@@ -1,0 +1,15 @@
+name: tests
+on: [push]
+jobs:
+  run-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout 🛎️Ivy
+        uses: actions/checkout@v2
+        with:
+          path: ivy
+          persist-credentials: false
+
+      - name: Run Tests
+        run: |
+          docker run --rm -v `pwd`/ivy:/ivy ivydl/ivy:latest python3 -m pytest ivy_tests/
