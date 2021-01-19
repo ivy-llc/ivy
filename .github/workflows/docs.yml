@@ -1,0 +1,47 @@
+name: docs
+on: [push]
+jobs:
+  update-docs:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout 🛎️Ivy
+        uses: actions/checkout@v2
+        with:
+          path: ivy
+          persist-credentials: false
+
+      - name: Checkout 🛎️Ivy Doc Builder
+        uses: actions/checkout@v2
+        with:
+          repository: ivy-dl/doc-builder
+          path: ivy_doc_builder
+          persist-credentials: false
+
+      - name: Install Dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install rsync
+          pip3 install --upgrade pip
+          pip3 install wheel setuptools
+          pip3 install -r ivy/requirements.txt
+          pip3 install -r ivy_doc_builder/requirements.txt
+
+      - name: Build Docs
+        run: |
+          cd ivy
+          rm -rf .gitignore
+          cd docs
+          rsync -rav ../../ivy_doc_builder/docs/ .
+          bash make_docs.sh --root_dir "../ivy"
+          cp .nojekyll build/
+          cd ../..
+
+      - name: Deploy 🚀
+        uses: JamesIves/github-pages-deploy-action@3.7.1
+        with:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          BRANCH: gh-pages
+          FOLDER: ivy/docs/build
+          CLEAN: false
+          GIT_CONFIG_NAME: ivy-seed
+          GIT_CONFIG_EMAIL: ivydl.team@gmail.com

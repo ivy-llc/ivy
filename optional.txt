@@ -1,0 +1,6 @@
+jax
+jaxlib
+tensorflow
+tensorflow-addons
+torch
+mxnet
