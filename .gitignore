@@ -12,4 +12,6 @@ saved_model/
 runtime_analysis/
 with_time_logs/
 *.csv
+*.csv#
 *.ods
+*.json
