@@ -1,7 +1,7 @@
-name: tests
+name: nightly-tests
 on: [push]
 jobs:
-  run-tests:
+  run-nightly-tests:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout 🛎️Ivy

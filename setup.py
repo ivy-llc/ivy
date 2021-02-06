@@ -17,7 +17,7 @@ from distutils.core import setup
 import setuptools
 
 setup(name='ivy-core',
-      version='0.0.0',
+      version='1.1.1',
       description='The templated deep learning framework, enabling framework-agnostic functions, layers and libraries.',
       author='Ivy Team',
       author_email='ivydl.team@gmail.com',
