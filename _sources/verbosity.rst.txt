@@ -1,0 +1,16 @@
+Verbosity
+=========
+
+.. automodule:: ivy.verbosity
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :show-inheritance:
+
+
+.. toctree::
+   :maxdepth: -1
+   :caption: Verbosity
+
+   verbosity/cprint.rst
+
