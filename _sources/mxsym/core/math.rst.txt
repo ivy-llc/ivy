@@ -1,0 +1,16 @@
+Math
+====
+
+.. automodule:: ivy.mxsym.core.math
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :show-inheritance:
+
+
+.. toctree::
+   :maxdepth: -1
+   :caption: Math
+
+   math/atan2.rst
+
