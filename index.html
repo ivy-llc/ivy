@@ -1,0 +1,397 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Contents &mdash; Ivy 1.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/custom.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Why Ivy?" href="why_ivy.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="#" class="icon icon-home"> Ivy
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Guides</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="why_ivy.html">Why Ivy?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="writing_ivy.html">Writing Ivy</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Core</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="core/general.html">General</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Docs</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../ivy"">Ivy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../mech"">Ivy Mech</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../vision"">Ivy Vision</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../robot"">Ivy Robot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../gym"">Ivy Gym</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="#">Ivy</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="#">Docs</a> &raquo;</li>
+        
+      <li>Contents</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/index.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <embed>
+  <a href="https://github.com/ivy-dl/ivy"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/365986a132ccd6a44c23a9169022c0b5c890c387/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f7265645f6161303030302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa00.png"></a>
+</embed><p align="center">
+    <img width="75%" style="display: block;" src='_images/logo.png'>
+</p><br/>
+<a href="https://github.com/ivy-dl/ivy/actions?query=workflow%3Adocs">
+    <img style="float: left; padding-right: 4px; padding-bottom: 4px;" src="https://img.shields.io/github/workflow/status/ivy-dl/ivy/docs?label=docs">
+</a>
+<a href="https://github.com/ivy-dl/ivy/actions?query=workflow%3Atests">
+    <img style="float: left; padding-right: 4px; padding-bottom: 4px;" src="https://img.shields.io/github/workflow/status/ivy-dl/ivy/tests?label=tests">
+</a>
+<a href="https://discord.gg/EN9YS3QW8w">
+    <img style="float: left; padding-right: 4px; padding-bottom: 4px;" src="https://img.shields.io/discord/799879767196958751?color=blue&label=%20&logo=discord&logoColor=white">
+</a>
+<br clear="all" /><p><strong>The templated deep learning framework, enabling framework-agnostic functions, layers and libraries.</strong></p>
+<div style="display: block;">
+    <img width="4%" style="float: left;" src="https://raw.githubusercontent.com/ivy-dl/ivy-dl.github.io/master/img/externally_linked/logos/supported/empty.png">
+    <a href="https://jax.readthedocs.io">
+        <img width="12%" style="float: left;" src="https://raw.githubusercontent.com/ivy-dl/ivy-dl.github.io/master/img/externally_linked/logos/supported/jax_logo.png">
+    </a>
+    <img width="6.66%" style="float: left;" src="https://raw.githubusercontent.com/ivy-dl/ivy-dl.github.io/master/img/externally_linked/logos/supported/empty.png">
+    <a href="https://www.tensorflow.org">
+        <img width="12%" style="float: left;" src="https://raw.githubusercontent.com/ivy-dl/ivy-dl.github.io/master/img/externally_linked/logos/supported/tensorflow_logo.png">
+    </a>
+    <img width="6.66%" style="float: left;" src="https://raw.githubusercontent.com/ivy-dl/ivy-dl.github.io/master/img/externally_linked/logos/supported/empty.png">
+    <a href="https://pytorch.org">
+        <img width="12%" style="float: left;" src="https://raw.githubusercontent.com/ivy-dl/ivy-dl.github.io/master/img/externally_linked/logos/supported/pytorch_logo.png">
+    </a>
+    <img width="6.66%" style="float: left;" src="https://raw.githubusercontent.com/ivy-dl/ivy-dl.github.io/master/img/externally_linked/logos/supported/empty.png">
+    <a href="https://mxnet.apache.org">
+        <img width="12%" style="float: left;" src="https://raw.githubusercontent.com/ivy-dl/ivy-dl.github.io/master/img/externally_linked/logos/supported/mxnet_logo.png">
+    </a>
+    <img width="6.66%" style="float: left;" src="https://raw.githubusercontent.com/ivy-dl/ivy-dl.github.io/master/img/externally_linked/logos/supported/empty.png">
+    <a href="https://numpy.org">
+        <img width="12%" style="float: left;" src="https://raw.githubusercontent.com/ivy-dl/ivy-dl.github.io/master/img/externally_linked/logos/supported/numpy_logo.png">
+    </a>
+</div><div class="section" id="contents">
+<h1>Contents<a class="headerlink" href="#contents" title="Permalink to this headline">¶</a></h1>
+<ul class="simple">
+<li><p><a class="reference internal" href="#overview">Overview</a></p></li>
+<li><p><a class="reference internal" href="#in-a-nutshell">In a Nutshell</a></p></li>
+<li><p><a class="reference internal" href="#where-next">Where Next?</a></p></li>
+</ul>
+</div>
+<div class="section" id="overview">
+<h1>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h1>
+<p><strong>What is Ivy?</strong></p>
+<p>Ivy is a templated deep learning framework which maximizes the portability of deep learning codebases.
+Ivy wraps the functional APIs of existing frameworks.
+Framework-agnostic functions, libraries and layers can then be written using Ivy,
+with simultaneous support for all frameworks.
+Ivy currently supports Jax, TensorFlow, PyTorch, MXNet and Numpy.</p>
+<p><strong>Ivy Libraries</strong></p>
+<p>There are a host of derived libraries written in Ivy, in the areas of mechanics, 3D vision, robotics,
+and differentiable gym environments. Click on the icons below for their respective github pages.</p>
+<div style="display: block;">
+    <img width="10%" style="float: left;" src="https://raw.githubusercontent.com/ivy-dl/ivy-dl.github.io/master/img/externally_linked/logos/empty.png">
+    <a href="https://github.com/ivy-dl/mech">
+        <img width="16%" style="float: left;" src="https://raw.githubusercontent.com/ivy-dl/ivy-dl.github.io/master/img/externally_linked/logos/ivy_mech.png">
+    </a>
+    <img width="3.2%" style="float: left;" src="https://raw.githubusercontent.com/ivy-dl/ivy-dl.github.io/master/img/externally_linked/logos/empty.png">
+    <a href="https://github.com/ivy-dl/vision">
+        <img width="16%" style="float: left;" src="https://raw.githubusercontent.com/ivy-dl/ivy-dl.github.io/master/img/externally_linked/logos/ivy_vision.png">
+    </a>
+    <img width="3.2%" style="float: left;" src="https://raw.githubusercontent.com/ivy-dl/ivy-dl.github.io/master/img/externally_linked/logos/empty.png">
+    <a href="https://github.com/ivy-dl/robot">
+        <img width="16%" style="float: left;" src="https://raw.githubusercontent.com/ivy-dl/ivy-dl.github.io/master/img/externally_linked/logos/ivy_robot.png">
+    </a>
+    <img width="3.2%" style="float: left;" src="https://raw.githubusercontent.com/ivy-dl/ivy-dl.github.io/master/img/externally_linked/logos/empty.png">
+    <a href="https://github.com/ivy-dl/gym">
+        <img width="16%" style="float: left;" src="https://raw.githubusercontent.com/ivy-dl/ivy-dl.github.io/master/img/externally_linked/logos/ivy_gym.png">
+    </a>
+</div>
+<br clear="all" />
+<br/>
+<br/><p><strong>Quick Start</strong></p>
+<p>Ivy can be installed like so: <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">ivy-core</span></code></p>
+<p>To get started, you can immediately use ivy with your deep learning framework of choice.
+In the example below we show how ivy’s concatenation function is compatible with tensors from different frameworks.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">jax.numpy</span> <span class="kn">as</span> <span class="nn">jnp</span>
+<span class="kn">import</span> <span class="nn">tensorflow</span> <span class="kn">as</span> <span class="nn">tf</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">mxnet</span> <span class="kn">as</span> <span class="nn">mx</span>
+<span class="kn">import</span> <span class="nn">torch</span>
+
+<span class="kn">import</span> <span class="nn">ivy</span>
+
+<span class="n">jax_concatted</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">concatenate</span><span class="p">((</span><span class="n">jnp</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="mi">1</span><span class="p">,)),</span> <span class="n">jnp</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="mi">1</span><span class="p">,))),</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">tf_concatted</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">concatenate</span><span class="p">((</span><span class="n">tf</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="mi">1</span><span class="p">,)),</span> <span class="n">tf</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="mi">1</span><span class="p">,))),</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">np_concatted</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">concatenate</span><span class="p">((</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="mi">1</span><span class="p">,)),</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="mi">1</span><span class="p">,))),</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">mx_concatted</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">concatenate</span><span class="p">((</span><span class="n">mx</span><span class="o">.</span><span class="n">nd</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="mi">1</span><span class="p">,)),</span> <span class="n">mx</span><span class="o">.</span><span class="n">nd</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="mi">1</span><span class="p">,))),</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">torch_concatted</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">concatenate</span><span class="p">((</span><span class="n">torch</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="mi">1</span><span class="p">,)),</span> <span class="n">torch</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="mi">1</span><span class="p">,))),</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>To see a list of all Ivy methods, type <code class="code docutils literal notranslate"><span class="pre">ivy.</span></code> into a python command prompt and press <code class="code docutils literal notranslate"><span class="pre">tab</span></code>.
+You should then see output like the following:</p>
+<a class="reference internal image-reference" href="_images/ivy_tab.png"><img alt="_images/ivy_tab.png" src="_images/ivy_tab.png" style="width: 100%;" /></a>
+<p>Based on this short code sample alone, you may wonder, why is this helpful?
+Don’t most developers stick to just one framework for a project?
+This is indeed the case, and the benefit of Ivy is <strong>not</strong> the ability to combine different frameworks in a single project.</p>
+<p>So what is the benefit of Ivy?</p>
+</div>
+<div class="section" id="in-a-nutshell">
+<h1>In a Nutshell<a class="headerlink" href="#in-a-nutshell" title="Permalink to this headline">¶</a></h1>
+<p>Ivy’s strength arises when we want to maximize the usability of our code.</p>
+<p>We can write a set of functions <strong>once</strong> in Ivy, and share these with the community so that <strong>all</strong> developers can use them,
+irrespective of their personal choice of framework. TensorFlow? PyTorch? Jax? With Ivy functions it doesn’t matter!</p>
+<p>This makes it very simple to create highly portable deep learning codebases.
+The core idea behind Ivy is captured by the example of the <code class="code docutils literal notranslate"><span class="pre">ivy.clip</span></code> function below.</p>
+<p align="center">
+    <img width="75%" style="display: block;" src='_images/a_templated_framework.png'>
+</p><p>On it’s own this may not seem very exciting, there are more interesting things to do in deep learning than clip tensors.
+Ivy is a building block for more interesting applications.</p>
+<p>For example, the Ivy libraries for mechanics, 3D vision, robotics, and differentiable environments are all written in pure Ivy.
+These libraries provide fully differentiable implementations of various applied functions,
+primed for integration in end-to-end networks, for users of any deep-learning framework.</p>
+<p>Another benefit of Ivy is user flexibility.
+By keeping the Ivy abstraction lightweight and fully functional, this keeps you in full control of your code.
+The schematic below emphasizes that you can choose to develop at any abstraction level.</p>
+<p align="center">
+    <img width="50%" style="display: block;" src='_images/abstraction_hierarchy.png'>
+</p><p>You can code entirely in Ivy, or mainly in their native DL framework, with a small amount of Ivy code.
+This is entirely up to you, depending on how many Ivy functions you need from existing Ivy libraries,
+and how much new Ivy code you add into your own project, to maximize it’s audience when sharing online.</p>
+</div>
+<div class="section" id="where-next">
+<h1>Where Next?<a class="headerlink" href="#where-next" title="Permalink to this headline">¶</a></h1>
+<p>So, now that you’ve got the gist of Ivy, and why it’s useful. Where to next?</p>
+<p>This depends on whether you see yourself in the short term as more likely to be an Ivy library <em>user</em> or an Ivy library <em>contributor</em>.</p>
+<p>If you would like to use the existing set of Ivy libraries, dragging and dropping key functions into your own project,
+then we suggest you dive into some of the demos for the various Ivy libraries currently on offer.
+Simply open up the main <a class="reference external" href="https://ivy-dl.org/ivy">docs</a>, then open the library-specific docs linked on the bottom left, and check out the demos folder in the library repo.</p>
+<p>On the other hand, if you have your own new library in mind,
+or if you would like to implement parts of your own project in Ivy to maximise it’s portability,
+then we recommend checking out the page <a class="reference external" href="https://ivy-dl.org/ivy/writing_ivy.html">Writing Ivy</a> in the docs.
+Here, we dive a bit deeper into the Ivy framework,
+and the best coding practices to get the most out of Ivy for your own codebases and libraries.</p>
+</div>
+<div class="section" id="documentation-tree">
+<h1>Documentation Tree<a class="headerlink" href="#documentation-tree" title="Permalink to this headline">¶</a></h1>
+<div class="toctree-wrapper compound">
+<p class="caption"><span class="caption-text">Guides</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="why_ivy.html">Why Ivy?</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="why_ivy.html#portable-code">Portable Code</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="writing_ivy.html">Writing Ivy</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="writing_ivy.html#ivy-namespace">Ivy Namespace</a></li>
+<li class="toctree-l2"><a class="reference internal" href="writing_ivy.html#ivy-frameworks">Ivy Frameworks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="writing_ivy.html#ivy-placeholders">Ivy placeholders</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<p class="caption"><span class="caption-text">Core</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="core/general.html">General</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="core/general/array.html">array</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+</div>
+<div class="toctree-wrapper compound">
+</div>
+<div class="toctree-wrapper compound">
+</div>
+<div class="toctree-wrapper compound">
+</div>
+<div class="toctree-wrapper compound">
+</div>
+<div class="toctree-wrapper compound">
+</div>
+<div class="toctree-wrapper compound">
+<p class="caption"><span class="caption-text">Docs</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../ivy"">Ivy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../mech"">Ivy Mech</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../vision"">Ivy Vision</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../robot"">Ivy Robot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../gym"">Ivy Gym</a></li>
+</ul>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="why_ivy.html" class="btn btn-neutral float-right" title="Why Ivy?" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Ivy Team
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

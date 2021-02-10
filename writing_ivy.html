@@ -1,0 +1,356 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Writing Ivy &mdash; Ivy 1.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/custom.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="General" href="core/general.html" />
+    <link rel="prev" title="Why Ivy?" href="why_ivy.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> Ivy
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Guides</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="why_ivy.html">Why Ivy?</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Writing Ivy</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#ivy-namespace">Ivy Namespace</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#ivy-frameworks">Ivy Frameworks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#ivy-placeholders">Ivy placeholders</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption"><span class="caption-text">Core</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="core/general.html">General</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Docs</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../ivy"">Ivy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../mech"">Ivy Mech</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../vision"">Ivy Vision</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../robot"">Ivy Robot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../gym"">Ivy Gym</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Ivy</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>Writing Ivy</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/writing_ivy.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="writing-ivy">
+<h1>Writing Ivy<a class="headerlink" href="#writing-ivy" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="ivy-namespace">
+<h2>Ivy Namespace<a class="headerlink" href="#ivy-namespace" title="Permalink to this headline">¶</a></h2>
+<p>Writing Ivy code is simple.
+The <code class="code docutils literal notranslate"><span class="pre">ivy</span></code> namespace can be used directly with tensors from any of the supported deep learning frameworks.
+While this is the simplest way of using Ivy, it is also the least efficient.
+In this format, Ivy will type-check the inputs on each function call.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Using the ivy namespace, with internal type-checking of inputs</span>
+
+<span class="kn">import</span> <span class="nn">tensorflow</span> <span class="kn">as</span> <span class="nn">tf</span>
+
+<span class="kn">import</span> <span class="nn">ivy</span>
+
+<span class="n">tf_concatted</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">concatenate</span><span class="p">((</span><span class="n">tf</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="mi">1</span><span class="p">,)),</span> <span class="n">tf</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="mi">1</span><span class="p">,))),</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Ivy makes use of a function <code class="code docutils literal notranslate"><span class="pre">get_framework</span></code> for doing this internally,
+which performs string parsing to determine the input data types.
+This method can also be called outside of ivy functions:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># using get_framework directly, which type-checks the inputs</span>
+
+<span class="kn">import</span> <span class="nn">tensorflow</span> <span class="kn">as</span> <span class="nn">tf</span>
+<span class="kn">import</span> <span class="nn">torch</span>
+
+<span class="kn">from</span> <span class="nn">ivy.framework_handler</span> <span class="kn">import</span> <span class="n">get_framework</span>
+
+<span class="c1"># returns ivy.tensorflow</span>
+<span class="n">get_framework</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">constant</span><span class="p">([</span><span class="mf">1.</span><span class="p">]))</span>
+
+<span class="c1"># returns ivy.torch</span>
+<span class="n">get_framework</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="mf">1.</span><span class="p">]))</span>
+</pre></div>
+</div>
+<p>Using the <code class="code docutils literal notranslate"><span class="pre">ivy</span></code> namespace directly is okay for prototyping, or if runtime is not a high priority.
+But if runtime is important, which is certainly the case in most deep learning applications,
+then using the <code class="code docutils literal notranslate"><span class="pre">ivy</span></code> namespace directly is not advised.</p>
+</div>
+<div class="section" id="ivy-frameworks">
+<h2>Ivy Frameworks<a class="headerlink" href="#ivy-frameworks" title="Permalink to this headline">¶</a></h2>
+<p>In addition to the core <code class="code docutils literal notranslate"><span class="pre">ivy</span></code> namespace, Ivy also exposes frameworks, in the form of <code class="code docutils literal notranslate"><span class="pre">ivy.framework</span></code>.
+These are actually what are returned from the <code class="code docutils literal notranslate"><span class="pre">get_framework</span></code> method, as in the examples above.</p>
+<p>For writing more efficient code, these Ivy framework modules should be imported and used directly.
+These Ivy frameworks bind directly to the functions of the supported backend frameworks.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Using Ivy frameworks directly</span>
+
+<span class="kn">import</span> <span class="nn">tensorflow</span> <span class="kn">as</span> <span class="nn">tf</span>
+
+<span class="kn">import</span> <span class="nn">ivy.tensorflow</span> <span class="kn">as</span> <span class="nn">ivy_tf</span>
+
+<span class="c1"># no type-checking, uses direct bindings to tensorflow functions</span>
+<span class="n">tf_concatted</span> <span class="o">=</span> <span class="n">ivy_tf</span><span class="o">.</span><span class="n">concatenate</span><span class="p">((</span><span class="n">tf</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="mi">1</span><span class="p">,)),</span> <span class="n">tf</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="mi">1</span><span class="p">,))),</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This may seem to entirely defeat the purpose of Ivy, given that the imported <code class="code docutils literal notranslate"><span class="pre">ivy_tf</span></code> module is now framework-specific,
+why not just use <code class="code docutils literal notranslate"><span class="pre">tf.concat</span></code> directly in the example above?</p>
+<p>Importantly, <code class="code docutils literal notranslate"><span class="pre">ivy.tensorflow</span></code> still maintains the <code class="code docutils literal notranslate"><span class="pre">ivy</span></code> syntax and call signatures,
+which are consistent across all backend frameworks,
+and therefore are distinct from the syntax and call signatures of pure tensorflow, imported as <code class="code docutils literal notranslate"><span class="pre">tf</span></code> above.</p>
+</div>
+<div class="section" id="ivy-placeholders">
+<h2>Ivy placeholders<a class="headerlink" href="#ivy-placeholders" title="Permalink to this headline">¶</a></h2>
+<p>In order to make use of the efficient Ivy frameworks, and their direct function bindings,
+placeholders can be used in newly written Ivy functions, such as <code class="code docutils literal notranslate"><span class="pre">f</span></code> in the example below.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Using Ivy placeholders</span>
+
+<span class="kn">import</span> <span class="nn">tensorflow</span> <span class="kn">as</span> <span class="nn">tf</span>
+<span class="kn">import</span> <span class="nn">torch</span>
+
+<span class="kn">import</span> <span class="nn">ivy.tensorflow</span> <span class="kn">as</span> <span class="nn">ivy_tf</span>
+<span class="kn">import</span> <span class="nn">ivy.torch</span> <span class="kn">as</span> <span class="nn">ivy_torch</span>
+
+<span class="k">def</span> <span class="nf">sin_cos</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">f</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">f</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+
+<span class="c1"># no type-checking</span>
+<span class="n">sin_cos</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">constant</span><span class="p">([</span><span class="mf">1.</span><span class="p">]),</span> <span class="n">ivy_tf</span><span class="p">)</span>
+
+<span class="c1"># no type-checking</span>
+<span class="n">sin_cos</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="mf">1.</span><span class="p">]),</span> <span class="n">ivy_torch</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>If you would like a function to keep input type-checking as an option, the <code class="code docutils literal notranslate"><span class="pre">get_framework</span></code> method can be used.
+If <code class="code docutils literal notranslate"><span class="pre">f</span></code> is passed into <code class="code docutils literal notranslate"><span class="pre">get_framework</span></code>, then type-checking is entirely bypassed,
+and <code class="code docutils literal notranslate"><span class="pre">get_framework</span></code> immediately returns the input framework <code class="code docutils literal notranslate"><span class="pre">f</span></code>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Using Ivy placeholders with optional type-checking</span>
+
+<span class="kn">import</span> <span class="nn">tensorflow</span> <span class="kn">as</span> <span class="nn">tf</span>
+<span class="kn">import</span> <span class="nn">torch</span>
+
+<span class="kn">import</span> <span class="nn">ivy.tensorflow</span> <span class="kn">as</span> <span class="nn">ivy_tf</span>
+<span class="kn">import</span> <span class="nn">ivy.torch</span> <span class="kn">as</span> <span class="nn">ivy_torch</span>
+<span class="kn">from</span> <span class="nn">ivy.framework_handler</span> <span class="kn">import</span> <span class="n">get_framework</span>
+
+<span class="k">def</span> <span class="nf">sin_cos</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="n">f</span> <span class="o">=</span> <span class="n">get_framework</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">f</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+
+<span class="c1"># type-checking</span>
+<span class="n">sin_cos</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">constant</span><span class="p">([</span><span class="mf">1.</span><span class="p">]))</span>
+
+<span class="c1"># no type-checking</span>
+<span class="n">sin_cos</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">constant</span><span class="p">([</span><span class="mf">1.</span><span class="p">]),</span> <span class="n">ivy_tf</span><span class="p">)</span>
+
+<span class="c1"># type-checking</span>
+<span class="n">sin_cos</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.</span><span class="p">]))</span>
+
+<span class="c1"># no type-checking</span>
+<span class="n">sin_cos</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.</span><span class="p">]),</span> <span class="n">ivy_torch</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The use of Ivy placeholders is also useful for writing Ivy classes,
+where the framework can be stored as part of the object state.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Using Ivy placeholders with classes</span>
+
+<span class="kn">import</span> <span class="nn">tensorflow</span> <span class="kn">as</span> <span class="nn">tf</span>
+
+<span class="kn">import</span> <span class="nn">ivy.tensorflow</span> <span class="kn">as</span> <span class="nn">ivy_tf</span>
+<span class="kn">from</span> <span class="nn">ivy.framework_handler</span> <span class="kn">import</span> <span class="n">get_framework</span>
+
+<span class="k">class</span> <span class="nc">MyClass</span><span class="p">:</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_config</span> <span class="o">=</span> <span class="n">config</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_f</span> <span class="o">=</span> <span class="n">get_framework</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">some_fn</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_f</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_config</span> <span class="o">*</span> <span class="n">x</span><span class="p">)</span>
+
+<span class="c1"># type-checking</span>
+<span class="n">obj</span> <span class="o">=</span> <span class="n">MyClass</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">constant</span><span class="p">([</span><span class="mf">0.</span><span class="p">]))</span>
+
+<span class="c1"># no type-checking</span>
+<span class="n">obj</span><span class="o">.</span><span class="n">some_fn</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">constant</span><span class="p">([</span><span class="mf">1.</span><span class="p">]))</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="core/general.html" class="btn btn-neutral float-right" title="General" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="why_ivy.html" class="btn btn-neutral float-left" title="Why Ivy?" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Ivy Team
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

@@ -1,0 +1,34 @@
+/* Main background color modification */
+.btn-info, .wy-menu-vertical a:active, .wy-side-nav-search, .wy-side-nav-search img, .wy-nav .wy-menu-vertical a:hover, .wy-nav-top img, .wy-tray-item-info, .wy-side-nav-search, .wy-dropdown-menu > dd > a:hover, .wy-dropdown-menu a:hover, .wy-nav-top {
+    background-color: #009600 !important;
+}
+
+.wy-menu-vertical header, .wy-menu-vertical p.caption {
+    color: #009600;
+}
+
+a {
+    color: #009600;
+}
+
+a:visited {
+    color: #009600;
+}
+
+.wy-menu-vertical a:visited {
+    color: #d9d9d9;
+}
+
+.wy-side-nav-search>a:visited, .wy-side-nav-search .wy-dropdown>a:visited {
+    color: #fcfcfc;
+}
+
+.rst-content tt.literal, .rst-content tt.literal, .rst-content code.literal {
+    color: #009600;
+}
+
+.rst-content dl:not(.docutils) dt {
+    background: #ebffe1;
+    color: #006400;
+    border-top: solid 3px #009600;
+}

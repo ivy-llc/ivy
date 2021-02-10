@@ -1,0 +1,17 @@
+General
+=======
+
+.. automodule:: ivy.jax.core.general
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :show-inheritance:
+
+
+.. toctree::
+   :maxdepth: -1
+   :caption: General
+
+   general/to_dev.rst
+   general/array.rst
+
