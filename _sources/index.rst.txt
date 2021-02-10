@@ -1,0 +1,265 @@
+.. raw:: html
+
+  <embed>
+    <a href="https://github.com/ivy-dl/ivy"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/365986a132ccd6a44c23a9169022c0b5c890c387/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f7265645f6161303030302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png"></a>
+  </embed>
+
+.. raw:: html
+
+    <p align="center">
+        <img width="75%" style="display: block;" src='_images/logo.png'>
+    </p>
+
+.. raw:: html
+
+    <br/>
+    <a href="https://github.com/ivy-dl/ivy/actions?query=workflow%3Adocs">
+        <img style="float: left; padding-right: 4px; padding-bottom: 4px;" src="https://img.shields.io/github/workflow/status/ivy-dl/ivy/docs?label=docs">
+    </a>
+    <a href="https://github.com/ivy-dl/ivy/actions?query=workflow%3Atests">
+        <img style="float: left; padding-right: 4px; padding-bottom: 4px;" src="https://img.shields.io/github/workflow/status/ivy-dl/ivy/tests?label=tests">
+    </a>
+    <a href="https://discord.gg/EN9YS3QW8w">
+        <img style="float: left; padding-right: 4px; padding-bottom: 4px;" src="https://img.shields.io/discord/799879767196958751?color=blue&label=%20&logo=discord&logoColor=white">
+    </a>
+    <br clear="all" />
+
+**The templated deep learning framework, enabling framework-agnostic functions, layers and libraries.**
+
+.. raw:: html
+
+    <div style="display: block;">
+        <img width="4%" style="float: left;" src="https://raw.githubusercontent.com/ivy-dl/ivy-dl.github.io/master/img/externally_linked/logos/supported/empty.png">
+        <a href="https://jax.readthedocs.io">
+            <img width="12%" style="float: left;" src="https://raw.githubusercontent.com/ivy-dl/ivy-dl.github.io/master/img/externally_linked/logos/supported/jax_logo.png">
+        </a>
+        <img width="6.66%" style="float: left;" src="https://raw.githubusercontent.com/ivy-dl/ivy-dl.github.io/master/img/externally_linked/logos/supported/empty.png">
+        <a href="https://www.tensorflow.org">
+            <img width="12%" style="float: left;" src="https://raw.githubusercontent.com/ivy-dl/ivy-dl.github.io/master/img/externally_linked/logos/supported/tensorflow_logo.png">
+        </a>
+        <img width="6.66%" style="float: left;" src="https://raw.githubusercontent.com/ivy-dl/ivy-dl.github.io/master/img/externally_linked/logos/supported/empty.png">
+        <a href="https://pytorch.org">
+            <img width="12%" style="float: left;" src="https://raw.githubusercontent.com/ivy-dl/ivy-dl.github.io/master/img/externally_linked/logos/supported/pytorch_logo.png">
+        </a>
+        <img width="6.66%" style="float: left;" src="https://raw.githubusercontent.com/ivy-dl/ivy-dl.github.io/master/img/externally_linked/logos/supported/empty.png">
+        <a href="https://mxnet.apache.org">
+            <img width="12%" style="float: left;" src="https://raw.githubusercontent.com/ivy-dl/ivy-dl.github.io/master/img/externally_linked/logos/supported/mxnet_logo.png">
+        </a>
+        <img width="6.66%" style="float: left;" src="https://raw.githubusercontent.com/ivy-dl/ivy-dl.github.io/master/img/externally_linked/logos/supported/empty.png">
+        <a href="https://numpy.org">
+            <img width="12%" style="float: left;" src="https://raw.githubusercontent.com/ivy-dl/ivy-dl.github.io/master/img/externally_linked/logos/supported/numpy_logo.png">
+        </a>
+    </div>
+
+Contents
+--------
+
+* `Overview`_
+* `In a Nutshell`_
+* `Where Next?`_
+
+Overview
+--------
+
+.. _docs: https://ivy-dl.org/ivy
+
+**What is Ivy?**
+
+Ivy is a templated deep learning framework which maximizes the portability of deep learning codebases.
+Ivy wraps the functional APIs of existing frameworks.
+Framework-agnostic functions, libraries and layers can then be written using Ivy,
+with simultaneous support for all frameworks.
+Ivy currently supports Jax, TensorFlow, PyTorch, MXNet and Numpy. 
+
+**Ivy Libraries**
+
+There are a host of derived libraries written in Ivy, in the areas of mechanics, 3D vision, robotics,
+and differentiable gym environments. Click on the icons below for their respective github pages.
+
+.. raw:: html
+
+    <div style="display: block;">
+        <img width="10%" style="float: left;" src="https://raw.githubusercontent.com/ivy-dl/ivy-dl.github.io/master/img/externally_linked/logos/empty.png">
+        <a href="https://github.com/ivy-dl/mech">
+            <img width="16%" style="float: left;" src="https://raw.githubusercontent.com/ivy-dl/ivy-dl.github.io/master/img/externally_linked/logos/ivy_mech.png">
+        </a>
+        <img width="3.2%" style="float: left;" src="https://raw.githubusercontent.com/ivy-dl/ivy-dl.github.io/master/img/externally_linked/logos/empty.png">
+        <a href="https://github.com/ivy-dl/vision">
+            <img width="16%" style="float: left;" src="https://raw.githubusercontent.com/ivy-dl/ivy-dl.github.io/master/img/externally_linked/logos/ivy_vision.png">
+        </a>
+        <img width="3.2%" style="float: left;" src="https://raw.githubusercontent.com/ivy-dl/ivy-dl.github.io/master/img/externally_linked/logos/empty.png">
+        <a href="https://github.com/ivy-dl/robot">
+            <img width="16%" style="float: left;" src="https://raw.githubusercontent.com/ivy-dl/ivy-dl.github.io/master/img/externally_linked/logos/ivy_robot.png">
+        </a>
+        <img width="3.2%" style="float: left;" src="https://raw.githubusercontent.com/ivy-dl/ivy-dl.github.io/master/img/externally_linked/logos/empty.png">
+        <a href="https://github.com/ivy-dl/gym">
+            <img width="16%" style="float: left;" src="https://raw.githubusercontent.com/ivy-dl/ivy-dl.github.io/master/img/externally_linked/logos/ivy_gym.png">
+        </a>
+    </div>
+    <br clear="all" />
+    <br/>
+    <br/>
+
+**Quick Start**
+
+Ivy can be installed like so: ``pip install ivy-core``
+
+To get started, you can immediately use ivy with your deep learning framework of choice.
+In the example below we show how ivy's concatenation function is compatible with tensors from different frameworks.
+
+.. code-block:: python
+
+    import jax.numpy as jnp
+    import tensorflow as tf
+    import numpy as np
+    import mxnet as mx
+    import torch
+
+    import ivy
+
+    jax_concatted = ivy.concatenate((jnp.ones((1,)), jnp.ones((1,))), -1)
+    tf_concatted = ivy.concatenate((tf.ones((1,)), tf.ones((1,))), -1)
+    np_concatted = ivy.concatenate((np.ones((1,)), np.ones((1,))), -1)
+    mx_concatted = ivy.concatenate((mx.nd.ones((1,)), mx.nd.ones((1,))), -1)
+    torch_concatted = ivy.concatenate((torch.ones((1,)), torch.ones((1,))), -1)
+
+To see a list of all Ivy methods, type :code:`ivy.` into a python command prompt and press :code:`tab`.
+You should then see output like the following:
+
+.. image:: _images/ivy_tab.png
+   :width: 100%
+
+Based on this short code sample alone, you may wonder, why is this helpful?
+Don't most developers stick to just one framework for a project?
+This is indeed the case, and the benefit of Ivy is **not** the ability to combine different frameworks in a single project.
+
+So what is the benefit of Ivy?
+
+In a Nutshell
+-------------
+
+Ivy's strength arises when we want to maximize the usability of our code.
+
+We can write a set of functions **once** in Ivy, and share these with the community so that **all** developers can use them,
+irrespective of their personal choice of framework. TensorFlow? PyTorch? Jax? With Ivy functions it doesn't matter!
+
+This makes it very simple to create highly portable deep learning codebases.
+The core idea behind Ivy is captured by the example of the :code:`ivy.clip` function below.
+
+.. raw:: html
+
+    <p align="center">
+        <img width="75%" style="display: block;" src='_images/a_templated_framework.png'>
+    </p>
+
+On it's own this may not seem very exciting, there are more interesting things to do in deep learning than clip tensors.
+Ivy is a building block for more interesting applications.
+
+For example, the Ivy libraries for mechanics, 3D vision, robotics, and differentiable environments are all written in pure Ivy.
+These libraries provide fully differentiable implementations of various applied functions,
+primed for integration in end-to-end networks, for users of any deep-learning framework.
+
+Another benefit of Ivy is user flexibility.
+By keeping the Ivy abstraction lightweight and fully functional, this keeps you in full control of your code.
+The schematic below emphasizes that you can choose to develop at any abstraction level.
+
+.. raw:: html
+
+    <p align="center">
+        <img width="50%" style="display: block;" src='_images/abstraction_hierarchy.png'>
+    </p>
+
+You can code entirely in Ivy, or mainly in their native DL framework, with a small amount of Ivy code.
+This is entirely up to you, depending on how many Ivy functions you need from existing Ivy libraries,
+and how much new Ivy code you add into your own project, to maximize it's audience when sharing online.
+
+Where Next?
+-----------
+
+.. _`Writing Ivy`: https://ivy-dl.org/ivy/writing_ivy.html
+
+So, now that you've got the gist of Ivy, and why it's useful. Where to next?
+
+This depends on whether you see yourself in the short term as more likely to be an Ivy library *user* or an Ivy library *contributor*.
+
+If you would like to use the existing set of Ivy libraries, dragging and dropping key functions into your own project,
+then we suggest you dive into some of the demos for the various Ivy libraries currently on offer.
+Simply open up the main docs_, then open the library-specific docs linked on the bottom left, and check out the demos folder in the library repo.
+
+On the other hand, if you have your own new library in mind,
+or if you would like to implement parts of your own project in Ivy to maximise it's portability,
+then we recommend checking out the page `Writing Ivy`_ in the docs.
+Here, we dive a bit deeper into the Ivy framework,
+and the best coding practices to get the most out of Ivy for your own codebases and libraries.
+
+
+Documentation Tree
+------------------
+
+.. toctree::
+   :maxdepth: -1
+   :caption: Guides
+
+   why_ivy.rst
+   writing_ivy.rst
+
+
+.. toctree::
+   :maxdepth: -1
+   :caption: Core
+
+   core/general.rst
+
+
+.. toctree::
+   :maxdepth: -1
+   :caption: Jax
+
+   jax/core.rst
+
+
+.. toctree::
+   :maxdepth: -1
+   :caption: Mxnd
+
+   mxnd/core.rst
+
+
+.. toctree::
+   :maxdepth: -1
+   :caption: Mxsym
+
+   mxsym/core.rst
+
+
+.. toctree::
+   :maxdepth: -1
+   :caption: Numpy
+
+   numpy/core.rst
+
+
+.. toctree::
+   :maxdepth: -1
+   :caption: Tensorflow
+
+   tensorflow/core.rst
+
+
+.. toctree::
+   :maxdepth: -1
+   :caption: Torch
+
+   torch/core.rst
+
+
+.. toctree::
+   :maxdepth: -1
+   :caption: Docs
+
+   docs/ivy.rst
+   docs/ivy_mech.rst
+   docs/ivy_vision.rst
+   docs/ivy_robot.rst
+   docs/ivy_gym.rst
+

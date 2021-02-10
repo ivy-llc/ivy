@@ -1,0 +1,15 @@
+Framework handler
+=================
+
+.. automodule:: ivy.framework_handler
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :show-inheritance:
+
+
+.. toctree::
+   :maxdepth: -1
+   :caption: Framework handler
+
+
