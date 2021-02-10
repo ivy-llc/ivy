@@ -1,0 +1,19 @@
+Random
+======
+
+.. automodule:: ivy.jax.core.random
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :show-inheritance:
+
+
+.. toctree::
+   :maxdepth: -1
+   :caption: Random
+
+   random/random_uniform.rst
+   random/randint.rst
+   random/seed.rst
+   random/shuffle.rst
+

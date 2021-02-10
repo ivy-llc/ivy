@@ -24,6 +24,7 @@
         <script src="../../../_static/jquery.js"></script>
         <script src="../../../_static/underscore.js"></script>
         <script src="../../../_static/doctools.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../../_static/js/theme.js"></script>
 
@@ -85,7 +86,14 @@
 </ul>
 <p class="caption"><span class="caption-text">Core</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../core/container.html">Container</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../core/general.html">General</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../core/gradients.html">Gradients</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../core/image.html">Image</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../core/linalg.html">Linalg</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../core/logic.html">Logic</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../core/random.html">Random</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../core/reductions.html">Reductions</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Docs</span></p>
 <ul>
@@ -184,6 +192,812 @@
 <span class="sd">    :return: An array object satisfying the specified requirements, in the form of the selected framework.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_get_framework</span><span class="p">(</span><span class="n">object_in</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">object_in</span><span class="p">,</span> <span class="n">dtype_str</span><span class="p">,</span> <span class="n">dev</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="to_numpy"><a class="viewcode-back" href="../../../core/general/to_numpy.html#ivy.core.general.to_numpy">[docs]</a><span class="k">def</span> <span class="nf">to_numpy</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Converts array into a numpy array.</span>
+
+<span class="sd">    :param x: Input array.</span>
+<span class="sd">    :type x: array</span>
+<span class="sd">    :param f: Machine learning framework. Inferred from inputs if None.</span>
+<span class="sd">    :type f: ml_framework, optional</span>
+<span class="sd">    :return: A numpy array.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">_get_framework</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">(</span><span class="n">x</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="to_list"><a class="viewcode-back" href="../../../core/general/to_list.html#ivy.core.general.to_list">[docs]</a><span class="k">def</span> <span class="nf">to_list</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Creates a (possibly nested) list from input array.</span>
+
+<span class="sd">    :param x: Input array.</span>
+<span class="sd">    :type x: array</span>
+<span class="sd">    :param f: Machine learning framework. Inferred from inputs if None.</span>
+<span class="sd">    :type f: ml_framework, optional</span>
+<span class="sd">    :return: A list representation of the input array.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">_get_framework</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">to_list</span><span class="p">(</span><span class="n">x</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="shape"><a class="viewcode-back" href="../../../core/general/shape.html#ivy.core.general.shape">[docs]</a><span class="k">def</span> <span class="nf">shape</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns the shape of the array x.</span>
+
+<span class="sd">    :param x: Input array to infer the shape of.</span>
+<span class="sd">    :type x: array</span>
+<span class="sd">    :param f: Machine learning framework. Inferred from inputs if None.</span>
+<span class="sd">    :type f: ml_framework, optional</span>
+<span class="sd">    :return: Shape of the array</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">_get_framework</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">(</span><span class="n">x</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="get_num_dims"><a class="viewcode-back" href="../../../core/general/get_num_dims.html#ivy.core.general.get_num_dims">[docs]</a><span class="k">def</span> <span class="nf">get_num_dims</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns the number of dimensions of the array x.</span>
+
+<span class="sd">    :param x: Input array to infer the number of dimensions for.</span>
+<span class="sd">    :type x: array</span>
+<span class="sd">    :param f: Machine learning framework. Inferred from inputs if None.</span>
+<span class="sd">    :type f: ml_framework, optional</span>
+<span class="sd">    :return: Shape of the array</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">_get_framework</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">get_num_dims</span><span class="p">(</span><span class="n">x</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="minimum"><a class="viewcode-back" href="../../../core/general/minimum.html#ivy.core.general.minimum">[docs]</a><span class="k">def</span> <span class="nf">minimum</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns the min of x and y (i.e. x &lt; y ? x : y) element-wise.</span>
+
+<span class="sd">    :param x: Input array containing elements to minimum threshold.</span>
+<span class="sd">    :type x: array</span>
+<span class="sd">    :param y: Array containing minimum values, must be broadcastable to x.</span>
+<span class="sd">    :type y: array</span>
+<span class="sd">    :param f: Machine learning framework. Inferred from inputs if None.</span>
+<span class="sd">    :type f: ml_framework, optional</span>
+<span class="sd">    :return: An array with the elements of x, but clipped to not exceed the y values.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">_get_framework</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">minimum</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="maximum"><a class="viewcode-back" href="../../../core/general/maximum.html#ivy.core.general.maximum">[docs]</a><span class="k">def</span> <span class="nf">maximum</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns the max of x and y (i.e. x &gt; y ? x : y) element-wise.</span>
+
+<span class="sd">    :param x: Input array containing elements to maximum threshold.</span>
+<span class="sd">    :type x: array</span>
+<span class="sd">    :param y: Array containing maximum values, must be broadcastable to x.</span>
+<span class="sd">    :type y: array</span>
+<span class="sd">    :param f: Machine learning framework. Inferred from inputs if None.</span>
+<span class="sd">    :type f: ml_framework, optional</span>
+<span class="sd">    :return: An array with the elements of x, but clipped to not be lower than the y values.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">_get_framework</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="clip"><a class="viewcode-back" href="../../../core/general/clip.html#ivy.core.general.clip">[docs]</a><span class="k">def</span> <span class="nf">clip</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">x_min</span><span class="p">,</span> <span class="n">x_max</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Clips (limits) the values in an array.</span>
+
+<span class="sd">    Given an interval, values outside the interval are clipped to the interval edges (element-wise).</span>
+<span class="sd">    For example, if an interval of [0, 1] is specified, values smaller than 0 become 0,</span>
+<span class="sd">    and values larger than 1 become 1.</span>
+
+<span class="sd">    :param x: Input array containing elements to clip.</span>
+<span class="sd">    :type x: array</span>
+<span class="sd">    :param x_min: Minimum value.</span>
+<span class="sd">    :type x_min: scalar</span>
+<span class="sd">    :param x_max: Maximum value.</span>
+<span class="sd">    :type x_max: scalar</span>
+<span class="sd">    :param f: Machine learning framework. Inferred from inputs if None.</span>
+<span class="sd">    :type f: ml_framework, optional</span>
+<span class="sd">    :return: An array with the elements of x, but where values &lt; x_min are replaced with x_min,</span>
+<span class="sd">                and those &gt; x_max with x_max.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">_get_framework</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">x_min</span><span class="p">,</span> <span class="n">x_max</span><span class="p">)</span></div>
+
+
+<span class="c1"># noinspection PyShadowingBuiltins</span>
+<div class="viewcode-block" id="round"><a class="viewcode-back" href="../../../core/general/round.html#ivy.core.general.round">[docs]</a><span class="k">def</span> <span class="nf">round</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Rounds the values of an array to the nearest integer, element-wise.</span>
+
+<span class="sd">    :param x: Input array containing elements to round.</span>
+<span class="sd">    :type x: array</span>
+<span class="sd">    :param f: Machine learning framework. Inferred from inputs if None.</span>
+<span class="sd">    :type f: ml_framework, optional</span>
+<span class="sd">    :return: An array of the same shape and type as x, with the elements rounded to integers.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">_get_framework</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">x</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="floormod"><a class="viewcode-back" href="../../../core/general/floormod.html#ivy.core.general.floormod">[docs]</a><span class="k">def</span> <span class="nf">floormod</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns element-wise remainder of division.</span>
+
+<span class="sd">    :param x: Input array to floormod.</span>
+<span class="sd">    :type x: array</span>
+<span class="sd">    :param y: Denominator input for floormod.</span>
+<span class="sd">    :type y: array</span>
+<span class="sd">    :param f: Machine learning framework. Inferred from inputs if None.</span>
+<span class="sd">    :type f: ml_framework, optional</span>
+<span class="sd">    :return: An array of the same shape and type as x, with the elements floor modded.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">_get_framework</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">floormod</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="floor"><a class="viewcode-back" href="../../../core/general/floor.html#ivy.core.general.floor">[docs]</a><span class="k">def</span> <span class="nf">floor</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns element-wise largest integer not greater than x.</span>
+
+<span class="sd">    :param x: Input array to floor.</span>
+<span class="sd">    :type x: array</span>
+<span class="sd">    :param f: Machine learning framework. Inferred from inputs if None.</span>
+<span class="sd">    :type f: ml_framework, optional</span>
+<span class="sd">    :return: An array of the same shape and type as x, with the elements floored to integers.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">_get_framework</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">x</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="ceil"><a class="viewcode-back" href="../../../core/general/ceil.html#ivy.core.general.ceil">[docs]</a><span class="k">def</span> <span class="nf">ceil</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns element-wise smallest integer not less than x.</span>
+
+<span class="sd">    :param x: Input array to ceil.</span>
+<span class="sd">    :type x: array</span>
+<span class="sd">    :param f: Machine learning framework. Inferred from inputs if None.</span>
+<span class="sd">    :type f: ml_framework, optional</span>
+<span class="sd">    :return: An array of the same shape and type as x, with the elements ceiled to integers.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">_get_framework</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">x</span><span class="p">)</span></div>
+
+
+<span class="c1"># noinspection PyShadowingBuiltins</span>
+<div class="viewcode-block" id="abs"><a class="viewcode-back" href="../../../core/general/abs.html#ivy.core.general.abs">[docs]</a><span class="k">def</span> <span class="nf">abs</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns the absolute value of each element in x.</span>
+
+<span class="sd">    :param x: Input array containing elements to absolute value.</span>
+<span class="sd">    :type x: array</span>
+<span class="sd">    :param f: Machine learning framework. Inferred from inputs if None.</span>
+<span class="sd">    :type f: ml_framework, optional</span>
+<span class="sd">    :return: A new array of the same shape as input array a, with all values now positive.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">_get_framework</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">x</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="argmax"><a class="viewcode-back" href="../../../core/general/argmax.html#ivy.core.general.argmax">[docs]</a><span class="k">def</span> <span class="nf">argmax</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns the index with the largest value across axes of an array.</span>
+
+<span class="sd">    :param x: Input array containing elements to argmax.</span>
+<span class="sd">    :type x: array</span>
+<span class="sd">    :param axis: Axis to perform the argmax, default is 0.</span>
+<span class="sd">    :type axis: int</span>
+<span class="sd">    :param f: Machine learning framework. Inferred from inputs if None.</span>
+<span class="sd">    :type f: ml_framework, optional</span>
+<span class="sd">    :return: Array containing the indices of the maximum values across the specified axis.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">_get_framework</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="argmin"><a class="viewcode-back" href="../../../core/general/argmin.html#ivy.core.general.argmin">[docs]</a><span class="k">def</span> <span class="nf">argmin</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns the index with the smallest value across axes of an array.</span>
+
+<span class="sd">    :param x: Input array containing elements to argmin.</span>
+<span class="sd">    :type x: array</span>
+<span class="sd">    :param axis: Axis to perform the argmin, default is 0.</span>
+<span class="sd">    :type axis: int</span>
+<span class="sd">    :param f: Machine learning framework. Inferred from inputs if None.</span>
+<span class="sd">    :type f: ml_framework, optional</span>
+<span class="sd">    :return: Array containing the indices of the minimum values across the specified axis.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">_get_framework</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="p">)</span></div>
+
+
+<span class="c1"># noinspection PyShadowingNames</span>
+<div class="viewcode-block" id="cast"><a class="viewcode-back" href="../../../core/general/cast.html#ivy.core.general.cast">[docs]</a><span class="k">def</span> <span class="nf">cast</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">dtype_str</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Casts an array to a specified type.</span>
+
+<span class="sd">    :param x: Input array containing elements to cast.</span>
+<span class="sd">    :type x: array</span>
+<span class="sd">    :param dtype_str: The desired data-type for the array in string format, i.e. &#39;float32&#39; or &#39;int64&#39;.</span>
+<span class="sd">            If not given, then the type will be determined as the minimum type required to hold the objects in the</span>
+<span class="sd">            sequence.</span>
+<span class="sd">    :type dtype_str: data-type string</span>
+<span class="sd">    :param f: Machine learning framework. Inferred from inputs if None.</span>
+<span class="sd">    :type f: ml_framework, optional</span>
+<span class="sd">    :return: A new array of the same shape as input array a, with data type given by dtype_str.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">_get_framework</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">cast</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">dtype_str</span><span class="p">)</span></div>
+
+
+<span class="c1"># noinspection PyShadowingNames</span>
+<div class="viewcode-block" id="arange"><a class="viewcode-back" href="../../../core/general/arange.html#ivy.core.general.arange">[docs]</a><span class="k">def</span> <span class="nf">arange</span><span class="p">(</span><span class="n">stop</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">dtype_str</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dev</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns evenly spaced values within a given interval, with the spacing being specified.</span>
+
+<span class="sd">    Values are generated within the half-open interval [start, stop) (in other words, the interval including start but</span>
+<span class="sd">    excluding stop). For integer arguments the function is equivalent to the Python built-in range function,</span>
+<span class="sd">    but returns an array in the chosen ml_framework rather than a list.</span>
+
+<span class="sd">    See :math:`linspace` for a certain number of evenly spaced values in an interval.</span>
+
+<span class="sd">    :param stop: End of interval. The interval does not include this value, except in some cases where step is not an</span>
+<span class="sd">                integer and floating point round-off affects the length of out.</span>
+<span class="sd">    :type stop: number</span>
+<span class="sd">    :param start: Start of interval. The interval includes this value. The default start value is 0.</span>
+<span class="sd">    :type start: number, optional</span>
+<span class="sd">    :param step: Spacing between values. For any output out, this is the distance between two adjacent values,</span>
+<span class="sd">                    out[i+1] - out[i]. The default step size is 1. If step is specified as a position argument,</span>
+<span class="sd">                    start must also be given.</span>
+<span class="sd">    :type step: number, optional</span>
+<span class="sd">    :param dtype_str: The desired data-type for the array in string format, i.e. &#39;float32&#39; or &#39;int64&#39;.</span>
+<span class="sd">        If not given, then the type will be determined as the minimum type required to hold the objects in the</span>
+<span class="sd">        sequence.</span>
+<span class="sd">    :type dtype_str: data-type string, optional</span>
+<span class="sd">    :param dev: device on which to create the array &#39;cuda:0&#39;, &#39;cuda:1&#39;, &#39;cpu&#39; etc.</span>
+<span class="sd">    :type dev: str</span>
+<span class="sd">    :param f: Machine learning framework. Inferred from inputs if None.</span>
+<span class="sd">    :type f: ml_framework, optional</span>
+<span class="sd">    :return: Array of evenly spaced values.</span>
+
+<span class="sd">            For floating point arguments, the length of the result is ceil((stop - start)/step).</span>
+<span class="sd">            Because of floating point overflow, this rule may result in the last element of out being greater than stop.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">_get_framework</span><span class="p">(</span><span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">stop</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">step</span><span class="p">,</span> <span class="n">dtype_str</span><span class="p">,</span> <span class="n">dev</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="linspace"><a class="viewcode-back" href="../../../core/general/linspace.html#ivy.core.general.linspace">[docs]</a><span class="k">def</span> <span class="nf">linspace</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">,</span> <span class="n">num</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dev</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Generates a certain number of evenly-spaced values in an interval along a given axis.</span>
+
+<span class="sd">    See :math:`arange` that allows to specify the step size of evenly spaced values in an interval.</span>
+
+<span class="sd">    :param start: First entry in the range.</span>
+<span class="sd">    :type start: array</span>
+<span class="sd">    :param stop: Final entry in the range.</span>
+<span class="sd">    :type stop: array</span>
+<span class="sd">    :param num: Number of values to generate.</span>
+<span class="sd">    :type num: int</span>
+<span class="sd">    :param axis: Axis along which the operation is performed.</span>
+<span class="sd">    :type axis: int</span>
+<span class="sd">    :param dev: device on which to create the array &#39;cuda:0&#39;, &#39;cuda:1&#39;, &#39;cpu&#39; etc.</span>
+<span class="sd">    :type dev: str</span>
+<span class="sd">    :param f: Machine learning framework. Inferred from inputs if None.</span>
+<span class="sd">    :type f: ml_framework, optional</span>
+<span class="sd">    :return: Array of evenly-spaced values.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">_get_framework</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">,</span> <span class="n">num</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">dev</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="concatenate"><a class="viewcode-back" href="../../../core/general/concatenate.html#ivy.core.general.concatenate">[docs]</a><span class="k">def</span> <span class="nf">concatenate</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Casts an array to a specified type.</span>
+
+<span class="sd">    :param xs: The input arrays must have the same shape, except in the dimension corresponding to axis</span>
+<span class="sd">                        (the first, by default).</span>
+<span class="sd">    :type xs: sequence of arrays</span>
+<span class="sd">    :param axis: The axis along which the arrays will be joined. If axis is None, arrays are flattened before use.</span>
+<span class="sd">                    Default is 0.</span>
+<span class="sd">    :type axis: int, optional</span>
+<span class="sd">    :param f: Machine learning framework. Inferred from inputs if None.</span>
+<span class="sd">    :type f: ml_framework, optional</span>
+<span class="sd">    :return: The concatenated array.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">_get_framework</span><span class="p">(</span><span class="n">xs</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="n">axis</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="flip"><a class="viewcode-back" href="../../../core/general/flip.html#ivy.core.general.flip">[docs]</a><span class="k">def</span> <span class="nf">flip</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">batch_shape</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Reverses the ord of elements in an array along the given axis.</span>
+<span class="sd">    The shape of the array is preserved, but the elements are reordered.</span>
+
+<span class="sd">    :param x: Input array.</span>
+<span class="sd">    :type x: array</span>
+<span class="sd">    :param axis: Axis or axes along which to flip over. The default, axis=None, will flip over all of the axes of the</span>
+<span class="sd">                    input array. If axis is negative it counts from the last to the first axis.</span>
+<span class="sd">                    If axis is a tuple of ints, flipping is performed on all of the axes specified in the tuple.</span>
+<span class="sd">    :type axis: None or int or tuple of ints, optional</span>
+<span class="sd">    :param batch_shape: Shape of batch. Inferred from inputs if None.</span>
+<span class="sd">    :type batch_shape: sequence of ints, optional</span>
+<span class="sd">    :param f: Machine learning framework. Inferred from inputs if None.</span>
+<span class="sd">    :type f: ml_framework, optional</span>
+<span class="sd">    :return: An array with the entries of axis reversed.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">_get_framework</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">flip</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">batch_shape</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="stack"><a class="viewcode-back" href="../../../core/general/stack.html#ivy.core.general.stack">[docs]</a><span class="k">def</span> <span class="nf">stack</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Joins a sequence of arrays along a new axis.</span>
+<span class="sd">    The axis parameter specifies the index of the new axis in the dimensions of the result.</span>
+<span class="sd">    For example, if axis=0, it will be the first dimension and if axis=-1, it will be the last dimension.</span>
+
+<span class="sd">    :param xs: Input arrays, each array must have the same shape.</span>
+<span class="sd">    :type xs: sequence of arrays</span>
+<span class="sd">    :param axis: The axis in the result array along which the input arrays are stacked.</span>
+<span class="sd">    :type axis: int, optional</span>
+<span class="sd">    :param f: Machine learning framework. Inferred from inputs if None.</span>
+<span class="sd">    :type f: ml_framework, optional</span>
+<span class="sd">    :return: The stacked array has one more dimension than the input arrays.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">_get_framework</span><span class="p">(</span><span class="n">xs</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="n">axis</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="unstack"><a class="viewcode-back" href="../../../core/general/unstack.html#ivy.core.general.unstack">[docs]</a><span class="k">def</span> <span class="nf">unstack</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">num_outputs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Unpacks the given dimension of a rank-R array into rank-(R-1) arrays.</span>
+
+<span class="sd">    :param x: Input array to unstack.</span>
+<span class="sd">    :type x: array</span>
+<span class="sd">    :param axis: Axis for which to unpack the array.</span>
+<span class="sd">    :type axis: int</span>
+<span class="sd">    :param num_outputs: Number of outputs from unstack. Required for mxnet symbolic.</span>
+<span class="sd">    :type num_outputs: int</span>
+<span class="sd">    :param f: Machine learning framework. Inferred from inputs if None.</span>
+<span class="sd">    :type f: ml_framework, optional</span>
+<span class="sd">    :return: List of arrays, unpacked along specified dimensions.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">_get_framework</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">unstack</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">num_outputs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="split"><a class="viewcode-back" href="../../../core/general/split.html#ivy.core.general.split">[docs]</a><span class="k">def</span> <span class="nf">split</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">num_sections</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Splits an array into multiple sub-arrays.</span>
+
+<span class="sd">    :param x: Array to be divided into sub-arrays.</span>
+<span class="sd">    :type x: array</span>
+<span class="sd">    :param num_sections: Number of equal arrays to divide the array into, along the given axis.</span>
+<span class="sd">                         Size of axis dimension must be multiple of num_sections.</span>
+<span class="sd">                         Default is to divide into as many arrays as the axis dimension.</span>
+<span class="sd">    :type num_sections: int, optional</span>
+<span class="sd">    :param axis: The axis along which to split, default is 0.</span>
+<span class="sd">    :type axis: int, optional</span>
+<span class="sd">    :param f: Machine learning framework. Inferred from inputs if None.</span>
+<span class="sd">    :type f: ml_framework, optional</span>
+<span class="sd">    :return: A list of sub-arrays.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">_get_framework</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">num_sections</span><span class="p">,</span> <span class="n">axis</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="tile"><a class="viewcode-back" href="../../../core/general/tile.html#ivy.core.general.tile">[docs]</a><span class="k">def</span> <span class="nf">tile</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">reps</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Constructs an array by repeating x the number of times given by reps.</span>
+
+<span class="sd">    :param x: Input array.</span>
+<span class="sd">    :type x: array</span>
+<span class="sd">    :param reps: The number of repetitions of x along each axis.</span>
+<span class="sd">    :type reps: sequence</span>
+<span class="sd">    :param f: Machine learning framework. Inferred from inputs if None.</span>
+<span class="sd">    :type f: ml_framework, optional</span>
+<span class="sd">    :return: The tiled output array.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">_get_framework</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">tile</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">reps</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="zero_pad"><a class="viewcode-back" href="../../../core/general/zero_pad.html#ivy.core.general.zero_pad">[docs]</a><span class="k">def</span> <span class="nf">zero_pad</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">pad_width</span><span class="p">,</span> <span class="n">x_shape</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Pads an array with zeros.</span>
+
+<span class="sd">    :param x: Input array to pad.</span>
+<span class="sd">    :type x: array</span>
+<span class="sd">    :param pad_width: Number of values padded to the edges of each axis.</span>
+<span class="sd">                      Specified as ((before_1, after_1), … (before_N, after_N)), where N is number of axes of x.</span>
+<span class="sd">    :type pad_width: sequence of tuples of ints</span>
+<span class="sd">    :param x_shape: Shape of x1 and x2. Required for mxnet symbolic.</span>
+<span class="sd">    :type x_shape: sequence of ints</span>
+<span class="sd">    :param f: Machine learning framework. Inferred from inputs if None.</span>
+<span class="sd">    :type f: ml_framework, optional</span>
+<span class="sd">    :return: Padded array of rank equal to x with shape increased according to pad_width.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">_get_framework</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">zero_pad</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">pad_width</span><span class="p">,</span> <span class="n">x_shape</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="swapaxes"><a class="viewcode-back" href="../../../core/general/swapaxes.html#ivy.core.general.swapaxes">[docs]</a><span class="k">def</span> <span class="nf">swapaxes</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis0</span><span class="p">,</span> <span class="n">axis1</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Interchange two axes of an array.</span>
+
+<span class="sd">    :param x: Input array.</span>
+<span class="sd">    :type x: array</span>
+<span class="sd">    :param axis0: First axis to be swapped.</span>
+<span class="sd">    :type axis0: int</span>
+<span class="sd">    :param axis1: Second axis to be swapped.</span>
+<span class="sd">    :type axis1: int</span>
+<span class="sd">    :param f: Machine learning framework. Inferred from inputs if None.</span>
+<span class="sd">    :type f: ml_framework, optional</span>
+<span class="sd">    :return: x with its axes permuted.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">_get_framework</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">swapaxes</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis0</span><span class="p">,</span> <span class="n">axis1</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="transpose"><a class="viewcode-back" href="../../../core/general/transpose.html#ivy.core.general.transpose">[docs]</a><span class="k">def</span> <span class="nf">transpose</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Permutes the dimensions of an array.</span>
+
+<span class="sd">    :param x: Input array.</span>
+<span class="sd">    :type x: array</span>
+<span class="sd">    :param axes: By default, reverse the dimensions, otherwise permute the axes according to the values given.</span>
+<span class="sd">    :type axes: sequence of ints of length N</span>
+<span class="sd">    :param f: Machine learning framework. Inferred from inputs if None.</span>
+<span class="sd">    :type f: ml_framework, optional</span>
+<span class="sd">    :return: x with its axes permuted.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">_get_framework</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axes</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="expand_dims"><a class="viewcode-back" href="../../../core/general/expand_dims.html#ivy.core.general.expand_dims">[docs]</a><span class="k">def</span> <span class="nf">expand_dims</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Expands the shape of an array.</span>
+<span class="sd">    Inserts a new axis that will appear at the axis position in the expanded array shape.</span>
+
+<span class="sd">    :param x: Input array.</span>
+<span class="sd">    :type x: array</span>
+<span class="sd">    :param axis: Position in the expanded axes where the new axis is placed.</span>
+<span class="sd">    :type axis: int</span>
+<span class="sd">    :param f: Machine learning framework. Inferred from inputs if None.</span>
+<span class="sd">    :type f: ml_framework, optional</span>
+<span class="sd">    :return: array with the number of dimensions increased by one.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">_get_framework</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">expand_dims</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="where"><a class="viewcode-back" href="../../../core/general/where.html#ivy.core.general.where">[docs]</a><span class="k">def</span> <span class="nf">where</span><span class="p">(</span><span class="n">condition</span><span class="p">,</span> <span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">condition_shape</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">x_shape</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns elements chosen from x or y depending on condition.</span>
+
+<span class="sd">    :param condition: Where True, yield x1, otherwise yield x2.</span>
+<span class="sd">    :type condition: bool array</span>
+<span class="sd">    :param x1: values from which to choose when condition is True.</span>
+<span class="sd">    :type x1: array</span>
+<span class="sd">    :param x2: values from which to choose when condition is False.</span>
+<span class="sd">    :type x2: array</span>
+<span class="sd">    :param condition_shape: Shape of condition. Required for mxnet symbolic.</span>
+<span class="sd">    :type condition_shape: sequence of ints</span>
+<span class="sd">    :param x_shape: Shape of x1 and x2. Required for mxnet symbolic.</span>
+<span class="sd">    :type x_shape: sequence of ints</span>
+<span class="sd">    :param f: Machine learning framework. Inferred from inputs if None.</span>
+<span class="sd">    :type f: ml_framework, optional</span>
+<span class="sd">    :return: An array with elements from x1 where condition is True, and elements from x2 elsewhere.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">_get_framework</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">condition</span><span class="p">,</span> <span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">condition_shape</span><span class="p">,</span> <span class="n">x_shape</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="indices_where"><a class="viewcode-back" href="../../../core/general/indices_where.html#ivy.core.general.indices_where">[docs]</a><span class="k">def</span> <span class="nf">indices_where</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns indices or true elements in an input boolean array.</span>
+
+<span class="sd">    :param x: Boolean array, for which indices are desired.</span>
+<span class="sd">    :type x: array</span>
+<span class="sd">    :param f: Machine learning framework. Inferred from inputs if None.</span>
+<span class="sd">    :type f: ml_framework, optional</span>
+<span class="sd">    :return: Indices for where the boolean array is True.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">_get_framework</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">indices_where</span><span class="p">(</span><span class="n">x</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="reshape"><a class="viewcode-back" href="../../../core/general/reshape.html#ivy.core.general.reshape">[docs]</a><span class="k">def</span> <span class="nf">reshape</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">newshape</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Gives a new shape to an array without changing its data.</span>
+
+<span class="sd">    :param x: Array to be reshaped.</span>
+<span class="sd">    :type x: array</span>
+<span class="sd">    :param newshape: The new shape should be compatible with the original shape. One shape dimension can be -1.</span>
+<span class="sd">                        In this case, the value is inferred from the length of the array and remaining dimensions.</span>
+<span class="sd">    :type newshape: sequence of ints</span>
+<span class="sd">    :param f: Machine learning framework. Inferred from inputs if None.</span>
+<span class="sd">    :type f: ml_framework, optional</span>
+<span class="sd">    :return: Reshaped array.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">_get_framework</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">newshape</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="squeeze"><a class="viewcode-back" href="../../../core/general/squeeze.html#ivy.core.general.squeeze">[docs]</a><span class="k">def</span> <span class="nf">squeeze</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Removes a single-dimensional entry from the shape of an array.</span>
+
+<span class="sd">    :param x: Input data.</span>
+<span class="sd">    :type x: array</span>
+<span class="sd">    :param axis: Index for one of the single-dimensional entries in the shape.</span>
+<span class="sd">                 If an axis is selected with shape entry greater than one, an error is raised.</span>
+<span class="sd">    :type axis: int, optional</span>
+<span class="sd">    :param f: Machine learning framework. Inferred from inputs if None.</span>
+<span class="sd">    :type f: ml_framework, optional</span>
+<span class="sd">    :return: The input array, but with all (axis=None) or one (axis is int) of the dimensions of length 1 removed.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">_get_framework</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="p">)</span></div>
+
+
+<span class="c1"># noinspection PyShadowingNames</span>
+<div class="viewcode-block" id="zeros"><a class="viewcode-back" href="../../../core/general/zeros.html#ivy.core.general.zeros">[docs]</a><span class="k">def</span> <span class="nf">zeros</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="n">dtype_str</span><span class="o">=</span><span class="s1">&#39;float32&#39;</span><span class="p">,</span> <span class="n">dev</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return a new array of given shape and type, filled with zeros.</span>
+
+<span class="sd">    :param shape: Shape of the new array, e.g. (2, 3).</span>
+<span class="sd">    :type shape: sequence of ints</span>
+<span class="sd">    :param dtype_str: The desired data-type for the array in string format, i.e. &#39;float32&#39; or &#39;int64&#39;.</span>
+<span class="sd">    Default is &#39;float32&#39;.</span>
+<span class="sd">    :type dtype_str: data-type string, optional</span>
+<span class="sd">    :param dev: device on which to create the array &#39;cuda:0&#39;, &#39;cuda:1&#39;, &#39;cpu&#39; etc..</span>
+<span class="sd">    :type dev: str</span>
+<span class="sd">    :param f: Machine learning framework. Inferred from inputs if None.</span>
+<span class="sd">    :type f: ml_framework, optional</span>
+<span class="sd">    :return: Array of zeros with the given shape and dtype_str.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">_get_framework</span><span class="p">(</span><span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="n">dtype_str</span><span class="p">,</span> <span class="n">dev</span><span class="p">)</span></div>
+
+
+<span class="c1"># noinspection PyShadowingNames</span>
+<div class="viewcode-block" id="zeros_like"><a class="viewcode-back" href="../../../core/general/zeros_like.html#ivy.core.general.zeros_like">[docs]</a><span class="k">def</span> <span class="nf">zeros_like</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">dtype_str</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dev</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns an array of zeros with the same shape and type as x, unless dtype_str provided which overrides.</span>
+
+<span class="sd">    :param x: The shape and data-type of x define these same attributes of the returned array.</span>
+<span class="sd">    :type x: array</span>
+<span class="sd">    :param dtype_str: The desired data-type for the array in string format, i.e. &#39;float32&#39; or &#39;int64&#39;.</span>
+<span class="sd">                    If not given, then the type of the original array is used.</span>
+<span class="sd">    :type dtype_str: data-type string, optional</span>
+<span class="sd">    :param dev: device on which to create the array &#39;cuda:0&#39;, &#39;cuda:1&#39;, &#39;cpu&#39; etc. Same as x if None.</span>
+<span class="sd">    :type dev: str, optional</span>
+<span class="sd">    :param f: Machine learning framework. Inferred from inputs if None.</span>
+<span class="sd">    :type f: ml_framework, optional</span>
+<span class="sd">    :return: Array of zeros with the same shape and type as a, unless dtype_str provided which overrides.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">_get_framework</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">dtype_str</span><span class="p">,</span> <span class="n">dev</span><span class="p">)</span></div>
+
+
+<span class="c1"># noinspection PyShadowingNames</span>
+<div class="viewcode-block" id="ones"><a class="viewcode-back" href="../../../core/general/ones.html#ivy.core.general.ones">[docs]</a><span class="k">def</span> <span class="nf">ones</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="n">dtype_str</span><span class="o">=</span><span class="s1">&#39;float32&#39;</span><span class="p">,</span> <span class="n">dev</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns a new array of given shape and type, filled with ones.</span>
+
+<span class="sd">    :param shape: Shape of the new array, e.g. (2, 3).</span>
+<span class="sd">    :type shape: sequence of ints</span>
+<span class="sd">    :param dtype_str: The desired data-type for the array in string format, i.e. &#39;float32&#39; or &#39;int64&#39;.</span>
+<span class="sd">    Default is &#39;float32&#39;.</span>
+<span class="sd">    :type dtype_str: data-type string, optional</span>
+<span class="sd">    :param dev: device on which to create the array &#39;cuda:0&#39;, &#39;cuda:1&#39;, &#39;cpu&#39; etc..</span>
+<span class="sd">    :type dev: str</span>
+<span class="sd">    :param f: Machine learning framework. Inferred from inputs if None.</span>
+<span class="sd">    :type f: ml_framework, optional</span>
+<span class="sd">    :return: Array of ones with the given shape and dtype_str.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">_get_framework</span><span class="p">(</span><span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="n">dtype_str</span><span class="p">,</span> <span class="n">dev</span><span class="p">)</span></div>
+
+
+<span class="c1"># noinspection PyShadowingNames</span>
+<div class="viewcode-block" id="ones_like"><a class="viewcode-back" href="../../../core/general/ones_like.html#ivy.core.general.ones_like">[docs]</a><span class="k">def</span> <span class="nf">ones_like</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">dtype_str</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dev</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns an array of ones with the same shape and type as x, unless dtype_str provided which overrides.</span>
+
+<span class="sd">    :param x: The shape and data-type of a define these same attributes of the returned array.</span>
+<span class="sd">    :type x: array</span>
+<span class="sd">    :param dtype_str: The desired data-type for the array in string format, i.e. &#39;float32&#39; or &#39;int64&#39;.</span>
+<span class="sd">                    If not given, then the type of the original array is used.</span>
+<span class="sd">    :type dtype_str: data-type string, optional</span>
+<span class="sd">    :param dev: device on which to create the array &#39;cuda:0&#39;, &#39;cuda:1&#39;, &#39;cpu&#39; etc. Same as x if None.</span>
+<span class="sd">    :type dev: str, optional</span>
+<span class="sd">    :param f: Machine learning framework. Inferred from inputs if None.</span>
+<span class="sd">    :type f: ml_framework, optional</span>
+<span class="sd">    :return: Array of zeros with the same shape and type as a, unless dtype_str provided which overrides.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">_get_framework</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">ones_like</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">dtype_str</span><span class="p">,</span> <span class="n">dev</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="one_hot"><a class="viewcode-back" href="../../../core/general/one_hot.html#ivy.core.general.one_hot">[docs]</a><span class="k">def</span> <span class="nf">one_hot</span><span class="p">(</span><span class="n">indices</span><span class="p">,</span> <span class="n">depth</span><span class="p">,</span> <span class="n">dev</span><span class="o">=</span><span class="s1">&#39;cpu&#39;</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns a one-hot tensor</span>
+<span class="sd">    :param indices: Indices for where the ones should be scattered *[batch_shape, dim]*</span>
+<span class="sd">    :type indices: array</span>
+<span class="sd">    :param depth: Scalar defining the depth of the one-hot dimension.</span>
+<span class="sd">    :type depth: int</span>
+<span class="sd">    :param dev: device on which to create the array &#39;cuda:0&#39;, &#39;cuda:1&#39;, &#39;cpu&#39; etc. Same as x if None.</span>
+<span class="sd">    :type dev: str, optional</span>
+<span class="sd">    :param f: Machine learning framework. Inferred from inputs if None.</span>
+<span class="sd">    :type f: ml_framework, optional</span>
+<span class="sd">    :return: Array of zeros with the same shape and type as a, unless dtype provided which overrides.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">_get_framework</span><span class="p">(</span><span class="n">indices</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">one_hot</span><span class="p">(</span><span class="n">indices</span><span class="p">,</span> <span class="n">depth</span><span class="p">,</span> <span class="n">dev</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="cross"><a class="viewcode-back" href="../../../core/general/cross.html#ivy.core.general.cross">[docs]</a><span class="k">def</span> <span class="nf">cross</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns the cross product of two (arrays of) vectors in R^3.</span>
+<span class="sd">    The cross product of x1 and x2 in R^3 is a vector perpendicular to both x1 and x2.</span>
+<span class="sd">    If x1 and x2 are arrays of vectors, the vectors are defined by the last axis of x1 and x2 by default which must have</span>
+<span class="sd">    dimension 3.</span>
+
+<span class="sd">    :param x1: Components of the first vector(s).</span>
+<span class="sd">    :type x1: array</span>
+<span class="sd">    :param x2: Components of the second vector(s).</span>
+<span class="sd">    :type x2: array</span>
+<span class="sd">    :param f: Machine learning framework. Inferred from inputs if None.</span>
+<span class="sd">    :type f: ml_framework, optional</span>
+<span class="sd">    :return: Vector cross product(s).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">_get_framework</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">cross</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="matmul"><a class="viewcode-back" href="../../../core/general/matmul.html#ivy.core.general.matmul">[docs]</a><span class="k">def</span> <span class="nf">matmul</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">batch_shape</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Computes the matrix product of two arrays x1 and x2.</span>
+
+<span class="sd">    :param x1: Input array 1.</span>
+<span class="sd">    :type x1: array</span>
+<span class="sd">    :param x2: Input array 2.</span>
+<span class="sd">    :type x2: array</span>
+<span class="sd">    :param batch_shape: Shape of batch. Required for mxnet symbolic.</span>
+<span class="sd">    :type batch_shape: sequence of ints, optional</span>
+<span class="sd">    :param f: Machine learning framework. Inferred from inputs if None.</span>
+<span class="sd">    :type f: ml_framework, optional</span>
+<span class="sd">    :return: The matrix product of the input arrays.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">_get_framework</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">batch_shape</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="cumsum"><a class="viewcode-back" href="../../../core/general/cumsum.html#ivy.core.general.cumsum">[docs]</a><span class="k">def</span> <span class="nf">cumsum</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns the cumulative sum of the elements along a given axis.</span>
+
+<span class="sd">    :param x: Input array.</span>
+<span class="sd">    :type x: array</span>
+<span class="sd">    :param axis: Axis along which the cumulative sum is computed. By default 0.</span>
+<span class="sd">    :type axis: int</span>
+<span class="sd">    :param f: Machine learning framework. Inferred from inputs if None.</span>
+<span class="sd">    :type f: ml_framework, optional</span>
+<span class="sd">    :return: Input array with cumulatively summed elements along axis.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">_get_framework</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="p">)</span></div>
+
+
+<span class="c1"># noinspection PyShadowingNames</span>
+<div class="viewcode-block" id="identity"><a class="viewcode-back" href="../../../core/general/identity.html#ivy.core.general.identity">[docs]</a><span class="k">def</span> <span class="nf">identity</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">dtype_str</span><span class="o">=</span><span class="s1">&#39;float32&#39;</span><span class="p">,</span> <span class="n">batch_shape</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dev</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns the identity array.</span>
+<span class="sd">    The identity array is a square array with ones on the main diagonal.</span>
+
+<span class="sd">    :param n: Number of rows (and columns) in n x n output.</span>
+<span class="sd">    :type n: int</span>
+<span class="sd">    :param dtype_str: The desired data-type for the array in string format, i.e. &#39;float32&#39; or &#39;int64&#39;.</span>
+<span class="sd">    Default is &#39;float32&#39;.</span>
+<span class="sd">    :type dtype_str: data-type string, optional</span>
+<span class="sd">    :param batch_shape: Shape of batch. Inferred from inputs if None.</span>
+<span class="sd">    :type batch_shape: sequence of ints, optional</span>
+<span class="sd">    :param dev: device on which to create the array &#39;cuda:0&#39;, &#39;cuda:1&#39;, &#39;cpu&#39; etc..</span>
+<span class="sd">    :type dev: str</span>
+<span class="sd">    :param f: Machine learning framework. Inferred from inputs if None.</span>
+<span class="sd">    :type f: ml_framework, optional</span>
+<span class="sd">    :return: n x n array of type dtype_str, with its main diagonal set to one, and all other elements 0.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">_get_framework</span><span class="p">(</span><span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">identity</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">dtype_str</span><span class="p">,</span> <span class="n">batch_shape</span><span class="p">,</span> <span class="n">dev</span><span class="p">)</span></div>
+
+
+<span class="c1"># noinspection PyShadowingNames</span>
+<div class="viewcode-block" id="scatter_flat"><a class="viewcode-back" href="../../../core/general/scatter_flat.html#ivy.core.general.scatter_flat">[docs]</a><span class="k">def</span> <span class="nf">scatter_flat</span><span class="p">(</span><span class="n">indices</span><span class="p">,</span> <span class="n">updates</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">reduction</span><span class="o">=</span><span class="s1">&#39;sum&#39;</span><span class="p">,</span> <span class="n">dev</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Scatter flat updates into a new flat array according to flat indices.</span>
+
+<span class="sd">    :param indices: Indices for the new values to occupy.</span>
+<span class="sd">    :type indices: array</span>
+<span class="sd">    :param updates: Values for the new array to hold.</span>
+<span class="sd">    :type updates: array</span>
+<span class="sd">    :param size: The size of the result.</span>
+<span class="sd">    :type size: int</span>
+<span class="sd">    :param reduction: The reduction method for the scatter, one of &#39;sum&#39;, &#39;min&#39; or &#39;max&#39;</span>
+<span class="sd">    :type reduction: str</span>
+<span class="sd">    :param dev: device on which to create the array &#39;cuda:0&#39;, &#39;cuda:1&#39;, &#39;cpu&#39; etc. Same as updates if None.</span>
+<span class="sd">    :type dev: str, optional</span>
+<span class="sd">    :param f: Machine learning framework. Inferred from inputs if None.</span>
+<span class="sd">    :type f: ml_framework, optional</span>
+<span class="sd">    :return: New array of given shape, with the values scattered at the indices.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">_get_framework</span><span class="p">(</span><span class="n">indices</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">scatter_flat</span><span class="p">(</span><span class="n">indices</span><span class="p">,</span> <span class="n">updates</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">reduction</span><span class="p">,</span> <span class="n">dev</span><span class="p">)</span></div>
+
+
+<span class="c1"># noinspection PyShadowingNames</span>
+<div class="viewcode-block" id="scatter_nd"><a class="viewcode-back" href="../../../core/general/scatter_nd.html#ivy.core.general.scatter_nd">[docs]</a><span class="k">def</span> <span class="nf">scatter_nd</span><span class="p">(</span><span class="n">indices</span><span class="p">,</span> <span class="n">updates</span><span class="p">,</span> <span class="n">shape</span><span class="p">,</span> <span class="n">num_idx_dims</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">reduction</span><span class="o">=</span><span class="s1">&#39;sum&#39;</span><span class="p">,</span> <span class="n">dev</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Scatter updates into a new array according to indices.</span>
+
+<span class="sd">    :param indices: Indices for the new values to occupy.</span>
+<span class="sd">    :type indices: array</span>
+<span class="sd">    :param updates: Values for the new array to hold.</span>
+<span class="sd">    :type updates: array</span>
+<span class="sd">    :param shape: The shape of the result.</span>
+<span class="sd">    :type shape: sequence of ints</span>
+<span class="sd">    :param num_idx_dims: Number of dimensions for indices array. Required for MXNet symbolic.</span>
+<span class="sd">    :type num_idx_dims: int</span>
+<span class="sd">    :param reduction: The reduction method for the scatter, one of &#39;sum&#39;, &#39;min&#39; or &#39;max&#39;</span>
+<span class="sd">    :type reduction: str</span>
+<span class="sd">    :param dev: device on which to create the array &#39;cuda:0&#39;, &#39;cuda:1&#39;, &#39;cpu&#39; etc. Same as updates if None.</span>
+<span class="sd">    :type dev: str, optional</span>
+<span class="sd">    :param f: Machine learning framework. Inferred from inputs if None.</span>
+<span class="sd">    :type f: ml_framework, optional</span>
+<span class="sd">    :return: New array of given shape, with the values scattered at the indices.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">_get_framework</span><span class="p">(</span><span class="n">indices</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">scatter_nd</span><span class="p">(</span><span class="n">indices</span><span class="p">,</span> <span class="n">updates</span><span class="p">,</span> <span class="n">shape</span><span class="p">,</span> <span class="n">num_idx_dims</span><span class="p">,</span> <span class="n">reduction</span><span class="p">,</span> <span class="n">dev</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="gather_flat"><a class="viewcode-back" href="../../../core/general/gather_flat.html#ivy.core.general.gather_flat">[docs]</a><span class="k">def</span> <span class="nf">gather_flat</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">indices</span><span class="p">,</span> <span class="n">dev</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Gather slices from flat params into a flat array with size specified by indices size.</span>
+
+<span class="sd">    :param params: The array from which to gather values.</span>
+<span class="sd">    :type params: array</span>
+<span class="sd">    :param indices: Index array.</span>
+<span class="sd">    :type indices: array</span>
+<span class="sd">    :param dev: device on which to create the array &#39;cuda:0&#39;, &#39;cuda:1&#39;, &#39;cpu&#39; etc. Same as x if None.</span>
+<span class="sd">    :type dev: str, optional</span>
+<span class="sd">    :param f: Machine learning framework. Inferred from inputs if None.</span>
+<span class="sd">    :type f: ml_framework, optional</span>
+<span class="sd">    :return: New array of given shape, with the values gathered at the indices.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">_get_framework</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">gather_flat</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">indices</span><span class="p">,</span> <span class="n">dev</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="gather_nd"><a class="viewcode-back" href="../../../core/general/gather_nd.html#ivy.core.general.gather_nd">[docs]</a><span class="k">def</span> <span class="nf">gather_nd</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">indices</span><span class="p">,</span> <span class="n">indices_shape</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dev</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Gather slices from params into a array with shape specified by indices.</span>
+
+<span class="sd">    :param params: The array from which to gather values.</span>
+<span class="sd">    :type params: array</span>
+<span class="sd">    :param indices: Index array.</span>
+<span class="sd">    :type indices: array</span>
+<span class="sd">    :param indices_shape: Shape of the indices, required for mxnet symbolic mode.</span>
+<span class="sd">    :type indices_shape: sequence of ints.</span>
+<span class="sd">    :param dev: device on which to create the array &#39;cuda:0&#39;, &#39;cuda:1&#39;, &#39;cpu&#39; etc. Same as x if None.</span>
+<span class="sd">    :type dev: str, optional</span>
+<span class="sd">    :param f: Machine learning framework. Inferred from inputs if None.</span>
+<span class="sd">    :type f: ml_framework, optional</span>
+<span class="sd">    :return: New array of given shape, with the values gathered at the indices.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">_get_framework</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">gather_nd</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">indices</span><span class="p">,</span> <span class="n">indices_shape</span><span class="p">,</span> <span class="n">dev</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="get_device"><a class="viewcode-back" href="../../../core/general/get_device.html#ivy.core.general.get_device">[docs]</a><span class="k">def</span> <span class="nf">get_device</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get the device string for input array x.</span>
+
+<span class="sd">    :param x: Array for which to get the device string.</span>
+<span class="sd">    :type x: str</span>
+<span class="sd">    :param f: Machine learning framework. Inferred from inputs if None.</span>
+<span class="sd">    :type f: ml_framework, optional</span>
+<span class="sd">    :return: Device string for the array, e.g. &#39;cuda:0&#39;, &#39;cuda:1&#39;, &#39;cpu&#39; etc..</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">_get_framework</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">get_device</span><span class="p">(</span><span class="n">x</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="dtype"><a class="viewcode-back" href="../../../core/general/dtype.html#ivy.core.general.dtype">[docs]</a><span class="k">def</span> <span class="nf">dtype</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get the data type string for input array x.</span>
+
+<span class="sd">    :param x: Array for which to get the data type string.</span>
+<span class="sd">    :type x: str</span>
+<span class="sd">    :param f: Machine learning framework. Inferred from inputs if None.</span>
+<span class="sd">    :type f: ml_framework, optional</span>
+<span class="sd">    :return: Device string for the array, e.g. &#39;float32&#39;.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">_get_framework</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="n">x</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="compile_fn"><a class="viewcode-back" href="../../../core/general/compile_fn.html#ivy.core.general.compile_fn">[docs]</a><span class="k">def</span> <span class="nf">compile_fn</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">example_inputs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Provide a function which should be compiled, for faster inference.</span>
+<span class="sd">    The handle to the newly compiled function is returned.</span>
+
+<span class="sd">    :param func: Function to be compiled.</span>
+<span class="sd">    :type func: function</span>
+<span class="sd">    :param example_inputs: Example of inputs to the function to be compiled.</span>
+<span class="sd">                            Required for torch, unused by other frameworks.</span>
+<span class="sd">    :type example_inputs: single input of tuple of inputs.</span>
+<span class="sd">    :param f: Machine learning framework. Inferred from inputs if None.</span>
+<span class="sd">    :type f: ml_framework, optional</span>
+<span class="sd">    :return: The handle to the newly compiled function.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">_get_framework</span><span class="p">(</span><span class="n">example_inputs</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">compile_fn</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">example_inputs</span><span class="p">)</span></div>
 </pre></div>
 
            </div>

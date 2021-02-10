@@ -24,6 +24,7 @@
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
@@ -86,7 +87,14 @@
 </ul>
 <p class="caption"><span class="caption-text">Core</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="core/container.html">Container</a></li>
 <li class="toctree-l1"><a class="reference internal" href="core/general.html">General</a></li>
+<li class="toctree-l1"><a class="reference internal" href="core/gradients.html">Gradients</a></li>
+<li class="toctree-l1"><a class="reference internal" href="core/image.html">Image</a></li>
+<li class="toctree-l1"><a class="reference internal" href="core/linalg.html">Linalg</a></li>
+<li class="toctree-l1"><a class="reference internal" href="core/logic.html">Logic</a></li>
+<li class="toctree-l1"><a class="reference internal" href="core/random.html">Random</a></li>
+<li class="toctree-l1"><a class="reference internal" href="core/reductions.html">Reductions</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Docs</span></p>
 <ul>
@@ -317,8 +325,101 @@ and the best coding practices to get the most out of Ivy for your own codebases 
 <div class="toctree-wrapper compound">
 <p class="caption"><span class="caption-text">Core</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="core/container.html">Container</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="core/container/Container.html">Container</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="core/general.html">General</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="core/general/array.html">array</a></li>
+<li class="toctree-l2"><a class="reference internal" href="core/general/to_numpy.html">to_numpy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="core/general/to_list.html">to_list</a></li>
+<li class="toctree-l2"><a class="reference internal" href="core/general/shape.html">shape</a></li>
+<li class="toctree-l2"><a class="reference internal" href="core/general/get_num_dims.html">get_num_dims</a></li>
+<li class="toctree-l2"><a class="reference internal" href="core/general/minimum.html">minimum</a></li>
+<li class="toctree-l2"><a class="reference internal" href="core/general/maximum.html">maximum</a></li>
+<li class="toctree-l2"><a class="reference internal" href="core/general/clip.html">clip</a></li>
+<li class="toctree-l2"><a class="reference internal" href="core/general/round.html">round</a></li>
+<li class="toctree-l2"><a class="reference internal" href="core/general/floormod.html">floormod</a></li>
+<li class="toctree-l2"><a class="reference internal" href="core/general/floor.html">floor</a></li>
+<li class="toctree-l2"><a class="reference internal" href="core/general/ceil.html">ceil</a></li>
+<li class="toctree-l2"><a class="reference internal" href="core/general/abs.html">abs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="core/general/argmax.html">argmax</a></li>
+<li class="toctree-l2"><a class="reference internal" href="core/general/argmin.html">argmin</a></li>
+<li class="toctree-l2"><a class="reference internal" href="core/general/cast.html">cast</a></li>
+<li class="toctree-l2"><a class="reference internal" href="core/general/arange.html">arange</a></li>
+<li class="toctree-l2"><a class="reference internal" href="core/general/linspace.html">linspace</a></li>
+<li class="toctree-l2"><a class="reference internal" href="core/general/concatenate.html">concatenate</a></li>
+<li class="toctree-l2"><a class="reference internal" href="core/general/flip.html">flip</a></li>
+<li class="toctree-l2"><a class="reference internal" href="core/general/stack.html">stack</a></li>
+<li class="toctree-l2"><a class="reference internal" href="core/general/unstack.html">unstack</a></li>
+<li class="toctree-l2"><a class="reference internal" href="core/general/split.html">split</a></li>
+<li class="toctree-l2"><a class="reference internal" href="core/general/tile.html">tile</a></li>
+<li class="toctree-l2"><a class="reference internal" href="core/general/zero_pad.html">zero_pad</a></li>
+<li class="toctree-l2"><a class="reference internal" href="core/general/swapaxes.html">swapaxes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="core/general/transpose.html">transpose</a></li>
+<li class="toctree-l2"><a class="reference internal" href="core/general/expand_dims.html">expand_dims</a></li>
+<li class="toctree-l2"><a class="reference internal" href="core/general/where.html">where</a></li>
+<li class="toctree-l2"><a class="reference internal" href="core/general/indices_where.html">indices_where</a></li>
+<li class="toctree-l2"><a class="reference internal" href="core/general/reshape.html">reshape</a></li>
+<li class="toctree-l2"><a class="reference internal" href="core/general/squeeze.html">squeeze</a></li>
+<li class="toctree-l2"><a class="reference internal" href="core/general/zeros.html">zeros</a></li>
+<li class="toctree-l2"><a class="reference internal" href="core/general/zeros_like.html">zeros_like</a></li>
+<li class="toctree-l2"><a class="reference internal" href="core/general/ones.html">ones</a></li>
+<li class="toctree-l2"><a class="reference internal" href="core/general/ones_like.html">ones_like</a></li>
+<li class="toctree-l2"><a class="reference internal" href="core/general/one_hot.html">one_hot</a></li>
+<li class="toctree-l2"><a class="reference internal" href="core/general/cross.html">cross</a></li>
+<li class="toctree-l2"><a class="reference internal" href="core/general/matmul.html">matmul</a></li>
+<li class="toctree-l2"><a class="reference internal" href="core/general/cumsum.html">cumsum</a></li>
+<li class="toctree-l2"><a class="reference internal" href="core/general/identity.html">identity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="core/general/scatter_flat.html">scatter_flat</a></li>
+<li class="toctree-l2"><a class="reference internal" href="core/general/scatter_nd.html">scatter_nd</a></li>
+<li class="toctree-l2"><a class="reference internal" href="core/general/gather_flat.html">gather_flat</a></li>
+<li class="toctree-l2"><a class="reference internal" href="core/general/gather_nd.html">gather_nd</a></li>
+<li class="toctree-l2"><a class="reference internal" href="core/general/get_device.html">get_device</a></li>
+<li class="toctree-l2"><a class="reference internal" href="core/general/dtype.html">dtype</a></li>
+<li class="toctree-l2"><a class="reference internal" href="core/general/compile_fn.html">compile_fn</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="core/gradients.html">Gradients</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="core/gradients/variable.html">variable</a></li>
+<li class="toctree-l2"><a class="reference internal" href="core/gradients/execute_with_gradients.html">execute_with_gradients</a></li>
+<li class="toctree-l2"><a class="reference internal" href="core/gradients/gradient_descent_update.html">gradient_descent_update</a></li>
+<li class="toctree-l2"><a class="reference internal" href="core/gradients/stop_gradient.html">stop_gradient</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="core/image.html">Image</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="core/image/stack_images.html">stack_images</a></li>
+<li class="toctree-l2"><a class="reference internal" href="core/image/bilinear_resample.html">bilinear_resample</a></li>
+<li class="toctree-l2"><a class="reference internal" href="core/image/gradient_image.html">gradient_image</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="core/linalg.html">Linalg</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="core/linalg/svd.html">svd</a></li>
+<li class="toctree-l2"><a class="reference internal" href="core/linalg/norm.html">norm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="core/linalg/inv.html">inv</a></li>
+<li class="toctree-l2"><a class="reference internal" href="core/linalg/pinv.html">pinv</a></li>
+<li class="toctree-l2"><a class="reference internal" href="core/linalg/vector_to_skew_symmetric_matrix.html">vector_to_skew_symmetric_matrix</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="core/logic.html">Logic</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="core/logic/logical_and.html">logical_and</a></li>
+<li class="toctree-l2"><a class="reference internal" href="core/logic/logical_or.html">logical_or</a></li>
+<li class="toctree-l2"><a class="reference internal" href="core/logic/logical_not.html">logical_not</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="core/random.html">Random</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="core/random/random_uniform.html">random_uniform</a></li>
+<li class="toctree-l2"><a class="reference internal" href="core/random/randint.html">randint</a></li>
+<li class="toctree-l2"><a class="reference internal" href="core/random/seed.html">seed</a></li>
+<li class="toctree-l2"><a class="reference internal" href="core/random/shuffle.html">shuffle</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="core/reductions.html">Reductions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="core/reductions/reduce_sum.html">reduce_sum</a></li>
+<li class="toctree-l2"><a class="reference internal" href="core/reductions/reduce_prod.html">reduce_prod</a></li>
+<li class="toctree-l2"><a class="reference internal" href="core/reductions/reduce_mean.html">reduce_mean</a></li>
+<li class="toctree-l2"><a class="reference internal" href="core/reductions/reduce_min.html">reduce_min</a></li>
+<li class="toctree-l2"><a class="reference internal" href="core/reductions/reduce_max.html">reduce_max</a></li>
 </ul>
 </li>
 </ul>

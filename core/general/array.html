@@ -24,6 +24,7 @@
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../_static/js/theme.js"></script>
 
@@ -35,7 +36,7 @@
   <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="Ivy" href="../../../ivy"" />
+    <link rel="next" title="to_numpy" href="to_numpy.html" />
     <link rel="prev" title="General" href="../general.html" /> 
 </head>
 
@@ -87,10 +88,64 @@
 </ul>
 <p class="caption"><span class="caption-text">Core</span></p>
 <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../container.html">Container</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../general.html">General</a><ul class="current">
 <li class="toctree-l2 current"><a class="current reference internal" href="#">array</a></li>
+<li class="toctree-l2"><a class="reference internal" href="to_numpy.html">to_numpy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="to_list.html">to_list</a></li>
+<li class="toctree-l2"><a class="reference internal" href="shape.html">shape</a></li>
+<li class="toctree-l2"><a class="reference internal" href="get_num_dims.html">get_num_dims</a></li>
+<li class="toctree-l2"><a class="reference internal" href="minimum.html">minimum</a></li>
+<li class="toctree-l2"><a class="reference internal" href="maximum.html">maximum</a></li>
+<li class="toctree-l2"><a class="reference internal" href="clip.html">clip</a></li>
+<li class="toctree-l2"><a class="reference internal" href="round.html">round</a></li>
+<li class="toctree-l2"><a class="reference internal" href="floormod.html">floormod</a></li>
+<li class="toctree-l2"><a class="reference internal" href="floor.html">floor</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ceil.html">ceil</a></li>
+<li class="toctree-l2"><a class="reference internal" href="abs.html">abs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="argmax.html">argmax</a></li>
+<li class="toctree-l2"><a class="reference internal" href="argmin.html">argmin</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cast.html">cast</a></li>
+<li class="toctree-l2"><a class="reference internal" href="arange.html">arange</a></li>
+<li class="toctree-l2"><a class="reference internal" href="linspace.html">linspace</a></li>
+<li class="toctree-l2"><a class="reference internal" href="concatenate.html">concatenate</a></li>
+<li class="toctree-l2"><a class="reference internal" href="flip.html">flip</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stack.html">stack</a></li>
+<li class="toctree-l2"><a class="reference internal" href="unstack.html">unstack</a></li>
+<li class="toctree-l2"><a class="reference internal" href="split.html">split</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tile.html">tile</a></li>
+<li class="toctree-l2"><a class="reference internal" href="zero_pad.html">zero_pad</a></li>
+<li class="toctree-l2"><a class="reference internal" href="swapaxes.html">swapaxes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="transpose.html">transpose</a></li>
+<li class="toctree-l2"><a class="reference internal" href="expand_dims.html">expand_dims</a></li>
+<li class="toctree-l2"><a class="reference internal" href="where.html">where</a></li>
+<li class="toctree-l2"><a class="reference internal" href="indices_where.html">indices_where</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reshape.html">reshape</a></li>
+<li class="toctree-l2"><a class="reference internal" href="squeeze.html">squeeze</a></li>
+<li class="toctree-l2"><a class="reference internal" href="zeros.html">zeros</a></li>
+<li class="toctree-l2"><a class="reference internal" href="zeros_like.html">zeros_like</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ones.html">ones</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ones_like.html">ones_like</a></li>
+<li class="toctree-l2"><a class="reference internal" href="one_hot.html">one_hot</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cross.html">cross</a></li>
+<li class="toctree-l2"><a class="reference internal" href="matmul.html">matmul</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cumsum.html">cumsum</a></li>
+<li class="toctree-l2"><a class="reference internal" href="identity.html">identity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="scatter_flat.html">scatter_flat</a></li>
+<li class="toctree-l2"><a class="reference internal" href="scatter_nd.html">scatter_nd</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gather_flat.html">gather_flat</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gather_nd.html">gather_nd</a></li>
+<li class="toctree-l2"><a class="reference internal" href="get_device.html">get_device</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dtype.html">dtype</a></li>
+<li class="toctree-l2"><a class="reference internal" href="compile_fn.html">compile_fn</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="../gradients.html">Gradients</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../image.html">Image</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../linalg.html">Linalg</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../logic.html">Logic</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../random.html">Random</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reductions.html">Reductions</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Docs</span></p>
 <ul>
@@ -204,7 +259,7 @@ sequence.</p></li>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../../../ivy"" class="btn btn-neutral float-right" title="Ivy" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="to_numpy.html" class="btn btn-neutral float-right" title="to_numpy" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="../general.html" class="btn btn-neutral float-left" title="General" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>

@@ -1,0 +1,672 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>ivy.core.container &mdash; Ivy 1.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> Ivy
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Guides</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../why_ivy.html">Why Ivy?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../writing_ivy.html">Writing Ivy</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Core</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../core/container.html">Container</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../core/general.html">General</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../core/gradients.html">Gradients</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../core/image.html">Image</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../core/linalg.html">Linalg</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../core/logic.html">Logic</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../core/random.html">Random</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../core/reductions.html">Reductions</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Docs</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../ivy"">Ivy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../mech"">Ivy Mech</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../vision"">Ivy Vision</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../robot"">Ivy Robot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../gym"">Ivy Gym</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Ivy</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>ivy.core.container</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for ivy.core.container</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Base Container Object</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="c1"># global</span>
+<span class="kn">import</span> <span class="nn">random</span> <span class="k">as</span> <span class="nn">_random</span>
+<span class="kn">import</span> <span class="nn">h5py</span> <span class="k">as</span> <span class="nn">_h5py</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">_np</span>
+<span class="kn">from</span> <span class="nn">functools</span> <span class="k">import</span> <span class="n">reduce</span> <span class="k">as</span> <span class="n">_reduce</span>
+<span class="kn">from</span> <span class="nn">operator</span> <span class="k">import</span> <span class="n">mul</span> <span class="k">as</span> <span class="n">_mul</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">jax.numpy</span> <span class="k">as</span> <span class="nn">_jpn</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="n">_jpn</span> <span class="o">=</span> <span class="kc">None</span>
+
+<span class="c1"># local</span>
+<span class="kn">from</span> <span class="nn">ivy.core</span> <span class="k">import</span> <span class="n">general</span> <span class="k">as</span> <span class="n">_ivy_gen</span>
+<span class="kn">from</span> <span class="nn">ivy.core</span> <span class="k">import</span> <span class="n">random</span> <span class="k">as</span> <span class="n">_ivy_rand</span>
+<span class="kn">from</span> <span class="nn">ivy.framework_handler</span> <span class="k">import</span> <span class="n">get_framework</span> <span class="k">as</span> <span class="n">_get_framework</span>
+
+
+<span class="c1"># noinspection PyMissingConstructor</span>
+<div class="viewcode-block" id="Container"><a class="viewcode-back" href="../../../core/container/Container.html#ivy.core.container.Container">[docs]</a><span class="k">class</span> <span class="nc">Container</span><span class="p">(</span><span class="nb">dict</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Container.__init__"><a class="viewcode-back" href="../../../core/container/Container.html#ivy.core.container.Container.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dict_in</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initialize container object from input dict representation.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">dict_in</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">dict_in</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">dict_in</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+            <span class="n">dict_in</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">dict_in</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">dict_in</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+                <span class="bp">self</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">Container</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_size</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_size</span><span class="p">()</span></div>
+
+    <span class="c1"># Class Methods #</span>
+    <span class="c1"># --------------#</span>
+
+<div class="viewcode-block" id="Container.concat"><a class="viewcode-back" href="../../../core/container/Container.html#ivy.core.container.Container.concat">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">concat</span><span class="p">(</span><span class="n">containers</span><span class="p">,</span> <span class="n">dim</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Concatenate containers together along the specified dimension.</span>
+
+<span class="sd">        :param containers: containers to _concatenate</span>
+<span class="sd">        :type containers: sequence of Container objects</span>
+<span class="sd">        :param dim: dimension along which to _concatenate</span>
+<span class="sd">        :type dim: int</span>
+<span class="sd">        :param f: Machine learning framework. Inferred from inputs if None.</span>
+<span class="sd">        :type f: ml_framework, optional</span>
+<span class="sd">        :return: Concatenated containers</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">container0</span> <span class="o">=</span> <span class="n">containers</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">container0</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+            <span class="n">return_dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">container0</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                <span class="n">return_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">Container</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">container</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="k">for</span> <span class="n">container</span> <span class="ow">in</span> <span class="n">containers</span><span class="p">],</span> <span class="n">dim</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">Container</span><span class="p">(</span><span class="n">return_dict</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">f</span> <span class="o">=</span> <span class="n">_get_framework</span><span class="p">(</span><span class="n">container0</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span>
+            <span class="c1"># noinspection PyBroadException</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">containers</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="n">_ivy_gen</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="n">_ivy_gen</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="p">(</span><span class="n">dim</span><span class="o">+</span><span class="mi">1</span><span class="p">))</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">containers</span><span class="p">],</span> <span class="n">dim</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="n">_ivy_gen</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span><span class="n">containers</span><span class="p">,</span> <span class="n">dim</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">Container concat operation only valid for containers of arrays&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Container.from_disk"><a class="viewcode-back" href="../../../core/container/Container.html#ivy.core.container.Container.from_disk">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">from_disk</span><span class="p">(</span><span class="n">h5_obj_or_filepath</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">slice_obj</span><span class="o">=</span><span class="nb">slice</span><span class="p">(</span><span class="kc">None</span><span class="p">)):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Load container object from disk, as an h5py file, at the specified filepath.</span>
+
+<span class="sd">        :param h5_obj_or_filepath: Filepath where the container object is saved to disk, or h5 object.</span>
+<span class="sd">        :type h5_obj_or_filepath: str or h5 obj</span>
+<span class="sd">        :param f: Machine learning framework.</span>
+<span class="sd">        :type f: ml_framework, optional</span>
+<span class="sd">        :param slice_obj: slice object to slice all h5 elements.</span>
+<span class="sd">        :type slice_obj: slice or sequence of slices</span>
+<span class="sd">        :return: Container loaded from disk</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">container_dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">h5_obj_or_filepath</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">str</span><span class="p">:</span>
+            <span class="n">h5_obj</span> <span class="o">=</span> <span class="n">_h5py</span><span class="o">.</span><span class="n">File</span><span class="p">(</span><span class="n">h5_obj_or_filepath</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">h5_obj</span> <span class="o">=</span> <span class="n">h5_obj_or_filepath</span>
+
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">h5_obj</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">_h5py</span><span class="o">.</span><span class="n">Group</span><span class="p">):</span>
+                <span class="n">container_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">Container</span><span class="o">.</span><span class="n">from_disk</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">slice_obj</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">_h5py</span><span class="o">.</span><span class="n">Dataset</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">f</span> <span class="ow">is</span> <span class="n">_np</span><span class="p">:</span>
+                    <span class="n">container_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span><span class="p">[</span><span class="n">slice_obj</span><span class="p">]</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">container_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">_ivy_gen</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">value</span><span class="p">[</span><span class="n">slice_obj</span><span class="p">]),</span> <span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;Item found inside h5_obj which was neither a Group nor a Dataset.&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">Container</span><span class="p">(</span><span class="n">container_dict</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Container.h5_file_size"><a class="viewcode-back" href="../../../core/container/Container.html#ivy.core.container.Container.h5_file_size">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">h5_file_size</span><span class="p">(</span><span class="n">h5_obj_or_filepath</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get file size of h5 file contents.</span>
+
+<span class="sd">        :param h5_obj_or_filepath: Filepath where the container object is saved to disk, or h5 object.</span>
+<span class="sd">        :type h5_obj_or_filepath: str or h5 obj</span>
+<span class="sd">        :return: Size of h5 file contents, and batch size.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">h5_obj_or_filepath</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">str</span><span class="p">:</span>
+            <span class="n">h5_obj</span> <span class="o">=</span> <span class="n">_h5py</span><span class="o">.</span><span class="n">File</span><span class="p">(</span><span class="n">h5_obj_or_filepath</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">h5_obj</span> <span class="o">=</span> <span class="n">h5_obj_or_filepath</span>
+
+        <span class="n">size</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">batch_size</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">h5_obj</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">_h5py</span><span class="o">.</span><span class="n">Group</span><span class="p">):</span>
+                <span class="n">size_to_add</span><span class="p">,</span> <span class="n">batch_size</span> <span class="o">=</span> <span class="n">Container</span><span class="o">.</span><span class="n">h5_file_size</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+                <span class="n">size</span> <span class="o">+=</span> <span class="n">size_to_add</span>
+            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">_h5py</span><span class="o">.</span><span class="n">Dataset</span><span class="p">):</span>
+                <span class="n">value_shape</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">shape</span>
+                <span class="n">size</span> <span class="o">+=</span> <span class="n">_reduce</span><span class="p">(</span><span class="n">_mul</span><span class="p">,</span> <span class="n">value_shape</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">value</span><span class="o">.</span><span class="n">dtype</span><span class="o">.</span><span class="n">itemsize</span>
+                <span class="n">batch_size</span> <span class="o">=</span> <span class="n">value_shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;Item found inside h5_obj which was neither a Group nor a Dataset.&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">size</span><span class="p">,</span> <span class="n">batch_size</span></div>
+
+<div class="viewcode-block" id="Container.shuffle_h5_file"><a class="viewcode-back" href="../../../core/container/Container.html#ivy.core.container.Container.shuffle_h5_file">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">shuffle_h5_file</span><span class="p">(</span><span class="n">h5_obj_or_filepath</span><span class="p">,</span> <span class="n">seed_value</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Shuffle entries in all datasets of h5 file, such that they are still aligned along axis 0.</span>
+
+<span class="sd">        :param h5_obj_or_filepath: Filepath where the container object is saved to disk, or h5 object.</span>
+<span class="sd">        :type h5_obj_or_filepath: str or h5 obj</span>
+<span class="sd">        :param seed_value: random seed to use for array shuffling</span>
+<span class="sd">        :type seed_value: int</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">seed_value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">seed_value</span> <span class="o">=</span> <span class="n">_random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1000</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">h5_obj_or_filepath</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">str</span><span class="p">:</span>
+            <span class="n">h5_obj</span> <span class="o">=</span> <span class="n">_h5py</span><span class="o">.</span><span class="n">File</span><span class="p">(</span><span class="n">h5_obj_or_filepath</span><span class="p">,</span> <span class="s1">&#39;a&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">h5_obj</span> <span class="o">=</span> <span class="n">h5_obj_or_filepath</span>
+
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">h5_obj</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">_h5py</span><span class="o">.</span><span class="n">Group</span><span class="p">):</span>
+                <span class="n">Container</span><span class="o">.</span><span class="n">shuffle_h5_file</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">seed_value</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">_h5py</span><span class="o">.</span><span class="n">Dataset</span><span class="p">):</span>
+                <span class="n">_random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="n">seed_value</span><span class="p">)</span>
+                <span class="n">_random</span><span class="o">.</span><span class="n">shuffle</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;Item found inside h5_obj which was neither a Group nor a Dataset.&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">h5_obj</span><span class="p">,</span> <span class="n">_h5py</span><span class="o">.</span><span class="n">File</span><span class="p">):</span>
+            <span class="n">h5_obj</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+
+    <span class="c1"># Private Methods #</span>
+    <span class="c1"># ----------------#</span>
+
+    <span class="k">def</span> <span class="nf">_get_size</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">vals</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">vals</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mi">0</span>
+        <span class="n">val</span> <span class="o">=</span> <span class="n">vals</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">Container</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">val</span><span class="o">.</span><span class="n">_get_size</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">val</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">except</span> <span class="p">(</span><span class="ne">AttributeError</span><span class="p">,</span> <span class="ne">IndexError</span><span class="p">,</span> <span class="ne">TypeError</span><span class="p">):</span>
+                <span class="k">return</span> <span class="mi">0</span>
+
+    <span class="c1"># Public Methods #</span>
+    <span class="c1"># ---------------#</span>
+
+<div class="viewcode-block" id="Container.shuffle"><a class="viewcode-back" href="../../../core/container/Container.html#ivy.core.container.Container.shuffle">[docs]</a>    <span class="k">def</span> <span class="nf">shuffle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">seed_value</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Shuffle entries in all sub-arrays, such that they are still aligned along axis 0.</span>
+
+<span class="sd">        :param seed_value: random seed to use for array shuffling</span>
+<span class="sd">        :type seed_value: int</span>
+<span class="sd">        :param f: Machine learning framework. Inferred from inputs if None.</span>
+<span class="sd">        :type f: ml_framework, optional</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">return_dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">seed_value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">seed_value</span> <span class="o">=</span> <span class="n">_random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1000</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">Container</span><span class="p">):</span>
+                <span class="n">return_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">shuffle</span><span class="p">(</span><span class="n">seed_value</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">f</span> <span class="o">=</span> <span class="n">_get_framework</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span>
+                <span class="n">_ivy_rand</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="n">seed_value</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span>
+                <span class="n">return_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">_ivy_rand</span><span class="o">.</span><span class="n">shuffle</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">Container</span><span class="p">(</span><span class="n">return_dict</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Container.slice"><a class="viewcode-back" href="../../../core/container/Container.html#ivy.core.container.Container.slice">[docs]</a>    <span class="k">def</span> <span class="nf">slice</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">slice_obj</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get slice of container object.</span>
+
+<span class="sd">        :param slice_obj: slice object to slice all container elements.</span>
+<span class="sd">        :type slice_obj: slice or sequence of slices</span>
+<span class="sd">        :return: Container object at desired slice.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">return_dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">Container</span><span class="p">):</span>
+                <span class="n">return_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">slice</span><span class="p">(</span><span class="n">slice_obj</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># noinspection PyBroadException</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">return_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span><span class="p">[</span><span class="n">slice_obj</span><span class="p">]</span>
+                <span class="k">except</span><span class="p">:</span>
+                    <span class="n">return_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+
+        <span class="k">return</span> <span class="n">Container</span><span class="p">(</span><span class="n">return_dict</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Container.expand_dims"><a class="viewcode-back" href="../../../core/container/Container.html#ivy.core.container.Container.expand_dims">[docs]</a>    <span class="k">def</span> <span class="nf">expand_dims</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">axis</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Expand dims of all sub-arrays of container object.</span>
+
+<span class="sd">        :param axis: Axis along which to expand dimensions of the sub-arrays.</span>
+<span class="sd">        :type axis: int</span>
+<span class="sd">        :return: Container object at with all sub-array dimensions expanded along the axis.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">return_dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">Container</span><span class="p">):</span>
+                <span class="n">return_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">expand_dims</span><span class="p">(</span><span class="n">axis</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">return_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">_ivy_gen</span><span class="o">.</span><span class="n">expand_dims</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">axis</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">Container</span><span class="p">(</span><span class="n">return_dict</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Container.unstack"><a class="viewcode-back" href="../../../core/container/Container.html#ivy.core.container.Container.unstack">[docs]</a>    <span class="k">def</span> <span class="nf">unstack</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dim</span><span class="p">,</span> <span class="n">dim_size</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Unstack containers along specified dimension.</span>
+
+<span class="sd">        :param dim: Dimensions along which to unstack.</span>
+<span class="sd">        :type dim: int</span>
+<span class="sd">        :param dim_size: Size of the dimension to unstack.</span>
+<span class="sd">        :type dim_size: int</span>
+<span class="sd">        :return: List of containers, unstacked along the specified dimension.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">slice</span><span class="p">(</span><span class="nb">tuple</span><span class="p">([</span><span class="nb">slice</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">)]</span> <span class="o">*</span> <span class="n">dim</span> <span class="o">+</span> <span class="p">[</span><span class="nb">slice</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)]))</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">dim_size</span><span class="p">)]</span></div>
+
+<div class="viewcode-block" id="Container.to_disk"><a class="viewcode-back" href="../../../core/container/Container.html#ivy.core.container.Container.to_disk">[docs]</a>    <span class="k">def</span> <span class="nf">to_disk</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">h5_obj_or_filepath</span><span class="p">,</span> <span class="n">starting_index</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="n">max_batch_size</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Save container object to disk, as an h5py file, at the specified filepath.</span>
+
+<span class="sd">        :param h5_obj_or_filepath: Filepath for where to save the container to disk, or h5 object.</span>
+<span class="sd">        :type h5_obj_or_filepath: str or h5 object</span>
+<span class="sd">        :param starting_index: Batch index for which to start writing to file, if it already exists</span>
+<span class="sd">        :type starting_index: int</span>
+<span class="sd">        :param mode: H5 read/write mode for writing to disk, [&#39;r&#39;, &#39;r+&#39;, &#39;w&#39;, &#39;w-&#39;, &#39;a&#39;], default is &#39;a&#39;.</span>
+<span class="sd">        :type mode: str</span>
+<span class="sd">        :param max_batch_size: Maximum batch size for the container on disk, this is useful if later appending to file.</span>
+<span class="sd">        :type max_batch_size: int</span>
+<span class="sd">        :type h5_obj_or_filepath: str or h5 object</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">h5_obj_or_filepath</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">str</span><span class="p">:</span>
+            <span class="n">h5_obj</span> <span class="o">=</span> <span class="n">_h5py</span><span class="o">.</span><span class="n">File</span><span class="p">(</span><span class="n">h5_obj_or_filepath</span><span class="p">,</span> <span class="n">mode</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">h5_obj</span> <span class="o">=</span> <span class="n">h5_obj_or_filepath</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">Container</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">h5_obj</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                    <span class="n">h5_group</span> <span class="o">=</span> <span class="n">h5_obj</span><span class="o">.</span><span class="n">create_group</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">h5_group</span> <span class="o">=</span> <span class="n">h5_obj</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+                <span class="n">value</span><span class="o">.</span><span class="n">to_disk</span><span class="p">(</span><span class="n">h5_group</span><span class="p">,</span> <span class="n">starting_index</span><span class="p">,</span> <span class="n">mode</span><span class="p">,</span> <span class="n">max_batch_size</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">value_as_np</span> <span class="o">=</span> <span class="n">_ivy_gen</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+                <span class="n">value_shape</span> <span class="o">=</span> <span class="n">value_as_np</span><span class="o">.</span><span class="n">shape</span>
+                <span class="n">this_batch_size</span> <span class="o">=</span> <span class="n">value_shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">max_batch_size</span><span class="p">:</span>
+                    <span class="n">max_batch_size</span> <span class="o">=</span> <span class="n">starting_index</span> <span class="o">+</span> <span class="n">this_batch_size</span>
+                <span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">h5_obj</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                    <span class="n">dataset_shape</span> <span class="o">=</span> <span class="p">[</span><span class="n">max_batch_size</span><span class="p">]</span> <span class="o">+</span> <span class="nb">list</span><span class="p">(</span><span class="n">value_shape</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
+                    <span class="n">maxshape</span> <span class="o">=</span> <span class="p">([</span><span class="kc">None</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">dataset_shape</span><span class="p">])</span>
+                    <span class="n">h5_obj</span><span class="o">.</span><span class="n">create_dataset</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">dataset_shape</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">value_as_np</span><span class="o">.</span><span class="n">dtype</span><span class="p">,</span> <span class="n">maxshape</span><span class="o">=</span><span class="n">maxshape</span><span class="p">)</span>
+                <span class="n">space_left</span> <span class="o">=</span> <span class="n">max_batch_size</span> <span class="o">-</span> <span class="n">starting_index</span>
+                <span class="n">amount_to_write</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">this_batch_size</span><span class="p">,</span> <span class="n">space_left</span><span class="p">)</span>
+                <span class="n">h5_obj</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="n">starting_index</span><span class="p">:</span><span class="n">starting_index</span> <span class="o">+</span> <span class="n">amount_to_write</span><span class="p">]</span> <span class="o">=</span> <span class="n">value_as_np</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="n">amount_to_write</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="Container.to_list"><a class="viewcode-back" href="../../../core/container/Container.html#ivy.core.container.Container.to_list">[docs]</a>    <span class="k">def</span> <span class="nf">to_list</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return nested list representation of container object.</span>
+
+<span class="sd">        :return: Container as nested list.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">return_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">Container</span><span class="p">):</span>
+                <span class="n">return_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">value</span><span class="o">.</span><span class="n">to_list</span><span class="p">())</span>
+            <span class="k">elif</span> <span class="n">value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">key</span> <span class="ow">is</span> <span class="ow">not</span> <span class="s1">&#39;_f&#39;</span><span class="p">:</span>
+                <span class="n">return_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">return_list</span></div>
+
+<div class="viewcode-block" id="Container.to_dict"><a class="viewcode-back" href="../../../core/container/Container.html#ivy.core.container.Container.to_dict">[docs]</a>    <span class="k">def</span> <span class="nf">to_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return nested pure dict representation of container object.</span>
+
+<span class="sd">        :return: Container as nested dict.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">return_dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">Container</span><span class="p">):</span>
+                <span class="n">return_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
+            <span class="k">elif</span> <span class="n">value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">key</span> <span class="ow">is</span> <span class="ow">not</span> <span class="s1">&#39;_f&#39;</span><span class="p">:</span>
+                <span class="n">return_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="k">return</span> <span class="n">return_dict</span></div>
+
+<div class="viewcode-block" id="Container.to_iterator"><a class="viewcode-back" href="../../../core/container/Container.html#ivy.core.container.Container.to_iterator">[docs]</a>    <span class="k">def</span> <span class="nf">to_iterator</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return iterator for traversing through the nested elements of container object.</span>
+
+<span class="sd">        :return: Iterator for the container elements.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">Container</span><span class="p">):</span>
+                <span class="c1"># noinspection PyCompatibility</span>
+                <span class="k">yield from</span> <span class="n">value</span><span class="o">.</span><span class="n">to_iterator</span><span class="p">()</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">yield</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span></div>
+
+<div class="viewcode-block" id="Container.to_flat_list"><a class="viewcode-back" href="../../../core/container/Container.html#ivy.core.container.Container.to_flat_list">[docs]</a>    <span class="k">def</span> <span class="nf">to_flat_list</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return flat list representation of container object.</span>
+
+<span class="sd">        :return: Container as flat list.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">list</span><span class="p">([</span><span class="n">item</span> <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">to_iterator</span><span class="p">()])</span></div>
+
+<div class="viewcode-block" id="Container.to_random"><a class="viewcode-back" href="../../../core/container/Container.html#ivy.core.container.Container.to_random">[docs]</a>    <span class="k">def</span> <span class="nf">to_random</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">f</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return new container, with all entries having same shape and type, but random values</span>
+
+<span class="sd">        :param f: Machine learning framework.</span>
+<span class="sd">        :type f: ml_framework</span>
+<span class="sd">        :return: Container with random values as entries.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">def</span> <span class="nf">_as_random</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">_</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="s1">&#39;shape&#39;</span><span class="p">):</span>
+                <span class="k">return</span> <span class="n">_ivy_rand</span><span class="o">.</span><span class="n">random_uniform</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="n">value</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">value</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">_as_random</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Container.prune_key_chain"><a class="viewcode-back" href="../../../core/container/Container.html#ivy.core.container.Container.prune_key_chain">[docs]</a>    <span class="k">def</span> <span class="nf">prune_key_chain</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key_chain</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Recursively prune chain of keys, specified as &#39;key1/key2/key3/...&#39;</span>
+
+<span class="sd">        :return: Container with keys in key chain pruned.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">keys_in_chain</span> <span class="o">=</span> <span class="n">key_chain</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)</span>
+        <span class="n">out_dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">Container</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="n">keys_in_chain</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+                    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">keys_in_chain</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                        <span class="n">new_val</span> <span class="o">=</span> <span class="p">[]</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">new_val</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">prune_key_chain</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">keys_in_chain</span><span class="p">[</span><span class="mi">1</span><span class="p">:]))</span>
+                    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">new_val</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                        <span class="n">out_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_val</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">new_val</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
+                    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">new_val</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                        <span class="n">out_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">keys_in_chain</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">1</span> <span class="ow">or</span> <span class="n">key</span> <span class="o">!=</span> <span class="n">keys_in_chain</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+                    <span class="n">out_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="k">return</span> <span class="n">Container</span><span class="p">(</span><span class="n">out_dict</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Container.prune_empty"><a class="viewcode-back" href="../../../core/container/Container.html#ivy.core.container.Container.prune_empty">[docs]</a>    <span class="k">def</span> <span class="nf">prune_empty</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Recursively prunes empty keys from the container dict structure.</span>
+<span class="sd">        Returns None if the entire container is empty.</span>
+
+<span class="sd">        :return: Container with empty keys pruned.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">out_dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">Container</span><span class="p">):</span>
+                <span class="n">new_value</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">prune_empty</span><span class="p">()</span>
+                <span class="k">if</span> <span class="n">new_value</span><span class="p">:</span>
+                    <span class="n">out_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_value</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">out_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">out_dict</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">Container</span><span class="p">(</span><span class="n">out_dict</span><span class="p">)</span>
+        <span class="k">return</span></div>
+
+<div class="viewcode-block" id="Container.copy"><a class="viewcode-back" href="../../../core/container/Container.html#ivy.core.container.Container.copy">[docs]</a>    <span class="k">def</span> <span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create a copy of this container.</span>
+
+<span class="sd">        :return: A copy of the container</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">Container</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">to_dict</span><span class="p">())</span></div>
+
+<div class="viewcode-block" id="Container.map"><a class="viewcode-back" href="../../../core/container/Container.html#ivy.core.container.Container.map">[docs]</a>    <span class="k">def</span> <span class="nf">map</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">func</span><span class="p">,</span> <span class="n">key_chain</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Apply function to all array values of container</span>
+
+<span class="sd">        :param func: Function to apply to each container entry</span>
+<span class="sd">        :type func: python function</span>
+<span class="sd">        :param key_chain: Chain of keys for this dict entry</span>
+<span class="sd">        :type key_chain: str</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">return_dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
+            <span class="n">this_key_chain</span> <span class="o">=</span> <span class="n">key_chain</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span> <span class="o">+</span> <span class="n">key</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">Container</span><span class="p">):</span>
+                <span class="n">return_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">this_key_chain</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">return_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">func</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">this_key_chain</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">Container</span><span class="p">(</span><span class="n">return_dict</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Container.dtype"><a class="viewcode-back" href="../../../core/container/Container.html#ivy.core.container.Container.dtype">[docs]</a>    <span class="k">def</span> <span class="nf">dtype</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return container, with all entries replaced with their data types.</span>
+
+<span class="sd">        :return: New datatype container</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">_</span><span class="p">:</span> <span class="n">_ivy_gen</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="n">x</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="Container.with_entries_as_lists"><a class="viewcode-back" href="../../../core/container/Container.html#ivy.core.container.Container.with_entries_as_lists">[docs]</a>    <span class="k">def</span> <span class="nf">with_entries_as_lists</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">f</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return container object, with each array entry in the container cast to a list</span>
+
+<span class="sd">        :param f: Machine learning framework.</span>
+<span class="sd">        :type f: ml_framework</span>
+<span class="sd">        :return: New container, with entries not as arrays but as python lists</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">def</span> <span class="nf">to_list</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">_</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">_ivy_gen</span><span class="o">.</span><span class="n">to_list</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
+            <span class="k">except</span> <span class="p">(</span><span class="ne">AttributeError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">):</span>
+                <span class="k">return</span> <span class="n">x</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">to_list</span><span class="p">)</span></div>
+
+    <span class="c1"># Built-ins #</span>
+    <span class="c1"># ----------#</span>
+
+    <span class="k">def</span> <span class="nf">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="p">[</span><span class="n">item</span><span class="p">]</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="c1"># noinspection PyUnresolvedReferences</span>
+            <span class="k">return</span> <span class="nb">super</span><span class="o">.</span><span class="fm">__getattr__</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+
+    <span class="c1"># Getters #</span>
+    <span class="c1"># --------#</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">size</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_size</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Ivy Team
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

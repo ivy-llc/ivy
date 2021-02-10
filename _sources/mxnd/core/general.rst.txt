@@ -13,4 +13,26 @@ General
    :caption: General
 
    general/array.rst
+   general/arange.rst
+   general/linspace.rst
+   general/concatenate.rst
+   general/flip.rst
+   general/unstack.rst
+   general/split.rst
+   general/zero_pad.rst
+   general/transpose.rst
+   general/where.rst
+   general/indices_where.rst
+   general/zeros.rst
+   general/zeros_like.rst
+   general/ones.rst
+   general/ones_like.rst
+   general/cross.rst
+   general/matmul.rst
+   general/identity.rst
+   general/scatter_flat.rst
+   general/scatter_nd.rst
+   general/gather_flat.rst
+   general/gather_nd.rst
+   general/compile_fn.rst
 

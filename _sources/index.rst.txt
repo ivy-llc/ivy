@@ -208,7 +208,14 @@ Documentation Tree
    :maxdepth: -1
    :caption: Core
 
+   core/container.rst
    core/general.rst
+   core/gradients.rst
+   core/image.rst
+   core/linalg.rst
+   core/logic.rst
+   core/random.rst
+   core/reductions.rst
 
 
 .. toctree::
