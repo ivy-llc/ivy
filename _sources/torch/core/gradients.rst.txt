@@ -1,0 +1,19 @@
+Gradients
+=========
+
+.. automodule:: ivy.torch.core.gradients
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :show-inheritance:
+
+
+.. toctree::
+   :maxdepth: -1
+   :caption: Gradients
+
+   gradients/variable.rst
+   gradients/execute_with_gradients.rst
+   gradients/gradient_descent_update.rst
+   gradients/stop_gradient.rst
+

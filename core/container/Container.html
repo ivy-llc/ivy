@@ -1,0 +1,521 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Container &mdash; Ivy 1.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="General" href="../general.html" />
+    <link rel="prev" title="Container" href="../container.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> Ivy
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Guides</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../why_ivy.html">Why Ivy?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../writing_ivy.html">Writing Ivy</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Core</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../container.html">Container</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Container</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../general.html">General</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../gradients.html">Gradients</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../image.html">Image</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../linalg.html">Linalg</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../logic.html">Logic</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../random.html">Random</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reductions.html">Reductions</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Docs</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../ivy"">Ivy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../mech"">Ivy Mech</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../vision"">Ivy Vision</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../robot"">Ivy Robot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../gym"">Ivy Gym</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Ivy</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../container.html">Container</a> &raquo;</li>
+        
+      <li>Container</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../_sources/core/container/Container.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="container">
+<h1>Container<a class="headerlink" href="#container" title="Permalink to this headline">¶</a></h1>
+<dl class="py class">
+<dt id="ivy.core.container.Container">
+<em class="property">class </em><code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">Container</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dict_in</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/container.html#Container"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></p>
+<dl class="py method">
+<dt id="ivy.core.container.Container.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dict_in</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/container.html#Container.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize container object from input dict representation.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="ivy.core.container.Container.concat">
+<em class="property">static </em><code class="sig-name descname">concat</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">containers</span></em>, <em class="sig-param"><span class="n">dim</span></em>, <em class="sig-param"><span class="n">f</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/container.html#Container.concat"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.concat" title="Permalink to this definition">¶</a></dt>
+<dd><p>Concatenate containers together along the specified dimension.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>containers</strong> (<em>sequence of Container objects</em>) – containers to _concatenate</p></li>
+<li><p><strong>dim</strong> (<em>int</em>) – dimension along which to _concatenate</p></li>
+<li><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning framework. Inferred from inputs if None.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Concatenated containers</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="ivy.core.container.Container.from_disk">
+<em class="property">static </em><code class="sig-name descname">from_disk</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">h5_obj_or_filepath</span></em>, <em class="sig-param"><span class="n">f</span></em>, <em class="sig-param"><span class="n">slice_obj</span><span class="o">=</span><span class="default_value">slice(None, None, None)</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/container.html#Container.from_disk"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.from_disk" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load container object from disk, as an h5py file, at the specified filepath.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>h5_obj_or_filepath</strong> (<em>str</em><em> or </em><em>h5 obj</em>) – Filepath where the container object is saved to disk, or h5 object.</p></li>
+<li><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning framework.</p></li>
+<li><p><strong>slice_obj</strong> (<em>slice</em><em> or </em><em>sequence of slices</em>) – slice object to slice all h5 elements.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Container loaded from disk</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="ivy.core.container.Container.h5_file_size">
+<em class="property">static </em><code class="sig-name descname">h5_file_size</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">h5_obj_or_filepath</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/container.html#Container.h5_file_size"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.h5_file_size" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get file size of h5 file contents.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>h5_obj_or_filepath</strong> (<em>str</em><em> or </em><em>h5 obj</em>) – Filepath where the container object is saved to disk, or h5 object.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Size of h5 file contents, and batch size.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="ivy.core.container.Container.shuffle_h5_file">
+<em class="property">static </em><code class="sig-name descname">shuffle_h5_file</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">h5_obj_or_filepath</span></em>, <em class="sig-param"><span class="n">seed_value</span><span class="o">=</span><span class="default_value">0</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/container.html#Container.shuffle_h5_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.shuffle_h5_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Shuffle entries in all datasets of h5 file, such that they are still aligned along axis 0.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>h5_obj_or_filepath</strong> (<em>str</em><em> or </em><em>h5 obj</em>) – Filepath where the container object is saved to disk, or h5 object.</p></li>
+<li><p><strong>seed_value</strong> (<em>int</em>) – random seed to use for array shuffling</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="ivy.core.container.Container.shuffle">
+<code class="sig-name descname">shuffle</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">seed_value</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">f</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/container.html#Container.shuffle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.shuffle" title="Permalink to this definition">¶</a></dt>
+<dd><p>Shuffle entries in all sub-arrays, such that they are still aligned along axis 0.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>seed_value</strong> (<em>int</em>) – random seed to use for array shuffling</p></li>
+<li><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning framework. Inferred from inputs if None.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="ivy.core.container.Container.slice">
+<code class="sig-name descname">slice</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">slice_obj</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/container.html#Container.slice"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.slice" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get slice of container object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>slice_obj</strong> (<em>slice</em><em> or </em><em>sequence of slices</em>) – slice object to slice all container elements.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Container object at desired slice.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="ivy.core.container.Container.expand_dims">
+<code class="sig-name descname">expand_dims</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">axis</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/container.html#Container.expand_dims"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.expand_dims" title="Permalink to this definition">¶</a></dt>
+<dd><p>Expand dims of all sub-arrays of container object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>axis</strong> (<em>int</em>) – Axis along which to expand dimensions of the sub-arrays.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Container object at with all sub-array dimensions expanded along the axis.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="ivy.core.container.Container.unstack">
+<code class="sig-name descname">unstack</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dim</span></em>, <em class="sig-param"><span class="n">dim_size</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/container.html#Container.unstack"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.unstack" title="Permalink to this definition">¶</a></dt>
+<dd><p>Unstack containers along specified dimension.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dim</strong> (<em>int</em>) – Dimensions along which to unstack.</p></li>
+<li><p><strong>dim_size</strong> (<em>int</em>) – Size of the dimension to unstack.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>List of containers, unstacked along the specified dimension.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="ivy.core.container.Container.to_disk">
+<code class="sig-name descname">to_disk</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">h5_obj_or_filepath</span></em>, <em class="sig-param"><span class="n">starting_index</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">mode</span><span class="o">=</span><span class="default_value">'a'</span></em>, <em class="sig-param"><span class="n">max_batch_size</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/container.html#Container.to_disk"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.to_disk" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save container object to disk, as an h5py file, at the specified filepath.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>h5_obj_or_filepath</strong> (<em>str</em><em> or </em><em>h5 object</em>) – Filepath for where to save the container to disk, or h5 object.</p></li>
+<li><p><strong>starting_index</strong> (<em>int</em>) – Batch index for which to start writing to file, if it already exists</p></li>
+<li><p><strong>mode</strong> (<em>str</em>) – H5 read/write mode for writing to disk, [‘r’, ‘r+’, ‘w’, ‘w-‘, ‘a’], default is ‘a’.</p></li>
+<li><p><strong>max_batch_size</strong> (<em>int</em>) – Maximum batch size for the container on disk, this is useful if later appending to file.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="ivy.core.container.Container.to_list">
+<code class="sig-name descname">to_list</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/container.html#Container.to_list"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.to_list" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return nested list representation of container object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Container as nested list.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="ivy.core.container.Container.to_dict">
+<code class="sig-name descname">to_dict</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/container.html#Container.to_dict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.to_dict" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return nested pure dict representation of container object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Container as nested dict.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="ivy.core.container.Container.to_iterator">
+<code class="sig-name descname">to_iterator</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/container.html#Container.to_iterator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.to_iterator" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return iterator for traversing through the nested elements of container object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Iterator for the container elements.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="ivy.core.container.Container.to_flat_list">
+<code class="sig-name descname">to_flat_list</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/container.html#Container.to_flat_list"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.to_flat_list" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return flat list representation of container object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Container as flat list.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="ivy.core.container.Container.to_random">
+<code class="sig-name descname">to_random</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">f</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/container.html#Container.to_random"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.to_random" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return new container, with all entries having same shape and type, but random values</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>f</strong> (<em>ml_framework</em>) – Machine learning framework.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Container with random values as entries.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="ivy.core.container.Container.prune_key_chain">
+<code class="sig-name descname">prune_key_chain</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">key_chain</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/container.html#Container.prune_key_chain"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.prune_key_chain" title="Permalink to this definition">¶</a></dt>
+<dd><p>Recursively prune chain of keys, specified as ‘key1/key2/key3/…’</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Container with keys in key chain pruned.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="ivy.core.container.Container.prune_empty">
+<code class="sig-name descname">prune_empty</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/container.html#Container.prune_empty"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.prune_empty" title="Permalink to this definition">¶</a></dt>
+<dd><p>Recursively prunes empty keys from the container dict structure.
+Returns None if the entire container is empty.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Container with empty keys pruned.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="ivy.core.container.Container.copy">
+<code class="sig-name descname">copy</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/container.html#Container.copy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.copy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a copy of this container.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>A copy of the container</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="ivy.core.container.Container.map">
+<code class="sig-name descname">map</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">func</span></em>, <em class="sig-param"><span class="n">key_chain</span><span class="o">=</span><span class="default_value">''</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/container.html#Container.map"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.map" title="Permalink to this definition">¶</a></dt>
+<dd><p>Apply function to all array values of container</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>func</strong> (<em>python function</em>) – Function to apply to each container entry</p></li>
+<li><p><strong>key_chain</strong> (<em>str</em>) – Chain of keys for this dict entry</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="ivy.core.container.Container.dtype">
+<code class="sig-name descname">dtype</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/container.html#Container.dtype"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.dtype" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return container, with all entries replaced with their data types.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>New datatype container</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="ivy.core.container.Container.with_entries_as_lists">
+<code class="sig-name descname">with_entries_as_lists</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">f</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/container.html#Container.with_entries_as_lists"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.with_entries_as_lists" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return container object, with each array entry in the container cast to a list</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>f</strong> (<em>ml_framework</em>) – Machine learning framework.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>New container, with entries not as arrays but as python lists</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="ivy.core.container.Container.size">
+<em class="property">property </em><code class="sig-name descname">size</code><a class="headerlink" href="#ivy.core.container.Container.size" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<div class="line-block">
+<div class="line"><br /></div>
+<div class="line"><strong>Supported Frameworks:</strong></div>
+</div>
+<p><a class="reference internal" href="../../_images/empty.png"><img alt="empty" src="../../_images/empty.png" style="width: 4%;" /></a> <a class="reference external" href="https://jax.readthedocs.io"><img alt="jax_logo" src="../../_images/jax_logo.png" style="width: 14%;" /></a> <a class="reference internal" href="../../_images/empty.png"><img alt="empty" src="../../_images/empty.png" style="width: 4%;" /></a> <a class="reference external" href="https://www.tensorflow.org"><img alt="tf_logo" src="../../_images/tensorflow_logo.png" style="width: 14%;" /></a> <a class="reference internal" href="../../_images/empty.png"><img alt="empty" src="../../_images/empty.png" style="width: 4%;" /></a> <a class="reference external" href="https://pytorch.org"><img alt="pytorch_logo" src="../../_images/pytorch_logo.png" style="width: 14%;" /></a> <a class="reference internal" href="../../_images/empty.png"><img alt="empty" src="../../_images/empty.png" style="width: 4%;" /></a> <a class="reference external" href="https://mxnet.apache.org"><img alt="mxnet_logo" src="../../_images/mxnet_logo.png" style="width: 14%;" /></a> <a class="reference internal" href="../../_images/empty.png"><img alt="empty" src="../../_images/empty.png" style="width: 4%;" /></a> <a class="reference external" href="https://numpy.org"><img alt="numpy_logo" src="../../_images/numpy_logo.png" style="width: 14%;" /></a> <a class="reference internal" href="../../_images/empty.png"><img alt="empty" src="../../_images/empty.png" style="width: 4%;" /></a></p>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../general.html" class="btn btn-neutral float-right" title="General" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="../container.html" class="btn btn-neutral float-left" title="Container" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Ivy Team
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

@@ -1,0 +1,16 @@
+Gradients
+=========
+
+.. automodule:: ivy.jax.core.gradients
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :show-inheritance:
+
+
+.. toctree::
+   :maxdepth: -1
+   :caption: Gradients
+
+   gradients/execute_with_gradients.rst
+
