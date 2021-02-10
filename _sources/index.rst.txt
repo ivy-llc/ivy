@@ -214,6 +214,7 @@ Documentation Tree
    core/image.rst
    core/linalg.rst
    core/logic.rst
+   core/math.rst
    core/random.rst
    core/reductions.rst
 
@@ -223,6 +224,7 @@ Documentation Tree
    :caption: Jax
 
    jax/core.rst
+   jax/nn.rst
 
 
 .. toctree::
@@ -230,6 +232,7 @@ Documentation Tree
    :caption: Mxnd
 
    mxnd/core.rst
+   mxnd/nn.rst
 
 
 .. toctree::
@@ -237,6 +240,15 @@ Documentation Tree
    :caption: Mxsym
 
    mxsym/core.rst
+   mxsym/nn.rst
+
+
+.. toctree::
+   :maxdepth: -1
+   :caption: Neural net
+
+   neural_net/activations.rst
+   neural_net/layers.rst
 
 
 .. toctree::
@@ -244,6 +256,7 @@ Documentation Tree
    :caption: Numpy
 
    numpy/core.rst
+   numpy/nn.rst
 
 
 .. toctree::
@@ -251,6 +264,7 @@ Documentation Tree
    :caption: Tensorflow
 
    tensorflow/core.rst
+   tensorflow/nn.rst
 
 
 .. toctree::
@@ -258,6 +272,7 @@ Documentation Tree
    :caption: Torch
 
    torch/core.rst
+   torch/nn.rst
 
 
 .. toctree::

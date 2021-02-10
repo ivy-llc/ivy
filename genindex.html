@@ -92,8 +92,14 @@
 <li class="toctree-l1"><a class="reference internal" href="core/image.html">Image</a></li>
 <li class="toctree-l1"><a class="reference internal" href="core/linalg.html">Linalg</a></li>
 <li class="toctree-l1"><a class="reference internal" href="core/logic.html">Logic</a></li>
+<li class="toctree-l1"><a class="reference internal" href="core/math.html">Math</a></li>
 <li class="toctree-l1"><a class="reference internal" href="core/random.html">Random</a></li>
 <li class="toctree-l1"><a class="reference internal" href="core/reductions.html">Reductions</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Neural net</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="neural_net/activations.html">Activations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="neural_net/layers.html">Layers</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Docs</span></p>
 <ul>
@@ -209,24 +215,38 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="core/general.html#ivy.core.general.abs">abs() (in module ivy.core.general)</a>, <a href="core/general/abs.html#ivy.core.general.abs">[1]</a>
 </li>
+      <li><a href="core/math.html#ivy.core.math.acos">acos() (in module ivy.core.math)</a>, <a href="core/math/acos.html#ivy.core.math.acos">[1]</a>
+</li>
+      <li><a href="core/math.html#ivy.core.math.acosh">acosh() (in module ivy.core.math)</a>, <a href="core/math/acosh.html#ivy.core.math.acosh">[1]</a>
+</li>
       <li><a href="core/general.html#ivy.core.general.arange">arange() (in module ivy.core.general)</a>, <a href="core/general/arange.html#ivy.core.general.arange">[1]</a>
 
       <ul>
         <li><a href="numpy/core/general.html#ivy.numpy.core.general.arange">(in module ivy.numpy.core.general)</a>, <a href="numpy/core/general/arange.html#ivy.numpy.core.general.arange">[1]</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="core/general.html#ivy.core.general.argmax">argmax() (in module ivy.core.general)</a>, <a href="core/general/argmax.html#ivy.core.general.argmax">[1]</a>
 </li>
       <li><a href="core/general.html#ivy.core.general.argmin">argmin() (in module ivy.core.general)</a>, <a href="core/general/argmin.html#ivy.core.general.argmin">[1]</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="core/general.html#ivy.core.general.array">array() (in module ivy.core.general)</a>, <a href="core/general/array.html#ivy.core.general.array">[1]</a>
 
       <ul>
         <li><a href="numpy/core/general.html#ivy.numpy.core.general.array">(in module ivy.numpy.core.general)</a>, <a href="numpy/core/general/array.html#ivy.numpy.core.general.array">[1]</a>
 </li>
       </ul></li>
+      <li><a href="core/math.html#ivy.core.math.asin">asin() (in module ivy.core.math)</a>, <a href="core/math/asin.html#ivy.core.math.asin">[1]</a>
+</li>
+      <li><a href="core/math.html#ivy.core.math.asinh">asinh() (in module ivy.core.math)</a>, <a href="core/math/asinh.html#ivy.core.math.asinh">[1]</a>
+</li>
+      <li><a href="core/math.html#ivy.core.math.atan">atan() (in module ivy.core.math)</a>, <a href="core/math/atan.html#ivy.core.math.atan">[1]</a>
+</li>
+      <li><a href="core/math.html#ivy.core.math.atan2">atan2() (in module ivy.core.math)</a>, <a href="core/math/atan2.html#ivy.core.math.atan2">[1]</a>
+</li>
+      <li><a href="core/math.html#ivy.core.math.atanh">atanh() (in module ivy.core.math)</a>, <a href="core/math/atanh.html#ivy.core.math.atanh">[1]</a>
+</li>
   </ul></td>
 </tr></table>
 
@@ -263,8 +283,6 @@
       </ul></li>
       <li><a href="core/container.html#ivy.core.container.Container.concat">concat() (ivy.core.container.Container static method)</a>, <a href="core/container/Container.html#ivy.core.container.Container.concat">[1]</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="core/general.html#ivy.core.general.concatenate">concatenate() (in module ivy.core.general)</a>, <a href="core/general/concatenate.html#ivy.core.general.concatenate">[1]</a>
 
       <ul>
@@ -275,7 +293,49 @@
 </li>
       <li><a href="framework_handler.html#ivy.framework_handler.ContextManager">ContextManager (class in ivy.framework_handler)</a>
 </li>
+      <li><a href="neural_net/layers.html#ivy.neural_net.layers.conv1d">conv1d() (in module ivy.neural_net.layers)</a>, <a href="neural_net/layers/conv1d.html#ivy.neural_net.layers.conv1d">[1]</a>
+
+      <ul>
+        <li><a href="numpy/nn/layers.html#ivy.numpy.nn.layers.conv1d">(in module ivy.numpy.nn.layers)</a>, <a href="numpy/nn/layers/conv1d.html#ivy.numpy.nn.layers.conv1d">[1]</a>
+</li>
+      </ul></li>
+      <li><a href="neural_net/layers.html#ivy.neural_net.layers.conv1d_transpose">conv1d_transpose() (in module ivy.neural_net.layers)</a>, <a href="neural_net/layers/conv1d_transpose.html#ivy.neural_net.layers.conv1d_transpose">[1]</a>
+
+      <ul>
+        <li><a href="numpy/nn/layers.html#ivy.numpy.nn.layers.conv1d_transpose">(in module ivy.numpy.nn.layers)</a>, <a href="numpy/nn/layers/conv1d_transpose.html#ivy.numpy.nn.layers.conv1d_transpose">[1]</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="neural_net/layers.html#ivy.neural_net.layers.conv2d">conv2d() (in module ivy.neural_net.layers)</a>, <a href="neural_net/layers/conv2d.html#ivy.neural_net.layers.conv2d">[1]</a>
+
+      <ul>
+        <li><a href="numpy/nn/layers.html#ivy.numpy.nn.layers.conv2d">(in module ivy.numpy.nn.layers)</a>, <a href="numpy/nn/layers/conv2d.html#ivy.numpy.nn.layers.conv2d">[1]</a>
+</li>
+      </ul></li>
+      <li><a href="neural_net/layers.html#ivy.neural_net.layers.conv2d_transpose">conv2d_transpose() (in module ivy.neural_net.layers)</a>, <a href="neural_net/layers/conv2d_transpose.html#ivy.neural_net.layers.conv2d_transpose">[1]</a>
+
+      <ul>
+        <li><a href="numpy/nn/layers.html#ivy.numpy.nn.layers.conv2d_transpose">(in module ivy.numpy.nn.layers)</a>, <a href="numpy/nn/layers/conv2d_transpose.html#ivy.numpy.nn.layers.conv2d_transpose">[1]</a>
+</li>
+      </ul></li>
+      <li><a href="neural_net/layers.html#ivy.neural_net.layers.conv3d">conv3d() (in module ivy.neural_net.layers)</a>, <a href="neural_net/layers/conv3d.html#ivy.neural_net.layers.conv3d">[1]</a>
+
+      <ul>
+        <li><a href="numpy/nn/layers.html#ivy.numpy.nn.layers.conv3d">(in module ivy.numpy.nn.layers)</a>, <a href="numpy/nn/layers/conv3d.html#ivy.numpy.nn.layers.conv3d">[1]</a>
+</li>
+      </ul></li>
+      <li><a href="neural_net/layers.html#ivy.neural_net.layers.conv3d_transpose">conv3d_transpose() (in module ivy.neural_net.layers)</a>, <a href="neural_net/layers/conv3d_transpose.html#ivy.neural_net.layers.conv3d_transpose">[1]</a>
+
+      <ul>
+        <li><a href="numpy/nn/layers.html#ivy.numpy.nn.layers.conv3d_transpose">(in module ivy.numpy.nn.layers)</a>, <a href="numpy/nn/layers/conv3d_transpose.html#ivy.numpy.nn.layers.conv3d_transpose">[1]</a>
+</li>
+      </ul></li>
       <li><a href="core/container.html#ivy.core.container.Container.copy">copy() (ivy.core.container.Container method)</a>, <a href="core/container/Container.html#ivy.core.container.Container.copy">[1]</a>
+</li>
+      <li><a href="core/math.html#ivy.core.math.cos">cos() (in module ivy.core.math)</a>, <a href="core/math/cos.html#ivy.core.math.cos">[1]</a>
+</li>
+      <li><a href="core/math.html#ivy.core.math.cosh">cosh() (in module ivy.core.math)</a>, <a href="core/math/cosh.html#ivy.core.math.cosh">[1]</a>
 </li>
       <li><a href="verbosity.html#ivy.verbosity.cprint">cprint() (in module ivy.verbosity)</a>, <a href="verbosity/cprint.html#ivy.verbosity.cprint">[1]</a>
 </li>
@@ -288,6 +348,14 @@
 
 <h2 id="D">D</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="neural_net/layers.html#ivy.neural_net.layers.depthwise_conv2d">depthwise_conv2d() (in module ivy.neural_net.layers)</a>, <a href="neural_net/layers/depthwise_conv2d.html#ivy.neural_net.layers.depthwise_conv2d">[1]</a>
+
+      <ul>
+        <li><a href="numpy/nn/layers.html#ivy.numpy.nn.layers.depthwise_conv2d">(in module ivy.numpy.nn.layers)</a>, <a href="numpy/nn/layers/depthwise_conv2d.html#ivy.numpy.nn.layers.depthwise_conv2d">[1]</a>
+</li>
+      </ul></li>
+  </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="core/general.html#ivy.core.general.dtype">dtype() (in module ivy.core.general)</a>, <a href="core/general/dtype.html#ivy.core.general.dtype">[1]</a>
 
@@ -311,6 +379,8 @@
       </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="core/math.html#ivy.core.math.exp">exp() (in module ivy.core.math)</a>, <a href="core/math/exp.html#ivy.core.math.exp">[1]</a>
+</li>
       <li><a href="core/general.html#ivy.core.general.expand_dims">expand_dims() (in module ivy.core.general)</a>, <a href="core/general/expand_dims.html#ivy.core.general.expand_dims">[1]</a>
 
       <ul>
@@ -458,14 +528,19 @@
 </li>
       </ul></li>
       <li>
+    ivy.core.math
+
+      <ul>
+        <li><a href="core/math.html#module-ivy.core.math">module</a>
+</li>
+      </ul></li>
+      <li>
     ivy.core.random
 
       <ul>
         <li><a href="core/random.html#module-ivy.core.random">module</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     ivy.core.reductions
 
@@ -478,6 +553,22 @@
 
       <ul>
         <li><a href="framework_handler.html#module-ivy.framework_handler">module</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li>
+    ivy.neural_net.activations
+
+      <ul>
+        <li><a href="neural_net/activations.html#module-ivy.neural_net.activations">module</a>
+</li>
+      </ul></li>
+      <li>
+    ivy.neural_net.layers
+
+      <ul>
+        <li><a href="neural_net/layers.html#module-ivy.neural_net.layers">module</a>
 </li>
       </ul></li>
       <li>
@@ -516,6 +607,13 @@
 </li>
       </ul></li>
       <li>
+    ivy.numpy.core.math
+
+      <ul>
+        <li><a href="numpy/core/math.html#module-ivy.numpy.core.math">module</a>
+</li>
+      </ul></li>
+      <li>
     ivy.numpy.core.random
 
       <ul>
@@ -527,6 +625,20 @@
 
       <ul>
         <li><a href="numpy/core/reductions.html#module-ivy.numpy.core.reductions">module</a>
+</li>
+      </ul></li>
+      <li>
+    ivy.numpy.nn.activations
+
+      <ul>
+        <li><a href="numpy/nn/activations.html#module-ivy.numpy.nn.activations">module</a>
+</li>
+      </ul></li>
+      <li>
+    ivy.numpy.nn.layers
+
+      <ul>
+        <li><a href="numpy/nn/layers.html#module-ivy.numpy.nn.layers">module</a>
 </li>
       </ul></li>
       <li>
@@ -542,6 +654,18 @@
 <h2 id="L">L</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="neural_net/activations.html#ivy.neural_net.activations.leaky_relu">leaky_relu() (in module ivy.neural_net.activations)</a>, <a href="neural_net/activations/leaky_relu.html#ivy.neural_net.activations.leaky_relu">[1]</a>
+
+      <ul>
+        <li><a href="numpy/nn/activations.html#ivy.numpy.nn.activations.leaky_relu">(in module ivy.numpy.nn.activations)</a>
+</li>
+      </ul></li>
+      <li><a href="neural_net/layers.html#ivy.neural_net.layers.linear">linear() (in module ivy.neural_net.layers)</a>, <a href="neural_net/layers/linear.html#ivy.neural_net.layers.linear">[1]</a>
+
+      <ul>
+        <li><a href="numpy/nn/layers.html#ivy.numpy.nn.layers.linear">(in module ivy.numpy.nn.layers)</a>
+</li>
+      </ul></li>
       <li><a href="core/general.html#ivy.core.general.linspace">linspace() (in module ivy.core.general)</a>, <a href="core/general/linspace.html#ivy.core.general.linspace">[1]</a>
 
       <ul>
@@ -550,6 +674,8 @@
       </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="core/math.html#ivy.core.math.log">log() (in module ivy.core.math)</a>, <a href="core/math/log.html#ivy.core.math.log">[1]</a>
+</li>
       <li><a href="core/logic.html#ivy.core.logic.logical_and">logical_and() (in module ivy.core.logic)</a>, <a href="core/logic/logical_and.html#ivy.core.logic.logical_and">[1]</a>
 </li>
       <li><a href="core/logic.html#ivy.core.logic.logical_not">logical_not() (in module ivy.core.logic)</a>, <a href="core/logic/logical_not.html#ivy.core.logic.logical_not">[1]</a>
@@ -590,11 +716,17 @@
 </li>
         <li><a href="core/logic.html#module-ivy.core.logic">ivy.core.logic</a>
 </li>
+        <li><a href="core/math.html#module-ivy.core.math">ivy.core.math</a>
+</li>
         <li><a href="core/random.html#module-ivy.core.random">ivy.core.random</a>
 </li>
         <li><a href="core/reductions.html#module-ivy.core.reductions">ivy.core.reductions</a>
 </li>
         <li><a href="framework_handler.html#module-ivy.framework_handler">ivy.framework_handler</a>
+</li>
+        <li><a href="neural_net/activations.html#module-ivy.neural_net.activations">ivy.neural_net.activations</a>
+</li>
+        <li><a href="neural_net/layers.html#module-ivy.neural_net.layers">ivy.neural_net.layers</a>
 </li>
         <li><a href="numpy/core/general.html#module-ivy.numpy.core.general">ivy.numpy.core.general</a>
 </li>
@@ -606,9 +738,15 @@
 </li>
         <li><a href="numpy/core/logic.html#module-ivy.numpy.core.logic">ivy.numpy.core.logic</a>
 </li>
+        <li><a href="numpy/core/math.html#module-ivy.numpy.core.math">ivy.numpy.core.math</a>
+</li>
         <li><a href="numpy/core/random.html#module-ivy.numpy.core.random">ivy.numpy.core.random</a>
 </li>
         <li><a href="numpy/core/reductions.html#module-ivy.numpy.core.reductions">ivy.numpy.core.reductions</a>
+</li>
+        <li><a href="numpy/nn/activations.html#module-ivy.numpy.nn.activations">ivy.numpy.nn.activations</a>
+</li>
+        <li><a href="numpy/nn/layers.html#module-ivy.numpy.nn.layers">ivy.numpy.nn.layers</a>
 </li>
         <li><a href="verbosity.html#module-ivy.verbosity">ivy.verbosity</a>
 </li>
@@ -691,14 +829,14 @@
         <li><a href="numpy/core/reductions.html#ivy.numpy.core.reductions.reduce_mean">(in module ivy.numpy.core.reductions)</a>, <a href="numpy/core/reductions/reduce_mean.html#ivy.numpy.core.reductions.reduce_mean">[1]</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="core/reductions.html#ivy.core.reductions.reduce_min">reduce_min() (in module ivy.core.reductions)</a>, <a href="core/reductions/reduce_min.html#ivy.core.reductions.reduce_min">[1]</a>
 
       <ul>
         <li><a href="numpy/core/reductions.html#ivy.numpy.core.reductions.reduce_min">(in module ivy.numpy.core.reductions)</a>, <a href="numpy/core/reductions/reduce_min.html#ivy.numpy.core.reductions.reduce_min">[1]</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="core/reductions.html#ivy.core.reductions.reduce_prod">reduce_prod() (in module ivy.core.reductions)</a>, <a href="core/reductions/reduce_prod.html#ivy.core.reductions.reduce_prod">[1]</a>
 
       <ul>
@@ -709,6 +847,12 @@
 
       <ul>
         <li><a href="numpy/core/reductions.html#ivy.numpy.core.reductions.reduce_sum">(in module ivy.numpy.core.reductions)</a>, <a href="numpy/core/reductions/reduce_sum.html#ivy.numpy.core.reductions.reduce_sum">[1]</a>
+</li>
+      </ul></li>
+      <li><a href="neural_net/activations.html#ivy.neural_net.activations.relu">relu() (in module ivy.neural_net.activations)</a>, <a href="neural_net/activations/relu.html#ivy.neural_net.activations.relu">[1]</a>
+
+      <ul>
+        <li><a href="numpy/nn/activations.html#ivy.numpy.nn.activations.relu">(in module ivy.numpy.nn.activations)</a>
 </li>
       </ul></li>
       <li><a href="core/general.html#ivy.core.general.reshape">reshape() (in module ivy.core.general)</a>, <a href="core/general/reshape.html#ivy.core.general.reshape">[1]</a>
@@ -757,12 +901,34 @@
       </ul></li>
       <li><a href="core/container.html#ivy.core.container.Container.shuffle_h5_file">shuffle_h5_file() (ivy.core.container.Container static method)</a>, <a href="core/container/Container.html#ivy.core.container.Container.shuffle_h5_file">[1]</a>
 </li>
+      <li><a href="neural_net/activations.html#ivy.neural_net.activations.sigmoid">sigmoid() (in module ivy.neural_net.activations)</a>, <a href="neural_net/activations/sigmoid.html#ivy.neural_net.activations.sigmoid">[1]</a>
+
+      <ul>
+        <li><a href="numpy/nn/activations.html#ivy.numpy.nn.activations.sigmoid">(in module ivy.numpy.nn.activations)</a>
+</li>
+      </ul></li>
+      <li><a href="core/math.html#ivy.core.math.sin">sin() (in module ivy.core.math)</a>, <a href="core/math/sin.html#ivy.core.math.sin">[1]</a>
+</li>
+      <li><a href="core/math.html#ivy.core.math.sinh">sinh() (in module ivy.core.math)</a>, <a href="core/math/sinh.html#ivy.core.math.sinh">[1]</a>
+</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="core/container.html#ivy.core.container.Container.size">size() (ivy.core.container.Container property)</a>, <a href="core/container/Container.html#ivy.core.container.Container.size">[1]</a>
 </li>
       <li><a href="core/container.html#ivy.core.container.Container.slice">slice() (ivy.core.container.Container method)</a>, <a href="core/container/Container.html#ivy.core.container.Container.slice">[1]</a>
 </li>
+      <li><a href="neural_net/activations.html#ivy.neural_net.activations.softmax">softmax() (in module ivy.neural_net.activations)</a>, <a href="neural_net/activations/softmax.html#ivy.neural_net.activations.softmax">[1]</a>
+
+      <ul>
+        <li><a href="numpy/nn/activations.html#ivy.numpy.nn.activations.softmax">(in module ivy.numpy.nn.activations)</a>, <a href="numpy/nn/activations/softmax.html#ivy.numpy.nn.activations.softmax">[1]</a>
+</li>
+      </ul></li>
+      <li><a href="neural_net/activations.html#ivy.neural_net.activations.softplus">softplus() (in module ivy.neural_net.activations)</a>, <a href="neural_net/activations/softplus.html#ivy.neural_net.activations.softplus">[1]</a>
+
+      <ul>
+        <li><a href="numpy/nn/activations.html#ivy.numpy.nn.activations.softplus">(in module ivy.numpy.nn.activations)</a>
+</li>
+      </ul></li>
       <li><a href="core/general.html#ivy.core.general.split">split() (in module ivy.core.general)</a>, <a href="core/general/split.html#ivy.core.general.split">[1]</a>
 
       <ul>
@@ -799,6 +965,14 @@
 <h2 id="T">T</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="core/math.html#ivy.core.math.tan">tan() (in module ivy.core.math)</a>, <a href="core/math/tan.html#ivy.core.math.tan">[1]</a>
+</li>
+      <li><a href="core/math.html#ivy.core.math.tanh">tanh() (in module ivy.core.math)</a>, <a href="core/math/tanh.html#ivy.core.math.tanh">[1]</a>
+
+      <ul>
+        <li><a href="neural_net/activations.html#ivy.neural_net.activations.tanh">(in module ivy.neural_net.activations)</a>, <a href="neural_net/activations/tanh.html#ivy.neural_net.activations.tanh">[1]</a>
+</li>
+      </ul></li>
       <li><a href="core/general.html#ivy.core.general.tile">tile() (in module ivy.core.general)</a>, <a href="core/general/tile.html#ivy.core.general.tile">[1]</a>
 </li>
       <li><a href="core/container.html#ivy.core.container.Container.to_dict">to_dict() (ivy.core.container.Container method)</a>, <a href="core/container/Container.html#ivy.core.container.Container.to_dict">[1]</a>
@@ -809,6 +983,8 @@
 </li>
       <li><a href="core/container.html#ivy.core.container.Container.to_iterator">to_iterator() (ivy.core.container.Container method)</a>, <a href="core/container/Container.html#ivy.core.container.Container.to_iterator">[1]</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="core/general.html#ivy.core.general.to_list">to_list() (in module ivy.core.general)</a>, <a href="core/general/to_list.html#ivy.core.general.to_list">[1]</a>
 
       <ul>
@@ -817,8 +993,6 @@
         <li><a href="core/container.html#ivy.core.container.Container.to_list">(ivy.core.container.Container method)</a>, <a href="core/container/Container.html#ivy.core.container.Container.to_list">[1]</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="core/general.html#ivy.core.general.to_numpy">to_numpy() (in module ivy.core.general)</a>, <a href="core/general/to_numpy.html#ivy.core.general.to_numpy">[1]</a>
 
       <ul>
