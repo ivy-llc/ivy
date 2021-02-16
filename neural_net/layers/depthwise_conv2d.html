@@ -24,7 +24,6 @@
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../_static/js/theme.js"></script>
 
@@ -119,6 +118,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../mech"">Ivy Mech</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../vision"">Ivy Vision</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../robot"">Ivy Robot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../memory"">Ivy Memory</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../gym"">Ivy Gym</a></li>
 </ul>
 
@@ -190,7 +190,7 @@
 <h1>depthwise_conv2d<a class="headerlink" href="#depthwise-conv2d" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
 <dt id="ivy.neural_net.layers.depthwise_conv2d">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">depthwise_conv2d</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">filters</span></em>, <em class="sig-param"><span class="n">strides</span></em>, <em class="sig-param"><span class="n">padding</span></em>, <em class="sig-param"><span class="n">data_format</span><span class="o">=</span><span class="default_value">'NHWC'</span></em>, <em class="sig-param"><span class="n">dilations</span><span class="o">=</span><span class="default_value">1</span></em>, <em class="sig-param"><span class="n">filter_shape</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">num_filters</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">num_channels</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">f</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/neural_net/layers.html#depthwise_conv2d"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.neural_net.layers.depthwise_conv2d" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname"><span class="pre">depthwise_conv2d</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filters</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">strides</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">padding</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'NHWC'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dilations</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filter_shape</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_filters</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_channels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/neural_net/layers.html#depthwise_conv2d"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.neural_net.layers.depthwise_conv2d" title="Permalink to this definition">¶</a></dt>
 <dd><p>Computes a 2-D depthwise convolution given 4-D input x and filters arrays.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
