@@ -208,14 +208,14 @@ and the best coding practices to get the most out of Ivy for your own codebases 
 Citation
 --------
 
-```
-@article{lenton2021ivy,
-  title={Ivy: Templated Deep Learning for Inter-Framework Portability},
-  author={Lenton, Daniel and Pardo, Fabio and Falck, Fabian and James, Stephen and Clark, Ronald},
-  journal={arXiv preprint arXiv:2102.02886},
-  year={2021}
-}
-```
+::
+
+    @article{lenton2021ivy,
+      title={Ivy: Templated Deep Learning for Inter-Framework Portability},
+      author={Lenton, Daniel and Pardo, Fabio and Falck, Fabian and James, Stephen and Clark, Ronald},
+      journal={arXiv preprint arXiv:2102.02886},
+      year={2021}
+    }
 
 Documentation Tree
 ------------------
