@@ -351,6 +351,18 @@ class Container(dict):
             return value
         return self.map(_as_random)
 
+    def at_key_chain(self, key_chain):
+        """
+        Query container object at a specified key-chain
+
+        :return: sub-container or value at specified key chain
+        """
+        keys = key_chain.split('/')
+        ret = self
+        for key in keys:
+            ret = ret[key]
+        return ret
+
     def prune_key_chain(self, key_chain):
         """
         Recursively prune chain of keys, specified as 'key1/key2/key3/...'
@@ -415,7 +427,7 @@ class Container(dict):
         """
         return_dict = dict()
         for key, value in sorted(self.items()):
-            this_key_chain = key_chain + '/' + key
+            this_key_chain = key if key_chain == '' else (key_chain + '/' + key)
             if isinstance(value, Container):
                 return_dict[key] = value.map(func, this_key_chain)
             else:

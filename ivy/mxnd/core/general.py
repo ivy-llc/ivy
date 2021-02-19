@@ -119,7 +119,8 @@ stack = lambda xs, axis=0: _mx.nd.stack(*xs, axis=axis)
 
 def unstack(x, axis, num_outputs=None):
     num_outputs = x.shape[axis] if not num_outputs else num_outputs
-    return _mx.nd.split(x, num_outputs, axis)
+    ret = _mx.nd.split(x, num_outputs, axis, squeeze_axis=True)
+    return ret if isinstance(ret, list) else [ret]
 
 
 def split(x, num_sections=None, axis=0):

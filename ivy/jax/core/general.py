@@ -81,7 +81,10 @@ def concatenate(xs, axis=None):
 
 def flip(x, axis=None, _=None):
     if isinstance(axis, list) or isinstance(axis, tuple):
-        raise Exception('Jax does not support flip() across multiple indices')
+        if len(axis) == 1:
+            axis = axis[0]
+        else:
+            raise Exception('Jax does not support flip() across multiple indices')
     return _jnp.flip(x, axis)
 
 
