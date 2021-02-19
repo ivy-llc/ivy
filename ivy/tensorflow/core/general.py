@@ -23,7 +23,7 @@ def array(object_in, dtype_str=None, dev=None):
         return _tf.convert_to_tensor(object_in, dtype=dtype)
 
 
-to_numpy = _np.asarray
+to_numpy = lambda x: _np.asarray(_tf.convert_to_tensor(x))
 to_list = lambda x: x.numpy().tolist()
 shape = _tf.shape
 get_num_dims = lambda x: _tf.shape(_tf.shape(x))

@@ -32,7 +32,7 @@ def execute_with_gradients(func, xs, f=None):
     :type f: ml_framework, optional
     :return: the function first output y, the gradients [dy/dx for x in xs], and any other extra function outputs
     """
-    return _get_framework(f.array(xs[0]), f=f).execute_with_gradients(func, xs)
+    return _get_framework(None, f=f).execute_with_gradients(func, xs)
 
 
 def gradient_descent_update(ws, dcdws, lr, f=None):
@@ -49,7 +49,37 @@ def gradient_descent_update(ws, dcdws, lr, f=None):
     :type f: ml_framework, optional
     :return: The new function weights ws_new, following the gradient descent updates.
     """
-    return _get_framework(f.array(ws[0]), f=f).gradient_descent_update(ws, dcdws, lr)
+    return _get_framework(None, f=f).gradient_descent_update(ws, dcdws, lr)
+
+
+def adam_update(ws, dcdws, lr, mw, vw, step, beta1=0.9, beta2=0.999, epsilon=1e-7, f=None):
+    """
+    Update weights ws of some function, given the derivatives of some cost c with respect to ws, using ADAM update.
+    `[reference] <https://en.wikipedia.org/wiki/Stochastic_gradient_descent#Adam>`_
+
+    :param ws: Weights of the function to be updated.
+    :type ws: container of variables
+    :param dcdws: Derivates of the cost c with respect to the weights ws, [dc/dw for w in ws].
+    :type dcdws: container of arrays
+    :param lr: Learning rate, the rate at which the weights should be updated relative to the gradient.
+    :type lr: float
+    :param mw: running average of the gradients
+    :type mw: container of arrays
+    :param vw: running average of second moments of the gradients
+    :type vw: container of arrays
+    :param step: training step
+    :type step: int
+    :param beta1: gradient forgetting factor
+    :type beta1: float
+    :param beta2: second moment of gradient forgetting factor
+    :type beta2: float
+    :param epsilon: divisor during adam update, preventing division by zero
+    :type epsilon: float
+    :param f: Machine learning framework. Inferred from inputs if None.
+    :type f: ml_framework, optional
+    :return: The new function weights ws_new, and also new mw and vw, following the gradient descent updates.
+    """
+    return _get_framework(None, f=f).adam_update(ws, dcdws, lr, mw, vw, step, beta1, beta2, epsilon)
 
 
 def stop_gradient(x, f=None):
