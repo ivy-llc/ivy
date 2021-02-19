@@ -46,6 +46,21 @@ def test_container_expand_dims():
         assert (fn(container_expanded_dims.b.d) == fn(ivy.array([[3]], f=lib)))[0, 0]
 
 
+def test_container_at_key_chain():
+    for lib, call in helpers.calls:
+        if call is helpers.mx_graph_call:
+            fn = func
+        else:
+            fn = lambda x: x
+        dict_in = {'a': ivy.array([1], f=lib),
+                   'b': {'c': ivy.array([2], f=lib), 'd': ivy.array([3], f=lib)}}
+        container = Container(dict_in)
+        sub_container = container.at_key_chain('b')
+        assert (fn(sub_container['c']) == fn(ivy.array([2], f=lib)))[0]
+        sub_container = container.at_key_chain('b/c')
+        assert (fn(sub_container) == fn(ivy.array([2], f=lib)))[0]
+
+
 def test_container_prune_key_chain():
     for lib, call in helpers.calls:
         if call is helpers.mx_graph_call:

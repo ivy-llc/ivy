@@ -13,7 +13,7 @@ sigmoid = lambda x: 1 / (1 + _jnp.exp(-x))
 
 def softmax(x):
     exp_x = _jnp.exp(x)
-    return exp_x / _jnp.sum(exp_x, -1)
+    return exp_x / _jnp.sum(exp_x, -1, keepdims=True)
 
 
 softplus = lambda x: _jnp.log(_jnp.exp(x) + 1)

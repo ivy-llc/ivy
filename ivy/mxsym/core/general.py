@@ -90,7 +90,7 @@ stack = lambda xs, axis=0: _mx.symbol.stack(*xs, axis=axis)
 
 def unstack(x, axis, num_outputs=None):
     num_outputs = _mx.symbol.shape_array(x)[axis] if not num_outputs else num_outputs
-    return _mx.symbol.split(x, num_outputs, axis)
+    return _mx.symbol.split(x, num_outputs, axis, squeeze_axis=True)
 
 
 def split(x, num_sections=None, axis=0):

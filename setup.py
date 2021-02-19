@@ -17,8 +17,9 @@ from distutils.core import setup
 import setuptools
 
 setup(name='ivy-core',
-      version='1.1.1',
-      description='The templated deep learning framework, enabling framework-agnostic functions, layers and libraries.',
+      version='1.1.2',
+      description='The templated deep learning framework, enabling framework-agnostic functions, layers and libraries.\n'
+                  'Tested with JAX 0.2.9, TensorFlow 2.4.1, PyTorch 1.7.1, MXNet 1.7.0, NumPy 1.19.5',
       author='Ivy Team',
       author_email='ivydl.team@gmail.com',
       packages=setuptools.find_packages(),

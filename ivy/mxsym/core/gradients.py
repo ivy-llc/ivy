@@ -13,7 +13,11 @@ def execute_with_gradients(func, xs):
 
 
 def gradient_descent_update(ws, dcdws, lr):
-    raise Exception('MXNet Symbolic mode does not gradient_descent_update to_list().')
+    raise Exception('MXNet Symbolic mode does not support gradient_descent_update().')
+
+
+def adam_update(ws, dcdws, lr):
+    raise Exception('MXNet Symbolic mode does not support adam_update().')
 
 
 stop_gradient = _mx.symbol.stop_gradient
