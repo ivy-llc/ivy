@@ -3,23 +3,25 @@ Collection of PyTorch random functions, wrapped to fit Ivy syntax and signature.
 """
 
 # global
-import torch as _torch
+import torch
+from typing import Optional, List
 
 
-def random_uniform(low, high, size, dev='cpu'):
+def random_uniform(low: float = 0.0, high: float = 1.0, shape: Optional[List[int]] = None, dev: torch.device = 'cpu'):
     rand_range = high - low
-    return _torch.rand(*size).to(dev) * rand_range + low
+    return torch.rand(shape).to(dev) * rand_range + low
 
 
-randint = lambda low, high, size, dev='cpu': _torch.randint(low, high, size).to(dev)
+def randint(low: int, high: int, shape: List[int], dev: torch.device = 'cpu'):
+    return torch.randint(low, high, shape).to(dev)
 
 
-def seed(seed_value):
-    _torch.manual_seed(seed_value)
-    _torch.cuda.manual_seed(seed_value)
+def seed(seed_value: int) -> None:
+    torch.manual_seed(seed_value)
+    torch.cuda.manual_seed(seed_value)
     return
 
 
 def shuffle(x):
     batch_size = x.shape[0]
-    return x[_torch.randperm(batch_size)]
+    return x[torch.randperm(batch_size)]

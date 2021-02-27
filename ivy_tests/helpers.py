@@ -4,17 +4,21 @@ Collection of helpers for ivy unit tests
 
 # global
 import ast
+import ivy
 try:
     import numpy as _np
+    from ivy import numpy as _ivy_np
 except ImportError:
     _np = None
+    _ivy_np = None
 try:
     import jax.numpy as _jnp
+    from ivy import jax as _ivy_jnp
 except ImportError:
     _jnp = None
+    _ivy_jnp = None
 try:
     import tensorflow as _tf
-
     _tf_version = float('.'.join(_tf.__version__.split('.')[0:2]))
     if _tf_version >= 2.3:
         # noinspection PyPep8Naming,PyUnresolvedReferences
@@ -26,24 +30,39 @@ try:
     physical_devices = _tf.config.list_physical_devices('GPU')
     for device in physical_devices:
         _tf.config.experimental.set_memory_growth(device, True)
+    from ivy import tensorflow as _ivy_tf
 except ImportError:
     _tf = None
+    _ivy_tf = None
 try:
     import torch as _torch
+    from ivy import torch as _ivy_torch
 except ImportError:
     _torch = None
+    _ivy_torch = None
 try:
     import mxnet as _mx
     import mxnet.ndarray as _mx_nd
     import mxnet.symbol as _mx_sym
+    from ivy import mxnd as _ivy_mxnd
+    from ivy import mxsym as _ivy_mxsym
 except ImportError:
     _mx = None
     _mx_nd = None
     _mx_sym = None
-from ivy import torch as _ivy_torch, tensorflow as _ivy_tf, mxnd as _ivy_mxnd, jax as _ivy_jnp, mxsym as _ivy_mxsym, \
-    numpy as _ivy_np
+    _ivy_mxnd = None
+    _ivy_mxsym = None
+
+_ivy_fws_dict = {'numpy': _ivy_np,
+                 'jax': _ivy_jnp,
+                 'tensorflow': _ivy_tf,
+                 'tensorflow_graph': _ivy_tf,
+                 'torch': _ivy_torch,
+                 'mxnd': _ivy_mxnd,
+                 'mxsym': _ivy_mxsym}
 
 _iterable_types = [list, tuple, dict]
+_excluded = []
 
 
 def _convert_vars(vars_in, from_type, to_type_callable=None, to_type_attribute_method_str=None,
@@ -187,9 +206,24 @@ def mx_graph_call(func, *args, **kwargs):
         return _convert_vars(output, _mx_nd.ndarray.NDArray, to_type_attribute_method_str='asnumpy')[0]
 
 
-_keys = [ivy_lib for ivy_lib, lib in
-         zip([_ivy_np, _ivy_jnp, _ivy_tf, _ivy_tf, _ivy_torch, _ivy_mxnd, _ivy_mxsym],
-             [_np, _jnp, _tf, _tf, _torch, _mx_nd, _mx_sym]) if lib is not None]
-_values = [call for call, lib in zip([np_call, jnp_call, tf_call, tf_graph_call, torch_call, mx_call, mx_graph_call],
-                                     [_np, _jnp, _tf, _tf, _torch, _mx_nd, _mx_sym]) if lib is not None]
-calls = list(zip(_keys, _values))
+_calls = [np_call, jnp_call, tf_call, tf_graph_call, torch_call, mx_call, mx_graph_call]
+
+
+def assert_compilable(func_name, lib):
+    ivy.set_framework(lib)
+    try:
+        ivy.compile_fn(ivy.__dict__[func_name])
+    except Exception as e:
+        ivy.unset_framework()
+        raise e
+    ivy.unset_framework()
+
+
+def exclude(exclusion_list):
+    global _excluded
+    _excluded = _excluded + list(set(exclusion_list) - set(_excluded))
+
+
+def calls():
+    return [(ivy_fw, call) for (fw_str, ivy_fw), call in zip(_ivy_fws_dict.items(), _calls)
+            if ivy_fw is not None and fw_str not in _excluded]

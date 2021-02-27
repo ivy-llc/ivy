@@ -3,41 +3,46 @@ Collection of PyTorch linear algebra functions, wrapped to fit Ivy syntax and si
 """
 
 # global
-import torch as _torch
+import torch
+from typing import Optional, List
 
 
 # noinspection PyPep8Naming
-def svd(x, batch_shape=None):
-    U, D, V = _torch.svd(x)
-    VT = _torch.transpose(V, -2, -1)
+def svd(x, batch_shape:Optional[List[int]]=None)->List[torch.Tensor]:
+    U, D, V = torch.svd(x)
+    VT = torch.transpose(V, -2, -1)
     return U, D, VT
 
 
 # noinspection PyShadowingBuiltins
-def norm(x, ord=2, axis=-1, keepdims=False):
-    return _torch.norm(x, p=ord, dim=axis, keepdim=keepdims)
+def norm(x, ord:int=2, axis:int=-1, keepdims:bool=False):
+    return torch.norm(x, p=ord, dim=axis, keepdim=keepdims)
 
 
-inv = _torch.inverse
-pinv = _torch.pinverse
+def inv(x):
+    return torch.inverse(x)
 
 
-def vector_to_skew_symmetric_matrix(vector, batch_shape=None):
+def pinv(x):
+    return torch.pinverse(x)
+
+
+def vector_to_skew_symmetric_matrix(vector, batch_shape:Optional[List[int]]=None):
     if batch_shape is None:
         batch_shape = vector.shape[:-1]
     # shapes as list
     batch_shape = list(batch_shape)
     # BS x 3 x 1
-    vector_expanded = _torch.unsqueeze(vector, -1)
+    vector_expanded = torch.unsqueeze(vector, -1)
     # BS x 1 x 1
     a1s = vector_expanded[..., 0:1, :]
     a2s = vector_expanded[..., 1:2, :]
     a3s = vector_expanded[..., 2:3, :]
     # BS x 1 x 1
-    zs = _torch.zeros(batch_shape + [1, 1])
+    zs = torch.zeros(batch_shape + [1, 1])
     # BS x 1 x 3
-    row1 = _torch.cat((zs, -a3s, a2s), -1)
-    row2 = _torch.cat((a3s, zs, -a1s), -1)
-    row3 = _torch.cat((-a2s, a1s, zs), -1)
+    row1 = torch.cat((zs, -a3s, a2s), -1)
+    row2 = torch.cat((a3s, zs, -a1s), -1)
+    row3 = torch.cat((-a2s, a1s, zs), -1)
     # BS x 3 x 3
-    return _torch.cat((row1, row2, row3), -2)
+    return torch.cat((row1, row2, row3), -2)

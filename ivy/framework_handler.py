@@ -1,9 +1,10 @@
+import ivy
 import importlib
-
 from ivy import verbosity
 
 
 framework_stack = []
+ivy_original_dict = dict()
 
 
 class ContextManager:
@@ -11,16 +12,10 @@ class ContextManager:
         self.module = module
 
     def __enter__(self):
-        framework_stack.append(self.module)
-        if verbosity.level > 0:
-            verbosity.cprint(
-                'framework stack: {}'.format(framework_stack))
+        set_framework(self.module)
 
     def __exit__(self, exc_type, exc_val, exc_tb):
-        framework_stack.pop(-1)
-        if verbosity.level > 0:
-            verbosity.cprint(
-                'framework stack: {}'.format(framework_stack))
+        unset_framework()
 
 
 _array_types = dict()
@@ -74,14 +69,23 @@ def get_framework(*args, f=None, **kwargs):
 
 
 def set_framework(f):
+    if not framework_stack:
+        global ivy_original_dict
+        ivy_original_dict = ivy.__dict__.copy()
     framework_stack.append(f)
+    for k, v in f.__dict__.items():
+        ivy.__dict__[k] = v
     if verbosity.level > 0:
         verbosity.cprint(
             'framework stack: {}'.format(framework_stack))
 
 
 def unset_framework():
-    framework_stack.pop(-1)
+    if framework_stack:
+        framework_stack.pop(-1)
+        f_dict = framework_stack[-1].__dict__ if framework_stack else ivy_original_dict
+        for k, v in f_dict.items():
+            ivy.__dict__[k] = v
     if verbosity.level > 0:
         verbosity.cprint(
             'framework stack: {}'.format(framework_stack))

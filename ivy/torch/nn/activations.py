@@ -5,9 +5,26 @@ Collection of PyTorch activation functions, wrapped to fit Ivy syntax and signat
 # global
 import torch as _torch
 
-relu = _torch.nn.functional.relu
-leaky_relu = _torch.nn.functional.leaky_relu
-tanh = _torch.nn.functional.tanh
-sigmoid = _torch.nn.functional.sigmoid
-softmax = _torch.nn.functional.softmax
-softplus = _torch.nn.functional.softplus
+
+def relu(x):
+    return _torch.nn.functional.relu(x)
+
+
+def leaky_relu(x, alpha:float=0.2):
+    return _torch.nn.functional.leaky_relu(x, alpha)
+
+
+def tanh(x):
+    return _torch.nn.functional.tanh(x)
+
+
+def sigmoid(x):
+    return _torch.nn.functional.sigmoid(x)
+
+
+def softmax(x):
+    return _torch.nn.functional.softmax(x)
+
+
+def softplus(x):
+    return _torch.nn.functional.softplus(x)
