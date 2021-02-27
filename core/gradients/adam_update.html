@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>stop_gradient &mdash; Ivy 1.0 documentation</title>
+  <title>adam_update &mdash; Ivy 1.0 documentation</title>
   
 
   
@@ -35,8 +35,8 @@
   <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="Image" href="../image.html" />
-    <link rel="prev" title="adam_update" href="adam_update.html" /> 
+    <link rel="next" title="stop_gradient" href="stop_gradient.html" />
+    <link rel="prev" title="gradient_descent_update" href="gradient_descent_update.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -93,8 +93,8 @@
 <li class="toctree-l2"><a class="reference internal" href="variable.html">variable</a></li>
 <li class="toctree-l2"><a class="reference internal" href="execute_with_gradients.html">execute_with_gradients</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gradient_descent_update.html">gradient_descent_update</a></li>
-<li class="toctree-l2"><a class="reference internal" href="adam_update.html">adam_update</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">stop_gradient</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">adam_update</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stop_gradient.html">stop_gradient</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../image.html">Image</a></li>
@@ -164,13 +164,13 @@
         
           <li><a href="../gradients.html">Gradients</a> &raquo;</li>
         
-      <li>stop_gradient</li>
+      <li>adam_update</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="../../_sources/core/gradients/stop_gradient.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../_sources/core/gradients/adam_update.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -183,21 +183,30 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="stop-gradient">
-<h1>stop_gradient<a class="headerlink" href="#stop-gradient" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="adam-update">
+<h1>adam_update<a class="headerlink" href="#adam-update" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
-<dt id="ivy.core.gradients.stop_gradient">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname"><span class="pre">stop_gradient</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/gradients.html#stop_gradient"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.core.gradients.stop_gradient" title="Permalink to this definition">¶</a></dt>
-<dd><p>Stops gradient computation.</p>
+<dt id="ivy.core.gradients.adam_update">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname"><span class="pre">adam_update</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ws</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dcdws</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mw</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vw</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">beta1</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.9</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">beta2</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.999</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epsilon</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-07</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/gradients.html#adam_update"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.core.gradients.adam_update" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update weights ws of some function, given the derivatives of some cost c with respect to ws, using ADAM update.
+<a class="reference external" href="https://en.wikipedia.org/wiki/Stochastic_gradient_descent#Adam">[reference]</a></p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<em>array</em>) – Array for which to stop the gradient.</p></li>
+<li><p><strong>ws</strong> (<em>container of variables</em>) – Weights of the function to be updated.</p></li>
+<li><p><strong>dcdws</strong> (<em>container of arrays</em>) – Derivates of the cost c with respect to the weights ws, [dc/dw for w in ws].</p></li>
+<li><p><strong>lr</strong> (<em>float</em>) – Learning rate, the rate at which the weights should be updated relative to the gradient.</p></li>
+<li><p><strong>mw</strong> (<em>container of arrays</em>) – running average of the gradients</p></li>
+<li><p><strong>vw</strong> (<em>container of arrays</em>) – running average of second moments of the gradients</p></li>
+<li><p><strong>step</strong> (<em>int</em>) – training step</p></li>
+<li><p><strong>beta1</strong> (<em>float</em>) – gradient forgetting factor</p></li>
+<li><p><strong>beta2</strong> (<em>float</em>) – second moment of gradient forgetting factor</p></li>
+<li><p><strong>epsilon</strong> (<em>float</em>) – divisor during adam update, preventing division by zero</p></li>
 <li><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning framework. Inferred from inputs if None.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>The same array x, but with no gradient information.</p>
+<dd class="field-even"><p>The new function weights ws_new, and also new mw and vw, following the gradient descent updates.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -217,10 +226,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../image.html" class="btn btn-neutral float-right" title="Image" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="stop_gradient.html" class="btn btn-neutral float-right" title="stop_gradient" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="adam_update.html" class="btn btn-neutral float-left" title="adam_update" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="gradient_descent_update.html" class="btn btn-neutral float-left" title="gradient_descent_update" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

@@ -13,4 +13,6 @@ Gradients
    :caption: Gradients
 
    gradients/execute_with_gradients.rst
+   gradients/gradient_descent_update.rst
+   gradients/adam_update.rst
 
