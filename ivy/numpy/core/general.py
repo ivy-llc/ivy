@@ -8,6 +8,11 @@ from operator import mul as _mul
 import numpy as _np
 import logging
 
+DTYPE_DICT = {_np.dtype('int32'): 'int32',
+              _np.dtype('int64'): 'int64',
+              _np.dtype('float32'): 'float32',
+              _np.dtype('float64'): 'float64'}
+
 
 def _to_dev(x, dev):
     if dev is not None:
@@ -56,7 +61,13 @@ def arange(stop, start=0, step=1, dtype_str=None, dev=None):
         dtype = _np.__dict__[dtype_str]
     else:
         dtype = None
-    return _to_dev(_np.arange(start, stop, step=step, dtype=dtype), dev)
+    res = _to_dev(_np.arange(start, stop, step=step, dtype=dtype), dev)
+    if not dtype:
+        if res.dtype == _np.dtype('float64'):
+            return res.astype(_np.float32)
+        elif res.dtype == _np.dtype('int64'):
+            return res.astype(_np.int32)
+    return res
 
 
 def linspace(start, stop, num, axis=None, dev=None):
@@ -99,6 +110,7 @@ def split(x, num_sections=None, axis=0):
 
 
 tile = _np.tile
+constant_pad = lambda x, pad_width, value=0, _=None: _np.pad(x, pad_width, constant_values=value)
 zero_pad = lambda x, pad_width, _=None: _np.pad(x, pad_width)
 swapaxes = _np.swapaxes
 
@@ -182,7 +194,7 @@ def identity(n, dtype_str='float32', batch_shape=None, dev=None):
 
 def scatter_flat(indices, updates, size, reduction='sum', dev=None):
     if dev is None:
-        dev = get_device(updates)
+        dev = dev_str(updates)
     if reduction == 'sum':
         target = _np.zeros([size], dtype=updates.dtype)
         _np.add.at(target, indices, updates)
@@ -202,7 +214,7 @@ def scatter_flat(indices, updates, size, reduction='sum', dev=None):
 # noinspection PyShadowingNames
 def scatter_nd(indices, updates, shape, num_idx_dims=None, reduction='sum', dev=None):
     if dev is None:
-        dev = get_device(updates)
+        dev = dev_str(updates)
     shape = list(shape)
     indices_flat = indices.reshape(-1, indices.shape[-1]).T
     indices_tuple = tuple(indices_flat) + (Ellipsis,)
@@ -224,13 +236,13 @@ def scatter_nd(indices, updates, shape, num_idx_dims=None, reduction='sum', dev=
 
 def gather_flat(params, indices, dev=None):
     if dev is None:
-        dev = get_device(params)
+        dev = dev_str(params)
     return _to_dev(_np.take(params, indices, 0), dev)
 
 
 def gather_nd(params, indices, indices_shape=None, dev=None):
     if dev is None:
-        dev = get_device(params)
+        dev = dev_str(params)
     if indices_shape is None:
         indices_shape = indices.shape
     params_shape = params.shape
@@ -251,12 +263,16 @@ def gather_nd(params, indices, indices_shape=None, dev=None):
     return _to_dev(res, dev)
 
 
-get_device = lambda x: 'cpu:0'
+dev = lambda x: 'cpu:0'
+dev_str = lambda x: 'cpu:0'
+dev_to_str = lambda dev_in: 'cpu:0'
 dtype = lambda x: x.dtype
+dtype_str = lambda x: DTYPE_DICT[x.dtype]
+dtype_to_str = lambda dtype_in: DTYPE_DICT[dtype_in]
 
 
 # noinspection PyUnusedLocal
-def compile_fn(func, example_inputs=None):
+def compile_fn(func, dynamic=True, example_inputs=None):
     logging.warning('Numpy does not support compiling functions.\n'
                     'Now returning the unmodified function.')
     return func

@@ -7,7 +7,17 @@ import tensorflow as _tf
 
 conv1d = lambda x, filters, strides, padding, data_format='NWC', dilations=1, _=None, _1=None: _tf.nn.conv1d(x, filters, strides, padding, data_format, dilations)
 conv1d_transpose = lambda x, filters, strides, padding, output_shape, data_format='NWC', dilations=1, _=None, _1=None: _tf.nn.conv1d_transpose(x, filters, output_shape, strides, padding, data_format, dilations)
-conv2d = lambda x, filters, strides, padding, data_format='NHWC', dilations=1, _=None, _1=None: _tf.nn.conv2d(x, filters, strides, padding, data_format, dilations)
+
+
+def conv2d(x, filters, strides, padding, data_format='NHWC', dilations=1, _=None, _1=None):
+    if data_format == 'NCHW':
+        x = _tf.transpose(x, (0, 2, 3, 1))
+    res = _tf.nn.conv2d(x, filters, strides, padding, 'NHWC', dilations)
+    if data_format == 'NCHW':
+        return _tf.transpose(res, (0, 3, 1, 2))
+    return res
+
+
 conv2d_transpose = lambda x, filters, strides, padding, output_shape, data_format='NHWC', dilations=1, _=None, _1=None: _tf.nn.conv2d_transpose(x, filters, output_shape, strides, padding, data_format, dilations)
 
 

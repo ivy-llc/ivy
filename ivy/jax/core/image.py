@@ -107,7 +107,7 @@ def gradient_image(x, batch_shape=None, image_dims=None, dev=None):
     if image_dims is None:
         image_dims = x_shape[-3:-1]
     if dev is None:
-        dev = _ivy.get_device(x)
+        dev = _ivy.dev_str(x)
     # to list
     batch_shape = list(batch_shape)
     image_dims = list(image_dims)

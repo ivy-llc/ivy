@@ -1,4 +1,4 @@
-FROM nvidia/cuda:10.1-base-ubuntu18.04
+FROM nvidia/cuda:10.2-base-ubuntu18.04
 
 RUN apt-get update && \
     apt-get install -y python3 python3-pip && \
@@ -21,4 +21,4 @@ RUN pip3 install --no-cache-dir -r requirements.txt && \
 COPY optional.txt /ivy
 RUN pip3 install --no-cache-dir -r optional.txt && \
     rm -rf optional.txt
-RUN pip3 install torch-scatter -f https://pytorch-geometric.com/whl/torch-1.7.0+cu102.html
+RUN pip3 install torch-scatter -f https://pytorch-geometric.com/whl/torch-1.8.0+cu102.html
