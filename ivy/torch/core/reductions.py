@@ -4,23 +4,20 @@ Collection of PyTorch reduction functions, wrapped to fit Ivy syntax and signatu
 
 # global
 import torch as _torch
+from typing import Optional, List
 
 
-def reduce_sum(x, axis=None, keepdims=False):
+def reduce_sum(x, axis:Optional[List[int]]=None, keepdims:bool=False):
     if axis is None:
         num_dims = len(x.shape)
-        axis = tuple(range(num_dims))
-    elif isinstance(axis, list):
-        axis = tuple(axis)
+        axis = list(range(num_dims))
     return _torch.sum(x, dim=axis, keepdim=keepdims)
 
 
-def reduce_prod(x, axis=None, keepdims=False):
+def reduce_prod(x, axis:Optional[List[int]]=None, keepdims:bool=False):
     if axis is None:
         num_dims = len(x.shape)
-        axis = tuple(range(num_dims))
-    elif isinstance(axis, list):
-        axis = tuple(axis)
+        axis = list(range(num_dims))
     if isinstance(axis, int):
         return _torch.prod(x, dim=axis, keepdim=keepdims)
     for i, a in enumerate(axis):
@@ -28,16 +25,14 @@ def reduce_prod(x, axis=None, keepdims=False):
     return x
 
 
-def reduce_mean(x, axis=None, keepdims=False):
+def reduce_mean(x, axis:Optional[List[int]]=None, keepdims:bool=False):
     if axis is None:
         num_dims = len(x.shape)
-        axis = tuple(range(num_dims))
-    elif isinstance(axis, list):
-        axis = tuple(axis)
+        axis = list(range(num_dims))
     return _torch.mean(x, dim=axis, keepdim=keepdims)
 
 
-def reduce_min(x, axis=None, num_x_dims=None, keepdims=False):
+def reduce_min(x, axis:Optional[List[int]]=None, num_x_dims:Optional[int]=None, keepdims:bool=False):
     if num_x_dims is None:
         num_x_dims = len(x.shape)
     if axis is None:
@@ -51,13 +46,13 @@ def reduce_min(x, axis=None, num_x_dims=None, keepdims=False):
     return x
 
 
-def reduce_max(x, axis=None, num_x_dims=None, keepdims=False):
+def reduce_max(x, axis:Optional[List[int]]=None, num_x_dims:Optional[int]=None, keepdims:bool=False):
     if num_x_dims is None:
-        num_x_dims = len(x.shape)
+        num_x_dims  = len(x.shape)
     if axis is None:
         axis = list(range(num_x_dims))
     elif isinstance(axis, int):
-        return _torch.max(x, dim=axis, keepdim=keepdims).values
+        axis = [axis]
     axis = [(item + num_x_dims) % num_x_dims for item in axis]  # prevent negative indices
     axis.sort()
     for i, a in enumerate(axis):

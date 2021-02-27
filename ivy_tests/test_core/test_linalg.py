@@ -4,12 +4,11 @@ Collection of tests for templated linear algebra functions
 
 # global
 import numpy as np
-from functools import reduce as _reduce
-from operator import mul as _mul
+from operator import mul
+from functools import reduce
 
 # local
-import ivy.core.linalg as ivy_linalg
-import ivy.core.general as ivy_gen
+import ivy
 import ivy_tests.helpers as helpers
 
 
@@ -48,55 +47,60 @@ td = LinAlgTestData()
 
 
 def test_svd():
-    for lib, call in helpers.calls:
+    for lib, call in helpers.calls():
         if call is helpers.mx_graph_call:
             # mxnet symbolic does not support svd
             continue
-        pred = call(ivy_linalg.svd, ivy_gen.array([[[1., 0.], [0., 1.]]], f=lib))
+        pred = call(ivy.svd, ivy.array([[[1., 0.], [0., 1.]]], f=lib))
         true = np.linalg.svd(np.array([[[1., 0.], [0., 1.]]]))
-        assert _reduce(_mul, [np.array_equal(pred_, true_) for pred_, true_ in zip(pred, true)], 1) == 1
-        pred = call(ivy_linalg.svd, ivy_gen.array([[[[1., 0.], [0., 1.]]]], f=lib))
+        assert reduce(mul, [np.array_equal(pred_, true_) for pred_, true_ in zip(pred, true)], 1) == 1
+        pred = call(ivy.svd, ivy.array([[[[1., 0.], [0., 1.]]]], f=lib))
         true = np.linalg.svd(np.array([[[[1., 0.], [0., 1.]]]]))
-        assert _reduce(_mul, [np.array_equal(pred_, true_) for pred_, true_ in zip(pred, true)], 1) == 1
+        assert reduce(mul, [np.array_equal(pred_, true_) for pred_, true_ in zip(pred, true)], 1) == 1
+        helpers.assert_compilable('svd', lib)
 
 
 def test_norm():
-    for lib, call in helpers.calls:
-        assert np.array_equal(call(ivy_linalg.norm, ivy_gen.array([[1., 0.], [0., 1.]], f=lib), 1),
+    for lib, call in helpers.calls():
+        assert np.array_equal(call(ivy.norm, ivy.array([[1., 0.], [0., 1.]], f=lib), 1),
                               np.linalg.norm(np.array([[1., 0.], [0., 1.]]), 1, -1))
-        assert np.array_equal(call(ivy_linalg.norm, ivy_gen.array([[1., 0.], [0., 1.]], f=lib), 1, 1),
+        assert np.array_equal(call(ivy.norm, ivy.array([[1., 0.], [0., 1.]], f=lib), 1, 1),
                               np.linalg.norm(np.array([[1., 0.], [0., 1.]]), 1, 1))
-        assert np.array_equal(call(ivy_linalg.norm, ivy_gen.array([[1., 0.], [0., 1.]], f=lib), 1, 1, True),
+        assert np.array_equal(call(ivy.norm, ivy.array([[1., 0.], [0., 1.]], f=lib), 1, 1, True),
                               np.linalg.norm(np.array([[1., 0.], [0., 1.]]), 1, 1, True))
-        assert np.array_equal(call(ivy_linalg.norm, ivy_gen.array([[[1., 0.], [0., 1.]]], f=lib), 2),
+        assert np.array_equal(call(ivy.norm, ivy.array([[[1., 0.], [0., 1.]]], f=lib), 2),
                               np.linalg.norm(np.array([[[1., 0.], [0., 1.]]]), 2, -1))
+        helpers.assert_compilable('norm', lib)
 
 
 def test_inv():
-    for lib, call in helpers.calls:
-        assert np.array_equal(call(ivy_linalg.inv, ivy_gen.array([[1., 0.], [0., 1.]], f=lib)),
+    for lib, call in helpers.calls():
+        assert np.array_equal(call(ivy.inv, ivy.array([[1., 0.], [0., 1.]], f=lib)),
                               np.linalg.inv(np.array([[1., 0.], [0., 1.]])))
-        assert np.array_equal(call(ivy_linalg.inv, ivy_gen.array([[[1., 0.], [0., 1.]]], f=lib)),
+        assert np.array_equal(call(ivy.inv, ivy.array([[[1., 0.], [0., 1.]]], f=lib)),
                               np.linalg.inv(np.array([[[1., 0.], [0., 1.]]])))
+        helpers.assert_compilable('inv', lib)
 
 
 def test_pinv():
-    for lib, call in helpers.calls:
+    for lib, call in helpers.calls():
         if call is helpers.mx_graph_call:
             # mxnet symbolic does not support pinv
             continue
-        assert np.allclose(call(ivy_linalg.pinv, ivy_gen.array([[1., 0.], [0., 1.], [1., 0.]], f=lib)),
-                              np.linalg.pinv(np.array([[1., 0.], [0., 1.], [1., 0.]])), atol=1e-6)
-        assert np.allclose(call(ivy_linalg.pinv, ivy_gen.array([[[1., 0.], [0., 1.], [1., 0.]]], f=lib)),
-                              np.linalg.pinv(np.array([[[1., 0.], [0., 1.], [1., 0.]]])), atol=1e-6)
+        assert np.allclose(call(ivy.pinv, ivy.array([[1., 0.], [0., 1.], [1., 0.]], f=lib)),
+                           np.linalg.pinv(np.array([[1., 0.], [0., 1.], [1., 0.]])), atol=1e-6)
+        assert np.allclose(call(ivy.pinv, ivy.array([[[1., 0.], [0., 1.], [1., 0.]]], f=lib)),
+                           np.linalg.pinv(np.array([[[1., 0.], [0., 1.], [1., 0.]]])), atol=1e-6)
+        helpers.assert_compilable('pinv', lib)
 
 
 def test_vector_to_skew_symmetric_matrix():
-    for lib, call in helpers.calls:
+    for lib, call in helpers.calls():
         if call is helpers.mx_graph_call:
             # mxnet symbolic does not fully support array slicing
             continue
-        assert np.allclose(call(ivy_linalg.vector_to_skew_symmetric_matrix, td.vectors),
+        assert np.allclose(call(ivy.vector_to_skew_symmetric_matrix, td.vectors),
                            td.skew_symmetric_matrices, atol=1e-6)
-        assert np.allclose(call(ivy_linalg.vector_to_skew_symmetric_matrix, td.vectors[0]),
+        assert np.allclose(call(ivy.vector_to_skew_symmetric_matrix, td.vectors[0]),
                            td.skew_symmetric_matrices[0], atol=1e-6)
+        helpers.assert_compilable('vector_to_skew_symmetric_matrix', lib)

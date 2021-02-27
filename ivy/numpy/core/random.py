@@ -5,8 +5,8 @@ Collection of Numpy random functions, wrapped to fit Ivy syntax and signature.
 # global
 import numpy as _np
 
-random_uniform = lambda low, high, size, _=None: _np.random.uniform(low, high, size)
-randint = lambda low, high, size, _=None: _np.random.randint(low, high, size)
+random_uniform = lambda low=0., high=1., shape=None, dev=None: _np.random.uniform(low, high, shape)
+randint = lambda low, high, shape, dev=None: _np.random.randint(low, high, shape)
 seed = lambda seed_value: _np.random.seed(seed_value)
 
 

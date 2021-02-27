@@ -9,6 +9,12 @@ _round = round
 import logging
 
 
+DTYPE_DICT = {_np.int32: 'int32',
+              _np.int64: 'int64',
+              _np.float32: 'float32',
+              _np.float64: 'float64'}
+
+
 def _raise(ex):
     raise ex
 
@@ -131,7 +137,7 @@ def split(x, num_sections=None, axis=0):
 tile = _mx.nd.tile
 
 
-def zero_pad(x, pad_width, x_shape=None):
+def constant_pad(x, pad_width, value=0, x_shape=None):
     x_shape = list(x.shape) if not x_shape else x_shape
     num_dims = len(x_shape)
     if num_dims > 3:
@@ -140,10 +146,15 @@ def zero_pad(x, pad_width, x_shape=None):
     new_shape = tuple([1] * num_dims_to_add + x_shape)
     mat_expanded_dims = _mx.nd.reshape(x, new_shape)
     pad_width_flat = [0]*num_dims_to_add*2 + [item for sublist in pad_width for item in sublist]
-    pad_expanded_dims = _mx.nd.pad(mat_expanded_dims, mode="constant", pad_width=tuple(pad_width_flat))
+    pad_expanded_dims = _mx.nd.pad(mat_expanded_dims, mode="constant", pad_width=tuple(pad_width_flat),
+                                   constant_value=value)
     new_shape = [orig_dim + pad_width_item[0] + pad_width_item[1] for orig_dim, pad_width_item in zip(x_shape, pad_width)]
     res = _mx.nd.reshape(pad_expanded_dims, tuple(new_shape))
     return res
+
+
+def zero_pad(x, pad_width, x_shape=None):
+    return constant_pad(x, pad_width, 0, x_shape)
 
 
 swapaxes = _mx.nd.swapaxes
@@ -273,13 +284,13 @@ def scatter_nd(indices, updates, shape, num_idx_dims=None, reduction='sum', dev=
 
 def gather_flat(params, indices, dev=None):
     if dev is None:
-        dev = get_device(params)
+        dev = dev_str(params)
     return _mx.nd.gather_nd(params, _mx.nd.expand_dims(indices, 0)).copyto(_mxnet_init_context('cpu' if not dev else dev))
 
 
 def gather_nd(params, indices, indices_shape=None, dev=None):
     if dev is None:
-        dev = get_device(params)
+        dev = dev_str(params)
     if indices_shape is None:
         indices_shape = indices.shape
     num_idx_dims = len(indices_shape)
@@ -288,12 +299,16 @@ def gather_nd(params, indices, indices_shape=None, dev=None):
     return _mx.nd.gather_nd(params, indices).copyto(_mxnet_init_context('cpu' if not dev else dev))
 
 
-get_device = lambda x: x.context.device_type
+dev = lambda x: x.context
+dev_to_str = lambda dev_in: dev_in.device_type
+dev_str = lambda x: dev_to_str(dev(x))
 dtype = lambda x: x.dtype
+dtype_str = lambda x: DTYPE_DICT[x.dtype]
+dtype_to_str = lambda dtype_in: DTYPE_DICT[dtype_in]
 
 
 # noinspection PyUnusedLocal
-def compile_fn(func, example_inputs=None):
+def compile_fn(func, dynamic=True, example_inputs=None):
     logging.warning('MXnet does not support compiling arbitrary functions, '
                     'consider writing a function using MXNet Symbolic backend instead for compiling.\n'
                     'Now returning the unmodified function.')

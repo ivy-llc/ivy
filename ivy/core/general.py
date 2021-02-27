@@ -412,6 +412,26 @@ def tile(x, reps, f=None):
     return _get_framework(x, f=f).tile(x, reps)
 
 
+def constant_pad(x, pad_width, value=0, x_shape=None, f=None):
+    """
+    Pads an array with a constant value.
+
+    :param x: Input array to pad.
+    :type x: array
+    :param pad_width: Number of values padded to the edges of each axis.
+                      Specified as ((before_1, after_1), … (before_N, after_N)), where N is number of axes of x.
+    :type pad_width: sequence of tuples of ints
+    :param value: The constant value to pad the tensor with.
+    :type value: float or int, default zero
+    :param x_shape: Shape of x. Required for mxnet symbolic.
+    :type x_shape: sequence of ints
+    :param f: Machine learning framework. Inferred from inputs if None.
+    :type f: ml_framework, optional
+    :return: Padded array of rank equal to x with shape increased according to pad_width.
+    """
+    return _get_framework(x, f=f).constant_pad(x, pad_width, value, x_shape)
+
+
 def zero_pad(x, pad_width, x_shape=None, f=None):
     """
     Pads an array with zeros.
@@ -421,7 +441,7 @@ def zero_pad(x, pad_width, x_shape=None, f=None):
     :param pad_width: Number of values padded to the edges of each axis.
                       Specified as ((before_1, after_1), … (before_N, after_N)), where N is number of axes of x.
     :type pad_width: sequence of tuples of ints
-    :param x_shape: Shape of x1 and x2. Required for mxnet symbolic.
+    :param x_shape: Shape of x. Required for mxnet symbolic.
     :type x_shape: sequence of ints
     :param f: Machine learning framework. Inferred from inputs if None.
     :type f: ml_framework, optional
@@ -790,44 +810,98 @@ def gather_nd(params, indices, indices_shape=None, dev=None, f=None):
     return _get_framework(params, f=f).gather_nd(params, indices, indices_shape, dev)
 
 
-def get_device(x, f=None):
+def dev(x, f=None):
+    """
+    Get the native device handle for input array x.
+
+    :param x: Array for which to get the device handle.
+    :type x: array
+    :param f: Machine learning framework. Inferred from inputs if None.
+    :type f: ml_framework, optional
+    :return: Device handle for the array, in native framework format.
+    """
+    return _get_framework(x, f=f).dev(x)
+
+
+def dev_to_str(dev_in, f=None):
+    """
+    Convert native data type to string representation.
+
+    :param dev_in: The device handle to convert to string.
+    :type dev_in: device handle
+    :param f: Machine learning framework. Inferred from inputs if None.
+    :type f: ml_framework, optional
+    :return: Device string e.g. 'cuda:0'.
+    """
+    return _get_framework(None, f=f).dev_to_str(dev_in)
+
+
+def dev_str(x, f=None):
     """
     Get the device string for input array x.
 
     :param x: Array for which to get the device string.
-    :type x: str
+    :type x: array
     :param f: Machine learning framework. Inferred from inputs if None.
     :type f: ml_framework, optional
     :return: Device string for the array, e.g. 'cuda:0', 'cuda:1', 'cpu' etc..
     """
-    return _get_framework(x, f=f).get_device(x)
+    return _get_framework(x, f=f).dev_str(x)
 
 
 def dtype(x, f=None):
     """
-    Get the data type string for input array x.
+    Get the data type for input array x.
 
-    :param x: Array for which to get the data type string.
-    :type x: str
+    :param x: Array for which to get the data type.
+    :type x: array
     :param f: Machine learning framework. Inferred from inputs if None.
     :type f: ml_framework, optional
-    :return: Device string for the array, e.g. 'float32'.
+    :return: Data type of the array
     """
     return _get_framework(x, f=f).dtype(x)
 
 
-def compile_fn(func, example_inputs=None, f=None):
+def dtype_to_str(dtype_in, f=None):
+    """
+    Convert native data type to string representation.
+
+    :param dtype_in: The data type to convert to string.
+    :type dtype_in: data type
+    :param f: Machine learning framework. Inferred from inputs if None.
+    :type f: ml_framework, optional
+    :return: Device string e.g. 'float32'.
+    """
+    return _get_framework(None, f=f).dtype_to_str(dtype_in)
+
+
+def dtype_str(x, f=None):
+    """
+    Get the data type string for input array x.
+
+    :param x: Array for which to get the data type string.
+    :type x: array
+    :param f: Machine learning framework. Inferred from inputs if None.
+    :type f: ml_framework, optional
+    :return: Device string e.g. 'float32'.
+    """
+    return _get_framework(None, f=f).dtype_str(x)
+
+
+def compile_fn(func, dynamic=True, example_inputs=None, f=None):
     """
     Provide a function which should be compiled, for faster inference.
     The handle to the newly compiled function is returned.
 
     :param func: Function to be compiled.
     :type func: function
+    :param dynamic: Whether to compile all conditional branches, regardless of inputs during first invocation.
+    :type dynamic: bool, default True
     :param example_inputs: Example of inputs to the function to be compiled.
-                            Required for torch, unused by other frameworks.
+                            Required for torch in non-dynamic mode, unused by other frameworks.
     :type example_inputs: single input of tuple of inputs.
     :param f: Machine learning framework. Inferred from inputs if None.
     :type f: ml_framework, optional
     :return: The handle to the newly compiled function.
     """
-    return _get_framework(example_inputs, f=f).compile_fn(func, example_inputs)
+    return _get_framework(example_inputs, f=f).compile_fn(func, dynamic, example_inputs)

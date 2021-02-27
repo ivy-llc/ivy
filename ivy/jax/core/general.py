@@ -9,6 +9,11 @@ import numpy as _onp
 import jax as _jax
 import jax.numpy as _jnp
 
+DTYPE_DICT = {_jnp.dtype('int32'): 'int32',
+              _jnp.dtype('int64'): 'int64',
+              _jnp.dtype('float32'): 'float32',
+              _jnp.dtype('float64'): 'float64'}
+
 
 def _to_dev(x, dev):
     if dev is not None:
@@ -105,7 +110,8 @@ def split(x, num_sections=None, axis=0):
 
 
 tile = _jnp.tile
-zero_pad = lambda x, pad_width, _=None: _jnp.pad(x, pad_width)
+constant_pad = lambda x, pad_width, value=0, _=None: _jnp.pad(x, pad_width, constant_values=value)
+zero_pad = lambda x, pad_width, _=None: _jnp.pad(x, pad_width, constant_values=0)
 swapaxes = _jnp.swapaxes
 
 
@@ -188,7 +194,7 @@ def identity(n, dtype_str='float32', batch_shape=None, dev=None):
 
 def scatter_flat(indices, updates, size, reduction='sum', dev=None):
     if dev is None:
-        dev = get_device(updates)
+        dev = dev_str(updates)
     if reduction == 'sum':
         target = _jnp.zeros([size], dtype=updates.dtype)
         target = target.at[indices].add(updates)
@@ -208,7 +214,7 @@ def scatter_flat(indices, updates, size, reduction='sum', dev=None):
 # noinspection PyShadowingNames
 def scatter_nd(indices, updates, shape, num_idx_dims=None, reduction='sum', dev=None):
     if dev is None:
-        dev = get_device(updates)
+        dev = dev_str(updates)
     shape = list(shape)
     indices_flat = indices.reshape(-1, indices.shape[-1]).T
     indices_tuple = tuple(indices_flat) + (Ellipsis,)
@@ -230,13 +236,13 @@ def scatter_nd(indices, updates, shape, num_idx_dims=None, reduction='sum', dev=
 
 def gather_flat(params, indices, dev=None):
     if dev is None:
-        dev = get_device(params)
+        dev = dev_str(params)
     return _to_dev(_jnp.take(params, indices, 0), dev)
 
 
 def gather_nd(params, indices, indices_shape=None, dev=None):
     if dev is None:
-        dev = get_device(params)
+        dev = dev_str(params)
     if indices_shape is None:
         indices_shape = indices.shape
     params_shape = params.shape
@@ -257,10 +263,17 @@ def gather_nd(params, indices, indices_shape=None, dev=None):
     return _to_dev(ret, dev)
 
 
-def get_device(x):
-    p, dev_id = (x.device_buffer.platform(), x.device_buffer.device().id)
+dev = lambda x: x.device_buffer
+
+
+def dev_to_str(dev_in):
+    p, dev_id = (dev_in.platform(), dev_in.device().id)
     return p + ':' + str(dev_id)
+
+dev_str = lambda x: dev_to_str(dev(x))
 
 
 dtype = lambda x: x.dtype
-compile_fn = lambda fn, example_inputs=None: _jax.jit(fn)
+dtype_to_str = lambda dtype_in: DTYPE_DICT[dtype_in]
+dtype_str = lambda x: dtype_to_str(dtype(x))
+compile_fn = lambda fn, dynamic=True, example_inputs=None: _jax.jit(fn)

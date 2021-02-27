@@ -12,6 +12,11 @@ _round = round
 import tensorflow as _tf
 import numpy as _np
 
+DTYPE_DICT = {_tf.int32: 'int32',
+              _tf.int64: 'int64',
+              _tf.float32: 'float32',
+              _tf.float64: 'float64'}
+
 
 # noinspection PyShadowingNames
 def array(object_in, dtype_str=None, dev=None):
@@ -99,6 +104,7 @@ def split(x, num_sections=None, axis=0):
 
 
 tile = _tf.tile
+constant_pad = lambda x, pad_width, value=0, _=None: _tf.pad(x, pad_width, constant_values=value)
 zero_pad = lambda x, pad_width, _=None: _tf.pad(x, pad_width)
 
 
@@ -191,7 +197,7 @@ TF_SCATTER_VAR = {}
 # noinspection PyShadowingNames
 def scatter_flat(indices, updates, size, reduction='sum', dev=None):
     if dev is None:
-        dev = get_device(updates)
+        dev = dev_str(updates)
     dtype = updates.dtype
     if reduction == 'sum':
         return _tf.scatter_nd(_tf.expand_dims(indices, -1), updates, [size])
@@ -219,7 +225,7 @@ def scatter_flat(indices, updates, size, reduction='sum', dev=None):
 # noinspection PyShadowingNames
 def scatter_nd(indices, updates, shape, num_idx_dims=None, reduction='sum', dev=None):
     if dev is None:
-        dev = get_device(updates)
+        dev = dev_str(updates)
     shape = list(shape)
     dtype = updates.dtype
     if reduction == 'sum':
@@ -261,22 +267,27 @@ def scatter_nd(indices, updates, shape, num_idx_dims=None, reduction='sum', dev=
 
 def gather_flat(params, indices, dev=None):
     if dev is None:
-        dev = get_device(params)
+        dev = dev_str(params)
     with _tf.device('/' + dev.upper()):
         return _tf.gather_nd(params, _tf.expand_dims(indices, -1))
 
 
 def gather_nd(params, indices, _=None, dev=None):
     if dev is None:
-        dev = get_device(params)
+        dev = dev_str(params)
     with _tf.device('/' + dev.upper()):
         return _tf.gather_nd(params, indices)
 
 
-def get_device(x):
-    dev_str = x.device
-    return ':'.join(dev_str.split(':')[-2:])
+dev = lambda x: x.device
 
 
+def dev_to_str(dev_in):
+    return ':'.join(dev_in.split(':')[-2:])
+
+
+dev_str = lambda x: dev_to_str(dev(x))
 dtype = lambda x: x.dtype
-compile_fn = lambda fn, example_inputs=None: _tf.function(fn)
+dtype_str = lambda x: DTYPE_DICT[x.dtype]
+dtype_to_str = lambda dtype_in: DTYPE_DICT[dtype_in]
+compile_fn = lambda fn, dynamic=True, example_inputs=None: _tf.function(fn)

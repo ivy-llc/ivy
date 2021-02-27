@@ -1,18 +1,17 @@
 # global
 import os
 import random
+import numpy as np
 
 # local
-from ivy.core.container import Container
-import ivy_tests.helpers as helpers
-import numpy as np
 import ivy
-
+import ivy_tests.helpers as helpers
+from ivy.core.container import Container
 from ivy_tests.helpers import mx_sym_to_val as func
 
 
 def test_container_from_dict():
-    for lib, call in helpers.calls:
+    for lib, call in helpers.calls():
         if call is helpers.mx_graph_call:
             fn = func
         else:
@@ -29,7 +28,7 @@ def test_container_from_dict():
 
 
 def test_container_expand_dims():
-    for lib, call in helpers.calls:
+    for lib, call in helpers.calls():
         if call is helpers.mx_graph_call:
             fn = func
         else:
@@ -47,7 +46,7 @@ def test_container_expand_dims():
 
 
 def test_container_at_key_chain():
-    for lib, call in helpers.calls:
+    for lib, call in helpers.calls():
         if call is helpers.mx_graph_call:
             fn = func
         else:
@@ -62,7 +61,7 @@ def test_container_at_key_chain():
 
 
 def test_container_prune_key_chain():
-    for lib, call in helpers.calls:
+    for lib, call in helpers.calls():
         if call is helpers.mx_graph_call:
             fn = func
         else:
@@ -102,7 +101,7 @@ def test_container_prune_key_chain():
 
 
 def test_container_prune_empty():
-    for lib, call in helpers.calls:
+    for lib, call in helpers.calls():
         if call is helpers.mx_graph_call:
             fn = func
         else:
@@ -128,7 +127,7 @@ def test_container_prune_empty():
 
 
 def test_container_shuffle():
-    for lib, call in helpers.calls:
+    for lib, call in helpers.calls():
         if call is helpers.tf_graph_call:
             # tf.random.set_seed is not compiled. The shuffle is then not aligned between container items.
             continue
@@ -153,7 +152,7 @@ def test_container_shuffle():
 
 
 def test_container_to_iterator():
-    for lib, call in helpers.calls:
+    for lib, call in helpers.calls():
         if call is helpers.mx_graph_call:
             fn = func
         else:
@@ -168,7 +167,7 @@ def test_container_to_iterator():
 
 
 def test_container_map():
-    for lib, call in helpers.calls:
+    for lib, call in helpers.calls():
         dict_in = {'a': ivy.array([1], f=lib),
                    'b': {'c': ivy.array([2], f=lib), 'd': ivy.array([3], f=lib)}}
         container = Container(dict_in)
@@ -179,7 +178,7 @@ def test_container_map():
 
 
 def test_container_to_random():
-    for lib, call in helpers.calls:
+    for lib, call in helpers.calls():
         dict_in = {'a': ivy.array([1.], f=lib),
                    'b': {'c': ivy.array([2.], f=lib), 'd': ivy.array([3.], f=lib)}}
         container = Container(dict_in)
@@ -190,7 +189,7 @@ def test_container_to_random():
 
 
 def test_container_dtype():
-    for lib, call in helpers.calls:
+    for lib, call in helpers.calls():
         if call is helpers.mx_graph_call:
             # MXNet symbolic does not support dtype
             continue
@@ -206,7 +205,7 @@ def test_container_dtype():
 
 
 def test_container_with_entries_as_lists():
-    for lib, call in helpers.calls:
+    for lib, call in helpers.calls():
         if call in [helpers.tf_graph_call, helpers.mx_graph_call]:
             # to_list() requires eager execution
             continue
@@ -222,7 +221,7 @@ def test_container_with_entries_as_lists():
 
 
 def test_container_to_and_from_disk():
-    for lib, call in helpers.calls:
+    for lib, call in helpers.calls():
         if call in [helpers.tf_graph_call, helpers.mx_graph_call]:
             # container disk saving requires eager execution
             continue
@@ -270,7 +269,7 @@ def test_container_to_and_from_disk():
 
 
 def test_container_to_disk_shuffle_and_from_disk():
-    for lib, call in helpers.calls:
+    for lib, call in helpers.calls():
         if call in [helpers.tf_graph_call, helpers.mx_graph_call]:
             # container disk saving requires eager execution
             continue

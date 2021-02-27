@@ -101,7 +101,7 @@ def split(x, num_sections=None, axis=0):
 tile = _mx.symbol.tile
 
 
-def zero_pad(x, pad_width, x_shape=None):
+def constant_pad(x, pad_width, value=0, x_shape=None):
     x_shape = list(_mx.symbol.shape_array(x)) if not x_shape else x_shape
     num_dims = len(x_shape)
     if num_dims > 3:
@@ -109,10 +109,15 @@ def zero_pad(x, pad_width, x_shape=None):
     num_dims_to_add = 4 - num_dims
     mat_expanded_dims = _mx.symbol.reshape(x, tuple([1] * num_dims_to_add + x_shape))
     pad_width_flat = [0]*num_dims_to_add*2 + [item for sublist in pad_width for item in sublist]
-    pad_expanded_dims = _mx.symbol.pad(mat_expanded_dims, mode="constant", pad_width=tuple(pad_width_flat))
+    pad_expanded_dims = _mx.symbol.pad(mat_expanded_dims, mode="constant", pad_width=tuple(pad_width_flat),
+                                       constant_value=value)
     new_shape = [orig_dim + pad_width_item[0] + pad_width_item[1]
                  for orig_dim, pad_width_item in zip(x_shape, pad_width)]
     return _mx.symbol.reshape(pad_expanded_dims, tuple(new_shape))
+
+
+def zero_pad(x, pad_width, x_shape=None):
+    return constant_pad(x, pad_width, 0, x_shape)
 
 
 swapaxes = _mx.symbol.swapaxes
@@ -232,12 +237,16 @@ def gather_nd(params, indices, indices_shape=None, dev=None):
     return _mx.symbol.gather_nd(params, indices)
 
 
-get_device = lambda _: _raise(Exception('mxnet symbolic tensors do not have a context'))
+dev = lambda _: _raise(Exception('mxnet symbolic tensors do not have a context'))
+dev_to_str = lambda _: _raise(Exception('mxnet symbolic tensors do not have a context'))
+dev_str = lambda _: _raise(Exception('mxnet symbolic tensors do not have a context'))
 dtype = lambda _: _raise(Exception('MXNet Symbolic mode does not support dtype().'))
+dtype_str = lambda _: _raise(Exception('MXNet Symbolic mode does not support dtype_str().'))
+dtype_to_str = lambda _: _raise(Exception('MXNet Symbolic mode does not support dtype_to_str().'))
 
 
 # noinspection PyUnusedLocal
-def compile_fn(func, example_inputs=None):
+def compile_fn(func, dynamic=True, example_inputs=None):
     logging.warning('MXnet does not support compiling arbitrary functions, '
                     'However, you are currently using the MXNet Symbolic backend, which does compile the functions.\n'
                     'Now returning the unmodified function.')
