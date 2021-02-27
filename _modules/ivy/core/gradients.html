@@ -205,7 +205,7 @@
 <span class="sd">    :type f: ml_framework, optional</span>
 <span class="sd">    :return: the function first output y, the gradients [dy/dx for x in xs], and any other extra function outputs</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">_get_framework</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">xs</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">execute_with_gradients</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">xs</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">_get_framework</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">execute_with_gradients</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">xs</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="gradient_descent_update"><a class="viewcode-back" href="../../../core/gradients/gradient_descent_update.html#ivy.core.gradients.gradient_descent_update">[docs]</a><span class="k">def</span> <span class="nf">gradient_descent_update</span><span class="p">(</span><span class="n">ws</span><span class="p">,</span> <span class="n">dcdws</span><span class="p">,</span> <span class="n">lr</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -222,7 +222,37 @@
 <span class="sd">    :type f: ml_framework, optional</span>
 <span class="sd">    :return: The new function weights ws_new, following the gradient descent updates.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">_get_framework</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">ws</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">gradient_descent_update</span><span class="p">(</span><span class="n">ws</span><span class="p">,</span> <span class="n">dcdws</span><span class="p">,</span> <span class="n">lr</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">_get_framework</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">gradient_descent_update</span><span class="p">(</span><span class="n">ws</span><span class="p">,</span> <span class="n">dcdws</span><span class="p">,</span> <span class="n">lr</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="adam_update"><a class="viewcode-back" href="../../../core/gradients/adam_update.html#ivy.core.gradients.adam_update">[docs]</a><span class="k">def</span> <span class="nf">adam_update</span><span class="p">(</span><span class="n">ws</span><span class="p">,</span> <span class="n">dcdws</span><span class="p">,</span> <span class="n">lr</span><span class="p">,</span> <span class="n">mw</span><span class="p">,</span> <span class="n">vw</span><span class="p">,</span> <span class="n">step</span><span class="p">,</span> <span class="n">beta1</span><span class="o">=</span><span class="mf">0.9</span><span class="p">,</span> <span class="n">beta2</span><span class="o">=</span><span class="mf">0.999</span><span class="p">,</span> <span class="n">epsilon</span><span class="o">=</span><span class="mf">1e-7</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Update weights ws of some function, given the derivatives of some cost c with respect to ws, using ADAM update.</span>
+<span class="sd">    `[reference] &lt;https://en.wikipedia.org/wiki/Stochastic_gradient_descent#Adam&gt;`_</span>
+
+<span class="sd">    :param ws: Weights of the function to be updated.</span>
+<span class="sd">    :type ws: container of variables</span>
+<span class="sd">    :param dcdws: Derivates of the cost c with respect to the weights ws, [dc/dw for w in ws].</span>
+<span class="sd">    :type dcdws: container of arrays</span>
+<span class="sd">    :param lr: Learning rate, the rate at which the weights should be updated relative to the gradient.</span>
+<span class="sd">    :type lr: float</span>
+<span class="sd">    :param mw: running average of the gradients</span>
+<span class="sd">    :type mw: container of arrays</span>
+<span class="sd">    :param vw: running average of second moments of the gradients</span>
+<span class="sd">    :type vw: container of arrays</span>
+<span class="sd">    :param step: training step</span>
+<span class="sd">    :type step: int</span>
+<span class="sd">    :param beta1: gradient forgetting factor</span>
+<span class="sd">    :type beta1: float</span>
+<span class="sd">    :param beta2: second moment of gradient forgetting factor</span>
+<span class="sd">    :type beta2: float</span>
+<span class="sd">    :param epsilon: divisor during adam update, preventing division by zero</span>
+<span class="sd">    :type epsilon: float</span>
+<span class="sd">    :param f: Machine learning framework. Inferred from inputs if None.</span>
+<span class="sd">    :type f: ml_framework, optional</span>
+<span class="sd">    :return: The new function weights ws_new, and also new mw and vw, following the gradient descent updates.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">_get_framework</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">adam_update</span><span class="p">(</span><span class="n">ws</span><span class="p">,</span> <span class="n">dcdws</span><span class="p">,</span> <span class="n">lr</span><span class="p">,</span> <span class="n">mw</span><span class="p">,</span> <span class="n">vw</span><span class="p">,</span> <span class="n">step</span><span class="p">,</span> <span class="n">beta1</span><span class="p">,</span> <span class="n">beta2</span><span class="p">,</span> <span class="n">epsilon</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="stop_gradient"><a class="viewcode-back" href="../../../core/gradients/stop_gradient.html#ivy.core.gradients.stop_gradient">[docs]</a><span class="k">def</span> <span class="nf">stop_gradient</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>

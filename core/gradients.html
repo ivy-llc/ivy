@@ -93,6 +93,7 @@
 <li class="toctree-l2"><a class="reference internal" href="gradients/variable.html">variable</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gradients/execute_with_gradients.html">execute_with_gradients</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gradients/gradient_descent_update.html">gradient_descent_update</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gradients/adam_update.html">adam_update</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gradients/stop_gradient.html">stop_gradient</a></li>
 </ul>
 </li>
@@ -239,6 +240,32 @@ and any other function outputs after the returned y value</p>
 </dd></dl>
 
 <dl class="py function">
+<dt id="ivy.core.gradients.adam_update">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname"><span class="pre">adam_update</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ws</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dcdws</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mw</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vw</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">beta1</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.9</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">beta2</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.999</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epsilon</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-07</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/gradients.html#adam_update"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.core.gradients.adam_update" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update weights ws of some function, given the derivatives of some cost c with respect to ws, using ADAM update.
+<a class="reference external" href="https://en.wikipedia.org/wiki/Stochastic_gradient_descent#Adam">[reference]</a></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ws</strong> (<em>container of variables</em>) – Weights of the function to be updated.</p></li>
+<li><p><strong>dcdws</strong> (<em>container of arrays</em>) – Derivates of the cost c with respect to the weights ws, [dc/dw for w in ws].</p></li>
+<li><p><strong>lr</strong> (<em>float</em>) – Learning rate, the rate at which the weights should be updated relative to the gradient.</p></li>
+<li><p><strong>mw</strong> (<em>container of arrays</em>) – running average of the gradients</p></li>
+<li><p><strong>vw</strong> (<em>container of arrays</em>) – running average of second moments of the gradients</p></li>
+<li><p><strong>step</strong> (<em>int</em>) – training step</p></li>
+<li><p><strong>beta1</strong> (<em>float</em>) – gradient forgetting factor</p></li>
+<li><p><strong>beta2</strong> (<em>float</em>) – second moment of gradient forgetting factor</p></li>
+<li><p><strong>epsilon</strong> (<em>float</em>) – divisor during adam update, preventing division by zero</p></li>
+<li><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning framework. Inferred from inputs if None.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The new function weights ws_new, and also new mw and vw, following the gradient descent updates.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt id="ivy.core.gradients.stop_gradient">
 <code class="sig-prename descclassname">ivy.</code><code class="sig-name descname"><span class="pre">stop_gradient</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/gradients.html#stop_gradient"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.core.gradients.stop_gradient" title="Permalink to this definition">¶</a></dt>
 <dd><p>Stops gradient computation.</p>
@@ -261,6 +288,7 @@ and any other function outputs after the returned y value</p>
 <li class="toctree-l1"><a class="reference internal" href="gradients/variable.html">variable</a></li>
 <li class="toctree-l1"><a class="reference internal" href="gradients/execute_with_gradients.html">execute_with_gradients</a></li>
 <li class="toctree-l1"><a class="reference internal" href="gradients/gradient_descent_update.html">gradient_descent_update</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gradients/adam_update.html">adam_update</a></li>
 <li class="toctree-l1"><a class="reference internal" href="gradients/stop_gradient.html">stop_gradient</a></li>
 </ul>
 </div>
