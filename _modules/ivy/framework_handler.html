@@ -99,6 +99,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../neural_net/activations.html">Activations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../neural_net/layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../neural_net/losses.html">Losses</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Docs</span></p>
 <ul>
@@ -171,12 +172,13 @@
            <div itemprop="articleBody">
             
   <h1>Source code for ivy.framework_handler</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">importlib</span>
-
+<span></span><span class="kn">import</span> <span class="nn">ivy</span>
+<span class="kn">import</span> <span class="nn">importlib</span>
 <span class="kn">from</span> <span class="nn">ivy</span> <span class="k">import</span> <span class="n">verbosity</span>
 
 
 <span class="n">framework_stack</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">ivy_original_dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
 
 
 <div class="viewcode-block" id="ContextManager"><a class="viewcode-back" href="../../framework_handler.html#ivy.framework_handler.ContextManager">[docs]</a><span class="k">class</span> <span class="nc">ContextManager</span><span class="p">:</span>
@@ -184,16 +186,10 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">module</span> <span class="o">=</span> <span class="n">module</span></div>
 
     <span class="k">def</span> <span class="nf">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">framework_stack</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">module</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">verbosity</span><span class="o">.</span><span class="n">level</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="n">verbosity</span><span class="o">.</span><span class="n">cprint</span><span class="p">(</span>
-                <span class="s1">&#39;framework stack: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">framework_stack</span><span class="p">))</span>
+        <span class="n">set_framework</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">module</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exc_type</span><span class="p">,</span> <span class="n">exc_val</span><span class="p">,</span> <span class="n">exc_tb</span><span class="p">):</span>
-        <span class="n">framework_stack</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">verbosity</span><span class="o">.</span><span class="n">level</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="n">verbosity</span><span class="o">.</span><span class="n">cprint</span><span class="p">(</span>
-                <span class="s1">&#39;framework stack: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">framework_stack</span><span class="p">))</span></div>
+        <span class="n">unset_framework</span><span class="p">()</span></div>
 
 
 <span class="n">_array_types</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
@@ -247,14 +243,23 @@
 
 
 <div class="viewcode-block" id="set_framework"><a class="viewcode-back" href="../../framework_handler/set_framework.html#ivy.framework_handler.set_framework">[docs]</a><span class="k">def</span> <span class="nf">set_framework</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">framework_stack</span><span class="p">:</span>
+        <span class="k">global</span> <span class="n">ivy_original_dict</span>
+        <span class="n">ivy_original_dict</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
     <span class="n">framework_stack</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">f</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="n">ivy</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
     <span class="k">if</span> <span class="n">verbosity</span><span class="o">.</span><span class="n">level</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
         <span class="n">verbosity</span><span class="o">.</span><span class="n">cprint</span><span class="p">(</span>
             <span class="s1">&#39;framework stack: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">framework_stack</span><span class="p">))</span></div>
 
 
 <div class="viewcode-block" id="unset_framework"><a class="viewcode-back" href="../../framework_handler/unset_framework.html#ivy.framework_handler.unset_framework">[docs]</a><span class="k">def</span> <span class="nf">unset_framework</span><span class="p">():</span>
-    <span class="n">framework_stack</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">framework_stack</span><span class="p">:</span>
+        <span class="n">framework_stack</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">f_dict</span> <span class="o">=</span> <span class="n">framework_stack</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="vm">__dict__</span> <span class="k">if</span> <span class="n">framework_stack</span> <span class="k">else</span> <span class="n">ivy_original_dict</span>
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">f_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">ivy</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
     <span class="k">if</span> <span class="n">verbosity</span><span class="o">.</span><span class="n">level</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
         <span class="n">verbosity</span><span class="o">.</span><span class="n">cprint</span><span class="p">(</span>
             <span class="s1">&#39;framework stack: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">framework_stack</span><span class="p">))</span></div>

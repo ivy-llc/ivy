@@ -114,6 +114,7 @@
 <li class="toctree-l2"><a class="reference internal" href="general/unstack.html">unstack</a></li>
 <li class="toctree-l2"><a class="reference internal" href="general/split.html">split</a></li>
 <li class="toctree-l2"><a class="reference internal" href="general/tile.html">tile</a></li>
+<li class="toctree-l2"><a class="reference internal" href="general/constant_pad.html">constant_pad</a></li>
 <li class="toctree-l2"><a class="reference internal" href="general/zero_pad.html">zero_pad</a></li>
 <li class="toctree-l2"><a class="reference internal" href="general/swapaxes.html">swapaxes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="general/transpose.html">transpose</a></li>
@@ -135,8 +136,12 @@
 <li class="toctree-l2"><a class="reference internal" href="general/scatter_nd.html">scatter_nd</a></li>
 <li class="toctree-l2"><a class="reference internal" href="general/gather_flat.html">gather_flat</a></li>
 <li class="toctree-l2"><a class="reference internal" href="general/gather_nd.html">gather_nd</a></li>
-<li class="toctree-l2"><a class="reference internal" href="general/get_device.html">get_device</a></li>
+<li class="toctree-l2"><a class="reference internal" href="general/dev.html">dev</a></li>
+<li class="toctree-l2"><a class="reference internal" href="general/dev_to_str.html">dev_to_str</a></li>
+<li class="toctree-l2"><a class="reference internal" href="general/dev_str.html">dev_str</a></li>
 <li class="toctree-l2"><a class="reference internal" href="general/dtype.html">dtype</a></li>
+<li class="toctree-l2"><a class="reference internal" href="general/dtype_to_str.html">dtype_to_str</a></li>
+<li class="toctree-l2"><a class="reference internal" href="general/dtype_str.html">dtype_str</a></li>
 <li class="toctree-l2"><a class="reference internal" href="general/compile_fn.html">compile_fn</a></li>
 </ul>
 </li>
@@ -152,6 +157,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../neural_net/activations.html">Activations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../neural_net/layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../neural_net/losses.html">Losses</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Docs</span></p>
 <ul>
@@ -695,6 +701,27 @@ Default is to divide into as many arrays as the axis dimension.</p></li>
 </dd></dl>
 
 <dl class="py function">
+<dt id="ivy.core.general.constant_pad">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname"><span class="pre">constant_pad</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pad_width</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_shape</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#constant_pad"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.core.general.constant_pad" title="Permalink to this definition">¶</a></dt>
+<dd><p>Pads an array with a constant value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>array</em>) – Input array to pad.</p></li>
+<li><p><strong>pad_width</strong> (<em>sequence of tuples of ints</em>) – Number of values padded to the edges of each axis.
+Specified as ((before_1, after_1), … (before_N, after_N)), where N is number of axes of x.</p></li>
+<li><p><strong>value</strong> (<em>float</em><em> or </em><em>int</em><em>, </em><em>default zero</em>) – The constant value to pad the tensor with.</p></li>
+<li><p><strong>x_shape</strong> (<em>sequence of ints</em>) – Shape of x. Required for mxnet symbolic.</p></li>
+<li><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning framework. Inferred from inputs if None.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Padded array of rank equal to x with shape increased according to pad_width.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt id="ivy.core.general.zero_pad">
 <code class="sig-prename descclassname">ivy.</code><code class="sig-name descname"><span class="pre">zero_pad</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pad_width</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_shape</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#zero_pad"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.core.general.zero_pad" title="Permalink to this definition">¶</a></dt>
 <dd><p>Pads an array with zeros.</p>
@@ -704,7 +731,7 @@ Default is to divide into as many arrays as the axis dimension.</p></li>
 <li><p><strong>x</strong> (<em>array</em>) – Input array to pad.</p></li>
 <li><p><strong>pad_width</strong> (<em>sequence of tuples of ints</em>) – Number of values padded to the edges of each axis.
 Specified as ((before_1, after_1), … (before_N, after_N)), where N is number of axes of x.</p></li>
-<li><p><strong>x_shape</strong> (<em>sequence of ints</em>) – Shape of x1 and x2. Required for mxnet symbolic.</p></li>
+<li><p><strong>x_shape</strong> (<em>sequence of ints</em>) – Shape of x. Required for mxnet symbolic.</p></li>
 <li><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning framework. Inferred from inputs if None.</p></li>
 </ul>
 </dd>
@@ -1108,13 +1135,47 @@ The identity array is a square array with ones on the main diagonal.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="ivy.core.general.get_device">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname"><span class="pre">get_device</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#get_device"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.core.general.get_device" title="Permalink to this definition">¶</a></dt>
+<dt id="ivy.core.general.dev">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname"><span class="pre">dev</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#dev"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.core.general.dev" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the native device handle for input array x.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>array</em>) – Array for which to get the device handle.</p></li>
+<li><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning framework. Inferred from inputs if None.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Device handle for the array, in native framework format.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.core.general.dev_to_str">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname"><span class="pre">dev_to_str</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dev_in</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#dev_to_str"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.core.general.dev_to_str" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert native data type to string representation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dev_in</strong> (<em>device handle</em>) – The device handle to convert to string.</p></li>
+<li><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning framework. Inferred from inputs if None.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Device string e.g. ‘cuda:0’.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.core.general.dev_str">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname"><span class="pre">dev_str</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#dev_str"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.core.general.dev_str" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the device string for input array x.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<em>str</em>) – Array for which to get the device string.</p></li>
+<li><p><strong>x</strong> (<em>array</em>) – Array for which to get the device string.</p></li>
 <li><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning framework. Inferred from inputs if None.</p></li>
 </ul>
 </dd>
@@ -1127,31 +1188,66 @@ The identity array is a square array with ones on the main diagonal.</p>
 <dl class="py function">
 <dt id="ivy.core.general.dtype">
 <code class="sig-prename descclassname">ivy.</code><code class="sig-name descname"><span class="pre">dtype</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#dtype"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.core.general.dtype" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the data type string for input array x.</p>
+<dd><p>Get the data type for input array x.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<em>str</em>) – Array for which to get the data type string.</p></li>
+<li><p><strong>x</strong> (<em>array</em>) – Array for which to get the data type.</p></li>
 <li><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning framework. Inferred from inputs if None.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Device string for the array, e.g. ‘float32’.</p>
+<dd class="field-even"><p>Data type of the array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.core.general.dtype_to_str">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname"><span class="pre">dtype_to_str</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dtype_in</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#dtype_to_str"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.core.general.dtype_to_str" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert native data type to string representation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dtype_in</strong> (<em>data type</em>) – The data type to convert to string.</p></li>
+<li><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning framework. Inferred from inputs if None.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Device string e.g. ‘float32’.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.core.general.dtype_str">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname"><span class="pre">dtype_str</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#dtype_str"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.core.general.dtype_str" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the data type string for input array x.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>array</em>) – Array for which to get the data type string.</p></li>
+<li><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning framework. Inferred from inputs if None.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Device string e.g. ‘float32’.</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py function">
 <dt id="ivy.core.general.compile_fn">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname"><span class="pre">compile_fn</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">example_inputs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#compile_fn"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.core.general.compile_fn" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname"><span class="pre">compile_fn</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dynamic</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">example_inputs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#compile_fn"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.core.general.compile_fn" title="Permalink to this definition">¶</a></dt>
 <dd><p>Provide a function which should be compiled, for faster inference.
 The handle to the newly compiled function is returned.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>func</strong> (<em>function</em>) – Function to be compiled.</p></li>
+<li><p><strong>dynamic</strong> (<em>bool</em><em>, </em><em>default True</em>) – Whether to compile all conditional branches, regardless of inputs during first invocation.</p></li>
 <li><p><strong>example_inputs</strong> (<em>single input of tuple of inputs.</em>) – Example of inputs to the function to be compiled.
-Required for torch, unused by other frameworks.</p></li>
+Required for torch in non-dynamic mode, unused by other frameworks.</p></li>
 <li><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning framework. Inferred from inputs if None.</p></li>
 </ul>
 </dd>
@@ -1188,6 +1284,7 @@ Required for torch, unused by other frameworks.</p></li>
 <li class="toctree-l1"><a class="reference internal" href="general/unstack.html">unstack</a></li>
 <li class="toctree-l1"><a class="reference internal" href="general/split.html">split</a></li>
 <li class="toctree-l1"><a class="reference internal" href="general/tile.html">tile</a></li>
+<li class="toctree-l1"><a class="reference internal" href="general/constant_pad.html">constant_pad</a></li>
 <li class="toctree-l1"><a class="reference internal" href="general/zero_pad.html">zero_pad</a></li>
 <li class="toctree-l1"><a class="reference internal" href="general/swapaxes.html">swapaxes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="general/transpose.html">transpose</a></li>
@@ -1209,8 +1306,12 @@ Required for torch, unused by other frameworks.</p></li>
 <li class="toctree-l1"><a class="reference internal" href="general/scatter_nd.html">scatter_nd</a></li>
 <li class="toctree-l1"><a class="reference internal" href="general/gather_flat.html">gather_flat</a></li>
 <li class="toctree-l1"><a class="reference internal" href="general/gather_nd.html">gather_nd</a></li>
-<li class="toctree-l1"><a class="reference internal" href="general/get_device.html">get_device</a></li>
+<li class="toctree-l1"><a class="reference internal" href="general/dev.html">dev</a></li>
+<li class="toctree-l1"><a class="reference internal" href="general/dev_to_str.html">dev_to_str</a></li>
+<li class="toctree-l1"><a class="reference internal" href="general/dev_str.html">dev_str</a></li>
 <li class="toctree-l1"><a class="reference internal" href="general/dtype.html">dtype</a></li>
+<li class="toctree-l1"><a class="reference internal" href="general/dtype_to_str.html">dtype_to_str</a></li>
+<li class="toctree-l1"><a class="reference internal" href="general/dtype_str.html">dtype_str</a></li>
 <li class="toctree-l1"><a class="reference internal" href="general/compile_fn.html">compile_fn</a></li>
 </ul>
 </div>

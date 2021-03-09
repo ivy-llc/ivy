@@ -99,6 +99,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../neural_net/activations.html">Activations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../neural_net/layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../neural_net/losses.html">Losses</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Docs</span></p>
 <ul>
@@ -241,6 +242,11 @@
 <dd></dd></dl>
 
 <dl class="py function">
+<dt id="ivy.numpy.core.general.constant_pad">
+<code class="sig-prename descclassname"><span class="pre">ivy.numpy.core.general.</span></code><code class="sig-name descname"><span class="pre">constant_pad</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pad_width</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ivy.numpy.core.general.constant_pad" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
 <dt id="ivy.numpy.core.general.zero_pad">
 <code class="sig-prename descclassname"><span class="pre">ivy.numpy.core.general.</span></code><code class="sig-name descname"><span class="pre">zero_pad</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pad_width</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ivy.numpy.core.general.zero_pad" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -316,8 +322,18 @@
 <dd></dd></dl>
 
 <dl class="py function">
-<dt id="ivy.numpy.core.general.get_device">
-<code class="sig-prename descclassname"><span class="pre">ivy.numpy.core.general.</span></code><code class="sig-name descname"><span class="pre">get_device</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ivy.numpy.core.general.get_device" title="Permalink to this definition">¶</a></dt>
+<dt id="ivy.numpy.core.general.dev">
+<code class="sig-prename descclassname"><span class="pre">ivy.numpy.core.general.</span></code><code class="sig-name descname"><span class="pre">dev</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ivy.numpy.core.general.dev" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="ivy.numpy.core.general.dev_str">
+<code class="sig-prename descclassname"><span class="pre">ivy.numpy.core.general.</span></code><code class="sig-name descname"><span class="pre">dev_str</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ivy.numpy.core.general.dev_str" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="ivy.numpy.core.general.dev_to_str">
+<code class="sig-prename descclassname"><span class="pre">ivy.numpy.core.general.</span></code><code class="sig-name descname"><span class="pre">dev_to_str</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dev_in</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ivy.numpy.core.general.dev_to_str" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py function">
@@ -326,8 +342,18 @@
 <dd></dd></dl>
 
 <dl class="py function">
+<dt id="ivy.numpy.core.general.dtype_str">
+<code class="sig-prename descclassname"><span class="pre">ivy.numpy.core.general.</span></code><code class="sig-name descname"><span class="pre">dtype_str</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ivy.numpy.core.general.dtype_str" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="ivy.numpy.core.general.dtype_to_str">
+<code class="sig-prename descclassname"><span class="pre">ivy.numpy.core.general.</span></code><code class="sig-name descname"><span class="pre">dtype_to_str</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dtype_in</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ivy.numpy.core.general.dtype_to_str" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
 <dt id="ivy.numpy.core.general.compile_fn">
-<code class="sig-prename descclassname"><span class="pre">ivy.numpy.core.general.</span></code><code class="sig-name descname"><span class="pre">compile_fn</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">example_inputs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/numpy/core/general.html#compile_fn"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.numpy.core.general.compile_fn" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname"><span class="pre">ivy.numpy.core.general.</span></code><code class="sig-name descname"><span class="pre">compile_fn</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dynamic</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">example_inputs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/numpy/core/general.html#compile_fn"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.numpy.core.general.compile_fn" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <div class="toctree-wrapper compound">

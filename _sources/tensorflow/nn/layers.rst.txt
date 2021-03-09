@@ -12,6 +12,7 @@ Layers
    :maxdepth: -1
    :caption: Layers
 
+   layers/conv2d.rst
    layers/depthwise_conv2d.rst
    layers/conv3d.rst
 

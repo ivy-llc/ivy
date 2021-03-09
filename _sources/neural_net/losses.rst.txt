@@ -1,0 +1,16 @@
+Losses
+======
+
+.. automodule:: ivy.neural_net.losses
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :show-inheritance:
+
+
+.. toctree::
+   :maxdepth: -1
+   :caption: Losses
+
+   losses/binary_cross_entropy.rst
+

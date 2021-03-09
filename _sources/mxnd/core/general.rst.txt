@@ -19,6 +19,7 @@ General
    general/flip.rst
    general/unstack.rst
    general/split.rst
+   general/constant_pad.rst
    general/zero_pad.rst
    general/transpose.rst
    general/where.rst
