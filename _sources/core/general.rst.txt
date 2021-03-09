@@ -36,6 +36,7 @@ General
    general/unstack.rst
    general/split.rst
    general/tile.rst
+   general/constant_pad.rst
    general/zero_pad.rst
    general/swapaxes.rst
    general/transpose.rst
@@ -57,7 +58,11 @@ General
    general/scatter_nd.rst
    general/gather_flat.rst
    general/gather_nd.rst
-   general/get_device.rst
+   general/dev.rst
+   general/dev_to_str.rst
+   general/dev_str.rst
    general/dtype.rst
+   general/dtype_to_str.rst
+   general/dtype_str.rst
    general/compile_fn.rst
 

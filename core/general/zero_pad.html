@@ -36,7 +36,7 @@
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
     <link rel="next" title="swapaxes" href="swapaxes.html" />
-    <link rel="prev" title="tile" href="tile.html" /> 
+    <link rel="prev" title="constant_pad" href="constant_pad.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -113,6 +113,7 @@
 <li class="toctree-l2"><a class="reference internal" href="unstack.html">unstack</a></li>
 <li class="toctree-l2"><a class="reference internal" href="split.html">split</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tile.html">tile</a></li>
+<li class="toctree-l2"><a class="reference internal" href="constant_pad.html">constant_pad</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">zero_pad</a></li>
 <li class="toctree-l2"><a class="reference internal" href="swapaxes.html">swapaxes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="transpose.html">transpose</a></li>
@@ -134,8 +135,12 @@
 <li class="toctree-l2"><a class="reference internal" href="scatter_nd.html">scatter_nd</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gather_flat.html">gather_flat</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gather_nd.html">gather_nd</a></li>
-<li class="toctree-l2"><a class="reference internal" href="get_device.html">get_device</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dev.html">dev</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dev_to_str.html">dev_to_str</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dev_str.html">dev_str</a></li>
 <li class="toctree-l2"><a class="reference internal" href="dtype.html">dtype</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dtype_to_str.html">dtype_to_str</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dtype_str.html">dtype_str</a></li>
 <li class="toctree-l2"><a class="reference internal" href="compile_fn.html">compile_fn</a></li>
 </ul>
 </li>
@@ -151,6 +156,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../neural_net/activations.html">Activations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../neural_net/layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../neural_net/losses.html">Losses</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Docs</span></p>
 <ul>
@@ -238,7 +244,7 @@
 <li><p><strong>x</strong> (<em>array</em>) – Input array to pad.</p></li>
 <li><p><strong>pad_width</strong> (<em>sequence of tuples of ints</em>) – Number of values padded to the edges of each axis.
 Specified as ((before_1, after_1), … (before_N, after_N)), where N is number of axes of x.</p></li>
-<li><p><strong>x_shape</strong> (<em>sequence of ints</em>) – Shape of x1 and x2. Required for mxnet symbolic.</p></li>
+<li><p><strong>x_shape</strong> (<em>sequence of ints</em>) – Shape of x. Required for mxnet symbolic.</p></li>
 <li><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning framework. Inferred from inputs if None.</p></li>
 </ul>
 </dd>
@@ -266,7 +272,7 @@ Specified as ((before_1, after_1), … (before_N, after_N)), where N is number o
         <a href="swapaxes.html" class="btn btn-neutral float-right" title="swapaxes" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="tile.html" class="btn btn-neutral float-left" title="tile" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="constant_pad.html" class="btn btn-neutral float-left" title="constant_pad" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

@@ -12,4 +12,10 @@ Activations
    :maxdepth: -1
    :caption: Activations
 
+   activations/relu.rst
+   activations/leaky_relu.rst
+   activations/tanh.rst
+   activations/sigmoid.rst
+   activations/softmax.rst
+   activations/softplus.rst
 

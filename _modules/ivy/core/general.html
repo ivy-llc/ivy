@@ -99,6 +99,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../neural_net/activations.html">Activations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../neural_net/layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../neural_net/losses.html">Losses</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Docs</span></p>
 <ul>
@@ -585,6 +586,26 @@
     <span class="k">return</span> <span class="n">_get_framework</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">tile</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">reps</span><span class="p">)</span></div>
 
 
+<div class="viewcode-block" id="constant_pad"><a class="viewcode-back" href="../../../core/general/constant_pad.html#ivy.core.general.constant_pad">[docs]</a><span class="k">def</span> <span class="nf">constant_pad</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">pad_width</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">x_shape</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Pads an array with a constant value.</span>
+
+<span class="sd">    :param x: Input array to pad.</span>
+<span class="sd">    :type x: array</span>
+<span class="sd">    :param pad_width: Number of values padded to the edges of each axis.</span>
+<span class="sd">                      Specified as ((before_1, after_1), … (before_N, after_N)), where N is number of axes of x.</span>
+<span class="sd">    :type pad_width: sequence of tuples of ints</span>
+<span class="sd">    :param value: The constant value to pad the tensor with.</span>
+<span class="sd">    :type value: float or int, default zero</span>
+<span class="sd">    :param x_shape: Shape of x. Required for mxnet symbolic.</span>
+<span class="sd">    :type x_shape: sequence of ints</span>
+<span class="sd">    :param f: Machine learning framework. Inferred from inputs if None.</span>
+<span class="sd">    :type f: ml_framework, optional</span>
+<span class="sd">    :return: Padded array of rank equal to x with shape increased according to pad_width.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">_get_framework</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">constant_pad</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">pad_width</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">x_shape</span><span class="p">)</span></div>
+
+
 <div class="viewcode-block" id="zero_pad"><a class="viewcode-back" href="../../../core/general/zero_pad.html#ivy.core.general.zero_pad">[docs]</a><span class="k">def</span> <span class="nf">zero_pad</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">pad_width</span><span class="p">,</span> <span class="n">x_shape</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Pads an array with zeros.</span>
@@ -594,7 +615,7 @@
 <span class="sd">    :param pad_width: Number of values padded to the edges of each axis.</span>
 <span class="sd">                      Specified as ((before_1, after_1), … (before_N, after_N)), where N is number of axes of x.</span>
 <span class="sd">    :type pad_width: sequence of tuples of ints</span>
-<span class="sd">    :param x_shape: Shape of x1 and x2. Required for mxnet symbolic.</span>
+<span class="sd">    :param x_shape: Shape of x. Required for mxnet symbolic.</span>
 <span class="sd">    :type x_shape: sequence of ints</span>
 <span class="sd">    :param f: Machine learning framework. Inferred from inputs if None.</span>
 <span class="sd">    :type f: ml_framework, optional</span>
@@ -963,47 +984,101 @@
     <span class="k">return</span> <span class="n">_get_framework</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">gather_nd</span><span class="p">(</span><span class="n">params</span><span class="p">,</span> <span class="n">indices</span><span class="p">,</span> <span class="n">indices_shape</span><span class="p">,</span> <span class="n">dev</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="get_device"><a class="viewcode-back" href="../../../core/general/get_device.html#ivy.core.general.get_device">[docs]</a><span class="k">def</span> <span class="nf">get_device</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="dev"><a class="viewcode-back" href="../../../core/general/dev.html#ivy.core.general.dev">[docs]</a><span class="k">def</span> <span class="nf">dev</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get the native device handle for input array x.</span>
+
+<span class="sd">    :param x: Array for which to get the device handle.</span>
+<span class="sd">    :type x: array</span>
+<span class="sd">    :param f: Machine learning framework. Inferred from inputs if None.</span>
+<span class="sd">    :type f: ml_framework, optional</span>
+<span class="sd">    :return: Device handle for the array, in native framework format.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">_get_framework</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">dev</span><span class="p">(</span><span class="n">x</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="dev_to_str"><a class="viewcode-back" href="../../../core/general/dev_to_str.html#ivy.core.general.dev_to_str">[docs]</a><span class="k">def</span> <span class="nf">dev_to_str</span><span class="p">(</span><span class="n">dev_in</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Convert native data type to string representation.</span>
+
+<span class="sd">    :param dev_in: The device handle to convert to string.</span>
+<span class="sd">    :type dev_in: device handle</span>
+<span class="sd">    :param f: Machine learning framework. Inferred from inputs if None.</span>
+<span class="sd">    :type f: ml_framework, optional</span>
+<span class="sd">    :return: Device string e.g. &#39;cuda:0&#39;.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">_get_framework</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">dev_to_str</span><span class="p">(</span><span class="n">dev_in</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="dev_str"><a class="viewcode-back" href="../../../core/general/dev_str.html#ivy.core.general.dev_str">[docs]</a><span class="k">def</span> <span class="nf">dev_str</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Get the device string for input array x.</span>
 
 <span class="sd">    :param x: Array for which to get the device string.</span>
-<span class="sd">    :type x: str</span>
+<span class="sd">    :type x: array</span>
 <span class="sd">    :param f: Machine learning framework. Inferred from inputs if None.</span>
 <span class="sd">    :type f: ml_framework, optional</span>
 <span class="sd">    :return: Device string for the array, e.g. &#39;cuda:0&#39;, &#39;cuda:1&#39;, &#39;cpu&#39; etc..</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">_get_framework</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">get_device</span><span class="p">(</span><span class="n">x</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">_get_framework</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">dev_str</span><span class="p">(</span><span class="n">x</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="dtype"><a class="viewcode-back" href="../../../core/general/dtype.html#ivy.core.general.dtype">[docs]</a><span class="k">def</span> <span class="nf">dtype</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Get the data type string for input array x.</span>
+<span class="sd">    Get the data type for input array x.</span>
 
-<span class="sd">    :param x: Array for which to get the data type string.</span>
-<span class="sd">    :type x: str</span>
+<span class="sd">    :param x: Array for which to get the data type.</span>
+<span class="sd">    :type x: array</span>
 <span class="sd">    :param f: Machine learning framework. Inferred from inputs if None.</span>
 <span class="sd">    :type f: ml_framework, optional</span>
-<span class="sd">    :return: Device string for the array, e.g. &#39;float32&#39;.</span>
+<span class="sd">    :return: Data type of the array</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_get_framework</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="n">x</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="compile_fn"><a class="viewcode-back" href="../../../core/general/compile_fn.html#ivy.core.general.compile_fn">[docs]</a><span class="k">def</span> <span class="nf">compile_fn</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">example_inputs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="dtype_to_str"><a class="viewcode-back" href="../../../core/general/dtype_to_str.html#ivy.core.general.dtype_to_str">[docs]</a><span class="k">def</span> <span class="nf">dtype_to_str</span><span class="p">(</span><span class="n">dtype_in</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Convert native data type to string representation.</span>
+
+<span class="sd">    :param dtype_in: The data type to convert to string.</span>
+<span class="sd">    :type dtype_in: data type</span>
+<span class="sd">    :param f: Machine learning framework. Inferred from inputs if None.</span>
+<span class="sd">    :type f: ml_framework, optional</span>
+<span class="sd">    :return: Device string e.g. &#39;float32&#39;.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">_get_framework</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">dtype_to_str</span><span class="p">(</span><span class="n">dtype_in</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="dtype_str"><a class="viewcode-back" href="../../../core/general/dtype_str.html#ivy.core.general.dtype_str">[docs]</a><span class="k">def</span> <span class="nf">dtype_str</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get the data type string for input array x.</span>
+
+<span class="sd">    :param x: Array for which to get the data type string.</span>
+<span class="sd">    :type x: array</span>
+<span class="sd">    :param f: Machine learning framework. Inferred from inputs if None.</span>
+<span class="sd">    :type f: ml_framework, optional</span>
+<span class="sd">    :return: Device string e.g. &#39;float32&#39;.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">_get_framework</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">dtype_str</span><span class="p">(</span><span class="n">x</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="compile_fn"><a class="viewcode-back" href="../../../core/general/compile_fn.html#ivy.core.general.compile_fn">[docs]</a><span class="k">def</span> <span class="nf">compile_fn</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">dynamic</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">example_inputs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Provide a function which should be compiled, for faster inference.</span>
 <span class="sd">    The handle to the newly compiled function is returned.</span>
 
 <span class="sd">    :param func: Function to be compiled.</span>
 <span class="sd">    :type func: function</span>
+<span class="sd">    :param dynamic: Whether to compile all conditional branches, regardless of inputs during first invocation.</span>
+<span class="sd">    :type dynamic: bool, default True</span>
 <span class="sd">    :param example_inputs: Example of inputs to the function to be compiled.</span>
-<span class="sd">                            Required for torch, unused by other frameworks.</span>
+<span class="sd">                            Required for torch in non-dynamic mode, unused by other frameworks.</span>
 <span class="sd">    :type example_inputs: single input of tuple of inputs.</span>
 <span class="sd">    :param f: Machine learning framework. Inferred from inputs if None.</span>
 <span class="sd">    :type f: ml_framework, optional</span>
 <span class="sd">    :return: The handle to the newly compiled function.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">_get_framework</span><span class="p">(</span><span class="n">example_inputs</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">compile_fn</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">example_inputs</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">_get_framework</span><span class="p">(</span><span class="n">example_inputs</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">compile_fn</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">dynamic</span><span class="p">,</span> <span class="n">example_inputs</span><span class="p">)</span></div>
 </pre></div>
 
            </div>

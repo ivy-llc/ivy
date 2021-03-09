@@ -30,5 +30,5 @@ General
    general/scatter_nd.rst
    general/gather_flat.rst
    general/gather_nd.rst
-   general/get_device.rst
+   general/dev_to_str.rst
 

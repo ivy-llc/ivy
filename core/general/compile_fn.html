@@ -36,7 +36,7 @@
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
     <link rel="next" title="Gradients" href="../gradients.html" />
-    <link rel="prev" title="dtype" href="dtype.html" /> 
+    <link rel="prev" title="dtype_str" href="dtype_str.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -113,6 +113,7 @@
 <li class="toctree-l2"><a class="reference internal" href="unstack.html">unstack</a></li>
 <li class="toctree-l2"><a class="reference internal" href="split.html">split</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tile.html">tile</a></li>
+<li class="toctree-l2"><a class="reference internal" href="constant_pad.html">constant_pad</a></li>
 <li class="toctree-l2"><a class="reference internal" href="zero_pad.html">zero_pad</a></li>
 <li class="toctree-l2"><a class="reference internal" href="swapaxes.html">swapaxes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="transpose.html">transpose</a></li>
@@ -134,8 +135,12 @@
 <li class="toctree-l2"><a class="reference internal" href="scatter_nd.html">scatter_nd</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gather_flat.html">gather_flat</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gather_nd.html">gather_nd</a></li>
-<li class="toctree-l2"><a class="reference internal" href="get_device.html">get_device</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dev.html">dev</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dev_to_str.html">dev_to_str</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dev_str.html">dev_str</a></li>
 <li class="toctree-l2"><a class="reference internal" href="dtype.html">dtype</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dtype_to_str.html">dtype_to_str</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dtype_str.html">dtype_str</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">compile_fn</a></li>
 </ul>
 </li>
@@ -151,6 +156,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../neural_net/activations.html">Activations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../neural_net/layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../neural_net/losses.html">Losses</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Docs</span></p>
 <ul>
@@ -230,15 +236,16 @@
 <h1>compile_fn<a class="headerlink" href="#compile-fn" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
 <dt id="ivy.core.general.compile_fn">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname"><span class="pre">compile_fn</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">example_inputs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/general.html#compile_fn"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.core.general.compile_fn" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname"><span class="pre">compile_fn</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dynamic</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">example_inputs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/general.html#compile_fn"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.core.general.compile_fn" title="Permalink to this definition">¶</a></dt>
 <dd><p>Provide a function which should be compiled, for faster inference.
 The handle to the newly compiled function is returned.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>func</strong> (<em>function</em>) – Function to be compiled.</p></li>
+<li><p><strong>dynamic</strong> (<em>bool</em><em>, </em><em>default True</em>) – Whether to compile all conditional branches, regardless of inputs during first invocation.</p></li>
 <li><p><strong>example_inputs</strong> (<em>single input of tuple of inputs.</em>) – Example of inputs to the function to be compiled.
-Required for torch, unused by other frameworks.</p></li>
+Required for torch in non-dynamic mode, unused by other frameworks.</p></li>
 <li><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning framework. Inferred from inputs if None.</p></li>
 </ul>
 </dd>
@@ -266,7 +273,7 @@ Required for torch, unused by other frameworks.</p></li>
         <a href="../gradients.html" class="btn btn-neutral float-right" title="Gradients" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="dtype.html" class="btn btn-neutral float-left" title="dtype" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="dtype_str.html" class="btn btn-neutral float-left" title="dtype_str" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
