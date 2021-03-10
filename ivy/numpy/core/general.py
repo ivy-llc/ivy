@@ -266,6 +266,8 @@ def gather_nd(params, indices, indices_shape=None, dev=None):
 dev = lambda x: 'cpu:0'
 dev_str = lambda x: 'cpu:0'
 dev_to_str = lambda dev_in: 'cpu:0'
+gpu_is_available = lambda: False
+tpu_is_available = lambda: False
 dtype = lambda x: x.dtype
 dtype_str = lambda x: DTYPE_DICT[x.dtype]
 dtype_to_str = lambda dtype_in: DTYPE_DICT[dtype_in]

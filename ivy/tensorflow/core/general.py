@@ -287,6 +287,21 @@ def dev_to_str(dev_in):
 
 
 dev_str = lambda x: dev_to_str(dev(x))
+gpu_is_available = _tf.test.is_gpu_available
+
+
+def tpu_is_available():
+    try:
+        resolver = _tf.distribute.cluster_resolver.TPUClusterResolver()
+        _tf.config.experimental_connect_to_cluster(resolver)
+        _tf.tpu.experimental.initialize_tpu_system(resolver)
+        _tf.config.list_logical_devices('TPU')
+        _tf.distribute.experimental.TPUStrategy(resolver)
+        return True
+    except ValueError:
+        return False
+
+
 dtype = lambda x: x.dtype
 dtype_str = lambda x: DTYPE_DICT[x.dtype]
 dtype_to_str = lambda dtype_in: DTYPE_DICT[dtype_in]

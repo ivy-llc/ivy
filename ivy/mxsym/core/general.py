@@ -240,6 +240,8 @@ def gather_nd(params, indices, indices_shape=None, dev=None):
 dev = lambda _: _raise(Exception('mxnet symbolic tensors do not have a context'))
 dev_to_str = lambda _: _raise(Exception('mxnet symbolic tensors do not have a context'))
 dev_str = lambda _: _raise(Exception('mxnet symbolic tensors do not have a context'))
+gpu_is_available = lambda: _mx.context.num_gpus() > 0
+tpu_is_available = lambda: False
 dtype = lambda _: _raise(Exception('MXNet Symbolic mode does not support dtype().'))
 dtype_str = lambda _: _raise(Exception('MXNet Symbolic mode does not support dtype_str().'))
 dtype_to_str = lambda _: _raise(Exception('MXNet Symbolic mode does not support dtype_to_str().'))
