@@ -849,6 +849,28 @@ def dev_str(x, f=None):
     return _get_framework(x, f=f).dev_str(x)
 
 
+def gpu_is_available(f=None):
+    """
+    Determine whether a GPU is available to use, with the backend framework.
+
+    :param f: Machine learning framework. Inferred from inputs if None.
+    :type f: ml_framework, optional
+    :return: Boolean, as to whether a gpu is available.
+    """
+    return _get_framework(f=f).gpu_is_available()
+
+
+def tpu_is_available(f=None):
+    """
+    Determine whether a TPU is available to use, with the backend framework.
+
+    :param f: Machine learning framework. Inferred from inputs if None.
+    :type f: ml_framework, optional
+    :return: Boolean, as to whether a tpu is available.
+    """
+    return _get_framework(f=f).tpu_is_available()
+
+
 def dtype(x, f=None):
     """
     Get the data type for input array x.

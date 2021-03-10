@@ -17,7 +17,7 @@ DTYPE_DICT = {_jnp.dtype('int32'): 'int32',
 
 def _to_dev(x, dev):
     if dev is not None:
-        if 'cpu' in dev or 'gpu' in dev:
+        if 'cpu' in dev or 'gpu' in dev or 'tpu' in dev:
             dev_split = dev.split(':')
             dev_str = dev_split[0]
             if len(dev_split) > 1:
@@ -26,7 +26,7 @@ def _to_dev(x, dev):
                 idx = 0
             _jax.device_put(x, _jax.devices(dev_str)[idx])
         else:
-            raise Exception('Invalid device specified, must be in the form [ "cpu:idx" | "gpu:idx" ]')
+            raise Exception('Invalid device specified, must be in the form [ "cpu:idx" | "gpu:idx" | "tpu:id" ]')
     return x
 
 
@@ -270,9 +270,20 @@ def dev_to_str(dev_in):
     p, dev_id = (dev_in.platform(), dev_in.device().id)
     return p + ':' + str(dev_id)
 
+
 dev_str = lambda x: dev_to_str(dev(x))
 
 
+def _dev_is_available(base_dev_str):
+    try:
+        _jax.devices(base_dev_str)
+        return True
+    except RuntimeError:
+        return False
+
+
+gpu_is_available = lambda: _dev_is_available('gpu')
+tpu_is_available = lambda: _dev_is_available('tpu')
 dtype = lambda x: x.dtype
 dtype_to_str = lambda dtype_in: DTYPE_DICT[dtype_in]
 dtype_str = lambda x: dtype_to_str(dtype(x))
