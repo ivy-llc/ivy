@@ -61,6 +61,8 @@ General
    general/dev.rst
    general/dev_to_str.rst
    general/dev_str.rst
+   general/gpu_is_available.rst
+   general/tpu_is_available.rst
    general/dtype.rst
    general/dtype_to_str.rst
    general/dtype_str.rst

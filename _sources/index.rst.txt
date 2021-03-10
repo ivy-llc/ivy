@@ -200,7 +200,7 @@ then we suggest you dive into some of the demos for the various Ivy libraries cu
 Simply open up the main docs_, then open the library-specific docs linked on the bottom left, and check out the demos folder in the library repo.
 
 On the other hand, if you have your own new library in mind,
-or if you would like to implement parts of your own project in Ivy to maximise it's portability,
+or if you would like to implement parts of your own project in Ivy to maximise its portability,
 then we recommend checking out the page `Writing Ivy`_ in the docs.
 Here, we dive a bit deeper into the Ivy framework,
 and the best coding practices to get the most out of Ivy for your own codebases and libraries.
