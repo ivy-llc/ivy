@@ -31,4 +31,5 @@ General
    general/gather_flat.rst
    general/gather_nd.rst
    general/dev_to_str.rst
+   general/tpu_is_available.rst
 
