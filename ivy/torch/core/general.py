@@ -4,6 +4,7 @@ Collection of PyTorch general functions, wrapped to fit Ivy syntax and signature
 
 # global
 import torch
+import importlib
 import numpy as np
 torch_scatter = None
 from operator import mul
@@ -13,7 +14,9 @@ from typing import List, Dict, Optional
 
 
 # noinspection PyShadowingNames
-def array(object_in, dtype_str: Optional[str] = None, dev: Optional[torch.device] = None):
+def array(object_in, dtype_str: Optional[str] = None, dev: Optional[str] = None):
+    if dev is not None:
+        dev = dev.replace('gpu', 'cuda')
     if dtype_str is not None:
         return torch.tensor(object_in, dtype=dtype_from_str(dtype_str)).to(dev)
     else:
@@ -266,7 +269,9 @@ def zeros_like(x, dtype_str: Optional[str] = None, dev: Optional[torch.device] =
 
 
 # noinspection PyShadowingNames
-def ones(shape: List[int], dtype_str: str = 'float32', dev: Optional[torch.device] = None):
+def ones(shape: List[int], dtype_str: str = 'float32', dev: Optional[str] = None):
+    if dev is not None:
+        dev: torch.device = dev.replace('gpu', 'cuda')
     type_dict: Dict[str, torch.dtype] = {'int32': torch.int32,
                                          'int64': torch.int64,
                                          'float32': torch.float32,
@@ -354,6 +359,7 @@ def scatter_flat(indices, updates, size: int, reduction: str = 'sum', dev: Optio
 def scatter_nd(indices, updates, shape, num_idx_dims=None, reduction='sum', dev=None):
     if dev is None:
         dev = dev_str(updates)
+    dev = dev.replace('gpu', 'cuda')
     shape = list(shape)
     dtype = updates.dtype
     indices_shape = indices.shape
@@ -437,6 +443,16 @@ def dev_to_str(dev_in: torch.device):
 
 def dev_str(x):
     return dev_to_str(dev(x))
+
+
+gpu_is_available = torch.cuda.is_available
+
+
+# noinspection PyUnresolvedReferences
+def tpu_is_available():
+    if importlib.util.find_spec("torch_xla") is not None:
+        return True
+    return False
 
 
 def dtype(x):

@@ -7,9 +7,9 @@ import torch
 from typing import Optional, List
 
 
-def random_uniform(low: float = 0.0, high: float = 1.0, shape: Optional[List[int]] = None, dev: torch.device = 'cpu'):
+def random_uniform(low: float = 0.0, high: float = 1.0, shape: Optional[List[int]] = None, dev: str = 'cpu'):
     rand_range = high - low
-    return torch.rand(shape).to(dev) * rand_range + low
+    return torch.rand(shape).to(dev.replace('gpu', 'cuda')) * rand_range + low
 
 
 def randint(low: int, high: int, shape: List[int], dev: torch.device = 'cpu'):

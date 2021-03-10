@@ -158,9 +158,9 @@ def torch_call(func, *args, **kwargs):
     new_kwargs = dict(zip(kwargs.keys(), new_kw_vals))
     output = func(*new_args, **new_kwargs)
     if isinstance(output, tuple):
-        return tuple(_convert_vars(output, _torch.Tensor, lambda x: x.detach().numpy()))
+        return tuple(_convert_vars(output, _torch.Tensor, lambda x: x.cpu().detach().numpy()))
     else:
-        return _convert_vars([output], _torch.Tensor, lambda x: x.detach().numpy())[0]
+        return _convert_vars([output], _torch.Tensor, lambda x: x.cpu().detach().numpy())[0]
 
 
 def mx_call(func, *args, **kwargs):
@@ -224,6 +224,16 @@ def exclude(exclusion_list):
     _excluded = _excluded + list(set(exclusion_list) - set(_excluded))
 
 
+def frameworks():
+    return list(set([ivy_fw for fw_str, ivy_fw in _ivy_fws_dict.items()
+                     if ivy_fw is not None and fw_str not in _excluded]))
+
+
 def calls():
+    return [call for (fw_str, ivy_fw), call in zip(_ivy_fws_dict.items(), _calls)
+            if ivy_fw is not None and fw_str not in _excluded]
+
+
+def f_n_calls():
     return [(ivy_fw, call) for (fw_str, ivy_fw), call in zip(_ivy_fws_dict.items(), _calls)
             if ivy_fw is not None and fw_str not in _excluded]

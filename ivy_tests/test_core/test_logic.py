@@ -11,40 +11,40 @@ import ivy_tests.helpers as helpers
 
 
 def test_logical_and():
-    for lib, call in helpers.calls():
-        assert np.array_equal(call(ivy.logical_and, ivy.array([True, True], f=lib),
-                                   ivy.array([False, True], f=lib), f=lib),
+    for f, call in helpers.f_n_calls():
+        assert np.array_equal(call(ivy.logical_and, ivy.array([True, True], f=f),
+                                   ivy.array([False, True], f=f), f=f),
                               np.logical_and(np.array([True, True]), np.array([False, True])))
-        assert np.array_equal(call(ivy.logical_and, ivy.array([[0.]], f=lib),
-                                   ivy.array([[1.]], f=lib), f=lib),
+        assert np.array_equal(call(ivy.logical_and, ivy.array([[0.]], f=f),
+                                   ivy.array([[1.]], f=f), f=f),
                               np.logical_and(np.array([[0.]]), np.array([[1.]])))
         if call in [helpers.torch_call]:
             # pytorch scripting does not support .type() method
             continue
-        helpers.assert_compilable('logical_and', lib)
+        helpers.assert_compilable('logical_and', f)
 
 
 def test_logical_or():
-    for lib, call in helpers.calls():
-        assert np.array_equal(call(ivy.logical_or, ivy.array([True, True], f=lib),
-                                   ivy.array([False, True], f=lib), f=lib),
+    for f, call in helpers.f_n_calls():
+        assert np.array_equal(call(ivy.logical_or, ivy.array([True, True], f=f),
+                                   ivy.array([False, True], f=f), f=f),
                               np.logical_or(np.array([True, True]), np.array([False, True])))
-        assert np.array_equal(call(ivy.logical_or, ivy.array([[0.]], f=lib),
-                                   ivy.array([[1.]], f=lib), f=lib),
+        assert np.array_equal(call(ivy.logical_or, ivy.array([[0.]], f=f),
+                                   ivy.array([[1.]], f=f), f=f),
                               np.logical_or(np.array([[0.]]), np.array([[1.]])))
         if call in [helpers.torch_call]:
             # pytorch scripting does not support .type() method
             continue
-        helpers.assert_compilable('logical_or', lib)
+        helpers.assert_compilable('logical_or', f)
 
 
 def test_logical_not():
-    for lib, call in helpers.calls():
-        assert np.array_equal(call(ivy.logical_not, ivy.array([True, True], f=lib)),
+    for f, call in helpers.f_n_calls():
+        assert np.array_equal(call(ivy.logical_not, ivy.array([True, True], f=f)),
                               np.logical_not(np.array([True, True])))
-        assert np.array_equal(call(ivy.logical_not, ivy.array([[0.]], f=lib)),
+        assert np.array_equal(call(ivy.logical_not, ivy.array([[0.]], f=f)),
                               np.logical_not(np.array([[0.]])))
         if call in [helpers.torch_call]:
             # pytorch scripting does not support .type() method
           continue
-        helpers.assert_compilable('logical_not', lib)
+        helpers.assert_compilable('logical_not', f)

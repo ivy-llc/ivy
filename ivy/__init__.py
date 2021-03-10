@@ -19,4 +19,10 @@ class Tensor:
         return
 
 
+class Framework:
+
+    def __init__(self):
+        pass
+
+
 backend = 'none'
