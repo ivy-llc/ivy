@@ -88,7 +88,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../core/container.html">Container</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../core/general.html">General</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../core/gradients.html">Gradients</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../core/image.html">Image</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../core/linalg.html">Linalg</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../core/logic.html">Logic</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../core/math.html">Math</a></li>
@@ -179,7 +178,6 @@
 <span class="c1"># global</span>
 <span class="kn">import</span> <span class="nn">random</span> <span class="k">as</span> <span class="nn">_random</span>
 <span class="kn">import</span> <span class="nn">h5py</span> <span class="k">as</span> <span class="nn">_h5py</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">_np</span>
 <span class="kn">from</span> <span class="nn">functools</span> <span class="k">import</span> <span class="n">reduce</span> <span class="k">as</span> <span class="n">_reduce</span>
 <span class="kn">from</span> <span class="nn">operator</span> <span class="k">import</span> <span class="n">mul</span> <span class="k">as</span> <span class="n">_mul</span>
 <span class="k">try</span><span class="p">:</span>
@@ -248,14 +246,12 @@
                 <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">Container concat operation only valid for containers of arrays&#39;</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Container.from_disk"><a class="viewcode-back" href="../../../core/container/Container.html#ivy.core.container.Container.from_disk">[docs]</a>    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">from_disk</span><span class="p">(</span><span class="n">h5_obj_or_filepath</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">slice_obj</span><span class="o">=</span><span class="nb">slice</span><span class="p">(</span><span class="kc">None</span><span class="p">)):</span>
+    <span class="k">def</span> <span class="nf">from_disk</span><span class="p">(</span><span class="n">h5_obj_or_filepath</span><span class="p">,</span> <span class="n">slice_obj</span><span class="o">=</span><span class="nb">slice</span><span class="p">(</span><span class="kc">None</span><span class="p">)):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Load container object from disk, as an h5py file, at the specified filepath.</span>
 
 <span class="sd">        :param h5_obj_or_filepath: Filepath where the container object is saved to disk, or h5 object.</span>
 <span class="sd">        :type h5_obj_or_filepath: str or h5 obj</span>
-<span class="sd">        :param f: Machine learning framework.</span>
-<span class="sd">        :type f: ml_framework, optional</span>
 <span class="sd">        :param slice_obj: slice object to slice all h5 elements.</span>
 <span class="sd">        :type slice_obj: slice or sequence of slices</span>
 <span class="sd">        :return: Container loaded from disk</span>
@@ -268,12 +264,9 @@
 
         <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">h5_obj</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">_h5py</span><span class="o">.</span><span class="n">Group</span><span class="p">):</span>
-                <span class="n">container_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">Container</span><span class="o">.</span><span class="n">from_disk</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">slice_obj</span><span class="p">)</span>
+                <span class="n">container_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">Container</span><span class="o">.</span><span class="n">from_disk</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">slice_obj</span><span class="p">)</span>
             <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">_h5py</span><span class="o">.</span><span class="n">Dataset</span><span class="p">):</span>
-                <span class="k">if</span> <span class="n">f</span> <span class="ow">is</span> <span class="n">_np</span><span class="p">:</span>
-                    <span class="n">container_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span><span class="p">[</span><span class="n">slice_obj</span><span class="p">]</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="n">container_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">_ivy_gen</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">value</span><span class="p">[</span><span class="n">slice_obj</span><span class="p">]),</span> <span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span>
+                <span class="n">container_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">_ivy_gen</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">value</span><span class="p">[</span><span class="n">slice_obj</span><span class="p">]))</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;Item found inside h5_obj which was neither a Group nor a Dataset.&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">Container</span><span class="p">(</span><span class="n">container_dict</span><span class="p">)</span></div>
@@ -511,17 +504,13 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="nb">list</span><span class="p">([</span><span class="n">item</span> <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">to_iterator</span><span class="p">()])</span></div>
 
-<div class="viewcode-block" id="Container.to_random"><a class="viewcode-back" href="../../../core/container/Container.html#ivy.core.container.Container.to_random">[docs]</a>    <span class="k">def</span> <span class="nf">to_random</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">f</span><span class="p">):</span>
+<div class="viewcode-block" id="Container.to_random"><a class="viewcode-back" href="../../../core/container/Container.html#ivy.core.container.Container.to_random">[docs]</a>    <span class="k">def</span> <span class="nf">to_random</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return new container, with all entries having same shape and type, but random values</span>
-
-<span class="sd">        :param f: Machine learning framework.</span>
-<span class="sd">        :type f: ml_framework</span>
-<span class="sd">        :return: Container with random values as entries.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">def</span> <span class="nf">_as_random</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">_</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
             <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="s1">&#39;shape&#39;</span><span class="p">):</span>
-                <span class="k">return</span> <span class="n">_ivy_rand</span><span class="o">.</span><span class="n">random_uniform</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="n">value</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">_ivy_rand</span><span class="o">.</span><span class="n">random_uniform</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="n">value</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">value</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">_as_random</span><span class="p">)</span></div>
 
@@ -616,17 +605,13 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">_</span><span class="p">:</span> <span class="n">_ivy_gen</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="n">x</span><span class="p">))</span></div>
 
-<div class="viewcode-block" id="Container.with_entries_as_lists"><a class="viewcode-back" href="../../../core/container/Container.html#ivy.core.container.Container.with_entries_as_lists">[docs]</a>    <span class="k">def</span> <span class="nf">with_entries_as_lists</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">f</span><span class="p">):</span>
+<div class="viewcode-block" id="Container.with_entries_as_lists"><a class="viewcode-back" href="../../../core/container/Container.html#ivy.core.container.Container.with_entries_as_lists">[docs]</a>    <span class="k">def</span> <span class="nf">with_entries_as_lists</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return container object, with each array entry in the container cast to a list</span>
-
-<span class="sd">        :param f: Machine learning framework.</span>
-<span class="sd">        :type f: ml_framework</span>
-<span class="sd">        :return: New container, with entries not as arrays but as python lists</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">def</span> <span class="nf">to_list</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">_</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
             <span class="k">try</span><span class="p">:</span>
-                <span class="k">return</span> <span class="n">_ivy_gen</span><span class="o">.</span><span class="n">to_list</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">_ivy_gen</span><span class="o">.</span><span class="n">to_list</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
             <span class="k">except</span> <span class="p">(</span><span class="ne">AttributeError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">):</span>
                 <span class="k">return</span> <span class="n">x</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">to_list</span><span class="p">)</span></div>

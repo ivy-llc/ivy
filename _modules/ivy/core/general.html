@@ -88,7 +88,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../core/container.html">Container</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../core/general.html">General</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../core/gradients.html">Gradients</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../core/image.html">Image</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../core/linalg.html">Linalg</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../core/logic.html">Logic</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../core/math.html">Math</a></li>
@@ -181,7 +180,7 @@
 
 
 <span class="c1"># noinspection PyShadowingNames</span>
-<div class="viewcode-block" id="array"><a class="viewcode-back" href="../../../core/general/array.html#ivy.core.general.array">[docs]</a><span class="k">def</span> <span class="nf">array</span><span class="p">(</span><span class="n">object_in</span><span class="p">,</span> <span class="n">dtype_str</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dev</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="array"><a class="viewcode-back" href="../../../core/general/array.html#ivy.core.general.array">[docs]</a><span class="k">def</span> <span class="nf">array</span><span class="p">(</span><span class="n">object_in</span><span class="p">,</span> <span class="n">dtype_str</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dev_str</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Creates an array.</span>
 <span class="sd">    </span>
@@ -192,13 +191,13 @@
 <span class="sd">        If not given, then the type will be determined as the minimum type required to hold the objects in the</span>
 <span class="sd">        sequence.</span>
 <span class="sd">    :type dtype_str: data-type string, optional</span>
-<span class="sd">    :param dev: device on which to create the array &#39;cuda:0&#39;, &#39;cuda:1&#39;, &#39;cpu&#39; etc..</span>
-<span class="sd">    :type dev: str</span>
+<span class="sd">    :param dev_str: device string on which to create the array &#39;cuda:0&#39;, &#39;cuda:1&#39;, &#39;cpu&#39; etc..</span>
+<span class="sd">    :type dev_str: str</span>
 <span class="sd">    :param f: Machine learning framework. Inferred from inputs if None.</span>
 <span class="sd">    :type f: ml_framework, optional</span>
 <span class="sd">    :return: An array object satisfying the specified requirements, in the form of the selected framework.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">_get_framework</span><span class="p">(</span><span class="n">object_in</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">object_in</span><span class="p">,</span> <span class="n">dtype_str</span><span class="p">,</span> <span class="n">dev</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">_get_framework</span><span class="p">(</span><span class="n">object_in</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">object_in</span><span class="p">,</span> <span class="n">dtype_str</span><span class="p">,</span> <span class="n">dev_str</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="to_numpy"><a class="viewcode-back" href="../../../core/general/to_numpy.html#ivy.core.general.to_numpy">[docs]</a><span class="k">def</span> <span class="nf">to_numpy</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -374,14 +373,14 @@
     <span class="k">return</span> <span class="n">_get_framework</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">x</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="argmax"><a class="viewcode-back" href="../../../core/general/argmax.html#ivy.core.general.argmax">[docs]</a><span class="k">def</span> <span class="nf">argmax</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="argmax"><a class="viewcode-back" href="../../../core/general/argmax.html#ivy.core.general.argmax">[docs]</a><span class="k">def</span> <span class="nf">argmax</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns the index with the largest value across axes of an array.</span>
 
 <span class="sd">    :param x: Input array containing elements to argmax.</span>
 <span class="sd">    :type x: array</span>
-<span class="sd">    :param axis: Axis to perform the argmax, default is 0.</span>
-<span class="sd">    :type axis: int</span>
+<span class="sd">    :param axis: Axis to perform the argmax, default is None, where the overall max is returned.</span>
+<span class="sd">    :type axis: int, optional</span>
 <span class="sd">    :param f: Machine learning framework. Inferred from inputs if None.</span>
 <span class="sd">    :type f: ml_framework, optional</span>
 <span class="sd">    :return: Array containing the indices of the maximum values across the specified axis.</span>
@@ -389,14 +388,14 @@
     <span class="k">return</span> <span class="n">_get_framework</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="argmin"><a class="viewcode-back" href="../../../core/general/argmin.html#ivy.core.general.argmin">[docs]</a><span class="k">def</span> <span class="nf">argmin</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="argmin"><a class="viewcode-back" href="../../../core/general/argmin.html#ivy.core.general.argmin">[docs]</a><span class="k">def</span> <span class="nf">argmin</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns the index with the smallest value across axes of an array.</span>
 
 <span class="sd">    :param x: Input array containing elements to argmin.</span>
 <span class="sd">    :type x: array</span>
-<span class="sd">    :param axis: Axis to perform the argmin, default is 0.</span>
-<span class="sd">    :type axis: int</span>
+<span class="sd">    :param axis: Axis to perform the argmin, default is None, where the overall min is returned.</span>
+<span class="sd">    :type axis: int, optional</span>
 <span class="sd">    :param f: Machine learning framework. Inferred from inputs if None.</span>
 <span class="sd">    :type f: ml_framework, optional</span>
 <span class="sd">    :return: Array containing the indices of the minimum values across the specified axis.</span>
