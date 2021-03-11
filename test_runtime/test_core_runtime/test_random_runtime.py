@@ -139,7 +139,7 @@ def test_shuffle():
 
         append_to_file(fname, '{}'.format(lib))
 
-        x0 = ivy_gen.array([random.uniform(0, 1) for _ in range(DIM)], f=lib)
+        x0 = ivy_gen.tensor([random.uniform(0, 1) for _ in range(DIM)], f=lib)
 
         ivy_rand.shuffle(x0, f=lib)
         ivy_rand_w_time.shuffle(x0, f=time_lib)

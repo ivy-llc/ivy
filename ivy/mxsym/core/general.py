@@ -28,7 +28,7 @@ def _mxnet_init_context(dev):
     return _mx.Context(mx_dev, mx_dev_id)
 
 
-def array(object_in, dtype_str=None, dev=None):
+def tensor(object_in, dtype_str=None, dev=None):
     if isinstance(object_in, _mx.symbol.symbol.Symbol):
         return object_in
     _mx_nd_array = _mx.nd.array(object_in)
@@ -44,8 +44,18 @@ def to_list(_):
     raise Exception('MXNet Symbolic mode does not support to_list().')
 
 
-shape = lambda x: _mx.symbol.shape_array(x)
-get_num_dims = lambda x: _mx.symbol.shape_array((_mx.symbol.shape_array(x)))
+def shape(x, as_tensor=False):
+    if not as_tensor:
+        raise Exception('MXNet symbolic can only infer tensor shape in the form of a new tensor.')
+    return _mx.symbol.shape_array(x)
+
+
+def get_num_dims(x, as_tensor=False):
+    if not as_tensor:
+        raise Exception('MXNet symbolic can only infer number of dimensions in the form of a new tensor.')
+    _mx.symbol.shape_array(_mx.symbol.shape_array(x))
+
+
 minimum = _mx.symbol.minimum
 maximum = _mx.symbol.maximum
 clip = _mx.symbol.clip

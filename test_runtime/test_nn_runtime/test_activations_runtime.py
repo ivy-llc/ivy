@@ -49,7 +49,7 @@ def test_relu():
 
         append_to_file(fname, '{}'.format(lib))
 
-        x0 = ivy_gen.array([random.uniform(0, 1) for _ in range(DIM)], f=lib)
+        x0 = ivy_gen.tensor([random.uniform(0, 1) for _ in range(DIM)], f=lib)
 
         ivy_act.relu(x0, f=lib)
         ivy_act_w_time.relu(x0, f=time_lib)
@@ -81,7 +81,7 @@ def test_leaky_relu():
 
         append_to_file(fname, '{}'.format(lib))
 
-        x0 = ivy_gen.array([random.uniform(0, 1) for _ in range(DIM)], f=lib)
+        x0 = ivy_gen.tensor([random.uniform(0, 1) for _ in range(DIM)], f=lib)
 
         ivy_act.leaky_relu(x0, f=lib)
         ivy_act_w_time.leaky_relu(x0, f=time_lib)
@@ -113,7 +113,7 @@ def test_tanh():
 
         append_to_file(fname, '{}'.format(lib))
 
-        x0 = ivy_gen.array([random.uniform(0, 1) for _ in range(DIM)], f=lib)
+        x0 = ivy_gen.tensor([random.uniform(0, 1) for _ in range(DIM)], f=lib)
 
         ivy_act.tanh(x0, f=lib)
         ivy_act_w_time.tanh(x0, f=time_lib)
@@ -145,7 +145,7 @@ def test_sigmoid():
 
         append_to_file(fname, '{}'.format(lib))
 
-        x0 = ivy_gen.array([random.uniform(0, 1) for _ in range(DIM)], f=lib)
+        x0 = ivy_gen.tensor([random.uniform(0, 1) for _ in range(DIM)], f=lib)
 
         ivy_act.sigmoid(x0, f=lib)
         ivy_act_w_time.sigmoid(x0, f=time_lib)
@@ -177,7 +177,7 @@ def test_softmax():
 
         append_to_file(fname, '{}'.format(lib))
 
-        x0 = ivy_gen.array([random.uniform(0, 1) for _ in range(DIM)], f=lib)
+        x0 = ivy_gen.tensor([random.uniform(0, 1) for _ in range(DIM)], f=lib)
 
         ivy_act.softmax(x0, f=lib)
         ivy_act_w_time.softmax(x0, f=time_lib)
@@ -209,7 +209,7 @@ def test_softplus():
 
         append_to_file(fname, '{}'.format(lib))
 
-        x0 = ivy_gen.array([random.uniform(0, 1) for _ in range(DIM)], f=lib)
+        x0 = ivy_gen.tensor([random.uniform(0, 1) for _ in range(DIM)], f=lib)
 
         ivy_act.softplus(x0, f=lib)
         ivy_act_w_time.softplus(x0, f=time_lib)

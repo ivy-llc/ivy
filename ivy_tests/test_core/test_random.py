@@ -39,8 +39,8 @@ def test_random_seed(dev_str, call):
 
 def test_random_shuffle(dev_str, call):
     call(ivy.seed, 0)
-    first_shuffle = call(ivy.shuffle, ivy.array([1, 2, 3]))
+    first_shuffle = call(ivy.shuffle, ivy.tensor([1, 2, 3]))
     call(ivy.seed, 0)
-    second_shuffle = call(ivy.shuffle, ivy.array([1, 2, 3]))
+    second_shuffle = call(ivy.shuffle, ivy.tensor([1, 2, 3]))
     assert np.array(first_shuffle == second_shuffle).all()
     helpers.assert_compilable(ivy.shuffle)

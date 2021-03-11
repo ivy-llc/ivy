@@ -15,9 +15,9 @@ def test_conv1d(dev_str, call):
     if call in [helpers.np_call, helpers.jnp_call]:
         # numpy and jax do not yet support 1d convolutions
         pytest.skip()
-    x = ivy.array([[[0.], [3.], [0.]]])
+    x = ivy.tensor([[[0.], [3.], [0.]]])
     x_batched = ivy.tile(x, (5, 1, 1))
-    filters = ivy.array([[[0.]], [[1.]], [[0.]]])
+    filters = ivy.tensor([[[0.]], [[1.]], [[0.]]])
     result_same = np.array([[[0.], [3.], [0.]]])
     result_same_batched = np.tile(result_same, (5, 1, 1))
     result_valid = np.array([[[3.]]])
@@ -34,9 +34,9 @@ def test_conv1d_transpose(dev_str, call):
     if call in [helpers.np_call, helpers.jnp_call]:
         # numpy and jax do not yet support 1d transpose convolutions
         pytest.skip()
-    x = ivy.array([[[0.], [3.], [0.]]])
+    x = ivy.tensor([[[0.], [3.], [0.]]])
     x_batched = ivy.tile(x, (5, 1, 1))
-    filters = ivy.array([[[0.]], [[1.]], [[0.]]])
+    filters = ivy.tensor([[[0.]], [[1.]], [[0.]]])
     result_same = np.array([[[0.], [3.], [0.]]])
     result_same_batched = np.tile(result_same, (5, 1, 1))
     result_valid = np.array([[[0.], [0.], [3.], [0.], [0.]]])
@@ -50,15 +50,15 @@ def test_conv1d_transpose(dev_str, call):
 
 
 def test_conv2d(dev_str, call):
-    x = ivy.array([[[[1.], [2.], [3.], [4.], [5.]],
-                    [[6.], [7.], [8.], [9.], [10.]],
-                    [[11.], [12.], [13.], [14.], [15.]],
-                    [[16.], [17.], [18.], [19.], [20.]],
-                    [[21.], [22.], [23.], [24.], [25.]]]])
+    x = ivy.tensor([[[[1.], [2.], [3.], [4.], [5.]],
+                     [[6.], [7.], [8.], [9.], [10.]],
+                     [[11.], [12.], [13.], [14.], [15.]],
+                     [[16.], [17.], [18.], [19.], [20.]],
+                     [[21.], [22.], [23.], [24.], [25.]]]])
     x_batched = ivy.tile(x, (5, 1, 1, 1))
-    filters = ivy.array([[[[0.]], [[1.]], [[0.]]],
-                         [[[1.]], [[1.]], [[1.]]],
-                         [[[0.]], [[1.]], [[0.]]]])
+    filters = ivy.tensor([[[[0.]], [[1.]], [[0.]]],
+                          [[[1.]], [[1.]], [[1.]]],
+                          [[[0.]], [[1.]], [[0.]]]])
     result_same = np.array([[[[9.], [13.], [17.], [21.], [19.]],
                              [[25.], [35.], [40.], [45.], [39.]],
                              [[45.], [60.], [65.], [70.], [59.]],
@@ -81,13 +81,13 @@ def test_conv2d_transpose(dev_str, call):
     if call in [helpers.np_call, helpers.jnp_call]:
         # numpy and jax do not yet support 2d transpose convolutions
         pytest.skip()
-    x = ivy.array([[[[0.], [0.], [0.]],
-                    [[0.], [3.], [0.]],
-                    [[0.], [0.], [0.]]]])
+    x = ivy.tensor([[[[0.], [0.], [0.]],
+                     [[0.], [3.], [0.]],
+                     [[0.], [0.], [0.]]]])
     x_batched = ivy.tile(x, (5, 1, 1, 1))
-    filters = ivy.array([[[[0.]], [[1.]], [[0.]]],
-                         [[[1.]], [[1.]], [[1.]]],
-                         [[[0.]], [[1.]], [[0.]]]])
+    filters = ivy.tensor([[[[0.]], [[1.]], [[0.]]],
+                          [[[1.]], [[1.]], [[1.]]],
+                          [[[0.]], [[1.]], [[0.]]]])
     result_same = np.array([[[[0.], [3.], [0.]],
                              [[3.], [3.], [3.]],
                              [[0.], [3.], [0.]]]])
@@ -110,15 +110,15 @@ def test_depthwise_conv2d(dev_str, call):
     if call in [helpers.np_call, helpers.jnp_call]:
         # numpy and jax do not yet support depthwise 2d convolutions
         pytest.skip()
-    x1 = ivy.array([[[[0.], [0.], [0.]],
-                     [[0.], [3.], [0.]],
-                     [[0.], [0.], [0.]]]])
+    x1 = ivy.tensor([[[[0.], [0.], [0.]],
+                      [[0.], [3.], [0.]],
+                      [[0.], [0.], [0.]]]])
     x2 = ivy.concatenate((x1, x1), -1)
     x1_batched = ivy.tile(x1, (5, 1, 1, 1))
     x2_batched = ivy.tile(x2, (5, 1, 1, 1))
-    filters1 = ivy.array([[[0.], [1.], [0.]],
-                          [[1.], [1.], [1.]],
-                          [[0.], [1.], [0.]]])
+    filters1 = ivy.tensor([[[0.], [1.], [0.]],
+                           [[1.], [1.], [1.]],
+                           [[0.], [1.], [0.]]])
     filters2 = ivy.concatenate((filters1, filters1), -1)
     result_same = np.array([[[[0.], [3.], [0.]],
                              [[3.], [3.], [3.]],
@@ -140,13 +140,13 @@ def test_conv3d(dev_str, call):
     if call in [helpers.np_call, helpers.jnp_call]:
         # numpy and jax do not yet support 3d convolutions
         pytest.skip()
-    x = ivy.array([[[[[0.], [0.], [0.]], [[0.], [0.], [0.]], [[0.], [0.], [0.]]],
-                    [[[0.], [0.], [0.]], [[0.], [3.], [0.]], [[0.], [0.], [0.]]],
-                    [[[0.], [0.], [0.]], [[0.], [0.], [0.]], [[0.], [0.], [0.]]]]])
+    x = ivy.tensor([[[[[0.], [0.], [0.]], [[0.], [0.], [0.]], [[0.], [0.], [0.]]],
+                     [[[0.], [0.], [0.]], [[0.], [3.], [0.]], [[0.], [0.], [0.]]],
+                     [[[0.], [0.], [0.]], [[0.], [0.], [0.]], [[0.], [0.], [0.]]]]])
     x_batched = ivy.tile(x, (5, 1, 1, 1, 1))
-    filters = ivy.array([[[[[0.]], [[0.]], [[0.]]], [[[1.]], [[1.]], [[1.]]], [[[0.]], [[0.]], [[0.]]]],
-                         [[[[1.]], [[1.]], [[1.]]], [[[1.]], [[1.]], [[1.]]], [[[1.]], [[1.]], [[1.]]]],
-                         [[[[0.]], [[0.]], [[0.]]], [[[1.]], [[1.]], [[1.]]], [[[0.]], [[0.]], [[0.]]]]])
+    filters = ivy.tensor([[[[[0.]], [[0.]], [[0.]]], [[[1.]], [[1.]], [[1.]]], [[[0.]], [[0.]], [[0.]]]],
+                          [[[[1.]], [[1.]], [[1.]]], [[[1.]], [[1.]], [[1.]]], [[[1.]], [[1.]], [[1.]]]],
+                          [[[[0.]], [[0.]], [[0.]]], [[[1.]], [[1.]], [[1.]]], [[[0.]], [[0.]], [[0.]]]]])
     result_same = np.array([[[[[0.], [0.], [0.]], [[3.], [3.], [3.]], [[0.], [0.], [0.]]],
                              [[[3.], [3.], [3.]], [[3.], [3.], [3.]], [[3.], [3.], [3.]]],
                              [[[0.], [0.], [0.]], [[3.], [3.], [3.]], [[0.], [0.], [0.]]]]])
@@ -162,16 +162,16 @@ def test_conv3d(dev_str, call):
 
 
 def test_conv3d_transpose(dev_str, call):
-    if call in [helpers.np_call, helpers.jnp_call, helpers.mx_call, helpers.mx_graph_call]:
+    if call in [helpers.np_call, helpers.jnp_call, helpers.mx_call]:
         # numpy and jax do not yet support 3d convolutions, and mxnet only supports with CUDNN
         pytest.skip()
-    x = ivy.array([[[[[0.], [0.], [0.]], [[0.], [0.], [0.]], [[0.], [0.], [0.]]],
-                    [[[0.], [0.], [0.]], [[0.], [3.], [0.]], [[0.], [0.], [0.]]],
-                    [[[0.], [0.], [0.]], [[0.], [0.], [0.]], [[0.], [0.], [0.]]]]])
+    x = ivy.tensor([[[[[0.], [0.], [0.]], [[0.], [0.], [0.]], [[0.], [0.], [0.]]],
+                     [[[0.], [0.], [0.]], [[0.], [3.], [0.]], [[0.], [0.], [0.]]],
+                     [[[0.], [0.], [0.]], [[0.], [0.], [0.]], [[0.], [0.], [0.]]]]])
     x_batched = ivy.tile(x, (5, 1, 1, 1, 1))
-    filters = ivy.array([[[[[0.]], [[0.]], [[0.]]], [[[1.]], [[1.]], [[1.]]], [[[0.]], [[0.]], [[0.]]]],
-                         [[[[1.]], [[1.]], [[1.]]], [[[1.]], [[1.]], [[1.]]], [[[1.]], [[1.]], [[1.]]]],
-                         [[[[0.]], [[0.]], [[0.]]], [[[1.]], [[1.]], [[1.]]], [[[0.]], [[0.]], [[0.]]]]])
+    filters = ivy.tensor([[[[[0.]], [[0.]], [[0.]]], [[[1.]], [[1.]], [[1.]]], [[[0.]], [[0.]], [[0.]]]],
+                          [[[[1.]], [[1.]], [[1.]]], [[[1.]], [[1.]], [[1.]]], [[[1.]], [[1.]], [[1.]]]],
+                          [[[[0.]], [[0.]], [[0.]]], [[[1.]], [[1.]], [[1.]]], [[[0.]], [[0.]], [[0.]]]]])
     result_same = np.array([[[[[0.], [0.], [0.]], [[3.], [3.], [3.]], [[0.], [0.], [0.]]],
                              [[[3.], [3.], [3.]], [[3.], [3.], [3.]], [[3.], [3.], [3.]]],
                              [[[0.], [0.], [0.]], [[3.], [3.], [3.]], [[0.], [0.], [0.]]]]])
@@ -191,9 +191,9 @@ def test_conv3d_transpose(dev_str, call):
 
 
 def test_linear(dev_str, call):
-    x = ivy.array([[1., 2., 3.]])
-    weight = ivy.array([[1., 1., 1.], [1., 1., 1.]])
-    bias = ivy.array([2., 2.])
+    x = ivy.tensor([[1., 2., 3.]])
+    weight = ivy.tensor([[1., 1., 1.], [1., 1., 1.]])
+    bias = ivy.tensor([2., 2.])
     res = np.array([[8., 8.]])
     assert np.allclose(call(ivy.linear, x, weight, bias, num_hidden=2), res)
     helpers.assert_compilable(ivy.linear)

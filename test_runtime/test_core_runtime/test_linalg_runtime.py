@@ -49,8 +49,8 @@ def test_svd():
 
         append_to_file(fname, '{}'.format(lib))
 
-        x0 = ivy_gen.array([[[random.uniform(0, 1), random.uniform(0, 1)],
-                             [random.uniform(0, 1), random.uniform(0, 1)]] for _ in range(DIM)], f=lib)
+        x0 = ivy_gen.tensor([[[random.uniform(0, 1), random.uniform(0, 1)],
+                              [random.uniform(0, 1), random.uniform(0, 1)]] for _ in range(DIM)], f=lib)
 
         ivy_linalg.svd(x0, f=lib)
         ivy_linalg_w_time.svd(x0, f=time_lib)
@@ -82,8 +82,8 @@ def test_norm():
 
         append_to_file(fname, '{}'.format(lib))
 
-        x0 = ivy_gen.array([[[random.uniform(0, 1), random.uniform(0, 1)],
-                             [random.uniform(0, 1), random.uniform(0, 1)]] for _ in range(DIM)], f=lib)
+        x0 = ivy_gen.tensor([[[random.uniform(0, 1), random.uniform(0, 1)],
+                              [random.uniform(0, 1), random.uniform(0, 1)]] for _ in range(DIM)], f=lib)
 
         ivy_linalg.norm(x0, f=lib)
         ivy_linalg_w_time.norm(x0, f=time_lib)
@@ -115,8 +115,8 @@ def test_inv():
 
         append_to_file(fname, '{}'.format(lib))
 
-        x0 = ivy_gen.array([[[random.uniform(0, 1), random.uniform(0, 1)],
-                             [random.uniform(0, 1), random.uniform(0, 1)]] for _ in range(DIM)], f=lib)
+        x0 = ivy_gen.tensor([[[random.uniform(0, 1), random.uniform(0, 1)],
+                              [random.uniform(0, 1), random.uniform(0, 1)]] for _ in range(DIM)], f=lib)
 
         ivy_linalg.inv(x0, f=lib)
         ivy_linalg_w_time.inv(x0, f=time_lib)
@@ -148,8 +148,8 @@ def test_pinv():
 
         append_to_file(fname, '{}'.format(lib))
 
-        x0 = ivy_gen.array([[[random.uniform(0, 1), random.uniform(0, 1)],
-                             [random.uniform(0, 1), random.uniform(0, 1)]] for _ in range(DIM)], f=lib)
+        x0 = ivy_gen.tensor([[[random.uniform(0, 1), random.uniform(0, 1)],
+                              [random.uniform(0, 1), random.uniform(0, 1)]] for _ in range(DIM)], f=lib)
 
         ivy_linalg.pinv(x0, f=lib)
         ivy_linalg_w_time.pinv(x0, f=time_lib)
@@ -181,8 +181,8 @@ def test_vector_to_skew_symmetric_matrix():
 
         append_to_file(fname, '{}'.format(lib))
 
-        x0 = ivy_gen.array([[random.uniform(0, 1), random.uniform(0, 1), random.uniform(0, 1)]
-                            for _ in range(DIM)], f=lib)
+        x0 = ivy_gen.tensor([[random.uniform(0, 1), random.uniform(0, 1), random.uniform(0, 1)]
+                             for _ in range(DIM)], f=lib)
 
         ivy_linalg.vector_to_skew_symmetric_matrix(x0, f=lib)
         ivy_linalg_w_time.vector_to_skew_symmetric_matrix(x0, f=time_lib)
