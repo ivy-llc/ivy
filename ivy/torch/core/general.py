@@ -24,8 +24,12 @@ def array(object_in, dtype_str: Optional[str] = None, dev: Optional[str] = None)
 
 
 def dtype_from_str(dtype_str_in: str) -> torch.dtype:
-    return {'int32': torch.int32,
+    return {'bool': torch.bool,
+            'int8': torch.int8,
+            'int16': torch.int16,
+            'int32': torch.int32,
             'int64': torch.int64,
+            'float16': torch.float16,
             'float32': torch.float32,
             'float64': torch.float64}[dtype_str_in]
 

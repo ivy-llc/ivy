@@ -46,8 +46,8 @@ floormod = lambda x, y: x % y
 floor = _np.floor
 ceil = _np.ceil
 abs = _np.absolute
-argmax = _np.argmax
-argmin = _np.argmin
+argmax = lambda x, axis=0: _np.argmax(x, axis)
+argmin = lambda x, axis=0: _np.argmin(x, axis)
 
 
 def cast(x, dtype_str):
@@ -96,7 +96,7 @@ def flip(x, axis=None, batch_shape=None):
 stack = _np.stack
 
 
-def unstack(x, axis, _=None):
+def unstack(x, axis, num_outputs=None):
     x_split = _np.split(x, x.shape[axis], axis)
     res = [_np.squeeze(item, axis) for item in x_split]
     return res
@@ -110,8 +110,8 @@ def split(x, num_sections=None, axis=0):
 
 
 tile = _np.tile
-constant_pad = lambda x, pad_width, value=0, _=None: _np.pad(x, pad_width, constant_values=value)
-zero_pad = lambda x, pad_width, _=None: _np.pad(x, pad_width)
+constant_pad = lambda x, pad_width, value=0, x_shape=None: _np.pad(x, pad_width, constant_values=value)
+zero_pad = lambda x, pad_width, x_shape=None: _np.pad(x, pad_width)
 swapaxes = _np.swapaxes
 
 
@@ -124,7 +124,7 @@ def transpose(x, axes=None):
 
 
 expand_dims = _np.expand_dims
-where = lambda condition, x1, x2, _=None, _1=None: _np.where(condition, x1, x2)
+where = lambda condition, x1, x2, condition_shape=None, x_shape=None: _np.where(condition, x1, x2)
 
 
 def indices_where(x):
@@ -175,7 +175,7 @@ def one_hot(indices, depth, dev=None):
 
 
 cross = _np.cross
-matmul = lambda x1, x2, _=None: _np.matmul(x1, x2)
+matmul = lambda x1, x2, batch_shape=None: _np.matmul(x1, x2)
 cumsum = _np.cumsum
 
 

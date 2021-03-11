@@ -209,14 +209,11 @@ def mx_graph_call(func, *args, **kwargs):
 _calls = [np_call, jnp_call, tf_call, tf_graph_call, torch_call, mx_call, mx_graph_call]
 
 
-def assert_compilable(func_name, lib):
-    ivy.set_framework(lib)
+def assert_compilable(fn):
     try:
-        ivy.compile_fn(ivy.__dict__[func_name])
+        ivy.compile_fn(fn)
     except Exception as e:
-        ivy.unset_framework()
         raise e
-    ivy.unset_framework()
 
 
 def exclude(exclusion_list):

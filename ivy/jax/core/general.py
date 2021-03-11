@@ -33,6 +33,8 @@ def _to_dev(x, dev):
 # noinspection PyShadowingNames
 def array(object_in, dtype_str=None, dev=None):
     if dtype_str:
+        if dtype_str == 'bool':
+            dtype_str += '_'
         dtype = _jnp.__dict__[dtype_str]
     else:
         dtype = None
@@ -53,8 +55,8 @@ floor = _jnp.floor
 ceil = _jnp.ceil
 # noinspection PyShadowingBuiltins
 abs = _jnp.absolute
-argmax = _jnp.argmax
-argmin = _jnp.argmin
+argmax = lambda x, axis=0: _jnp.argmax(x, axis)
+argmin = lambda x, axis=0: _jnp.argmin(x, axis)
 
 
 def cast(x, dtype_str):
@@ -84,7 +86,7 @@ def concatenate(xs, axis=None):
     return _jnp.concatenate(xs, axis)
 
 
-def flip(x, axis=None, _=None):
+def flip(x, axis=None, batch_shape=None):
     if isinstance(axis, list) or isinstance(axis, tuple):
         if len(axis) == 1:
             axis = axis[0]
@@ -96,7 +98,7 @@ def flip(x, axis=None, _=None):
 stack = _jnp.stack
 
 
-def unstack(x, axis, _=None):
+def unstack(x, axis, num_outputs=None):
     dim_size = x.shape[axis]
     x_split = _jnp.split(x, dim_size, axis)
     res = [_jnp.squeeze(item, axis) for item in x_split]
@@ -110,8 +112,8 @@ def split(x, num_sections=None, axis=0):
 
 
 tile = _jnp.tile
-constant_pad = lambda x, pad_width, value=0, _=None: _jnp.pad(x, pad_width, constant_values=value)
-zero_pad = lambda x, pad_width, _=None: _jnp.pad(x, pad_width, constant_values=0)
+constant_pad = lambda x, pad_width, value=0, x_shape=None: _jnp.pad(x, pad_width, constant_values=value)
+zero_pad = lambda x, pad_width, x_shape=None: _jnp.pad(x, pad_width, constant_values=0)
 swapaxes = _jnp.swapaxes
 
 
@@ -124,7 +126,7 @@ def transpose(x, axes=None):
 
 
 expand_dims = _jnp.expand_dims
-where = lambda condition, x1, x2, _=None, _1=None: _jnp.where(condition, x1, x2)
+where = lambda condition, x1, x2, condition_shape=None, x_shape=None: _jnp.where(condition, x1, x2)
 
 
 def indices_where(x):
@@ -175,7 +177,7 @@ def one_hot(indices, depth, dev=None):
 
 
 cross = _jnp.cross
-matmul = lambda x1, x2, _=None: _jnp.matmul(x1, x2)
+matmul = lambda x1, x2, batch_shape=None: _jnp.matmul(x1, x2)
 cumsum = _jnp.cumsum
 
 
