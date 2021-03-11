@@ -260,14 +260,6 @@ Documentation Tree
 
 .. toctree::
    :maxdepth: -1
-   :caption: Mxsym
-
-   mxsym/core.rst
-   mxsym/nn.rst
-
-
-.. toctree::
-   :maxdepth: -1
    :caption: Neural net
 
    neural_net/activations.rst
