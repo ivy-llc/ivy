@@ -89,7 +89,7 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../container.html">Container</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../general.html">General</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="array.html">array</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tensor.html">tensor</a></li>
 <li class="toctree-l2"><a class="reference internal" href="to_numpy.html">to_numpy</a></li>
 <li class="toctree-l2"><a class="reference internal" href="to_list.html">to_list</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">shape</a></li>
@@ -237,17 +237,21 @@
 <h1>shape<a class="headerlink" href="#shape" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
 <dt id="ivy.core.general.shape">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname"><span class="pre">shape</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/general.html#shape"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.core.general.shape" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns the shape of the array x.</p>
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname"><span class="pre">shape</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">as_tensor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/general.html#shape"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.core.general.shape" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the shape of the tensor x.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<em>array</em>) – Input array to infer the shape of.</p></li>
+<li><p><strong>x</strong> (<em>tensor</em>) – Input tensor to infer the shape of.</p></li>
+<li><p><strong>as_tensor</strong> – Whether to return the shape as a tensor, default False.</p></li>
 <li><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning framework. Inferred from inputs if None.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Shape of the array</p>
+<dt class="field-even">Type</dt>
+<dd class="field-even"><p>as_tensor: bool, optional</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Shape of the tensor</p>
 </dd>
 </dl>
 </dd></dl>

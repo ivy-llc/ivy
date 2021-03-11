@@ -89,7 +89,7 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../container.html">Container</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../general.html">General</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="array.html">array</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tensor.html">tensor</a></li>
 <li class="toctree-l2"><a class="reference internal" href="to_numpy.html">to_numpy</a></li>
 <li class="toctree-l2"><a class="reference internal" href="to_list.html">to_list</a></li>
 <li class="toctree-l2"><a class="reference internal" href="shape.html">shape</a></li>
@@ -238,19 +238,19 @@
 <dl class="py function">
 <dt id="ivy.core.general.stack">
 <code class="sig-prename descclassname">ivy.</code><code class="sig-name descname"><span class="pre">stack</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">xs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/general.html#stack"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.core.general.stack" title="Permalink to this definition">¶</a></dt>
-<dd><p>Joins a sequence of arrays along a new axis.
+<dd><p>Joins a sequence of tensors along a new axis.
 The axis parameter specifies the index of the new axis in the dimensions of the result.
 For example, if axis=0, it will be the first dimension and if axis=-1, it will be the last dimension.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>xs</strong> (<em>sequence of arrays</em>) – Input arrays, each array must have the same shape.</p></li>
-<li><p><strong>axis</strong> (<em>int</em><em>, </em><em>optional</em>) – The axis in the result array along which the input arrays are stacked.</p></li>
+<li><p><strong>xs</strong> (<em>sequence of tensors</em>) – Input tensors, each tensor must have the same shape.</p></li>
+<li><p><strong>axis</strong> (<em>int</em><em>, </em><em>optional</em>) – The axis in the result tensor along which the input tensors are stacked.</p></li>
 <li><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning framework. Inferred from inputs if None.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>The stacked array has one more dimension than the input arrays.</p>
+<dd class="field-even"><p>The stacked tensor has one more dimension than the input tensors.</p>
 </dd>
 </dl>
 </dd></dl>

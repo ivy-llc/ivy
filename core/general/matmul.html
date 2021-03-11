@@ -89,7 +89,7 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../container.html">Container</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../general.html">General</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="array.html">array</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tensor.html">tensor</a></li>
 <li class="toctree-l2"><a class="reference internal" href="to_numpy.html">to_numpy</a></li>
 <li class="toctree-l2"><a class="reference internal" href="to_list.html">to_list</a></li>
 <li class="toctree-l2"><a class="reference internal" href="shape.html">shape</a></li>
@@ -238,18 +238,18 @@
 <dl class="py function">
 <dt id="ivy.core.general.matmul">
 <code class="sig-prename descclassname">ivy.</code><code class="sig-name descname"><span class="pre">matmul</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_shape</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/general.html#matmul"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.core.general.matmul" title="Permalink to this definition">¶</a></dt>
-<dd><p>Computes the matrix product of two arrays x1 and x2.</p>
+<dd><p>Computes the matrix product of two tensors x1 and x2.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>x1</strong> (<em>array</em>) – Input array 1.</p></li>
-<li><p><strong>x2</strong> (<em>array</em>) – Input array 2.</p></li>
+<li><p><strong>x1</strong> (<em>tensor</em>) – Input tensor 1.</p></li>
+<li><p><strong>x2</strong> (<em>tensor</em>) – Input tensor 2.</p></li>
 <li><p><strong>batch_shape</strong> (<em>sequence of ints</em><em>, </em><em>optional</em>) – Shape of batch. Required for mxnet symbolic.</p></li>
 <li><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning framework. Inferred from inputs if None.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>The matrix product of the input arrays.</p>
+<dd class="field-even"><p>The matrix product of the input tensors.</p>
 </dd>
 </dl>
 </dd></dl>
