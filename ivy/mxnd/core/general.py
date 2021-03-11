@@ -3,17 +3,25 @@ Collection of MXNet general functions, wrapped to fit Ivy syntax and signature.
 """
 
 # global
-import mxnet as _mx
-import numpy as _np
 _round = round
 import logging
+import mxnet as _mx
+import numpy as _np
+from numbers import Number
 
 
-DTYPE_DICT = {_np.int32: 'int32',
+DTYPE_DICT = {_np.bool_: 'bool',
+              _np.int8: 'int8',
+              _np.int16: 'int16',
+              _np.int32: 'int32',
               _np.int64: 'int64',
+              _np.float16: 'float16',
               _np.float32: 'float32',
               _np.float64: 'float64'}
 
+
+# Helpers #
+# --------#
 
 def _raise(ex):
     raise ex
@@ -33,6 +41,21 @@ def _mxnet_init_context(dev):
     return _mx.Context(mx_dev, mx_dev_id)
 
 
+def _scalar_or_flat_array_to_scalar(x):
+    return x if isinstance(x, Number) else (x.asscalar() if len(x.shape) == 0 else x)
+
+
+def _flat_array_to_1_dim_array(x):
+    return _mx.nd.array([x.asscalar()])
+
+
+def _1_dim_array_to_flat_array(x):
+    return _mx.nd.array(x.asscalar())
+
+
+# API #
+# ----#
+
 def tensor(object_in, dtype_str=None, dev=None):
     cont = _mxnet_init_context('cpu' if not dev else dev)
     return _mx.nd.array(object_in, cont, dtype=dtype_str)
@@ -43,15 +66,48 @@ to_list = lambda x: x.asnumpy().tolist()
 shape = lambda x, as_tensor=False: _mx.nd.shape_array(x) if as_tensor else x.shape
 get_num_dims = lambda x, as_tensor=False:\
     _mx.nd.shape_array(_mx.nd.shape_array(x)).reshape([]) if as_tensor else len(x.shape)
-minimum = _mx.nd.minimum
-maximum = _mx.nd.maximum
+minimum = lambda x, y: _mx.nd.minimum(_scalar_or_flat_array_to_scalar(x), _scalar_or_flat_array_to_scalar(y))
+maximum = lambda x, y: _mx.nd.maximum(_scalar_or_flat_array_to_scalar(x), _scalar_or_flat_array_to_scalar(y))
 clip = _mx.nd.clip
-round = _mx.nd.round
-floormod = lambda x, y: x % y
-floor = _mx.nd.floor
-ceil = _mx.nd.ceil
+
+
+def round(x):
+    if len(x.shape) == 0:
+        return _1_dim_array_to_flat_array(_mx.nd.round(_flat_array_to_1_dim_array(x)))
+    return _mx.nd.round(x)
+
+
+def floormod(x, y):
+    orig_x_shape = x.shape
+    if len(orig_x_shape) == 0:
+        x = _flat_array_to_1_dim_array(x)
+    if len(y.shape) == 0:
+        y = _flat_array_to_1_dim_array(y)
+    res = x % y
+    if len(orig_x_shape) == 0:
+        return _1_dim_array_to_flat_array(res)
+    return res
+
+
+def floor(x):
+    if len(x.shape) == 0:
+        return _1_dim_array_to_flat_array(_mx.nd.floor(_flat_array_to_1_dim_array(x)))
+    return _mx.nd.floor(x)
+
+
+def ceil(x):
+    if len(x.shape) == 0:
+        return _1_dim_array_to_flat_array(_mx.nd.ceil(_flat_array_to_1_dim_array(x)))
+    return _mx.nd.ceil(x)
+
+
 # noinspection PyShadowingBuiltins
-abs = _mx.nd.abs
+def abs(x):
+    if len(x.shape) == 0:
+        return _1_dim_array_to_flat_array(_mx.nd.abs(_flat_array_to_1_dim_array(x)))
+    return _mx.nd.abs(x)
+
+
 argmax = lambda x, axis=0: _mx.nd.argmax(x, axis)
 argmin = lambda x, axis=0: _mx.nd.argmin(x, axis)
 cast = lambda x, dtype_str: x.astype(dtype_str)

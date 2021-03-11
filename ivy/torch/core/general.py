@@ -71,6 +71,10 @@ def maximum(x, y):
 
 
 def clip(x, x_min, x_max):
+    if isinstance(x_min, torch.Tensor):
+        x_min = x_min.item()
+    if isinstance(x_max, torch.Tensor):
+        x_max = x_max.item()
     return torch.clamp(x, x_min, x_max)
 
 
@@ -97,11 +101,11 @@ def abs(x):
 
 
 def argmax(x, axis: int = 0):
-    return torch.argmax(x, axis)
+    return torch.argmax(x, axis).reshape(-1)
 
 
 def argmin(x, axis: int = 0):
-    return torch.argmin(x, axis)
+    return torch.argmin(x, axis).reshape(-1)
 
 
 def cast(x, dtype_str_in: str):
@@ -251,8 +255,12 @@ def squeeze(x, axis: Optional[int] = None):
 
 # noinspection PyShadowingNames
 def zeros(shape: List[int], dtype_str: str = 'float32', dev: Optional[torch.device] = None):
-    type_dict: Dict[str, torch.dtype] = {'int32': torch.int32,
+    type_dict: Dict[str, torch.dtype] = {'bool': torch.bool,
+                                         'int8': torch.int8,
+                                         'int16': torch.int16,
+                                         'int32': torch.int32,
                                          'int64': torch.int64,
+                                         'float16': torch.float16,
                                          'float32': torch.float32,
                                          'float64': torch.float64}
     dtype_val: torch.dtype = type_dict[dtype_str]
@@ -264,8 +272,12 @@ def zeros_like(x, dtype_str: Optional[str] = None, dev: Optional[torch.device] =
     if dev is None:
         dev = dev_str(x)
     if dtype_str is not None:
-        type_dict: Dict[str, torch.dtype] = {'int32': torch.int32,
+        type_dict: Dict[str, torch.dtype] = {'bool': torch.bool,
+                                             'int8': torch.int8,
+                                             'int16': torch.int16,
+                                             'int32': torch.int32,
                                              'int64': torch.int64,
+                                             'float16': torch.float16,
                                              'float32': torch.float32,
                                              'float64': torch.float64}
         return torch.zeros_like(x, dtype=type_dict[dtype_str]).to(dev)
@@ -276,8 +288,12 @@ def zeros_like(x, dtype_str: Optional[str] = None, dev: Optional[torch.device] =
 def ones(shape: List[int], dtype_str: str = 'float32', dev: Optional[str] = None):
     if dev is not None:
         dev: torch.device = dev.replace('gpu', 'cuda')
-    type_dict: Dict[str, torch.dtype] = {'int32': torch.int32,
+    type_dict: Dict[str, torch.dtype] = {'bool': torch.bool,
+                                         'int8': torch.int8,
+                                         'int16': torch.int16,
+                                         'int32': torch.int32,
                                          'int64': torch.int64,
+                                         'float16': torch.float16,
                                          'float32': torch.float32,
                                          'float64': torch.float64}
     dtype_val: torch.dtype = type_dict[dtype_str]
@@ -289,8 +305,12 @@ def ones_like(x, dtype_str: Optional[str] = None, dev: Optional[torch.device] = 
     if dev is None:
         dev = dev_str(x)
     if dtype_str is not None:
-        type_dict: Dict[str, torch.dtype] = {'int32': torch.int32,
+        type_dict: Dict[str, torch.dtype] = {'bool': torch.bool,
+                                             'int8': torch.int8,
+                                             'int16': torch.int16,
+                                             'int32': torch.int32,
                                              'int64': torch.int64,
+                                             'float16': torch.float16,
                                              'float32': torch.float32,
                                              'float64': torch.float64}
         return torch.ones_like(x, dtype=type_dict[dtype_str]).to(dev)
@@ -319,8 +339,12 @@ def cumsum(x, axis: int = 0):
 # noinspection PyShadowingNames
 def identity(n: int, dtype_str: str = 'float32', batch_shape: Optional[List[int]] = None,
              dev: Optional[torch.device] = None):
-    type_dict: Dict[str, torch.dtype] = {'int32': torch.int32,
+    type_dict: Dict[str, torch.dtype] = {'bool': torch.bool,
+                                         'int8': torch.int8,
+                                         'int16': torch.int16,
+                                         'int32': torch.int32,
                                          'int64': torch.int64,
+                                         'float16': torch.float16,
                                          'float32': torch.float32,
                                          'float64': torch.float64}
     dtype_val: torch.dtype = type_dict[dtype_str]
@@ -464,15 +488,23 @@ def dtype(x):
 
 
 def dtype_str(x):
-    return {torch.int32: 'int32',
+    return {torch.bool: 'bool',
+            torch.int8: 'int8',
+            torch.int16: 'int16',
+            torch.int32: 'int32',
             torch.int64: 'int64',
+            torch.float16: 'float16',
             torch.float32: 'float32',
             torch.float64: 'float64'}[x.dtype]
 
 
 def dtype_to_str(dtype_in):
-    return {torch.int32: 'int32',
+    return {torch.bool: 'bool',
+            torch.int8: 'int8',
+            torch.int16: 'int16',
+            torch.int32: 'int32',
             torch.int64: 'int64',
+            torch.float16: 'float16',
             torch.float32: 'float32',
             torch.float64: 'float64'}[dtype_in]
 

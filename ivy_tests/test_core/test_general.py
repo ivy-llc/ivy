@@ -139,7 +139,7 @@ def test_to_list(object_in, dtype_str, dev_str, call):
 @pytest.mark.parametrize(
     "object_in", [[], [0.], [1], [True], [[1., 2.]]])
 @pytest.mark.parametrize(
-    "dtype_str", [None, 'float32'])
+    "dtype_str", ['float32'])
 @pytest.mark.parametrize(
     "as_tensor", [None, True, False])
 def test_shape(object_in, dtype_str, as_tensor, dev_str, call):
@@ -166,7 +166,7 @@ def test_shape(object_in, dtype_str, as_tensor, dev_str, call):
 @pytest.mark.parametrize(
     "object_in", [[], [0.], [1], [True], [[1., 2.]]])
 @pytest.mark.parametrize(
-    "dtype_str", [None, 'float32'])
+    "dtype_str", ['float32'])
 @pytest.mark.parametrize(
     "as_tensor", [None, True, False])
 def test_get_num_dims(object_in, dtype_str, as_tensor, dev_str, call):
@@ -193,13 +193,11 @@ def test_get_num_dims(object_in, dtype_str, as_tensor, dev_str, call):
 @pytest.mark.parametrize(
     "xy", [([0.7], [0.5]), ([0.7], 0.5), (0.5, [0.7]), ([[0.8, 1.2], [1.5, 0.2]], [0., 1.])])
 @pytest.mark.parametrize(
-    "dtype_str", [None, 'float32'])
+    "dtype_str", ['float32'])
 def test_minimum(xy, dtype_str, dev_str, call):
     # smoke test
     x = ivy.tensor(xy[0], dtype_str, dev_str)
     y = ivy.tensor(xy[1], dtype_str, dev_str)
-    if call in [helpers.mx_call] and x.shape != y.shape:
-        pytest.skip()
     ret = ivy.minimum(x, y)
     # type test
     assert isinstance(ret, ivy.Tensor)
@@ -218,13 +216,11 @@ def test_minimum(xy, dtype_str, dev_str, call):
 @pytest.mark.parametrize(
     "xy", [([0.7], [0.5]), ([0.7], 0.5), (0.5, [0.7]), ([[0.8, 1.2], [1.5, 0.2]], [0., 1.])])
 @pytest.mark.parametrize(
-    "dtype_str", [None, 'float32'])
+    "dtype_str", ['float32'])
 def test_maximum(xy, dtype_str, dev_str, call):
     # smoke test
     x = ivy.tensor(xy[0], dtype_str, dev_str)
     y = ivy.tensor(xy[1], dtype_str, dev_str)
-    if call in [helpers.mx_call] and x.shape != y.shape:
-        pytest.skip()
     ret = ivy.maximum(x, y)
     # type test
     assert isinstance(ret, ivy.Tensor)
@@ -239,63 +235,191 @@ def test_maximum(xy, dtype_str, dev_str, call):
     helpers.assert_compilable(ivy.maximum)
 
 
-def test_clip(dev_str, call):
-    assert np.array_equal(call(ivy.clip, ivy.tensor([0.]), 0, 1), np.clip(np.array([0.]), 0, 1))
-    assert np.array_equal(call(ivy.clip, ivy.tensor([[0.]]), 0, 1), np.clip(np.array([[0.]]), 0, 1))
+# clip
+@pytest.mark.parametrize(
+    "x_min_n_max", [(-0.5, 0., 1.5), ([1.7], [0.5], [1.1]),
+                    ([[0.8, 2.2], [1.5, 0.2]], [[1., 1.], [1., 1.]], [[1.1, 2.], [1.1, 2.]])])
+@pytest.mark.parametrize(
+    "dtype_str", ['float32'])
+def test_clip(x_min_n_max, dtype_str, dev_str, call):
+    # smoke test
+    x = ivy.tensor(x_min_n_max[0], dtype_str, dev_str)
+    min_val = ivy.tensor(x_min_n_max[1], dtype_str, dev_str)
+    max_val = ivy.tensor(x_min_n_max[2], dtype_str, dev_str)
+    if (min_val.shape != [] and min_val.shape != [1]) or (max_val.shape != [] and max_val.shape != [1])\
+            and call is helpers.torch_call:
+        # pytorch only supports numbers or 0 or 1 dimensional arrays for min and max values while performing clip
+        pytest.skip()
+    ret = ivy.clip(x, min_val, max_val)
+    # type test
+    assert isinstance(ret, ivy.Tensor)
+    # cardinality test
+    max_shape = max([x.shape, min_val.shape, max_val.shape], key=lambda x_: len(x_))
+    assert ret.shape == max_shape
+    # value test
+    assert np.array_equal(call(ivy.clip, x, min_val, max_val),
+                          ivy.numpy.clip(ivy.to_numpy(x), ivy.to_numpy(min_val), ivy.to_numpy(max_val)))
+    # compilation test
     helpers.assert_compilable(ivy.clip)
 
 
-def test_round(dev_str, call):
-    assert np.array_equal(call(ivy.round, ivy.tensor([0.3])), np.round(np.array([0.3])))
-    assert np.array_equal(call(ivy.round, ivy.tensor([[0.51]])), np.array([[1.]]))
+# round
+@pytest.mark.parametrize(
+    "x_n_x_rounded", [(-0.51, -1), ([1.7], [2.]), ([[0.8, 2.2], [1.51, 0.2]], [[1., 2.], [2., 0.]])])
+@pytest.mark.parametrize(
+    "dtype_str", ['float32'])
+def test_round(x_n_x_rounded, dtype_str, dev_str, call):
+    # smoke test
+    x = ivy.tensor(x_n_x_rounded[0], dtype_str, dev_str)
+    ret = ivy.round(x)
+    # type test
+    assert isinstance(ret, ivy.Tensor)
+    # cardinality test
+    assert ret.shape == x.shape
+    # value test
+    assert np.array_equal(call(ivy.round, x), np.array(x_n_x_rounded[1]))
+    # compilation test
     helpers.assert_compilable(ivy.round)
 
 
-def test_floormod(dev_str, call):
-    assert np.allclose(call(ivy.floormod, ivy.tensor([3.3]), ivy.tensor([3.])),
-                       np.array([0.3]), atol=1e-6)
-    assert np.allclose(call(ivy.floormod, ivy.tensor([[10.7]]), ivy.tensor([[5.]])),
-                       np.array([[0.7]]), atol=1e-6)
+# floormod
+@pytest.mark.parametrize(
+    "x_n_divisor_n_x_floormod", [(2.5, 2., 0.5), ([10.7], [5.], [0.7]),
+                                 ([[0.8, 2.2], [1.7, 0.2]], [[0.3, 0.5], [0.4, 0.11]], [[0.2, 0.2], [0.1, 0.09]])])
+@pytest.mark.parametrize(
+    "dtype_str", ['float32'])
+def test_floormod(x_n_divisor_n_x_floormod, dtype_str, dev_str, call):
+    # smoke test
+    x = ivy.tensor(x_n_divisor_n_x_floormod[0], dtype_str, dev_str)
+    divisor = ivy.tensor(x_n_divisor_n_x_floormod[1], dtype_str, dev_str)
+    ret = ivy.floormod(x, divisor)
+    # type test
+    assert isinstance(ret, ivy.Tensor)
+    # cardinality test
+    assert ret.shape == x.shape
+    # value test
+    assert np.allclose(call(ivy.floormod, x, divisor), np.array(x_n_divisor_n_x_floormod[2]))
+    # compilation test
     helpers.assert_compilable(ivy.floormod)
 
 
-def test_floor(dev_str, call):
-    assert np.array_equal(call(ivy.floor, ivy.tensor([0.3])), np.floor(np.array([0.3])))
-    assert np.array_equal(call(ivy.floor, ivy.tensor([[0.7]])), np.floor(np.array([[0.7]])))
+# floor
+@pytest.mark.parametrize(
+    "x_n_x_floored", [(2.5, 2.), ([10.7], [10.]), ([[3.8, 2.2], [1.7, 0.2]], [[3., 2.], [1., 0.]])])
+@pytest.mark.parametrize(
+    "dtype_str", ['float32'])
+def test_floor(x_n_x_floored, dtype_str, dev_str, call):
+    # smoke test
+    x = ivy.tensor(x_n_x_floored[0], dtype_str, dev_str)
+    ret = ivy.floor(x)
+    # type test
+    assert isinstance(ret, ivy.Tensor)
+    # cardinality test
+    assert ret.shape == x.shape
+    # value test
+    assert np.allclose(call(ivy.floor, x), np.array(x_n_x_floored[1]))
+    # compilation test
     helpers.assert_compilable(ivy.floor)
 
 
-def test_ceil(dev_str, call):
-    assert np.array_equal(call(ivy.ceil, ivy.tensor([0.3])), np.ceil(np.array([0.3])))
-    assert np.array_equal(call(ivy.ceil, ivy.tensor([[0.7]])), np.ceil(np.array([[0.7]])))
+# ceil
+@pytest.mark.parametrize(
+    "x_n_x_ceiled", [(2.5, 3.), ([10.7], [11.]), ([[3.8, 2.2], [1.7, 0.2]], [[4., 3.], [2., 1.]])])
+@pytest.mark.parametrize(
+    "dtype_str", ['float32'])
+def test_ceil(x_n_x_ceiled, dtype_str, dev_str, call):
+    # smoke test
+    x = ivy.tensor(x_n_x_ceiled[0], dtype_str, dev_str)
+    ret = ivy.ceil(x)
+    # type test
+    assert isinstance(ret, ivy.Tensor)
+    # cardinality test
+    assert ret.shape == x.shape
+    # value test
+    assert np.allclose(call(ivy.ceil, x), np.array(x_n_x_ceiled[1]))
+    # compilation test
     helpers.assert_compilable(ivy.ceil)
 
 
-def test_abs(dev_str, call):
-    assert np.allclose(call(ivy.abs, ivy.tensor([-0.3])), np.array([0.3]), atol=1e-6)
-    assert np.allclose(call(ivy.abs, ivy.tensor([[-0.7]])), np.array([[0.7]]), atol=1e-6)
+# abs
+@pytest.mark.parametrize(
+    "x_n_x_absed", [(-2.5, 2.5), ([-10.7], [10.7]), ([[-3.8, 2.2], [1.7, -0.2]], [[3.8, 2.2], [1.7, 0.2]])])
+@pytest.mark.parametrize(
+    "dtype_str", ['float32'])
+def test_abs(x_n_x_absed, dtype_str, dev_str, call):
+    # smoke test
+    x = ivy.tensor(x_n_x_absed[0], dtype_str, dev_str)
+    ret = ivy.abs(x)
+    # type test
+    assert isinstance(ret, ivy.Tensor)
+    # cardinality test
+    assert ret.shape == x.shape
+    # value test
+    assert np.allclose(call(ivy.abs, x), np.array(x_n_x_absed[1]))
+    # compilation test
     helpers.assert_compilable(ivy.abs)
 
 
-def test_argmax(dev_str, call):
-    assert np.allclose(call(ivy.argmax, ivy.tensor([-0.3, 0.1])), np.array([1]), atol=1e-6)
-    assert np.allclose(call(ivy.argmax, ivy.tensor([[1.3, -0.7], [0.1, 2.5]])),
-                       np.array([0, 1]), atol=1e-6)
+# argmax
+@pytest.mark.parametrize(
+    "x_n_axis_x_argmax", [([-0.3, 0.1], None, [1]), ([[1.3, 2.6], [2.3, 2.5]], 0, [1, 0]),
+                          ([[1.3, 2.6], [2.3, 2.5]], 1, [1, 1])])
+@pytest.mark.parametrize(
+    "dtype_str", ['float32'])
+def test_argmax(x_n_axis_x_argmax, dtype_str, dev_str, call):
+    # smoke test
+    x = ivy.tensor(x_n_axis_x_argmax[0], dtype_str, dev_str)
+    axis = x_n_axis_x_argmax[1]
+    ret = ivy.argmax(x, axis)
+    # type test
+    assert isinstance(ret, ivy.Tensor)
+    # cardinality test
+    assert tuple(ret.shape) == (len(x.shape),)
+    # value test
+    assert np.allclose(call(ivy.argmax, x, axis), np.array(x_n_axis_x_argmax[2]))
+    # compilation test
     helpers.assert_compilable(ivy.argmax)
 
 
-def test_argmin(dev_str, call):
-    assert np.allclose(call(ivy.argmin, ivy.tensor([-0.3, 0.1])), np.array([0]), atol=1e-6)
-    assert np.allclose(call(ivy.argmin, ivy.tensor([[1.3, -0.7], [0.1, 2.5]])),
-                       np.array([1, 0]), atol=1e-6)
+# argmin
+@pytest.mark.parametrize(
+    "x_n_axis_x_argmin", [([-0.3, 0.1], None, [0]), ([[1.3, 2.6], [2.3, 2.5]], 0, [0, 1]),
+                          ([[1.3, 2.6], [2.3, 2.5]], 1, [0, 0])])
+@pytest.mark.parametrize(
+    "dtype_str", ['float32'])
+def test_argmin(x_n_axis_x_argmin, dtype_str, dev_str, call):
+    # smoke test
+    x = ivy.tensor(x_n_axis_x_argmin[0], dtype_str, dev_str)
+    axis = x_n_axis_x_argmin[1]
+    ret = ivy.argmin(x, axis)
+    # type test
+    assert isinstance(ret, ivy.Tensor)
+    # cardinality test
+    assert tuple(ret.shape) == (len(x.shape),)
+    # value test
+    assert np.allclose(call(ivy.argmin, x, axis), np.array(x_n_axis_x_argmin[2]))
+    # compilation test
     helpers.assert_compilable(ivy.argmin)
 
 
-def test_cast(dev_str, call):
-    assert np.array_equal(call(ivy.cast, ivy.tensor([0]), 'float32'),
-                          np.array([0]).astype(np.float32))
-    assert np.array_equal(call(ivy.cast, ivy.tensor([[0]]), 'float32'),
-                          np.array([[0]]).astype(np.float32))
+# cast
+@pytest.mark.parametrize(
+    "object_in", [[1], [True], [[1., 2.]]])
+@pytest.mark.parametrize(
+    "starting_dtype_str", ['float32', 'int32', 'bool'])
+@pytest.mark.parametrize(
+    "target_dtype_str", ['float32', 'int32', 'bool'])
+def test_cast(object_in, starting_dtype_str, target_dtype_str, dev_str, call):
+    # smoke test
+    x = ivy.tensor(object_in, starting_dtype_str, dev_str)
+    ret = ivy.cast(x, target_dtype_str)
+    # type test
+    assert isinstance(ret, ivy.Tensor)
+    # cardinality test
+    assert ret.shape == x.shape
+    # value test
+    assert ivy.dtype_str(ret) == target_dtype_str
+    # compilation test
     if call in [helpers.torch_call]:
         # pytorch scripting does not support .type() method
         return

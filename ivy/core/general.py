@@ -204,13 +204,13 @@ def abs(x, f=None):
     return _get_framework(x, f=f).abs(x)
 
 
-def argmax(x, axis=None, f=None):
+def argmax(x, axis=0, f=None):
     """
     Returns the index with the largest value across axes of an tensor.
 
     :param x: Input tensor containing elements to argmax.
     :type x: tensor
-    :param axis: Axis to perform the argmax, default is None, where the overall max is returned.
+    :param axis: Axis to perform the argmax, default is 0.
     :type axis: int, optional
     :param f: Machine learning framework. Inferred from inputs if None.
     :type f: ml_framework, optional
@@ -219,13 +219,13 @@ def argmax(x, axis=None, f=None):
     return _get_framework(x, f=f).argmax(x, axis)
 
 
-def argmin(x, axis=None, f=None):
+def argmin(x, axis=0, f=None):
     """
     Returns the index with the smallest value across axes of an tensor.
 
     :param x: Input tensor containing elements to argmin.
     :type x: tensor
-    :param axis: Axis to perform the argmin, default is None, where the overall min is returned.
+    :param axis: Axis to perform the argmin, default is 0.
     :type axis: int, optional
     :param f: Machine learning framework. Inferred from inputs if None.
     :type f: ml_framework, optional
