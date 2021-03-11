@@ -23,9 +23,15 @@ def array(object_in, dtype_str=None, dev=None):
     dtype = _tf.__dict__[dtype_str] if dtype_str else dtype_str
     if dev:
         with _tf.device('/' + dev.upper()):
-            return _tf.convert_to_tensor(object_in, dtype=dtype)
+            tensor = _tf.convert_to_tensor(object_in)
+            if dtype is None:
+                return tensor
+            return _tf.cast(tensor, dtype)
     else:
-        return _tf.convert_to_tensor(object_in, dtype=dtype)
+        tensor = _tf.convert_to_tensor(object_in)
+        if dtype is None:
+            return tensor
+        return _tf.cast(tensor, dtype)
 
 
 to_numpy = lambda x: _np.asarray(_tf.convert_to_tensor(x))
@@ -41,9 +47,9 @@ floormod = lambda x, y: x % y
 floor = _tf.floor
 ceil = _tf.math.ceil
 # noinspection PyShadowingBuiltins
-abs = _tf.math.abs
-argmax = _tf.math.argmax
-argmin = _tf.math.argmin
+abs = _tf.abs
+argmax = _tf.argmax
+argmin = _tf.argmin
 
 
 def cast(x, dtype_str):
@@ -93,7 +99,7 @@ def flip(x, axis=None, batch_shape=None):
 
 
 stack = _tf.stack
-unstack = lambda x, axis, _=None: _tf.unstack(x, axis=axis)
+unstack = lambda x, axis, num_outputs=None: _tf.unstack(x, axis=axis)
 
 
 def split(x, num_sections=None, axis=0):
@@ -104,8 +110,8 @@ def split(x, num_sections=None, axis=0):
 
 
 tile = _tf.tile
-constant_pad = lambda x, pad_width, value=0, _=None: _tf.pad(x, pad_width, constant_values=value)
-zero_pad = lambda x, pad_width, _=None: _tf.pad(x, pad_width)
+constant_pad = lambda x, pad_width, value=0, x_shape=None: _tf.pad(x, pad_width, constant_values=value)
+zero_pad = lambda x, pad_width, x_shape=None: _tf.pad(x, pad_width)
 
 
 def swapaxes(x, axis0, axis1):
@@ -123,7 +129,7 @@ def swapaxes(x, axis0, axis1):
 
 transpose = _tf.transpose
 expand_dims = _tf.expand_dims
-where = lambda condition, x1, x2, _=None, _1=None: _tf.where(condition, x1, x2)
+where = lambda condition, x1, x2, condition_shape=None, x_shape=None: _tf.where(condition, x1, x2)
 indices_where = _tf.where
 reshape = _tf.reshape
 squeeze = _tf.squeeze
@@ -177,7 +183,7 @@ def one_hot(indices, depth, dev=None):
 
 
 cross = _tf.linalg.cross
-matmul = lambda x1, x2, _=None: _tf.matmul(x1, x2)
+matmul = lambda x1, x2, batch_shape=None: _tf.matmul(x1, x2)
 cumsum = _tf.cumsum
 
 
@@ -272,7 +278,7 @@ def gather_flat(params, indices, dev=None):
         return _tf.gather_nd(params, _tf.expand_dims(indices, -1))
 
 
-def gather_nd(params, indices, _=None, dev=None):
+def gather_nd(params, indices, indices_shape=None, dev=None):
     if dev is None:
         dev = dev_str(params)
     with _tf.device('/' + dev.upper()):

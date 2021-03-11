@@ -49,7 +49,10 @@ def bilinear_resample(x, warp, batch_shape:Optional[List[int]]=None, input_image
     batch_shape = list(batch_shape)
     input_image_dims = list(input_image_dims)
     batch_shape_product = reduce(mul, batch_shape, 1)
-    warp_flat = warp.view([batch_shape_product] + input_image_dims + [2])
+    try:
+        warp_flat = warp.view([batch_shape_product] + input_image_dims + [2])
+    except:
+        d = 0
     warp_flat_x = 2 * warp_flat[:, :, :, 0:1] / (input_image_dims[1] - 1) - 1
     warp_flat_y = 2 * warp_flat[:, :, :, 1:2] / (input_image_dims[0] - 1) - 1
     warp_flat_scaled = torch.cat((warp_flat_x, warp_flat_y), -1)

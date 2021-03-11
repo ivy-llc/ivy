@@ -5,7 +5,6 @@ Base Container Object
 # global
 import random as _random
 import h5py as _h5py
-import numpy as _np
 from functools import reduce as _reduce
 from operator import mul as _mul
 try:
@@ -74,14 +73,12 @@ class Container(dict):
                 raise Exception(str(e) + '\nContainer concat operation only valid for containers of arrays')
 
     @staticmethod
-    def from_disk(h5_obj_or_filepath, f, slice_obj=slice(None)):
+    def from_disk(h5_obj_or_filepath, slice_obj=slice(None)):
         """
         Load container object from disk, as an h5py file, at the specified filepath.
 
         :param h5_obj_or_filepath: Filepath where the container object is saved to disk, or h5 object.
         :type h5_obj_or_filepath: str or h5 obj
-        :param f: Machine learning framework.
-        :type f: ml_framework, optional
         :param slice_obj: slice object to slice all h5 elements.
         :type slice_obj: slice or sequence of slices
         :return: Container loaded from disk
@@ -94,12 +91,9 @@ class Container(dict):
 
         for key, value in sorted(h5_obj.items()):
             if isinstance(value, _h5py.Group):
-                container_dict[key] = Container.from_disk(value, f, slice_obj)
+                container_dict[key] = Container.from_disk(value, slice_obj)
             elif isinstance(value, _h5py.Dataset):
-                if f is _np:
-                    container_dict[key] = value[slice_obj]
-                else:
-                    container_dict[key] = _ivy_gen.array(list(value[slice_obj]), f=f)
+                container_dict[key] = _ivy_gen.array(list(value[slice_obj]))
             else:
                 raise Exception('Item found inside h5_obj which was neither a Group nor a Dataset.')
         return Container(container_dict)
@@ -337,17 +331,13 @@ class Container(dict):
         """
         return list([item for key, item in self.to_iterator()])
 
-    def to_random(self, f):
+    def to_random(self):
         """
         Return new container, with all entries having same shape and type, but random values
-
-        :param f: Machine learning framework.
-        :type f: ml_framework
-        :return: Container with random values as entries.
         """
         def _as_random(value, _=''):
             if hasattr(value, 'shape'):
-                return _ivy_rand.random_uniform(0., 1., value.shape, f=f)
+                return _ivy_rand.random_uniform(0., 1., value.shape)
             return value
         return self.map(_as_random)
 
@@ -442,17 +432,13 @@ class Container(dict):
         """
         return self.map(lambda x, _: _ivy_gen.dtype(x))
 
-    def with_entries_as_lists(self, f):
+    def with_entries_as_lists(self):
         """
         Return container object, with each array entry in the container cast to a list
-
-        :param f: Machine learning framework.
-        :type f: ml_framework
-        :return: New container, with entries not as arrays but as python lists
         """
         def to_list(x, _=''):
             try:
-                return _ivy_gen.to_list(x, f)
+                return _ivy_gen.to_list(x)
             except (AttributeError, ValueError):
                 return x
         return self.map(to_list)

@@ -1,5 +1,9 @@
 *.egg-info/
-.idea
+**/.idea/workspace.xml
+**/.idea/tasks.xml
+**/.idea/usage.statistics.xml
+**/.idea/shelf/
+**/.idea/markdown-navigator*
 .run
 __pycache__/
 .pytest_cache/

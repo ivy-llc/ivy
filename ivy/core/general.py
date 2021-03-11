@@ -7,7 +7,7 @@ from ivy.framework_handler import get_framework as _get_framework
 
 
 # noinspection PyShadowingNames
-def array(object_in, dtype_str=None, dev=None, f=None):
+def array(object_in, dtype_str=None, dev_str=None, f=None):
     """
     Creates an array.
     
@@ -18,13 +18,13 @@ def array(object_in, dtype_str=None, dev=None, f=None):
         If not given, then the type will be determined as the minimum type required to hold the objects in the
         sequence.
     :type dtype_str: data-type string, optional
-    :param dev: device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc..
-    :type dev: str
+    :param dev_str: device string on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc..
+    :type dev_str: str
     :param f: Machine learning framework. Inferred from inputs if None.
     :type f: ml_framework, optional
     :return: An array object satisfying the specified requirements, in the form of the selected framework.
     """
-    return _get_framework(object_in, f=f).array(object_in, dtype_str, dev)
+    return _get_framework(object_in, f=f).array(object_in, dtype_str, dev_str)
 
 
 def to_numpy(x, f=None):
@@ -200,14 +200,14 @@ def abs(x, f=None):
     return _get_framework(x, f=f).abs(x)
 
 
-def argmax(x, axis=0, f=None):
+def argmax(x, axis=None, f=None):
     """
     Returns the index with the largest value across axes of an array.
 
     :param x: Input array containing elements to argmax.
     :type x: array
-    :param axis: Axis to perform the argmax, default is 0.
-    :type axis: int
+    :param axis: Axis to perform the argmax, default is None, where the overall max is returned.
+    :type axis: int, optional
     :param f: Machine learning framework. Inferred from inputs if None.
     :type f: ml_framework, optional
     :return: Array containing the indices of the maximum values across the specified axis.
@@ -215,14 +215,14 @@ def argmax(x, axis=0, f=None):
     return _get_framework(x, f=f).argmax(x, axis)
 
 
-def argmin(x, axis=0, f=None):
+def argmin(x, axis=None, f=None):
     """
     Returns the index with the smallest value across axes of an array.
 
     :param x: Input array containing elements to argmin.
     :type x: array
-    :param axis: Axis to perform the argmin, default is 0.
-    :type axis: int
+    :param axis: Axis to perform the argmin, default is None, where the overall min is returned.
+    :type axis: int, optional
     :param f: Machine learning framework. Inferred from inputs if None.
     :type f: ml_framework, optional
     :return: Array containing the indices of the minimum values across the specified axis.
