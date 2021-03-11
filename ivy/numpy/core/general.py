@@ -8,8 +8,12 @@ from operator import mul as _mul
 import numpy as _np
 import logging
 
-DTYPE_DICT = {_np.dtype('int32'): 'int32',
+DTYPE_DICT = {_np.dtype('bool'): 'bool',
+              _np.dtype('int8'): 'int8',
+              _np.dtype('int16'): 'int16',
+              _np.dtype('int32'): 'int32',
               _np.dtype('int64'): 'int64',
+              _np.dtype('float16'): 'float32',
               _np.dtype('float32'): 'float32',
               _np.dtype('float64'): 'float64'}
 
@@ -40,14 +44,14 @@ shape = lambda x, as_tensor=False: _np.asarray(_np.shape(x)) if as_tensor else x
 get_num_dims = lambda x, as_tensor=False: _np.asarray(len(_np.shape(x))) if as_tensor else len(x.shape)
 minimum = _np.minimum
 maximum = _np.maximum
-clip = _np.clip
-round = _np.round
-floormod = lambda x, y: x % y
-floor = _np.floor
-ceil = _np.ceil
-abs = _np.absolute
-argmax = lambda x, axis=0: _np.argmax(x, axis)
-argmin = lambda x, axis=0: _np.argmin(x, axis)
+clip = lambda x, x_min, x_max: _np.asarray(_np.clip(x, x_min, x_max))
+round = lambda x: _np.asarray(_np.round(x))
+floormod = lambda x, y: _np.asarray(x % y)
+floor = lambda x: _np.asarray(_np.floor(x))
+ceil = lambda x: _np.asarray(_np.ceil(x))
+abs = lambda x: _np.asarray(_np.absolute(x))
+argmax = lambda x, axis=0: _np.asarray(_np.argmax(x, axis)).reshape(-1)
+argmin = lambda x, axis=0: _np.asarray(_np.argmin(x, axis)).reshape(-1)
 
 
 def cast(x, dtype_str):
