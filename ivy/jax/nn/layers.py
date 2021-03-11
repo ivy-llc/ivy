@@ -37,4 +37,4 @@ def conv3d_transpose(*_):
     raise Exception('Convolutions not yet implemented for jax library')
 
 
-linear = lambda x, weight, bias, _=None: _jnp.matmul(x, _jnp.transpose(weight)) + bias
+linear = lambda x, weight, bias, num_hidden=None: _jnp.matmul(x, _jnp.transpose(weight)) + bias

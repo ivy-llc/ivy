@@ -16,7 +16,7 @@ def randint(low: int, high: int, shape: List[int], dev: torch.device = 'cpu'):
     return torch.randint(low, high, shape).to(dev)
 
 
-def seed(seed_value: int) -> None:
+def seed(seed_value: int = 0) -> None:
     torch.manual_seed(seed_value)
     torch.cuda.manual_seed(seed_value)
     return
