@@ -36,7 +36,7 @@
   <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="array" href="general/array.html" />
+    <link rel="next" title="tensor" href="general/tensor.html" />
     <link rel="prev" title="Container" href="container/Container.html" /> 
 </head>
 
@@ -90,7 +90,7 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="container.html">Container</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">General</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="general/array.html">array</a></li>
+<li class="toctree-l2"><a class="reference internal" href="general/tensor.html">tensor</a></li>
 <li class="toctree-l2"><a class="reference internal" href="general/to_numpy.html">to_numpy</a></li>
 <li class="toctree-l2"><a class="reference internal" href="general/to_list.html">to_list</a></li>
 <li class="toctree-l2"><a class="reference internal" href="general/shape.html">shape</a></li>
@@ -236,23 +236,23 @@
 <span id="general"></span><h1>General<a class="headerlink" href="#module-ivy.core.general" title="Permalink to this headline">¶</a></h1>
 <p>Collection of general Ivy functions.</p>
 <dl class="py function">
-<dt id="ivy.core.general.array">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname"><span class="pre">array</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">object_in</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype_str</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dev_str</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#array"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.core.general.array" title="Permalink to this definition">¶</a></dt>
-<dd><p>Creates an array.</p>
+<dt id="ivy.core.general.tensor">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname"><span class="pre">tensor</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">object_in</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype_str</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dev_str</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#tensor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.core.general.tensor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates an tensor.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>object_in</strong> (<em>array_like</em>) – An array_like object, which exposes the array interface,
-an object whose __array__ method returns an array, or any (nested) sequence.</p></li>
-<li><p><strong>dtype_str</strong> (<em>data-type string</em><em>, </em><em>optional</em>) – The desired data-type for the array in string format, i.e. ‘float32’ or ‘int64’.
+<li><p><strong>object_in</strong> (<em>tensor</em>) – An tensor_like object, which exposes the tensor interface,
+an object whose __array__ method returns an tensor, or any (nested) sequence.</p></li>
+<li><p><strong>dtype_str</strong> (<em>data-type string</em><em>, </em><em>optional</em>) – The desired data-type for the tensor in string format, i.e. ‘float32’ or ‘int64’.
 If not given, then the type will be determined as the minimum type required to hold the objects in the
 sequence.</p></li>
-<li><p><strong>dev_str</strong> (<em>str</em>) – device string on which to create the array ‘cuda:0’, ‘cuda:1’, ‘cpu’ etc..</p></li>
+<li><p><strong>dev_str</strong> (<em>str</em>) – device string on which to create the tensor ‘cuda:0’, ‘cuda:1’, ‘cpu’ etc..</p></li>
 <li><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning framework. Inferred from inputs if None.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>An array object satisfying the specified requirements, in the form of the selected framework.</p>
+<dd class="field-even"><p>An tensor object satisfying the specified requirements, in the form of the selected framework.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -260,16 +260,16 @@ sequence.</p></li>
 <dl class="py function">
 <dt id="ivy.core.general.to_numpy">
 <code class="sig-prename descclassname">ivy.</code><code class="sig-name descname"><span class="pre">to_numpy</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#to_numpy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.core.general.to_numpy" title="Permalink to this definition">¶</a></dt>
-<dd><p>Converts array into a numpy array.</p>
+<dd><p>Converts tensor into a numpy tensor.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<em>array</em>) – Input array.</p></li>
+<li><p><strong>x</strong> (<em>tensor</em>) – Input tensor.</p></li>
 <li><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning framework. Inferred from inputs if None.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>A numpy array.</p>
+<dd class="field-even"><p>A numpy tensor.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -277,50 +277,58 @@ sequence.</p></li>
 <dl class="py function">
 <dt id="ivy.core.general.to_list">
 <code class="sig-prename descclassname">ivy.</code><code class="sig-name descname"><span class="pre">to_list</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#to_list"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.core.general.to_list" title="Permalink to this definition">¶</a></dt>
-<dd><p>Creates a (possibly nested) list from input array.</p>
+<dd><p>Creates a (possibly nested) list from input tensor.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<em>array</em>) – Input array.</p></li>
+<li><p><strong>x</strong> (<em>tensor</em>) – Input tensor.</p></li>
 <li><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning framework. Inferred from inputs if None.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>A list representation of the input array.</p>
+<dd class="field-even"><p>A list representation of the input tensor.</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py function">
 <dt id="ivy.core.general.shape">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname"><span class="pre">shape</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#shape"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.core.general.shape" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns the shape of the array x.</p>
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname"><span class="pre">shape</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">as_tensor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#shape"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.core.general.shape" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the shape of the tensor x.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<em>array</em>) – Input array to infer the shape of.</p></li>
+<li><p><strong>x</strong> (<em>tensor</em>) – Input tensor to infer the shape of.</p></li>
+<li><p><strong>as_tensor</strong> – Whether to return the shape as a tensor, default False.</p></li>
 <li><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning framework. Inferred from inputs if None.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Shape of the array</p>
+<dt class="field-even">Type</dt>
+<dd class="field-even"><p>as_tensor: bool, optional</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Shape of the tensor</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py function">
 <dt id="ivy.core.general.get_num_dims">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname"><span class="pre">get_num_dims</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#get_num_dims"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.core.general.get_num_dims" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns the number of dimensions of the array x.</p>
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname"><span class="pre">get_num_dims</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">as_tensor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#get_num_dims"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.core.general.get_num_dims" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the number of dimensions of the tensor x.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<em>array</em>) – Input array to infer the number of dimensions for.</p></li>
+<li><p><strong>x</strong> (<em>tensor</em>) – Input tensor to infer the number of dimensions for.</p></li>
+<li><p><strong>as_tensor</strong> – Whether to return the shape as a tensor, default False.</p></li>
 <li><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning framework. Inferred from inputs if None.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Shape of the array</p>
+<dt class="field-even">Type</dt>
+<dd class="field-even"><p>as_tensor: bool, optional</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Shape of the tensor</p>
 </dd>
 </dl>
 </dd></dl>
@@ -332,13 +340,13 @@ sequence.</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<em>array</em>) – Input array containing elements to minimum threshold.</p></li>
-<li><p><strong>y</strong> (<em>array</em>) – Array containing minimum values, must be broadcastable to x.</p></li>
+<li><p><strong>x</strong> (<em>tensor</em>) – Input tensor containing elements to minimum threshold.</p></li>
+<li><p><strong>y</strong> (<em>tensor</em>) – Tensor containing minimum values, must be broadcastable to x.</p></li>
 <li><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning framework. Inferred from inputs if None.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>An array with the elements of x, but clipped to not exceed the y values.</p>
+<dd class="field-even"><p>An tensor with the elements of x, but clipped to not exceed the y values.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -350,13 +358,13 @@ sequence.</p></li>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<em>array</em>) – Input array containing elements to maximum threshold.</p></li>
-<li><p><strong>y</strong> (<em>array</em>) – Array containing maximum values, must be broadcastable to x.</p></li>
+<li><p><strong>x</strong> (<em>tensor</em>) – Input tensor containing elements to maximum threshold.</p></li>
+<li><p><strong>y</strong> (<em>tensor</em>) – Tensor containing maximum values, must be broadcastable to x.</p></li>
 <li><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning framework. Inferred from inputs if None.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>An array with the elements of x, but clipped to not be lower than the y values.</p>
+<dd class="field-even"><p>An tensor with the elements of x, but clipped to not be lower than the y values.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -364,21 +372,21 @@ sequence.</p></li>
 <dl class="py function">
 <dt id="ivy.core.general.clip">
 <code class="sig-prename descclassname">ivy.</code><code class="sig-name descname"><span class="pre">clip</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_min</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_max</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#clip"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.core.general.clip" title="Permalink to this definition">¶</a></dt>
-<dd><p>Clips (limits) the values in an array.</p>
+<dd><p>Clips (limits) the values in an tensor.</p>
 <p>Given an interval, values outside the interval are clipped to the interval edges (element-wise).
 For example, if an interval of [0, 1] is specified, values smaller than 0 become 0,
 and values larger than 1 become 1.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<em>array</em>) – Input array containing elements to clip.</p></li>
+<li><p><strong>x</strong> (<em>tensor</em>) – Input tensor containing elements to clip.</p></li>
 <li><p><strong>x_min</strong> (<em>scalar</em>) – Minimum value.</p></li>
 <li><p><strong>x_max</strong> (<em>scalar</em>) – Maximum value.</p></li>
 <li><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning framework. Inferred from inputs if None.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>An array with the elements of x, but where values &lt; x_min are replaced with x_min,
+<dd class="field-even"><p>An tensor with the elements of x, but where values &lt; x_min are replaced with x_min,
 and those &gt; x_max with x_max.</p>
 </dd>
 </dl>
@@ -387,16 +395,16 @@ and those &gt; x_max with x_max.</p>
 <dl class="py function">
 <dt id="ivy.core.general.round">
 <code class="sig-prename descclassname">ivy.</code><code class="sig-name descname"><span class="pre">round</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#round"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.core.general.round" title="Permalink to this definition">¶</a></dt>
-<dd><p>Rounds the values of an array to the nearest integer, element-wise.</p>
+<dd><p>Rounds the values of an tensor to the nearest integer, element-wise.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<em>array</em>) – Input array containing elements to round.</p></li>
+<li><p><strong>x</strong> (<em>tensor</em>) – Input tensor containing elements to round.</p></li>
 <li><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning framework. Inferred from inputs if None.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>An array of the same shape and type as x, with the elements rounded to integers.</p>
+<dd class="field-even"><p>An tensor of the same shape and type as x, with the elements rounded to integers.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -408,13 +416,13 @@ and those &gt; x_max with x_max.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<em>array</em>) – Input array to floormod.</p></li>
-<li><p><strong>y</strong> (<em>array</em>) – Denominator input for floormod.</p></li>
+<li><p><strong>x</strong> (<em>tensor</em>) – Input tensor to floormod.</p></li>
+<li><p><strong>y</strong> (<em>tensor</em>) – Denominator input for floormod.</p></li>
 <li><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning framework. Inferred from inputs if None.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>An array of the same shape and type as x, with the elements floor modded.</p>
+<dd class="field-even"><p>An tensor of the same shape and type as x, with the elements floor modded.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -426,12 +434,12 @@ and those &gt; x_max with x_max.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<em>array</em>) – Input array to floor.</p></li>
+<li><p><strong>x</strong> (<em>tensor</em>) – Input tensor to floor.</p></li>
 <li><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning framework. Inferred from inputs if None.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>An array of the same shape and type as x, with the elements floored to integers.</p>
+<dd class="field-even"><p>An tensor of the same shape and type as x, with the elements floored to integers.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -443,12 +451,12 @@ and those &gt; x_max with x_max.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<em>array</em>) – Input array to ceil.</p></li>
+<li><p><strong>x</strong> (<em>tensor</em>) – Input tensor to ceil.</p></li>
 <li><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning framework. Inferred from inputs if None.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>An array of the same shape and type as x, with the elements ceiled to integers.</p>
+<dd class="field-even"><p>An tensor of the same shape and type as x, with the elements ceiled to integers.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -460,12 +468,12 @@ and those &gt; x_max with x_max.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<em>array</em>) – Input array containing elements to absolute value.</p></li>
+<li><p><strong>x</strong> (<em>tensor</em>) – Input tensor containing elements to absolute value.</p></li>
 <li><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning framework. Inferred from inputs if None.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>A new array of the same shape as input array a, with all values now positive.</p>
+<dd class="field-even"><p>A new tensor of the same shape as input tensor a, with all values now positive.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -473,17 +481,17 @@ and those &gt; x_max with x_max.</p>
 <dl class="py function">
 <dt id="ivy.core.general.argmax">
 <code class="sig-prename descclassname">ivy.</code><code class="sig-name descname"><span class="pre">argmax</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#argmax"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.core.general.argmax" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns the index with the largest value across axes of an array.</p>
+<dd><p>Returns the index with the largest value across axes of an tensor.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<em>array</em>) – Input array containing elements to argmax.</p></li>
+<li><p><strong>x</strong> (<em>tensor</em>) – Input tensor containing elements to argmax.</p></li>
 <li><p><strong>axis</strong> (<em>int</em><em>, </em><em>optional</em>) – Axis to perform the argmax, default is None, where the overall max is returned.</p></li>
 <li><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning framework. Inferred from inputs if None.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Array containing the indices of the maximum values across the specified axis.</p>
+<dd class="field-even"><p>Tensor containing the indices of the maximum values across the specified axis.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -491,17 +499,17 @@ and those &gt; x_max with x_max.</p>
 <dl class="py function">
 <dt id="ivy.core.general.argmin">
 <code class="sig-prename descclassname">ivy.</code><code class="sig-name descname"><span class="pre">argmin</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#argmin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.core.general.argmin" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns the index with the smallest value across axes of an array.</p>
+<dd><p>Returns the index with the smallest value across axes of an tensor.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<em>array</em>) – Input array containing elements to argmin.</p></li>
+<li><p><strong>x</strong> (<em>tensor</em>) – Input tensor containing elements to argmin.</p></li>
 <li><p><strong>axis</strong> (<em>int</em><em>, </em><em>optional</em>) – Axis to perform the argmin, default is None, where the overall min is returned.</p></li>
 <li><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning framework. Inferred from inputs if None.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Array containing the indices of the minimum values across the specified axis.</p>
+<dd class="field-even"><p>Tensor containing the indices of the minimum values across the specified axis.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -509,19 +517,19 @@ and those &gt; x_max with x_max.</p>
 <dl class="py function">
 <dt id="ivy.core.general.cast">
 <code class="sig-prename descclassname">ivy.</code><code class="sig-name descname"><span class="pre">cast</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype_str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#cast"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.core.general.cast" title="Permalink to this definition">¶</a></dt>
-<dd><p>Casts an array to a specified type.</p>
+<dd><p>Casts an tensor to a specified type.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<em>array</em>) – Input array containing elements to cast.</p></li>
-<li><p><strong>dtype_str</strong> (<em>data-type string</em>) – The desired data-type for the array in string format, i.e. ‘float32’ or ‘int64’.
+<li><p><strong>x</strong> (<em>tensor</em>) – Input tensor containing elements to cast.</p></li>
+<li><p><strong>dtype_str</strong> (<em>data-type string</em>) – The desired data-type for the tensor in string format, i.e. ‘float32’ or ‘int64’.
 If not given, then the type will be determined as the minimum type required to hold the objects in the
 sequence.</p></li>
 <li><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning framework. Inferred from inputs if None.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>A new array of the same shape as input array a, with data type given by dtype_str.</p>
+<dd class="field-even"><p>A new tensor of the same shape as input tensor a, with data type given by dtype_str.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -532,7 +540,7 @@ sequence.</p></li>
 <dd><p>Returns evenly spaced values within a given interval, with the spacing being specified.</p>
 <p>Values are generated within the half-open interval [start, stop) (in other words, the interval including start but
 excluding stop). For integer arguments the function is equivalent to the Python built-in range function,
-but returns an array in the chosen ml_framework rather than a list.</p>
+but returns an tensor in the chosen ml_framework rather than a list.</p>
 <p>See <span class="math notranslate nohighlight">\(linspace\)</span> for a certain number of evenly spaced values in an interval.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -543,15 +551,15 @@ integer and floating point round-off affects the length of out.</p></li>
 <li><p><strong>step</strong> (<em>number</em><em>, </em><em>optional</em>) – Spacing between values. For any output out, this is the distance between two adjacent values,
 out[i+1] - out[i]. The default step size is 1. If step is specified as a position argument,
 start must also be given.</p></li>
-<li><p><strong>dtype_str</strong> (<em>data-type string</em><em>, </em><em>optional</em>) – The desired data-type for the array in string format, i.e. ‘float32’ or ‘int64’.
+<li><p><strong>dtype_str</strong> (<em>data-type string</em><em>, </em><em>optional</em>) – The desired data-type for the tensor in string format, i.e. ‘float32’ or ‘int64’.
 If not given, then the type will be determined as the minimum type required to hold the objects in the
 sequence.</p></li>
-<li><p><strong>dev</strong> (<em>str</em>) – device on which to create the array ‘cuda:0’, ‘cuda:1’, ‘cpu’ etc.</p></li>
+<li><p><strong>dev</strong> (<em>str</em>) – device on which to create the tensor ‘cuda:0’, ‘cuda:1’, ‘cpu’ etc.</p></li>
 <li><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning framework. Inferred from inputs if None.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p><p>Array of evenly spaced values.</p>
+<dd class="field-even"><p><p>Tensor of evenly spaced values.</p>
 <p>For floating point arguments, the length of the result is ceil((stop - start)/step).
 Because of floating point overflow, this rule may result in the last element of out being greater than stop.</p>
 </p>
@@ -561,22 +569,22 @@ Because of floating point overflow, this rule may result in the last element of 
 
 <dl class="py function">
 <dt id="ivy.core.general.linspace">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname"><span class="pre">linspace</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stop</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dev</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#linspace"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.core.general.linspace" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname"><span class="pre">linspace</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stop</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dev_str</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#linspace"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.core.general.linspace" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generates a certain number of evenly-spaced values in an interval along a given axis.</p>
 <p>See <span class="math notranslate nohighlight">\(arange\)</span> that allows to specify the step size of evenly spaced values in an interval.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>start</strong> (<em>array</em>) – First entry in the range.</p></li>
-<li><p><strong>stop</strong> (<em>array</em>) – Final entry in the range.</p></li>
+<li><p><strong>start</strong> (<em>tensor</em>) – First entry in the range.</p></li>
+<li><p><strong>stop</strong> (<em>tensor</em>) – Final entry in the range.</p></li>
 <li><p><strong>num</strong> (<em>int</em>) – Number of values to generate.</p></li>
 <li><p><strong>axis</strong> (<em>int</em>) – Axis along which the operation is performed.</p></li>
-<li><p><strong>dev</strong> (<em>str</em>) – device on which to create the array ‘cuda:0’, ‘cuda:1’, ‘cpu’ etc.</p></li>
+<li><p><strong>dev_str</strong> (<em>str</em>) – device on which to create the tensor ‘cuda:0’, ‘cuda:1’, ‘cpu’ etc.</p></li>
 <li><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning framework. Inferred from inputs if None.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Array of evenly-spaced values.</p>
+<dd class="field-even"><p>Tensor of evenly-spaced values.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -584,19 +592,19 @@ Because of floating point overflow, this rule may result in the last element of 
 <dl class="py function">
 <dt id="ivy.core.general.concatenate">
 <code class="sig-prename descclassname">ivy.</code><code class="sig-name descname"><span class="pre">concatenate</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">xs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#concatenate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.core.general.concatenate" title="Permalink to this definition">¶</a></dt>
-<dd><p>Casts an array to a specified type.</p>
+<dd><p>Casts an tensor to a specified type.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>xs</strong> (<em>sequence of arrays</em>) – The input arrays must have the same shape, except in the dimension corresponding to axis
+<li><p><strong>xs</strong> (<em>sequence of tensors</em>) – The input tensors must have the same shape, except in the dimension corresponding to axis
 (the first, by default).</p></li>
-<li><p><strong>axis</strong> (<em>int</em><em>, </em><em>optional</em>) – The axis along which the arrays will be joined. If axis is None, arrays are flattened before use.
+<li><p><strong>axis</strong> (<em>int</em><em>, </em><em>optional</em>) – The axis along which the tensors will be joined. If axis is None, tensors are flattened before use.
 Default is 0.</p></li>
 <li><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning framework. Inferred from inputs if None.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>The concatenated array.</p>
+<dd class="field-even"><p>The concatenated tensor.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -604,21 +612,21 @@ Default is 0.</p></li>
 <dl class="py function">
 <dt id="ivy.core.general.flip">
 <code class="sig-prename descclassname">ivy.</code><code class="sig-name descname"><span class="pre">flip</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_shape</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#flip"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.core.general.flip" title="Permalink to this definition">¶</a></dt>
-<dd><p>Reverses the ord of elements in an array along the given axis.
-The shape of the array is preserved, but the elements are reordered.</p>
+<dd><p>Reverses the ord of elements in an tensor along the given axis.
+The shape of the tensor is preserved, but the elements are reordered.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<em>array</em>) – Input array.</p></li>
+<li><p><strong>x</strong> (<em>tensor</em>) – Input tensor.</p></li>
 <li><p><strong>axis</strong> (<em>None</em><em> or </em><em>int</em><em> or </em><em>tuple of ints</em><em>, </em><em>optional</em>) – Axis or axes along which to flip over. The default, axis=None, will flip over all of the axes of the
-input array. If axis is negative it counts from the last to the first axis.
+input tensor. If axis is negative it counts from the last to the first axis.
 If axis is a tuple of ints, flipping is performed on all of the axes specified in the tuple.</p></li>
 <li><p><strong>batch_shape</strong> (<em>sequence of ints</em><em>, </em><em>optional</em>) – Shape of batch. Inferred from inputs if None.</p></li>
 <li><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning framework. Inferred from inputs if None.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>An array with the entries of axis reversed.</p>
+<dd class="field-even"><p>An tensor with the entries of axis reversed.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -626,19 +634,19 @@ If axis is a tuple of ints, flipping is performed on all of the axes specified i
 <dl class="py function">
 <dt id="ivy.core.general.stack">
 <code class="sig-prename descclassname">ivy.</code><code class="sig-name descname"><span class="pre">stack</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">xs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#stack"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.core.general.stack" title="Permalink to this definition">¶</a></dt>
-<dd><p>Joins a sequence of arrays along a new axis.
+<dd><p>Joins a sequence of tensors along a new axis.
 The axis parameter specifies the index of the new axis in the dimensions of the result.
 For example, if axis=0, it will be the first dimension and if axis=-1, it will be the last dimension.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>xs</strong> (<em>sequence of arrays</em>) – Input arrays, each array must have the same shape.</p></li>
-<li><p><strong>axis</strong> (<em>int</em><em>, </em><em>optional</em>) – The axis in the result array along which the input arrays are stacked.</p></li>
+<li><p><strong>xs</strong> (<em>sequence of tensors</em>) – Input tensors, each tensor must have the same shape.</p></li>
+<li><p><strong>axis</strong> (<em>int</em><em>, </em><em>optional</em>) – The axis in the result tensor along which the input tensors are stacked.</p></li>
 <li><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning framework. Inferred from inputs if None.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>The stacked array has one more dimension than the input arrays.</p>
+<dd class="field-even"><p>The stacked tensor has one more dimension than the input tensors.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -646,18 +654,18 @@ For example, if axis=0, it will be the first dimension and if axis=-1, it will b
 <dl class="py function">
 <dt id="ivy.core.general.unstack">
 <code class="sig-prename descclassname">ivy.</code><code class="sig-name descname"><span class="pre">unstack</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_outputs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#unstack"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.core.general.unstack" title="Permalink to this definition">¶</a></dt>
-<dd><p>Unpacks the given dimension of a rank-R array into rank-(R-1) arrays.</p>
+<dd><p>Unpacks the given dimension of a rank-R tensor into rank-(R-1) tensors.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<em>array</em>) – Input array to unstack.</p></li>
-<li><p><strong>axis</strong> (<em>int</em>) – Axis for which to unpack the array.</p></li>
+<li><p><strong>x</strong> (<em>tensor</em>) – Input tensor to unstack.</p></li>
+<li><p><strong>axis</strong> (<em>int</em>) – Axis for which to unpack the tensor.</p></li>
 <li><p><strong>num_outputs</strong> (<em>int</em>) – Number of outputs from unstack. Required for mxnet symbolic.</p></li>
 <li><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning framework. Inferred from inputs if None.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>List of arrays, unpacked along specified dimensions.</p>
+<dd class="field-even"><p>List of tensors, unpacked along specified dimensions.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -665,14 +673,14 @@ For example, if axis=0, it will be the first dimension and if axis=-1, it will b
 <dl class="py function">
 <dt id="ivy.core.general.split">
 <code class="sig-prename descclassname">ivy.</code><code class="sig-name descname"><span class="pre">split</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_sections</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#split"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.core.general.split" title="Permalink to this definition">¶</a></dt>
-<dd><p>Splits an array into multiple sub-arrays.</p>
+<dd><p>Splits an tensor into multiple sub-arrays.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<em>array</em>) – Array to be divided into sub-arrays.</p></li>
-<li><p><strong>num_sections</strong> (<em>int</em><em>, </em><em>optional</em>) – Number of equal arrays to divide the array into, along the given axis.
+<li><p><strong>x</strong> (<em>tensor</em>) – Tensor to be divided into sub-arrays.</p></li>
+<li><p><strong>num_sections</strong> (<em>int</em><em>, </em><em>optional</em>) – Number of equal tensors to divide the tensor into, along the given axis.
 Size of axis dimension must be multiple of num_sections.
-Default is to divide into as many arrays as the axis dimension.</p></li>
+Default is to divide into as many tensors as the axis dimension.</p></li>
 <li><p><strong>axis</strong> (<em>int</em><em>, </em><em>optional</em>) – The axis along which to split, default is 0.</p></li>
 <li><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning framework. Inferred from inputs if None.</p></li>
 </ul>
@@ -686,17 +694,17 @@ Default is to divide into as many arrays as the axis dimension.</p></li>
 <dl class="py function">
 <dt id="ivy.core.general.tile">
 <code class="sig-prename descclassname">ivy.</code><code class="sig-name descname"><span class="pre">tile</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reps</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#tile"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.core.general.tile" title="Permalink to this definition">¶</a></dt>
-<dd><p>Constructs an array by repeating x the number of times given by reps.</p>
+<dd><p>Constructs an tensor by repeating x the number of times given by reps.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<em>array</em>) – Input array.</p></li>
+<li><p><strong>x</strong> (<em>tensor</em>) – Input tensor.</p></li>
 <li><p><strong>reps</strong> (<em>sequence</em>) – The number of repetitions of x along each axis.</p></li>
 <li><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning framework. Inferred from inputs if None.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>The tiled output array.</p>
+<dd class="field-even"><p>The tiled output tensor.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -704,11 +712,11 @@ Default is to divide into as many arrays as the axis dimension.</p></li>
 <dl class="py function">
 <dt id="ivy.core.general.constant_pad">
 <code class="sig-prename descclassname">ivy.</code><code class="sig-name descname"><span class="pre">constant_pad</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pad_width</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_shape</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#constant_pad"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.core.general.constant_pad" title="Permalink to this definition">¶</a></dt>
-<dd><p>Pads an array with a constant value.</p>
+<dd><p>Pads an tensor with a constant value.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<em>array</em>) – Input array to pad.</p></li>
+<li><p><strong>x</strong> (<em>tensor</em>) – Input tensor to pad.</p></li>
 <li><p><strong>pad_width</strong> (<em>sequence of tuples of ints</em>) – Number of values padded to the edges of each axis.
 Specified as ((before_1, after_1), … (before_N, after_N)), where N is number of axes of x.</p></li>
 <li><p><strong>value</strong> (<em>float</em><em> or </em><em>int</em><em>, </em><em>default zero</em>) – The constant value to pad the tensor with.</p></li>
@@ -717,7 +725,7 @@ Specified as ((before_1, after_1), … (before_N, after_N)), where N is number o
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Padded array of rank equal to x with shape increased according to pad_width.</p>
+<dd class="field-even"><p>Padded tensor of rank equal to x with shape increased according to pad_width.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -725,11 +733,11 @@ Specified as ((before_1, after_1), … (before_N, after_N)), where N is number o
 <dl class="py function">
 <dt id="ivy.core.general.zero_pad">
 <code class="sig-prename descclassname">ivy.</code><code class="sig-name descname"><span class="pre">zero_pad</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pad_width</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_shape</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#zero_pad"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.core.general.zero_pad" title="Permalink to this definition">¶</a></dt>
-<dd><p>Pads an array with zeros.</p>
+<dd><p>Pads an tensor with zeros.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<em>array</em>) – Input array to pad.</p></li>
+<li><p><strong>x</strong> (<em>tensor</em>) – Input tensor to pad.</p></li>
 <li><p><strong>pad_width</strong> (<em>sequence of tuples of ints</em>) – Number of values padded to the edges of each axis.
 Specified as ((before_1, after_1), … (before_N, after_N)), where N is number of axes of x.</p></li>
 <li><p><strong>x_shape</strong> (<em>sequence of ints</em>) – Shape of x. Required for mxnet symbolic.</p></li>
@@ -737,7 +745,7 @@ Specified as ((before_1, after_1), … (before_N, after_N)), where N is number o
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Padded array of rank equal to x with shape increased according to pad_width.</p>
+<dd class="field-even"><p>Padded tensor of rank equal to x with shape increased according to pad_width.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -745,11 +753,11 @@ Specified as ((before_1, after_1), … (before_N, after_N)), where N is number o
 <dl class="py function">
 <dt id="ivy.core.general.swapaxes">
 <code class="sig-prename descclassname">ivy.</code><code class="sig-name descname"><span class="pre">swapaxes</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#swapaxes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.core.general.swapaxes" title="Permalink to this definition">¶</a></dt>
-<dd><p>Interchange two axes of an array.</p>
+<dd><p>Interchange two axes of an tensor.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<em>array</em>) – Input array.</p></li>
+<li><p><strong>x</strong> (<em>tensor</em>) – Input tensor.</p></li>
 <li><p><strong>axis0</strong> (<em>int</em>) – First axis to be swapped.</p></li>
 <li><p><strong>axis1</strong> (<em>int</em>) – Second axis to be swapped.</p></li>
 <li><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning framework. Inferred from inputs if None.</p></li>
@@ -764,11 +772,11 @@ Specified as ((before_1, after_1), … (before_N, after_N)), where N is number o
 <dl class="py function">
 <dt id="ivy.core.general.transpose">
 <code class="sig-prename descclassname">ivy.</code><code class="sig-name descname"><span class="pre">transpose</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#transpose"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.core.general.transpose" title="Permalink to this definition">¶</a></dt>
-<dd><p>Permutes the dimensions of an array.</p>
+<dd><p>Permutes the dimensions of an tensor.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<em>array</em>) – Input array.</p></li>
+<li><p><strong>x</strong> (<em>tensor</em>) – Input tensor.</p></li>
 <li><p><strong>axes</strong> (<em>sequence of ints of length N</em>) – By default, reverse the dimensions, otherwise permute the axes according to the values given.</p></li>
 <li><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning framework. Inferred from inputs if None.</p></li>
 </ul>
@@ -782,18 +790,18 @@ Specified as ((before_1, after_1), … (before_N, after_N)), where N is number o
 <dl class="py function">
 <dt id="ivy.core.general.expand_dims">
 <code class="sig-prename descclassname">ivy.</code><code class="sig-name descname"><span class="pre">expand_dims</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#expand_dims"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.core.general.expand_dims" title="Permalink to this definition">¶</a></dt>
-<dd><p>Expands the shape of an array.
-Inserts a new axis that will appear at the axis position in the expanded array shape.</p>
+<dd><p>Expands the shape of an tensor.
+Inserts a new axis that will appear at the axis position in the expanded tensor shape.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<em>array</em>) – Input array.</p></li>
+<li><p><strong>x</strong> (<em>tensor</em>) – Input tensor.</p></li>
 <li><p><strong>axis</strong> (<em>int</em>) – Position in the expanded axes where the new axis is placed.</p></li>
 <li><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning framework. Inferred from inputs if None.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>array with the number of dimensions increased by one.</p>
+<dd class="field-even"><p>tensor with the number of dimensions increased by onetensor</p>
 </dd>
 </dl>
 </dd></dl>
@@ -805,16 +813,16 @@ Inserts a new axis that will appear at the axis position in the expanded array s
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>condition</strong> (<em>bool array</em>) – Where True, yield x1, otherwise yield x2.</p></li>
-<li><p><strong>x1</strong> (<em>array</em>) – values from which to choose when condition is True.</p></li>
-<li><p><strong>x2</strong> (<em>array</em>) – values from which to choose when condition is False.</p></li>
+<li><p><strong>condition</strong> (<em>bool tensor</em>) – Where True, yield x1, otherwise yield x2.</p></li>
+<li><p><strong>x1</strong> (<em>tensor</em>) – values from which to choose when condition is True.</p></li>
+<li><p><strong>x2</strong> (<em>tensor</em>) – values from which to choose when condition is False.</p></li>
 <li><p><strong>condition_shape</strong> (<em>sequence of ints</em>) – Shape of condition. Required for mxnet symbolic.</p></li>
 <li><p><strong>x_shape</strong> (<em>sequence of ints</em>) – Shape of x1 and x2. Required for mxnet symbolic.</p></li>
 <li><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning framework. Inferred from inputs if None.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>An array with elements from x1 where condition is True, and elements from x2 elsewhere.</p>
+<dd class="field-even"><p>An tensor with elements from x1 where condition is True, and elements from x2 elsewhere.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -822,16 +830,16 @@ Inserts a new axis that will appear at the axis position in the expanded array s
 <dl class="py function">
 <dt id="ivy.core.general.indices_where">
 <code class="sig-prename descclassname">ivy.</code><code class="sig-name descname"><span class="pre">indices_where</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#indices_where"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.core.general.indices_where" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns indices or true elements in an input boolean array.</p>
+<dd><p>Returns indices or true elements in an input boolean tensor.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<em>array</em>) – Boolean array, for which indices are desired.</p></li>
+<li><p><strong>x</strong> (<em>tensor</em>) – Boolean tensor, for which indices are desired.</p></li>
 <li><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning framework. Inferred from inputs if None.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Indices for where the boolean array is True.</p>
+<dd class="field-even"><p>Indices for where the boolean tensor is True.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -839,18 +847,18 @@ Inserts a new axis that will appear at the axis position in the expanded array s
 <dl class="py function">
 <dt id="ivy.core.general.reshape">
 <code class="sig-prename descclassname">ivy.</code><code class="sig-name descname"><span class="pre">reshape</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">newshape</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#reshape"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.core.general.reshape" title="Permalink to this definition">¶</a></dt>
-<dd><p>Gives a new shape to an array without changing its data.</p>
+<dd><p>Gives a new shape to an tensor without changing its data.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<em>array</em>) – Array to be reshaped.</p></li>
+<li><p><strong>x</strong> (<em>tensor</em>) – Tensor to be reshaped.</p></li>
 <li><p><strong>newshape</strong> (<em>sequence of ints</em>) – The new shape should be compatible with the original shape. One shape dimension can be -1.
-In this case, the value is inferred from the length of the array and remaining dimensions.</p></li>
+In this case, the value is inferred from the length of the tensor and remaining dimensions.</p></li>
 <li><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning framework. Inferred from inputs if None.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Reshaped array.</p>
+<dd class="field-even"><p>Reshaped tensor.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -858,18 +866,18 @@ In this case, the value is inferred from the length of the array and remaining d
 <dl class="py function">
 <dt id="ivy.core.general.squeeze">
 <code class="sig-prename descclassname">ivy.</code><code class="sig-name descname"><span class="pre">squeeze</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#squeeze"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.core.general.squeeze" title="Permalink to this definition">¶</a></dt>
-<dd><p>Removes a single-dimensional entry from the shape of an array.</p>
+<dd><p>Removes a single-dimensional entry from the shape of an tensor.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<em>array</em>) – Input data.</p></li>
+<li><p><strong>x</strong> (<em>tensor</em>) – Input data.</p></li>
 <li><p><strong>axis</strong> (<em>int</em><em>, </em><em>optional</em>) – Index for one of the single-dimensional entries in the shape.
 If an axis is selected with shape entry greater than one, an error is raised.</p></li>
 <li><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning framework. Inferred from inputs if None.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>The input array, but with all (axis=None) or one (axis is int) of the dimensions of length 1 removed.</p>
+<dd class="field-even"><p>The input tensor, but with all (axis=None) or one (axis is int) of the dimensions of length 1 removed.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -877,40 +885,40 @@ If an axis is selected with shape entry greater than one, an error is raised.</p
 <dl class="py function">
 <dt id="ivy.core.general.zeros">
 <code class="sig-prename descclassname">ivy.</code><code class="sig-name descname"><span class="pre">zeros</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">shape</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype_str</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'float32'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dev</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#zeros"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.core.general.zeros" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return a new array of given shape and type, filled with zeros.</p>
+<dd><p>Return a new tensor of given shape and type, filled with zeros.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>shape</strong> (<em>sequence of ints</em>) – Shape of the new array, e.g. (2, 3).</p></li>
-<li><p><strong>dtype_str</strong> – The desired data-type for the array in string format, i.e. ‘float32’ or ‘int64’.</p></li>
+<li><p><strong>shape</strong> (<em>sequence of ints</em>) – Shape of the new tensor, e.g. (2, 3).</p></li>
+<li><p><strong>dtype_str</strong> – The desired data-type for the tensor in string format, i.e. ‘float32’ or ‘int64’.</p></li>
 </ul>
 </dd>
 </dl>
 <p>Default is ‘float32’.
 :type dtype_str: data-type string, optional
-:param dev: device on which to create the array ‘cuda:0’, ‘cuda:1’, ‘cpu’ etc..
+:param dev: device on which to create the tensor ‘cuda:0’, ‘cuda:1’, ‘cpu’ etc..
 :type dev: str
 :param f: Machine learning framework. Inferred from inputs if None.
 :type f: ml_framework, optional
-:return: Array of zeros with the given shape and dtype_str.</p>
+:return: Tensor of zeros with the given shape and dtype_str.</p>
 </dd></dl>
 
 <dl class="py function">
 <dt id="ivy.core.general.zeros_like">
 <code class="sig-prename descclassname">ivy.</code><code class="sig-name descname"><span class="pre">zeros_like</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype_str</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dev</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#zeros_like"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.core.general.zeros_like" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns an array of zeros with the same shape and type as x, unless dtype_str provided which overrides.</p>
+<dd><p>Returns an tensor of zeros with the same shape and type as x, unless dtype_str provided which overrides.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<em>array</em>) – The shape and data-type of x define these same attributes of the returned array.</p></li>
-<li><p><strong>dtype_str</strong> (<em>data-type string</em><em>, </em><em>optional</em>) – The desired data-type for the array in string format, i.e. ‘float32’ or ‘int64’.
-If not given, then the type of the original array is used.</p></li>
-<li><p><strong>dev</strong> (<em>str</em><em>, </em><em>optional</em>) – device on which to create the array ‘cuda:0’, ‘cuda:1’, ‘cpu’ etc. Same as x if None.</p></li>
+<li><p><strong>x</strong> (<em>tensor</em>) – The shape and data-type of x define these same attributes of the returned tensor.</p></li>
+<li><p><strong>dtype_str</strong> (<em>data-type string</em><em>, </em><em>optional</em>) – The desired data-type for the tensor in string format, i.e. ‘float32’ or ‘int64’.
+If not given, then the type of the original tensor is used.</p></li>
+<li><p><strong>dev</strong> (<em>str</em><em>, </em><em>optional</em>) – device on which to create the tensor ‘cuda:0’, ‘cuda:1’, ‘cpu’ etc. Same as x if None.</p></li>
 <li><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning framework. Inferred from inputs if None.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Array of zeros with the same shape and type as a, unless dtype_str provided which overrides.</p>
+<dd class="field-even"><p>Tensor of zeros with the same shape and type as a, unless dtype_str provided which overrides.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -918,57 +926,57 @@ If not given, then the type of the original array is used.</p></li>
 <dl class="py function">
 <dt id="ivy.core.general.ones">
 <code class="sig-prename descclassname">ivy.</code><code class="sig-name descname"><span class="pre">ones</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">shape</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype_str</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'float32'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dev</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#ones"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.core.general.ones" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns a new array of given shape and type, filled with ones.</p>
+<dd><p>Returns a new tensor of given shape and type, filled with ones.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>shape</strong> (<em>sequence of ints</em>) – Shape of the new array, e.g. (2, 3).</p></li>
-<li><p><strong>dtype_str</strong> – The desired data-type for the array in string format, i.e. ‘float32’ or ‘int64’.</p></li>
+<li><p><strong>shape</strong> (<em>sequence of ints</em>) – Shape of the new tensor, e.g. (2, 3).</p></li>
+<li><p><strong>dtype_str</strong> – The desired data-type for the tensor in string format, i.e. ‘float32’ or ‘int64’.</p></li>
 </ul>
 </dd>
 </dl>
 <p>Default is ‘float32’.
 :type dtype_str: data-type string, optional
-:param dev: device on which to create the array ‘cuda:0’, ‘cuda:1’, ‘cpu’ etc..
+:param dev: device on which to create the tensor ‘cuda:0’, ‘cuda:1’, ‘cpu’ etc..
 :type dev: str
 :param f: Machine learning framework. Inferred from inputs if None.
 :type f: ml_framework, optional
-:return: Array of ones with the given shape and dtype_str.</p>
+:return: Tensor of ones with the given shape and dtype_str.</p>
 </dd></dl>
 
 <dl class="py function">
 <dt id="ivy.core.general.ones_like">
 <code class="sig-prename descclassname">ivy.</code><code class="sig-name descname"><span class="pre">ones_like</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype_str</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dev</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#ones_like"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.core.general.ones_like" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns an array of ones with the same shape and type as x, unless dtype_str provided which overrides.</p>
+<dd><p>Returns an tensor of ones with the same shape and type as x, unless dtype_str provided which overrides.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<em>array</em>) – The shape and data-type of a define these same attributes of the returned array.</p></li>
-<li><p><strong>dtype_str</strong> (<em>data-type string</em><em>, </em><em>optional</em>) – The desired data-type for the array in string format, i.e. ‘float32’ or ‘int64’.
-If not given, then the type of the original array is used.</p></li>
-<li><p><strong>dev</strong> (<em>str</em><em>, </em><em>optional</em>) – device on which to create the array ‘cuda:0’, ‘cuda:1’, ‘cpu’ etc. Same as x if None.</p></li>
+<li><p><strong>x</strong> (<em>tensor</em>) – The shape and data-type of a define these same attributes of the returned tensor.</p></li>
+<li><p><strong>dtype_str</strong> (<em>data-type string</em><em>, </em><em>optional</em>) – The desired data-type for the tensor in string format, i.e. ‘float32’ or ‘int64’.
+If not given, then the type of the original tensor is used.</p></li>
+<li><p><strong>dev</strong> (<em>str</em><em>, </em><em>optional</em>) – device on which to create the tensor ‘cuda:0’, ‘cuda:1’, ‘cpu’ etc. Same as x if None.</p></li>
 <li><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning framework. Inferred from inputs if None.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Array of zeros with the same shape and type as a, unless dtype_str provided which overrides.</p>
+<dd class="field-even"><p>Tensor of zeros with the same shape and type as a, unless dtype_str provided which overrides.</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py function">
 <dt id="ivy.core.general.one_hot">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname"><span class="pre">one_hot</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">indices</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">depth</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dev</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'cpu'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#one_hot"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.core.general.one_hot" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname"><span class="pre">one_hot</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">indices</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">depth</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dev_str</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#one_hot"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.core.general.one_hot" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a one-hot tensor
 :param indices: Indices for where the ones should be scattered <em>[batch_shape, dim]</em>
-:type indices: array
+:type indices: tensor
 :param depth: Scalar defining the depth of the one-hot dimension.
 :type depth: int
-:param dev: device on which to create the array ‘cuda:0’, ‘cuda:1’, ‘cpu’ etc. Same as x if None.
-:type dev: str, optional
+:param dev_str: device on which to create the tensor ‘cuda:0’, ‘cuda:1’, ‘cpu’ etc. Same as x if None.
+:type dev_str: str, optional
 :param f: Machine learning framework. Inferred from inputs if None.
 :type f: ml_framework, optional
-:return: Array of zeros with the same shape and type as a, unless dtype provided which overrides.</p>
+:return: Tensor of zeros with the same shape and type as a, unless dtype provided which overrides.</p>
 </dd></dl>
 
 <dl class="py function">
@@ -976,13 +984,13 @@ If not given, then the type of the original array is used.</p></li>
 <code class="sig-prename descclassname">ivy.</code><code class="sig-name descname"><span class="pre">cross</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#cross"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.core.general.cross" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the cross product of two (arrays of) vectors in R^3.
 The cross product of x1 and x2 in R^3 is a vector perpendicular to both x1 and x2.
-If x1 and x2 are arrays of vectors, the vectors are defined by the last axis of x1 and x2 by default which must have
+If x1 and x2 are tensors of vectors, the vectors are defined by the last axis of x1 and x2 by default which must have
 dimension 3.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>x1</strong> (<em>array</em>) – Components of the first vector(s).</p></li>
-<li><p><strong>x2</strong> (<em>array</em>) – Components of the second vector(s).</p></li>
+<li><p><strong>x1</strong> (<em>tensor</em>) – Components of the first vector(s).</p></li>
+<li><p><strong>x2</strong> (<em>tensor</em>) – Components of the second vector(s).</p></li>
 <li><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning framework. Inferred from inputs if None.</p></li>
 </ul>
 </dd>
@@ -995,18 +1003,18 @@ dimension 3.</p>
 <dl class="py function">
 <dt id="ivy.core.general.matmul">
 <code class="sig-prename descclassname">ivy.</code><code class="sig-name descname"><span class="pre">matmul</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_shape</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#matmul"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.core.general.matmul" title="Permalink to this definition">¶</a></dt>
-<dd><p>Computes the matrix product of two arrays x1 and x2.</p>
+<dd><p>Computes the matrix product of two tensors x1 and x2.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>x1</strong> (<em>array</em>) – Input array 1.</p></li>
-<li><p><strong>x2</strong> (<em>array</em>) – Input array 2.</p></li>
+<li><p><strong>x1</strong> (<em>tensor</em>) – Input tensor 1.</p></li>
+<li><p><strong>x2</strong> (<em>tensor</em>) – Input tensor 2.</p></li>
 <li><p><strong>batch_shape</strong> (<em>sequence of ints</em><em>, </em><em>optional</em>) – Shape of batch. Required for mxnet symbolic.</p></li>
 <li><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning framework. Inferred from inputs if None.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>The matrix product of the input arrays.</p>
+<dd class="field-even"><p>The matrix product of the input tensors.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1018,13 +1026,13 @@ dimension 3.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<em>array</em>) – Input array.</p></li>
+<li><p><strong>x</strong> (<em>tensor</em>) – Input tensor.</p></li>
 <li><p><strong>axis</strong> (<em>int</em>) – Axis along which the cumulative sum is computed. By default 0.</p></li>
 <li><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning framework. Inferred from inputs if None.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Input array with cumulatively summed elements along axis.</p>
+<dd class="field-even"><p>Input tensor with cumulatively summed elements along axis.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1032,13 +1040,13 @@ dimension 3.</p>
 <dl class="py function">
 <dt id="ivy.core.general.identity">
 <code class="sig-prename descclassname">ivy.</code><code class="sig-name descname"><span class="pre">identity</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype_str</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'float32'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_shape</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dev</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#identity"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.core.general.identity" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns the identity array.
-The identity array is a square array with ones on the main diagonal.</p>
+<dd><p>Returns the identity tensor.
+The identity tensor is a square tensor with ones on the main diagonal.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>n</strong> (<em>int</em>) – Number of rows (and columns) in n x n output.</p></li>
-<li><p><strong>dtype_str</strong> – The desired data-type for the array in string format, i.e. ‘float32’ or ‘int64’.</p></li>
+<li><p><strong>dtype_str</strong> – The desired data-type for the tensor in string format, i.e. ‘float32’ or ‘int64’.</p></li>
 </ul>
 </dd>
 </dl>
@@ -1046,30 +1054,30 @@ The identity array is a square array with ones on the main diagonal.</p>
 :type dtype_str: data-type string, optional
 :param batch_shape: Shape of batch. Inferred from inputs if None.
 :type batch_shape: sequence of ints, optional
-:param dev: device on which to create the array ‘cuda:0’, ‘cuda:1’, ‘cpu’ etc..
+:param dev: device on which to create the tensor ‘cuda:0’, ‘cuda:1’, ‘cpu’ etc..
 :type dev: str
 :param f: Machine learning framework. Inferred from inputs if None.
 :type f: ml_framework, optional
-:return: n x n array of type dtype_str, with its main diagonal set to one, and all other elements 0.</p>
+:return: n x n tensor of type dtype_str, with its main diagonal set to one, and all other elements 0.</p>
 </dd></dl>
 
 <dl class="py function">
 <dt id="ivy.core.general.scatter_flat">
 <code class="sig-prename descclassname">ivy.</code><code class="sig-name descname"><span class="pre">scatter_flat</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">indices</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">updates</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reduction</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'sum'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dev</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#scatter_flat"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.core.general.scatter_flat" title="Permalink to this definition">¶</a></dt>
-<dd><p>Scatter flat updates into a new flat array according to flat indices.</p>
+<dd><p>Scatter flat updates into a new flat tensor according to flat indices.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>indices</strong> (<em>array</em>) – Indices for the new values to occupy.</p></li>
-<li><p><strong>updates</strong> (<em>array</em>) – Values for the new array to hold.</p></li>
+<li><p><strong>indices</strong> (<em>tensor</em>) – Indices for the new values to occupy.</p></li>
+<li><p><strong>updates</strong> (<em>tensor</em>) – Values for the new tensor to hold.</p></li>
 <li><p><strong>size</strong> (<em>int</em>) – The size of the result.</p></li>
 <li><p><strong>reduction</strong> (<em>str</em>) – The reduction method for the scatter, one of ‘sum’, ‘min’ or ‘max’</p></li>
-<li><p><strong>dev</strong> (<em>str</em><em>, </em><em>optional</em>) – device on which to create the array ‘cuda:0’, ‘cuda:1’, ‘cpu’ etc. Same as updates if None.</p></li>
+<li><p><strong>dev</strong> (<em>str</em><em>, </em><em>optional</em>) – device on which to create the tensor ‘cuda:0’, ‘cuda:1’, ‘cpu’ etc. Same as updates if None.</p></li>
 <li><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning framework. Inferred from inputs if None.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>New array of given shape, with the values scattered at the indices.</p>
+<dd class="field-even"><p>New tensor of given shape, with the values scattered at the indices.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1077,60 +1085,60 @@ The identity array is a square array with ones on the main diagonal.</p>
 <dl class="py function">
 <dt id="ivy.core.general.scatter_nd">
 <code class="sig-prename descclassname">ivy.</code><code class="sig-name descname"><span class="pre">scatter_nd</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">indices</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">updates</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shape</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_idx_dims</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reduction</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'sum'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dev</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#scatter_nd"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.core.general.scatter_nd" title="Permalink to this definition">¶</a></dt>
-<dd><p>Scatter updates into a new array according to indices.</p>
+<dd><p>Scatter updates into a new tensor according to indices.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>indices</strong> (<em>array</em>) – Indices for the new values to occupy.</p></li>
-<li><p><strong>updates</strong> (<em>array</em>) – Values for the new array to hold.</p></li>
+<li><p><strong>indices</strong> (<em>tensor</em>) – Indices for the new values to occupy.</p></li>
+<li><p><strong>updates</strong> (<em>tensor</em>) – Values for the new tensor to hold.</p></li>
 <li><p><strong>shape</strong> (<em>sequence of ints</em>) – The shape of the result.</p></li>
-<li><p><strong>num_idx_dims</strong> (<em>int</em>) – Number of dimensions for indices array. Required for MXNet symbolic.</p></li>
+<li><p><strong>num_idx_dims</strong> (<em>int</em>) – Number of dimensions for indices tensor. Required for MXNet symbolic.</p></li>
 <li><p><strong>reduction</strong> (<em>str</em>) – The reduction method for the scatter, one of ‘sum’, ‘min’ or ‘max’</p></li>
-<li><p><strong>dev</strong> (<em>str</em><em>, </em><em>optional</em>) – device on which to create the array ‘cuda:0’, ‘cuda:1’, ‘cpu’ etc. Same as updates if None.</p></li>
+<li><p><strong>dev</strong> (<em>str</em><em>, </em><em>optional</em>) – device on which to create the tensor ‘cuda:0’, ‘cuda:1’, ‘cpu’ etc. Same as updates if None.</p></li>
 <li><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning framework. Inferred from inputs if None.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>New array of given shape, with the values scattered at the indices.</p>
+<dd class="field-even"><p>New tensor of given shape, with the values scattered at the indices.</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py function">
 <dt id="ivy.core.general.gather_flat">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname"><span class="pre">gather_flat</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">params</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">indices</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dev</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#gather_flat"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.core.general.gather_flat" title="Permalink to this definition">¶</a></dt>
-<dd><p>Gather slices from flat params into a flat array with size specified by indices size.</p>
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname"><span class="pre">gather_flat</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">params</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">indices</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dev_str</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#gather_flat"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.core.general.gather_flat" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gather slices from flat params into a flat tensor with size specified by indices size.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>params</strong> (<em>array</em>) – The array from which to gather values.</p></li>
-<li><p><strong>indices</strong> (<em>array</em>) – Index array.</p></li>
-<li><p><strong>dev</strong> (<em>str</em><em>, </em><em>optional</em>) – device on which to create the array ‘cuda:0’, ‘cuda:1’, ‘cpu’ etc. Same as x if None.</p></li>
+<li><p><strong>params</strong> (<em>tensor</em>) – The tensor from which to gather values.</p></li>
+<li><p><strong>indices</strong> (<em>tensor</em>) – Index tensor.</p></li>
+<li><p><strong>dev_str</strong> (<em>str</em><em>, </em><em>optional</em>) – device on which to create the tensor ‘cuda:0’, ‘cuda:1’, ‘cpu’ etc. Same as x if None.</p></li>
 <li><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning framework. Inferred from inputs if None.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>New array of given shape, with the values gathered at the indices.</p>
+<dd class="field-even"><p>New tensor of given shape, with the values gathered at the indices.</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py function">
 <dt id="ivy.core.general.gather_nd">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname"><span class="pre">gather_nd</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">params</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">indices</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">indices_shape</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dev</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#gather_nd"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.core.general.gather_nd" title="Permalink to this definition">¶</a></dt>
-<dd><p>Gather slices from params into a array with shape specified by indices.</p>
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname"><span class="pre">gather_nd</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">params</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">indices</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">indices_shape</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dev_str</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#gather_nd"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.core.general.gather_nd" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gather slices from params into a tensor with shape specified by indices.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>params</strong> (<em>array</em>) – The array from which to gather values.</p></li>
-<li><p><strong>indices</strong> (<em>array</em>) – Index array.</p></li>
+<li><p><strong>params</strong> (<em>tensor</em>) – The tensor from which to gather values.</p></li>
+<li><p><strong>indices</strong> (<em>tensor</em>) – Index tensor.</p></li>
 <li><p><strong>indices_shape</strong> (<em>sequence of ints.</em>) – Shape of the indices, required for mxnet symbolic mode.</p></li>
-<li><p><strong>dev</strong> (<em>str</em><em>, </em><em>optional</em>) – device on which to create the array ‘cuda:0’, ‘cuda:1’, ‘cpu’ etc. Same as x if None.</p></li>
+<li><p><strong>dev_str</strong> (<em>str</em><em>, </em><em>optional</em>) – device on which to create the tensor ‘cuda:0’, ‘cuda:1’, ‘cpu’ etc. Same as x if None.</p></li>
 <li><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning framework. Inferred from inputs if None.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>New array of given shape, with the values gathered at the indices.</p>
+<dd class="field-even"><p>New tensor of given shape, with the values gathered at the indices.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1138,16 +1146,16 @@ The identity array is a square array with ones on the main diagonal.</p>
 <dl class="py function">
 <dt id="ivy.core.general.dev">
 <code class="sig-prename descclassname">ivy.</code><code class="sig-name descname"><span class="pre">dev</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#dev"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.core.general.dev" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the native device handle for input array x.</p>
+<dd><p>Get the native device handle for input tensor x.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<em>array</em>) – Array for which to get the device handle.</p></li>
+<li><p><strong>x</strong> (<em>tensor</em>) – Tensor for which to get the device handle.</p></li>
 <li><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning framework. Inferred from inputs if None.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Device handle for the array, in native framework format.</p>
+<dd class="field-even"><p>Device handle for the tensor, in native framework format.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1172,16 +1180,16 @@ The identity array is a square array with ones on the main diagonal.</p>
 <dl class="py function">
 <dt id="ivy.core.general.dev_str">
 <code class="sig-prename descclassname">ivy.</code><code class="sig-name descname"><span class="pre">dev_str</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#dev_str"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.core.general.dev_str" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the device string for input array x.</p>
+<dd><p>Get the device string for input tensor x.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<em>array</em>) – Array for which to get the device string.</p></li>
+<li><p><strong>x</strong> (<em>tensor</em>) – Tensor for which to get the device string.</p></li>
 <li><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning framework. Inferred from inputs if None.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Device string for the array, e.g. ‘cuda:0’, ‘cuda:1’, ‘cpu’ etc..</p>
+<dd class="field-even"><p>Device string for the tensor, e.g. ‘cuda:0’, ‘cuda:1’, ‘cpu’ etc..</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1217,16 +1225,16 @@ The identity array is a square array with ones on the main diagonal.</p>
 <dl class="py function">
 <dt id="ivy.core.general.dtype">
 <code class="sig-prename descclassname">ivy.</code><code class="sig-name descname"><span class="pre">dtype</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#dtype"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.core.general.dtype" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the data type for input array x.</p>
+<dd><p>Get the data type for input tensor x.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<em>array</em>) – Array for which to get the data type.</p></li>
+<li><p><strong>x</strong> (<em>tensor</em>) – Tensor for which to get the data type.</p></li>
 <li><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning framework. Inferred from inputs if None.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Data type of the array</p>
+<dd class="field-even"><p>Data type of the tensor</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1251,11 +1259,11 @@ The identity array is a square array with ones on the main diagonal.</p>
 <dl class="py function">
 <dt id="ivy.core.general.dtype_str">
 <code class="sig-prename descclassname">ivy.</code><code class="sig-name descname"><span class="pre">dtype_str</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#dtype_str"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.core.general.dtype_str" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the data type string for input array x.</p>
+<dd><p>Get the data type string for input tensor x.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<em>array</em>) – Array for which to get the data type string.</p></li>
+<li><p><strong>x</strong> (<em>tensor</em>) – Tensor for which to get the data type string.</p></li>
 <li><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning framework. Inferred from inputs if None.</p></li>
 </ul>
 </dd>
@@ -1289,7 +1297,7 @@ Required for torch in non-dynamic mode, unused by other frameworks.</p></li>
 <div class="toctree-wrapper compound">
 <p class="caption"><span class="caption-text">General</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="general/array.html">array</a></li>
+<li class="toctree-l1"><a class="reference internal" href="general/tensor.html">tensor</a></li>
 <li class="toctree-l1"><a class="reference internal" href="general/to_numpy.html">to_numpy</a></li>
 <li class="toctree-l1"><a class="reference internal" href="general/to_list.html">to_list</a></li>
 <li class="toctree-l1"><a class="reference internal" href="general/shape.html">shape</a></li>
@@ -1356,7 +1364,7 @@ Required for torch in non-dynamic mode, unused by other frameworks.</p></li>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="general/array.html" class="btn btn-neutral float-right" title="array" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="general/tensor.html" class="btn btn-neutral float-right" title="tensor" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="container/Container.html" class="btn btn-neutral float-left" title="Container" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
