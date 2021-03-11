@@ -10,11 +10,11 @@ torch_scatter = None
 from operator import mul
 from torch.types import Number
 from functools import reduce as _reduce
-from typing import List, Dict, Optional
+from typing import List, Dict, Optional, Union
 
 
 # noinspection PyShadowingNames
-def array(object_in, dtype_str: Optional[str] = None, dev: Optional[str] = None):
+def tensor(object_in, dtype_str: Optional[str] = None, dev: Optional[str] = None):
     if dev is not None:
         dev = dev.replace('gpu', 'cuda')
     if dtype_str is not None:
@@ -50,12 +50,12 @@ def to_list(x):
     raise ValueError('Expected a pytroch tensor.')
 
 
-def shape(x) -> List[int]:
-    return x.shape
+def shape(x, as_tensor=False) -> Union[torch.Tensor, List[int]]:
+    return torch.tensor(x.shape) if as_tensor else x.shape
 
 
-def get_num_dims(x) -> int:
-    return len(x.shape)
+def get_num_dims(x, as_tensor=False) -> Union[torch.Tensor, int]:
+    return torch.tensor(len(x.shape)) if as_tensor else len(x.shape)
 
 
 def minimum(x, y):

@@ -19,7 +19,7 @@ DTYPE_DICT = {_tf.int32: 'int32',
 
 
 # noinspection PyShadowingNames
-def array(object_in, dtype_str=None, dev=None):
+def tensor(object_in, dtype_str=None, dev=None):
     dtype = _tf.__dict__[dtype_str] if dtype_str else dtype_str
     if dev:
         with _tf.device('/' + dev.upper()):
@@ -36,8 +36,8 @@ def array(object_in, dtype_str=None, dev=None):
 
 to_numpy = lambda x: _np.asarray(_tf.convert_to_tensor(x))
 to_list = lambda x: x.numpy().tolist()
-shape = _tf.shape
-get_num_dims = lambda x: _tf.shape(_tf.shape(x))
+shape = lambda x, as_tensor=False: _tf.shape(x) if as_tensor else tuple(x.shape)
+get_num_dims = lambda x, as_tensor: _tf.shape(_tf.shape(x))[0] if as_tensor else int(_tf.shape(_tf.shape(x)))
 minimum = _tf.minimum
 maximum = _tf.maximum
 clip = _tf.clip_by_value

@@ -33,15 +33,16 @@ def _mxnet_init_context(dev):
     return _mx.Context(mx_dev, mx_dev_id)
 
 
-def array(object_in, dtype_str=None, dev=None):
+def tensor(object_in, dtype_str=None, dev=None):
     cont = _mxnet_init_context('cpu' if not dev else dev)
     return _mx.nd.array(object_in, cont, dtype=dtype_str)
 
 
 to_numpy = lambda x: x.asnumpy()
 to_list = lambda x: x.asnumpy().tolist()
-shape = lambda x: x.shape
-get_num_dims = lambda x: len(x.shape)
+shape = lambda x, as_tensor=False: _mx.nd.shape_array(x) if as_tensor else x.shape
+get_num_dims = lambda x, as_tensor=False:\
+    _mx.nd.shape_array(_mx.nd.shape_array(x)).reshape([]) if as_tensor else len(x.shape)
 minimum = _mx.nd.minimum
 maximum = _mx.nd.maximum
 clip = _mx.nd.clip
@@ -171,7 +172,7 @@ def transpose(x, axes=None):
 expand_dims = _mx.nd.expand_dims
 
 
-def where(condition, x1, x2, _=None, _1=None):
+def where(condition, x1, x2, condition_shape=None, x_shape=None):
     x_shape = list(x1.shape)
     condition_shape = list(condition.shape)
     if x_shape == condition_shape:

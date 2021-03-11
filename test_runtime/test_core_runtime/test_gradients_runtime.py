@@ -49,7 +49,7 @@ def test_variable():
 
         append_to_file(fname, '{}'.format(lib))
 
-        x0 = ivy_gen.array([random.uniform(0, 1) for _ in range(DIM)], f=lib)
+        x0 = ivy_gen.tensor([random.uniform(0, 1) for _ in range(DIM)], f=lib)
 
         ivy_grad.variable(x0, f=lib)
         ivy_grad_w_time.variable(x0, f=time_lib)
@@ -81,7 +81,7 @@ def test_execute_with_gradients():
 
         append_to_file(fname, '{}'.format(lib))
 
-        x0 = ivy_gen.array([random.uniform(0, 1) for _ in range(DIM)], f=lib)
+        x0 = ivy_gen.tensor([random.uniform(0, 1) for _ in range(DIM)], f=lib)
         func = lambda xs_in: (xs_in[0] * xs_in[0])[0]
         xs = [ivy_grad.variable(x0)]
 
@@ -115,8 +115,8 @@ def test_gradient_descent_update():
 
         append_to_file(fname, '{}'.format(lib))
 
-        x0 = ivy_gen.array([random.uniform(0, 1) for _ in range(DIM)], f=lib)
-        x1 = ivy_gen.array([random.uniform(0, 1) for _ in range(DIM)], f=lib)
+        x0 = ivy_gen.tensor([random.uniform(0, 1) for _ in range(DIM)], f=lib)
+        x1 = ivy_gen.tensor([random.uniform(0, 1) for _ in range(DIM)], f=lib)
         ws = [ivy_grad.variable(x0)]
         dcdws = [x1]
 
@@ -150,7 +150,7 @@ def test_stop_gradient():
 
         append_to_file(fname, '{}'.format(lib))
 
-        x0 = ivy_gen.array([random.uniform(0, 1) for _ in range(DIM)], f=lib)
+        x0 = ivy_gen.tensor([random.uniform(0, 1) for _ in range(DIM)], f=lib)
 
         ivy_grad.stop_gradient(x0, f=lib)
         ivy_grad_w_time.stop_gradient(x0, f=time_lib)
