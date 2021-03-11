@@ -13,6 +13,11 @@ General
    :caption: General
 
    general/tensor.rst
+   general/round.rst
+   general/floormod.rst
+   general/floor.rst
+   general/ceil.rst
+   general/abs.rst
    general/arange.rst
    general/linspace.rst
    general/concatenate.rst
