@@ -19,5 +19,5 @@ def randint(low, high, shape, dev='cpu'):
     return _mx.nd.random.randint(low, high, shape, ctx=ctx)
 
 
-seed = lambda seed_value: _mx.random.seed(seed_value)
+seed = lambda seed_value=0: _mx.random.seed(seed_value)
 shuffle = lambda x: _mx.nd.random.shuffle(x)

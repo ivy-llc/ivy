@@ -49,7 +49,7 @@ def test_sin():
 
         append_to_file(fname, '{}'.format(lib))
 
-        x0 = ivy_gen.array([random.uniform(0, 1) for _ in range(DIM)], f=lib)
+        x0 = ivy_gen.tensor([random.uniform(0, 1) for _ in range(DIM)], f=lib)
 
         ivy_math.sin(x0, f=lib)
         ivy_math_w_time.sin(x0, f=time_lib)
@@ -81,7 +81,7 @@ def test_cos():
 
         append_to_file(fname, '{}'.format(lib))
 
-        x0 = ivy_gen.array([random.uniform(0, 1) for _ in range(DIM)], f=lib)
+        x0 = ivy_gen.tensor([random.uniform(0, 1) for _ in range(DIM)], f=lib)
 
         ivy_math.cos(x0, f=lib)
         ivy_math_w_time.cos(x0, f=time_lib)
@@ -113,7 +113,7 @@ def test_tan():
 
         append_to_file(fname, '{}'.format(lib))
 
-        x0 = ivy_gen.array([random.uniform(0, 1) for _ in range(DIM)], f=lib)
+        x0 = ivy_gen.tensor([random.uniform(0, 1) for _ in range(DIM)], f=lib)
 
         ivy_math.tan(x0, f=lib)
         ivy_math_w_time.tan(x0, f=time_lib)
@@ -145,7 +145,7 @@ def test_asin():
 
         append_to_file(fname, '{}'.format(lib))
 
-        x0 = ivy_gen.array([random.uniform(0, 1) for _ in range(DIM)], f=lib)
+        x0 = ivy_gen.tensor([random.uniform(0, 1) for _ in range(DIM)], f=lib)
 
         ivy_math.asin(x0, f=lib)
         ivy_math_w_time.asin(x0, f=time_lib)
@@ -177,7 +177,7 @@ def test_acos():
 
         append_to_file(fname, '{}'.format(lib))
 
-        x0 = ivy_gen.array([random.uniform(0, 1) for _ in range(DIM)], f=lib)
+        x0 = ivy_gen.tensor([random.uniform(0, 1) for _ in range(DIM)], f=lib)
 
         ivy_math.acos(x0, f=lib)
         ivy_math_w_time.acos(x0, f=time_lib)
@@ -209,7 +209,7 @@ def test_atan():
 
         append_to_file(fname, '{}'.format(lib))
 
-        x0 = ivy_gen.array([random.uniform(0, 1) for _ in range(DIM)], f=lib)
+        x0 = ivy_gen.tensor([random.uniform(0, 1) for _ in range(DIM)], f=lib)
 
         ivy_math.atan(x0, f=lib)
         ivy_math_w_time.atan(x0, f=time_lib)
@@ -241,8 +241,8 @@ def test_atan2():
 
         append_to_file(fname, '{}'.format(lib))
 
-        x0 = ivy_gen.array([random.uniform(0, 1) for _ in range(DIM)], f=lib)
-        x1 = ivy_gen.array([random.uniform(0, 1) for _ in range(DIM)], f=lib)
+        x0 = ivy_gen.tensor([random.uniform(0, 1) for _ in range(DIM)], f=lib)
+        x1 = ivy_gen.tensor([random.uniform(0, 1) for _ in range(DIM)], f=lib)
 
         ivy_math.atan2(x0, x1, f=lib)
         ivy_math_w_time.atan2(x0, x1, f=time_lib)
@@ -274,7 +274,7 @@ def test_sinh():
 
         append_to_file(fname, '{}'.format(lib))
 
-        x0 = ivy_gen.array([random.uniform(0, 1) for _ in range(DIM)], f=lib)
+        x0 = ivy_gen.tensor([random.uniform(0, 1) for _ in range(DIM)], f=lib)
 
         ivy_math.sinh(x0, f=lib)
         ivy_math_w_time.sinh(x0, f=time_lib)
@@ -306,7 +306,7 @@ def test_cosh():
 
         append_to_file(fname, '{}'.format(lib))
 
-        x0 = ivy_gen.array([random.uniform(0, 1) for _ in range(DIM)], f=lib)
+        x0 = ivy_gen.tensor([random.uniform(0, 1) for _ in range(DIM)], f=lib)
 
         ivy_math.cosh(x0, f=lib)
         ivy_math_w_time.cosh(x0, f=time_lib)
@@ -338,7 +338,7 @@ def test_tanh():
 
         append_to_file(fname, '{}'.format(lib))
 
-        x0 = ivy_gen.array([random.uniform(0, 1) for _ in range(DIM)], f=lib)
+        x0 = ivy_gen.tensor([random.uniform(0, 1) for _ in range(DIM)], f=lib)
 
         ivy_math.tanh(x0, f=lib)
         ivy_math_w_time.tanh(x0, f=time_lib)
@@ -370,7 +370,7 @@ def test_asinh():
 
         append_to_file(fname, '{}'.format(lib))
 
-        x0 = ivy_gen.array([random.uniform(0, 1) for _ in range(DIM)], f=lib)
+        x0 = ivy_gen.tensor([random.uniform(0, 1) for _ in range(DIM)], f=lib)
 
         ivy_math.asinh(x0, f=lib)
         ivy_math_w_time.asinh(x0, f=time_lib)
@@ -402,7 +402,7 @@ def test_acosh():
 
         append_to_file(fname, '{}'.format(lib))
 
-        x0 = ivy_gen.array([random.uniform(0, 1) for _ in range(DIM)], f=lib)
+        x0 = ivy_gen.tensor([random.uniform(0, 1) for _ in range(DIM)], f=lib)
 
         ivy_math.acosh(x0, f=lib)
         ivy_math_w_time.acosh(x0, f=time_lib)
@@ -434,7 +434,7 @@ def test_atanh():
 
         append_to_file(fname, '{}'.format(lib))
 
-        x0 = ivy_gen.array([random.uniform(0, 1) for _ in range(DIM)], f=lib)
+        x0 = ivy_gen.tensor([random.uniform(0, 1) for _ in range(DIM)], f=lib)
 
         ivy_math.atanh(x0, f=lib)
         ivy_math_w_time.atanh(x0, f=time_lib)
@@ -466,7 +466,7 @@ def test_log():
 
         append_to_file(fname, '{}'.format(lib))
 
-        x0 = ivy_gen.array([random.uniform(0, 1) for _ in range(DIM)], f=lib)
+        x0 = ivy_gen.tensor([random.uniform(0, 1) for _ in range(DIM)], f=lib)
 
         ivy_math.log(x0, f=lib)
         ivy_math_w_time.log(x0, f=time_lib)
@@ -498,7 +498,7 @@ def test_exp():
 
         append_to_file(fname, '{}'.format(lib))
 
-        x0 = ivy_gen.array([random.uniform(0, 1) for _ in range(DIM)], f=lib)
+        x0 = ivy_gen.tensor([random.uniform(0, 1) for _ in range(DIM)], f=lib)
 
         ivy_math.exp(x0, f=lib)
         ivy_math_w_time.exp(x0, f=time_lib)

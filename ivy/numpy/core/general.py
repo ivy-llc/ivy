@@ -26,7 +26,7 @@ def _to_dev(x, dev):
 
 
 # noinspection PyShadowingNames
-def array(object_in, dtype_str=None, dev=None):
+def tensor(object_in, dtype_str=None, dev=None):
     if dtype_str:
         dtype = _np.__dict__[dtype_str]
     else:
@@ -36,8 +36,8 @@ def array(object_in, dtype_str=None, dev=None):
 
 to_numpy = lambda x: x
 to_list = lambda x: x.tolist()
-shape = lambda x: x.shape
-get_num_dims = lambda x: len(x.shape)
+shape = lambda x, as_tensor=False: _np.asarray(_np.shape(x)) if as_tensor else x.shape
+get_num_dims = lambda x, as_tensor=False: _np.asarray(len(_np.shape(x))) if as_tensor else len(x.shape)
 minimum = _np.minimum
 maximum = _np.maximum
 clip = _np.clip

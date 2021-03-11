@@ -51,7 +51,7 @@ def test_conv1d():
             # numpy and jax do not yet support 2d convolutions
             continue
 
-        x0 = ivy_gen.array([[[random.uniform(0, 1)], [random.uniform(0, 1)]] for _ in range(DIM)], f=lib)
+        x0 = ivy_gen.tensor([[[random.uniform(0, 1)], [random.uniform(0, 1)]] for _ in range(DIM)], f=lib)
         if call in [helpers.tf_call, helpers.tf_graph_call]:
             data_format = "NWC"
         else:
@@ -60,7 +60,7 @@ def test_conv1d():
 
         append_to_file(fname, '{}'.format(lib))
 
-        filters = ivy_gen.array([[[0.]], [[1.]]], f=lib)
+        filters = ivy_gen.tensor([[[0.]], [[1.]]], f=lib)
         ivy_layers.conv1d(x0, filters, 1, "SAME", data_format, filter_shape=[2], num_filters=1, f=lib)
         ivy_layers_w_time.conv1d(x0, filters, 1, "SAME", data_format, filter_shape=[2], num_filters=1, f=time_lib)
         TIMES_DICT.clear()
@@ -93,7 +93,7 @@ def test_conv1d_transpose():
             # numpy and jax do not yet support 2d convolutions
             continue
 
-        x0 = ivy_gen.array([[[random.uniform(0, 1)], [random.uniform(0, 1)]] for _ in range(DIM)], f=lib)
+        x0 = ivy_gen.tensor([[[random.uniform(0, 1)], [random.uniform(0, 1)]] for _ in range(DIM)], f=lib)
         if call in [helpers.tf_call, helpers.tf_graph_call]:
             data_format = "NWC"
         else:
@@ -102,7 +102,7 @@ def test_conv1d_transpose():
 
         append_to_file(fname, '{}'.format(lib))
 
-        filters = ivy_gen.array([[[0.]], [[1.]]], f=lib)
+        filters = ivy_gen.tensor([[[0.]], [[1.]]], f=lib)
         ivy_layers.conv1d_transpose(x0, filters, 1, "SAME", (DIM, 2, 1), data_format, filter_shape=[2], num_filters=1,
                                     f=lib)
         ivy_layers_w_time.conv1d_transpose(x0, filters, 1, "SAME", (DIM, 2, 1), data_format, filter_shape=[2],
@@ -139,8 +139,8 @@ def test_conv2d():
             # numpy and jax do not yet support 2d convolutions
             continue
 
-        x0 = ivy_gen.array([[[[random.uniform(0, 1)], [random.uniform(0, 1)]],
-                             [[random.uniform(0, 1)], [random.uniform(0, 1)]]] for _ in range(DIM)], f=lib)
+        x0 = ivy_gen.tensor([[[[random.uniform(0, 1)], [random.uniform(0, 1)]],
+                              [[random.uniform(0, 1)], [random.uniform(0, 1)]]] for _ in range(DIM)], f=lib)
         if call in [helpers.tf_call, helpers.tf_graph_call]:
             data_format = "NHWC"
         else:
@@ -149,8 +149,8 @@ def test_conv2d():
 
         append_to_file(fname, '{}'.format(lib))
 
-        filters = ivy_gen.array([[[[0.]], [[1.]]],
-                                 [[[1.]], [[0.]]]], f=lib)
+        filters = ivy_gen.tensor([[[[0.]], [[1.]]],
+                                  [[[1.]], [[0.]]]], f=lib)
         ivy_layers.conv2d(x0, filters, 1, "SAME", data_format, filter_shape=[2, 2], num_filters=1, f=lib)
         ivy_layers_w_time.conv2d(x0, filters, 1, "SAME", data_format, filter_shape=[2, 2], num_filters=1, f=time_lib)
         TIMES_DICT.clear()
@@ -184,8 +184,8 @@ def test_conv2d_transpose():
             # numpy and jax do not yet support 2d convolutions
             continue
 
-        x0 = ivy_gen.array([[[[random.uniform(0, 1)], [random.uniform(0, 1)]],
-                             [[random.uniform(0, 1)], [random.uniform(0, 1)]]] for _ in range(DIM)], f=lib)
+        x0 = ivy_gen.tensor([[[[random.uniform(0, 1)], [random.uniform(0, 1)]],
+                              [[random.uniform(0, 1)], [random.uniform(0, 1)]]] for _ in range(DIM)], f=lib)
         if call in [helpers.tf_call, helpers.tf_graph_call]:
             data_format = "NHWC"
         else:
@@ -194,8 +194,8 @@ def test_conv2d_transpose():
 
         append_to_file(fname, '{}'.format(lib))
 
-        filters = ivy_gen.array([[[[0.]], [[1.]]],
-                                 [[[1.]], [[0.]]]], f=lib)
+        filters = ivy_gen.tensor([[[[0.]], [[1.]]],
+                                  [[[1.]], [[0.]]]], f=lib)
         ivy_layers.conv2d_transpose(x0, filters, 1, "SAME", (DIM, 2, 2, 1), data_format, filter_shape=[2, 2],
                                     num_filters=1, f=lib)
         ivy_layers_w_time.conv2d_transpose(x0, filters, 1, "SAME", (DIM, 2, 2, 1), data_format, filter_shape=[2, 2],
@@ -232,8 +232,8 @@ def test_depthwise_conv2d():
             # numpy and jax do not yet support 2d convolutions
             continue
 
-        x0 = ivy_gen.array([[[[random.uniform(0, 1)], [random.uniform(0, 1)]],
-                             [[random.uniform(0, 1)], [random.uniform(0, 1)]]] for _ in range(DIM)], f=lib)
+        x0 = ivy_gen.tensor([[[[random.uniform(0, 1)], [random.uniform(0, 1)]],
+                              [[random.uniform(0, 1)], [random.uniform(0, 1)]]] for _ in range(DIM)], f=lib)
         if call in [helpers.tf_call, helpers.tf_graph_call]:
             data_format = "NHWC"
         else:
@@ -242,8 +242,8 @@ def test_depthwise_conv2d():
 
         append_to_file(fname, '{}'.format(lib))
 
-        filters = ivy_gen.array([[[0.], [1.]],
-                                 [[1.], [0.]]], f=lib)
+        filters = ivy_gen.tensor([[[0.], [1.]],
+                                  [[1.], [0.]]], f=lib)
         ivy_layers.depthwise_conv2d(x0, filters, 1, "SAME", data_format, filter_shape=[2, 2], num_filters=1,
                                     num_channels=1, f=lib)
         ivy_layers_w_time.depthwise_conv2d(x0, filters, 1, "SAME", data_format, filter_shape=[2, 2], num_filters=1,
@@ -279,9 +279,9 @@ def test_conv3d():
             # numpy and jax do not yet support 3d convolutions
             continue
 
-        x0 = ivy_gen.array([[[[[random.uniform(0, 1)], [random.uniform(0, 1)]],
-                              [[random.uniform(0, 1)], [random.uniform(0, 1)]]],
-                             [[[random.uniform(0, 1)], [random.uniform(0, 1)]],
+        x0 = ivy_gen.tensor([[[[[random.uniform(0, 1)], [random.uniform(0, 1)]],
+                               [[random.uniform(0, 1)], [random.uniform(0, 1)]]],
+                              [[[random.uniform(0, 1)], [random.uniform(0, 1)]],
                               [[random.uniform(0, 1)], [random.uniform(0, 1)]]]] for _ in range(DIM)], f=lib)
         if call in [helpers.tf_call, helpers.tf_graph_call]:
             data_format = "NDHWC"
@@ -291,8 +291,8 @@ def test_conv3d():
 
         append_to_file(fname, '{}'.format(lib))
 
-        filters = ivy_gen.array([[[[[0.]], [[0.]]], [[[1.]], [[1.]]]],
-                                 [[[[1.]], [[1.]]], [[[0.]], [[0.]]]]], f=lib)
+        filters = ivy_gen.tensor([[[[[0.]], [[0.]]], [[[1.]], [[1.]]]],
+                                  [[[[1.]], [[1.]]], [[[0.]], [[0.]]]]], f=lib)
         ivy_layers.conv3d(x0, filters, 1, "SAME", data_format, filter_shape=[2, 2, 2], num_filters=1, f=lib)
         ivy_layers_w_time.conv3d(x0, filters, 1, "SAME", data_format, filter_shape=[2, 2, 2], num_filters=1, f=time_lib)
         TIMES_DICT.clear()
@@ -326,9 +326,9 @@ def test_conv3d_transpose():
             # numpy and jax do not yet support 3d convolutions, and mxnet only supports with CUDNN
             continue
 
-        x0 = ivy_gen.array([[[[[random.uniform(0, 1)], [random.uniform(0, 1)]],
-                              [[random.uniform(0, 1)], [random.uniform(0, 1)]]],
-                             [[[random.uniform(0, 1)], [random.uniform(0, 1)]],
+        x0 = ivy_gen.tensor([[[[[random.uniform(0, 1)], [random.uniform(0, 1)]],
+                               [[random.uniform(0, 1)], [random.uniform(0, 1)]]],
+                              [[[random.uniform(0, 1)], [random.uniform(0, 1)]],
                               [[random.uniform(0, 1)], [random.uniform(0, 1)]]]] for _ in range(DIM)], f=lib)
         if call in [helpers.tf_call, helpers.tf_graph_call]:
             data_format = "NDHWC"
@@ -338,8 +338,8 @@ def test_conv3d_transpose():
 
         append_to_file(fname, '{}'.format(lib))
 
-        filters = ivy_gen.array([[[[[0.]], [[0.]]], [[[1.]], [[1.]]]],
-                                 [[[[1.]], [[1.]]], [[[0.]], [[0.]]]]], f=lib)
+        filters = ivy_gen.tensor([[[[[0.]], [[0.]]], [[[1.]], [[1.]]]],
+                                  [[[[1.]], [[1.]]], [[[0.]], [[0.]]]]], f=lib)
         ivy_layers.conv3d_transpose(x0, filters, 1, "SAME", (DIM, 2, 2, 2, 1), data_format, filter_shape=[2, 2, 2],
                                     num_filters=1, f=lib)
         ivy_layers_w_time.conv3d_transpose(x0, filters, 1, "SAME", (DIM, 2, 2, 2, 1), data_format,
@@ -374,10 +374,10 @@ def test_linear():
 
         append_to_file(fname, '{}'.format(lib))
 
-        x0 = ivy_gen.array([[random.uniform(0, 1) for _ in range(DIM)]], f=lib)
-        weight = ivy_gen.array([[random.uniform(0, 1) for _ in range(DIM)],
-                                [random.uniform(0, 1) for _ in range(DIM)]], f=lib)
-        bias = ivy_gen.array([random.uniform(0, 1), random.uniform(0, 1)], f=lib)
+        x0 = ivy_gen.tensor([[random.uniform(0, 1) for _ in range(DIM)]], f=lib)
+        weight = ivy_gen.tensor([[random.uniform(0, 1) for _ in range(DIM)],
+                                 [random.uniform(0, 1) for _ in range(DIM)]], f=lib)
+        bias = ivy_gen.tensor([random.uniform(0, 1), random.uniform(0, 1)], f=lib)
 
         ivy_layers.linear(x0, weight, bias, num_hidden=2, f=lib)
         ivy_layers_w_time.linear(x0, weight, bias, num_hidden=2, f=time_lib)

@@ -50,18 +50,18 @@ def test_array():
 
         x0 = [random.uniform(0, 1) for _ in range(DIM)]
 
-        ivy_gen.array(x0, f=lib)
-        ivy_gen_w_time.array(x0, f=time_lib)
+        ivy_gen.tensor(x0, f=lib)
+        ivy_gen_w_time.tensor(x0, f=time_lib)
         TIMES_DICT.clear()
 
         for _ in range(100):
 
             log_time(fname, 'tb0')
-            ivy_gen_w_time.array(x0, f=time_lib)
+            ivy_gen_w_time.tensor(x0, f=time_lib)
             log_time(fname, 'tb4', time_at_start=True)
 
             log_time(fname, 'tt0')
-            ivy_gen.array(x0, f=lib)
+            ivy_gen.tensor(x0, f=lib)
             log_time(fname, 'tt1', time_at_start=True)
 
         write_times()
@@ -80,7 +80,7 @@ def test_to_numpy():
 
         append_to_file(fname, '{}'.format(lib))
 
-        x0 = ivy_gen.array([random.uniform(0, 1) for _ in range(DIM)], f=lib)
+        x0 = ivy_gen.tensor([random.uniform(0, 1) for _ in range(DIM)], f=lib)
 
         ivy_gen.to_numpy(x0, f=lib)
         ivy_gen_w_time.to_numpy(x0, f=time_lib)
@@ -112,7 +112,7 @@ def test_to_list():
 
         append_to_file(fname, '{}'.format(lib))
 
-        x0 = ivy_gen.array([random.uniform(0, 1) for _ in range(DIM)], f=lib)
+        x0 = ivy_gen.tensor([random.uniform(0, 1) for _ in range(DIM)], f=lib)
 
         ivy_gen.to_list(x0, f=lib)
         ivy_gen_w_time.to_list(x0, f=time_lib)
@@ -144,7 +144,7 @@ def test_shape():
 
         append_to_file(fname, '{}'.format(lib))
 
-        x0 = ivy_gen.array([random.uniform(0, 1) for _ in range(DIM)], f=lib)
+        x0 = ivy_gen.tensor([random.uniform(0, 1) for _ in range(DIM)], f=lib)
 
         ivy_gen.shape(x0, f=lib)
         ivy_gen_w_time.shape(x0, f=time_lib)
@@ -176,7 +176,7 @@ def test_get_num_dims():
 
         append_to_file(fname, '{}'.format(lib))
 
-        x0 = ivy_gen.array([random.uniform(0, 1) for _ in range(DIM)], f=lib)
+        x0 = ivy_gen.tensor([random.uniform(0, 1) for _ in range(DIM)], f=lib)
 
         ivy_gen.get_num_dims(x0, f=lib)
         ivy_gen_w_time.get_num_dims(x0, f=time_lib)
@@ -208,8 +208,8 @@ def test_minimum():
 
         append_to_file(fname, '{}'.format(lib))
 
-        x0 = ivy_gen.array([random.uniform(0, 1) for _ in range(DIM)], f=lib)
-        x1 = ivy_gen.array([random.uniform(0, 1) for _ in range(DIM)], f=lib)
+        x0 = ivy_gen.tensor([random.uniform(0, 1) for _ in range(DIM)], f=lib)
+        x1 = ivy_gen.tensor([random.uniform(0, 1) for _ in range(DIM)], f=lib)
 
         ivy_gen.minimum(x0, x1, f=lib)
         ivy_gen_w_time.minimum(x0, x1, f=time_lib)
@@ -241,8 +241,8 @@ def test_maximum():
 
         append_to_file(fname, '{}'.format(lib))
 
-        x0 = ivy_gen.array([random.uniform(0, 1) for _ in range(DIM)], f=lib)
-        x1 = ivy_gen.array([random.uniform(0, 1) for _ in range(DIM)], f=lib)
+        x0 = ivy_gen.tensor([random.uniform(0, 1) for _ in range(DIM)], f=lib)
+        x1 = ivy_gen.tensor([random.uniform(0, 1) for _ in range(DIM)], f=lib)
 
         ivy_gen.maximum(x0, x1, f=lib)
         ivy_gen_w_time.maximum(x0, x1, f=time_lib)
@@ -274,7 +274,7 @@ def test_clip():
 
         append_to_file(fname, '{}'.format(lib))
 
-        x0 = ivy_gen.array([random.uniform(0, 1) for _ in range(DIM)], f=lib)
+        x0 = ivy_gen.tensor([random.uniform(0, 1) for _ in range(DIM)], f=lib)
 
         ivy_gen.clip(x0, 0, 1, f=lib)
         ivy_gen_w_time.clip(x0, 0, 1, f=time_lib)
@@ -306,7 +306,7 @@ def test_round():
 
         append_to_file(fname, '{}'.format(lib))
 
-        x0 = ivy_gen.array([random.uniform(0, 1) for _ in range(DIM)], f=lib)
+        x0 = ivy_gen.tensor([random.uniform(0, 1) for _ in range(DIM)], f=lib)
 
         ivy_gen.round(x0, f=lib)
         ivy_gen_w_time.round(x0, f=time_lib)
@@ -338,8 +338,8 @@ def test_floormod():
 
         append_to_file(fname, '{}'.format(lib))
 
-        x0 = ivy_gen.array([random.uniform(0, 1) for _ in range(DIM)], f=lib)
-        x1 = ivy_gen.array([random.uniform(0, 1) for _ in range(DIM)], f=lib)
+        x0 = ivy_gen.tensor([random.uniform(0, 1) for _ in range(DIM)], f=lib)
+        x1 = ivy_gen.tensor([random.uniform(0, 1) for _ in range(DIM)], f=lib)
 
         ivy_gen.floormod(x0, x1, f=lib)
         ivy_gen_w_time.floormod(x0, x1, f=time_lib)
@@ -371,7 +371,7 @@ def test_floor():
 
         append_to_file(fname, '{}'.format(lib))
 
-        x0 = ivy_gen.array([random.uniform(0, 1) for _ in range(DIM)], f=lib)
+        x0 = ivy_gen.tensor([random.uniform(0, 1) for _ in range(DIM)], f=lib)
 
         ivy_gen.floor(x0, f=lib)
         ivy_gen_w_time.floor(x0, f=time_lib)
@@ -403,7 +403,7 @@ def test_ceil():
 
         append_to_file(fname, '{}'.format(lib))
 
-        x0 = ivy_gen.array([random.uniform(0, 1) for _ in range(DIM)], f=lib)
+        x0 = ivy_gen.tensor([random.uniform(0, 1) for _ in range(DIM)], f=lib)
 
         ivy_gen.ceil(x0, f=lib)
         ivy_gen_w_time.ceil(x0, f=time_lib)
@@ -435,7 +435,7 @@ def test_abs():
 
         append_to_file(fname, '{}'.format(lib))
 
-        x0 = ivy_gen.array([random.uniform(0, 1) for _ in range(DIM)], f=lib)
+        x0 = ivy_gen.tensor([random.uniform(0, 1) for _ in range(DIM)], f=lib)
 
         ivy_gen.abs(x0, f=lib)
         ivy_gen_w_time.abs(x0, f=time_lib)
@@ -467,7 +467,7 @@ def test_argmax():
 
         append_to_file(fname, '{}'.format(lib))
 
-        x0 = ivy_gen.array([random.uniform(0, 1) for _ in range(DIM)], f=lib)
+        x0 = ivy_gen.tensor([random.uniform(0, 1) for _ in range(DIM)], f=lib)
 
         ivy_gen.argmax(x0, f=lib)
         ivy_gen_w_time.argmax(x0, f=time_lib)
@@ -499,7 +499,7 @@ def test_argmin():
 
         append_to_file(fname, '{}'.format(lib))
 
-        x0 = ivy_gen.array([random.uniform(0, 1) for _ in range(DIM)], f=lib)
+        x0 = ivy_gen.tensor([random.uniform(0, 1) for _ in range(DIM)], f=lib)
 
         ivy_gen.argmin(x0, f=lib)
         ivy_gen_w_time.argmin(x0, f=time_lib)
@@ -531,7 +531,7 @@ def test_cast():
 
         append_to_file(fname, '{}'.format(lib))
 
-        x0 = ivy_gen.array([random.uniform(0, 1) for _ in range(DIM)], f=lib)
+        x0 = ivy_gen.tensor([random.uniform(0, 1) for _ in range(DIM)], f=lib)
 
         ivy_gen.cast(x0, 'float32', f=lib)
         ivy_gen_w_time.cast(x0, 'float32', f=time_lib)
@@ -623,8 +623,8 @@ def test_concatenate():
 
         append_to_file(fname, '{}'.format(lib))
 
-        x0 = ivy_gen.array([random.uniform(0, 1) for _ in range(DIM)], f=lib)
-        x1 = ivy_gen.array([random.uniform(0, 1) for _ in range(DIM)], f=lib)
+        x0 = ivy_gen.tensor([random.uniform(0, 1) for _ in range(DIM)], f=lib)
+        x1 = ivy_gen.tensor([random.uniform(0, 1) for _ in range(DIM)], f=lib)
 
         ivy_gen.concatenate([x0, x1], f=lib)
         ivy_gen_w_time.concatenate(x0, f=time_lib)
@@ -656,7 +656,7 @@ def test_flip():
 
         append_to_file(fname, '{}'.format(lib))
 
-        x0 = ivy_gen.array([random.uniform(0, 1) for _ in range(DIM)], f=lib)
+        x0 = ivy_gen.tensor([random.uniform(0, 1) for _ in range(DIM)], f=lib)
 
         ivy_gen.flip(x0, 0, f=lib)
         ivy_gen_w_time.flip(x0, f=time_lib)
@@ -688,8 +688,8 @@ def test_stack():
 
         append_to_file(fname, '{}'.format(lib))
 
-        x0 = ivy_gen.array([random.uniform(0, 1) for _ in range(DIM)], f=lib)
-        x1 = ivy_gen.array([random.uniform(0, 1) for _ in range(DIM)], f=lib)
+        x0 = ivy_gen.tensor([random.uniform(0, 1) for _ in range(DIM)], f=lib)
+        x1 = ivy_gen.tensor([random.uniform(0, 1) for _ in range(DIM)], f=lib)
 
         ivy_gen.stack([x0, x1], f=lib)
         ivy_gen_w_time.stack([x0, x1], f=time_lib)
@@ -721,7 +721,7 @@ def test_unstack():
 
         append_to_file(fname, '{}'.format(lib))
 
-        x0 = ivy_gen.array([[random.uniform(0, 1) for _ in range(DIM)]], f=lib)
+        x0 = ivy_gen.tensor([[random.uniform(0, 1) for _ in range(DIM)]], f=lib)
 
         ivy_gen.unstack(x0, 0, num_outputs=1, f=lib)
         ivy_gen_w_time.unstack(x0, 0, num_outputs=1, f=time_lib)
@@ -753,7 +753,7 @@ def test_split():
 
         append_to_file(fname, '{}'.format(lib))
 
-        x0 = ivy_gen.array([[random.uniform(0, 1) for _ in range(DIM)]], f=lib)
+        x0 = ivy_gen.tensor([[random.uniform(0, 1) for _ in range(DIM)]], f=lib)
 
         ivy_gen.split(x0, 1, 0, f=lib)
         ivy_gen_w_time.split(x0, 1, 0, f=time_lib)
@@ -785,7 +785,7 @@ def test_tile():
 
         append_to_file(fname, '{}'.format(lib))
 
-        x0 = ivy_gen.array([random.uniform(0, 1)], f=lib)
+        x0 = ivy_gen.tensor([random.uniform(0, 1)], f=lib)
 
         ivy_gen.tile(x0, [DIM], f=lib)
         ivy_gen_w_time.tile(x0, [DIM], f=time_lib)
@@ -817,7 +817,7 @@ def test_zero_pad():
 
         append_to_file(fname, '{}'.format(lib))
 
-        x0 = ivy_gen.array([random.uniform(0, 1) for _ in range(DIM)], f=lib)
+        x0 = ivy_gen.tensor([random.uniform(0, 1) for _ in range(DIM)], f=lib)
 
         ivy_gen.zero_pad(x0, [(DIM, DIM)], x_shape=[DIM], f=lib)
         ivy_gen_w_time.zero_pad(x0, [(DIM, DIM)], x_shape=[DIM], f=time_lib)
@@ -849,7 +849,7 @@ def test_swapaxes():
 
         append_to_file(fname, '{}'.format(lib))
 
-        x0 = ivy_gen.array([[random.uniform(0, 1) for _ in range(DIM)], [random.uniform(0, 1) for _ in range(DIM)]], f=lib)
+        x0 = ivy_gen.tensor([[random.uniform(0, 1) for _ in range(DIM)], [random.uniform(0, 1) for _ in range(DIM)]], f=lib)
 
         ivy_gen.swapaxes(x0, 1, 0, f=lib)
         ivy_gen_w_time.swapaxes(x0, 1, 0, f=time_lib)
@@ -881,7 +881,7 @@ def test_transpose():
 
         append_to_file(fname, '{}'.format(lib))
 
-        x0 = ivy_gen.array([[random.uniform(0, 1) for _ in range(DIM)], [random.uniform(0, 1) for _ in range(DIM)]], f=lib)
+        x0 = ivy_gen.tensor([[random.uniform(0, 1) for _ in range(DIM)], [random.uniform(0, 1) for _ in range(DIM)]], f=lib)
 
         ivy_gen.transpose(x0, (1, 0), f=lib)
         ivy_gen_w_time.transpose(x0, f=time_lib)
@@ -913,7 +913,7 @@ def test_expand_dims():
 
         append_to_file(fname, '{}'.format(lib))
 
-        x0 = ivy_gen.array([random.uniform(0, 1) for _ in range(DIM)], f=lib)
+        x0 = ivy_gen.tensor([random.uniform(0, 1) for _ in range(DIM)], f=lib)
 
         ivy_gen.expand_dims(x0, 0, f=lib)
         ivy_gen_w_time.expand_dims(x0, 0, f=time_lib)
@@ -945,9 +945,9 @@ def test_where():
 
         append_to_file(fname, '{}'.format(lib))
 
-        x0 = ivy_gen.array([random.uniform(0, 1) for _ in range(DIM)], f=lib) > 0
-        x1 = ivy_gen.array([random.uniform(0, 1) for _ in range(DIM)], f=lib)
-        x2 = ivy_gen.array([random.uniform(0, 1) for _ in range(DIM)], f=lib)
+        x0 = ivy_gen.tensor([random.uniform(0, 1) for _ in range(DIM)], f=lib) > 0
+        x1 = ivy_gen.tensor([random.uniform(0, 1) for _ in range(DIM)], f=lib)
+        x2 = ivy_gen.tensor([random.uniform(0, 1) for _ in range(DIM)], f=lib)
 
         ivy_gen.where(x0, x1, x2, condition_shape=[DIM], x_shape=[DIM], f=lib)
         ivy_gen_w_time.where(x0, x1, x2, f=time_lib)
@@ -979,7 +979,7 @@ def test_indices_where():
 
         append_to_file(fname, '{}'.format(lib))
 
-        x0 = ivy_gen.array([random.uniform(-1, 1) for _ in range(DIM)], f=lib) > 0
+        x0 = ivy_gen.tensor([random.uniform(-1, 1) for _ in range(DIM)], f=lib) > 0
 
         ivy_gen.indices_where(x0, f=lib)
         ivy_gen_w_time.indices_where(x0, f=time_lib)
@@ -1011,7 +1011,7 @@ def test_reshape():
 
         append_to_file(fname, '{}'.format(lib))
 
-        x0 = ivy_gen.array([random.uniform(0, 1) for _ in range(DIM)], f=lib)
+        x0 = ivy_gen.tensor([random.uniform(0, 1) for _ in range(DIM)], f=lib)
 
         ivy_gen.reshape(x0, [1, DIM], f=lib)
         ivy_gen_w_time.reshape(x0, [1, DIM], f=time_lib)
@@ -1043,7 +1043,7 @@ def test_squeeze():
 
         append_to_file(fname, '{}'.format(lib))
 
-        x0 = ivy_gen.array([[random.uniform(0, 1) for _ in range(DIM)]], f=lib)
+        x0 = ivy_gen.tensor([[random.uniform(0, 1) for _ in range(DIM)]], f=lib)
 
         ivy_gen.squeeze(x0, f=lib)
         ivy_gen_w_time.squeeze(x0, f=time_lib)
@@ -1105,7 +1105,7 @@ def test_zeros_like():
 
         append_to_file(fname, '{}'.format(lib))
 
-        x0 = ivy_gen.array([random.uniform(0, 1) for _ in range(DIM)], f=lib)
+        x0 = ivy_gen.tensor([random.uniform(0, 1) for _ in range(DIM)], f=lib)
 
         ivy_gen.zeros_like(x0, f=lib)
         ivy_gen_w_time.zeros_like(x0, f=time_lib)
@@ -1167,7 +1167,7 @@ def test_ones_like():
 
         append_to_file(fname, '{}'.format(lib))
 
-        x0 = ivy_gen.array([random.uniform(0, 1) for _ in range(DIM)], f=lib)
+        x0 = ivy_gen.tensor([random.uniform(0, 1) for _ in range(DIM)], f=lib)
 
         ivy_gen.ones_like(x0, f=lib)
         ivy_gen_w_time.ones_like(x0, f=time_lib)
@@ -1199,8 +1199,8 @@ def test_one_hot():
 
         append_to_file(fname, '{}'.format(lib))
 
-        x0 = ivy_gen.cast(ivy_gen.array([random.randint(0, int(DIM**0.5)-1)
-                                         for _ in range(int(DIM**0.5))], f=lib), 'int64')
+        x0 = ivy_gen.cast(ivy_gen.tensor([random.randint(0, int(DIM ** 0.5) - 1)
+                                          for _ in range(int(DIM**0.5))], f=lib), 'int64')
 
         ivy_gen.one_hot(x0, int(DIM**0.5), f=lib)
         ivy_gen_w_time.one_hot(x0, int(DIM**0.5), f=time_lib)
@@ -1232,8 +1232,8 @@ def test_cross():
 
         append_to_file(fname, '{}'.format(lib))
 
-        x0 = ivy_gen.array([[random.uniform(0, 1)]*3 for _ in range(DIM)], f=lib)
-        x1 = ivy_gen.array([[random.uniform(0, 1)]*3 for _ in range(DIM)], f=lib)
+        x0 = ivy_gen.tensor([[random.uniform(0, 1)] * 3 for _ in range(DIM)], f=lib)
+        x1 = ivy_gen.tensor([[random.uniform(0, 1)] * 3 for _ in range(DIM)], f=lib)
 
         ivy_gen.cross(x0, x1, f=lib)
         ivy_gen_w_time.cross(x0, x1, f=time_lib)
@@ -1265,8 +1265,8 @@ def test_matmul():
 
         append_to_file(fname, '{}'.format(lib))
 
-        x0 = ivy_gen.array([[[random.uniform(0, 1) for _ in range(DIM)]]], f=lib)
-        x1 = ivy_gen.array([[[random.uniform(0, 1)] for _ in range(DIM)]], f=lib)
+        x0 = ivy_gen.tensor([[[random.uniform(0, 1) for _ in range(DIM)]]], f=lib)
+        x1 = ivy_gen.tensor([[[random.uniform(0, 1)] for _ in range(DIM)]], f=lib)
 
         ivy_gen.matmul(x0, x1, batch_shape=[1], f=lib)
         ivy_gen_w_time.matmul(x0, x1, batch_shape=[1], f=time_lib)
@@ -1298,7 +1298,7 @@ def test_cumsum():
 
         append_to_file(fname, '{}'.format(lib))
 
-        x0 = ivy_gen.array([random.uniform(0, 1) for _ in range(DIM)], f=lib)
+        x0 = ivy_gen.tensor([random.uniform(0, 1) for _ in range(DIM)], f=lib)
 
         ivy_gen.cumsum(x0, 0, f=lib)
         ivy_gen_w_time.cumsum(x0, f=time_lib)
@@ -1360,8 +1360,8 @@ def test_scatter_flat():
 
         append_to_file(fname, '{}'.format(lib))
 
-        x0 = ivy_gen.array([random.randint(0, DIM-1) for _ in range(DIM)], f=lib)
-        x1 = ivy_gen.array([random.uniform(0, 1) for _ in range(DIM)], f=lib)
+        x0 = ivy_gen.tensor([random.randint(0, DIM - 1) for _ in range(DIM)], f=lib)
+        x1 = ivy_gen.tensor([random.uniform(0, 1) for _ in range(DIM)], f=lib)
 
         ivy_gen.scatter_flat(x0, x1, DIM, f=lib)
         ivy_gen_w_time.scatter_flat(x0, x1, DIM, f=time_lib)
@@ -1393,8 +1393,8 @@ def test_scatter_nd():
 
         append_to_file(fname, '{}'.format(lib))
 
-        x0 = ivy_gen.array([[random.randint(0, DIM-1)] for _ in range(DIM)], f=lib)
-        x1 = ivy_gen.array([random.uniform(0, 1) for _ in range(DIM)], f=lib)
+        x0 = ivy_gen.tensor([[random.randint(0, DIM - 1)] for _ in range(DIM)], f=lib)
+        x1 = ivy_gen.tensor([random.uniform(0, 1) for _ in range(DIM)], f=lib)
 
         ivy_gen.scatter_nd(x0, x1, [DIM], f=lib)
         ivy_gen_w_time.scatter_nd(x0, x1, [DIM], f=time_lib)
@@ -1426,8 +1426,8 @@ def test_gather_flat():
 
         append_to_file(fname, '{}'.format(lib))
 
-        x0 = ivy_gen.array([random.uniform(0, 1) for _ in range(DIM)], f=lib)
-        x1 = ivy_gen.array([random.randint(0, DIM-1) for _ in range(DIM)], f=lib)
+        x0 = ivy_gen.tensor([random.uniform(0, 1) for _ in range(DIM)], f=lib)
+        x1 = ivy_gen.tensor([random.randint(0, DIM - 1) for _ in range(DIM)], f=lib)
 
         ivy_gen.gather_flat(x0, x1, f=lib)
         ivy_gen_w_time.gather_flat(x0, x1, f=time_lib)
@@ -1459,8 +1459,8 @@ def test_gather_nd():
 
         append_to_file(fname, '{}'.format(lib))
 
-        x0 = ivy_gen.array([random.uniform(0, 1) for _ in range(DIM)], f=lib)
-        x1 = ivy_gen.array([[random.randint(0, DIM-1)] for _ in range(DIM)], f=lib)
+        x0 = ivy_gen.tensor([random.uniform(0, 1) for _ in range(DIM)], f=lib)
+        x1 = ivy_gen.tensor([[random.randint(0, DIM - 1)] for _ in range(DIM)], f=lib)
 
         ivy_gen.gather_nd(x0, x1, indices_shape=[DIM, 1], f=lib)
         ivy_gen_w_time.gather_nd(x0, x1, indices_shape=[DIM, 1], f=time_lib)
@@ -1492,7 +1492,7 @@ def test_get_device():
 
         append_to_file(fname, '{}'.format(lib))
 
-        x0 = ivy_gen.array([random.uniform(0, 1) for _ in range(DIM)], f=lib)
+        x0 = ivy_gen.tensor([random.uniform(0, 1) for _ in range(DIM)], f=lib)
 
         ivy_gen.dev_str(x0, f=lib)
         ivy_gen_w_time.dev_str(x0, f=time_lib)
@@ -1524,7 +1524,7 @@ def test_dtype():
 
         append_to_file(fname, '{}'.format(lib))
 
-        x0 = ivy_gen.array([random.uniform(0, 1) for _ in range(DIM)], f=lib)
+        x0 = ivy_gen.tensor([random.uniform(0, 1) for _ in range(DIM)], f=lib)
 
         ivy_gen.dtype(x0, f=lib)
         ivy_gen_w_time.dtype(x0, f=time_lib)
@@ -1560,7 +1560,7 @@ def test_compile_fn():
         append_to_file(fname, '{}'.format(lib))
 
         some_fn = lambda x: x ** 2
-        x0 = ivy_gen.array([random.uniform(0, 1) for _ in range(DIM)], f=lib)
+        x0 = ivy_gen.tensor([random.uniform(0, 1) for _ in range(DIM)], f=lib)
 
         ivy_gen.dtype(x0, f=lib)
         ivy_gen_w_time.dtype(x0, f=time_lib)

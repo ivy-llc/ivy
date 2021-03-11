@@ -1,15 +1,15 @@
 import pytest
+import ivy.numpy
 import ivy.jax
 import ivy.tensorflow
 import ivy.torch
-import ivy.numpy
+import ivy.mxnd
 from typing import List, Dict
 import itertools
 from ivy_tests import helpers
-helpers.exclude(['mxnd', 'mxsym'])
 
 
-FW_STRS = ['numpy', 'jax', 'tensorflow', 'tensorflow_graph', 'torch']
+FW_STRS = ['numpy', 'jax', 'tensorflow', 'tensorflow_graph', 'torch', 'mxnd']
 
 
 def get_test_devices() -> Dict[ivy.Framework, List[str]]:
@@ -38,12 +38,14 @@ TEST_FRAMEWORKS: Dict[str, ivy.Framework] = {'numpy': ivy.numpy,
                                              'jax': ivy.jax,
                                              'tensorflow': ivy.tensorflow,
                                              'tensorflow_graph': ivy.tensorflow,
-                                             'torch': ivy.torch}
+                                             'torch': ivy.torch,
+                                             'mxnd': ivy.mxnd}
 TEST_CALL_METHODS: Dict[str, callable] = {'numpy': helpers.np_call,
                                           'jax': helpers.jnp_call,
                                           'tensorflow': helpers.tf_call,
                                           'tensorflow_graph': helpers.tf_graph_call,
-                                          'torch': helpers.torch_call}
+                                          'torch': helpers.torch_call,
+                                          'mxnd': helpers.mx_call}
 
 
 @pytest.fixture(autouse=True)

@@ -93,7 +93,7 @@ class Container(dict):
             if isinstance(value, _h5py.Group):
                 container_dict[key] = Container.from_disk(value, slice_obj)
             elif isinstance(value, _h5py.Dataset):
-                container_dict[key] = _ivy_gen.array(list(value[slice_obj]))
+                container_dict[key] = _ivy_gen.tensor(list(value[slice_obj]))
             else:
                 raise Exception('Item found inside h5_obj which was neither a Group nor a Dataset.')
         return Container(container_dict)

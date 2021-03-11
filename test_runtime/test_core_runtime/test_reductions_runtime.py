@@ -49,7 +49,7 @@ def test_reduce_sum():
 
         append_to_file(fname, '{}'.format(lib))
 
-        x0 = ivy_gen.array([random.uniform(0, 1) for _ in range(DIM)], f=lib)
+        x0 = ivy_gen.tensor([random.uniform(0, 1) for _ in range(DIM)], f=lib)
 
         ivy_red.reduce_sum(x0, f=lib)
         ivy_red_w_time.reduce_sum(x0, -1, f=time_lib)
@@ -81,7 +81,7 @@ def test_reduce_prod():
 
         append_to_file(fname, '{}'.format(lib))
 
-        x0 = ivy_gen.array([random.uniform(0, 1) for _ in range(DIM)], f=lib)
+        x0 = ivy_gen.tensor([random.uniform(0, 1) for _ in range(DIM)], f=lib)
 
         ivy_red.reduce_prod(x0, f=lib)
         ivy_red_w_time.reduce_prod(x0, -1, f=time_lib)
@@ -113,7 +113,7 @@ def test_reduce_mean():
 
         append_to_file(fname, '{}'.format(lib))
 
-        x0 = ivy_gen.array([random.uniform(0, 1) for _ in range(DIM)], f=lib)
+        x0 = ivy_gen.tensor([random.uniform(0, 1) for _ in range(DIM)], f=lib)
 
         ivy_red.reduce_mean(x0, f=lib)
         ivy_red_w_time.reduce_mean(x0, -1, f=time_lib)
@@ -145,7 +145,7 @@ def test_reduce_min():
 
         append_to_file(fname, '{}'.format(lib))
 
-        x0 = ivy_gen.array([random.uniform(0, 1) for _ in range(DIM)], f=lib)
+        x0 = ivy_gen.tensor([random.uniform(0, 1) for _ in range(DIM)], f=lib)
 
         ivy_red.reduce_min(x0, f=lib)
         ivy_red_w_time.reduce_min(x0, -1, f=time_lib)
@@ -177,7 +177,7 @@ def test_reduce_max():
 
         append_to_file(fname, '{}'.format(lib))
 
-        x0 = ivy_gen.array([random.uniform(0, 1) for _ in range(DIM)], f=lib)
+        x0 = ivy_gen.tensor([random.uniform(0, 1) for _ in range(DIM)], f=lib)
 
         ivy_red.reduce_max(x0, f=lib)
         ivy_red_w_time.reduce_max(x0, -1, f=time_lib)
