@@ -88,7 +88,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../../core/container.html">Container</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../core/general.html">General</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../core/gradients.html">Gradients</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../../core/image.html">Image</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../core/linalg.html">Linalg</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../core/logic.html">Logic</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../core/math.html">Math</a></li>
@@ -181,7 +180,7 @@
 
 <span class="n">random_uniform</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">low</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> <span class="n">high</span><span class="o">=</span><span class="mf">1.</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dev</span><span class="o">=</span><span class="kc">None</span><span class="p">:</span> <span class="n">_np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">uniform</span><span class="p">(</span><span class="n">low</span><span class="p">,</span> <span class="n">high</span><span class="p">,</span> <span class="n">shape</span><span class="p">)</span>
 <span class="n">randint</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">low</span><span class="p">,</span> <span class="n">high</span><span class="p">,</span> <span class="n">shape</span><span class="p">,</span> <span class="n">dev</span><span class="o">=</span><span class="kc">None</span><span class="p">:</span> <span class="n">_np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="n">low</span><span class="p">,</span> <span class="n">high</span><span class="p">,</span> <span class="n">shape</span><span class="p">)</span>
-<span class="n">seed</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">seed_value</span><span class="p">:</span> <span class="n">_np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="n">seed_value</span><span class="p">)</span>
+<span class="n">seed</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">seed_value</span><span class="o">=</span><span class="mi">0</span><span class="p">:</span> <span class="n">_np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="n">seed_value</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="shuffle"><a class="viewcode-back" href="../../../../numpy/core/random/shuffle.html#ivy.numpy.core.random.shuffle">[docs]</a><span class="k">def</span> <span class="nf">shuffle</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>

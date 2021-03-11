@@ -93,7 +93,6 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../general.html">General</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../gradients.html">Gradients</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../image.html">Image</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../linalg.html">Linalg</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../logic.html">Logic</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../math.html">Math</a></li>
@@ -212,13 +211,12 @@
 
 <dl class="py method">
 <dt id="ivy.core.container.Container.from_disk">
-<em class="property"><span class="pre">static</span> </em><code class="sig-name descname"><span class="pre">from_disk</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">h5_obj_or_filepath</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">slice_obj</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">slice(None,</span> <span class="pre">None,</span> <span class="pre">None)</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/container.html#Container.from_disk"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.core.container.Container.from_disk" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">static</span> </em><code class="sig-name descname"><span class="pre">from_disk</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">h5_obj_or_filepath</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">slice_obj</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">slice(None,</span> <span class="pre">None,</span> <span class="pre">None)</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/container.html#Container.from_disk"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.core.container.Container.from_disk" title="Permalink to this definition">¶</a></dt>
 <dd><p>Load container object from disk, as an h5py file, at the specified filepath.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>h5_obj_or_filepath</strong> (<em>str</em><em> or </em><em>h5 obj</em>) – Filepath where the container object is saved to disk, or h5 object.</p></li>
-<li><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning framework.</p></li>
 <li><p><strong>slice_obj</strong> (<em>slice</em><em> or </em><em>sequence of slices</em>) – slice object to slice all h5 elements.</p></li>
 </ul>
 </dd>
@@ -377,16 +375,8 @@
 
 <dl class="py method">
 <dt id="ivy.core.container.Container.to_random">
-<code class="sig-name descname"><span class="pre">to_random</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">f</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/container.html#Container.to_random"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.core.container.Container.to_random" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">to_random</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/container.html#Container.to_random"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.core.container.Container.to_random" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return new container, with all entries having same shape and type, but random values</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>f</strong> (<em>ml_framework</em>) – Machine learning framework.</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Container with random values as entries.</p>
-</dd>
-</dl>
 </dd></dl>
 
 <dl class="py method">
@@ -461,16 +451,8 @@ Returns None if the entire container is empty.</p>
 
 <dl class="py method">
 <dt id="ivy.core.container.Container.with_entries_as_lists">
-<code class="sig-name descname"><span class="pre">with_entries_as_lists</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">f</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/container.html#Container.with_entries_as_lists"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.core.container.Container.with_entries_as_lists" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">with_entries_as_lists</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/container.html#Container.with_entries_as_lists"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.core.container.Container.with_entries_as_lists" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return container object, with each array entry in the container cast to a list</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>f</strong> (<em>ml_framework</em>) – Machine learning framework.</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>New container, with entries not as arrays but as python lists</p>
-</dd>
-</dl>
 </dd></dl>
 
 <dl class="py method">
