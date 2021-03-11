@@ -9,8 +9,12 @@ import numpy as _onp
 import jax as _jax
 import jax.numpy as _jnp
 
-DTYPE_DICT = {_jnp.dtype('int32'): 'int32',
+DTYPE_DICT = {_jnp.dtype('bool'): 'bool',
+              _jnp.dtype('int8'): 'int8',
+              _jnp.dtype('int16'): 'int16',
+              _jnp.dtype('int32'): 'int32',
               _jnp.dtype('int64'): 'int64',
+              _jnp.dtype('float16'): 'float32',
               _jnp.dtype('float32'): 'float32',
               _jnp.dtype('float64'): 'float64'}
 
@@ -55,8 +59,8 @@ floor = _jnp.floor
 ceil = _jnp.ceil
 # noinspection PyShadowingBuiltins
 abs = _jnp.absolute
-argmax = lambda x, axis=0: _jnp.argmax(x, axis)
-argmin = lambda x, axis=0: _jnp.argmin(x, axis)
+argmax = lambda x, axis=0: _jnp.argmax(x, axis).reshape(-1)
+argmin = lambda x, axis=0: _jnp.argmin(x, axis).reshape(-1)
 
 
 def cast(x, dtype_str):

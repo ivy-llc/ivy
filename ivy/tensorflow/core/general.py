@@ -12,8 +12,12 @@ _round = round
 import tensorflow as _tf
 import numpy as _np
 
-DTYPE_DICT = {_tf.int32: 'int32',
+DTYPE_DICT = {_tf.bool: 'bool',
+              _tf.int8: 'int8',
+              _tf.int16: 'int16',
+              _tf.int32: 'int32',
               _tf.int64: 'int64',
+              _tf.float16: 'float16',
               _tf.float32: 'float32',
               _tf.float64: 'float64'}
 
@@ -37,7 +41,7 @@ def tensor(object_in, dtype_str=None, dev=None):
 to_numpy = lambda x: _np.asarray(_tf.convert_to_tensor(x))
 to_list = lambda x: x.numpy().tolist()
 shape = lambda x, as_tensor=False: _tf.shape(x) if as_tensor else tuple(x.shape)
-get_num_dims = lambda x, as_tensor: _tf.shape(_tf.shape(x))[0] if as_tensor else int(_tf.shape(_tf.shape(x)))
+get_num_dims = lambda x, as_tensor=False: _tf.shape(_tf.shape(x))[0] if as_tensor else int(_tf.shape(_tf.shape(x)))
 minimum = _tf.minimum
 maximum = _tf.maximum
 clip = _tf.clip_by_value
@@ -48,8 +52,8 @@ floor = _tf.floor
 ceil = _tf.math.ceil
 # noinspection PyShadowingBuiltins
 abs = _tf.abs
-argmax = _tf.argmax
-argmin = _tf.argmin
+argmax = lambda x, axis=None: _tf.reshape(_tf.argmax(x, axis), get_num_dims(x))
+argmin = lambda x, axis=None: _tf.reshape(_tf.argmin(x, axis), get_num_dims(x))
 
 
 def cast(x, dtype_str):
