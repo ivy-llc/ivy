@@ -164,15 +164,16 @@ def linspace(start, stop, num, axis=None, dev_str=None):
     return res
 
 
-def concatenate(xs, axis=None):
-    if axis is None:
-        xs = [_mx.nd.reshape(a, (-1,)) for a in xs]
-        axis = 0
+def concatenate(xs, axis=-1):
+    if xs[0].shape == ():
+        return _mx.nd.concat(*[_flat_array_to_1_dim_array(x) for x in xs], dim=axis)
     return _mx.nd.concat(*xs, dim=axis)
 
 
 def flip(x, axis=None, batch_shape=None):
     num_dims = len(batch_shape) if batch_shape is not None else len(x.shape)
+    if not num_dims:
+        return x
     if axis is None:
         new_axis = list(range(num_dims))
     else:
@@ -185,11 +186,16 @@ def flip(x, axis=None, batch_shape=None):
     return _mx.nd.flip(x, new_axis)
 
 
-stack = lambda xs, axis=0: _mx.nd.stack(*xs, axis=axis)
+def stack(xs, axis=0):
+    if xs[0].shape == ():
+        return _mx.nd.reshape(_mx.nd.stack(*[_flat_array_to_1_dim_array(x) for x in xs], axis=axis), -1)
+    return _mx.nd.stack(*xs, axis=axis)
 
 
-def unstack(x, axis, num_outputs=None):
-    num_outputs = x.shape[axis] if not num_outputs else num_outputs
+def unstack(x, axis):
+    if x.shape == ():
+        return [x]
+    num_outputs = x.shape[axis]
     ret = _mx.nd.split(x, num_outputs, axis, squeeze_axis=True)
     return ret if isinstance(ret, list) else [ret]
 

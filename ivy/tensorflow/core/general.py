@@ -81,15 +81,16 @@ def linspace(start, stop, num, axis=None, dev_str=None):
         return _tf.linspace(start, stop, num, axis=axis)
 
 
-def concatenate(xs, axis=None):
-    if axis is None:
-        xs = [_tf.reshape(a, (-1,)) for a in xs]
-        axis = 0
+def concatenate(xs, axis=-1):
+    if xs[0].shape == ():
+        return _tf.concat([_tf.expand_dims(x, 0) for x in xs], axis)
     return _tf.concat(xs, axis)
 
 
 def flip(x, axis=None, batch_shape=None):
     num_dims = len(batch_shape) if batch_shape is not None else len(x.shape)
+    if not num_dims:
+        return x
     if axis is None:
         new_axis = list(range(num_dims))
     else:
@@ -103,7 +104,12 @@ def flip(x, axis=None, batch_shape=None):
 
 
 stack = _tf.stack
-unstack = lambda x, axis, num_outputs=None: _tf.unstack(x, axis=axis)
+
+
+def unstack(x, axis):
+    if x.shape == ():
+        return [x]
+    return _tf.unstack(x, axis=axis)
 
 
 def split(x, num_sections=None, axis=0):

@@ -80,15 +80,16 @@ def linspace(start, stop, num, axis=None, dev_str=None):
     return _to_dev(_np.linspace(start, stop, num, axis=axis), dev_str)
 
 
-def concatenate(xs, axis=None):
-    if axis is None:
-        xs = [reshape(a, (-1,)) for a in xs]
-        axis = 0
+def concatenate(xs, axis=-1):
+    if xs[0].shape == ():
+        return _np.concatenate([_np.expand_dims(x, 0) for x in xs], axis)
     return _np.concatenate(xs, axis)
 
 
 def flip(x, axis=None, batch_shape=None):
     num_dims = len(batch_shape) if batch_shape is not None else len(x.shape)
+    if not num_dims:
+        return x
     if axis is None:
         axis = list(range(num_dims))
     if type(axis) is int:
@@ -100,7 +101,9 @@ def flip(x, axis=None, batch_shape=None):
 stack = _np.stack
 
 
-def unstack(x, axis, num_outputs=None):
+def unstack(x, axis):
+    if x.shape == ():
+        return [x]
     x_split = _np.split(x, x.shape[axis], axis)
     res = [_np.squeeze(item, axis) for item in x_split]
     return res
