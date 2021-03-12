@@ -11,49 +11,49 @@ from ivy.core.container import Container
 
 
 def test_container_from_dict(dev_str, call):
-    dict_in = {'a': ivy.tensor([1]),
-               'b': {'c': ivy.tensor([2]), 'd': ivy.tensor([3])}}
+    dict_in = {'a': ivy.array([1]),
+               'b': {'c': ivy.array([2]), 'd': ivy.array([3])}}
     container = Container(dict_in)
-    assert container['a'] == ivy.tensor([1])
-    assert container.a == ivy.tensor([1])
-    assert container['b']['c'] == ivy.tensor([2])
-    assert container.b.c == ivy.tensor([2])
-    assert container['b']['d'] == ivy.tensor([3])
-    assert container.b.d == ivy.tensor([3])
+    assert container['a'] == ivy.array([1])
+    assert container.a == ivy.array([1])
+    assert container['b']['c'] == ivy.array([2])
+    assert container.b.c == ivy.array([2])
+    assert container['b']['d'] == ivy.array([3])
+    assert container.b.d == ivy.array([3])
 
 
 def test_container_expand_dims(dev_str, call):
-    dict_in = {'a': ivy.tensor([1]),
-               'b': {'c': ivy.tensor([2]), 'd': ivy.tensor([3])}}
+    dict_in = {'a': ivy.array([1]),
+               'b': {'c': ivy.array([2]), 'd': ivy.array([3])}}
     container = Container(dict_in)
     container_expanded_dims = container.expand_dims(0)
-    assert (container_expanded_dims['a'] == ivy.tensor([[1]]))[0, 0]
-    assert (container_expanded_dims.a == ivy.tensor([[1]]))[0, 0]
-    assert (container_expanded_dims['b']['c'] == ivy.tensor([[2]]))[0, 0]
-    assert (container_expanded_dims.b.c == ivy.tensor([[2]]))[0, 0]
-    assert (container_expanded_dims['b']['d'] == ivy.tensor([[3]]))[0, 0]
-    assert (container_expanded_dims.b.d == ivy.tensor([[3]]))[0, 0]
+    assert (container_expanded_dims['a'] == ivy.array([[1]]))[0, 0]
+    assert (container_expanded_dims.a == ivy.array([[1]]))[0, 0]
+    assert (container_expanded_dims['b']['c'] == ivy.array([[2]]))[0, 0]
+    assert (container_expanded_dims.b.c == ivy.array([[2]]))[0, 0]
+    assert (container_expanded_dims['b']['d'] == ivy.array([[3]]))[0, 0]
+    assert (container_expanded_dims.b.d == ivy.array([[3]]))[0, 0]
 
 
 def test_container_at_key_chain(dev_str, call):
-    dict_in = {'a': ivy.tensor([1]),
-               'b': {'c': ivy.tensor([2]), 'd': ivy.tensor([3])}}
+    dict_in = {'a': ivy.array([1]),
+               'b': {'c': ivy.array([2]), 'd': ivy.array([3])}}
     container = Container(dict_in)
     sub_container = container.at_key_chain('b')
-    assert (sub_container['c'] == ivy.tensor([2]))[0]
+    assert (sub_container['c'] == ivy.array([2]))[0]
     sub_container = container.at_key_chain('b/c')
-    assert (sub_container == ivy.tensor([2]))[0]
+    assert (sub_container == ivy.array([2]))[0]
 
 
 def test_container_prune_key_chain(dev_str, call):
-    dict_in = {'a': ivy.tensor([1]),
-               'b': {'c': ivy.tensor([2]), 'd': ivy.tensor([3])}}
+    dict_in = {'a': ivy.array([1]),
+               'b': {'c': ivy.array([2]), 'd': ivy.array([3])}}
     container = Container(dict_in)
     container_pruned = container.prune_key_chain('b/c')
-    assert (container_pruned['a'] == ivy.tensor([[1]]))[0, 0]
-    assert (container_pruned.a == ivy.tensor([[1]]))[0, 0]
-    assert (container_pruned['b']['d'] == ivy.tensor([[3]]))[0, 0]
-    assert (container_pruned.b.d == ivy.tensor([[3]]))[0, 0]
+    assert (container_pruned['a'] == ivy.array([[1]]))[0, 0]
+    assert (container_pruned.a == ivy.array([[1]]))[0, 0]
+    assert (container_pruned['b']['d'] == ivy.array([[3]]))[0, 0]
+    assert (container_pruned.b.d == ivy.array([[3]]))[0, 0]
     assert ('c' not in container_pruned['b'].keys())
 
     def _test_exception(container_in):
@@ -66,8 +66,8 @@ def test_container_prune_key_chain(dev_str, call):
     assert _test_exception(container_pruned)
 
     container_further_pruned = container.prune_key_chain('b')
-    assert (container_further_pruned['a'] == ivy.tensor([[1]]))[0, 0]
-    assert (container_further_pruned.a == ivy.tensor([[1]]))[0, 0]
+    assert (container_further_pruned['a'] == ivy.array([[1]]))[0, 0]
+    assert (container_further_pruned.a == ivy.array([[1]]))[0, 0]
     assert ('b' not in container_further_pruned.keys())
 
     def _test_exception(container_in):
@@ -81,14 +81,14 @@ def test_container_prune_key_chain(dev_str, call):
 
 
 def test_container_prune_empty(dev_str, call):
-    dict_in = {'a': ivy.tensor([1]),
-               'b': {'c': {}, 'd': ivy.tensor([3])}}
+    dict_in = {'a': ivy.array([1]),
+               'b': {'c': {}, 'd': ivy.array([3])}}
     container = Container(dict_in)
     container_pruned = container.prune_empty()
-    assert (container_pruned['a'] == ivy.tensor([[1]]))[0, 0]
-    assert (container_pruned.a == ivy.tensor([[1]]))[0, 0]
-    assert (container_pruned['b']['d'] == ivy.tensor([[3]]))[0, 0]
-    assert (container_pruned.b.d == ivy.tensor([[3]]))[0, 0]
+    assert (container_pruned['a'] == ivy.array([[1]]))[0, 0]
+    assert (container_pruned.a == ivy.array([[1]]))[0, 0]
+    assert (container_pruned['b']['d'] == ivy.array([[3]]))[0, 0]
+    assert (container_pruned.b.d == ivy.array([[3]]))[0, 0]
     assert ('c' not in container_pruned['b'].keys())
 
     def _test_exception(container_in):
@@ -105,11 +105,11 @@ def test_container_shuffle(dev_str, call):
     if call is helpers.tf_graph_call:
         # tf.random.set_seed is not compiled. The shuffle is then not aligned between container items.
         pytest.skip()
-    dict_in = {'a': ivy.tensor([1, 2, 3]),
-               'b': {'c': ivy.tensor([1, 2, 3]), 'd': ivy.tensor([1, 2, 3])}}
+    dict_in = {'a': ivy.array([1, 2, 3]),
+               'b': {'c': ivy.array([1, 2, 3]), 'd': ivy.array([1, 2, 3])}}
     container = Container(dict_in)
     container_shuffled = container.shuffle(0)
-    data = ivy.tensor([1, 2, 3])
+    data = ivy.array([1, 2, 3])
     ivy.core.random.seed()
     shuffled_data = ivy.core.random.shuffle(data)
 
@@ -122,44 +122,44 @@ def test_container_shuffle(dev_str, call):
 
 
 def test_container_to_iterator(dev_str, call):
-    dict_in = {'a': ivy.tensor([1]),
-               'b': {'c': ivy.tensor([2]), 'd': ivy.tensor([3])}}
+    dict_in = {'a': ivy.array([1]),
+               'b': {'c': ivy.array([2]), 'd': ivy.array([3])}}
     container = Container(dict_in)
     container_iterator = container.to_iterator()
     for (key, value), expected_value in zip(container_iterator,
-                                            [ivy.tensor([1]), ivy.tensor([2]), ivy.tensor([3])]):
+                                            [ivy.array([1]), ivy.array([2]), ivy.array([3])]):
         assert value == expected_value
 
 
 def test_container_map(dev_str, call):
-    dict_in = {'a': ivy.tensor([1]),
-               'b': {'c': ivy.tensor([2]), 'd': ivy.tensor([3])}}
+    dict_in = {'a': ivy.array([1]),
+               'b': {'c': ivy.array([2]), 'd': ivy.array([3])}}
     container = Container(dict_in)
     container_iterator = container.map(lambda x, _: x + 1).to_iterator()
     for (key, value), expected_value in zip(container_iterator,
-                                            [ivy.tensor([2]), ivy.tensor([3]), ivy.tensor([4])]):
+                                            [ivy.array([2]), ivy.array([3]), ivy.array([4])]):
         assert call(lambda x: x, value) == call(lambda x: x, expected_value)
 
 
 def test_container_to_random(dev_str, call):
-    dict_in = {'a': ivy.tensor([1.]),
-               'b': {'c': ivy.tensor([2.]), 'd': ivy.tensor([3.])}}
+    dict_in = {'a': ivy.array([1.]),
+               'b': {'c': ivy.array([2.]), 'd': ivy.array([3.])}}
     container = Container(dict_in)
     random_container = container.to_random()
     for (key, value), orig_value in zip(random_container.to_iterator(),
-                                        [ivy.tensor([2]), ivy.tensor([3]), ivy.tensor([4])]):
+                                        [ivy.array([2]), ivy.array([3]), ivy.array([4])]):
         assert call(ivy.shape, value) == call(ivy.shape, orig_value)
 
 
 def test_container_dtype(dev_str, call):
-    dict_in = {'a': ivy.tensor([1]),
-               'b': {'c': ivy.tensor([2.]), 'd': ivy.tensor([3])}}
+    dict_in = {'a': ivy.array([1]),
+               'b': {'c': ivy.array([2.]), 'd': ivy.array([3])}}
     container = Container(dict_in)
     dtype_container = container.dtype()
     for (key, value), expected_value in zip(dtype_container.to_iterator(),
-                                            [ivy.tensor([1]).dtype,
-                                             ivy.tensor([2.]).dtype,
-                                             ivy.tensor([3]).dtype]):
+                                            [ivy.array([1]).dtype,
+                                             ivy.array([2.]).dtype,
+                                             ivy.array([3]).dtype]):
         assert value == expected_value
 
 
@@ -167,8 +167,8 @@ def test_container_with_entries_as_lists(dev_str, call):
     if call in [helpers.tf_graph_call]:
         # to_list() requires eager execution
         pytest.skip()
-    dict_in = {'a': ivy.tensor([1]),
-               'b': {'c': ivy.tensor([2.]), 'd': 'some string'}}
+    dict_in = {'a': ivy.array([1]),
+               'b': {'c': ivy.array([2.]), 'd': 'some string'}}
     container = Container(dict_in)
     container_w_list_entries = container.with_entries_as_lists()
     for (key, value), expected_value in zip(container_w_list_entries.to_iterator(),
@@ -183,12 +183,12 @@ def test_container_to_and_from_disk(dev_str, call):
         # container disk saving requires eager execution
         pytest.skip()
     save_filepath = 'container_on_disk.hdf5'
-    dict_in_1 = {'a': ivy.tensor([np.float32(1.)]),
-                 'b': {'c': ivy.tensor([np.float32(2.)]), 'd': ivy.tensor([np.float32(3.)])}}
+    dict_in_1 = {'a': ivy.array([np.float32(1.)]),
+                 'b': {'c': ivy.array([np.float32(2.)]), 'd': ivy.array([np.float32(3.)])}}
     container1 = Container(dict_in_1)
-    dict_in_2 = {'a': ivy.tensor([np.float32(1.), np.float32(1.)]),
-                 'b': {'c': ivy.tensor([np.float32(2.), np.float32(2.)]),
-                       'd': ivy.tensor([np.float32(3.), np.float32(3.)])}}
+    dict_in_2 = {'a': ivy.array([np.float32(1.), np.float32(1.)]),
+                 'b': {'c': ivy.array([np.float32(2.), np.float32(2.)]),
+                       'd': ivy.array([np.float32(3.), np.float32(3.)])}}
     container2 = Container(dict_in_2)
 
     # saving
@@ -230,8 +230,8 @@ def test_container_to_disk_shuffle_and_from_disk(dev_str, call):
         # container disk saving requires eager execution
         pytest.skip()
     save_filepath = 'container_on_disk.hdf5'
-    dict_in = {'a': ivy.tensor([1, 2, 3]),
-               'b': {'c': ivy.tensor([1, 2, 3]), 'd': ivy.tensor([1, 2, 3])}}
+    dict_in = {'a': ivy.array([1, 2, 3]),
+               'b': {'c': ivy.array([1, 2, 3]), 'd': ivy.array([1, 2, 3])}}
     container = Container(dict_in)
 
     # saving

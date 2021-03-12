@@ -6,6 +6,7 @@ Collection of tests for templated general functions
 import pytest
 import ivy.numpy
 import numpy as np
+from numbers import Number
 from operator import mul as _mul
 from functools import reduce as _reduce
 
@@ -18,6 +19,10 @@ from collections.abc import Sequence
 
 # Helpers #
 # --------#
+
+def _var_fn(a, b=None, c=None):
+    return ivy.variable(ivy.array(a, b, c))
+
 
 def _get_shape_of_list(lst, shape=()):
     if not lst:
@@ -61,23 +66,23 @@ def np_scatter(indices, updates, shape, reduction='sum'):
     "object_in", [[], [0.], [1], [True], [[1., 2.]]])
 @pytest.mark.parametrize(
     "dtype_str", [None, 'float16', 'float32', 'float64', 'int8', 'int16', 'int32', 'int64', 'bool'])
-def test_tensor(object_in, dtype_str, dev_str, call):
+def test_array(object_in, dtype_str, dev_str, call):
     if call in [helpers.mx_call] and dtype_str == 'int16':
         # mxnet does not support int16
         pytest.skip()
     # smoke test
-    ret = ivy.tensor(object_in, dtype_str, dev_str)
+    ret = ivy.array(object_in, dtype_str, dev_str)
     # type test
     assert isinstance(ret, ivy.Tensor)
     # cardinality test
     assert ret.shape == np.array(object_in).shape
     # value test
-    assert np.allclose(call(ivy.tensor, object_in, dtype_str, dev_str), np.array(object_in).astype(dtype_str))
+    assert np.allclose(call(ivy.array, object_in, dtype_str, dev_str), np.array(object_in).astype(dtype_str))
     # compilation test
     if call in [helpers.torch_call]:
         # pytorch scripting does not support string devices
         return
-    helpers.assert_compilable(ivy.tensor)
+    helpers.assert_compilable(ivy.array)
 
 
 # to_numpy
@@ -85,7 +90,9 @@ def test_tensor(object_in, dtype_str, dev_str, call):
     "object_in", [[], [0.], [1], [True], [[1., 2.]]])
 @pytest.mark.parametrize(
     "dtype_str", [None, 'float16', 'float32', 'float64', 'int8', 'int16', 'int32', 'int64', 'bool'])
-def test_to_numpy(object_in, dtype_str, dev_str, call):
+@pytest.mark.parametrize(
+    "tensor_fn", [ivy.array])
+def test_to_numpy(object_in, dtype_str, tensor_fn, dev_str, call):
     if call in [helpers.mx_call] and dtype_str == 'int16':
         # mxnet does not support int16
         pytest.skip()
@@ -93,13 +100,13 @@ def test_to_numpy(object_in, dtype_str, dev_str, call):
         # to_numpy() requires eager execution
         pytest.skip()
     # smoke test
-    ret = ivy.to_numpy(ivy.tensor(object_in, dtype_str, dev_str))
+    ret = ivy.to_numpy(tensor_fn(object_in, dtype_str, dev_str))
     # type test
     assert isinstance(ret, np.ndarray)
     # cardinality test
     assert ret.shape == np.array(object_in).shape
     # value test
-    assert np.allclose(ivy.to_numpy(ivy.tensor(object_in, dtype_str, dev_str)), np.array(object_in).astype(dtype_str))
+    assert np.allclose(ivy.to_numpy(tensor_fn(object_in, dtype_str, dev_str)), np.array(object_in).astype(dtype_str))
     # compilation test
     if call in [helpers.torch_call]:
         # pytorch scripting does not support numpy conversion
@@ -112,7 +119,9 @@ def test_to_numpy(object_in, dtype_str, dev_str, call):
     "object_in", [[], [0.], [1], [True], [[1., 2.]]])
 @pytest.mark.parametrize(
     "dtype_str", [None, 'float16', 'float32', 'float64', 'int8', 'int16', 'int32', 'int64', 'bool'])
-def test_to_list(object_in, dtype_str, dev_str, call):
+@pytest.mark.parametrize(
+    "tensor_fn", [ivy.array])
+def test_to_list(object_in, dtype_str, tensor_fn, dev_str, call):
     if call in [helpers.mx_call] and dtype_str == 'int16':
         # mxnet does not support int16
         pytest.skip()
@@ -120,13 +129,13 @@ def test_to_list(object_in, dtype_str, dev_str, call):
         # to_list() requires eager execution
         pytest.skip()
     # smoke test
-    ret = ivy.to_list(ivy.tensor(object_in, dtype_str, dev_str))
+    ret = ivy.to_list(tensor_fn(object_in, dtype_str, dev_str))
     # type test
     assert isinstance(ret, list)
     # cardinality test
     assert _get_shape_of_list(ret) == _get_shape_of_list(object_in)
     # value test
-    assert np.allclose(np.asarray(ivy.to_list(ivy.tensor(object_in, dtype_str, dev_str))),
+    assert np.allclose(np.asarray(ivy.to_list(tensor_fn(object_in, dtype_str, dev_str))),
                        np.array(object_in).astype(dtype_str))
     # compilation test
     if call in [helpers.torch_call]:
@@ -142,15 +151,20 @@ def test_to_list(object_in, dtype_str, dev_str, call):
     "dtype_str", ['float32'])
 @pytest.mark.parametrize(
     "as_tensor", [None, True, False])
-def test_shape(object_in, dtype_str, as_tensor, dev_str, call):
+@pytest.mark.parametrize(
+    "tensor_fn", [ivy.array, _var_fn])
+def test_shape(object_in, dtype_str, as_tensor, tensor_fn, dev_str, call):
     # smoke test
-    ret = ivy.shape(ivy.tensor(object_in, dtype_str, dev_str), as_tensor)
+    if len(object_in) == 0 and tensor_fn == _var_fn and call is helpers.mx_call:
+        # mxnet does not support 0-dimensional variables
+        pytest.skip()
+    ret = ivy.shape(tensor_fn(object_in, dtype_str, dev_str), as_tensor)
     # type test
     if as_tensor:
         assert isinstance(ret, ivy.Tensor)
     else:
         assert isinstance(ret, tuple)
-        ret = ivy.tensor(ret)
+        ret = ivy.array(ret)
     # cardinality test
     assert ret.shape[0] == len(np.asarray(object_in).shape)
     # value test
@@ -169,15 +183,20 @@ def test_shape(object_in, dtype_str, as_tensor, dev_str, call):
     "dtype_str", ['float32'])
 @pytest.mark.parametrize(
     "as_tensor", [None, True, False])
-def test_get_num_dims(object_in, dtype_str, as_tensor, dev_str, call):
+@pytest.mark.parametrize(
+    "tensor_fn", [ivy.array, _var_fn])
+def test_get_num_dims(object_in, dtype_str, as_tensor, tensor_fn, dev_str, call):
     # smoke test
-    ret = ivy.get_num_dims(ivy.tensor(object_in, dtype_str, dev_str), as_tensor)
+    if len(object_in) == 0 and tensor_fn == _var_fn and call is helpers.mx_call:
+        # mxnet does not support 0-dimensional variables
+        pytest.skip()
+    ret = ivy.get_num_dims(tensor_fn(object_in, dtype_str, dev_str), as_tensor)
     # type test
     if as_tensor:
         assert isinstance(ret, ivy.Tensor)
     else:
         assert isinstance(ret, int)
-        ret = ivy.tensor(ret)
+        ret = ivy.array(ret)
     # cardinality test
     assert list(ret.shape) == []
     # value test
@@ -194,10 +213,15 @@ def test_get_num_dims(object_in, dtype_str, as_tensor, dev_str, call):
     "xy", [([0.7], [0.5]), ([0.7], 0.5), (0.5, [0.7]), ([[0.8, 1.2], [1.5, 0.2]], [0., 1.])])
 @pytest.mark.parametrize(
     "dtype_str", ['float32'])
-def test_minimum(xy, dtype_str, dev_str, call):
+@pytest.mark.parametrize(
+    "tensor_fn", [ivy.array, _var_fn])
+def test_minimum(xy, dtype_str, tensor_fn, dev_str, call):
     # smoke test
-    x = ivy.tensor(xy[0], dtype_str, dev_str)
-    y = ivy.tensor(xy[1], dtype_str, dev_str)
+    if (isinstance(xy[0], Number) or isinstance(xy[1], Number)) and tensor_fn == _var_fn and call is helpers.mx_call:
+        # mxnet does not support 0-dimensional variables
+        pytest.skip()
+    x = tensor_fn(xy[0], dtype_str, dev_str)
+    y = tensor_fn(xy[1], dtype_str, dev_str)
     ret = ivy.minimum(x, y)
     # type test
     assert isinstance(ret, ivy.Tensor)
@@ -217,10 +241,15 @@ def test_minimum(xy, dtype_str, dev_str, call):
     "xy", [([0.7], [0.5]), ([0.7], 0.5), (0.5, [0.7]), ([[0.8, 1.2], [1.5, 0.2]], [0., 1.])])
 @pytest.mark.parametrize(
     "dtype_str", ['float32'])
-def test_maximum(xy, dtype_str, dev_str, call):
+@pytest.mark.parametrize(
+    "tensor_fn", [ivy.array, _var_fn])
+def test_maximum(xy, dtype_str, tensor_fn, dev_str, call):
     # smoke test
-    x = ivy.tensor(xy[0], dtype_str, dev_str)
-    y = ivy.tensor(xy[1], dtype_str, dev_str)
+    if (isinstance(xy[0], Number) or isinstance(xy[1], Number)) and tensor_fn == _var_fn and call is helpers.mx_call:
+        # mxnet does not support 0-dimensional variables
+        pytest.skip()
+    x = tensor_fn(xy[0], dtype_str, dev_str)
+    y = tensor_fn(xy[1], dtype_str, dev_str)
     ret = ivy.maximum(x, y)
     # type test
     assert isinstance(ret, ivy.Tensor)
@@ -237,18 +266,24 @@ def test_maximum(xy, dtype_str, dev_str, call):
 
 # clip
 @pytest.mark.parametrize(
-    "x_min_n_max", [(-0.5, 0., 1.5), ([1.7], [0.5], [1.1]),
+    "x_min_n_max", [(-0.5, 0., 1.5), ([1.7], [0.5], [1.1]), ([[0.8, 2.2], [1.5, 0.2]], 0.2, 1.4),
                     ([[0.8, 2.2], [1.5, 0.2]], [[1., 1.], [1., 1.]], [[1.1, 2.], [1.1, 2.]])])
 @pytest.mark.parametrize(
     "dtype_str", ['float32'])
-def test_clip(x_min_n_max, dtype_str, dev_str, call):
+@pytest.mark.parametrize(
+    "tensor_fn", [ivy.array, _var_fn])
+def test_clip(x_min_n_max, dtype_str, tensor_fn, dev_str, call):
     # smoke test
-    x = ivy.tensor(x_min_n_max[0], dtype_str, dev_str)
-    min_val = ivy.tensor(x_min_n_max[1], dtype_str, dev_str)
-    max_val = ivy.tensor(x_min_n_max[2], dtype_str, dev_str)
-    if (min_val.shape != [] and min_val.shape != [1]) or (max_val.shape != [] and max_val.shape != [1])\
-            and call is helpers.torch_call:
-        # pytorch only supports numbers or 0 or 1 dimensional arrays for min and max values while performing clip
+    if (isinstance(x_min_n_max[0], Number) or isinstance(x_min_n_max[1], Number) or isinstance(x_min_n_max[2], Number))\
+            and tensor_fn == _var_fn and call is helpers.mx_call:
+        # mxnet does not support 0-dimensional variables
+        pytest.skip()
+    x = tensor_fn(x_min_n_max[0], dtype_str, dev_str)
+    min_val = tensor_fn(x_min_n_max[1], dtype_str, dev_str)
+    max_val = tensor_fn(x_min_n_max[2], dtype_str, dev_str)
+    if ((min_val.shape != [] and min_val.shape != [1]) or (max_val.shape != [] and max_val.shape != [1]))\
+            and call in [helpers.torch_call, helpers.mx_call]:
+        # pytorch and mxnet only support numbers or 0 or 1 dimensional arrays for min and max while performing clip
         pytest.skip()
     ret = ivy.clip(x, min_val, max_val)
     # type test
@@ -268,9 +303,15 @@ def test_clip(x_min_n_max, dtype_str, dev_str, call):
     "x_n_x_rounded", [(-0.51, -1), ([1.7], [2.]), ([[0.8, 2.2], [1.51, 0.2]], [[1., 2.], [2., 0.]])])
 @pytest.mark.parametrize(
     "dtype_str", ['float32'])
-def test_round(x_n_x_rounded, dtype_str, dev_str, call):
+@pytest.mark.parametrize(
+    "tensor_fn", [ivy.array, _var_fn])
+def test_round(x_n_x_rounded, dtype_str, tensor_fn, dev_str, call):
     # smoke test
-    x = ivy.tensor(x_n_x_rounded[0], dtype_str, dev_str)
+    if (isinstance(x_n_x_rounded[0], Number) or isinstance(x_n_x_rounded[1], Number))\
+            and tensor_fn == _var_fn and call is helpers.mx_call:
+        # mxnet does not support 0-dimensional variables
+        pytest.skip()
+    x = tensor_fn(x_n_x_rounded[0], dtype_str, dev_str)
     ret = ivy.round(x)
     # type test
     assert isinstance(ret, ivy.Tensor)
@@ -288,10 +329,16 @@ def test_round(x_n_x_rounded, dtype_str, dev_str, call):
                                  ([[0.8, 2.2], [1.7, 0.2]], [[0.3, 0.5], [0.4, 0.11]], [[0.2, 0.2], [0.1, 0.09]])])
 @pytest.mark.parametrize(
     "dtype_str", ['float32'])
-def test_floormod(x_n_divisor_n_x_floormod, dtype_str, dev_str, call):
+@pytest.mark.parametrize(
+    "tensor_fn", [ivy.array, _var_fn])
+def test_floormod(x_n_divisor_n_x_floormod, dtype_str, tensor_fn, dev_str, call):
     # smoke test
-    x = ivy.tensor(x_n_divisor_n_x_floormod[0], dtype_str, dev_str)
-    divisor = ivy.tensor(x_n_divisor_n_x_floormod[1], dtype_str, dev_str)
+    if (isinstance(x_n_divisor_n_x_floormod[0], Number) or isinstance(x_n_divisor_n_x_floormod[1], Number) or
+            isinstance(x_n_divisor_n_x_floormod[2], Number)) and tensor_fn == _var_fn and call is helpers.mx_call:
+        # mxnet does not support 0-dimensional variables
+        pytest.skip()
+    x = tensor_fn(x_n_divisor_n_x_floormod[0], dtype_str, dev_str)
+    divisor = ivy.array(x_n_divisor_n_x_floormod[1], dtype_str, dev_str)
     ret = ivy.floormod(x, divisor)
     # type test
     assert isinstance(ret, ivy.Tensor)
@@ -308,9 +355,15 @@ def test_floormod(x_n_divisor_n_x_floormod, dtype_str, dev_str, call):
     "x_n_x_floored", [(2.5, 2.), ([10.7], [10.]), ([[3.8, 2.2], [1.7, 0.2]], [[3., 2.], [1., 0.]])])
 @pytest.mark.parametrize(
     "dtype_str", ['float32'])
-def test_floor(x_n_x_floored, dtype_str, dev_str, call):
+@pytest.mark.parametrize(
+    "tensor_fn", [ivy.array, _var_fn])
+def test_floor(x_n_x_floored, dtype_str, tensor_fn, dev_str, call):
     # smoke test
-    x = ivy.tensor(x_n_x_floored[0], dtype_str, dev_str)
+    if (isinstance(x_n_x_floored[0], Number) or isinstance(x_n_x_floored[1], Number))\
+            and tensor_fn == _var_fn and call is helpers.mx_call:
+        # mxnet does not support 0-dimensional variables
+        pytest.skip()
+    x = tensor_fn(x_n_x_floored[0], dtype_str, dev_str)
     ret = ivy.floor(x)
     # type test
     assert isinstance(ret, ivy.Tensor)
@@ -327,9 +380,15 @@ def test_floor(x_n_x_floored, dtype_str, dev_str, call):
     "x_n_x_ceiled", [(2.5, 3.), ([10.7], [11.]), ([[3.8, 2.2], [1.7, 0.2]], [[4., 3.], [2., 1.]])])
 @pytest.mark.parametrize(
     "dtype_str", ['float32'])
-def test_ceil(x_n_x_ceiled, dtype_str, dev_str, call):
+@pytest.mark.parametrize(
+    "tensor_fn", [ivy.array, _var_fn])
+def test_ceil(x_n_x_ceiled, dtype_str, tensor_fn, dev_str, call):
     # smoke test
-    x = ivy.tensor(x_n_x_ceiled[0], dtype_str, dev_str)
+    if (isinstance(x_n_x_ceiled[0], Number) or isinstance(x_n_x_ceiled[1], Number))\
+            and tensor_fn == _var_fn and call is helpers.mx_call:
+        # mxnet does not support 0-dimensional variables
+        pytest.skip()
+    x = tensor_fn(x_n_x_ceiled[0], dtype_str, dev_str)
     ret = ivy.ceil(x)
     # type test
     assert isinstance(ret, ivy.Tensor)
@@ -346,9 +405,15 @@ def test_ceil(x_n_x_ceiled, dtype_str, dev_str, call):
     "x_n_x_absed", [(-2.5, 2.5), ([-10.7], [10.7]), ([[-3.8, 2.2], [1.7, -0.2]], [[3.8, 2.2], [1.7, 0.2]])])
 @pytest.mark.parametrize(
     "dtype_str", ['float32'])
-def test_abs(x_n_x_absed, dtype_str, dev_str, call):
+@pytest.mark.parametrize(
+    "tensor_fn", [ivy.array, _var_fn])
+def test_abs(x_n_x_absed, dtype_str, tensor_fn, dev_str, call):
     # smoke test
-    x = ivy.tensor(x_n_x_absed[0], dtype_str, dev_str)
+    if (isinstance(x_n_x_absed[0], Number) or isinstance(x_n_x_absed[1], Number))\
+            and tensor_fn == _var_fn and call is helpers.mx_call:
+        # mxnet does not support 0-dimensional variables
+        pytest.skip()
+    x = tensor_fn(x_n_x_absed[0], dtype_str, dev_str)
     ret = ivy.abs(x)
     # type test
     assert isinstance(ret, ivy.Tensor)
@@ -366,9 +431,11 @@ def test_abs(x_n_x_absed, dtype_str, dev_str, call):
                           ([[1.3, 2.6], [2.3, 2.5]], 1, [1, 1])])
 @pytest.mark.parametrize(
     "dtype_str", ['float32'])
-def test_argmax(x_n_axis_x_argmax, dtype_str, dev_str, call):
+@pytest.mark.parametrize(
+    "tensor_fn", [ivy.array, _var_fn])
+def test_argmax(x_n_axis_x_argmax, dtype_str, tensor_fn, dev_str, call):
     # smoke test
-    x = ivy.tensor(x_n_axis_x_argmax[0], dtype_str, dev_str)
+    x = ivy.array(x_n_axis_x_argmax[0], dtype_str, dev_str)
     axis = x_n_axis_x_argmax[1]
     ret = ivy.argmax(x, axis)
     # type test
@@ -387,9 +454,11 @@ def test_argmax(x_n_axis_x_argmax, dtype_str, dev_str, call):
                           ([[1.3, 2.6], [2.3, 2.5]], 1, [0, 0])])
 @pytest.mark.parametrize(
     "dtype_str", ['float32'])
-def test_argmin(x_n_axis_x_argmin, dtype_str, dev_str, call):
+@pytest.mark.parametrize(
+    "tensor_fn", [ivy.array, _var_fn])
+def test_argmin(x_n_axis_x_argmin, dtype_str, tensor_fn, dev_str, call):
     # smoke test
-    x = ivy.tensor(x_n_axis_x_argmin[0], dtype_str, dev_str)
+    x = tensor_fn(x_n_axis_x_argmin[0], dtype_str, dev_str)
     axis = x_n_axis_x_argmin[1]
     ret = ivy.argmin(x, axis)
     # type test
@@ -411,7 +480,7 @@ def test_argmin(x_n_axis_x_argmin, dtype_str, dev_str, call):
     "target_dtype_str", ['float32', 'int32', 'bool'])
 def test_cast(object_in, starting_dtype_str, target_dtype_str, dev_str, call):
     # smoke test
-    x = ivy.tensor(object_in, starting_dtype_str, dev_str)
+    x = ivy.array(object_in, starting_dtype_str, dev_str)
     ret = ivy.cast(x, target_dtype_str)
     # type test
     assert isinstance(ret, ivy.Tensor)
@@ -426,36 +495,78 @@ def test_cast(object_in, starting_dtype_str, target_dtype_str, dev_str, call):
     helpers.assert_compilable(ivy.cast)
 
 
-def test_arange(dev_str, call):
-    assert np.array_equal(call(ivy.arange, 10), np.arange(10))
-    assert np.array_equal(call(ivy.arange, 10, 2), np.arange(2, 10))
-    assert np.array_equal(call(ivy.arange, 10, 2, 2), np.arange(2, 10, 2))
-    assert np.array_equal(call(ivy.arange, 10, 2, 2, 'float32'), np.arange(2, 10, 2, dtype=np.float32))
-    if call is helpers.torch_call:
-        # pytorch scripting does not support Union or Numbers for type hinting
+# arange
+@pytest.mark.parametrize(
+    "stop_n_start_n_step", [[10, None, None], [10, 2, None], [10, 2, 2]])
+@pytest.mark.parametrize(
+    "dtype_str", ['float32'])
+@pytest.mark.parametrize(
+    "tensor_fn", [ivy.array, _var_fn])
+def test_arange(stop_n_start_n_step, dtype_str, tensor_fn, dev_str, call):
+    # smoke test
+    stop, start, step = stop_n_start_n_step[0], stop_n_start_n_step[1], stop_n_start_n_step[2]
+    if (isinstance(stop, Number) or isinstance(start, Number) or isinstance(step, Number))\
+            and tensor_fn == _var_fn and call is helpers.mx_call:
+        # mxnet does not support 0-dimensional variables
+        pytest.skip()
+    if tensor_fn == _var_fn and call is helpers.torch_call:
+        # pytorch does not support arange using variables as input
+        pytest.skip()
+    args = list()
+    if stop:
+        stop = tensor_fn(stop, dtype_str, dev_str)
+        args.append(stop)
+    if start:
+        start = tensor_fn(start, dtype_str, dev_str)
+        args.append(start)
+    if step:
+        step = tensor_fn(step, dtype_str, dev_str)
+        args.append(step)
+    ret = ivy.arange(*args, dtype_str=dtype_str, dev_str=dev_str)
+    # type test
+    assert isinstance(ret, ivy.Tensor)
+    # cardinality test
+    assert ret.shape == (int((ivy.to_list(stop) -
+                              (ivy.to_list(start) if start else 0))/(ivy.to_list(step) if step else 1)),)
+    # value test
+    assert np.array_equal(call(ivy.arange, *args, dtype_str=dtype_str, dev_str=dev_str),
+                          ivy.numpy.arange(*[ivy.to_numpy(arg) for arg in args], dtype_str=dtype_str))
+    # compilation test
+    if call in [helpers.torch_call]:
+        # pytorch scripting does not support Number type, or Union for Union[float, int] etc.
         return
     helpers.assert_compilable(ivy.arange)
 
 
-def test_linspace(dev_str, call):
-    assert np.allclose(call(ivy.linspace, 1, 10, 100), np.linspace(1, 10, 100), atol=1e-6)
-    start = ivy.tensor([[0., 1., 2.]])
-    stop = ivy.tensor([[1., 2., 3.]])
-    assert np.allclose(call(ivy.linspace, start, stop, 100),
-                       np.linspace(np.array([[0., 1., 2.]]), np.array([[1., 2., 3.]]), 100, axis=-1), atol=1e-6)
-    start = ivy.tensor([[[-0.1471, 0.4477, 0.2214]]])
-    stop = ivy.tensor([[[-0.3048, 0.3308, 0.2721]]])
-    res = np.array([[[[-0.1471,  0.4477,  0.2214],
-                      [-0.1786,  0.4243,  0.2316],
-                      [-0.2102,  0.4009,  0.2417],
-                      [-0.2417,  0.3776,  0.2518],
-                      [-0.2732,  0.3542,  0.2620],
-                      [-0.3048,  0.3308,  0.2721]]]])
-    assert np.allclose(call(ivy.linspace, start, stop, 6, axis=-2), res, atol=1e-4)
-    if call is helpers.torch_call:
-        start = ivy.variable(start)
-        stop = ivy.variable(stop)
-        assert np.allclose(ivy.linspace(start, stop, 6, axis=-2).detach().numpy(), res, atol=1e-4)
+# linspace
+@pytest.mark.parametrize(
+    "start_n_stop_n_num_n_axis", [[1, 10, 100, None], [[[0., 1., 2.]], [[1., 2., 3.]], 150, -1],
+                                  [[[[-0.1471, 0.4477, 0.2214]]], [[[-0.3048, 0.3308, 0.2721]]], 6, -2]])
+@pytest.mark.parametrize(
+    "dtype_str", ['float32'])
+@pytest.mark.parametrize(
+    "tensor_fn", [ivy.array, _var_fn])
+def test_linspace(start_n_stop_n_num_n_axis, dtype_str, tensor_fn, dev_str, call):
+    # smoke test
+    start, stop, num, axis = start_n_stop_n_num_n_axis[0], start_n_stop_n_num_n_axis[1], start_n_stop_n_num_n_axis[2],\
+                             start_n_stop_n_num_n_axis[3]
+    if (isinstance(start, Number) or isinstance(stop, Number))\
+            and tensor_fn == _var_fn and call is helpers.mx_call:
+        # mxnet does not support 0-dimensional variables
+        pytest.skip()
+    start = tensor_fn(start, dtype_str, dev_str)
+    stop = tensor_fn(stop, dtype_str, dev_str)
+    ret = ivy.linspace(start, stop, num, axis, dev_str=dev_str)
+    # type test
+    assert isinstance(ret, ivy.Tensor)
+    # cardinality test
+    target_shape = list(start.shape)
+    target_shape.insert(axis + 1 if (axis and axis != -1) else len(target_shape), num)
+    assert ret.shape == tuple(target_shape)
+    # value test
+    assert np.allclose(call(ivy.linspace, start, stop, num, axis, dev_str=dev_str),
+                       ivy.numpy.linspace(ivy.to_numpy(start), ivy.to_numpy(stop), num, axis))
+    # compilation test
     if call in [helpers.torch_call]:
         # pytorch scripting does not support numpy conversion
         return
@@ -463,28 +574,28 @@ def test_linspace(dev_str, call):
 
 
 def test_concatenate(dev_str, call):
-    assert np.array_equal(call(ivy.concatenate, (ivy.tensor([0.]), ivy.tensor([0.])), 0),
+    assert np.array_equal(call(ivy.concatenate, (ivy.array([0.]), ivy.array([0.])), 0),
                           np.concatenate((np.array([0.]), np.array([0.])), 0))
     assert np.array_equal(call(ivy.concatenate,
-                               (ivy.tensor([[0.]]), ivy.tensor([[0.]])), 0),
+                               (ivy.array([[0.]]), ivy.array([[0.]])), 0),
                           np.concatenate((np.array([[0.]]), np.array([[0.]])), 0))
     helpers.assert_compilable(ivy.concatenate)
 
 
 def test_flip(dev_str, call):
-    assert np.array_equal(call(ivy.flip, ivy.tensor([0., 1.]), batch_shape=[2]),
+    assert np.array_equal(call(ivy.flip, ivy.array([0., 1.]), batch_shape=[2]),
                           np.flip(np.array([0., 1.])))
-    assert np.array_equal(call(ivy.flip, ivy.tensor([0., 1.]), -1, batch_shape=[2]),
+    assert np.array_equal(call(ivy.flip, ivy.array([0., 1.]), -1, batch_shape=[2]),
                           np.flip(np.array([0., 1.])))
-    assert np.array_equal(call(ivy.flip, ivy.tensor([[0., 1.]]), -1, batch_shape=[1, 2]),
+    assert np.array_equal(call(ivy.flip, ivy.array([[0., 1.]]), -1, batch_shape=[1, 2]),
                           np.flip(np.array([[0., 1.]])))
     helpers.assert_compilable(ivy.flip)
 
 
 def test_stack(dev_str, call):
-    assert np.array_equal(call(ivy.stack, [ivy.tensor([0.]), ivy.tensor([0.])], 0),
+    assert np.array_equal(call(ivy.stack, [ivy.array([0.]), ivy.array([0.])], 0),
                           np.stack([np.array([0.]), np.array([0.])]))
-    assert np.array_equal(call(ivy.stack, [ivy.tensor([[0.]]), ivy.tensor([[0.]])], 0),
+    assert np.array_equal(call(ivy.stack, [ivy.array([[0.]]), ivy.array([[0.]])], 0),
                           np.stack([np.array([[0.]]), np.array([[0.]])]))
     helpers.assert_compilable(ivy.stack)
 
@@ -492,35 +603,35 @@ def test_stack(dev_str, call):
 def test_unstack(dev_str, call):
     x = np.swapaxes(np.array([[0.]]), 0, 0)
     true = [np.array(item) for item in x.tolist()]
-    pred = call(ivy.unstack, ivy.tensor([[0.]]), 0, num_outputs=1)
+    pred = call(ivy.unstack, ivy.array([[0.]]), 0, num_outputs=1)
     assert _reduce(_mul, [np.array_equal(pred_, true_) for pred_, true_ in zip(pred, true)], 1) == 1
     x = np.swapaxes(np.array([[[0.]]]), 0, 0)
     true = [np.array(item) for item in x.tolist()]
-    pred = call(ivy.unstack, ivy.tensor([[[0.]]]), 0, num_outputs=1)
+    pred = call(ivy.unstack, ivy.array([[[0.]]]), 0, num_outputs=1)
     assert _reduce(_mul, [np.array_equal(pred_, true_) for pred_, true_ in zip(pred, true)], 1) == 1
     helpers.assert_compilable(ivy.unstack)
 
 
 def test_split(dev_str, call):
-    assert np.array_equal(call(ivy.split, ivy.tensor([[0., 1.]]), 2, -1),
+    assert np.array_equal(call(ivy.split, ivy.array([[0., 1.]]), 2, -1),
                           np.split(np.array([[0., 1.]]), 2, -1))
-    assert np.array_equal(call(ivy.split, ivy.tensor([[[0., 1.]]]), 2, -1),
+    assert np.array_equal(call(ivy.split, ivy.array([[[0., 1.]]]), 2, -1),
                           np.split(np.array([[[0., 1.]]]), 2, -1))
     helpers.assert_compilable(ivy.split)
 
 
 def test_tile(dev_str, call):
-    assert np.array_equal(call(ivy.tile, ivy.tensor([[0.]]), [1, 2]),
+    assert np.array_equal(call(ivy.tile, ivy.array([[0.]]), [1, 2]),
                           np.tile(np.array([[0.]]), [1, 2]))
-    assert np.array_equal(call(ivy.tile, ivy.tensor([[[0.]]]), [1, 2, 3]),
+    assert np.array_equal(call(ivy.tile, ivy.array([[[0.]]]), [1, 2, 3]),
                           np.tile(np.array([[[0.]]]), [1, 2, 3]))
     helpers.assert_compilable(ivy.tile)
 
 
 def test_zero_pad(dev_str, call):
-    assert np.array_equal(call(ivy.zero_pad, ivy.tensor([[0.]]), [[0, 1], [1, 2]], x_shape=[1, 1]),
+    assert np.array_equal(call(ivy.zero_pad, ivy.array([[0.]]), [[0, 1], [1, 2]], x_shape=[1, 1]),
                           np.pad(np.array([[0.]]), [[0, 1], [1, 2]]))
-    assert np.array_equal(call(ivy.zero_pad, ivy.tensor([[[0.]]]), [[0, 0], [1, 1], [2, 3]],
+    assert np.array_equal(call(ivy.zero_pad, ivy.array([[[0.]]]), [[0, 0], [1, 1], [2, 3]],
                                x_shape=[1, 1, 1]),
                           np.pad(np.array([[[0.]]]), [[0, 0], [1, 1], [2, 3]]))
     if call is helpers.torch_call:
@@ -530,9 +641,9 @@ def test_zero_pad(dev_str, call):
 
 
 def test_constant_pad(dev_str, call):
-    assert np.array_equal(call(ivy.constant_pad, ivy.tensor([[0.]]), [[0, 1], [1, 2]], 2.,
+    assert np.array_equal(call(ivy.constant_pad, ivy.array([[0.]]), [[0, 1], [1, 2]], 2.,
                                x_shape=[1, 1]), np.pad(np.array([[0.]]), [[0, 1], [1, 2]], constant_values=2.))
-    assert np.array_equal(call(ivy.constant_pad, ivy.tensor([[[0.]]]), [[0, 0], [1, 1], [2, 3]],
+    assert np.array_equal(call(ivy.constant_pad, ivy.array([[[0.]]]), [[0, 0], [1, 1], [2, 3]],
                                3., x_shape=[1, 1, 1]),
                           np.pad(np.array([[[0.]]]), [[0, 0], [1, 1], [2, 3]], constant_values=3.))
     if call is helpers.torch_call:
@@ -542,47 +653,47 @@ def test_constant_pad(dev_str, call):
 
 
 def test_swapaxes(dev_str, call):
-    assert np.array_equal(call(ivy.swapaxes, ivy.tensor([[0., 0.]]), 1, 0),
+    assert np.array_equal(call(ivy.swapaxes, ivy.array([[0., 0.]]), 1, 0),
                           np.swapaxes(np.array([[0., 0.]]), 1, 0))
-    assert np.array_equal(call(ivy.swapaxes, ivy.tensor([[0., 0.]]), -1, -2),
+    assert np.array_equal(call(ivy.swapaxes, ivy.array([[0., 0.]]), -1, -2),
                           np.swapaxes(np.array([[0., 0.]]), -1, -2))
     helpers.assert_compilable(ivy.swapaxes)
 
 
 def test_transpose(dev_str, call):
-    assert np.array_equal(call(ivy.transpose, ivy.tensor([[0., 0.]]), [1, 0]),
+    assert np.array_equal(call(ivy.transpose, ivy.array([[0., 0.]]), [1, 0]),
                           np.transpose(np.array([[0., 0.]]), [1, 0]))
-    assert np.array_equal(call(ivy.transpose, ivy.tensor([[[0., 0.]]]), [2, 0, 1]),
+    assert np.array_equal(call(ivy.transpose, ivy.array([[[0., 0.]]]), [2, 0, 1]),
                           np.transpose(np.array([[[0., 0.]]]), [2, 0, 1]))
     helpers.assert_compilable(ivy.transpose)
 
 
 def test_expand_dims(dev_str, call):
-    assert np.array_equal(call(ivy.expand_dims, ivy.tensor([[0., 0.]]), 0),
+    assert np.array_equal(call(ivy.expand_dims, ivy.array([[0., 0.]]), 0),
                           np.expand_dims(np.array([[0., 0.]]), 0))
-    assert np.array_equal(call(ivy.expand_dims, ivy.tensor([[[0., 0.]]]), -1),
+    assert np.array_equal(call(ivy.expand_dims, ivy.array([[[0., 0.]]]), -1),
                           np.expand_dims(np.array([[[0., 0.]]]), -1))
     helpers.assert_compilable(ivy.expand_dims)
 
 
 def test_where(dev_str, call):
-    assert np.array_equal(call(ivy.where, ivy.tensor([[0., 1.]]) > 0,
-                               ivy.tensor([[1., 1.]]), ivy.tensor([[2., 2.]]),
+    assert np.array_equal(call(ivy.where, ivy.array([[0., 1.]]) > 0,
+                               ivy.array([[1., 1.]]), ivy.array([[2., 2.]]),
                                condition_shape=[1, 2], x_shape=[1, 2]),
                           np.where(np.array([[0., 1.]]) > 0, np.array([[0., 1.]]), np.array([[2., 2.]])))
-    assert np.array_equal(call(ivy.where, ivy.tensor([[[1., 0.]]]) > 0,
-                               ivy.tensor([[[1., 1.]]]), ivy.tensor([[[2., 2.]]]),
+    assert np.array_equal(call(ivy.where, ivy.array([[[1., 0.]]]) > 0,
+                               ivy.array([[[1., 1.]]]), ivy.array([[[2., 2.]]]),
                                condition_shape=[1, 1, 2], x_shape=[1, 1, 2]),
                           np.where(np.array([[[1., 0.]]]) > 0, np.array([[[1., 1.]]]), np.array([[[2., 2.]]])))
     helpers.assert_compilable(ivy.where)
 
 
 def test_indices_where(dev_str, call):
-    assert np.array_equal(call(ivy.indices_where, ivy.tensor([[False, True],
+    assert np.array_equal(call(ivy.indices_where, ivy.array([[False, True],
                                                               [True, False],
                                                               [True, True]])),
                           np.array([[0, 1], [1, 0], [2, 0], [2, 1]]))
-    assert np.array_equal(call(ivy.indices_where, ivy.tensor([[[False, True],
+    assert np.array_equal(call(ivy.indices_where, ivy.array([[[False, True],
                                                                [True, False],
                                                                [True, True]]])),
                           np.array([[0, 0, 1], [0, 1, 0], [0, 2, 0], [0, 2, 1]]))
@@ -590,17 +701,17 @@ def test_indices_where(dev_str, call):
 
 
 def test_reshape(dev_str, call):
-    assert np.array_equal(call(ivy.reshape, ivy.tensor([[0., 1.]]), (-1,)),
+    assert np.array_equal(call(ivy.reshape, ivy.array([[0., 1.]]), (-1,)),
                           np.reshape(np.array([[0., 1.]]), (-1,)))
-    assert np.array_equal(call(ivy.reshape, ivy.tensor([[[1., 0.]]]), (1, 2)),
+    assert np.array_equal(call(ivy.reshape, ivy.array([[[1., 0.]]]), (1, 2)),
                           np.reshape(np.array([[[1., 0.]]]), (1, 2)))
     helpers.assert_compilable(ivy.reshape)
 
 
 def test_squeeze(dev_str, call):
-    assert np.array_equal(call(ivy.squeeze, ivy.tensor([[0., 1.]])),
+    assert np.array_equal(call(ivy.squeeze, ivy.array([[0., 1.]])),
                           np.squeeze(np.array([[0., 1.]])))
-    assert np.array_equal(call(ivy.squeeze, ivy.tensor([[[1., 0.]]]), 1),
+    assert np.array_equal(call(ivy.squeeze, ivy.array([[[1., 0.]]]), 1),
                           np.squeeze(np.array([[[1., 0.]]]), 1))
     helpers.assert_compilable(ivy.squeeze)
 
@@ -609,14 +720,20 @@ def test_zeros(dev_str, call):
     assert np.array_equal(call(ivy.zeros, (1, 2)), np.zeros((1, 2)))
     assert np.array_equal(call(ivy.zeros, (1, 2), 'int64'), np.zeros((1, 2), np.int64))
     assert np.array_equal(call(ivy.zeros, (1, 2, 3)), np.zeros((1, 2, 3)))
+    if call in [helpers.torch_call]:
+        # pytorch scripting cannot assign a torch.device value with a string
+        return
     helpers.assert_compilable(ivy.zeros)
 
 
 def test_zeros_like(dev_str, call):
-    assert np.array_equal(call(ivy.zeros_like, ivy.tensor([[0., 1.]])),
+    assert np.array_equal(call(ivy.zeros_like, ivy.array([[0., 1.]])),
                           np.zeros_like(np.array([[0., 1.]])))
-    assert np.array_equal(call(ivy.zeros_like, ivy.tensor([[[1., 0.]]])),
+    assert np.array_equal(call(ivy.zeros_like, ivy.array([[[1., 0.]]])),
                           np.zeros_like(np.array([[[1., 0.]]])))
+    if call in [helpers.torch_call]:
+        # pytorch scripting cannot assign a torch.device value with a string
+        return
     helpers.assert_compilable(ivy.zeros_like)
 
 
@@ -625,49 +742,55 @@ def test_ones(dev_str, call):
     assert np.array_equal(call(ivy.ones, (1, 2), 'int64'), np.ones((1, 2), np.int64))
     assert np.array_equal(call(ivy.ones, (1, 2, 3)), np.ones((1, 2, 3)))
     if call in [helpers.torch_call]:
-        # pytorch scripting does not support string devices
+        # pytorch scripting cannot assign a torch.device value with a string
         return
     helpers.assert_compilable(ivy.ones)
 
 
 def test_ones_like(dev_str, call):
-    assert np.array_equal(call(ivy.ones_like, ivy.tensor([[0., 1.]])),
+    assert np.array_equal(call(ivy.ones_like, ivy.array([[0., 1.]])),
                           np.ones_like(np.array([[0., 1.]])))
-    assert np.array_equal(call(ivy.ones_like, ivy.tensor([[[1., 0.]]])),
+    assert np.array_equal(call(ivy.ones_like, ivy.array([[[1., 0.]]])),
                           np.ones_like(np.array([[[1., 0.]]])))
+    if call in [helpers.torch_call]:
+        # pytorch scripting cannot assign a torch.device value with a string
+        return
     helpers.assert_compilable(ivy.ones_like)
 
 
 def test_one_hot(dev_str, call):
     np_one_hot = helpers._ivy_np.one_hot(np.array([0, 1, 2]), 3)
-    assert np.array_equal(call(ivy.one_hot, ivy.tensor([0, 1, 2]), 3), np_one_hot)
+    assert np.array_equal(call(ivy.one_hot, ivy.array([0, 1, 2]), 3), np_one_hot)
+    if call in [helpers.torch_call]:
+        # pytorch scripting cannot assign a torch.device value with a string
+        return
     helpers.assert_compilable(ivy.one_hot)
 
 
 def test_cross(dev_str, call):
-    assert np.array_equal(call(ivy.cross, ivy.tensor([0., 0., 0.]),
-                               ivy.tensor([0., 0., 0.])),
+    assert np.array_equal(call(ivy.cross, ivy.array([0., 0., 0.]),
+                               ivy.array([0., 0., 0.])),
                           np.cross(np.array([0., 0., 0.]), np.array([0., 0., 0.])))
-    assert np.array_equal(call(ivy.cross, ivy.tensor([[0., 0., 0.]]),
-                               ivy.tensor([[0., 0., 0.]])),
+    assert np.array_equal(call(ivy.cross, ivy.array([[0., 0., 0.]]),
+                               ivy.array([[0., 0., 0.]])),
                           np.cross(np.array([[0., 0., 0.]]), np.array([[0., 0., 0.]])))
     helpers.assert_compilable(ivy.cross)
 
 
 def test_matmul(dev_str, call):
-    assert np.array_equal(call(ivy.matmul, ivy.tensor([[1., 0.], [0., 1.]]),
-                               ivy.tensor([[1., 0.], [0., 1.]]), batch_shape=[]),
+    assert np.array_equal(call(ivy.matmul, ivy.array([[1., 0.], [0., 1.]]),
+                               ivy.array([[1., 0.], [0., 1.]]), batch_shape=[]),
                           np.matmul(np.array([[1., 0.], [0., 1.]]), np.array([[1., 0.], [0., 1.]])))
-    assert np.array_equal(call(ivy.matmul, ivy.tensor([[[[1., 0.], [0., 1.]]]]),
-                               ivy.tensor([[[[1., 0.], [0., 1.]]]]), batch_shape=[1, 1]),
+    assert np.array_equal(call(ivy.matmul, ivy.array([[[[1., 0.], [0., 1.]]]]),
+                               ivy.array([[[[1., 0.], [0., 1.]]]]), batch_shape=[1, 1]),
                           np.matmul(np.array([[[[1., 0.], [0., 1.]]]]), np.array([[[[1., 0.], [0., 1.]]]])))
     helpers.assert_compilable(ivy.matmul)
 
 
 def test_cumsum(dev_str, call):
-    assert np.array_equal(call(ivy.cumsum, ivy.tensor([[0., 1., 2., 3.]]), 1),
+    assert np.array_equal(call(ivy.cumsum, ivy.array([[0., 1., 2., 3.]]), 1),
                           np.array([[0., 1., 3., 6.]]))
-    assert np.array_equal(call(ivy.cumsum, ivy.tensor([[0., 1., 2.], [0., 1., 2.]]), 0),
+    assert np.array_equal(call(ivy.cumsum, ivy.array([[0., 1., 2.], [0., 1., 2.]]), 0),
                           np.array([[0., 1., 2.], [0., 2., 4.]]))
     helpers.assert_compilable(ivy.cumsum)
 
@@ -676,18 +799,21 @@ def test_identity(dev_str, call):
     assert np.array_equal(call(ivy.identity, 1), np.identity(1))
     assert np.array_equal(call(ivy.identity, 2, 'int64'), np.identity(2, np.int64))
     call(ivy.identity, 2, 'int64', (1, 2))
+    if call in [helpers.torch_call]:
+        # pytorch scripting cannot assign a torch.device value with a string
+        return
     helpers.assert_compilable(ivy.identity)
 
 
 def test_scatter_flat_sum(dev_str, call):
-    assert np.array_equal(call(ivy.scatter_flat, ivy.tensor([0, 4, 1, 2]),
-                               ivy.tensor([1, 2, 3, 4]), 8),
+    assert np.array_equal(call(ivy.scatter_flat, ivy.array([0, 4, 1, 2]),
+                               ivy.array([1, 2, 3, 4]), 8),
                           np.array([1, 3, 4, 0, 2, 0, 0, 0]))
     if call in [helpers.mx_call]:
         # mxnet scatter does not support sum reduction
         return
-    assert np.array_equal(call(ivy.scatter_flat, ivy.tensor([0, 4, 1, 2, 0]),
-                               ivy.tensor([1, 2, 3, 4, 5]), 8),
+    assert np.array_equal(call(ivy.scatter_flat, ivy.array([0, 4, 1, 2, 0]),
+                               ivy.array([1, 2, 3, 4, 5]), 8),
                           np.array([6, 3, 4, 0, 2, 0, 0, 0]))
     if call in [helpers.torch_call]:
         # global torch_scatter var not supported when scripting
@@ -699,11 +825,11 @@ def test_scatter_flat_min(dev_str, call):
     if call in [helpers.mx_call]:
         # mxnet does not support max reduction for scatter flat
         pytest.skip()
-    assert np.array_equal(call(ivy.scatter_flat, ivy.tensor([0, 4, 1, 2]),
-                               ivy.tensor([1, 2, 3, 4]), 8, 'min'),
+    assert np.array_equal(call(ivy.scatter_flat, ivy.array([0, 4, 1, 2]),
+                               ivy.array([1, 2, 3, 4]), 8, 'min'),
                           np.array([1, 3, 4, 0, 2, 0, 0, 0]))
-    assert np.array_equal(call(ivy.scatter_flat, ivy.tensor([0, 4, 1, 2, 0]),
-                               ivy.tensor([1, 2, 3, 4, 5]), 8, 'min'),
+    assert np.array_equal(call(ivy.scatter_flat, ivy.array([0, 4, 1, 2, 0]),
+                               ivy.array([1, 2, 3, 4, 5]), 8, 'min'),
                           np.array([1, 3, 4, 0, 2, 0, 0, 0]))
     if call in [helpers.torch_call]:
         # global torch_scatter var not supported when scripting
@@ -715,11 +841,11 @@ def test_scatter_flat_max(dev_str, call):
     if call in [helpers.mx_call]:
         # mxnet does not support max reduction for scatter flat
         pytest.skip()
-    assert np.array_equal(call(ivy.scatter_flat, ivy.tensor([0, 4, 1, 2]),
-                               ivy.tensor([1, 2, 3, 4]), 8, 'max'),
+    assert np.array_equal(call(ivy.scatter_flat, ivy.array([0, 4, 1, 2]),
+                               ivy.array([1, 2, 3, 4]), 8, 'max'),
                           np.array([1, 3, 4, 0, 2, 0, 0, 0]))
-    assert np.array_equal(call(ivy.scatter_flat, ivy.tensor([0, 4, 1, 2, 0]),
-                               ivy.tensor([1, 2, 3, 4, 5]), 8, 'max'),
+    assert np.array_equal(call(ivy.scatter_flat, ivy.array([0, 4, 1, 2, 0]),
+                               ivy.array([1, 2, 3, 4, 5]), 8, 'max'),
                           np.array([5, 3, 4, 0, 2, 0, 0, 0]))
     if call in [helpers.torch_call]:
         # global torch_scatter var not supported when scripting
@@ -728,16 +854,16 @@ def test_scatter_flat_max(dev_str, call):
 
 
 def test_scatter_sum_nd(dev_str, call):
-    assert np.array_equal(call(ivy.scatter_nd, ivy.tensor([[4], [3], [1], [7]]),
-                               ivy.tensor([9, 10, 11, 12]), [8], 2),
+    assert np.array_equal(call(ivy.scatter_nd, ivy.array([[4], [3], [1], [7]]),
+                               ivy.array([9, 10, 11, 12]), [8], 2),
                           np_scatter(np.array([[4], [3], [1], [7]]), np.array([9, 10, 11, 12]),
                                              [8]))
-    assert np.array_equal(call(ivy.scatter_nd, ivy.tensor([[0, 1, 2]]),
-                               ivy.tensor([1]), [3, 3, 3], 2),
+    assert np.array_equal(call(ivy.scatter_nd, ivy.array([[0, 1, 2]]),
+                               ivy.array([1]), [3, 3, 3], 2),
                           np_scatter(np.array([[0, 1, 2]]), np.array([1]),
                                              [3, 3, 3]))
-    assert np.array_equal(call(ivy.scatter_nd, ivy.tensor([[0], [2]]),
-                               ivy.tensor([[[5, 5, 5, 5], [6, 6, 6, 6],
+    assert np.array_equal(call(ivy.scatter_nd, ivy.array([[0], [2]]),
+                               ivy.array([[[5, 5, 5, 5], [6, 6, 6, 6],
                                             [7, 7, 7, 7], [8, 8, 8, 8]],
                                            [[5, 5, 5, 5], [6, 6, 6, 6],
                                                [7, 7, 7, 7], [8, 8, 8, 8]]]), [4, 4, 4], 2),
@@ -756,14 +882,14 @@ def test_scatter_min_nd(dev_str, call):
     if call in [helpers.mx_call]:
         # mxnet does not support min reduction for scatter nd
         pytest.skip()
-    assert np.array_equal(call(ivy.scatter_nd, ivy.tensor([[4], [3], [1], [7]]),
-                               ivy.tensor([9, 10, 11, 12]), [8], 'min'),
+    assert np.array_equal(call(ivy.scatter_nd, ivy.array([[4], [3], [1], [7]]),
+                               ivy.array([9, 10, 11, 12]), [8], 'min'),
                           np_scatter(np.array([[4], [3], [1], [7]]), np.array([9, 10, 11, 12]), [8], 'min'))
-    assert np.array_equal(call(ivy.scatter_nd, ivy.tensor([[0, 1, 2]]),
-                               ivy.tensor([1]), [3, 3, 3], 'min'),
+    assert np.array_equal(call(ivy.scatter_nd, ivy.array([[0, 1, 2]]),
+                               ivy.array([1]), [3, 3, 3], 'min'),
                           np_scatter(np.array([[0, 1, 2]]), np.array([1]), [3, 3, 3], 'min'))
-    assert np.array_equal(call(ivy.scatter_nd, ivy.tensor([[0], [2]]),
-                               ivy.tensor([[[5, 5, 5, 5], [6, 6, 6, 6],
+    assert np.array_equal(call(ivy.scatter_nd, ivy.array([[0], [2]]),
+                               ivy.array([[[5, 5, 5, 5], [6, 6, 6, 6],
                                             [7, 7, 7, 7], [8, 8, 8, 8]],
                                            [[5, 5, 5, 5], [6, 6, 6, 6],
                                                [7, 7, 7, 7], [8, 8, 8, 8]]]), [4, 4, 4], 'min'),
@@ -782,14 +908,14 @@ def test_scatter_max_nd(dev_str, call):
     if call in [helpers.mx_call]:
         # mxnet does not support max reduction for scatter nd
         pytest.skip()
-    assert np.array_equal(call(ivy.scatter_nd, ivy.tensor([[4], [3], [1], [7]]),
-                               ivy.tensor([9, 10, 11, 12]), [8], 'max'),
+    assert np.array_equal(call(ivy.scatter_nd, ivy.array([[4], [3], [1], [7]]),
+                               ivy.array([9, 10, 11, 12]), [8], 'max'),
                           np_scatter(np.array([[4], [3], [1], [7]]), np.array([9, 10, 11, 12]), [8], 'max'))
-    assert np.array_equal(call(ivy.scatter_nd, ivy.tensor([[0, 1, 2]]),
-                               ivy.tensor([1]), [3, 3, 3], 'max'),
+    assert np.array_equal(call(ivy.scatter_nd, ivy.array([[0, 1, 2]]),
+                               ivy.array([1]), [3, 3, 3], 'max'),
                           np_scatter(np.array([[0, 1, 2]]), np.array([1]), [3, 3, 3], 'max'))
-    assert np.array_equal(call(ivy.scatter_nd, ivy.tensor([[0], [2]]),
-                               ivy.tensor([[[5, 5, 5, 5], [6, 6, 6, 6],
+    assert np.array_equal(call(ivy.scatter_nd, ivy.array([[0], [2]]),
+                               ivy.array([[[5, 5, 5, 5], [6, 6, 6, 6],
                                             [7, 7, 7, 7], [8, 8, 8, 8]],
                                            [[5, 5, 5, 5], [6, 6, 6, 6],
                                                [7, 7, 7, 7], [8, 8, 8, 8]]]), [4, 4, 4], 'max'),
@@ -805,23 +931,26 @@ def test_scatter_max_nd(dev_str, call):
 
 
 def test_gather_flat(dev_str, call):
-    assert np.allclose(call(ivy.gather_flat, ivy.tensor([9, 8, 7, 6, 5, 4, 3, 2, 1, 0]),
-                            ivy.tensor([0, 4, 7])), np.array([9, 5, 2]), atol=1e-6)
+    assert np.allclose(call(ivy.gather_flat, ivy.array([9, 8, 7, 6, 5, 4, 3, 2, 1, 0]),
+                            ivy.array([0, 4, 7])), np.array([9, 5, 2]), atol=1e-6)
+    if call in [helpers.torch_call]:
+        # pytorch scripting cannot assign a torch.device value with a string
+        return
     helpers.assert_compilable(ivy.gather_flat)
 
 
 def test_gather_nd(dev_str, call):
-    assert np.allclose(call(ivy.gather_nd, ivy.tensor([[[0.0, 1.0], [2.0, 3.0]],
+    assert np.allclose(call(ivy.gather_nd, ivy.array([[[0.0, 1.0], [2.0, 3.0]],
                                                        [[0.1, 1.1], [2.1, 3.1]]]),
-                            ivy.tensor([[0, 1], [1, 0]]), indices_shape=[2, 2]),
+                            ivy.array([[0, 1], [1, 0]]), indices_shape=[2, 2]),
                        np.array([[2.0, 3.0], [0.1, 1.1]]), atol=1e-6)
-    assert np.allclose(call(ivy.gather_nd, ivy.tensor([[[0.0, 1.0], [2.0, 3.0]],
+    assert np.allclose(call(ivy.gather_nd, ivy.array([[[0.0, 1.0], [2.0, 3.0]],
                                                        [[0.1, 1.1], [2.1, 3.1]]]),
-                            ivy.tensor([[[0, 1]], [[1, 0]]]), indices_shape=[2, 1, 2]),
+                            ivy.array([[[0, 1]], [[1, 0]]]), indices_shape=[2, 1, 2]),
                        np.array([[[2.0, 3.0]], [[0.1, 1.1]]]), atol=1e-6)
-    assert np.allclose(call(ivy.gather_nd, ivy.tensor([[[0.0, 1.0], [2.0, 3.0]],
+    assert np.allclose(call(ivy.gather_nd, ivy.array([[[0.0, 1.0], [2.0, 3.0]],
                                                        [[0.1, 1.1], [2.1, 3.1]]]),
-                            ivy.tensor([[[0, 1, 0]], [[1, 0, 1]]]),
+                            ivy.array([[[0, 1, 0]], [[1, 0, 1]]]),
                             indices_shape=[2, 1, 3]), np.array([[2.0], [1.1]]), atol=1e-6)
     if call in [helpers.torch_call]:
         # torch scripting does not support builtins
@@ -830,37 +959,37 @@ def test_gather_nd(dev_str, call):
 
 
 def test_dev(dev_str, call):
-    assert ivy.dev(ivy.tensor([1.]))
+    assert ivy.dev(ivy.array([1.]))
     helpers.assert_compilable(ivy.dev)
 
 
 def test_dev_to_str(dev_str, call):
-    assert 'cpu' in ivy.dev_to_str(ivy.dev(ivy.tensor([0.]))).lower()
+    assert 'cpu' in ivy.dev_to_str(ivy.dev(ivy.array([0.]))).lower()
     helpers.assert_compilable(ivy.dev_to_str)
 
 
 def test_dev_str(dev_str, call):
-    assert 'cpu' in ivy.dev_str(ivy.tensor([0.])).lower()
+    assert 'cpu' in ivy.dev_str(ivy.array([0.])).lower()
     helpers.assert_compilable(ivy.dev_str)
 
 
 def test_dtype(dev_str, call):
-    assert ivy.dtype(ivy.tensor([0.])) == ivy.tensor([0.]).dtype
+    assert ivy.dtype(ivy.array([0.])) == ivy.array([0.]).dtype
     helpers.assert_compilable(ivy.dtype)
 
 
 def test_dtype_to_str(dev_str, call):
-    assert ivy.dtype_to_str(ivy.tensor([0.], dtype_str='float32').dtype) == 'float32'
+    assert ivy.dtype_to_str(ivy.array([0.], dtype_str='float32').dtype) == 'float32'
     helpers.assert_compilable(ivy.dtype_to_str)
 
 
 def test_dtype_str(dev_str, call):
-    assert ivy.dtype_str(ivy.tensor([0.], dtype_str='float32')) == 'float32'
+    assert ivy.dtype_str(ivy.array([0.], dtype_str='float32')) == 'float32'
     helpers.assert_compilable(ivy.dtype_str)
 
 
 def test_compile_fn(dev_str, call):
     some_fn = lambda x: x**2
-    example_inputs = ivy.tensor([2.])
+    example_inputs = ivy.array([2.])
     new_fn = ivy.compile_fn(some_fn, False, example_inputs)
     assert np.allclose(call(new_fn, example_inputs), np.array([4.]))
