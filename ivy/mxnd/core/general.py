@@ -293,7 +293,17 @@ def indices_where(x):
 
 
 reshape = lambda x, new_shape: x.reshape(new_shape)
-squeeze = lambda x, axis=None: _mx.nd.squeeze(x, axis)
+
+
+def squeeze(x, axis=None):
+    if x.shape == ():
+        if axis is None or axis == 0 or axis == -1:
+            return x
+        raise Exception('tried to squeeze a zero-dimensional input by axis {}'.format(axis))
+    res = _mx.nd.squeeze(x, axis)
+    if axis is None:
+        return _1_dim_array_to_flat_array(res)
+    return res
 
 
 # noinspection PyShadowingNames

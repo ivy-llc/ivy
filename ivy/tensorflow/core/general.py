@@ -165,7 +165,14 @@ expand_dims = _tf.expand_dims
 where = lambda condition, x1, x2: _tf.where(_tf.cast(condition, _tf.bool), x1, x2)
 indices_where = _tf.where
 reshape = _tf.reshape
-squeeze = _tf.squeeze
+
+
+def squeeze(x, axis=None):
+    if x.shape == ():
+        if axis is None or axis == 0 or axis == -1:
+            return x
+        raise Exception('tried to squeeze a zero-dimensional input by axis {}'.format(axis))
+    return _tf.squeeze(x, axis)
 
 
 # noinspection PyShadowingNames
