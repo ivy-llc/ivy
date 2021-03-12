@@ -351,7 +351,7 @@ def cross(x1, x2):
     return torch.cross(x1, x2)
 
 
-def matmul(x1, x2, batch_shape: Optional[List[int]] = None):
+def matmul(x1, x2):
     return torch.matmul(x1, x2)
 
 

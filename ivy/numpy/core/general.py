@@ -204,7 +204,7 @@ def one_hot(indices, depth, dev_str=None):
 
 
 cross = _np.cross
-matmul = lambda x1, x2, batch_shape=None: _np.matmul(x1, x2)
+matmul = lambda x1, x2: _np.matmul(x1, x2)
 cumsum = _np.cumsum
 
 
