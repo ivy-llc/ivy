@@ -318,7 +318,7 @@ def gather_flat(params, indices, dev_str=None):
         return _tf.gather_nd(params, _tf.expand_dims(indices, -1))
 
 
-def gather_nd(params, indices, indices_shape=None, dev_str=None):
+def gather_nd(params, indices, dev_str=None):
     if dev_str is None:
         dev_str = _dev_str_callable(params)
     with _tf.device('/' + dev_str.upper()):
