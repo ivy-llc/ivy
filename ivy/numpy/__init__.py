@@ -9,5 +9,6 @@ from .nn import *
 # noinspection PyUnresolvedReferences
 use = ivy.framework_handler.ContextManager(sys.modules[__name__])
 
-Tensor = np.ndarray
+Array = np.ndarray
+Variable = np.ndarray
 backend = 'numpy'

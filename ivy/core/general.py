@@ -412,7 +412,7 @@ def tile(x, reps, f=None):
     return _get_framework(x, f=f).tile(x, reps)
 
 
-def constant_pad(x, pad_width, value=0, x_shape=None, f=None):
+def constant_pad(x, pad_width, value=0, f=None):
     """
     Pads an array with a constant value.
 
@@ -423,16 +423,14 @@ def constant_pad(x, pad_width, value=0, x_shape=None, f=None):
     :type pad_width: sequence of tuples of ints
     :param value: The constant value to pad the array with.
     :type value: float or int, default zero
-    :param x_shape: Shape of x. Required for mxnet symbolic.
-    :type x_shape: sequence of ints
     :param f: Machine learning framework. Inferred from inputs if None.
     :type f: ml_framework, optional
     :return: Padded array of rank equal to x with shape increased according to pad_width.
     """
-    return _get_framework(x, f=f).constant_pad(x, pad_width, value, x_shape)
+    return _get_framework(x, f=f).constant_pad(x, pad_width, value)
 
 
-def zero_pad(x, pad_width, x_shape=None, f=None):
+def zero_pad(x, pad_width, f=None):
     """
     Pads an array with zeros.
 
@@ -441,13 +439,11 @@ def zero_pad(x, pad_width, x_shape=None, f=None):
     :param pad_width: Number of values padded to the edges of each axis.
                       Specified as ((before_1, after_1), … (before_N, after_N)), where N is number of axes of x.
     :type pad_width: sequence of tuples of ints
-    :param x_shape: Shape of x. Required for mxnet symbolic.
-    :type x_shape: sequence of ints
     :param f: Machine learning framework. Inferred from inputs if None.
     :type f: ml_framework, optional
     :return: Padded array of rank equal to x with shape increased according to pad_width.
     """
-    return _get_framework(x, f=f).zero_pad(x, pad_width, x_shape)
+    return _get_framework(x, f=f).zero_pad(x, pad_width)
 
 
 def swapaxes(x, axis0, axis1, f=None):
