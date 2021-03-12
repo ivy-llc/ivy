@@ -75,8 +75,8 @@ def pytest_generate_tests(metafunc):
 
     if dev_strs is not None and f_strs is not None:
         params = list(itertools.chain.from_iterable(
-            [[(item, TEST_FRAMEWORKS[f_str], TEST_CALL_METHODS[f_str]) for item in TEST_DEV_STRS[f_str]]
-             for f_str in f_strs]))
+            [[(item, TEST_FRAMEWORKS[f_str], TEST_CALL_METHODS[f_str])
+              for item in TEST_DEV_STRS[f_str] if item in dev_strs] for f_str in f_strs]))
         metafunc.parametrize('dev_str,f,call', params)
 
     # ToDo: add full support for partial arguments later
@@ -85,5 +85,5 @@ def pytest_generate_tests(metafunc):
 
 
 def pytest_addoption(parser):
-    parser.addoption('--dev_str', action="store", default="all")
+    parser.addoption('--dev_str', action="store", default="cpu:0")
     parser.addoption('--backend', action="store", default="all")

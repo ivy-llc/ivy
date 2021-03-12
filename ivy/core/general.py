@@ -667,7 +667,7 @@ def cross(x1, x2, f=None):
     return _get_framework(x1, f=f).cross(x1, x2)
 
 
-def matmul(x1, x2, batch_shape=None, f=None):
+def matmul(x1, x2, f=None):
     """
     Computes the matrix product of two arrays x1 and x2.
 
@@ -675,13 +675,11 @@ def matmul(x1, x2, batch_shape=None, f=None):
     :type x1: array
     :param x2: Input array 2.
     :type x2: array
-    :param batch_shape: Shape of batch. Required for mxnet symbolic.
-    :type batch_shape: sequence of ints, optional
     :param f: Machine learning framework. Inferred from inputs if None.
     :type f: ml_framework, optional
     :return: The matrix product of the input arrays.
     """
-    return _get_framework(x1, f=f).matmul(x1, x2, batch_shape)
+    return _get_framework(x1, f=f).matmul(x1, x2)
 
 
 def cumsum(x, axis=0, f=None):
@@ -707,8 +705,7 @@ def identity(n, dtype_str='float32', batch_shape=None, dev_str=None, f=None):
 
     :param n: Number of rows (and columns) in n x n output.
     :type n: int
-    :param dtype_str: The desired data-type for the array in string format, i.e. 'float32' or 'int64'.
-    Default is 'float32'.
+    :param dtype_str: The desired data-type for the array in string format, i.e. 'float32' or 'int64'. Default is 'float32'.
     :type dtype_str: data-type string, optional
     :param batch_shape: Shape of batch. Inferred from inputs if None.
     :type batch_shape: sequence of ints, optional
