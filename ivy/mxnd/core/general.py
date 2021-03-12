@@ -42,11 +42,11 @@ def _mxnet_init_context(dev):
 
 
 def _scalar_or_flat_array_to_scalar(x):
-    return x if isinstance(x, Number) else (x.asscalar() if len(x.shape) == 0 else x)
+    return x if isinstance(x, Number) else (x.asscalar() if x.shape == () else x)
 
 
 def _flat_array_to_1_dim_array(x):
-    return _mx.nd.array([x.asscalar()])
+    return _mx.nd.array([x.asscalar()]) if x.shape == () else x
 
 
 def _1_dim_array_to_flat_array(x):
@@ -56,8 +56,8 @@ def _1_dim_array_to_flat_array(x):
 # API #
 # ----#
 
-def tensor(object_in, dtype_str=None, dev=None):
-    cont = _mxnet_init_context('cpu' if not dev else dev)
+def array(object_in, dtype_str=None, dev_str=None):
+    cont = _mxnet_init_context('cpu' if not dev_str else dev_str)
     return _mx.nd.array(object_in, cont, dtype=dtype_str)
 
 
@@ -66,9 +66,11 @@ to_list = lambda x: x.asnumpy().tolist()
 shape = lambda x, as_tensor=False: _mx.nd.shape_array(x) if as_tensor else x.shape
 get_num_dims = lambda x, as_tensor=False:\
     _mx.nd.shape_array(_mx.nd.shape_array(x)).reshape([]) if as_tensor else len(x.shape)
-minimum = lambda x, y: _mx.nd.minimum(_scalar_or_flat_array_to_scalar(x), _scalar_or_flat_array_to_scalar(y))
-maximum = lambda x, y: _mx.nd.maximum(_scalar_or_flat_array_to_scalar(x), _scalar_or_flat_array_to_scalar(y))
-clip = _mx.nd.clip
+minimum = lambda x, y: _mx.nd.array(_mx.nd.minimum(_scalar_or_flat_array_to_scalar(x), _scalar_or_flat_array_to_scalar(y)))
+maximum = lambda x, y: _mx.nd.array(_mx.nd.maximum(_scalar_or_flat_array_to_scalar(x), _scalar_or_flat_array_to_scalar(y)))
+clip = lambda x, x_min, x_max: _mx.nd.clip(_flat_array_to_1_dim_array(_mx.nd.array(x)),
+                                           _scalar_or_flat_array_to_scalar(x_min),
+                                           _scalar_or_flat_array_to_scalar(x_max))
 
 
 def round(x):
@@ -113,12 +115,16 @@ argmin = lambda x, axis=0: _mx.nd.argmin(x, axis)
 cast = lambda x, dtype_str: x.astype(dtype_str)
 
 
-def arange(stop, start=0, step=1, dtype_str=None, dev=None):
-    cont = _mxnet_init_context('cpu' if not dev else dev)
+# noinspection PyUnresolvedReferences
+def arange(stop, start=0, step=1, dtype_str=None, dev_str=None):
+    cont = _mxnet_init_context('cpu' if not dev_str else dev_str)
+    stop = stop if isinstance(stop, Number) else stop.asscalar()
+    start = start if isinstance(start, Number) else start.asscalar()
+    step = step if isinstance(step, Number) else step.asscalar()
     return _mx.nd.arange(start, stop, ctx=cont, step=step, dtype=dtype_str)
 
 
-def _linspace(start, stop, num):
+def _linspace(start, stop, num, cont):
     if num == 1:
         return start
     start = _mx.nd.array(start).reshape((1,)).astype('float32')
@@ -126,30 +132,32 @@ def _linspace(start, stop, num):
     n_m_1 = _mx.nd.array(num - 1).reshape((1,)).astype('float32')
     increment = (stop - start)/n_m_1
     increment_tiled = _mx.nd.tile(increment, num - 1)
-    increments = increment_tiled * _mx.nd.array(_mx.nd.np.linspace(1, num - 1, num - 1).tolist())
+    increments = increment_tiled * _mx.nd.array(_mx.nd.np.linspace(1, num - 1, num - 1).tolist(), ctx=cont)
     ret = _mx.nd.concat(start, start + increments, dim=0)
     return ret
 
 
-def linspace(start, stop, num, axis=None, _=None):
+def linspace(start, stop, num, axis=None, dev_str=None):
+    cont = _mxnet_init_context('cpu' if not dev_str else dev_str)
     num = num.asnumpy()[0] if isinstance(num, _mx.nd.NDArray) else num
     start_is_array = isinstance(start, _mx.nd.NDArray)
     stop_is_array = isinstance(stop, _mx.nd.NDArray)
+    start_shape = []
     if start_is_array:
-        batch_shape = list(start.shape[:-1])
+        start_shape = list(start.shape)
         start = start.reshape((-1,))
     if stop_is_array:
-        batch_shape = list(stop.shape[:-1])
+        start_shape = list(stop.shape)
         stop = stop.reshape((-1,))
     if start_is_array and stop_is_array:
-        res = [_linspace(strt, stp, num) for strt, stp in zip(start, stop)]
+        res = [_linspace(strt, stp, num, cont) for strt, stp in zip(start, stop)]
     elif start_is_array and not stop_is_array:
-        res = [_linspace(strt, stop, num) for strt in start]
+        res = [_linspace(strt, stop, num, cont) for strt in start]
     elif not start_is_array and stop_is_array:
-        res = [_linspace(start, stp, num) for stp in stop]
+        res = [_linspace(start, stp, num, cont) for stp in stop]
     else:
-        return _linspace(start, stop, num)
-    new_shape = batch_shape + [-1, num]
+        return _linspace(start, stop, num, cont)
+    new_shape = start_shape + [num]
     res = _mx.nd.concat(*res, dim=-1).reshape(new_shape)
     if axis is not None:
         res = _mx.nd.swapaxes(res, axis, -1)
@@ -254,29 +262,29 @@ squeeze = lambda x, axis=None: _mx.nd.squeeze(x, axis)
 
 
 # noinspection PyShadowingNames
-def zeros(shape, dtype_str='float32', dev=None):
-    cont = _mxnet_init_context('cpu' if not dev else dev)
+def zeros(shape, dtype_str='float32', dev_str=None):
+    cont = _mxnet_init_context('cpu' if not dev_str else dev_str)
     return _mx.nd.zeros(shape, ctx=cont).astype(dtype_str)
 
 
-def zeros_like(x, dtype_str=None, dev=None):
-    mx_zeros = _mx.nd.zeros_like(x, ctx=_mxnet_init_context('cpu' if not dev else dev))
+def zeros_like(x, dtype_str=None, dev_str=None):
+    mx_zeros = _mx.nd.zeros_like(x, ctx=_mxnet_init_context('cpu' if not dev_str else dev_str))
     return mx_zeros if not dtype_str else mx_zeros.astype(dtype_str)
 
 
 # noinspection PyShadowingNames
-def ones(shape, dtype_str='float32', dev=None):
-    cont = _mxnet_init_context('cpu' if not dev else dev)
+def ones(shape, dtype_str='float32', dev_str=None):
+    cont = _mxnet_init_context('cpu' if not dev_str else dev_str)
     return _mx.nd.ones(shape, ctx=cont).astype(dtype_str)
 
 
-def ones_like(x, dtype_str=None, dev=None):
-    mx_ones = _mx.nd.ones_like(x, ctx=_mxnet_init_context('cpu' if not dev else dev))
+def ones_like(x, dtype_str=None, dev_str=None):
+    mx_ones = _mx.nd.ones_like(x, ctx=_mxnet_init_context('cpu' if not dev_str else dev_str))
     return mx_ones if dtype_str is None else mx_ones.astype(dtype_str)
 
 
 # noinspection PyUnusedLocal
-one_hot = lambda indices, depth, dev=None: _mx.nd.one_hot(indices, depth)
+one_hot = lambda indices, depth, dev_str=None: _mx.nd.one_hot(indices, depth)
 
 
 def cross(x1, x2):
@@ -305,8 +313,8 @@ def matmul(x1, x2, batch_shape=None):
 cumsum = lambda x, axis=0: _mx.nd.cumsum(x, axis)
 
 
-def identity(n, dtype_str='float32', batch_shape=None, dev=None):
-    mat = _mx.nd.eye(n, dtype=dtype_str).copyto(_mxnet_init_context('cpu' if not dev else dev))
+def identity(n, dtype_str='float32', batch_shape=None, dev_str=None):
+    mat = _mx.nd.eye(n, dtype=dtype_str).copyto(_mxnet_init_context('cpu' if not dev_str else dev_str))
     if batch_shape is None:
         return mat
     else:
@@ -317,48 +325,49 @@ def identity(n, dtype_str='float32', batch_shape=None, dev=None):
 
 
 # noinspection PyShadowingNames
-def scatter_flat(indices, updates, size, reduction='sum', dev=None):
+def scatter_flat(indices, updates, size, reduction='sum', dev_str=None):
     if reduction == 'sum':
-        return _mx.nd.scatter_nd(updates, _mx.nd.expand_dims(indices, 0), [size]).copyto(_mxnet_init_context('cpu' if not dev else dev))
+        return _mx.nd.scatter_nd(updates, _mx.nd.expand_dims(indices, 0), [size]).copyto(_mxnet_init_context('cpu' if not dev_str else dev_str))
     else:
         raise Exception('MXNet scatter_nd currently only supports reduction mode "sum", but {} selected.'.
                         format(reduction))
 
 
 # noinspection PyShadowingNames
-def scatter_nd(indices, updates, shape, num_idx_dims=None, reduction='sum', dev=None):
+def scatter_nd(indices, updates, shape, num_idx_dims=None, reduction='sum', dev_str=None):
     shape = list(shape)
     num_idx_dims = len(indices.shape) if num_idx_dims is None else num_idx_dims
     transpose_order = [num_idx_dims-1] + list(range(num_idx_dims-1))
     indices = _mx.nd.transpose(indices, transpose_order)
     shape = shape if type(shape) is list else shape.asnumpy().astype(_np.int32).tolist()
     if reduction == 'sum':
-        return _mx.nd.scatter_nd(updates, indices, shape).copyto(_mxnet_init_context('cpu' if not dev else dev))
+        return _mx.nd.scatter_nd(updates, indices, shape).copyto(_mxnet_init_context('cpu' if not dev_str else dev_str))
     else:
         raise Exception('MXNet scatter_nd currently only supports reduction mode "sum", but {} selected.'.
                         format(reduction))
 
 
-def gather_flat(params, indices, dev=None):
-    if dev is None:
-        dev = dev_str(params)
-    return _mx.nd.gather_nd(params, _mx.nd.expand_dims(indices, 0)).copyto(_mxnet_init_context('cpu' if not dev else dev))
+def gather_flat(params, indices, dev_str=None):
+    if dev_str is None:
+        dev_str = _callable_dev_str(params)
+    return _mx.nd.gather_nd(params, _mx.nd.expand_dims(indices, 0)).copyto(_mxnet_init_context('cpu' if not dev_str else dev_str))
 
 
-def gather_nd(params, indices, indices_shape=None, dev=None):
-    if dev is None:
-        dev = dev_str(params)
+def gather_nd(params, indices, indices_shape=None, dev_str=None):
+    if dev_str is None:
+        dev_str = _callable_dev_str(params)
     if indices_shape is None:
         indices_shape = indices.shape
     num_idx_dims = len(indices_shape)
     transpose_order = [num_idx_dims-1] + list(range(num_idx_dims-1))
     indices = _mx.nd.transpose(indices, transpose_order)
-    return _mx.nd.gather_nd(params, indices).copyto(_mxnet_init_context('cpu' if not dev else dev))
+    return _mx.nd.gather_nd(params, indices).copyto(_mxnet_init_context('cpu' if not dev_str else dev_str))
 
 
 dev = lambda x: x.context
 dev_to_str = lambda dev_in: dev_in.device_type
 dev_str = lambda x: dev_to_str(dev(x))
+_callable_dev_str = dev_str
 gpu_is_available = lambda: _mx.context.num_gpus() > 0
 tpu_is_available = lambda: False
 dtype = lambda x: x.dtype

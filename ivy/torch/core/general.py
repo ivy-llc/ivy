@@ -13,14 +13,26 @@ from functools import reduce as _reduce
 from typing import List, Dict, Optional, Union
 
 
+# Helpers #
+# --------#
+
 # noinspection PyShadowingNames
-def tensor(object_in, dtype_str: Optional[str] = None, dev: Optional[str] = None):
-    if dev is not None:
-        dev = dev.replace('gpu', 'cuda')
+def _dev_str_to_dev(dev_str_in: Optional[str] = None) -> Optional[torch.device]:
+    if dev_str_in is not None:
+        dev: torch.device = dev_str_in.replace('gpu', 'cuda')
+        return dev
+    return dev_str_in
+
+# API #
+# ----#
+
+
+# noinspection PyShadowingNames
+def array(object_in, dtype_str: Optional[str] = None, dev_str: Optional[str] = None):
     if dtype_str is not None:
-        return torch.tensor(object_in, dtype=dtype_from_str(dtype_str)).to(dev)
+        return torch.tensor(object_in, dtype=dtype_from_str(dtype_str)).to(_dev_str_to_dev(dev_str))
     else:
-        return torch.tensor(object_in).to(dev)
+        return torch.tensor(object_in).to(_dev_str_to_dev(dev_str))
 
 
 def dtype_from_str(dtype_str_in: str) -> torch.dtype:
@@ -115,50 +127,50 @@ def cast(x, dtype_str_in: str):
 
 # noinspection PyShadowingNames
 def arange(stop: Number, start: Number = 0, step: Number = 1, dtype_str: Optional[str] = None,
-           dev: Optional[torch.device] = None):
+           dev_str: Optional[str] = None):
     if dtype_str is not None:
-        return torch.arange(start, stop, step=step, dtype=dtype_from_str(dtype_str)).to(dev)
+        return torch.arange(start, stop, step=step, dtype=dtype_from_str(dtype_str)).to(_dev_str_to_dev(dev_str))
     else:
-        return torch.arange(start, stop, step=step).to(dev)
+        return torch.arange(start, stop, step=step).to(_dev_str_to_dev(dev_str))
 
 
-def _differentiable_linspace(start, stop, num):
+def _differentiable_linspace(start, stop, num, device):
     if num == 1:
         return torch.unsqueeze(start, 0)
     n_m_1 = num - 1
     increment = (stop - start) / n_m_1
     increment_tiled = increment.repeat(n_m_1)
-    increments = increment_tiled * torch.linspace(1, n_m_1, n_m_1)
+    increments = increment_tiled * torch.linspace(1, n_m_1, n_m_1, device=device)
     res = torch.cat((torch.unsqueeze(start, 0), start + increments), 0)
     return res
 
 
 # noinspection PyUnboundLocalVariable,PyShadowingNames
-def linspace(start, stop, num, axis=None, dev=None):
+def linspace(start, stop, num, axis=None, dev_str=None):
     num = num.detach().numpy().item() if isinstance(num, torch.Tensor) else num
     start_is_array = isinstance(start, torch.Tensor)
     stop_is_array = isinstance(stop, torch.Tensor)
     linspace_method = torch.linspace
     if start_is_array:
-        batch_shape = list(start.shape[:-1])
+        start_shape = list(start.shape)
         start = start.reshape((-1,))
         linspace_method = _differentiable_linspace if start.requires_grad else torch.linspace
     if stop_is_array:
-        batch_shape = list(stop.shape[:-1])
+        start_shape = list(stop.shape)
         stop = stop.reshape((-1,))
         linspace_method = _differentiable_linspace if stop.requires_grad else torch.linspace
     if start_is_array and stop_is_array:
-        res = [linspace_method(strt, stp, num) for strt, stp in zip(start, stop)]
+        res = [linspace_method(strt, stp, num, device=_dev_str_to_dev(dev_str)) for strt, stp in zip(start, stop)]
     elif start_is_array and not stop_is_array:
-        res = [linspace_method(strt, stop, num) for strt in start]
+        res = [linspace_method(strt, stop, num, device=_dev_str_to_dev(dev_str)) for strt in start]
     elif not start_is_array and stop_is_array:
-        res = [linspace_method(start, stp, num) for stp in stop]
+        res = [linspace_method(start, stp, num, device=_dev_str_to_dev(dev_str)) for stp in stop]
     else:
-        return linspace_method(start, stop, num).to(dev)
-    res = torch.cat(res, -1).reshape(batch_shape + [-1, num])
+        return linspace_method(start, stop, num, device=_dev_str_to_dev(dev_str))
+    res = torch.cat(res, -1).reshape(start_shape + [num])
     if axis is not None:
         res = torch.transpose(res, axis, -1)
-    return res.to(dev)
+    return res.to(_dev_str_to_dev(dev_str))
 
 
 def concatenate(xs: List[torch.Tensor], axis: Optional[int] = None):
@@ -254,7 +266,7 @@ def squeeze(x, axis: Optional[int] = None):
 
 
 # noinspection PyShadowingNames
-def zeros(shape: List[int], dtype_str: str = 'float32', dev: Optional[torch.device] = None):
+def zeros(shape: List[int], dtype_str: str = 'float32', dev_str: Optional[str] = None):
     type_dict: Dict[str, torch.dtype] = {'bool': torch.bool,
                                          'int8': torch.int8,
                                          'int16': torch.int16,
@@ -264,13 +276,13 @@ def zeros(shape: List[int], dtype_str: str = 'float32', dev: Optional[torch.devi
                                          'float32': torch.float32,
                                          'float64': torch.float64}
     dtype_val: torch.dtype = type_dict[dtype_str]
-    return torch.zeros(shape, dtype=dtype_val).to(dev)
+    return torch.zeros(shape, dtype=dtype_val).to(_dev_str_to_dev(dev_str))
 
 
 # noinspection PyShadowingNames
-def zeros_like(x, dtype_str: Optional[str] = None, dev: Optional[torch.device] = None):
-    if dev is None:
-        dev = dev_str(x)
+def zeros_like(x, dtype_str: Optional[str] = None, dev_str: Optional[str] = None):
+    if dev_str is None:
+        dev_str = _callable_dev_str(x)
     if dtype_str is not None:
         type_dict: Dict[str, torch.dtype] = {'bool': torch.bool,
                                              'int8': torch.int8,
@@ -280,14 +292,12 @@ def zeros_like(x, dtype_str: Optional[str] = None, dev: Optional[torch.device] =
                                              'float16': torch.float16,
                                              'float32': torch.float32,
                                              'float64': torch.float64}
-        return torch.zeros_like(x, dtype=type_dict[dtype_str]).to(dev)
-    return torch.zeros_like(x).to(dev)
+        return torch.zeros_like(x, dtype=type_dict[dtype_str]).to(_dev_str_to_dev(dev_str))
+    return torch.zeros_like(x).to(_dev_str_to_dev(dev_str))
 
 
 # noinspection PyShadowingNames
-def ones(shape: List[int], dtype_str: str = 'float32', dev: Optional[str] = None):
-    if dev is not None:
-        dev: torch.device = dev.replace('gpu', 'cuda')
+def ones(shape: List[int], dtype_str: str = 'float32', dev_str: Optional[str] = None):
     type_dict: Dict[str, torch.dtype] = {'bool': torch.bool,
                                          'int8': torch.int8,
                                          'int16': torch.int16,
@@ -297,13 +307,13 @@ def ones(shape: List[int], dtype_str: str = 'float32', dev: Optional[str] = None
                                          'float32': torch.float32,
                                          'float64': torch.float64}
     dtype_val: torch.dtype = type_dict[dtype_str]
-    return torch.ones(shape, dtype=dtype_val).to(dev)
+    return torch.ones(shape, dtype=dtype_val).to(_dev_str_to_dev(dev_str))
 
 
 # noinspection PyShadowingNames
-def ones_like(x, dtype_str: Optional[str] = None, dev: Optional[torch.device] = None):
-    if dev is None:
-        dev = dev_str(x)
+def ones_like(x, dtype_str: Optional[str] = None, dev_str: Optional[str] = None):
+    if dev_str is None:
+        dev_str = _callable_dev_str(x)
     if dtype_str is not None:
         type_dict: Dict[str, torch.dtype] = {'bool': torch.bool,
                                              'int8': torch.int8,
@@ -313,15 +323,15 @@ def ones_like(x, dtype_str: Optional[str] = None, dev: Optional[torch.device] = 
                                              'float16': torch.float16,
                                              'float32': torch.float32,
                                              'float64': torch.float64}
-        return torch.ones_like(x, dtype=type_dict[dtype_str]).to(dev)
-    return torch.ones_like(x).to(dev)
+        return torch.ones_like(x, dtype=type_dict[dtype_str]).to(_dev_str_to_dev(dev_str))
+    return torch.ones_like(x).to(_dev_str_to_dev(dev_str))
 
 
 # noinspection PyUnresolvedReferences,PyShadowingNames
-def one_hot(indices, depth: int, dev: Optional[torch.device] = None):
-    if dev is None:
-        dev = dev_str(indices)
-    return torch.nn.functional.one_hot(indices, depth).to(dev)
+def one_hot(indices, depth: int, dev_str: Optional[str] = None):
+    if dev_str is None:
+        dev_str = _callable_dev_str(indices)
+    return torch.nn.functional.one_hot(indices, depth).to(_dev_str_to_dev(dev_str))
 
 
 def cross(x1, x2):
@@ -338,7 +348,7 @@ def cumsum(x, axis: int = 0):
 
 # noinspection PyShadowingNames
 def identity(n: int, dtype_str: str = 'float32', batch_shape: Optional[List[int]] = None,
-             dev: Optional[torch.device] = None):
+             dev_str: Optional[str] = None):
     type_dict: Dict[str, torch.dtype] = {'bool': torch.bool,
                                          'int8': torch.int8,
                                          'int16': torch.int16,
@@ -348,7 +358,7 @@ def identity(n: int, dtype_str: str = 'float32', batch_shape: Optional[List[int]
                                          'float32': torch.float32,
                                          'float64': torch.float64}
     dtype_val: torch.dtype = type_dict[dtype_str]
-    mat = torch.eye(n, n, dtype=dtype_val).to(dev)
+    mat = torch.eye(n, n, dtype=dtype_val).to(_dev_str_to_dev(dev_str))
     if batch_shape is None:
         return mat
     else:
@@ -359,19 +369,19 @@ def identity(n: int, dtype_str: str = 'float32', batch_shape: Optional[List[int]
 
 
 # noinspection PyShadowingNames
-def scatter_flat(indices, updates, size: int, reduction: str = 'sum', dev: Optional[torch.device] = None):
-    if dev is None:
-        dev = dev_str(updates)
+def scatter_flat(indices, updates, size: int, reduction: str = 'sum', dev_str: Optional[str] = None):
+    if dev_str is None:
+        dev_str = _callable_dev_str(updates)
     dtype = updates.dtype
     if reduction == 'sum':
-        initial_val = torch.tensor(0).type(dtype).to(dev)
+        initial_val = torch.tensor(0).type(dtype).to(_dev_str_to_dev(dev_str))
     elif reduction == 'min':
-        initial_val = torch.tensor(1e12).type(dtype).to(dev)
+        initial_val = torch.tensor(1e12).type(dtype).to(_dev_str_to_dev(dev_str))
     elif reduction == 'max':
-        initial_val = torch.tensor(-1e12).type(dtype).to(dev)
+        initial_val = torch.tensor(-1e12).type(dtype).to(_dev_str_to_dev(dev_str))
     else:
         raise Exception('reduction is {}, but it must be one of "sum", "min" or "max"'.format(reduction))
-    output = torch.ones([size], dtype=dtype).to(dev) * initial_val
+    output = torch.ones([size], dtype=dtype).to(_dev_str_to_dev(dev_str)) * initial_val
     global torch_scatter
     if torch_scatter is None:
         try:
@@ -379,38 +389,37 @@ def scatter_flat(indices, updates, size: int, reduction: str = 'sum', dev: Optio
         except:
             raise Exception('Unable to import torch_scatter, verify this is correctly installed.')
     res = torch_scatter.scatter(updates, indices, out=output, reduce=reduction)
-    res = torch.where(res == initial_val, torch.zeros([size], dtype=updates.dtype).to(dev), res)
+    res = torch.where(res == initial_val, torch.zeros([size], dtype=updates.dtype).to(_dev_str_to_dev(dev_str)), res)
     return res
 
 
 # noinspection PyShadowingNames
-def scatter_nd(indices, updates, shape, num_idx_dims=None, reduction='sum', dev=None):
-    if dev is None:
-        dev = dev_str(updates)
-    dev = dev.replace('gpu', 'cuda')
+def scatter_nd(indices, updates, shape, num_idx_dims=None, reduction='sum', dev_str=None):
+    if dev_str is None:
+        dev_str = _callable_dev_str(updates)
     shape = list(shape)
     dtype = updates.dtype
     indices_shape = indices.shape
     num_index_dims = indices_shape[-1]
     result_dim_sizes_list = [_reduce(mul, shape[i + 1:], 1) for i in range(len(shape) - 1)] + [1]
-    result_dim_sizes = torch.tensor(result_dim_sizes_list).to(dev)
+    result_dim_sizes = torch.tensor(result_dim_sizes_list).to(_dev_str_to_dev(dev_str))
     implicit_indices_factor = int(result_dim_sizes[num_index_dims - 1].item())
     flat_result_size = _reduce(mul, shape, 1)
     if reduction == 'sum':
-        initial_val = torch.tensor(0).type(dtype).to(dev)
+        initial_val = torch.tensor(0).type(dtype).to(_dev_str_to_dev(dev_str))
     elif reduction == 'min':
-        initial_val = torch.tensor(1e12).type(dtype).to(dev)
+        initial_val = torch.tensor(1e12).type(dtype).to(_dev_str_to_dev(dev_str))
     elif reduction == 'max':
-        initial_val = torch.tensor(-1e12).type(dtype).to(dev)
+        initial_val = torch.tensor(-1e12).type(dtype).to(_dev_str_to_dev(dev_str))
     else:
         raise Exception('reduction is {}, but it must be one of "sum", "min" or "max"'.format(reduction))
-    flat_output = torch.ones(flat_result_size, dtype=dtype).to(dev) * initial_val
+    flat_output = torch.ones(flat_result_size, dtype=dtype).to(_dev_str_to_dev(dev_str)) * initial_val
     flat_updates = torch.reshape(updates, (-1,))
     new_shape = [1] * (len(indices_shape) - 1) + [num_index_dims]
     indices_scales = torch.reshape(result_dim_sizes[0:num_index_dims], new_shape)
     indices_for_flat_tiled = torch.reshape(torch.sum(indices * indices_scales, -1, keepdim=True), (-1, 1)).repeat(
         *[1, implicit_indices_factor])
-    implicit_indices = torch.unsqueeze(torch.arange(implicit_indices_factor).to(dev), 0).repeat(
+    implicit_indices = torch.unsqueeze(torch.arange(implicit_indices_factor).to(_dev_str_to_dev(dev_str)), 0).repeat(
         *[indices_for_flat_tiled.shape[0], 1])
     indices_for_flat = indices_for_flat_tiled + implicit_indices
     flat_indices_for_flat = torch.reshape(indices_for_flat, (-1,)).type(torch.long)
@@ -422,36 +431,36 @@ def scatter_nd(indices, updates, shape, num_idx_dims=None, reduction='sum', dev=
             raise Exception('Unable to import torch_scatter, verify this is correctly installed.')
     flat_scatter = torch_scatter.scatter(flat_updates, flat_indices_for_flat, out=flat_output, reduce=reduction)
     # noinspection PyTypeChecker
-    flat_scatter = torch.where(flat_scatter == initial_val, torch.zeros(flat_result_size, dtype=updates.dtype).to(dev),
-                               flat_scatter)
+    flat_scatter = torch.where(flat_scatter == initial_val, torch.zeros(flat_result_size, dtype=updates.dtype)
+                               .to(_dev_str_to_dev(dev_str)), flat_scatter)
     res = torch.reshape(flat_scatter, list(shape))
     return res
 
 
 # noinspection PyShadowingNames
-def gather_flat(params, indices, dev: Optional[torch.device] = None):
-    if dev is None:
-        dev = dev_str(params)
-    return torch.gather(params, 0, indices)
+def gather_flat(params, indices, dev_str: Optional[str] = None):
+    if dev_str is None:
+        dev_str = _callable_dev_str(params)
+    return torch.gather(params, 0, indices).to(_dev_str_to_dev(dev_str))
 
 
 # noinspection PyShadowingNames
-def gather_nd(params, indices, indices_shape: Optional[List[int]] = None, dev: Optional[torch.device] = None):
-    if dev is None:
-        dev = dev_str(params)
+def gather_nd(params, indices, indices_shape: Optional[List[int]] = None, dev_str: Optional[str] = None):
+    if dev_str is None:
+        dev_str = _callable_dev_str(params)
     if indices_shape is None:
         indices_shape = indices.shape
     params_shape = params.shape
     num_index_dims = indices_shape[-1]
     result_dim_sizes_list = [_reduce(mul, params_shape[i + 1:], 1) for i in range(len(params_shape) - 1)] + [1]
-    result_dim_sizes = torch.tensor(result_dim_sizes_list).to(dev)
+    result_dim_sizes = torch.tensor(result_dim_sizes_list).to(_dev_str_to_dev(dev_str))
     implicit_indices_factor = int(result_dim_sizes[num_index_dims - 1].item())
     flat_params = torch.reshape(params, (-1,))
     new_shape = [1] * (len(indices_shape) - 1) + [num_index_dims]
     indices_scales = torch.reshape(result_dim_sizes[0:num_index_dims], new_shape)
     indices_for_flat_tiled = torch.reshape(torch.sum(indices * indices_scales, -1, keepdim=True), (-1, 1)).repeat(
         *[1, implicit_indices_factor])
-    implicit_indices = torch.unsqueeze(torch.arange(implicit_indices_factor).to(dev), 0).repeat(
+    implicit_indices = torch.unsqueeze(torch.arange(implicit_indices_factor).to(_dev_str_to_dev(dev_str)), 0).repeat(
         *[indices_for_flat_tiled.shape[0], 1])
     indices_for_flat = indices_for_flat_tiled + implicit_indices
     flat_indices_for_flat = torch.reshape(indices_for_flat, (-1,)).type(torch.long)
@@ -473,6 +482,7 @@ def dev_str(x):
     return dev_to_str(dev(x))
 
 
+_callable_dev_str = dev_str
 gpu_is_available = torch.cuda.is_available
 
 

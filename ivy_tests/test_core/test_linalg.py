@@ -47,39 +47,39 @@ td = LinAlgTestData()
 
 
 def test_svd(dev_str, call):
-    pred = call(ivy.svd, ivy.tensor([[[1., 0.], [0., 1.]]]))
+    pred = call(ivy.svd, ivy.array([[[1., 0.], [0., 1.]]]))
     true = np.linalg.svd(np.array([[[1., 0.], [0., 1.]]]))
     assert reduce(mul, [np.array_equal(pred_, true_) for pred_, true_ in zip(pred, true)], 1) == 1
-    pred = call(ivy.svd, ivy.tensor([[[[1., 0.], [0., 1.]]]]))
+    pred = call(ivy.svd, ivy.array([[[[1., 0.], [0., 1.]]]]))
     true = np.linalg.svd(np.array([[[[1., 0.], [0., 1.]]]]))
     assert reduce(mul, [np.array_equal(pred_, true_) for pred_, true_ in zip(pred, true)], 1) == 1
     helpers.assert_compilable(ivy.svd)
 
 
 def test_norm(dev_str, call):
-    assert np.array_equal(call(ivy.norm, ivy.tensor([[1., 0.], [0., 1.]]), 1, -1),
+    assert np.array_equal(call(ivy.norm, ivy.array([[1., 0.], [0., 1.]]), 1, -1),
                           np.linalg.norm(np.array([[1., 0.], [0., 1.]]), 1, -1))
-    assert np.array_equal(call(ivy.norm, ivy.tensor([[1., 0.], [0., 1.]]), 1, 1),
+    assert np.array_equal(call(ivy.norm, ivy.array([[1., 0.], [0., 1.]]), 1, 1),
                           np.linalg.norm(np.array([[1., 0.], [0., 1.]]), 1, 1))
-    assert np.array_equal(call(ivy.norm, ivy.tensor([[1., 0.], [0., 1.]]), 1, 1, True),
+    assert np.array_equal(call(ivy.norm, ivy.array([[1., 0.], [0., 1.]]), 1, 1, True),
                           np.linalg.norm(np.array([[1., 0.], [0., 1.]]), 1, 1, True))
-    assert np.array_equal(call(ivy.norm, ivy.tensor([[[1., 0.], [0., 1.]]]), 2, -1),
+    assert np.array_equal(call(ivy.norm, ivy.array([[[1., 0.], [0., 1.]]]), 2, -1),
                           np.linalg.norm(np.array([[[1., 0.], [0., 1.]]]), 2, -1))
     helpers.assert_compilable(ivy.norm)
 
 
 def test_inv(dev_str, call):
-    assert np.array_equal(call(ivy.inv, ivy.tensor([[1., 0.], [0., 1.]])),
+    assert np.array_equal(call(ivy.inv, ivy.array([[1., 0.], [0., 1.]])),
                           np.linalg.inv(np.array([[1., 0.], [0., 1.]])))
-    assert np.array_equal(call(ivy.inv, ivy.tensor([[[1., 0.], [0., 1.]]])),
+    assert np.array_equal(call(ivy.inv, ivy.array([[[1., 0.], [0., 1.]]])),
                           np.linalg.inv(np.array([[[1., 0.], [0., 1.]]])))
     helpers.assert_compilable(ivy.inv)
 
 
 def test_pinv(dev_str, call):
-    assert np.allclose(call(ivy.pinv, ivy.tensor([[1., 0.], [0., 1.], [1., 0.]])),
+    assert np.allclose(call(ivy.pinv, ivy.array([[1., 0.], [0., 1.], [1., 0.]])),
                        np.linalg.pinv(np.array([[1., 0.], [0., 1.], [1., 0.]])), atol=1e-6)
-    assert np.allclose(call(ivy.pinv, ivy.tensor([[[1., 0.], [0., 1.], [1., 0.]]])),
+    assert np.allclose(call(ivy.pinv, ivy.array([[[1., 0.], [0., 1.], [1., 0.]]])),
                        np.linalg.pinv(np.array([[[1., 0.], [0., 1.], [1., 0.]]])), atol=1e-6)
     helpers.assert_compilable(ivy.pinv)
 

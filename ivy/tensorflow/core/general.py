@@ -23,10 +23,10 @@ DTYPE_DICT = {_tf.bool: 'bool',
 
 
 # noinspection PyShadowingNames
-def tensor(object_in, dtype_str=None, dev=None):
+def array(object_in, dtype_str=None, dev_str=None):
     dtype = _tf.__dict__[dtype_str] if dtype_str else dtype_str
-    if dev:
-        with _tf.device('/' + dev.upper()):
+    if dev_str:
+        with _tf.device('/' + dev_str.upper()):
             tensor = _tf.convert_to_tensor(object_in)
             if dtype is None:
                 return tensor
@@ -62,20 +62,20 @@ def cast(x, dtype_str):
 
 
 # noinspection PyShadowingNames
-def arange(stop, start=0, step=1, dtype_str=None, dev=None):
+def arange(stop, start=0, step=1, dtype_str=None, dev_str=None):
     dtype = _tf.__dict__[dtype_str] if dtype_str else dtype_str
-    if dev:
-        with _tf.device('/' + dev.upper()):
+    if dev_str:
+        with _tf.device('/' + dev_str.upper()):
             return _tf.range(start, stop, delta=step, dtype=dtype)
     else:
         return _tf.range(start, stop, delta=step, dtype=dtype)
 
 
-def linspace(start, stop, num, axis=None, dev=None):
+def linspace(start, stop, num, axis=None, dev_str=None):
     if axis is None:
         axis = -1
-    if dev:
-        with _tf.device('/' + dev.upper()):
+    if dev_str:
+        with _tf.device('/' + dev_str.upper()):
             return _tf.linspace(start, stop, num, axis=axis)
     else:
         return _tf.linspace(start, stop, num, axis=axis)
@@ -140,48 +140,48 @@ squeeze = _tf.squeeze
 
 
 # noinspection PyShadowingNames
-def zeros(shape, dtype_str='float32', dev=None):
+def zeros(shape, dtype_str='float32', dev_str=None):
     dtype = _tf.__dict__[dtype_str]
-    if dev:
-        with _tf.device('/' + dev.upper()):
+    if dev_str:
+        with _tf.device('/' + dev_str.upper()):
             return _tf.zeros(shape, dtype)
     else:
         return _tf.zeros(shape, dtype)
 
 
 # noinspection PyShadowingNames
-def zeros_like(x, dtype_str=None, dev=None):
+def zeros_like(x, dtype_str=None, dev_str=None):
     dtype = _tf.__dict__[dtype_str] if dtype_str else dtype_str
-    if dev:
-        with _tf.device('/' + dev.upper()):
+    if dev_str:
+        with _tf.device('/' + dev_str.upper()):
             return _tf.zeros_like(x, dtype=dtype)
     else:
         return _tf.zeros_like(x, dtype=dtype)
 
 
 # noinspection PyShadowingNames
-def ones(shape, dtype_str='float32', dev=None):
+def ones(shape, dtype_str='float32', dev_str=None):
     dtype = _tf.__dict__[dtype_str]
-    if dev:
-        with _tf.device('/' + dev.upper()):
+    if dev_str:
+        with _tf.device('/' + dev_str.upper()):
             return _tf.ones(shape, dtype)
     else:
         return _tf.ones(shape, dtype)
 
 
 # noinspection PyShadowingNames
-def ones_like(x, dtype_str=None, dev=None):
+def ones_like(x, dtype_str=None, dev_str=None):
     dtype = _tf.__dict__[dtype_str] if dtype_str else dtype_str
-    if dev:
-        with _tf.device('/' + dev.upper()):
+    if dev_str:
+        with _tf.device('/' + dev_str.upper()):
             return _tf.ones_like(x, dtype=dtype)
     else:
         return _tf.ones_like(x, dtype=dtype)
 
 
-def one_hot(indices, depth, dev=None):
-    if dev is not None:
-        with _tf.device('/' + dev.upper()):
+def one_hot(indices, depth, dev_str=None):
+    if dev_str is not None:
+        with _tf.device('/' + dev_str.upper()):
             return _tf.one_hot(indices, depth)
     return _tf.one_hot(indices, depth)
 
@@ -192,10 +192,10 @@ cumsum = _tf.cumsum
 
 
 # noinspection PyShadowingNames
-def identity(n, dtype_str='float32', batch_shape=None, dev=None):
+def identity(n, dtype_str='float32', batch_shape=None, dev_str=None):
     dtype = _tf.__dict__[dtype_str]
-    if dev:
-        with _tf.device('/' + dev.upper()):
+    if dev_str:
+        with _tf.device('/' + dev_str.upper()):
             return _tf.eye(n, n, batch_shape=batch_shape, dtype=dtype)
     else:
         return _tf.eye(n, n, batch_shape=batch_shape, dtype=dtype)
@@ -205,9 +205,9 @@ TF_SCATTER_VAR = {}
 
 
 # noinspection PyShadowingNames
-def scatter_flat(indices, updates, size, reduction='sum', dev=None):
-    if dev is None:
-        dev = dev_str(updates)
+def scatter_flat(indices, updates, size, reduction='sum', dev_str=None):
+    if dev_str is None:
+        dev_str = _dev_str_callable(updates)
     dtype = updates.dtype
     if reduction == 'sum':
         return _tf.scatter_nd(_tf.expand_dims(indices, -1), updates, [size])
@@ -228,14 +228,14 @@ def scatter_flat(indices, updates, size, reduction='sum', dev=None):
         TF_SCATTER_VAR[size][dtype].assign(_tf.ones(size, dtype=dtype) * initial_val)
     res = _tf.convert_to_tensor(func(TF_SCATTER_VAR[size][dtype], indices, updates))
     res = _tf.where(res == initial_val, _tf.zeros(size, dtype=updates.dtype), res)
-    with _tf.device('/' + dev.upper()):
+    with _tf.device('/' + dev_str.upper()):
         return res
 
 
 # noinspection PyShadowingNames
-def scatter_nd(indices, updates, shape, num_idx_dims=None, reduction='sum', dev=None):
-    if dev is None:
-        dev = dev_str(updates)
+def scatter_nd(indices, updates, shape, num_idx_dims=None, reduction='sum', dev_str=None):
+    if dev_str is None:
+        dev_str = _dev_str_callable(updates)
     shape = list(shape)
     dtype = updates.dtype
     if reduction == 'sum':
@@ -270,22 +270,22 @@ def scatter_nd(indices, updates, shape, num_idx_dims=None, reduction='sum', dev=
     flat_indices_for_flat = _tf.reshape(indices_for_flat, (-1,))
     flat_scatter = _tf.convert_to_tensor(func(TF_SCATTER_VAR[flat_result_size][dtype], flat_indices_for_flat, flat_updates))
     flat_scatter = _tf.where(flat_scatter == initial_val, _tf.zeros(flat_result_size, dtype=updates.dtype), flat_scatter)
-    with _tf.device('/' + dev.upper()):
+    with _tf.device('/' + dev_str.upper()):
         res = _tf.reshape(flat_scatter, list(shape))
         return res
 
 
-def gather_flat(params, indices, dev=None):
-    if dev is None:
-        dev = dev_str(params)
-    with _tf.device('/' + dev.upper()):
+def gather_flat(params, indices, dev_str=None):
+    if dev_str is None:
+        dev_str = _dev_str_callable(params)
+    with _tf.device('/' + dev_str.upper()):
         return _tf.gather_nd(params, _tf.expand_dims(indices, -1))
 
 
-def gather_nd(params, indices, indices_shape=None, dev=None):
-    if dev is None:
-        dev = dev_str(params)
-    with _tf.device('/' + dev.upper()):
+def gather_nd(params, indices, indices_shape=None, dev_str=None):
+    if dev_str is None:
+        dev_str = _dev_str_callable(params)
+    with _tf.device('/' + dev_str.upper()):
         return _tf.gather_nd(params, indices)
 
 
@@ -297,6 +297,7 @@ def dev_to_str(dev_in):
 
 
 dev_str = lambda x: dev_to_str(dev(x))
+_dev_str_callable = dev_str
 gpu_is_available = _tf.test.is_gpu_available
 
 
