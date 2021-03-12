@@ -18,6 +18,7 @@ General
    general/linspace.rst
    general/concatenate.rst
    general/flip.rst
+   general/unstack.rst
    general/split.rst
    general/swapaxes.rst
    general/zeros.rst

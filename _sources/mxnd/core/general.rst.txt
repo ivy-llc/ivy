@@ -22,6 +22,7 @@ General
    general/linspace.rst
    general/concatenate.rst
    general/flip.rst
+   general/stack.rst
    general/unstack.rst
    general/split.rst
    general/constant_pad.rst
