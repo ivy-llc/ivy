@@ -485,15 +485,14 @@
     <span class="k">return</span> <span class="n">_get_framework</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">,</span> <span class="n">num</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">dev_str</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="concatenate"><a class="viewcode-back" href="../../../core/general/concatenate.html#ivy.core.general.concatenate">[docs]</a><span class="k">def</span> <span class="nf">concatenate</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="concatenate"><a class="viewcode-back" href="../../../core/general/concatenate.html#ivy.core.general.concatenate">[docs]</a><span class="k">def</span> <span class="nf">concatenate</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Casts an array to a specified type.</span>
 
 <span class="sd">    :param xs: The input arrays must have the same shape, except in the dimension corresponding to axis</span>
 <span class="sd">                        (the first, by default).</span>
 <span class="sd">    :type xs: sequence of arrays</span>
-<span class="sd">    :param axis: The axis along which the arrays will be joined. If axis is None, arrays are flattened before use.</span>
-<span class="sd">                    Default is 0.</span>
+<span class="sd">    :param axis: The axis along which the arrays will be joined. Default is -1.</span>
 <span class="sd">    :type axis: int, optional</span>
 <span class="sd">    :param f: Machine learning framework. Inferred from inputs if None.</span>
 <span class="sd">    :type f: ml_framework, optional</span>
@@ -509,10 +508,8 @@
 
 <span class="sd">    :param x: Input array.</span>
 <span class="sd">    :type x: array</span>
-<span class="sd">    :param axis: Axis or axes along which to flip over. The default, axis=None, will flip over all of the axes of the</span>
-<span class="sd">                    input array. If axis is negative it counts from the last to the first axis.</span>
-<span class="sd">                    If axis is a tuple of ints, flipping is performed on all of the axes specified in the tuple.</span>
-<span class="sd">    :type axis: None or int or tuple of ints, optional</span>
+<span class="sd">    :param axis: Axis or axes along which to flip over. The default, axis=None, will flip over all axes.</span>
+<span class="sd">    :type axis: None or int or sequence of ints, optional</span>
 <span class="sd">    :param batch_shape: Shape of batch. Inferred from inputs if None.</span>
 <span class="sd">    :type batch_shape: sequence of ints, optional</span>
 <span class="sd">    :param f: Machine learning framework. Inferred from inputs if None.</span>
@@ -539,7 +536,7 @@
     <span class="k">return</span> <span class="n">_get_framework</span><span class="p">(</span><span class="n">xs</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="n">axis</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="unstack"><a class="viewcode-back" href="../../../core/general/unstack.html#ivy.core.general.unstack">[docs]</a><span class="k">def</span> <span class="nf">unstack</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">num_outputs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="unstack"><a class="viewcode-back" href="../../../core/general/unstack.html#ivy.core.general.unstack">[docs]</a><span class="k">def</span> <span class="nf">unstack</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Unpacks the given dimension of a rank-R array into rank-(R-1) arrays.</span>
 
@@ -547,13 +544,11 @@
 <span class="sd">    :type x: array</span>
 <span class="sd">    :param axis: Axis for which to unpack the array.</span>
 <span class="sd">    :type axis: int</span>
-<span class="sd">    :param num_outputs: Number of outputs from unstack. Required for mxnet symbolic.</span>
-<span class="sd">    :type num_outputs: int</span>
 <span class="sd">    :param f: Machine learning framework. Inferred from inputs if None.</span>
 <span class="sd">    :type f: ml_framework, optional</span>
 <span class="sd">    :return: List of arrays, unpacked along specified dimensions.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">_get_framework</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">unstack</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">num_outputs</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">_get_framework</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">unstack</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="split"><a class="viewcode-back" href="../../../core/general/split.html#ivy.core.general.split">[docs]</a><span class="k">def</span> <span class="nf">split</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">num_sections</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
