@@ -1258,125 +1258,82 @@ def test_identity(dim_n_bs, dtype_str, tensor_fn, dev_str, call):
     helpers.assert_compilable(ivy.identity)
 
 
-def test_scatter_flat_sum(dev_str, call):
-    assert np.array_equal(call(ivy.scatter_flat, ivy.array([0, 4, 1, 2]),
-                               ivy.array([1, 2, 3, 4]), 8),
-                          np.array([1, 3, 4, 0, 2, 0, 0, 0]))
-    if call in [helpers.mx_call]:
-        # mxnet scatter does not support sum reduction
+# scatter_flat
+@pytest.mark.parametrize(
+    "inds_n_upd_n_size", [([0, 4, 1, 2], [1, 2, 3, 4], 8), ([0, 4, 1, 2, 0], [1, 2, 3, 4, 5], 8)])
+@pytest.mark.parametrize(
+    "red", ['sum', 'min', 'max', 'replace'])
+@pytest.mark.parametrize(
+    "dtype_str", ['float32'])
+@pytest.mark.parametrize(
+    "tensor_fn", [ivy.array, _var_fn])
+def test_scatter_flat(inds_n_upd_n_size, red, dtype_str, tensor_fn, dev_str, call):
+    # smoke test
+    if (red == 'sum' or red == 'min' or red == 'max') and call is helpers.mx_call:
+        # mxnet does not support sum, min or max reduction for scattering
+        pytest.skip()
+    if red == 'replace' and call is not helpers.mx_call:
+        # mxnet is the only backend which supports the replace reduction
+        pytest.skip()
+    inds, upd, size = inds_n_upd_n_size
+    inds = ivy.array(inds, 'int32', dev_str)
+    upd = tensor_fn(upd, dtype_str, dev_str)
+    ret = ivy.scatter_flat(inds, upd, size, red, dev_str)
+    # type test
+    try:
+        assert isinstance(ret, ivy.Array)
+    except AssertionError:
+        assert isinstance(ret, Buffer)
+    # cardinality test
+    assert ret.shape == (size,)
+    if red == 'replace':
         return
-    assert np.array_equal(call(ivy.scatter_flat, ivy.array([0, 4, 1, 2, 0]),
-                               ivy.array([1, 2, 3, 4, 5]), 8),
-                          np.array([6, 3, 4, 0, 2, 0, 0, 0]))
+    # value test
+    assert np.allclose(call(ivy.scatter_flat, inds, upd, size, red, dev_str),
+                       ivy.numpy.scatter_flat(ivy.to_numpy(inds), ivy.to_numpy(upd), size, red, dev_str))
+    # compilation test
     if call in [helpers.torch_call]:
         # global torch_scatter var not supported when scripting
         return
     helpers.assert_compilable(ivy.scatter_flat)
 
 
-def test_scatter_flat_min(dev_str, call):
-    if call in [helpers.mx_call]:
-        # mxnet does not support max reduction for scatter flat
+# scatter_nd
+@pytest.mark.parametrize(
+    "inds_n_upd_n_shape", [([[4], [3], [1], [7]], [9, 10, 11, 12], [8]), ([[0, 1, 2]], [1], [3, 3, 3]),
+                           ([[0], [2]], [[[5, 5, 5, 5], [6, 6, 6, 6], [7, 7, 7, 7], [8, 8, 8, 8]],
+                                         [[5, 5, 5, 5], [6, 6, 6, 6], [7, 7, 7, 7], [8, 8, 8, 8]]], [4, 4, 4])])
+@pytest.mark.parametrize(
+    "red", ['sum', 'min', 'max', 'replace'])
+@pytest.mark.parametrize(
+    "dtype_str", ['float32'])
+@pytest.mark.parametrize(
+    "tensor_fn", [ivy.array, _var_fn])
+def test_scatter_nd(inds_n_upd_n_shape, red, dtype_str, tensor_fn, dev_str, call):
+    # smoke test
+    if (red == 'sum' or red == 'min' or red == 'max') and call is helpers.mx_call:
+        # mxnet does not support sum, min or max reduction for scattering
         pytest.skip()
-    assert np.array_equal(call(ivy.scatter_flat, ivy.array([0, 4, 1, 2]),
-                               ivy.array([1, 2, 3, 4]), 8, 'min'),
-                          np.array([1, 3, 4, 0, 2, 0, 0, 0]))
-    assert np.array_equal(call(ivy.scatter_flat, ivy.array([0, 4, 1, 2, 0]),
-                               ivy.array([1, 2, 3, 4, 5]), 8, 'min'),
-                          np.array([1, 3, 4, 0, 2, 0, 0, 0]))
-    if call in [helpers.torch_call]:
-        # global torch_scatter var not supported when scripting
-        return
-    helpers.assert_compilable(ivy.scatter_flat)
-
-
-def test_scatter_flat_max(dev_str, call):
-    if call in [helpers.mx_call]:
-        # mxnet does not support max reduction for scatter flat
+    if red == 'replace' and call is not helpers.mx_call:
+        # mxnet is the only backend which supports the replace reduction
         pytest.skip()
-    assert np.array_equal(call(ivy.scatter_flat, ivy.array([0, 4, 1, 2]),
-                               ivy.array([1, 2, 3, 4]), 8, 'max'),
-                          np.array([1, 3, 4, 0, 2, 0, 0, 0]))
-    assert np.array_equal(call(ivy.scatter_flat, ivy.array([0, 4, 1, 2, 0]),
-                               ivy.array([1, 2, 3, 4, 5]), 8, 'max'),
-                          np.array([5, 3, 4, 0, 2, 0, 0, 0]))
-    if call in [helpers.torch_call]:
-        # global torch_scatter var not supported when scripting
+    inds, upd, shape = inds_n_upd_n_shape
+    inds = ivy.array(inds, 'int32', dev_str)
+    upd = tensor_fn(upd, dtype_str, dev_str)
+    ret = ivy.scatter_nd(inds, upd, shape, red, dev_str)
+    # type test
+    try:
+        assert isinstance(ret, ivy.Array)
+    except AssertionError:
+        assert isinstance(ret, Buffer)
+    # cardinality test
+    assert ret.shape == tuple(shape)
+    if red == 'replace':
         return
-    helpers.assert_compilable(ivy.scatter_flat)
-
-
-def test_scatter_sum_nd(dev_str, call):
-    assert np.array_equal(call(ivy.scatter_nd, ivy.array([[4], [3], [1], [7]]),
-                               ivy.array([9, 10, 11, 12]), [8], 2),
-                          np_scatter(np.array([[4], [3], [1], [7]]), np.array([9, 10, 11, 12]),
-                                             [8]))
-    assert np.array_equal(call(ivy.scatter_nd, ivy.array([[0, 1, 2]]),
-                               ivy.array([1]), [3, 3, 3], 2),
-                          np_scatter(np.array([[0, 1, 2]]), np.array([1]),
-                                             [3, 3, 3]))
-    assert np.array_equal(call(ivy.scatter_nd, ivy.array([[0], [2]]),
-                               ivy.array([[[5, 5, 5, 5], [6, 6, 6, 6],
-                                            [7, 7, 7, 7], [8, 8, 8, 8]],
-                                           [[5, 5, 5, 5], [6, 6, 6, 6],
-                                               [7, 7, 7, 7], [8, 8, 8, 8]]]), [4, 4, 4], 2),
-                          np_scatter(np.array([[0], [2]]),
-                                             np.array([[[5, 5, 5, 5], [6, 6, 6, 6],
-                                                        [7, 7, 7, 7], [8, 8, 8, 8]],
-                                                       [[5, 5, 5, 5], [6, 6, 6, 6],
-                                                        [7, 7, 7, 7], [8, 8, 8, 8]]]), [4, 4, 4]))
-    if call in [helpers.torch_call]:
-        # global torch_scatter var not supported when scripting
-        return
-    helpers.assert_compilable(ivy.scatter_nd)
-
-
-def test_scatter_min_nd(dev_str, call):
-    if call in [helpers.mx_call]:
-        # mxnet does not support min reduction for scatter nd
-        pytest.skip()
-    assert np.array_equal(call(ivy.scatter_nd, ivy.array([[4], [3], [1], [7]]),
-                               ivy.array([9, 10, 11, 12]), [8], 'min'),
-                          np_scatter(np.array([[4], [3], [1], [7]]), np.array([9, 10, 11, 12]), [8], 'min'))
-    assert np.array_equal(call(ivy.scatter_nd, ivy.array([[0, 1, 2]]),
-                               ivy.array([1]), [3, 3, 3], 'min'),
-                          np_scatter(np.array([[0, 1, 2]]), np.array([1]), [3, 3, 3], 'min'))
-    assert np.array_equal(call(ivy.scatter_nd, ivy.array([[0], [2]]),
-                               ivy.array([[[5, 5, 5, 5], [6, 6, 6, 6],
-                                            [7, 7, 7, 7], [8, 8, 8, 8]],
-                                           [[5, 5, 5, 5], [6, 6, 6, 6],
-                                               [7, 7, 7, 7], [8, 8, 8, 8]]]), [4, 4, 4], 'min'),
-                          np_scatter(np.array([[0], [2]]),
-                                             np.array([[[5, 5, 5, 5], [6, 6, 6, 6],
-                                                        [7, 7, 7, 7], [8, 8, 8, 8]],
-                                                       [[5, 5, 5, 5], [6, 6, 6, 6],
-                                                        [7, 7, 7, 7], [8, 8, 8, 8]]]), [4, 4, 4], 'min'))
-    if call in [helpers.torch_call]:
-        # global torch_scatter var not supported when scripting
-        return
-    helpers.assert_compilable(ivy.scatter_nd)
-
-
-def test_scatter_max_nd(dev_str, call):
-    if call in [helpers.mx_call]:
-        # mxnet does not support max reduction for scatter nd
-        pytest.skip()
-    assert np.array_equal(call(ivy.scatter_nd, ivy.array([[4], [3], [1], [7]]),
-                               ivy.array([9, 10, 11, 12]), [8], 'max'),
-                          np_scatter(np.array([[4], [3], [1], [7]]), np.array([9, 10, 11, 12]), [8], 'max'))
-    assert np.array_equal(call(ivy.scatter_nd, ivy.array([[0, 1, 2]]),
-                               ivy.array([1]), [3, 3, 3], 'max'),
-                          np_scatter(np.array([[0, 1, 2]]), np.array([1]), [3, 3, 3], 'max'))
-    assert np.array_equal(call(ivy.scatter_nd, ivy.array([[0], [2]]),
-                               ivy.array([[[5, 5, 5, 5], [6, 6, 6, 6],
-                                            [7, 7, 7, 7], [8, 8, 8, 8]],
-                                           [[5, 5, 5, 5], [6, 6, 6, 6],
-                                               [7, 7, 7, 7], [8, 8, 8, 8]]]), [4, 4, 4], 'max'),
-                          np_scatter(np.array([[0], [2]]),
-                                             np.array([[[5, 5, 5, 5], [6, 6, 6, 6],
-                                                        [7, 7, 7, 7], [8, 8, 8, 8]],
-                                                       [[5, 5, 5, 5], [6, 6, 6, 6],
-                                                        [7, 7, 7, 7], [8, 8, 8, 8]]]), [4, 4, 4], 'max'))
+    # value test
+    assert np.allclose(call(ivy.scatter_nd, inds, upd, shape, red, dev_str),
+                       ivy.numpy.scatter_nd(ivy.to_numpy(inds), ivy.to_numpy(upd), shape, red, dev_str))
+    # compilation test
     if call in [helpers.torch_call]:
         # global torch_scatter var not supported when scripting
         return
