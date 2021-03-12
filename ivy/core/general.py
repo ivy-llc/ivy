@@ -781,7 +781,7 @@ def gather_flat(params, indices, dev_str=None, f=None):
 
 
 # noinspection PyShadowingNames
-def gather_nd(params, indices, indices_shape=None, dev_str=None, f=None):
+def gather_nd(params, indices, dev_str=None, f=None):
     """
     Gather slices from params into a array with shape specified by indices.
 
@@ -789,15 +789,13 @@ def gather_nd(params, indices, indices_shape=None, dev_str=None, f=None):
     :type params: array
     :param indices: Index array.
     :type indices: array
-    :param indices_shape: Shape of the indices, required for mxnet symbolic mode.
-    :type indices_shape: sequence of ints.
     :param dev_str: device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc. Same as x if None.
     :type dev_str: str, optional
     :param f: Machine learning framework. Inferred from inputs if None.
     :type f: ml_framework, optional
     :return: New array of given shape, with the values gathered at the indices.
     """
-    return _get_framework(params, f=f).gather_nd(params, indices, indices_shape, dev_str)
+    return _get_framework(params, f=f).gather_nd(params, indices, dev_str)
 
 
 def dev(x, f=None):
