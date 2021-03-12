@@ -585,7 +585,7 @@
     <span class="k">return</span> <span class="n">_get_framework</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">tile</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">reps</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="constant_pad"><a class="viewcode-back" href="../../../core/general/constant_pad.html#ivy.core.general.constant_pad">[docs]</a><span class="k">def</span> <span class="nf">constant_pad</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">pad_width</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">x_shape</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="constant_pad"><a class="viewcode-back" href="../../../core/general/constant_pad.html#ivy.core.general.constant_pad">[docs]</a><span class="k">def</span> <span class="nf">constant_pad</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">pad_width</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Pads an array with a constant value.</span>
 
@@ -596,16 +596,14 @@
 <span class="sd">    :type pad_width: sequence of tuples of ints</span>
 <span class="sd">    :param value: The constant value to pad the array with.</span>
 <span class="sd">    :type value: float or int, default zero</span>
-<span class="sd">    :param x_shape: Shape of x. Required for mxnet symbolic.</span>
-<span class="sd">    :type x_shape: sequence of ints</span>
 <span class="sd">    :param f: Machine learning framework. Inferred from inputs if None.</span>
 <span class="sd">    :type f: ml_framework, optional</span>
 <span class="sd">    :return: Padded array of rank equal to x with shape increased according to pad_width.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">_get_framework</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">constant_pad</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">pad_width</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">x_shape</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">_get_framework</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">constant_pad</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">pad_width</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="zero_pad"><a class="viewcode-back" href="../../../core/general/zero_pad.html#ivy.core.general.zero_pad">[docs]</a><span class="k">def</span> <span class="nf">zero_pad</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">pad_width</span><span class="p">,</span> <span class="n">x_shape</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="zero_pad"><a class="viewcode-back" href="../../../core/general/zero_pad.html#ivy.core.general.zero_pad">[docs]</a><span class="k">def</span> <span class="nf">zero_pad</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">pad_width</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Pads an array with zeros.</span>
 
@@ -614,13 +612,11 @@
 <span class="sd">    :param pad_width: Number of values padded to the edges of each axis.</span>
 <span class="sd">                      Specified as ((before_1, after_1), … (before_N, after_N)), where N is number of axes of x.</span>
 <span class="sd">    :type pad_width: sequence of tuples of ints</span>
-<span class="sd">    :param x_shape: Shape of x. Required for mxnet symbolic.</span>
-<span class="sd">    :type x_shape: sequence of ints</span>
 <span class="sd">    :param f: Machine learning framework. Inferred from inputs if None.</span>
 <span class="sd">    :type f: ml_framework, optional</span>
 <span class="sd">    :return: Padded array of rank equal to x with shape increased according to pad_width.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">_get_framework</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">zero_pad</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">pad_width</span><span class="p">,</span> <span class="n">x_shape</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">_get_framework</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">zero_pad</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">pad_width</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="swapaxes"><a class="viewcode-back" href="../../../core/general/swapaxes.html#ivy.core.general.swapaxes">[docs]</a><span class="k">def</span> <span class="nf">swapaxes</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis0</span><span class="p">,</span> <span class="n">axis1</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
