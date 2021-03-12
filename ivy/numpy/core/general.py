@@ -110,9 +110,12 @@ def unstack(x, axis):
 
 
 def split(x, num_sections=None, axis=0):
-    dim_size = x.shape[axis]
+    if x.shape == ():
+        if num_sections is not None and num_sections != 1:
+            raise Exception('input array had no shape, but num_sections specified was {}'.format(num_sections))
+        return [x]
     if num_sections is None:
-        num_sections = dim_size
+        num_sections = x.shape[axis]
     return _np.split(x, num_sections, axis)
 
 
