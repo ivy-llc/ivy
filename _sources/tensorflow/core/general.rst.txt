@@ -20,6 +20,7 @@ General
    general/flip.rst
    general/unstack.rst
    general/split.rst
+   general/tile.rst
    general/swapaxes.rst
    general/zeros.rst
    general/zeros_like.rst
