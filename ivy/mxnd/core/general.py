@@ -379,24 +379,24 @@ def identity(n, dtype_str='float32', batch_shape=None, dev_str=None):
 
 # noinspection PyShadowingNames
 def scatter_flat(indices, updates, size, reduction='sum', dev_str=None):
-    if reduction == 'sum':
+    if reduction == 'replace':
         return _mx.nd.scatter_nd(updates, _mx.nd.expand_dims(indices, 0), [size]).copyto(_mxnet_init_context('cpu' if not dev_str else dev_str))
     else:
-        raise Exception('MXNet scatter_nd currently only supports reduction mode "sum", but {} selected.'.
+        raise Exception('MXNet scatter_flat currently only supports reduction mode "replace", but {} selected.'.
                         format(reduction))
 
 
 # noinspection PyShadowingNames
-def scatter_nd(indices, updates, shape, num_idx_dims=None, reduction='sum', dev_str=None):
+def scatter_nd(indices, updates, shape, reduction='sum', dev_str=None):
     shape = list(shape)
-    num_idx_dims = len(indices.shape) if num_idx_dims is None else num_idx_dims
+    num_idx_dims = len(indices.shape)
     transpose_order = [num_idx_dims-1] + list(range(num_idx_dims-1))
     indices = _mx.nd.transpose(indices, transpose_order)
     shape = shape if type(shape) is list else shape.asnumpy().astype(_np.int32).tolist()
-    if reduction == 'sum':
+    if reduction == 'replace':
         return _mx.nd.scatter_nd(updates, indices, shape).copyto(_mxnet_init_context('cpu' if not dev_str else dev_str))
     else:
-        raise Exception('MXNet scatter_nd currently only supports reduction mode "sum", but {} selected.'.
+        raise Exception('MXNet scatter_nd currently only supports reduction mode "replace", but {} selected.'.
                         format(reduction))
 
 

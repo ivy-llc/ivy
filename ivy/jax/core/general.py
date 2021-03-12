@@ -243,7 +243,7 @@ def scatter_flat(indices, updates, size, reduction='sum', dev_str=None):
 
 
 # noinspection PyShadowingNames
-def scatter_nd(indices, updates, shape, num_idx_dims=None, reduction='sum', dev_str=None):
+def scatter_nd(indices, updates, shape, reduction='sum', dev_str=None):
     if dev_str is None:
         dev_str = _callable_dev_str(updates)
     shape = list(shape)
