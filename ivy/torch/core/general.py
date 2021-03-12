@@ -173,15 +173,16 @@ def linspace(start, stop, num, axis=None, dev_str=None):
     return res.to(_dev_str_to_dev(dev_str))
 
 
-def concatenate(xs: List[torch.Tensor], axis: Optional[int] = None):
-    if axis is None:
-        xs = [torch.reshape(a, (-1,)) for a in xs]
-        axis = 0
+def concatenate(xs: List[torch.Tensor], axis: int = -1):
+    if xs[0].shape == ():
+        return torch.cat([x.unsqueeze(0) for x in xs], axis)
     return torch.cat(xs, axis)
 
 
 def flip(x, axis: Optional[List[int]] = None, batch_shape: Optional[List[int]] = None):
     num_dims: int = len(batch_shape) if batch_shape is not None else len(x.shape)
+    if not num_dims:
+        return x
     if axis is None:
         new_axis: List[int] = list(range(num_dims))
     else:
@@ -198,7 +199,9 @@ def stack(xs: List[torch.Tensor], axis: int = 0):
     return torch.stack(xs, axis)
 
 
-def unstack(x, axis: int, num_outputs: Optional[int] = None) -> List[torch.Tensor]:
+def unstack(x, axis: int) -> List[torch.Tensor]:
+    if x.shape == ():
+        return [x]
     return list(torch.unbind(x, axis))
 
 

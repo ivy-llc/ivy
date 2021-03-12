@@ -83,14 +83,16 @@ def linspace(start, stop, num, axis=None, dev_str=None):
     return _to_dev(_jnp.linspace(start, stop, num, axis=axis), dev_str)
 
 
-def concatenate(xs, axis=None):
-    if axis is None:
-        xs = [reshape(a, (-1,)) for a in xs]
-        axis = 0
+def concatenate(xs, axis=-1):
+    if xs[0].shape == ():
+        return _jnp.concatenate([_jnp.expand_dims(x, 0) for x in xs], axis)
     return _jnp.concatenate(xs, axis)
 
 
 def flip(x, axis=None, batch_shape=None):
+    num_dims = len(batch_shape) if batch_shape is not None else len(x.shape)
+    if not num_dims:
+        return x
     if isinstance(axis, list) or isinstance(axis, tuple):
         if len(axis) == 1:
             axis = axis[0]
@@ -102,7 +104,9 @@ def flip(x, axis=None, batch_shape=None):
 stack = _jnp.stack
 
 
-def unstack(x, axis, num_outputs=None):
+def unstack(x, axis):
+    if x.shape == ():
+        return [x]
     dim_size = x.shape[axis]
     x_split = _jnp.split(x, dim_size, axis)
     res = [_jnp.squeeze(item, axis) for item in x_split]

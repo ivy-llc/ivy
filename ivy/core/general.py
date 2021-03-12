@@ -312,15 +312,14 @@ def linspace(start, stop, num, axis=None, dev_str=None, f=None):
     return _get_framework(start, f=f).linspace(start, stop, num, axis, dev_str)
 
 
-def concatenate(xs, axis=None, f=None):
+def concatenate(xs, axis=-1, f=None):
     """
     Casts an array to a specified type.
 
     :param xs: The input arrays must have the same shape, except in the dimension corresponding to axis
                         (the first, by default).
     :type xs: sequence of arrays
-    :param axis: The axis along which the arrays will be joined. If axis is None, arrays are flattened before use.
-                    Default is 0.
+    :param axis: The axis along which the arrays will be joined. Default is -1.
     :type axis: int, optional
     :param f: Machine learning framework. Inferred from inputs if None.
     :type f: ml_framework, optional
@@ -336,10 +335,8 @@ def flip(x, axis=None, batch_shape=None, f=None):
 
     :param x: Input array.
     :type x: array
-    :param axis: Axis or axes along which to flip over. The default, axis=None, will flip over all of the axes of the
-                    input array. If axis is negative it counts from the last to the first axis.
-                    If axis is a tuple of ints, flipping is performed on all of the axes specified in the tuple.
-    :type axis: None or int or tuple of ints, optional
+    :param axis: Axis or axes along which to flip over. The default, axis=None, will flip over all axes.
+    :type axis: None or int or sequence of ints, optional
     :param batch_shape: Shape of batch. Inferred from inputs if None.
     :type batch_shape: sequence of ints, optional
     :param f: Machine learning framework. Inferred from inputs if None.
@@ -366,7 +363,7 @@ def stack(xs, axis=0, f=None):
     return _get_framework(xs[0], f=f).stack(xs, axis)
 
 
-def unstack(x, axis, num_outputs=None, f=None):
+def unstack(x, axis, f=None):
     """
     Unpacks the given dimension of a rank-R array into rank-(R-1) arrays.
 
@@ -374,13 +371,11 @@ def unstack(x, axis, num_outputs=None, f=None):
     :type x: array
     :param axis: Axis for which to unpack the array.
     :type axis: int
-    :param num_outputs: Number of outputs from unstack. Required for mxnet symbolic.
-    :type num_outputs: int
     :param f: Machine learning framework. Inferred from inputs if None.
     :type f: ml_framework, optional
     :return: List of arrays, unpacked along specified dimensions.
     """
-    return _get_framework(x, f=f).unstack(x, axis, num_outputs)
+    return _get_framework(x, f=f).unstack(x, axis)
 
 
 def split(x, num_sections=None, axis=0, f=None):
