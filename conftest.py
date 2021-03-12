@@ -25,7 +25,7 @@ def get_test_devices() -> Dict[ivy.Framework, List[str]]:
         new_list.append(None)
         new_list.append('cpu:0')
         if f.gpu_is_available():
-            new_list.append('cuda:0')
+            new_list.append('gpu:0')
         if f.tpu_is_available():
             new_list.append('tpu:0')
         devices_dict[fw_str] = new_list

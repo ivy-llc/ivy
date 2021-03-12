@@ -13,8 +13,7 @@ except ImportError:
     _jpn = None
 
 # local
-from ivy.core import general as _ivy_gen
-from ivy.core import random as _ivy_rand
+import ivy as _ivy
 from ivy.framework_handler import get_framework as _get_framework
 
 
@@ -66,9 +65,9 @@ class Container(dict):
             # noinspection PyBroadException
             try:
                 if len(containers[0].shape) == 0:
-                    return _ivy_gen.concatenate([_ivy_gen.reshape(item, [1]*(dim+1)) for item in containers], dim, f=f)
+                    return _ivy.concatenate([_ivy.reshape(item, [1] * (dim + 1)) for item in containers], dim, f=f)
                 else:
-                    return _ivy_gen.concatenate(containers, dim, f=f)
+                    return _ivy.concatenate(containers, dim, f=f)
             except Exception as e:
                 raise Exception(str(e) + '\nContainer concat operation only valid for containers of arrays')
 
@@ -93,7 +92,7 @@ class Container(dict):
             if isinstance(value, _h5py.Group):
                 container_dict[key] = Container.from_disk(value, slice_obj)
             elif isinstance(value, _h5py.Dataset):
-                container_dict[key] = _ivy_gen.tensor(list(value[slice_obj]))
+                container_dict[key] = _ivy.array(list(value[slice_obj]))
             else:
                 raise Exception('Item found inside h5_obj which was neither a Group nor a Dataset.')
         return Container(container_dict)
@@ -173,14 +172,12 @@ class Container(dict):
     # Public Methods #
     # ---------------#
 
-    def shuffle(self, seed_value=None, f=None):
+    def shuffle(self, seed_value=None):
         """
         Shuffle entries in all sub-arrays, such that they are still aligned along axis 0.
 
         :param seed_value: random seed to use for array shuffling
         :type seed_value: int
-        :param f: Machine learning framework. Inferred from inputs if None.
-        :type f: ml_framework, optional
         """
         return_dict = dict()
         if seed_value is None:
@@ -189,9 +186,8 @@ class Container(dict):
             if isinstance(value, Container):
                 return_dict[key] = value.shuffle(seed_value)
             else:
-                f = _get_framework(value, f=f)
-                _ivy_rand.seed(seed_value, f=f)
-                return_dict[key] = _ivy_rand.shuffle(value, f)
+                _ivy.seed(seed_value)
+                return_dict[key] = _ivy.shuffle(value)
         return Container(return_dict)
 
     def slice(self, slice_obj):
@@ -228,7 +224,7 @@ class Container(dict):
             if isinstance(value, Container):
                 return_dict[key] = value.expand_dims(axis)
             else:
-                return_dict[key] = _ivy_gen.expand_dims(value, axis)
+                return_dict[key] = _ivy.expand_dims(value, axis)
         return Container(return_dict)
 
     def unstack(self, dim, dim_size):
@@ -269,7 +265,7 @@ class Container(dict):
                     h5_group = h5_obj[key]
                 value.to_disk(h5_group, starting_index, mode, max_batch_size)
             else:
-                value_as_np = _ivy_gen.to_numpy(value)
+                value_as_np = _ivy.to_numpy(value)
                 value_shape = value_as_np.shape
                 this_batch_size = value_shape[0]
                 if not max_batch_size:
@@ -337,7 +333,7 @@ class Container(dict):
         """
         def _as_random(value, _=''):
             if hasattr(value, 'shape'):
-                return _ivy_rand.random_uniform(0., 1., value.shape)
+                return _ivy.random_uniform(0., 1., value.shape)
             return value
         return self.map(_as_random)
 
@@ -430,7 +426,7 @@ class Container(dict):
 
         :return: New datatype container
         """
-        return self.map(lambda x, _: _ivy_gen.dtype(x))
+        return self.map(lambda x, _: _ivy.dtype(x))
 
     def with_entries_as_lists(self):
         """
@@ -438,7 +434,7 @@ class Container(dict):
         """
         def to_list(x, _=''):
             try:
-                return _ivy_gen.to_list(x)
+                return _ivy.to_list(x)
             except (AttributeError, ValueError):
                 return x
         return self.map(to_list)
