@@ -19,6 +19,9 @@ DTYPE_DICT = {_jnp.dtype('bool'): 'bool',
               _jnp.dtype('float64'): 'float64'}
 
 
+# Helpers #
+# --------#
+
 def _to_dev(x, dev_str_in):
     if dev_str_in is not None:
         if 'cpu' in dev_str_in or 'gpu' in dev_str_in or 'tpu' in dev_str_in:
@@ -33,6 +36,13 @@ def _to_dev(x, dev_str_in):
             raise Exception('Invalid device specified, must be in the form [ "cpu:idx" | "gpu:idx" | "tpu:id" ]')
     return x
 
+
+def _flat_array_to_1_dim_array(x):
+    return x.reshape((1,)) if x.shape == () else x
+
+
+# API #
+# ----#
 
 # noinspection PyShadowingNames
 def array(object_in, dtype_str=None, dev_str=None):
@@ -124,8 +134,8 @@ def split(x, num_sections=None, axis=0):
 
 
 tile = _jnp.tile
-constant_pad = lambda x, pad_width, value=0, x_shape=None: _jnp.pad(x, pad_width, constant_values=value)
-zero_pad = lambda x, pad_width, x_shape=None: _jnp.pad(x, pad_width, constant_values=0)
+constant_pad = lambda x, pad_width, value=0: _jnp.pad(_flat_array_to_1_dim_array(x), pad_width, constant_values=value)
+zero_pad = lambda x, pad_width: _jnp.pad(_flat_array_to_1_dim_array(x), pad_width, constant_values=0)
 swapaxes = _jnp.swapaxes
 
 

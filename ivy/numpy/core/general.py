@@ -18,6 +18,9 @@ DTYPE_DICT = {_np.dtype('bool'): 'bool',
               _np.dtype('float64'): 'float64'}
 
 
+# Helpers #
+# --------#
+
 def _to_dev(x, dev_str):
     if dev_str is not None:
         if 'gpu' in dev_str:
@@ -28,6 +31,13 @@ def _to_dev(x, dev_str):
             raise Exception('Invalid device specified, must be in the form [ "cpu:idx" | "gpu:idx" ]')
     return x
 
+
+def _flat_array_to_1_dim_array(x):
+    return x.reshape((1,)) if x.shape == () else x
+
+
+# API #
+# ----#
 
 # noinspection PyShadowingNames
 def array(object_in, dtype_str=None, dev_str=None):
@@ -120,8 +130,8 @@ def split(x, num_sections=None, axis=0):
 
 
 tile = _np.tile
-constant_pad = lambda x, pad_width, value=0, x_shape=None: _np.pad(x, pad_width, constant_values=value)
-zero_pad = lambda x, pad_width, x_shape=None: _np.pad(x, pad_width)
+constant_pad = lambda x, pad_width, value=0: _np.pad(_flat_array_to_1_dim_array(x), pad_width, constant_values=value)
+zero_pad = lambda x, pad_width: _np.pad(_flat_array_to_1_dim_array(x), pad_width)
 swapaxes = _np.swapaxes
 
 

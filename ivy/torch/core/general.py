@@ -225,7 +225,11 @@ def tile(x, reps):
 
 
 # noinspection PyUnresolvedReferences
-def constant_pad(x, pad_width: List[List[int]], value: Number = 0., x_shape: Optional[List[int]] = None):
+def constant_pad(x, pad_width: List[List[int]], value: Number = 0.):
+    if x.shape == ():
+        x = x.unsqueeze(0)
+    if isinstance(pad_width, torch.Tensor):
+        pad_width = pad_width.detach().cpu().numpy().tolist()
     pad_width.reverse()
     pad_width_flat: List[int] = list()
     for pad_width_sec in pad_width:
@@ -234,8 +238,8 @@ def constant_pad(x, pad_width: List[List[int]], value: Number = 0., x_shape: Opt
     return torch.nn.functional.pad(x, pad_width_flat, mode='constant', value=value)
 
 
-def zero_pad(x, pad_width: List[List[int]], x_shape: Optional[List[int]] = None):
-    return constant_pad(x, pad_width, 0., x_shape)
+def zero_pad(x, pad_width: List[List[int]]):
+    return constant_pad(x, pad_width, 0.)
 
 
 def swapaxes(x, axis0, axis1):

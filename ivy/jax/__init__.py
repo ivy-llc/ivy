@@ -10,4 +10,6 @@ from .nn import *
 use = ivy.framework_handler.ContextManager(sys.modules[__name__])
 
 # noinspection PyUnresolvedReferences,PyProtectedMember
-Tensor = jax.interpreters.xla._DeviceArray
+Array = jax.interpreters.xla._DeviceArray
+# noinspection PyUnresolvedReferences,PyProtectedMember
+Variable = jax.interpreters.xla._DeviceArray
