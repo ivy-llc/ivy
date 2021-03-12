@@ -344,7 +344,7 @@ def ones_like(x, dtype_str: Optional[str] = None, dev_str: Optional[str] = None)
 def one_hot(indices, depth: int, dev_str: Optional[str] = None):
     if dev_str is None:
         dev_str = _callable_dev_str(indices)
-    return torch.nn.functional.one_hot(indices, depth).to(_dev_str_to_dev(dev_str))
+    return torch.nn.functional.one_hot(indices.type(torch.int64), depth).to(_dev_str_to_dev(dev_str))
 
 
 def cross(x1, x2):

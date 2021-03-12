@@ -1026,51 +1026,128 @@ def test_squeeze(x_n_axis, dtype_str, tensor_fn, dev_str, call):
     helpers.assert_compilable(ivy.squeeze)
 
 
-def test_zeros(dev_str, call):
-    assert np.array_equal(call(ivy.zeros, (1, 2)), np.zeros((1, 2)))
-    assert np.array_equal(call(ivy.zeros, (1, 2), 'int64'), np.zeros((1, 2), np.int64))
-    assert np.array_equal(call(ivy.zeros, (1, 2, 3)), np.zeros((1, 2, 3)))
+# zeros
+@pytest.mark.parametrize(
+    "shape", [(), (1, 2, 3), tuple([1]*10)])
+@pytest.mark.parametrize(
+    "dtype_str", ['float32'])
+@pytest.mark.parametrize(
+    "tensor_fn", [ivy.array, _var_fn])
+def test_zeros(shape, dtype_str, tensor_fn, dev_str, call):
+    # smoke test
+    ret = ivy.zeros(shape, dtype_str, dev_str)
+    # type test
+    assert isinstance(ret, ivy.Array)
+    # cardinality test
+    assert ret.shape == tuple(shape)
+    # value test
+    assert np.allclose(call(ivy.zeros, shape, dtype_str, dev_str), ivy.numpy.zeros(shape, dtype_str))
+    # compilation test
     if call in [helpers.torch_call]:
         # pytorch scripting cannot assign a torch.device value with a string
         return
     helpers.assert_compilable(ivy.zeros)
 
 
-def test_zeros_like(dev_str, call):
-    assert np.array_equal(call(ivy.zeros_like, ivy.array([[0., 1.]])),
-                          np.zeros_like(np.array([[0., 1.]])))
-    assert np.array_equal(call(ivy.zeros_like, ivy.array([[[1., 0.]]])),
-                          np.zeros_like(np.array([[[1., 0.]]])))
+# zeros_like
+@pytest.mark.parametrize(
+    "x", [1, [1], [[1], [2], [3]]])
+@pytest.mark.parametrize(
+    "dtype_str", ['float32'])
+@pytest.mark.parametrize(
+    "tensor_fn", [ivy.array, _var_fn])
+def test_zeros_like(x, dtype_str, tensor_fn, dev_str, call):
+    # smoke test
+    if isinstance(x, Number) and tensor_fn == _var_fn and call is helpers.mx_call:
+        # mxnet does not support 0-dimensional variables
+        pytest.skip()
+    x = tensor_fn(x, dtype_str, dev_str)
+    ret = ivy.zeros_like(x, dtype_str, dev_str)
+    # type test
+    assert isinstance(ret, ivy.Array)
+    # cardinality test
+    assert ret.shape == x.shape
+    # value test
+    assert np.allclose(call(ivy.zeros_like, x, dtype_str, dev_str), ivy.numpy.zeros_like(ivy.to_numpy(x), dtype_str))
+    # compilation test
     if call in [helpers.torch_call]:
         # pytorch scripting cannot assign a torch.device value with a string
         return
     helpers.assert_compilable(ivy.zeros_like)
 
 
-def test_ones(dev_str, call):
-    assert np.array_equal(call(ivy.ones, (1, 2)), np.ones((1, 2)))
-    assert np.array_equal(call(ivy.ones, (1, 2), 'int64'), np.ones((1, 2), np.int64))
-    assert np.array_equal(call(ivy.ones, (1, 2, 3)), np.ones((1, 2, 3)))
+# ones
+@pytest.mark.parametrize(
+    "shape", [(), (1, 2, 3), tuple([1]*10)])
+@pytest.mark.parametrize(
+    "dtype_str", ['float32'])
+@pytest.mark.parametrize(
+    "tensor_fn", [ivy.array, _var_fn])
+def test_ones(shape, dtype_str, tensor_fn, dev_str, call):
+    # smoke test
+    ret = ivy.ones(shape, dtype_str, dev_str)
+    # type test
+    assert isinstance(ret, ivy.Array)
+    # cardinality test
+    assert ret.shape == tuple(shape)
+    # value test
+    assert np.allclose(call(ivy.ones, shape, dtype_str, dev_str), ivy.numpy.ones(shape, dtype_str))
+    # compilation test
     if call in [helpers.torch_call]:
         # pytorch scripting cannot assign a torch.device value with a string
         return
     helpers.assert_compilable(ivy.ones)
 
 
-def test_ones_like(dev_str, call):
-    assert np.array_equal(call(ivy.ones_like, ivy.array([[0., 1.]])),
-                          np.ones_like(np.array([[0., 1.]])))
-    assert np.array_equal(call(ivy.ones_like, ivy.array([[[1., 0.]]])),
-                          np.ones_like(np.array([[[1., 0.]]])))
+# ones_like
+@pytest.mark.parametrize(
+    "x", [1, [1], [[1], [2], [3]]])
+@pytest.mark.parametrize(
+    "dtype_str", ['float32'])
+@pytest.mark.parametrize(
+    "tensor_fn", [ivy.array, _var_fn])
+def test_ones_like(x, dtype_str, tensor_fn, dev_str, call):
+    # smoke test
+    if isinstance(x, Number) and tensor_fn == _var_fn and call is helpers.mx_call:
+        # mxnet does not support 0-dimensional variables
+        pytest.skip()
+    x = tensor_fn(x, dtype_str, dev_str)
+    ret = ivy.ones_like(x, dtype_str, dev_str)
+    # type test
+    assert isinstance(ret, ivy.Array)
+    # cardinality test
+    assert ret.shape == x.shape
+    # value test
+    assert np.allclose(call(ivy.ones_like, x, dtype_str, dev_str), ivy.numpy.ones_like(ivy.to_numpy(x), dtype_str))
+    # compilation test
     if call in [helpers.torch_call]:
         # pytorch scripting cannot assign a torch.device value with a string
         return
     helpers.assert_compilable(ivy.ones_like)
 
 
-def test_one_hot(dev_str, call):
-    np_one_hot = helpers._ivy_np.one_hot(np.array([0, 1, 2]), 3)
-    assert np.array_equal(call(ivy.one_hot, ivy.array([0, 1, 2]), 3), np_one_hot)
+# one_hot
+@pytest.mark.parametrize(
+    "ind_n_depth", [([0], 1), ([0, 1, 2], 3), ([[1, 3], [0, 0], [8, 4], [7, 9]], 10)])
+@pytest.mark.parametrize(
+    "dtype_str", ['float32'])
+@pytest.mark.parametrize(
+    "tensor_fn", [ivy.array, _var_fn])
+def test_one_hot(ind_n_depth, dtype_str, tensor_fn, dev_str, call):
+    # smoke test
+    ind, depth = ind_n_depth
+    if isinstance(ind, Number) and tensor_fn == _var_fn and call is helpers.mx_call:
+        # mxnet does not support 0-dimensional variables
+        pytest.skip()
+    ind = ivy.array(ind, 'int32', dev_str)
+    ret = ivy.one_hot(ind, depth, dev_str)
+    # type test
+    assert isinstance(ret, ivy.Array)
+    # cardinality test
+    assert ret.shape == ind.shape + (depth,)
+    # value test
+    assert np.allclose(call(ivy.one_hot, ind, depth, dev_str), ivy.numpy.one_hot(ivy.to_numpy(ind), depth, dev_str))
+    # compilation test
     if call in [helpers.torch_call]:
         # pytorch scripting cannot assign a torch.device value with a string
         return
