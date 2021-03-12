@@ -206,6 +206,10 @@ def unstack(x, axis: int) -> List[torch.Tensor]:
 
 
 def split(x, num_sections: Optional[int] = None, axis: int = 0) -> List[torch.Tensor]:
+    if x.shape == ():
+        if num_sections is not None and num_sections != 1:
+            raise Exception('input array had no shape, but num_sections specified was {}'.format(num_sections))
+        return [x]
     dim_size: int = x.shape[axis]
     if num_sections is None:
         # noinspection PyUnboundLocalVariable
@@ -215,6 +219,8 @@ def split(x, num_sections: Optional[int] = None, axis: int = 0) -> List[torch.Te
 
 
 def tile(x, reps):
+    if isinstance(reps, torch.Tensor):
+        reps = reps.detach().cpu().numpy().tolist()
     return x.repeat(reps)
 
 
