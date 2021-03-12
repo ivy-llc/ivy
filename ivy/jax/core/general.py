@@ -271,11 +271,10 @@ def gather_flat(params, indices, dev_str=None):
     return _to_dev(_jnp.take(params, indices, 0), dev_str)
 
 
-def gather_nd(params, indices, indices_shape=None, dev_str=None):
+def gather_nd(params, indices, dev_str=None):
     if dev_str is None:
         dev_str = _callable_dev_str(params)
-    if indices_shape is None:
-        indices_shape = indices.shape
+    indices_shape = indices.shape
     params_shape = params.shape
     num_index_dims = indices_shape[-1]
     res_dim_sizes_list = [_reduce(_mul, params_shape[i + 1:], 1) for i in range(len(params_shape) - 1)] + [1]

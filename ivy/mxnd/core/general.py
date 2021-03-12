@@ -406,11 +406,10 @@ def gather_flat(params, indices, dev_str=None):
     return _mx.nd.gather_nd(params, _mx.nd.expand_dims(indices, 0)).copyto(_mxnet_init_context('cpu' if not dev_str else dev_str))
 
 
-def gather_nd(params, indices, indices_shape=None, dev_str=None):
+def gather_nd(params, indices, dev_str=None):
     if dev_str is None:
         dev_str = _callable_dev_str(params)
-    if indices_shape is None:
-        indices_shape = indices.shape
+    indices_shape = indices.shape
     num_idx_dims = len(indices_shape)
     transpose_order = [num_idx_dims-1] + list(range(num_idx_dims-1))
     indices = _mx.nd.transpose(indices, transpose_order)

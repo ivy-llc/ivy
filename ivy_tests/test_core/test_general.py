@@ -1340,30 +1340,58 @@ def test_scatter_nd(inds_n_upd_n_shape, red, dtype_str, tensor_fn, dev_str, call
     helpers.assert_compilable(ivy.scatter_nd)
 
 
-def test_gather_flat(dev_str, call):
-    assert np.allclose(call(ivy.gather_flat, ivy.array([9, 8, 7, 6, 5, 4, 3, 2, 1, 0]),
-                            ivy.array([0, 4, 7])), np.array([9, 5, 2]), atol=1e-6)
+# gather_flat
+@pytest.mark.parametrize(
+    "prms_n_inds", [([9, 8, 7, 6, 5, 4, 3, 2, 1, 0], [0, 4, 7])])
+@pytest.mark.parametrize(
+    "dtype_str", ['float32'])
+@pytest.mark.parametrize(
+    "tensor_fn", [ivy.array, _var_fn])
+def test_gather_flat(prms_n_inds, dtype_str, tensor_fn, dev_str, call):
+    # smoke test
+    prms, inds = prms_n_inds
+    prms = tensor_fn(prms, dtype_str, dev_str)
+    inds = ivy.array(inds, 'int32', dev_str)
+    ret = ivy.gather_flat(prms, inds, dev_str)
+    # type test
+    assert isinstance(ret, ivy.Array)
+    # cardinality test
+    assert ret.shape == inds.shape
+    # value test
+    assert np.allclose(call(ivy.gather_flat, prms, inds, dev_str),
+                       ivy.numpy.gather_flat(ivy.to_numpy(prms), ivy.to_numpy(inds), dev_str))
+    # compilation test
     if call in [helpers.torch_call]:
         # pytorch scripting cannot assign a torch.device value with a string
         return
     helpers.assert_compilable(ivy.gather_flat)
 
 
-def test_gather_nd(dev_str, call):
-    assert np.allclose(call(ivy.gather_nd, ivy.array([[[0.0, 1.0], [2.0, 3.0]],
-                                                       [[0.1, 1.1], [2.1, 3.1]]]),
-                            ivy.array([[0, 1], [1, 0]]), indices_shape=[2, 2]),
-                       np.array([[2.0, 3.0], [0.1, 1.1]]), atol=1e-6)
-    assert np.allclose(call(ivy.gather_nd, ivy.array([[[0.0, 1.0], [2.0, 3.0]],
-                                                       [[0.1, 1.1], [2.1, 3.1]]]),
-                            ivy.array([[[0, 1]], [[1, 0]]]), indices_shape=[2, 1, 2]),
-                       np.array([[[2.0, 3.0]], [[0.1, 1.1]]]), atol=1e-6)
-    assert np.allclose(call(ivy.gather_nd, ivy.array([[[0.0, 1.0], [2.0, 3.0]],
-                                                       [[0.1, 1.1], [2.1, 3.1]]]),
-                            ivy.array([[[0, 1, 0]], [[1, 0, 1]]]),
-                            indices_shape=[2, 1, 3]), np.array([[2.0], [1.1]]), atol=1e-6)
+# gather_nd
+@pytest.mark.parametrize(
+    "prms_n_inds", [([[[0.0, 1.0], [2.0, 3.0]], [[0.1, 1.1], [2.1, 3.1]]], [[0, 1], [1, 0]]),
+                    ([[[0.0, 1.0], [2.0, 3.0]], [[0.1, 1.1], [2.1, 3.1]]], [[[0, 1]], [[1, 0]]]),
+                    ([[[0.0, 1.0], [2.0, 3.0]], [[0.1, 1.1], [2.1, 3.1]]], [[[0, 1, 0]], [[1, 0, 1]]])])
+@pytest.mark.parametrize(
+    "dtype_str", ['float32'])
+@pytest.mark.parametrize(
+    "tensor_fn", [ivy.array, _var_fn])
+def test_gather_nd(prms_n_inds, dtype_str, tensor_fn, dev_str, call):
+    # smoke test
+    prms, inds = prms_n_inds
+    prms = tensor_fn(prms, dtype_str, dev_str)
+    inds = ivy.array(inds, 'int32', dev_str)
+    ret = ivy.gather_nd(prms, inds, dev_str)
+    # type test
+    assert isinstance(ret, ivy.Array)
+    # cardinality test
+    assert ret.shape == inds.shape[:-1] + prms.shape[inds.shape[-1]:]
+    # value test
+    assert np.allclose(call(ivy.gather_nd, prms, inds, dev_str),
+                       ivy.numpy.gather_nd(ivy.to_numpy(prms), ivy.to_numpy(inds), dev_str))
+    # compilation test
     if call in [helpers.torch_call]:
-        # torch scripting does not support builtins
+        # pytorch scripting cannot assign a torch.device value with a string
         return
     helpers.assert_compilable(ivy.gather_nd)
 
