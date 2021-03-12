@@ -1154,38 +1154,104 @@ def test_one_hot(ind_n_depth, dtype_str, tensor_fn, dev_str, call):
     helpers.assert_compilable(ivy.one_hot)
 
 
-def test_cross(dev_str, call):
-    assert np.array_equal(call(ivy.cross, ivy.array([0., 0., 0.]),
-                               ivy.array([0., 0., 0.])),
-                          np.cross(np.array([0., 0., 0.]), np.array([0., 0., 0.])))
-    assert np.array_equal(call(ivy.cross, ivy.array([[0., 0., 0.]]),
-                               ivy.array([[0., 0., 0.]])),
-                          np.cross(np.array([[0., 0., 0.]]), np.array([[0., 0., 0.]])))
+# cross
+@pytest.mark.parametrize(
+    "x1_n_x2", [([0., 1., 2.], [3., 4., 5.]), ([[0., 1., 2.], [2., 1., 0.]], [[3., 4., 5.], [5., 4., 3.]])])
+@pytest.mark.parametrize(
+    "dtype_str", ['float32'])
+@pytest.mark.parametrize(
+    "tensor_fn", [ivy.array, _var_fn])
+def test_cross(x1_n_x2, dtype_str, tensor_fn, dev_str, call):
+    # smoke test
+    x1, x2 = x1_n_x2
+    if (isinstance(x1, Number) or isinstance(x2, Number)) and tensor_fn == _var_fn and call is helpers.mx_call:
+        # mxnet does not support 0-dimensional variables
+        pytest.skip()
+    x1 = ivy.array(x1, dtype_str, dev_str)
+    x2 = ivy.array(x2, dtype_str, dev_str)
+    ret = ivy.cross(x1, x2)
+    # type test
+    try:
+        assert isinstance(ret, ivy.Array)
+    except AssertionError:
+        assert isinstance(ret, Buffer)
+    # cardinality test
+    assert ret.shape == x1.shape
+    # value test
+    assert np.allclose(call(ivy.cross, x1, x2), ivy.numpy.cross(ivy.to_numpy(x1), ivy.to_numpy(x2)))
+    # compilation test
     helpers.assert_compilable(ivy.cross)
 
 
-def test_matmul(dev_str, call):
-    assert np.array_equal(call(ivy.matmul, ivy.array([[1., 0.], [0., 1.]]),
-                               ivy.array([[1., 0.], [0., 1.]]), batch_shape=[]),
-                          np.matmul(np.array([[1., 0.], [0., 1.]]), np.array([[1., 0.], [0., 1.]])))
-    assert np.array_equal(call(ivy.matmul, ivy.array([[[[1., 0.], [0., 1.]]]]),
-                               ivy.array([[[[1., 0.], [0., 1.]]]]), batch_shape=[1, 1]),
-                          np.matmul(np.array([[[[1., 0.], [0., 1.]]]]), np.array([[[[1., 0.], [0., 1.]]]])))
+# matmul
+@pytest.mark.parametrize(
+    "x1_n_x2", [([[0., 1., 2.]], [[3.], [4.], [5.]]), ([[0., 1., 2.], [2., 1., 0.]], [[3., 4.], [5., 5.], [4., 3.]])])
+@pytest.mark.parametrize(
+    "dtype_str", ['float32'])
+@pytest.mark.parametrize(
+    "tensor_fn", [ivy.array, _var_fn])
+def test_matmul(x1_n_x2, dtype_str, tensor_fn, dev_str, call):
+    # smoke test
+    x1, x2 = x1_n_x2
+    if (isinstance(x1, Number) or isinstance(x2, Number)) and tensor_fn == _var_fn and call is helpers.mx_call:
+        # mxnet does not support 0-dimensional variables
+        pytest.skip()
+    x1 = ivy.array(x1, dtype_str, dev_str)
+    x2 = ivy.array(x2, dtype_str, dev_str)
+    ret = ivy.matmul(x1, x2)
+    # type test
+    assert isinstance(ret, ivy.Array)
+    # cardinality test
+    assert ret.shape == x1.shape[:-1] + (x2.shape[-1],)
+    # value test
+    assert np.allclose(call(ivy.matmul, x1, x2), ivy.numpy.matmul(ivy.to_numpy(x1), ivy.to_numpy(x2)))
+    # compilation test
     helpers.assert_compilable(ivy.matmul)
 
 
-def test_cumsum(dev_str, call):
-    assert np.array_equal(call(ivy.cumsum, ivy.array([[0., 1., 2., 3.]]), 1),
-                          np.array([[0., 1., 3., 6.]]))
-    assert np.array_equal(call(ivy.cumsum, ivy.array([[0., 1., 2.], [0., 1., 2.]]), 0),
-                          np.array([[0., 1., 2.], [0., 2., 4.]]))
+# cumsum
+@pytest.mark.parametrize(
+    "x_n_axis", [([[0., 1., 2.]], -1), ([[0., 1., 2.], [2., 1., 0.]], 0), ([[0., 1., 2.], [2., 1., 0.]], 1)])
+@pytest.mark.parametrize(
+    "dtype_str", ['float32'])
+@pytest.mark.parametrize(
+    "tensor_fn", [ivy.array, _var_fn])
+def test_cumsum(x_n_axis, dtype_str, tensor_fn, dev_str, call):
+    # smoke test
+    x, axis = x_n_axis
+    x = ivy.array(x, dtype_str, dev_str)
+    ret = ivy.cumsum(x, axis)
+    # type test
+    try:
+        assert isinstance(ret, ivy.Array)
+    except AssertionError:
+        assert isinstance(ret, Buffer)
+    # cardinality test
+    assert ret.shape == x.shape
+    # value test
+    assert np.allclose(call(ivy.cumsum, x, axis), ivy.numpy.cumsum(ivy.to_numpy(x), axis))
+    # compilation test
     helpers.assert_compilable(ivy.cumsum)
 
 
-def test_identity(dev_str, call):
-    assert np.array_equal(call(ivy.identity, 1), np.identity(1))
-    assert np.array_equal(call(ivy.identity, 2, 'int64'), np.identity(2, np.int64))
-    call(ivy.identity, 2, 'int64', (1, 2))
+# identity
+@pytest.mark.parametrize(
+    "dim_n_bs", [(3, None), (1, (2, 3)), (5, (1, 2, 3))])
+@pytest.mark.parametrize(
+    "dtype_str", ['float32'])
+@pytest.mark.parametrize(
+    "tensor_fn", [ivy.array, _var_fn])
+def test_identity(dim_n_bs, dtype_str, tensor_fn, dev_str, call):
+    # smoke test
+    dim, bs = dim_n_bs
+    ret = ivy.identity(dim, dtype_str, bs, dev_str)
+    # type test
+    assert isinstance(ret, ivy.Array)
+    # cardinality test
+    assert ret.shape == (tuple(bs) if bs else ()) + (dim, dim)
+    # value test
+    assert np.allclose(call(ivy.identity, dim, dtype_str, bs, dev_str), ivy.numpy.identity(dim, dtype_str, bs))
+    # compilation test
     if call in [helpers.torch_call]:
         # pytorch scripting cannot assign a torch.device value with a string
         return

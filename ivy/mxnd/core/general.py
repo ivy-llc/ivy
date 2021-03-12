@@ -354,8 +354,8 @@ def cross(x1, x2):
     return res
 
 
-def matmul(x1, x2, batch_shape=None):
-    expand = len(batch_shape) == 0 if batch_shape is not None else len(x1.shape) < 3
+def matmul(x1, x2):
+    expand = len(x1.shape) < 3
     if expand:
         x1 = _mx.nd.expand_dims(x1, 0)
         x2 = _mx.nd.expand_dims(x2, 0)
@@ -363,7 +363,7 @@ def matmul(x1, x2, batch_shape=None):
     return res[0] if expand else res
 
 
-cumsum = lambda x, axis=0: _mx.nd.cumsum(x, axis)
+cumsum = lambda x, axis=0: _mx.nd.cumsum(x, axis if axis >= 0 else axis % len(x.shape))
 
 
 def identity(n, dtype_str='float32', batch_shape=None, dev_str=None):
