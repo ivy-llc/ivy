@@ -11,4 +11,7 @@ use = ivy.framework_handler.ContextManager(sys.modules[__name__])
 
 Array = np.ndarray
 Variable = np.ndarray
+Device = str
+Dtype = np.dtype
+
 backend = 'numpy'

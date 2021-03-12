@@ -14,7 +14,7 @@ DTYPE_DICT = {_jnp.dtype('bool'): 'bool',
               _jnp.dtype('int16'): 'int16',
               _jnp.dtype('int32'): 'int32',
               _jnp.dtype('int64'): 'int64',
-              _jnp.dtype('float16'): 'float32',
+              _jnp.dtype('float16'): 'float16',
               _jnp.dtype('float32'): 'float32',
               _jnp.dtype('float64'): 'float64'}
 
@@ -293,11 +293,11 @@ def gather_nd(params, indices, dev_str=None):
     return _to_dev(ret, dev_str)
 
 
-dev = lambda x: x.device_buffer
+dev = lambda x: x.device_buffer.device()
 
 
 def dev_to_str(dev_in):
-    p, dev_id = (dev_in.platform(), dev_in.device().id)
+    p, dev_id = (dev_in.platform, dev_in.id)
     return p + ':' + str(dev_id)
 
 

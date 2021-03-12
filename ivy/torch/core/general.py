@@ -487,7 +487,7 @@ def dev(x):
 
 def dev_to_str(dev_in: torch.device):
     dev_type, dev_idx = (dev_in.type, dev_in.index)
-    return dev_type + (':' + str(dev_idx) if dev_idx is not None else '')
+    return dev_type + (':' + (str(dev_idx) if dev_idx is not None else '0'))
 
 
 def dev_str(x):
