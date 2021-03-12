@@ -201,11 +201,18 @@ def unstack(x, axis):
 
 
 def split(x, num_sections=None, axis=0):
+    if x.shape == ():
+        if num_sections is not None and num_sections != 1:
+            raise Exception('input array had no shape, but num_sections specified was {}'.format(num_sections))
+        return [x]
     num_sections = x.shape[axis] if not num_sections else num_sections
     return _mx.nd.split(x, x.shape[axis] if not num_sections else num_sections, axis)
 
 
-tile = _mx.nd.tile
+def tile(x, reps):
+    if isinstance(reps, _mx.nd.ndarray.NDArray):
+        reps = reps.asnumpy().tolist()
+    return _mx.nd.tile(_flat_array_to_1_dim_array(x), reps)
 
 
 def constant_pad(x, pad_width, value=0, x_shape=None):

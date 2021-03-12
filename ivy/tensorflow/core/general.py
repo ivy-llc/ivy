@@ -3,8 +3,10 @@ Collection of TensorFlow general functions, wrapped to fit Ivy syntax and signat
 """
 
 # global
-from functools import reduce as _reduce
+from numbers import Number
 from operator import mul as _mul
+from functools import reduce as _reduce
+from tensorflow.python.types.core import Tensor
 
 _round = round
 
@@ -113,13 +115,26 @@ def unstack(x, axis):
 
 
 def split(x, num_sections=None, axis=0):
+    if x.shape == ():
+        if num_sections is not None and num_sections != 1:
+            raise Exception('input array had no shape, but num_sections specified was {}'.format(num_sections))
+        return [x]
     if num_sections is None:
         dim_size = _tf.shape(x)[axis]
         num_sections = dim_size
     return _tf.split(x, num_sections, axis)
 
 
-tile = _tf.tile
+def tile(x, reps):
+    if x.shape == ():
+        x = _tf.reshape(x, (-1,))
+    if isinstance(reps, Number):
+        reps = [reps]
+    if isinstance(reps, Tensor) and reps.shape == ():
+        reps = _tf.reshape(reps, (-1,))
+    return _tf.tile(x, reps)
+
+
 constant_pad = lambda x, pad_width, value=0, x_shape=None: _tf.pad(x, pad_width, constant_values=value)
 zero_pad = lambda x, pad_width, x_shape=None: _tf.pad(x, pad_width)
 
