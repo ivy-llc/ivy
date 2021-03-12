@@ -11,4 +11,7 @@ use = ivy.framework_handler.ContextManager(sys.modules[__name__])
 
 Array = mx.ndarray.ndarray.NDArray
 Variable = mx.ndarray.ndarray.NDArray
+Device = mx.context.Context
+Dtype = type
+
 backend = 'mxnd'
