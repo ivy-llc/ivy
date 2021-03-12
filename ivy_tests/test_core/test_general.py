@@ -829,27 +829,84 @@ def test_constant_pad(x_n_pw_n_val, dtype_str, tensor_fn, dev_str, call):
     helpers.assert_compilable(ivy.constant_pad)
 
 
-def test_swapaxes(dev_str, call):
-    assert np.array_equal(call(ivy.swapaxes, ivy.array([[0., 0.]]), 1, 0),
-                          np.swapaxes(np.array([[0., 0.]]), 1, 0))
-    assert np.array_equal(call(ivy.swapaxes, ivy.array([[0., 0.]]), -1, -2),
-                          np.swapaxes(np.array([[0., 0.]]), -1, -2))
+# swapaxes
+@pytest.mark.parametrize(
+    "x_n_ax0_n_ax1", [([[1.]], 0, 1), ([[0., 1., 2., 3.]], 1, 0), ([[[0., 1., 2.], [3., 4., 5.]]], -2, -1)])
+@pytest.mark.parametrize(
+    "dtype_str", ['float32'])
+@pytest.mark.parametrize(
+    "tensor_fn", [ivy.array, _var_fn])
+def test_swapaxes(x_n_ax0_n_ax1, dtype_str, tensor_fn, dev_str, call):
+    # smoke test
+    x, ax0, ax1 = x_n_ax0_n_ax1
+    if isinstance(x, Number) and tensor_fn == _var_fn and call is helpers.mx_call:
+        # mxnet does not support 0-dimensional variables
+        pytest.skip()
+    x = tensor_fn(x, dtype_str, dev_str)
+    ret = ivy.swapaxes(x, ax0, ax1)
+    # type test
+    assert isinstance(ret, ivy.Array)
+    # cardinality test
+    expected_shape = list(x.shape)
+    expected_shape[ax0], expected_shape[ax1] = expected_shape[ax1], expected_shape[ax0]
+    assert ret.shape == tuple(expected_shape)
+    # value test
+    assert np.allclose(call(ivy.swapaxes, x, ax0, ax1),
+                       ivy.numpy.swapaxes(ivy.to_numpy(x), ax0, ax1))
+    # compilation test
     helpers.assert_compilable(ivy.swapaxes)
 
 
-def test_transpose(dev_str, call):
-    assert np.array_equal(call(ivy.transpose, ivy.array([[0., 0.]]), [1, 0]),
-                          np.transpose(np.array([[0., 0.]]), [1, 0]))
-    assert np.array_equal(call(ivy.transpose, ivy.array([[[0., 0.]]]), [2, 0, 1]),
-                          np.transpose(np.array([[[0., 0.]]]), [2, 0, 1]))
+# transpose
+@pytest.mark.parametrize(
+    "x_n_axes", [([[1.]], [1, 0]), ([[0., 1., 2., 3.]], [1, 0]), ([[[0., 1., 2.], [3., 4., 5.]]], [0, 2, 1])])
+@pytest.mark.parametrize(
+    "dtype_str", ['float32'])
+@pytest.mark.parametrize(
+    "tensor_fn", [ivy.array, _var_fn])
+def test_transpose(x_n_axes, dtype_str, tensor_fn, dev_str, call):
+    # smoke test
+    x, axes = x_n_axes
+    if isinstance(x, Number) and tensor_fn == _var_fn and call is helpers.mx_call:
+        # mxnet does not support 0-dimensional variables
+        pytest.skip()
+    x = tensor_fn(x, dtype_str, dev_str)
+    ret = ivy.transpose(x, axes)
+    # type test
+    assert isinstance(ret, ivy.Array)
+    # cardinality test
+    x_shape = x.shape
+    assert ret.shape == tuple([x.shape[idx] for idx in axes])
+    # value test
+    assert np.allclose(call(ivy.transpose, x, axes), ivy.numpy.transpose(ivy.to_numpy(x), axes))
+    # compilation test
     helpers.assert_compilable(ivy.transpose)
 
 
-def test_expand_dims(dev_str, call):
-    assert np.array_equal(call(ivy.expand_dims, ivy.array([[0., 0.]]), 0),
-                          np.expand_dims(np.array([[0., 0.]]), 0))
-    assert np.array_equal(call(ivy.expand_dims, ivy.array([[[0., 0.]]]), -1),
-                          np.expand_dims(np.array([[[0., 0.]]]), -1))
+# expand_dims
+@pytest.mark.parametrize(
+    "x_n_axis", [(1., 0), (1., -1), ([1.], 0), ([[0., 1., 2., 3.]], -2), ([[[0., 1., 2.], [3., 4., 5.]]], -3)])
+@pytest.mark.parametrize(
+    "dtype_str", ['float32'])
+@pytest.mark.parametrize(
+    "tensor_fn", [ivy.array, _var_fn])
+def test_expand_dims(x_n_axis, dtype_str, tensor_fn, dev_str, call):
+    # smoke test
+    x, axis = x_n_axis
+    if isinstance(x, Number) and tensor_fn == _var_fn and call is helpers.mx_call:
+        # mxnet does not support 0-dimensional variables
+        pytest.skip()
+    x = tensor_fn(x, dtype_str, dev_str)
+    ret = ivy.expand_dims(x, axis)
+    # type test
+    assert isinstance(ret, ivy.Array)
+    # cardinality test
+    expected_shape = list(x.shape)
+    expected_shape.insert(axis, 1)
+    assert ret.shape == tuple(expected_shape)
+    # value test
+    assert np.allclose(call(ivy.expand_dims, x, axis), ivy.numpy.expand_dims(ivy.to_numpy(x), axis))
+    # compilation test
     helpers.assert_compilable(ivy.expand_dims)
 
 
