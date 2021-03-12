@@ -729,7 +729,7 @@ def scatter_flat(indices, updates, size, reduction='sum', dev_str=None, f=None):
     :type updates: array
     :param size: The size of the result.
     :type size: int
-    :param reduction: The reduction method for the scatter, one of 'sum', 'min' or 'max'
+    :param reduction: The reduction method for the scatter, one of 'sum', 'min', 'max' or 'replace'
     :type reduction: str
     :param dev_str: device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc. Same as updates if None.
     :type dev_str: str, optional
@@ -741,7 +741,7 @@ def scatter_flat(indices, updates, size, reduction='sum', dev_str=None, f=None):
 
 
 # noinspection PyShadowingNames
-def scatter_nd(indices, updates, shape, num_idx_dims=None, reduction='sum', dev_str=None, f=None):
+def scatter_nd(indices, updates, shape, reduction='sum', dev_str=None, f=None):
     """
     Scatter updates into a new array according to indices.
 
@@ -751,8 +751,6 @@ def scatter_nd(indices, updates, shape, num_idx_dims=None, reduction='sum', dev_
     :type updates: array
     :param shape: The shape of the result.
     :type shape: sequence of ints
-    :param num_idx_dims: Number of dimensions for indices array. Required for MXNet symbolic.
-    :type num_idx_dims: int
     :param reduction: The reduction method for the scatter, one of 'sum', 'min' or 'max'
     :type reduction: str
     :param dev_str: device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc. Same as updates if None.
@@ -761,7 +759,7 @@ def scatter_nd(indices, updates, shape, num_idx_dims=None, reduction='sum', dev_
     :type f: ml_framework, optional
     :return: New array of given shape, with the values scattered at the indices.
     """
-    return _get_framework(indices, f=f).scatter_nd(indices, updates, shape, num_idx_dims, reduction, dev_str)
+    return _get_framework(indices, f=f).scatter_nd(indices, updates, shape, reduction, dev_str)
 
 
 # noinspection PyShadowingNames

@@ -401,13 +401,13 @@ def scatter_flat(indices, updates, size: int, reduction: str = 'sum', dev_str: O
             import torch_scatter as torch_scatter
         except:
             raise Exception('Unable to import torch_scatter, verify this is correctly installed.')
-    res = torch_scatter.scatter(updates, indices, out=output, reduce=reduction)
+    res = torch_scatter.scatter(updates, indices.type(torch.int64), out=output, reduce=reduction)
     res = torch.where(res == initial_val, torch.zeros([size], dtype=updates.dtype).to(_dev_str_to_dev(dev_str)), res)
     return res
 
 
 # noinspection PyShadowingNames
-def scatter_nd(indices, updates, shape, num_idx_dims=None, reduction='sum', dev_str=None):
+def scatter_nd(indices, updates, shape, reduction='sum', dev_str=None):
     if dev_str is None:
         dev_str = _callable_dev_str(updates)
     shape = list(shape)
