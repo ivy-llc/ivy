@@ -13,7 +13,7 @@ DTYPE_DICT = {_np.dtype('bool'): 'bool',
               _np.dtype('int16'): 'int16',
               _np.dtype('int32'): 'int32',
               _np.dtype('int64'): 'int64',
-              _np.dtype('float16'): 'float32',
+              _np.dtype('float16'): 'float16',
               _np.dtype('float32'): 'float32',
               _np.dtype('float64'): 'float64'}
 

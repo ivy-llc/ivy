@@ -39,4 +39,16 @@ class Framework:
         pass
 
 
+class Device:
+
+    def __init__(self):
+        pass
+
+
+class Dtype:
+
+    def __init__(self):
+        pass
+
+
 backend = 'none'

@@ -4,17 +4,16 @@ Collection of tests for templated general functions
 
 # global
 import pytest
-import ivy.numpy
 import numpy as np
 from numbers import Number
+from collections.abc import Sequence
 # noinspection PyPackageRequirements
 from jaxlib.xla_extension import Buffer
 
 # local
 import ivy
+import ivy.numpy
 import ivy_tests.helpers as helpers
-
-from collections.abc import Sequence
 
 
 # Helpers #
@@ -37,25 +36,6 @@ def _get_shape_of_list(lst, shape=()):
     shape += (len(lst),)
     shape = _get_shape_of_list(lst[0], shape)
     return shape
-
-
-def np_scatter(indices, updates, shape, reduction='sum'):
-    indices_flat = indices.reshape(-1, indices.shape[-1]).T
-    indices_tuple = tuple(indices_flat) + (Ellipsis,)
-    if reduction == 'sum':
-        target = np.zeros(shape, dtype=updates.dtype)
-        np.add.at(target, indices_tuple, updates)
-    elif reduction == 'min':
-        target = np.ones(shape, dtype=updates.dtype)*1e12
-        np.minimum.at(target, indices_tuple, updates)
-        target = np.where(target == 1e12, 0., target)
-    elif reduction == 'max':
-        target = np.ones(shape, dtype=updates.dtype)*-1e12
-        np.maximum.at(target, indices_tuple, updates)
-        target = np.where(target == -1e12, 0., target)
-    else:
-        raise Exception('Invalid reduction selected')
-    return target
 
 
 # Tests #
@@ -1396,38 +1376,178 @@ def test_gather_nd(prms_n_inds, dtype_str, tensor_fn, dev_str, call):
     helpers.assert_compilable(ivy.gather_nd)
 
 
-def test_dev(dev_str, call):
-    assert ivy.dev(ivy.array([1.]))
+# dev
+@pytest.mark.parametrize(
+    "x", [1, [], [1], [[0.0, 1.0], [2.0, 3.0]]])
+@pytest.mark.parametrize(
+    "dtype_str", ['float32'])
+@pytest.mark.parametrize(
+    "tensor_fn", [ivy.array, _var_fn])
+def test_dev(x, dtype_str, tensor_fn, dev_str, call):
+    # smoke test
+    if (isinstance(x, Number) or len(x) == 0) and tensor_fn == _var_fn and call is helpers.mx_call:
+        # mxnet does not support 0-dimensional variables
+        pytest.skip()
+    x = tensor_fn(x, dtype_str, dev_str)
+    ret = ivy.dev(x)
+    # type test
+    assert isinstance(ret, ivy.Device)
+    # compilation test
     helpers.assert_compilable(ivy.dev)
 
 
-def test_dev_to_str(dev_str, call):
-    assert 'cpu' in ivy.dev_to_str(ivy.dev(ivy.array([0.]))).lower()
+# dev_to_str
+@pytest.mark.parametrize(
+    "x", [1, [], [1], [[0.0, 1.0], [2.0, 3.0]]])
+@pytest.mark.parametrize(
+    "dtype_str", ['float32'])
+@pytest.mark.parametrize(
+    "tensor_fn", [ivy.array, _var_fn])
+def test_dev_to_str(x, dtype_str, tensor_fn, dev_str, call):
+    # smoke test
+    if (isinstance(x, Number) or len(x) == 0) and tensor_fn == _var_fn and call is helpers.mx_call:
+        # mxnet does not support 0-dimensional variables
+        pytest.skip()
+    x = tensor_fn(x, dtype_str, dev_str)
+    dev = ivy.dev(x)
+    ret = ivy.dev_to_str(dev)
+    # type test
+    assert isinstance(ret, str)
+    # value test
+    assert ret == dev_str
+    # compilation test
     helpers.assert_compilable(ivy.dev_to_str)
 
 
-def test_dev_str(dev_str, call):
-    assert 'cpu' in ivy.dev_str(ivy.array([0.])).lower()
+# dev_str
+@pytest.mark.parametrize(
+    "x", [1, [], [1], [[0.0, 1.0], [2.0, 3.0]]])
+@pytest.mark.parametrize(
+    "dtype_str", ['float32'])
+@pytest.mark.parametrize(
+    "tensor_fn", [ivy.array, _var_fn])
+def test_dev_str(x, dtype_str, tensor_fn, dev_str, call):
+    # smoke test
+    if (isinstance(x, Number) or len(x) == 0) and tensor_fn == _var_fn and call is helpers.mx_call:
+        # mxnet does not support 0-dimensional variables
+        pytest.skip()
+    x = tensor_fn(x, dtype_str, dev_str)
+    ret = ivy.dev_str(x)
+    # type test
+    assert isinstance(ret, str)
+    # value test
+    assert ret == dev_str
+    # compilation test
     helpers.assert_compilable(ivy.dev_str)
 
 
-def test_dtype(dev_str, call):
-    assert ivy.dtype(ivy.array([0.])) == ivy.array([0.]).dtype
+# dtype
+@pytest.mark.parametrize(
+    "x", [1, [], [1], [[0.0, 1.0], [2.0, 3.0]]])
+@pytest.mark.parametrize(
+    "dtype_str", [None, 'float16', 'float32', 'float64', 'int8', 'int16', 'int32', 'int64', 'bool'])
+@pytest.mark.parametrize(
+    "tensor_fn", [ivy.array])
+def test_dtype(x, dtype_str, tensor_fn, dev_str, call):
+    # smoke test
+    if call in [helpers.mx_call] and dtype_str == 'int16':
+        # mxnet does not support int16
+        pytest.skip()
+    if (isinstance(x, Number) or len(x) == 0) and tensor_fn == _var_fn and call is helpers.mx_call:
+        # mxnet does not support 0-dimensional variables
+        pytest.skip()
+    x = tensor_fn(x, dtype_str, dev_str)
+    ret = ivy.dtype(x)
+    # type test
+    assert isinstance(ret, ivy.Dtype)
+    # compilation test
     helpers.assert_compilable(ivy.dtype)
 
 
-def test_dtype_to_str(dev_str, call):
-    assert ivy.dtype_to_str(ivy.array([0.], dtype_str='float32').dtype) == 'float32'
+# dtype_to_str
+@pytest.mark.parametrize(
+    "x", [1, [], [1], [[0.0, 1.0], [2.0, 3.0]]])
+@pytest.mark.parametrize(
+    "dtype_str", ['float16', 'float32', 'float64', 'int8', 'int16', 'int32', 'int64', 'bool'])
+@pytest.mark.parametrize(
+    "tensor_fn", [ivy.array])
+def test_dtype_to_str(x, dtype_str, tensor_fn, dev_str, call):
+    # smoke test
+    if call is helpers.mx_call and dtype_str == 'int16':
+        # mxnet does not support int16
+        pytest.skip()
+    if call is helpers.jnp_call and dtype_str in ['int64', 'float64']:
+        # jax does not support int64 or float64 arrays
+        pytest.skip()
+    if (isinstance(x, Number) or len(x) == 0) and tensor_fn == _var_fn and call is helpers.mx_call:
+        # mxnet does not support 0-dimensional variables
+        pytest.skip()
+    x = tensor_fn(x, dtype_str, dev_str)
+    dtype = ivy.dtype(x)
+    ret = ivy.dtype_to_str(dtype)
+    # type test
+    assert isinstance(ret, str)
+    # value test
+    assert ret == dtype_str
+    # compilation test
     helpers.assert_compilable(ivy.dtype_to_str)
 
 
-def test_dtype_str(dev_str, call):
-    assert ivy.dtype_str(ivy.array([0.], dtype_str='float32')) == 'float32'
+# dtype_str
+@pytest.mark.parametrize(
+    "x", [1, [], [1], [[0.0, 1.0], [2.0, 3.0]]])
+@pytest.mark.parametrize(
+    "dtype_str", ['float16', 'float32', 'float64', 'int8', 'int16', 'int32', 'int64', 'bool'])
+@pytest.mark.parametrize(
+    "tensor_fn", [ivy.array])
+def test_dtype_str(x, dtype_str, tensor_fn, dev_str, call):
+    # smoke test
+    if call is helpers.mx_call and dtype_str == 'int16':
+        # mxnet does not support int16
+        pytest.skip()
+    if call is helpers.jnp_call and dtype_str in ['int64', 'float64']:
+        # jax does not support int64 or float64 arrays
+        pytest.skip()
+    if (isinstance(x, Number) or len(x) == 0) and tensor_fn == _var_fn and call is helpers.mx_call:
+        # mxnet does not support 0-dimensional variables
+        pytest.skip()
+    x = tensor_fn(x, dtype_str, dev_str)
+    ret = ivy.dtype_str(x)
+    # type test
+    assert isinstance(ret, str)
+    # value test
+    assert ret == dtype_str
+    # compilation test
     helpers.assert_compilable(ivy.dtype_str)
 
 
-def test_compile_fn(dev_str, call):
-    some_fn = lambda x: x**2
-    example_inputs = ivy.array([2.])
-    new_fn = ivy.compile_fn(some_fn, False, example_inputs)
-    assert np.allclose(call(new_fn, example_inputs), np.array([4.]))
+# compile_fn
+def _fn_1(x):
+    return x**2
+
+
+def _fn_2(x):
+    return (x + 10)**0.5 - 5
+
+
+@pytest.mark.parametrize(
+    "x", [[1], [[0.0, 1.0], [2.0, 3.0]]])
+@pytest.mark.parametrize(
+    "fn", [_fn_1, _fn_2])
+@pytest.mark.parametrize(
+    "dtype_str", ['float32'])
+@pytest.mark.parametrize(
+    "tensor_fn", [ivy.array, _var_fn])
+def test_compile_fn(x, fn, dtype_str, tensor_fn, dev_str, call):
+    # smoke test
+    if (isinstance(x, Number) or len(x) == 0) and tensor_fn == _var_fn and call is helpers.mx_call:
+        # mxnet does not support 0-dimensional variables
+        pytest.skip()
+    x = tensor_fn(x, dtype_str, dev_str)
+    comp_fn = ivy.compile_fn(fn)
+    # type test
+    assert callable(comp_fn)
+    # value test
+    non_compiled_return = fn(x)
+    compiled_return = comp_fn(x)
+    assert np.allclose(ivy.to_numpy(non_compiled_return), ivy.to_numpy(compiled_return))

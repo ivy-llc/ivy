@@ -10,10 +10,7 @@ use = ivy.framework_handler.ContextManager(sys.modules[__name__])
 
 Array = torch.Tensor
 Variable = torch.Tensor
-
-
-def tensor_classes() -> List[torch.Tensor]:
-    return [torch.Tensor]
-
+Device = torch.device
+Dtype = torch.dtype
 
 backend = 'torch'
