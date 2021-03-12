@@ -215,8 +215,11 @@ def tile(x, reps):
     return _mx.nd.tile(_flat_array_to_1_dim_array(x), reps)
 
 
-def constant_pad(x, pad_width, value=0, x_shape=None):
-    x_shape = list(x.shape) if not x_shape else x_shape
+def constant_pad(x, pad_width, value=0):
+    x = _flat_array_to_1_dim_array(x)
+    if isinstance(pad_width, _mx.ndarray.ndarray.NDArray):
+        pad_width = pad_width.asnumpy().tolist()
+    x_shape = list(x.shape)
     num_dims = len(x_shape)
     if num_dims > 3:
         raise Exception('Invalid inputs. Pad for mxnet only supports inputs with 3 dimensions or smaller.')
@@ -231,8 +234,8 @@ def constant_pad(x, pad_width, value=0, x_shape=None):
     return res
 
 
-def zero_pad(x, pad_width, x_shape=None):
-    return constant_pad(x, pad_width, 0, x_shape)
+def zero_pad(x, pad_width):
+    return constant_pad(x, pad_width, 0)
 
 
 swapaxes = _mx.nd.swapaxes

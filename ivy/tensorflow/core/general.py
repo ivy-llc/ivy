@@ -135,8 +135,16 @@ def tile(x, reps):
     return _tf.tile(x, reps)
 
 
-constant_pad = lambda x, pad_width, value=0, x_shape=None: _tf.pad(x, pad_width, constant_values=value)
-zero_pad = lambda x, pad_width, x_shape=None: _tf.pad(x, pad_width)
+def constant_pad(x, pad_width, value=0):
+    if x.shape == ():
+        x = _tf.reshape(x, (-1,))
+    return _tf.pad(x, pad_width, constant_values=value)
+
+
+def zero_pad(x, pad_width):
+    if x.shape == ():
+        x = _tf.reshape(x, (-1,))
+    return _tf.pad(x, pad_width)
 
 
 def swapaxes(x, axis0, axis1):
