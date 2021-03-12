@@ -148,7 +148,7 @@ def transpose(x, axes=None):
 
 
 expand_dims = _jnp.expand_dims
-where = lambda condition, x1, x2, condition_shape=None, x_shape=None: _jnp.where(condition, x1, x2)
+where = lambda condition, x1, x2: _jnp.where(condition, x1, x2)
 
 
 def indices_where(x):

@@ -494,7 +494,7 @@ def expand_dims(x, axis, f=None):
     return _get_framework(x, f=f).expand_dims(x, axis)
 
 
-def where(condition, x1, x2, condition_shape=None, x_shape=None, f=None):
+def where(condition, x1, x2, f=None):
     """
     Returns elements chosen from x or y depending on condition.
 
@@ -504,15 +504,11 @@ def where(condition, x1, x2, condition_shape=None, x_shape=None, f=None):
     :type x1: array
     :param x2: values from which to choose when condition is False.
     :type x2: array
-    :param condition_shape: Shape of condition. Required for mxnet symbolic.
-    :type condition_shape: sequence of ints
-    :param x_shape: Shape of x1 and x2. Required for mxnet symbolic.
-    :type x_shape: sequence of ints
     :param f: Machine learning framework. Inferred from inputs if None.
     :type f: ml_framework, optional
     :return: An array with elements from x1 where condition is True, and elements from x2 elsewhere.
     """
-    return _get_framework(x1, f=f).where(condition, x1, x2, condition_shape, x_shape)
+    return _get_framework(x1, f=f).where(condition, x1, x2)
 
 
 def indices_where(x, f=None):

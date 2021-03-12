@@ -162,7 +162,7 @@ def swapaxes(x, axis0, axis1):
 
 transpose = _tf.transpose
 expand_dims = _tf.expand_dims
-where = lambda condition, x1, x2, condition_shape=None, x_shape=None: _tf.where(condition, x1, x2)
+where = lambda condition, x1, x2: _tf.where(_tf.cast(condition, _tf.bool), x1, x2)
 indices_where = _tf.where
 reshape = _tf.reshape
 squeeze = _tf.squeeze

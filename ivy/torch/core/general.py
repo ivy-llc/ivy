@@ -258,8 +258,8 @@ def expand_dims(x, axis: int):
     return torch.unsqueeze(x, axis)
 
 
-def where(condition, x1, x2, condition_shape: Optional[List[int]] = None, x_shape: Optional[List[int]] = None):
-    return torch.where(condition, x1, x2)
+def where(condition, x1, x2):
+    return torch.where(condition.type(torch.bool), x1, x2)
 
 
 def indices_where(x):

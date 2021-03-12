@@ -910,27 +910,65 @@ def test_expand_dims(x_n_axis, dtype_str, tensor_fn, dev_str, call):
     helpers.assert_compilable(ivy.expand_dims)
 
 
-def test_where(dev_str, call):
-    assert np.array_equal(call(ivy.where, ivy.array([[0., 1.]]) > 0,
-                               ivy.array([[1., 1.]]), ivy.array([[2., 2.]]),
-                               condition_shape=[1, 2], x_shape=[1, 2]),
-                          np.where(np.array([[0., 1.]]) > 0, np.array([[0., 1.]]), np.array([[2., 2.]])))
-    assert np.array_equal(call(ivy.where, ivy.array([[[1., 0.]]]) > 0,
-                               ivy.array([[[1., 1.]]]), ivy.array([[[2., 2.]]]),
-                               condition_shape=[1, 1, 2], x_shape=[1, 1, 2]),
-                          np.where(np.array([[[1., 0.]]]) > 0, np.array([[[1., 1.]]]), np.array([[[2., 2.]]])))
+# where
+@pytest.mark.parametrize(
+    "cond_n_x1_n_x2", [(True, 2., 3.), (0., 2., 3.), ([True], [2.], [3.]), ([[0.]], [[2., 3.]], [[4., 5.]])])
+@pytest.mark.parametrize(
+    "dtype_str", ['float32'])
+@pytest.mark.parametrize(
+    "tensor_fn", [ivy.array, _var_fn])
+def test_where(cond_n_x1_n_x2, dtype_str, tensor_fn, dev_str, call):
+    # smoke test
+    cond, x1, x2 = cond_n_x1_n_x2
+    if (isinstance(cond, Number) or isinstance(x1, Number) or isinstance(x2, Number))\
+            and tensor_fn == _var_fn and call is helpers.mx_call:
+        # mxnet does not support 0-dimensional variables
+        pytest.skip()
+    cond = tensor_fn(cond, dtype_str, dev_str)
+    x1 = tensor_fn(x1, dtype_str, dev_str)
+    x2 = tensor_fn(x2, dtype_str, dev_str)
+    ret = ivy.where(cond, x1, x2)
+    # type test
+    try:
+        assert isinstance(ret, ivy.Array)
+    except AssertionError:
+        assert isinstance(ret, Buffer)
+    # cardinality test
+    assert ret.shape == x1.shape
+    # value test
+    assert np.allclose(call(ivy.where, cond, x1, x2),
+                       ivy.numpy.where(ivy.to_numpy(cond), ivy.to_numpy(x1), ivy.to_numpy(x2)))
+    # compilation test
+    if call in [helpers.torch_call]:
+        # pytorch scripting does not support .type() method
+        return
     helpers.assert_compilable(ivy.where)
 
 
-def test_indices_where(dev_str, call):
-    assert np.array_equal(call(ivy.indices_where, ivy.array([[False, True],
-                                                              [True, False],
-                                                              [True, True]])),
-                          np.array([[0, 1], [1, 0], [2, 0], [2, 1]]))
-    assert np.array_equal(call(ivy.indices_where, ivy.array([[[False, True],
-                                                               [True, False],
-                                                               [True, True]]])),
-                          np.array([[0, 0, 1], [0, 1, 0], [0, 2, 0], [0, 2, 1]]))
+# indices_where
+@pytest.mark.parametrize(
+    "x", [[True], [[0., 1.], [2., 3.]]])
+@pytest.mark.parametrize(
+    "dtype_str", ['float32'])
+@pytest.mark.parametrize(
+    "tensor_fn", [ivy.array, _var_fn])
+def test_indices_where(x, dtype_str, tensor_fn, dev_str, call):
+    # smoke test
+    if isinstance(x, Number) and tensor_fn == _var_fn and call is helpers.mx_call:
+        # mxnet does not support 0-dimensional variables
+        pytest.skip()
+    x = tensor_fn(x, dtype_str, dev_str)
+    ret = ivy.indices_where(x)
+    # type test
+    try:
+        assert isinstance(ret, ivy.Array)
+    except AssertionError:
+        assert isinstance(ret, Buffer)
+    # cardinality test
+    assert ret.shape[-1] == len(x.shape)
+    # value test
+    assert np.allclose(call(ivy.indices_where, x), ivy.numpy.indices_where(ivy.to_numpy(x)))
+    # compilation test
     helpers.assert_compilable(ivy.indices_where)
 
 
