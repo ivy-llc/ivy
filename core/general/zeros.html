@@ -89,7 +89,7 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../container.html">Container</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../general.html">General</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="tensor.html">tensor</a></li>
+<li class="toctree-l2"><a class="reference internal" href="array.html">array</a></li>
 <li class="toctree-l2"><a class="reference internal" href="to_numpy.html">to_numpy</a></li>
 <li class="toctree-l2"><a class="reference internal" href="to_list.html">to_list</a></li>
 <li class="toctree-l2"><a class="reference internal" href="shape.html">shape</a></li>
@@ -237,20 +237,20 @@
 <h1>zeros<a class="headerlink" href="#zeros" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
 <dt id="ivy.core.general.zeros">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname"><span class="pre">zeros</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">shape</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype_str</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'float32'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dev</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/general.html#zeros"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.core.general.zeros" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return a new tensor of given shape and type, filled with zeros.</p>
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname"><span class="pre">zeros</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">shape</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype_str</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'float32'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dev_str</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/general.html#zeros"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.core.general.zeros" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a new array of given shape and type, filled with zeros.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>shape</strong> (<em>sequence of ints</em>) – Shape of the new tensor, e.g. (2, 3).</p></li>
-<li><p><strong>dtype_str</strong> – The desired data-type for the tensor in string format, i.e. ‘float32’ or ‘int64’.</p></li>
+<li><p><strong>shape</strong> (<em>sequence of ints</em>) – Shape of the new array, e.g. (2, 3).</p></li>
+<li><p><strong>dtype_str</strong> – The desired data-type for the array in string format, i.e. ‘float32’ or ‘int64’.</p></li>
 </ul>
 </dd>
 </dl>
 <p>Default is ‘float32’.
 :type dtype_str: data-type string, optional
-:param dev: device on which to create the tensor ‘cuda:0’, ‘cuda:1’, ‘cpu’ etc..
-:type dev: str
+:param dev_str: device on which to create the array ‘cuda:0’, ‘cuda:1’, ‘cpu’ etc..
+:type dev_str: str
 :param f: Machine learning framework. Inferred from inputs if None.
 :type f: ml_framework, optional
 :return: Tensor of zeros with the given shape and dtype_str.</p>

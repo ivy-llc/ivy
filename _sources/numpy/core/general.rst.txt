@@ -12,7 +12,7 @@ General
    :maxdepth: -1
    :caption: General
 
-   general/tensor.rst
+   general/array.rst
    general/cast.rst
    general/arange.rst
    general/linspace.rst
