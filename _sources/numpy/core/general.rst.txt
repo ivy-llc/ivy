@@ -22,6 +22,7 @@ General
    general/split.rst
    general/transpose.rst
    general/indices_where.rst
+   general/squeeze.rst
    general/zeros.rst
    general/zeros_like.rst
    general/ones.rst
