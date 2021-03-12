@@ -667,7 +667,7 @@
     <span class="k">return</span> <span class="n">_get_framework</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">expand_dims</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="where"><a class="viewcode-back" href="../../../core/general/where.html#ivy.core.general.where">[docs]</a><span class="k">def</span> <span class="nf">where</span><span class="p">(</span><span class="n">condition</span><span class="p">,</span> <span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">condition_shape</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">x_shape</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="where"><a class="viewcode-back" href="../../../core/general/where.html#ivy.core.general.where">[docs]</a><span class="k">def</span> <span class="nf">where</span><span class="p">(</span><span class="n">condition</span><span class="p">,</span> <span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns elements chosen from x or y depending on condition.</span>
 
@@ -677,15 +677,11 @@
 <span class="sd">    :type x1: array</span>
 <span class="sd">    :param x2: values from which to choose when condition is False.</span>
 <span class="sd">    :type x2: array</span>
-<span class="sd">    :param condition_shape: Shape of condition. Required for mxnet symbolic.</span>
-<span class="sd">    :type condition_shape: sequence of ints</span>
-<span class="sd">    :param x_shape: Shape of x1 and x2. Required for mxnet symbolic.</span>
-<span class="sd">    :type x_shape: sequence of ints</span>
 <span class="sd">    :param f: Machine learning framework. Inferred from inputs if None.</span>
 <span class="sd">    :type f: ml_framework, optional</span>
 <span class="sd">    :return: An array with elements from x1 where condition is True, and elements from x2 elsewhere.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">_get_framework</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">condition</span><span class="p">,</span> <span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">,</span> <span class="n">condition_shape</span><span class="p">,</span> <span class="n">x_shape</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">_get_framework</span><span class="p">(</span><span class="n">x1</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">condition</span><span class="p">,</span> <span class="n">x1</span><span class="p">,</span> <span class="n">x2</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="indices_where"><a class="viewcode-back" href="../../../core/general/indices_where.html#ivy.core.general.indices_where">[docs]</a><span class="k">def</span> <span class="nf">indices_where</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>

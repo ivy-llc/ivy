@@ -796,7 +796,7 @@ Inserts a new axis that will appear at the axis position in the expanded array s
 
 <dl class="py function">
 <dt id="ivy.core.general.where">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname"><span class="pre">where</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">condition</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">condition_shape</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_shape</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#where"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.core.general.where" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname"><span class="pre">where</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">condition</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#where"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.core.general.where" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns elements chosen from x or y depending on condition.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -804,8 +804,6 @@ Inserts a new axis that will appear at the axis position in the expanded array s
 <li><p><strong>condition</strong> (<em>bool array</em>) – Where True, yield x1, otherwise yield x2.</p></li>
 <li><p><strong>x1</strong> (<em>array</em>) – values from which to choose when condition is True.</p></li>
 <li><p><strong>x2</strong> (<em>array</em>) – values from which to choose when condition is False.</p></li>
-<li><p><strong>condition_shape</strong> (<em>sequence of ints</em>) – Shape of condition. Required for mxnet symbolic.</p></li>
-<li><p><strong>x_shape</strong> (<em>sequence of ints</em>) – Shape of x1 and x2. Required for mxnet symbolic.</p></li>
 <li><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning framework. Inferred from inputs if None.</p></li>
 </ul>
 </dd>
