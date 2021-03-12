@@ -309,10 +309,14 @@ def squeeze(x, axis=None):
 # noinspection PyShadowingNames
 def zeros(shape, dtype_str='float32', dev_str=None):
     cont = _mxnet_init_context('cpu' if not dev_str else dev_str)
+    if len(shape) == 0:
+        return _1_dim_array_to_flat_array(_mx.nd.zeros((1,), ctx=cont).astype(dtype_str))
     return _mx.nd.zeros(shape, ctx=cont).astype(dtype_str)
 
 
 def zeros_like(x, dtype_str=None, dev_str=None):
+    if x.shape == ():
+        return _mx.nd.array(0., ctx=_mxnet_init_context('cpu' if not dev_str else dev_str))
     mx_zeros = _mx.nd.zeros_like(x, ctx=_mxnet_init_context('cpu' if not dev_str else dev_str))
     return mx_zeros if not dtype_str else mx_zeros.astype(dtype_str)
 
@@ -320,10 +324,14 @@ def zeros_like(x, dtype_str=None, dev_str=None):
 # noinspection PyShadowingNames
 def ones(shape, dtype_str='float32', dev_str=None):
     cont = _mxnet_init_context('cpu' if not dev_str else dev_str)
+    if len(shape) == 0:
+        return _1_dim_array_to_flat_array(_mx.nd.ones((1,), ctx=cont).astype(dtype_str))
     return _mx.nd.ones(shape, ctx=cont).astype(dtype_str)
 
 
 def ones_like(x, dtype_str=None, dev_str=None):
+    if x.shape == ():
+        return _mx.nd.array(1., ctx=_mxnet_init_context('cpu' if not dev_str else dev_str))
     mx_ones = _mx.nd.ones_like(x, ctx=_mxnet_init_context('cpu' if not dev_str else dev_str))
     return mx_ones if dtype_str is None else mx_ones.astype(dtype_str)
 
