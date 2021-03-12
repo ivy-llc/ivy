@@ -255,14 +255,30 @@ def expand_dims(x, axis):
     return _mx.nd.expand_dims(x, axis)
 
 
-def where(condition, x1, x2, condition_shape=None, x_shape=None):
+def where(condition, x1, x2):
+    flat = False
+    if condition.shape == ():
+        condition = _flat_array_to_1_dim_array(condition)
+        flat = True
+    if x1.shape == ():
+        x1 = _flat_array_to_1_dim_array(x1)
+        flat = True
+    if x2.shape == ():
+        x2 = _flat_array_to_1_dim_array(x2)
+        flat = True
     x_shape = list(x1.shape)
     condition_shape = list(condition.shape)
     if x_shape == condition_shape:
-        return _mx.nd.where(condition, x1, x2)
+        res = _mx.nd.where(condition, x1, x2)
+        if flat:
+            return _1_dim_array_to_flat_array(res)
+        return res
     tile_reps = [int(x / c) for x, c in zip(x_shape, condition_shape)]
     tiled_condition = _mx.nd.tile(condition, tile_reps)
-    return _mx.nd.where(tiled_condition, x1, x2)
+    res = _mx.nd.where(tiled_condition, x1, x2)
+    if flat:
+        return _1_dim_array_to_flat_array(res)
+    return res
 
 
 def indices_where(x):
