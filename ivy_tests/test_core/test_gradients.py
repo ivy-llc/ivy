@@ -5,99 +5,180 @@ Collection of tests for templated gradient functions
 # global
 import pytest
 import numpy as np
+from numbers import Number
 
 # local
 import ivy
+import ivy.numpy
 import ivy_tests.helpers as helpers
 from ivy.core.container import Container
 
 
-def test_variable(dev_str, call):
+# variable
+@pytest.mark.parametrize(
+    "object_in", [[], [0.], [1], [True], [[1., 2.]]])
+@pytest.mark.parametrize(
+    "dtype_str", ['float16', 'float32', 'float64'])
+def test_variable(object_in, dtype_str, dev_str, call):
     if call is helpers.tf_graph_call:
         # cannot create variables as part of compiled tf graph
         pytest.skip()
-    call(ivy.variable, ivy.array([0.]))
-    call(ivy.variable, ivy.array([0.], 'float32'))
-    call(ivy.variable, ivy.array([[0.]]))
+    if call in [helpers.mx_call] and dtype_str == 'int16':
+        # mxnet does not support int16
+        pytest.skip()
+    if len(object_in) == 0 and call is helpers.mx_call:
+        # mxnet does not support 0-dimensional variables
+        pytest.skip()
+    # smoke test
+    ret = ivy.variable(ivy.array(object_in, dtype_str, dev_str))
+    # type test
+    assert isinstance(ret, ivy.Variable)
+    # cardinality test
+    assert ret.shape == np.array(object_in).shape
+    # value test
+    assert np.allclose(call(ivy.variable, ivy.array(object_in, dtype_str, dev_str)),
+                       np.array(object_in).astype(dtype_str))
+    # compilation test
     if call in [helpers.torch_call]:
-        # pytorch scripting does not support attribute setting
+        # pytorch scripting does not support string devices
         return
     helpers.assert_compilable(ivy.variable)
 
 
-def test_execute_with_gradients(dev_str, call):
-    # func with single return val
-    func = lambda xs_in: (xs_in['w'] * xs_in['w'])[0]
-    xs = Container({'w': ivy.variable(ivy.array([3.]))})
-    y, dydxs = call(ivy.execute_with_gradients, func, xs)
-    assert np.allclose(y, np.array(9.))
+# execute_with_gradients
+@pytest.mark.parametrize(
+    "func_n_xs_n_ty_n_te_n_tg", [(lambda xs_in: (xs_in['w'] * xs_in['w'])[0],
+                                  Container({'w': [3.]}), np.array(9.), None, {'w': np.array([6.])}),
+                                 (lambda xs_in: ((xs_in['w'] * xs_in['w'])[0], xs_in['w'] * 1.5),
+                                  Container({'w': [3.]}), np.array(9.), np.array([4.5]), {'w': np.array([6.])}),
+                                 (lambda xs_in: (xs_in['w1'] * xs_in['w2'])[0],
+                                  Container({'w1': [3.], 'w2': [5.]}), np.array(15.), None,
+                                  {'w1': np.array([5.]), 'w2': np.array([3.])})])
+@pytest.mark.parametrize(
+    "dtype_str", ['float32'])
+@pytest.mark.parametrize(
+    "tensor_fn", [ivy.array])
+def test_execute_with_gradients(func_n_xs_n_ty_n_te_n_tg, dtype_str, tensor_fn, dev_str, call):
+    # smoke test
+    func, xs_raw, true_y, true_extra, true_dydxs = func_n_xs_n_ty_n_te_n_tg
+    xs = xs_raw.map(lambda x, _: ivy.variable(ivy.array(x)))
+    if true_extra is None:
+        y, dydxs = ivy.execute_with_gradients(func, xs)
+        extra_out = None
+    else:
+        y, dydxs, extra_out = ivy.execute_with_gradients(func, xs)
+    # type test
+    assert isinstance(y, (ivy.Array, Number))
+    if call is not helpers.np_call:
+        assert isinstance(dydxs, dict)
+    # cardinality test
+    if call is not helpers.mx_call:
+        # mxnet cannot slice array down to shape (), it remains fixed at size (1,)
+        assert y.shape == true_y.shape
+    if call is not helpers.np_call:
+        for (g, g_true) in zip(dydxs.values(), true_dydxs.values()):
+            assert g.shape == g_true.shape
+    # value test
+    xs = xs_raw.map(lambda x, _: ivy.variable(ivy.array(x)))
+    if true_extra is None:
+        y, dydxs = call(ivy.execute_with_gradients, func, xs)
+    else:
+        y, dydxs, extra_out = call(ivy.execute_with_gradients, func, xs)
+    assert np.allclose(y, true_y)
+    if true_extra:
+        assert np.allclose(extra_out, true_extra)
     if call is helpers.np_call:
         # numpy doesn't support autodiff
         assert dydxs is None
     else:
-        assert np.allclose(ivy.to_numpy(dydxs['w']), np.array([6.]))
-
-    # func with multi return vals
-    func = lambda xs_in: ((xs_in['w'] * xs_in['w'])[0], xs_in['w'] * 1.5)
-    xs = Container({'w': ivy.variable(ivy.array([3.]))})
-    y, dydxs, extra_out = call(ivy.execute_with_gradients, func, xs)
-    assert np.allclose(y, np.array(9.))
-    assert np.allclose(extra_out, np.array([4.5]))
-    if call is helpers.np_call:
-        # numpy doesn't support autodiff
-        assert dydxs is None
-    else:
-        assert np.allclose(ivy.to_numpy(dydxs['w']), np.array([6.]))
-
-    # func with multi weights vals
-    func = lambda xs_in: (xs_in['w1'] * xs_in['w2'])[0]
-    xs = Container({'w1': ivy.variable(ivy.array([3.])),
-                    'w2': ivy.variable(ivy.array([5.]))})
-    y, dydxs = call(ivy.execute_with_gradients, func, xs)
-    assert np.allclose(y, np.array(15.))
-    if call is helpers.np_call:
-        # numpy doesn't support autodiff
-        assert dydxs is None
-    else:
-        assert np.allclose(ivy.to_numpy(dydxs['w1']), np.array([5.]))
-        assert np.allclose(ivy.to_numpy(dydxs['w2']), np.array([3.]))
-
-    # compile
-    if call in [helpers.torch_call]:
-        # pytorch scripting does not support internal function definitions
-        return
-    helpers.assert_compilable(ivy.execute_with_gradients)
+        for (g, g_true) in zip(dydxs.values(), true_dydxs.values()):
+            assert np.allclose(ivy.to_numpy(g), g_true)
 
 
-def test_gradient_descent_update(dev_str, call):
-    ws = Container({'w': ivy.variable(ivy.array([3.]))})
-    dcdws = Container({'w': ivy.array([6.])})
-    w_new = ivy.array(ivy.gradient_descent_update(ws, dcdws, 0.1)['w'])
-    assert np.allclose(ivy.to_numpy(w_new), np.array([2.4]))
+# gradient_descent_update
+@pytest.mark.parametrize(
+    "ws_n_grads_n_lr_n_wsnew", [(Container({'w': [3.]}), Container({'w': [6.]}), 0.1, Container({'w': [2.4]}))])
+@pytest.mark.parametrize(
+    "dtype_str", ['float32'])
+@pytest.mark.parametrize(
+    "tensor_fn", [ivy.array, helpers.var_fn])
+def test_gradient_descent_update(ws_n_grads_n_lr_n_wsnew, dtype_str, tensor_fn, dev_str, call):
+    # smoke test
+    ws_raw, dcdws_raw, lr, ws_raw_new = ws_n_grads_n_lr_n_wsnew
+    ws = ws_raw.map(lambda x, _: ivy.variable(ivy.array(x)))
+    dcdws = dcdws_raw.map(lambda x, _: ivy.array(x))
+    ws_true_new = ws_raw_new.map(lambda x, _: ivy.variable(ivy.array(x)))
+    ws_new = ivy.gradient_descent_update(ws, dcdws, lr)
+    # type test
+    assert isinstance(ws_new, dict)
+    # cardinality test
+    for (w_new, w_true_new) in zip(ws_new.values(), ws_true_new.values()):
+        assert w_new.shape == w_true_new.shape
+    # value test
+    for (w_new, w_true_new) in zip(ws_new.values(), ws_true_new.values()):
+        assert np.allclose(ivy.to_numpy(w_new), ivy.to_numpy(w_true_new))
+    # compilation test
     if call in [helpers.torch_call]:
         # pytorch scripting does not support internal function definitions
         return
     helpers.assert_compilable(ivy.gradient_descent_update)
 
 
-def test_adam_update(dev_str, call):
-    ws = Container({'w': ivy.variable(ivy.array([3.]))})
-    dcdws = Container({'w': ivy.array([6.])})
+# adam_update
+@pytest.mark.parametrize(
+    "ws_n_grads_n_lr_n_wsnew", [(Container({'w': [3.]}), Container({'w': [6.]}), 0.1, Container({'w': [2.96837726]}))])
+@pytest.mark.parametrize(
+    "dtype_str", ['float32'])
+@pytest.mark.parametrize(
+    "tensor_fn", [ivy.array, helpers.var_fn])
+def test_adam_update(ws_n_grads_n_lr_n_wsnew, dtype_str, tensor_fn, dev_str, call):
+    # smoke test
+    ws_raw, dcdws_raw, lr, ws_raw_new = ws_n_grads_n_lr_n_wsnew
+    ws = ws_raw.map(lambda x, _: ivy.variable(ivy.array(x)))
+    dcdws = dcdws_raw.map(lambda x, _: ivy.array(x))
+    ws_true_new = ws_raw_new.map(lambda x, _: ivy.variable(ivy.array(x)))
     mw = dcdws
     vw = dcdws.map(lambda x, _: x ** 2)
-    w_new = ivy.array(ivy.adam_update(ws, dcdws, 0.1, mw, vw, ivy.array(1))[0]['w'])
-    assert np.allclose(ivy.to_numpy(w_new), np.array([2.96837726]))
+    ws_new, mw_new, vw_new = ivy.adam_update(ws, dcdws, lr, mw, vw, ivy.array(1))
+    # type test
+    assert isinstance(ws_new, dict)
+    assert isinstance(mw_new, dict)
+    assert isinstance(vw_new, dict)
+    # cardinality test
+    for (w_new, w_true_new) in zip(ws_new.values(), ws_true_new.values()):
+        assert w_new.shape == w_true_new.shape
+    for (m_new, m_orig) in zip(mw_new.values(), mw.values()):
+        assert m_new.shape == m_orig.shape
+    for (v_new, v_orig) in zip(vw_new.values(), vw.values()):
+        assert v_new.shape == v_orig.shape
+    # value test
+    for (w_new, w_true_new) in zip(ws_new.values(), ws_true_new.values()):
+        assert np.allclose(ivy.to_numpy(w_new), ivy.to_numpy(w_true_new))
+    # compilation test
     if call in [helpers.torch_call]:
         # pytorch scripting does not support internal function definitions
         return
     helpers.assert_compilable(ivy.adam_update)
 
 
-def test_stop_gradient(dev_str, call):
-    x_init = ivy.array([0.])
-    x_init_np = call(lambda x: x, x_init)
-    x_new = call(ivy.stop_gradient, x_init)
-    assert np.array_equal(x_init_np, x_new)
+# gradient_descent_update
+@pytest.mark.parametrize(
+    "x_raw", [[0.]])
+@pytest.mark.parametrize(
+    "dtype_str", ['float32'])
+@pytest.mark.parametrize(
+    "tensor_fn", [ivy.array, helpers.var_fn])
+def test_stop_gradient(x_raw, dtype_str, tensor_fn, dev_str, call):
+    # smoke test
+    x = tensor_fn(x_raw, dtype_str, dev_str)
+    ret = ivy.stop_gradient(x)
+    # type test
+    assert isinstance(ret, ivy.Array)
+    # cardinality test
+    assert ret.shape == x.shape
+    # value test
+    assert np.array_equal(call(ivy.stop_gradient, x), ivy.numpy.array(x_raw, dtype_str, dev_str))
+    # compilation test
     if call in [helpers.torch_call]:
         # pytorch scripting does not support attribute setting
         return
