@@ -6,8 +6,7 @@ Collection of Ivy activation functions.
 from ivy.framework_handler import get_framework as _get_framework
 
 
-def conv1d(x, filters, strides, padding, data_format='NWC', dilations=1, filter_shape=None, num_filters=None,
-           f=None):
+def conv1d(x, filters, strides, padding, data_format='NWC', dilations=1, f=None):
     """
     Computes a 1-D convolution given 3-D input x and filters arrays.
 
@@ -23,20 +22,14 @@ def conv1d(x, filters, strides, padding, data_format='NWC', dilations=1, filter_
     :type data_format: string
     :param dilations: The dilation factor for each dimension of input.
     :type dilations: int or sequence of ints
-    :param filter_shape: Filter shape.
-    :type filter_shape: sequence of ints, needed for MXNet symbolic.
-    :param num_filters: Number of filters.
-    :type num_filters: sequence of ints, needed for MXNet symbolic.
     :param f: Machine learning library. Inferred from Inputs if None.
     :type f: ml_framework, optional
     :return: The result of the convolution operation.
     """
-    return _get_framework(x, f=f).conv1d(x, filters, strides, padding, data_format, dilations, filter_shape,
-                                         num_filters)
+    return _get_framework(x, f=f).conv1d(x, filters, strides, padding, data_format, dilations)
 
 
-def conv1d_transpose(x, filters, strides, padding, output_shape=None, data_format='NWC', dilations=1, filter_shape=None,
-                     num_filters=None, f=None):
+def conv1d_transpose(x, filters, strides, padding, output_shape=None, data_format='NWC', dilations=1, f=None):
     """
     Computes a 1-D transpose convolution given 3-D input x and filters arrays.
 
@@ -54,20 +47,14 @@ def conv1d_transpose(x, filters, strides, padding, output_shape=None, data_forma
     :type data_format: string
     :param dilations: The dilation factor for each dimension of input.
     :type dilations: int or sequence of ints
-    :param filter_shape: Filter shape.
-    :type filter_shape: sequence of ints, needed for MXNet symbolic.
-    :param num_filters: Number of filters.
-    :type num_filters: sequence of ints, needed for MXNet symbolic.
     :param f: Machine learning library. Inferred from Inputs if None.
     :type f: ml_framework, optional
     :return: The result of the transpose convolution operation.
     """
-    return _get_framework(x, f=f).conv1d_transpose(x, filters, strides, padding, output_shape, data_format, dilations,
-                                                   filter_shape, num_filters)
+    return _get_framework(x, f=f).conv1d_transpose(x, filters, strides, padding, output_shape, data_format, dilations)
 
 
-def conv2d(x, filters, strides, padding, data_format='NHWC', dilations=1, filter_shape=None, num_filters=None,
-           f=None):
+def conv2d(x, filters, strides, padding, data_format='NHWC', dilations=1, f=None):
     """
     Computes a 2-D convolution given 4-D input x and filters arrays.
 
@@ -83,20 +70,14 @@ def conv2d(x, filters, strides, padding, data_format='NHWC', dilations=1, filter
     :type data_format: string
     :param dilations: The dilation factor for each dimension of input.
     :type dilations: int or sequence of ints
-    :param filter_shape: Filter shape.
-    :type filter_shape: sequence of ints, needed for MXNet symbolic.
-    :param num_filters: Number of filters.
-    :type num_filters: sequence of ints, needed for MXNet symbolic.
     :param f: Machine learning library. Inferred from Inputs if None.
     :type f: ml_framework, optional
     :return: The result of the convolution operation.
     """
-    return _get_framework(x, f=f).conv2d(x, filters, strides, padding, data_format, dilations, filter_shape,
-                                         num_filters)
+    return _get_framework(x, f=f).conv2d(x, filters, strides, padding, data_format, dilations)
 
 
-def conv2d_transpose(x, filters, strides, padding, output_shape=None, data_format='NHWC', dilations=1,
-                     filter_shape=None, num_filters=None, f=None):
+def conv2d_transpose(x, filters, strides, padding, output_shape=None, data_format='NHWC', dilations=1, f=None):
     """
     Computes a 2-D transpose convolution given 4-D input x and filters arrays.
 
@@ -114,20 +95,14 @@ def conv2d_transpose(x, filters, strides, padding, output_shape=None, data_forma
     :type data_format: string
     :param dilations: The dilation factor for each dimension of input.
     :type dilations: int or sequence of ints
-    :param filter_shape: Filter shape.
-    :type filter_shape: sequence of ints, needed for MXNet symbolic.
-    :param num_filters: Number of filters.
-    :type num_filters: sequence of ints, needed for MXNet symbolic.
     :param f: Machine learning library. Inferred from Inputs if None.
     :type f: ml_framework, optional
     :return: The result of the transpose convolution operation.
     """
-    return _get_framework(x, f=f).conv2d_transpose(x, filters, strides, padding, output_shape, data_format, dilations,
-                                                   filter_shape, num_filters)
+    return _get_framework(x, f=f).conv2d_transpose(x, filters, strides, padding, output_shape, data_format, dilations)
 
 
-def depthwise_conv2d(x, filters, strides, padding, data_format='NHWC', dilations=1, filter_shape=None,
-                     num_filters=None, num_channels=None, f=None):
+def depthwise_conv2d(x, filters, strides, padding, data_format='NHWC', dilations=1, f=None):
     """
     Computes a 2-D depthwise convolution given 4-D input x and filters arrays.
 
@@ -143,23 +118,15 @@ def depthwise_conv2d(x, filters, strides, padding, data_format='NHWC', dilations
     :type data_format: string
     :param dilations: The dilation factor for each dimension of input.
     :type dilations: int or sequence of ints
-    :param filter_shape: Filter shape.
-    :type filter_shape: sequence of ints, needed for MXNet symbolic.
-    :param num_filters: Number of filters.
-    :type num_filters: sequence of ints, needed for MXNet symbolic.
-    :param num_channels: Number of channels.
-    :type num_channels: sequence of ints, needed for MXNet symbolic.
     :param f: Machine learning library. Inferred from Inputs if None.
     :type f: ml_framework, optional
     :return: The result of the convolution operation.
     """
-    return _get_framework(x, f=f).depthwise_conv2d(x, filters, strides, padding, data_format, dilations, filter_shape,
-                                                   num_filters, num_channels)
+    return _get_framework(x, f=f).depthwise_conv2d(x, filters, strides, padding, data_format, dilations)
 
 
 # noinspection PyDefaultArgument
-def conv3d(x, filters, strides, padding, data_format='NDHWC', dilations=1, filter_shape=None, num_filters=None,
-           f=None):
+def conv3d(x, filters, strides, padding, data_format='NDHWC', dilations=1, f=None):
     """
     Computes a 3-D convolution given 5-D input x and filters arrays.
 
@@ -175,20 +142,14 @@ def conv3d(x, filters, strides, padding, data_format='NDHWC', dilations=1, filte
     :type data_format: string
     :param dilations: The dilation factor for each dimension of input.
     :type dilations: int or sequence of ints
-    :param filter_shape: Filter shape.
-    :type filter_shape: sequence of ints, needed for MXNet symbolic.
-    :param num_filters: Number of filters.
-    :type num_filters: sequence of ints, needed for MXNet symbolic.
     :param f: Machine learning library. Inferred from Inputs if None.
     :type f: ml_framework, optional
     :return: The result of the convolution operation.
     """
-    return _get_framework(x, f=f).conv3d(x, filters, strides, padding, data_format, dilations, filter_shape,
-                                         num_filters)
+    return _get_framework(x, f=f).conv3d(x, filters, strides, padding, data_format, dilations)
 
 
-def conv3d_transpose(x, filters, strides, padding, output_shape=None, data_format='NDHWC', dilations=1,
-                     filter_shape=None, num_filters=None, f=None):
+def conv3d_transpose(x, filters, strides, padding, output_shape=None, data_format='NDHWC', dilations=1, f=None):
     """
     Computes a 3-D transpose convolution given 5-D input x and filters arrays.
 
@@ -206,19 +167,14 @@ def conv3d_transpose(x, filters, strides, padding, output_shape=None, data_forma
     :type data_format: string
     :param dilations: The dilation factor for each dimension of input.
     :type dilations: int or sequence of ints
-    :param filter_shape: Filter shape.
-    :type filter_shape: sequence of ints, needed for MXNet symbolic.
-    :param num_filters: Number of filters.
-    :type num_filters: sequence of ints, needed for MXNet symbolic.
     :param f: Machine learning library. Inferred from Inputs if None.
     :type f: ml_framework, optional
     :return: The result of the transpose convolution operation.
     """
-    return _get_framework(x, f=f).conv3d_transpose(x, filters, strides, padding, output_shape, data_format, dilations,
-                                                   filter_shape, num_filters)
+    return _get_framework(x, f=f).conv3d_transpose(x, filters, strides, padding, output_shape, data_format, dilations)
 
 
-def linear(x, weight, bias, num_hidden=None, f=None):
+def linear(x, weight, bias, f=None):
     """
     Applies a linear transformation to the incoming data: y = x * t(weight) + bias,
     where t(...) indicates transpose.
@@ -229,10 +185,8 @@ def linear(x, weight, bias, num_hidden=None, f=None):
     :type weight: array
     :param bias: The bias vector. *[out_features]*
     :type bias: array
-    :param num_hidden: Number of hidden units.
-    :type num_hidden: int, needed for MXNet symbolic.
     :param f: Machine learning framework. Inferred from inputs if None.
     :type f: ml_framework, optional
     :return: Result array of the linear transformation. *[N,∗,out_features]*
     """
-    return _get_framework(x, f=f).linear(x, weight, bias, num_hidden)
+    return _get_framework(x, f=f).linear(x, weight, bias)
