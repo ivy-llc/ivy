@@ -7,9 +7,8 @@ import tensorflow as _tf
 
 
 # noinspection PyPep8Naming
-def svd(x, batch_shape=None):
-    if batch_shape is None:
-        batch_shape = _tf.shape(x)[:-2]
+def svd(x):
+    batch_shape = _tf.shape(x)[:-2]
     num_batch_dims = len(batch_shape)
     transpose_dims = list(range(num_batch_dims)) + [num_batch_dims + 1, num_batch_dims]
     D, U, V = _tf.linalg.svd(x)
@@ -17,16 +16,14 @@ def svd(x, batch_shape=None):
     return U, D, VT
 
 
-norm = _tf.linalg.norm
+# noinspection PyShadowingBuiltins
+norm = lambda x, ord=2, axis=-1, keepdims=False: _tf.linalg.norm(x, ord, axis, keepdims)
 inv = _tf.linalg.inv
 pinv = _tf.linalg.pinv
 
 
-def vector_to_skew_symmetric_matrix(vector, batch_shape=None):
-    if batch_shape is None:
-        batch_shape = vector.shape[:-1]
-    # shapes as list
-    batch_shape = list(batch_shape)
+def vector_to_skew_symmetric_matrix(vector):
+    batch_shape = list(vector.shape[:-1])
     # BS x 3 x 1
     vector_expanded = _tf.expand_dims(vector, -1)
     # BS x 1 x 1

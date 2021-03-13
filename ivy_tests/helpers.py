@@ -160,6 +160,10 @@ def assert_compilable(fn):
         raise e
 
 
+def var_fn(a, b=None, c=None):
+    return ivy.variable(ivy.array(a, b, c))
+
+
 def exclude(exclusion_list):
     global _excluded
     _excluded = _excluded + list(set(exclusion_list) - set(_excluded))
