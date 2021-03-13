@@ -22,8 +22,5 @@ def binary_cross_entropy(x, y, epsilon=1e-7, f=None):
     :return: The binary cross entropy loss array.
     """
     f = _get_framework(x, f=f)
-    try:
-        x = f.clip(x, epsilon, 1-epsilon)
-    except:
-        d = 0
+    x = f.clip(x, epsilon, 1-epsilon)
     return -(y * f.log(x) + (1 - y) * f.log(1 - x))
