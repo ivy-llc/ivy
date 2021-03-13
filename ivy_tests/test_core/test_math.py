@@ -3,100 +3,327 @@ Collection of tests for templated math functions
 """
 
 # global
+import pytest
 import numpy as np
 
 # local
 import ivy
+import ivy.numpy
 import ivy_tests.helpers as helpers
 
 
-def test_sin(dev_str, call):
-    assert np.allclose(call(ivy.sin, ivy.array([0.])), np.sin(np.array([0.])))
-    assert np.allclose(call(ivy.sin, ivy.array([[0.]])), np.sin(np.array([[0.]])))
+# sin
+@pytest.mark.parametrize(
+    "x", [[0.], [[0.]]])
+@pytest.mark.parametrize(
+    "dtype_str", ['float32'])
+@pytest.mark.parametrize(
+    "tensor_fn", [ivy.array, helpers.var_fn])
+def test_sin(x, dtype_str, tensor_fn, dev_str, call):
+    # smoke test
+    x = tensor_fn(x, dtype_str, dev_str)
+    ret = ivy.sin(x)
+    # type test
+    assert isinstance(ret, ivy.Array)
+    # cardinality test
+    assert ret.shape == x.shape
+    # value test
+    assert np.allclose(call(ivy.sin, x), ivy.numpy.sin(ivy.to_numpy(x)))
+    # compilation test
     helpers.assert_compilable(ivy.sin)
 
 
-def test_cos(dev_str, call):
-    assert np.allclose(call(ivy.cos, ivy.array([0.])), np.cos(np.array([0.])))
-    assert np.allclose(call(ivy.cos, ivy.array([[0.]])), np.cos(np.array([[0.]])))
+# cos
+@pytest.mark.parametrize(
+    "x", [[0.], [[0.]]])
+@pytest.mark.parametrize(
+    "dtype_str", ['float32'])
+@pytest.mark.parametrize(
+    "tensor_fn", [ivy.array, helpers.var_fn])
+def test_cos(x, dtype_str, tensor_fn, dev_str, call):
+    # smoke test
+    x = tensor_fn(x, dtype_str, dev_str)
+    ret = ivy.cos(x)
+    # type test
+    assert isinstance(ret, ivy.Array)
+    # cardinality test
+    assert ret.shape == x.shape
+    # value test
+    assert np.allclose(call(ivy.cos, x), ivy.numpy.cos(ivy.to_numpy(x)))
+    # compilation test
     helpers.assert_compilable(ivy.cos)
 
 
-def test_tan(dev_str, call):
-    assert np.allclose(call(ivy.tan, ivy.array([0.])), np.tan(np.array([0.])))
-    assert np.allclose(call(ivy.tan, ivy.array([[0.]])), np.tan(np.array([[0.]])))
+# tan
+@pytest.mark.parametrize(
+    "x", [[0.], [[0.]]])
+@pytest.mark.parametrize(
+    "dtype_str", ['float32'])
+@pytest.mark.parametrize(
+    "tensor_fn", [ivy.array, helpers.var_fn])
+def test_tan(x, dtype_str, tensor_fn, dev_str, call):
+    # smoke test
+    x = tensor_fn(x, dtype_str, dev_str)
+    ret = ivy.tan(x)
+    # type test
+    assert isinstance(ret, ivy.Array)
+    # cardinality test
+    assert ret.shape == x.shape
+    # value test
+    assert np.allclose(call(ivy.tan, x), ivy.numpy.tan(ivy.to_numpy(x)))
+    # compilation test
     helpers.assert_compilable(ivy.tan)
 
 
-def test_asin(dev_str, call):
-    assert np.allclose(call(ivy.asin, ivy.array([0.])), np.arcsin(np.array([0.])))
-    assert np.allclose(call(ivy.asin, ivy.array([[0.]])), np.arcsin(np.array([[0.]])))
+# asin
+@pytest.mark.parametrize(
+    "x", [[0.], [[0.]]])
+@pytest.mark.parametrize(
+    "dtype_str", ['float32'])
+@pytest.mark.parametrize(
+    "tensor_fn", [ivy.array, helpers.var_fn])
+def test_asin(x, dtype_str, tensor_fn, dev_str, call):
+    # smoke test
+    x = tensor_fn(x, dtype_str, dev_str)
+    ret = ivy.asin(x)
+    # type test
+    assert isinstance(ret, ivy.Array)
+    # cardinality test
+    assert ret.shape == x.shape
+    # value test
+    assert np.allclose(call(ivy.asin, x), ivy.numpy.asin(ivy.to_numpy(x)))
+    # compilation test
     helpers.assert_compilable(ivy.asin)
 
 
-def test_acos(dev_str, call):
-    assert np.allclose(call(ivy.acos, ivy.array([0.])), np.arccos(np.array([0.])))
-    assert np.allclose(call(ivy.acos, ivy.array([[0.]])), np.arccos(np.array([[0.]])))
+# acos
+@pytest.mark.parametrize(
+    "x", [[0.], [[0.]]])
+@pytest.mark.parametrize(
+    "dtype_str", ['float32'])
+@pytest.mark.parametrize(
+    "tensor_fn", [ivy.array, helpers.var_fn])
+def test_acos(x, dtype_str, tensor_fn, dev_str, call):
+    # smoke test
+    x = tensor_fn(x, dtype_str, dev_str)
+    ret = ivy.acos(x)
+    # type test
+    assert isinstance(ret, ivy.Array)
+    # cardinality test
+    assert ret.shape == x.shape
+    # value test
+    assert np.allclose(call(ivy.acos, x), ivy.numpy.acos(ivy.to_numpy(x)))
+    # compilation test
     helpers.assert_compilable(ivy.acos)
 
 
-def test_atan(dev_str, call):
-    assert np.allclose(call(ivy.atan, ivy.array([0.])), np.arctan(np.array([0.])))
-    assert np.allclose(call(ivy.atan, ivy.array([[0.]])), np.arctan(np.array([[0.]])))
+# atan
+@pytest.mark.parametrize(
+    "x", [[0.], [[0.]]])
+@pytest.mark.parametrize(
+    "dtype_str", ['float32'])
+@pytest.mark.parametrize(
+    "tensor_fn", [ivy.array, helpers.var_fn])
+def test_atan(x, dtype_str, tensor_fn, dev_str, call):
+    # smoke test
+    x = tensor_fn(x, dtype_str, dev_str)
+    ret = ivy.atan(x)
+    # type test
+    assert isinstance(ret, ivy.Array)
+    # cardinality test
+    assert ret.shape == x.shape
+    # value test
+    assert np.allclose(call(ivy.atan, x), ivy.numpy.atan(ivy.to_numpy(x)))
+    # compilation test
     helpers.assert_compilable(ivy.atan)
 
 
-def test_atan2(dev_str, call):
-    assert np.array_equal(call(ivy.atan2, ivy.array([0.]), ivy.array([0.])),
-                          np.arctan2(np.array([0.]), np.array([0.])))
-    assert np.array_equal(call(ivy.atan2, ivy.array([[0.]]), ivy.array([[0.]])),
-                          np.arctan2(np.array([[0.]]), np.array([[0.]])))
+# atan2
+@pytest.mark.parametrize(
+    "x1_n_x2", [([0.], [0.]), ([[0.]], [[0.]])])
+@pytest.mark.parametrize(
+    "dtype_str", ['float32'])
+@pytest.mark.parametrize(
+    "tensor_fn", [ivy.array, helpers.var_fn])
+def test_atan2(x1_n_x2, dtype_str, tensor_fn, dev_str, call):
+    # smoke test
+    x1, x2 = x1_n_x2
+    x1 = tensor_fn(x1, dtype_str, dev_str)
+    x2 = tensor_fn(x2, dtype_str, dev_str)
+    ret = ivy.atan2(x1, x2)
+    # type test
+    assert isinstance(ret, ivy.Array)
+    # cardinality test
+    assert ret.shape == x1.shape
+    # value test
+    assert np.allclose(call(ivy.atan2, x1, x2), ivy.numpy.atan2(ivy.to_numpy(x1), ivy.to_numpy(x2)))
+    # compilation test
     helpers.assert_compilable(ivy.atan2)
 
 
-def test_sinh(dev_str, call):
-    assert np.allclose(call(ivy.sinh, ivy.array([[.1, .2, .3]])),
-                       np.sinh(np.array([[.1, .2, .3]])))  # almost equal
+# sinh
+@pytest.mark.parametrize(
+    "x", [[[.1, .2, .3]]])
+@pytest.mark.parametrize(
+    "dtype_str", ['float32'])
+@pytest.mark.parametrize(
+    "tensor_fn", [ivy.array, helpers.var_fn])
+def test_sinh(x, dtype_str, tensor_fn, dev_str, call):
+    # smoke test
+    x = tensor_fn(x, dtype_str, dev_str)
+    ret = ivy.sinh(x)
+    # type test
+    assert isinstance(ret, ivy.Array)
+    # cardinality test
+    assert ret.shape == x.shape
+    # value test
+    assert np.allclose(call(ivy.sinh, x), ivy.numpy.sinh(ivy.to_numpy(x)))
+    # compilation test
     helpers.assert_compilable(ivy.sinh)
 
 
-def test_cosh(dev_str, call):
-    assert np.allclose(call(ivy.cosh, ivy.array([[.1, .2, .3]])),
-                       np.cosh(np.array([[.1, .2, .3]])))  # almost equal
+# cosh
+@pytest.mark.parametrize(
+    "x", [[[.1, .2, .3]]])
+@pytest.mark.parametrize(
+    "dtype_str", ['float32'])
+@pytest.mark.parametrize(
+    "tensor_fn", [ivy.array, helpers.var_fn])
+def test_cosh(x, dtype_str, tensor_fn, dev_str, call):
+    # smoke test
+    x = tensor_fn(x, dtype_str, dev_str)
+    ret = ivy.cosh(x)
+    # type test
+    assert isinstance(ret, ivy.Array)
+    # cardinality test
+    assert ret.shape == x.shape
+    # value test
+    assert np.allclose(call(ivy.cosh, x), ivy.numpy.cosh(ivy.to_numpy(x)))
+    # compilation test
     helpers.assert_compilable(ivy.cosh)
 
 
-def test_tanh(dev_str, call):
-    assert np.allclose(call(ivy.tanh, ivy.array([[.1, .2, .3]])),
-                       np.tanh(np.array([[.1, .2, .3]])))  # almost equal
+# tanh
+@pytest.mark.parametrize(
+    "x", [[[.1, .2, .3]]])
+@pytest.mark.parametrize(
+    "dtype_str", ['float32'])
+@pytest.mark.parametrize(
+    "tensor_fn", [ivy.array, helpers.var_fn])
+def test_tanh(x, dtype_str, tensor_fn, dev_str, call):
+    # smoke test
+    x = tensor_fn(x, dtype_str, dev_str)
+    ret = ivy.tanh(x)
+    # type test
+    assert isinstance(ret, ivy.Array)
+    # cardinality test
+    assert ret.shape == x.shape
+    # value test
+    assert np.allclose(call(ivy.tanh, x), ivy.numpy.tanh(ivy.to_numpy(x)))
+    # compilation test
     helpers.assert_compilable(ivy.tanh)
 
 
-def test_asinh(dev_str, call):
-    assert np.allclose(call(ivy.asinh, ivy.array([[.1, .2, .3]])),
-                       np.arcsinh(np.array([[.1, .2, .3]])))  # almost equal
+# asinh
+@pytest.mark.parametrize(
+    "x", [[[.1, .2, .3]]])
+@pytest.mark.parametrize(
+    "dtype_str", ['float32'])
+@pytest.mark.parametrize(
+    "tensor_fn", [ivy.array, helpers.var_fn])
+def test_asinh(x, dtype_str, tensor_fn, dev_str, call):
+    # smoke test
+    x = tensor_fn(x, dtype_str, dev_str)
+    ret = ivy.asinh(x)
+    # type test
+    assert isinstance(ret, ivy.Array)
+    # cardinality test
+    assert ret.shape == x.shape
+    # value test
+    assert np.allclose(call(ivy.asinh, x), ivy.numpy.asinh(ivy.to_numpy(x)))
+    # compilation test
     helpers.assert_compilable(ivy.asinh)
 
 
-def test_acosh(dev_str, call):
-    assert np.allclose(call(ivy.acosh, ivy.array([[1, 1.2, 200, 10000]])),
-                       np.arccosh(np.array([[1, 1.2, 200, 10000]])))  # almost equal
+# acosh
+@pytest.mark.parametrize(
+    "x", [[[1, 1.2, 200, 10000]]])
+@pytest.mark.parametrize(
+    "dtype_str", ['float32'])
+@pytest.mark.parametrize(
+    "tensor_fn", [ivy.array, helpers.var_fn])
+def test_acosh(x, dtype_str, tensor_fn, dev_str, call):
+    # smoke test
+    x = tensor_fn(x, dtype_str, dev_str)
+    ret = ivy.acosh(x)
+    # type test
+    assert isinstance(ret, ivy.Array)
+    # cardinality test
+    assert ret.shape == x.shape
+    # value test
+    assert np.allclose(call(ivy.acosh, x), ivy.numpy.acosh(ivy.to_numpy(x)))
+    # compilation test
     helpers.assert_compilable(ivy.acosh)
 
 
-def test_atanh(dev_str, call):
-    assert np.allclose(call(ivy.atanh, ivy.array([[-0.5, 0.5]])),
-                       np.arctanh(np.array([[-0.5, 0.5]])))  # almost equal
+# atanh
+@pytest.mark.parametrize(
+    "x", [[[-0.5, 0.5]]])
+@pytest.mark.parametrize(
+    "dtype_str", ['float32'])
+@pytest.mark.parametrize(
+    "tensor_fn", [ivy.array, helpers.var_fn])
+def test_atanh(x, dtype_str, tensor_fn, dev_str, call):
+    # smoke test
+    x = tensor_fn(x, dtype_str, dev_str)
+    ret = ivy.atanh(x)
+    # type test
+    assert isinstance(ret, ivy.Array)
+    # cardinality test
+    assert ret.shape == x.shape
+    # value test
+    assert np.allclose(call(ivy.atanh, x), ivy.numpy.atanh(ivy.to_numpy(x)))
+    # compilation test
     helpers.assert_compilable(ivy.atanh)
 
 
-def test_log(dev_str, call):
-    assert np.array_equal(call(ivy.log, ivy.array([1.])), np.array([0.]))
-    assert np.array_equal(call(ivy.log, ivy.array([[1.]])), np.array([[0.]]))
+# log
+@pytest.mark.parametrize(
+    "x", [[1.], [[1.]]])
+@pytest.mark.parametrize(
+    "dtype_str", ['float32'])
+@pytest.mark.parametrize(
+    "tensor_fn", [ivy.array, helpers.var_fn])
+def test_log(x, dtype_str, tensor_fn, dev_str, call):
+    # smoke test
+    x = tensor_fn(x, dtype_str, dev_str)
+    ret = ivy.log(x)
+    # type test
+    assert isinstance(ret, ivy.Array)
+    # cardinality test
+    assert ret.shape == x.shape
+    # value test
+    assert np.allclose(call(ivy.log, x), ivy.numpy.log(ivy.to_numpy(x)))
+    # compilation test
     helpers.assert_compilable(ivy.log)
 
 
-def test_exp(dev_str, call):
-    assert np.array_equal(call(ivy.exp, ivy.array([0.])), np.array([1.]))
-    assert np.array_equal(call(ivy.exp, ivy.array([[0.]])), np.array([[1.]]))
+# exp
+@pytest.mark.parametrize(
+    "x", [[0.], [[0.]]])
+@pytest.mark.parametrize(
+    "dtype_str", ['float32'])
+@pytest.mark.parametrize(
+    "tensor_fn", [ivy.array, helpers.var_fn])
+def test_exp(x, dtype_str, tensor_fn, dev_str, call):
+    # smoke test
+    x = tensor_fn(x, dtype_str, dev_str)
+    ret = ivy.exp(x)
+    # type test
+    assert isinstance(ret, ivy.Array)
+    # cardinality test
+    assert ret.shape == x.shape
+    # value test
+    assert np.allclose(call(ivy.exp, x), ivy.numpy.exp(ivy.to_numpy(x)))
+    # compilation test
     helpers.assert_compilable(ivy.exp)
