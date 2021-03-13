@@ -5,17 +5,14 @@ Collection of Numpy linear algebra functions, wrapped to fit Ivy syntax and sign
 # global
 import numpy as _np
 
-svd = lambda x, batch_shape=None: _np.linalg.svd(x)
+svd = _np.linalg.svd
 norm = _np.linalg.norm
 inv = _np.linalg.inv
 pinv = _np.linalg.pinv
 
 
-def vector_to_skew_symmetric_matrix(vector, batch_shape=None):
-    if batch_shape is None:
-        batch_shape = vector.shape[:-1]
-    # shapes as list
-    batch_shape = list(batch_shape)
+def vector_to_skew_symmetric_matrix(vector):
+    batch_shape = list(vector.shape[:-1])
     # BS x 3 x 1
     vector_expanded = _np.expand_dims(vector, -1)
     # BS x 1 x 1

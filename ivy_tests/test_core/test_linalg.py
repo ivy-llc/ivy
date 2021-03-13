@@ -3,90 +3,138 @@ Collection of tests for templated linear algebra functions
 """
 
 # global
+import pytest
 import numpy as np
-from operator import mul
-from functools import reduce
+# noinspection PyPackageRequirements
+from jaxlib.xla_extension import Buffer
 
 # local
 import ivy
+import ivy.numpy
 import ivy_tests.helpers as helpers
 
 
-class LinAlgTestData:
-
-    def __init__(self):
-
-        self.vectors = np.array([[[1., 2., 3.]],
-                                 [[4., 5., 6.]],
-                                 [[1., 2., 3.]],
-                                 [[4., 5., 6.]],
-                                 [[1., 2., 3.]]])
-
-        self.skew_symmetric_matrices = np.array([[[[0., -3., 2.],
-                                                   [3., 0., -1.],
-                                                   [-2., 1., 0.]]],
-
-                                                 [[[0., -6., 5.],
-                                                   [6., 0., -4.],
-                                                   [-5., 4., 0.]]],
-
-                                                 [[[0., -3., 2.],
-                                                   [3., 0., -1.],
-                                                   [-2., 1., 0.]]],
-
-                                                 [[[0., -6., 5.],
-                                                   [6., 0., -4.],
-                                                   [-5., 4., 0.]]],
-
-                                                 [[[0., -3., 2.],
-                                                   [3., 0., -1.],
-                                                   [-2., 1., 0.]]]])
-
-
-td = LinAlgTestData()
-
-
-def test_svd(dev_str, call):
-    pred = call(ivy.svd, ivy.array([[[1., 0.], [0., 1.]]]))
-    true = np.linalg.svd(np.array([[[1., 0.], [0., 1.]]]))
-    assert reduce(mul, [np.array_equal(pred_, true_) for pred_, true_ in zip(pred, true)], 1) == 1
-    pred = call(ivy.svd, ivy.array([[[[1., 0.], [0., 1.]]]]))
-    true = np.linalg.svd(np.array([[[[1., 0.], [0., 1.]]]]))
-    assert reduce(mul, [np.array_equal(pred_, true_) for pred_, true_ in zip(pred, true)], 1) == 1
+# svd
+@pytest.mark.parametrize(
+    "x", [[[[1., 0.], [0., 1.]]], [[[[1., 0.], [0., 1.]]]]])
+@pytest.mark.parametrize(
+    "dtype_str", ['float32'])
+@pytest.mark.parametrize(
+    "tensor_fn", [ivy.array, helpers.var_fn])
+def test_svd(x, dtype_str, tensor_fn, dev_str, call):
+    # smoke test
+    x = tensor_fn(x, dtype_str, dev_str)
+    u, s, vh = ivy.svd(x)
+    # type test
+    assert isinstance(u, ivy.Array)
+    assert isinstance(s, ivy.Array)
+    assert isinstance(vh, ivy.Array)
+    # cardinality test
+    assert u.shape == x.shape
+    assert s.shape == x.shape[:-1]
+    assert vh.shape == x.shape
+    # value test
+    pred_u, pred_s, pred_vh = call(ivy.svd, x)
+    true_u, true_s, true_vh = ivy.numpy.svd(ivy.to_numpy(x))
+    assert np.allclose(pred_u, true_u)
+    assert np.allclose(pred_s, true_s)
+    assert np.allclose(pred_vh, true_vh)
+    # compilation test
     helpers.assert_compilable(ivy.svd)
 
 
-def test_norm(dev_str, call):
-    assert np.array_equal(call(ivy.norm, ivy.array([[1., 0.], [0., 1.]]), 1, -1),
-                          np.linalg.norm(np.array([[1., 0.], [0., 1.]]), 1, -1))
-    assert np.array_equal(call(ivy.norm, ivy.array([[1., 0.], [0., 1.]]), 1, 1),
-                          np.linalg.norm(np.array([[1., 0.], [0., 1.]]), 1, 1))
-    assert np.array_equal(call(ivy.norm, ivy.array([[1., 0.], [0., 1.]]), 1, 1, True),
-                          np.linalg.norm(np.array([[1., 0.], [0., 1.]]), 1, 1, True))
-    assert np.array_equal(call(ivy.norm, ivy.array([[[1., 0.], [0., 1.]]]), 2, -1),
-                          np.linalg.norm(np.array([[[1., 0.], [0., 1.]]]), 2, -1))
+# norm
+@pytest.mark.parametrize(
+    "x_n_ord_n_ax_n_kd", [([[1., 0.], [0., 1.]], 1, -1, None), ([[1., 0.], [0., 1.]], 1, 1, None),
+                          ([[1., 0.], [0., 1.]], 1, 1, True), ([[[1., 0.], [0., 1.]]], 2, -1, None)])
+@pytest.mark.parametrize(
+    "dtype_str", ['float32'])
+@pytest.mark.parametrize(
+    "tensor_fn", [ivy.array, helpers.var_fn])
+def test_norm(x_n_ord_n_ax_n_kd, dtype_str, tensor_fn, dev_str, call):
+    # smoke test
+    x, order, ax, kd = x_n_ord_n_ax_n_kd
+    x = tensor_fn(x, dtype_str, dev_str)
+    kwargs = dict([(k, v) for k, v in zip(['x', 'ord', 'axis', 'keepdims'], [x, order, ax, kd]) if v is not None])
+    ret = ivy.norm(**kwargs)
+    # type test
+    try:
+        assert isinstance(ret, ivy.Array)
+    except AssertionError:
+        assert isinstance(ret, Buffer)
+    # cardinality test
+    if kd:
+        expected_shape = [1 if i == ax else item for i, item in enumerate(x.shape)]
+    else:
+        expected_shape = list(x.shape)
+        expected_shape.pop(ax)
+    assert ret.shape == tuple(expected_shape)
+    # value test
+    kwargs.pop('x', None)
+    assert np.allclose(call(ivy.norm, x, **kwargs), ivy.numpy.norm(ivy.to_numpy(x), **kwargs))
+    # compilation test
     helpers.assert_compilable(ivy.norm)
 
 
-def test_inv(dev_str, call):
-    assert np.array_equal(call(ivy.inv, ivy.array([[1., 0.], [0., 1.]])),
-                          np.linalg.inv(np.array([[1., 0.], [0., 1.]])))
-    assert np.array_equal(call(ivy.inv, ivy.array([[[1., 0.], [0., 1.]]])),
-                          np.linalg.inv(np.array([[[1., 0.], [0., 1.]]])))
+# inv
+@pytest.mark.parametrize(
+    "x", [[[1., 0.], [0., 1.]], [[[1., 0.], [0., 1.]]]])
+@pytest.mark.parametrize(
+    "dtype_str", ['float32'])
+@pytest.mark.parametrize(
+    "tensor_fn", [ivy.array, helpers.var_fn])
+def test_inv(x, dtype_str, tensor_fn, dev_str, call):
+    # smoke test
+    x = tensor_fn(x, dtype_str, dev_str)
+    ret = ivy.inv(x)
+    # type test
+    assert isinstance(ret, ivy.Array)
+    # cardinality test
+    assert ret.shape == x.shape
+    # value test
+    assert np.allclose(call(ivy.inv, x), ivy.numpy.inv(ivy.to_numpy(x)))
+    # compilation test
     helpers.assert_compilable(ivy.inv)
 
 
-def test_pinv(dev_str, call):
-    assert np.allclose(call(ivy.pinv, ivy.array([[1., 0.], [0., 1.], [1., 0.]])),
-                       np.linalg.pinv(np.array([[1., 0.], [0., 1.], [1., 0.]])), atol=1e-6)
-    assert np.allclose(call(ivy.pinv, ivy.array([[[1., 0.], [0., 1.], [1., 0.]]])),
-                       np.linalg.pinv(np.array([[[1., 0.], [0., 1.], [1., 0.]]])), atol=1e-6)
+# pinv
+@pytest.mark.parametrize(
+    "x", [[[1., 0.], [0., 1.], [1., 0.]], [[[1., 0.], [0., 1.], [1., 0.]]]])
+@pytest.mark.parametrize(
+    "dtype_str", ['float32'])
+@pytest.mark.parametrize(
+    "tensor_fn", [ivy.array, helpers.var_fn])
+def test_pinv(x, dtype_str, tensor_fn, dev_str, call):
+    # smoke test
+    x = tensor_fn(x, dtype_str, dev_str)
+    ret = ivy.pinv(x)
+    # type test
+    assert isinstance(ret, ivy.Array)
+    # cardinality test
+    assert ret.shape == x.shape[:-2] + (x.shape[-1], x.shape[-2])
+    # value test
+    assert np.allclose(call(ivy.pinv, x), ivy.numpy.pinv(ivy.to_numpy(x)))
+    # compilation test
     helpers.assert_compilable(ivy.pinv)
 
 
-def test_vector_to_skew_symmetric_matrix(dev_str, call):
-    assert np.allclose(call(ivy.vector_to_skew_symmetric_matrix, td.vectors),
-                       td.skew_symmetric_matrices, atol=1e-6)
-    assert np.allclose(call(ivy.vector_to_skew_symmetric_matrix, td.vectors[0]),
-                       td.skew_symmetric_matrices[0], atol=1e-6)
+# vector_to_skew_symmetric_matrix
+@pytest.mark.parametrize(
+    "x", [[[[1., 2., 3.]], [[4., 5., 6.]], [[1., 2., 3.]], [[4., 5., 6.]], [[1., 2., 3.]]], [[1., 2., 3.]]])
+@pytest.mark.parametrize(
+    "dtype_str", ['float32'])
+@pytest.mark.parametrize(
+    "tensor_fn", [ivy.array, helpers.var_fn])
+def test_vector_to_skew_symmetric_matrix(x, dtype_str, tensor_fn, dev_str, call):
+    # smoke test
+    x = tensor_fn(x, dtype_str, dev_str)
+    ret = ivy.vector_to_skew_symmetric_matrix(x)
+    # type test
+    assert isinstance(ret, ivy.Array)
+    # cardinality test
+    assert ret.shape == x.shape + (x.shape[-1],)
+    # value test
+    assert np.allclose(call(ivy.vector_to_skew_symmetric_matrix, x),
+                       ivy.numpy.vector_to_skew_symmetric_matrix(ivy.to_numpy(x)))
+    # compilation test
     helpers.assert_compilable(ivy.vector_to_skew_symmetric_matrix)

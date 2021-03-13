@@ -6,7 +6,7 @@ Collection of linear algebra Ivy functions.
 from ivy.framework_handler import get_framework as _get_framework
 
 
-def svd(x, batch_shape=None, f=None):
+def svd(x, f=None):
     """
     Singular Value Decomposition.
     When x is a 2D array, it is factorized as u @ numpy.diag(s) @ vh = (u * s) @ vh, where u and vh are 2D unitary
@@ -14,8 +14,6 @@ def svd(x, batch_shape=None, f=None):
 
     :param x: Input array with number of dimensions >= 2.
     :type x: array
-    :param batch_shape: Shape of batch. Inferred from inputs if None.
-    :type batch_shape: sequence of ints, optional
     :param f: Machine learning framework. Inferred from inputs if None.
     :type f: ml_framework, optional
     :return:
@@ -31,7 +29,7 @@ def svd(x, batch_shape=None, f=None):
         Unitary array(s). The first (number of dims - 2) dimensions have the same size as those of the input a.
         The size of the last two dimensions depends on the value of full_matrices.
     """
-    return _get_framework(x, f=f).svd(x, batch_shape)
+    return _get_framework(x, f=f).svd(x)
 
 
 # noinspection PyShadowingBuiltins
@@ -86,7 +84,7 @@ def pinv(x, f=None):
     return _get_framework(x, f=f).pinv(x)
 
 
-def vector_to_skew_symmetric_matrix(vector, batch_shape=None, f=None):
+def vector_to_skew_symmetric_matrix(vector, f=None):
     """
     Given vector :math:`\mathbf{a}\in\mathbb{R}^3`, return associated skew-symmetric matrix
     :math:`[\mathbf{a}]_×\in\mathbb{R}^{3×3}` satisfying :math:`\mathbf{a}×\mathbf{b}=[\mathbf{a}]_×\mathbf{b}`.\n
@@ -94,10 +92,8 @@ def vector_to_skew_symmetric_matrix(vector, batch_shape=None, f=None):
 
     :param vector: Vector to convert *[batch_shape,3]*.
     :type vector: array
-    :param batch_shape: Shape of batch. Inferred from inputs if None.
-    :type batch_shape: sequence of ints, optional
     :param f: Machine learning framework. Inferred from inputs if None.
     :type f: ml_framework, optional
     :return: Skew-symmetric matrix *[batch_shape,3,3]*.
     """
-    return _get_framework(vector, f=f).vector_to_skew_symmetric_matrix(vector, batch_shape)
+    return _get_framework(vector, f=f).vector_to_skew_symmetric_matrix(vector)
