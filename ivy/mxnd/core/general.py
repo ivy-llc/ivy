@@ -50,7 +50,7 @@ def _flat_array_to_1_dim_array(x):
 
 
 def _1_dim_array_to_flat_array(x):
-    return _mx.nd.array(x.asscalar())
+    return _mx.nd.array(x.asscalar()) if x.shape == (1,) else x
 
 
 # API #
