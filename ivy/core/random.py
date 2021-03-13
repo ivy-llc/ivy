@@ -6,7 +6,7 @@ Collection of random Ivy functions
 from ivy.framework_handler import get_framework as _get_framework
 
 
-def random_uniform(low=0.0, high=0.0, shape=None, dev='cpu', f=None):
+def random_uniform(low=0.0, high=1.0, shape=None, dev_str='cpu', f=None):
     """
     Draws samples from a uniform distribution.
     Samples are uniformly distributed over the half-open interval [low, high) (includes low, but excludes high).
@@ -20,16 +20,16 @@ def random_uniform(low=0.0, high=0.0, shape=None, dev='cpu', f=None):
     :type high: float
     :param shape: Output shape. If the given shape is, e.g., (m, n, k), then m * n * k samples are drawn.
                     If size is None (default), a single value is returned.
-    :param dev: device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc.
-    :type dev: str
+    :param dev_str: device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc.
+    :type dev_str: str
     :param f: Machine learning framework. Inferred from inputs if None.
     :type f: ml_framework, optional
     :return: Drawn samples from the parameterized uniform distribution.
     """
-    return _get_framework(f=f).random_uniform(low, high, shape, dev)
+    return _get_framework(f=f).random_uniform(low, high, shape, dev_str)
 
 
-def randint(low, high, shape, dev='cpu', f=None):
+def randint(low, high, shape, dev_str='cpu', f=None):
     """
     Returns a tensor filled with random integers generated uniformly between low (inclusive) and high (exclusive).
 
@@ -39,20 +39,20 @@ def randint(low, high, shape, dev='cpu', f=None):
     :type high: int
     :param shape: a tuple defining the shape of the output tensor.
     :type shape: tuple
-    :param dev: device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc.
-    :type dev: str
+    :param dev_str: device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc.
+    :type dev_str: str
     :param f: Machine learning framework. Inferred from inputs if None.
     :type f: ml_framework, optional
     :return:
     """
-    return _get_framework(f=f).randint(low, high, shape, dev)
+    return _get_framework(f=f).randint(low, high, shape, dev_str)
 
 
 def seed(seed_value=0, f=None):
     """
     Sets the seed for random number generation.
 
-    :param seed_value: Seed for random number generation.
+    :param seed_value: Seed for random number generation, must be a positive integer.
     :type seed_value: int
     :param f: Machine learning framework. Inferred from inputs if None.
     :type f: ml_framework, optional
