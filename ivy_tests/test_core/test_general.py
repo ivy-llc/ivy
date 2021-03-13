@@ -19,10 +19,6 @@ import ivy_tests.helpers as helpers
 # Helpers #
 # --------#
 
-def _var_fn(a, b=None, c=None):
-    return ivy.variable(ivy.array(a, b, c))
-
-
 def _get_shape_of_list(lst, shape=()):
     if not lst:
         return []
@@ -132,10 +128,10 @@ def test_to_list(object_in, dtype_str, tensor_fn, dev_str, call):
 @pytest.mark.parametrize(
     "as_tensor", [None, True, False])
 @pytest.mark.parametrize(
-    "tensor_fn", [ivy.array, _var_fn])
+    "tensor_fn", [ivy.array, helpers.var_fn])
 def test_shape(object_in, dtype_str, as_tensor, tensor_fn, dev_str, call):
     # smoke test
-    if len(object_in) == 0 and tensor_fn == _var_fn and call is helpers.mx_call:
+    if len(object_in) == 0 and tensor_fn == helpers.var_fn and call is helpers.mx_call:
         # mxnet does not support 0-dimensional variables
         pytest.skip()
     ret = ivy.shape(tensor_fn(object_in, dtype_str, dev_str), as_tensor)
@@ -164,10 +160,10 @@ def test_shape(object_in, dtype_str, as_tensor, tensor_fn, dev_str, call):
 @pytest.mark.parametrize(
     "as_tensor", [None, True, False])
 @pytest.mark.parametrize(
-    "tensor_fn", [ivy.array, _var_fn])
+    "tensor_fn", [ivy.array, helpers.var_fn])
 def test_get_num_dims(object_in, dtype_str, as_tensor, tensor_fn, dev_str, call):
     # smoke test
-    if len(object_in) == 0 and tensor_fn == _var_fn and call is helpers.mx_call:
+    if len(object_in) == 0 and tensor_fn == helpers.var_fn and call is helpers.mx_call:
         # mxnet does not support 0-dimensional variables
         pytest.skip()
     ret = ivy.get_num_dims(tensor_fn(object_in, dtype_str, dev_str), as_tensor)
@@ -194,10 +190,11 @@ def test_get_num_dims(object_in, dtype_str, as_tensor, tensor_fn, dev_str, call)
 @pytest.mark.parametrize(
     "dtype_str", ['float32'])
 @pytest.mark.parametrize(
-    "tensor_fn", [ivy.array, _var_fn])
+    "tensor_fn", [ivy.array, helpers.var_fn])
 def test_minimum(xy, dtype_str, tensor_fn, dev_str, call):
     # smoke test
-    if (isinstance(xy[0], Number) or isinstance(xy[1], Number)) and tensor_fn == _var_fn and call is helpers.mx_call:
+    if (isinstance(xy[0], Number) or isinstance(xy[1], Number))\
+            and tensor_fn == helpers.var_fn and call is helpers.mx_call:
         # mxnet does not support 0-dimensional variables
         pytest.skip()
     x = tensor_fn(xy[0], dtype_str, dev_str)
@@ -222,10 +219,11 @@ def test_minimum(xy, dtype_str, tensor_fn, dev_str, call):
 @pytest.mark.parametrize(
     "dtype_str", ['float32'])
 @pytest.mark.parametrize(
-    "tensor_fn", [ivy.array, _var_fn])
+    "tensor_fn", [ivy.array, helpers.var_fn])
 def test_maximum(xy, dtype_str, tensor_fn, dev_str, call):
     # smoke test
-    if (isinstance(xy[0], Number) or isinstance(xy[1], Number)) and tensor_fn == _var_fn and call is helpers.mx_call:
+    if (isinstance(xy[0], Number) or isinstance(xy[1], Number))\
+            and tensor_fn == helpers.var_fn and call is helpers.mx_call:
         # mxnet does not support 0-dimensional variables
         pytest.skip()
     x = tensor_fn(xy[0], dtype_str, dev_str)
@@ -251,11 +249,11 @@ def test_maximum(xy, dtype_str, tensor_fn, dev_str, call):
 @pytest.mark.parametrize(
     "dtype_str", ['float32'])
 @pytest.mark.parametrize(
-    "tensor_fn", [ivy.array, _var_fn])
+    "tensor_fn", [ivy.array, helpers.var_fn])
 def test_clip(x_min_n_max, dtype_str, tensor_fn, dev_str, call):
     # smoke test
     if (isinstance(x_min_n_max[0], Number) or isinstance(x_min_n_max[1], Number) or isinstance(x_min_n_max[2], Number))\
-            and tensor_fn == _var_fn and call is helpers.mx_call:
+            and tensor_fn == helpers.var_fn and call is helpers.mx_call:
         # mxnet does not support 0-dimensional variables
         pytest.skip()
     x = tensor_fn(x_min_n_max[0], dtype_str, dev_str)
@@ -284,11 +282,11 @@ def test_clip(x_min_n_max, dtype_str, tensor_fn, dev_str, call):
 @pytest.mark.parametrize(
     "dtype_str", ['float32'])
 @pytest.mark.parametrize(
-    "tensor_fn", [ivy.array, _var_fn])
+    "tensor_fn", [ivy.array, helpers.var_fn])
 def test_round(x_n_x_rounded, dtype_str, tensor_fn, dev_str, call):
     # smoke test
     if (isinstance(x_n_x_rounded[0], Number) or isinstance(x_n_x_rounded[1], Number))\
-            and tensor_fn == _var_fn and call is helpers.mx_call:
+            and tensor_fn == helpers.var_fn and call is helpers.mx_call:
         # mxnet does not support 0-dimensional variables
         pytest.skip()
     x = tensor_fn(x_n_x_rounded[0], dtype_str, dev_str)
@@ -310,11 +308,12 @@ def test_round(x_n_x_rounded, dtype_str, tensor_fn, dev_str, call):
 @pytest.mark.parametrize(
     "dtype_str", ['float32'])
 @pytest.mark.parametrize(
-    "tensor_fn", [ivy.array, _var_fn])
+    "tensor_fn", [ivy.array, helpers.var_fn])
 def test_floormod(x_n_divisor_n_x_floormod, dtype_str, tensor_fn, dev_str, call):
     # smoke test
     if (isinstance(x_n_divisor_n_x_floormod[0], Number) or isinstance(x_n_divisor_n_x_floormod[1], Number) or
-            isinstance(x_n_divisor_n_x_floormod[2], Number)) and tensor_fn == _var_fn and call is helpers.mx_call:
+            isinstance(x_n_divisor_n_x_floormod[2], Number))\
+            and tensor_fn == helpers.var_fn and call is helpers.mx_call:
         # mxnet does not support 0-dimensional variables
         pytest.skip()
     x = tensor_fn(x_n_divisor_n_x_floormod[0], dtype_str, dev_str)
@@ -336,11 +335,11 @@ def test_floormod(x_n_divisor_n_x_floormod, dtype_str, tensor_fn, dev_str, call)
 @pytest.mark.parametrize(
     "dtype_str", ['float32'])
 @pytest.mark.parametrize(
-    "tensor_fn", [ivy.array, _var_fn])
+    "tensor_fn", [ivy.array, helpers.var_fn])
 def test_floor(x_n_x_floored, dtype_str, tensor_fn, dev_str, call):
     # smoke test
     if (isinstance(x_n_x_floored[0], Number) or isinstance(x_n_x_floored[1], Number))\
-            and tensor_fn == _var_fn and call is helpers.mx_call:
+            and tensor_fn == helpers.var_fn and call is helpers.mx_call:
         # mxnet does not support 0-dimensional variables
         pytest.skip()
     x = tensor_fn(x_n_x_floored[0], dtype_str, dev_str)
@@ -361,11 +360,11 @@ def test_floor(x_n_x_floored, dtype_str, tensor_fn, dev_str, call):
 @pytest.mark.parametrize(
     "dtype_str", ['float32'])
 @pytest.mark.parametrize(
-    "tensor_fn", [ivy.array, _var_fn])
+    "tensor_fn", [ivy.array, helpers.var_fn])
 def test_ceil(x_n_x_ceiled, dtype_str, tensor_fn, dev_str, call):
     # smoke test
     if (isinstance(x_n_x_ceiled[0], Number) or isinstance(x_n_x_ceiled[1], Number))\
-            and tensor_fn == _var_fn and call is helpers.mx_call:
+            and tensor_fn == helpers.var_fn and call is helpers.mx_call:
         # mxnet does not support 0-dimensional variables
         pytest.skip()
     x = tensor_fn(x_n_x_ceiled[0], dtype_str, dev_str)
@@ -386,11 +385,11 @@ def test_ceil(x_n_x_ceiled, dtype_str, tensor_fn, dev_str, call):
 @pytest.mark.parametrize(
     "dtype_str", ['float32'])
 @pytest.mark.parametrize(
-    "tensor_fn", [ivy.array, _var_fn])
+    "tensor_fn", [ivy.array, helpers.var_fn])
 def test_abs(x_n_x_absed, dtype_str, tensor_fn, dev_str, call):
     # smoke test
     if (isinstance(x_n_x_absed[0], Number) or isinstance(x_n_x_absed[1], Number))\
-            and tensor_fn == _var_fn and call is helpers.mx_call:
+            and tensor_fn == helpers.var_fn and call is helpers.mx_call:
         # mxnet does not support 0-dimensional variables
         pytest.skip()
     x = tensor_fn(x_n_x_absed[0], dtype_str, dev_str)
@@ -412,7 +411,7 @@ def test_abs(x_n_x_absed, dtype_str, tensor_fn, dev_str, call):
 @pytest.mark.parametrize(
     "dtype_str", ['float32'])
 @pytest.mark.parametrize(
-    "tensor_fn", [ivy.array, _var_fn])
+    "tensor_fn", [ivy.array, helpers.var_fn])
 def test_argmax(x_n_axis_x_argmax, dtype_str, tensor_fn, dev_str, call):
     # smoke test
     x = ivy.array(x_n_axis_x_argmax[0], dtype_str, dev_str)
@@ -435,7 +434,7 @@ def test_argmax(x_n_axis_x_argmax, dtype_str, tensor_fn, dev_str, call):
 @pytest.mark.parametrize(
     "dtype_str", ['float32'])
 @pytest.mark.parametrize(
-    "tensor_fn", [ivy.array, _var_fn])
+    "tensor_fn", [ivy.array, helpers.var_fn])
 def test_argmin(x_n_axis_x_argmin, dtype_str, tensor_fn, dev_str, call):
     # smoke test
     x = tensor_fn(x_n_axis_x_argmin[0], dtype_str, dev_str)
@@ -481,15 +480,15 @@ def test_cast(object_in, starting_dtype_str, target_dtype_str, dev_str, call):
 @pytest.mark.parametrize(
     "dtype_str", ['float32'])
 @pytest.mark.parametrize(
-    "tensor_fn", [ivy.array, _var_fn])
+    "tensor_fn", [ivy.array, helpers.var_fn])
 def test_arange(stop_n_start_n_step, dtype_str, tensor_fn, dev_str, call):
     # smoke test
     stop, start, step = stop_n_start_n_step
     if (isinstance(stop, Number) or isinstance(start, Number) or isinstance(step, Number))\
-            and tensor_fn == _var_fn and call is helpers.mx_call:
+            and tensor_fn == helpers.var_fn and call is helpers.mx_call:
         # mxnet does not support 0-dimensional variables
         pytest.skip()
-    if tensor_fn == _var_fn and call is helpers.torch_call:
+    if tensor_fn == helpers.var_fn and call is helpers.torch_call:
         # pytorch does not support arange using variables as input
         pytest.skip()
     args = list()
@@ -525,12 +524,12 @@ def test_arange(stop_n_start_n_step, dtype_str, tensor_fn, dev_str, call):
 @pytest.mark.parametrize(
     "dtype_str", ['float32'])
 @pytest.mark.parametrize(
-    "tensor_fn", [ivy.array, _var_fn])
+    "tensor_fn", [ivy.array, helpers.var_fn])
 def test_linspace(start_n_stop_n_num_n_axis, dtype_str, tensor_fn, dev_str, call):
     # smoke test
     start, stop, num, axis = start_n_stop_n_num_n_axis
     if (isinstance(start, Number) or isinstance(stop, Number))\
-            and tensor_fn == _var_fn and call is helpers.mx_call:
+            and tensor_fn == helpers.var_fn and call is helpers.mx_call:
         # mxnet does not support 0-dimensional variables
         pytest.skip()
     start = tensor_fn(start, dtype_str, dev_str)
@@ -559,11 +558,11 @@ def test_linspace(start_n_stop_n_num_n_axis, dtype_str, tensor_fn, dev_str, call
 @pytest.mark.parametrize(
     "dtype_str", ['float32'])
 @pytest.mark.parametrize(
-    "tensor_fn", [ivy.array, _var_fn])
+    "tensor_fn", [ivy.array, helpers.var_fn])
 def test_concatenate(x1_n_x2_n_axis, dtype_str, tensor_fn, dev_str, call):
     # smoke test
     x1, x2, axis = x1_n_x2_n_axis
-    if (isinstance(x1, Number) or isinstance(x2, Number)) and tensor_fn == _var_fn and call is helpers.mx_call:
+    if (isinstance(x1, Number) or isinstance(x2, Number)) and tensor_fn == helpers.var_fn and call is helpers.mx_call:
         # mxnet does not support 0-dimensional variables
         pytest.skip()
     x1 = tensor_fn(x1, dtype_str, dev_str)
@@ -592,11 +591,11 @@ def test_concatenate(x1_n_x2_n_axis, dtype_str, tensor_fn, dev_str, call):
 @pytest.mark.parametrize(
     "dtype_str", ['float32'])
 @pytest.mark.parametrize(
-    "tensor_fn", [ivy.array, _var_fn])
+    "tensor_fn", [ivy.array, helpers.var_fn])
 def test_flip(x_n_axis_n_bs, dtype_str, tensor_fn, dev_str, call):
     # smoke test
     x, axis, bs = x_n_axis_n_bs
-    if isinstance(x, Number) and tensor_fn == _var_fn and call is helpers.mx_call:
+    if isinstance(x, Number) and tensor_fn == helpers.var_fn and call is helpers.mx_call:
         # mxnet does not support 0-dimensional variables
         pytest.skip()
     x = tensor_fn(x, dtype_str, dev_str)
@@ -617,11 +616,11 @@ def test_flip(x_n_axis_n_bs, dtype_str, tensor_fn, dev_str, call):
 @pytest.mark.parametrize(
     "dtype_str", ['float32'])
 @pytest.mark.parametrize(
-    "tensor_fn", [ivy.array, _var_fn])
+    "tensor_fn", [ivy.array, helpers.var_fn])
 def test_stack(xs_n_axis, dtype_str, tensor_fn, dev_str, call):
     # smoke test
     (x1, x2), axis = xs_n_axis
-    if (isinstance(x1, Number) or isinstance(x2, Number)) and tensor_fn == _var_fn and call is helpers.mx_call:
+    if (isinstance(x1, Number) or isinstance(x2, Number)) and tensor_fn == helpers.var_fn and call is helpers.mx_call:
         # mxnet does not support 0-dimensional variables
         pytest.skip()
     x1 = tensor_fn(x1, dtype_str, dev_str)
@@ -649,11 +648,11 @@ def test_stack(xs_n_axis, dtype_str, tensor_fn, dev_str, call):
 @pytest.mark.parametrize(
     "dtype_str", ['float32'])
 @pytest.mark.parametrize(
-    "tensor_fn", [ivy.array, _var_fn])
+    "tensor_fn", [ivy.array, helpers.var_fn])
 def test_unstack(x_n_axis, dtype_str, tensor_fn, dev_str, call):
     # smoke test
     x, axis = x_n_axis
-    if isinstance(x, Number) and tensor_fn == _var_fn and call is helpers.mx_call:
+    if isinstance(x, Number) and tensor_fn == helpers.var_fn and call is helpers.mx_call:
         # mxnet does not support 0-dimensional variables
         pytest.skip()
     x = tensor_fn(x, dtype_str, dev_str)
@@ -680,11 +679,11 @@ def test_unstack(x_n_axis, dtype_str, tensor_fn, dev_str, call):
 @pytest.mark.parametrize(
     "dtype_str", ['float32'])
 @pytest.mark.parametrize(
-    "tensor_fn", [ivy.array, _var_fn])
+    "tensor_fn", [ivy.array, helpers.var_fn])
 def test_split(x_n_secs_n_axis, dtype_str, tensor_fn, dev_str, call):
     # smoke test
     x, secs, axis = x_n_secs_n_axis
-    if isinstance(x, Number) and tensor_fn == _var_fn and call is helpers.mx_call:
+    if isinstance(x, Number) and tensor_fn == helpers.var_fn and call is helpers.mx_call:
         # mxnet does not support 0-dimensional variables
         pytest.skip()
     x = tensor_fn(x, dtype_str, dev_str)
@@ -710,11 +709,11 @@ def test_split(x_n_secs_n_axis, dtype_str, tensor_fn, dev_str, call):
 @pytest.mark.parametrize(
     "dtype_str", ['float32'])
 @pytest.mark.parametrize(
-    "tensor_fn", [ivy.array, _var_fn])
+    "tensor_fn", [ivy.array, helpers.var_fn])
 def test_tile(x_n_reps, dtype_str, tensor_fn, dev_str, call):
     # smoke test
     x, reps_raw = x_n_reps
-    if isinstance(x, Number) and tensor_fn == _var_fn and call is helpers.mx_call:
+    if isinstance(x, Number) and tensor_fn == helpers.var_fn and call is helpers.mx_call:
         # mxnet does not support 0-dimensional variables
         pytest.skip()
     x = tensor_fn(x, dtype_str, dev_str)
@@ -744,11 +743,11 @@ def test_tile(x_n_reps, dtype_str, tensor_fn, dev_str, call):
 @pytest.mark.parametrize(
     "dtype_str", ['float32'])
 @pytest.mark.parametrize(
-    "tensor_fn", [ivy.array, _var_fn])
+    "tensor_fn", [ivy.array, helpers.var_fn])
 def test_zero_pad(x_n_pw, dtype_str, tensor_fn, dev_str, call):
     # smoke test
     x, pw_raw = x_n_pw
-    if isinstance(x, Number) and tensor_fn == _var_fn and call is helpers.mx_call:
+    if isinstance(x, Number) and tensor_fn == helpers.var_fn and call is helpers.mx_call:
         # mxnet does not support 0-dimensional variables
         pytest.skip()
     x = tensor_fn(x, dtype_str, dev_str)
@@ -779,11 +778,11 @@ def test_zero_pad(x_n_pw, dtype_str, tensor_fn, dev_str, call):
 @pytest.mark.parametrize(
     "dtype_str", ['float32'])
 @pytest.mark.parametrize(
-    "tensor_fn", [ivy.array, _var_fn])
+    "tensor_fn", [ivy.array, helpers.var_fn])
 def test_constant_pad(x_n_pw_n_val, dtype_str, tensor_fn, dev_str, call):
     # smoke test
     x, pw_raw, val = x_n_pw_n_val
-    if isinstance(x, Number) and tensor_fn == _var_fn and call is helpers.mx_call:
+    if isinstance(x, Number) and tensor_fn == helpers.var_fn and call is helpers.mx_call:
         # mxnet does not support 0-dimensional variables
         pytest.skip()
     x = tensor_fn(x, dtype_str, dev_str)
@@ -815,11 +814,11 @@ def test_constant_pad(x_n_pw_n_val, dtype_str, tensor_fn, dev_str, call):
 @pytest.mark.parametrize(
     "dtype_str", ['float32'])
 @pytest.mark.parametrize(
-    "tensor_fn", [ivy.array, _var_fn])
+    "tensor_fn", [ivy.array, helpers.var_fn])
 def test_swapaxes(x_n_ax0_n_ax1, dtype_str, tensor_fn, dev_str, call):
     # smoke test
     x, ax0, ax1 = x_n_ax0_n_ax1
-    if isinstance(x, Number) and tensor_fn == _var_fn and call is helpers.mx_call:
+    if isinstance(x, Number) and tensor_fn == helpers.var_fn and call is helpers.mx_call:
         # mxnet does not support 0-dimensional variables
         pytest.skip()
     x = tensor_fn(x, dtype_str, dev_str)
@@ -843,11 +842,11 @@ def test_swapaxes(x_n_ax0_n_ax1, dtype_str, tensor_fn, dev_str, call):
 @pytest.mark.parametrize(
     "dtype_str", ['float32'])
 @pytest.mark.parametrize(
-    "tensor_fn", [ivy.array, _var_fn])
+    "tensor_fn", [ivy.array, helpers.var_fn])
 def test_transpose(x_n_axes, dtype_str, tensor_fn, dev_str, call):
     # smoke test
     x, axes = x_n_axes
-    if isinstance(x, Number) and tensor_fn == _var_fn and call is helpers.mx_call:
+    if isinstance(x, Number) and tensor_fn == helpers.var_fn and call is helpers.mx_call:
         # mxnet does not support 0-dimensional variables
         pytest.skip()
     x = tensor_fn(x, dtype_str, dev_str)
@@ -869,11 +868,11 @@ def test_transpose(x_n_axes, dtype_str, tensor_fn, dev_str, call):
 @pytest.mark.parametrize(
     "dtype_str", ['float32'])
 @pytest.mark.parametrize(
-    "tensor_fn", [ivy.array, _var_fn])
+    "tensor_fn", [ivy.array, helpers.var_fn])
 def test_expand_dims(x_n_axis, dtype_str, tensor_fn, dev_str, call):
     # smoke test
     x, axis = x_n_axis
-    if isinstance(x, Number) and tensor_fn == _var_fn and call is helpers.mx_call:
+    if isinstance(x, Number) and tensor_fn == helpers.var_fn and call is helpers.mx_call:
         # mxnet does not support 0-dimensional variables
         pytest.skip()
     x = tensor_fn(x, dtype_str, dev_str)
@@ -896,12 +895,12 @@ def test_expand_dims(x_n_axis, dtype_str, tensor_fn, dev_str, call):
 @pytest.mark.parametrize(
     "dtype_str", ['float32'])
 @pytest.mark.parametrize(
-    "tensor_fn", [ivy.array, _var_fn])
+    "tensor_fn", [ivy.array, helpers.var_fn])
 def test_where(cond_n_x1_n_x2, dtype_str, tensor_fn, dev_str, call):
     # smoke test
     cond, x1, x2 = cond_n_x1_n_x2
     if (isinstance(cond, Number) or isinstance(x1, Number) or isinstance(x2, Number))\
-            and tensor_fn == _var_fn and call is helpers.mx_call:
+            and tensor_fn == helpers.var_fn and call is helpers.mx_call:
         # mxnet does not support 0-dimensional variables
         pytest.skip()
     cond = tensor_fn(cond, dtype_str, dev_str)
@@ -931,10 +930,10 @@ def test_where(cond_n_x1_n_x2, dtype_str, tensor_fn, dev_str, call):
 @pytest.mark.parametrize(
     "dtype_str", ['float32'])
 @pytest.mark.parametrize(
-    "tensor_fn", [ivy.array, _var_fn])
+    "tensor_fn", [ivy.array, helpers.var_fn])
 def test_indices_where(x, dtype_str, tensor_fn, dev_str, call):
     # smoke test
-    if isinstance(x, Number) and tensor_fn == _var_fn and call is helpers.mx_call:
+    if isinstance(x, Number) and tensor_fn == helpers.var_fn and call is helpers.mx_call:
         # mxnet does not support 0-dimensional variables
         pytest.skip()
     x = tensor_fn(x, dtype_str, dev_str)
@@ -955,11 +954,11 @@ def test_indices_where(x, dtype_str, tensor_fn, dev_str, call):
 @pytest.mark.parametrize(
     "dtype_str", ['float32'])
 @pytest.mark.parametrize(
-    "tensor_fn", [ivy.array, _var_fn])
+    "tensor_fn", [ivy.array, helpers.var_fn])
 def test_reshape(x_n_shp, dtype_str, tensor_fn, dev_str, call):
     # smoke test
     x, new_shape = x_n_shp
-    if isinstance(x, Number) and tensor_fn == _var_fn and call is helpers.mx_call:
+    if isinstance(x, Number) and tensor_fn == helpers.var_fn and call is helpers.mx_call:
         # mxnet does not support 0-dimensional variables
         pytest.skip()
     x = tensor_fn(x, dtype_str, dev_str)
@@ -980,11 +979,11 @@ def test_reshape(x_n_shp, dtype_str, tensor_fn, dev_str, call):
 @pytest.mark.parametrize(
     "dtype_str", ['float32'])
 @pytest.mark.parametrize(
-    "tensor_fn", [ivy.array, _var_fn])
+    "tensor_fn", [ivy.array, helpers.var_fn])
 def test_squeeze(x_n_axis, dtype_str, tensor_fn, dev_str, call):
     # smoke test
     x, axis = x_n_axis
-    if isinstance(x, Number) and tensor_fn == _var_fn and call is helpers.mx_call:
+    if isinstance(x, Number) and tensor_fn == helpers.var_fn and call is helpers.mx_call:
         # mxnet does not support 0-dimensional variables
         pytest.skip()
     x = tensor_fn(x, dtype_str, dev_str)
@@ -1012,7 +1011,7 @@ def test_squeeze(x_n_axis, dtype_str, tensor_fn, dev_str, call):
 @pytest.mark.parametrize(
     "dtype_str", ['float32'])
 @pytest.mark.parametrize(
-    "tensor_fn", [ivy.array, _var_fn])
+    "tensor_fn", [ivy.array, helpers.var_fn])
 def test_zeros(shape, dtype_str, tensor_fn, dev_str, call):
     # smoke test
     ret = ivy.zeros(shape, dtype_str, dev_str)
@@ -1035,10 +1034,10 @@ def test_zeros(shape, dtype_str, tensor_fn, dev_str, call):
 @pytest.mark.parametrize(
     "dtype_str", ['float32'])
 @pytest.mark.parametrize(
-    "tensor_fn", [ivy.array, _var_fn])
+    "tensor_fn", [ivy.array, helpers.var_fn])
 def test_zeros_like(x, dtype_str, tensor_fn, dev_str, call):
     # smoke test
-    if isinstance(x, Number) and tensor_fn == _var_fn and call is helpers.mx_call:
+    if isinstance(x, Number) and tensor_fn == helpers.var_fn and call is helpers.mx_call:
         # mxnet does not support 0-dimensional variables
         pytest.skip()
     x = tensor_fn(x, dtype_str, dev_str)
@@ -1062,7 +1061,7 @@ def test_zeros_like(x, dtype_str, tensor_fn, dev_str, call):
 @pytest.mark.parametrize(
     "dtype_str", ['float32'])
 @pytest.mark.parametrize(
-    "tensor_fn", [ivy.array, _var_fn])
+    "tensor_fn", [ivy.array, helpers.var_fn])
 def test_ones(shape, dtype_str, tensor_fn, dev_str, call):
     # smoke test
     ret = ivy.ones(shape, dtype_str, dev_str)
@@ -1085,10 +1084,10 @@ def test_ones(shape, dtype_str, tensor_fn, dev_str, call):
 @pytest.mark.parametrize(
     "dtype_str", ['float32'])
 @pytest.mark.parametrize(
-    "tensor_fn", [ivy.array, _var_fn])
+    "tensor_fn", [ivy.array, helpers.var_fn])
 def test_ones_like(x, dtype_str, tensor_fn, dev_str, call):
     # smoke test
-    if isinstance(x, Number) and tensor_fn == _var_fn and call is helpers.mx_call:
+    if isinstance(x, Number) and tensor_fn == helpers.var_fn and call is helpers.mx_call:
         # mxnet does not support 0-dimensional variables
         pytest.skip()
     x = tensor_fn(x, dtype_str, dev_str)
@@ -1112,11 +1111,11 @@ def test_ones_like(x, dtype_str, tensor_fn, dev_str, call):
 @pytest.mark.parametrize(
     "dtype_str", ['float32'])
 @pytest.mark.parametrize(
-    "tensor_fn", [ivy.array, _var_fn])
+    "tensor_fn", [ivy.array, helpers.var_fn])
 def test_one_hot(ind_n_depth, dtype_str, tensor_fn, dev_str, call):
     # smoke test
     ind, depth = ind_n_depth
-    if isinstance(ind, Number) and tensor_fn == _var_fn and call is helpers.mx_call:
+    if isinstance(ind, Number) and tensor_fn == helpers.var_fn and call is helpers.mx_call:
         # mxnet does not support 0-dimensional variables
         pytest.skip()
     ind = ivy.array(ind, 'int32', dev_str)
@@ -1140,11 +1139,11 @@ def test_one_hot(ind_n_depth, dtype_str, tensor_fn, dev_str, call):
 @pytest.mark.parametrize(
     "dtype_str", ['float32'])
 @pytest.mark.parametrize(
-    "tensor_fn", [ivy.array, _var_fn])
+    "tensor_fn", [ivy.array, helpers.var_fn])
 def test_cross(x1_n_x2, dtype_str, tensor_fn, dev_str, call):
     # smoke test
     x1, x2 = x1_n_x2
-    if (isinstance(x1, Number) or isinstance(x2, Number)) and tensor_fn == _var_fn and call is helpers.mx_call:
+    if (isinstance(x1, Number) or isinstance(x2, Number)) and tensor_fn == helpers.var_fn and call is helpers.mx_call:
         # mxnet does not support 0-dimensional variables
         pytest.skip()
     x1 = ivy.array(x1, dtype_str, dev_str)
@@ -1169,11 +1168,11 @@ def test_cross(x1_n_x2, dtype_str, tensor_fn, dev_str, call):
 @pytest.mark.parametrize(
     "dtype_str", ['float32'])
 @pytest.mark.parametrize(
-    "tensor_fn", [ivy.array, _var_fn])
+    "tensor_fn", [ivy.array, helpers.var_fn])
 def test_matmul(x1_n_x2, dtype_str, tensor_fn, dev_str, call):
     # smoke test
     x1, x2 = x1_n_x2
-    if (isinstance(x1, Number) or isinstance(x2, Number)) and tensor_fn == _var_fn and call is helpers.mx_call:
+    if (isinstance(x1, Number) or isinstance(x2, Number)) and tensor_fn == helpers.var_fn and call is helpers.mx_call:
         # mxnet does not support 0-dimensional variables
         pytest.skip()
     x1 = ivy.array(x1, dtype_str, dev_str)
@@ -1195,7 +1194,7 @@ def test_matmul(x1_n_x2, dtype_str, tensor_fn, dev_str, call):
 @pytest.mark.parametrize(
     "dtype_str", ['float32'])
 @pytest.mark.parametrize(
-    "tensor_fn", [ivy.array, _var_fn])
+    "tensor_fn", [ivy.array, helpers.var_fn])
 def test_cumsum(x_n_axis, dtype_str, tensor_fn, dev_str, call):
     # smoke test
     x, axis = x_n_axis
@@ -1220,7 +1219,7 @@ def test_cumsum(x_n_axis, dtype_str, tensor_fn, dev_str, call):
 @pytest.mark.parametrize(
     "dtype_str", ['float32'])
 @pytest.mark.parametrize(
-    "tensor_fn", [ivy.array, _var_fn])
+    "tensor_fn", [ivy.array, helpers.var_fn])
 def test_identity(dim_n_bs, dtype_str, tensor_fn, dev_str, call):
     # smoke test
     dim, bs = dim_n_bs
@@ -1246,7 +1245,7 @@ def test_identity(dim_n_bs, dtype_str, tensor_fn, dev_str, call):
 @pytest.mark.parametrize(
     "dtype_str", ['float32'])
 @pytest.mark.parametrize(
-    "tensor_fn", [ivy.array, _var_fn])
+    "tensor_fn", [ivy.array, helpers.var_fn])
 def test_scatter_flat(inds_n_upd_n_size, red, dtype_str, tensor_fn, dev_str, call):
     # smoke test
     if (red == 'sum' or red == 'min' or red == 'max') and call is helpers.mx_call:
@@ -1288,7 +1287,7 @@ def test_scatter_flat(inds_n_upd_n_size, red, dtype_str, tensor_fn, dev_str, cal
 @pytest.mark.parametrize(
     "dtype_str", ['float32'])
 @pytest.mark.parametrize(
-    "tensor_fn", [ivy.array, _var_fn])
+    "tensor_fn", [ivy.array, helpers.var_fn])
 def test_scatter_nd(inds_n_upd_n_shape, red, dtype_str, tensor_fn, dev_str, call):
     # smoke test
     if (red == 'sum' or red == 'min' or red == 'max') and call is helpers.mx_call:
@@ -1326,7 +1325,7 @@ def test_scatter_nd(inds_n_upd_n_shape, red, dtype_str, tensor_fn, dev_str, call
 @pytest.mark.parametrize(
     "dtype_str", ['float32'])
 @pytest.mark.parametrize(
-    "tensor_fn", [ivy.array, _var_fn])
+    "tensor_fn", [ivy.array, helpers.var_fn])
 def test_gather_flat(prms_n_inds, dtype_str, tensor_fn, dev_str, call):
     # smoke test
     prms, inds = prms_n_inds
@@ -1355,7 +1354,7 @@ def test_gather_flat(prms_n_inds, dtype_str, tensor_fn, dev_str, call):
 @pytest.mark.parametrize(
     "dtype_str", ['float32'])
 @pytest.mark.parametrize(
-    "tensor_fn", [ivy.array, _var_fn])
+    "tensor_fn", [ivy.array, helpers.var_fn])
 def test_gather_nd(prms_n_inds, dtype_str, tensor_fn, dev_str, call):
     # smoke test
     prms, inds = prms_n_inds
@@ -1382,10 +1381,10 @@ def test_gather_nd(prms_n_inds, dtype_str, tensor_fn, dev_str, call):
 @pytest.mark.parametrize(
     "dtype_str", ['float32'])
 @pytest.mark.parametrize(
-    "tensor_fn", [ivy.array, _var_fn])
+    "tensor_fn", [ivy.array, helpers.var_fn])
 def test_dev(x, dtype_str, tensor_fn, dev_str, call):
     # smoke test
-    if (isinstance(x, Number) or len(x) == 0) and tensor_fn == _var_fn and call is helpers.mx_call:
+    if (isinstance(x, Number) or len(x) == 0) and tensor_fn == helpers.var_fn and call is helpers.mx_call:
         # mxnet does not support 0-dimensional variables
         pytest.skip()
     x = tensor_fn(x, dtype_str, dev_str)
@@ -1402,10 +1401,10 @@ def test_dev(x, dtype_str, tensor_fn, dev_str, call):
 @pytest.mark.parametrize(
     "dtype_str", ['float32'])
 @pytest.mark.parametrize(
-    "tensor_fn", [ivy.array, _var_fn])
+    "tensor_fn", [ivy.array, helpers.var_fn])
 def test_dev_to_str(x, dtype_str, tensor_fn, dev_str, call):
     # smoke test
-    if (isinstance(x, Number) or len(x) == 0) and tensor_fn == _var_fn and call is helpers.mx_call:
+    if (isinstance(x, Number) or len(x) == 0) and tensor_fn == helpers.var_fn and call is helpers.mx_call:
         # mxnet does not support 0-dimensional variables
         pytest.skip()
     x = tensor_fn(x, dtype_str, dev_str)
@@ -1425,10 +1424,10 @@ def test_dev_to_str(x, dtype_str, tensor_fn, dev_str, call):
 @pytest.mark.parametrize(
     "dtype_str", ['float32'])
 @pytest.mark.parametrize(
-    "tensor_fn", [ivy.array, _var_fn])
+    "tensor_fn", [ivy.array, helpers.var_fn])
 def test_dev_str(x, dtype_str, tensor_fn, dev_str, call):
     # smoke test
-    if (isinstance(x, Number) or len(x) == 0) and tensor_fn == _var_fn and call is helpers.mx_call:
+    if (isinstance(x, Number) or len(x) == 0) and tensor_fn == helpers.var_fn and call is helpers.mx_call:
         # mxnet does not support 0-dimensional variables
         pytest.skip()
     x = tensor_fn(x, dtype_str, dev_str)
@@ -1453,7 +1452,7 @@ def test_dtype(x, dtype_str, tensor_fn, dev_str, call):
     if call in [helpers.mx_call] and dtype_str == 'int16':
         # mxnet does not support int16
         pytest.skip()
-    if (isinstance(x, Number) or len(x) == 0) and tensor_fn == _var_fn and call is helpers.mx_call:
+    if (isinstance(x, Number) or len(x) == 0) and tensor_fn == helpers.var_fn and call is helpers.mx_call:
         # mxnet does not support 0-dimensional variables
         pytest.skip()
     x = tensor_fn(x, dtype_str, dev_str)
@@ -1479,7 +1478,7 @@ def test_dtype_to_str(x, dtype_str, tensor_fn, dev_str, call):
     if call is helpers.jnp_call and dtype_str in ['int64', 'float64']:
         # jax does not support int64 or float64 arrays
         pytest.skip()
-    if (isinstance(x, Number) or len(x) == 0) and tensor_fn == _var_fn and call is helpers.mx_call:
+    if (isinstance(x, Number) or len(x) == 0) and tensor_fn == helpers.var_fn and call is helpers.mx_call:
         # mxnet does not support 0-dimensional variables
         pytest.skip()
     x = tensor_fn(x, dtype_str, dev_str)
@@ -1508,7 +1507,7 @@ def test_dtype_str(x, dtype_str, tensor_fn, dev_str, call):
     if call is helpers.jnp_call and dtype_str in ['int64', 'float64']:
         # jax does not support int64 or float64 arrays
         pytest.skip()
-    if (isinstance(x, Number) or len(x) == 0) and tensor_fn == _var_fn and call is helpers.mx_call:
+    if (isinstance(x, Number) or len(x) == 0) and tensor_fn == helpers.var_fn and call is helpers.mx_call:
         # mxnet does not support 0-dimensional variables
         pytest.skip()
     x = tensor_fn(x, dtype_str, dev_str)
@@ -1537,10 +1536,10 @@ def _fn_2(x):
 @pytest.mark.parametrize(
     "dtype_str", ['float32'])
 @pytest.mark.parametrize(
-    "tensor_fn", [ivy.array, _var_fn])
+    "tensor_fn", [ivy.array, helpers.var_fn])
 def test_compile_fn(x, fn, dtype_str, tensor_fn, dev_str, call):
     # smoke test
-    if (isinstance(x, Number) or len(x) == 0) and tensor_fn == _var_fn and call is helpers.mx_call:
+    if (isinstance(x, Number) or len(x) == 0) and tensor_fn == helpers.var_fn and call is helpers.mx_call:
         # mxnet does not support 0-dimensional variables
         pytest.skip()
     x = tensor_fn(x, dtype_str, dev_str)

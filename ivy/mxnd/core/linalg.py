@@ -10,7 +10,7 @@ from ivy.mxnd.core.general import matmul as _matmul
 
 
 # noinspection PyPep8Naming
-def svd(x, batch_shape=None):
+def svd(x):
     U, D, VT = _mx.nd.np.linalg.svd(x.as_np_ndarray())
     return U.as_nd_ndarray(), D.as_nd_ndarray(), VT.as_nd_ndarray()
 
@@ -43,11 +43,8 @@ def pinv(x):
                 return xT
 
 
-def vector_to_skew_symmetric_matrix(vector, batch_shape=None):
-    if batch_shape is None:
-        batch_shape = vector.shape[:-1]
-    # shapes as list
-    batch_shape = list(batch_shape)
+def vector_to_skew_symmetric_matrix(vector):
+    batch_shape = list(vector.shape[:-1])
     # BS x 3 x 1
     vector_expanded = _mx.nd.expand_dims(vector, -1)
     # BS x 1 x 1

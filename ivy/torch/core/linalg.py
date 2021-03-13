@@ -8,14 +8,14 @@ from typing import Optional, List
 
 
 # noinspection PyPep8Naming
-def svd(x, batch_shape:Optional[List[int]]=None)->List[torch.Tensor]:
+def svd(x) -> List[torch.Tensor]:
     U, D, V = torch.svd(x)
     VT = torch.transpose(V, -2, -1)
     return U, D, VT
 
 
 # noinspection PyShadowingBuiltins
-def norm(x, ord:int=2, axis:int=-1, keepdims:bool=False):
+def norm(x, ord: int = 2, axis: int = -1, keepdims: bool = False):
     return torch.norm(x, p=ord, dim=axis, keepdim=keepdims)
 
 
@@ -27,11 +27,8 @@ def pinv(x):
     return torch.pinverse(x)
 
 
-def vector_to_skew_symmetric_matrix(vector, batch_shape:Optional[List[int]]=None):
-    if batch_shape is None:
-        batch_shape = vector.shape[:-1]
-    # shapes as list
-    batch_shape = list(batch_shape)
+def vector_to_skew_symmetric_matrix(vector):
+    batch_shape = list(vector.shape[:-1])
     # BS x 3 x 1
     vector_expanded = torch.unsqueeze(vector, -1)
     # BS x 1 x 1

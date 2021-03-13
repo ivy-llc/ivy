@@ -5,17 +5,14 @@ Collection of Jax linear algebra functions, wrapped to fit Ivy syntax and signat
 # global
 import jax.numpy as _jnp
 
-svd = lambda x, batch_shape=None: _jnp.linalg.svd(x)
+svd = _jnp.linalg.svd
 norm = _jnp.linalg.norm
 inv = _jnp.linalg.inv
 pinv = _jnp.linalg.pinv
 
 
-def vector_to_skew_symmetric_matrix(vector, batch_shape=None):
-    if batch_shape is None:
-        batch_shape = vector.shape[:-1]
-    # shapes as list
-    batch_shape = list(batch_shape)
+def vector_to_skew_symmetric_matrix(vector):
+    batch_shape = list(vector.shape[:-1])
     # BS x 3 x 1
     vector_expanded = _jnp.expand_dims(vector, -1)
     # BS x 1 x 1
