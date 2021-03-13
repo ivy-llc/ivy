@@ -15,7 +15,7 @@ def conv1d_transpose(*_):
     raise Exception('Convolutions not yet implemented for jax library')
 
 
-def conv2d(x, filters, strides, padding, data_format='NHWC', dilations=1, filter_shape=None, num_filters=None):
+def conv2d(x, filters, strides, padding, data_format='NHWC', dilations=1):
     strides = [strides]*2 if isinstance(strides, int) else strides
     dilations = [dilations]*2 if isinstance(dilations, int) else dilations
     return _jlax.conv_general_dilated(x, filters, strides, padding, None, dilations, (data_format, 'HWIO', data_format))
@@ -37,4 +37,4 @@ def conv3d_transpose(*_):
     raise Exception('Convolutions not yet implemented for jax library')
 
 
-linear = lambda x, weight, bias, num_hidden=None: _jnp.matmul(x, _jnp.transpose(weight)) + bias
+linear = lambda x, weight, bias: _jnp.matmul(x, _jnp.transpose(weight)) + bias

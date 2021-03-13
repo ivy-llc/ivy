@@ -9,10 +9,8 @@ from typing import List, Optional
 
 
 # noinspection PyUnresolvedReferences
-def conv1d(x, filters, strides: int, padding: str, data_format: str = 'NWC', dilations: int = 1,
-           filter_shape: Optional[List[int]] = None, num_filters: Optional[int] = None):
-    if filter_shape is None:
-        filter_shape = list(filters.shape[0:1])
+def conv1d(x, filters, strides: int, padding: str, data_format: str = 'NWC', dilations: int = 1):
+    filter_shape = list(filters.shape[0:1])
     filters = filters.permute(1, 2, 0)
     if data_format == 'NWC':
         x = x.permute(0, 2, 1)
@@ -29,10 +27,8 @@ def conv1d(x, filters, strides: int, padding: str, data_format: str = 'NWC', dil
 
 # noinspection PyUnresolvedReferences
 def conv1d_transpose(x, filters, strides: int, padding: str, output_shape: Optional[List[int]] = None,
-                     data_format: str = 'NWC', dilations: int = 1, filter_shape: Optional[List[int]] = None,
-                     num_filters: Optional[int] = None):
-    if filter_shape is None:
-        filter_shape = list(filters.shape[0:1])
+                     data_format: str = 'NWC', dilations: int = 1):
+    filter_shape = list(filters.shape[0:1])
     filters = filters.permute(1, 2, 0)
     if data_format == 'NWC':
         x = x.permute(0, 2, 1)
@@ -48,10 +44,8 @@ def conv1d_transpose(x, filters, strides: int, padding: str, output_shape: Optio
 
 
 # noinspection PyUnresolvedReferences
-def conv2d(x, filters, strides: int, padding: str, data_format: str = 'NHWC', dilations: int = 1,
-           filter_shape: Optional[List[int]] = None, num_filters: Optional[int] = None):
-    if filter_shape is None:
-        filter_shape = list(filters.shape[0:2])
+def conv2d(x, filters, strides: int, padding: str, data_format: str = 'NHWC', dilations: int = 1):
+    filter_shape = list(filters.shape[0:2])
     filters = filters.permute(3, 2, 0, 1)
     if data_format == 'NHWC':
         x = x.permute(0, 3, 1, 2)
@@ -70,10 +64,8 @@ def conv2d(x, filters, strides: int, padding: str, data_format: str = 'NHWC', di
 
 # noinspection PyUnresolvedReferences
 def conv2d_transpose(x, filters, strides: int, padding: str, output_shape: Optional[List[int]] = None,
-                     data_format: str = 'NHWC', dilations: int = 1, filter_shape: Optional[List[int]] = None,
-                     num_filters: Optional[int] = None):
-    if filter_shape is None:
-        filter_shape = list(filters.shape[0:1])
+                     data_format: str = 'NHWC', dilations: int = 1):
+    filter_shape = list(filters.shape[0:1])
     filters = filters.permute(2, 3, 0, 1)
     if data_format == 'NHWC':
         x = x.permute(0, 3, 1, 2)
@@ -89,11 +81,8 @@ def conv2d_transpose(x, filters, strides: int, padding: str, output_shape: Optio
 
 
 # noinspection PyUnresolvedReferences
-def depthwise_conv2d(x, filters, strides: int, padding: str, data_format: str = 'NHWC', dilations: int = 1,
-                     filter_shape: Optional[List[int]] = None, num_filters: Optional[int] = None,
-                     num_channels: Optional[int] = None):
-    if filter_shape is None:
-        filter_shape = list(filters.shape[0:2])
+def depthwise_conv2d(x, filters, strides: int, padding: str, data_format: str = 'NHWC', dilations: int = 1):
+    filter_shape = list(filters.shape[0:2])
     dims_in = filters.shape[-1]
     filters = _torch.unsqueeze(filters, -1)
     filters = filters.permute(2, 3, 0, 1)
@@ -112,10 +101,8 @@ def depthwise_conv2d(x, filters, strides: int, padding: str, data_format: str = 
 
 
 # noinspection PyUnresolvedReferences
-def conv3d(x, filters, strides: int, padding: str, data_format: str = 'NDHWC', dilations: int = 1,
-           filter_shape: Optional[List[int]] = None, num_filters: Optional[int] = None):
-    if filter_shape is None:
-        filter_shape = list(filters.shape[0:3])
+def conv3d(x, filters, strides: int, padding: str, data_format: str = 'NDHWC', dilations: int = 1):
+    filter_shape = list(filters.shape[0:3])
     filters = filters.permute(3, 4, 0, 1, 2)
     if data_format == 'NDHWC':
         x = x.permute(0, 4, 1, 2, 3)
@@ -132,10 +119,8 @@ def conv3d(x, filters, strides: int, padding: str, data_format: str = 'NDHWC', d
 
 # noinspection PyUnresolvedReferences
 def conv3d_transpose(x, filters, strides: int, padding: str, output_shape: Optional[List[int]] = None,
-                     data_format: str = 'NDHWC', dilations: int = 1, filter_shape: Optional[List[int]] = None,
-                     num_filters: Optional[int] = None):
-    if filter_shape is None:
-        filter_shape = list(filters.shape[0:1])
+                     data_format: str = 'NDHWC', dilations: int = 1):
+    filter_shape = list(filters.shape[0:1])
     filters = filters.permute(3, 4, 0, 1, 2)
     if data_format == 'NDHWC':
         x = x.permute(0, 4, 1, 2, 3)
@@ -151,5 +136,5 @@ def conv3d_transpose(x, filters, strides: int, padding: str, output_shape: Optio
 
 
 # noinspection PyUnresolvedReferences
-def linear(x, weight, bias, num_hidden: Optional[int] = None):
+def linear(x, weight, bias):
     return _torch.nn.functional.linear(x, weight, bias)

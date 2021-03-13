@@ -14,9 +14,8 @@ def conv1d_transpose(*_):
     raise Exception('Convolutions not yet implemented for numpy library')
 
 
-def conv2d(x, filters, strides, padding, data_format='NHWC', dilations=1, filter_shape=None, num_filters=None):
-    if filter_shape is None:
-        filter_shape = filters.shape[0:2]
+def conv2d(x, filters, strides, padding, data_format='NHWC', dilations=1):
+    filter_shape = filters.shape[0:2]
     filter_shape = list(filter_shape)
     if data_format == 'NCHW':
         x = _np.transpose(x, (0, 2, 3, 1))
@@ -59,4 +58,4 @@ def conv3d_transpose(*_):
     raise Exception('Convolutions not yet implemented for numpy library')
 
 
-linear = lambda x, weight, bias, num_hidden=None: _np.matmul(x, _np.transpose(weight)) + bias
+linear = lambda x, weight, bias: _np.matmul(x, _np.transpose(weight)) + bias
