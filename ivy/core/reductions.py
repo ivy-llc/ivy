@@ -70,7 +70,7 @@ def reduce_mean(x, axis=None, keepdims=False, f=None):
     return _get_framework(x, f=f).reduce_mean(x, axis, keepdims)
 
 
-def reduce_min(x, axis=None, num_x_dims=None, keepdims=False, f=None):
+def reduce_min(x, axis=None, keepdims=False, f=None):
     """
     Computes the minimum value along the specified axis. The minimum is taken over the flattened array by default,
     otherwise over the specified axis.
@@ -81,8 +81,6 @@ def reduce_min(x, axis=None, num_x_dims=None, keepdims=False, f=None):
                     array. If this is a tuple of ints, a min is performed over multiple axes, instead of a single axis
                     or all the axes as before.
     :type axis: int or sequence of ints
-    :param num_x_dims: Number of dimensions of x array.
-    :type num_x_dims: int
     :param keepdims: If this is set to True, the axes which are reduced are left in the result as dimensions with size
                         one. With this option, the result will broadcast correctly against the input array.
     :type keepdims: bool, optional
@@ -90,10 +88,10 @@ def reduce_min(x, axis=None, num_x_dims=None, keepdims=False, f=None):
     :type f: ml_framework, optional
     :return: The array with mins computed.
     """
-    return _get_framework(x, f=f).reduce_min(x, axis, num_x_dims, keepdims)
+    return _get_framework(x, f=f).reduce_min(x, axis, keepdims)
 
 
-def reduce_max(x, axis=None, num_x_dims=None, keepdims=False, f=None):
+def reduce_max(x, axis=None, keepdims=False, f=None):
     """
     Computes the maximum value along the specified axis. The maximum is taken over the flattened array by default,
     otherwise over the specified axis.
@@ -104,8 +102,6 @@ def reduce_max(x, axis=None, num_x_dims=None, keepdims=False, f=None):
                     array. If this is a tuple of ints, a max is performed over multiple axes, instead of a single axis
                     or all the axes as before.
     :type axis: int or sequence of ints
-    :param num_x_dims: Number of dimensions of x array.
-    :type num_x_dims: int
     :param keepdims: If this is set to True, the axes which are reduced are left in the result as dimensions with size
                         one. With this option, the result will broadcast correctly against the input array.
     :type keepdims: bool, optional
@@ -113,4 +109,4 @@ def reduce_max(x, axis=None, num_x_dims=None, keepdims=False, f=None):
     :type f: ml_framework, optional
     :return: The array with maxes computed.
     """
-    return _get_framework(x, f=f).reduce_max(x, axis, num_x_dims, keepdims)
+    return _get_framework(x, f=f).reduce_max(x, axis, keepdims)
