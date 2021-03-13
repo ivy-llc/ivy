@@ -4,54 +4,82 @@ Collection of MXNet reduction functions, wrapped to fit Ivy syntax and signature
 
 # global
 import mxnet as _mx
+from numbers import Number
+
+# local
+from ivy.mxnd.core.general import _1_dim_array_to_flat_array
 
 
 def reduce_sum(x, axis=None, keepdims=False):
+    axis_specified = True
     if axis is None:
+        axis_specified = False
         num_dims = len(x.shape)
         axis = tuple(range(num_dims))
+    elif isinstance(axis, Number):
+        axis = (axis,)
     elif isinstance(axis, list):
         axis = tuple(axis)
-    return _mx.nd.sum(x, axis=axis, keepdims=keepdims)
+    if keepdims or (axis_specified and len(axis) != len(x.shape)):
+        return _mx.nd.sum(x, axis=axis, keepdims=keepdims)
+    return _1_dim_array_to_flat_array(_mx.nd.sum(x, axis=axis, keepdims=keepdims))
 
 
 def reduce_prod(x, axis=None, keepdims=False):
+    axis_specified = True
     if axis is None:
+        axis_specified = False
         num_dims = len(x.shape)
         axis = tuple(range(num_dims))
+    elif isinstance(axis, Number):
+        axis = (axis,)
     elif isinstance(axis, list):
         axis = tuple(axis)
-    return _mx.nd.prod(x, axis=axis, keepdims=keepdims)
+    if keepdims or (axis_specified and len(axis) != len(x.shape)):
+        return _mx.nd.prod(x, axis=axis, keepdims=keepdims)
+    return _1_dim_array_to_flat_array(_mx.nd.prod(x, axis=axis, keepdims=keepdims))
 
 
 def reduce_mean(x, axis=None, keepdims=False):
+    axis_specified = True
     if axis is None:
+        axis_specified = False
         num_dims = len(x.shape)
         axis = tuple(range(num_dims))
+    elif isinstance(axis, Number):
+        axis = (axis,)
     elif isinstance(axis, list):
         axis = tuple(axis)
-    return _mx.nd.mean(x, axis=axis, keepdims=keepdims)
+    if keepdims or (axis_specified and len(axis) != len(x.shape)):
+        return _mx.nd.mean(x, axis=axis, keepdims=keepdims)
+    return _1_dim_array_to_flat_array(_mx.nd.mean(x, axis=axis, keepdims=keepdims))
 
 
-def reduce_min(x, axis=None, num_x_dims=None, keepdims=False):
-    if num_x_dims is None:
-        num_x_dims = len(x.shape)
+def reduce_min(x, axis=None, keepdims=False):
+    axis_specified = True
     if axis is None:
-        axis = list(range(num_x_dims))
-    elif isinstance(axis, int):
-        axis = [axis]
-    axis = [(item + num_x_dims) % num_x_dims for item in axis]  # prevent negative indices
-    axis.sort()
-    return _mx.nd.min(x, axis=axis, keepdims=keepdims)
+        axis_specified = False
+        num_dims = len(x.shape)
+        axis = tuple(range(num_dims))
+    elif isinstance(axis, Number):
+        axis = (axis,)
+    elif isinstance(axis, list):
+        axis = tuple(axis)
+    if keepdims or (axis_specified and len(axis) != len(x.shape)):
+        return _mx.nd.min(x, axis=axis, keepdims=keepdims)
+    return _1_dim_array_to_flat_array(_mx.nd.min(x, axis=axis, keepdims=keepdims))
 
 
-def reduce_max(x, axis=None, num_x_dims=None, keepdims=False):
-    if num_x_dims is None:
-        num_x_dims = len(x.shape)
+def reduce_max(x, axis=None, keepdims=False):
+    axis_specified = True
     if axis is None:
-        axis = list(range(num_x_dims))
-    elif isinstance(axis, int):
-        axis = [axis]
-    axis = [(item + num_x_dims) % num_x_dims for item in axis]  # prevent negative indices
-    axis.sort()
-    return _mx.nd.max(x, axis=axis, keepdims=keepdims)
+        axis_specified = False
+        num_dims = len(x.shape)
+        axis = tuple(range(num_dims))
+    elif isinstance(axis, Number):
+        axis = (axis,)
+    elif isinstance(axis, list):
+        axis = tuple(axis)
+    if keepdims or (axis_specified and len(axis) != len(x.shape)):
+        return _mx.nd.max(x, axis=axis, keepdims=keepdims)
+    return _1_dim_array_to_flat_array(_mx.nd.max(x, axis=axis, keepdims=keepdims))

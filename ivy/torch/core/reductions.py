@@ -7,14 +7,14 @@ import torch as _torch
 from typing import Optional, List
 
 
-def reduce_sum(x, axis:Optional[List[int]]=None, keepdims:bool=False):
+def reduce_sum(x, axis: Optional[List[int]] = None, keepdims: bool = False):
     if axis is None:
         num_dims = len(x.shape)
         axis = list(range(num_dims))
     return _torch.sum(x, dim=axis, keepdim=keepdims)
 
 
-def reduce_prod(x, axis:Optional[List[int]]=None, keepdims:bool=False):
+def reduce_prod(x, axis: Optional[List[int]] = None, keepdims: bool = False):
     if axis is None:
         num_dims = len(x.shape)
         axis = list(range(num_dims))
@@ -25,36 +25,30 @@ def reduce_prod(x, axis:Optional[List[int]]=None, keepdims:bool=False):
     return x
 
 
-def reduce_mean(x, axis:Optional[List[int]]=None, keepdims:bool=False):
+def reduce_mean(x, axis: Optional[List[int]] = None, keepdims: bool = False):
     if axis is None:
         num_dims = len(x.shape)
         axis = list(range(num_dims))
     return _torch.mean(x, dim=axis, keepdim=keepdims)
 
 
-def reduce_min(x, axis:Optional[List[int]]=None, num_x_dims:Optional[int]=None, keepdims:bool=False):
-    if num_x_dims is None:
-        num_x_dims = len(x.shape)
+def reduce_min(x, axis: Optional[List[int]] = None, keepdims: bool = False):
     if axis is None:
-        axis = list(range(num_x_dims))
-    elif isinstance(axis, int):
-        axis = [axis]
-    axis = [(item + num_x_dims) % num_x_dims for item in axis]  # prevent negative indices
-    axis.sort()
+        num_dims = len(x.shape)
+        axis = list(range(num_dims))
+    if isinstance(axis, int):
+        return _torch.min(x, dim=axis, keepdim=keepdims).values
     for i, a in enumerate(axis):
         x = _torch.min(x, dim=a if keepdims else a - i, keepdim=keepdims).values
     return x
 
 
-def reduce_max(x, axis:Optional[List[int]]=None, num_x_dims:Optional[int]=None, keepdims:bool=False):
-    if num_x_dims is None:
-        num_x_dims  = len(x.shape)
+def reduce_max(x, axis: Optional[List[int]] = None, keepdims: bool = False):
     if axis is None:
-        axis = list(range(num_x_dims))
-    elif isinstance(axis, int):
-        axis = [axis]
-    axis = [(item + num_x_dims) % num_x_dims for item in axis]  # prevent negative indices
-    axis.sort()
+        num_dims = len(x.shape)
+        axis = list(range(num_dims))
+    if isinstance(axis, int):
+        return _torch.max(x, dim=axis, keepdim=keepdims).values
     for i, a in enumerate(axis):
         x = _torch.max(x, dim=a if keepdims else a - i, keepdim=keepdims).values
     return x
