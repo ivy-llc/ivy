@@ -13,12 +13,6 @@ FW_STRS = ['numpy', 'jax', 'tensorflow', 'tensorflow_graph', 'torch', 'mxnd']
 
 
 def get_test_devices() -> Dict[ivy.Framework, List[str]]:
-    """Creates a list of device strings to test the source code as values.
-    CUDA devices will be test only in case the current hardware supports it.
-
-    Return:
-        dict(ivy.Framework, list(device_str)): list with devices names.
-    """
     devices_dict: Dict[str, List[str]] = dict()
     for fw_str, (f, _) in zip(FW_STRS, helpers.f_n_calls()):
         new_list = list()
