@@ -11,7 +11,10 @@ def reduce_sum(x, axis: Optional[List[int]] = None, keepdims: bool = False):
     if axis is None:
         num_dims = len(x.shape)
         axis = list(range(num_dims))
-    return _torch.sum(x, dim=axis, keepdim=keepdims)
+    ret = _torch.sum(x, dim=axis, keepdim=keepdims)
+    if ret.shape == ():
+        return ret.view((1,))
+    return ret
 
 
 def reduce_prod(x, axis: Optional[List[int]] = None, keepdims: bool = False):
@@ -19,17 +22,26 @@ def reduce_prod(x, axis: Optional[List[int]] = None, keepdims: bool = False):
         num_dims = len(x.shape)
         axis = list(range(num_dims))
     if isinstance(axis, int):
-        return _torch.prod(x, dim=axis, keepdim=keepdims)
+        ret = _torch.prod(x, dim=axis, keepdim=keepdims)
+        if ret.shape == ():
+            return ret.view((1,))
+        return ret
     for i, a in enumerate(axis):
         x = _torch.prod(x, dim=a if keepdims else a - i, keepdim=keepdims)
-    return x
+    ret = x
+    if ret.shape == ():
+        return ret.view((1,))
+    return ret
 
 
 def reduce_mean(x, axis: Optional[List[int]] = None, keepdims: bool = False):
     if axis is None:
         num_dims = len(x.shape)
         axis = list(range(num_dims))
-    return _torch.mean(x, dim=axis, keepdim=keepdims)
+    ret = _torch.mean(x, dim=axis, keepdim=keepdims)
+    if ret.shape == ():
+        return ret.view((1,))
+    return ret
 
 
 def reduce_min(x, axis: Optional[List[int]] = None, keepdims: bool = False):
@@ -37,10 +49,16 @@ def reduce_min(x, axis: Optional[List[int]] = None, keepdims: bool = False):
         num_dims = len(x.shape)
         axis = list(range(num_dims))
     if isinstance(axis, int):
-        return _torch.min(x, dim=axis, keepdim=keepdims).values
+        ret = _torch.min(x, dim=axis, keepdim=keepdims).values
+        if ret.shape == ():
+            return ret.view((1,))
+        return ret
     for i, a in enumerate(axis):
         x = _torch.min(x, dim=a if keepdims else a - i, keepdim=keepdims).values
-    return x
+    ret = x
+    if ret.shape == ():
+        return ret.view((1,))
+    return ret
 
 
 def reduce_max(x, axis: Optional[List[int]] = None, keepdims: bool = False):
@@ -48,7 +66,13 @@ def reduce_max(x, axis: Optional[List[int]] = None, keepdims: bool = False):
         num_dims = len(x.shape)
         axis = list(range(num_dims))
     if isinstance(axis, int):
-        return _torch.max(x, dim=axis, keepdim=keepdims).values
+        ret = _torch.max(x, dim=axis, keepdim=keepdims).values
+        if ret.shape == ():
+            return ret.view((1,))
+        return ret
     for i, a in enumerate(axis):
         x = _torch.max(x, dim=a if keepdims else a - i, keepdim=keepdims).values
-    return x
+    ret = x
+    if ret.shape == ():
+        return ret.view((1,))
+    return ret
