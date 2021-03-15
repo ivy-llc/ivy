@@ -40,6 +40,7 @@ def test_reduce_sum(x, axis, kd, dtype_str, tensor_fn, dev_str, call):
             expected_shape = [1 if i % len(x.shape) in axis_ else item for i, item in enumerate(expected_shape)]
         else:
             [expected_shape.pop(item) for item in axis_]
+    expected_shape = [1] if expected_shape == [] else expected_shape
     assert ret.shape == tuple(expected_shape)
     # value test
     assert np.allclose(call(ivy.reduce_sum, x), ivy.numpy.reduce_sum(ivy.to_numpy(x)))
@@ -75,6 +76,7 @@ def test_reduce_prod(x, axis, kd, dtype_str, tensor_fn, dev_str, call):
             expected_shape = [1 if i % len(x.shape) in axis_ else item for i, item in enumerate(expected_shape)]
         else:
             [expected_shape.pop(item) for item in axis_]
+    expected_shape = [1] if expected_shape == [] else expected_shape
     assert ret.shape == tuple(expected_shape)
     # value test
     assert np.allclose(call(ivy.reduce_prod, x), ivy.numpy.reduce_prod(ivy.to_numpy(x)))
@@ -110,6 +112,7 @@ def test_reduce_mean(x, axis, kd, dtype_str, tensor_fn, dev_str, call):
             expected_shape = [1 if i % len(x.shape) in axis_ else item for i, item in enumerate(expected_shape)]
         else:
             [expected_shape.pop(item) for item in axis_]
+    expected_shape = [1] if expected_shape == [] else expected_shape
     assert ret.shape == tuple(expected_shape)
     # value test
     assert np.allclose(call(ivy.reduce_mean, x), ivy.numpy.reduce_mean(ivy.to_numpy(x)))
@@ -145,6 +148,7 @@ def test_reduce_min(x, axis, kd, dtype_str, tensor_fn, dev_str, call):
             expected_shape = [1 if i % len(x.shape) in axis_ else item for i, item in enumerate(expected_shape)]
         else:
             [expected_shape.pop(item) for item in axis_]
+    expected_shape = [1] if expected_shape == [] else expected_shape
     assert ret.shape == tuple(expected_shape)
     # value test
     assert np.allclose(call(ivy.reduce_min, x), ivy.numpy.reduce_min(ivy.to_numpy(x)))
@@ -180,6 +184,7 @@ def test_reduce_max(x, axis, kd, dtype_str, tensor_fn, dev_str, call):
             expected_shape = [1 if i % len(x.shape) in axis_ else item for i, item in enumerate(expected_shape)]
         else:
             [expected_shape.pop(item) for item in axis_]
+    expected_shape = [1] if expected_shape == [] else expected_shape
     assert ret.shape == tuple(expected_shape)
     # value test
     assert np.allclose(call(ivy.reduce_max, x), ivy.numpy.reduce_max(ivy.to_numpy(x)))

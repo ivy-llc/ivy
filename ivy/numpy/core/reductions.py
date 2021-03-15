@@ -12,7 +12,10 @@ def reduce_sum(x, axis=None, keepdims=False):
         axis = tuple(range(num_dims))
     elif isinstance(axis, list):
         axis = tuple(axis)
-    return _np.asarray(_np.sum(x, axis=axis, keepdims=keepdims))
+    ret = _np.asarray(_np.sum(x, axis=axis, keepdims=keepdims))
+    if ret.shape == ():
+        return ret.reshape((1,))
+    return ret
 
 
 def reduce_prod(x, axis=None, keepdims=False):
@@ -21,7 +24,10 @@ def reduce_prod(x, axis=None, keepdims=False):
         axis = tuple(range(num_dims))
     elif isinstance(axis, list):
         axis = tuple(axis)
-    return _np.asarray(_np.prod(x, axis=axis, keepdims=keepdims))
+    ret = _np.asarray(_np.prod(x, axis=axis, keepdims=keepdims))
+    if ret.shape == ():
+        return ret.reshape((1,))
+    return ret
 
 
 def reduce_mean(x, axis=None, keepdims=False):
@@ -30,7 +36,10 @@ def reduce_mean(x, axis=None, keepdims=False):
         axis = tuple(range(num_dims))
     elif isinstance(axis, list):
         axis = tuple(axis)
-    return _np.asarray(_np.mean(x, axis=axis, keepdims=keepdims))
+    ret = _np.asarray(_np.mean(x, axis=axis, keepdims=keepdims))
+    if ret.shape == ():
+        return ret.reshape((1,))
+    return ret
 
 
 def reduce_min(x, axis=None, keepdims=False):
@@ -39,7 +48,10 @@ def reduce_min(x, axis=None, keepdims=False):
         axis = tuple(range(num_dims))
     elif isinstance(axis, list):
         axis = tuple(axis)
-    return _np.asarray(_np.min(x, axis=axis, keepdims=keepdims))
+    ret = _np.asarray(_np.min(x, axis=axis, keepdims=keepdims))
+    if ret.shape == ():
+        return ret.reshape((1,))
+    return ret
 
 
 def reduce_max(x, axis=None, keepdims=False):
@@ -48,4 +60,7 @@ def reduce_max(x, axis=None, keepdims=False):
         axis = tuple(range(num_dims))
     elif isinstance(axis, list):
         axis = tuple(axis)
-    return _np.asarray(_np.max(x, axis=axis, keepdims=keepdims))
+    ret = _np.asarray(_np.max(x, axis=axis, keepdims=keepdims))
+    if ret.shape == ():
+        return ret.reshape((1,))
+    return ret
