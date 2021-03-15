@@ -150,7 +150,7 @@ where = lambda condition, x1, x2: _np.where(condition, x1, x2)
 def indices_where(x):
     where_x = _np.where(x)
     if len(where_x) == 1:
-        return where_x[0]
+        return _np.expand_dims(where_x[0], -1)
     res = _np.concatenate([_np.expand_dims(item, -1) for item in where_x], -1)
     return res
 
