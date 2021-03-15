@@ -941,6 +941,7 @@ def test_indices_where(x, dtype_str, tensor_fn, dev_str, call):
     # type test
     assert isinstance(ret, ivy.Array)
     # cardinality test
+    assert len(ret.shape) == 2
     assert ret.shape[-1] == len(x.shape)
     # value test
     assert np.allclose(call(ivy.indices_where, x), ivy.numpy.indices_where(ivy.to_numpy(x)))
