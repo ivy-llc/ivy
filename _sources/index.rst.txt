@@ -235,6 +235,7 @@ Documentation Tree
    core/container.rst
    core/general.rst
    core/gradients.rst
+   core/image.rst
    core/linalg.rst
    core/logic.rst
    core/math.rst

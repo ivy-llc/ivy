@@ -180,7 +180,7 @@
 <span class="kn">from</span> <span class="nn">ivy.framework_handler</span> <span class="k">import</span> <span class="n">get_framework</span> <span class="k">as</span> <span class="n">_get_framework</span>
 
 
-<div class="viewcode-block" id="stack_images"><a class="viewcode-back" href="../../../core/image/stack_images.html#ivy.core.image.stack_images">[docs]</a><span class="k">def</span> <span class="nf">stack_images</span><span class="p">(</span><span class="n">images</span><span class="p">,</span> <span class="n">desired_aspect_ratio</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">batch_shape</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">image_dims</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="stack_images"><a class="viewcode-back" href="../../../core/image/stack_images.html#ivy.core.image.stack_images">[docs]</a><span class="k">def</span> <span class="nf">stack_images</span><span class="p">(</span><span class="n">images</span><span class="p">,</span> <span class="n">desired_aspect_ratio</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">f</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Stacks a group of images into a combined windowed image, fitting the desired aspect ratio as closely as possible.</span>
 
@@ -188,18 +188,14 @@
 <span class="sd">    :type images: sequence of arrays</span>
 <span class="sd">    :param desired_aspect_ratio: Desired aspect ratio of stacked image.</span>
 <span class="sd">    :type desired_aspect_ratio: sequence of ints</span>
-<span class="sd">    :param batch_shape: Shape of batch. Inferred from inputs if None.</span>
-<span class="sd">    :type batch_shape: sequence of ints, optional</span>
-<span class="sd">    :param image_dims: image dimensions.</span>
-<span class="sd">    :type image_dims: sequence of ints</span>
 <span class="sd">    :param f: Machine learning framework. Inferred from inputs if None.</span>
 <span class="sd">    :type f: ml_framework, optional</span>
 <span class="sd">    :return: Stacked image, suitable for viewing in a single window.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">_get_framework</span><span class="p">(</span><span class="n">images</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">stack_images</span><span class="p">(</span><span class="n">images</span><span class="p">,</span> <span class="n">desired_aspect_ratio</span><span class="p">,</span> <span class="n">batch_shape</span><span class="p">,</span> <span class="n">image_dims</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">_get_framework</span><span class="p">(</span><span class="n">images</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">stack_images</span><span class="p">(</span><span class="n">images</span><span class="p">,</span> <span class="n">desired_aspect_ratio</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="bilinear_resample"><a class="viewcode-back" href="../../../core/image/bilinear_resample.html#ivy.core.image.bilinear_resample">[docs]</a><span class="k">def</span> <span class="nf">bilinear_resample</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">warp</span><span class="p">,</span> <span class="n">batch_shape</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">input_image_dims</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">output_image_dims</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="bilinear_resample"><a class="viewcode-back" href="../../../core/image/bilinear_resample.html#ivy.core.image.bilinear_resample">[docs]</a><span class="k">def</span> <span class="nf">bilinear_resample</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">warp</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Performs bilinearly re-sampling on input image.</span>
 
@@ -207,36 +203,24 @@
 <span class="sd">    :type x: array</span>
 <span class="sd">    :param warp: Warp array.</span>
 <span class="sd">    :type warp: array</span>
-<span class="sd">    :param batch_shape: Shape of batch. Inferred from inputs if None.</span>
-<span class="sd">    :type batch_shape: sequence of ints, optional</span>
-<span class="sd">    :param input_image_dims: image dimensions of image to be sampled from.</span>
-<span class="sd">    :type input_image_dims: sequence of ints</span>
-<span class="sd">    :param output_image_dims: image dimensions of the output image, after sampling.</span>
-<span class="sd">    :type output_image_dims: sequence of ints</span>
 <span class="sd">    :param f: Machine learning framework. Inferred from inputs if None.</span>
 <span class="sd">    :type f: ml_framework, optional</span>
 <span class="sd">    :return: Image after bilinear re-sampling.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">_get_framework</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">bilinear_resample</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">warp</span><span class="p">,</span> <span class="n">batch_shape</span><span class="p">,</span> <span class="n">input_image_dims</span><span class="p">,</span> <span class="n">output_image_dims</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">_get_framework</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">bilinear_resample</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">warp</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="gradient_image"><a class="viewcode-back" href="../../../core/image/gradient_image.html#ivy.core.image.gradient_image">[docs]</a><span class="k">def</span> <span class="nf">gradient_image</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">batch_shape</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">image_dims</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dev</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="gradient_image"><a class="viewcode-back" href="../../../core/image/gradient_image.html#ivy.core.image.gradient_image">[docs]</a><span class="k">def</span> <span class="nf">gradient_image</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Computes image gradients (dy, dx) for each channel.</span>
 
 <span class="sd">    :param x: Input image *[batch_shape, h, w, d]* .</span>
 <span class="sd">    :type x: array</span>
-<span class="sd">    :param batch_shape: Shape of batch. Inferred from inputs if None.</span>
-<span class="sd">    :type batch_shape: sequence of ints, optional</span>
-<span class="sd">    :param image_dims: Image dimensions. Inferred from inputs in None.</span>
-<span class="sd">    :type image_dims: sequence of ints, optional</span>
-<span class="sd">    :param dev: device on which to create the array &#39;cuda:0&#39;, &#39;cuda:1&#39;, &#39;cpu&#39; etc. Same as x if None.</span>
-<span class="sd">    :type dev: str, optional</span>
 <span class="sd">    :param f: Machine learning library. Inferred from inputs if None.</span>
 <span class="sd">    :type f: ml_framework, optional</span>
 <span class="sd">    :return: Gradient images dy *[batch_shape,h,w,d]* and dx *[batch_shape,h,w,d]* .</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">_get_framework</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">gradient_image</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">batch_shape</span><span class="p">,</span> <span class="n">image_dims</span><span class="p">,</span> <span class="n">dev</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">_get_framework</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">gradient_image</span><span class="p">(</span><span class="n">x</span><span class="p">)</span></div>
 </pre></div>
 
            </div>
