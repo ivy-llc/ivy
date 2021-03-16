@@ -35,7 +35,7 @@
   <link rel="stylesheet" href="_static/css/custom.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Writing Ivy" href="writing_ivy.html" />
+    <link rel="next" title="Using Ivy" href="using_ivy.html" />
     <link rel="prev" title="Contents" href="index.html" /> 
 </head>
 
@@ -86,7 +86,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#portable-code">Portable Code</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="writing_ivy.html">Writing Ivy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="using_ivy.html">Using Ivy</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Core</span></p>
 <ul>
@@ -227,35 +227,30 @@ meaning your library will not become outdated.</p>
 we show the same kalman filter function written in Ivy below.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">ivy.framework_handler</span> <span class="kn">import</span> <span class="n">get_framework</span>
 
-<span class="k">def</span> <span class="nf">kalman_filter_update</span><span class="p">(</span><span class="n">xkm1km1</span><span class="p">,</span> <span class="n">Pkm1km1</span><span class="p">,</span> <span class="n">zk</span><span class="p">,</span> <span class="n">Rk</span><span class="p">,</span> <span class="n">uk</span><span class="p">,</span> <span class="n">Fk</span><span class="p">,</span> <span class="n">Bk</span><span class="p">,</span> <span class="n">Qk</span><span class="p">,</span> <span class="n">Hk</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">kalman_filter_update</span><span class="p">(</span><span class="n">xkm1km1</span><span class="p">,</span> <span class="n">Pkm1km1</span><span class="p">,</span> <span class="n">zk</span><span class="p">,</span> <span class="n">Rk</span><span class="p">,</span> <span class="n">uk</span><span class="p">,</span> <span class="n">Fk</span><span class="p">,</span> <span class="n">Bk</span><span class="p">,</span> <span class="n">Qk</span><span class="p">,</span> <span class="n">Hk</span><span class="p">):</span>
     <span class="c1"># reference: https://en.wikipedia.org/wiki/Kalman_filter#Details</span>
 
-    <span class="n">f</span> <span class="o">=</span> <span class="n">get_framework</span><span class="p">(</span><span class="n">xkm1km1</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span>
-
     <span class="c1"># trans</span>
-    <span class="n">FkT</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">swapaxes</span><span class="p">(</span><span class="n">Fk</span><span class="p">,</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">))</span>
-    <span class="n">HkT</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">swapaxes</span><span class="p">(</span><span class="n">Hk</span><span class="p">,</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">))</span>
+    <span class="n">FkT</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">swapaxes</span><span class="p">(</span><span class="n">Fk</span><span class="p">,</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">))</span>
+    <span class="n">HkT</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">swapaxes</span><span class="p">(</span><span class="n">Hk</span><span class="p">,</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">))</span>
 
     <span class="c1"># predict</span>
-    <span class="n">xkkm1</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">Fk</span><span class="p">,</span> <span class="n">xkm1km1</span><span class="p">)</span> <span class="o">+</span> <span class="n">f</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">Bk</span><span class="p">,</span> <span class="n">uk</span><span class="p">)</span>
-    <span class="n">Pkkm1</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">Fk</span><span class="p">,</span> <span class="n">Pkm1km1</span><span class="p">),</span> <span class="n">FkT</span><span class="p">)</span> <span class="o">+</span> <span class="n">Qk</span>
+    <span class="n">xkkm1</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">Fk</span><span class="p">,</span> <span class="n">xkm1km1</span><span class="p">)</span> <span class="o">+</span> <span class="n">ivy</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">Bk</span><span class="p">,</span> <span class="n">uk</span><span class="p">)</span>
+    <span class="n">Pkkm1</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">Fk</span><span class="p">,</span> <span class="n">Pkm1km1</span><span class="p">),</span> <span class="n">FkT</span><span class="p">)</span> <span class="o">+</span> <span class="n">Qk</span>
 
     <span class="c1"># update</span>
-    <span class="n">Sk</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">Hk</span><span class="p">,</span> <span class="n">Pkkm1</span><span class="p">),</span> <span class="n">HkT</span><span class="p">)</span> <span class="o">+</span> <span class="n">Rk</span>
-    <span class="n">Skinv</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="n">Sk</span><span class="p">)</span>
-    <span class="n">Kk</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">Pkkm1</span><span class="p">,</span> <span class="n">HkT</span><span class="p">),</span> <span class="n">Skinv</span><span class="p">)</span>
-    <span class="n">ImKkHk</span> <span class="o">=</span> <span class="n">I</span> <span class="o">-</span> <span class="n">f</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">Kk</span><span class="p">,</span> <span class="n">Hk</span><span class="p">)</span>
-    <span class="n">xkk</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">ImKkHk</span><span class="p">,</span> <span class="n">xkkm1</span><span class="p">)</span>  <span class="o">+</span> <span class="n">f</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">Kk</span><span class="p">,</span> <span class="n">f</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">Hk</span><span class="p">,</span> <span class="n">xk</span><span class="p">)</span> <span class="o">+</span> <span class="n">vk</span><span class="p">)</span>
-    <span class="n">Pkk</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">ImKkHk</span><span class="p">,</span> <span class="n">Pkkm1</span><span class="p">)</span>
+    <span class="n">Sk</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">Hk</span><span class="p">,</span> <span class="n">Pkkm1</span><span class="p">),</span> <span class="n">HkT</span><span class="p">)</span> <span class="o">+</span> <span class="n">Rk</span>
+    <span class="n">Skinv</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">inv</span><span class="p">(</span><span class="n">Sk</span><span class="p">)</span>
+    <span class="n">Kk</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">Pkkm1</span><span class="p">,</span> <span class="n">HkT</span><span class="p">),</span> <span class="n">Skinv</span><span class="p">)</span>
+    <span class="n">ImKkHk</span> <span class="o">=</span> <span class="n">I</span> <span class="o">-</span> <span class="n">ivy</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">Kk</span><span class="p">,</span> <span class="n">Hk</span><span class="p">)</span>
+    <span class="n">xkk</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">ImKkHk</span><span class="p">,</span> <span class="n">xkkm1</span><span class="p">)</span>  <span class="o">+</span> <span class="n">ivy</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">Kk</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">Hk</span><span class="p">,</span> <span class="n">xk</span><span class="p">)</span> <span class="o">+</span> <span class="n">vk</span><span class="p">)</span>
+    <span class="n">Pkk</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">ImKkHk</span><span class="p">,</span> <span class="n">Pkkm1</span><span class="p">)</span>
 
     <span class="c1"># return</span>
     <span class="k">return</span> <span class="n">xkk</span><span class="p">,</span> <span class="n">Pkk</span>
 </pre></div>
 </div>
-<p>For improved runtime efficiency, we make use of a placeholder <code class="docutils literal notranslate"><span class="pre">f</span></code> which holds an ivy framework such as <code class="docutils literal notranslate"><span class="pre">ivy.torch</span></code> or <code class="docutils literal notranslate"><span class="pre">ivy.tensorflow</span></code>.
-This avoids type checking of the inputs, which is used by the direct <code class="docutils literal notranslate"><span class="pre">ivy</span></code> namespace.
-For this new function, an ivy framework can either be passed directly as input,
-or if left as <code class="docutils literal notranslate"><span class="pre">None</span></code> then the input <code class="docutils literal notranslate"><span class="pre">xkm1km1</span></code> will be type checked to infer the ivy framework <code class="docutils literal notranslate"><span class="pre">f</span></code>.
+<p>The backend framework can be selected before calling the function like so <code class="docutils literal notranslate"><span class="pre">ivy.set_framework('pytorch')</span></code>.
 Further details on how to write efficient Ivy code are given in the short guide Writing Ivy in the docs.</p>
 <p>We now consider the use of your new library by some hypothetical users,
 with this particular application inspired by <a class="reference external" href="https://arxiv.org/abs/1605.07148">Backprop Kalman Filter</a>.
@@ -266,6 +261,8 @@ we simply aim to highlight the “drag-and-drop” nature of this new bayesian I
 
 <span class="kn">import</span> <span class="nn">tensorflow</span> <span class="kn">as</span> <span class="nn">tf</span>
 <span class="kn">import</span> <span class="nn">ivy_bayes</span>
+<span class="kn">import</span> <span class="nn">ivy</span>
+<span class="n">ivy</span><span class="o">.</span><span class="n">set_framework</span><span class="p">(</span><span class="s1">&#39;tensorflow&#39;</span><span class="p">)</span>
 
 <span class="k">class</span> <span class="nc">Network</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">Layer</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -285,6 +282,8 @@ we simply aim to highlight the “drag-and-drop” nature of this new bayesian I
 
 <span class="kn">import</span> <span class="nn">torch</span>
 <span class="kn">import</span> <span class="nn">ivy_bayes</span>
+<span class="kn">import</span> <span class="nn">ivy</span>
+<span class="n">ivy</span><span class="o">.</span><span class="n">set_framework</span><span class="p">(</span><span class="s1">&#39;pytorch&#39;</span><span class="p">)</span>
 
 <span class="k">class</span> <span class="nc">Network</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -300,7 +299,7 @@ we simply aim to highlight the “drag-and-drop” nature of this new bayesian I
 </pre></div>
 </div>
 <p>The same drag-and-drop behaviour is possible for MXNet, Jax and Numpy,
-and we are confident it will be possible for future deep learning frameworks yet to be created.</p>
+and we are commited to supporting future deep learning frameworks, yet to be created.</p>
 </div>
 </div>
 
@@ -312,7 +311,7 @@ and we are confident it will be possible for future deep learning frameworks yet
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="writing_ivy.html" class="btn btn-neutral float-right" title="Writing Ivy" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="using_ivy.html" class="btn btn-neutral float-right" title="Using Ivy" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="index.html" class="btn btn-neutral float-left" title="Contents" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
