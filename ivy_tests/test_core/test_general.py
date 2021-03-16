@@ -37,6 +37,14 @@ def _get_shape_of_list(lst, shape=()):
 # Tests #
 # ------#
 
+# set_framework
+@pytest.mark.parametrize(
+    "fw_str", ['numpy', 'jax', 'tensorflow', 'torch', 'mxnd'])
+def test_set_framework(fw_str, dev_str, call):
+    ivy.set_framework(fw_str)
+    ivy.unset_framework()
+
+
 # array
 @pytest.mark.parametrize(
     "object_in", [[], [0.], [1], [True], [[1., 2.]]])
