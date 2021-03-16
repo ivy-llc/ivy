@@ -61,34 +61,29 @@ we show the same kalman filter function written in Ivy below.
 
     from ivy.framework_handler import get_framework
 
-    def kalman_filter_update(xkm1km1, Pkm1km1, zk, Rk, uk, Fk, Bk, Qk, Hk, f=None):
+    def kalman_filter_update(xkm1km1, Pkm1km1, zk, Rk, uk, Fk, Bk, Qk, Hk):
         # reference: https://en.wikipedia.org/wiki/Kalman_filter#Details
 
-        f = get_framework(xkm1km1, f=f)
-
         # trans
-        FkT = f.swapaxes(Fk, (-1, -2))
-        HkT = f.swapaxes(Hk, (-1, -2))
+        FkT = ivy.swapaxes(Fk, (-1, -2))
+        HkT = ivy.swapaxes(Hk, (-1, -2))
 
         # predict
-        xkkm1 = f.matmul(Fk, xkm1km1) + f.matmul(Bk, uk)
-        Pkkm1 = f.matmul(f.matmul(Fk, Pkm1km1), FkT) + Qk
+        xkkm1 = ivy.matmul(Fk, xkm1km1) + ivy.matmul(Bk, uk)
+        Pkkm1 = ivy.matmul(ivy.matmul(Fk, Pkm1km1), FkT) + Qk
 
         # update
-        Sk = f.matmul(f.matmul(Hk, Pkkm1), HkT) + Rk
-        Skinv = f.inv(Sk)
-        Kk = f.matmul(f.matmul(Pkkm1, HkT), Skinv)
-        ImKkHk = I - f.matmul(Kk, Hk)
-        xkk = f.matmul(ImKkHk, xkkm1)  + f.matmul(Kk, f.matmul(Hk, xk) + vk)
-        Pkk = f.matmul(ImKkHk, Pkkm1)
+        Sk = ivy.matmul(ivy.matmul(Hk, Pkkm1), HkT) + Rk
+        Skinv = ivy.inv(Sk)
+        Kk = ivy.matmul(ivy.matmul(Pkkm1, HkT), Skinv)
+        ImKkHk = I - ivy.matmul(Kk, Hk)
+        xkk = ivy.matmul(ImKkHk, xkkm1)  + ivy.matmul(Kk, ivy.matmul(Hk, xk) + vk)
+        Pkk = ivy.matmul(ImKkHk, Pkkm1)
 
         # return
         return xkk, Pkk
 
-For improved runtime efficiency, we make use of a placeholder ``f`` which holds an ivy framework such as ``ivy.torch`` or ``ivy.tensorflow``.
-This avoids type checking of the inputs, which is used by the direct ``ivy`` namespace.
-For this new function, an ivy framework can either be passed directly as input,
-or if left as ``None`` then the input ``xkm1km1`` will be type checked to infer the ivy framework ``f``.
+The backend framework can be selected before calling the function like so ``ivy.set_framework('pytorch')``.
 Further details on how to write efficient Ivy code are given in the short guide Writing Ivy in the docs.
 
 We now consider the use of your new library by some hypothetical users,
@@ -104,6 +99,8 @@ For a tensorflow developer using your library, their network class might look so
 
     import tensorflow as tf
     import ivy_bayes
+    import ivy
+    ivy.set_framework('tensorflow')
 
     class Network(tf.keras.layers.Layer):
         def __init__(self):
@@ -125,6 +122,8 @@ For a pytorch developer using your library, their network class might look somet
 
     import torch
     import ivy_bayes
+    import ivy
+    ivy.set_framework('pytorch')
 
     class Network(torch.nn.Module):
         def __init__(self):
@@ -139,4 +138,4 @@ For a pytorch developer using your library, their network class might look somet
                 mean, var, zk_e, Rk_e, *self._get_kalman_params())
 
 The same drag-and-drop behaviour is possible for MXNet, Jax and Numpy,
-and we are confident it will be possible for future deep learning frameworks yet to be created.
+and we are commited to supporting future deep learning frameworks, yet to be created.

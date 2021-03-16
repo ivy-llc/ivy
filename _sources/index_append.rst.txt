@@ -4,4 +4,4 @@
    :caption: Guides
 
    why_ivy.rst
-   writing_ivy.rst
+   using_ivy.rst

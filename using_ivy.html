@@ -1,0 +1,335 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Using Ivy &mdash; Ivy 1.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/custom.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Container" href="core/container.html" />
+    <link rel="prev" title="Why Ivy?" href="why_ivy.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> Ivy
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Guides</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="why_ivy.html">Why Ivy?</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Using Ivy</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#writing-ivy">Writing Ivy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#running-ivy">Running Ivy</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption"><span class="caption-text">Core</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="core/container.html">Container</a></li>
+<li class="toctree-l1"><a class="reference internal" href="core/general.html">General</a></li>
+<li class="toctree-l1"><a class="reference internal" href="core/gradients.html">Gradients</a></li>
+<li class="toctree-l1"><a class="reference internal" href="core/image.html">Image</a></li>
+<li class="toctree-l1"><a class="reference internal" href="core/linalg.html">Linalg</a></li>
+<li class="toctree-l1"><a class="reference internal" href="core/logic.html">Logic</a></li>
+<li class="toctree-l1"><a class="reference internal" href="core/math.html">Math</a></li>
+<li class="toctree-l1"><a class="reference internal" href="core/random.html">Random</a></li>
+<li class="toctree-l1"><a class="reference internal" href="core/reductions.html">Reductions</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Neural net</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="neural_net/activations.html">Activations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="neural_net/layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="neural_net/losses.html">Losses</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Docs</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../ivy"">Ivy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../mech"">Ivy Mech</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../vision"">Ivy Vision</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../robot"">Ivy Robot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../memory"">Ivy Memory</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../gym"">Ivy Gym</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Ivy</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>Using Ivy</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/using_ivy.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="using-ivy">
+<h1>Using Ivy<a class="headerlink" href="#using-ivy" title="Permalink to this headline">¶</a></h1>
+<p>Ivy is useful tool for any developer wishing to maximize the audience of their codebase,
+by making their code framework-agnostic.</p>
+<p>First, we explain how to write framework-agnostic Ivy code.
+We then explain the variety of ways in which an end user can run your Ivy code,
+using their specific choice of backend framework.</p>
+<div class="section" id="writing-ivy">
+<h2>Writing Ivy<a class="headerlink" href="#writing-ivy" title="Permalink to this headline">¶</a></h2>
+<p>Writing Ivy code is simple.
+The <code class="code docutils literal notranslate"><span class="pre">ivy</span></code> namespace provides access to all of the Ivy functions,
+which can all be used directly with tensors from any of the supported deep learning frameworks.</p>
+<p>Let’s assume the codebase that you wish to share with the community consists of a single simple function, outlined below.
+In reality, your code will likely be a little more complex than this!</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">ivy</span>
+
+<span class="k">def</span> <span class="nf">sincos</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>That’s it, having used the Ivy namespace to write your code, it is now framework-agnostic! There is nothing more to it!</p>
+</div>
+<div class="section" id="running-ivy">
+<h2>Running Ivy<a class="headerlink" href="#running-ivy" title="Permalink to this headline">¶</a></h2>
+<p>When it comes to an end user actually <em>running</em> your code alongside their specific framework, there are a number of options.</p>
+<p><strong>Type Checking</strong></p>
+<p>Firstly, the user can simply use your new function directly in their code, like so:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">tensorflow</span> <span class="kn">as</span> <span class="nn">tf</span>
+<span class="kn">from</span> <span class="nn">your_awesome_project</span> <span class="kn">import</span> <span class="n">sincos</span>
+
+<span class="c1"># some exciting tf code</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">constant</span><span class="p">([</span><span class="mf">1.</span><span class="p">])</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">sincos</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>  <span class="c1"># with type checking</span>
+<span class="c1"># more exciting tf code</span>
+</pre></div>
+</div>
+<p>In this simple format, each <code class="code docutils literal notranslate"><span class="pre">ivy</span></code> method will simply type-check the inputs to infer the correct backend framework,
+and then call the framework-specific functions. A PyTorch user’s code would look like this:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">torch</span>
+<span class="kn">from</span> <span class="nn">your_awesome_project</span> <span class="kn">import</span> <span class="n">sincos</span>
+
+<span class="c1"># some exciting torch code</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="mf">1.</span><span class="p">])</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">sincos</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>  <span class="c1"># with type checking</span>
+<span class="c1"># more exciting torch code</span>
+</pre></div>
+</div>
+<p>This is the simplest way for an end user to run your framework-agnostic code.
+However, in eager execution mode the continual type-checking adds a small overhead,
+which we may wish to avoid.</p>
+<p><strong>Framework Setting</strong></p>
+<p>To avoid the small type-checking overhead, the framework can be set explicitly, by calling <code class="code docutils literal notranslate"><span class="pre">ivy.set_framework(&quot;torch&quot;)</span></code> for example.
+This updates the <code class="code docutils literal notranslate"><span class="pre">__dict__</span></code> of the <code class="code docutils literal notranslate"><span class="pre">ivy</span></code> namespace with the <code class="code docutils literal notranslate"><span class="pre">__dict__</span></code> of a framework-specific namespace,
+such as <code class="code docutils literal notranslate"><span class="pre">ivy.torch</span></code>. The framework-specific namespace bypasses type-checking of the inputs.
+The end user would use your codebase like so:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">ivy</span>
+<span class="kn">import</span> <span class="nn">torch</span>
+<span class="kn">from</span> <span class="nn">your_awesome_project</span> <span class="kn">import</span> <span class="n">sincos</span>
+
+<span class="n">ivy</span><span class="o">.</span><span class="n">set_framework</span><span class="p">(</span><span class="s1">&#39;torch&#39;</span><span class="p">)</span>
+<span class="c1"># some exciting torch code</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="mf">0.</span><span class="p">])</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">sincos</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>  <span class="c1"># no type checking</span>
+<span class="c1"># more exciting torch code</span>
+<span class="n">ivy</span><span class="o">.</span><span class="n">unset_framework</span><span class="p">()</span>
+</pre></div>
+</div>
+<p><strong>Framework Block Setting</strong></p>
+<p>Finally, some users may wish to use multiple frameworks in a single project.
+For example, NumPy is often used in conjunction with DL frameworks.
+NumPy can be used for implementing non-differentiable parts of the project on the CPU,
+and interfacing with other packages such as OpenCV and MatPlotLib for visualization.</p>
+<p>For end users wishing to use different parts of your code with different backends in a single project,
+without using repeated calls to <code class="code docutils literal notranslate"><span class="pre">ivy.set_framework()</span></code> and <code class="code docutils literal notranslate"><span class="pre">ivy.unset_framework()</span></code>,
+then the <code class="code docutils literal notranslate"><span class="pre">with</span></code> statement can be used like so:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">ivy</span>
+<span class="kn">import</span> <span class="nn">torch</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">your_awesome_project</span> <span class="kn">import</span> <span class="n">sincos</span>
+
+<span class="k">with</span> <span class="n">ivy</span><span class="o">.</span><span class="n">numpy</span><span class="o">.</span><span class="n">use</span><span class="p">:</span>
+    <span class="c1"># some exciting np code</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">])</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">sincos</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>  <span class="c1"># no type checking</span>
+    <span class="c1"># more exciting np code</span>
+
+<span class="k">with</span> <span class="n">ivy</span><span class="o">.</span><span class="n">torch</span><span class="o">.</span><span class="n">use</span><span class="p">:</span>
+    <span class="c1"># some exciting torch code</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="mf">0.</span><span class="p">])</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">sincos</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>  <span class="c1"># no type checking</span>
+    <span class="c1"># more exciting torch code</span>
+</pre></div>
+</div>
+<p><strong>User Flexibility</strong></p>
+<p>Overall, this variety in backend selection gives end users lots of flexibility.
+If they want to dive straight into using your project, then they can start using functions immediately,
+with type-checking in the background. If they use only a single backend in their project,
+they can explicitly set this at the beginning of their own code using <code class="code docutils literal notranslate"><span class="pre">ivy.set_framework()</span></code>.
+Finally, if they use multiple backends in one project,
+they can set and unset the frameworks using either <code class="code docutils literal notranslate"><span class="pre">ivy.set_framework()</span></code> and <code class="code docutils literal notranslate"><span class="pre">ivy.unset_framework()</span></code>,
+or via the <code class="code docutils literal notranslate"><span class="pre">with</span></code> statement.</p>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="core/container.html" class="btn btn-neutral float-right" title="Container" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="why_ivy.html" class="btn btn-neutral float-left" title="Why Ivy?" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Ivy Team
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
