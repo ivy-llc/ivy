@@ -24,7 +24,13 @@ _array_types['jax.interpreters.xla'] = 'ivy.jax'
 _array_types['tensorflow.python.framework.ops'] = 'ivy.tensorflow'
 _array_types['torch'] = 'ivy.torch'
 _array_types['mxnet.ndarray.ndarray'] = 'ivy.mxnd'
-_array_types['mxnet.symbol.symbol'] = 'ivy.mxsym'
+
+_framework_dict = dict()
+_framework_dict['numpy'] = 'ivy.numpy'
+_framework_dict['jax'] = 'ivy.jax'
+_framework_dict['tensorflow'] = 'ivy.tensorflow'
+_framework_dict['torch'] = 'ivy.torch'
+_framework_dict['mxnd'] = 'ivy.mxnd'
 
 
 def _get_framework_from_args(args):
@@ -72,6 +78,8 @@ def set_framework(f):
     if not framework_stack:
         global ivy_original_dict
         ivy_original_dict = ivy.__dict__.copy()
+    if isinstance(f, str):
+        f = importlib.import_module(_framework_dict[f])
     framework_stack.append(f)
     for k, v in f.__dict__.items():
         ivy.__dict__[k] = v
