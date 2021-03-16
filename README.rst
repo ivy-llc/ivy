@@ -181,7 +181,7 @@ and how much new Ivy code you add into your own project, to maximize it's audien
 Where Next?
 -----------
 
-.. _`Writing Ivy`: https://ivy-dl.org/ivy/writing_ivy.html
+.. _`Using Ivy`: https://ivy-dl.org/ivy/using_ivy.html
 
 So, now that you've got the gist of Ivy, and why it's useful. Where to next?
 
@@ -193,7 +193,7 @@ Simply open up the main docs_, then open the library-specific docs linked on the
 
 On the other hand, if you have your own new library in mind,
 or if you would like to implement parts of your own project in Ivy to maximise its portability,
-then we recommend checking out the page `Writing Ivy`_ in the docs.
+then we recommend checking out the page `Using Ivy`_ in the docs.
 Here, we dive a bit deeper into the Ivy framework,
 and the best coding practices to get the most out of Ivy for your own codebases and libraries.
 
