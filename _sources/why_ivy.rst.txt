@@ -59,7 +59,7 @@ we show the same kalman filter function written in Ivy below.
 
 .. code-block:: python
 
-    from ivy.framework_handler import get_framework
+    import ivy
 
     def kalman_filter_update(xkm1km1, Pkm1km1, zk, Rk, uk, Fk, Bk, Qk, Hk):
         # reference: https://en.wikipedia.org/wiki/Kalman_filter#Details
@@ -83,7 +83,7 @@ we show the same kalman filter function written in Ivy below.
         # return
         return xkk, Pkk
 
-The backend framework can be selected before calling the function like so ``ivy.set_framework('pytorch')``.
+The backend framework can be selected before calling the function like so ``ivy.set_framework('torch')``.
 Further details on how to write efficient Ivy code are given in the short guide Writing Ivy in the docs.
 
 We now consider the use of your new library by some hypothetical users,
@@ -97,9 +97,9 @@ For a tensorflow developer using your library, their network class might look so
 
     # Tensorflow User
 
-    import tensorflow as tf
-    import ivy_bayes
     import ivy
+    import ivy_bayes
+    import tensorflow as tf
     ivy.set_framework('tensorflow')
 
     class Network(tf.keras.layers.Layer):
@@ -123,7 +123,7 @@ For a pytorch developer using your library, their network class might look somet
     import torch
     import ivy_bayes
     import ivy
-    ivy.set_framework('pytorch')
+    ivy.set_framework('torch')
 
     class Network(torch.nn.Module):
         def __init__(self):
