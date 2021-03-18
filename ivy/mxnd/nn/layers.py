@@ -161,4 +161,9 @@ def conv3d_transpose(x, filters, strides, padding, _=None, data_format='NDHWC', 
 
 def linear(x, weight, bias):
     num_hidden = weight.shape[0]
-    return _mx.nd.FullyConnected(x, weight, bias, num_hidden=num_hidden)
+    orig_x_shape = list(x.shape)
+    batch_shape = orig_x_shape[:-1]
+    feats_in = orig_x_shape[-1]
+    x_flat = _mx.nd.reshape(x, [-1, feats_in])
+    ret = _mx.nd.FullyConnected(x_flat, weight, bias, num_hidden=num_hidden)
+    return _mx.nd.reshape(ret, batch_shape + [-1])

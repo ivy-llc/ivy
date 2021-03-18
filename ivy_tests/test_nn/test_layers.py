@@ -413,10 +413,17 @@ def test_conv3d_transpose(x_n_filters_n_pad_n_outshp_n_res, dtype_str, tensor_fn
 # linear
 @pytest.mark.parametrize(
     "x_n_w_n_b_n_res", [
+
         ([[1., 2., 3.]],
          [[1., 1., 1.], [1., 1., 1.]],
          [2., 2.],
-         [[8., 8.]])])
+         [[8., 8.]]),
+
+        ([[[1., 2., 3.]]],
+         [[1., 1., 1.], [1., 1., 1.]],
+         [2., 2.],
+         [[[8., 8.]]])
+    ])
 @pytest.mark.parametrize(
     "dtype_str", ['float32'])
 @pytest.mark.parametrize(
