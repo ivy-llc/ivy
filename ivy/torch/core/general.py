@@ -451,10 +451,10 @@ def scatter_nd(indices, updates, shape, reduction='sum', dev_str=None):
 
 
 # noinspection PyShadowingNames
-def gather_flat(params, indices, dev_str: Optional[str] = None):
+def gather(params, indices, axis=-1, dev_str: Optional[str] = None):
     if dev_str is None:
         dev_str = _callable_dev_str(params)
-    return torch.gather(params, 0, indices.type(torch.int64)).to(_dev_str_to_dev(dev_str))
+    return torch.gather(params, axis, indices.type(torch.int64)).to(_dev_str_to_dev(dev_str))
 
 
 # noinspection PyShadowingNames

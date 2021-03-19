@@ -1328,31 +1328,35 @@ def test_scatter_nd(inds_n_upd_n_shape, red, dtype_str, tensor_fn, dev_str, call
     helpers.assert_compilable(ivy.scatter_nd)
 
 
-# gather_flat
+# gather
 @pytest.mark.parametrize(
-    "prms_n_inds", [([9, 8, 7, 6, 5, 4, 3, 2, 1, 0], [0, 4, 7])])
+    "prms_n_inds_n_axis", [([9, 8, 7, 6, 5, 4, 3, 2, 1, 0], [0, 4, 7], 0),
+                           ([[1, 2], [3, 4]], [[0, 0], [1, 0]], 1)])
 @pytest.mark.parametrize(
     "dtype_str", ['float32'])
 @pytest.mark.parametrize(
     "tensor_fn", [ivy.array, helpers.var_fn])
-def test_gather_flat(prms_n_inds, dtype_str, tensor_fn, dev_str, call):
+def test_gather(prms_n_inds_n_axis, dtype_str, tensor_fn, dev_str, call):
     # smoke test
-    prms, inds = prms_n_inds
+    prms, inds, axis = prms_n_inds_n_axis
     prms = tensor_fn(prms, dtype_str, dev_str)
     inds = ivy.array(inds, 'int32', dev_str)
-    ret = ivy.gather_flat(prms, inds, dev_str)
+    ret = ivy.gather(prms, inds, axis, dev_str)
     # type test
-    assert isinstance(ret, ivy.Array)
+    try:
+        assert isinstance(ret, ivy.Array)
+    except AssertionError:
+        assert isinstance(ret, Buffer)
     # cardinality test
     assert ret.shape == inds.shape
     # value test
-    assert np.allclose(call(ivy.gather_flat, prms, inds, dev_str),
-                       ivy.numpy.gather_flat(ivy.to_numpy(prms), ivy.to_numpy(inds), dev_str))
+    assert np.allclose(call(ivy.gather, prms, inds, axis, dev_str),
+                       ivy.numpy.gather(ivy.to_numpy(prms), ivy.to_numpy(inds), axis, dev_str))
     # compilation test
     if call in [helpers.torch_call]:
         # pytorch scripting cannot assign a torch.device value with a string
         return
-    helpers.assert_compilable(ivy.gather_flat)
+    helpers.assert_compilable(ivy.gather)
 
 
 # gather_nd

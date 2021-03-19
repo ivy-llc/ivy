@@ -1429,18 +1429,18 @@ def test_gather_flat():
         x0 = ivy_gen.tensor([random.uniform(0, 1) for _ in range(DIM)], f=lib)
         x1 = ivy_gen.tensor([random.randint(0, DIM - 1) for _ in range(DIM)], f=lib)
 
-        ivy_gen.gather_flat(x0, x1, f=lib)
-        ivy_gen_w_time.gather_flat(x0, x1, f=time_lib)
+        ivy_gen.gather(x0, x1, f=lib)
+        ivy_gen_w_time.gather(x0, x1, f=time_lib)
         TIMES_DICT.clear()
 
         for _ in range(100):
 
             log_time(fname, 'tb0')
-            ivy_gen_w_time.gather_flat(x0, x1, f=time_lib)
+            ivy_gen_w_time.gather(x0, x1, f=time_lib)
             log_time(fname, 'tb4', time_at_start=True)
 
             log_time(fname, 'tt0')
-            ivy_gen.gather_flat(x0, x1, f=lib)
+            ivy_gen.gather(x0, x1, f=lib)
             log_time(fname, 'tt1', time_at_start=True)
 
         write_times()
