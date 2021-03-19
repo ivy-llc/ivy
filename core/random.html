@@ -96,6 +96,7 @@
 <li class="toctree-l1"><a class="reference internal" href="math.html">Math</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Random</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="random/random_uniform.html">random_uniform</a></li>
+<li class="toctree-l2"><a class="reference internal" href="random/multinomial.html">multinomial</a></li>
 <li class="toctree-l2"><a class="reference internal" href="random/randint.html">randint</a></li>
 <li class="toctree-l2"><a class="reference internal" href="random/seed.html">seed</a></li>
 <li class="toctree-l2"><a class="reference internal" href="random/shuffle.html">shuffle</a></li>
@@ -210,6 +211,27 @@ If size is None (default), a single value is returned.</p></li>
 </dd></dl>
 
 <dl class="py function">
+<dt id="ivy.core.random.multinomial">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname"><span class="pre">multinomial</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">probs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_samples</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dev_str</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'cpu'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/random.html#multinomial"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.core.random.multinomial" title="Permalink to this definition">¶</a></dt>
+<dd><p>Draws samples from a multinomial distribution.
+Samples are uniformly distributed over the half-open interval [low, high) (includes low, but excludes high).
+In other words, any value within the given interval is equally likely to be drawn by uniform.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>probs</strong> (<em>array</em>) – The unnormalized log-probabilities for all classes <em>[batch_shape, num_classes]</em></p></li>
+<li><p><strong>num_samples</strong> (<em>int</em>) – Number of independent samples to draw for each row slice</p></li>
+<li><p><strong>dev_str</strong> (<em>str</em>) – device on which to create the array ‘cuda:0’, ‘cuda:1’, ‘cpu’ etc.</p></li>
+<li><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning framework. Inferred from inputs if None.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Drawn samples from the parameterized uniform distribution.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt id="ivy.core.random.randint">
 <code class="sig-prename descclassname">ivy.</code><code class="sig-name descname"><span class="pre">randint</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">low</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">high</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shape</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dev_str</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'cpu'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/random.html#randint"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.core.random.randint" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a tensor filled with random integers generated uniformly between low (inclusive) and high (exclusive).</p>
@@ -264,6 +286,7 @@ If size is None (default), a single value is returned.</p></li>
 <p class="caption"><span class="caption-text">Random</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="random/random_uniform.html">random_uniform</a></li>
+<li class="toctree-l1"><a class="reference internal" href="random/multinomial.html">multinomial</a></li>
 <li class="toctree-l1"><a class="reference internal" href="random/randint.html">randint</a></li>
 <li class="toctree-l1"><a class="reference internal" href="random/seed.html">seed</a></li>
 <li class="toctree-l1"><a class="reference internal" href="random/shuffle.html">shuffle</a></li>
