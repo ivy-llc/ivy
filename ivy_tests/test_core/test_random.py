@@ -59,7 +59,7 @@ def test_random_uniform(low, high, shape, dtype_str, tensor_fn, dev_str, call):
 def test_multinomial(probs, num_samples, dtype_str, tensor_fn, dev_str, call):
     # smoke test
     probs = tensor_fn(probs, dtype_str, dev_str)
-    ret = ivy.multinomial(probs, num_samples, dev_str)
+    ret = ivy.multinomial(probs, num_samples)
     # type test
     assert isinstance(ret, ivy.Array)
     # cardinality test

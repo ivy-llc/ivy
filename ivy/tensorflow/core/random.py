@@ -7,7 +7,7 @@ import tensorflow as _tf
 
 random_uniform = lambda low=0., high=1., shape=None, dev_str='cpu':\
     _tf.random.uniform(shape if shape else (), low, high)
-multinomial = lambda probs, num_samples, dev_str='cpu':\
+multinomial = lambda probs, num_samples:\
     _tf.random.categorical(_tf.math.log(probs), num_samples)
 randint = lambda low, high, shape, dev_str='cpu':\
     _tf.random.uniform(shape=shape, minval=low, maxval=high, dtype=_tf.int32)
