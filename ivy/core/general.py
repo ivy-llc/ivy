@@ -777,7 +777,7 @@ def gather(params, indices, axis=-1, dev_str=None, f=None):
     :type dev_str: str, optional
     :param f: Machine learning framework. Inferred from inputs if None.
     :type f: ml_framework, optional
-    :return: New array of given shape, with the values gathered at the indices.
+    :return: New array with the values gathered at the specified indices along the specified axis.
     """
     return _get_framework(params, f=f).gather(params, indices, axis, dev_str)
 

@@ -19,7 +19,7 @@ def random_uniform(low=0., high=1., shape=None, dev_str='cpu'):
     return _mx.nd.random.uniform(low, high, shape, ctx=ctx)
 
 
-def multinomial(probs, num_samples, dev_str='cpu'):
+def multinomial(probs, num_samples):
     probs = probs / _mx.nd.sum(probs, -1, True)
     return _mx.nd.sample_multinomial(probs, (num_samples,))
 

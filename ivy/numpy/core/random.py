@@ -8,7 +8,7 @@ import numpy as _np
 random_uniform = lambda low=0., high=1., shape=None, dev_str='cpu': _np.asarray(_np.random.uniform(low, high, shape))
 
 
-def multinomial(probs, num_samples, dev_str='cpu'):
+def multinomial(probs, num_samples):
     orig_probs_shape = list(probs.shape)
     num_classes = orig_probs_shape[-1]
     probs_flat = _np.reshape(probs, (-1, orig_probs_shape[-1]))
