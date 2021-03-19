@@ -12,5 +12,6 @@ Random
    :maxdepth: -1
    :caption: Random
 
+   random/multinomial.rst
    random/shuffle.rst
 
