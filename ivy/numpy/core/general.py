@@ -263,10 +263,10 @@ def scatter_nd(indices, updates, shape, reduction='sum', dev_str=None):
     return _to_dev(target, dev_str)
 
 
-def gather_flat(params, indices, dev_str=None):
+def gather(params, indices, axis=-1, dev_str=None):
     if dev_str is None:
         dev_str = _dev_str_callable(params)
-    return _to_dev(_np.take(params, indices, 0), dev_str)
+    return _to_dev(_np.take_along_axis(params, indices, axis), dev_str)
 
 
 def gather_nd(params, indices, dev_str=None):

@@ -400,10 +400,14 @@ def scatter_nd(indices, updates, shape, reduction='sum', dev_str=None):
                         format(reduction))
 
 
-def gather_flat(params, indices, dev_str=None):
+def gather(params, indices, axis=-1, dev_str=None):
     if dev_str is None:
         dev_str = _callable_dev_str(params)
-    return _mx.nd.gather_nd(params, _mx.nd.expand_dims(indices, 0)).copyto(_mxnet_init_context('cpu' if not dev_str else dev_str))
+    index_slices = unstack(indices, -1)
+    res = _mx.nd.concat(
+        *[_mx.nd.expand_dims(_mx.nd.pick(params, idx_slice, axis), -1) for idx_slice in index_slices], dim=-1)
+    res = _mx.nd.reshape(res, indices.shape)
+    return res.copyto(_mxnet_init_context('cpu' if not dev_str else dev_str))
 
 
 def gather_nd(params, indices, dev_str=None):

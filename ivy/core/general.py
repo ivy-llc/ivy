@@ -763,21 +763,23 @@ def scatter_nd(indices, updates, shape, reduction='sum', dev_str=None, f=None):
 
 
 # noinspection PyShadowingNames
-def gather_flat(params, indices, dev_str=None, f=None):
+def gather(params, indices, axis=-1, dev_str=None, f=None):
     """
-    Gather slices from flat params into a flat array with size specified by indices size.
+    Gather slices from params axis axis according to indices.
 
     :param params: The array from which to gather values.
     :type params: array
     :param indices: Index array.
     :type indices: array
+    :param axis: The axis from which to gather from. Default is -1.
+    :type axis: int, optional
     :param dev_str: device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc. Same as x if None.
     :type dev_str: str, optional
     :param f: Machine learning framework. Inferred from inputs if None.
     :type f: ml_framework, optional
     :return: New array of given shape, with the values gathered at the indices.
     """
-    return _get_framework(params, f=f).gather_flat(params, indices, dev_str)
+    return _get_framework(params, f=f).gather(params, indices, axis, dev_str)
 
 
 # noinspection PyShadowingNames
