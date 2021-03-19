@@ -311,11 +311,12 @@ def scatter_nd(indices, updates, shape, reduction='sum', dev_str=None):
         return res
 
 
-def gather_flat(params, indices, dev_str=None):
+def gather(params, indices, axis=-1, dev_str=None):
+    axis = axis % len(indices.shape)
     if dev_str is None:
         dev_str = _dev_str_callable(params)
     with _tf.device('/' + dev_str.upper()):
-        return _tf.gather_nd(params, _tf.expand_dims(indices, -1))
+        return _tf.gather(params, indices, axis=axis, batch_dims=axis)
 
 
 def gather_nd(params, indices, dev_str=None):
