@@ -29,6 +29,25 @@ def random_uniform(low=0.0, high=1.0, shape=None, dev_str='cpu', f=None):
     return _get_framework(f=f).random_uniform(low, high, shape, dev_str)
 
 
+def multinomial(probs, num_samples, dev_str='cpu', f=None):
+    """
+    Draws samples from a multinomial distribution.
+    Samples are uniformly distributed over the half-open interval [low, high) (includes low, but excludes high).
+    In other words, any value within the given interval is equally likely to be drawn by uniform.
+
+    :param probs: The unnormalized log-probabilities for all classes *[batch_shape, num_classes]*
+    :type probs: array
+    :param num_samples: Number of independent samples to draw for each row slice
+    :type num_samples: int
+    :param dev_str: device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc.
+    :type dev_str: str
+    :param f: Machine learning framework. Inferred from inputs if None.
+    :type f: ml_framework, optional
+    :return: Drawn samples from the parameterized uniform distribution.
+    """
+    return _get_framework(f=f).multinomial(probs, num_samples, dev_str)
+
+
 def randint(low, high, shape, dev_str='cpu', f=None):
     """
     Returns a tensor filled with random integers generated uniformly between low (inclusive) and high (exclusive).
