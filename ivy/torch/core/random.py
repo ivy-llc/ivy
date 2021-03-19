@@ -16,6 +16,10 @@ def random_uniform(low: float = 0.0, high: float = 1.0, shape: Optional[List[int
     return torch.rand(true_shape).to(dev_str.replace('gpu', 'cuda')) * rand_range + low
 
 
+def multinomial(probs, num_samples: int, dev_str: str = 'cpu'):
+    return torch.multinomial(probs, num_samples, True).to(dev_str.replace('gpu', 'cuda'))
+
+
 def randint(low: int, high: int, shape: List[int], dev_str: str = 'cpu'):
     return torch.randint(low, high, shape).to(dev_str)
 
