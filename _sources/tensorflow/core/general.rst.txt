@@ -33,7 +33,7 @@ General
    general/identity.rst
    general/scatter_flat.rst
    general/scatter_nd.rst
-   general/gather_flat.rst
+   general/gather.rst
    general/gather_nd.rst
    general/dev_to_str.rst
    general/tpu_is_available.rst
