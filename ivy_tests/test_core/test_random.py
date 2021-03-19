@@ -47,6 +47,27 @@ def test_random_uniform(low, high, shape, dtype_str, tensor_fn, dev_str, call):
     helpers.assert_compilable(ivy.random_uniform)
 
 
+# multinomial
+@pytest.mark.parametrize(
+    "probs", [[[1., 2.]], [[1., 0.5], [0.2, 0.3]]])
+@pytest.mark.parametrize(
+    "num_samples", [1, 11])
+@pytest.mark.parametrize(
+    "dtype_str", ['float32'])
+@pytest.mark.parametrize(
+    "tensor_fn", [ivy.array, helpers.var_fn])
+def test_multinomial(probs, num_samples, dtype_str, tensor_fn, dev_str, call):
+    # smoke test
+    probs = tensor_fn(probs, dtype_str, dev_str)
+    ret = ivy.multinomial(probs, num_samples, dev_str)
+    # type test
+    assert isinstance(ret, ivy.Array)
+    # cardinality test
+    assert ret.shape == tuple(list(probs.shape[:-1]) + [num_samples])
+    # compilation test
+    helpers.assert_compilable(ivy.multinomial)
+
+
 # randint
 @pytest.mark.parametrize(
     "low", [-1, 2])
