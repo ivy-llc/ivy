@@ -1,5 +1,5 @@
 from .core import *
-from . import neural_net as nn
+from . import neural_net
 from .neural_net import *
 from . import verbosity
 from .framework_handler import get_framework, set_framework, unset_framework, framework_stack
