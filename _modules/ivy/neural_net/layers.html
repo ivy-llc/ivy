@@ -99,6 +99,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../neural_net/activations.html">Activations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../neural_net/layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../neural_net/layers_functional.html">Layers functional</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../neural_net/losses.html">Losses</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Docs</span></p>
@@ -173,197 +174,199 @@
             
   <h1>Source code for ivy.neural_net.layers</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">Collection of Ivy activation functions.</span>
+<span class="sd">Collection of Ivy neural network layers as stateful classes.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="c1"># local</span>
-<span class="kn">from</span> <span class="nn">ivy.framework_handler</span> <span class="k">import</span> <span class="n">get_framework</span> <span class="k">as</span> <span class="n">_get_framework</span>
+<span class="c1"># global</span>
+<span class="kn">import</span> <span class="nn">ivy</span>
+<span class="kn">import</span> <span class="nn">abc</span>
+<span class="kn">from</span> <span class="nn">ivy.core.container</span> <span class="k">import</span> <span class="n">Container</span>
 
 
-<div class="viewcode-block" id="conv1d"><a class="viewcode-back" href="../../../neural_net/layers/conv1d.html#ivy.neural_net.layers.conv1d">[docs]</a><span class="k">def</span> <span class="nf">conv1d</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">filters</span><span class="p">,</span> <span class="n">strides</span><span class="p">,</span> <span class="n">padding</span><span class="p">,</span> <span class="n">data_format</span><span class="o">=</span><span class="s1">&#39;NWC&#39;</span><span class="p">,</span> <span class="n">dilations</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Computes a 1-D convolution given 3-D input x and filters arrays.</span>
+<span class="c1"># Base #</span>
+<span class="c1"># -----#</span>
 
-<span class="sd">    :param x: Input image *[batch_size,w,d_in]*.</span>
-<span class="sd">    :type x: array</span>
-<span class="sd">    :param filters: Convolution filters *[fw,d_in,d_out]*.</span>
-<span class="sd">    :type filters: array</span>
-<span class="sd">    :param strides: The stride of the sliding window for each dimension of input.</span>
-<span class="sd">    :type strides: int or sequence of ints</span>
-<span class="sd">    :param padding: &quot;SAME&quot; or &quot;VALID&quot; indicating the algorithm, or list indicating the per-dimension paddings.</span>
-<span class="sd">    :type padding: string or sequence of ints</span>
-<span class="sd">    :param data_format: &quot;NWC&quot; or &quot;NCW&quot;. Defaults to &quot;NWC&quot;.</span>
-<span class="sd">    :type data_format: string</span>
-<span class="sd">    :param dilations: The dilation factor for each dimension of input.</span>
-<span class="sd">    :type dilations: int or sequence of ints</span>
-<span class="sd">    :param f: Machine learning library. Inferred from Inputs if None.</span>
-<span class="sd">    :type f: ml_framework, optional</span>
-<span class="sd">    :return: The result of the convolution operation.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">_get_framework</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">conv1d</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">filters</span><span class="p">,</span> <span class="n">strides</span><span class="p">,</span> <span class="n">padding</span><span class="p">,</span> <span class="n">data_format</span><span class="p">,</span> <span class="n">dilations</span><span class="p">)</span></div>
+<div class="viewcode-block" id="Layer"><a class="viewcode-back" href="../../../neural_net/layers/Layer.html#ivy.neural_net.layers.Layer">[docs]</a><span class="k">class</span> <span class="nc">Layer</span><span class="p">(</span><span class="n">abc</span><span class="o">.</span><span class="n">ABC</span><span class="p">):</span>
 
+<div class="viewcode-block" id="Layer.__init__"><a class="viewcode-back" href="../../../neural_net/layers/Layer.html#ivy.neural_net.layers.Layer.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Initialze Ivy layer, is a stateful object consisting of trainable variables.</span>
 
-<div class="viewcode-block" id="conv1d_transpose"><a class="viewcode-back" href="../../../neural_net/layers/conv1d_transpose.html#ivy.neural_net.layers.conv1d_transpose">[docs]</a><span class="k">def</span> <span class="nf">conv1d_transpose</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">filters</span><span class="p">,</span> <span class="n">strides</span><span class="p">,</span> <span class="n">padding</span><span class="p">,</span> <span class="n">output_shape</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">data_format</span><span class="o">=</span><span class="s1">&#39;NWC&#39;</span><span class="p">,</span> <span class="n">dilations</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Computes a 1-D transpose convolution given 3-D input x and filters arrays.</span>
+<span class="sd">        :param v: Ivy container of trainable variables. Created internally by default.</span>
+<span class="sd">        :type v: ivy container, optional.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">v</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">v</span> <span class="o">=</span> <span class="n">Container</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_create_variables</span><span class="p">())</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">v</span> <span class="o">=</span> <span class="n">Container</span><span class="p">(</span><span class="n">v</span><span class="p">)</span></div>
 
-<span class="sd">    :param x: Input image *[batch_size,w,d_in]*.</span>
-<span class="sd">    :type x: array</span>
-<span class="sd">    :param filters: Convolution filters *[fw,d_in,d_out]*.</span>
-<span class="sd">    :type filters: array</span>
-<span class="sd">    :param strides: The stride of the sliding window for each dimension of input.</span>
-<span class="sd">    :type strides: int or sequence of ints</span>
-<span class="sd">    :param padding: &quot;SAME&quot; or &quot;VALID&quot; indicating the algorithm, or list indicating the per-dimension paddings.</span>
-<span class="sd">    :type padding: string or sequence of ints</span>
-<span class="sd">    :param output_shape: Shape of the output</span>
-<span class="sd">    :type output_shape: sequence of ints, needed for TensorFlow</span>
-<span class="sd">    :param data_format: &quot;NWC&quot; or &quot;NCW&quot;. Defaults to &quot;NWC&quot;.</span>
-<span class="sd">    :type data_format: string</span>
-<span class="sd">    :param dilations: The dilation factor for each dimension of input.</span>
-<span class="sd">    :type dilations: int or sequence of ints</span>
-<span class="sd">    :param f: Machine learning library. Inferred from Inputs if None.</span>
-<span class="sd">    :type f: ml_framework, optional</span>
-<span class="sd">    :return: The result of the transpose convolution operation.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">_get_framework</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">conv1d_transpose</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">filters</span><span class="p">,</span> <span class="n">strides</span><span class="p">,</span> <span class="n">padding</span><span class="p">,</span> <span class="n">output_shape</span><span class="p">,</span> <span class="n">data_format</span><span class="p">,</span> <span class="n">dilations</span><span class="p">)</span></div>
+    <span class="c1"># Public #</span>
 
+<div class="viewcode-block" id="Layer.forward"><a class="viewcode-back" href="../../../neural_net/layers/Layer.html#ivy.neural_net.layers.Layer.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">v</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Run layer forward pass, by first setting the variables via either input or internal values, and then calling the</span>
+<span class="sd">        overridden forward method.</span>
 
-<div class="viewcode-block" id="conv2d"><a class="viewcode-back" href="../../../neural_net/layers/conv2d.html#ivy.neural_net.layers.conv2d">[docs]</a><span class="k">def</span> <span class="nf">conv2d</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">filters</span><span class="p">,</span> <span class="n">strides</span><span class="p">,</span> <span class="n">padding</span><span class="p">,</span> <span class="n">data_format</span><span class="o">=</span><span class="s1">&#39;NHWC&#39;</span><span class="p">,</span> <span class="n">dilations</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Computes a 2-D convolution given 4-D input x and filters arrays.</span>
+<span class="sd">        :param v: Ivy container of trainable variables. Internal variables used by default.</span>
+<span class="sd">        :type v: ivy container, optional.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">v</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">v</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">v</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">v</span> <span class="o">=</span> <span class="n">Container</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_forward</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span> <span class="n">v</span><span class="o">=</span><span class="n">v</span><span class="p">)</span></div>
 
-<span class="sd">    :param x: Input image *[batch_size,h,w,d_in]*.</span>
-<span class="sd">    :type x: array</span>
-<span class="sd">    :param filters: Convolution filters *[fh,fw,d_in,d_out]*.</span>
-<span class="sd">    :type filters: array</span>
-<span class="sd">    :param strides: The stride of the sliding window for each dimension of input.</span>
-<span class="sd">    :type strides: int or sequence of ints</span>
-<span class="sd">    :param padding: &quot;SAME&quot; or &quot;VALID&quot; indicating the algorithm, or list indicating the per-dimension paddings.</span>
-<span class="sd">    :type padding: string or sequence of ints</span>
-<span class="sd">    :param data_format: &quot;NHWC&quot; or &quot;NCHW&quot;. Defaults to &quot;NHWC&quot;.</span>
-<span class="sd">    :type data_format: string</span>
-<span class="sd">    :param dilations: The dilation factor for each dimension of input.</span>
-<span class="sd">    :type dilations: int or sequence of ints</span>
-<span class="sd">    :param f: Machine learning library. Inferred from Inputs if None.</span>
-<span class="sd">    :type f: ml_framework, optional</span>
-<span class="sd">    :return: The result of the convolution operation.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">_get_framework</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">conv2d</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">filters</span><span class="p">,</span> <span class="n">strides</span><span class="p">,</span> <span class="n">padding</span><span class="p">,</span> <span class="n">data_format</span><span class="p">,</span> <span class="n">dilations</span><span class="p">)</span></div>
+    <span class="c1"># Abstract #</span>
+
+    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">_create_variables</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        create internal trainable variables, and return as arbitrary nested dict.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+
+    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">_forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        the forward pass of the layer, called after handling the optional input variables.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
 
 
-<div class="viewcode-block" id="conv2d_transpose"><a class="viewcode-back" href="../../../neural_net/layers/conv2d_transpose.html#ivy.neural_net.layers.conv2d_transpose">[docs]</a><span class="k">def</span> <span class="nf">conv2d_transpose</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">filters</span><span class="p">,</span> <span class="n">strides</span><span class="p">,</span> <span class="n">padding</span><span class="p">,</span> <span class="n">output_shape</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">data_format</span><span class="o">=</span><span class="s1">&#39;NHWC&#39;</span><span class="p">,</span> <span class="n">dilations</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Computes a 2-D transpose convolution given 4-D input x and filters arrays.</span>
+<span class="c1"># Linear #</span>
+<span class="c1"># -------#</span>
 
-<span class="sd">    :param x: Input image *[batch_size,h,w,d_in]*.</span>
-<span class="sd">    :type x: array</span>
-<span class="sd">    :param filters: Convolution filters *[fh,fw,d_in,d_out]*.</span>
-<span class="sd">    :type filters: array</span>
-<span class="sd">    :param strides: The stride of the sliding window for each dimension of input.</span>
-<span class="sd">    :type strides: int or sequence of ints</span>
-<span class="sd">    :param padding: &quot;SAME&quot; or &quot;VALID&quot; indicating the algorithm, or list indicating the per-dimension paddings.</span>
-<span class="sd">    :type padding: string or sequence of ints</span>
-<span class="sd">    :param output_shape: Shape of the output</span>
-<span class="sd">    :type output_shape: sequence of ints, needed for TensorFlow</span>
-<span class="sd">    :param data_format: &quot;NHWC&quot; or &quot;NCHW&quot;. Defaults to &quot;NHWC&quot;.</span>
-<span class="sd">    :type data_format: string</span>
-<span class="sd">    :param dilations: The dilation factor for each dimension of input.</span>
-<span class="sd">    :type dilations: int or sequence of ints</span>
-<span class="sd">    :param f: Machine learning library. Inferred from Inputs if None.</span>
-<span class="sd">    :type f: ml_framework, optional</span>
-<span class="sd">    :return: The result of the transpose convolution operation.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">_get_framework</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">conv2d_transpose</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">filters</span><span class="p">,</span> <span class="n">strides</span><span class="p">,</span> <span class="n">padding</span><span class="p">,</span> <span class="n">output_shape</span><span class="p">,</span> <span class="n">data_format</span><span class="p">,</span> <span class="n">dilations</span><span class="p">)</span></div>
+<div class="viewcode-block" id="Linear"><a class="viewcode-back" href="../../../neural_net/layers/Linear.html#ivy.neural_net.layers.Linear">[docs]</a><span class="k">class</span> <span class="nc">Linear</span><span class="p">(</span><span class="n">Layer</span><span class="p">):</span>
 
+<div class="viewcode-block" id="Linear.__init__"><a class="viewcode-back" href="../../../neural_net/layers/Linear.html#ivy.neural_net.layers.Linear.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_channels</span><span class="p">,</span> <span class="n">output_channels</span><span class="p">,</span> <span class="n">v</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Linear layer, also referred to as dense or fully connected. The layer receives tensors with input_channels last</span>
+<span class="sd">        dimension and returns a new tensor with output_channels last dimension, following matrix multiplication with the</span>
+<span class="sd">        weight matrix and addition with the bias vector.</span>
 
-<div class="viewcode-block" id="depthwise_conv2d"><a class="viewcode-back" href="../../../neural_net/layers/depthwise_conv2d.html#ivy.neural_net.layers.depthwise_conv2d">[docs]</a><span class="k">def</span> <span class="nf">depthwise_conv2d</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">filters</span><span class="p">,</span> <span class="n">strides</span><span class="p">,</span> <span class="n">padding</span><span class="p">,</span> <span class="n">data_format</span><span class="o">=</span><span class="s1">&#39;NHWC&#39;</span><span class="p">,</span> <span class="n">dilations</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Computes a 2-D depthwise convolution given 4-D input x and filters arrays.</span>
+<span class="sd">        :param input_channels: Number of input channels for the layer.</span>
+<span class="sd">        :type input_channels: int</span>
+<span class="sd">        :param output_channels: Number of output channels for the layer.</span>
+<span class="sd">        :type output_channels: int</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_input_channels</span> <span class="o">=</span> <span class="n">input_channels</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_output_channels</span> <span class="o">=</span> <span class="n">output_channels</span>
+        <span class="n">Layer</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span></div>
 
-<span class="sd">    :param x: Input image *[batch_size,h,w,d]*.</span>
-<span class="sd">    :type x: array</span>
-<span class="sd">    :param filters: Convolution filters *[fh,fw,d]*.</span>
-<span class="sd">    :type filters: array</span>
-<span class="sd">    :param strides: The stride of the sliding window for each dimension of input.</span>
-<span class="sd">    :type strides: int or sequence of ints</span>
-<span class="sd">    :param padding: &quot;SAME&quot; or &quot;VALID&quot; indicating the algorithm, or list indicating the per-dimension paddings.</span>
-<span class="sd">    :type padding: string or sequence of ints</span>
-<span class="sd">    :param data_format: &quot;NHWC&quot; or &quot;NCHW&quot;. Defaults to &quot;NHWC&quot;.</span>
-<span class="sd">    :type data_format: string</span>
-<span class="sd">    :param dilations: The dilation factor for each dimension of input.</span>
-<span class="sd">    :type dilations: int or sequence of ints</span>
-<span class="sd">    :param f: Machine learning library. Inferred from Inputs if None.</span>
-<span class="sd">    :type f: ml_framework, optional</span>
-<span class="sd">    :return: The result of the convolution operation.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">_get_framework</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">depthwise_conv2d</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">filters</span><span class="p">,</span> <span class="n">strides</span><span class="p">,</span> <span class="n">padding</span><span class="p">,</span> <span class="n">data_format</span><span class="p">,</span> <span class="n">dilations</span><span class="p">)</span></div>
+    <span class="k">def</span> <span class="nf">_create_variables</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create internal variables for the Linear layer</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># ToDo: support other initialization mechanisms, via class constructor options</span>
+        <span class="c1"># ToDo: automate the consstruction of these variables, with helper functions</span>
+        <span class="n">wlim</span> <span class="o">=</span> <span class="p">(</span><span class="mi">6</span> <span class="o">/</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_output_channels</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_input_channels</span><span class="p">))</span> <span class="o">**</span> <span class="mf">0.5</span>
+        <span class="n">w</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">variable</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">random_uniform</span><span class="p">(</span><span class="o">-</span><span class="n">wlim</span><span class="p">,</span> <span class="n">wlim</span><span class="p">,</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_output_channels</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_input_channels</span><span class="p">)))</span>
+        <span class="n">b</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">variable</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">zeros</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">_output_channels</span><span class="p">]))</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;w&#39;</span><span class="p">:</span> <span class="n">w</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">:</span> <span class="n">b</span><span class="p">}</span>
+
+    <span class="k">def</span> <span class="nf">_forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Perform forward pass of the linear layer.</span>
+
+<span class="sd">        :param inputs: Inputs to process *[batch_shape, in]*.</span>
+<span class="sd">        :type inputs: array</span>
+<span class="sd">        :param v: the variables for each of the lstm cells, as a container, use internal variables by default.</span>
+<span class="sd">        :type v: ivy container of parameter arrays, optional</span>
+<span class="sd">        :return: The outputs following the linear operation and bias addition *[batch_shape, out]*</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">linear</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="n">v</span><span class="o">.</span><span class="n">w</span><span class="p">,</span> <span class="n">v</span><span class="o">.</span><span class="n">b</span><span class="p">)</span></div>
 
 
-<span class="c1"># noinspection PyDefaultArgument</span>
-<div class="viewcode-block" id="conv3d"><a class="viewcode-back" href="../../../neural_net/layers/conv3d.html#ivy.neural_net.layers.conv3d">[docs]</a><span class="k">def</span> <span class="nf">conv3d</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">filters</span><span class="p">,</span> <span class="n">strides</span><span class="p">,</span> <span class="n">padding</span><span class="p">,</span> <span class="n">data_format</span><span class="o">=</span><span class="s1">&#39;NDHWC&#39;</span><span class="p">,</span> <span class="n">dilations</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Computes a 3-D convolution given 5-D input x and filters arrays.</span>
+<span class="c1"># LSTM #</span>
+<span class="c1"># -----#</span>
 
-<span class="sd">    :param x: Input volume *[batch_size,d,h,w,d_in]*.</span>
-<span class="sd">    :type x: array</span>
-<span class="sd">    :param filters: Convolution filters *[fd,fh,fw,d_in,d_out]*.</span>
-<span class="sd">    :type filters: array</span>
-<span class="sd">    :param strides: The stride of the sliding window for each dimension of input.</span>
-<span class="sd">    :type strides: sequence of ints</span>
-<span class="sd">    :param padding: &quot;SAME&quot; or &quot;VALID&quot; indicating the algorithm, or list indicating the per-dimension paddings.</span>
-<span class="sd">    :type padding: string or sequence of ints</span>
-<span class="sd">    :param data_format: &quot;NDHWC&quot; or &quot;NCDHW&quot;. Defaults to &quot;NDHWC&quot;.</span>
-<span class="sd">    :type data_format: string</span>
-<span class="sd">    :param dilations: The dilation factor for each dimension of input.</span>
-<span class="sd">    :type dilations: int or sequence of ints</span>
-<span class="sd">    :param f: Machine learning library. Inferred from Inputs if None.</span>
-<span class="sd">    :type f: ml_framework, optional</span>
-<span class="sd">    :return: The result of the convolution operation.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">_get_framework</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">conv3d</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">filters</span><span class="p">,</span> <span class="n">strides</span><span class="p">,</span> <span class="n">padding</span><span class="p">,</span> <span class="n">data_format</span><span class="p">,</span> <span class="n">dilations</span><span class="p">)</span></div>
+<div class="viewcode-block" id="LSTM"><a class="viewcode-back" href="../../../neural_net/layers/LSTM.html#ivy.neural_net.layers.LSTM">[docs]</a><span class="k">class</span> <span class="nc">LSTM</span><span class="p">(</span><span class="n">Layer</span><span class="p">):</span>
 
+<div class="viewcode-block" id="LSTM.__init__"><a class="viewcode-back" href="../../../neural_net/layers/LSTM.html#ivy.neural_net.layers.LSTM.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_channels</span><span class="p">,</span> <span class="n">output_channels</span><span class="p">,</span> <span class="n">num_layers</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">return_sequence</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">return_state</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">v</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        LSTM layer, which is a set of stacked lstm cells.</span>
 
-<div class="viewcode-block" id="conv3d_transpose"><a class="viewcode-back" href="../../../neural_net/layers/conv3d_transpose.html#ivy.neural_net.layers.conv3d_transpose">[docs]</a><span class="k">def</span> <span class="nf">conv3d_transpose</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">filters</span><span class="p">,</span> <span class="n">strides</span><span class="p">,</span> <span class="n">padding</span><span class="p">,</span> <span class="n">output_shape</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">data_format</span><span class="o">=</span><span class="s1">&#39;NDHWC&#39;</span><span class="p">,</span> <span class="n">dilations</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Computes a 3-D transpose convolution given 5-D input x and filters arrays.</span>
+<span class="sd">        :param input_channels: Number of input channels for the layer</span>
+<span class="sd">        :type input_channels: int</span>
+<span class="sd">        :param output_channels: Number of output channels for the layer</span>
+<span class="sd">        :type output_channels: int</span>
+<span class="sd">        :param num_layers: Number of lstm cells in the lstm layer, default is 1.</span>
+<span class="sd">        :type num_layers: int, optional</span>
+<span class="sd">        :param return_sequence: Whether or not to return the entire output sequence, or just the latest timestep.</span>
+<span class="sd">                                Default is True.</span>
+<span class="sd">        :type return_sequence: bool, optional</span>
+<span class="sd">        :param return_state: Whether or not to return the latest hidden and cell states. Default is True.</span>
+<span class="sd">        :type return_state: bool, optional</span>
+<span class="sd">        :param v: the variables for each of the lstm cells, as a container, constructed internally by default.</span>
+<span class="sd">        :type v: ivy container of parameter arrays, optional</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_input_channels</span> <span class="o">=</span> <span class="n">input_channels</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_output_channels</span> <span class="o">=</span> <span class="n">output_channels</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_num_layers</span> <span class="o">=</span> <span class="n">num_layers</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_return_sequence</span> <span class="o">=</span> <span class="n">return_sequence</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_return_state</span> <span class="o">=</span> <span class="n">return_state</span>
+        <span class="n">Layer</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span></div>
 
-<span class="sd">    :param x: Input image *[batch_size,d,h,w,d_in]*.</span>
-<span class="sd">    :type x: array</span>
-<span class="sd">    :param filters: Convolution filters *[fd,fh,fw,d_in,d_out]*.</span>
-<span class="sd">    :type filters: array</span>
-<span class="sd">    :param strides: The stride of the sliding window for each dimension of input.</span>
-<span class="sd">    :type strides: int or sequence of ints</span>
-<span class="sd">    :param padding: &quot;SAME&quot; or &quot;VALID&quot; indicating the algorithm, or list indicating the per-dimension paddings.</span>
-<span class="sd">    :type padding: string or sequence of ints</span>
-<span class="sd">    :param output_shape: Shape of the output</span>
-<span class="sd">    :type output_shape: sequence of ints, needed for TensorFlow</span>
-<span class="sd">    :param data_format: &quot;NDHWC&quot; or &quot;NCDHW&quot;. Defaults to &quot;NDHWC&quot;.</span>
-<span class="sd">    :type data_format: string</span>
-<span class="sd">    :param dilations: The dilation factor for each dimension of input.</span>
-<span class="sd">    :type dilations: int or sequence of ints</span>
-<span class="sd">    :param f: Machine learning library. Inferred from Inputs if None.</span>
-<span class="sd">    :type f: ml_framework, optional</span>
-<span class="sd">    :return: The result of the transpose convolution operation.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">_get_framework</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">conv3d_transpose</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">filters</span><span class="p">,</span> <span class="n">strides</span><span class="p">,</span> <span class="n">padding</span><span class="p">,</span> <span class="n">output_shape</span><span class="p">,</span> <span class="n">data_format</span><span class="p">,</span> <span class="n">dilations</span><span class="p">)</span></div>
+    <span class="c1"># Private #</span>
 
+    <span class="k">def</span> <span class="nf">_get_initial_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">batch_shape</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get the initial state of the hidden and cell states, if not provided explicitly</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">batch_shape</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">batch_shape</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">([</span><span class="n">ivy</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">batch_shape</span> <span class="o">+</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_output_channels</span><span class="p">]))</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_num_layers</span><span class="p">)],</span>
+                <span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">batch_shape</span> <span class="o">+</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_output_channels</span><span class="p">]))</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_num_layers</span><span class="p">)])</span>
 
-<div class="viewcode-block" id="linear"><a class="viewcode-back" href="../../../neural_net/layers/linear.html#ivy.neural_net.layers.linear">[docs]</a><span class="k">def</span> <span class="nf">linear</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">weight</span><span class="p">,</span> <span class="n">bias</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Applies a linear transformation to the incoming data: y = x * t(weight) + bias,</span>
-<span class="sd">    where t(...) indicates transpose.</span>
+    <span class="c1"># Overridden</span>
 
-<span class="sd">    :param x: The input x compute linear transformation on. *[N,*,in_features]*</span>
-<span class="sd">    :type x: array</span>
-<span class="sd">    :param weight: The weight matrix. *[out_features,in_features]*</span>
-<span class="sd">    :type weight: array</span>
-<span class="sd">    :param bias: The bias vector. *[out_features]*</span>
-<span class="sd">    :type bias: array</span>
-<span class="sd">    :param f: Machine learning framework. Inferred from inputs if None.</span>
-<span class="sd">    :type f: ml_framework, optional</span>
-<span class="sd">    :return: Result array of the linear transformation. *[N,∗,out_features]*</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">_get_framework</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">linear</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">weight</span><span class="p">,</span> <span class="n">bias</span><span class="p">)</span></div>
+    <span class="k">def</span> <span class="nf">_create_variables</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create internal variables for the LSTM layer</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># ToDo: support other initialization mechanisms, via class constructor options</span>
+        <span class="c1"># ToDo: automate the consstruction of these variables, with helper functions</span>
+        <span class="n">wlim</span> <span class="o">=</span> <span class="p">(</span><span class="mi">6</span> <span class="o">/</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_output_channels</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_input_channels</span><span class="p">))</span> <span class="o">**</span> <span class="mf">0.5</span>
+        <span class="n">input_weights</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span>
+            <span class="p">[</span><span class="s1">&#39;layer_&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_num_layers</span><span class="p">)],</span>
+            <span class="p">[{</span><span class="s1">&#39;w&#39;</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">variable</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">random_uniform</span><span class="p">(</span>
+                <span class="o">-</span><span class="n">wlim</span><span class="p">,</span> <span class="n">wlim</span><span class="p">,</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_input_channels</span> <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">0</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">_output_channels</span><span class="p">,</span> <span class="mi">4</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_output_channels</span><span class="p">)))}</span>
+                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_num_layers</span><span class="p">)]))</span>
+        <span class="n">wlim</span> <span class="o">=</span> <span class="p">(</span><span class="mi">6</span> <span class="o">/</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_output_channels</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_output_channels</span><span class="p">))</span> <span class="o">**</span> <span class="mf">0.5</span>
+        <span class="n">recurrent_weights</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span>
+            <span class="p">[</span><span class="s1">&#39;layer_&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_num_layers</span><span class="p">)],</span>
+            <span class="p">[{</span><span class="s1">&#39;w&#39;</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">variable</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">random_uniform</span><span class="p">(</span><span class="o">-</span><span class="n">wlim</span><span class="p">,</span> <span class="n">wlim</span><span class="p">,</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_output_channels</span><span class="p">,</span> <span class="mi">4</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_output_channels</span><span class="p">)))}</span>
+             <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_num_layers</span><span class="p">)]))</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;input&#39;</span><span class="p">:</span> <span class="n">input_weights</span><span class="p">,</span> <span class="s1">&#39;recurrent&#39;</span><span class="p">:</span> <span class="n">recurrent_weights</span><span class="p">}</span>
+
+    <span class="k">def</span> <span class="nf">_forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">initial_state</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Perform forward pass of the lstm layer.</span>
+
+<span class="sd">        :param inputs: Inputs to process *[batch_shape, t, in]*.</span>
+<span class="sd">        :type inputs: array</span>
+<span class="sd">        :param v: the variables for each of the lstm cells, as a container, use internal variables by default.</span>
+<span class="sd">        :type v: ivy container of parameter arrays, optional</span>
+<span class="sd">        :param initial_state: 2-tuple of lists of the hidden states h and c for each layer, each of dimension *[batch_shape,out]*.</span>
+<span class="sd">                        Created internally if None.</span>
+<span class="sd">        :type initial_state: tuple of list of arrays, optional</span>
+<span class="sd">        :return: The outputs of the final lstm layer *[batch_shape, t, out]* and the hidden state tuple of lists,</span>
+<span class="sd">                each of dimension *[batch_shape, out]*</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">initial_state</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">initial_state</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_initial_state</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">shape</span><span class="p">[:</span><span class="o">-</span><span class="mi">2</span><span class="p">])</span>
+        <span class="n">h_n_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+        <span class="n">c_n_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+        <span class="n">h_t</span> <span class="o">=</span> <span class="n">inputs</span>
+        <span class="k">for</span> <span class="n">h_0</span><span class="p">,</span> <span class="n">c_0</span><span class="p">,</span> <span class="p">(</span><span class="n">_</span><span class="p">,</span> <span class="n">lstm_input_var</span><span class="p">),</span> <span class="p">(</span><span class="n">_</span><span class="p">,</span> <span class="n">lstm_recurrent_var</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span>
+                <span class="n">initial_state</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">initial_state</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">v</span><span class="o">.</span><span class="n">input</span><span class="o">.</span><span class="n">items</span><span class="p">(),</span> <span class="n">v</span><span class="o">.</span><span class="n">recurrent</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
+            <span class="n">h_t</span><span class="p">,</span> <span class="n">c_n</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">lstm_update</span><span class="p">(</span><span class="n">h_t</span><span class="p">,</span> <span class="n">h_0</span><span class="p">,</span> <span class="n">c_0</span><span class="p">,</span> <span class="n">lstm_input_var</span><span class="o">.</span><span class="n">w</span><span class="p">,</span> <span class="n">lstm_recurrent_var</span><span class="o">.</span><span class="n">w</span><span class="p">)</span>
+            <span class="n">h_n_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">h_t</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="p">:])</span>
+            <span class="n">c_n_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">c_n</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_return_sequence</span><span class="p">:</span>
+            <span class="n">h_t</span> <span class="o">=</span> <span class="n">h_t</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="p">:]</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_return_state</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">h_t</span>
+        <span class="k">return</span> <span class="n">h_t</span><span class="p">,</span> <span class="p">(</span><span class="n">h_n_list</span><span class="p">,</span> <span class="n">c_n_list</span><span class="p">)</span></div>
 </pre></div>
 
            </div>
