@@ -1,0 +1,24 @@
+Layers functional
+=================
+
+.. automodule:: ivy.neural_net.layers_functional
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :show-inheritance:
+
+
+.. toctree::
+   :maxdepth: -1
+   :caption: Layers functional
+
+   layers_functional/linear.rst
+   layers_functional/conv1d.rst
+   layers_functional/conv1d_transpose.rst
+   layers_functional/conv2d.rst
+   layers_functional/conv2d_transpose.rst
+   layers_functional/depthwise_conv2d.rst
+   layers_functional/conv3d.rst
+   layers_functional/conv3d_transpose.rst
+   layers_functional/lstm_update.rst
+

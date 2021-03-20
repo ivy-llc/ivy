@@ -35,7 +35,7 @@
   <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="conv1d" href="layers/conv1d.html" />
+    <link rel="next" title="Layer" href="layers/Layer.html" />
     <link rel="prev" title="softplus" href="activations/softplus.html" /> 
 </head>
 
@@ -101,16 +101,12 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="activations.html">Activations</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Layers</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="layers/conv1d.html">conv1d</a></li>
-<li class="toctree-l2"><a class="reference internal" href="layers/conv1d_transpose.html">conv1d_transpose</a></li>
-<li class="toctree-l2"><a class="reference internal" href="layers/conv2d.html">conv2d</a></li>
-<li class="toctree-l2"><a class="reference internal" href="layers/conv2d_transpose.html">conv2d_transpose</a></li>
-<li class="toctree-l2"><a class="reference internal" href="layers/depthwise_conv2d.html">depthwise_conv2d</a></li>
-<li class="toctree-l2"><a class="reference internal" href="layers/conv3d.html">conv3d</a></li>
-<li class="toctree-l2"><a class="reference internal" href="layers/conv3d_transpose.html">conv3d_transpose</a></li>
-<li class="toctree-l2"><a class="reference internal" href="layers/linear.html">linear</a></li>
+<li class="toctree-l2"><a class="reference internal" href="layers/Layer.html">Layer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="layers/Linear.html">Linear</a></li>
+<li class="toctree-l2"><a class="reference internal" href="layers/LSTM.html">LSTM</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="layers_functional.html">Layers functional</a></li>
 <li class="toctree-l1"><a class="reference internal" href="losses.html">Losses</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Docs</span></p>
@@ -187,195 +183,89 @@
             
   <div class="section" id="module-ivy.neural_net.layers">
 <span id="layers"></span><h1>Layers<a class="headerlink" href="#module-ivy.neural_net.layers" title="Permalink to this headline">¶</a></h1>
-<p>Collection of Ivy activation functions.</p>
-<dl class="py function">
-<dt id="ivy.neural_net.layers.conv1d">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname"><span class="pre">conv1d</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filters</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">strides</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">padding</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'NWC'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dilations</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/neural_net/layers.html#conv1d"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.neural_net.layers.conv1d" title="Permalink to this definition">¶</a></dt>
-<dd><p>Computes a 1-D convolution given 3-D input x and filters arrays.</p>
+<p>Collection of Ivy neural network layers as stateful classes.</p>
+<dl class="py class">
+<dt id="ivy.neural_net.layers.Layer">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname">ivy.</code><code class="sig-name descname"><span class="pre">Layer</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">v</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/neural_net/layers.html#Layer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.neural_net.layers.Layer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">abc.ABC</span></code></p>
+<dl class="py method">
+<dt id="ivy.neural_net.layers.Layer.__init__">
+<code class="sig-name descname"><span class="pre">__init__</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">v</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/neural_net/layers.html#Layer.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.neural_net.layers.Layer.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialze Ivy layer, is a stateful object consisting of trainable variables.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<em>array</em>) – Input image <em>[batch_size,w,d_in]</em>.</p></li>
-<li><p><strong>filters</strong> (<em>array</em>) – Convolution filters <em>[fw,d_in,d_out]</em>.</p></li>
-<li><p><strong>strides</strong> (<em>int</em><em> or </em><em>sequence of ints</em>) – The stride of the sliding window for each dimension of input.</p></li>
-<li><p><strong>padding</strong> (<em>string</em><em> or </em><em>sequence of ints</em>) – “SAME” or “VALID” indicating the algorithm, or list indicating the per-dimension paddings.</p></li>
-<li><p><strong>data_format</strong> (<em>string</em>) – “NWC” or “NCW”. Defaults to “NWC”.</p></li>
-<li><p><strong>dilations</strong> (<em>int</em><em> or </em><em>sequence of ints</em>) – The dilation factor for each dimension of input.</p></li>
-<li><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning library. Inferred from Inputs if None.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>The result of the convolution operation.</p>
+<dd class="field-odd"><p><strong>v</strong> (<em>ivy container</em><em>, </em><em>optional.</em>) – Ivy container of trainable variables. Created internally by default.</p>
 </dd>
 </dl>
 </dd></dl>
 
-<dl class="py function">
-<dt id="ivy.neural_net.layers.conv1d_transpose">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname"><span class="pre">conv1d_transpose</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filters</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">strides</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">padding</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_shape</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'NWC'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dilations</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/neural_net/layers.html#conv1d_transpose"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.neural_net.layers.conv1d_transpose" title="Permalink to this definition">¶</a></dt>
-<dd><p>Computes a 1-D transpose convolution given 3-D input x and filters arrays.</p>
+<dl class="py method">
+<dt id="ivy.neural_net.layers.Layer.forward">
+<code class="sig-name descname"><span class="pre">forward</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/neural_net/layers.html#Layer.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.neural_net.layers.Layer.forward" title="Permalink to this definition">¶</a></dt>
+<dd><p>Run layer forward pass, by first setting the variables via either input or internal values, and then calling the
+overridden forward method.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<em>array</em>) – Input image <em>[batch_size,w,d_in]</em>.</p></li>
-<li><p><strong>filters</strong> (<em>array</em>) – Convolution filters <em>[fw,d_in,d_out]</em>.</p></li>
-<li><p><strong>strides</strong> (<em>int</em><em> or </em><em>sequence of ints</em>) – The stride of the sliding window for each dimension of input.</p></li>
-<li><p><strong>padding</strong> (<em>string</em><em> or </em><em>sequence of ints</em>) – “SAME” or “VALID” indicating the algorithm, or list indicating the per-dimension paddings.</p></li>
-<li><p><strong>output_shape</strong> (<em>sequence of ints</em><em>, </em><em>needed for TensorFlow</em>) – Shape of the output</p></li>
-<li><p><strong>data_format</strong> (<em>string</em>) – “NWC” or “NCW”. Defaults to “NWC”.</p></li>
-<li><p><strong>dilations</strong> (<em>int</em><em> or </em><em>sequence of ints</em>) – The dilation factor for each dimension of input.</p></li>
-<li><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning library. Inferred from Inputs if None.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>The result of the transpose convolution operation.</p>
+<dd class="field-odd"><p><strong>v</strong> (<em>ivy container</em><em>, </em><em>optional.</em>) – Ivy container of trainable variables. Internal variables used by default.</p>
 </dd>
 </dl>
 </dd></dl>
 
-<dl class="py function">
-<dt id="ivy.neural_net.layers.conv2d">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname"><span class="pre">conv2d</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filters</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">strides</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">padding</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'NHWC'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dilations</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/neural_net/layers.html#conv2d"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.neural_net.layers.conv2d" title="Permalink to this definition">¶</a></dt>
-<dd><p>Computes a 2-D convolution given 4-D input x and filters arrays.</p>
+</dd></dl>
+
+<dl class="py class">
+<dt id="ivy.neural_net.layers.Linear">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname">ivy.</code><code class="sig-name descname"><span class="pre">Linear</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_channels</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_channels</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/neural_net/layers.html#Linear"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.neural_net.layers.Linear" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="layers/Layer.html#ivy.neural_net.layers.Layer" title="ivy.neural_net.layers.Layer"><code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.neural_net.layers.Layer</span></code></a></p>
+<dl class="py method">
+<dt id="ivy.neural_net.layers.Linear.__init__">
+<code class="sig-name descname"><span class="pre">__init__</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_channels</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_channels</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/neural_net/layers.html#Linear.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.neural_net.layers.Linear.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Linear layer, also referred to as dense or fully connected. The layer receives tensors with input_channels last
+dimension and returns a new tensor with output_channels last dimension, following matrix multiplication with the
+weight matrix and addition with the bias vector.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<em>array</em>) – Input image <em>[batch_size,h,w,d_in]</em>.</p></li>
-<li><p><strong>filters</strong> (<em>array</em>) – Convolution filters <em>[fh,fw,d_in,d_out]</em>.</p></li>
-<li><p><strong>strides</strong> (<em>int</em><em> or </em><em>sequence of ints</em>) – The stride of the sliding window for each dimension of input.</p></li>
-<li><p><strong>padding</strong> (<em>string</em><em> or </em><em>sequence of ints</em>) – “SAME” or “VALID” indicating the algorithm, or list indicating the per-dimension paddings.</p></li>
-<li><p><strong>data_format</strong> (<em>string</em>) – “NHWC” or “NCHW”. Defaults to “NHWC”.</p></li>
-<li><p><strong>dilations</strong> (<em>int</em><em> or </em><em>sequence of ints</em>) – The dilation factor for each dimension of input.</p></li>
-<li><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning library. Inferred from Inputs if None.</p></li>
+<li><p><strong>input_channels</strong> (<em>int</em>) – Number of input channels for the layer.</p></li>
+<li><p><strong>output_channels</strong> (<em>int</em>) – Number of output channels for the layer.</p></li>
 </ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>The result of the convolution operation.</p>
 </dd>
 </dl>
 </dd></dl>
 
-<dl class="py function">
-<dt id="ivy.neural_net.layers.conv2d_transpose">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname"><span class="pre">conv2d_transpose</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filters</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">strides</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">padding</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_shape</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'NHWC'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dilations</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/neural_net/layers.html#conv2d_transpose"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.neural_net.layers.conv2d_transpose" title="Permalink to this definition">¶</a></dt>
-<dd><p>Computes a 2-D transpose convolution given 4-D input x and filters arrays.</p>
+</dd></dl>
+
+<dl class="py class">
+<dt id="ivy.neural_net.layers.LSTM">
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname">ivy.</code><code class="sig-name descname"><span class="pre">LSTM</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_channels</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_channels</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_layers</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_sequence</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/neural_net/layers.html#LSTM"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.neural_net.layers.LSTM" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="layers/Layer.html#ivy.neural_net.layers.Layer" title="ivy.neural_net.layers.Layer"><code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.neural_net.layers.Layer</span></code></a></p>
+<dl class="py method">
+<dt id="ivy.neural_net.layers.LSTM.__init__">
+<code class="sig-name descname"><span class="pre">__init__</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_channels</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_channels</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_layers</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_sequence</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/neural_net/layers.html#LSTM.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.neural_net.layers.LSTM.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>LSTM layer, which is a set of stacked lstm cells.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<em>array</em>) – Input image <em>[batch_size,h,w,d_in]</em>.</p></li>
-<li><p><strong>filters</strong> (<em>array</em>) – Convolution filters <em>[fh,fw,d_in,d_out]</em>.</p></li>
-<li><p><strong>strides</strong> (<em>int</em><em> or </em><em>sequence of ints</em>) – The stride of the sliding window for each dimension of input.</p></li>
-<li><p><strong>padding</strong> (<em>string</em><em> or </em><em>sequence of ints</em>) – “SAME” or “VALID” indicating the algorithm, or list indicating the per-dimension paddings.</p></li>
-<li><p><strong>output_shape</strong> (<em>sequence of ints</em><em>, </em><em>needed for TensorFlow</em>) – Shape of the output</p></li>
-<li><p><strong>data_format</strong> (<em>string</em>) – “NHWC” or “NCHW”. Defaults to “NHWC”.</p></li>
-<li><p><strong>dilations</strong> (<em>int</em><em> or </em><em>sequence of ints</em>) – The dilation factor for each dimension of input.</p></li>
-<li><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning library. Inferred from Inputs if None.</p></li>
+<li><p><strong>input_channels</strong> (<em>int</em>) – Number of input channels for the layer</p></li>
+<li><p><strong>output_channels</strong> (<em>int</em>) – Number of output channels for the layer</p></li>
+<li><p><strong>num_layers</strong> (<em>int</em><em>, </em><em>optional</em>) – Number of lstm cells in the lstm layer, default is 1.</p></li>
+<li><p><strong>return_sequence</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether or not to return the entire output sequence, or just the latest timestep.
+Default is True.</p></li>
+<li><p><strong>return_state</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether or not to return the latest hidden and cell states. Default is True.</p></li>
+<li><p><strong>v</strong> (<em>ivy container of parameter arrays</em><em>, </em><em>optional</em>) – the variables for each of the lstm cells, as a container, constructed internally by default.</p></li>
 </ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>The result of the transpose convolution operation.</p>
 </dd>
 </dl>
 </dd></dl>
 
-<dl class="py function">
-<dt id="ivy.neural_net.layers.depthwise_conv2d">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname"><span class="pre">depthwise_conv2d</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filters</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">strides</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">padding</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'NHWC'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dilations</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/neural_net/layers.html#depthwise_conv2d"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.neural_net.layers.depthwise_conv2d" title="Permalink to this definition">¶</a></dt>
-<dd><p>Computes a 2-D depthwise convolution given 4-D input x and filters arrays.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<em>array</em>) – Input image <em>[batch_size,h,w,d]</em>.</p></li>
-<li><p><strong>filters</strong> (<em>array</em>) – Convolution filters <em>[fh,fw,d]</em>.</p></li>
-<li><p><strong>strides</strong> (<em>int</em><em> or </em><em>sequence of ints</em>) – The stride of the sliding window for each dimension of input.</p></li>
-<li><p><strong>padding</strong> (<em>string</em><em> or </em><em>sequence of ints</em>) – “SAME” or “VALID” indicating the algorithm, or list indicating the per-dimension paddings.</p></li>
-<li><p><strong>data_format</strong> (<em>string</em>) – “NHWC” or “NCHW”. Defaults to “NHWC”.</p></li>
-<li><p><strong>dilations</strong> (<em>int</em><em> or </em><em>sequence of ints</em>) – The dilation factor for each dimension of input.</p></li>
-<li><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning library. Inferred from Inputs if None.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>The result of the convolution operation.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt id="ivy.neural_net.layers.conv3d">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname"><span class="pre">conv3d</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filters</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">strides</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">padding</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'NDHWC'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dilations</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/neural_net/layers.html#conv3d"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.neural_net.layers.conv3d" title="Permalink to this definition">¶</a></dt>
-<dd><p>Computes a 3-D convolution given 5-D input x and filters arrays.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<em>array</em>) – Input volume <em>[batch_size,d,h,w,d_in]</em>.</p></li>
-<li><p><strong>filters</strong> (<em>array</em>) – Convolution filters <em>[fd,fh,fw,d_in,d_out]</em>.</p></li>
-<li><p><strong>strides</strong> (<em>sequence of ints</em>) – The stride of the sliding window for each dimension of input.</p></li>
-<li><p><strong>padding</strong> (<em>string</em><em> or </em><em>sequence of ints</em>) – “SAME” or “VALID” indicating the algorithm, or list indicating the per-dimension paddings.</p></li>
-<li><p><strong>data_format</strong> (<em>string</em>) – “NDHWC” or “NCDHW”. Defaults to “NDHWC”.</p></li>
-<li><p><strong>dilations</strong> (<em>int</em><em> or </em><em>sequence of ints</em>) – The dilation factor for each dimension of input.</p></li>
-<li><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning library. Inferred from Inputs if None.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>The result of the convolution operation.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt id="ivy.neural_net.layers.conv3d_transpose">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname"><span class="pre">conv3d_transpose</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filters</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">strides</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">padding</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_shape</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'NDHWC'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dilations</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/neural_net/layers.html#conv3d_transpose"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.neural_net.layers.conv3d_transpose" title="Permalink to this definition">¶</a></dt>
-<dd><p>Computes a 3-D transpose convolution given 5-D input x and filters arrays.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<em>array</em>) – Input image <em>[batch_size,d,h,w,d_in]</em>.</p></li>
-<li><p><strong>filters</strong> (<em>array</em>) – Convolution filters <em>[fd,fh,fw,d_in,d_out]</em>.</p></li>
-<li><p><strong>strides</strong> (<em>int</em><em> or </em><em>sequence of ints</em>) – The stride of the sliding window for each dimension of input.</p></li>
-<li><p><strong>padding</strong> (<em>string</em><em> or </em><em>sequence of ints</em>) – “SAME” or “VALID” indicating the algorithm, or list indicating the per-dimension paddings.</p></li>
-<li><p><strong>output_shape</strong> (<em>sequence of ints</em><em>, </em><em>needed for TensorFlow</em>) – Shape of the output</p></li>
-<li><p><strong>data_format</strong> (<em>string</em>) – “NDHWC” or “NCDHW”. Defaults to “NDHWC”.</p></li>
-<li><p><strong>dilations</strong> (<em>int</em><em> or </em><em>sequence of ints</em>) – The dilation factor for each dimension of input.</p></li>
-<li><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning library. Inferred from Inputs if None.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>The result of the transpose convolution operation.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt id="ivy.neural_net.layers.linear">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname"><span class="pre">linear</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weight</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bias</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/neural_net/layers.html#linear"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.neural_net.layers.linear" title="Permalink to this definition">¶</a></dt>
-<dd><p>Applies a linear transformation to the incoming data: y = x * t(weight) + bias,
-where t(…) indicates transpose.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<em>array</em>) – The input x compute linear transformation on. <em>[N,</em>,in_features]*</p></li>
-<li><p><strong>weight</strong> (<em>array</em>) – The weight matrix. <em>[out_features,in_features]</em></p></li>
-<li><p><strong>bias</strong> (<em>array</em>) – The bias vector. <em>[out_features]</em></p></li>
-<li><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning framework. Inferred from inputs if None.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Result array of the linear transformation. <em>[N,∗,out_features]</em></p>
-</dd>
-</dl>
 </dd></dl>
 
 <div class="toctree-wrapper compound">
 <p class="caption"><span class="caption-text">Layers</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="layers/conv1d.html">conv1d</a></li>
-<li class="toctree-l1"><a class="reference internal" href="layers/conv1d_transpose.html">conv1d_transpose</a></li>
-<li class="toctree-l1"><a class="reference internal" href="layers/conv2d.html">conv2d</a></li>
-<li class="toctree-l1"><a class="reference internal" href="layers/conv2d_transpose.html">conv2d_transpose</a></li>
-<li class="toctree-l1"><a class="reference internal" href="layers/depthwise_conv2d.html">depthwise_conv2d</a></li>
-<li class="toctree-l1"><a class="reference internal" href="layers/conv3d.html">conv3d</a></li>
-<li class="toctree-l1"><a class="reference internal" href="layers/conv3d_transpose.html">conv3d_transpose</a></li>
-<li class="toctree-l1"><a class="reference internal" href="layers/linear.html">linear</a></li>
+<li class="toctree-l1"><a class="reference internal" href="layers/Layer.html">Layer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="layers/Linear.html">Linear</a></li>
+<li class="toctree-l1"><a class="reference internal" href="layers/LSTM.html">LSTM</a></li>
 </ul>
 </div>
 </div>
@@ -388,7 +278,7 @@ where t(…) indicates transpose.</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="layers/conv1d.html" class="btn btn-neutral float-right" title="conv1d" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="layers/Layer.html" class="btn btn-neutral float-right" title="Layer" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="activations/softplus.html" class="btn btn-neutral float-left" title="softplus" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>

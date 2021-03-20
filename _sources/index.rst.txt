@@ -262,6 +262,7 @@ Documentation Tree
 
    neural_net/activations.rst
    neural_net/layers.rst
+   neural_net/layers_functional.rst
    neural_net/losses.rst
 
 
