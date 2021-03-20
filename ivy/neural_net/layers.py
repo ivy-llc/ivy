@@ -1,192 +1,194 @@
 """
-Collection of Ivy activation functions.
+Collection of Ivy neural network layers as stateful classes.
 """
 
-# local
-from ivy.framework_handler import get_framework as _get_framework
+# global
+import ivy
+import abc
+from ivy.core.container import Container
 
 
-def conv1d(x, filters, strides, padding, data_format='NWC', dilations=1, f=None):
-    """
-    Computes a 1-D convolution given 3-D input x and filters arrays.
+# Base #
+# -----#
 
-    :param x: Input image *[batch_size,w,d_in]*.
-    :type x: array
-    :param filters: Convolution filters *[fw,d_in,d_out]*.
-    :type filters: array
-    :param strides: The stride of the sliding window for each dimension of input.
-    :type strides: int or sequence of ints
-    :param padding: "SAME" or "VALID" indicating the algorithm, or list indicating the per-dimension paddings.
-    :type padding: string or sequence of ints
-    :param data_format: "NWC" or "NCW". Defaults to "NWC".
-    :type data_format: string
-    :param dilations: The dilation factor for each dimension of input.
-    :type dilations: int or sequence of ints
-    :param f: Machine learning library. Inferred from Inputs if None.
-    :type f: ml_framework, optional
-    :return: The result of the convolution operation.
-    """
-    return _get_framework(x, f=f).conv1d(x, filters, strides, padding, data_format, dilations)
+class Layer(abc.ABC):
 
+    def __init__(self, v=None):
+        """
+        Initialze Ivy layer, is a stateful object consisting of trainable variables.
 
-def conv1d_transpose(x, filters, strides, padding, output_shape=None, data_format='NWC', dilations=1, f=None):
-    """
-    Computes a 1-D transpose convolution given 3-D input x and filters arrays.
+        :param v: Ivy container of trainable variables. Created internally by default.
+        :type v: ivy container, optional.
+        """
+        if v is None:
+            self.v = Container(self._create_variables())
+        else:
+            self.v = Container(v)
 
-    :param x: Input image *[batch_size,w,d_in]*.
-    :type x: array
-    :param filters: Convolution filters *[fw,d_in,d_out]*.
-    :type filters: array
-    :param strides: The stride of the sliding window for each dimension of input.
-    :type strides: int or sequence of ints
-    :param padding: "SAME" or "VALID" indicating the algorithm, or list indicating the per-dimension paddings.
-    :type padding: string or sequence of ints
-    :param output_shape: Shape of the output
-    :type output_shape: sequence of ints, needed for TensorFlow
-    :param data_format: "NWC" or "NCW". Defaults to "NWC".
-    :type data_format: string
-    :param dilations: The dilation factor for each dimension of input.
-    :type dilations: int or sequence of ints
-    :param f: Machine learning library. Inferred from Inputs if None.
-    :type f: ml_framework, optional
-    :return: The result of the transpose convolution operation.
-    """
-    return _get_framework(x, f=f).conv1d_transpose(x, filters, strides, padding, output_shape, data_format, dilations)
+    # Public #
 
+    def forward(self, *args, v=None, **kwargs):
+        """
+        Run layer forward pass, by first setting the variables via either input or internal values, and then calling the
+        overridden forward method.
 
-def conv2d(x, filters, strides, padding, data_format='NHWC', dilations=1, f=None):
-    """
-    Computes a 2-D convolution given 4-D input x and filters arrays.
+        :param v: Ivy container of trainable variables. Internal variables used by default.
+        :type v: ivy container, optional.
+        """
+        if v is None:
+            v = self.v
+        else:
+            v = Container(v)
+        return self._forward(*args, **kwargs, v=v)
 
-    :param x: Input image *[batch_size,h,w,d_in]*.
-    :type x: array
-    :param filters: Convolution filters *[fh,fw,d_in,d_out]*.
-    :type filters: array
-    :param strides: The stride of the sliding window for each dimension of input.
-    :type strides: int or sequence of ints
-    :param padding: "SAME" or "VALID" indicating the algorithm, or list indicating the per-dimension paddings.
-    :type padding: string or sequence of ints
-    :param data_format: "NHWC" or "NCHW". Defaults to "NHWC".
-    :type data_format: string
-    :param dilations: The dilation factor for each dimension of input.
-    :type dilations: int or sequence of ints
-    :param f: Machine learning library. Inferred from Inputs if None.
-    :type f: ml_framework, optional
-    :return: The result of the convolution operation.
-    """
-    return _get_framework(x, f=f).conv2d(x, filters, strides, padding, data_format, dilations)
+    # Abstract #
+
+    @abc.abstractmethod
+    def _create_variables(self):
+        """
+        create internal trainable variables, and return as arbitrary nested dict.
+        """
+        raise NotImplementedError
+
+    @abc.abstractmethod
+    def _forward(self, *args, **kwargs):
+        """
+        the forward pass of the layer, called after handling the optional input variables.
+        """
+        raise NotImplementedError
 
 
-def conv2d_transpose(x, filters, strides, padding, output_shape=None, data_format='NHWC', dilations=1, f=None):
-    """
-    Computes a 2-D transpose convolution given 4-D input x and filters arrays.
+# Linear #
+# -------#
 
-    :param x: Input image *[batch_size,h,w,d_in]*.
-    :type x: array
-    :param filters: Convolution filters *[fh,fw,d_in,d_out]*.
-    :type filters: array
-    :param strides: The stride of the sliding window for each dimension of input.
-    :type strides: int or sequence of ints
-    :param padding: "SAME" or "VALID" indicating the algorithm, or list indicating the per-dimension paddings.
-    :type padding: string or sequence of ints
-    :param output_shape: Shape of the output
-    :type output_shape: sequence of ints, needed for TensorFlow
-    :param data_format: "NHWC" or "NCHW". Defaults to "NHWC".
-    :type data_format: string
-    :param dilations: The dilation factor for each dimension of input.
-    :type dilations: int or sequence of ints
-    :param f: Machine learning library. Inferred from Inputs if None.
-    :type f: ml_framework, optional
-    :return: The result of the transpose convolution operation.
-    """
-    return _get_framework(x, f=f).conv2d_transpose(x, filters, strides, padding, output_shape, data_format, dilations)
+class Linear(Layer):
 
+    def __init__(self, input_channels, output_channels, v=None):
+        """
+        Linear layer, also referred to as dense or fully connected. The layer receives tensors with input_channels last
+        dimension and returns a new tensor with output_channels last dimension, following matrix multiplication with the
+        weight matrix and addition with the bias vector.
 
-def depthwise_conv2d(x, filters, strides, padding, data_format='NHWC', dilations=1, f=None):
-    """
-    Computes a 2-D depthwise convolution given 4-D input x and filters arrays.
+        :param input_channels: Number of input channels for the layer.
+        :type input_channels: int
+        :param output_channels: Number of output channels for the layer.
+        :type output_channels: int
+        """
+        self._input_channels = input_channels
+        self._output_channels = output_channels
+        Layer.__init__(self, v)
 
-    :param x: Input image *[batch_size,h,w,d]*.
-    :type x: array
-    :param filters: Convolution filters *[fh,fw,d]*.
-    :type filters: array
-    :param strides: The stride of the sliding window for each dimension of input.
-    :type strides: int or sequence of ints
-    :param padding: "SAME" or "VALID" indicating the algorithm, or list indicating the per-dimension paddings.
-    :type padding: string or sequence of ints
-    :param data_format: "NHWC" or "NCHW". Defaults to "NHWC".
-    :type data_format: string
-    :param dilations: The dilation factor for each dimension of input.
-    :type dilations: int or sequence of ints
-    :param f: Machine learning library. Inferred from Inputs if None.
-    :type f: ml_framework, optional
-    :return: The result of the convolution operation.
-    """
-    return _get_framework(x, f=f).depthwise_conv2d(x, filters, strides, padding, data_format, dilations)
+    def _create_variables(self):
+        """
+        Create internal variables for the Linear layer
+        """
+        # ToDo: support other initialization mechanisms, via class constructor options
+        # ToDo: automate the consstruction of these variables, with helper functions
+        wlim = (6 / (self._output_channels + self._input_channels)) ** 0.5
+        w = ivy.variable(ivy.random_uniform(-wlim, wlim, (self._output_channels, self._input_channels)))
+        b = ivy.variable(ivy.zeros([self._output_channels]))
+        return {'w': w, 'b': b}
+
+    def _forward(self, inputs, v):
+        """
+        Perform forward pass of the linear layer.
+
+        :param inputs: Inputs to process *[batch_shape, in]*.
+        :type inputs: array
+        :param v: the variables for each of the lstm cells, as a container, use internal variables by default.
+        :type v: ivy container of parameter arrays, optional
+        :return: The outputs following the linear operation and bias addition *[batch_shape, out]*
+        """
+        return ivy.linear(inputs, v.w, v.b)
 
 
-# noinspection PyDefaultArgument
-def conv3d(x, filters, strides, padding, data_format='NDHWC', dilations=1, f=None):
-    """
-    Computes a 3-D convolution given 5-D input x and filters arrays.
+# LSTM #
+# -----#
 
-    :param x: Input volume *[batch_size,d,h,w,d_in]*.
-    :type x: array
-    :param filters: Convolution filters *[fd,fh,fw,d_in,d_out]*.
-    :type filters: array
-    :param strides: The stride of the sliding window for each dimension of input.
-    :type strides: sequence of ints
-    :param padding: "SAME" or "VALID" indicating the algorithm, or list indicating the per-dimension paddings.
-    :type padding: string or sequence of ints
-    :param data_format: "NDHWC" or "NCDHW". Defaults to "NDHWC".
-    :type data_format: string
-    :param dilations: The dilation factor for each dimension of input.
-    :type dilations: int or sequence of ints
-    :param f: Machine learning library. Inferred from Inputs if None.
-    :type f: ml_framework, optional
-    :return: The result of the convolution operation.
-    """
-    return _get_framework(x, f=f).conv3d(x, filters, strides, padding, data_format, dilations)
+class LSTM(Layer):
 
+    def __init__(self, input_channels, output_channels, num_layers=1, return_sequence=True, return_state=True, v=None):
+        """
+        LSTM layer, which is a set of stacked lstm cells.
 
-def conv3d_transpose(x, filters, strides, padding, output_shape=None, data_format='NDHWC', dilations=1, f=None):
-    """
-    Computes a 3-D transpose convolution given 5-D input x and filters arrays.
+        :param input_channels: Number of input channels for the layer
+        :type input_channels: int
+        :param output_channels: Number of output channels for the layer
+        :type output_channels: int
+        :param num_layers: Number of lstm cells in the lstm layer, default is 1.
+        :type num_layers: int, optional
+        :param return_sequence: Whether or not to return the entire output sequence, or just the latest timestep.
+                                Default is True.
+        :type return_sequence: bool, optional
+        :param return_state: Whether or not to return the latest hidden and cell states. Default is True.
+        :type return_state: bool, optional
+        :param v: the variables for each of the lstm cells, as a container, constructed internally by default.
+        :type v: ivy container of parameter arrays, optional
+        """
+        self._input_channels = input_channels
+        self._output_channels = output_channels
+        self._num_layers = num_layers
+        self._return_sequence = return_sequence
+        self._return_state = return_state
+        Layer.__init__(self, v)
 
-    :param x: Input image *[batch_size,d,h,w,d_in]*.
-    :type x: array
-    :param filters: Convolution filters *[fd,fh,fw,d_in,d_out]*.
-    :type filters: array
-    :param strides: The stride of the sliding window for each dimension of input.
-    :type strides: int or sequence of ints
-    :param padding: "SAME" or "VALID" indicating the algorithm, or list indicating the per-dimension paddings.
-    :type padding: string or sequence of ints
-    :param output_shape: Shape of the output
-    :type output_shape: sequence of ints, needed for TensorFlow
-    :param data_format: "NDHWC" or "NCDHW". Defaults to "NDHWC".
-    :type data_format: string
-    :param dilations: The dilation factor for each dimension of input.
-    :type dilations: int or sequence of ints
-    :param f: Machine learning library. Inferred from Inputs if None.
-    :type f: ml_framework, optional
-    :return: The result of the transpose convolution operation.
-    """
-    return _get_framework(x, f=f).conv3d_transpose(x, filters, strides, padding, output_shape, data_format, dilations)
+    # Private #
 
+    def _get_initial_state(self, batch_shape):
+        """
+        Get the initial state of the hidden and cell states, if not provided explicitly
+        """
+        batch_shape = list(batch_shape)
+        return ([ivy.zeros((batch_shape + [self._output_channels])) for i in range(self._num_layers)],
+                [ivy.zeros((batch_shape + [self._output_channels])) for i in range(self._num_layers)])
 
-def linear(x, weight, bias, f=None):
-    """
-    Applies a linear transformation to the incoming data: y = x * t(weight) + bias,
-    where t(...) indicates transpose.
+    # Overridden
 
-    :param x: The input x compute linear transformation on. *[N,*,in_features]*
-    :type x: array
-    :param weight: The weight matrix. *[out_features,in_features]*
-    :type weight: array
-    :param bias: The bias vector. *[out_features]*
-    :type bias: array
-    :param f: Machine learning framework. Inferred from inputs if None.
-    :type f: ml_framework, optional
-    :return: Result array of the linear transformation. *[N,∗,out_features]*
-    """
-    return _get_framework(x, f=f).linear(x, weight, bias)
+    def _create_variables(self):
+        """
+        Create internal variables for the LSTM layer
+        """
+        # ToDo: support other initialization mechanisms, via class constructor options
+        # ToDo: automate the consstruction of these variables, with helper functions
+        wlim = (6 / (self._output_channels + self._input_channels)) ** 0.5
+        input_weights = dict(zip(
+            ['layer_' + str(i) for i in range(self._num_layers)],
+            [{'w': ivy.variable(ivy.random_uniform(
+                -wlim, wlim, (self._input_channels if i == 0 else self._output_channels, 4 * self._output_channels)))}
+                for i in range(self._num_layers)]))
+        wlim = (6 / (self._output_channels + self._output_channels)) ** 0.5
+        recurrent_weights = dict(zip(
+            ['layer_' + str(i) for i in range(self._num_layers)],
+            [{'w': ivy.variable(ivy.random_uniform(-wlim, wlim, (self._output_channels, 4 * self._output_channels)))}
+             for i in range(self._num_layers)]))
+        return {'input': input_weights, 'recurrent': recurrent_weights}
+
+    def _forward(self, inputs, v, initial_state=None):
+        """
+        Perform forward pass of the lstm layer.
+
+        :param inputs: Inputs to process *[batch_shape, t, in]*.
+        :type inputs: array
+        :param v: the variables for each of the lstm cells, as a container, use internal variables by default.
+        :type v: ivy container of parameter arrays, optional
+        :param initial_state: 2-tuple of lists of the hidden states h and c for each layer, each of dimension *[batch_shape,out]*.
+                        Created internally if None.
+        :type initial_state: tuple of list of arrays, optional
+        :return: The outputs of the final lstm layer *[batch_shape, t, out]* and the hidden state tuple of lists,
+                each of dimension *[batch_shape, out]*
+        """
+        if initial_state is None:
+            initial_state = self._get_initial_state(inputs.shape[:-2])
+        h_n_list = list()
+        c_n_list = list()
+        h_t = inputs
+        for h_0, c_0, (_, lstm_input_var), (_, lstm_recurrent_var) in zip(
+                initial_state[0], initial_state[1], v.input.items(), v.recurrent.items()):
+            h_t, c_n = ivy.lstm_update(h_t, h_0, c_0, lstm_input_var.w, lstm_recurrent_var.w)
+            h_n_list.append(h_t[..., -1, :])
+            c_n_list.append(c_n)
+        if not self._return_sequence:
+            h_t = h_t[..., -1, :]
+        if not self._return_state:
+            return h_t
+        return h_t, (h_n_list, c_n_list)
