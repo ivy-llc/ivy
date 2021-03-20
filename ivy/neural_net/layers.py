@@ -132,9 +132,9 @@ class LSTM(Layer):
         self._return_state = return_state
         Layer.__init__(self, v)
 
-    # Private #
+    # Public #
 
-    def _get_initial_state(self, batch_shape):
+    def get_initial_state(self, batch_shape):
         """
         Get the initial state of the hidden and cell states, if not provided explicitly
         """
@@ -178,7 +178,7 @@ class LSTM(Layer):
                 each of dimension *[batch_shape, out]*
         """
         if initial_state is None:
-            initial_state = self._get_initial_state(inputs.shape[:-2])
+            initial_state = self.get_initial_state(inputs.shape[:-2])
         h_n_list = list()
         c_n_list = list()
         h_t = inputs
