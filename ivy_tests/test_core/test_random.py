@@ -24,10 +24,15 @@ import ivy_tests.helpers as helpers
 @pytest.mark.parametrize(
     "dtype_str", ['float32'])
 @pytest.mark.parametrize(
-    "tensor_fn", [ivy.array, helpers.var_fn])
+    "tensor_fn", [ivy.array, helpers.var_fn, lambda x: x])
 def test_random_uniform(low, high, shape, dtype_str, tensor_fn, dev_str, call):
     # smoke test
-    kwargs = dict([(k, v) for k, v in zip(['low', 'high', 'shape'], [low, high, shape]) if v is not None])
+    if tensor_fn == helpers.var_fn and call is helpers.mx_call:
+        # mxnet does not support 0-dimensional variables
+        pytest.skip()
+    kwargs = dict([(k, tensor_fn(v)) for k, v in zip(['low', 'high'], [low, high]) if v is not None])
+    if shape is not None:
+        kwargs['shape'] = shape
     ret = ivy.random_uniform(**kwargs, dev_str=dev_str)
     # type test
     try:
@@ -78,10 +83,14 @@ def test_multinomial(probs, num_samples, dtype_str, tensor_fn, dev_str, call):
 @pytest.mark.parametrize(
     "dtype_str", ['float32'])
 @pytest.mark.parametrize(
-    "tensor_fn", [ivy.array, helpers.var_fn])
+    "tensor_fn", [ivy.array, helpers.var_fn, lambda x: x])
 def test_randint(low, high, shape, dtype_str, tensor_fn, dev_str, call):
     # smoke test
-    ret = ivy.randint(low, high, shape, dev_str=dev_str)
+    if call in [helpers.mx_call, helpers.torch_call] and tensor_fn is helpers.var_fn:
+        # PyTorch and MXNet do not support non-float variables
+        pytest.skip()
+    low_tnsr, high_tnsr = tensor_fn(low), tensor_fn(high)
+    ret = ivy.randint(low_tnsr, high_tnsr, shape, dev_str=dev_str)
     # type test
     try:
         assert isinstance(ret, ivy.Array)
@@ -90,7 +99,7 @@ def test_randint(low, high, shape, dtype_str, tensor_fn, dev_str, call):
     # cardinality test
     assert ret.shape == shape
     # value test
-    ret_np = call(ivy.randint, low, high, shape, dev_str=dev_str)
+    ret_np = call(ivy.randint, low_tnsr, high_tnsr, shape, dev_str=dev_str)
     assert np.min((ret_np < high).astype(np.int32)) == 1
     assert np.min((ret_np >= low).astype(np.int32)) == 1
     # compilation test
