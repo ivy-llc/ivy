@@ -13,6 +13,10 @@ from ivy.mxnd.core.general import _1_dim_array_to_flat_array
 
 
 def random_uniform(low=0., high=1., shape=None, dev_str='cpu'):
+    if isinstance(low, _mx.nd.NDArray):
+        low = low.asscalar()
+    if isinstance(high, _mx.nd.NDArray):
+        high = high.asscalar()
     ctx = _mxnet_init_context(dev_str)
     if shape is None or len(shape) == 0:
         return _1_dim_array_to_flat_array(_mx.nd.random.uniform(low, high, (1,), ctx=ctx))
@@ -25,9 +29,14 @@ def multinomial(probs, num_samples):
 
 
 def randint(low, high, shape, dev_str='cpu'):
+    if isinstance(low, _mx.nd.NDArray):
+        low = int(low.asscalar())
+    if isinstance(high, _mx.nd.NDArray):
+        high = int(high.asscalar())
     ctx = _mxnet_init_context(dev_str)
     if len(shape) == 0:
-        return _1_dim_array_to_flat_array(_mx.nd.random.randint(low, high, (1,), ctx=ctx))
+        return _1_dim_array_to_flat_array(_mx.nd.random.randint(
+            low, high, (1,), ctx=ctx))
     return _mx.nd.random.randint(low, high, shape, ctx=ctx)
 
 
