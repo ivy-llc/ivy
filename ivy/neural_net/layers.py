@@ -15,7 +15,7 @@ class Layer(abc.ABC):
 
     def __init__(self, v=None):
         """
-        Initialze Ivy layer, is a stateful object consisting of trainable variables.
+        Initialze Ivy layer, which is a stateful object consisting of trainable variables.
 
         :param v: Ivy container of trainable variables. Created internally by default.
         :type v: ivy container, optional.
@@ -27,7 +27,7 @@ class Layer(abc.ABC):
 
     # Public #
 
-    def forward(self, *args, v=None, **kwargs):
+    def __call__(self, *args, v=None, **kwargs):
         """
         Run layer forward pass, by first setting the variables via either input or internal values, and then calling the
         overridden forward method.
