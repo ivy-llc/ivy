@@ -1222,6 +1222,31 @@ def test_cumsum(x_n_axis, dtype_str, tensor_fn, dev_str, call):
     helpers.assert_compilable(ivy.cumsum)
 
 
+# cumprod
+@pytest.mark.parametrize(
+    "x_n_axis", [([[0., 1., 2.]], -1), ([[0., 1., 2.], [2., 1., 0.]], 0), ([[0., 1., 2.], [2., 1., 0.]], 1)])
+@pytest.mark.parametrize(
+    "dtype_str", ['float32'])
+@pytest.mark.parametrize(
+    "tensor_fn", [ivy.array, helpers.var_fn])
+def test_cumprod(x_n_axis, dtype_str, tensor_fn, dev_str, call):
+    # smoke test
+    x, axis = x_n_axis
+    x = ivy.array(x, dtype_str, dev_str)
+    ret = ivy.cumprod(x, axis)
+    # type test
+    try:
+        assert isinstance(ret, ivy.Array)
+    except AssertionError:
+        assert isinstance(ret, Buffer)
+    # cardinality test
+    assert ret.shape == x.shape
+    # value test
+    assert np.allclose(call(ivy.cumprod, x, axis), ivy.numpy.cumprod(ivy.to_numpy(x), axis))
+    # compilation test
+    helpers.assert_compilable(ivy.cumprod)
+
+
 # identity
 @pytest.mark.parametrize(
     "dim_n_bs", [(3, None), (1, (2, 3)), (5, (1, 2, 3))])
