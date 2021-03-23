@@ -359,6 +359,10 @@ def cumsum(x, axis: int = 0):
     return torch.cumsum(x, axis)
 
 
+def cumprod(x, axis: int = 0):
+    return torch.cumprod(x, axis)
+
+
 # noinspection PyShadowingNames
 def identity(n: int, dtype_str: str = 'float32', batch_shape: Optional[List[int]] = None,
              dev_str: Optional[str] = None):

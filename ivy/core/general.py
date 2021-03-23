@@ -697,6 +697,21 @@ def cumsum(x, axis=0, f=None):
     return _get_framework(x, f=f).cumsum(x, axis)
 
 
+def cumprod(x, axis=0, f=None):
+    """
+    Returns the cumulative product of the elements along a given axis.
+
+    :param x: Input array.
+    :type x: array
+    :param axis: Axis along which the cumulative product is computed. By default 0.
+    :type axis: int
+    :param f: Machine learning framework. Inferred from inputs if None.
+    :type f: ml_framework, optional
+    :return: Input array with cumulatively multiplied elements along axis.
+    """
+    return _get_framework(x, f=f).cumprod(x, axis)
+
+
 # noinspection PyShadowingNames
 def identity(n, dtype_str='float32', batch_shape=None, dev_str=None, f=None):
     """
