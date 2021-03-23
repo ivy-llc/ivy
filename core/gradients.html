@@ -91,6 +91,7 @@
 <li class="toctree-l1"><a class="reference internal" href="general.html">General</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Gradients</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="gradients/variable.html">variable</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gradients/is_variable.html">is_variable</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gradients/execute_with_gradients.html">execute_with_gradients</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gradients/gradient_descent_update.html">gradient_descent_update</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gradients/adam_update.html">adam_update</a></li>
@@ -188,17 +189,34 @@
 <p>Collection of gradient Ivy functions.</p>
 <dl class="py function">
 <dt id="ivy.core.gradients.variable">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname"><span class="pre">variable</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">object_in</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/gradients.html#variable"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.core.gradients.variable" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname"><span class="pre">variable</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/gradients.html#variable"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.core.gradients.variable" title="Permalink to this definition">¶</a></dt>
 <dd><p>Creates a variable, which supports gradient computation.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>object_in</strong> (<em>array</em>) – An ivy array.</p></li>
+<li><p><strong>x</strong> (<em>array</em>) – An ivy array.</p></li>
 <li><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning framework. Inferred from inputs if None.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>An ivy variable, supporting gradient computation.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.core.gradients.is_variable">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname"><span class="pre">is_variable</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/gradients.html#is_variable"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.core.gradients.is_variable" title="Permalink to this definition">¶</a></dt>
+<dd><p>Determines whether the input is a variable or not.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>array</em>) – An ivy array.</p></li>
+<li><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning framework. Inferred from inputs if None.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Boolean, true if x is a trainable variable, false otherwise.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -288,6 +306,7 @@ and any other function outputs after the returned y value</p>
 <p class="caption"><span class="caption-text">Gradients</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="gradients/variable.html">variable</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gradients/is_variable.html">is_variable</a></li>
 <li class="toctree-l1"><a class="reference internal" href="gradients/execute_with_gradients.html">execute_with_gradients</a></li>
 <li class="toctree-l1"><a class="reference internal" href="gradients/gradient_descent_update.html">gradient_descent_update</a></li>
 <li class="toctree-l1"><a class="reference internal" href="gradients/adam_update.html">adam_update</a></li>

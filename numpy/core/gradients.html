@@ -176,10 +176,15 @@
             
   <div class="section" id="module-ivy.numpy.core.gradients">
 <span id="gradients"></span><h1>Gradients<a class="headerlink" href="#module-ivy.numpy.core.gradients" title="Permalink to this headline">¶</a></h1>
-<p>Collection of Numpy gradient functions, wrapped to fit Ivy syntax and signature.</p>
+<p>Collection of NumPy gradient functions, wrapped to fit Ivy syntax and signature.</p>
 <dl class="py function">
 <dt id="ivy.numpy.core.gradients.variable">
-<code class="sig-prename descclassname"><span class="pre">ivy.numpy.core.gradients.</span></code><code class="sig-name descname"><span class="pre">variable</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">array_in</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/numpy/core/gradients.html#variable"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.numpy.core.gradients.variable" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname"><span class="pre">ivy.numpy.core.gradients.</span></code><code class="sig-name descname"><span class="pre">variable</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/numpy/core/gradients.html#variable"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.numpy.core.gradients.variable" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="ivy.numpy.core.gradients.is_variable">
+<code class="sig-prename descclassname"><span class="pre">ivy.numpy.core.gradients.</span></code><code class="sig-name descname"><span class="pre">is_variable</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/numpy/core/gradients.html#is_variable"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.numpy.core.gradients.is_variable" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py function">
@@ -206,6 +211,7 @@
 <p class="caption"><span class="caption-text">Gradients</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="gradients/variable.html">variable</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gradients/is_variable.html">is_variable</a></li>
 <li class="toctree-l1"><a class="reference internal" href="gradients/execute_with_gradients.html">execute_with_gradients</a></li>
 <li class="toctree-l1"><a class="reference internal" href="gradients/gradient_descent_update.html">gradient_descent_update</a></li>
 <li class="toctree-l1"><a class="reference internal" href="gradients/adam_update.html">adam_update</a></li>

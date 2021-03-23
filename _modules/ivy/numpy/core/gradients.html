@@ -174,7 +174,7 @@
             
   <h1>Source code for ivy.numpy.core.gradients</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">Collection of Numpy gradient functions, wrapped to fit Ivy syntax and signature.</span>
+<span class="sd">Collection of NumPy gradient functions, wrapped to fit Ivy syntax and signature.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="c1"># global</span>
@@ -182,14 +182,20 @@
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">_np</span>
 
 
-<div class="viewcode-block" id="variable"><a class="viewcode-back" href="../../../../numpy/core/gradients/variable.html#ivy.numpy.core.gradients.variable">[docs]</a><span class="k">def</span> <span class="nf">variable</span><span class="p">(</span><span class="n">array_in</span><span class="p">):</span>
-    <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Numpy does not support autograd, &#39;</span>
+<div class="viewcode-block" id="variable"><a class="viewcode-back" href="../../../../numpy/core/gradients/variable.html#ivy.numpy.core.gradients.variable">[docs]</a><span class="k">def</span> <span class="nf">variable</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;NumPy does not support autograd, &#39;</span>
                     <span class="s1">&#39;declaring a &quot;variable&quot; is identical to declaring an &quot;array&quot; when using numpy backend&#39;</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">array_in</span></div>
+    <span class="k">return</span> <span class="n">x</span></div>
+
+
+<div class="viewcode-block" id="is_variable"><a class="viewcode-back" href="../../../../numpy/core/gradients/is_variable.html#ivy.numpy.core.gradients.is_variable">[docs]</a><span class="k">def</span> <span class="nf">is_variable</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;NumPy does not support autograd, &#39;</span>
+                    <span class="s1">&#39;checking if x is a variable does have any meaning for NumPy. Returning False.&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="kc">False</span></div>
 
 
 <div class="viewcode-block" id="execute_with_gradients"><a class="viewcode-back" href="../../../../numpy/core/gradients/execute_with_gradients.html#ivy.numpy.core.gradients.execute_with_gradients">[docs]</a><span class="k">def</span> <span class="nf">execute_with_gradients</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">xs</span><span class="p">):</span>
-    <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Numpy does not support autograd, &#39;</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;NumPy does not support autograd, &#39;</span>
                     <span class="s1">&#39;&quot;execute_with_gradients&quot; returns None in place of function gradients.&#39;</span><span class="p">)</span>
     <span class="n">func_ret</span> <span class="o">=</span> <span class="n">func</span><span class="p">(</span><span class="n">xs</span><span class="p">)</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">func_ret</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
@@ -219,7 +225,7 @@
 
 
 <div class="viewcode-block" id="stop_gradient"><a class="viewcode-back" href="../../../../numpy/core/gradients/stop_gradient.html#ivy.numpy.core.gradients.stop_gradient">[docs]</a><span class="k">def</span> <span class="nf">stop_gradient</span><span class="p">(</span><span class="n">array_in</span><span class="p">):</span>
-    <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Numpy does not support autograd, &#39;</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;NumPy does not support autograd, &#39;</span>
                     <span class="s1">&#39;&quot;stop_gradient&quot; has no effect on the array, as gradients are not supported in the first place.&#39;</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">array_in</span></div>
 </pre></div>
