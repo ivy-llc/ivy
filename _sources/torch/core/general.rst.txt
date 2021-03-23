@@ -54,6 +54,7 @@ General
    general/cross.rst
    general/matmul.rst
    general/cumsum.rst
+   general/cumprod.rst
    general/identity.rst
    general/scatter_flat.rst
    general/scatter_nd.rst
