@@ -45,6 +45,39 @@ def test_variable(object_in, dtype_str, dev_str, call):
     helpers.assert_compilable(ivy.variable)
 
 
+# is_variable
+@pytest.mark.parametrize(
+    "object_in", [[], [0.], [1], [True], [[1., 2.]]])
+@pytest.mark.parametrize(
+    "dtype_str", ['float16', 'float32', 'float64'])
+def test_is_variable(object_in, dtype_str, dev_str, call):
+    if call is helpers.tf_graph_call:
+        # cannot create variables as part of compiled tf graph
+        pytest.skip()
+    if call in [helpers.mx_call] and dtype_str == 'int16':
+        # mxnet does not support int16
+        pytest.skip()
+    if len(object_in) == 0 and call is helpers.mx_call:
+        # mxnet does not support 0-dimensional variables
+        pytest.skip()
+    # smoke test
+    non_var = ivy.array(object_in, dtype_str, dev_str)
+    var = ivy.variable(ivy.array(object_in, dtype_str, dev_str))
+    non_var_res = ivy.is_variable(non_var)
+    var_res = ivy.is_variable(var)
+    # type test
+    assert isinstance(non_var, ivy.Array)
+    assert isinstance(var, ivy.Variable)
+    if call in [helpers.np_call, helpers.jnp_call]:
+        # numpy and jax do not support flagging variables
+        pytest.skip()
+    # value test
+    assert non_var_res is False
+    assert var_res is True
+    # compilation test
+    helpers.assert_compilable(ivy.is_variable)
+
+
 # execute_with_gradients
 @pytest.mark.parametrize(
     "func_n_xs_n_ty_n_te_n_tg", [(lambda xs_in: (xs_in['w'] * xs_in['w'])[0],
