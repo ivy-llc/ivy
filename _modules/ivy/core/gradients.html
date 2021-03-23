@@ -181,17 +181,30 @@
 <span class="kn">from</span> <span class="nn">ivy.framework_handler</span> <span class="k">import</span> <span class="n">get_framework</span> <span class="k">as</span> <span class="n">_get_framework</span>
 
 
-<div class="viewcode-block" id="variable"><a class="viewcode-back" href="../../../core/gradients/variable.html#ivy.core.gradients.variable">[docs]</a><span class="k">def</span> <span class="nf">variable</span><span class="p">(</span><span class="n">object_in</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="variable"><a class="viewcode-back" href="../../../core/gradients/variable.html#ivy.core.gradients.variable">[docs]</a><span class="k">def</span> <span class="nf">variable</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Creates a variable, which supports gradient computation.</span>
 
-<span class="sd">    :param object_in: An ivy array.</span>
-<span class="sd">    :type object_in: array</span>
+<span class="sd">    :param x: An ivy array.</span>
+<span class="sd">    :type x: array</span>
 <span class="sd">    :param f: Machine learning framework. Inferred from inputs if None.</span>
 <span class="sd">    :type f: ml_framework, optional</span>
 <span class="sd">    :return: An ivy variable, supporting gradient computation.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">_get_framework</span><span class="p">(</span><span class="n">object_in</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">variable</span><span class="p">(</span><span class="n">object_in</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">_get_framework</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">variable</span><span class="p">(</span><span class="n">x</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="is_variable"><a class="viewcode-back" href="../../../core/gradients/is_variable.html#ivy.core.gradients.is_variable">[docs]</a><span class="k">def</span> <span class="nf">is_variable</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Determines whether the input is a variable or not.</span>
+
+<span class="sd">    :param x: An ivy array.</span>
+<span class="sd">    :type x: array</span>
+<span class="sd">    :param f: Machine learning framework. Inferred from inputs if None.</span>
+<span class="sd">    :type f: ml_framework, optional</span>
+<span class="sd">    :return: Boolean, true if x is a trainable variable, false otherwise.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">_get_framework</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">is_variable</span><span class="p">(</span><span class="n">x</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="execute_with_gradients"><a class="viewcode-back" href="../../../core/gradients/execute_with_gradients.html#ivy.core.gradients.execute_with_gradients">[docs]</a><span class="k">def</span> <span class="nf">execute_with_gradients</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">xs</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
