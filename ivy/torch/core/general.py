@@ -155,10 +155,12 @@ def linspace(start, stop, num, axis=None, dev_str=None):
         start_shape = list(start.shape)
         start = start.reshape((-1,))
         linspace_method = _differentiable_linspace if start.requires_grad else torch.linspace
+        dev_str = _callable_dev_str(start)
     if stop_is_array:
         start_shape = list(stop.shape)
         stop = stop.reshape((-1,))
         linspace_method = _differentiable_linspace if stop.requires_grad else torch.linspace
+        dev_str = _callable_dev_str(stop)
     if start_is_array and stop_is_array:
         res = [linspace_method(strt, stp, num, device=_dev_str_to_dev(dev_str)) for strt, stp in zip(start, stop)]
     elif start_is_array and not stop_is_array:
