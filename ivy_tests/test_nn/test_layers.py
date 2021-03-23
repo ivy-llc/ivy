@@ -39,7 +39,7 @@ def test_linear_layer(bs_ic_oc_target, with_v, dtype_str, tensor_fn, dev_str, ca
     else:
         v = None
     linear_layer = ivy.Linear(input_channels, output_channels, v)
-    ret = linear_layer.forward(x)
+    ret = linear_layer(x)
     # type test
     assert isinstance(ret, ivy.Array)
     # cardinality test
@@ -47,12 +47,12 @@ def test_linear_layer(bs_ic_oc_target, with_v, dtype_str, tensor_fn, dev_str, ca
     # value test
     if not with_v:
         return
-    assert np.allclose(call(linear_layer.forward, x), np.array(target))
+    assert np.allclose(call(linear_layer, x), np.array(target))
     # compilation test
     if call is helpers.torch_call:
         # pytest scripting does not **kwargs
         return
-    helpers.assert_compilable(linear_layer.forward)
+    helpers.assert_compilable(linear_layer)
 
 
 # LSTM #
@@ -89,7 +89,7 @@ def test_lstm_layer(b_t_ic_hc_otf_sctv, with_v, with_initial_state, dtype_str, t
     else:
         v = None
     lstm_layer = ivy.LSTM(input_channels, hidden_channels, v=v)
-    output, (state_h, state_c) = lstm_layer.forward(x, initial_state=initial_state)
+    output, (state_h, state_c) = lstm_layer(x, initial_state=initial_state)
     # type test
     assert isinstance(output, ivy.Array)
     assert isinstance(state_h[0], ivy.Array)
@@ -103,7 +103,7 @@ def test_lstm_layer(b_t_ic_hc_otf_sctv, with_v, with_initial_state, dtype_str, t
         return
     output_true = np.tile(np.asarray(output_true_flat).reshape((b, t, 1)), (1, 1, hidden_channels))
     state_c_true = np.ones([b, hidden_channels]) * state_c_true_val
-    output, (state_h, state_c) = call(lstm_layer.forward, x, initial_state=initial_state)
+    output, (state_h, state_c) = call(lstm_layer, x, initial_state=initial_state)
     assert np.allclose(output, output_true, atol=1e-6)
     assert np.allclose(state_c, state_c_true, atol=1e-6)
     # compilation test
