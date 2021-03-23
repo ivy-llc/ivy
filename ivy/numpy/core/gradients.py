@@ -1,5 +1,5 @@
 """
-Collection of Numpy gradient functions, wrapped to fit Ivy syntax and signature.
+Collection of NumPy gradient functions, wrapped to fit Ivy syntax and signature.
 """
 
 # global
@@ -7,14 +7,20 @@ import logging
 import numpy as _np
 
 
-def variable(array_in):
-    logging.warning('Numpy does not support autograd, '
+def variable(x):
+    logging.warning('NumPy does not support autograd, '
                     'declaring a "variable" is identical to declaring an "array" when using numpy backend')
-    return array_in
+    return x
+
+
+def is_variable(x):
+    logging.warning('NumPy does not support autograd, '
+                    'checking if x is a variable does have any meaning for NumPy. Returning False.')
+    return False
 
 
 def execute_with_gradients(func, xs):
-    logging.warning('Numpy does not support autograd, '
+    logging.warning('NumPy does not support autograd, '
                     '"execute_with_gradients" returns None in place of function gradients.')
     func_ret = func(xs)
     if isinstance(func_ret, tuple):
@@ -44,6 +50,6 @@ def adam_update(ws, dcdws, lr, mw, vw, step, beta1=0.9, beta2=0.999, epsilon=1e-
 
 
 def stop_gradient(array_in):
-    logging.warning('Numpy does not support autograd, '
+    logging.warning('NumPy does not support autograd, '
                     '"stop_gradient" has no effect on the array, as gradients are not supported in the first place.')
     return array_in

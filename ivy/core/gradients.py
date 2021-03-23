@@ -6,17 +6,30 @@ Collection of gradient Ivy functions.
 from ivy.framework_handler import get_framework as _get_framework
 
 
-def variable(object_in, f=None):
+def variable(x, f=None):
     """
     Creates a variable, which supports gradient computation.
 
-    :param object_in: An ivy array.
-    :type object_in: array
+    :param x: An ivy array.
+    :type x: array
     :param f: Machine learning framework. Inferred from inputs if None.
     :type f: ml_framework, optional
     :return: An ivy variable, supporting gradient computation.
     """
-    return _get_framework(object_in, f=f).variable(object_in)
+    return _get_framework(x, f=f).variable(x)
+
+
+def is_variable(x, f=None):
+    """
+    Determines whether the input is a variable or not.
+
+    :param x: An ivy array.
+    :type x: array
+    :param f: Machine learning framework. Inferred from inputs if None.
+    :type f: ml_framework, optional
+    :return: Boolean, true if x is a trainable variable, false otherwise.
+    """
+    return _get_framework(x, f=f).is_variable(x)
 
 
 def execute_with_gradients(func, xs, f=None):

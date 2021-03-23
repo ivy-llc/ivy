@@ -6,9 +6,13 @@ Collection of PyTorch gradient functions, wrapped to fit Ivy syntax and signatur
 import torch as _torch
 
 
-def variable(array_in):
-    array_in.requires_grad = True
-    return array_in
+def variable(x):
+    x.requires_grad = True
+    return x
+
+
+def is_variable(x):
+    return x.requires_grad
 
 
 def execute_with_gradients(func, xs):

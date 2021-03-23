@@ -10,7 +10,9 @@ import jax.numpy as _jnp
 # local
 from ivy.core.container import Container
 
+# ToDo: modify these functions to track whether variable() has been called
 variable = lambda x: x
+is_variable = lambda x: True
 
 
 def execute_with_gradients(func, xs):
