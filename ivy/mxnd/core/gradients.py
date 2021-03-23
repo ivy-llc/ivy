@@ -6,9 +6,13 @@ Collection of MXNet gradient functions, wrapped to fit Ivy syntax and signature.
 import mxnet as _mx
 
 
-def variable(array_in):
-    array_in.attach_grad()
-    return array_in
+def variable(x):
+    x.attach_grad()
+    return x
+
+
+def is_variable(x):
+    return x.grad is not None
 
 
 # noinspection PyUnresolvedReferences

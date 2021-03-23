@@ -11,6 +11,10 @@ from ivy.core.container import Container
 variable = lambda x: _tf.Variable(x, trainable=True)
 
 
+def is_variable(x):
+    return isinstance(x, _tf.Variable)
+
+
 def execute_with_gradients(func, xs):
     with _tf.GradientTape() as tape:
         func_ret = func(xs)
