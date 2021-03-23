@@ -192,22 +192,10 @@
 <dl class="py method">
 <dt id="ivy.neural_net.layers.Layer.__init__">
 <code class="sig-name descname"><span class="pre">__init__</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">v</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/neural_net/layers.html#Layer.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.neural_net.layers.Layer.__init__" title="Permalink to this definition">¶</a></dt>
-<dd><p>Initialze Ivy layer, is a stateful object consisting of trainable variables.</p>
+<dd><p>Initialze Ivy layer, which is a stateful object consisting of trainable variables.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>v</strong> (<em>ivy container</em><em>, </em><em>optional.</em>) – Ivy container of trainable variables. Created internally by default.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt id="ivy.neural_net.layers.Layer.forward">
-<code class="sig-name descname"><span class="pre">forward</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/neural_net/layers.html#Layer.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.neural_net.layers.Layer.forward" title="Permalink to this definition">¶</a></dt>
-<dd><p>Run layer forward pass, by first setting the variables via either input or internal values, and then calling the
-overridden forward method.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>v</strong> (<em>ivy container</em><em>, </em><em>optional.</em>) – Ivy container of trainable variables. Internal variables used by default.</p>
 </dd>
 </dl>
 </dd></dl>
