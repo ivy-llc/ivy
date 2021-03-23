@@ -225,6 +225,7 @@ def one_hot(indices, depth, dev_str=None):
 cross = _tf.linalg.cross
 matmul = lambda x1, x2: _tf.matmul(x1, x2)
 cumsum = _tf.cumsum
+cumprod = _tf.math.cumprod
 
 
 # noinspection PyShadowingNames

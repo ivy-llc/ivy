@@ -366,6 +366,14 @@ def matmul(x1, x2):
 cumsum = lambda x, axis=0: _mx.nd.cumsum(x, axis if axis >= 0 else axis % len(x.shape))
 
 
+def cumprod(x, axis=0):
+    array_stack = [_mx.nd.expand_dims(chunk, axis) for chunk in unstack(x, axis)]
+    new_array_list = [array_stack[0]]
+    for array_chunk in array_stack[1:]:
+        new_array_list.append(new_array_list[-1] * array_chunk)
+    return _mx.nd.concat(*new_array_list, dim=axis)
+
+
 def identity(n, dtype_str='float32', batch_shape=None, dev_str=None):
     mat = _mx.nd.eye(n, dtype=dtype_str).copyto(_mxnet_init_context('cpu' if not dev_str else dev_str))
     if batch_shape is None:
