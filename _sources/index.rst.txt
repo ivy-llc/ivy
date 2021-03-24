@@ -264,6 +264,7 @@ Documentation Tree
    neural_net/layers.rst
    neural_net/layers_functional.rst
    neural_net/losses.rst
+   neural_net/module.rst
 
 
 .. toctree::

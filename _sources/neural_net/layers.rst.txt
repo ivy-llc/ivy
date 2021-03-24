@@ -12,7 +12,6 @@ Layers
    :maxdepth: -1
    :caption: Layers
 
-   layers/Layer.rst
    layers/Linear.rst
    layers/LSTM.rst
 

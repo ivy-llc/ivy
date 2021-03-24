@@ -35,7 +35,7 @@
   <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Layer" href="layers/Layer.html" />
+    <link rel="next" title="Linear" href="layers/Linear.html" />
     <link rel="prev" title="softplus" href="activations/softplus.html" /> 
 </head>
 
@@ -101,13 +101,13 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="activations.html">Activations</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Layers</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="layers/Layer.html">Layer</a></li>
 <li class="toctree-l2"><a class="reference internal" href="layers/Linear.html">Linear</a></li>
 <li class="toctree-l2"><a class="reference internal" href="layers/LSTM.html">LSTM</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="layers_functional.html">Layers functional</a></li>
 <li class="toctree-l1"><a class="reference internal" href="losses.html">Losses</a></li>
+<li class="toctree-l1"><a class="reference internal" href="module.html">Module</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Docs</span></p>
 <ul>
@@ -185,26 +185,9 @@
 <span id="layers"></span><h1>Layers<a class="headerlink" href="#module-ivy.neural_net.layers" title="Permalink to this headline">¶</a></h1>
 <p>Collection of Ivy neural network layers as stateful classes.</p>
 <dl class="py class">
-<dt id="ivy.neural_net.layers.Layer">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname">ivy.</code><code class="sig-name descname"><span class="pre">Layer</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">v</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/neural_net/layers.html#Layer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.neural_net.layers.Layer" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">abc.ABC</span></code></p>
-<dl class="py method">
-<dt id="ivy.neural_net.layers.Layer.__init__">
-<code class="sig-name descname"><span class="pre">__init__</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">v</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/neural_net/layers.html#Layer.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.neural_net.layers.Layer.__init__" title="Permalink to this definition">¶</a></dt>
-<dd><p>Initialze Ivy layer, which is a stateful object consisting of trainable variables.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>v</strong> (<em>ivy container</em><em>, </em><em>optional.</em>) – Ivy container of trainable variables. Created internally by default.</p>
-</dd>
-</dl>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="py class">
 <dt id="ivy.neural_net.layers.Linear">
 <em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname">ivy.</code><code class="sig-name descname"><span class="pre">Linear</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_channels</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_channels</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/neural_net/layers.html#Linear"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.neural_net.layers.Linear" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="layers/Layer.html#ivy.neural_net.layers.Layer" title="ivy.neural_net.layers.Layer"><code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.neural_net.layers.Layer</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="module/Module.html#ivy.neural_net.module.Module" title="ivy.neural_net.module.Module"><code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.neural_net.module.Module</span></code></a></p>
 <dl class="py method">
 <dt id="ivy.neural_net.layers.Linear.__init__">
 <code class="sig-name descname"><span class="pre">__init__</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_channels</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_channels</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/neural_net/layers.html#Linear.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.neural_net.layers.Linear.__init__" title="Permalink to this definition">¶</a></dt>
@@ -226,7 +209,7 @@ weight matrix and addition with the bias vector.</p>
 <dl class="py class">
 <dt id="ivy.neural_net.layers.LSTM">
 <em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname">ivy.</code><code class="sig-name descname"><span class="pre">LSTM</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_channels</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_channels</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_layers</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_sequence</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/neural_net/layers.html#LSTM"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.neural_net.layers.LSTM" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="layers/Layer.html#ivy.neural_net.layers.Layer" title="ivy.neural_net.layers.Layer"><code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.neural_net.layers.Layer</span></code></a></p>
+<dd><p>Bases: <a class="reference internal" href="module/Module.html#ivy.neural_net.module.Module" title="ivy.neural_net.module.Module"><code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.neural_net.module.Module</span></code></a></p>
 <dl class="py method">
 <dt id="ivy.neural_net.layers.LSTM.__init__">
 <code class="sig-name descname"><span class="pre">__init__</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_channels</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_channels</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_layers</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_sequence</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_state</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/neural_net/layers.html#LSTM.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.neural_net.layers.LSTM.__init__" title="Permalink to this definition">¶</a></dt>
@@ -257,7 +240,6 @@ Default is True.</p></li>
 <div class="toctree-wrapper compound">
 <p class="caption"><span class="caption-text">Layers</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="layers/Layer.html">Layer</a></li>
 <li class="toctree-l1"><a class="reference internal" href="layers/Linear.html">Linear</a></li>
 <li class="toctree-l1"><a class="reference internal" href="layers/LSTM.html">LSTM</a></li>
 </ul>
@@ -272,7 +254,7 @@ Default is True.</p></li>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="layers/Layer.html" class="btn btn-neutral float-right" title="Layer" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="layers/Linear.html" class="btn btn-neutral float-right" title="Linear" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="activations/softplus.html" class="btn btn-neutral float-left" title="softplus" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
