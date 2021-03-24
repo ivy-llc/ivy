@@ -4,64 +4,15 @@ Collection of Ivy neural network layers as stateful classes.
 
 # global
 import ivy
-import abc
-from ivy.core.container import Container
 
-
-# Base #
-# -----#
-
-class Layer(abc.ABC):
-
-    def __init__(self, v=None):
-        """
-        Initialze Ivy layer, which is a stateful object consisting of trainable variables.
-
-        :param v: Ivy container of trainable variables. Created internally by default.
-        :type v: ivy container, optional.
-        """
-        if v is None:
-            self.v = Container(self._create_variables())
-        else:
-            self.v = Container(v)
-
-    # Public #
-
-    def __call__(self, *args, v=None, **kwargs):
-        """
-        Run layer forward pass, by first setting the variables via either input or internal values, and then calling the
-        overridden forward method.
-
-        :param v: Ivy container of trainable variables. Internal variables used by default.
-        :type v: ivy container, optional.
-        """
-        if v is None:
-            v = self.v
-        else:
-            v = Container(v)
-        return self._forward(*args, **kwargs, v=v)
-
-    # Abstract #
-
-    @abc.abstractmethod
-    def _create_variables(self):
-        """
-        create internal trainable variables, and return as arbitrary nested dict.
-        """
-        raise NotImplementedError
-
-    @abc.abstractmethod
-    def _forward(self, *args, **kwargs):
-        """
-        the forward pass of the layer, called after handling the optional input variables.
-        """
-        raise NotImplementedError
+# local
+from ivy.neural_net.module import Module
 
 
 # Linear #
 # -------#
 
-class Linear(Layer):
+class Linear(Module):
 
     def __init__(self, input_channels, output_channels, v=None):
         """
@@ -76,7 +27,7 @@ class Linear(Layer):
         """
         self._input_channels = input_channels
         self._output_channels = output_channels
-        Layer.__init__(self, v)
+        Module.__init__(self, v)
 
     def _create_variables(self):
         """
@@ -89,23 +40,21 @@ class Linear(Layer):
         b = ivy.variable(ivy.zeros([self._output_channels]))
         return {'w': w, 'b': b}
 
-    def _forward(self, inputs, v):
+    def _forward(self, inputs):
         """
         Perform forward pass of the linear layer.
 
         :param inputs: Inputs to process *[batch_shape, in]*.
         :type inputs: array
-        :param v: the variables for each of the lstm cells, as a container, use internal variables by default.
-        :type v: ivy container of parameter arrays, optional
         :return: The outputs following the linear operation and bias addition *[batch_shape, out]*
         """
-        return ivy.linear(inputs, v.w, v.b)
+        return ivy.linear(inputs, self.v.w, self.v.b)
 
 
 # LSTM #
 # -----#
 
-class LSTM(Layer):
+class LSTM(Module):
 
     def __init__(self, input_channels, output_channels, num_layers=1, return_sequence=True, return_state=True, v=None):
         """
@@ -130,7 +79,7 @@ class LSTM(Layer):
         self._num_layers = num_layers
         self._return_sequence = return_sequence
         self._return_state = return_state
-        Layer.__init__(self, v)
+        Module.__init__(self, v)
 
     # Public #
 
@@ -163,14 +112,12 @@ class LSTM(Layer):
              for i in range(self._num_layers)]))
         return {'input': input_weights, 'recurrent': recurrent_weights}
 
-    def _forward(self, inputs, v, initial_state=None):
+    def _forward(self, inputs, initial_state=None):
         """
         Perform forward pass of the lstm layer.
 
         :param inputs: Inputs to process *[batch_shape, t, in]*.
         :type inputs: array
-        :param v: the variables for each of the lstm cells, as a container, use internal variables by default.
-        :type v: ivy container of parameter arrays, optional
         :param initial_state: 2-tuple of lists of the hidden states h and c for each layer, each of dimension *[batch_shape,out]*.
                         Created internally if None.
         :type initial_state: tuple of list of arrays, optional
@@ -183,7 +130,7 @@ class LSTM(Layer):
         c_n_list = list()
         h_t = inputs
         for h_0, c_0, (_, lstm_input_var), (_, lstm_recurrent_var) in zip(
-                initial_state[0], initial_state[1], v.input.items(), v.recurrent.items()):
+                initial_state[0], initial_state[1], self.v.input.items(), self.v.recurrent.items()):
             h_t, c_n = ivy.lstm_update(h_t, h_0, c_0, lstm_input_var.w, lstm_recurrent_var.w)
             h_n_list.append(h_t[..., -1, :])
             c_n_list.append(c_n)

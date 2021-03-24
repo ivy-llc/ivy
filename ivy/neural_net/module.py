@@ -1,0 +1,79 @@
+"""
+Base class for deriving trainable modules
+"""
+
+# global
+import abc
+
+# local
+from ivy.core.container import Container
+
+
+# Base #
+# -----#
+
+class Module(abc.ABC):
+
+    def __init__(self, v=None):
+        """
+        Initialze Ivy layer, which is a stateful object consisting of trainable variables.
+
+        :param v: Ivy container of trainable variables. Created internally by default.
+        :type v: ivy container, optional.
+        """
+        if v is None:
+            self.v = Container(self._find_and_create_variables())
+        else:
+            self.v = Container(v)
+
+    # Private #
+    # --------#
+
+    def _fn_with_var_arg(self, fn, key):
+        def new_fn(*a, **kw):
+            return fn(*a, **kw, v=self.v[key])
+        new_fn.wrapped = True
+        return new_fn
+
+    def _find_and_create_variables(self):
+        vs = dict()
+        # ToDo: add support for finding local variables, when JAX supports uniquely flagging variables
+        for key, val in self.__dict__.items():
+            if isinstance(val, Module):
+                vs[key.replace('_', '')] = val.v
+                self.__dict__[key].__call__ = self._fn_with_var_arg(self.__dict__[key].__call__, key.replace('_', ''))
+        return dict(**vs, **self._create_variables())
+
+    # Overridable #
+
+    def _create_variables(self):
+        """
+        create internal trainable variables, and return as arbitrary nested dict.
+        """
+        return {}
+
+    # Abstract #
+
+    @abc.abstractmethod
+    def _forward(self, *args, **kwargs):
+        """
+        the forward pass of the layer, called after handling the optional input variables.
+        """
+        raise NotImplementedError
+
+    # Public #
+    # -------#
+
+    def __call__(self, *args, v=None, **kwargs):
+        """
+        the forward pass of the layer, treating layer instance as callable function.
+        """
+        if v is not None:
+            v_orig = self.v
+            self.v = Container(v)
+            res = self._forward(*args, **kwargs)
+            self.v = v_orig
+            return res
+        if hasattr(self.__call__, 'wrapped'):
+            return self.__call__(*args, **kwargs)
+        return self._forward(*args, **kwargs)
