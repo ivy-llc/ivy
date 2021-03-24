@@ -97,10 +97,7 @@
 </ul>
 <p class="caption"><span class="caption-text">Neural net</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../neural_net/activations.html">Activations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../neural_net/layers.html">Layers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../neural_net/layers_functional.html">Layers functional</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../neural_net/losses.html">Losses</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../neural_net/module.html">Module</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Docs</span></p>
@@ -229,9 +226,9 @@
 <span class="sd">    Update weights ws of some function, given the derivatives of some cost c with respect to ws, [dc/dw for w in ws].</span>
 
 <span class="sd">    :param ws: Weights of the function to be updated.</span>
-<span class="sd">    :type ws: sequence of variables</span>
+<span class="sd">    :type ws: Ivy container</span>
 <span class="sd">    :param dcdws: Derivates of the cost c with respect to the weights ws, [dc/dw for w in ws].</span>
-<span class="sd">    :type dcdws: sequence of arrays</span>
+<span class="sd">    :type dcdws: Ivy container</span>
 <span class="sd">    :param lr: Learning rate, the rate at which the weights should be updated relative to the gradient.</span>
 <span class="sd">    :type lr: float</span>
 <span class="sd">    :param f: Machine learning framework. Inferred from inputs if None.</span>

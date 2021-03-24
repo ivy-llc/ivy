@@ -97,10 +97,7 @@
 </ul>
 <p class="caption"><span class="caption-text">Neural net</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../neural_net/activations.html">Activations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../neural_net/layers.html">Layers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../neural_net/layers_functional.html">Layers functional</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../neural_net/losses.html">Losses</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../neural_net/module.html">Module</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Docs</span></p>
@@ -178,10 +175,8 @@
 <span class="sd">Collection of Ivy neural network layers as stateful classes.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="c1"># global</span>
-<span class="kn">import</span> <span class="nn">ivy</span>
-
 <span class="c1"># local</span>
+<span class="kn">import</span> <span class="nn">ivy</span>
 <span class="kn">from</span> <span class="nn">ivy.neural_net.module</span> <span class="k">import</span> <span class="n">Module</span>
 
 
@@ -210,7 +205,7 @@
 <span class="sd">        Create internal variables for the Linear layer</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># ToDo: support other initialization mechanisms, via class constructor options</span>
-        <span class="c1"># ToDo: automate the consstruction of these variables, with helper functions</span>
+        <span class="c1"># ToDo: tidy the construction of these variables, with helper functions</span>
         <span class="n">wlim</span> <span class="o">=</span> <span class="p">(</span><span class="mi">6</span> <span class="o">/</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_output_channels</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_input_channels</span><span class="p">))</span> <span class="o">**</span> <span class="mf">0.5</span>
         <span class="n">w</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">variable</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">random_uniform</span><span class="p">(</span><span class="o">-</span><span class="n">wlim</span><span class="p">,</span> <span class="n">wlim</span><span class="p">,</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_output_channels</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_input_channels</span><span class="p">)))</span>
         <span class="n">b</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">variable</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">zeros</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">_output_channels</span><span class="p">]))</span>
@@ -274,7 +269,7 @@
 <span class="sd">        Create internal variables for the LSTM layer</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># ToDo: support other initialization mechanisms, via class constructor options</span>
-        <span class="c1"># ToDo: automate the consstruction of these variables, with helper functions</span>
+        <span class="c1"># ToDo: tidy the construction of these variables, with helper functions</span>
         <span class="n">wlim</span> <span class="o">=</span> <span class="p">(</span><span class="mi">6</span> <span class="o">/</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_output_channels</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_input_channels</span><span class="p">))</span> <span class="o">**</span> <span class="mf">0.5</span>
         <span class="n">input_weights</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span>
             <span class="p">[</span><span class="s1">&#39;layer_&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_num_layers</span><span class="p">)],</span>
