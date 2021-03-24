@@ -11,7 +11,7 @@ import random
 
 # local
 import ivy.core.general as ivy_gen
-import ivy.neural_net.activations as ivy_act
+import ivy.neural_net.functional.activations as ivy_act
 this_file_dir = os.path.dirname(os.path.realpath(__file__))
 import with_time_logs.ivy.neural_net.activations as ivy_act_w_time
 
