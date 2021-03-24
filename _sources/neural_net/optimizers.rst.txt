@@ -1,0 +1,17 @@
+Optimizers
+==========
+
+.. automodule:: ivy.neural_net.optimizers
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :show-inheritance:
+
+
+.. toctree::
+   :maxdepth: -1
+   :caption: Optimizers
+
+   optimizers/Optimizer.rst
+   optimizers/SGD.rst
+

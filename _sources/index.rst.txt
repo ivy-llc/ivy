@@ -263,6 +263,7 @@ Documentation Tree
    neural_net/functional.rst
    neural_net/layers.rst
    neural_net/module.rst
+   neural_net/optimizers.rst
 
 
 .. toctree::
