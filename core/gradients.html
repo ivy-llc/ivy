@@ -107,10 +107,7 @@
 </ul>
 <p class="caption"><span class="caption-text">Neural net</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../neural_net/activations.html">Activations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../neural_net/layers.html">Layers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../neural_net/layers_functional.html">Layers functional</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../neural_net/losses.html">Losses</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../neural_net/module.html">Module</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Docs</span></p>
@@ -248,8 +245,8 @@ and any other function outputs after the returned y value</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>ws</strong> (<em>sequence of variables</em>) – Weights of the function to be updated.</p></li>
-<li><p><strong>dcdws</strong> (<em>sequence of arrays</em>) – Derivates of the cost c with respect to the weights ws, [dc/dw for w in ws].</p></li>
+<li><p><strong>ws</strong> (<em>Ivy container</em>) – Weights of the function to be updated.</p></li>
+<li><p><strong>dcdws</strong> (<em>Ivy container</em>) – Derivates of the cost c with respect to the weights ws, [dc/dw for w in ws].</p></li>
 <li><p><strong>lr</strong> (<em>float</em>) – Learning rate, the rate at which the weights should be updated relative to the gradient.</p></li>
 <li><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning framework. Inferred from inputs if None.</p></li>
 </ul>
