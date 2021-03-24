@@ -2,10 +2,8 @@
 Collection of Ivy neural network layers as stateful classes.
 """
 
-# global
-import ivy
-
 # local
+import ivy
 from ivy.neural_net.module import Module
 
 
@@ -34,7 +32,7 @@ class Linear(Module):
         Create internal variables for the Linear layer
         """
         # ToDo: support other initialization mechanisms, via class constructor options
-        # ToDo: automate the consstruction of these variables, with helper functions
+        # ToDo: tidy the construction of these variables, with helper functions
         wlim = (6 / (self._output_channels + self._input_channels)) ** 0.5
         w = ivy.variable(ivy.random_uniform(-wlim, wlim, (self._output_channels, self._input_channels)))
         b = ivy.variable(ivy.zeros([self._output_channels]))
@@ -98,7 +96,7 @@ class LSTM(Module):
         Create internal variables for the LSTM layer
         """
         # ToDo: support other initialization mechanisms, via class constructor options
-        # ToDo: automate the consstruction of these variables, with helper functions
+        # ToDo: tidy the construction of these variables, with helper functions
         wlim = (6 / (self._output_channels + self._input_channels)) ** 0.5
         input_weights = dict(zip(
             ['layer_' + str(i) for i in range(self._num_layers)],
