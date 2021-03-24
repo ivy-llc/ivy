@@ -53,9 +53,9 @@ def gradient_descent_update(ws, dcdws, lr, f=None):
     Update weights ws of some function, given the derivatives of some cost c with respect to ws, [dc/dw for w in ws].
 
     :param ws: Weights of the function to be updated.
-    :type ws: sequence of variables
+    :type ws: Ivy container
     :param dcdws: Derivates of the cost c with respect to the weights ws, [dc/dw for w in ws].
-    :type dcdws: sequence of arrays
+    :type dcdws: Ivy container
     :param lr: Learning rate, the rate at which the weights should be updated relative to the gradient.
     :type lr: float
     :param f: Machine learning framework. Inferred from inputs if None.
