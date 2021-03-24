@@ -40,8 +40,9 @@ class Module(abc.ABC):
         # ToDo: add support for finding local variables, when JAX supports uniquely flagging variables
         for key, val in self.__dict__.items():
             if isinstance(val, Module):
-                vs[key.replace('_', '')] = val.v
-                self.__dict__[key].__call__ = self._fn_with_var_arg(self.__dict__[key].__call__, key.replace('_', ''))
+                vs[key[1:] if key[0] == '_' else key] = val.v
+                self.__dict__[key].__call__ = self._fn_with_var_arg(self.__dict__[key].__call__,
+                                                                    key[1:] if key[0] == '_' else key)
         return dict(**vs, **self._create_variables())
 
     # Overridable #
