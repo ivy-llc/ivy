@@ -6,3 +6,5 @@ from . import layers_functional
 from .layers_functional import *
 from . import losses
 from .losses import *
+from . import module
+from .module import *
