@@ -1,0 +1,16 @@
+Module
+======
+
+.. automodule:: ivy.neural_net.module
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :show-inheritance:
+
+
+.. toctree::
+   :maxdepth: -1
+   :caption: Module
+
+   module/Module.rst
+
