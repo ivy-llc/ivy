@@ -254,6 +254,54 @@
 <span class="sd">        :return: The new updated variables container, following gradient descent step.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">gradient_descent_update</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">grads</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lr</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Adam"><a class="viewcode-back" href="../../../neural_net/optimizers/Adam.html#ivy.neural_net.optimizers.Adam">[docs]</a><span class="k">class</span> <span class="nc">Adam</span><span class="p">(</span><span class="n">Optimizer</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Adam.__init__"><a class="viewcode-back" href="../../../neural_net/optimizers/Adam.html#ivy.neural_net.optimizers.Adam.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lr</span><span class="o">=</span><span class="mf">1e-4</span><span class="p">,</span> <span class="n">beta1</span><span class="o">=</span><span class="mf">0.9</span><span class="p">,</span> <span class="n">beta2</span><span class="o">=</span><span class="mf">0.999</span><span class="p">,</span> <span class="n">epsilon</span><span class="o">=</span><span class="mf">1e-07</span><span class="p">,</span> <span class="n">compile_step</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Construct an ADAM optimizer.</span>
+
+<span class="sd">        :param lr: Learning rate, default is 1e-4.</span>
+<span class="sd">        :type lr: float, optional</span>
+<span class="sd">        :param beta1: gradient forgetting factor, default is 0.9</span>
+<span class="sd">        :type beta1: float, optional</span>
+<span class="sd">        :param beta2: second moment of gradient forgetting factor, default is 0.999</span>
+<span class="sd">        :type beta2: float, optional</span>
+<span class="sd">        :param epsilon: divisor during adam update, preventing division by zero, default is 1e-07</span>
+<span class="sd">        :type epsilon: float, optional</span>
+<span class="sd">        :param compile_step: Whether to compile the optimizer step, default is False.</span>
+<span class="sd">        :type compile_step: bool, option</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">Optimizer</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lr</span><span class="p">,</span> <span class="n">compile_step</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_beta1</span> <span class="o">=</span> <span class="n">beta1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_beta2</span> <span class="o">=</span> <span class="n">beta2</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_epsilon</span> <span class="o">=</span> <span class="n">epsilon</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_mw</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_vw</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_first_pass</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_step</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">])</span></div>
+
+    <span class="c1"># Custom Step</span>
+
+    <span class="k">def</span> <span class="nf">_step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">grads</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Update nested variables container v by Adam update step, using nested grads container.</span>
+
+<span class="sd">        :param v: Nested variables to update.</span>
+<span class="sd">        :type v: Ivy container of variables</span>
+<span class="sd">        :param grads: Nested gradients to update.</span>
+<span class="sd">        :type grads: sequence of arrays</span>
+<span class="sd">        :return: The updated variables, following Adam update step.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_first_pass</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_mw</span> <span class="o">=</span> <span class="n">grads</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_vw</span> <span class="o">=</span> <span class="n">grads</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">_</span><span class="p">:</span> <span class="n">x</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_first_pass</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="n">new_v</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mw</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_vw</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">adam_update</span><span class="p">(</span>
+            <span class="n">v</span><span class="p">,</span> <span class="n">grads</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lr</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mw</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_vw</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_step</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_beta1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_beta2</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_epsilon</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_step</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">return</span> <span class="n">new_v</span></div>
 </pre></div>
 
            </div>
