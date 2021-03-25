@@ -1,13 +1,91 @@
-FROM nvidia/cuda:10.2-base-ubuntu18.04
+# BASE CUDA IMAGE #
+# ----------------#
 
+ARG UBUNTU_VERSION=18.04
+ARG CUDA=11.0
+FROM nvidia/cuda:${CUDA}-base-ubuntu${UBUNTU_VERSION} as base
+
+# For TensorFlow #
+# ---------------#
+# Adapted from
+# https://github.com/tensorflow/tensorflow/blob/master/tensorflow/tools/dockerfiles/dockerfiles/gpu.Dockerfile
+
+# CUDA is specified again because the FROM directive resets ARGs
+# (but their default value is retained if set previously)
+ARG CUDA
+ARG CUDNN=8.0.2.39-1
+ARG CUDNN_MAJOR_VERSION=8
+ARG LIB_DIR_PREFIX=x86_64
+ARG LIBNVINFER=7.1.3-1
+ARG LIBNVINFER_MAJOR_VERSION=7
+
+# Needed for string substitution
+SHELL ["/bin/bash", "-c"]
+# Pick up some dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+        build-essential \
+        cuda-command-line-tools-${CUDA/./-} \
+        libcublas-${CUDA/./-} \
+        cuda-nvrtc-${CUDA/./-} \
+        libcufft-${CUDA/./-} \
+        libcurand-${CUDA/./-} \
+        libcusolver-${CUDA/./-} \
+        libcusparse-${CUDA/./-} \
+        curl \
+        libcudnn8=${CUDNN}+cuda${CUDA} \
+        libfreetype6-dev \
+        libhdf5-serial-dev \
+        libzmq3-dev \
+        pkg-config \
+        software-properties-common \
+        unzip
+
+# Install TensorRT if not building for PowerPC
 RUN apt-get update && \
-    apt-get install -y python3 python3-pip && \
-    apt-get install -y libsm6 libxext6 libxrender-dev libgl1-mesa-glx && \
-    apt-get install -y python-opengl && \
-    apt-get install -y git && \
-    apt-get install -y rsync && \
-    apt-get install -y libusb-1.0-0 && \
-    pip3 install --upgrade pip
+    apt-get install -y --no-install-recommends libnvinfer${LIBNVINFER_MAJOR_VERSION}=${LIBNVINFER}+cuda${CUDA} \
+    libnvinfer-plugin${LIBNVINFER_MAJOR_VERSION}=${LIBNVINFER}+cuda${CUDA} \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+# For CUDA profiling, TensorFlow requires CUPTI.
+ENV LD_LIBRARY_PATH /usr/local/cuda/extras/CUPTI/lib64:/usr/local/cuda/lib64:$LD_LIBRARY_PATH
+
+# Link the libcuda stub to the location where tensorflow is searching for it and reconfigure
+# dynamic linker run-time bindings
+RUN ln -s /usr/local/cuda/lib64/stubs/libcuda.so /usr/local/cuda/lib64/stubs/libcuda.so.1 \
+    && echo "/usr/local/cuda/lib64/stubs" > /etc/ld.so.conf.d/z-cuda-stubs.conf \
+    && ldconfig
+
+# See http://bugs.python.org/issue19846
+ENV LANG C.UTF-8
+
+RUN apt-get update && apt-get install -y \
+    python3 \
+    python3-pip
+
+RUN python3 -m pip --no-cache-dir install --upgrade \
+    pip \
+    setuptools
+
+# Some tools expect a "python" binary
+RUN ln -s $(which python3) /usr/local/bin/python
+
+# For MXNet #
+# ----------#
+
+# Install NCCL
+RUN apt-get install wget
+RUN wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64/cuda-ubuntu1804.pin
+RUN mv cuda-ubuntu1804.pin /etc/apt/preferences.d/cuda-repository-pin-600
+RUN apt-key adv --fetch-keys https://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64/7fa2af80.pub
+RUN add-apt-repository "deb http://developer.download.nvidia.com/compute/cuda/repos/ubuntu1804/x86_64/ /"
+RUN apt-get install libnccl2=2.8.4-1+cuda11.0 libnccl-dev=2.8.4-1+cuda11.0
+
+# OpenBLAS
+RUN apt-get install -y libopenblas-dev
+
+# Ivy #
+# ----#
 
 RUN pip3 install pytest
 
@@ -21,4 +99,7 @@ RUN pip3 install --no-cache-dir -r requirements.txt && \
 COPY optional.txt /ivy
 RUN pip3 install --no-cache-dir -r optional.txt && \
     rm -rf optional.txt
-RUN pip3 install torch-scatter -f https://pytorch-geometric.com/whl/torch-1.8.0+cu102.html
+
+# CUDA-specific Installations
+RUN pip3 install --upgrade jaxlib==0.1.64+cuda110 -f https://storage.googleapis.com/jax-releases/jax_releases.html
+RUN pip3 install --upgrade torch-scatter -f https://pytorch-geometric.com/whl/torch-1.8.0+cu102.html

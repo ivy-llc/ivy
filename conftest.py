@@ -56,7 +56,7 @@ def pytest_generate_tests(metafunc):
     if 'dev_str' in metafunc.fixturenames:
         raw_value = metafunc.config.getoption('--dev_str')
         if raw_value == 'all':
-            dev_strs = TEST_DEV_STRS
+            dev_strs = ['cpu:0', 'gpu:0', 'tpu:0']
         else:
             dev_strs = raw_value.split(',')
 

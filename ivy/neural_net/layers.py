@@ -12,7 +12,7 @@ from ivy.neural_net.module import Module
 
 class Linear(Module):
 
-    def __init__(self, input_channels, output_channels, v=None):
+    def __init__(self, input_channels, output_channels, dev_str='cpu', v=None):
         """
         Linear layer, also referred to as dense or fully connected. The layer receives tensors with input_channels last
         dimension and returns a new tensor with output_channels last dimension, following matrix multiplication with the
@@ -22,20 +22,25 @@ class Linear(Module):
         :type input_channels: int
         :param output_channels: Number of output channels for the layer.
         :type output_channels: int
+        :param dev_str: device on which to create the layer's variables 'cuda:0', 'cuda:1', 'cpu' etc. Default is cpu.
+        :type dev_str: str, optional
+        :param v: the variables for each of the linear layer, as a container, constructed internally by default.
+        :type v: ivy container of variables, optional
         """
         self._input_channels = input_channels
         self._output_channels = output_channels
-        Module.__init__(self, v)
+        Module.__init__(self, dev_str, v)
 
-    def _create_variables(self):
+    def _create_variables(self, dev_str):
         """
         Create internal variables for the Linear layer
         """
         # ToDo: support other initialization mechanisms, via class constructor options
         # ToDo: tidy the construction of these variables, with helper functions
         wlim = (6 / (self._output_channels + self._input_channels)) ** 0.5
-        w = ivy.variable(ivy.random_uniform(-wlim, wlim, (self._output_channels, self._input_channels)))
-        b = ivy.variable(ivy.zeros([self._output_channels]))
+        w = ivy.variable(ivy.random_uniform(-wlim, wlim, (self._output_channels, self._input_channels),
+                                            dev_str=dev_str))
+        b = ivy.variable(ivy.zeros([self._output_channels], dev_str=dev_str))
         return {'w': w, 'b': b}
 
     def _forward(self, inputs):
@@ -54,7 +59,8 @@ class Linear(Module):
 
 class LSTM(Module):
 
-    def __init__(self, input_channels, output_channels, num_layers=1, return_sequence=True, return_state=True, v=None):
+    def __init__(self, input_channels, output_channels, num_layers=1, return_sequence=True, return_state=True,
+                 dev_str='cpu', v=None):
         """
         LSTM layer, which is a set of stacked lstm cells.
 
@@ -69,6 +75,8 @@ class LSTM(Module):
         :type return_sequence: bool, optional
         :param return_state: Whether or not to return the latest hidden and cell states. Default is True.
         :type return_state: bool, optional
+        :param dev_str: device on which to create the layer's variables 'cuda:0', 'cuda:1', 'cpu' etc. Default is cpu.
+        :type dev_str: str, optional
         :param v: the variables for each of the lstm cells, as a container, constructed internally by default.
         :type v: ivy container of parameter arrays, optional
         """
@@ -77,7 +85,7 @@ class LSTM(Module):
         self._num_layers = num_layers
         self._return_sequence = return_sequence
         self._return_state = return_state
-        Module.__init__(self, v)
+        Module.__init__(self, dev_str, v)
 
     # Public #
 
@@ -91,7 +99,7 @@ class LSTM(Module):
 
     # Overridden
 
-    def _create_variables(self):
+    def _create_variables(self, dev_str):
         """
         Create internal variables for the LSTM layer
         """
@@ -100,13 +108,15 @@ class LSTM(Module):
         wlim = (6 / (self._output_channels + self._input_channels)) ** 0.5
         input_weights = dict(zip(
             ['layer_' + str(i) for i in range(self._num_layers)],
-            [{'w': ivy.variable(ivy.random_uniform(
-                -wlim, wlim, (self._input_channels if i == 0 else self._output_channels, 4 * self._output_channels)))}
+            [{'w': ivy.variable(
+                ivy.random_uniform(-wlim, wlim, (self._input_channels if i == 0 else self._output_channels,
+                                                 4 * self._output_channels), dev_str=dev_str))}
                 for i in range(self._num_layers)]))
         wlim = (6 / (self._output_channels + self._output_channels)) ** 0.5
         recurrent_weights = dict(zip(
             ['layer_' + str(i) for i in range(self._num_layers)],
-            [{'w': ivy.variable(ivy.random_uniform(-wlim, wlim, (self._output_channels, 4 * self._output_channels)))}
+            [{'w': ivy.variable(
+                ivy.random_uniform(-wlim, wlim, (self._output_channels, 4 * self._output_channels), dev_str=dev_str))}
              for i in range(self._num_layers)]))
         return {'input': input_weights, 'recurrent': recurrent_weights}
 

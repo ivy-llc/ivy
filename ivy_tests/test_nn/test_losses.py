@@ -23,7 +23,7 @@ def test_binary_cross_entropy(x_n_y_n_res, dtype_str, tensor_fn, dev_str, call):
     y = tensor_fn(y, dtype_str, dev_str)
     ret = ivy.binary_cross_entropy(x, y)
     # type test
-    assert isinstance(ret, ivy.Array)
+    assert ivy.is_array(ret)
     # cardinality test
     assert ret.shape == x.shape
     # value test

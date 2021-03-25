@@ -61,6 +61,12 @@ def array(object_in, dtype_str=None, dev_str=None):
     return _mx.nd.array(object_in, cont, dtype=dtype_str)
 
 
+def is_array(x):
+    if isinstance(x, _mx.ndarray.ndarray.NDArray):
+        return True
+    return False
+
+
 to_numpy = lambda x: x.asnumpy()
 to_list = lambda x: x.asnumpy().tolist()
 shape = lambda x, as_tensor=False: _mx.nd.shape_array(x) if as_tensor else x.shape

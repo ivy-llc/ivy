@@ -41,7 +41,7 @@ def test_linear(x_n_w_n_b_n_res, dtype_str, tensor_fn, dev_str, call):
     true_res = tensor_fn(true_res, dtype_str, dev_str)
     ret = ivy.linear(x, weight, bias)
     # type test
-    assert isinstance(ret, ivy.Array)
+    assert ivy.is_array(ret)
     # cardinality test
     assert ret.shape == true_res.shape
     # value test
@@ -75,6 +75,9 @@ def test_linear(x_n_w_n_b_n_res, dtype_str, tensor_fn, dev_str, call):
 @pytest.mark.parametrize(
     "tensor_fn", [ivy.array, helpers.var_fn])
 def test_conv1d(x_n_filters_n_pad_n_res, dtype_str, tensor_fn, dev_str, call):
+    if call in [helpers.tf_call, helpers.tf_graph_call] and 'cpu' in dev_str:
+        # tf conv1d does not work when CUDA is installed, but array is on CPU
+        pytest.skip()
     # smoke test
     if call in [helpers.np_call, helpers.jnp_call]:
         # numpy and jax do not yet support conv1d
@@ -85,7 +88,7 @@ def test_conv1d(x_n_filters_n_pad_n_res, dtype_str, tensor_fn, dev_str, call):
     true_res = tensor_fn(true_res, dtype_str, dev_str)
     ret = ivy.conv1d(x, filters, 1, padding)
     # type test
-    assert isinstance(ret, ivy.Array)
+    assert ivy.is_array(ret)
     # cardinality test
     assert ret.shape == true_res.shape
     # value test
@@ -120,6 +123,9 @@ def test_conv1d(x_n_filters_n_pad_n_res, dtype_str, tensor_fn, dev_str, call):
 @pytest.mark.parametrize(
     "tensor_fn", [ivy.array, helpers.var_fn])
 def test_conv1d_transpose(x_n_filters_n_pad_n_outshp_n_res, dtype_str, tensor_fn, dev_str, call):
+    if call in [helpers.tf_call, helpers.tf_graph_call] and 'cpu' in dev_str:
+        # tf conv1d transpose does not work when CUDA is installed, but array is on CPU
+        pytest.skip()
     # smoke test
     if call in [helpers.np_call, helpers.jnp_call]:
         # numpy and jax do not yet support conv1d_transpose
@@ -130,7 +136,7 @@ def test_conv1d_transpose(x_n_filters_n_pad_n_outshp_n_res, dtype_str, tensor_fn
     true_res = tensor_fn(true_res, dtype_str, dev_str)
     ret = ivy.conv1d_transpose(x, filters, 1, padding, output_shape)
     # type test
-    assert isinstance(ret, ivy.Array)
+    assert ivy.is_array(ret)
     # cardinality test
     assert ret.shape == true_res.shape
     # value test
@@ -188,6 +194,9 @@ def test_conv1d_transpose(x_n_filters_n_pad_n_outshp_n_res, dtype_str, tensor_fn
 @pytest.mark.parametrize(
     "tensor_fn", [ivy.array, helpers.var_fn])
 def test_conv2d(x_n_filters_n_pad_n_res, dtype_str, tensor_fn, dev_str, call):
+    if call in [helpers.tf_call, helpers.tf_graph_call] and 'cpu' in dev_str:
+        # tf conv2d does not work when CUDA is installed, but array is on CPU
+        pytest.skip()
     # smoke test
     x, filters, padding, true_res = x_n_filters_n_pad_n_res
     x = tensor_fn(x, dtype_str, dev_str)
@@ -195,7 +204,7 @@ def test_conv2d(x_n_filters_n_pad_n_res, dtype_str, tensor_fn, dev_str, call):
     true_res = tensor_fn(true_res, dtype_str, dev_str)
     ret = ivy.conv2d(x, filters, 1, padding)
     # type test
-    assert isinstance(ret, ivy.Array)
+    assert ivy.is_array(ret)
     # cardinality test
     assert ret.shape == true_res.shape
     # value test
@@ -249,6 +258,9 @@ def test_conv2d(x_n_filters_n_pad_n_res, dtype_str, tensor_fn, dev_str, call):
 @pytest.mark.parametrize(
     "tensor_fn", [ivy.array, helpers.var_fn])
 def test_conv2d_transpose(x_n_filters_n_pad_n_outshp_n_res, dtype_str, tensor_fn, dev_str, call):
+    if call in [helpers.tf_call, helpers.tf_graph_call] and 'cpu' in dev_str:
+        # tf conv2d transpose does not work when CUDA is installed, but array is on CPU
+        pytest.skip()
     # smoke test
     if call in [helpers.np_call, helpers.jnp_call]:
         # numpy and jax do not yet support conv2d_transpose
@@ -259,7 +271,7 @@ def test_conv2d_transpose(x_n_filters_n_pad_n_outshp_n_res, dtype_str, tensor_fn
     true_res = tensor_fn(true_res, dtype_str, dev_str)
     ret = ivy.conv2d_transpose(x, filters, 1, padding, output_shape)
     # type test
-    assert isinstance(ret, ivy.Array)
+    assert ivy.is_array(ret)
     # cardinality test
     assert ret.shape == true_res.shape
     # value test
@@ -305,6 +317,9 @@ def test_conv2d_transpose(x_n_filters_n_pad_n_outshp_n_res, dtype_str, tensor_fn
 @pytest.mark.parametrize(
     "tensor_fn", [ivy.array, helpers.var_fn])
 def test_depthwise_conv2d(x_n_filters_n_pad_n_res, dtype_str, tensor_fn, dev_str, call):
+    if call in [helpers.tf_call, helpers.tf_graph_call] and 'cpu' in dev_str:
+        # tf depthwise conv2d does not work when CUDA is installed, but array is on CPU
+        pytest.skip()
     # smoke test
     if call in [helpers.np_call, helpers.jnp_call]:
         # numpy and jax do not yet support depthwise 2d convolutions
@@ -315,7 +330,7 @@ def test_depthwise_conv2d(x_n_filters_n_pad_n_res, dtype_str, tensor_fn, dev_str
     true_res = tensor_fn(true_res, dtype_str, dev_str)
     ret = ivy.depthwise_conv2d(x, filters, 1, padding)
     # type test
-    assert isinstance(ret, ivy.Array)
+    assert ivy.is_array(ret)
     # cardinality test
     assert ret.shape == true_res.shape
     # value test
@@ -361,6 +376,9 @@ def test_depthwise_conv2d(x_n_filters_n_pad_n_res, dtype_str, tensor_fn, dev_str
 @pytest.mark.parametrize(
     "tensor_fn", [ivy.array, helpers.var_fn])
 def test_conv3d(x_n_filters_n_pad_n_res, dtype_str, tensor_fn, dev_str, call):
+    if call in [helpers.tf_call, helpers.tf_graph_call] and 'cpu' in dev_str:
+        # tf conv3d does not work when CUDA is installed, but array is on CPU
+        pytest.skip()
     # smoke test
     if call in [helpers.np_call, helpers.jnp_call]:
         # numpy and jax do not yet support 3d convolutions
@@ -371,7 +389,7 @@ def test_conv3d(x_n_filters_n_pad_n_res, dtype_str, tensor_fn, dev_str, call):
     true_res = tensor_fn(true_res, dtype_str, dev_str)
     ret = ivy.conv3d(x, filters, 1, padding)
     # type test
-    assert isinstance(ret, ivy.Array)
+    assert ivy.is_array(ret)
     # cardinality test
     assert ret.shape == true_res.shape
     # value test
@@ -430,6 +448,9 @@ def test_conv3d(x_n_filters_n_pad_n_res, dtype_str, tensor_fn, dev_str, call):
 @pytest.mark.parametrize(
     "tensor_fn", [ivy.array, helpers.var_fn])
 def test_conv3d_transpose(x_n_filters_n_pad_n_outshp_n_res, dtype_str, tensor_fn, dev_str, call):
+    if call in [helpers.tf_call, helpers.tf_graph_call] and 'cpu' in dev_str:
+        # tf conv3d transpose does not work when CUDA is installed, but array is on CPU
+        pytest.skip()
     # smoke test
     if call in [helpers.np_call, helpers.jnp_call, helpers.mx_call]:
         # numpy and jax do not yet support 3d transpose convolutions, and mxnet only supports with CUDNN
@@ -443,7 +464,7 @@ def test_conv3d_transpose(x_n_filters_n_pad_n_outshp_n_res, dtype_str, tensor_fn
     true_res = tensor_fn(true_res, dtype_str, dev_str)
     ret = ivy.conv3d_transpose(x, filters, 1, padding, output_shape)
     # type test
-    assert isinstance(ret, ivy.Array)
+    assert ivy.is_array(ret)
     # cardinality test
     assert ret.shape == true_res.shape
     # value test
@@ -474,8 +495,8 @@ def test_lstm(b_t_ic_hc_otf_sctv, dtype_str, tensor_fn, dev_str, call):
     recurrent_kernel = ivy.variable(ivy.ones([hidden_channels, 4*hidden_channels]))*0.5
     output, state_c = ivy.lstm_update(x, init_h, init_c, kernel, recurrent_kernel)
     # type test
-    assert isinstance(output, ivy.Array)
-    assert isinstance(state_c, ivy.Array)
+    assert ivy.is_array(output)
+    assert ivy.is_array(state_c)
     # cardinality test
     assert output.shape == (b, t, hidden_channels)
     assert state_c.shape == (b, hidden_channels)

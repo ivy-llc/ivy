@@ -38,10 +38,10 @@ def test_linear_layer(bs_ic_oc_target, with_v, dtype_str, tensor_fn, dev_str, ca
         v = Container({'w': w, 'b': b})
     else:
         v = None
-    linear_layer = ivy.Linear(input_channels, output_channels, v)
+    linear_layer = ivy.Linear(input_channels, output_channels, v=v)
     ret = linear_layer(x)
     # type test
-    assert isinstance(ret, ivy.Array)
+    assert ivy.is_array(ret)
     # cardinality test
     assert ret.shape == tuple(batch_shape + [output_channels])
     # value test
@@ -81,7 +81,7 @@ def test_linear_layer_training(bs_ic_oc_target, with_v, dtype_str, tensor_fn, de
         v = Container({'w': w, 'b': b})
     else:
         v = None
-    linear_layer = ivy.Linear(input_channels, output_channels, v)
+    linear_layer = ivy.Linear(input_channels, output_channels, v=v)
 
     def loss_fn(v_):
         out = linear_layer(x, v=v_)
@@ -98,7 +98,7 @@ def test_linear_layer_training(bs_ic_oc_target, with_v, dtype_str, tensor_fn, de
         loss_tm1 = loss
 
     # type test
-    assert isinstance(loss, ivy.Array)
+    assert ivy.is_array(loss)
     assert isinstance(grads, ivy.Container)
     # cardinality test
     if call is helpers.mx_call:
@@ -152,9 +152,9 @@ def test_lstm_layer(b_t_ic_hc_otf_sctv, with_v, with_initial_state, dtype_str, t
     lstm_layer = ivy.LSTM(input_channels, hidden_channels, v=v)
     output, (state_h, state_c) = lstm_layer(x, initial_state=initial_state)
     # type test
-    assert isinstance(output, ivy.Array)
-    assert isinstance(state_h[0], ivy.Array)
-    assert isinstance(state_c[0], ivy.Array)
+    assert ivy.is_array(output)
+    assert ivy.is_array(state_h[0])
+    assert ivy.is_array(state_c[0])
     # cardinality test
     assert output.shape == (b, t, hidden_channels)
     assert state_h[0].shape == (b, hidden_channels)
@@ -217,7 +217,7 @@ def test_lstm_layer_training(b_t_ic_hc_otf_sctv, with_v, dtype_str, tensor_fn, d
         loss_tm1 = loss
 
     # type test
-    assert isinstance(loss, ivy.Array)
+    assert ivy.is_array(loss)
     assert isinstance(grads, ivy.Container)
     # cardinality test
     if call is helpers.mx_call:

@@ -14,7 +14,7 @@ import ivy
 
 class Optimizer(abc.ABC):
 
-    def __init__(self, lr, compile_step=False):
+    def __init__(self, lr, dev_str, compile_step=False):
         """
         Construct an general Optimizer. This is an abstract class, and must be derived.
 
@@ -36,19 +36,32 @@ class Optimizer(abc.ABC):
     # Abstract #
 
     @abc.abstractmethod
-    def _step(self, *args, **kwargs):
+    def _step(self, v, grads):
         """
-        The custom step function for the optimizer, must be implemented in child class.
+        Update nested variables container v from update step, using nested grads container.
+        Override this abstract method with child class custom implementation.
+
+        :param v: Nested variables to update.
+        :type v: Ivy container of variables
+        :param grads: Nested gradients to update.
+        :type grads: sequence of arrays
+        :return: The updated variables, following update step.
         """
         raise NotImplementedError
 
     # Given #
 
-    def step(self, *args, **kwargs):
+    def step(self, v, grads):
         """
-        The callable step function, which calls the private step function, either compiled or not compiled.
+        Update nested variables container v from possibly compiled overriden private self._step_fn
+
+        :param v: Nested variables to update.
+        :type v: Ivy container of variables
+        :param grads: Nested gradients to update.
+        :type grads: sequence of arrays
+        :return: The updated variables, following update step.
         """
-        return self._step_fn(*args, **kwargs)
+        return self._step_fn(v, grads)
 
 
 # Optimizers #
@@ -84,7 +97,7 @@ class SGD(Optimizer):
 
 class Adam(Optimizer):
 
-    def __init__(self, lr=1e-4, beta1=0.9, beta2=0.999, epsilon=1e-07, compile_step=False):
+    def __init__(self, lr=1e-4, beta1=0.9, beta2=0.999, epsilon=1e-07, compile_step=False, dev_str='cpu'):
         """
         Construct an ADAM optimizer.
 
@@ -98,6 +111,8 @@ class Adam(Optimizer):
         :type epsilon: float, optional
         :param compile_step: Whether to compile the optimizer step, default is False.
         :type compile_step: bool, option
+        :param dev_str: device on which to create the layer's variables 'cuda:0', 'cuda:1', 'cpu' etc. Default is cpu.
+        :type dev_str: str, optional
         """
         Optimizer.__init__(self, lr, compile_step)
         self._beta1 = beta1
@@ -106,7 +121,7 @@ class Adam(Optimizer):
         self._mw = None
         self._vw = None
         self._first_pass = True
-        self._step = ivy.array([0])
+        self._step = ivy.array([0], dev_str=dev_str)
 
     # Custom Step
 

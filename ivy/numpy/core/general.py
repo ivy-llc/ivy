@@ -48,6 +48,12 @@ def array(object_in, dtype_str=None, dev_str=None):
     return _to_dev(_np.array(object_in, dtype=dtype), dev_str)
 
 
+def is_array(x):
+    if isinstance(x, _np.ndarray):
+        return True
+    return False
+
+
 to_numpy = lambda x: x
 to_list = lambda x: x.tolist()
 shape = lambda x, as_tensor=False: _np.asarray(_np.shape(x)) if as_tensor else x.shape
