@@ -13,6 +13,7 @@ General
    :caption: General
 
    general/array.rst
+   general/is_array.rst
    general/cast.rst
    general/arange.rst
    general/linspace.rst

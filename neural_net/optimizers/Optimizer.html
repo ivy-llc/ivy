@@ -186,11 +186,11 @@
 <h1>Optimizer<a class="headerlink" href="#optimizer" title="Permalink to this headline">¶</a></h1>
 <dl class="py class">
 <dt id="ivy.neural_net.optimizers.Optimizer">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname">ivy.</code><code class="sig-name descname"><span class="pre">Optimizer</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compile_step</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/neural_net/optimizers.html#Optimizer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.neural_net.optimizers.Optimizer" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname">ivy.</code><code class="sig-name descname"><span class="pre">Optimizer</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dev_str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compile_step</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/neural_net/optimizers.html#Optimizer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.neural_net.optimizers.Optimizer" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">abc.ABC</span></code></p>
 <dl class="py method">
 <dt id="ivy.neural_net.optimizers.Optimizer.__init__">
-<code class="sig-name descname"><span class="pre">__init__</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compile_step</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/neural_net/optimizers.html#Optimizer.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.neural_net.optimizers.Optimizer.__init__" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname"><span class="pre">__init__</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dev_str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compile_step</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/neural_net/optimizers.html#Optimizer.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.neural_net.optimizers.Optimizer.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Construct an general Optimizer. This is an abstract class, and must be derived.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -204,8 +204,19 @@
 
 <dl class="py method">
 <dt id="ivy.neural_net.optimizers.Optimizer.step">
-<code class="sig-name descname"><span class="pre">step</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/neural_net/optimizers.html#Optimizer.step"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.neural_net.optimizers.Optimizer.step" title="Permalink to this definition">¶</a></dt>
-<dd><p>The callable step function, which calls the private step function, either compiled or not compiled.</p>
+<code class="sig-name descname"><span class="pre">step</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">v</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">grads</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/neural_net/optimizers.html#Optimizer.step"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.neural_net.optimizers.Optimizer.step" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update nested variables container v from possibly compiled overriden private self._step_fn</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>v</strong> (<em>Ivy container of variables</em>) – Nested variables to update.</p></li>
+<li><p><strong>grads</strong> (<em>sequence of arrays</em>) – Nested gradients to update.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The updated variables, following update step.</p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>

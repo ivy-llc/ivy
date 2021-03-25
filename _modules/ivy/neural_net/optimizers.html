@@ -188,7 +188,7 @@
 
 <div class="viewcode-block" id="Optimizer"><a class="viewcode-back" href="../../../neural_net/optimizers/Optimizer.html#ivy.neural_net.optimizers.Optimizer">[docs]</a><span class="k">class</span> <span class="nc">Optimizer</span><span class="p">(</span><span class="n">abc</span><span class="o">.</span><span class="n">ABC</span><span class="p">):</span>
 
-<div class="viewcode-block" id="Optimizer.__init__"><a class="viewcode-back" href="../../../neural_net/optimizers/Optimizer.html#ivy.neural_net.optimizers.Optimizer.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lr</span><span class="p">,</span> <span class="n">compile_step</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="Optimizer.__init__"><a class="viewcode-back" href="../../../neural_net/optimizers/Optimizer.html#ivy.neural_net.optimizers.Optimizer.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lr</span><span class="p">,</span> <span class="n">dev_str</span><span class="p">,</span> <span class="n">compile_step</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Construct an general Optimizer. This is an abstract class, and must be derived.</span>
 
@@ -210,19 +210,32 @@
     <span class="c1"># Abstract #</span>
 
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
-    <span class="k">def</span> <span class="nf">_step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">grads</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        The custom step function for the optimizer, must be implemented in child class.</span>
+<span class="sd">        Update nested variables container v from update step, using nested grads container.</span>
+<span class="sd">        Override this abstract method with child class custom implementation.</span>
+
+<span class="sd">        :param v: Nested variables to update.</span>
+<span class="sd">        :type v: Ivy container of variables</span>
+<span class="sd">        :param grads: Nested gradients to update.</span>
+<span class="sd">        :type grads: sequence of arrays</span>
+<span class="sd">        :return: The updated variables, following update step.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span>
 
     <span class="c1"># Given #</span>
 
-<div class="viewcode-block" id="Optimizer.step"><a class="viewcode-back" href="../../../neural_net/optimizers/Optimizer.html#ivy.neural_net.optimizers.Optimizer.step">[docs]</a>    <span class="k">def</span> <span class="nf">step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="Optimizer.step"><a class="viewcode-back" href="../../../neural_net/optimizers/Optimizer.html#ivy.neural_net.optimizers.Optimizer.step">[docs]</a>    <span class="k">def</span> <span class="nf">step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">grads</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        The callable step function, which calls the private step function, either compiled or not compiled.</span>
+<span class="sd">        Update nested variables container v from possibly compiled overriden private self._step_fn</span>
+
+<span class="sd">        :param v: Nested variables to update.</span>
+<span class="sd">        :type v: Ivy container of variables</span>
+<span class="sd">        :param grads: Nested gradients to update.</span>
+<span class="sd">        :type grads: sequence of arrays</span>
+<span class="sd">        :return: The updated variables, following update step.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_step_fn</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_step_fn</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">grads</span><span class="p">)</span></div></div>
 
 
 <span class="c1"># Optimizers #</span>
@@ -258,7 +271,7 @@
 
 <div class="viewcode-block" id="Adam"><a class="viewcode-back" href="../../../neural_net/optimizers/Adam.html#ivy.neural_net.optimizers.Adam">[docs]</a><span class="k">class</span> <span class="nc">Adam</span><span class="p">(</span><span class="n">Optimizer</span><span class="p">):</span>
 
-<div class="viewcode-block" id="Adam.__init__"><a class="viewcode-back" href="../../../neural_net/optimizers/Adam.html#ivy.neural_net.optimizers.Adam.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lr</span><span class="o">=</span><span class="mf">1e-4</span><span class="p">,</span> <span class="n">beta1</span><span class="o">=</span><span class="mf">0.9</span><span class="p">,</span> <span class="n">beta2</span><span class="o">=</span><span class="mf">0.999</span><span class="p">,</span> <span class="n">epsilon</span><span class="o">=</span><span class="mf">1e-07</span><span class="p">,</span> <span class="n">compile_step</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="Adam.__init__"><a class="viewcode-back" href="../../../neural_net/optimizers/Adam.html#ivy.neural_net.optimizers.Adam.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lr</span><span class="o">=</span><span class="mf">1e-4</span><span class="p">,</span> <span class="n">beta1</span><span class="o">=</span><span class="mf">0.9</span><span class="p">,</span> <span class="n">beta2</span><span class="o">=</span><span class="mf">0.999</span><span class="p">,</span> <span class="n">epsilon</span><span class="o">=</span><span class="mf">1e-07</span><span class="p">,</span> <span class="n">compile_step</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">dev_str</span><span class="o">=</span><span class="s1">&#39;cpu&#39;</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Construct an ADAM optimizer.</span>
 
@@ -272,6 +285,8 @@
 <span class="sd">        :type epsilon: float, optional</span>
 <span class="sd">        :param compile_step: Whether to compile the optimizer step, default is False.</span>
 <span class="sd">        :type compile_step: bool, option</span>
+<span class="sd">        :param dev_str: device on which to create the layer&#39;s variables &#39;cuda:0&#39;, &#39;cuda:1&#39;, &#39;cpu&#39; etc. Default is cpu.</span>
+<span class="sd">        :type dev_str: str, optional</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">Optimizer</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lr</span><span class="p">,</span> <span class="n">compile_step</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_beta1</span> <span class="o">=</span> <span class="n">beta1</span>
@@ -280,7 +295,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_mw</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_vw</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_first_pass</span> <span class="o">=</span> <span class="kc">True</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_step</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">])</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_step</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">],</span> <span class="n">dev_str</span><span class="o">=</span><span class="n">dev_str</span><span class="p">)</span></div>
 
     <span class="c1"># Custom Step</span>
 

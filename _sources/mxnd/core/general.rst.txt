@@ -13,6 +13,7 @@ General
    :caption: General
 
    general/array.rst
+   general/is_array.rst
    general/round.rst
    general/floormod.rst
    general/floor.rst
