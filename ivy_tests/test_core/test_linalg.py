@@ -5,8 +5,6 @@ Collection of tests for templated linear algebra functions
 # global
 import pytest
 import numpy as np
-# noinspection PyPackageRequirements
-from jaxlib.xla_extension import Buffer
 
 # local
 import ivy
@@ -22,13 +20,16 @@ import ivy_tests.helpers as helpers
 @pytest.mark.parametrize(
     "tensor_fn", [ivy.array, helpers.var_fn])
 def test_svd(x, dtype_str, tensor_fn, dev_str, call):
+    if call in [helpers.tf_call, helpers.tf_graph_call] and 'cpu' in dev_str:
+        # tf.linalg.svd segfaults when CUDA is installed, but array is on CPU
+        pytest.skip()
     # smoke test
     x = tensor_fn(x, dtype_str, dev_str)
     u, s, vh = ivy.svd(x)
     # type test
-    assert isinstance(u, ivy.Array)
-    assert isinstance(s, ivy.Array)
-    assert isinstance(vh, ivy.Array)
+    assert ivy.is_array(u)
+    assert ivy.is_array(s)
+    assert ivy.is_array(vh)
     # cardinality test
     assert u.shape == x.shape
     assert s.shape == x.shape[:-1]
@@ -58,10 +59,7 @@ def test_norm(x_n_ord_n_ax_n_kd, dtype_str, tensor_fn, dev_str, call):
     kwargs = dict([(k, v) for k, v in zip(['x', 'ord', 'axis', 'keepdims'], [x, order, ax, kd]) if v is not None])
     ret = ivy.norm(**kwargs)
     # type test
-    try:
-        assert isinstance(ret, ivy.Array)
-    except AssertionError:
-        assert isinstance(ret, Buffer)
+    assert ivy.is_array(ret)
     # cardinality test
     if kd:
         expected_shape = [1 if i == ax else item for i, item in enumerate(x.shape)]
@@ -84,11 +82,14 @@ def test_norm(x_n_ord_n_ax_n_kd, dtype_str, tensor_fn, dev_str, call):
 @pytest.mark.parametrize(
     "tensor_fn", [ivy.array, helpers.var_fn])
 def test_inv(x, dtype_str, tensor_fn, dev_str, call):
+    if call in [helpers.tf_call, helpers.tf_graph_call] and 'cpu' in dev_str:
+        # tf.linalg.inv segfaults when CUDA is installed, but array is on CPU
+        pytest.skip()
     # smoke test
     x = tensor_fn(x, dtype_str, dev_str)
     ret = ivy.inv(x)
     # type test
-    assert isinstance(ret, ivy.Array)
+    assert ivy.is_array(ret)
     # cardinality test
     assert ret.shape == x.shape
     # value test
@@ -105,11 +106,14 @@ def test_inv(x, dtype_str, tensor_fn, dev_str, call):
 @pytest.mark.parametrize(
     "tensor_fn", [ivy.array, helpers.var_fn])
 def test_pinv(x, dtype_str, tensor_fn, dev_str, call):
+    if call in [helpers.tf_call, helpers.tf_graph_call] and 'cpu' in dev_str:
+        # tf.linalg.pinv segfaults when CUDA is installed, but array is on CPU
+        pytest.skip()
     # smoke test
     x = tensor_fn(x, dtype_str, dev_str)
     ret = ivy.pinv(x)
     # type test
-    assert isinstance(ret, ivy.Array)
+    assert ivy.is_array(ret)
     # cardinality test
     assert ret.shape == x.shape[:-2] + (x.shape[-1], x.shape[-2])
     # value test
@@ -130,7 +134,7 @@ def test_vector_to_skew_symmetric_matrix(x, dtype_str, tensor_fn, dev_str, call)
     x = tensor_fn(x, dtype_str, dev_str)
     ret = ivy.vector_to_skew_symmetric_matrix(x)
     # type test
-    assert isinstance(ret, ivy.Array)
+    assert ivy.is_array(ret)
     # cardinality test
     assert ret.shape == x.shape + (x.shape[-1],)
     # value test

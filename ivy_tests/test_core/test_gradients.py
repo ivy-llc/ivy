@@ -32,7 +32,8 @@ def test_variable(object_in, dtype_str, dev_str, call):
     # smoke test
     ret = ivy.variable(ivy.array(object_in, dtype_str, dev_str))
     # type test
-    assert isinstance(ret, ivy.Variable)
+    if call is not helpers.np_call:
+        assert ivy.is_variable(ret)
     # cardinality test
     assert ret.shape == np.array(object_in).shape
     # value test
@@ -66,8 +67,9 @@ def test_is_variable(object_in, dtype_str, dev_str, call):
     non_var_res = ivy.is_variable(non_var)
     var_res = ivy.is_variable(var)
     # type test
-    assert isinstance(non_var, ivy.Array)
-    assert isinstance(var, ivy.Variable)
+    assert ivy.is_array(non_var)
+    if call is not helpers.np_call:
+        assert ivy.is_variable(var)
     if call in [helpers.np_call, helpers.jnp_call]:
         # numpy and jax do not support flagging variables
         pytest.skip()
@@ -101,7 +103,7 @@ def test_execute_with_gradients(func_n_xs_n_ty_n_te_n_tg, dtype_str, tensor_fn, 
     else:
         y, dydxs, extra_out = ivy.execute_with_gradients(func, xs)
     # type test
-    assert isinstance(y, (ivy.Array, Number))
+    assert ivy.is_array(y) or isinstance(y, Number)
     if call is not helpers.np_call:
         assert isinstance(dydxs, dict)
     # cardinality test
@@ -206,7 +208,7 @@ def test_stop_gradient(x_raw, dtype_str, tensor_fn, dev_str, call):
     x = tensor_fn(x_raw, dtype_str, dev_str)
     ret = ivy.stop_gradient(x)
     # type test
-    assert isinstance(ret, ivy.Array)
+    assert ivy.is_array(ret)
     # cardinality test
     assert ret.shape == x.shape
     # value test

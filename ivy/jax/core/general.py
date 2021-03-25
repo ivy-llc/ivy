@@ -3,11 +3,13 @@ Collection of Jax general functions, wrapped to fit Ivy syntax and signature.
 """
 
 # global
-from functools import reduce as _reduce
-from operator import mul as _mul
-import numpy as _onp
 import jax as _jax
+import numpy as _onp
 import jax.numpy as _jnp
+import jaxlib as _jaxlib
+from operator import mul as _mul
+from functools import reduce as _reduce
+from jaxlib.xla_extension import Buffer
 
 DTYPE_DICT = {_jnp.dtype('bool'): 'bool',
               _jnp.dtype('int8'): 'int8',
@@ -31,7 +33,7 @@ def _to_dev(x, dev_str_in):
                 idx = int(dev_split[1])
             else:
                 idx = 0
-            _jax.device_put(x, _jax.devices(dev_str)[idx])
+            x = _jax.device_put(x, _jax.devices(dev_str)[idx])
         else:
             raise Exception('Invalid device specified, must be in the form [ "cpu:idx" | "gpu:idx" | "tpu:id" ]')
     return x
@@ -53,6 +55,13 @@ def array(object_in, dtype_str=None, dev_str=None):
     else:
         dtype = None
     return _to_dev(_jnp.array(object_in, dtype=dtype), dev_str)
+
+
+# noinspection PyUnresolvedReferences,PyProtectedMember
+def is_array(x):
+    if isinstance(x, (_jax.interpreters.xla._DeviceArray, _jaxlib.xla_extension.DeviceArray, Buffer)):
+        return True
+    return False
 
 
 to_numpy = _onp.asarray

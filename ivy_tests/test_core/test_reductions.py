@@ -28,7 +28,7 @@ def test_reduce_sum(x, axis, kd, dtype_str, tensor_fn, dev_str, call):
     x = tensor_fn(x, dtype_str, dev_str)
     ret = ivy.reduce_sum(x, axis, kd)
     # type test
-    assert isinstance(ret, ivy.Array)
+    assert ivy.is_array(ret)
     # cardinality test
     if axis is None:
         expected_shape = [1]*len(x.shape) if kd else []
@@ -64,7 +64,7 @@ def test_reduce_prod(x, axis, kd, dtype_str, tensor_fn, dev_str, call):
     x = tensor_fn(x, dtype_str, dev_str)
     ret = ivy.reduce_prod(x, axis, kd)
     # type test
-    assert isinstance(ret, ivy.Array)
+    assert ivy.is_array(ret)
     # cardinality test
     if axis is None:
         expected_shape = [1]*len(x.shape) if kd else []
@@ -100,7 +100,7 @@ def test_reduce_mean(x, axis, kd, dtype_str, tensor_fn, dev_str, call):
     x = tensor_fn(x, dtype_str, dev_str)
     ret = ivy.reduce_mean(x, axis, kd)
     # type test
-    assert isinstance(ret, ivy.Array)
+    assert ivy.is_array(ret)
     # cardinality test
     if axis is None:
         expected_shape = [1]*len(x.shape) if kd else []
@@ -136,7 +136,7 @@ def test_reduce_min(x, axis, kd, dtype_str, tensor_fn, dev_str, call):
     x = tensor_fn(x, dtype_str, dev_str)
     ret = ivy.reduce_min(x, axis, kd)
     # type test
-    assert isinstance(ret, ivy.Array)
+    assert ivy.is_array(ret)
     # cardinality test
     if axis is None:
         expected_shape = [1]*len(x.shape) if kd else []
@@ -172,7 +172,7 @@ def test_reduce_max(x, axis, kd, dtype_str, tensor_fn, dev_str, call):
     x = tensor_fn(x, dtype_str, dev_str)
     ret = ivy.reduce_max(x, axis, kd)
     # type test
-    assert isinstance(ret, ivy.Array)
+    assert ivy.is_array(ret)
     # cardinality test
     if axis is None:
         expected_shape = [1]*len(x.shape) if kd else []

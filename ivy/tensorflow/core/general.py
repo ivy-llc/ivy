@@ -40,6 +40,12 @@ def array(object_in, dtype_str=None, dev_str=None):
         return _tf.cast(tensor, dtype)
 
 
+def is_array(x):
+    if isinstance(x, Tensor):
+        return True
+    return False
+
+
 to_numpy = lambda x: _np.asarray(_tf.convert_to_tensor(x))
 to_list = lambda x: x.numpy().tolist()
 shape = lambda x, as_tensor=False: _tf.shape(x) if as_tensor else tuple(x.shape)
@@ -336,7 +342,7 @@ def dev_to_str(dev_in):
 
 dev_str = lambda x: dev_to_str(dev(x))
 _dev_str_callable = dev_str
-gpu_is_available = _tf.test.is_gpu_available
+gpu_is_available = lambda: len(_tf.config.list_physical_devices('GPU')) > 0
 
 
 def tpu_is_available():

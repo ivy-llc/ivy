@@ -12,11 +12,11 @@ import ivy_tests.helpers as helpers
 
 class TrainableModule(ivy.Module):
 
-    def __init__(self, in_size, out_size, hidden_size=64):
+    def __init__(self, in_size, out_size, dev_str='cpu', hidden_size=64):
         self._linear0 = ivy.Linear(in_size, hidden_size)
         self._linear1 = ivy.Linear(hidden_size, hidden_size)
         self._linear2 = ivy.Linear(hidden_size, out_size)
-        ivy.Module.__init__(self)
+        ivy.Module.__init__(self, dev_str)
 
     def _forward(self, x):
         x = ivy.expand_dims(x, 0)
@@ -27,19 +27,13 @@ class TrainableModule(ivy.Module):
 
 # module training
 @pytest.mark.parametrize(
-    "bs_ic_oc_target", [
-        ([1, 2], 4, 5, [[0.30230279, 0.65123089, 0.30132881, -0.90954636, 1.08810135]]),
-    ])
-@pytest.mark.parametrize(
-    "dtype_str", ['float32'])
-@pytest.mark.parametrize(
-    "tensor_fn", [ivy.array, helpers.var_fn])
-def test_composed_module_training(bs_ic_oc_target, dtype_str, tensor_fn, dev_str, call):
+    "bs_ic_oc", [([1, 2], 4, 5)])
+def test_composed_module_training(bs_ic_oc, dev_str, call):
     # smoke test
     if call is helpers.np_call:
         # NumPy does not support gradients
         pytest.skip()
-    batch_shape, input_channels, output_channels, target = bs_ic_oc_target
+    batch_shape, input_channels, output_channels = bs_ic_oc
     x = ivy.cast(ivy.linspace(ivy.zeros(batch_shape), ivy.ones(batch_shape), input_channels), 'float32')
     module = TrainableModule(input_channels, output_channels)
 
@@ -58,7 +52,7 @@ def test_composed_module_training(bs_ic_oc_target, dtype_str, tensor_fn, dev_str
         loss_tm1 = loss
 
     # type test
-    assert isinstance(loss, ivy.Array)
+    assert ivy.is_array(loss)
     assert isinstance(grads, ivy.Container)
     # cardinality test
     if call is helpers.mx_call:
@@ -75,6 +69,6 @@ def test_composed_module_training(bs_ic_oc_target, dtype_str, tensor_fn, dev_str
     assert ivy.reduce_max(ivy.abs(grads.linear2.w)) > 0
     # compilation test
     if call is helpers.torch_call:
-        # pytest scripting does not **kwargs
+        # pytest scripting does not support **kwargs
         return
     helpers.assert_compilable(loss_fn)
