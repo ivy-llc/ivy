@@ -91,6 +91,7 @@
 <li class="toctree-l1"><a class="reference internal" href="container.html">Container</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">General</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="general/array.html">array</a></li>
+<li class="toctree-l2"><a class="reference internal" href="general/is_array.html">is_array</a></li>
 <li class="toctree-l2"><a class="reference internal" href="general/to_numpy.html">to_numpy</a></li>
 <li class="toctree-l2"><a class="reference internal" href="general/to_list.html">to_list</a></li>
 <li class="toctree-l2"><a class="reference internal" href="general/shape.html">shape</a></li>
@@ -255,6 +256,23 @@ sequence.</p></li>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>An array object satisfying the specified requirements, in the form of the selected framework.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.core.general.is_array">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname"><span class="pre">is_array</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#is_array"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.core.general.is_array" title="Permalink to this definition">¶</a></dt>
+<dd><p>Determines whether the input x is an Ivy Array.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>any</em>) – The input to check</p></li>
+<li><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning framework. Inferred from inputs if None.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Boolean, whether or not x is an array.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1299,6 +1317,7 @@ Required for torch in non-dynamic mode, unused by other frameworks.</p></li>
 <p class="caption"><span class="caption-text">General</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="general/array.html">array</a></li>
+<li class="toctree-l1"><a class="reference internal" href="general/is_array.html">is_array</a></li>
 <li class="toctree-l1"><a class="reference internal" href="general/to_numpy.html">to_numpy</a></li>
 <li class="toctree-l1"><a class="reference internal" href="general/to_list.html">to_list</a></li>
 <li class="toctree-l1"><a class="reference internal" href="general/shape.html">shape</a></li>

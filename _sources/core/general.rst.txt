@@ -13,6 +13,7 @@ General
    :caption: General
 
    general/array.rst
+   general/is_array.rst
    general/to_numpy.rst
    general/to_list.rst
    general/shape.rst

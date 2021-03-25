@@ -12,6 +12,7 @@ Gradients
    :maxdepth: -1
    :caption: Gradients
 
+   gradients/variable.rst
    gradients/is_variable.rst
    gradients/execute_with_gradients.rst
    gradients/gradient_descent_update.rst
