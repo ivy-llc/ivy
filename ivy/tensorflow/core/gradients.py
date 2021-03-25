@@ -6,9 +6,13 @@ Collection of TensorFlow gradient functions, wrapped to fit Ivy syntax and signa
 import tensorflow as _tf
 
 # local
+import ivy
 from ivy.core.container import Container
 
-variable = lambda x: _tf.Variable(x, trainable=True)
+
+def variable(x):
+    with _tf.device('/' + ivy.dev_str(x).upper()):
+        return _tf.Variable(x, trainable=True)
 
 
 def is_variable(x):

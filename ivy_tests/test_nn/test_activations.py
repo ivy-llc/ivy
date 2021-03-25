@@ -5,8 +5,6 @@ Collection of tests for templated neural network activation functions
 # global
 import pytest
 import numpy as np
-# noinspection PyPackageRequirements
-from jaxlib.xla_extension import Buffer
 
 # local
 import ivy
@@ -26,7 +24,7 @@ def test_relu(x, dtype_str, tensor_fn, dev_str, call):
     x = tensor_fn(x, dtype_str, dev_str)
     ret = ivy.relu(x)
     # type test
-    assert isinstance(ret, ivy.Array)
+    assert ivy.is_array(ret)
     # cardinality test
     assert ret.shape == x.shape
     # value test
@@ -47,10 +45,7 @@ def test_leaky_relu(x, dtype_str, tensor_fn, dev_str, call):
     x = tensor_fn(x, dtype_str, dev_str)
     ret = ivy.leaky_relu(x)
     # type test
-    try:
-        assert isinstance(ret, ivy.Array)
-    except AssertionError:
-        assert isinstance(ret, Buffer)
+    assert ivy.is_array(ret)
     # cardinality test
     assert ret.shape == x.shape
     # value test
@@ -71,7 +66,7 @@ def test_tanh(x, dtype_str, tensor_fn, dev_str, call):
     x = tensor_fn(x, dtype_str, dev_str)
     ret = ivy.tanh(x)
     # type test
-    assert isinstance(ret, ivy.Array)
+    assert ivy.is_array(ret)
     # cardinality test
     assert ret.shape == x.shape
     # value test
@@ -92,7 +87,7 @@ def test_sigmoid(x, dtype_str, tensor_fn, dev_str, call):
     x = tensor_fn(x, dtype_str, dev_str)
     ret = ivy.sigmoid(x)
     # type test
-    assert isinstance(ret, ivy.Array)
+    assert ivy.is_array(ret)
     # cardinality test
     assert ret.shape == x.shape
     # value test
@@ -113,7 +108,7 @@ def test_softmax(x, dtype_str, tensor_fn, dev_str, call):
     x = tensor_fn(x, dtype_str, dev_str)
     ret = ivy.softmax(x)
     # type test
-    assert isinstance(ret, ivy.Array)
+    assert ivy.is_array(ret)
     # cardinality test
     assert ret.shape == x.shape
     # value test
@@ -134,7 +129,7 @@ def test_softplus(x, dtype_str, tensor_fn, dev_str, call):
     x = tensor_fn(x, dtype_str, dev_str)
     ret = ivy.softplus(x)
     # type test
-    assert isinstance(ret, ivy.Array)
+    assert ivy.is_array(ret)
     # cardinality test
     assert ret.shape == x.shape
     # value test

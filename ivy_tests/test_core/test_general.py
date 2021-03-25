@@ -7,8 +7,6 @@ import pytest
 import numpy as np
 from numbers import Number
 from collections.abc import Sequence
-# noinspection PyPackageRequirements
-from jaxlib.xla_extension import Buffer
 
 # local
 import ivy
@@ -57,7 +55,7 @@ def test_array(object_in, dtype_str, dev_str, call):
     # smoke test
     ret = ivy.array(object_in, dtype_str, dev_str)
     # type test
-    assert isinstance(ret, ivy.Array)
+    assert ivy.is_array(ret)
     # cardinality test
     assert ret.shape == np.array(object_in).shape
     # value test
@@ -145,7 +143,7 @@ def test_shape(object_in, dtype_str, as_tensor, tensor_fn, dev_str, call):
     ret = ivy.shape(tensor_fn(object_in, dtype_str, dev_str), as_tensor)
     # type test
     if as_tensor:
-        assert isinstance(ret, ivy.Array)
+        assert ivy.is_array(ret)
     else:
         assert isinstance(ret, tuple)
         ret = ivy.array(ret)
@@ -177,7 +175,7 @@ def test_get_num_dims(object_in, dtype_str, as_tensor, tensor_fn, dev_str, call)
     ret = ivy.get_num_dims(tensor_fn(object_in, dtype_str, dev_str), as_tensor)
     # type test
     if as_tensor:
-        assert isinstance(ret, ivy.Array)
+        assert ivy.is_array(ret)
     else:
         assert isinstance(ret, int)
         ret = ivy.array(ret)
@@ -209,7 +207,7 @@ def test_minimum(xy, dtype_str, tensor_fn, dev_str, call):
     y = tensor_fn(xy[1], dtype_str, dev_str)
     ret = ivy.minimum(x, y)
     # type test
-    assert isinstance(ret, ivy.Array)
+    assert ivy.is_array(ret)
     # cardinality test
     if len(x.shape) > len(y.shape):
         assert ret.shape == x.shape
@@ -238,7 +236,7 @@ def test_maximum(xy, dtype_str, tensor_fn, dev_str, call):
     y = tensor_fn(xy[1], dtype_str, dev_str)
     ret = ivy.maximum(x, y)
     # type test
-    assert isinstance(ret, ivy.Array)
+    assert ivy.is_array(ret)
     # cardinality test
     if len(x.shape) > len(y.shape):
         assert ret.shape == x.shape
@@ -273,7 +271,7 @@ def test_clip(x_min_n_max, dtype_str, tensor_fn, dev_str, call):
         pytest.skip()
     ret = ivy.clip(x, min_val, max_val)
     # type test
-    assert isinstance(ret, ivy.Array)
+    assert ivy.is_array(ret)
     # cardinality test
     max_shape = max([x.shape, min_val.shape, max_val.shape], key=lambda x_: len(x_))
     assert ret.shape == max_shape
@@ -300,7 +298,7 @@ def test_round(x_n_x_rounded, dtype_str, tensor_fn, dev_str, call):
     x = tensor_fn(x_n_x_rounded[0], dtype_str, dev_str)
     ret = ivy.round(x)
     # type test
-    assert isinstance(ret, ivy.Array)
+    assert ivy.is_array(ret)
     # cardinality test
     assert ret.shape == x.shape
     # value test
@@ -328,7 +326,7 @@ def test_floormod(x_n_divisor_n_x_floormod, dtype_str, tensor_fn, dev_str, call)
     divisor = ivy.array(x_n_divisor_n_x_floormod[1], dtype_str, dev_str)
     ret = ivy.floormod(x, divisor)
     # type test
-    assert isinstance(ret, ivy.Array)
+    assert ivy.is_array(ret)
     # cardinality test
     assert ret.shape == x.shape
     # value test
@@ -353,7 +351,7 @@ def test_floor(x_n_x_floored, dtype_str, tensor_fn, dev_str, call):
     x = tensor_fn(x_n_x_floored[0], dtype_str, dev_str)
     ret = ivy.floor(x)
     # type test
-    assert isinstance(ret, ivy.Array)
+    assert ivy.is_array(ret)
     # cardinality test
     assert ret.shape == x.shape
     # value test
@@ -378,7 +376,7 @@ def test_ceil(x_n_x_ceiled, dtype_str, tensor_fn, dev_str, call):
     x = tensor_fn(x_n_x_ceiled[0], dtype_str, dev_str)
     ret = ivy.ceil(x)
     # type test
-    assert isinstance(ret, ivy.Array)
+    assert ivy.is_array(ret)
     # cardinality test
     assert ret.shape == x.shape
     # value test
@@ -403,7 +401,7 @@ def test_abs(x_n_x_absed, dtype_str, tensor_fn, dev_str, call):
     x = tensor_fn(x_n_x_absed[0], dtype_str, dev_str)
     ret = ivy.abs(x)
     # type test
-    assert isinstance(ret, ivy.Array)
+    assert ivy.is_array(ret)
     # cardinality test
     assert ret.shape == x.shape
     # value test
@@ -426,7 +424,7 @@ def test_argmax(x_n_axis_x_argmax, dtype_str, tensor_fn, dev_str, call):
     axis = x_n_axis_x_argmax[1]
     ret = ivy.argmax(x, axis)
     # type test
-    assert isinstance(ret, ivy.Array)
+    assert ivy.is_array(ret)
     # cardinality test
     assert tuple(ret.shape) == (len(x.shape),)
     # value test
@@ -449,7 +447,7 @@ def test_argmin(x_n_axis_x_argmin, dtype_str, tensor_fn, dev_str, call):
     axis = x_n_axis_x_argmin[1]
     ret = ivy.argmin(x, axis)
     # type test
-    assert isinstance(ret, ivy.Array)
+    assert ivy.is_array(ret)
     # cardinality test
     assert tuple(ret.shape) == (len(x.shape),)
     # value test
@@ -470,7 +468,7 @@ def test_cast(object_in, starting_dtype_str, target_dtype_str, dev_str, call):
     x = ivy.array(object_in, starting_dtype_str, dev_str)
     ret = ivy.cast(x, target_dtype_str)
     # type test
-    assert isinstance(ret, ivy.Array)
+    assert ivy.is_array(ret)
     # cardinality test
     assert ret.shape == x.shape
     # value test
@@ -511,7 +509,7 @@ def test_arange(stop_n_start_n_step, dtype_str, tensor_fn, dev_str, call):
         args.append(step)
     ret = ivy.arange(*args, dtype_str=dtype_str, dev_str=dev_str)
     # type test
-    assert isinstance(ret, ivy.Array)
+    assert ivy.is_array(ret)
     # cardinality test
     assert ret.shape == (int((ivy.to_list(stop) -
                               (ivy.to_list(start) if start else 0))/(ivy.to_list(step) if step else 1)),)
@@ -544,7 +542,7 @@ def test_linspace(start_n_stop_n_num_n_axis, dtype_str, tensor_fn, dev_str, call
     stop = tensor_fn(stop, dtype_str, dev_str)
     ret = ivy.linspace(start, stop, num, axis, dev_str=dev_str)
     # type test
-    assert isinstance(ret, ivy.Array)
+    assert ivy.is_array(ret)
     # cardinality test
     target_shape = list(start.shape)
     target_shape.insert(axis + 1 if (axis and axis != -1) else len(target_shape), num)
@@ -577,7 +575,7 @@ def test_concatenate(x1_n_x2_n_axis, dtype_str, tensor_fn, dev_str, call):
     x2 = tensor_fn(x2, dtype_str, dev_str)
     ret = ivy.concatenate((x1, x2), axis)
     # type test
-    assert isinstance(ret, ivy.Array)
+    assert ivy.is_array(ret)
     # cardinality test
     axis_val = (axis % len(x1.shape) if (axis is not None and len(x1.shape) != 0) else len(x1.shape) - 1)
     if x1.shape == ():
@@ -609,7 +607,7 @@ def test_flip(x_n_axis_n_bs, dtype_str, tensor_fn, dev_str, call):
     x = tensor_fn(x, dtype_str, dev_str)
     ret = ivy.flip(x, axis, bs)
     # type test
-    assert isinstance(ret, ivy.Array)
+    assert ivy.is_array(ret)
     # cardinality test
     assert ret.shape == x.shape
     # value test
@@ -635,7 +633,7 @@ def test_stack(xs_n_axis, dtype_str, tensor_fn, dev_str, call):
     x2 = tensor_fn(x2, dtype_str, dev_str)
     ret = ivy.stack((x1, x2), axis)
     # type test
-    assert isinstance(ret, ivy.Array)
+    assert ivy.is_array(ret)
     # cardinality test
     axis_val = (axis % len(x1.shape) if (axis is not None and len(x1.shape) != 0) else len(x1.shape) - 1)
     if x1.shape == ():
@@ -729,7 +727,7 @@ def test_tile(x_n_reps, dtype_str, tensor_fn, dev_str, call):
     reps = ivy.array(reps_raw, 'int32', dev_str)
     ret = ivy.tile(x, reps)
     # type test
-    assert isinstance(ret, ivy.Array)
+    assert ivy.is_array(ret)
     # cardinality test
     if x.shape == ():
         expected_shape = tuple(reps_raw) if isinstance(reps_raw, list) else (reps_raw,)
@@ -763,10 +761,7 @@ def test_zero_pad(x_n_pw, dtype_str, tensor_fn, dev_str, call):
     pw = ivy.array(pw_raw, 'int32', dev_str)
     ret = ivy.zero_pad(x, pw)
     # type test
-    try:
-        assert isinstance(ret, ivy.Array)
-    except AssertionError:
-        assert isinstance(ret, Buffer)
+    assert ivy.is_array(ret)
     # cardinality test
     x_shape = [1] if x.shape == () else x.shape
     expected_shape = tuple([int(item + pw_[0] + pw_[1]) for item, pw_ in zip(x_shape, pw_raw)])
@@ -798,10 +793,7 @@ def test_constant_pad(x_n_pw_n_val, dtype_str, tensor_fn, dev_str, call):
     pw = ivy.array(pw_raw, 'int32', dev_str)
     ret = ivy.constant_pad(x, pw, val)
     # type test
-    try:
-        assert isinstance(ret, ivy.Array)
-    except AssertionError:
-        assert isinstance(ret, Buffer)
+    assert ivy.is_array(ret)
     # cardinality test
     x_shape = [1] if x.shape == () else x.shape
     expected_shape = tuple([int(item + pw_[0] + pw_[1]) for item, pw_ in zip(x_shape, pw_raw)])
@@ -832,7 +824,7 @@ def test_swapaxes(x_n_ax0_n_ax1, dtype_str, tensor_fn, dev_str, call):
     x = tensor_fn(x, dtype_str, dev_str)
     ret = ivy.swapaxes(x, ax0, ax1)
     # type test
-    assert isinstance(ret, ivy.Array)
+    assert ivy.is_array(ret)
     # cardinality test
     expected_shape = list(x.shape)
     expected_shape[ax0], expected_shape[ax1] = expected_shape[ax1], expected_shape[ax0]
@@ -860,7 +852,7 @@ def test_transpose(x_n_axes, dtype_str, tensor_fn, dev_str, call):
     x = tensor_fn(x, dtype_str, dev_str)
     ret = ivy.transpose(x, axes)
     # type test
-    assert isinstance(ret, ivy.Array)
+    assert ivy.is_array(ret)
     # cardinality test
     x_shape = x.shape
     assert ret.shape == tuple([x.shape[idx] for idx in axes])
@@ -886,7 +878,7 @@ def test_expand_dims(x_n_axis, dtype_str, tensor_fn, dev_str, call):
     x = tensor_fn(x, dtype_str, dev_str)
     ret = ivy.expand_dims(x, axis)
     # type test
-    assert isinstance(ret, ivy.Array)
+    assert ivy.is_array(ret)
     # cardinality test
     expected_shape = list(x.shape)
     expected_shape.insert(axis, 1)
@@ -916,10 +908,7 @@ def test_where(cond_n_x1_n_x2, dtype_str, tensor_fn, dev_str, call):
     x2 = tensor_fn(x2, dtype_str, dev_str)
     ret = ivy.where(cond, x1, x2)
     # type test
-    try:
-        assert isinstance(ret, ivy.Array)
-    except AssertionError:
-        assert isinstance(ret, Buffer)
+    assert ivy.is_array(ret)
     # cardinality test
     assert ret.shape == x1.shape
     # value test
@@ -947,7 +936,7 @@ def test_indices_where(x, dtype_str, tensor_fn, dev_str, call):
     x = tensor_fn(x, dtype_str, dev_str)
     ret = ivy.indices_where(x)
     # type test
-    assert isinstance(ret, ivy.Array)
+    assert ivy.is_array(ret)
     # cardinality test
     assert len(ret.shape) == 2
     assert ret.shape[-1] == len(x.shape)
@@ -973,7 +962,7 @@ def test_reshape(x_n_shp, dtype_str, tensor_fn, dev_str, call):
     x = tensor_fn(x, dtype_str, dev_str)
     ret = ivy.reshape(x, new_shape)
     # type test
-    assert isinstance(ret, ivy.Array)
+    assert ivy.is_array(ret)
     # cardinality test
     assert ret.shape == tuple(new_shape)
     # value test
@@ -998,7 +987,7 @@ def test_squeeze(x_n_axis, dtype_str, tensor_fn, dev_str, call):
     x = tensor_fn(x, dtype_str, dev_str)
     ret = ivy.squeeze(x, axis)
     # type test
-    assert isinstance(ret, ivy.Array)
+    assert ivy.is_array(ret)
     # cardinality test
     if axis is None:
         expected_shape = [item for item in x.shape if item != 1]
@@ -1025,7 +1014,7 @@ def test_zeros(shape, dtype_str, tensor_fn, dev_str, call):
     # smoke test
     ret = ivy.zeros(shape, dtype_str, dev_str)
     # type test
-    assert isinstance(ret, ivy.Array)
+    assert ivy.is_array(ret)
     # cardinality test
     assert ret.shape == tuple(shape)
     # value test
@@ -1052,7 +1041,7 @@ def test_zeros_like(x, dtype_str, tensor_fn, dev_str, call):
     x = tensor_fn(x, dtype_str, dev_str)
     ret = ivy.zeros_like(x, dtype_str, dev_str)
     # type test
-    assert isinstance(ret, ivy.Array)
+    assert ivy.is_array(ret)
     # cardinality test
     assert ret.shape == x.shape
     # value test
@@ -1075,7 +1064,7 @@ def test_ones(shape, dtype_str, tensor_fn, dev_str, call):
     # smoke test
     ret = ivy.ones(shape, dtype_str, dev_str)
     # type test
-    assert isinstance(ret, ivy.Array)
+    assert ivy.is_array(ret)
     # cardinality test
     assert ret.shape == tuple(shape)
     # value test
@@ -1102,7 +1091,7 @@ def test_ones_like(x, dtype_str, tensor_fn, dev_str, call):
     x = tensor_fn(x, dtype_str, dev_str)
     ret = ivy.ones_like(x, dtype_str, dev_str)
     # type test
-    assert isinstance(ret, ivy.Array)
+    assert ivy.is_array(ret)
     # cardinality test
     assert ret.shape == x.shape
     # value test
@@ -1130,7 +1119,7 @@ def test_one_hot(ind_n_depth, dtype_str, tensor_fn, dev_str, call):
     ind = ivy.array(ind, 'int32', dev_str)
     ret = ivy.one_hot(ind, depth, dev_str)
     # type test
-    assert isinstance(ret, ivy.Array)
+    assert ivy.is_array(ret)
     # cardinality test
     assert ret.shape == ind.shape + (depth,)
     # value test
@@ -1159,10 +1148,7 @@ def test_cross(x1_n_x2, dtype_str, tensor_fn, dev_str, call):
     x2 = ivy.array(x2, dtype_str, dev_str)
     ret = ivy.cross(x1, x2)
     # type test
-    try:
-        assert isinstance(ret, ivy.Array)
-    except AssertionError:
-        assert isinstance(ret, Buffer)
+    assert ivy.is_array(ret)
     # cardinality test
     assert ret.shape == x1.shape
     # value test
@@ -1188,7 +1174,7 @@ def test_matmul(x1_n_x2, dtype_str, tensor_fn, dev_str, call):
     x2 = ivy.array(x2, dtype_str, dev_str)
     ret = ivy.matmul(x1, x2)
     # type test
-    assert isinstance(ret, ivy.Array)
+    assert ivy.is_array(ret)
     # cardinality test
     assert ret.shape == x1.shape[:-1] + (x2.shape[-1],)
     # value test
@@ -1210,10 +1196,7 @@ def test_cumsum(x_n_axis, dtype_str, tensor_fn, dev_str, call):
     x = ivy.array(x, dtype_str, dev_str)
     ret = ivy.cumsum(x, axis)
     # type test
-    try:
-        assert isinstance(ret, ivy.Array)
-    except AssertionError:
-        assert isinstance(ret, Buffer)
+    assert ivy.is_array(ret)
     # cardinality test
     assert ret.shape == x.shape
     # value test
@@ -1235,10 +1218,7 @@ def test_cumprod(x_n_axis, dtype_str, tensor_fn, dev_str, call):
     x = ivy.array(x, dtype_str, dev_str)
     ret = ivy.cumprod(x, axis)
     # type test
-    try:
-        assert isinstance(ret, ivy.Array)
-    except AssertionError:
-        assert isinstance(ret, Buffer)
+    assert ivy.is_array(ret)
     # cardinality test
     assert ret.shape == x.shape
     # value test
@@ -1259,7 +1239,7 @@ def test_identity(dim_n_bs, dtype_str, tensor_fn, dev_str, call):
     dim, bs = dim_n_bs
     ret = ivy.identity(dim, dtype_str, bs, dev_str)
     # type test
-    assert isinstance(ret, ivy.Array)
+    assert ivy.is_array(ret)
     # cardinality test
     assert ret.shape == (tuple(bs) if bs else ()) + (dim, dim)
     # value test
@@ -1293,10 +1273,7 @@ def test_scatter_flat(inds_n_upd_n_size, red, dtype_str, tensor_fn, dev_str, cal
     upd = tensor_fn(upd, dtype_str, dev_str)
     ret = ivy.scatter_flat(inds, upd, size, red, dev_str)
     # type test
-    try:
-        assert isinstance(ret, ivy.Array)
-    except AssertionError:
-        assert isinstance(ret, Buffer)
+    assert ivy.is_array(ret)
     # cardinality test
     assert ret.shape == (size,)
     if red == 'replace':
@@ -1335,10 +1312,7 @@ def test_scatter_nd(inds_n_upd_n_shape, red, dtype_str, tensor_fn, dev_str, call
     upd = tensor_fn(upd, dtype_str, dev_str)
     ret = ivy.scatter_nd(inds, upd, shape, red, dev_str)
     # type test
-    try:
-        assert isinstance(ret, ivy.Array)
-    except AssertionError:
-        assert isinstance(ret, Buffer)
+    assert ivy.is_array(ret)
     # cardinality test
     assert ret.shape == tuple(shape)
     if red == 'replace':
@@ -1368,10 +1342,7 @@ def test_gather(prms_n_inds_n_axis, dtype_str, tensor_fn, dev_str, call):
     inds = ivy.array(inds, 'int32', dev_str)
     ret = ivy.gather(prms, inds, axis, dev_str)
     # type test
-    try:
-        assert isinstance(ret, ivy.Array)
-    except AssertionError:
-        assert isinstance(ret, Buffer)
+    assert ivy.is_array(ret)
     # cardinality test
     assert ret.shape == inds.shape
     # value test
@@ -1400,7 +1371,7 @@ def test_gather_nd(prms_n_inds, dtype_str, tensor_fn, dev_str, call):
     inds = ivy.array(inds, 'int32', dev_str)
     ret = ivy.gather_nd(prms, inds, dev_str)
     # type test
-    assert isinstance(ret, ivy.Array)
+    assert ivy.is_array(ret)
     # cardinality test
     assert ret.shape == inds.shape[:-1] + prms.shape[inds.shape[-1]:]
     # value test

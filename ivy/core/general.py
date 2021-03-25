@@ -27,6 +27,19 @@ def array(object_in, dtype_str=None, dev_str=None, f=None):
     return _get_framework(object_in, f=f).array(object_in, dtype_str, dev_str)
 
 
+def is_array(x, f=None):
+    """
+    Determines whether the input x is an Ivy Array.
+
+    :param x: The input to check
+    :type x: any
+    :param f: Machine learning framework. Inferred from inputs if None.
+    :type f: ml_framework, optional
+    :return: Boolean, whether or not x is an array.
+    """
+    return _get_framework(x, f=f).is_array(x)
+
+
 def to_numpy(x, f=None):
     """
     Converts array into a numpy array.

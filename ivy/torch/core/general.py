@@ -35,6 +35,12 @@ def array(object_in, dtype_str: Optional[str] = None, dev_str: Optional[str] = N
         return torch.tensor(object_in).to(_dev_str_to_dev(dev_str))
 
 
+def is_array(x):
+    if isinstance(x, torch.Tensor):
+        return True
+    return False
+
+
 def dtype_from_str(dtype_str_in: str) -> torch.dtype:
     return {'bool': torch.bool,
             'int8': torch.int8,

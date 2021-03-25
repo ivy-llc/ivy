@@ -26,7 +26,7 @@ def test_logical_and(x1_n_x2, dtype_str, tensor_fn, dev_str, call):
     x2 = tensor_fn(x2, dtype_str, dev_str)
     ret = ivy.logical_and(x1, x2)
     # type test
-    assert isinstance(ret, ivy.Array)
+    assert ivy.is_array(ret)
     # cardinality test
     assert ret.shape == x1.shape
     # value test
@@ -52,7 +52,7 @@ def test_logical_or(x1_n_x2, dtype_str, tensor_fn, dev_str, call):
     x2 = tensor_fn(x2, dtype_str, dev_str)
     ret = ivy.logical_or(x1, x2)
     # type test
-    assert isinstance(ret, ivy.Array)
+    assert ivy.is_array(ret)
     # cardinality test
     assert ret.shape == x1.shape
     # value test
@@ -76,7 +76,7 @@ def test_logical_not(x, dtype_str, tensor_fn, dev_str, call):
     x = tensor_fn(x, dtype_str, dev_str)
     ret = ivy.logical_not(x)
     # type test
-    assert isinstance(ret, ivy.Array)
+    assert ivy.is_array(ret)
     # cardinality test
     assert ret.shape == x.shape
     # value test

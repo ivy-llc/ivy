@@ -38,7 +38,7 @@ def test_sgd_optimizer(bs_ic_oc_target, with_v, dtype_str, tensor_fn, dev_str, c
         v = Container({'w': w, 'b': b})
     else:
         v = None
-    linear_layer = ivy.Linear(input_channels, output_channels, v)
+    linear_layer = ivy.Linear(input_channels, output_channels, v=v)
 
     def loss_fn(v_):
         out = linear_layer(x, v=v_)
@@ -58,7 +58,7 @@ def test_sgd_optimizer(bs_ic_oc_target, with_v, dtype_str, tensor_fn, dev_str, c
         loss_tm1 = loss
 
     # type test
-    assert isinstance(loss, ivy.Array)
+    assert ivy.is_array(loss)
     assert isinstance(grads, ivy.Container)
     # cardinality test
     if call is helpers.mx_call:
@@ -102,7 +102,7 @@ def test_adam_optimizer(bs_ic_oc_target, with_v, dtype_str, tensor_fn, dev_str, 
         v = Container({'w': w, 'b': b})
     else:
         v = None
-    linear_layer = ivy.Linear(input_channels, output_channels, v)
+    linear_layer = ivy.Linear(input_channels, output_channels, v=v)
 
     def loss_fn(v_):
         out = linear_layer(x, v=v_)
@@ -125,7 +125,7 @@ def test_adam_optimizer(bs_ic_oc_target, with_v, dtype_str, tensor_fn, dev_str, 
         loss_tm1 = loss
 
     # type test
-    assert isinstance(loss, ivy.Array)
+    assert ivy.is_array(loss)
     assert isinstance(grads, ivy.Container)
     # cardinality test
     if call is helpers.mx_call:

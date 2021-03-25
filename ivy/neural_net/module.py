@@ -14,13 +14,16 @@ from ivy.core.container import Container
 
 class Module(abc.ABC):
 
-    def __init__(self, v=None):
+    def __init__(self, dev_str, v=None):
         """
         Initialze Ivy layer, which is a stateful object consisting of trainable variables.
 
+        :param dev_str: device on which to create the layer's variables 'cuda:0', 'cuda:1', 'cpu' etc.
+        :type dev_str: str
         :param v: Ivy container of trainable variables. Created internally by default.
-        :type v: ivy container, optional.
+        :type v: ivy container, optional
         """
+        self._dev_str = dev_str
         if v is None:
             self.v = Container(self._find_and_create_variables())
         else:
@@ -43,13 +46,16 @@ class Module(abc.ABC):
                 vs[key[1:] if key[0] == '_' else key] = val.v
                 self.__dict__[key].__call__ = self._fn_with_var_arg(self.__dict__[key].__call__,
                                                                     key[1:] if key[0] == '_' else key)
-        return dict(**vs, **self._create_variables())
+        return dict(**vs, **self._create_variables(self._dev_str))
 
     # Overridable #
 
-    def _create_variables(self):
+    def _create_variables(self, dev_str):
         """
         create internal trainable variables, and return as arbitrary nested dict.
+
+        :param dev_str: The device string, specifying the device on which to create the variables.
+        :type dev_str: string
         """
         return {}
 

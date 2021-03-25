@@ -24,7 +24,7 @@ def test_stack_images(shp_n_num_n_ar_n_newshp, dev_str, call):
     xs = [ivy.ones(shape)] * num
     ret = ivy.stack_images(xs, ar)
     # type test
-    assert isinstance(ret, ivy.Array)
+    assert ivy.is_array(ret)
     # cardinality test
     assert ret.shape == new_shape
     # compilation test
@@ -46,7 +46,7 @@ def test_bilinear_resample(x_n_warp, dtype_str, tensor_fn, dev_str, call):
     warp = tensor_fn(warp, dtype_str, dev_str)
     ret = ivy.bilinear_resample(x, warp)
     # type test
-    assert isinstance(ret, ivy.Array)
+    assert ivy.is_array(ret)
     # cardinality test
     assert ret.shape == x.shape
     # value test
@@ -74,8 +74,8 @@ def test_gradient_image(x_n_dy_n_dx, dtype_str, tensor_fn, dev_str, call):
     x = tensor_fn(x, dtype_str, dev_str)
     dy, dx = ivy.gradient_image(x)
     # type test
-    assert isinstance(dy, ivy.Array)
-    assert isinstance(dx, ivy.Array)
+    assert ivy.is_array(dy)
+    assert ivy.is_array(dx)
     # cardinality test
     assert dy.shape == x.shape
     assert dx.shape == x.shape

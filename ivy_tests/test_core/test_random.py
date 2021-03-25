@@ -5,8 +5,6 @@ Collection of tests for templated reduction functions
 # global
 import pytest
 import numpy as np
-# noinspection PyPackageRequirements
-from jaxlib.xla_extension import Buffer
 
 # local
 import ivy
@@ -35,10 +33,7 @@ def test_random_uniform(low, high, shape, dtype_str, tensor_fn, dev_str, call):
         kwargs['shape'] = shape
     ret = ivy.random_uniform(**kwargs, dev_str=dev_str)
     # type test
-    try:
-        assert isinstance(ret, ivy.Array)
-    except AssertionError:
-        assert isinstance(ret, Buffer)
+    assert ivy.is_array(ret)
     # cardinality test
     if shape is None:
         assert ret.shape == ()
@@ -66,7 +61,7 @@ def test_multinomial(probs, num_samples, dtype_str, tensor_fn, dev_str, call):
     probs = tensor_fn(probs, dtype_str, dev_str)
     ret = ivy.multinomial(probs, num_samples)
     # type test
-    assert isinstance(ret, ivy.Array)
+    assert ivy.is_array(ret)
     # cardinality test
     assert ret.shape == tuple(list(probs.shape[:-1]) + [num_samples])
     # compilation test
@@ -92,10 +87,7 @@ def test_randint(low, high, shape, dtype_str, tensor_fn, dev_str, call):
     low_tnsr, high_tnsr = tensor_fn(low), tensor_fn(high)
     ret = ivy.randint(low_tnsr, high_tnsr, shape, dev_str=dev_str)
     # type test
-    try:
-        assert isinstance(ret, ivy.Array)
-    except AssertionError:
-        assert isinstance(ret, Buffer)
+    assert ivy.is_array(ret)
     # cardinality test
     assert ret.shape == shape
     # value test
@@ -135,10 +127,7 @@ def test_shuffle(x, dtype_str, tensor_fn, dev_str, call):
     x = tensor_fn(x, dtype_str, dev_str)
     ret = ivy.shuffle(x)
     # type test
-    try:
-        assert isinstance(ret, ivy.Array)
-    except AssertionError:
-        assert isinstance(ret, Buffer)
+    assert ivy.is_array(ret)
     # cardinality test
     assert ret.shape == x.shape
     # value test
