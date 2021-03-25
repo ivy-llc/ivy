@@ -87,6 +87,7 @@ RUN apt-get install -y libopenblas-dev
 # Ivy #
 # ----#
 
+RUN apt-get install -y git
 RUN pip3 install pytest
 
 RUN mkdir ivy
