@@ -841,6 +841,21 @@ def dev(x, f=None):
     return _get_framework(x, f=f).dev(x)
 
 
+def to_dev(x, dev_str=None, f=None):
+    """
+    Move the input array x to the desired device, specified by device string.
+
+    :param x: Array to move onto the device.
+    :type x: array
+    :param dev_str: device to move the array to 'cuda:0', 'cuda:1', 'cpu' etc. Keep same device if None.
+    :type dev_str: str, optional
+    :param f: Machine learning framework. Inferred from inputs if None.
+    :type f: ml_framework, optional
+    :return: The array x, but now placed on the target device.
+    """
+    return _get_framework(x, f=f).to_dev(x, dev_str)
+
+
 def dev_to_str(dev_in, f=None):
     """
     Convert native data type to string representation.

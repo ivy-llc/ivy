@@ -435,6 +435,14 @@ def gather_nd(params, indices, dev_str=None):
 
 
 dev = lambda x: x.context
+
+
+def to_dev(x, dev_str=None):
+    if dev_str is not None:
+        return x.as_in_context(str_to_dev(dev_str))
+    return x
+
+
 dev_to_str = lambda dev_in:\
     dev_in.device_type + (':' + (str(dev_in.device_id) if dev_in.device_id is not None else '0'))
 
