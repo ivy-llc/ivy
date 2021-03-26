@@ -140,6 +140,7 @@
 <li class="toctree-l2"><a class="reference internal" href="general/gather_nd.html">gather_nd</a></li>
 <li class="toctree-l2"><a class="reference internal" href="general/dev.html">dev</a></li>
 <li class="toctree-l2"><a class="reference internal" href="general/dev_to_str.html">dev_to_str</a></li>
+<li class="toctree-l2"><a class="reference internal" href="general/str_to_dev.html">str_to_dev</a></li>
 <li class="toctree-l2"><a class="reference internal" href="general/dev_str.html">dev_str</a></li>
 <li class="toctree-l2"><a class="reference internal" href="general/gpu_is_available.html">gpu_is_available</a></li>
 <li class="toctree-l2"><a class="reference internal" href="general/tpu_is_available.html">tpu_is_available</a></li>
@@ -1197,6 +1198,23 @@ The identity array is a square array with ones on the main diagonal.</p>
 </dd></dl>
 
 <dl class="py function">
+<dt id="ivy.core.general.str_to_dev">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname"><span class="pre">str_to_dev</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dev_str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#str_to_dev"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.core.general.str_to_dev" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert device string representation to native device type.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dev_str</strong> (<em>str</em>) – The device string to conver to native device handle.</p></li>
+<li><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning framework. Inferred from inputs if None.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Native device handle.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt id="ivy.core.general.dev_str">
 <code class="sig-prename descclassname">ivy.</code><code class="sig-name descname"><span class="pre">dev_str</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#dev_str"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.core.general.dev_str" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the device string for input array x.</p>
@@ -1366,6 +1384,7 @@ Required for torch in non-dynamic mode, unused by other frameworks.</p></li>
 <li class="toctree-l1"><a class="reference internal" href="general/gather_nd.html">gather_nd</a></li>
 <li class="toctree-l1"><a class="reference internal" href="general/dev.html">dev</a></li>
 <li class="toctree-l1"><a class="reference internal" href="general/dev_to_str.html">dev_to_str</a></li>
+<li class="toctree-l1"><a class="reference internal" href="general/str_to_dev.html">str_to_dev</a></li>
 <li class="toctree-l1"><a class="reference internal" href="general/dev_str.html">dev_str</a></li>
 <li class="toctree-l1"><a class="reference internal" href="general/gpu_is_available.html">gpu_is_available</a></li>
 <li class="toctree-l1"><a class="reference internal" href="general/tpu_is_available.html">tpu_is_available</a></li>
