@@ -337,7 +337,11 @@ dev = lambda x: x.device
 
 
 def dev_to_str(dev_in):
-    return ':'.join(dev_in.split(':')[-2:]).lower()
+    return ':'.join(dev_in[1:].split(':')[-2:]).lower()
+
+
+def str_to_dev(dev_str):
+    return '/' + dev_str.upper()
 
 
 dev_str = lambda x: dev_to_str(dev(x))

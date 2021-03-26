@@ -502,6 +502,10 @@ def dev_to_str(dev_in: torch.device):
     return dev_type + (':' + (str(dev_idx) if dev_idx is not None else '0'))
 
 
+def str_to_dev(dev_str: str) -> torch.device:
+    return torch.device(dev_str)
+
+
 def dev_str(x):
     return dev_to_str(dev(x))
 

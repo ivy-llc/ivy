@@ -437,6 +437,18 @@ def gather_nd(params, indices, dev_str=None):
 dev = lambda x: x.context
 dev_to_str = lambda dev_in:\
     dev_in.device_type + (':' + (str(dev_in.device_id) if dev_in.device_id is not None else '0'))
+
+
+def str_to_dev(dev_str):
+    dev_split = dev_str.split(':')
+    dev_str = dev_split[0]
+    if len(dev_split) > 1:
+        idx = int(dev_split[1])
+    else:
+        idx = 0
+    return _mx.context.Context(dev_str, idx)
+
+
 dev_str = lambda x: dev_to_str(dev(x))
 _callable_dev_str = dev_str
 gpu_is_available = lambda: _mx.context.num_gpus() > 0

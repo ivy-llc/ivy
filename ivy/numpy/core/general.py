@@ -302,6 +302,7 @@ dev = lambda x: 'cpu:0'
 dev_str = lambda x: 'cpu:0'
 _dev_str_callable = dev_str
 dev_to_str = lambda dev_in: 'cpu:0'
+str_to_dev = lambda dev_str: 'cpu:0'
 gpu_is_available = lambda: False
 tpu_is_available = lambda: False
 dtype = lambda x: x.dtype

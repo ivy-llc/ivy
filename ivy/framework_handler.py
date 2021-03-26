@@ -37,11 +37,11 @@ def _get_framework_from_args(args):
     for arg in args:
         arg_type = type(arg)
         if arg_type in [list, tuple]:
-            lib = _get_framework_from_args(*arg)
+            lib = _get_framework_from_args(arg)
             if lib:
                 return lib
         elif arg_type is dict:
-            lib = _get_framework_from_args(*list(arg.values()))
+            lib = _get_framework_from_args(list(arg.values()))
             if lib:
                 return lib
         else:
