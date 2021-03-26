@@ -62,6 +62,7 @@ General
    general/gather.rst
    general/gather_nd.rst
    general/dev.rst
+   general/to_dev.rst
    general/dev_to_str.rst
    general/str_to_dev.rst
    general/dev_str.rst
