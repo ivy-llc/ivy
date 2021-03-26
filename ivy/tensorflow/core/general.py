@@ -24,6 +24,16 @@ DTYPE_DICT = {_tf.bool: 'bool',
               _tf.float64: 'float64'}
 
 
+# Helpers #
+# --------#
+
+def _same_device(dev_a, dev_b):
+    return '/' + ':'.join(dev_a[1:].split(':')[-2:]) == '/' + ':'.join(dev_b[1:].split(':')[-2:])
+
+
+# API #
+# ----#
+
 # noinspection PyShadowingNames
 def array(object_in, dtype_str=None, dev_str=None):
     dtype = _tf.__dict__[dtype_str] if dtype_str else dtype_str
@@ -334,6 +344,14 @@ def gather_nd(params, indices, dev_str=None):
 
 
 dev = lambda x: x.device
+
+
+def to_dev(x, dev_str=None):
+    current_dev_str = _dev_str_callable(x)
+    if not _same_device(current_dev_str, dev_str):
+        with _tf.device('/' + dev_str.upper()):
+            return _tf.identity(x)
+    return x
 
 
 def dev_to_str(dev_in):

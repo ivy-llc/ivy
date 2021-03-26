@@ -299,6 +299,7 @@ def gather_nd(params, indices, dev_str=None):
 
 
 dev = lambda x: 'cpu:0'
+to_dev = lambda x, dev_str=None: x
 dev_str = lambda x: 'cpu:0'
 _dev_str_callable = dev_str
 dev_to_str = lambda dev_in: 'cpu:0'
