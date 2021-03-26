@@ -854,6 +854,19 @@ def dev_to_str(dev_in, f=None):
     return _get_framework(None, f=f).dev_to_str(dev_in)
 
 
+def str_to_dev(dev_str, f=None):
+    """
+    Convert device string representation to native device type.
+
+    :param dev_str: The device string to conver to native device handle.
+    :type dev_str: str
+    :param f: Machine learning framework. Inferred from inputs if None.
+    :type f: ml_framework, optional
+    :return: Native device handle.
+    """
+    return _get_framework(None, f=f).str_to_dev(dev_str)
+
+
 def dev_str(x, f=None):
     """
     Get the device string for input array x.

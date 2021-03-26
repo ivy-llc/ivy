@@ -24,20 +24,10 @@ DTYPE_DICT = {_jnp.dtype('bool'): 'bool',
 # Helpers #
 # --------#
 
-def _to_dev(x, dev_str_in):
-    if dev_str_in is not None:
-        if 'cpu' in dev_str_in or 'gpu' in dev_str_in or 'tpu' in dev_str_in:
-            dev_split = dev_str_in.split(':')
-            dev_str = dev_split[0]
-            if len(dev_split) > 1:
-                idx = int(dev_split[1])
-            else:
-                idx = 0
-            x = _jax.device_put(x, _jax.devices(dev_str)[idx])
-        else:
-            raise Exception('Invalid device specified, must be in the form [ "cpu:idx" | "gpu:idx" | "tpu:id" ]')
+def _to_dev(x, dev_str):
+    if dev_str is not None:
+        x = _jax.device_put(x, str_to_dev(dev_str))
     return x
-
 
 def _flat_array_to_1_dim_array(x):
     return x.reshape((1,)) if x.shape == () else x
@@ -127,6 +117,7 @@ def unstack(x, axis):
     if x.shape == ():
         return [x]
     dim_size = x.shape[axis]
+    # ToDo: make this faster somehow, jnp.split is VERY slow for large dim_size
     x_split = _jnp.split(x, dim_size, axis)
     res = [_jnp.squeeze(item, axis) for item in x_split]
     return res
@@ -309,6 +300,16 @@ dev = lambda x: x.device_buffer.device()
 def dev_to_str(dev_in):
     p, dev_id = (dev_in.platform, dev_in.id)
     return p + ':' + str(dev_id)
+
+
+def str_to_dev(dev_str):
+    dev_split = dev_str.split(':')
+    dev_str = dev_split[0]
+    if len(dev_split) > 1:
+        idx = int(dev_split[1])
+    else:
+        idx = 0
+    return _jax.devices(dev_str)[idx]
 
 
 dev_str = lambda x: dev_to_str(dev(x))

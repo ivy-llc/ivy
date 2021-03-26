@@ -97,7 +97,7 @@ class SGD(Optimizer):
 
 class Adam(Optimizer):
 
-    def __init__(self, lr=1e-4, beta1=0.9, beta2=0.999, epsilon=1e-07, compile_step=False, dev_str='cpu'):
+    def __init__(self, lr=1e-4, beta1=0.9, beta2=0.999, epsilon=1e-07, compile_step=False, dev_str=None):
         """
         Construct an ADAM optimizer.
 
@@ -111,7 +111,7 @@ class Adam(Optimizer):
         :type epsilon: float, optional
         :param compile_step: Whether to compile the optimizer step, default is False.
         :type compile_step: bool, option
-        :param dev_str: device on which to create the layer's variables 'cuda:0', 'cuda:1', 'cpu' etc. Default is cpu.
+        :param dev_str: device on which to create the layer's variables 'cuda:0', 'cuda:1', 'cpu' etc.
         :type dev_str: str, optional
         """
         Optimizer.__init__(self, lr, compile_step)
