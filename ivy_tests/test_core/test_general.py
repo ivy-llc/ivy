@@ -1404,6 +1404,36 @@ def test_dev(x, dtype_str, tensor_fn, dev_str, call):
     helpers.assert_compilable(ivy.dev)
 
 
+# to_dev
+@pytest.mark.parametrize(
+    "x", [1, [], [1], [[0.0, 1.0], [2.0, 3.0]]])
+@pytest.mark.parametrize(
+    "dtype_str", ['float32'])
+@pytest.mark.parametrize(
+    "tensor_fn", [ivy.array, helpers.var_fn])
+def test_to_dev(x, dtype_str, tensor_fn, dev_str, call):
+    # smoke test
+    if (isinstance(x, Number) or len(x) == 0) and tensor_fn == helpers.var_fn and call is helpers.mx_call:
+        # mxnet does not support 0-dimensional variables
+        pytest.skip()
+    x = tensor_fn(x, dtype_str, dev_str)
+    dev = ivy.dev(x)
+    x_on_dev = ivy.to_dev(x, dev_str)
+    dev_from_new_x = ivy.dev(x)
+    # value test
+    if call in [helpers.tf_call, helpers.tf_graph_call]:
+        assert '/' + ':'.join(dev_from_new_x[1:].split(':')[-2:]) == '/' + ':'.join(dev[1:].split(':')[-2:])
+    elif call is helpers.torch_call:
+        assert dev_from_new_x.type == dev.type
+    else:
+        assert dev_from_new_x == dev
+    # compilation test
+    if call is helpers.torch_call:
+        # pytorch scripting does not handle converting string to device
+        return
+    helpers.assert_compilable(ivy.to_dev)
+
+
 # dev_to_str
 @pytest.mark.parametrize(
     "x", [1, [], [1], [[0.0, 1.0], [2.0, 3.0]]])
@@ -1450,6 +1480,9 @@ def test_str_to_dev(x, dtype_str, tensor_fn, dev_str, call):
     else:
         assert ret == dev
     # compilation test
+    if call is helpers.torch_call:
+        # pytorch scripting does not handle converting string to device
+        return
     helpers.assert_compilable(ivy.str_to_dev)
 
 
