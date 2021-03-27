@@ -135,6 +135,7 @@
 <li class="toctree-l2"><a class="reference internal" href="general/cumsum.html">cumsum</a></li>
 <li class="toctree-l2"><a class="reference internal" href="general/cumprod.html">cumprod</a></li>
 <li class="toctree-l2"><a class="reference internal" href="general/identity.html">identity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="general/meshgrid.html">meshgrid</a></li>
 <li class="toctree-l2"><a class="reference internal" href="general/scatter_flat.html">scatter_flat</a></li>
 <li class="toctree-l2"><a class="reference internal" href="general/scatter_nd.html">scatter_nd</a></li>
 <li class="toctree-l2"><a class="reference internal" href="general/gather.html">gather</a></li>
@@ -1103,6 +1104,24 @@ The identity array is a square array with ones on the main diagonal.</p>
 </dd></dl>
 
 <dl class="py function">
+<dt id="ivy.core.general.meshgrid">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname"><span class="pre">meshgrid</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">xs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">indexing</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'ij'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#meshgrid"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.core.general.meshgrid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Broadcasts parameters for evaluation on an N-D grid.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>xs</strong> (<em>sequence of arrays</em>) – input arrays</p></li>
+<li><p><strong>indexing</strong> (<em>str</em><em>, </em><em>optional</em>) – The indexing method, either ‘xy’ or ‘ij’. Default is ‘ij’.</p></li>
+<li><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning framework. Inferred from inputs if None.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>list of N-D coordinate arrays for evaluating expressions on an N-D grid</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt id="ivy.core.general.scatter_flat">
 <code class="sig-prename descclassname">ivy.</code><code class="sig-name descname"><span class="pre">scatter_flat</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">indices</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">updates</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reduction</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'sum'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dev_str</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#scatter_flat"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.core.general.scatter_flat" title="Permalink to this definition">¶</a></dt>
 <dd><p>Scatter flat updates into a new flat array according to flat indices.</p>
@@ -1417,6 +1436,7 @@ Required for torch in non-dynamic mode, unused by other frameworks.</p></li>
 <li class="toctree-l1"><a class="reference internal" href="general/cumsum.html">cumsum</a></li>
 <li class="toctree-l1"><a class="reference internal" href="general/cumprod.html">cumprod</a></li>
 <li class="toctree-l1"><a class="reference internal" href="general/identity.html">identity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="general/meshgrid.html">meshgrid</a></li>
 <li class="toctree-l1"><a class="reference internal" href="general/scatter_flat.html">scatter_flat</a></li>
 <li class="toctree-l1"><a class="reference internal" href="general/scatter_nd.html">scatter_nd</a></li>
 <li class="toctree-l1"><a class="reference internal" href="general/gather.html">gather</a></li>
