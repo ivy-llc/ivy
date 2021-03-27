@@ -761,6 +761,21 @@ def identity(n, dtype_str='float32', batch_shape=None, dev_str=None, f=None):
     return _get_framework(f=f).identity(n, dtype_str, batch_shape, dev_str)
 
 
+def meshgrid(*xs, indexing='ij', f=None):
+    """
+    Broadcasts parameters for evaluation on an N-D grid.
+
+    :param xs: input arrays
+    :type xs: sequence of arrays
+    :param indexing: The indexing method, either 'xy' or 'ij'. Default is 'ij'.
+    :type indexing: str, optional
+    :param f: Machine learning framework. Inferred from inputs if None.
+    :type f: ml_framework, optional
+    :return: list of N-D coordinate arrays for evaluating expressions on an N-D grid
+    """
+    return _get_framework(f=f).meshgrid(*xs, indexing=indexing)
+
+
 # noinspection PyShadowingNames
 def scatter_flat(indices, updates, size, reduction='sum', dev_str=None, f=None):
     """

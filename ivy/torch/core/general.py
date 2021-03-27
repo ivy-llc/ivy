@@ -386,6 +386,14 @@ def identity(n: int, dtype_str: str = 'float32', batch_shape: Optional[List[int]
         return res
 
 
+def meshgrid(*xs, indexing='ij'):
+    ret = torch.meshgrid(*xs)
+    if indexing == 'xy':
+        # ToDo: verify if this is correct
+        return tuple([torch.swapaxes(x, 1, 0) for x in ret])
+    return ret
+
+
 # noinspection PyShadowingNames
 def scatter_flat(indices, updates, size: int, reduction: str = 'sum', dev_str: Optional[str] = None):
     if dev_str is None:
