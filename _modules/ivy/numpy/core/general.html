@@ -403,6 +403,9 @@
     <span class="k">return</span> <span class="n">_to_dev</span><span class="p">(</span><span class="n">return_mat</span><span class="p">,</span> <span class="n">dev_str</span><span class="p">)</span></div>
 
 
+<span class="n">meshgrid</span> <span class="o">=</span> <span class="k">lambda</span> <span class="o">*</span><span class="n">xs</span><span class="p">,</span> <span class="n">indexing</span><span class="o">=</span><span class="s1">&#39;ij&#39;</span><span class="p">:</span> <span class="n">_np</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span><span class="o">*</span><span class="n">xs</span><span class="p">,</span> <span class="n">indexing</span><span class="o">=</span><span class="n">indexing</span><span class="p">)</span>
+
+
 <div class="viewcode-block" id="scatter_flat"><a class="viewcode-back" href="../../../../numpy/core/general/scatter_flat.html#ivy.numpy.core.general.scatter_flat">[docs]</a><span class="k">def</span> <span class="nf">scatter_flat</span><span class="p">(</span><span class="n">indices</span><span class="p">,</span> <span class="n">updates</span><span class="p">,</span> <span class="n">size</span><span class="p">,</span> <span class="n">reduction</span><span class="o">=</span><span class="s1">&#39;sum&#39;</span><span class="p">,</span> <span class="n">dev_str</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="k">if</span> <span class="n">dev_str</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">dev_str</span> <span class="o">=</span> <span class="n">_dev_str_callable</span><span class="p">(</span><span class="n">updates</span><span class="p">)</span>

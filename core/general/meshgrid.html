@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>floormod &mdash; Ivy 1.0 documentation</title>
+  <title>meshgrid &mdash; Ivy 1.0 documentation</title>
   
 
   
@@ -35,8 +35,8 @@
   <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="floor" href="floor.html" />
-    <link rel="prev" title="round" href="round.html" /> 
+    <link rel="next" title="scatter_flat" href="scatter_flat.html" />
+    <link rel="prev" title="identity" href="identity.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -99,7 +99,7 @@
 <li class="toctree-l2"><a class="reference internal" href="maximum.html">maximum</a></li>
 <li class="toctree-l2"><a class="reference internal" href="clip.html">clip</a></li>
 <li class="toctree-l2"><a class="reference internal" href="round.html">round</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">floormod</a></li>
+<li class="toctree-l2"><a class="reference internal" href="floormod.html">floormod</a></li>
 <li class="toctree-l2"><a class="reference internal" href="floor.html">floor</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ceil.html">ceil</a></li>
 <li class="toctree-l2"><a class="reference internal" href="abs.html">abs</a></li>
@@ -134,7 +134,7 @@
 <li class="toctree-l2"><a class="reference internal" href="cumsum.html">cumsum</a></li>
 <li class="toctree-l2"><a class="reference internal" href="cumprod.html">cumprod</a></li>
 <li class="toctree-l2"><a class="reference internal" href="identity.html">identity</a></li>
-<li class="toctree-l2"><a class="reference internal" href="meshgrid.html">meshgrid</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">meshgrid</a></li>
 <li class="toctree-l2"><a class="reference internal" href="scatter_flat.html">scatter_flat</a></li>
 <li class="toctree-l2"><a class="reference internal" href="scatter_nd.html">scatter_nd</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gather.html">gather</a></li>
@@ -221,13 +221,13 @@
         
           <li><a href="../general.html">General</a> &raquo;</li>
         
-      <li>floormod</li>
+      <li>meshgrid</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="../../_sources/core/general/floormod.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../_sources/core/general/meshgrid.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -240,22 +240,22 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="floormod">
-<h1>floormod<a class="headerlink" href="#floormod" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="meshgrid">
+<h1>meshgrid<a class="headerlink" href="#meshgrid" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
-<dt id="ivy.core.general.floormod">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname"><span class="pre">floormod</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/general.html#floormod"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.core.general.floormod" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns element-wise remainder of division.</p>
+<dt id="ivy.core.general.meshgrid">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname"><span class="pre">meshgrid</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">xs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">indexing</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'ij'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/general.html#meshgrid"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.core.general.meshgrid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Broadcasts parameters for evaluation on an N-D grid.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<em>array</em>) – Input array to floormod.</p></li>
-<li><p><strong>y</strong> (<em>array</em>) – Denominator input for floormod.</p></li>
+<li><p><strong>xs</strong> (<em>sequence of arrays</em>) – input arrays</p></li>
+<li><p><strong>indexing</strong> (<em>str</em><em>, </em><em>optional</em>) – The indexing method, either ‘xy’ or ‘ij’. Default is ‘ij’.</p></li>
 <li><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning framework. Inferred from inputs if None.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>An array of the same shape and type as x, with the elements floor modded.</p>
+<dd class="field-even"><p>list of N-D coordinate arrays for evaluating expressions on an N-D grid</p>
 </dd>
 </dl>
 </dd></dl>
@@ -275,10 +275,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="floor.html" class="btn btn-neutral float-right" title="floor" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="scatter_flat.html" class="btn btn-neutral float-right" title="scatter_flat" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="round.html" class="btn btn-neutral float-left" title="round" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="identity.html" class="btn btn-neutral float-left" title="identity" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
