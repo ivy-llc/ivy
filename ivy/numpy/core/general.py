@@ -229,6 +229,9 @@ def identity(n, dtype_str='float32', batch_shape=None, dev_str=None):
     return _to_dev(return_mat, dev_str)
 
 
+meshgrid = lambda *xs, indexing='ij': _np.meshgrid(*xs, indexing=indexing)
+
+
 def scatter_flat(indices, updates, size, reduction='sum', dev_str=None):
     if dev_str is None:
         dev_str = _dev_str_callable(updates)
