@@ -1276,6 +1276,38 @@ def test_identity(dim_n_bs, dtype_str, tensor_fn, dev_str, call):
     helpers.assert_compilable(ivy.identity)
 
 
+# meshgrid
+@pytest.mark.parametrize(
+    "xs", [([1, 2, 3], [4, 5, 6]), ([1, 2, 3], [4, 5, 6, 7], [8, 9])])
+@pytest.mark.parametrize(
+    "indexing", ['xy', 'ij'])
+@pytest.mark.parametrize(
+    "dtype_str", ['float32'])
+@pytest.mark.parametrize(
+    "tensor_fn", [ivy.array, helpers.var_fn])
+def test_meshgrid(xs, indexing, dtype_str, tensor_fn, dev_str, call):
+    # smoke test
+    xs_as_arrays = [ivy.array(x, 'int32', dev_str) for x in xs]
+    rets = ivy.meshgrid(*xs_as_arrays, indexing=indexing)
+    # type test
+    for ret in rets:
+        assert ivy.is_array(ret)
+    # cardinality test
+    target_shape = tuple([len(x) for x in xs])
+    if indexing == 'xy':
+        target_shape = (target_shape[1], target_shape[0]) + target_shape[2:]
+    for ret in rets:
+        assert ret.shape == target_shape
+    # value test
+    assert np.allclose(call(ivy.meshgrid, *xs_as_arrays, indexing=indexing),
+                       ivy.numpy.meshgrid(*[ivy.to_numpy(x) for x in xs_as_arrays], indexing=indexing))
+    # compilation test
+    if call is helpers.torch_call:
+        # torch scripting can't take variable number of arguments or use keyword-only arguments with defaults
+        return
+    helpers.assert_compilable(ivy.meshgrid)
+
+
 # scatter_flat
 @pytest.mark.parametrize(
     "inds_n_upd_n_size", [([0, 4, 1, 2], [1, 2, 3, 4], 8), ([0, 4, 1, 2, 0], [1, 2, 3, 4, 5], 8)])

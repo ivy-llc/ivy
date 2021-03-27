@@ -220,6 +220,9 @@ def identity(n, dtype_str='float32', batch_shape=None, dev_str=None):
     return to_dev(return_mat, dev_str)
 
 
+meshgrid = lambda *xs, indexing='ij': _jnp.meshgrid(*xs, indexing=indexing)
+
+
 def scatter_flat(indices, updates, size, reduction='sum', dev_str=None):
     if dev_str is None:
         dev_str = _callable_dev_str(updates)

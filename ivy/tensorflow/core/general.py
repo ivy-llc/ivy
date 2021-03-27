@@ -258,6 +258,9 @@ def identity(n, dtype_str='float32', batch_shape=None, dev_str=None):
 TF_SCATTER_VAR = {}
 
 
+meshgrid = lambda *xs, indexing='ij': _tf.meshgrid(*xs, indexing=indexing)
+
+
 # noinspection PyShadowingNames
 def scatter_flat(indices, updates, size, reduction='sum', dev_str=None):
     if dev_str is None:
