@@ -269,6 +269,10 @@ def reshape(x, newshape: List[int]):
     return torch.reshape(x, newshape)
 
 
+def broadcast_to(x, new_shape):
+    return torch.broadcast_to(x, new_shape)
+
+
 def squeeze(x, axis: Optional[int] = None):
     if axis is None:
         return torch.squeeze(x)

@@ -301,6 +301,17 @@ def indices_where(x):
 reshape = lambda x, new_shape: x.reshape(new_shape)
 
 
+def broadcast_to(x, new_shape):
+    x_shape = list(x.shape)
+    num_x_dims = len(x_shape)
+    num_shape_dims = len(new_shape)
+    diff = num_shape_dims - num_x_dims
+    if diff == 0:
+        return _mx.nd.broadcast_to(x, new_shape)
+    x = _mx.nd.reshape(x, [1]*diff + x_shape)
+    return _mx.nd.broadcast_to(x, new_shape)
+
+
 def squeeze(x, axis=None):
     if x.shape == ():
         if axis is None or axis == 0 or axis == -1:

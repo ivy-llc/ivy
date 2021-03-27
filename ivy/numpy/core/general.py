@@ -162,6 +162,7 @@ def indices_where(x):
 
 
 reshape = _np.reshape
+broadcast_to = _np.broadcast_to
 
 
 def squeeze(x, axis=None):

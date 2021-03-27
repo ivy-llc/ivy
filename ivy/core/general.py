@@ -553,6 +553,21 @@ def reshape(x, newshape, f=None):
     return _get_framework(x, f=f).reshape(x, newshape)
 
 
+def broadcast_to(x, newshape, f=None):
+    """
+    Broadcast the input tensor to newshape, adding dimensions of size 1 where the dimensions do not align.
+
+    :param x: Tensor to be broadcast to new shape.
+    :type x: array
+    :param newshape: The new shape the tensor should be broadcast to.
+    :type newshape: sequence of ints
+    :param f: Machine learning framework. Inferred from inputs if None.
+    :type f: ml_framework, optional
+    :return: Newly broadcast array.
+    """
+    return _get_framework(x, f=f).broadcast_to(x, newshape)
+
+
 def squeeze(x, axis=None, f=None):
     """
     Removes a single-dimensional entry from the shape of an array.

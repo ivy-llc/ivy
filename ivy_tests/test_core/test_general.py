@@ -971,6 +971,31 @@ def test_reshape(x_n_shp, dtype_str, tensor_fn, dev_str, call):
     helpers.assert_compilable(ivy.reshape)
 
 
+# broadcast_to
+@pytest.mark.parametrize(
+    "x_n_shp", [([1.], (2, 1)), ([[0., 1.], [2., 3.]], (10, 2, 2))])
+@pytest.mark.parametrize(
+    "dtype_str", ['float32'])
+@pytest.mark.parametrize(
+    "tensor_fn", [ivy.array, helpers.var_fn])
+def test_broadcast_to(x_n_shp, dtype_str, tensor_fn, dev_str, call):
+    # smoke test
+    x, new_shape = x_n_shp
+    if isinstance(x, Number) and tensor_fn == helpers.var_fn and call is helpers.mx_call:
+        # mxnet does not support 0-dimensional variables
+        pytest.skip()
+    x = tensor_fn(x, dtype_str, dev_str)
+    ret = ivy.broadcast_to(x, new_shape)
+    # type test
+    assert ivy.is_array(ret)
+    # cardinality test
+    assert len(ret.shape) == len(new_shape)
+    # value test
+    assert np.allclose(call(ivy.broadcast_to, x, new_shape), ivy.numpy.broadcast_to(ivy.to_numpy(x), new_shape))
+    # compilation test
+    helpers.assert_compilable(ivy.broadcast_to)
+
+
 # squeeze
 @pytest.mark.parametrize(
     "x_n_axis", [(1., 0), (1., -1), ([[1.]], None), ([[[0.], [1.]], [[2.], [3.]]], -1)])
