@@ -123,6 +123,7 @@
 <li class="toctree-l2"><a class="reference internal" href="general/where.html">where</a></li>
 <li class="toctree-l2"><a class="reference internal" href="general/indices_where.html">indices_where</a></li>
 <li class="toctree-l2"><a class="reference internal" href="general/reshape.html">reshape</a></li>
+<li class="toctree-l2"><a class="reference internal" href="general/broadcast_to.html">broadcast_to</a></li>
 <li class="toctree-l2"><a class="reference internal" href="general/squeeze.html">squeeze</a></li>
 <li class="toctree-l2"><a class="reference internal" href="general/zeros.html">zeros</a></li>
 <li class="toctree-l2"><a class="reference internal" href="general/zeros_like.html">zeros_like</a></li>
@@ -872,6 +873,24 @@ In this case, the value is inferred from the length of the array and remaining d
 </dd></dl>
 
 <dl class="py function">
+<dt id="ivy.core.general.broadcast_to">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname"><span class="pre">broadcast_to</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">newshape</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#broadcast_to"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.core.general.broadcast_to" title="Permalink to this definition">¶</a></dt>
+<dd><p>Broadcast the input tensor to newshape, adding dimensions of size 1 where the dimensions do not align.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>array</em>) – Tensor to be broadcast to new shape.</p></li>
+<li><p><strong>newshape</strong> (<em>sequence of ints</em>) – The new shape the tensor should be broadcast to.</p></li>
+<li><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning framework. Inferred from inputs if None.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Newly broadcast array.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt id="ivy.core.general.squeeze">
 <code class="sig-prename descclassname">ivy.</code><code class="sig-name descname"><span class="pre">squeeze</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#squeeze"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.core.general.squeeze" title="Permalink to this definition">¶</a></dt>
 <dd><p>Removes a single-dimensional entry from the shape of an array.</p>
@@ -1386,6 +1405,7 @@ Required for torch in non-dynamic mode, unused by other frameworks.</p></li>
 <li class="toctree-l1"><a class="reference internal" href="general/where.html">where</a></li>
 <li class="toctree-l1"><a class="reference internal" href="general/indices_where.html">indices_where</a></li>
 <li class="toctree-l1"><a class="reference internal" href="general/reshape.html">reshape</a></li>
+<li class="toctree-l1"><a class="reference internal" href="general/broadcast_to.html">broadcast_to</a></li>
 <li class="toctree-l1"><a class="reference internal" href="general/squeeze.html">squeeze</a></li>
 <li class="toctree-l1"><a class="reference internal" href="general/zeros.html">zeros</a></li>
 <li class="toctree-l1"><a class="reference internal" href="general/zeros_like.html">zeros_like</a></li>

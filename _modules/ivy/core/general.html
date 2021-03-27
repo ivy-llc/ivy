@@ -727,6 +727,21 @@
     <span class="k">return</span> <span class="n">_get_framework</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">newshape</span><span class="p">)</span></div>
 
 
+<div class="viewcode-block" id="broadcast_to"><a class="viewcode-back" href="../../../core/general/broadcast_to.html#ivy.core.general.broadcast_to">[docs]</a><span class="k">def</span> <span class="nf">broadcast_to</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">newshape</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Broadcast the input tensor to newshape, adding dimensions of size 1 where the dimensions do not align.</span>
+
+<span class="sd">    :param x: Tensor to be broadcast to new shape.</span>
+<span class="sd">    :type x: array</span>
+<span class="sd">    :param newshape: The new shape the tensor should be broadcast to.</span>
+<span class="sd">    :type newshape: sequence of ints</span>
+<span class="sd">    :param f: Machine learning framework. Inferred from inputs if None.</span>
+<span class="sd">    :type f: ml_framework, optional</span>
+<span class="sd">    :return: Newly broadcast array.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">_get_framework</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">broadcast_to</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">newshape</span><span class="p">)</span></div>
+
+
 <div class="viewcode-block" id="squeeze"><a class="viewcode-back" href="../../../core/general/squeeze.html#ivy.core.general.squeeze">[docs]</a><span class="k">def</span> <span class="nf">squeeze</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Removes a single-dimensional entry from the shape of an array.</span>
