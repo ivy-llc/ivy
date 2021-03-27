@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>identity &mdash; Ivy 1.0 documentation</title>
+  <title>broadcast_to &mdash; Ivy 1.0 documentation</title>
   
 
   
@@ -35,8 +35,8 @@
   <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="scatter_flat" href="scatter_flat.html" />
-    <link rel="prev" title="cumprod" href="cumprod.html" /> 
+    <link rel="next" title="squeeze" href="squeeze.html" />
+    <link rel="prev" title="reshape" href="reshape.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -122,7 +122,7 @@
 <li class="toctree-l2"><a class="reference internal" href="where.html">where</a></li>
 <li class="toctree-l2"><a class="reference internal" href="indices_where.html">indices_where</a></li>
 <li class="toctree-l2"><a class="reference internal" href="reshape.html">reshape</a></li>
-<li class="toctree-l2"><a class="reference internal" href="broadcast_to.html">broadcast_to</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">broadcast_to</a></li>
 <li class="toctree-l2"><a class="reference internal" href="squeeze.html">squeeze</a></li>
 <li class="toctree-l2"><a class="reference internal" href="zeros.html">zeros</a></li>
 <li class="toctree-l2"><a class="reference internal" href="zeros_like.html">zeros_like</a></li>
@@ -133,7 +133,7 @@
 <li class="toctree-l2"><a class="reference internal" href="matmul.html">matmul</a></li>
 <li class="toctree-l2"><a class="reference internal" href="cumsum.html">cumsum</a></li>
 <li class="toctree-l2"><a class="reference internal" href="cumprod.html">cumprod</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">identity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="identity.html">identity</a></li>
 <li class="toctree-l2"><a class="reference internal" href="scatter_flat.html">scatter_flat</a></li>
 <li class="toctree-l2"><a class="reference internal" href="scatter_nd.html">scatter_nd</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gather.html">gather</a></li>
@@ -220,13 +220,13 @@
         
           <li><a href="../general.html">General</a> &raquo;</li>
         
-      <li>identity</li>
+      <li>broadcast_to</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="../../_sources/core/general/identity.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../_sources/core/general/broadcast_to.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -239,25 +239,22 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="identity">
-<h1>identity<a class="headerlink" href="#identity" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="broadcast-to">
+<h1>broadcast_to<a class="headerlink" href="#broadcast-to" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
-<dt id="ivy.core.general.identity">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname"><span class="pre">identity</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype_str</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'float32'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_shape</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dev_str</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/general.html#identity"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.core.general.identity" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns the identity array.
-The identity array is a square array with ones on the main diagonal.</p>
+<dt id="ivy.core.general.broadcast_to">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname"><span class="pre">broadcast_to</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">newshape</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/general.html#broadcast_to"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.core.general.broadcast_to" title="Permalink to this definition">¶</a></dt>
+<dd><p>Broadcast the input tensor to newshape, adding dimensions of size 1 where the dimensions do not align.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>n</strong> (<em>int</em>) – Number of rows (and columns) in n x n output.</p></li>
-<li><p><strong>dtype_str</strong> (<em>data-type string</em><em>, </em><em>optional</em>) – The desired data-type for the array in string format, i.e. ‘float32’ or ‘int64’. Default is ‘float32’.</p></li>
-<li><p><strong>batch_shape</strong> (<em>sequence of ints</em><em>, </em><em>optional</em>) – Shape of batch. Inferred from inputs if None.</p></li>
-<li><p><strong>dev_str</strong> (<em>str</em>) – device on which to create the array ‘cuda:0’, ‘cuda:1’, ‘cpu’ etc..</p></li>
+<li><p><strong>x</strong> (<em>array</em>) – Tensor to be broadcast to new shape.</p></li>
+<li><p><strong>newshape</strong> (<em>sequence of ints</em>) – The new shape the tensor should be broadcast to.</p></li>
 <li><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning framework. Inferred from inputs if None.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>n x n array of type dtype_str, with its main diagonal set to one, and all other elements 0.</p>
+<dd class="field-even"><p>Newly broadcast array.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -277,10 +274,10 @@ The identity array is a square array with ones on the main diagonal.</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="scatter_flat.html" class="btn btn-neutral float-right" title="scatter_flat" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="squeeze.html" class="btn btn-neutral float-right" title="squeeze" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="cumprod.html" class="btn btn-neutral float-left" title="cumprod" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="reshape.html" class="btn btn-neutral float-left" title="reshape" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
