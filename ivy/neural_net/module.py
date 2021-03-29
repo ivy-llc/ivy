@@ -38,15 +38,32 @@ class Module(abc.ABC):
         new_fn.wrapped = True
         return new_fn
 
-    def _find_and_create_variables(self):
+    def _find_variables(self, key='', obj=None):
+        obj = self if obj is None else obj
         vs = dict()
         # ToDo: add support for finding local variables, when JAX supports uniquely flagging variables
-        for key, val in self.__dict__.items():
-            if isinstance(val, Module):
-                vs[key[1:] if key[0] == '_' else key] = val.v
-                self.__dict__[key].__call__ = self._fn_with_var_arg(self.__dict__[key].__call__,
-                                                                    key[1:] if key[0] == '_' else key)
-        return dict(**vs, **self._create_variables(self._dev_str))
+        if isinstance(obj, Module) and obj is not self:
+            vs[key[1:] if key[0] == '_' else key] = obj.v
+            obj.__call__ = self._fn_with_var_arg(obj.__call__, key[1:] if key[0] == '_' else key)
+            return vs
+        elif isinstance(obj, (list, tuple)):
+            for i, v in enumerate(obj):
+                vs = dict(**vs, **self._find_variables(key + str(i), v))
+            return vs
+        elif isinstance(obj, dict):
+            for k, v in obj.items():
+                k = (key + '/' + k) if key != '' else k
+                vs = dict(**vs, **self._find_variables(k, v))
+            return vs
+        if not hasattr(obj, '__dict__'):
+            return vs
+        for k, val in obj.__dict__.items():
+            k = (key + '/' + k) if key != '' else k
+            vs = dict(**vs, **self._find_variables(k, val))
+        return vs
+
+    def _find_and_create_variables(self):
+        return dict(**self._find_variables(), **self._create_variables(self._dev_str))
 
     # Overridable #
 
