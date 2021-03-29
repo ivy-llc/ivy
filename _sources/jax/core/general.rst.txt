@@ -29,6 +29,7 @@ General
    general/ones.rst
    general/ones_like.rst
    general/one_hot.rst
+   general/cumprod.rst
    general/identity.rst
    general/scatter_flat.rst
    general/scatter_nd.rst
