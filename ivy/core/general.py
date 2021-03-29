@@ -725,7 +725,7 @@ def cumsum(x, axis=0, f=None):
     return _get_framework(x, f=f).cumsum(x, axis)
 
 
-def cumprod(x, axis=0, f=None):
+def cumprod(x, axis=0, exclusive=False, f=None):
     """
     Returns the cumulative product of the elements along a given axis.
 
@@ -733,11 +733,13 @@ def cumprod(x, axis=0, f=None):
     :type x: array
     :param axis: Axis along which the cumulative product is computed. By default 0.
     :type axis: int
+    :param exclusive: Whether to perform the cumprod exclusively. Defaults is False.
+    :type exclusive: bool, optional
     :param f: Machine learning framework. Inferred from inputs if None.
     :type f: ml_framework, optional
     :return: Input array with cumulatively multiplied elements along axis.
     """
-    return _get_framework(x, f=f).cumprod(x, axis)
+    return _get_framework(x, f=f).cumprod(x, axis, exclusive)
 
 
 # noinspection PyShadowingNames

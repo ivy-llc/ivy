@@ -383,8 +383,10 @@ def matmul(x1, x2):
 cumsum = lambda x, axis=0: _mx.nd.cumsum(x, axis if axis >= 0 else axis % len(x.shape))
 
 
-def cumprod(x, axis=0):
+def cumprod(x, axis=0, exclusive=False):
     array_stack = [_mx.nd.expand_dims(chunk, axis) for chunk in unstack(x, axis)]
+    if exclusive:
+        array_stack = [_mx.nd.ones_like(array_stack[0])] + array_stack[:-1]
     new_array_list = [array_stack[0]]
     for array_chunk in array_stack[1:]:
         new_array_list.append(new_array_list[-1] * array_chunk)
