@@ -204,7 +204,15 @@ def one_hot(indices, depth, dev_str=None):
 cross = _jnp.cross
 matmul = lambda x1, x2: _jnp.matmul(x1, x2)
 cumsum = _jnp.cumsum
-cumprod = _jnp.cumprod
+
+
+def cumprod(x, axis=0, exclusive=False):
+    if exclusive:
+        x = _jnp.swapaxes(x, axis, -1)
+        x = _jnp.concatenate((_jnp.ones_like(x[..., -1:]), x[..., :-1]), -1)
+        res = _jnp.cumprod(x, -1)
+        return _jnp.swapaxes(res, axis, -1)
+    return _jnp.cumprod(x, axis)
 
 
 # noinspection PyShadowingNames
