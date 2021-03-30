@@ -3,4 +3,4 @@ jaxlib # 0.1.64
 tensorflow # 2.4.1
 tensorflow-addons # 0.12.1
 torch # 1.8.0
-mxnet-cu110 # 1.7.0.post2
+mxnet # 1.7.0.post2
