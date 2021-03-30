@@ -59,7 +59,8 @@ class Module(abc.ABC):
             return vs
         for k, val in obj.__dict__.items():
             k = (key + '/' + k) if key != '' else k
-            vs = dict(**vs, **self._find_variables(k, val))
+            if val is not None:
+                vs = dict(**vs, **self._find_variables(k, val))
         return vs
 
     def _find_and_create_variables(self):
