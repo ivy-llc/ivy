@@ -33,8 +33,9 @@ def test_stack_images(shp_n_num_n_ar_n_newshp, dev_str, call):
 
 # bilinear_resample
 @pytest.mark.parametrize(
-    "x_n_warp", [([[[[0.], [1.]], [[2.], [3.]]]], [[[[0., 1.], [0.5, 0.5]], [[0.5, 1.], [1., 0.5]]]]),
-                 ([[[[[0.], [1.]], [[2.], [3.]]]]], [[[[[0., 1.], [0.5, 0.5]], [[0.5, 1.], [1., 0.5]]]]])])
+    "x_n_warp", [([[[[0.], [1.]], [[2.], [3.]]]], [[[0., 1.], [0.25, 0.25], [0.5, 0.5], [0.5, 1.], [1., 0.5]]]),
+                 ([[[[0.], [1.]], [[2.], [3.]]]], [[[0., 1.], [0.5, 0.5], [0.5, 1.], [1., 0.5]]]),
+                 ([[[[[0.], [1.]], [[2.], [3.]]]]], [[[[0., 1.], [0.5, 0.5], [0.5, 1.], [1., 0.5]]]])])
 @pytest.mark.parametrize(
     "dtype_str", ['float32'])
 @pytest.mark.parametrize(
@@ -48,7 +49,7 @@ def test_bilinear_resample(x_n_warp, dtype_str, tensor_fn, dev_str, call):
     # type test
     assert ivy.is_array(ret)
     # cardinality test
-    assert ret.shape == x.shape
+    assert ret.shape == warp.shape[:-1] + x.shape[-1:]
     # value test
     assert np.allclose(call(ivy.bilinear_resample, x, warp),
                        ivy.numpy.bilinear_resample(ivy.to_numpy(x), ivy.to_numpy(warp)))
