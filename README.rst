@@ -102,7 +102,7 @@ differentiable memory, and differentiable gym environments. Click on the icons b
 **Quick Start**
 
 Ivy can be installed like so: ``pip install ivy-core``
-You can immediately use Ivy to train a neural network like so:
+You can immediately use Ivy to train a neural network, using your favourite framework in the background, like so:
 
 .. code-block:: python
 
@@ -117,7 +117,7 @@ You can immediately use Ivy to train a neural network like so:
             x = ivy.relu(self.linear0(x))
             return ivy.sigmoid(self.linear2(x))
 
-    ivy.set_framework('torch')
+    ivy.set_framework('torch')  # change to any framework!
     model = MyModel()
     optimizer = ivy.Adam(1e-4)
     x_in = ivy.array([1., 2., 3.])
@@ -139,7 +139,7 @@ but the backend can easily be changed to your favourite framework, such as Tenso
 
 **Framework Agnostic Functions**
 
-In the example below we show how ivy's concatenation function is compatible with tensors from different frameworks.
+In the example below we show how Ivy's concatenation function is compatible with tensors from different frameworks.
 This is the same for ALL Ivy functions. They can accept tensors from any framework and return the correct result.
 
 .. code-block:: python
