@@ -105,9 +105,45 @@ differentiable memory, and differentiable gym environments. Click on the icons b
 **Quick Start**
 
 Ivy can be installed like so: ``pip install ivy-core``
+You can immediately use Ivy to train a neural network like so:
 
-To get started, you can immediately use ivy with your deep learning framework of choice.
+.. code-block:: python
+
+    import ivy
+
+    class MyModel(ivy.Module):
+        def __init__(self):
+            self.linear0 = ivy.Linear(3, 64)
+            self.linear2 = ivy.Linear(64, 1)
+
+        def _forward(x):
+            x = ivy.relu(self.linear0(x))
+            return ivy.sigmoid(self.linear2(x))
+
+    ivy.set_framework('torch')
+    model = MyModel()
+    optimizer = ivy.Adam(1e-4)
+    x_in = ivy.array([1., 2., 3.])
+    target = ivy.array([0.])
+
+    def loss_fn(v):
+        out = model(x_in, v=v)
+        return ivy.reduce_mean((out - target)**2)[0]
+
+    for step in range(100):
+        loss, grads = ivy.execute_with_gradients(loss_fn, model.v)
+        model.v = optimizer.step(model.v, grads)
+        print('step {} loss {}'.format(step, ivy.to_numpy(loss).item()))
+
+    print('Finished training!')
+
+This example uses PyTorch as a backend framework,
+but the backend can easily be changed to your favourite framework, such as TensorFlow, JAX or MXNet.
+
+**Framework Agnostic Functions**
+
 In the example below we show how ivy's concatenation function is compatible with tensors from different frameworks.
+This is the same for ALL Ivy functions. They can accept tensors from any framework and return the correct result.
 
 .. code-block:: python
 
@@ -143,7 +179,7 @@ In a Nutshell
 Ivy's strength arises when we want to maximize the usability of our code.
 
 We can write a set of functions **once** in Ivy, and share these with the community so that **all** developers can use them,
-irrespective of their personal choice of framework. TensorFlow? PyTorch? Jax? With Ivy functions it doesn't matter!
+irrespective of their personal choice of framework. TensorFlow? PyTorch? Jax? With Ivy code it doesn't matter!
 
 This makes it very simple to create highly portable deep learning codebases.
 The core idea behind Ivy is captured by the example of the :code:`ivy.clip` function below.

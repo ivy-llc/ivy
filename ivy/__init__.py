@@ -1,6 +1,8 @@
 from .core import *
-from . import neural_net
-from .neural_net import *
+from . import neural_net_functional
+from .neural_net_functional import *
+from . import neural_net_stateful
+from .neural_net_stateful import *
 from . import verbosity
 from .framework_handler import get_framework, set_framework, unset_framework, framework_stack
 
