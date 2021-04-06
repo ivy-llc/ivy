@@ -11,7 +11,7 @@ import random
 
 # local
 import ivy.core.general as ivy_gen
-import ivy.neural_net.layers as ivy_layers
+import ivy.neural_net_stateful.layers as ivy_layers
 this_file_dir = os.path.dirname(os.path.realpath(__file__))
 import with_time_logs.ivy.neural_net.layers as ivy_layers_w_time
 

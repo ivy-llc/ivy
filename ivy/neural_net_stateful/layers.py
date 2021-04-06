@@ -4,7 +4,7 @@ Collection of Ivy neural network layers as stateful classes.
 
 # local
 import ivy
-from ivy.neural_net.module import Module
+from ivy.neural_net_stateful.module import Module
 
 
 # Linear #

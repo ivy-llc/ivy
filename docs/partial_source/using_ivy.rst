@@ -92,7 +92,7 @@ For example, NumPy is often used in conjunction with DL frameworks.
 NumPy can be used for implementing non-differentiable parts of the project on the CPU,
 and interfacing with other packages such as OpenCV and MatPlotLib for visualization.
 
-For end users wishing to use different parts of your code with different backends in a single project,
+For end users wishing to use different parts of their code with different backends in a single project,
 without using repeated calls to :code:`ivy.set_framework()` and :code:`ivy.unset_framework()`,
 then the :code:`with` statement can be used like so:
 
@@ -117,8 +117,8 @@ then the :code:`with` statement can be used like so:
 
 **User Flexibility**
 
-Overall, this variety in backend selection gives end users lots of flexibility.
-If they want to dive straight into using your project, then they can start using functions immediately,
+Overall, this variety in backend selection gives end users a lot of flexibility.
+If they want to dive straight into using your Ivy project, then they can start using functions immediately,
 with type-checking in the background. If they use only a single backend in their project,
 they can explicitly set this at the beginning of their own code using :code:`ivy.set_framework()`.
 Finally, if they use multiple backends in one project,
