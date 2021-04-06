@@ -40,19 +40,20 @@ def stack_images(images: List[torch.Tensor], desired_aspect_ratio: List[int] = (
 def bilinear_resample(x, warp):
     batch_shape = x.shape[:-3]
     input_image_dims = x.shape[-3:-1]
+    num_feats = x.shape[-1]
     batch_shape = list(batch_shape)
     input_image_dims = list(input_image_dims)
     batch_shape_product = reduce(mul, batch_shape, 1)
-    warp_flat = warp.view([batch_shape_product] + input_image_dims + [2])
-    warp_flat_x = 2 * warp_flat[:, :, :, 0:1] / (input_image_dims[1] - 1) - 1
-    warp_flat_y = 2 * warp_flat[:, :, :, 1:2] / (input_image_dims[0] - 1) - 1
+    warp_flat = warp.view([batch_shape_product] + [-1, 1] + [2])
+    warp_flat_x = 2 * warp_flat[..., 0:1] / (input_image_dims[1] - 1) - 1
+    warp_flat_y = 2 * warp_flat[..., 1:2] / (input_image_dims[0] - 1) - 1
     warp_flat_scaled = torch.cat((warp_flat_x, warp_flat_y), -1)
     mat_flat = x.view([batch_shape_product] + input_image_dims + [-1])
     mat_flat_transposed = mat_flat.permute((0, 3, 1, 2))
     interpolated_flat_transposed = torch.nn.functional.grid_sample(mat_flat_transposed, warp_flat_scaled,
                                                                    align_corners=True)
     interpolated_flat = interpolated_flat_transposed.permute((0, 2, 3, 1))
-    return interpolated_flat.view(batch_shape + input_image_dims + [-1])
+    return interpolated_flat.view(batch_shape + [-1, num_feats])
 
 
 def gradient_image(x, batch_shape: Optional[List[int]] = None, image_dims: Optional[List[int]] = None):
