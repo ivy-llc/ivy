@@ -35,12 +35,11 @@ def stack_images(images, desired_aspect_ratio=(1, 1)):
 
 # noinspection PyPep8Naming
 def bilinear_resample(x, warp):
-    batch_shape = _ivy.shape(x)[:-3]
-    input_image_dims = _ivy.shape(x)[-3:-1]
-    output_image_dims = input_image_dims
+    batch_shape = x.shape[:-3]
+    input_image_dims = x.shape[-3:-1]
+    num_feats = x.shape[-1]
     batch_shape = list(batch_shape)
     input_image_dims = list(input_image_dims)
-    output_image_dims = list(output_image_dims)
     # image statistics
     height, width = input_image_dims
     max_x = width - 1
@@ -87,10 +86,10 @@ def bilinear_resample(x, warp):
     wb = _np.expand_dims((1 - xw) * yw, 1)
     wc = _np.expand_dims(xw * (1 - yw), 1)
     wd = _np.expand_dims(xw * yw, 1)
-    # (BxHxW) x D
+    # (BxNP) x D
     resampled_flat = wa * Ia + wb * Ib + wc * Ic + wd * Id
-    # B x H x W x D
-    return _np.reshape(resampled_flat, batch_shape + output_image_dims + [-1])
+    # B x NP x D
+    return _np.reshape(resampled_flat, batch_shape + [-1, num_feats])
 
 
 def gradient_image(x):

@@ -38,10 +38,11 @@ def stack_images(images, desired_aspect_ratio=(1, 1)):
 def bilinear_resample(x, warp):
     batch_shape = _ivy.shape(x)[:-3]
     input_image_dims = _ivy.shape(x)[-3:-1]
+    num_feats = x.shape[-1]
     batch_shape = list(batch_shape)
     input_image_dims = list(input_image_dims)
     batch_shape_product = _reduce(_mul, batch_shape, 1)
-    warp_flat = _mx.nd.reshape(warp, [batch_shape_product] + input_image_dims + [2])
+    warp_flat = _mx.nd.reshape(warp, [batch_shape_product] + [-1, 1] + [2])
     warp_flat_x = 2 * warp_flat[..., 0:1] / (input_image_dims[1] - 1) - 1
     warp_flat_y = 2 * warp_flat[..., 1:2] / (input_image_dims[0] - 1) - 1
     warp_flat_scaled = _mx.nd.concat(warp_flat_x, warp_flat_y, dim=-1)
@@ -50,7 +51,7 @@ def bilinear_resample(x, warp):
     mat_flat_trans = _mx.nd.transpose(mat_flat, (0, 3, 1, 2))
     interpolated_flat_transposed = _mx.nd.BilinearSampler(mat_flat_trans, warp_flat_trans)
     interpolated_flat = _mx.nd.transpose(interpolated_flat_transposed, (0, 2, 3, 1))
-    return _mx.nd.reshape(interpolated_flat, batch_shape + input_image_dims + [-1])
+    return _mx.nd.reshape(interpolated_flat, batch_shape + [-1, num_feats])
 
 
 def gradient_image(x):

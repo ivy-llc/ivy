@@ -39,6 +39,7 @@ def stack_images(images, desired_aspect_ratio=(1, 1)):
 def bilinear_resample(x, warp):
     batch_shape = _ivy.shape(x)[:-3]
     input_image_dims = _ivy.shape(x)[-3:-1]
+    num_feats = x.shape[-1]
     batch_shape = list(batch_shape)
     input_image_dims = list(input_image_dims)
     batch_shape_product = _reduce(_mul, batch_shape, 1)
@@ -50,8 +51,8 @@ def bilinear_resample(x, warp):
             import tensorflow_addons as _tfa
         except:
             raise Exception('Unable to import tensorflow_addons, verify this is correctly installed.')
-    interpolated_flat = _tfa.image.interpolate_bilinear(mat_flat, warp_flat, indexing='xy')
-    return _tf.reshape(interpolated_flat, batch_shape + input_image_dims + [-1])
+    ret = _tfa.image.interpolate_bilinear(mat_flat, warp_flat, indexing='xy')
+    return _tf.reshape(ret, batch_shape + [-1, num_feats])
 
 
 def gradient_image(x):
