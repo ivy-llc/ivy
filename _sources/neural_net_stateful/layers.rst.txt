@@ -1,0 +1,17 @@
+Layers
+======
+
+.. automodule:: ivy.neural_net_stateful.layers
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :show-inheritance:
+
+
+.. toctree::
+   :maxdepth: -1
+   :caption: Layers
+
+   layers/Linear.rst
+   layers/LSTM.rst
+

@@ -88,6 +88,7 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="using_ivy.html">Using Ivy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="training_a_network.html">Training a Network</a></li>
 </ul>
 <p><span class="caption-text">Core</span></p>
 <ul>
@@ -101,11 +102,17 @@
 <li class="toctree-l1"><a class="reference internal" href="core/random.html">Random</a></li>
 <li class="toctree-l1"><a class="reference internal" href="core/reductions.html">Reductions</a></li>
 </ul>
-<p><span class="caption-text">Neural net</span></p>
+<p><span class="caption-text">Neural net functional</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="neural_net/layers.html">Layers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="neural_net/module.html">Module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="neural_net/optimizers.html">Optimizers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="neural_net_functional/activations.html">Activations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="neural_net_functional/layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="neural_net_functional/losses.html">Losses</a></li>
+</ul>
+<p><span class="caption-text">Neural net stateful</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="neural_net_stateful/layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="neural_net_stateful/module.html">Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="neural_net_stateful/optimizers.html">Optimizers</a></li>
 </ul>
 <p><span class="caption-text">Docs</span></p>
 <ul>
@@ -252,7 +259,7 @@ we show the same kalman filter function written in Ivy below.</p>
 </pre></div>
 </div>
 <p>The backend framework can be selected before calling the function like so <code class="docutils literal notranslate"><span class="pre">ivy.set_framework('torch')</span></code>.
-Further details on how to write efficient Ivy code are given in the short guide Writing Ivy in the docs.</p>
+Further details on how to write efficient Ivy code are given in the short guide <a class="reference external" href="https://ivy-dl.org/ivy/using_ivy.html">Using Ivy</a>.</p>
 <p>We now consider the use of your new library by some hypothetical users,
 with this particular application inspired by <a class="reference external" href="https://arxiv.org/abs/1605.07148">Backprop Kalman Filter</a>.
 The details of the algorithm are not important,

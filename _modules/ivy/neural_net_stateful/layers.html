@@ -1,0 +1,372 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>ivy.neural_net_stateful.layers &mdash; Ivy 1.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> Ivy
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p><span class="caption-text">Guides</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../why_ivy.html">Why Ivy?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../using_ivy.html">Using Ivy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../training_a_network.html">Training a Network</a></li>
+</ul>
+<p><span class="caption-text">Core</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../core/container.html">Container</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../core/general.html">General</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../core/gradients.html">Gradients</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../core/image.html">Image</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../core/linalg.html">Linalg</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../core/logic.html">Logic</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../core/math.html">Math</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../core/random.html">Random</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../core/reductions.html">Reductions</a></li>
+</ul>
+<p><span class="caption-text">Neural net functional</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../neural_net_functional/activations.html">Activations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../neural_net_functional/layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../neural_net_functional/losses.html">Losses</a></li>
+</ul>
+<p><span class="caption-text">Neural net stateful</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../neural_net_stateful/layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../neural_net_stateful/module.html">Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../neural_net_stateful/optimizers.html">Optimizers</a></li>
+</ul>
+<p><span class="caption-text">Docs</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../ivy"">Ivy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../mech"">Ivy Mech</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../vision"">Ivy Vision</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../robot"">Ivy Robot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../memory"">Ivy Memory</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../gym"">Ivy Gym</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Ivy</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>ivy.neural_net_stateful.layers</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for ivy.neural_net_stateful.layers</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Collection of Ivy neural network layers as stateful classes.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="c1"># local</span>
+<span class="kn">import</span> <span class="nn">ivy</span>
+<span class="kn">from</span> <span class="nn">ivy.neural_net_stateful.module</span> <span class="k">import</span> <span class="n">Module</span>
+
+
+<span class="c1"># Linear #</span>
+<span class="c1"># -------#</span>
+
+<div class="viewcode-block" id="Linear"><a class="viewcode-back" href="../../../neural_net_stateful/layers/Linear.html#ivy.neural_net_stateful.layers.Linear">[docs]</a><span class="k">class</span> <span class="nc">Linear</span><span class="p">(</span><span class="n">Module</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Linear.__init__"><a class="viewcode-back" href="../../../neural_net_stateful/layers/Linear.html#ivy.neural_net_stateful.layers.Linear.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_channels</span><span class="p">,</span> <span class="n">output_channels</span><span class="p">,</span> <span class="n">dev_str</span><span class="o">=</span><span class="s1">&#39;cpu&#39;</span><span class="p">,</span> <span class="n">v</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Linear layer, also referred to as dense or fully connected. The layer receives tensors with input_channels last</span>
+<span class="sd">        dimension and returns a new tensor with output_channels last dimension, following matrix multiplication with the</span>
+<span class="sd">        weight matrix and addition with the bias vector.</span>
+
+<span class="sd">        :param input_channels: Number of input channels for the layer.</span>
+<span class="sd">        :type input_channels: int</span>
+<span class="sd">        :param output_channels: Number of output channels for the layer.</span>
+<span class="sd">        :type output_channels: int</span>
+<span class="sd">        :param dev_str: device on which to create the layer&#39;s variables &#39;cuda:0&#39;, &#39;cuda:1&#39;, &#39;cpu&#39; etc. Default is cpu.</span>
+<span class="sd">        :type dev_str: str, optional</span>
+<span class="sd">        :param v: the variables for each of the linear layer, as a container, constructed internally by default.</span>
+<span class="sd">        :type v: ivy container of variables, optional</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_input_channels</span> <span class="o">=</span> <span class="n">input_channels</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_output_channels</span> <span class="o">=</span> <span class="n">output_channels</span>
+        <span class="n">Module</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dev_str</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">_create_variables</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dev_str</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create internal variables for the Linear layer</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># ToDo: support other initialization mechanisms, via class constructor options</span>
+        <span class="c1"># ToDo: tidy the construction of these variables, with helper functions</span>
+        <span class="n">wlim</span> <span class="o">=</span> <span class="p">(</span><span class="mi">6</span> <span class="o">/</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_output_channels</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_input_channels</span><span class="p">))</span> <span class="o">**</span> <span class="mf">0.5</span>
+        <span class="n">w</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">variable</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">random_uniform</span><span class="p">(</span><span class="o">-</span><span class="n">wlim</span><span class="p">,</span> <span class="n">wlim</span><span class="p">,</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_output_channels</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_input_channels</span><span class="p">),</span>
+                                            <span class="n">dev_str</span><span class="o">=</span><span class="n">dev_str</span><span class="p">))</span>
+        <span class="n">b</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">variable</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">zeros</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">_output_channels</span><span class="p">],</span> <span class="n">dev_str</span><span class="o">=</span><span class="n">dev_str</span><span class="p">))</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;w&#39;</span><span class="p">:</span> <span class="n">w</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">:</span> <span class="n">b</span><span class="p">}</span>
+
+    <span class="k">def</span> <span class="nf">_forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Perform forward pass of the linear layer.</span>
+
+<span class="sd">        :param inputs: Inputs to process *[batch_shape, in]*.</span>
+<span class="sd">        :type inputs: array</span>
+<span class="sd">        :return: The outputs following the linear operation and bias addition *[batch_shape, out]*</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">linear</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">w</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">b</span><span class="p">)</span></div>
+
+
+<span class="c1"># LSTM #</span>
+<span class="c1"># -----#</span>
+
+<div class="viewcode-block" id="LSTM"><a class="viewcode-back" href="../../../neural_net_stateful/layers/LSTM.html#ivy.neural_net_stateful.layers.LSTM">[docs]</a><span class="k">class</span> <span class="nc">LSTM</span><span class="p">(</span><span class="n">Module</span><span class="p">):</span>
+
+<div class="viewcode-block" id="LSTM.__init__"><a class="viewcode-back" href="../../../neural_net_stateful/layers/LSTM.html#ivy.neural_net_stateful.layers.LSTM.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_channels</span><span class="p">,</span> <span class="n">output_channels</span><span class="p">,</span> <span class="n">num_layers</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">return_sequence</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">return_state</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                 <span class="n">dev_str</span><span class="o">=</span><span class="s1">&#39;cpu&#39;</span><span class="p">,</span> <span class="n">v</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        LSTM layer, which is a set of stacked lstm cells.</span>
+
+<span class="sd">        :param input_channels: Number of input channels for the layer</span>
+<span class="sd">        :type input_channels: int</span>
+<span class="sd">        :param output_channels: Number of output channels for the layer</span>
+<span class="sd">        :type output_channels: int</span>
+<span class="sd">        :param num_layers: Number of lstm cells in the lstm layer, default is 1.</span>
+<span class="sd">        :type num_layers: int, optional</span>
+<span class="sd">        :param return_sequence: Whether or not to return the entire output sequence, or just the latest timestep.</span>
+<span class="sd">                                Default is True.</span>
+<span class="sd">        :type return_sequence: bool, optional</span>
+<span class="sd">        :param return_state: Whether or not to return the latest hidden and cell states. Default is True.</span>
+<span class="sd">        :type return_state: bool, optional</span>
+<span class="sd">        :param dev_str: device on which to create the layer&#39;s variables &#39;cuda:0&#39;, &#39;cuda:1&#39;, &#39;cpu&#39; etc. Default is cpu.</span>
+<span class="sd">        :type dev_str: str, optional</span>
+<span class="sd">        :param v: the variables for each of the lstm cells, as a container, constructed internally by default.</span>
+<span class="sd">        :type v: ivy container of parameter arrays, optional</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_input_channels</span> <span class="o">=</span> <span class="n">input_channels</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_output_channels</span> <span class="o">=</span> <span class="n">output_channels</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_num_layers</span> <span class="o">=</span> <span class="n">num_layers</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_return_sequence</span> <span class="o">=</span> <span class="n">return_sequence</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_return_state</span> <span class="o">=</span> <span class="n">return_state</span>
+        <span class="n">Module</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dev_str</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span></div>
+
+    <span class="c1"># Public #</span>
+
+<div class="viewcode-block" id="LSTM.get_initial_state"><a class="viewcode-back" href="../../../neural_net_stateful/layers/LSTM.html#ivy.neural_net_stateful.layers.LSTM.get_initial_state">[docs]</a>    <span class="k">def</span> <span class="nf">get_initial_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">batch_shape</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Get the initial state of the hidden and cell states, if not provided explicitly</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">batch_shape</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">batch_shape</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">([</span><span class="n">ivy</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">batch_shape</span> <span class="o">+</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_output_channels</span><span class="p">]))</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_num_layers</span><span class="p">)],</span>
+                <span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">batch_shape</span> <span class="o">+</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_output_channels</span><span class="p">]))</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_num_layers</span><span class="p">)])</span></div>
+
+    <span class="c1"># Overridden</span>
+
+    <span class="k">def</span> <span class="nf">_create_variables</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dev_str</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create internal variables for the LSTM layer</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># ToDo: support other initialization mechanisms, via class constructor options</span>
+        <span class="c1"># ToDo: tidy the construction of these variables, with helper functions</span>
+        <span class="n">wlim</span> <span class="o">=</span> <span class="p">(</span><span class="mi">6</span> <span class="o">/</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_output_channels</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_input_channels</span><span class="p">))</span> <span class="o">**</span> <span class="mf">0.5</span>
+        <span class="n">input_weights</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span>
+            <span class="p">[</span><span class="s1">&#39;layer_&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_num_layers</span><span class="p">)],</span>
+            <span class="p">[{</span><span class="s1">&#39;w&#39;</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">variable</span><span class="p">(</span>
+                <span class="n">ivy</span><span class="o">.</span><span class="n">random_uniform</span><span class="p">(</span><span class="o">-</span><span class="n">wlim</span><span class="p">,</span> <span class="n">wlim</span><span class="p">,</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_input_channels</span> <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">0</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">_output_channels</span><span class="p">,</span>
+                                                 <span class="mi">4</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_output_channels</span><span class="p">),</span> <span class="n">dev_str</span><span class="o">=</span><span class="n">dev_str</span><span class="p">))}</span>
+                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_num_layers</span><span class="p">)]))</span>
+        <span class="n">wlim</span> <span class="o">=</span> <span class="p">(</span><span class="mi">6</span> <span class="o">/</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_output_channels</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_output_channels</span><span class="p">))</span> <span class="o">**</span> <span class="mf">0.5</span>
+        <span class="n">recurrent_weights</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span>
+            <span class="p">[</span><span class="s1">&#39;layer_&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_num_layers</span><span class="p">)],</span>
+            <span class="p">[{</span><span class="s1">&#39;w&#39;</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">variable</span><span class="p">(</span>
+                <span class="n">ivy</span><span class="o">.</span><span class="n">random_uniform</span><span class="p">(</span><span class="o">-</span><span class="n">wlim</span><span class="p">,</span> <span class="n">wlim</span><span class="p">,</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_output_channels</span><span class="p">,</span> <span class="mi">4</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_output_channels</span><span class="p">),</span> <span class="n">dev_str</span><span class="o">=</span><span class="n">dev_str</span><span class="p">))}</span>
+             <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_num_layers</span><span class="p">)]))</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;input&#39;</span><span class="p">:</span> <span class="n">input_weights</span><span class="p">,</span> <span class="s1">&#39;recurrent&#39;</span><span class="p">:</span> <span class="n">recurrent_weights</span><span class="p">}</span>
+
+    <span class="k">def</span> <span class="nf">_forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">,</span> <span class="n">initial_state</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Perform forward pass of the lstm layer.</span>
+
+<span class="sd">        :param inputs: Inputs to process *[batch_shape, t, in]*.</span>
+<span class="sd">        :type inputs: array</span>
+<span class="sd">        :param initial_state: 2-tuple of lists of the hidden states h and c for each layer, each of dimension *[batch_shape,out]*.</span>
+<span class="sd">                        Created internally if None.</span>
+<span class="sd">        :type initial_state: tuple of list of arrays, optional</span>
+<span class="sd">        :return: The outputs of the final lstm layer *[batch_shape, t, out]* and the hidden state tuple of lists,</span>
+<span class="sd">                each of dimension *[batch_shape, out]*</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">initial_state</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">initial_state</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_initial_state</span><span class="p">(</span><span class="n">inputs</span><span class="o">.</span><span class="n">shape</span><span class="p">[:</span><span class="o">-</span><span class="mi">2</span><span class="p">])</span>
+        <span class="n">h_n_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+        <span class="n">c_n_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+        <span class="n">h_t</span> <span class="o">=</span> <span class="n">inputs</span>
+        <span class="k">for</span> <span class="n">h_0</span><span class="p">,</span> <span class="n">c_0</span><span class="p">,</span> <span class="p">(</span><span class="n">_</span><span class="p">,</span> <span class="n">lstm_input_var</span><span class="p">),</span> <span class="p">(</span><span class="n">_</span><span class="p">,</span> <span class="n">lstm_recurrent_var</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span>
+                <span class="n">initial_state</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">initial_state</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">input</span><span class="o">.</span><span class="n">items</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">recurrent</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
+            <span class="n">h_t</span><span class="p">,</span> <span class="n">c_n</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">lstm_update</span><span class="p">(</span><span class="n">h_t</span><span class="p">,</span> <span class="n">h_0</span><span class="p">,</span> <span class="n">c_0</span><span class="p">,</span> <span class="n">lstm_input_var</span><span class="o">.</span><span class="n">w</span><span class="p">,</span> <span class="n">lstm_recurrent_var</span><span class="o">.</span><span class="n">w</span><span class="p">)</span>
+            <span class="n">h_n_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">h_t</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="p">:])</span>
+            <span class="n">c_n_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">c_n</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_return_sequence</span><span class="p">:</span>
+            <span class="n">h_t</span> <span class="o">=</span> <span class="n">h_t</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="p">:]</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_return_state</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">h_t</span>
+        <span class="k">return</span> <span class="n">h_t</span><span class="p">,</span> <span class="p">(</span><span class="n">h_n_list</span><span class="p">,</span> <span class="n">c_n_list</span><span class="p">)</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Ivy Team
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

@@ -82,6 +82,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="why_ivy.html">Why Ivy?</a></li>
 <li class="toctree-l1"><a class="reference internal" href="using_ivy.html">Using Ivy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="training_a_network.html">Training a Network</a></li>
 </ul>
 <p><span class="caption-text">Core</span></p>
 <ul>
@@ -95,11 +96,17 @@
 <li class="toctree-l1"><a class="reference internal" href="core/random.html">Random</a></li>
 <li class="toctree-l1"><a class="reference internal" href="core/reductions.html">Reductions</a></li>
 </ul>
-<p><span class="caption-text">Neural net</span></p>
+<p><span class="caption-text">Neural net functional</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="neural_net/layers.html">Layers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="neural_net/module.html">Module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="neural_net/optimizers.html">Optimizers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="neural_net_functional/activations.html">Activations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="neural_net_functional/layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="neural_net_functional/losses.html">Losses</a></li>
+</ul>
+<p><span class="caption-text">Neural net stateful</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="neural_net_stateful/layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="neural_net_stateful/module.html">Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="neural_net_stateful/optimizers.html">Optimizers</a></li>
 </ul>
 <p><span class="caption-text">Docs</span></p>
 <ul>
@@ -207,17 +214,17 @@
       <ul>
         <li><a href="framework_handler.html#ivy.framework_handler.ContextManager.__init__">(ivy.framework_handler.ContextManager method)</a>
 </li>
-        <li><a href="neural_net/layers.html#ivy.neural_net.layers.Linear.__init__">(ivy.neural_net.layers.Linear method)</a>, <a href="neural_net/layers/Linear.html#ivy.neural_net.layers.Linear.__init__">[1]</a>
+        <li><a href="neural_net_stateful/layers.html#ivy.neural_net_stateful.layers.Linear.__init__">(ivy.neural_net_stateful.layers.Linear method)</a>, <a href="neural_net_stateful/layers/Linear.html#ivy.neural_net_stateful.layers.Linear.__init__">[1]</a>
 </li>
-        <li><a href="neural_net/layers.html#ivy.neural_net.layers.LSTM.__init__">(ivy.neural_net.layers.LSTM method)</a>, <a href="neural_net/layers/LSTM.html#ivy.neural_net.layers.LSTM.__init__">[1]</a>
+        <li><a href="neural_net_stateful/layers.html#ivy.neural_net_stateful.layers.LSTM.__init__">(ivy.neural_net_stateful.layers.LSTM method)</a>, <a href="neural_net_stateful/layers/LSTM.html#ivy.neural_net_stateful.layers.LSTM.__init__">[1]</a>
 </li>
-        <li><a href="neural_net/module.html#ivy.neural_net.module.Module.__init__">(ivy.neural_net.module.Module method)</a>, <a href="neural_net/module/Module.html#ivy.neural_net.module.Module.__init__">[1]</a>
+        <li><a href="neural_net_stateful/module.html#ivy.neural_net_stateful.module.Module.__init__">(ivy.neural_net_stateful.module.Module method)</a>, <a href="neural_net_stateful/module/Module.html#ivy.neural_net_stateful.module.Module.__init__">[1]</a>
 </li>
-        <li><a href="neural_net/optimizers.html#ivy.neural_net.optimizers.Adam.__init__">(ivy.neural_net.optimizers.Adam method)</a>, <a href="neural_net/optimizers/Adam.html#ivy.neural_net.optimizers.Adam.__init__">[1]</a>
+        <li><a href="neural_net_stateful/optimizers.html#ivy.neural_net_stateful.optimizers.Adam.__init__">(ivy.neural_net_stateful.optimizers.Adam method)</a>, <a href="neural_net_stateful/optimizers/Adam.html#ivy.neural_net_stateful.optimizers.Adam.__init__">[1]</a>
 </li>
-        <li><a href="neural_net/optimizers.html#ivy.neural_net.optimizers.Optimizer.__init__">(ivy.neural_net.optimizers.Optimizer method)</a>, <a href="neural_net/optimizers/Optimizer.html#ivy.neural_net.optimizers.Optimizer.__init__">[1]</a>
+        <li><a href="neural_net_stateful/optimizers.html#ivy.neural_net_stateful.optimizers.Optimizer.__init__">(ivy.neural_net_stateful.optimizers.Optimizer method)</a>, <a href="neural_net_stateful/optimizers/Optimizer.html#ivy.neural_net_stateful.optimizers.Optimizer.__init__">[1]</a>
 </li>
-        <li><a href="neural_net/optimizers.html#ivy.neural_net.optimizers.SGD.__init__">(ivy.neural_net.optimizers.SGD method)</a>, <a href="neural_net/optimizers/SGD.html#ivy.neural_net.optimizers.SGD.__init__">[1]</a>
+        <li><a href="neural_net_stateful/optimizers.html#ivy.neural_net_stateful.optimizers.SGD.__init__">(ivy.neural_net_stateful.optimizers.SGD method)</a>, <a href="neural_net_stateful/optimizers/SGD.html#ivy.neural_net_stateful.optimizers.SGD.__init__">[1]</a>
 </li>
       </ul></li>
   </ul></td>
@@ -236,7 +243,7 @@
 </li>
       <li><a href="core/math.html#ivy.core.math.acosh">acosh() (in module ivy.core.math)</a>, <a href="core/math/acosh.html#ivy.core.math.acosh">[1]</a>
 </li>
-      <li><a href="neural_net/optimizers.html#ivy.neural_net.optimizers.Adam">Adam (class in ivy.neural_net.optimizers)</a>, <a href="neural_net/optimizers/Adam.html#ivy.neural_net.optimizers.Adam">[1]</a>
+      <li><a href="neural_net_stateful/optimizers.html#ivy.neural_net_stateful.optimizers.Adam">Adam (class in ivy.neural_net_stateful.optimizers)</a>, <a href="neural_net_stateful/optimizers/Adam.html#ivy.neural_net_stateful.optimizers.Adam">[1]</a>
 </li>
       <li><a href="core/gradients.html#ivy.core.gradients.adam_update">adam_update() (in module ivy.core.gradients)</a>, <a href="core/gradients/adam_update.html#ivy.core.gradients.adam_update">[1]</a>
 
@@ -296,7 +303,7 @@
       </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="neural_net/functional/losses.html#ivy.neural_net.functional.losses.binary_cross_entropy">binary_cross_entropy() (in module ivy.neural_net.functional.losses)</a>, <a href="neural_net/functional/losses/binary_cross_entropy.html#ivy.neural_net.functional.losses.binary_cross_entropy">[1]</a>
+      <li><a href="neural_net_functional/losses.html#ivy.neural_net_functional.losses.binary_cross_entropy">binary_cross_entropy() (in module ivy.neural_net_functional.losses)</a>, <a href="neural_net_functional/losses/binary_cross_entropy.html#ivy.neural_net_functional.losses.binary_cross_entropy">[1]</a>
 </li>
       <li><a href="core/general.html#ivy.core.general.broadcast_to">broadcast_to() (in module ivy.core.general)</a>, <a href="core/general/broadcast_to.html#ivy.core.general.broadcast_to">[1]</a>
 </li>
@@ -348,7 +355,7 @@
 </li>
       <li><a href="framework_handler.html#ivy.framework_handler.ContextManager">ContextManager (class in ivy.framework_handler)</a>
 </li>
-      <li><a href="neural_net/functional/layers.html#ivy.neural_net.functional.layers.conv1d">conv1d() (in module ivy.neural_net.functional.layers)</a>, <a href="neural_net/functional/layers/conv1d.html#ivy.neural_net.functional.layers.conv1d">[1]</a>
+      <li><a href="neural_net_functional/layers.html#ivy.neural_net_functional.layers.conv1d">conv1d() (in module ivy.neural_net_functional.layers)</a>, <a href="neural_net_functional/layers/conv1d.html#ivy.neural_net_functional.layers.conv1d">[1]</a>
 
       <ul>
         <li><a href="numpy/nn/layers.html#ivy.numpy.nn.layers.conv1d">(in module ivy.numpy.nn.layers)</a>, <a href="numpy/nn/layers/conv1d.html#ivy.numpy.nn.layers.conv1d">[1]</a>
@@ -356,31 +363,31 @@
       </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="neural_net/functional/layers.html#ivy.neural_net.functional.layers.conv1d_transpose">conv1d_transpose() (in module ivy.neural_net.functional.layers)</a>, <a href="neural_net/functional/layers/conv1d_transpose.html#ivy.neural_net.functional.layers.conv1d_transpose">[1]</a>
+      <li><a href="neural_net_functional/layers.html#ivy.neural_net_functional.layers.conv1d_transpose">conv1d_transpose() (in module ivy.neural_net_functional.layers)</a>, <a href="neural_net_functional/layers/conv1d_transpose.html#ivy.neural_net_functional.layers.conv1d_transpose">[1]</a>
 
       <ul>
         <li><a href="numpy/nn/layers.html#ivy.numpy.nn.layers.conv1d_transpose">(in module ivy.numpy.nn.layers)</a>, <a href="numpy/nn/layers/conv1d_transpose.html#ivy.numpy.nn.layers.conv1d_transpose">[1]</a>
 </li>
       </ul></li>
-      <li><a href="neural_net/functional/layers.html#ivy.neural_net.functional.layers.conv2d">conv2d() (in module ivy.neural_net.functional.layers)</a>, <a href="neural_net/functional/layers/conv2d.html#ivy.neural_net.functional.layers.conv2d">[1]</a>
+      <li><a href="neural_net_functional/layers.html#ivy.neural_net_functional.layers.conv2d">conv2d() (in module ivy.neural_net_functional.layers)</a>, <a href="neural_net_functional/layers/conv2d.html#ivy.neural_net_functional.layers.conv2d">[1]</a>
 
       <ul>
         <li><a href="numpy/nn/layers.html#ivy.numpy.nn.layers.conv2d">(in module ivy.numpy.nn.layers)</a>, <a href="numpy/nn/layers/conv2d.html#ivy.numpy.nn.layers.conv2d">[1]</a>
 </li>
       </ul></li>
-      <li><a href="neural_net/functional/layers.html#ivy.neural_net.functional.layers.conv2d_transpose">conv2d_transpose() (in module ivy.neural_net.functional.layers)</a>, <a href="neural_net/functional/layers/conv2d_transpose.html#ivy.neural_net.functional.layers.conv2d_transpose">[1]</a>
+      <li><a href="neural_net_functional/layers.html#ivy.neural_net_functional.layers.conv2d_transpose">conv2d_transpose() (in module ivy.neural_net_functional.layers)</a>, <a href="neural_net_functional/layers/conv2d_transpose.html#ivy.neural_net_functional.layers.conv2d_transpose">[1]</a>
 
       <ul>
         <li><a href="numpy/nn/layers.html#ivy.numpy.nn.layers.conv2d_transpose">(in module ivy.numpy.nn.layers)</a>, <a href="numpy/nn/layers/conv2d_transpose.html#ivy.numpy.nn.layers.conv2d_transpose">[1]</a>
 </li>
       </ul></li>
-      <li><a href="neural_net/functional/layers.html#ivy.neural_net.functional.layers.conv3d">conv3d() (in module ivy.neural_net.functional.layers)</a>, <a href="neural_net/functional/layers/conv3d.html#ivy.neural_net.functional.layers.conv3d">[1]</a>
+      <li><a href="neural_net_functional/layers.html#ivy.neural_net_functional.layers.conv3d">conv3d() (in module ivy.neural_net_functional.layers)</a>, <a href="neural_net_functional/layers/conv3d.html#ivy.neural_net_functional.layers.conv3d">[1]</a>
 
       <ul>
         <li><a href="numpy/nn/layers.html#ivy.numpy.nn.layers.conv3d">(in module ivy.numpy.nn.layers)</a>, <a href="numpy/nn/layers/conv3d.html#ivy.numpy.nn.layers.conv3d">[1]</a>
 </li>
       </ul></li>
-      <li><a href="neural_net/functional/layers.html#ivy.neural_net.functional.layers.conv3d_transpose">conv3d_transpose() (in module ivy.neural_net.functional.layers)</a>, <a href="neural_net/functional/layers/conv3d_transpose.html#ivy.neural_net.functional.layers.conv3d_transpose">[1]</a>
+      <li><a href="neural_net_functional/layers.html#ivy.neural_net_functional.layers.conv3d_transpose">conv3d_transpose() (in module ivy.neural_net_functional.layers)</a>, <a href="neural_net_functional/layers/conv3d_transpose.html#ivy.neural_net_functional.layers.conv3d_transpose">[1]</a>
 
       <ul>
         <li><a href="numpy/nn/layers.html#ivy.numpy.nn.layers.conv3d_transpose">(in module ivy.numpy.nn.layers)</a>, <a href="numpy/nn/layers/conv3d_transpose.html#ivy.numpy.nn.layers.conv3d_transpose">[1]</a>
@@ -410,7 +417,7 @@
 <h2 id="D">D</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="neural_net/functional/layers.html#ivy.neural_net.functional.layers.depthwise_conv2d">depthwise_conv2d() (in module ivy.neural_net.functional.layers)</a>, <a href="neural_net/functional/layers/depthwise_conv2d.html#ivy.neural_net.functional.layers.depthwise_conv2d">[1]</a>
+      <li><a href="neural_net_functional/layers.html#ivy.neural_net_functional.layers.depthwise_conv2d">depthwise_conv2d() (in module ivy.neural_net_functional.layers)</a>, <a href="neural_net_functional/layers/depthwise_conv2d.html#ivy.neural_net_functional.layers.depthwise_conv2d">[1]</a>
 
       <ul>
         <li><a href="numpy/nn/layers.html#ivy.numpy.nn.layers.depthwise_conv2d">(in module ivy.numpy.nn.layers)</a>, <a href="numpy/nn/layers/depthwise_conv2d.html#ivy.numpy.nn.layers.depthwise_conv2d">[1]</a>
@@ -526,7 +533,7 @@
       </ul></li>
       <li><a href="framework_handler.html#ivy.framework_handler.get_framework">get_framework() (in module ivy.framework_handler)</a>, <a href="framework_handler/get_framework.html#ivy.framework_handler.get_framework">[1]</a>
 </li>
-      <li><a href="neural_net/layers.html#ivy.neural_net.layers.LSTM.get_initial_state">get_initial_state() (ivy.neural_net.layers.LSTM method)</a>, <a href="neural_net/layers/LSTM.html#ivy.neural_net.layers.LSTM.get_initial_state">[1]</a>
+      <li><a href="neural_net_stateful/layers.html#ivy.neural_net_stateful.layers.LSTM.get_initial_state">get_initial_state() (ivy.neural_net_stateful.layers.LSTM method)</a>, <a href="neural_net_stateful/layers/LSTM.html#ivy.neural_net_stateful.layers.LSTM.get_initial_state">[1]</a>
 </li>
       <li><a href="core/general.html#ivy.core.general.get_num_dims">get_num_dims() (in module ivy.core.general)</a>, <a href="core/general/get_num_dims.html#ivy.core.general.get_num_dims">[1]</a>
 
@@ -665,47 +672,47 @@
 </li>
       </ul></li>
       <li>
-    ivy.neural_net.functional.activations
+    ivy.neural_net_functional.activations
 
       <ul>
-        <li><a href="neural_net/functional/activations.html#module-ivy.neural_net.functional.activations">module</a>
+        <li><a href="neural_net_functional/activations.html#module-ivy.neural_net_functional.activations">module</a>
 </li>
       </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li>
-    ivy.neural_net.functional.layers
+    ivy.neural_net_functional.layers
 
       <ul>
-        <li><a href="neural_net/functional/layers.html#module-ivy.neural_net.functional.layers">module</a>
+        <li><a href="neural_net_functional/layers.html#module-ivy.neural_net_functional.layers">module</a>
 </li>
       </ul></li>
       <li>
-    ivy.neural_net.functional.losses
+    ivy.neural_net_functional.losses
 
       <ul>
-        <li><a href="neural_net/functional/losses.html#module-ivy.neural_net.functional.losses">module</a>
+        <li><a href="neural_net_functional/losses.html#module-ivy.neural_net_functional.losses">module</a>
 </li>
       </ul></li>
       <li>
-    ivy.neural_net.layers
+    ivy.neural_net_stateful.layers
 
       <ul>
-        <li><a href="neural_net/layers.html#module-ivy.neural_net.layers">module</a>
+        <li><a href="neural_net_stateful/layers.html#module-ivy.neural_net_stateful.layers">module</a>
 </li>
       </ul></li>
       <li>
-    ivy.neural_net.module
+    ivy.neural_net_stateful.module
 
       <ul>
-        <li><a href="neural_net/module.html#module-ivy.neural_net.module">module</a>
+        <li><a href="neural_net_stateful/module.html#module-ivy.neural_net_stateful.module">module</a>
 </li>
       </ul></li>
       <li>
-    ivy.neural_net.optimizers
+    ivy.neural_net_stateful.optimizers
 
       <ul>
-        <li><a href="neural_net/optimizers.html#module-ivy.neural_net.optimizers">module</a>
+        <li><a href="neural_net_stateful/optimizers.html#module-ivy.neural_net_stateful.optimizers">module</a>
 </li>
       </ul></li>
       <li>
@@ -791,15 +798,15 @@
 <h2 id="L">L</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="neural_net/functional/activations.html#ivy.neural_net.functional.activations.leaky_relu">leaky_relu() (in module ivy.neural_net.functional.activations)</a>, <a href="neural_net/functional/activations/leaky_relu.html#ivy.neural_net.functional.activations.leaky_relu">[1]</a>
+      <li><a href="neural_net_functional/activations.html#ivy.neural_net_functional.activations.leaky_relu">leaky_relu() (in module ivy.neural_net_functional.activations)</a>, <a href="neural_net_functional/activations/leaky_relu.html#ivy.neural_net_functional.activations.leaky_relu">[1]</a>
 
       <ul>
         <li><a href="numpy/nn/activations.html#ivy.numpy.nn.activations.leaky_relu">(in module ivy.numpy.nn.activations)</a>
 </li>
       </ul></li>
-      <li><a href="neural_net/layers.html#ivy.neural_net.layers.Linear">Linear (class in ivy.neural_net.layers)</a>, <a href="neural_net/layers/Linear.html#ivy.neural_net.layers.Linear">[1]</a>
+      <li><a href="neural_net_stateful/layers.html#ivy.neural_net_stateful.layers.Linear">Linear (class in ivy.neural_net_stateful.layers)</a>, <a href="neural_net_stateful/layers/Linear.html#ivy.neural_net_stateful.layers.Linear">[1]</a>
 </li>
-      <li><a href="neural_net/functional/layers.html#ivy.neural_net.functional.layers.linear">linear() (in module ivy.neural_net.functional.layers)</a>, <a href="neural_net/functional/layers/linear.html#ivy.neural_net.functional.layers.linear">[1]</a>
+      <li><a href="neural_net_functional/layers.html#ivy.neural_net_functional.layers.linear">linear() (in module ivy.neural_net_functional.layers)</a>, <a href="neural_net_functional/layers/linear.html#ivy.neural_net_functional.layers.linear">[1]</a>
 
       <ul>
         <li><a href="numpy/nn/layers.html#ivy.numpy.nn.layers.linear">(in module ivy.numpy.nn.layers)</a>
@@ -821,9 +828,9 @@
 </li>
       <li><a href="core/logic.html#ivy.core.logic.logical_or">logical_or() (in module ivy.core.logic)</a>, <a href="core/logic/logical_or.html#ivy.core.logic.logical_or">[1]</a>
 </li>
-      <li><a href="neural_net/layers.html#ivy.neural_net.layers.LSTM">LSTM (class in ivy.neural_net.layers)</a>, <a href="neural_net/layers/LSTM.html#ivy.neural_net.layers.LSTM">[1]</a>
+      <li><a href="neural_net_stateful/layers.html#ivy.neural_net_stateful.layers.LSTM">LSTM (class in ivy.neural_net_stateful.layers)</a>, <a href="neural_net_stateful/layers/LSTM.html#ivy.neural_net_stateful.layers.LSTM">[1]</a>
 </li>
-      <li><a href="neural_net/functional/layers.html#ivy.neural_net.functional.layers.lstm_update">lstm_update() (in module ivy.neural_net.functional.layers)</a>, <a href="neural_net/functional/layers/lstm_update.html#ivy.neural_net.functional.layers.lstm_update">[1]</a>
+      <li><a href="neural_net_functional/layers.html#ivy.neural_net_functional.layers.lstm_update">lstm_update() (in module ivy.neural_net_functional.layers)</a>, <a href="neural_net_functional/layers/lstm_update.html#ivy.neural_net_functional.layers.lstm_update">[1]</a>
 </li>
   </ul></td>
 </tr></table>
@@ -873,17 +880,17 @@
 </li>
         <li><a href="framework_handler.html#module-ivy.framework_handler">ivy.framework_handler</a>
 </li>
-        <li><a href="neural_net/functional/activations.html#module-ivy.neural_net.functional.activations">ivy.neural_net.functional.activations</a>
+        <li><a href="neural_net_functional/activations.html#module-ivy.neural_net_functional.activations">ivy.neural_net_functional.activations</a>
 </li>
-        <li><a href="neural_net/functional/layers.html#module-ivy.neural_net.functional.layers">ivy.neural_net.functional.layers</a>
+        <li><a href="neural_net_functional/layers.html#module-ivy.neural_net_functional.layers">ivy.neural_net_functional.layers</a>
 </li>
-        <li><a href="neural_net/functional/losses.html#module-ivy.neural_net.functional.losses">ivy.neural_net.functional.losses</a>
+        <li><a href="neural_net_functional/losses.html#module-ivy.neural_net_functional.losses">ivy.neural_net_functional.losses</a>
 </li>
-        <li><a href="neural_net/layers.html#module-ivy.neural_net.layers">ivy.neural_net.layers</a>
+        <li><a href="neural_net_stateful/layers.html#module-ivy.neural_net_stateful.layers">ivy.neural_net_stateful.layers</a>
 </li>
-        <li><a href="neural_net/module.html#module-ivy.neural_net.module">ivy.neural_net.module</a>
+        <li><a href="neural_net_stateful/module.html#module-ivy.neural_net_stateful.module">ivy.neural_net_stateful.module</a>
 </li>
-        <li><a href="neural_net/optimizers.html#module-ivy.neural_net.optimizers">ivy.neural_net.optimizers</a>
+        <li><a href="neural_net_stateful/optimizers.html#module-ivy.neural_net_stateful.optimizers">ivy.neural_net_stateful.optimizers</a>
 </li>
         <li><a href="numpy/core/general.html#module-ivy.numpy.core.general">ivy.numpy.core.general</a>
 </li>
@@ -910,7 +917,7 @@
       </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="neural_net/module.html#ivy.neural_net.module.Module">Module (class in ivy.neural_net.module)</a>, <a href="neural_net/module/Module.html#ivy.neural_net.module.Module">[1]</a>
+      <li><a href="neural_net_stateful/module.html#ivy.neural_net_stateful.module.Module">Module (class in ivy.neural_net_stateful.module)</a>, <a href="neural_net_stateful/module/Module.html#ivy.neural_net_stateful.module.Module">[1]</a>
 </li>
       <li><a href="core/random.html#ivy.core.random.multinomial">multinomial() (in module ivy.core.random)</a>, <a href="core/random/multinomial.html#ivy.core.random.multinomial">[1]</a>
 
@@ -952,7 +959,7 @@
         <li><a href="numpy/core/general.html#ivy.numpy.core.general.ones_like">(in module ivy.numpy.core.general)</a>, <a href="numpy/core/general/ones_like.html#ivy.numpy.core.general.ones_like">[1]</a>
 </li>
       </ul></li>
-      <li><a href="neural_net/optimizers.html#ivy.neural_net.optimizers.Optimizer">Optimizer (class in ivy.neural_net.optimizers)</a>, <a href="neural_net/optimizers/Optimizer.html#ivy.neural_net.optimizers.Optimizer">[1]</a>
+      <li><a href="neural_net_stateful/optimizers.html#ivy.neural_net_stateful.optimizers.Optimizer">Optimizer (class in ivy.neural_net_stateful.optimizers)</a>, <a href="neural_net_stateful/optimizers/Optimizer.html#ivy.neural_net_stateful.optimizers.Optimizer">[1]</a>
 </li>
   </ul></td>
 </tr></table>
@@ -1018,7 +1025,7 @@
         <li><a href="numpy/core/reductions.html#ivy.numpy.core.reductions.reduce_sum">(in module ivy.numpy.core.reductions)</a>, <a href="numpy/core/reductions/reduce_sum.html#ivy.numpy.core.reductions.reduce_sum">[1]</a>
 </li>
       </ul></li>
-      <li><a href="neural_net/functional/activations.html#ivy.neural_net.functional.activations.relu">relu() (in module ivy.neural_net.functional.activations)</a>, <a href="neural_net/functional/activations/relu.html#ivy.neural_net.functional.activations.relu">[1]</a>
+      <li><a href="neural_net_functional/activations.html#ivy.neural_net_functional.activations.relu">relu() (in module ivy.neural_net_functional.activations)</a>, <a href="neural_net_functional/activations/relu.html#ivy.neural_net_functional.activations.relu">[1]</a>
 
       <ul>
         <li><a href="numpy/nn/activations.html#ivy.numpy.nn.activations.relu">(in module ivy.numpy.nn.activations)</a>
@@ -1058,7 +1065,7 @@
       </ul></li>
       <li><a href="framework_handler.html#ivy.framework_handler.set_framework">set_framework() (in module ivy.framework_handler)</a>, <a href="framework_handler/set_framework.html#ivy.framework_handler.set_framework">[1]</a>
 </li>
-      <li><a href="neural_net/optimizers.html#ivy.neural_net.optimizers.SGD">SGD (class in ivy.neural_net.optimizers)</a>, <a href="neural_net/optimizers/SGD.html#ivy.neural_net.optimizers.SGD">[1]</a>
+      <li><a href="neural_net_stateful/optimizers.html#ivy.neural_net_stateful.optimizers.SGD">SGD (class in ivy.neural_net_stateful.optimizers)</a>, <a href="neural_net_stateful/optimizers/SGD.html#ivy.neural_net_stateful.optimizers.SGD">[1]</a>
 </li>
       <li><a href="core/general.html#ivy.core.general.shape">shape() (in module ivy.core.general)</a>, <a href="core/general/shape.html#ivy.core.general.shape">[1]</a>
 
@@ -1076,7 +1083,7 @@
       </ul></li>
       <li><a href="core/container.html#ivy.core.container.Container.shuffle_h5_file">shuffle_h5_file() (ivy.core.container.Container static method)</a>, <a href="core/container/Container.html#ivy.core.container.Container.shuffle_h5_file">[1]</a>
 </li>
-      <li><a href="neural_net/functional/activations.html#ivy.neural_net.functional.activations.sigmoid">sigmoid() (in module ivy.neural_net.functional.activations)</a>, <a href="neural_net/functional/activations/sigmoid.html#ivy.neural_net.functional.activations.sigmoid">[1]</a>
+      <li><a href="neural_net_functional/activations.html#ivy.neural_net_functional.activations.sigmoid">sigmoid() (in module ivy.neural_net_functional.activations)</a>, <a href="neural_net_functional/activations/sigmoid.html#ivy.neural_net_functional.activations.sigmoid">[1]</a>
 
       <ul>
         <li><a href="numpy/nn/activations.html#ivy.numpy.nn.activations.sigmoid">(in module ivy.numpy.nn.activations)</a>
@@ -1092,13 +1099,13 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="core/container.html#ivy.core.container.Container.slice">slice() (ivy.core.container.Container method)</a>, <a href="core/container/Container.html#ivy.core.container.Container.slice">[1]</a>
 </li>
-      <li><a href="neural_net/functional/activations.html#ivy.neural_net.functional.activations.softmax">softmax() (in module ivy.neural_net.functional.activations)</a>, <a href="neural_net/functional/activations/softmax.html#ivy.neural_net.functional.activations.softmax">[1]</a>
+      <li><a href="neural_net_functional/activations.html#ivy.neural_net_functional.activations.softmax">softmax() (in module ivy.neural_net_functional.activations)</a>, <a href="neural_net_functional/activations/softmax.html#ivy.neural_net_functional.activations.softmax">[1]</a>
 
       <ul>
         <li><a href="numpy/nn/activations.html#ivy.numpy.nn.activations.softmax">(in module ivy.numpy.nn.activations)</a>, <a href="numpy/nn/activations/softmax.html#ivy.numpy.nn.activations.softmax">[1]</a>
 </li>
       </ul></li>
-      <li><a href="neural_net/functional/activations.html#ivy.neural_net.functional.activations.softplus">softplus() (in module ivy.neural_net.functional.activations)</a>, <a href="neural_net/functional/activations/softplus.html#ivy.neural_net.functional.activations.softplus">[1]</a>
+      <li><a href="neural_net_functional/activations.html#ivy.neural_net_functional.activations.softplus">softplus() (in module ivy.neural_net_functional.activations)</a>, <a href="neural_net_functional/activations/softplus.html#ivy.neural_net_functional.activations.softplus">[1]</a>
 
       <ul>
         <li><a href="numpy/nn/activations.html#ivy.numpy.nn.activations.softplus">(in module ivy.numpy.nn.activations)</a>
@@ -1124,7 +1131,7 @@
         <li><a href="numpy/core/image.html#ivy.numpy.core.image.stack_images">(in module ivy.numpy.core.image)</a>, <a href="numpy/core/image/stack_images.html#ivy.numpy.core.image.stack_images">[1]</a>
 </li>
       </ul></li>
-      <li><a href="neural_net/optimizers.html#ivy.neural_net.optimizers.Optimizer.step">step() (ivy.neural_net.optimizers.Optimizer method)</a>, <a href="neural_net/optimizers/Optimizer.html#ivy.neural_net.optimizers.Optimizer.step">[1]</a>
+      <li><a href="neural_net_stateful/optimizers.html#ivy.neural_net_stateful.optimizers.Optimizer.step">step() (ivy.neural_net_stateful.optimizers.Optimizer method)</a>, <a href="neural_net_stateful/optimizers/Optimizer.html#ivy.neural_net_stateful.optimizers.Optimizer.step">[1]</a>
 </li>
       <li><a href="core/gradients.html#ivy.core.gradients.stop_gradient">stop_gradient() (in module ivy.core.gradients)</a>, <a href="core/gradients/stop_gradient.html#ivy.core.gradients.stop_gradient">[1]</a>
 
@@ -1153,7 +1160,7 @@
       <li><a href="core/math.html#ivy.core.math.tanh">tanh() (in module ivy.core.math)</a>, <a href="core/math/tanh.html#ivy.core.math.tanh">[1]</a>
 
       <ul>
-        <li><a href="neural_net/functional/activations.html#ivy.neural_net.functional.activations.tanh">(in module ivy.neural_net.functional.activations)</a>, <a href="neural_net/functional/activations/tanh.html#ivy.neural_net.functional.activations.tanh">[1]</a>
+        <li><a href="neural_net_functional/activations.html#ivy.neural_net_functional.activations.tanh">(in module ivy.neural_net_functional.activations)</a>, <a href="neural_net_functional/activations/tanh.html#ivy.neural_net_functional.activations.tanh">[1]</a>
 </li>
       </ul></li>
       <li><a href="core/general.html#ivy.core.general.tile">tile() (in module ivy.core.general)</a>, <a href="core/general/tile.html#ivy.core.general.tile">[1]</a>
