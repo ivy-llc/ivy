@@ -5,7 +5,8 @@
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  
+  <meta name="generator" content="Docutils 0.17: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
   <title>Using Ivy &mdash; Ivy 1.0 documentation</title>
@@ -80,7 +81,7 @@
               
             
             
-              <p class="caption"><span class="caption-text">Guides</span></p>
+              <p><span class="caption-text">Guides</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="why_ivy.html">Why Ivy?</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Using Ivy</a><ul>
@@ -89,7 +90,7 @@
 </ul>
 </li>
 </ul>
-<p class="caption"><span class="caption-text">Core</span></p>
+<p><span class="caption-text">Core</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="core/container.html">Container</a></li>
 <li class="toctree-l1"><a class="reference internal" href="core/general.html">General</a></li>
@@ -101,13 +102,13 @@
 <li class="toctree-l1"><a class="reference internal" href="core/random.html">Random</a></li>
 <li class="toctree-l1"><a class="reference internal" href="core/reductions.html">Reductions</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Neural net</span></p>
+<p><span class="caption-text">Neural net</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="neural_net/layers.html">Layers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="neural_net/module.html">Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="neural_net/optimizers.html">Optimizers</a></li>
 </ul>
-<p class="caption"><span class="caption-text">Docs</span></p>
+<p><span class="caption-text">Docs</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../ivy"">Ivy</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../mech"">Ivy Mech</a></li>
@@ -179,14 +180,14 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="using-ivy">
+  <section id="using-ivy">
 <h1>Using Ivy<a class="headerlink" href="#using-ivy" title="Permalink to this headline">¶</a></h1>
 <p>Ivy is useful tool for any developer wishing to maximize the audience of their codebase,
 by making their code framework-agnostic.</p>
 <p>First, we explain how to write framework-agnostic Ivy code.
 We then explain the variety of ways in which an end user can run your Ivy code,
 using their specific choice of backend framework.</p>
-<div class="section" id="writing-ivy">
+<section id="writing-ivy">
 <h2>Writing Ivy<a class="headerlink" href="#writing-ivy" title="Permalink to this headline">¶</a></h2>
 <p>Writing Ivy code is simple.
 The <code class="code docutils literal notranslate"><span class="pre">ivy</span></code> namespace provides access to all of the Ivy functions,
@@ -200,8 +201,8 @@ In reality, your code will likely be a little more complex than this!</p>
 </pre></div>
 </div>
 <p>That’s it, having used the Ivy namespace to write your code, it is now framework-agnostic! There is nothing more to it!</p>
-</div>
-<div class="section" id="running-ivy">
+</section>
+<section id="running-ivy">
 <h2>Running Ivy<a class="headerlink" href="#running-ivy" title="Permalink to this headline">¶</a></h2>
 <p>When it comes to an end user actually <em>running</em> your code alongside their specific framework, there are a number of options.</p>
 <p><strong>Type Checking</strong></p>
@@ -280,8 +281,8 @@ they can explicitly set this at the beginning of their own code using <code clas
 Finally, if they use multiple backends in one project,
 they can set and unset the frameworks using either <code class="code docutils literal notranslate"><span class="pre">ivy.set_framework()</span></code> and <code class="code docutils literal notranslate"><span class="pre">ivy.unset_framework()</span></code>,
 or via the <code class="code docutils literal notranslate"><span class="pre">with</span></code> statement.</p>
-</div>
-</div>
+</section>
+</section>
 
 
            </div>
