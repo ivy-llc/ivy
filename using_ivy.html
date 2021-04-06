@@ -36,7 +36,7 @@
   <link rel="stylesheet" href="_static/css/custom.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Container" href="core/container.html" />
+    <link rel="next" title="Training a Network" href="training_a_network.html" />
     <link rel="prev" title="Why Ivy?" href="why_ivy.html" /> 
 </head>
 
@@ -89,6 +89,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#running-ivy">Running Ivy</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="training_a_network.html">Training a Network</a></li>
 </ul>
 <p><span class="caption-text">Core</span></p>
 <ul>
@@ -102,11 +103,17 @@
 <li class="toctree-l1"><a class="reference internal" href="core/random.html">Random</a></li>
 <li class="toctree-l1"><a class="reference internal" href="core/reductions.html">Reductions</a></li>
 </ul>
-<p><span class="caption-text">Neural net</span></p>
+<p><span class="caption-text">Neural net functional</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="neural_net/layers.html">Layers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="neural_net/module.html">Module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="neural_net/optimizers.html">Optimizers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="neural_net_functional/activations.html">Activations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="neural_net_functional/layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="neural_net_functional/losses.html">Losses</a></li>
+</ul>
+<p><span class="caption-text">Neural net stateful</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="neural_net_stateful/layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="neural_net_stateful/module.html">Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="neural_net_stateful/optimizers.html">Optimizers</a></li>
 </ul>
 <p><span class="caption-text">Docs</span></p>
 <ul>
@@ -252,7 +259,7 @@ The end user would use your codebase like so:</p>
 For example, NumPy is often used in conjunction with DL frameworks.
 NumPy can be used for implementing non-differentiable parts of the project on the CPU,
 and interfacing with other packages such as OpenCV and MatPlotLib for visualization.</p>
-<p>For end users wishing to use different parts of your code with different backends in a single project,
+<p>For end users wishing to use different parts of their code with different backends in a single project,
 without using repeated calls to <code class="code docutils literal notranslate"><span class="pre">ivy.set_framework()</span></code> and <code class="code docutils literal notranslate"><span class="pre">ivy.unset_framework()</span></code>,
 then the <code class="code docutils literal notranslate"><span class="pre">with</span></code> statement can be used like so:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">ivy</span>
@@ -274,8 +281,8 @@ then the <code class="code docutils literal notranslate"><span class="pre">with<
 </pre></div>
 </div>
 <p><strong>User Flexibility</strong></p>
-<p>Overall, this variety in backend selection gives end users lots of flexibility.
-If they want to dive straight into using your project, then they can start using functions immediately,
+<p>Overall, this variety in backend selection gives end users a lot of flexibility.
+If they want to dive straight into using your Ivy project, then they can start using functions immediately,
 with type-checking in the background. If they use only a single backend in their project,
 they can explicitly set this at the beginning of their own code using <code class="code docutils literal notranslate"><span class="pre">ivy.set_framework()</span></code>.
 Finally, if they use multiple backends in one project,
@@ -292,7 +299,7 @@ or via the <code class="code docutils literal notranslate"><span class="pre">wit
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="core/container.html" class="btn btn-neutral float-right" title="Container" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="training_a_network.html" class="btn btn-neutral float-right" title="Training a Network" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="why_ivy.html" class="btn btn-neutral float-left" title="Why Ivy?" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>

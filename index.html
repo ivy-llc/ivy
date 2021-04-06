@@ -84,6 +84,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="why_ivy.html">Why Ivy?</a></li>
 <li class="toctree-l1"><a class="reference internal" href="using_ivy.html">Using Ivy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="training_a_network.html">Training a Network</a></li>
 </ul>
 <p><span class="caption-text">Core</span></p>
 <ul>
@@ -97,11 +98,17 @@
 <li class="toctree-l1"><a class="reference internal" href="core/random.html">Random</a></li>
 <li class="toctree-l1"><a class="reference internal" href="core/reductions.html">Reductions</a></li>
 </ul>
-<p><span class="caption-text">Neural net</span></p>
+<p><span class="caption-text">Neural net functional</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="neural_net/layers.html">Layers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="neural_net/module.html">Module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="neural_net/optimizers.html">Optimizers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="neural_net_functional/activations.html">Activations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="neural_net_functional/layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="neural_net_functional/losses.html">Losses</a></li>
+</ul>
+<p><span class="caption-text">Neural net stateful</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="neural_net_stateful/layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="neural_net_stateful/module.html">Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="neural_net_stateful/optimizers.html">Optimizers</a></li>
 </ul>
 <p><span class="caption-text">Docs</span></p>
 <ul>
@@ -261,9 +268,42 @@ differentiable memory, and differentiable gym environments. Click on the icons b
 <br clear="all" />
 <br/>
 <br/><p><strong>Quick Start</strong></p>
-<p>Ivy can be installed like so: <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">ivy-core</span></code></p>
-<p>To get started, you can immediately use ivy with your deep learning framework of choice.
-In the example below we show how ivy’s concatenation function is compatible with tensors from different frameworks.</p>
+<p>Ivy can be installed like so: <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">ivy-core</span></code>
+You can immediately use Ivy to train a neural network like so:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">ivy</span>
+
+<span class="k">class</span> <span class="nc">MyModel</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">linear0</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">64</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">linear2</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="mi">64</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_forward</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">relu</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">linear0</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">sigmoid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">linear2</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+
+<span class="n">ivy</span><span class="o">.</span><span class="n">set_framework</span><span class="p">(</span><span class="s1">&#39;torch&#39;</span><span class="p">)</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">MyModel</span><span class="p">()</span>
+<span class="n">optimizer</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Adam</span><span class="p">(</span><span class="mf">1e-4</span><span class="p">)</span>
+<span class="n">x_in</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">2.</span><span class="p">,</span> <span class="mf">3.</span><span class="p">])</span>
+<span class="n">target</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">])</span>
+
+<span class="k">def</span> <span class="nf">loss_fn</span><span class="p">(</span><span class="n">v</span><span class="p">):</span>
+    <span class="n">out</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">x_in</span><span class="p">,</span> <span class="n">v</span><span class="o">=</span><span class="n">v</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">reduce_mean</span><span class="p">((</span><span class="n">out</span> <span class="o">-</span> <span class="n">target</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+
+<span class="k">for</span> <span class="n">step</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">100</span><span class="p">):</span>
+    <span class="n">loss</span><span class="p">,</span> <span class="n">grads</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">execute_with_gradients</span><span class="p">(</span><span class="n">loss_fn</span><span class="p">,</span> <span class="n">model</span><span class="o">.</span><span class="n">v</span><span class="p">)</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">v</span> <span class="o">=</span> <span class="n">optimizer</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">v</span><span class="p">,</span> <span class="n">grads</span><span class="p">)</span>
+    <span class="k">print</span><span class="p">(</span><span class="s1">&#39;step {} loss {}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">step</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">(</span><span class="n">loss</span><span class="p">)</span><span class="o">.</span><span class="n">item</span><span class="p">()))</span>
+
+<span class="k">print</span><span class="p">(</span><span class="s1">&#39;Finished training!&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This example uses PyTorch as a backend framework,
+but the backend can easily be changed to your favourite framework, such as TensorFlow, JAX or MXNet.</p>
+<p><strong>Framework Agnostic Functions</strong></p>
+<p>In the example below we show how ivy’s concatenation function is compatible with tensors from different frameworks.
+This is the same for ALL Ivy functions. They can accept tensors from any framework and return the correct result.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">jax.numpy</span> <span class="kn">as</span> <span class="nn">jnp</span>
 <span class="kn">import</span> <span class="nn">tensorflow</span> <span class="kn">as</span> <span class="nn">tf</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
@@ -291,7 +331,7 @@ This is indeed the case, and the benefit of Ivy is <strong>not</strong> the abil
 <h1>In a Nutshell<a class="headerlink" href="#in-a-nutshell" title="Permalink to this headline">¶</a></h1>
 <p>Ivy’s strength arises when we want to maximize the usability of our code.</p>
 <p>We can write a set of functions <strong>once</strong> in Ivy, and share these with the community so that <strong>all</strong> developers can use them,
-irrespective of their personal choice of framework. TensorFlow? PyTorch? Jax? With Ivy functions it doesn’t matter!</p>
+irrespective of their personal choice of framework. TensorFlow? PyTorch? Jax? With Ivy code it doesn’t matter!</p>
 <p>This makes it very simple to create highly portable deep learning codebases.
 The core idea behind Ivy is captured by the example of the <code class="code docutils literal notranslate"><span class="pre">ivy.clip</span></code> function below.</p>
 <p align="center">
@@ -346,6 +386,12 @@ and the best coding practices to get the most out of Ivy for your own codebases 
 <li class="toctree-l1"><a class="reference internal" href="using_ivy.html">Using Ivy</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="using_ivy.html#writing-ivy">Writing Ivy</a></li>
 <li class="toctree-l2"><a class="reference internal" href="using_ivy.html#running-ivy">Running Ivy</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="training_a_network.html">Training a Network</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="training_a_network.html#trainable-ivy-module">Trainable Ivy Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="training_a_network.html#ivy-training">Ivy Training</a></li>
+<li class="toctree-l2"><a class="reference internal" href="training_a_network.html#native-training">Native Training</a></li>
 </ul>
 </li>
 </ul>
@@ -491,21 +537,51 @@ and the best coding practices to get the most out of Ivy for your own codebases 
 <div class="toctree-wrapper compound">
 </div>
 <div class="toctree-wrapper compound">
-<p><span class="caption-text">Neural net</span></p>
+<p><span class="caption-text">Neural net functional</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="neural_net/layers.html">Layers</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="neural_net/layers/Linear.html">Linear</a></li>
-<li class="toctree-l2"><a class="reference internal" href="neural_net/layers/LSTM.html">LSTM</a></li>
+<li class="toctree-l1"><a class="reference internal" href="neural_net_functional/activations.html">Activations</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="neural_net_functional/activations/relu.html">relu</a></li>
+<li class="toctree-l2"><a class="reference internal" href="neural_net_functional/activations/leaky_relu.html">leaky_relu</a></li>
+<li class="toctree-l2"><a class="reference internal" href="neural_net_functional/activations/tanh.html">tanh</a></li>
+<li class="toctree-l2"><a class="reference internal" href="neural_net_functional/activations/sigmoid.html">sigmoid</a></li>
+<li class="toctree-l2"><a class="reference internal" href="neural_net_functional/activations/softmax.html">softmax</a></li>
+<li class="toctree-l2"><a class="reference internal" href="neural_net_functional/activations/softplus.html">softplus</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="neural_net/module.html">Module</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="neural_net/module/Module.html">Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="neural_net_functional/layers.html">Layers</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="neural_net_functional/layers/linear.html">linear</a></li>
+<li class="toctree-l2"><a class="reference internal" href="neural_net_functional/layers/conv1d.html">conv1d</a></li>
+<li class="toctree-l2"><a class="reference internal" href="neural_net_functional/layers/conv1d_transpose.html">conv1d_transpose</a></li>
+<li class="toctree-l2"><a class="reference internal" href="neural_net_functional/layers/conv2d.html">conv2d</a></li>
+<li class="toctree-l2"><a class="reference internal" href="neural_net_functional/layers/conv2d_transpose.html">conv2d_transpose</a></li>
+<li class="toctree-l2"><a class="reference internal" href="neural_net_functional/layers/depthwise_conv2d.html">depthwise_conv2d</a></li>
+<li class="toctree-l2"><a class="reference internal" href="neural_net_functional/layers/conv3d.html">conv3d</a></li>
+<li class="toctree-l2"><a class="reference internal" href="neural_net_functional/layers/conv3d_transpose.html">conv3d_transpose</a></li>
+<li class="toctree-l2"><a class="reference internal" href="neural_net_functional/layers/lstm_update.html">lstm_update</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="neural_net/optimizers.html">Optimizers</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="neural_net/optimizers/Optimizer.html">Optimizer</a></li>
-<li class="toctree-l2"><a class="reference internal" href="neural_net/optimizers/SGD.html">SGD</a></li>
-<li class="toctree-l2"><a class="reference internal" href="neural_net/optimizers/Adam.html">Adam</a></li>
+<li class="toctree-l1"><a class="reference internal" href="neural_net_functional/losses.html">Losses</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="neural_net_functional/losses/binary_cross_entropy.html">binary_cross_entropy</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<p><span class="caption-text">Neural net stateful</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="neural_net_stateful/layers.html">Layers</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="neural_net_stateful/layers/Linear.html">Linear</a></li>
+<li class="toctree-l2"><a class="reference internal" href="neural_net_stateful/layers/LSTM.html">LSTM</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="neural_net_stateful/module.html">Module</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="neural_net_stateful/module/Module.html">Module</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="neural_net_stateful/optimizers.html">Optimizers</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="neural_net_stateful/optimizers/Optimizer.html">Optimizer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="neural_net_stateful/optimizers/SGD.html">SGD</a></li>
+<li class="toctree-l2"><a class="reference internal" href="neural_net_stateful/optimizers/Adam.html">Adam</a></li>
 </ul>
 </li>
 </ul>
