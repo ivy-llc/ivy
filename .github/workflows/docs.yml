@@ -18,13 +18,14 @@ jobs:
           persist-credentials: false
 
       - name: Install Dependencies
+        continue-on-error: true
         run: |
           sudo apt-get update
           sudo apt-get install rsync
           pip3 install --upgrade pip
           pip3 install wheel setuptools
           pip3 install -r ivy/requirements.txt
-          pip3 install -r ivy_doc_builder/requirements.txt
+          cat ivy_doc_builder/requirements.txt | xargs -n 1 pip3 install
 
       - name: Build Docs
         run: |
