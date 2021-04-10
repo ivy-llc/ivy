@@ -25,9 +25,9 @@ def bilinear_resample(x, warp, f=None):
     """
     Performs bilinearly re-sampling on input image.
 
-    :param x: Input image.
+    :param x: Input image *[batch_shape,h,w,dims]*.
     :type x: array
-    :param warp: Warp array.
+    :param warp: Warp array *[batch_shape,num_samples,2]*
     :type warp: array
     :param f: Machine learning framework. Inferred from inputs if None.
     :type f: ml_framework, optional
