@@ -15,13 +15,21 @@
 # ==============================================================================
 from distutils.core import setup
 import setuptools
-
 setup(name='ivy-core',
-      version='1.1.3',
-      description='The templated deep learning framework, enabling framework-agnostic functions, layers and libraries.\n'
-                  'Tested with JAX 0.2.10, TensorFlow 2.4.1, PyTorch 1.8.0, MXNet 1.7.0, NumPy 1.19.5',
+      version='1.1.4',
       author='Ivy Team',
       author_email='ivydl.team@gmail.com',
+      description='The templated deep learning framework, enabling framework-agnostic functions, layers and libraries.',
+      long_description="""# What is Ivy?\n\nIvy is a templated deep learning framework which maximizes the portability
+      of deep learning codebases. Ivy wraps the functional APIs of existing frameworks. Framework-agnostic functions,
+      libraries and layers can then be written using Ivy, with simultaneous support for all frameworks.
+      Ivy currently supports Jax, TensorFlow, PyTorch, MXNet and Numpy. Check out the [docs](https://ivy-dl.org/ivy) for more info!""",
+      long_description_content_type='text/markdown',
+      url='https://ivy-dl.org/ivy',
+      project_urls={
+            'Docs': 'https://ivy-dl.org/ivy/',
+            'Source': 'https://github.com/ivy-dl/ivy',
+      },
       packages=setuptools.find_packages(),
       install_requires=['h5py', 'numpy', 'termcolor'],
       classifiers=['License :: OSI Approved :: Apache Software License'],
