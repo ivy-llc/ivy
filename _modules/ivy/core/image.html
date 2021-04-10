@@ -206,9 +206,9 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Performs bilinearly re-sampling on input image.</span>
 
-<span class="sd">    :param x: Input image.</span>
+<span class="sd">    :param x: Input image *[batch_shape,h,w,dims]*.</span>
 <span class="sd">    :type x: array</span>
-<span class="sd">    :param warp: Warp array.</span>
+<span class="sd">    :param warp: Warp array *[batch_shape,num_samples,2]*</span>
 <span class="sd">    :type warp: array</span>
 <span class="sd">    :param f: Machine learning framework. Inferred from inputs if None.</span>
 <span class="sd">    :type f: ml_framework, optional</span>
