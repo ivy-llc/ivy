@@ -5,8 +5,7 @@
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <meta name="generator" content="Docutils 0.17: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
   <title>Why Ivy? &mdash; Ivy 1.0 documentation</title>
@@ -25,6 +24,7 @@
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
@@ -81,7 +81,7 @@
               
             
             
-              <p><span class="caption-text">Guides</span></p>
+              <p class="caption"><span class="caption-text">Guides</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Why Ivy?</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#portable-code">Portable Code</a></li>
@@ -90,7 +90,7 @@
 <li class="toctree-l1"><a class="reference internal" href="using_ivy.html">Using Ivy</a></li>
 <li class="toctree-l1"><a class="reference internal" href="training_a_network.html">Training a Network</a></li>
 </ul>
-<p><span class="caption-text">Core</span></p>
+<p class="caption"><span class="caption-text">Core</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="core/container.html">Container</a></li>
 <li class="toctree-l1"><a class="reference internal" href="core/general.html">General</a></li>
@@ -102,19 +102,19 @@
 <li class="toctree-l1"><a class="reference internal" href="core/random.html">Random</a></li>
 <li class="toctree-l1"><a class="reference internal" href="core/reductions.html">Reductions</a></li>
 </ul>
-<p><span class="caption-text">Neural net functional</span></p>
+<p class="caption"><span class="caption-text">Neural net functional</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="neural_net_functional/activations.html">Activations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="neural_net_functional/layers.html">Layers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="neural_net_functional/losses.html">Losses</a></li>
 </ul>
-<p><span class="caption-text">Neural net stateful</span></p>
+<p class="caption"><span class="caption-text">Neural net stateful</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="neural_net_stateful/layers.html">Layers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="neural_net_stateful/module.html">Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="neural_net_stateful/optimizers.html">Optimizers</a></li>
 </ul>
-<p><span class="caption-text">Docs</span></p>
+<p class="caption"><span class="caption-text">Docs</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../ivy"">Ivy</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../mech"">Ivy Mech</a></li>
@@ -186,9 +186,9 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="why-ivy">
+  <div class="section" id="why-ivy">
 <h1>Why Ivy?<a class="headerlink" href="#why-ivy" title="Permalink to this headline">¶</a></h1>
-<section id="portable-code">
+<div class="section" id="portable-code">
 <h2>Portable Code<a class="headerlink" href="#portable-code" title="Permalink to this headline">¶</a></h2>
 <p>Ivy’s strength arises when we want to maximize the usability of our code.</p>
 <p>With deep learning and gradient-based optimization increasingly finding their way into all kinds of different fields,
@@ -269,7 +269,7 @@ we simply aim to highlight the “drag-and-drop” nature of this new bayesian I
 
 <span class="kn">import</span> <span class="nn">ivy</span>
 <span class="kn">import</span> <span class="nn">ivy_bayes</span>
-<span class="kn">import</span> <span class="nn">tensorflow</span> <span class="kn">as</span> <span class="nn">tf</span>
+<span class="kn">import</span> <span class="nn">tensorflow</span> <span class="k">as</span> <span class="nn">tf</span>
 <span class="n">ivy</span><span class="o">.</span><span class="n">set_framework</span><span class="p">(</span><span class="s1">&#39;tensorflow&#39;</span><span class="p">)</span>
 
 <span class="k">class</span> <span class="nc">Network</span><span class="p">(</span><span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">layers</span><span class="o">.</span><span class="n">Layer</span><span class="p">):</span>
@@ -308,8 +308,8 @@ we simply aim to highlight the “drag-and-drop” nature of this new bayesian I
 </div>
 <p>The same drag-and-drop behaviour is possible for MXNet, Jax and Numpy,
 and we are commited to supporting future deep learning frameworks, yet to be created.</p>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

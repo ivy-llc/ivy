@@ -5,8 +5,7 @@
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <meta name="generator" content="Docutils 0.17: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
   <title>arange &mdash; Ivy 1.0 documentation</title>
@@ -82,13 +81,13 @@
               
             
             
-              <p><span class="caption-text">Guides</span></p>
+              <p class="caption"><span class="caption-text">Guides</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../why_ivy.html">Why Ivy?</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../using_ivy.html">Using Ivy</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../training_a_network.html">Training a Network</a></li>
 </ul>
-<p><span class="caption-text">Core</span></p>
+<p class="caption"><span class="caption-text">Core</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../container.html">Container</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../general.html">General</a><ul class="current">
@@ -163,19 +162,19 @@
 <li class="toctree-l1"><a class="reference internal" href="../random.html">Random</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../reductions.html">Reductions</a></li>
 </ul>
-<p><span class="caption-text">Neural net functional</span></p>
+<p class="caption"><span class="caption-text">Neural net functional</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../neural_net_functional/activations.html">Activations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../neural_net_functional/layers.html">Layers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../neural_net_functional/losses.html">Losses</a></li>
 </ul>
-<p><span class="caption-text">Neural net stateful</span></p>
+<p class="caption"><span class="caption-text">Neural net stateful</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../neural_net_stateful/layers.html">Layers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../neural_net_stateful/module.html">Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../neural_net_stateful/optimizers.html">Optimizers</a></li>
 </ul>
-<p><span class="caption-text">Docs</span></p>
+<p class="caption"><span class="caption-text">Docs</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../ivy"">Ivy</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../mech"">Ivy Mech</a></li>
@@ -249,11 +248,11 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="arange">
+  <div class="section" id="arange">
 <h1>arange<a class="headerlink" href="#arange" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
 <dt id="ivy.core.general.arange">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname"><span class="pre">arange</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">stop</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype_str</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dev_str</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/general.html#arange"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.core.general.arange" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">arange</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">stop</span></em>, <em class="sig-param"><span class="n">start</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">step</span><span class="o">=</span><span class="default_value">1</span></em>, <em class="sig-param"><span class="n">dtype_str</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">dev_str</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">f</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/general.html#arange"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.arange" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns evenly spaced values within a given interval, with the spacing being specified.</p>
 <p>Values are generated within the half-open interval [start, stop) (in other words, the interval including start but
 excluding stop). For integer arguments the function is equivalent to the Python built-in range function,
@@ -289,7 +288,7 @@ Because of floating point overflow, this rule may result in the last element of 
 <div class="line"><strong>Supported Frameworks:</strong></div>
 </div>
 <p><a class="reference internal" href="../../_images/empty.png"><img alt="empty" src="../../_images/empty.png" style="width: 4%;" /></a> <a class="reference external" href="https://jax.readthedocs.io"><img alt="jax_logo" src="../../_images/jax_logo.png" style="width: 14%;" /></a> <a class="reference internal" href="../../_images/empty.png"><img alt="empty" src="../../_images/empty.png" style="width: 4%;" /></a> <a class="reference external" href="https://www.tensorflow.org"><img alt="tf_logo" src="../../_images/tensorflow_logo.png" style="width: 14%;" /></a> <a class="reference internal" href="../../_images/empty.png"><img alt="empty" src="../../_images/empty.png" style="width: 4%;" /></a> <a class="reference external" href="https://pytorch.org"><img alt="pytorch_logo" src="../../_images/pytorch_logo.png" style="width: 14%;" /></a> <a class="reference internal" href="../../_images/empty.png"><img alt="empty" src="../../_images/empty.png" style="width: 4%;" /></a> <a class="reference external" href="https://mxnet.apache.org"><img alt="mxnet_logo" src="../../_images/mxnet_logo.png" style="width: 14%;" /></a> <a class="reference internal" href="../../_images/empty.png"><img alt="empty" src="../../_images/empty.png" style="width: 4%;" /></a> <a class="reference external" href="https://numpy.org"><img alt="numpy_logo" src="../../_images/numpy_logo.png" style="width: 14%;" /></a> <a class="reference internal" href="../../_images/empty.png"><img alt="empty" src="../../_images/empty.png" style="width: 4%;" /></a></p>
-</section>
+</div>
 
 
            </div>

@@ -24,6 +24,7 @@
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../_static/js/theme.js"></script>
 
@@ -78,13 +79,13 @@
               
             
             
-              <p><span class="caption-text">Guides</span></p>
+              <p class="caption"><span class="caption-text">Guides</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../why_ivy.html">Why Ivy?</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../using_ivy.html">Using Ivy</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../training_a_network.html">Training a Network</a></li>
 </ul>
-<p><span class="caption-text">Core</span></p>
+<p class="caption"><span class="caption-text">Core</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../core/container.html">Container</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../core/general.html">General</a></li>
@@ -96,19 +97,19 @@
 <li class="toctree-l1"><a class="reference internal" href="../../core/random.html">Random</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../core/reductions.html">Reductions</a></li>
 </ul>
-<p><span class="caption-text">Neural net functional</span></p>
+<p class="caption"><span class="caption-text">Neural net functional</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../neural_net_functional/activations.html">Activations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../neural_net_functional/layers.html">Layers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../neural_net_functional/losses.html">Losses</a></li>
 </ul>
-<p><span class="caption-text">Neural net stateful</span></p>
+<p class="caption"><span class="caption-text">Neural net stateful</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../neural_net_stateful/layers.html">Layers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../neural_net_stateful/module.html">Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../neural_net_stateful/optimizers.html">Optimizers</a></li>
 </ul>
-<p><span class="caption-text">Docs</span></p>
+<p class="caption"><span class="caption-text">Docs</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../ivy"">Ivy</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../mech"">Ivy Mech</a></li>
@@ -181,7 +182,7 @@
   <h1>Source code for ivy.framework_handler</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">ivy</span>
 <span class="kn">import</span> <span class="nn">importlib</span>
-<span class="kn">from</span> <span class="nn">ivy</span> <span class="k">import</span> <span class="n">verbosity</span>
+<span class="kn">from</span> <span class="nn">ivy</span> <span class="kn">import</span> <span class="n">verbosity</span>
 
 
 <span class="n">framework_stack</span> <span class="o">=</span> <span class="p">[]</span>
@@ -189,13 +190,13 @@
 
 
 <div class="viewcode-block" id="ContextManager"><a class="viewcode-back" href="../../framework_handler.html#ivy.framework_handler.ContextManager">[docs]</a><span class="k">class</span> <span class="nc">ContextManager</span><span class="p">:</span>
-<div class="viewcode-block" id="ContextManager.__init__"><a class="viewcode-back" href="../../framework_handler.html#ivy.framework_handler.ContextManager.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">module</span><span class="p">):</span>
+<div class="viewcode-block" id="ContextManager.__init__"><a class="viewcode-back" href="../../framework_handler.html#ivy.framework_handler.ContextManager.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">module</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">module</span> <span class="o">=</span> <span class="n">module</span></div>
 
-    <span class="k">def</span> <span class="nf">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">set_framework</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">module</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exc_type</span><span class="p">,</span> <span class="n">exc_val</span><span class="p">,</span> <span class="n">exc_tb</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exc_type</span><span class="p">,</span> <span class="n">exc_val</span><span class="p">,</span> <span class="n">exc_tb</span><span class="p">):</span>
         <span class="n">unset_framework</span><span class="p">()</span></div>
 
 

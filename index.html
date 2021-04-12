@@ -5,8 +5,7 @@
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <meta name="generator" content="Docutils 0.17: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
   <title>Contents &mdash; Ivy 1.0 documentation</title>
@@ -25,6 +24,7 @@
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
@@ -80,13 +80,13 @@
               
             
             
-              <p><span class="caption-text">Guides</span></p>
+              <p class="caption"><span class="caption-text">Guides</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="why_ivy.html">Why Ivy?</a></li>
 <li class="toctree-l1"><a class="reference internal" href="using_ivy.html">Using Ivy</a></li>
 <li class="toctree-l1"><a class="reference internal" href="training_a_network.html">Training a Network</a></li>
 </ul>
-<p><span class="caption-text">Core</span></p>
+<p class="caption"><span class="caption-text">Core</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="core/container.html">Container</a></li>
 <li class="toctree-l1"><a class="reference internal" href="core/general.html">General</a></li>
@@ -98,19 +98,19 @@
 <li class="toctree-l1"><a class="reference internal" href="core/random.html">Random</a></li>
 <li class="toctree-l1"><a class="reference internal" href="core/reductions.html">Reductions</a></li>
 </ul>
-<p><span class="caption-text">Neural net functional</span></p>
+<p class="caption"><span class="caption-text">Neural net functional</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="neural_net_functional/activations.html">Activations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="neural_net_functional/layers.html">Layers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="neural_net_functional/losses.html">Losses</a></li>
 </ul>
-<p><span class="caption-text">Neural net stateful</span></p>
+<p class="caption"><span class="caption-text">Neural net stateful</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="neural_net_stateful/layers.html">Layers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="neural_net_stateful/module.html">Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="neural_net_stateful/optimizers.html">Optimizers</a></li>
 </ul>
-<p><span class="caption-text">Docs</span></p>
+<p class="caption"><span class="caption-text">Docs</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../ivy"">Ivy</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../mech"">Ivy Mech</a></li>
@@ -221,15 +221,15 @@
     <a href="https://numpy.org">
         <img width="12%" style="float: left;" src="https://raw.githubusercontent.com/ivy-dl/ivy-dl.github.io/master/img/externally_linked/logos/supported/numpy_logo.png">
     </a>
-</div><section id="contents">
+</div><div class="section" id="contents">
 <h1>Contents<a class="headerlink" href="#contents" title="Permalink to this headline">¶</a></h1>
 <ul class="simple">
 <li><p><a class="reference internal" href="#overview">Overview</a></p></li>
 <li><p><a class="reference internal" href="#in-a-nutshell">In a Nutshell</a></p></li>
 <li><p><a class="reference internal" href="#where-next">Where Next?</a></p></li>
 </ul>
-</section>
-<section id="overview">
+</div>
+<div class="section" id="overview">
 <h1>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h1>
 <p><strong>What is Ivy?</strong></p>
 <p>Ivy is a templated deep learning framework which maximizes the portability of deep learning codebases.
@@ -291,9 +291,9 @@ You can immediately use Ivy to train a neural network, using your favourite fram
 <span class="k">for</span> <span class="n">step</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">100</span><span class="p">):</span>
     <span class="n">loss</span><span class="p">,</span> <span class="n">grads</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">execute_with_gradients</span><span class="p">(</span><span class="n">loss_fn</span><span class="p">,</span> <span class="n">model</span><span class="o">.</span><span class="n">v</span><span class="p">)</span>
     <span class="n">model</span><span class="o">.</span><span class="n">v</span> <span class="o">=</span> <span class="n">optimizer</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">v</span><span class="p">,</span> <span class="n">grads</span><span class="p">)</span>
-    <span class="k">print</span><span class="p">(</span><span class="s1">&#39;step {} loss {}&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">step</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">(</span><span class="n">loss</span><span class="p">)</span><span class="o">.</span><span class="n">item</span><span class="p">()))</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;step </span><span class="si">{}</span><span class="s1"> loss </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">step</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">(</span><span class="n">loss</span><span class="p">)</span><span class="o">.</span><span class="n">item</span><span class="p">()))</span>
 
-<span class="k">print</span><span class="p">(</span><span class="s1">&#39;Finished training!&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Finished training!&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>This example uses PyTorch as a backend framework,
@@ -301,10 +301,10 @@ but the backend can easily be changed to your favourite framework, such as Tenso
 <p><strong>Framework Agnostic Functions</strong></p>
 <p>In the example below we show how Ivy’s concatenation function is compatible with tensors from different frameworks.
 This is the same for ALL Ivy functions. They can accept tensors from any framework and return the correct result.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">jax.numpy</span> <span class="kn">as</span> <span class="nn">jnp</span>
-<span class="kn">import</span> <span class="nn">tensorflow</span> <span class="kn">as</span> <span class="nn">tf</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">mxnet</span> <span class="kn">as</span> <span class="nn">mx</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">jax.numpy</span> <span class="k">as</span> <span class="nn">jnp</span>
+<span class="kn">import</span> <span class="nn">tensorflow</span> <span class="k">as</span> <span class="nn">tf</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">mxnet</span> <span class="k">as</span> <span class="nn">mx</span>
 <span class="kn">import</span> <span class="nn">torch</span>
 
 <span class="kn">import</span> <span class="nn">ivy</span>
@@ -323,8 +323,8 @@ You should then see output like the following:</p>
 Don’t most developers stick to just one framework for a project?
 This is indeed the case, and the benefit of Ivy is <strong>not</strong> the ability to combine different frameworks in a single project.</p>
 <p>So what is the benefit of Ivy?</p>
-</section>
-<section id="in-a-nutshell">
+</div>
+<div class="section" id="in-a-nutshell">
 <h1>In a Nutshell<a class="headerlink" href="#in-a-nutshell" title="Permalink to this headline">¶</a></h1>
 <p>Ivy’s strength arises when we want to maximize the usability of our code.</p>
 <p>We can write a set of functions <strong>once</strong> in Ivy, and share these with the community so that <strong>all</strong> developers can use them,
@@ -346,8 +346,8 @@ The schematic below emphasizes that you can choose to develop at any abstraction
 </p><p>You can code entirely in Ivy, or mainly in their native DL framework, with a small amount of Ivy code.
 This is entirely up to you, depending on how many Ivy functions you need from existing Ivy libraries,
 and how much new Ivy code you add into your own project, to maximize it’s audience when sharing online.</p>
-</section>
-<section id="where-next">
+</div>
+<div class="section" id="where-next">
 <h1>Where Next?<a class="headerlink" href="#where-next" title="Permalink to this headline">¶</a></h1>
 <p>So, now that you’ve got the gist of Ivy, and why it’s useful. Where to next?</p>
 <p>This depends on whether you see yourself in the short term as more likely to be an Ivy library <em>user</em> or an Ivy library <em>contributor</em>.</p>
@@ -359,8 +359,8 @@ or if you would like to implement parts of your own project in Ivy to maximise i
 then we recommend checking out the page <a class="reference external" href="https://ivy-dl.org/ivy/using_ivy.html">Using Ivy</a> in the docs.
 Here, we dive a bit deeper into the Ivy framework,
 and the best coding practices to get the most out of Ivy for your own codebases and libraries.</p>
-</section>
-<section id="citation">
+</div>
+<div class="section" id="citation">
 <h1>Citation<a class="headerlink" href="#citation" title="Permalink to this headline">¶</a></h1>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nd">@article</span><span class="p">{</span><span class="n">lenton2021ivy</span><span class="p">,</span>
   <span class="n">title</span><span class="o">=</span><span class="p">{</span><span class="n">Ivy</span><span class="p">:</span> <span class="n">Templated</span> <span class="n">Deep</span> <span class="n">Learning</span> <span class="k">for</span> <span class="n">Inter</span><span class="o">-</span><span class="n">Framework</span> <span class="n">Portability</span><span class="p">},</span>
@@ -370,11 +370,11 @@ and the best coding practices to get the most out of Ivy for your own codebases 
 <span class="p">}</span>
 </pre></div>
 </div>
-</section>
-<section id="documentation-tree">
+</div>
+<div class="section" id="documentation-tree">
 <h1>Documentation Tree<a class="headerlink" href="#documentation-tree" title="Permalink to this headline">¶</a></h1>
 <div class="toctree-wrapper compound">
-<p><span class="caption-text">Guides</span></p>
+<p class="caption"><span class="caption-text">Guides</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="why_ivy.html">Why Ivy?</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="why_ivy.html#portable-code">Portable Code</a></li>
@@ -394,7 +394,7 @@ and the best coding practices to get the most out of Ivy for your own codebases 
 </ul>
 </div>
 <div class="toctree-wrapper compound">
-<p><span class="caption-text">Core</span></p>
+<p class="caption"><span class="caption-text">Core</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="core/container.html">Container</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="core/container/Container.html">Container</a></li>
@@ -534,7 +534,7 @@ and the best coding practices to get the most out of Ivy for your own codebases 
 <div class="toctree-wrapper compound">
 </div>
 <div class="toctree-wrapper compound">
-<p><span class="caption-text">Neural net functional</span></p>
+<p class="caption"><span class="caption-text">Neural net functional</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="neural_net_functional/activations.html">Activations</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="neural_net_functional/activations/relu.html">relu</a></li>
@@ -564,7 +564,7 @@ and the best coding practices to get the most out of Ivy for your own codebases 
 </ul>
 </div>
 <div class="toctree-wrapper compound">
-<p><span class="caption-text">Neural net stateful</span></p>
+<p class="caption"><span class="caption-text">Neural net stateful</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="neural_net_stateful/layers.html">Layers</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="neural_net_stateful/layers/Linear.html">Linear</a></li>
@@ -590,7 +590,7 @@ and the best coding practices to get the most out of Ivy for your own codebases 
 <div class="toctree-wrapper compound">
 </div>
 <div class="toctree-wrapper compound">
-<p><span class="caption-text">Docs</span></p>
+<p class="caption"><span class="caption-text">Docs</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../ivy"">Ivy</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../mech"">Ivy Mech</a></li>
@@ -600,7 +600,7 @@ and the best coding practices to get the most out of Ivy for your own codebases 
 <li class="toctree-l1"><a class="reference internal" href="../gym"">Ivy Gym</a></li>
 </ul>
 </div>
-</section>
+</div>
 
 
            </div>

@@ -24,6 +24,7 @@
         <script src="../../../_static/jquery.js"></script>
         <script src="../../../_static/underscore.js"></script>
         <script src="../../../_static/doctools.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../../_static/js/theme.js"></script>
 
@@ -78,13 +79,13 @@
               
             
             
-              <p><span class="caption-text">Guides</span></p>
+              <p class="caption"><span class="caption-text">Guides</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../why_ivy.html">Why Ivy?</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../using_ivy.html">Using Ivy</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../training_a_network.html">Training a Network</a></li>
 </ul>
-<p><span class="caption-text">Core</span></p>
+<p class="caption"><span class="caption-text">Core</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../core/container.html">Container</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../core/general.html">General</a></li>
@@ -96,19 +97,19 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../core/random.html">Random</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../core/reductions.html">Reductions</a></li>
 </ul>
-<p><span class="caption-text">Neural net functional</span></p>
+<p class="caption"><span class="caption-text">Neural net functional</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../neural_net_functional/activations.html">Activations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../neural_net_functional/layers.html">Layers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../neural_net_functional/losses.html">Losses</a></li>
 </ul>
-<p><span class="caption-text">Neural net stateful</span></p>
+<p class="caption"><span class="caption-text">Neural net stateful</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../neural_net_stateful/layers.html">Layers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../neural_net_stateful/module.html">Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../neural_net_stateful/optimizers.html">Optimizers</a></li>
 </ul>
-<p><span class="caption-text">Docs</span></p>
+<p class="caption"><span class="caption-text">Docs</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../ivy"">Ivy</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../mech"">Ivy Mech</a></li>
@@ -195,7 +196,7 @@
 
 <div class="viewcode-block" id="Optimizer"><a class="viewcode-back" href="../../../neural_net_stateful/optimizers/Optimizer.html#ivy.neural_net_stateful.optimizers.Optimizer">[docs]</a><span class="k">class</span> <span class="nc">Optimizer</span><span class="p">(</span><span class="n">abc</span><span class="o">.</span><span class="n">ABC</span><span class="p">):</span>
 
-<div class="viewcode-block" id="Optimizer.__init__"><a class="viewcode-back" href="../../../neural_net_stateful/optimizers/Optimizer.html#ivy.neural_net_stateful.optimizers.Optimizer.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lr</span><span class="p">,</span> <span class="n">dev_str</span><span class="p">,</span> <span class="n">compile_step</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="Optimizer.__init__"><a class="viewcode-back" href="../../../neural_net_stateful/optimizers/Optimizer.html#ivy.neural_net_stateful.optimizers.Optimizer.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lr</span><span class="p">,</span> <span class="n">dev_str</span><span class="p">,</span> <span class="n">compile_step</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Construct an general Optimizer. This is an abstract class, and must be derived.</span>
 
@@ -250,7 +251,7 @@
 
 <div class="viewcode-block" id="SGD"><a class="viewcode-back" href="../../../neural_net_stateful/optimizers/SGD.html#ivy.neural_net_stateful.optimizers.SGD">[docs]</a><span class="k">class</span> <span class="nc">SGD</span><span class="p">(</span><span class="n">Optimizer</span><span class="p">):</span>
 
-<div class="viewcode-block" id="SGD.__init__"><a class="viewcode-back" href="../../../neural_net_stateful/optimizers/SGD.html#ivy.neural_net_stateful.optimizers.SGD.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lr</span><span class="o">=</span><span class="mf">1e-4</span><span class="p">,</span> <span class="n">compile_step</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="SGD.__init__"><a class="viewcode-back" href="../../../neural_net_stateful/optimizers/SGD.html#ivy.neural_net_stateful.optimizers.SGD.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lr</span><span class="o">=</span><span class="mf">1e-4</span><span class="p">,</span> <span class="n">compile_step</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Construct a Stochastic-Gradient-Descent (SGD) optimizer.</span>
 
@@ -278,7 +279,7 @@
 
 <div class="viewcode-block" id="Adam"><a class="viewcode-back" href="../../../neural_net_stateful/optimizers/Adam.html#ivy.neural_net_stateful.optimizers.Adam">[docs]</a><span class="k">class</span> <span class="nc">Adam</span><span class="p">(</span><span class="n">Optimizer</span><span class="p">):</span>
 
-<div class="viewcode-block" id="Adam.__init__"><a class="viewcode-back" href="../../../neural_net_stateful/optimizers/Adam.html#ivy.neural_net_stateful.optimizers.Adam.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lr</span><span class="o">=</span><span class="mf">1e-4</span><span class="p">,</span> <span class="n">beta1</span><span class="o">=</span><span class="mf">0.9</span><span class="p">,</span> <span class="n">beta2</span><span class="o">=</span><span class="mf">0.999</span><span class="p">,</span> <span class="n">epsilon</span><span class="o">=</span><span class="mf">1e-07</span><span class="p">,</span> <span class="n">compile_step</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">dev_str</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="Adam.__init__"><a class="viewcode-back" href="../../../neural_net_stateful/optimizers/Adam.html#ivy.neural_net_stateful.optimizers.Adam.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lr</span><span class="o">=</span><span class="mf">1e-4</span><span class="p">,</span> <span class="n">beta1</span><span class="o">=</span><span class="mf">0.9</span><span class="p">,</span> <span class="n">beta2</span><span class="o">=</span><span class="mf">0.999</span><span class="p">,</span> <span class="n">epsilon</span><span class="o">=</span><span class="mf">1e-07</span><span class="p">,</span> <span class="n">compile_step</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">dev_str</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Construct an ADAM optimizer.</span>
 
