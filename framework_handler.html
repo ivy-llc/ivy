@@ -5,8 +5,7 @@
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <meta name="generator" content="Docutils 0.17: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
   <title>Framework handler &mdash; Ivy 1.0 documentation</title>
@@ -25,6 +24,7 @@
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
@@ -79,13 +79,13 @@
               
             
             
-              <p><span class="caption-text">Guides</span></p>
+              <p class="caption"><span class="caption-text">Guides</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="why_ivy.html">Why Ivy?</a></li>
 <li class="toctree-l1"><a class="reference internal" href="using_ivy.html">Using Ivy</a></li>
 <li class="toctree-l1"><a class="reference internal" href="training_a_network.html">Training a Network</a></li>
 </ul>
-<p><span class="caption-text">Core</span></p>
+<p class="caption"><span class="caption-text">Core</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="core/container.html">Container</a></li>
 <li class="toctree-l1"><a class="reference internal" href="core/general.html">General</a></li>
@@ -97,19 +97,19 @@
 <li class="toctree-l1"><a class="reference internal" href="core/random.html">Random</a></li>
 <li class="toctree-l1"><a class="reference internal" href="core/reductions.html">Reductions</a></li>
 </ul>
-<p><span class="caption-text">Neural net functional</span></p>
+<p class="caption"><span class="caption-text">Neural net functional</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="neural_net_functional/activations.html">Activations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="neural_net_functional/layers.html">Layers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="neural_net_functional/losses.html">Losses</a></li>
 </ul>
-<p><span class="caption-text">Neural net stateful</span></p>
+<p class="caption"><span class="caption-text">Neural net stateful</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="neural_net_stateful/layers.html">Layers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="neural_net_stateful/module.html">Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="neural_net_stateful/optimizers.html">Optimizers</a></li>
 </ul>
-<p><span class="caption-text">Docs</span></p>
+<p class="caption"><span class="caption-text">Docs</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../ivy"">Ivy</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../mech"">Ivy Mech</a></li>
@@ -181,15 +181,15 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="module-ivy.framework_handler">
+  <div class="section" id="module-ivy.framework_handler">
 <span id="framework-handler"></span><h1>Framework handler<a class="headerlink" href="#module-ivy.framework_handler" title="Permalink to this headline">¶</a></h1>
 <dl class="py class">
 <dt id="ivy.framework_handler.ContextManager">
-<em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">ivy.framework_handler.</span></code><code class="sig-name descname"><span class="pre">ContextManager</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">module</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ivy/framework_handler.html#ContextManager"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.framework_handler.ContextManager" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">ivy.framework_handler.</code><code class="sig-name descname">ContextManager</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">module</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ivy/framework_handler.html#ContextManager"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.framework_handler.ContextManager" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <dl class="py method">
 <dt id="ivy.framework_handler.ContextManager.__init__">
-<code class="sig-name descname"><span class="pre">__init__</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">module</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ivy/framework_handler.html#ContextManager.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.framework_handler.ContextManager.__init__" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">module</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ivy/framework_handler.html#ContextManager.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.framework_handler.ContextManager.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
 </dd></dl>
 
@@ -197,29 +197,29 @@
 
 <dl class="py function">
 <dt id="ivy.framework_handler.get_framework">
-<code class="sig-prename descclassname"><span class="pre">ivy.framework_handler.</span></code><code class="sig-name descname"><span class="pre">get_framework</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ivy/framework_handler.html#get_framework"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.framework_handler.get_framework" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">ivy.framework_handler.</code><code class="sig-name descname">get_framework</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="n">f</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ivy/framework_handler.html#get_framework"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.framework_handler.get_framework" title="Permalink to this definition">¶</a></dt>
 <dd><p>Priorities: framework &gt; global_framework &gt; input’s framework.</p>
 </dd></dl>
 
 <dl class="py function">
 <dt id="ivy.framework_handler.set_framework">
-<code class="sig-prename descclassname"><span class="pre">ivy.framework_handler.</span></code><code class="sig-name descname"><span class="pre">set_framework</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">f</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ivy/framework_handler.html#set_framework"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.framework_handler.set_framework" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">ivy.framework_handler.</code><code class="sig-name descname">set_framework</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">f</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ivy/framework_handler.html#set_framework"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.framework_handler.set_framework" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py function">
 <dt id="ivy.framework_handler.unset_framework">
-<code class="sig-prename descclassname"><span class="pre">ivy.framework_handler.</span></code><code class="sig-name descname"><span class="pre">unset_framework</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ivy/framework_handler.html#unset_framework"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.framework_handler.unset_framework" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">ivy.framework_handler.</code><code class="sig-name descname">unset_framework</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ivy/framework_handler.html#unset_framework"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.framework_handler.unset_framework" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <div class="toctree-wrapper compound">
-<p><span class="caption-text">Framework handler</span></p>
+<p class="caption"><span class="caption-text">Framework handler</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="framework_handler/get_framework.html">get_framework</a></li>
 <li class="toctree-l1"><a class="reference internal" href="framework_handler/set_framework.html">set_framework</a></li>
 <li class="toctree-l1"><a class="reference internal" href="framework_handler/unset_framework.html">unset_framework</a></li>
 </ul>
 </div>
-</section>
+</div>
 
 
            </div>

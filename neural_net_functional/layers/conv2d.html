@@ -5,8 +5,7 @@
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <meta name="generator" content="Docutils 0.17: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
   <title>conv2d &mdash; Ivy 1.0 documentation</title>
@@ -25,6 +24,7 @@
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../_static/js/theme.js"></script>
 
@@ -81,13 +81,13 @@
               
             
             
-              <p><span class="caption-text">Guides</span></p>
+              <p class="caption"><span class="caption-text">Guides</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../why_ivy.html">Why Ivy?</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../using_ivy.html">Using Ivy</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../training_a_network.html">Training a Network</a></li>
 </ul>
-<p><span class="caption-text">Core</span></p>
+<p class="caption"><span class="caption-text">Core</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../core/container.html">Container</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../core/general.html">General</a></li>
@@ -99,7 +99,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../core/random.html">Random</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../core/reductions.html">Reductions</a></li>
 </ul>
-<p><span class="caption-text">Neural net functional</span></p>
+<p class="caption"><span class="caption-text">Neural net functional</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../activations.html">Activations</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../layers.html">Layers</a><ul class="current">
@@ -116,13 +116,13 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../losses.html">Losses</a></li>
 </ul>
-<p><span class="caption-text">Neural net stateful</span></p>
+<p class="caption"><span class="caption-text">Neural net stateful</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../neural_net_stateful/layers.html">Layers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../neural_net_stateful/module.html">Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../neural_net_stateful/optimizers.html">Optimizers</a></li>
 </ul>
-<p><span class="caption-text">Docs</span></p>
+<p class="caption"><span class="caption-text">Docs</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../ivy"">Ivy</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../mech"">Ivy Mech</a></li>
@@ -196,11 +196,11 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="conv2d">
+  <div class="section" id="conv2d">
 <h1>conv2d<a class="headerlink" href="#conv2d" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
 <dt id="ivy.neural_net_functional.layers.conv2d">
-<code class="sig-prename descclassname"><span class="pre">ivy.neural_net_functional.layers.</span></code><code class="sig-name descname"><span class="pre">conv2d</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filters</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">strides</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">padding</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'NHWC'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dilations</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/neural_net_functional/layers.html#conv2d"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.neural_net_functional.layers.conv2d" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">ivy.neural_net_functional.layers.</code><code class="sig-name descname">conv2d</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">filters</span></em>, <em class="sig-param"><span class="n">strides</span></em>, <em class="sig-param"><span class="n">padding</span></em>, <em class="sig-param"><span class="n">data_format</span><span class="o">=</span><span class="default_value">'NHWC'</span></em>, <em class="sig-param"><span class="n">dilations</span><span class="o">=</span><span class="default_value">1</span></em>, <em class="sig-param"><span class="n">f</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/neural_net_functional/layers.html#conv2d"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.neural_net_functional.layers.conv2d" title="Permalink to this definition">¶</a></dt>
 <dd><p>Computes a 2-D convolution given 4-D input x and filters arrays.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -225,7 +225,7 @@
 <div class="line"><strong>Supported Frameworks:</strong></div>
 </div>
 <p><a class="reference internal" href="../../_images/empty.png"><img alt="empty" src="../../_images/empty.png" style="width: 4%;" /></a> <a class="reference external" href="https://jax.readthedocs.io"><img alt="jax_logo" src="../../_images/jax_logo.png" style="width: 14%;" /></a> <a class="reference internal" href="../../_images/empty.png"><img alt="empty" src="../../_images/empty.png" style="width: 4%;" /></a> <a class="reference external" href="https://www.tensorflow.org"><img alt="tf_logo" src="../../_images/tensorflow_logo.png" style="width: 14%;" /></a> <a class="reference internal" href="../../_images/empty.png"><img alt="empty" src="../../_images/empty.png" style="width: 4%;" /></a> <a class="reference external" href="https://pytorch.org"><img alt="pytorch_logo" src="../../_images/pytorch_logo.png" style="width: 14%;" /></a> <a class="reference internal" href="../../_images/empty.png"><img alt="empty" src="../../_images/empty.png" style="width: 4%;" /></a> <a class="reference external" href="https://mxnet.apache.org"><img alt="mxnet_logo" src="../../_images/mxnet_logo.png" style="width: 14%;" /></a> <a class="reference internal" href="../../_images/empty.png"><img alt="empty" src="../../_images/empty.png" style="width: 4%;" /></a> <a class="reference external" href="https://numpy.org"><img alt="numpy_logo" src="../../_images/numpy_logo.png" style="width: 14%;" /></a> <a class="reference internal" href="../../_images/empty.png"><img alt="empty" src="../../_images/empty.png" style="width: 4%;" /></a></p>
-</section>
+</div>
 
 
            </div>
