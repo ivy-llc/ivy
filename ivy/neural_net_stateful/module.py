@@ -14,15 +14,17 @@ from ivy.core.container import Container
 
 class Module(abc.ABC):
 
-    def __init__(self, dev_str, v=None):
+    def __init__(self, dev_str=None, v=None):
         """
         Initialze Ivy layer, which is a stateful object consisting of trainable variables.
 
         :param dev_str: device on which to create the layer's variables 'cuda:0', 'cuda:1', 'cpu' etc.
-        :type dev_str: str
+        :type dev_str: str, optional
         :param v: Ivy container of trainable variables. Created internally by default.
         :type v: ivy container, optional
         """
+        if dev_str is None:
+            dev_str = 'gpu:0' if ivy.gpu_is_available() else 'cpu'
         self._dev_str = dev_str
         if v is None:
             self.v = Container(self._find_and_create_variables())
