@@ -112,8 +112,9 @@ You can immediately use Ivy to train a neural network, using your favourite fram
         def __init__(self):
             self.linear0 = ivy.Linear(3, 64)
             self.linear2 = ivy.Linear(64, 1)
+            ivy.Module.__init__(self)
 
-        def _forward(x):
+        def _forward(self, x):
             x = ivy.relu(self.linear0(x))
             return ivy.sigmoid(self.linear2(x))
 
