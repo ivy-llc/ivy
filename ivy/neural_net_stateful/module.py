@@ -3,6 +3,7 @@ Base class for deriving trainable modules
 """
 
 # global
+import ivy
 import abc
 
 # local

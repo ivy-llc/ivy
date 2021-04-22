@@ -40,7 +40,7 @@ class Container(dict):
     # --------------#
 
     @staticmethod
-    def concat(containers, dim, f=None):
+    def concat(containers, dim):
         """
         Concatenate containers together along the specified dimension.
 
@@ -48,8 +48,6 @@ class Container(dict):
         :type containers: sequence of Container objects
         :param dim: dimension along which to _concatenate
         :type dim: int
-        :param f: Machine learning framework. Inferred from inputs if None.
-        :type f: ml_framework, optional
         :return: Concatenated containers
         """
 
@@ -61,13 +59,12 @@ class Container(dict):
                 return_dict[key] = Container.concat([container[key] for container in containers], dim)
             return Container(return_dict)
         else:
-            f = _get_framework(container0, f=f)
             # noinspection PyBroadException
             try:
                 if len(containers[0].shape) == 0:
-                    return _ivy.concatenate([_ivy.reshape(item, [1] * (dim + 1)) for item in containers], dim, f=f)
+                    return _ivy.concatenate([_ivy.reshape(item, [1] * (dim + 1)) for item in containers], dim)
                 else:
-                    return _ivy.concatenate(containers, dim, f=f)
+                    return _ivy.concatenate(containers, dim)
             except Exception as e:
                 raise Exception(str(e) + '\nContainer concat operation only valid for containers of arrays')
 
