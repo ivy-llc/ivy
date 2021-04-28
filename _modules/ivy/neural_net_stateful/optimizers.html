@@ -201,7 +201,7 @@
 <span class="sd">        Construct an general Optimizer. This is an abstract class, and must be derived.</span>
 
 <span class="sd">        :param lr: Learning rate.</span>
-<span class="sd">        :type lr: float</span>
+<span class="sd">        :type lr: function or float.</span>
 <span class="sd">        :param compile_step: Whether to compile the optimizer step, default is False.</span>
 <span class="sd">        :type compile_step: bool, option</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -231,6 +231,16 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span>
 
+<div class="viewcode-block" id="Optimizer.set_state"><a class="viewcode-back" href="../../../neural_net_stateful/optimizers/Optimizer.html#ivy.neural_net_stateful.optimizers.Optimizer.set_state">[docs]</a>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
+    <span class="k">def</span> <span class="nf">set_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set state of the optimizer.</span>
+
+<span class="sd">        :param state: Nested state to update.</span>
+<span class="sd">        :type state: Ivy container of state tensors</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+
     <span class="c1"># Given #</span>
 
 <div class="viewcode-block" id="Optimizer.step"><a class="viewcode-back" href="../../../neural_net_stateful/optimizers/Optimizer.html#ivy.neural_net_stateful.optimizers.Optimizer.step">[docs]</a>    <span class="k">def</span> <span class="nf">step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">grads</span><span class="p">):</span>
@@ -251,7 +261,7 @@
 
 <div class="viewcode-block" id="SGD"><a class="viewcode-back" href="../../../neural_net_stateful/optimizers/SGD.html#ivy.neural_net_stateful.optimizers.SGD">[docs]</a><span class="k">class</span> <span class="nc">SGD</span><span class="p">(</span><span class="n">Optimizer</span><span class="p">):</span>
 
-<div class="viewcode-block" id="SGD.__init__"><a class="viewcode-back" href="../../../neural_net_stateful/optimizers/SGD.html#ivy.neural_net_stateful.optimizers.SGD.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lr</span><span class="o">=</span><span class="mf">1e-4</span><span class="p">,</span> <span class="n">compile_step</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="SGD.__init__"><a class="viewcode-back" href="../../../neural_net_stateful/optimizers/SGD.html#ivy.neural_net_stateful.optimizers.SGD.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lr</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="mf">1e-4</span><span class="p">,</span> <span class="n">compile_step</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Construct a Stochastic-Gradient-Descent (SGD) optimizer.</span>
 
@@ -274,7 +284,20 @@
 <span class="sd">        :type grads: sequence of arrays</span>
 <span class="sd">        :return: The new updated variables container, following gradient descent step.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">gradient_descent_update</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">grads</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lr</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">gradient_descent_update</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">grads</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lr</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_lr</span><span class="p">,</span> <span class="nb">float</span><span class="p">)</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lr</span><span class="p">())</span>
+
+<div class="viewcode-block" id="SGD.set_state"><a class="viewcode-back" href="../../../neural_net_stateful/optimizers/SGD.html#ivy.neural_net_stateful.optimizers.SGD.set_state">[docs]</a>    <span class="k">def</span> <span class="nf">set_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set state of the optimizer.</span>
+
+<span class="sd">        :param state: Nested state to update.</span>
+<span class="sd">        :type state: Ivy container of state tensors</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">state</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">({})</span></div>
 
 
 <div class="viewcode-block" id="Adam"><a class="viewcode-back" href="../../../neural_net_stateful/optimizers/Adam.html#ivy.neural_net_stateful.optimizers.Adam">[docs]</a><span class="k">class</span> <span class="nc">Adam</span><span class="p">(</span><span class="n">Optimizer</span><span class="p">):</span>
@@ -322,9 +345,24 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_vw</span> <span class="o">=</span> <span class="n">grads</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">_</span><span class="p">:</span> <span class="n">x</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_first_pass</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="n">new_v</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mw</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_vw</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">adam_update</span><span class="p">(</span>
-            <span class="n">v</span><span class="p">,</span> <span class="n">grads</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lr</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mw</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_vw</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_step</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_beta1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_beta2</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_epsilon</span><span class="p">)</span>
+            <span class="n">v</span><span class="p">,</span> <span class="n">grads</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lr</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_lr</span><span class="p">,</span> <span class="nb">float</span><span class="p">)</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lr</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mw</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_vw</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_step</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_beta1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_beta2</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_epsilon</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_step</span> <span class="o">+=</span> <span class="mi">1</span>
-        <span class="k">return</span> <span class="n">new_v</span></div>
+        <span class="k">return</span> <span class="n">new_v</span>
+
+<div class="viewcode-block" id="Adam.set_state"><a class="viewcode-back" href="../../../neural_net_stateful/optimizers/Adam.html#ivy.neural_net_stateful.optimizers.Adam.set_state">[docs]</a>    <span class="k">def</span> <span class="nf">set_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Set state of the optimizer.</span>
+
+<span class="sd">        :param state: Nested state to update.</span>
+<span class="sd">        :type state: Ivy container of state tensors</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_mw</span> <span class="o">=</span> <span class="n">state</span><span class="o">.</span><span class="n">mw</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_vw</span> <span class="o">=</span> <span class="n">state</span><span class="o">.</span><span class="n">vw</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">state</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">({</span><span class="s1">&#39;mw&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mw</span><span class="p">,</span> <span class="s1">&#39;vw&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_vw</span><span class="p">})</span></div>
 </pre></div>
 
            </div>
