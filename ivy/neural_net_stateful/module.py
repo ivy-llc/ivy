@@ -3,6 +3,7 @@ Base class for deriving trainable modules
 """
 
 # global
+import os
 import ivy
 import abc
 
@@ -105,3 +106,12 @@ class Module(abc.ABC):
         if hasattr(self.__call__, 'wrapped'):
             return self.__call__(*args, **kwargs)
         return self._forward(*args, **kwargs)
+
+    def save_weights(self, weights_path):
+        """
+        Save the weights on the Module.
+        :param weights_path: The hdf5 file for saving the weights.
+        :type weights_path: string
+        """
+        os.makedirs('/'.join(weights_path.split('/')[:-1]), exist_ok=True)
+        self.v.to_disk(weights_path)
