@@ -19,7 +19,7 @@ class Optimizer(abc.ABC):
         Construct an general Optimizer. This is an abstract class, and must be derived.
 
         :param lr: Learning rate.
-        :type lr: float
+        :type lr: function or float.
         :param compile_step: Whether to compile the optimizer step, default is False.
         :type compile_step: bool, option
         """
@@ -49,6 +49,16 @@ class Optimizer(abc.ABC):
         """
         raise NotImplementedError
 
+    @abc.abstractmethod
+    def set_state(self, state):
+        """
+        Set state of the optimizer.
+
+        :param state: Nested state to update.
+        :type state: Ivy container of state tensors
+        """
+        raise NotImplementedError
+
     # Given #
 
     def step(self, v, grads):
@@ -69,7 +79,7 @@ class Optimizer(abc.ABC):
 
 class SGD(Optimizer):
 
-    def __init__(self, lr=1e-4, compile_step=False):
+    def __init__(self, lr=lambda: 1e-4, compile_step=False):
         """
         Construct a Stochastic-Gradient-Descent (SGD) optimizer.
 
@@ -92,7 +102,20 @@ class SGD(Optimizer):
         :type grads: sequence of arrays
         :return: The new updated variables container, following gradient descent step.
         """
-        return ivy.gradient_descent_update(v, grads, self._lr)
+        return ivy.gradient_descent_update(v, grads, self._lr if isinstance(self._lr, float) else self._lr())
+
+    def set_state(self, state):
+        """
+        Set state of the optimizer.
+
+        :param state: Nested state to update.
+        :type state: Ivy container of state tensors
+        """
+        pass
+
+    @property
+    def state(self):
+        return ivy.Container({})
 
 
 class Adam(Optimizer):
@@ -140,6 +163,21 @@ class Adam(Optimizer):
             self._vw = grads.map(lambda x, _: x ** 2)
             self._first_pass = False
         new_v, self._mw, self._vw = ivy.adam_update(
-            v, grads, self._lr, self._mw, self._vw, self._step, self._beta1, self._beta2, self._epsilon)
+            v, grads, self._lr if isinstance(self._lr, float) else self._lr(), self._mw, self._vw, self._step,
+            self._beta1, self._beta2, self._epsilon)
         self._step += 1
         return new_v
+
+    def set_state(self, state):
+        """
+        Set state of the optimizer.
+
+        :param state: Nested state to update.
+        :type state: Ivy container of state tensors
+        """
+        self._mw = state.mw
+        self._vw = state.vw
+
+    @property
+    def state(self):
+        return ivy.Container({'mw': self._mw, 'vw': self._vw})
