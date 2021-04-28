@@ -20,6 +20,9 @@ class Array:
     def dtype(self):
         return
 
+    def __getitem__(self):
+        pass
+
 
 class Variable:
 
