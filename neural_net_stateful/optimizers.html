@@ -213,6 +213,22 @@
 </dl>
 </dd></dl>
 
+<dl class="py method">
+<dt id="ivy.neural_net_stateful.optimizers.Adam.set_state">
+<code class="sig-name descname">set_state</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">state</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/neural_net_stateful/optimizers.html#Adam.set_state"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.neural_net_stateful.optimizers.Adam.set_state" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set state of the optimizer.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>state</strong> (<em>Ivy container of state tensors</em>) – Nested state to update.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="ivy.neural_net_stateful.optimizers.Adam.state">
+<em class="property">property </em><code class="sig-name descname">state</code><a class="headerlink" href="#ivy.neural_net_stateful.optimizers.Adam.state" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 </dd></dl>
 
 <dl class="py class">
@@ -226,9 +242,20 @@
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>lr</strong> (<em>float</em>) – Learning rate.</p></li>
+<li><p><strong>lr</strong> (<em>function</em><em> or </em><em>float.</em>) – Learning rate.</p></li>
 <li><p><strong>compile_step</strong> (<em>bool</em><em>, </em><em>option</em>) – Whether to compile the optimizer step, default is False.</p></li>
 </ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="ivy.neural_net_stateful.optimizers.Optimizer.set_state">
+<em class="property">abstract </em><code class="sig-name descname">set_state</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">state</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/neural_net_stateful/optimizers.html#Optimizer.set_state"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.neural_net_stateful.optimizers.Optimizer.set_state" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set state of the optimizer.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>state</strong> (<em>Ivy container of state tensors</em>) – Nested state to update.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -254,11 +281,11 @@
 
 <dl class="py class">
 <dt id="ivy.neural_net_stateful.optimizers.SGD">
-<em class="property">class </em><code class="sig-prename descclassname">ivy.neural_net_stateful.optimizers.</code><code class="sig-name descname">SGD</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">lr</span><span class="o">=</span><span class="default_value">0.0001</span></em>, <em class="sig-param"><span class="n">compile_step</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/neural_net_stateful/optimizers.html#SGD"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.neural_net_stateful.optimizers.SGD" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">ivy.neural_net_stateful.optimizers.</code><code class="sig-name descname">SGD</code><span class="sig-paren">(</span><em class="sig-param">lr=&lt;function SGD.&lt;lambda&gt;&gt;</em>, <em class="sig-param">compile_step=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/neural_net_stateful/optimizers.html#SGD"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.neural_net_stateful.optimizers.SGD" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="optimizers/Optimizer.html#ivy.neural_net_stateful.optimizers.Optimizer" title="ivy.neural_net_stateful.optimizers.Optimizer"><code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.neural_net_stateful.optimizers.Optimizer</span></code></a></p>
 <dl class="py method">
 <dt id="ivy.neural_net_stateful.optimizers.SGD.__init__">
-<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">lr</span><span class="o">=</span><span class="default_value">0.0001</span></em>, <em class="sig-param"><span class="n">compile_step</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/neural_net_stateful/optimizers.html#SGD.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.neural_net_stateful.optimizers.SGD.__init__" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param">lr=&lt;function SGD.&lt;lambda&gt;&gt;</em>, <em class="sig-param">compile_step=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/neural_net_stateful/optimizers.html#SGD.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.neural_net_stateful.optimizers.SGD.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Construct a Stochastic-Gradient-Descent (SGD) optimizer.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -269,6 +296,22 @@
 </dd>
 </dl>
 </dd></dl>
+
+<dl class="py method">
+<dt id="ivy.neural_net_stateful.optimizers.SGD.set_state">
+<code class="sig-name descname">set_state</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">state</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/neural_net_stateful/optimizers.html#SGD.set_state"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.neural_net_stateful.optimizers.SGD.set_state" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set state of the optimizer.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>state</strong> (<em>Ivy container of state tensors</em>) – Nested state to update.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="ivy.neural_net_stateful.optimizers.SGD.state">
+<em class="property">property </em><code class="sig-name descname">state</code><a class="headerlink" href="#ivy.neural_net_stateful.optimizers.SGD.state" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 </dd></dl>
 
