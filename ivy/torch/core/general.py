@@ -33,6 +33,7 @@ def is_array(x):
 def dtype_from_str(dtype_str_in: str) -> torch.dtype:
     return {'bool': torch.bool,
             'int8': torch.int8,
+            'uint8': torch.uint8,
             'int16': torch.int16,
             'int32': torch.int32,
             'int64': torch.int64,
@@ -283,6 +284,7 @@ def squeeze(x, axis: Optional[int] = None):
 def zeros(shape: List[int], dtype_str: str = 'float32', dev_str: Optional[str] = None):
     type_dict: Dict[str, torch.dtype] = {'bool': torch.bool,
                                          'int8': torch.int8,
+                                         'uint8': torch.uint8,
                                          'int16': torch.int16,
                                          'int32': torch.int32,
                                          'int64': torch.int64,
@@ -300,6 +302,7 @@ def zeros_like(x, dtype_str: Optional[str] = None, dev_str: Optional[str] = None
     if dtype_str is not None:
         type_dict: Dict[str, torch.dtype] = {'bool': torch.bool,
                                              'int8': torch.int8,
+                                             'uint8': torch.uint8,
                                              'int16': torch.int16,
                                              'int32': torch.int32,
                                              'int64': torch.int64,
@@ -314,6 +317,7 @@ def zeros_like(x, dtype_str: Optional[str] = None, dev_str: Optional[str] = None
 def ones(shape: List[int], dtype_str: str = 'float32', dev_str: Optional[str] = None):
     type_dict: Dict[str, torch.dtype] = {'bool': torch.bool,
                                          'int8': torch.int8,
+                                         'uint8': torch.uint8,
                                          'int16': torch.int16,
                                          'int32': torch.int32,
                                          'int64': torch.int64,
@@ -331,6 +335,7 @@ def ones_like(x, dtype_str: Optional[str] = None, dev_str: Optional[str] = None)
     if dtype_str is not None:
         type_dict: Dict[str, torch.dtype] = {'bool': torch.bool,
                                              'int8': torch.int8,
+                                             'uint8': torch.uint8,
                                              'int16': torch.int16,
                                              'int32': torch.int32,
                                              'int64': torch.int64,
@@ -374,6 +379,7 @@ def identity(n: int, dtype_str: str = 'float32', batch_shape: Optional[List[int]
              dev_str: Optional[str] = None):
     type_dict: Dict[str, torch.dtype] = {'bool': torch.bool,
                                          'int8': torch.int8,
+                                         'uint8': torch.uint8,
                                          'int16': torch.int16,
                                          'int32': torch.int32,
                                          'int64': torch.int64,
@@ -540,6 +546,7 @@ def dtype(x):
 def dtype_str(x):
     return {torch.bool: 'bool',
             torch.int8: 'int8',
+            torch.uint8: 'uint8',
             torch.int16: 'int16',
             torch.int32: 'int32',
             torch.int64: 'int64',
@@ -551,6 +558,7 @@ def dtype_str(x):
 def dtype_to_str(dtype_in):
     return {torch.bool: 'bool',
             torch.int8: 'int8',
+            torch.uint8: 'uint8',
             torch.int16: 'int16',
             torch.int32: 'int32',
             torch.int64: 'int64',

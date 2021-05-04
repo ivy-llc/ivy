@@ -12,6 +12,7 @@ from numbers import Number
 
 DTYPE_DICT = {_np.bool_: 'bool',
               _np.int8: 'int8',
+              _np.uint8: 'uint8',
               _np.int16: 'int16',
               _np.int32: 'int32',
               _np.int64: 'int64',
