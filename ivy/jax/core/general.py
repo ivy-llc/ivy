@@ -13,6 +13,7 @@ from jaxlib.xla_extension import Buffer
 
 DTYPE_DICT = {_jnp.dtype('bool'): 'bool',
               _jnp.dtype('int8'): 'int8',
+              _jnp.dtype('uint8'): 'uint8',
               _jnp.dtype('int16'): 'int16',
               _jnp.dtype('int32'): 'int32',
               _jnp.dtype('int64'): 'int64',

@@ -10,6 +10,7 @@ import logging
 
 DTYPE_DICT = {_np.dtype('bool'): 'bool',
               _np.dtype('int8'): 'int8',
+              _np.dtype('uint8'): 'uint8',
               _np.dtype('int16'): 'int16',
               _np.dtype('int32'): 'int32',
               _np.dtype('int64'): 'int64',

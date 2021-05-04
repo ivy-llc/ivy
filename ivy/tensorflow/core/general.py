@@ -16,6 +16,7 @@ import numpy as _np
 
 DTYPE_DICT = {_tf.bool: 'bool',
               _tf.int8: 'int8',
+              _tf.uint8: 'uint8',
               _tf.int16: 'int16',
               _tf.int32: 'int32',
               _tf.int64: 'int64',

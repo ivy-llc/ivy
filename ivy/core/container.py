@@ -14,7 +14,6 @@ except ImportError:
 
 # local
 import ivy as _ivy
-from ivy.framework_handler import get_framework as _get_framework
 
 
 # noinspection PyMissingConstructor
@@ -40,13 +39,60 @@ class Container(dict):
     # --------------#
 
     @staticmethod
+    def list_join(containers, dim):
+        """
+        Join containers of lists together along the specified dimension.
+
+        :param containers: containers to list join
+        :type containers: sequence of Container objects
+        :param dim: dimension along which to join to lists
+        :type dim: int
+        :return: List joined containers, with each entry being a list of arrays
+        """
+
+        container0 = containers[0]
+
+        if isinstance(container0, dict):
+            return_dict = dict()
+            for key in container0.keys():
+                new_list = list()
+                for container in containers:
+                    new_list += container[key]
+                return_dict[key] = Container.list_join(new_list, dim)
+            return Container(return_dict)
+        else:
+            return containers
+    
+    @staticmethod
+    def list_stack(containers, dim):
+        """
+        List stack containers together along the specified dimension.
+
+        :param containers: containers to list stack
+        :type containers: sequence of Container objects
+        :param dim: dimension along which to list stack
+        :type dim: int
+        :return: Stacked containers, with each entry being a list of arrays
+        """
+
+        container0 = containers[0]
+
+        if isinstance(container0, dict):
+            return_dict = dict()
+            for key in container0.keys():
+                return_dict[key] = Container.list_stack([container[key] for container in containers], dim)
+            return Container(return_dict)
+        else:
+            return containers
+
+    @staticmethod
     def concat(containers, dim):
         """
         Concatenate containers together along the specified dimension.
 
-        :param containers: containers to _concatenate
+        :param containers: containers to concatenate
         :type containers: sequence of Container objects
-        :param dim: dimension along which to _concatenate
+        :param dim: dimension along which to concatenate
         :type dim: int
         :return: Concatenated containers
         """
@@ -160,6 +206,10 @@ class Container(dict):
         val = vals[0]
         if isinstance(val, Container):
             return val._get_size()
+        elif isinstance(val, list):
+            return len(val)
+        elif isinstance(val, tuple):
+            return len(val)
         else:
             try:
                 return val.shape[0]
