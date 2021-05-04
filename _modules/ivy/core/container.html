@@ -196,7 +196,6 @@
 
 <span class="c1"># local</span>
 <span class="kn">import</span> <span class="nn">ivy</span> <span class="k">as</span> <span class="nn">_ivy</span>
-<span class="kn">from</span> <span class="nn">ivy.framework_handler</span> <span class="kn">import</span> <span class="n">get_framework</span> <span class="k">as</span> <span class="n">_get_framework</span>
 
 
 <span class="c1"># noinspection PyMissingConstructor</span>
@@ -221,14 +220,61 @@
     <span class="c1"># Class Methods #</span>
     <span class="c1"># --------------#</span>
 
+<div class="viewcode-block" id="Container.list_join"><a class="viewcode-back" href="../../../core/container/Container.html#ivy.core.container.Container.list_join">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">list_join</span><span class="p">(</span><span class="n">containers</span><span class="p">,</span> <span class="n">dim</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Join containers of lists together along the specified dimension.</span>
+
+<span class="sd">        :param containers: containers to list join</span>
+<span class="sd">        :type containers: sequence of Container objects</span>
+<span class="sd">        :param dim: dimension along which to join to lists</span>
+<span class="sd">        :type dim: int</span>
+<span class="sd">        :return: List joined containers, with each entry being a list of arrays</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">container0</span> <span class="o">=</span> <span class="n">containers</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">container0</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+            <span class="n">return_dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">container0</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                <span class="n">new_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+                <span class="k">for</span> <span class="n">container</span> <span class="ow">in</span> <span class="n">containers</span><span class="p">:</span>
+                    <span class="n">new_list</span> <span class="o">+=</span> <span class="n">container</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+                <span class="n">return_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">Container</span><span class="o">.</span><span class="n">list_join</span><span class="p">(</span><span class="n">new_list</span><span class="p">,</span> <span class="n">dim</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">Container</span><span class="p">(</span><span class="n">return_dict</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">containers</span></div>
+    
+<div class="viewcode-block" id="Container.list_stack"><a class="viewcode-back" href="../../../core/container/Container.html#ivy.core.container.Container.list_stack">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">list_stack</span><span class="p">(</span><span class="n">containers</span><span class="p">,</span> <span class="n">dim</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        List stack containers together along the specified dimension.</span>
+
+<span class="sd">        :param containers: containers to list stack</span>
+<span class="sd">        :type containers: sequence of Container objects</span>
+<span class="sd">        :param dim: dimension along which to list stack</span>
+<span class="sd">        :type dim: int</span>
+<span class="sd">        :return: Stacked containers, with each entry being a list of arrays</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">container0</span> <span class="o">=</span> <span class="n">containers</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">container0</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+            <span class="n">return_dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">container0</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                <span class="n">return_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">Container</span><span class="o">.</span><span class="n">list_stack</span><span class="p">([</span><span class="n">container</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="k">for</span> <span class="n">container</span> <span class="ow">in</span> <span class="n">containers</span><span class="p">],</span> <span class="n">dim</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">Container</span><span class="p">(</span><span class="n">return_dict</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">containers</span></div>
+
 <div class="viewcode-block" id="Container.concat"><a class="viewcode-back" href="../../../core/container/Container.html#ivy.core.container.Container.concat">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">concat</span><span class="p">(</span><span class="n">containers</span><span class="p">,</span> <span class="n">dim</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Concatenate containers together along the specified dimension.</span>
 
-<span class="sd">        :param containers: containers to _concatenate</span>
+<span class="sd">        :param containers: containers to concatenate</span>
 <span class="sd">        :type containers: sequence of Container objects</span>
-<span class="sd">        :param dim: dimension along which to _concatenate</span>
+<span class="sd">        :param dim: dimension along which to concatenate</span>
 <span class="sd">        :type dim: int</span>
 <span class="sd">        :return: Concatenated containers</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -342,6 +388,10 @@
         <span class="n">val</span> <span class="o">=</span> <span class="n">vals</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">Container</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">val</span><span class="o">.</span><span class="n">_get_size</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+            <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
+            <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">val</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
