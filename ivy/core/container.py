@@ -39,14 +39,12 @@ class Container(dict):
     # --------------#
 
     @staticmethod
-    def list_join(containers, dim):
+    def list_join(containers):
         """
         Join containers of lists together along the specified dimension.
 
         :param containers: containers to list join
         :type containers: sequence of Container objects
-        :param dim: dimension along which to join to lists
-        :type dim: int
         :return: List joined containers, with each entry being a list of arrays
         """
 
@@ -57,11 +55,11 @@ class Container(dict):
             for key in container0.keys():
                 new_list = list()
                 for container in containers:
-                    new_list += container[key]
-                return_dict[key] = Container.list_join(new_list, dim)
+                    new_list.append(container[key])
+                return_dict[key] = Container.list_join(new_list)
             return Container(return_dict)
         else:
-            return containers
+            return [item for sublist in containers for item in sublist]
     
     @staticmethod
     def list_stack(containers, dim):
