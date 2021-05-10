@@ -221,14 +221,12 @@
     <span class="c1"># --------------#</span>
 
 <div class="viewcode-block" id="Container.list_join"><a class="viewcode-back" href="../../../core/container/Container.html#ivy.core.container.Container.list_join">[docs]</a>    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">list_join</span><span class="p">(</span><span class="n">containers</span><span class="p">,</span> <span class="n">dim</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">list_join</span><span class="p">(</span><span class="n">containers</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Join containers of lists together along the specified dimension.</span>
 
 <span class="sd">        :param containers: containers to list join</span>
 <span class="sd">        :type containers: sequence of Container objects</span>
-<span class="sd">        :param dim: dimension along which to join to lists</span>
-<span class="sd">        :type dim: int</span>
 <span class="sd">        :return: List joined containers, with each entry being a list of arrays</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
@@ -239,11 +237,11 @@
             <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">container0</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
                 <span class="n">new_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
                 <span class="k">for</span> <span class="n">container</span> <span class="ow">in</span> <span class="n">containers</span><span class="p">:</span>
-                    <span class="n">new_list</span> <span class="o">+=</span> <span class="n">container</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
-                <span class="n">return_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">Container</span><span class="o">.</span><span class="n">list_join</span><span class="p">(</span><span class="n">new_list</span><span class="p">,</span> <span class="n">dim</span><span class="p">)</span>
+                    <span class="n">new_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">container</span><span class="p">[</span><span class="n">key</span><span class="p">])</span>
+                <span class="n">return_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">Container</span><span class="o">.</span><span class="n">list_join</span><span class="p">(</span><span class="n">new_list</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">Container</span><span class="p">(</span><span class="n">return_dict</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">containers</span></div>
+            <span class="k">return</span> <span class="p">[</span><span class="n">item</span> <span class="k">for</span> <span class="n">sublist</span> <span class="ow">in</span> <span class="n">containers</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">sublist</span><span class="p">]</span></div>
     
 <div class="viewcode-block" id="Container.list_stack"><a class="viewcode-back" href="../../../core/container/Container.html#ivy.core.container.Container.list_stack">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">list_stack</span><span class="p">(</span><span class="n">containers</span><span class="p">,</span> <span class="n">dim</span><span class="p">):</span>
