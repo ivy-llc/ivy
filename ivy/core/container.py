@@ -249,10 +249,15 @@ class Container(dict):
                 return_dict[key] = value.slice(slice_obj)
             else:
                 # noinspection PyBroadException
-                try:
-                    return_dict[key] = value[slice_obj]
-                except:
+                if isinstance(value, list) or isinstance(value, tuple):
+                    if len(value) == 0:
+                        return_dict[key] = value
+                    else:
+                        return_dict[key] = value[slice_obj]
+                elif value.shape == ():
                     return_dict[key] = value
+                else:
+                    return_dict[key] = value[slice_obj]
 
         return Container(return_dict)
 
