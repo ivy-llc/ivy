@@ -7,6 +7,8 @@ import torch as _torch
 
 
 def variable(x):
+    if not x.is_leaf:
+        x = x.detach()
     x.requires_grad = True
     return x
 

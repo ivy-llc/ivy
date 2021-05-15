@@ -273,8 +273,10 @@ class Container(dict):
         for key, value in sorted(self.items()):
             if isinstance(value, Container):
                 return_dict[key] = value.expand_dims(axis)
-            else:
+            elif value is not None:
                 return_dict[key] = _ivy.expand_dims(value, axis)
+            else:
+                return_dict[key] = value
         return Container(return_dict)
 
     def unstack(self, dim, dim_size):
