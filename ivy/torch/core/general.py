@@ -20,6 +20,8 @@ from typing import List, Dict, Optional, Union
 def array(object_in, dtype_str: Optional[str] = None, dev_str: Optional[str] = None):
     if dtype_str is not None:
         return torch.tensor(object_in, dtype=dtype_from_str(dtype_str)).to(str_to_dev(dev_str))
+    elif isinstance(object_in, torch.Tensor):
+        return object_in.to(str_to_dev(dev_str))
     else:
         return torch.tensor(object_in).to(str_to_dev(dev_str))
 
@@ -271,7 +273,7 @@ def reshape(x, newshape: List[int]):
 
 
 def broadcast_to(x, new_shape):
-    return torch.broadcast_to(x, new_shape)
+    return x.expand(new_shape)
 
 
 def squeeze(x, axis: Optional[int] = None):
@@ -367,10 +369,10 @@ def cumsum(x, axis: int = 0):
 
 def cumprod(x, axis: int = 0, exclusive: bool = False):
     if exclusive:
-        x = torch.swapaxes(x, axis, -1)
+        x = torch.transpose(x, axis, -1)
         x = torch.cat((torch.ones_like(x[..., -1:]), x[..., :-1]), -1)
         res = torch.cumprod(x, -1)
-        return torch.swapaxes(res, axis, -1)
+        return torch.transpose(res, axis, -1)
     return torch.cumprod(x, axis)
 
 
@@ -401,7 +403,7 @@ def meshgrid(*xs, indexing='ij'):
     ret = torch.meshgrid(*xs)
     if indexing == 'xy':
         # ToDo: verify if this is correct
-        return tuple([torch.swapaxes(x, 1, 0) for x in ret])
+        return tuple([torch.transpose(x, 1, 0) for x in ret])
     return ret
 
 
