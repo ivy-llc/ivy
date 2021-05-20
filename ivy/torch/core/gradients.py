@@ -26,7 +26,9 @@ def execute_with_gradients(func, xs):
         y = func_ret
         rest = tuple()
     y.backward()
-    return (y, xs.map(lambda x, _: x.grad), *rest)
+    xs_grad = xs.map(lambda x, _: x.grad.data.detach().clone())
+    xs.map(lambda x, _: x.grad.data.zero_())
+    return (y.detach(), xs_grad, *rest)
 
 
 def gradient_descent_update(ws, dcdws, lr):
