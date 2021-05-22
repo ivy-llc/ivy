@@ -26,6 +26,8 @@ def reduce_prod(x, axis: Optional[List[int]] = None, keepdims: bool = False):
         if ret.shape == ():
             return ret.view((1,))
         return ret
+    axis = list(axis)
+    axis.sort()
     for i, a in enumerate(axis):
         x = _torch.prod(x, dim=a if keepdims else a - i, keepdim=keepdims)
     ret = x
@@ -53,6 +55,8 @@ def reduce_min(x, axis: Optional[List[int]] = None, keepdims: bool = False):
         if ret.shape == ():
             return ret.view((1,))
         return ret
+    axis = list(axis)
+    axis.sort()
     for i, a in enumerate(axis):
         x = _torch.min(x, dim=a if keepdims else a - i, keepdim=keepdims).values
     ret = x
@@ -70,6 +74,8 @@ def reduce_max(x, axis: Optional[List[int]] = None, keepdims: bool = False):
         if ret.shape == ():
             return ret.view((1,))
         return ret
+    axis = list(axis)
+    axis.sort()
     for i, a in enumerate(axis):
         x = _torch.max(x, dim=a if keepdims else a - i, keepdim=keepdims).values
     ret = x
