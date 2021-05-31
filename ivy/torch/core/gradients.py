@@ -51,5 +51,4 @@ def adam_update(ws, dcdws, lr, mw, vw, step, beta1=0.9, beta2=0.999, epsilon=1e-
 
 
 def stop_gradient(x):
-    x.requires_grad = False
-    return x
+    return x.detach()
