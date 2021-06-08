@@ -15,5 +15,6 @@ Layers
    layers/Linear.rst
    layers/Conv1D.rst
    layers/Conv1DTranspose.rst
+   layers/Conv2D.rst
    layers/LSTM.rst
 
