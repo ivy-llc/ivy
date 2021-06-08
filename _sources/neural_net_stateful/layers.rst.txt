@@ -19,5 +19,6 @@ Layers
    layers/Conv2DTranspose.rst
    layers/DepthwiseConv2D.rst
    layers/Conv3D.rst
+   layers/Conv3DTranspose.rst
    layers/LSTM.rst
 
