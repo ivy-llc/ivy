@@ -1,5 +1,5 @@
 """
-Collection of tests for templated neural network layers
+Collection of tests for training templated neural network layers
 """
 
 # global
@@ -15,6 +15,7 @@ from ivy.core.container import Container
 # Linear #
 # -------#
 
+
 @pytest.mark.parametrize(
     "bs_ic_oc_target", [
         ([1, 2], 4, 5, [[0.30230279, 0.65123089, 0.30132881, -0.90954636, 1.08810135]]),
@@ -25,8 +26,11 @@ from ivy.core.container import Container
     "dtype_str", ['float32'])
 @pytest.mark.parametrize(
     "tensor_fn", [ivy.array, helpers.var_fn])
-def test_linear_layer(bs_ic_oc_target, with_v, dtype_str, tensor_fn, dev_str, call):
+def test_linear_layer_training(bs_ic_oc_target, with_v, dtype_str, tensor_fn, dev_str, call):
     # smoke test
+    if call is helpers.np_call:
+        # NumPy does not support gradients
+        pytest.skip()
     batch_shape, input_channels, output_channels, target = bs_ic_oc_target
     x = ivy.cast(ivy.linspace(ivy.zeros(batch_shape), ivy.ones(batch_shape), input_channels), 'float32')
     if with_v:
@@ -38,24 +42,43 @@ def test_linear_layer(bs_ic_oc_target, with_v, dtype_str, tensor_fn, dev_str, ca
     else:
         v = None
     linear_layer = ivy.Linear(input_channels, output_channels, v=v)
-    ret = linear_layer(x)
+
+    def loss_fn(v_):
+        out = linear_layer(x, v=v_)
+        return ivy.reduce_mean(out)[0]
+
+    # train
+    loss_tm1 = 1e12
+    loss = None
+    grads = None
+    for i in range(10):
+        loss, grads = ivy.execute_with_gradients(loss_fn, linear_layer.v)
+        linear_layer.v = ivy.gradient_descent_update(linear_layer.v, grads, 1e-3)
+        assert loss < loss_tm1
+        loss_tm1 = loss
+
     # type test
-    assert ivy.is_array(ret)
+    assert ivy.is_array(loss)
+    assert isinstance(grads, ivy.Container)
     # cardinality test
-    assert ret.shape == tuple(batch_shape + [output_channels])
+    if call is helpers.mx_call:
+        # mxnet slicing cannot reduce dimension to zero
+        assert loss.shape == (1,)
+    else:
+        assert loss.shape == ()
     # value test
-    if not with_v:
-        return
-    assert np.allclose(call(linear_layer, x), np.array(target))
+    assert ivy.reduce_max(ivy.abs(grads.b)) > 0
+    assert ivy.reduce_max(ivy.abs(grads.w)) > 0
     # compilation test
     if call is helpers.torch_call:
         # pytest scripting does not **kwargs
         return
-    helpers.assert_compilable(linear_layer)
+    helpers.assert_compilable(loss_fn)
 
 
 # Convolutions #
 # -------------#
+
 
 @pytest.mark.parametrize(
     "x_n_fs_n_pad_n_res", [
@@ -142,6 +165,7 @@ def test_conv1d_layer_training(x_n_fs_n_pad_n_res, with_v, dtype_str, tensor_fn,
 
 # LSTM #
 # -----#
+
 
 @pytest.mark.parametrize(
     "b_t_ic_hc_otf_sctv", [
