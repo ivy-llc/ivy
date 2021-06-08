@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>LSTM &mdash; Ivy 1.0 documentation</title>
+  <title>Conv2DTranspose &mdash; Ivy 1.0 documentation</title>
   
 
   
@@ -36,8 +36,8 @@
   <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="Module" href="../module.html" />
-    <link rel="prev" title="Conv2DTranspose" href="Conv2DTranspose.html" /> 
+    <link rel="next" title="LSTM" href="LSTM.html" />
+    <link rel="prev" title="Conv2D" href="Conv2D.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -112,8 +112,8 @@
 <li class="toctree-l2"><a class="reference internal" href="Conv1D.html">Conv1D</a></li>
 <li class="toctree-l2"><a class="reference internal" href="Conv1DTranspose.html">Conv1DTranspose</a></li>
 <li class="toctree-l2"><a class="reference internal" href="Conv2D.html">Conv2D</a></li>
-<li class="toctree-l2"><a class="reference internal" href="Conv2DTranspose.html">Conv2DTranspose</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">LSTM</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Conv2DTranspose</a></li>
+<li class="toctree-l2"><a class="reference internal" href="LSTM.html">LSTM</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../module.html">Module</a></li>
@@ -174,13 +174,13 @@
         
           <li><a href="../layers.html">Layers</a> &raquo;</li>
         
-      <li>LSTM</li>
+      <li>Conv2DTranspose</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="../../_sources/neural_net_stateful/layers/LSTM.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../_sources/neural_net_stateful/layers/Conv2DTranspose.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -193,36 +193,32 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="lstm">
-<h1>LSTM<a class="headerlink" href="#lstm" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="conv2dtranspose">
+<h1>Conv2DTranspose<a class="headerlink" href="#conv2dtranspose" title="Permalink to this headline">¶</a></h1>
 <dl class="py class">
-<dt id="ivy.neural_net_stateful.layers.LSTM">
-<em class="property">class </em><code class="sig-prename descclassname">ivy.neural_net_stateful.layers.</code><code class="sig-name descname">LSTM</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">input_channels</span></em>, <em class="sig-param"><span class="n">output_channels</span></em>, <em class="sig-param"><span class="n">num_layers</span><span class="o">=</span><span class="default_value">1</span></em>, <em class="sig-param"><span class="n">return_sequence</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">return_state</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">dev_str</span><span class="o">=</span><span class="default_value">'cpu'</span></em>, <em class="sig-param"><span class="n">v</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/neural_net_stateful/layers.html#LSTM"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.neural_net_stateful.layers.LSTM" title="Permalink to this definition">¶</a></dt>
+<dt id="ivy.neural_net_stateful.layers.Conv2DTranspose">
+<em class="property">class </em><code class="sig-prename descclassname">ivy.neural_net_stateful.layers.</code><code class="sig-name descname">Conv2DTranspose</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">input_channels</span></em>, <em class="sig-param"><span class="n">output_channels</span></em>, <em class="sig-param"><span class="n">filter_shape</span></em>, <em class="sig-param"><span class="n">strides</span></em>, <em class="sig-param"><span class="n">padding</span></em>, <em class="sig-param"><span class="n">output_shape</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">data_format</span><span class="o">=</span><span class="default_value">'NHWC'</span></em>, <em class="sig-param"><span class="n">dilations</span><span class="o">=</span><span class="default_value">1</span></em>, <em class="sig-param"><span class="n">dev_str</span><span class="o">=</span><span class="default_value">'cpu'</span></em>, <em class="sig-param"><span class="n">v</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/neural_net_stateful/layers.html#Conv2DTranspose"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.neural_net_stateful.layers.Conv2DTranspose" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="../module/Module.html#ivy.neural_net_stateful.module.Module" title="ivy.neural_net_stateful.module.Module"><code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.neural_net_stateful.module.Module</span></code></a></p>
 <dl class="py method">
-<dt id="ivy.neural_net_stateful.layers.LSTM.__init__">
-<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">input_channels</span></em>, <em class="sig-param"><span class="n">output_channels</span></em>, <em class="sig-param"><span class="n">num_layers</span><span class="o">=</span><span class="default_value">1</span></em>, <em class="sig-param"><span class="n">return_sequence</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">return_state</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">dev_str</span><span class="o">=</span><span class="default_value">'cpu'</span></em>, <em class="sig-param"><span class="n">v</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/neural_net_stateful/layers.html#LSTM.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.neural_net_stateful.layers.LSTM.__init__" title="Permalink to this definition">¶</a></dt>
-<dd><p>LSTM layer, which is a set of stacked lstm cells.</p>
+<dt id="ivy.neural_net_stateful.layers.Conv2DTranspose.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">input_channels</span></em>, <em class="sig-param"><span class="n">output_channels</span></em>, <em class="sig-param"><span class="n">filter_shape</span></em>, <em class="sig-param"><span class="n">strides</span></em>, <em class="sig-param"><span class="n">padding</span></em>, <em class="sig-param"><span class="n">output_shape</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">data_format</span><span class="o">=</span><span class="default_value">'NHWC'</span></em>, <em class="sig-param"><span class="n">dilations</span><span class="o">=</span><span class="default_value">1</span></em>, <em class="sig-param"><span class="n">dev_str</span><span class="o">=</span><span class="default_value">'cpu'</span></em>, <em class="sig-param"><span class="n">v</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/neural_net_stateful/layers.html#Conv2DTranspose.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.neural_net_stateful.layers.Conv2DTranspose.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>2D convolutional transpose layer.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>input_channels</strong> (<em>int</em>) – Number of input channels for the layer</p></li>
-<li><p><strong>output_channels</strong> (<em>int</em>) – Number of output channels for the layer</p></li>
-<li><p><strong>num_layers</strong> (<em>int</em><em>, </em><em>optional</em>) – Number of lstm cells in the lstm layer, default is 1.</p></li>
-<li><p><strong>return_sequence</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether or not to return the entire output sequence, or just the latest timestep.
-Default is True.</p></li>
-<li><p><strong>return_state</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether or not to return the latest hidden and cell states. Default is True.</p></li>
+<li><p><strong>input_channels</strong> (<em>int</em>) – Number of input channels for the layer.</p></li>
+<li><p><strong>output_channels</strong> (<em>int</em>) – Number of output channels for the layer.</p></li>
+<li><p><strong>filter_shape</strong> (<em>sequence of ints</em>) – Shape of the convolutional filter.</p></li>
+<li><p><strong>strides</strong> (<em>int</em><em> or </em><em>sequence of ints</em>) – The stride of the sliding window for each dimension of input.</p></li>
+<li><p><strong>padding</strong> (<em>string</em><em> or </em><em>sequence of ints</em>) – “SAME” or “VALID” indicating the algorithm, or list indicating the per-dimension paddings.</p></li>
+<li><p><strong>output_shape</strong> (<em>sequence of ints</em><em>, </em><em>needed for TensorFlow</em>) – Shape of the output</p></li>
+<li><p><strong>data_format</strong> (<em>string</em>) – “NHWC” or “NCHW”. Defaults to “NHWC”.</p></li>
+<li><p><strong>dilations</strong> (<em>int</em><em> or </em><em>sequence of ints</em>) – The dilation factor for each dimension of input.</p></li>
 <li><p><strong>dev_str</strong> (<em>str</em><em>, </em><em>optional</em>) – device on which to create the layer’s variables ‘cuda:0’, ‘cuda:1’, ‘cpu’ etc. Default is cpu.</p></li>
-<li><p><strong>v</strong> (<em>ivy container of parameter arrays</em><em>, </em><em>optional</em>) – the variables for each of the lstm cells, as a container, constructed internally by default.</p></li>
+<li><p><strong>v</strong> (<em>ivy container of variables</em><em>, </em><em>optional</em>) – the variables for each of the linear layer, as a container, constructed internally by default.</p></li>
 </ul>
 </dd>
 </dl>
-</dd></dl>
-
-<dl class="py method">
-<dt id="ivy.neural_net_stateful.layers.LSTM.get_initial_state">
-<code class="sig-name descname">get_initial_state</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">batch_shape</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/neural_net_stateful/layers.html#LSTM.get_initial_state"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.neural_net_stateful.layers.LSTM.get_initial_state" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the initial state of the hidden and cell states, if not provided explicitly</p>
 </dd></dl>
 
 </dd></dl>
@@ -242,10 +238,10 @@ Default is True.</p></li>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../module.html" class="btn btn-neutral float-right" title="Module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="LSTM.html" class="btn btn-neutral float-right" title="LSTM" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="Conv2DTranspose.html" class="btn btn-neutral float-left" title="Conv2DTranspose" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="Conv2D.html" class="btn btn-neutral float-left" title="Conv2D" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
