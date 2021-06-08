@@ -57,6 +57,7 @@ def test_linear_layer(bs_ic_oc_target, with_v, dtype_str, tensor_fn, dev_str, ca
 # Convolutions #
 # -------------#
 
+# conv1d
 @pytest.mark.parametrize(
     "x_n_fs_n_pad_n_res", [
         ([[[0.], [3.], [0.]]],
@@ -81,7 +82,7 @@ def test_linear_layer(bs_ic_oc_target, with_v, dtype_str, tensor_fn, dev_str, ca
     "dtype_str", ['float32'])
 @pytest.mark.parametrize(
     "tensor_fn", [ivy.array, helpers.var_fn])
-def test_conv1d_layer_training(x_n_fs_n_pad_n_res, with_v, dtype_str, tensor_fn, dev_str, call):
+def test_conv1d_layer(x_n_fs_n_pad_n_res, with_v, dtype_str, tensor_fn, dev_str, call):
     if call in [helpers.tf_call, helpers.tf_graph_call] and 'cpu' in dev_str:
         # tf conv1d does not work when CUDA is installed, but array is on CPU
         pytest.skip()
@@ -121,6 +122,74 @@ def test_conv1d_layer_training(x_n_fs_n_pad_n_res, with_v, dtype_str, tensor_fn,
         # pytest scripting does not **kwargs
         return
     helpers.assert_compilable(conv1d_layer)
+
+
+# conv1d transpose
+@pytest.mark.parametrize(
+    "x_n_fs_n_pad_n_outshp_n_res", [
+        ([[[0.], [3.], [0.]]],
+         3,
+         "SAME",
+         (1, 3, 1),
+         [[[0.5072848], [2.2363136], [1.0679483]]]),
+
+        ([[[0.], [3.], [0.]] for _ in range(5)],
+         3,
+         "SAME",
+         (5, 3, 1),
+         [[[0.5072848], [2.2363136], [1.0679483]] for _ in range(5)]),
+
+        ([[[0.], [3.], [0.]]],
+         3,
+         "VALID",
+         (1, 5, 1),
+         [[[0.], [0.5072848], [2.2363136], [1.0679483], [0.]]])])
+@pytest.mark.parametrize(
+    "with_v", [True, False])
+@pytest.mark.parametrize(
+    "dtype_str", ['float32'])
+@pytest.mark.parametrize(
+    "tensor_fn", [ivy.array, helpers.var_fn])
+def test_conv1d_transpose_layer(x_n_fs_n_pad_n_outshp_n_res, with_v, dtype_str, tensor_fn, dev_str, call):
+    if call in [helpers.tf_call, helpers.tf_graph_call] and 'cpu' in dev_str:
+        # tf conv1d does not work when CUDA is installed, but array is on CPU
+        pytest.skip()
+    if call in [helpers.np_call, helpers.jnp_call]:
+        # numpy and jax do not yet support conv1d
+        pytest.skip()
+    # smoke test
+    x, filter_size, padding, out_shape, target = x_n_fs_n_pad_n_outshp_n_res
+    x = tensor_fn(x, dtype_str, dev_str)
+    target = np.asarray(target)
+    input_channels = x.shape[-1]
+    output_channels = target.shape[-1]
+    batch_size = x.shape[0]
+    width = x.shape[1]
+    if with_v:
+        np.random.seed(0)
+        wlim = (6 / (output_channels + input_channels)) ** 0.5
+        w = ivy.variable(ivy.array(np.random.uniform(
+            -wlim, wlim, (filter_size, output_channels, input_channels)), 'float32'))
+        b = ivy.variable(ivy.zeros([1, 1, output_channels]))
+        v = Container({'w': w, 'b': b})
+    else:
+        v = None
+    conv1d_trans_layer = ivy.Conv1DTranspose(input_channels, output_channels, filter_size, 1, padding, out_shape, v=v)
+    ret = conv1d_trans_layer(x)
+    # type test
+    assert ivy.is_array(ret)
+    # cardinality test
+    new_width = width if padding == 'SAME' else width + filter_size - 1
+    assert ret.shape == (batch_size, new_width, output_channels)
+    # value test
+    if not with_v:
+        return
+    assert np.allclose(call(conv1d_trans_layer, x), target)
+    # compilation test
+    if call is helpers.torch_call:
+        # pytest scripting does not **kwargs
+        return
+    helpers.assert_compilable(conv1d_trans_layer)
 
 
 # LSTM #
