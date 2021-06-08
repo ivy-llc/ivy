@@ -452,9 +452,99 @@ def test_conv2d_transpose_layer_training(x_n_fs_n_pad_n_outshp_n_res, with_v, dt
     helpers.assert_compilable(loss_fn)
 
 
+# depthwise conv2d
+@pytest.mark.parametrize(
+    "x_n_fs_n_pad_n_res", [
+                                ([[[[0.], [0.], [0.]],
+                                   [[0.], [3.], [0.]],
+                                   [[0.], [0.], [0.]]]],
+                                 [3, 3],
+                                 "SAME",
+                                 [[[[4.818525], [4.0714245], [-0.64861274]],
+                                   [[1.516176], [-0.7934026], [0.46643972]],
+                                   [[1.0679483], [2.2363136], [0.5072848]]]]),
+
+                                ([[[[0.], [0.], [0.]],
+                                   [[0.], [3.], [0.]],
+                                   [[0.], [0.], [0.]]] for _ in range(5)],
+                                 [3, 3],
+                                 "SAME",
+                                 [[[[4.818525], [4.0714245], [-0.64861274]],
+                                   [[1.516176], [-0.7934026], [0.46643972]],
+                                   [[1.0679483], [2.2363136], [0.5072848]]] for _ in range(5)]),
+
+                                ([[[[0.], [0.], [0.]],
+                                   [[0.], [3.], [0.]],
+                                   [[0.], [0.], [0.]]]],
+                                 [3, 3],
+                                 "VALID",
+                                 [[[[-0.7934026]]]])])
+@pytest.mark.parametrize(
+    "with_v", [True, False])
+@pytest.mark.parametrize(
+    "dtype_str", ['float32'])
+@pytest.mark.parametrize(
+    "tensor_fn", [ivy.array, helpers.var_fn])
+def test_depthwise_conv2d_layer_training(x_n_fs_n_pad_n_res, with_v, dtype_str, tensor_fn, dev_str, call):
+    if call in [helpers.tf_call, helpers.tf_graph_call] and 'cpu' in dev_str:
+        # tf conv1d does not work when CUDA is installed, but array is on CPU
+        pytest.skip()
+    if call in [helpers.np_call, helpers.jnp_call]:
+        # numpy and jax do not yet support conv1d
+        pytest.skip()
+    # smoke test
+    x, filter_shape, padding, target = x_n_fs_n_pad_n_res
+    x = tensor_fn(x, dtype_str, dev_str)
+    target = np.asarray(target)
+    num_channels = x.shape[-1]
+    batch_size = x.shape[0]
+    input_shape = list(x.shape[1:3])
+    if with_v:
+        np.random.seed(0)
+        wlim = (6 / (num_channels*2)) ** 0.5
+        w = ivy.variable(ivy.array(np.random.uniform(
+            -wlim, wlim, tuple(filter_shape + [num_channels])), 'float32'))
+        b = ivy.variable(ivy.zeros([1, 1, num_channels]))
+        v = Container({'w': w, 'b': b})
+    else:
+        v = None
+    depthwise_conv2d_layer = ivy.DepthwiseConv2D(num_channels, filter_shape, 1, padding, v=v)
+
+    def loss_fn(v_):
+        out = depthwise_conv2d_layer(x, v=v_)
+        return ivy.reduce_mean(out)[0]
+
+    # train
+    loss_tm1 = 1e12
+    loss = None
+    grads = None
+    for i in range(10):
+        loss, grads = ivy.execute_with_gradients(loss_fn, depthwise_conv2d_layer.v)
+        depthwise_conv2d_layer.v = ivy.gradient_descent_update(depthwise_conv2d_layer.v, grads, 1e-3)
+        assert loss < loss_tm1
+        loss_tm1 = loss
+
+    # type test
+    assert ivy.is_array(loss)
+    assert isinstance(grads, ivy.Container)
+    # cardinality test
+    if call is helpers.mx_call:
+        # mxnet slicing cannot reduce dimension to zero
+        assert loss.shape == (1,)
+    else:
+        assert loss.shape == ()
+    # value test
+    assert ivy.reduce_max(ivy.abs(grads.b)) > 0
+    assert ivy.reduce_max(ivy.abs(grads.w)) > 0
+    # compilation test
+    if call is helpers.torch_call:
+        # pytest scripting does not **kwargs
+        return
+    helpers.assert_compilable(loss_fn)
+
+
 # LSTM #
 # -----#
-
 
 @pytest.mark.parametrize(
     "b_t_ic_hc_otf_sctv", [
