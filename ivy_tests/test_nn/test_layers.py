@@ -510,6 +510,97 @@ def test_conv3d_layer(x_n_fs_n_pad_n_res, with_v, dtype_str, tensor_fn, dev_str,
     helpers.assert_compilable(conv3d_layer)
 
 
+# conv3d transpose
+@pytest.mark.parametrize(
+    "x_n_fs_n_pad_n_outshp_n_res", [
+        ([[[[[0.], [0.], [0.]], [[0.], [0.], [0.]], [[0.], [0.], [0.]]],
+           [[[0.], [0.], [0.]], [[0.], [3.], [0.]], [[0.], [0.], [0.]]],
+           [[[0.], [0.], [0.]], [[0.], [0.], [0.]], [[0.], [0.], [0.]]]]],
+         [3, 3, 3],
+         "SAME",
+         (1, 3, 3, 3, 1),
+         [[[[[0.5072848], [2.2363136], [1.0679483]], [[0.46643972], [-0.7934026], [1.516176]], [[-0.64861274], [4.0714245], [4.818525]]],
+           [[[-1.2113112], [3.0316954], [0.3002848]], [[0.70713985], [4.4229302], [-4.457924]], [[-4.290678], [-4.986037], [3.456687]]],
+           [[[2.8906898], [3.8452792], [4.9739475]], [[3.108947], [-0.4003182], [2.9153447]], [[-3.9670086], [1.4541019], [-3.7063813]]]]]),
+
+        ([[[[[0.], [0.], [0.]], [[0.], [0.], [0.]], [[0.], [0.], [0.]]],
+           [[[0.], [0.], [0.]], [[0.], [3.], [0.]], [[0.], [0.], [0.]]],
+           [[[0.], [0.], [0.]], [[0.], [0.], [0.]], [[0.], [0.], [0.]]]] for _ in range(5)],
+         [3, 3, 3],
+         "SAME",
+         (5, 3, 3, 3, 1),
+         [[[[[0.5072848], [2.2363136], [1.0679483]], [[0.46643972], [-0.7934026], [1.516176]], [[-0.64861274], [4.0714245], [4.818525]]],
+           [[[-1.2113112], [3.0316954], [0.3002848]], [[0.70713985], [4.4229302], [-4.457924]], [[-4.290678], [-4.986037], [3.456687]]],
+           [[[2.8906898], [3.8452792], [4.9739475]], [[3.108947], [-0.4003182], [2.9153447]], [[-3.9670086], [1.4541019], [-3.7063813]]]] for _ in range(5)]),
+
+        ([[[[[0.], [0.], [0.]], [[0.], [0.], [0.]], [[0.], [0.], [0.]]],
+           [[[0.], [0.], [0.]], [[0.], [3.], [0.]], [[0.], [0.], [0.]]],
+           [[[0.], [0.], [0.]], [[0.], [0.], [0.]], [[0.], [0.], [0.]]]]],
+         [3, 3, 3],
+         "VALID",
+         (1, 5, 5, 5, 1),
+         [[[[[0.], [0.], [0.], [0.], [0.]], [[0.], [0.], [0.], [0.], [0.]], [[0.], [0.], [0.], [0.], [0.]],
+            [[0.], [0.], [0.], [0.], [0.]], [[0.], [0.], [0.], [0.], [0.]]],
+           [[[0.], [0.], [0.], [0.], [0.]], [[0.], [0.5072848], [2.2363136], [1.0679483], [0.]], [[0.], [0.46643972], [-0.7934026], [1.516176], [0.]],
+            [[0.], [-0.64861274], [4.0714245], [4.818525], [0.]], [[0.], [0.], [0.], [0.], [0.]]],
+           [[[0.], [0.], [0.], [0.], [0.]], [[0.], [-1.2113112], [3.0316954], [0.3002848], [0.]], [[0.], [0.70713985], [4.4229302], [-4.457924], [0.]],
+            [[0.], [-4.290678], [-4.986037], [3.456687], [0.]], [[0.], [0.], [0.], [0.], [0.]]],
+           [[[0.], [0.], [0.], [0.], [0.]], [[0.], [2.8906898], [3.8452792], [4.9739475], [0.]], [[0.], [3.108947], [-0.4003182], [2.9153447], [0.]],
+            [[0.], [-3.9670086], [1.4541019], [-3.7063813], [0.]], [[0.], [0.], [0.], [0.], [0.]]],
+           [[[0.], [0.], [0.], [0.], [0.]], [[0.], [0.], [0.], [0.], [0.]], [[0.], [0.], [0.], [0.], [0.]],
+            [[0.], [0.], [0.], [0.], [0.]], [[0.], [0.], [0.], [0.], [0.]]]]])])
+@pytest.mark.parametrize(
+    "with_v", [True, False])
+@pytest.mark.parametrize(
+    "dtype_str", ['float32'])
+@pytest.mark.parametrize(
+    "tensor_fn", [ivy.array, helpers.var_fn])
+def test_conv3d_transpose_layer(x_n_fs_n_pad_n_outshp_n_res, with_v, dtype_str, tensor_fn, dev_str, call):
+    if call in [helpers.tf_call, helpers.tf_graph_call] and 'cpu' in dev_str:
+        # tf conv1d does not work when CUDA is installed, but array is on CPU
+        pytest.skip()
+    if call in [helpers.np_call, helpers.jnp_call]:
+        # numpy and jax do not yet support conv1d
+        pytest.skip()
+    if call in [helpers.mx_call] and 'cpu' in dev_str:
+        # mxnet only supports 3d transpose convolutions with CUDNN
+        pytest.skip()
+    # smoke test
+    x, filter_shape, padding, out_shape, target = x_n_fs_n_pad_n_outshp_n_res
+    x = tensor_fn(x, dtype_str, dev_str)
+    target = np.asarray(target)
+    input_channels = x.shape[-1]
+    output_channels = target.shape[-1]
+    batch_size = x.shape[0]
+    input_shape = list(x.shape[1:4])
+    if with_v:
+        np.random.seed(0)
+        wlim = (6 / (output_channels + input_channels)) ** 0.5
+        w = ivy.variable(ivy.array(np.random.uniform(
+            -wlim, wlim, tuple(filter_shape + [output_channels, input_channels])), 'float32'))
+        b = ivy.variable(ivy.zeros([1, 1, 1, 1, output_channels]))
+        v = Container({'w': w, 'b': b})
+    else:
+        v = None
+    conv3d_transpose_layer = ivy.Conv3DTranspose(
+        input_channels, output_channels, filter_shape, 1, padding, out_shape, v=v)
+    ret = conv3d_transpose_layer(x)
+    # type test
+    assert ivy.is_array(ret)
+    # cardinality test
+    new_shape = input_shape if padding == 'SAME' else [item + filter_shape[i] - 1 for i, item in enumerate(input_shape)]
+    assert ret.shape == tuple([batch_size] + new_shape + [output_channels])
+    # value test
+    if not with_v:
+        return
+    assert np.allclose(call(conv3d_transpose_layer, x), target)
+    # compilation test
+    if call is helpers.torch_call:
+        # pytest scripting does not **kwargs
+        return
+    helpers.assert_compilable(conv3d_transpose_layer)
+
+
 # LSTM #
 # -----#
 
