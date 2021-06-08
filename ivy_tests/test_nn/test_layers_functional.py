@@ -78,10 +78,10 @@ def test_conv1d(x_n_filters_n_pad_n_res, dtype_str, tensor_fn, dev_str, call):
     if call in [helpers.tf_call, helpers.tf_graph_call] and 'cpu' in dev_str:
         # tf conv1d does not work when CUDA is installed, but array is on CPU
         pytest.skip()
-    # smoke test
     if call in [helpers.np_call, helpers.jnp_call]:
         # numpy and jax do not yet support conv1d
         pytest.skip()
+    # smoke test
     x, filters, padding, true_res = x_n_filters_n_pad_n_res
     x = tensor_fn(x, dtype_str, dev_str)
     filters = tensor_fn(filters, dtype_str, dev_str)
