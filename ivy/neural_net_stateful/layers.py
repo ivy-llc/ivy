@@ -45,7 +45,7 @@ class Linear(Module):
 
     def _forward(self, inputs):
         """
-        Perform forward pass of the linear layer.
+        Perform forward pass of the Linear layer.
 
         :param inputs: Inputs to process *[batch_shape, in]*.
         :type inputs: array
@@ -94,7 +94,7 @@ class Conv1D(Module):
 
     def _create_variables(self, dev_str):
         """
-        Create internal variables for the Linear layer
+        Create internal variables for the Conv1D layer
         """
         # ToDo: support other initialization mechanisms, via class constructor options
         # ToDo: tidy the construction of these variables, with helper functions
@@ -107,11 +107,11 @@ class Conv1D(Module):
 
     def _forward(self, inputs):
         """
-        Perform forward pass of the linear layer.
+        Perform forward pass of the Conv1D layer.
 
-        :param inputs: Inputs to process *[batch_shape, in]*.
+        :param inputs: Inputs to process *[batch_size,w,d_in]*
         :type inputs: array
-        :return: The outputs following the linear operation and bias addition *[batch_shape, out]*
+        :return: The outputs following the conv1d layer *[batch_size,new_w,d_out]*
         """
         return ivy.conv1d(inputs, self.v.w, self._strides, self._padding, self._data_format, self._dilations) + self.v.b
 
@@ -184,7 +184,7 @@ class LSTM(Module):
 
     def _forward(self, inputs, initial_state=None):
         """
-        Perform forward pass of the lstm layer.
+        Perform forward pass of the LSTM layer.
 
         :param inputs: Inputs to process *[batch_shape, t, in]*.
         :type inputs: array
