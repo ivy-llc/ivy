@@ -358,6 +358,65 @@ class DepthwiseConv2D(Module):
                + self.v.b
 
 
+class Conv3D(Module):
+
+    def __init__(self, input_channels, output_channels, filter_shape, strides, padding, data_format='NDHWC',
+                 dilations=1, dev_str='cpu', v=None):
+        """
+        3D convolutional layer.
+
+        :param input_channels: Number of input channels for the layer.
+        :type input_channels: int
+        :param output_channels: Number of output channels for the layer.
+        :type output_channels: int
+        :param filter_shape: Shape of the convolutional filter.
+        :type filter_shape: sequence of ints
+        :param strides: The stride of the sliding window for each dimension of input.
+        :type strides: int or sequence of ints
+        :param padding: "SAME" or "VALID" indicating the algorithm, or list indicating the per-dimension paddings.
+        :type padding: string or sequence of ints
+        :param data_format: "NDHWC" or "NCDHW". Defaults to "NDHWC".
+        :type data_format: string
+        :param dilations: The dilation factor for each dimension of input.
+        :type dilations: int or sequence of ints
+        :param dev_str: device on which to create the layer's variables 'cuda:0', 'cuda:1', 'cpu' etc. Default is cpu.
+        :type dev_str: str, optional
+        :param v: the variables for each of the linear layer, as a container, constructed internally by default.
+        :type v: ivy container of variables, optional
+        """
+        self._input_channels = input_channels
+        self._output_channels = output_channels
+        self._filter_shape = filter_shape
+        self._strides = strides
+        self._padding = padding
+        self._data_format = data_format
+        self._dilations = dilations
+        Module.__init__(self, dev_str, v)
+
+    def _create_variables(self, dev_str):
+        """
+        Create internal variables for the Conv3D layer
+        """
+        # ToDo: support other initialization mechanisms, via class constructor options
+        # ToDo: tidy the construction of these variables, with helper functions
+        wlim = (6 / (self._output_channels + self._input_channels)) ** 0.5
+        w_shape = self._filter_shape + [self._output_channels, self._input_channels] if self._data_format == 'NDHWC'\
+            else [self._output_channels, self._input_channels] + self._filter_shape
+        w = ivy.variable(ivy.random_uniform(-wlim, wlim, w_shape, dev_str=dev_str))
+        b = ivy.variable(ivy.zeros([1, 1, 1, 1, self._output_channels], dev_str=dev_str))
+        return {'w': w, 'b': b}
+
+    def _forward(self, inputs):
+        """
+        Perform forward pass of the Conv3D layer.
+
+        :param inputs: Inputs to process *[batch_size,d,h,w,d_in]*.
+        :type inputs: array
+        :return: The outputs following the conv1d layer *[batch_size,new_d,new_h,new_w,d_out]*
+        """
+        return ivy.conv3d(inputs, self.v.w, self._strides, self._padding, self._data_format, self._dilations) + self.v.b
+
+
 # LSTM #
 # -----#
 

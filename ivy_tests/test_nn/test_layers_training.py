@@ -17,21 +17,19 @@ from ivy.core.container import Container
 
 
 @pytest.mark.parametrize(
-    "bs_ic_oc_target", [
-        ([1, 2], 4, 5, [[0.30230279, 0.65123089, 0.30132881, -0.90954636, 1.08810135]]),
-    ])
+    "bs_ic_oc", [([1, 2], 4, 5)])
 @pytest.mark.parametrize(
     "with_v", [True, False])
 @pytest.mark.parametrize(
     "dtype_str", ['float32'])
 @pytest.mark.parametrize(
     "tensor_fn", [ivy.array, helpers.var_fn])
-def test_linear_layer_training(bs_ic_oc_target, with_v, dtype_str, tensor_fn, dev_str, call):
+def test_linear_layer_training(bs_ic_oc, with_v, dtype_str, tensor_fn, dev_str, call):
     # smoke test
     if call is helpers.np_call:
         # NumPy does not support gradients
         pytest.skip()
-    batch_shape, input_channels, output_channels, target = bs_ic_oc_target
+    batch_shape, input_channels, output_channels = bs_ic_oc
     x = ivy.cast(ivy.linspace(ivy.zeros(batch_shape), ivy.ones(batch_shape), input_channels), 'float32')
     if with_v:
         np.random.seed(0)
@@ -82,30 +80,28 @@ def test_linear_layer_training(bs_ic_oc_target, with_v, dtype_str, tensor_fn, de
 
 # conv1d
 @pytest.mark.parametrize(
-    "x_n_fs_n_pad_n_res", [
+    "x_n_fs_n_pad_n_oc", [
         ([[[0.], [3.], [0.]]],
          3,
          "SAME",
-         [[[1.0679483],
-           [2.2363136],
-           [0.5072848]]]),
+         1),
 
         ([[[0.], [3.], [0.]] for _ in range(5)],
          3,
          "SAME",
-         [[[1.0679483], [2.2363136], [0.5072848]] for _ in range(5)]),
+         1),
 
         ([[[0.], [3.], [0.]]],
          3,
          "VALID",
-         [[[2.2363136]]])])
+         1)])
 @pytest.mark.parametrize(
     "with_v", [True, False])
 @pytest.mark.parametrize(
     "dtype_str", ['float32'])
 @pytest.mark.parametrize(
     "tensor_fn", [ivy.array, helpers.var_fn])
-def test_conv1d_layer_training(x_n_fs_n_pad_n_res, with_v, dtype_str, tensor_fn, dev_str, call):
+def test_conv1d_layer_training(x_n_fs_n_pad_n_oc, with_v, dtype_str, tensor_fn, dev_str, call):
     if call in [helpers.tf_call, helpers.tf_graph_call] and 'cpu' in dev_str:
         # tf conv1d does not work when CUDA is installed, but array is on CPU
         pytest.skip()
@@ -113,11 +109,9 @@ def test_conv1d_layer_training(x_n_fs_n_pad_n_res, with_v, dtype_str, tensor_fn,
         # numpy and jax do not yet support conv1d
         pytest.skip()
     # smoke test
-    x, filter_size, padding, target = x_n_fs_n_pad_n_res
+    x, filter_size, padding, output_channels = x_n_fs_n_pad_n_oc
     x = tensor_fn(x, dtype_str, dev_str)
-    target = np.asarray(target)
     input_channels = x.shape[-1]
-    output_channels = target.shape[-1]
     batch_size = x.shape[0]
     width = x.shape[1]
     if with_v:
@@ -166,31 +160,31 @@ def test_conv1d_layer_training(x_n_fs_n_pad_n_res, with_v, dtype_str, tensor_fn,
 
 # conv1d transpose
 @pytest.mark.parametrize(
-    "x_n_fs_n_pad_n_outshp_n_res", [
+    "x_n_fs_n_pad_n_outshp_n_oc", [
         ([[[0.], [3.], [0.]]],
          3,
          "SAME",
          (1, 3, 1),
-         [[[0.5072848], [2.2363136], [1.0679483]]]),
+         1),
 
         ([[[0.], [3.], [0.]] for _ in range(5)],
          3,
          "SAME",
          (5, 3, 1),
-         [[[0.5072848], [2.2363136], [1.0679483]] for _ in range(5)]),
+         1),
 
         ([[[0.], [3.], [0.]]],
          3,
          "VALID",
          (1, 5, 1),
-         [[[0.], [0.5072848], [2.2363136], [1.0679483], [0.]]])])
+         1)])
 @pytest.mark.parametrize(
     "with_v", [True, False])
 @pytest.mark.parametrize(
     "dtype_str", ['float32'])
 @pytest.mark.parametrize(
     "tensor_fn", [ivy.array, helpers.var_fn])
-def test_conv1d_transpose_layer_training(x_n_fs_n_pad_n_outshp_n_res, with_v, dtype_str, tensor_fn, dev_str, call):
+def test_conv1d_transpose_layer_training(x_n_fs_n_pad_n_outshp_n_oc, with_v, dtype_str, tensor_fn, dev_str, call):
     if call in [helpers.tf_call, helpers.tf_graph_call] and 'cpu' in dev_str:
         # tf conv1d does not work when CUDA is installed, but array is on CPU
         pytest.skip()
@@ -198,11 +192,9 @@ def test_conv1d_transpose_layer_training(x_n_fs_n_pad_n_outshp_n_res, with_v, dt
         # numpy and jax do not yet support conv1d
         pytest.skip()
     # smoke test
-    x, filter_size, padding, out_shape, target = x_n_fs_n_pad_n_outshp_n_res
+    x, filter_size, padding, out_shape, output_channels = x_n_fs_n_pad_n_outshp_n_oc
     x = tensor_fn(x, dtype_str, dev_str)
-    target = np.asarray(target)
     input_channels = x.shape[-1]
-    output_channels = target.shape[-1]
     batch_size = x.shape[0]
     width = x.shape[1]
     if with_v:
@@ -251,18 +243,14 @@ def test_conv1d_transpose_layer_training(x_n_fs_n_pad_n_outshp_n_res, with_v, dt
 
 # conv2d
 @pytest.mark.parametrize(
-    "x_n_fs_n_pad_n_res", [([[[[1.], [2.], [3.], [4.], [5.]],
+    "x_n_fs_n_pad_n_oc",  [([[[[1.], [2.], [3.], [4.], [5.]],
                               [[6.], [7.], [8.], [9.], [10.]],
                               [[11.], [12.], [13.], [14.], [15.]],
                               [[16.], [17.], [18.], [19.], [20.]],
                               [[21.], [22.], [23.], [24.], [25.]]]],
                             [3, 3],
                             "SAME",
-                            [[[[20.132391], [22.194885], [25.338402], [28.481918], [10.9251585]],
-                              [[37.611], [40.64039], [45.05442], [49.468452], [20.488476]],
-                              [[59.139305], [62.71055], [67.12458], [71.53861], [30.220888]],
-                              [[80.66761], [84.78071], [89.19474], [93.60877], [39.9533]],
-                              [[23.54352], [30.85646], [32.52338], [34.1903], [15.24139]]]]),
+                            1),
 
                            ([[[[1.], [2.], [3.], [4.], [5.]],
                               [[6.], [7.], [8.], [9.], [10.]],
@@ -271,11 +259,7 @@ def test_conv1d_transpose_layer_training(x_n_fs_n_pad_n_outshp_n_res, with_v, dt
                               [[21.], [22.], [23.], [24.], [25.]]] for _ in range(5)],
                             [3, 3],
                             "SAME",
-                            [[[[20.132391], [22.194885], [25.338402], [28.481918], [10.9251585]],
-                              [[37.611], [40.64039], [45.05442], [49.468452], [20.488476]],
-                              [[59.139305], [62.71055], [67.12458], [71.53861], [30.220888]],
-                              [[80.66761], [84.78071], [89.19474], [93.60877], [39.9533]],
-                              [[23.54352], [30.85646], [32.52338], [34.1903], [15.24139]]] for _ in range(5)]),
+                            1),
 
                            ([[[[1.], [2.], [3.], [4.], [5.]],
                               [[6.], [7.], [8.], [9.], [10.]],
@@ -284,16 +268,14 @@ def test_conv1d_transpose_layer_training(x_n_fs_n_pad_n_outshp_n_res, with_v, dt
                               [[21.], [22.], [23.], [24.], [25.]]]],
                             [3, 3],
                             "VALID",
-                            [[[[40.64039], [45.05442], [49.468452]],
-                              [[62.71055], [67.12458], [71.53861]],
-                              [[84.78071], [89.19474], [93.60877]]]])])
+                            1)])
 @pytest.mark.parametrize(
     "with_v", [True, False])
 @pytest.mark.parametrize(
     "dtype_str", ['float32'])
 @pytest.mark.parametrize(
     "tensor_fn", [ivy.array, helpers.var_fn])
-def test_conv2d_layer_training(x_n_fs_n_pad_n_res, with_v, dtype_str, tensor_fn, dev_str, call):
+def test_conv2d_layer_training(x_n_fs_n_pad_n_oc, with_v, dtype_str, tensor_fn, dev_str, call):
     if call in [helpers.tf_call, helpers.tf_graph_call] and 'cpu' in dev_str:
         # tf conv1d does not work when CUDA is installed, but array is on CPU
         pytest.skip()
@@ -301,11 +283,9 @@ def test_conv2d_layer_training(x_n_fs_n_pad_n_res, with_v, dtype_str, tensor_fn,
         # numpy and jax do not yet support conv1d
         pytest.skip()
     # smoke test
-    x, filter_shape, padding, target = x_n_fs_n_pad_n_res
+    x, filter_shape, padding, output_channels = x_n_fs_n_pad_n_oc
     x = tensor_fn(x, dtype_str, dev_str)
-    target = np.asarray(target)
     input_channels = x.shape[-1]
-    output_channels = target.shape[-1]
     batch_size = x.shape[0]
     input_shape = list(x.shape[1:3])
     if with_v:
@@ -354,16 +334,14 @@ def test_conv2d_layer_training(x_n_fs_n_pad_n_res, with_v, dtype_str, tensor_fn,
 
 # conv2d transpose
 @pytest.mark.parametrize(
-    "x_n_fs_n_pad_n_outshp_n_res", [
+    "x_n_fs_n_pad_n_outshp_n_oc", [
         ([[[[0.], [0.], [0.]],
            [[0.], [3.], [0.]],
            [[0.], [0.], [0.]]]],
          [3, 3],
          "SAME",
          (1, 3, 3, 1),
-         [[[[0.5072848], [2.2363136], [1.0679483]],
-           [[0.46643972], [-0.7934026], [1.516176]],
-           [[-0.64861274], [4.0714245], [4.818525]]]]),
+         1),
 
         ([[[[0.], [0.], [0.]],
            [[0.], [3.], [0.]],
@@ -371,9 +349,7 @@ def test_conv2d_layer_training(x_n_fs_n_pad_n_res, with_v, dtype_str, tensor_fn,
          [3, 3],
          "SAME",
          (5, 3, 3, 1),
-         [[[[0.5072848], [2.2363136], [1.0679483]],
-           [[0.46643972], [-0.7934026], [1.516176]],
-           [[-0.64861274], [4.0714245], [4.818525]]] for _ in range(5)]),
+         1),
 
         ([[[[0.], [0.], [0.]],
            [[0.], [3.], [0.]],
@@ -381,18 +357,14 @@ def test_conv2d_layer_training(x_n_fs_n_pad_n_res, with_v, dtype_str, tensor_fn,
          [3, 3],
          "VALID",
          (1, 5, 5, 1),
-         [[[[0.], [0.], [0.], [0.], [0.]],
-           [[0.], [0.5072848], [2.2363136], [1.0679483], [0.]],
-           [[0.], [0.46643972], [-0.7934026], [1.516176], [0.]],
-           [[0.], [-0.64861274], [4.0714245], [4.818525], [0.]],
-           [[0.], [0.], [0.], [0.], [0.]]]])])
+         1)])
 @pytest.mark.parametrize(
     "with_v", [True, False])
 @pytest.mark.parametrize(
     "dtype_str", ['float32'])
 @pytest.mark.parametrize(
     "tensor_fn", [ivy.array, helpers.var_fn])
-def test_conv2d_transpose_layer_training(x_n_fs_n_pad_n_outshp_n_res, with_v, dtype_str, tensor_fn, dev_str, call):
+def test_conv2d_transpose_layer_training(x_n_fs_n_pad_n_outshp_n_oc, with_v, dtype_str, tensor_fn, dev_str, call):
     if call in [helpers.tf_call, helpers.tf_graph_call] and 'cpu' in dev_str:
         # tf conv1d does not work when CUDA is installed, but array is on CPU
         pytest.skip()
@@ -400,11 +372,9 @@ def test_conv2d_transpose_layer_training(x_n_fs_n_pad_n_outshp_n_res, with_v, dt
         # numpy and jax do not yet support conv1d
         pytest.skip()
     # smoke test
-    x, filter_shape, padding, out_shape, target = x_n_fs_n_pad_n_outshp_n_res
+    x, filter_shape, padding, out_shape, output_channels = x_n_fs_n_pad_n_outshp_n_oc
     x = tensor_fn(x, dtype_str, dev_str)
-    target = np.asarray(target)
     input_channels = x.shape[-1]
-    output_channels = target.shape[-1]
     batch_size = x.shape[0]
     input_shape = list(x.shape[1:3])
     if with_v:
@@ -454,38 +424,31 @@ def test_conv2d_transpose_layer_training(x_n_fs_n_pad_n_outshp_n_res, with_v, dt
 
 # depthwise conv2d
 @pytest.mark.parametrize(
-    "x_n_fs_n_pad_n_res", [
+    "x_n_fs_n_pad", [
                                 ([[[[0.], [0.], [0.]],
                                    [[0.], [3.], [0.]],
                                    [[0.], [0.], [0.]]]],
                                  [3, 3],
-                                 "SAME",
-                                 [[[[4.818525], [4.0714245], [-0.64861274]],
-                                   [[1.516176], [-0.7934026], [0.46643972]],
-                                   [[1.0679483], [2.2363136], [0.5072848]]]]),
+                                 "SAME"),
 
                                 ([[[[0.], [0.], [0.]],
                                    [[0.], [3.], [0.]],
                                    [[0.], [0.], [0.]]] for _ in range(5)],
                                  [3, 3],
-                                 "SAME",
-                                 [[[[4.818525], [4.0714245], [-0.64861274]],
-                                   [[1.516176], [-0.7934026], [0.46643972]],
-                                   [[1.0679483], [2.2363136], [0.5072848]]] for _ in range(5)]),
+                                 "SAME"),
 
                                 ([[[[0.], [0.], [0.]],
                                    [[0.], [3.], [0.]],
                                    [[0.], [0.], [0.]]]],
                                  [3, 3],
-                                 "VALID",
-                                 [[[[-0.7934026]]]])])
+                                 "VALID")])
 @pytest.mark.parametrize(
     "with_v", [True, False])
 @pytest.mark.parametrize(
     "dtype_str", ['float32'])
 @pytest.mark.parametrize(
     "tensor_fn", [ivy.array, helpers.var_fn])
-def test_depthwise_conv2d_layer_training(x_n_fs_n_pad_n_res, with_v, dtype_str, tensor_fn, dev_str, call):
+def test_depthwise_conv2d_layer_training(x_n_fs_n_pad, with_v, dtype_str, tensor_fn, dev_str, call):
     if call in [helpers.tf_call, helpers.tf_graph_call] and 'cpu' in dev_str:
         # tf conv1d does not work when CUDA is installed, but array is on CPU
         pytest.skip()
@@ -493,9 +456,8 @@ def test_depthwise_conv2d_layer_training(x_n_fs_n_pad_n_res, with_v, dtype_str, 
         # numpy and jax do not yet support conv1d
         pytest.skip()
     # smoke test
-    x, filter_shape, padding, target = x_n_fs_n_pad_n_res
+    x, filter_shape, padding = x_n_fs_n_pad
     x = tensor_fn(x, dtype_str, dev_str)
-    target = np.asarray(target)
     num_channels = x.shape[-1]
     batch_size = x.shape[0]
     input_shape = list(x.shape[1:3])
@@ -521,6 +483,92 @@ def test_depthwise_conv2d_layer_training(x_n_fs_n_pad_n_res, with_v, dtype_str, 
     for i in range(10):
         loss, grads = ivy.execute_with_gradients(loss_fn, depthwise_conv2d_layer.v)
         depthwise_conv2d_layer.v = ivy.gradient_descent_update(depthwise_conv2d_layer.v, grads, 1e-3)
+        assert loss < loss_tm1
+        loss_tm1 = loss
+
+    # type test
+    assert ivy.is_array(loss)
+    assert isinstance(grads, ivy.Container)
+    # cardinality test
+    if call is helpers.mx_call:
+        # mxnet slicing cannot reduce dimension to zero
+        assert loss.shape == (1,)
+    else:
+        assert loss.shape == ()
+    # value test
+    assert ivy.reduce_max(ivy.abs(grads.b)) > 0
+    assert ivy.reduce_max(ivy.abs(grads.w)) > 0
+    # compilation test
+    if call is helpers.torch_call:
+        # pytest scripting does not **kwargs
+        return
+    helpers.assert_compilable(loss_fn)
+
+
+# conv3d
+@pytest.mark.parametrize(
+    "x_n_fs_n_pad_n_oc",
+    [([[[[[0.], [0.], [0.]], [[0.], [0.], [0.]], [[0.], [0.], [0.]]],
+        [[[0.], [0.], [0.]], [[0.], [3.], [0.]], [[0.], [0.], [0.]]],
+        [[[0.], [0.], [0.]], [[0.], [0.], [0.]], [[0.], [0.], [0.]]]]],
+      [3, 3, 3],
+      "SAME",
+      1),
+
+     ([[[[[0.], [0.], [0.]], [[0.], [0.], [0.]], [[0.], [0.], [0.]]],
+        [[[0.], [0.], [0.]], [[0.], [3.], [0.]], [[0.], [0.], [0.]]],
+        [[[0.], [0.], [0.]], [[0.], [0.], [0.]], [[0.], [0.], [0.]]]] for _ in range(5)],
+      [3, 3, 3],
+      "SAME",
+      1),
+
+     ([[[[[0.], [0.], [0.]], [[0.], [0.], [0.]], [[0.], [0.], [0.]]],
+        [[[0.], [0.], [0.]], [[0.], [3.], [0.]], [[0.], [0.], [0.]]],
+        [[[0.], [0.], [0.]], [[0.], [0.], [0.]], [[0.], [0.], [0.]]]]],
+      [3, 3, 3],
+      "VALID",
+      1)])
+@pytest.mark.parametrize(
+    "with_v", [True, False])
+@pytest.mark.parametrize(
+    "dtype_str", ['float32'])
+@pytest.mark.parametrize(
+    "tensor_fn", [ivy.array, helpers.var_fn])
+def test_conv3d_layer_training(x_n_fs_n_pad_n_oc, with_v, dtype_str, tensor_fn, dev_str, call):
+    if call in [helpers.tf_call, helpers.tf_graph_call] and 'cpu' in dev_str:
+        # tf conv1d does not work when CUDA is installed, but array is on CPU
+        pytest.skip()
+    if call in [helpers.np_call, helpers.jnp_call]:
+        # numpy and jax do not yet support conv1d
+        pytest.skip()
+    # smoke test
+    x, filter_shape, padding, output_channels = x_n_fs_n_pad_n_oc
+    x = tensor_fn(x, dtype_str, dev_str)
+    input_channels = x.shape[-1]
+    batch_size = x.shape[0]
+    input_shape = list(x.shape[1:4])
+    if with_v:
+        np.random.seed(0)
+        wlim = (6 / (output_channels + input_channels)) ** 0.5
+        w = ivy.variable(ivy.array(np.random.uniform(
+            -wlim, wlim, tuple(filter_shape + [output_channels, input_channels])), 'float32'))
+        b = ivy.variable(ivy.zeros([1, 1, 1, 1, output_channels]))
+        v = Container({'w': w, 'b': b})
+    else:
+        v = None
+    conv3d_layer = ivy.Conv3D(input_channels, output_channels, filter_shape, 1, padding, v=v)
+
+    def loss_fn(v_):
+        out = conv3d_layer(x, v=v_)
+        return ivy.reduce_mean(out)[0]
+
+    # train
+    loss_tm1 = 1e12
+    loss = None
+    grads = None
+    for i in range(10):
+        loss, grads = ivy.execute_with_gradients(loss_fn, conv3d_layer.v)
+        conv3d_layer.v = ivy.gradient_descent_update(conv3d_layer.v, grads, 1e-3)
         assert loss < loss_tm1
         loss_tm1 = loss
 
