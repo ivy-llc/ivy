@@ -5,7 +5,8 @@
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  
+  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
   <title>Training a Network &mdash; Ivy 1.0 documentation</title>
@@ -21,10 +22,10 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
@@ -33,6 +34,8 @@
   
   <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/css/custom.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -188,12 +191,12 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="training-a-network">
+  <section id="training-a-network">
 <h1>Training a Network<a class="headerlink" href="#training-a-network" title="Permalink to this headline">¶</a></h1>
 <p>So far, we have only considered using Ivy to create framework agnostic functions and libraries,
 which can then be used alongside framework-specific code, such as a PyTorch project.</p>
 <p>Ivy can also be used to create a fully framework agnostic training pipeline, including stateful neural network models and optimizers.</p>
-<div class="section" id="trainable-ivy-module">
+<section id="trainable-ivy-module">
 <h2>Trainable Ivy Module<a class="headerlink" href="#trainable-ivy-module" title="Permalink to this headline">¶</a></h2>
 <p>A trainable Ivy module can be constructed like so:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">IvyFcModel</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
@@ -209,8 +212,8 @@ which can then be used alongside framework-specific code, such as a PyTorch proj
 </pre></div>
 </div>
 <p>This model is now ready to train!</p>
-</div>
-<div class="section" id="ivy-training">
+</section>
+<section id="ivy-training">
 <h2>Ivy Training<a class="headerlink" href="#ivy-training" title="Permalink to this headline">¶</a></h2>
 <p>This model can then be trained using Ivy like so:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ivy</span><span class="o">.</span><span class="n">set_framework</span><span class="p">(</span><span class="s1">&#39;torch&#39;</span><span class="p">)</span>  <span class="c1"># change to any framework</span>
@@ -231,8 +234,8 @@ which can then be used alongside framework-specific code, such as a PyTorch proj
 </div>
 <p>This example does not work with a NumPy backend, as NumPy does not support gradients.
 With any other framework, you can watch the loss quickly go down!</p>
-</div>
-<div class="section" id="native-training">
+</section>
+<section id="native-training">
 <h2>Native Training<a class="headerlink" href="#native-training" title="Permalink to this headline">¶</a></h2>
 <p>Alternatively, the same Ivy network model can be trained with optimizer classes from your favourite framework.</p>
 <p><strong>PyTorch</strong></p>
@@ -270,8 +273,8 @@ With any other framework, you can watch the loss quickly go down!</p>
     <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;step </span><span class="si">{}</span><span class="s1"> loss = </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">step</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">(</span><span class="n">loss</span><span class="p">)</span><span class="o">.</span><span class="n">item</span><span class="p">()))</span>
 </pre></div>
 </div>
-</div>
-</div>
+</section>
+</section>
 
 
            </div>

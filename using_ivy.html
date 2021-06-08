@@ -5,7 +5,8 @@
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  
+  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
   <title>Using Ivy &mdash; Ivy 1.0 documentation</title>
@@ -21,10 +22,10 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
@@ -33,6 +34,8 @@
   
   <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/css/custom.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -187,14 +190,14 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="using-ivy">
+  <section id="using-ivy">
 <h1>Using Ivy<a class="headerlink" href="#using-ivy" title="Permalink to this headline">¶</a></h1>
 <p>Ivy is useful tool for any developer wishing to maximize the audience of their codebase,
 by making their code framework-agnostic.</p>
 <p>First, we explain how to write framework-agnostic Ivy code.
 We then explain the variety of ways in which an end user can run your Ivy code,
 using their specific choice of backend framework.</p>
-<div class="section" id="writing-ivy">
+<section id="writing-ivy">
 <h2>Writing Ivy<a class="headerlink" href="#writing-ivy" title="Permalink to this headline">¶</a></h2>
 <p>Writing Ivy code is simple.
 The <code class="code docutils literal notranslate"><span class="pre">ivy</span></code> namespace provides access to all of the Ivy functions,
@@ -208,8 +211,8 @@ In reality, your code will likely be a little more complex than this!</p>
 </pre></div>
 </div>
 <p>That’s it, having used the Ivy namespace to write your code, it is now framework-agnostic! There is nothing more to it!</p>
-</div>
-<div class="section" id="running-ivy">
+</section>
+<section id="running-ivy">
 <h2>Running Ivy<a class="headerlink" href="#running-ivy" title="Permalink to this headline">¶</a></h2>
 <p>When it comes to an end user actually <em>running</em> your code alongside their specific framework, there are a number of options.</p>
 <p><strong>Type Checking</strong></p>
@@ -288,8 +291,8 @@ they can explicitly set this at the beginning of their own code using <code clas
 Finally, if they use multiple backends in one project,
 they can set and unset the frameworks using either <code class="code docutils literal notranslate"><span class="pre">ivy.set_framework()</span></code> and <code class="code docutils literal notranslate"><span class="pre">ivy.unset_framework()</span></code>,
 or via the <code class="code docutils literal notranslate"><span class="pre">with</span></code> statement.</p>
-</div>
-</div>
+</section>
+</section>
 
 
            </div>

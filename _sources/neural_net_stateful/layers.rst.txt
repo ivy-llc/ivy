@@ -13,5 +13,6 @@ Layers
    :caption: Layers
 
    layers/Linear.rst
+   layers/Conv1D.rst
    layers/LSTM.rst
 
