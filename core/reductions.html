@@ -5,8 +5,7 @@
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
   <title>Reductions &mdash; Ivy 1.0 documentation</title>
@@ -22,10 +21,10 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
 
@@ -34,8 +33,6 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -193,12 +190,12 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="module-ivy.core.reductions">
+  <div class="section" id="module-ivy.core.reductions">
 <span id="reductions"></span><h1>Reductions<a class="headerlink" href="#module-ivy.core.reductions" title="Permalink to this headline">¶</a></h1>
 <p>Collection of reduction Ivy functions</p>
 <dl class="py function">
-<dt class="sig sig-object py" id="ivy.core.reductions.reduce_max">
-<span class="sig-prename descclassname"><span class="pre">ivy.core.reductions.</span></span><span class="sig-name descname"><span class="pre">reduce_max</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keepdims</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/reductions.html#reduce_max"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.core.reductions.reduce_max" title="Permalink to this definition">¶</a></dt>
+<dt id="ivy.core.reductions.reduce_max">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">reduce_max</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">keepdims</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">f</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/reductions.html#reduce_max"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.reductions.reduce_max" title="Permalink to this definition">¶</a></dt>
 <dd><p>Computes the maximum value along the specified axis. The maximum is taken over the flattened array by default,
 otherwise over the specified axis.</p>
 <dl class="field-list simple">
@@ -220,8 +217,8 @@ one. With this option, the result will broadcast correctly against the input arr
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="ivy.core.reductions.reduce_mean">
-<span class="sig-prename descclassname"><span class="pre">ivy.core.reductions.</span></span><span class="sig-name descname"><span class="pre">reduce_mean</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keepdims</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/reductions.html#reduce_mean"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.core.reductions.reduce_mean" title="Permalink to this definition">¶</a></dt>
+<dt id="ivy.core.reductions.reduce_mean">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">reduce_mean</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">keepdims</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">f</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/reductions.html#reduce_mean"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.reductions.reduce_mean" title="Permalink to this definition">¶</a></dt>
 <dd><p>Computes the arithmetic mean along a given axis.
 Returns the average of the array elements. The average is taken over the flattened array by default, otherwise over
 the specified axis.</p>
@@ -244,8 +241,8 @@ one. With this option, the result will broadcast correctly against the input arr
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="ivy.core.reductions.reduce_min">
-<span class="sig-prename descclassname"><span class="pre">ivy.core.reductions.</span></span><span class="sig-name descname"><span class="pre">reduce_min</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keepdims</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/reductions.html#reduce_min"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.core.reductions.reduce_min" title="Permalink to this definition">¶</a></dt>
+<dt id="ivy.core.reductions.reduce_min">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">reduce_min</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">keepdims</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">f</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/reductions.html#reduce_min"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.reductions.reduce_min" title="Permalink to this definition">¶</a></dt>
 <dd><p>Computes the minimum value along the specified axis. The minimum is taken over the flattened array by default,
 otherwise over the specified axis.</p>
 <dl class="field-list simple">
@@ -267,8 +264,8 @@ one. With this option, the result will broadcast correctly against the input arr
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="ivy.core.reductions.reduce_prod">
-<span class="sig-prename descclassname"><span class="pre">ivy.core.reductions.</span></span><span class="sig-name descname"><span class="pre">reduce_prod</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keepdims</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/reductions.html#reduce_prod"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.core.reductions.reduce_prod" title="Permalink to this definition">¶</a></dt>
+<dt id="ivy.core.reductions.reduce_prod">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">reduce_prod</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">keepdims</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">f</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/reductions.html#reduce_prod"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.reductions.reduce_prod" title="Permalink to this definition">¶</a></dt>
 <dd><p>Multiplies array elements along a given axis.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -290,8 +287,8 @@ one. With this option, the result will broadcast correctly against the input arr
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="ivy.core.reductions.reduce_sum">
-<span class="sig-prename descclassname"><span class="pre">ivy.core.reductions.</span></span><span class="sig-name descname"><span class="pre">reduce_sum</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keepdims</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/reductions.html#reduce_sum"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.core.reductions.reduce_sum" title="Permalink to this definition">¶</a></dt>
+<dt id="ivy.core.reductions.reduce_sum">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">reduce_sum</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">keepdims</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">f</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/reductions.html#reduce_sum"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.reductions.reduce_sum" title="Permalink to this definition">¶</a></dt>
 <dd><p>Computes sum of array elements along a given axis.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -322,7 +319,7 @@ one. With this option, the result will broadcast correctly against the input arr
 <li class="toctree-l1"><a class="reference internal" href="reductions/reduce_max.html">reduce_max</a></li>
 </ul>
 </div>
-</section>
+</div>
 
 
            </div>

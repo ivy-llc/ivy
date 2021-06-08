@@ -5,8 +5,7 @@
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
   <title>Activations &mdash; Ivy 1.0 documentation</title>
@@ -22,10 +21,10 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
 
@@ -34,8 +33,6 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -194,12 +191,12 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="module-ivy.neural_net_functional.activations">
+  <div class="section" id="module-ivy.neural_net_functional.activations">
 <span id="activations"></span><h1>Activations<a class="headerlink" href="#module-ivy.neural_net_functional.activations" title="Permalink to this headline">¶</a></h1>
 <p>Collection of Ivy activation functions.</p>
 <dl class="py function">
-<dt class="sig sig-object py" id="ivy.neural_net_functional.activations.leaky_relu">
-<span class="sig-prename descclassname"><span class="pre">ivy.neural_net_functional.activations.</span></span><span class="sig-name descname"><span class="pre">leaky_relu</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/neural_net_functional/activations.html#leaky_relu"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.neural_net_functional.activations.leaky_relu" title="Permalink to this definition">¶</a></dt>
+<dt id="ivy.neural_net_functional.activations.leaky_relu">
+<code class="sig-prename descclassname">ivy.neural_net_functional.activations.</code><code class="sig-name descname">leaky_relu</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">alpha</span><span class="o">=</span><span class="default_value">0.2</span></em>, <em class="sig-param"><span class="n">f</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/neural_net_functional/activations.html#leaky_relu"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.neural_net_functional.activations.leaky_relu" title="Permalink to this definition">¶</a></dt>
 <dd><p>Applies the leaky rectified linear unit function element-wise.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -216,8 +213,8 @@
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="ivy.neural_net_functional.activations.relu">
-<span class="sig-prename descclassname"><span class="pre">ivy.neural_net_functional.activations.</span></span><span class="sig-name descname"><span class="pre">relu</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/neural_net_functional/activations.html#relu"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.neural_net_functional.activations.relu" title="Permalink to this definition">¶</a></dt>
+<dt id="ivy.neural_net_functional.activations.relu">
+<code class="sig-prename descclassname">ivy.neural_net_functional.activations.</code><code class="sig-name descname">relu</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">f</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/neural_net_functional/activations.html#relu"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.neural_net_functional.activations.relu" title="Permalink to this definition">¶</a></dt>
 <dd><p>Applies the rectified linear unit function element-wise.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -233,8 +230,8 @@
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="ivy.neural_net_functional.activations.sigmoid">
-<span class="sig-prename descclassname"><span class="pre">ivy.neural_net_functional.activations.</span></span><span class="sig-name descname"><span class="pre">sigmoid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/neural_net_functional/activations.html#sigmoid"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.neural_net_functional.activations.sigmoid" title="Permalink to this definition">¶</a></dt>
+<dt id="ivy.neural_net_functional.activations.sigmoid">
+<code class="sig-prename descclassname">ivy.neural_net_functional.activations.</code><code class="sig-name descname">sigmoid</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">f</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/neural_net_functional/activations.html#sigmoid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.neural_net_functional.activations.sigmoid" title="Permalink to this definition">¶</a></dt>
 <dd><p>Applies the sigmoid function element-wise.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -250,8 +247,8 @@
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="ivy.neural_net_functional.activations.softmax">
-<span class="sig-prename descclassname"><span class="pre">ivy.neural_net_functional.activations.</span></span><span class="sig-name descname"><span class="pre">softmax</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/neural_net_functional/activations.html#softmax"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.neural_net_functional.activations.softmax" title="Permalink to this definition">¶</a></dt>
+<dt id="ivy.neural_net_functional.activations.softmax">
+<code class="sig-prename descclassname">ivy.neural_net_functional.activations.</code><code class="sig-name descname">softmax</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">f</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/neural_net_functional/activations.html#softmax"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.neural_net_functional.activations.softmax" title="Permalink to this definition">¶</a></dt>
 <dd><p>Applies the softmax function element-wise.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -267,8 +264,8 @@
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="ivy.neural_net_functional.activations.softplus">
-<span class="sig-prename descclassname"><span class="pre">ivy.neural_net_functional.activations.</span></span><span class="sig-name descname"><span class="pre">softplus</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/neural_net_functional/activations.html#softplus"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.neural_net_functional.activations.softplus" title="Permalink to this definition">¶</a></dt>
+<dt id="ivy.neural_net_functional.activations.softplus">
+<code class="sig-prename descclassname">ivy.neural_net_functional.activations.</code><code class="sig-name descname">softplus</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">f</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/neural_net_functional/activations.html#softplus"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.neural_net_functional.activations.softplus" title="Permalink to this definition">¶</a></dt>
 <dd><p>Applies the softplus function element-wise.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -284,8 +281,8 @@
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="ivy.neural_net_functional.activations.tanh">
-<span class="sig-prename descclassname"><span class="pre">ivy.neural_net_functional.activations.</span></span><span class="sig-name descname"><span class="pre">tanh</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/neural_net_functional/activations.html#tanh"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.neural_net_functional.activations.tanh" title="Permalink to this definition">¶</a></dt>
+<dt id="ivy.neural_net_functional.activations.tanh">
+<code class="sig-prename descclassname">ivy.neural_net_functional.activations.</code><code class="sig-name descname">tanh</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">f</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/neural_net_functional/activations.html#tanh"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.neural_net_functional.activations.tanh" title="Permalink to this definition">¶</a></dt>
 <dd><p>Applies the tangent hyperbolic function element-wise.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -311,7 +308,7 @@
 <li class="toctree-l1"><a class="reference internal" href="activations/softplus.html">softplus</a></li>
 </ul>
 </div>
-</section>
+</div>
 
 
            </div>

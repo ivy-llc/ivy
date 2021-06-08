@@ -21,10 +21,10 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
-        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
         <script src="../../../_static/jquery.js"></script>
         <script src="../../../_static/underscore.js"></script>
         <script src="../../../_static/doctools.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../../_static/js/theme.js"></script>
 
@@ -33,8 +33,6 @@
   
   <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../../_static/css/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" /> 
@@ -298,6 +296,69 @@
 <span class="sd">        :return: The outputs following the conv1d layer *[batch_size,new_w,d_out]*</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">conv1d</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">w</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_strides</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_padding</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data_format</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dilations</span><span class="p">)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">b</span></div>
+
+
+<div class="viewcode-block" id="Conv1DTranspose"><a class="viewcode-back" href="../../../neural_net_stateful/layers/Conv1DTranspose.html#ivy.neural_net_stateful.layers.Conv1DTranspose">[docs]</a><span class="k">class</span> <span class="nc">Conv1DTranspose</span><span class="p">(</span><span class="n">Module</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Conv1DTranspose.__init__"><a class="viewcode-back" href="../../../neural_net_stateful/layers/Conv1DTranspose.html#ivy.neural_net_stateful.layers.Conv1DTranspose.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_channels</span><span class="p">,</span> <span class="n">output_channels</span><span class="p">,</span> <span class="n">filter_size</span><span class="p">,</span> <span class="n">strides</span><span class="p">,</span> <span class="n">padding</span><span class="p">,</span> <span class="n">output_shape</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">data_format</span><span class="o">=</span><span class="s1">&#39;NWC&#39;</span><span class="p">,</span> <span class="n">dilations</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">dev_str</span><span class="o">=</span><span class="s1">&#39;cpu&#39;</span><span class="p">,</span> <span class="n">v</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        1D transpose convolutional layer.</span>
+
+<span class="sd">        :param input_channels: Number of input channels for the layer.</span>
+<span class="sd">        :type input_channels: int</span>
+<span class="sd">        :param output_channels: Number of output channels for the layer.</span>
+<span class="sd">        :type output_channels: int</span>
+<span class="sd">        :param filter_size: Size of the convolutional filter.</span>
+<span class="sd">        :type filter_size: int</span>
+<span class="sd">        :param strides: The stride of the sliding window for each dimension of input.</span>
+<span class="sd">        :type strides: int or sequence of ints</span>
+<span class="sd">        :param padding: &quot;SAME&quot; or &quot;VALID&quot; indicating the algorithm, or list indicating the per-dimension paddings.</span>
+<span class="sd">        :type padding: string or sequence of ints</span>
+<span class="sd">        :param output_shape: Shape of the output</span>
+<span class="sd">        :type output_shape: sequence of ints, needed for TensorFlow</span>
+<span class="sd">        :param data_format: &quot;NWC&quot; or &quot;NCW&quot;. Defaults to &quot;NWC&quot;.</span>
+<span class="sd">        :type data_format: string</span>
+<span class="sd">        :param dilations: The dilation factor for each dimension of input.</span>
+<span class="sd">        :type dilations: int or sequence of ints</span>
+<span class="sd">        :param dev_str: device on which to create the layer&#39;s variables &#39;cuda:0&#39;, &#39;cuda:1&#39;, &#39;cpu&#39; etc. Default is cpu.</span>
+<span class="sd">        :type dev_str: str, optional</span>
+<span class="sd">        :param v: the variables for each of the linear layer, as a container, constructed internally by default.</span>
+<span class="sd">        :type v: ivy container of variables, optional</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_input_channels</span> <span class="o">=</span> <span class="n">input_channels</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_output_channels</span> <span class="o">=</span> <span class="n">output_channels</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_filter_size</span> <span class="o">=</span> <span class="n">filter_size</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_strides</span> <span class="o">=</span> <span class="n">strides</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_padding</span> <span class="o">=</span> <span class="n">padding</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_output_shape</span> <span class="o">=</span> <span class="n">output_shape</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_data_format</span> <span class="o">=</span> <span class="n">data_format</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_dilations</span> <span class="o">=</span> <span class="n">dilations</span>
+        <span class="n">Module</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dev_str</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">_create_variables</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dev_str</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create internal variables for the Conv1DTranspose layer</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># ToDo: support other initialization mechanisms, via class constructor options</span>
+        <span class="c1"># ToDo: tidy the construction of these variables, with helper functions</span>
+        <span class="n">wlim</span> <span class="o">=</span> <span class="p">(</span><span class="mi">6</span> <span class="o">/</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_output_channels</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_input_channels</span><span class="p">))</span> <span class="o">**</span> <span class="mf">0.5</span>
+        <span class="n">w_shape</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_filter_size</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_output_channels</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_input_channels</span><span class="p">)</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_data_format</span> <span class="o">==</span> <span class="s1">&#39;NWC&#39;</span>\
+            <span class="k">else</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_output_channels</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_input_channels</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_filter_size</span><span class="p">)</span>
+        <span class="n">w</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">variable</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">random_uniform</span><span class="p">(</span><span class="o">-</span><span class="n">wlim</span><span class="p">,</span> <span class="n">wlim</span><span class="p">,</span> <span class="n">w_shape</span><span class="p">,</span> <span class="n">dev_str</span><span class="o">=</span><span class="n">dev_str</span><span class="p">))</span>
+        <span class="n">b</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">variable</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">zeros</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_output_channels</span><span class="p">],</span> <span class="n">dev_str</span><span class="o">=</span><span class="n">dev_str</span><span class="p">))</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;w&#39;</span><span class="p">:</span> <span class="n">w</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">:</span> <span class="n">b</span><span class="p">}</span>
+
+    <span class="k">def</span> <span class="nf">_forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Perform forward pass of the Conv1DTranspose layer.</span>
+
+<span class="sd">        :param inputs: Inputs to process *[batch_size,w,d_in]*</span>
+<span class="sd">        :type inputs: array</span>
+<span class="sd">        :return: The outputs following the conv1d layer *[batch_size,new_w,d_out]*</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">conv1d_transpose</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">w</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_strides</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_padding</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_output_shape</span><span class="p">,</span>
+                                    <span class="bp">self</span><span class="o">.</span><span class="n">_data_format</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dilations</span><span class="p">)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">b</span></div>
 
 
 <span class="c1"># LSTM #</span>
