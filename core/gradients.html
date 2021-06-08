@@ -5,8 +5,7 @@
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
   <title>Gradients &mdash; Ivy 1.0 documentation</title>
@@ -22,10 +21,10 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
 
@@ -34,8 +33,6 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -194,12 +191,12 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="module-ivy.core.gradients">
+  <div class="section" id="module-ivy.core.gradients">
 <span id="gradients"></span><h1>Gradients<a class="headerlink" href="#module-ivy.core.gradients" title="Permalink to this headline">¶</a></h1>
 <p>Collection of gradient Ivy functions.</p>
 <dl class="py function">
-<dt class="sig sig-object py" id="ivy.core.gradients.adam_update">
-<span class="sig-prename descclassname"><span class="pre">ivy.core.gradients.</span></span><span class="sig-name descname"><span class="pre">adam_update</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ws</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dcdws</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mw</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vw</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">beta1</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.9</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">beta2</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.999</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epsilon</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-07</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/gradients.html#adam_update"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.core.gradients.adam_update" title="Permalink to this definition">¶</a></dt>
+<dt id="ivy.core.gradients.adam_update">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">adam_update</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ws</span></em>, <em class="sig-param"><span class="n">dcdws</span></em>, <em class="sig-param"><span class="n">lr</span></em>, <em class="sig-param"><span class="n">mw</span></em>, <em class="sig-param"><span class="n">vw</span></em>, <em class="sig-param"><span class="n">step</span></em>, <em class="sig-param"><span class="n">beta1</span><span class="o">=</span><span class="default_value">0.9</span></em>, <em class="sig-param"><span class="n">beta2</span><span class="o">=</span><span class="default_value">0.999</span></em>, <em class="sig-param"><span class="n">epsilon</span><span class="o">=</span><span class="default_value">1e-07</span></em>, <em class="sig-param"><span class="n">f</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/gradients.html#adam_update"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.gradients.adam_update" title="Permalink to this definition">¶</a></dt>
 <dd><p>Update weights ws of some function, given the derivatives of some cost c with respect to ws, using ADAM update.
 <a class="reference external" href="https://en.wikipedia.org/wiki/Stochastic_gradient_descent#Adam">[reference]</a></p>
 <dl class="field-list simple">
@@ -224,8 +221,8 @@
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="ivy.core.gradients.execute_with_gradients">
-<span class="sig-prename descclassname"><span class="pre">ivy.core.gradients.</span></span><span class="sig-name descname"><span class="pre">execute_with_gradients</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/gradients.html#execute_with_gradients"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.core.gradients.execute_with_gradients" title="Permalink to this definition">¶</a></dt>
+<dt id="ivy.core.gradients.execute_with_gradients">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">execute_with_gradients</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">func</span></em>, <em class="sig-param"><span class="n">xs</span></em>, <em class="sig-param"><span class="n">f</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/gradients.html#execute_with_gradients"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.gradients.execute_with_gradients" title="Permalink to this definition">¶</a></dt>
 <dd><p>Call function func with input of xs variables, and return func first output y, the gradients [dy/dx for x in xs],
 and any other function outputs after the returned y value</p>
 <dl class="field-list simple">
@@ -243,8 +240,8 @@ and any other function outputs after the returned y value</p>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="ivy.core.gradients.gradient_descent_update">
-<span class="sig-prename descclassname"><span class="pre">ivy.core.gradients.</span></span><span class="sig-name descname"><span class="pre">gradient_descent_update</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ws</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dcdws</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/gradients.html#gradient_descent_update"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.core.gradients.gradient_descent_update" title="Permalink to this definition">¶</a></dt>
+<dt id="ivy.core.gradients.gradient_descent_update">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">gradient_descent_update</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ws</span></em>, <em class="sig-param"><span class="n">dcdws</span></em>, <em class="sig-param"><span class="n">lr</span></em>, <em class="sig-param"><span class="n">f</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/gradients.html#gradient_descent_update"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.gradients.gradient_descent_update" title="Permalink to this definition">¶</a></dt>
 <dd><p>Update weights ws of some function, given the derivatives of some cost c with respect to ws, [dc/dw for w in ws].</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -262,8 +259,8 @@ and any other function outputs after the returned y value</p>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="ivy.core.gradients.is_variable">
-<span class="sig-prename descclassname"><span class="pre">ivy.core.gradients.</span></span><span class="sig-name descname"><span class="pre">is_variable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/gradients.html#is_variable"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.core.gradients.is_variable" title="Permalink to this definition">¶</a></dt>
+<dt id="ivy.core.gradients.is_variable">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">is_variable</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">f</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/gradients.html#is_variable"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.gradients.is_variable" title="Permalink to this definition">¶</a></dt>
 <dd><p>Determines whether the input is a variable or not.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -279,8 +276,8 @@ and any other function outputs after the returned y value</p>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="ivy.core.gradients.stop_gradient">
-<span class="sig-prename descclassname"><span class="pre">ivy.core.gradients.</span></span><span class="sig-name descname"><span class="pre">stop_gradient</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/gradients.html#stop_gradient"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.core.gradients.stop_gradient" title="Permalink to this definition">¶</a></dt>
+<dt id="ivy.core.gradients.stop_gradient">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">stop_gradient</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">f</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/gradients.html#stop_gradient"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.gradients.stop_gradient" title="Permalink to this definition">¶</a></dt>
 <dd><p>Stops gradient computation.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -296,8 +293,8 @@ and any other function outputs after the returned y value</p>
 </dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="ivy.core.gradients.variable">
-<span class="sig-prename descclassname"><span class="pre">ivy.core.gradients.</span></span><span class="sig-name descname"><span class="pre">variable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/gradients.html#variable"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.core.gradients.variable" title="Permalink to this definition">¶</a></dt>
+<dt id="ivy.core.gradients.variable">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">variable</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">f</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/gradients.html#variable"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.gradients.variable" title="Permalink to this definition">¶</a></dt>
 <dd><p>Creates a variable, which supports gradient computation.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -323,7 +320,7 @@ and any other function outputs after the returned y value</p>
 <li class="toctree-l1"><a class="reference internal" href="gradients/stop_gradient.html">stop_gradient</a></li>
 </ul>
 </div>
-</section>
+</div>
 
 
            </div>

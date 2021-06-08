@@ -5,8 +5,7 @@
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
   <title>Module &mdash; Ivy 1.0 documentation</title>
@@ -22,10 +21,10 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
 
@@ -34,8 +33,6 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -189,16 +186,16 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <section id="module-ivy.neural_net_stateful.module">
+  <div class="section" id="module-ivy.neural_net_stateful.module">
 <span id="module"></span><h1>Module<a class="headerlink" href="#module-ivy.neural_net_stateful.module" title="Permalink to this headline">¶</a></h1>
 <p>Base class for deriving trainable modules</p>
 <dl class="py class">
-<dt class="sig sig-object py" id="ivy.neural_net_stateful.module.Module">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">ivy.neural_net_stateful.module.</span></span><span class="sig-name descname"><span class="pre">Module</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dev_str</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/neural_net_stateful/module.html#Module"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.neural_net_stateful.module.Module" title="Permalink to this definition">¶</a></dt>
+<dt id="ivy.neural_net_stateful.module.Module">
+<em class="property">class </em><code class="sig-prename descclassname">ivy.neural_net_stateful.module.</code><code class="sig-name descname">Module</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dev_str</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">v</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/neural_net_stateful/module.html#Module"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.neural_net_stateful.module.Module" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">abc.ABC</span></code></p>
 <dl class="py method">
-<dt class="sig sig-object py" id="ivy.neural_net_stateful.module.Module.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dev_str</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/neural_net_stateful/module.html#Module.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.neural_net_stateful.module.Module.__init__" title="Permalink to this definition">¶</a></dt>
+<dt id="ivy.neural_net_stateful.module.Module.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dev_str</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">v</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/neural_net_stateful/module.html#Module.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.neural_net_stateful.module.Module.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initialze Ivy layer, which is a stateful object consisting of trainable variables.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -211,8 +208,8 @@
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="ivy.neural_net_stateful.module.Module.save_weights">
-<span class="sig-name descname"><span class="pre">save_weights</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">weights_path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/neural_net_stateful/module.html#Module.save_weights"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.neural_net_stateful.module.Module.save_weights" title="Permalink to this definition">¶</a></dt>
+<dt id="ivy.neural_net_stateful.module.Module.save_weights">
+<code class="sig-name descname">save_weights</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">weights_path</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/neural_net_stateful/module.html#Module.save_weights"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.neural_net_stateful.module.Module.save_weights" title="Permalink to this definition">¶</a></dt>
 <dd><p>Save the weights on the Module.
 :param weights_path: The hdf5 file for saving the weights.
 :type weights_path: string</p>
@@ -226,7 +223,7 @@
 <li class="toctree-l1"><a class="reference internal" href="module/Module.html">Module</a></li>
 </ul>
 </div>
-</section>
+</div>
 
 
            </div>

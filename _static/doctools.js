@@ -29,14 +29,9 @@ if (!window.console || !console.firebug) {
 
 /**
  * small helper function to urldecode strings
- *
- * See https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/decodeURIComponent#Decoding_query_parameters_from_a_URL
  */
 jQuery.urldecode = function(x) {
-  if (!x) {
-    return x
-  }
-  return decodeURIComponent(x.replace(/\+/g, ' '));
+  return decodeURIComponent(x).replace(/\+/g, ' ');
 };
 
 /**
