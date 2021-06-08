@@ -5,7 +5,8 @@
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  
+  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
   <title>Linalg &mdash; Ivy 1.0 documentation</title>
@@ -21,10 +22,11 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
 
@@ -33,6 +35,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -190,12 +194,12 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="module-ivy.core.linalg">
+  <section id="module-ivy.core.linalg">
 <span id="linalg"></span><h1>Linalg<a class="headerlink" href="#module-ivy.core.linalg" title="Permalink to this headline">¶</a></h1>
 <p>Collection of linear algebra Ivy functions.</p>
 <dl class="py function">
-<dt id="ivy.core.linalg.inv">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">inv</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">f</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/linalg.html#inv"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.linalg.inv" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="ivy.core.linalg.inv">
+<span class="sig-prename descclassname"><span class="pre">ivy.core.linalg.</span></span><span class="sig-name descname"><span class="pre">inv</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/linalg.html#inv"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.core.linalg.inv" title="Permalink to this definition">¶</a></dt>
 <dd><p>Computes the (multiplicative) inverse of x matrix.
 Given a square matrix x, returns the matrix x_inv satisfying dot(x, x_inv) = dot(x_inv, x) = eye(x.shape[0]).</p>
 <dl class="field-list simple">
@@ -212,8 +216,8 @@ Given a square matrix x, returns the matrix x_inv satisfying dot(x, x_inv) = dot
 </dd></dl>
 
 <dl class="py function">
-<dt id="ivy.core.linalg.norm">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">norm</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">ord</span><span class="o">=</span><span class="default_value">2</span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">- 1</span></em>, <em class="sig-param"><span class="n">keepdims</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">f</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/linalg.html#norm"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.linalg.norm" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="ivy.core.linalg.norm">
+<span class="sig-prename descclassname"><span class="pre">ivy.core.linalg.</span></span><span class="sig-name descname"><span class="pre">norm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ord</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-</span> <span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keepdims</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/linalg.html#norm"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.core.linalg.norm" title="Permalink to this definition">¶</a></dt>
 <dd><p>Matrix or vector norm.
 This function is able to return ord-1 and ord-2 vector-norms and matrix-norms.</p>
 <dl class="field-list simple">
@@ -237,8 +241,8 @@ Default is False.</p></li>
 </dd></dl>
 
 <dl class="py function">
-<dt id="ivy.core.linalg.pinv">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">pinv</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">f</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/linalg.html#pinv"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.linalg.pinv" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="ivy.core.linalg.pinv">
+<span class="sig-prename descclassname"><span class="pre">ivy.core.linalg.</span></span><span class="sig-name descname"><span class="pre">pinv</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/linalg.html#pinv"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.core.linalg.pinv" title="Permalink to this definition">¶</a></dt>
 <dd><p>Computes the pseudo inverse of x matrix.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -254,8 +258,8 @@ Default is False.</p></li>
 </dd></dl>
 
 <dl class="py function">
-<dt id="ivy.core.linalg.svd">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">svd</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">f</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/linalg.html#svd"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.linalg.svd" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="ivy.core.linalg.svd">
+<span class="sig-prename descclassname"><span class="pre">ivy.core.linalg.</span></span><span class="sig-name descname"><span class="pre">svd</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/linalg.html#svd"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.core.linalg.svd" title="Permalink to this definition">¶</a></dt>
 <dd><p>Singular Value Decomposition.
 When x is a 2D array, it is factorized as u &#64; numpy.diag(s) &#64; vh = (u * s) &#64; vh, where u and vh are 2D unitary
 arrays and s is a 1D array of a’s singular values. When x is higher-dimensional, SVD is applied in batched mode.</p>
@@ -282,8 +286,8 @@ The size of the last two dimensions depends on the value of full_matrices.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="ivy.core.linalg.vector_to_skew_symmetric_matrix">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">vector_to_skew_symmetric_matrix</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">vector</span></em>, <em class="sig-param"><span class="n">f</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/linalg.html#vector_to_skew_symmetric_matrix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.linalg.vector_to_skew_symmetric_matrix" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="ivy.core.linalg.vector_to_skew_symmetric_matrix">
+<span class="sig-prename descclassname"><span class="pre">ivy.core.linalg.</span></span><span class="sig-name descname"><span class="pre">vector_to_skew_symmetric_matrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vector</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/linalg.html#vector_to_skew_symmetric_matrix"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.core.linalg.vector_to_skew_symmetric_matrix" title="Permalink to this definition">¶</a></dt>
 <dd><p>Given vector <span class="math notranslate nohighlight">\(\mathbf{a}\in\mathbb{R}^3\)</span>, return associated skew-symmetric matrix
 <span class="math notranslate nohighlight">\([\mathbf{a}]_×\in\mathbb{R}^{3×3}\)</span> satisfying <span class="math notranslate nohighlight">\(\mathbf{a}×\mathbf{b}=[\mathbf{a}]_×\mathbf{b}\)</span>.</p>
 <p><a class="reference external" href="https://en.wikipedia.org/wiki/Skew-symmetric_matrix#Cross_product">[reference]</a></p>
@@ -310,7 +314,7 @@ The size of the last two dimensions depends on the value of full_matrices.</p>
 <li class="toctree-l1"><a class="reference internal" href="linalg/vector_to_skew_symmetric_matrix.html">vector_to_skew_symmetric_matrix</a></li>
 </ul>
 </div>
-</div>
+</section>
 
 
            </div>

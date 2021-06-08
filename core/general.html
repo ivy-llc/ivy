@@ -5,7 +5,8 @@
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  
+  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
   <title>General &mdash; Ivy 1.0 documentation</title>
@@ -21,10 +22,11 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
 
@@ -33,6 +35,8 @@
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -246,12 +250,12 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="module-ivy.core.general">
+  <section id="module-ivy.core.general">
 <span id="general"></span><h1>General<a class="headerlink" href="#module-ivy.core.general" title="Permalink to this headline">¶</a></h1>
 <p>Collection of general Ivy functions.</p>
 <dl class="py function">
-<dt id="ivy.core.general.abs">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">abs</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">f</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#abs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.abs" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="ivy.core.general.abs">
+<span class="sig-prename descclassname"><span class="pre">ivy.core.general.</span></span><span class="sig-name descname"><span class="pre">abs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#abs"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.core.general.abs" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the absolute value of each element in x.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -267,8 +271,8 @@
 </dd></dl>
 
 <dl class="py function">
-<dt id="ivy.core.general.arange">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">arange</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">stop</span></em>, <em class="sig-param"><span class="n">start</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">step</span><span class="o">=</span><span class="default_value">1</span></em>, <em class="sig-param"><span class="n">dtype_str</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">dev_str</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">f</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#arange"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.arange" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="ivy.core.general.arange">
+<span class="sig-prename descclassname"><span class="pre">ivy.core.general.</span></span><span class="sig-name descname"><span class="pre">arange</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">stop</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype_str</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dev_str</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#arange"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.core.general.arange" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns evenly spaced values within a given interval, with the spacing being specified.</p>
 <p>Values are generated within the half-open interval [start, stop) (in other words, the interval including start but
 excluding stop). For integer arguments the function is equivalent to the Python built-in range function,
@@ -300,8 +304,8 @@ Because of floating point overflow, this rule may result in the last element of 
 </dd></dl>
 
 <dl class="py function">
-<dt id="ivy.core.general.argmax">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">argmax</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">f</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#argmax"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.argmax" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="ivy.core.general.argmax">
+<span class="sig-prename descclassname"><span class="pre">ivy.core.general.</span></span><span class="sig-name descname"><span class="pre">argmax</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#argmax"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.core.general.argmax" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the index with the largest value across axes of an array.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -318,8 +322,8 @@ Because of floating point overflow, this rule may result in the last element of 
 </dd></dl>
 
 <dl class="py function">
-<dt id="ivy.core.general.argmin">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">argmin</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">f</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#argmin"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.argmin" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="ivy.core.general.argmin">
+<span class="sig-prename descclassname"><span class="pre">ivy.core.general.</span></span><span class="sig-name descname"><span class="pre">argmin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#argmin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.core.general.argmin" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the index with the smallest value across axes of an array.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -336,8 +340,8 @@ Because of floating point overflow, this rule may result in the last element of 
 </dd></dl>
 
 <dl class="py function">
-<dt id="ivy.core.general.array">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">array</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">object_in</span></em>, <em class="sig-param"><span class="n">dtype_str</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">dev_str</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">f</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#array"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.array" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="ivy.core.general.array">
+<span class="sig-prename descclassname"><span class="pre">ivy.core.general.</span></span><span class="sig-name descname"><span class="pre">array</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">object_in</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype_str</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dev_str</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#array"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.core.general.array" title="Permalink to this definition">¶</a></dt>
 <dd><p>Creates an array.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -358,8 +362,8 @@ sequence.</p></li>
 </dd></dl>
 
 <dl class="py function">
-<dt id="ivy.core.general.broadcast_to">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">broadcast_to</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">newshape</span></em>, <em class="sig-param"><span class="n">f</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#broadcast_to"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.broadcast_to" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="ivy.core.general.broadcast_to">
+<span class="sig-prename descclassname"><span class="pre">ivy.core.general.</span></span><span class="sig-name descname"><span class="pre">broadcast_to</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">newshape</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#broadcast_to"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.core.general.broadcast_to" title="Permalink to this definition">¶</a></dt>
 <dd><p>Broadcast the input tensor to newshape, adding dimensions of size 1 where the dimensions do not align.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -376,8 +380,8 @@ sequence.</p></li>
 </dd></dl>
 
 <dl class="py function">
-<dt id="ivy.core.general.cast">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">cast</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">dtype_str</span></em>, <em class="sig-param"><span class="n">f</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#cast"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.cast" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="ivy.core.general.cast">
+<span class="sig-prename descclassname"><span class="pre">ivy.core.general.</span></span><span class="sig-name descname"><span class="pre">cast</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype_str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#cast"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.core.general.cast" title="Permalink to this definition">¶</a></dt>
 <dd><p>Casts an array to a specified type.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -396,8 +400,8 @@ sequence.</p></li>
 </dd></dl>
 
 <dl class="py function">
-<dt id="ivy.core.general.ceil">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">ceil</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">f</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#ceil"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.ceil" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="ivy.core.general.ceil">
+<span class="sig-prename descclassname"><span class="pre">ivy.core.general.</span></span><span class="sig-name descname"><span class="pre">ceil</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#ceil"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.core.general.ceil" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns element-wise smallest integer not less than x.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -413,8 +417,8 @@ sequence.</p></li>
 </dd></dl>
 
 <dl class="py function">
-<dt id="ivy.core.general.clip">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">clip</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">x_min</span></em>, <em class="sig-param"><span class="n">x_max</span></em>, <em class="sig-param"><span class="n">f</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#clip"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.clip" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="ivy.core.general.clip">
+<span class="sig-prename descclassname"><span class="pre">ivy.core.general.</span></span><span class="sig-name descname"><span class="pre">clip</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_min</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_max</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#clip"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.core.general.clip" title="Permalink to this definition">¶</a></dt>
 <dd><p>Clips (limits) the values in an array.</p>
 <p>Given an interval, values outside the interval are clipped to the interval edges (element-wise).
 For example, if an interval of [0, 1] is specified, values smaller than 0 become 0,
@@ -436,8 +440,8 @@ and those &gt; x_max with x_max.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="ivy.core.general.compile_fn">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">compile_fn</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">func</span></em>, <em class="sig-param"><span class="n">dynamic</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">example_inputs</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">f</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#compile_fn"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.compile_fn" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="ivy.core.general.compile_fn">
+<span class="sig-prename descclassname"><span class="pre">ivy.core.general.</span></span><span class="sig-name descname"><span class="pre">compile_fn</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dynamic</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">example_inputs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#compile_fn"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.core.general.compile_fn" title="Permalink to this definition">¶</a></dt>
 <dd><p>Provide a function which should be compiled, for faster inference.
 The handle to the newly compiled function is returned.</p>
 <dl class="field-list simple">
@@ -457,8 +461,8 @@ Required for torch in non-dynamic mode, unused by other frameworks.</p></li>
 </dd></dl>
 
 <dl class="py function">
-<dt id="ivy.core.general.concatenate">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">concatenate</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">xs</span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">- 1</span></em>, <em class="sig-param"><span class="n">f</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#concatenate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.concatenate" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="ivy.core.general.concatenate">
+<span class="sig-prename descclassname"><span class="pre">ivy.core.general.</span></span><span class="sig-name descname"><span class="pre">concatenate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">xs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-</span> <span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#concatenate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.core.general.concatenate" title="Permalink to this definition">¶</a></dt>
 <dd><p>Casts an array to a specified type.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -476,8 +480,8 @@ Required for torch in non-dynamic mode, unused by other frameworks.</p></li>
 </dd></dl>
 
 <dl class="py function">
-<dt id="ivy.core.general.constant_pad">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">constant_pad</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">pad_width</span></em>, <em class="sig-param"><span class="n">value</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">f</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#constant_pad"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.constant_pad" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="ivy.core.general.constant_pad">
+<span class="sig-prename descclassname"><span class="pre">ivy.core.general.</span></span><span class="sig-name descname"><span class="pre">constant_pad</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pad_width</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#constant_pad"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.core.general.constant_pad" title="Permalink to this definition">¶</a></dt>
 <dd><p>Pads an array with a constant value.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -496,8 +500,8 @@ Specified as ((before_1, after_1), … (before_N, after_N)), where N is number o
 </dd></dl>
 
 <dl class="py function">
-<dt id="ivy.core.general.cross">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">cross</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x1</span></em>, <em class="sig-param"><span class="n">x2</span></em>, <em class="sig-param"><span class="n">f</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#cross"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.cross" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="ivy.core.general.cross">
+<span class="sig-prename descclassname"><span class="pre">ivy.core.general.</span></span><span class="sig-name descname"><span class="pre">cross</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#cross"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.core.general.cross" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the cross product of two (arrays of) vectors in R^3.
 The cross product of x1 and x2 in R^3 is a vector perpendicular to both x1 and x2.
 If x1 and x2 are arrays of vectors, the vectors are defined by the last axis of x1 and x2 by default which must have
@@ -517,8 +521,8 @@ dimension 3.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="ivy.core.general.cumprod">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">cumprod</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">exclusive</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">f</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#cumprod"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.cumprod" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="ivy.core.general.cumprod">
+<span class="sig-prename descclassname"><span class="pre">ivy.core.general.</span></span><span class="sig-name descname"><span class="pre">cumprod</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exclusive</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#cumprod"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.core.general.cumprod" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the cumulative product of the elements along a given axis.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -536,8 +540,8 @@ dimension 3.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="ivy.core.general.cumsum">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">cumsum</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">f</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#cumsum"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.cumsum" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="ivy.core.general.cumsum">
+<span class="sig-prename descclassname"><span class="pre">ivy.core.general.</span></span><span class="sig-name descname"><span class="pre">cumsum</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#cumsum"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.core.general.cumsum" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the cumulative sum of the elements along a given axis.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -554,8 +558,8 @@ dimension 3.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="ivy.core.general.dev">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">dev</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">f</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#dev"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.dev" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="ivy.core.general.dev">
+<span class="sig-prename descclassname"><span class="pre">ivy.core.general.</span></span><span class="sig-name descname"><span class="pre">dev</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#dev"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.core.general.dev" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the native device handle for input array x.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -571,8 +575,8 @@ dimension 3.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="ivy.core.general.dev_str">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">dev_str</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">f</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#dev_str"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.dev_str" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="ivy.core.general.dev_str">
+<span class="sig-prename descclassname"><span class="pre">ivy.core.general.</span></span><span class="sig-name descname"><span class="pre">dev_str</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#dev_str"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.core.general.dev_str" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the device string for input array x.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -588,8 +592,8 @@ dimension 3.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="ivy.core.general.dev_to_str">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">dev_to_str</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dev_in</span></em>, <em class="sig-param"><span class="n">f</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#dev_to_str"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.dev_to_str" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="ivy.core.general.dev_to_str">
+<span class="sig-prename descclassname"><span class="pre">ivy.core.general.</span></span><span class="sig-name descname"><span class="pre">dev_to_str</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dev_in</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#dev_to_str"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.core.general.dev_to_str" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convert native data type to string representation.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -605,8 +609,8 @@ dimension 3.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="ivy.core.general.dtype">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">dtype</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">f</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#dtype"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.dtype" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="ivy.core.general.dtype">
+<span class="sig-prename descclassname"><span class="pre">ivy.core.general.</span></span><span class="sig-name descname"><span class="pre">dtype</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#dtype"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.core.general.dtype" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the data type for input array x.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -622,8 +626,8 @@ dimension 3.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="ivy.core.general.dtype_str">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">dtype_str</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">f</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#dtype_str"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.dtype_str" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="ivy.core.general.dtype_str">
+<span class="sig-prename descclassname"><span class="pre">ivy.core.general.</span></span><span class="sig-name descname"><span class="pre">dtype_str</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#dtype_str"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.core.general.dtype_str" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the data type string for input array x.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -639,8 +643,8 @@ dimension 3.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="ivy.core.general.dtype_to_str">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">dtype_to_str</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dtype_in</span></em>, <em class="sig-param"><span class="n">f</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#dtype_to_str"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.dtype_to_str" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="ivy.core.general.dtype_to_str">
+<span class="sig-prename descclassname"><span class="pre">ivy.core.general.</span></span><span class="sig-name descname"><span class="pre">dtype_to_str</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dtype_in</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#dtype_to_str"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.core.general.dtype_to_str" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convert native data type to string representation.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -656,8 +660,8 @@ dimension 3.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="ivy.core.general.expand_dims">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">expand_dims</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">axis</span></em>, <em class="sig-param"><span class="n">f</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#expand_dims"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.expand_dims" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="ivy.core.general.expand_dims">
+<span class="sig-prename descclassname"><span class="pre">ivy.core.general.</span></span><span class="sig-name descname"><span class="pre">expand_dims</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#expand_dims"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.core.general.expand_dims" title="Permalink to this definition">¶</a></dt>
 <dd><p>Expands the shape of an array.
 Inserts a new axis that will appear at the axis position in the expanded array shape.</p>
 <dl class="field-list simple">
@@ -675,8 +679,8 @@ Inserts a new axis that will appear at the axis position in the expanded array s
 </dd></dl>
 
 <dl class="py function">
-<dt id="ivy.core.general.flip">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">flip</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">batch_shape</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">f</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#flip"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.flip" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="ivy.core.general.flip">
+<span class="sig-prename descclassname"><span class="pre">ivy.core.general.</span></span><span class="sig-name descname"><span class="pre">flip</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_shape</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#flip"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.core.general.flip" title="Permalink to this definition">¶</a></dt>
 <dd><p>Reverses the ord of elements in an array along the given axis.
 The shape of the array is preserved, but the elements are reordered.</p>
 <dl class="field-list simple">
@@ -695,8 +699,8 @@ The shape of the array is preserved, but the elements are reordered.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="ivy.core.general.floor">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">floor</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">f</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#floor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.floor" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="ivy.core.general.floor">
+<span class="sig-prename descclassname"><span class="pre">ivy.core.general.</span></span><span class="sig-name descname"><span class="pre">floor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#floor"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.core.general.floor" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns element-wise largest integer not greater than x.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -712,8 +716,8 @@ The shape of the array is preserved, but the elements are reordered.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="ivy.core.general.floormod">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">floormod</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">y</span></em>, <em class="sig-param"><span class="n">f</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#floormod"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.floormod" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="ivy.core.general.floormod">
+<span class="sig-prename descclassname"><span class="pre">ivy.core.general.</span></span><span class="sig-name descname"><span class="pre">floormod</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#floormod"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.core.general.floormod" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns element-wise remainder of division.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -730,8 +734,8 @@ The shape of the array is preserved, but the elements are reordered.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="ivy.core.general.gather">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">gather</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">params</span></em>, <em class="sig-param"><span class="n">indices</span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">- 1</span></em>, <em class="sig-param"><span class="n">dev_str</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">f</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#gather"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.gather" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="ivy.core.general.gather">
+<span class="sig-prename descclassname"><span class="pre">ivy.core.general.</span></span><span class="sig-name descname"><span class="pre">gather</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">params</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">indices</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-</span> <span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dev_str</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#gather"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.core.general.gather" title="Permalink to this definition">¶</a></dt>
 <dd><p>Gather slices from params axis axis according to indices.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -750,8 +754,8 @@ The shape of the array is preserved, but the elements are reordered.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="ivy.core.general.gather_nd">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">gather_nd</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">params</span></em>, <em class="sig-param"><span class="n">indices</span></em>, <em class="sig-param"><span class="n">dev_str</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">f</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#gather_nd"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.gather_nd" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="ivy.core.general.gather_nd">
+<span class="sig-prename descclassname"><span class="pre">ivy.core.general.</span></span><span class="sig-name descname"><span class="pre">gather_nd</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">params</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">indices</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dev_str</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#gather_nd"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.core.general.gather_nd" title="Permalink to this definition">¶</a></dt>
 <dd><p>Gather slices from params into a array with shape specified by indices.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -769,8 +773,8 @@ The shape of the array is preserved, but the elements are reordered.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="ivy.core.general.get_num_dims">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">get_num_dims</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">as_array</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">f</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#get_num_dims"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.get_num_dims" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="ivy.core.general.get_num_dims">
+<span class="sig-prename descclassname"><span class="pre">ivy.core.general.</span></span><span class="sig-name descname"><span class="pre">get_num_dims</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">as_array</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#get_num_dims"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.core.general.get_num_dims" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the number of dimensions of the array x.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -787,8 +791,8 @@ The shape of the array is preserved, but the elements are reordered.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="ivy.core.general.gpu_is_available">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">gpu_is_available</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">f</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#gpu_is_available"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.gpu_is_available" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="ivy.core.general.gpu_is_available">
+<span class="sig-prename descclassname"><span class="pre">ivy.core.general.</span></span><span class="sig-name descname"><span class="pre">gpu_is_available</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#gpu_is_available"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.core.general.gpu_is_available" title="Permalink to this definition">¶</a></dt>
 <dd><p>Determine whether a GPU is available to use, with the backend framework.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -801,8 +805,8 @@ The shape of the array is preserved, but the elements are reordered.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="ivy.core.general.identity">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">identity</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">n</span></em>, <em class="sig-param"><span class="n">dtype_str</span><span class="o">=</span><span class="default_value">'float32'</span></em>, <em class="sig-param"><span class="n">batch_shape</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">dev_str</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">f</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#identity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.identity" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="ivy.core.general.identity">
+<span class="sig-prename descclassname"><span class="pre">ivy.core.general.</span></span><span class="sig-name descname"><span class="pre">identity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype_str</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'float32'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_shape</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dev_str</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#identity"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.core.general.identity" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the identity array.
 The identity array is a square array with ones on the main diagonal.</p>
 <dl class="field-list simple">
@@ -822,8 +826,8 @@ The identity array is a square array with ones on the main diagonal.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="ivy.core.general.indices_where">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">indices_where</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">f</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#indices_where"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.indices_where" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="ivy.core.general.indices_where">
+<span class="sig-prename descclassname"><span class="pre">ivy.core.general.</span></span><span class="sig-name descname"><span class="pre">indices_where</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#indices_where"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.core.general.indices_where" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns indices or true elements in an input boolean array.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -839,8 +843,8 @@ The identity array is a square array with ones on the main diagonal.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="ivy.core.general.is_array">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">is_array</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">f</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#is_array"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.is_array" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="ivy.core.general.is_array">
+<span class="sig-prename descclassname"><span class="pre">ivy.core.general.</span></span><span class="sig-name descname"><span class="pre">is_array</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#is_array"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.core.general.is_array" title="Permalink to this definition">¶</a></dt>
 <dd><p>Determines whether the input x is an Ivy Array.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -856,8 +860,8 @@ The identity array is a square array with ones on the main diagonal.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="ivy.core.general.linspace">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">linspace</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">start</span></em>, <em class="sig-param"><span class="n">stop</span></em>, <em class="sig-param"><span class="n">num</span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">dev_str</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">f</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#linspace"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.linspace" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="ivy.core.general.linspace">
+<span class="sig-prename descclassname"><span class="pre">ivy.core.general.</span></span><span class="sig-name descname"><span class="pre">linspace</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stop</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dev_str</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#linspace"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.core.general.linspace" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generates a certain number of evenly-spaced values in an interval along a given axis.</p>
 <p>See <span class="math notranslate nohighlight">\(arange\)</span> that allows to specify the step size of evenly spaced values in an interval.</p>
 <dl class="field-list simple">
@@ -878,8 +882,8 @@ The identity array is a square array with ones on the main diagonal.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="ivy.core.general.matmul">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">matmul</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x1</span></em>, <em class="sig-param"><span class="n">x2</span></em>, <em class="sig-param"><span class="n">f</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#matmul"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.matmul" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="ivy.core.general.matmul">
+<span class="sig-prename descclassname"><span class="pre">ivy.core.general.</span></span><span class="sig-name descname"><span class="pre">matmul</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#matmul"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.core.general.matmul" title="Permalink to this definition">¶</a></dt>
 <dd><p>Computes the matrix product of two arrays x1 and x2.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -896,8 +900,8 @@ The identity array is a square array with ones on the main diagonal.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="ivy.core.general.maximum">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">maximum</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">y</span></em>, <em class="sig-param"><span class="n">f</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#maximum"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.maximum" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="ivy.core.general.maximum">
+<span class="sig-prename descclassname"><span class="pre">ivy.core.general.</span></span><span class="sig-name descname"><span class="pre">maximum</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#maximum"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.core.general.maximum" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the max of x and y (i.e. x &gt; y ? x : y) element-wise.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -914,8 +918,8 @@ The identity array is a square array with ones on the main diagonal.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="ivy.core.general.meshgrid">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">meshgrid</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">xs</span></em>, <em class="sig-param"><span class="n">indexing</span><span class="o">=</span><span class="default_value">'ij'</span></em>, <em class="sig-param"><span class="n">f</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#meshgrid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.meshgrid" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="ivy.core.general.meshgrid">
+<span class="sig-prename descclassname"><span class="pre">ivy.core.general.</span></span><span class="sig-name descname"><span class="pre">meshgrid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">xs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">indexing</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'ij'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#meshgrid"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.core.general.meshgrid" title="Permalink to this definition">¶</a></dt>
 <dd><p>Broadcasts parameters for evaluation on an N-D grid.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -932,8 +936,8 @@ The identity array is a square array with ones on the main diagonal.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="ivy.core.general.minimum">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">minimum</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">y</span></em>, <em class="sig-param"><span class="n">f</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#minimum"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.minimum" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="ivy.core.general.minimum">
+<span class="sig-prename descclassname"><span class="pre">ivy.core.general.</span></span><span class="sig-name descname"><span class="pre">minimum</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#minimum"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.core.general.minimum" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the min of x and y (i.e. x &lt; y ? x : y) element-wise.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -950,8 +954,8 @@ The identity array is a square array with ones on the main diagonal.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="ivy.core.general.one_hot">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">one_hot</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">indices</span></em>, <em class="sig-param"><span class="n">depth</span></em>, <em class="sig-param"><span class="n">dev_str</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">f</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#one_hot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.one_hot" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="ivy.core.general.one_hot">
+<span class="sig-prename descclassname"><span class="pre">ivy.core.general.</span></span><span class="sig-name descname"><span class="pre">one_hot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">indices</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">depth</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dev_str</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#one_hot"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.core.general.one_hot" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a one-hot array
 :param indices: Indices for where the ones should be scattered <em>[batch_shape, dim]</em>
 :type indices: array
@@ -965,8 +969,8 @@ The identity array is a square array with ones on the main diagonal.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="ivy.core.general.ones">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">ones</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">shape</span></em>, <em class="sig-param"><span class="n">dtype_str</span><span class="o">=</span><span class="default_value">'float32'</span></em>, <em class="sig-param"><span class="n">dev_str</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">f</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#ones"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.ones" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="ivy.core.general.ones">
+<span class="sig-prename descclassname"><span class="pre">ivy.core.general.</span></span><span class="sig-name descname"><span class="pre">ones</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">shape</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype_str</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'float32'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dev_str</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#ones"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.core.general.ones" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a new array of given shape and type, filled with ones.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -986,8 +990,8 @@ The identity array is a square array with ones on the main diagonal.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="ivy.core.general.ones_like">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">ones_like</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">dtype_str</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">dev_str</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">f</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#ones_like"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.ones_like" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="ivy.core.general.ones_like">
+<span class="sig-prename descclassname"><span class="pre">ivy.core.general.</span></span><span class="sig-name descname"><span class="pre">ones_like</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype_str</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dev_str</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#ones_like"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.core.general.ones_like" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns an array of ones with the same shape and type as x, unless dtype_str provided which overrides.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1006,8 +1010,8 @@ If not given, then the type of the original array is used.</p></li>
 </dd></dl>
 
 <dl class="py function">
-<dt id="ivy.core.general.reshape">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">reshape</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">newshape</span></em>, <em class="sig-param"><span class="n">f</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#reshape"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.reshape" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="ivy.core.general.reshape">
+<span class="sig-prename descclassname"><span class="pre">ivy.core.general.</span></span><span class="sig-name descname"><span class="pre">reshape</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">newshape</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#reshape"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.core.general.reshape" title="Permalink to this definition">¶</a></dt>
 <dd><p>Gives a new shape to an array without changing its data.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1025,8 +1029,8 @@ In this case, the value is inferred from the length of the array and remaining d
 </dd></dl>
 
 <dl class="py function">
-<dt id="ivy.core.general.round">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">round</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">f</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#round"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.round" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="ivy.core.general.round">
+<span class="sig-prename descclassname"><span class="pre">ivy.core.general.</span></span><span class="sig-name descname"><span class="pre">round</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#round"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.core.general.round" title="Permalink to this definition">¶</a></dt>
 <dd><p>Rounds the values of an array to the nearest integer, element-wise.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1042,8 +1046,8 @@ In this case, the value is inferred from the length of the array and remaining d
 </dd></dl>
 
 <dl class="py function">
-<dt id="ivy.core.general.scatter_flat">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">scatter_flat</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">indices</span></em>, <em class="sig-param"><span class="n">updates</span></em>, <em class="sig-param"><span class="n">size</span></em>, <em class="sig-param"><span class="n">reduction</span><span class="o">=</span><span class="default_value">'sum'</span></em>, <em class="sig-param"><span class="n">dev_str</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">f</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#scatter_flat"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.scatter_flat" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="ivy.core.general.scatter_flat">
+<span class="sig-prename descclassname"><span class="pre">ivy.core.general.</span></span><span class="sig-name descname"><span class="pre">scatter_flat</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">indices</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">updates</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reduction</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'sum'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dev_str</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#scatter_flat"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.core.general.scatter_flat" title="Permalink to this definition">¶</a></dt>
 <dd><p>Scatter flat updates into a new flat array according to flat indices.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1063,8 +1067,8 @@ In this case, the value is inferred from the length of the array and remaining d
 </dd></dl>
 
 <dl class="py function">
-<dt id="ivy.core.general.scatter_nd">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">scatter_nd</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">indices</span></em>, <em class="sig-param"><span class="n">updates</span></em>, <em class="sig-param"><span class="n">shape</span></em>, <em class="sig-param"><span class="n">reduction</span><span class="o">=</span><span class="default_value">'sum'</span></em>, <em class="sig-param"><span class="n">dev_str</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">f</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#scatter_nd"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.scatter_nd" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="ivy.core.general.scatter_nd">
+<span class="sig-prename descclassname"><span class="pre">ivy.core.general.</span></span><span class="sig-name descname"><span class="pre">scatter_nd</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">indices</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">updates</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shape</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reduction</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'sum'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dev_str</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#scatter_nd"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.core.general.scatter_nd" title="Permalink to this definition">¶</a></dt>
 <dd><p>Scatter updates into a new array according to indices.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1084,8 +1088,8 @@ In this case, the value is inferred from the length of the array and remaining d
 </dd></dl>
 
 <dl class="py function">
-<dt id="ivy.core.general.shape">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">shape</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">as_array</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">f</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#shape"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.shape" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="ivy.core.general.shape">
+<span class="sig-prename descclassname"><span class="pre">ivy.core.general.</span></span><span class="sig-name descname"><span class="pre">shape</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">as_array</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#shape"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.core.general.shape" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the shape of the array x.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1102,8 +1106,8 @@ In this case, the value is inferred from the length of the array and remaining d
 </dd></dl>
 
 <dl class="py function">
-<dt id="ivy.core.general.split">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">split</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">num_sections</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">f</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#split"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.split" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="ivy.core.general.split">
+<span class="sig-prename descclassname"><span class="pre">ivy.core.general.</span></span><span class="sig-name descname"><span class="pre">split</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_sections</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#split"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.core.general.split" title="Permalink to this definition">¶</a></dt>
 <dd><p>Splits an array into multiple sub-arrays.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1123,8 +1127,8 @@ Default is to divide into as many arrays as the axis dimension.</p></li>
 </dd></dl>
 
 <dl class="py function">
-<dt id="ivy.core.general.squeeze">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">squeeze</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">f</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#squeeze"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.squeeze" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="ivy.core.general.squeeze">
+<span class="sig-prename descclassname"><span class="pre">ivy.core.general.</span></span><span class="sig-name descname"><span class="pre">squeeze</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#squeeze"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.core.general.squeeze" title="Permalink to this definition">¶</a></dt>
 <dd><p>Removes a single-dimensional entry from the shape of an array.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1142,8 +1146,8 @@ If an axis is selected with shape entry greater than one, an error is raised.</p
 </dd></dl>
 
 <dl class="py function">
-<dt id="ivy.core.general.stack">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">stack</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">xs</span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">f</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#stack"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.stack" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="ivy.core.general.stack">
+<span class="sig-prename descclassname"><span class="pre">ivy.core.general.</span></span><span class="sig-name descname"><span class="pre">stack</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">xs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#stack"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.core.general.stack" title="Permalink to this definition">¶</a></dt>
 <dd><p>Joins a sequence of arrays along a new axis.
 The axis parameter specifies the index of the new axis in the dimensions of the result.
 For example, if axis=0, it will be the first dimension and if axis=-1, it will be the last dimension.</p>
@@ -1162,8 +1166,8 @@ For example, if axis=0, it will be the first dimension and if axis=-1, it will b
 </dd></dl>
 
 <dl class="py function">
-<dt id="ivy.core.general.str_to_dev">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">str_to_dev</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dev_str</span></em>, <em class="sig-param"><span class="n">f</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#str_to_dev"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.str_to_dev" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="ivy.core.general.str_to_dev">
+<span class="sig-prename descclassname"><span class="pre">ivy.core.general.</span></span><span class="sig-name descname"><span class="pre">str_to_dev</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dev_str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#str_to_dev"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.core.general.str_to_dev" title="Permalink to this definition">¶</a></dt>
 <dd><p>Convert device string representation to native device type.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1179,8 +1183,8 @@ For example, if axis=0, it will be the first dimension and if axis=-1, it will b
 </dd></dl>
 
 <dl class="py function">
-<dt id="ivy.core.general.swapaxes">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">swapaxes</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">axis0</span></em>, <em class="sig-param"><span class="n">axis1</span></em>, <em class="sig-param"><span class="n">f</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#swapaxes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.swapaxes" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="ivy.core.general.swapaxes">
+<span class="sig-prename descclassname"><span class="pre">ivy.core.general.</span></span><span class="sig-name descname"><span class="pre">swapaxes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#swapaxes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.core.general.swapaxes" title="Permalink to this definition">¶</a></dt>
 <dd><p>Interchange two axes of an array.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1198,8 +1202,8 @@ For example, if axis=0, it will be the first dimension and if axis=-1, it will b
 </dd></dl>
 
 <dl class="py function">
-<dt id="ivy.core.general.tile">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">tile</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">reps</span></em>, <em class="sig-param"><span class="n">f</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#tile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.tile" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="ivy.core.general.tile">
+<span class="sig-prename descclassname"><span class="pre">ivy.core.general.</span></span><span class="sig-name descname"><span class="pre">tile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reps</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#tile"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.core.general.tile" title="Permalink to this definition">¶</a></dt>
 <dd><p>Constructs an array by repeating x the number of times given by reps.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1216,8 +1220,8 @@ For example, if axis=0, it will be the first dimension and if axis=-1, it will b
 </dd></dl>
 
 <dl class="py function">
-<dt id="ivy.core.general.to_dev">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">to_dev</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">dev_str</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">f</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#to_dev"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.to_dev" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="ivy.core.general.to_dev">
+<span class="sig-prename descclassname"><span class="pre">ivy.core.general.</span></span><span class="sig-name descname"><span class="pre">to_dev</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dev_str</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#to_dev"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.core.general.to_dev" title="Permalink to this definition">¶</a></dt>
 <dd><p>Move the input array x to the desired device, specified by device string.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1234,8 +1238,8 @@ For example, if axis=0, it will be the first dimension and if axis=-1, it will b
 </dd></dl>
 
 <dl class="py function">
-<dt id="ivy.core.general.to_list">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">to_list</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">f</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#to_list"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.to_list" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="ivy.core.general.to_list">
+<span class="sig-prename descclassname"><span class="pre">ivy.core.general.</span></span><span class="sig-name descname"><span class="pre">to_list</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#to_list"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.core.general.to_list" title="Permalink to this definition">¶</a></dt>
 <dd><p>Creates a (possibly nested) list from input array.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1251,8 +1255,8 @@ For example, if axis=0, it will be the first dimension and if axis=-1, it will b
 </dd></dl>
 
 <dl class="py function">
-<dt id="ivy.core.general.to_numpy">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">to_numpy</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">f</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#to_numpy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.to_numpy" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="ivy.core.general.to_numpy">
+<span class="sig-prename descclassname"><span class="pre">ivy.core.general.</span></span><span class="sig-name descname"><span class="pre">to_numpy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#to_numpy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.core.general.to_numpy" title="Permalink to this definition">¶</a></dt>
 <dd><p>Converts array into a numpy array.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1268,8 +1272,8 @@ For example, if axis=0, it will be the first dimension and if axis=-1, it will b
 </dd></dl>
 
 <dl class="py function">
-<dt id="ivy.core.general.tpu_is_available">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">tpu_is_available</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">f</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#tpu_is_available"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.tpu_is_available" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="ivy.core.general.tpu_is_available">
+<span class="sig-prename descclassname"><span class="pre">ivy.core.general.</span></span><span class="sig-name descname"><span class="pre">tpu_is_available</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#tpu_is_available"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.core.general.tpu_is_available" title="Permalink to this definition">¶</a></dt>
 <dd><p>Determine whether a TPU is available to use, with the backend framework.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1282,8 +1286,8 @@ For example, if axis=0, it will be the first dimension and if axis=-1, it will b
 </dd></dl>
 
 <dl class="py function">
-<dt id="ivy.core.general.transpose">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">transpose</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">axes</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">f</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#transpose"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.transpose" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="ivy.core.general.transpose">
+<span class="sig-prename descclassname"><span class="pre">ivy.core.general.</span></span><span class="sig-name descname"><span class="pre">transpose</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#transpose"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.core.general.transpose" title="Permalink to this definition">¶</a></dt>
 <dd><p>Permutes the dimensions of an array.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1300,8 +1304,8 @@ For example, if axis=0, it will be the first dimension and if axis=-1, it will b
 </dd></dl>
 
 <dl class="py function">
-<dt id="ivy.core.general.unstack">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">unstack</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">axis</span></em>, <em class="sig-param"><span class="n">f</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#unstack"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.unstack" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="ivy.core.general.unstack">
+<span class="sig-prename descclassname"><span class="pre">ivy.core.general.</span></span><span class="sig-name descname"><span class="pre">unstack</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#unstack"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.core.general.unstack" title="Permalink to this definition">¶</a></dt>
 <dd><p>Unpacks the given dimension of a rank-R array into rank-(R-1) arrays.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1318,8 +1322,8 @@ For example, if axis=0, it will be the first dimension and if axis=-1, it will b
 </dd></dl>
 
 <dl class="py function">
-<dt id="ivy.core.general.where">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">where</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">condition</span></em>, <em class="sig-param"><span class="n">x1</span></em>, <em class="sig-param"><span class="n">x2</span></em>, <em class="sig-param"><span class="n">f</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#where"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.where" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="ivy.core.general.where">
+<span class="sig-prename descclassname"><span class="pre">ivy.core.general.</span></span><span class="sig-name descname"><span class="pre">where</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">condition</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#where"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.core.general.where" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns elements chosen from x or y depending on condition.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1337,8 +1341,8 @@ For example, if axis=0, it will be the first dimension and if axis=-1, it will b
 </dd></dl>
 
 <dl class="py function">
-<dt id="ivy.core.general.zero_pad">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">zero_pad</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">pad_width</span></em>, <em class="sig-param"><span class="n">f</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#zero_pad"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.zero_pad" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="ivy.core.general.zero_pad">
+<span class="sig-prename descclassname"><span class="pre">ivy.core.general.</span></span><span class="sig-name descname"><span class="pre">zero_pad</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pad_width</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#zero_pad"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.core.general.zero_pad" title="Permalink to this definition">¶</a></dt>
 <dd><p>Pads an array with zeros.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1356,8 +1360,8 @@ Specified as ((before_1, after_1), … (before_N, after_N)), where N is number o
 </dd></dl>
 
 <dl class="py function">
-<dt id="ivy.core.general.zeros">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">zeros</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">shape</span></em>, <em class="sig-param"><span class="n">dtype_str</span><span class="o">=</span><span class="default_value">'float32'</span></em>, <em class="sig-param"><span class="n">dev_str</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">f</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#zeros"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.zeros" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="ivy.core.general.zeros">
+<span class="sig-prename descclassname"><span class="pre">ivy.core.general.</span></span><span class="sig-name descname"><span class="pre">zeros</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">shape</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype_str</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'float32'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dev_str</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#zeros"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.core.general.zeros" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a new array of given shape and type, filled with zeros.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1377,8 +1381,8 @@ Specified as ((before_1, after_1), … (before_N, after_N)), where N is number o
 </dd></dl>
 
 <dl class="py function">
-<dt id="ivy.core.general.zeros_like">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">zeros_like</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">dtype_str</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">dev_str</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">f</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#zeros_like"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.zeros_like" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="ivy.core.general.zeros_like">
+<span class="sig-prename descclassname"><span class="pre">ivy.core.general.</span></span><span class="sig-name descname"><span class="pre">zeros_like</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype_str</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dev_str</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#zeros_like"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ivy.core.general.zeros_like" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns an array of zeros with the same shape and type as x, unless dtype_str provided which overrides.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1462,7 +1466,7 @@ If not given, then the type of the original array is used.</p></li>
 <li class="toctree-l1"><a class="reference internal" href="general/compile_fn.html">compile_fn</a></li>
 </ul>
 </div>
-</div>
+</section>
 
 
            </div>
