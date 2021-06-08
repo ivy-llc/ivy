@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Conv2D &mdash; Ivy 1.0 documentation</title>
+  <title>Conv3D &mdash; Ivy 1.0 documentation</title>
   
 
   
@@ -36,8 +36,8 @@
   <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="Conv2DTranspose" href="Conv2DTranspose.html" />
-    <link rel="prev" title="Conv1DTranspose" href="Conv1DTranspose.html" /> 
+    <link rel="next" title="LSTM" href="LSTM.html" />
+    <link rel="prev" title="DepthwiseConv2D" href="DepthwiseConv2D.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -111,10 +111,10 @@
 <li class="toctree-l2"><a class="reference internal" href="Linear.html">Linear</a></li>
 <li class="toctree-l2"><a class="reference internal" href="Conv1D.html">Conv1D</a></li>
 <li class="toctree-l2"><a class="reference internal" href="Conv1DTranspose.html">Conv1DTranspose</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">Conv2D</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Conv2D.html">Conv2D</a></li>
 <li class="toctree-l2"><a class="reference internal" href="Conv2DTranspose.html">Conv2DTranspose</a></li>
 <li class="toctree-l2"><a class="reference internal" href="DepthwiseConv2D.html">DepthwiseConv2D</a></li>
-<li class="toctree-l2"><a class="reference internal" href="Conv3D.html">Conv3D</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Conv3D</a></li>
 <li class="toctree-l2"><a class="reference internal" href="LSTM.html">LSTM</a></li>
 </ul>
 </li>
@@ -176,13 +176,13 @@
         
           <li><a href="../layers.html">Layers</a> &raquo;</li>
         
-      <li>Conv2D</li>
+      <li>Conv3D</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="../../_sources/neural_net_stateful/layers/Conv2D.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../_sources/neural_net_stateful/layers/Conv3D.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -195,16 +195,16 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="conv2d">
-<h1>Conv2D<a class="headerlink" href="#conv2d" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="conv3d">
+<h1>Conv3D<a class="headerlink" href="#conv3d" title="Permalink to this headline">¶</a></h1>
 <dl class="py class">
-<dt id="ivy.neural_net_stateful.layers.Conv2D">
-<em class="property">class </em><code class="sig-prename descclassname">ivy.neural_net_stateful.layers.</code><code class="sig-name descname">Conv2D</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">input_channels</span></em>, <em class="sig-param"><span class="n">output_channels</span></em>, <em class="sig-param"><span class="n">filter_shape</span></em>, <em class="sig-param"><span class="n">strides</span></em>, <em class="sig-param"><span class="n">padding</span></em>, <em class="sig-param"><span class="n">data_format</span><span class="o">=</span><span class="default_value">'NHWC'</span></em>, <em class="sig-param"><span class="n">dilations</span><span class="o">=</span><span class="default_value">1</span></em>, <em class="sig-param"><span class="n">dev_str</span><span class="o">=</span><span class="default_value">'cpu'</span></em>, <em class="sig-param"><span class="n">v</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/neural_net_stateful/layers.html#Conv2D"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.neural_net_stateful.layers.Conv2D" title="Permalink to this definition">¶</a></dt>
+<dt id="ivy.neural_net_stateful.layers.Conv3D">
+<em class="property">class </em><code class="sig-prename descclassname">ivy.neural_net_stateful.layers.</code><code class="sig-name descname">Conv3D</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">input_channels</span></em>, <em class="sig-param"><span class="n">output_channels</span></em>, <em class="sig-param"><span class="n">filter_shape</span></em>, <em class="sig-param"><span class="n">strides</span></em>, <em class="sig-param"><span class="n">padding</span></em>, <em class="sig-param"><span class="n">data_format</span><span class="o">=</span><span class="default_value">'NDHWC'</span></em>, <em class="sig-param"><span class="n">dilations</span><span class="o">=</span><span class="default_value">1</span></em>, <em class="sig-param"><span class="n">dev_str</span><span class="o">=</span><span class="default_value">'cpu'</span></em>, <em class="sig-param"><span class="n">v</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/neural_net_stateful/layers.html#Conv3D"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.neural_net_stateful.layers.Conv3D" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="../module/Module.html#ivy.neural_net_stateful.module.Module" title="ivy.neural_net_stateful.module.Module"><code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.neural_net_stateful.module.Module</span></code></a></p>
 <dl class="py method">
-<dt id="ivy.neural_net_stateful.layers.Conv2D.__init__">
-<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">input_channels</span></em>, <em class="sig-param"><span class="n">output_channels</span></em>, <em class="sig-param"><span class="n">filter_shape</span></em>, <em class="sig-param"><span class="n">strides</span></em>, <em class="sig-param"><span class="n">padding</span></em>, <em class="sig-param"><span class="n">data_format</span><span class="o">=</span><span class="default_value">'NHWC'</span></em>, <em class="sig-param"><span class="n">dilations</span><span class="o">=</span><span class="default_value">1</span></em>, <em class="sig-param"><span class="n">dev_str</span><span class="o">=</span><span class="default_value">'cpu'</span></em>, <em class="sig-param"><span class="n">v</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/neural_net_stateful/layers.html#Conv2D.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.neural_net_stateful.layers.Conv2D.__init__" title="Permalink to this definition">¶</a></dt>
-<dd><p>2D convolutional layer.</p>
+<dt id="ivy.neural_net_stateful.layers.Conv3D.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">input_channels</span></em>, <em class="sig-param"><span class="n">output_channels</span></em>, <em class="sig-param"><span class="n">filter_shape</span></em>, <em class="sig-param"><span class="n">strides</span></em>, <em class="sig-param"><span class="n">padding</span></em>, <em class="sig-param"><span class="n">data_format</span><span class="o">=</span><span class="default_value">'NDHWC'</span></em>, <em class="sig-param"><span class="n">dilations</span><span class="o">=</span><span class="default_value">1</span></em>, <em class="sig-param"><span class="n">dev_str</span><span class="o">=</span><span class="default_value">'cpu'</span></em>, <em class="sig-param"><span class="n">v</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/neural_net_stateful/layers.html#Conv3D.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.neural_net_stateful.layers.Conv3D.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>3D convolutional layer.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -213,7 +213,7 @@
 <li><p><strong>filter_shape</strong> (<em>sequence of ints</em>) – Shape of the convolutional filter.</p></li>
 <li><p><strong>strides</strong> (<em>int</em><em> or </em><em>sequence of ints</em>) – The stride of the sliding window for each dimension of input.</p></li>
 <li><p><strong>padding</strong> (<em>string</em><em> or </em><em>sequence of ints</em>) – “SAME” or “VALID” indicating the algorithm, or list indicating the per-dimension paddings.</p></li>
-<li><p><strong>data_format</strong> (<em>string</em>) – “NHWC” or “NCHW”. Defaults to “NHWC”.</p></li>
+<li><p><strong>data_format</strong> (<em>string</em>) – “NDHWC” or “NCDHW”. Defaults to “NDHWC”.</p></li>
 <li><p><strong>dilations</strong> (<em>int</em><em> or </em><em>sequence of ints</em>) – The dilation factor for each dimension of input.</p></li>
 <li><p><strong>dev_str</strong> (<em>str</em><em>, </em><em>optional</em>) – device on which to create the layer’s variables ‘cuda:0’, ‘cuda:1’, ‘cpu’ etc. Default is cpu.</p></li>
 <li><p><strong>v</strong> (<em>ivy container of variables</em><em>, </em><em>optional</em>) – the variables for each of the linear layer, as a container, constructed internally by default.</p></li>
@@ -239,10 +239,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="Conv2DTranspose.html" class="btn btn-neutral float-right" title="Conv2DTranspose" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="LSTM.html" class="btn btn-neutral float-right" title="LSTM" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="Conv1DTranspose.html" class="btn btn-neutral float-left" title="Conv1DTranspose" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="DepthwiseConv2D.html" class="btn btn-neutral float-left" title="DepthwiseConv2D" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
