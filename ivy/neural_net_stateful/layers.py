@@ -99,8 +99,8 @@ class Conv1D(Module):
         # ToDo: support other initialization mechanisms, via class constructor options
         # ToDo: tidy the construction of these variables, with helper functions
         wlim = (6 / (self._output_channels + self._input_channels)) ** 0.5
-        w_shape = (self._filter_size, self._output_channels, self._input_channels) if self._data_format == 'NWC'\
-            else (self._output_channels, self._input_channels, self._filter_size)
+        w_shape = (self._filter_size, self._input_channels, self._output_channels) if self._data_format == 'NWC'\
+            else (self._input_channels, self._output_channels, self._filter_size)
         w = ivy.variable(ivy.random_uniform(-wlim, wlim, w_shape, dev_str=dev_str))
         b = ivy.variable(ivy.zeros([1, 1, self._output_channels], dev_str=dev_str))
         return {'w': w, 'b': b}
@@ -161,8 +161,8 @@ class Conv1DTranspose(Module):
         # ToDo: support other initialization mechanisms, via class constructor options
         # ToDo: tidy the construction of these variables, with helper functions
         wlim = (6 / (self._output_channels + self._input_channels)) ** 0.5
-        w_shape = (self._filter_size, self._output_channels, self._input_channels) if self._data_format == 'NWC'\
-            else (self._output_channels, self._input_channels, self._filter_size)
+        w_shape = (self._filter_size, self._input_channels, self._output_channels) if self._data_format == 'NWC'\
+            else (self._input_channels, self._output_channels, self._filter_size)
         w = ivy.variable(ivy.random_uniform(-wlim, wlim, w_shape, dev_str=dev_str))
         b = ivy.variable(ivy.zeros([1, 1, self._output_channels], dev_str=dev_str))
         return {'w': w, 'b': b}
@@ -221,8 +221,8 @@ class Conv2D(Module):
         # ToDo: support other initialization mechanisms, via class constructor options
         # ToDo: tidy the construction of these variables, with helper functions
         wlim = (6 / (self._output_channels + self._input_channels)) ** 0.5
-        w_shape = self._filter_shape + [self._output_channels, self._input_channels] if self._data_format == 'NHWC'\
-            else [self._output_channels, self._input_channels] + self._filter_shape
+        w_shape = self._filter_shape + [self._input_channels, self._output_channels] if self._data_format == 'NHWC'\
+            else [self._input_channels, self._output_channels] + self._filter_shape
         w = ivy.variable(ivy.random_uniform(-wlim, wlim, w_shape, dev_str=dev_str))
         b = ivy.variable(ivy.zeros([1, 1, 1, self._output_channels], dev_str=dev_str))
         return {'w': w, 'b': b}
@@ -283,8 +283,8 @@ class Conv2DTranspose(Module):
         # ToDo: support other initialization mechanisms, via class constructor options
         # ToDo: tidy the construction of these variables, with helper functions
         wlim = (6 / (self._output_channels + self._input_channels)) ** 0.5
-        w_shape = self._filter_shape + [self._output_channels, self._input_channels] if self._data_format == 'NHWC'\
-            else [self._output_channels, self._input_channels] + self._filter_shape
+        w_shape = self._filter_shape + [self._input_channels, self._output_channels] if self._data_format == 'NHWC'\
+            else [self._input_channels, self._output_channels] + self._filter_shape
         w = ivy.variable(ivy.random_uniform(-wlim, wlim, w_shape, dev_str=dev_str))
         b = ivy.variable(ivy.zeros([1, 1, 1, self._output_channels], dev_str=dev_str))
         return {'w': w, 'b': b}
@@ -400,8 +400,8 @@ class Conv3D(Module):
         # ToDo: support other initialization mechanisms, via class constructor options
         # ToDo: tidy the construction of these variables, with helper functions
         wlim = (6 / (self._output_channels + self._input_channels)) ** 0.5
-        w_shape = self._filter_shape + [self._output_channels, self._input_channels] if self._data_format == 'NDHWC'\
-            else [self._output_channels, self._input_channels] + self._filter_shape
+        w_shape = self._filter_shape + [self._input_channels, self._output_channels] if self._data_format == 'NDHWC'\
+            else [self._input_channels, self._output_channels] + self._filter_shape
         w = ivy.variable(ivy.random_uniform(-wlim, wlim, w_shape, dev_str=dev_str))
         b = ivy.variable(ivy.zeros([1, 1, 1, 1, self._output_channels], dev_str=dev_str))
         return {'w': w, 'b': b}
@@ -462,8 +462,8 @@ class Conv3DTranspose(Module):
         # ToDo: support other initialization mechanisms, via class constructor options
         # ToDo: tidy the construction of these variables, with helper functions
         wlim = (6 / (self._output_channels + self._input_channels)) ** 0.5
-        w_shape = self._filter_shape + [self._output_channels, self._input_channels] if self._data_format == 'NDHWC'\
-            else [self._output_channels, self._input_channels] + self._filter_shape
+        w_shape = self._filter_shape + [self._input_channels, self._output_channels] if self._data_format == 'NDHWC'\
+            else [self._input_channels, self._output_channels] + self._filter_shape
         w = ivy.variable(ivy.random_uniform(-wlim, wlim, w_shape, dev_str=dev_str))
         b = ivy.variable(ivy.zeros([1, 1, 1, 1, self._output_channels], dev_str=dev_str))
         return {'w': w, 'b': b}
