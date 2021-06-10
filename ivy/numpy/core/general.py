@@ -162,6 +162,7 @@ def indices_where(x):
     return res
 
 
+isnan = _np.isnan
 reshape = _np.reshape
 broadcast_to = _np.broadcast_to
 

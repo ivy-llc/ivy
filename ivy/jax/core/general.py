@@ -153,6 +153,7 @@ def indices_where(x):
     return ret
 
 
+isnan = _jnp.isnan
 reshape = _jnp.reshape
 broadcast_to = _jnp.broadcast_to
 
