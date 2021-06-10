@@ -268,6 +268,10 @@ def indices_where(x):
     return res
 
 
+def isnan(x):
+    return torch.isnan(x)
+
+
 def reshape(x, newshape: List[int]):
     return torch.reshape(x, newshape)
 

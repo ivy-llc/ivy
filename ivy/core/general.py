@@ -537,6 +537,19 @@ def indices_where(x, f=None):
     return _get_framework(x, f=f).indices_where(x)
 
 
+def isnan(x, f=None):
+    """
+    Returns boolean map at locations where the input is not a number (nan).
+
+    :param x: Input array.
+    :type x: array
+    :param f: Machine learning framework. Inferred from inputs if None.
+    :type f: ml_framework, optional
+    :return: Boolean values for where the values of the array are nan.
+    """
+    return _get_framework(x, f=f).isnan(x)
+
+
 def reshape(x, newshape, f=None):
     """
     Gives a new shape to an array without changing its data.

@@ -946,6 +946,33 @@ def test_indices_where(x, dtype_str, tensor_fn, dev_str, call):
     helpers.assert_compilable(ivy.indices_where)
 
 
+# isnan
+@pytest.mark.parametrize(
+    "x_n_res", [([True], [False]),
+                ([[0., float('nan')], [float('nan'), 3.]],
+                 [[False, True], [True, False]])])
+@pytest.mark.parametrize(
+    "dtype_str", ['float32'])
+@pytest.mark.parametrize(
+    "tensor_fn", [ivy.array, helpers.var_fn])
+def test_isnan(x_n_res, dtype_str, tensor_fn, dev_str, call):
+    x, res = x_n_res
+    # smoke test
+    if isinstance(x, Number) and tensor_fn == helpers.var_fn and call is helpers.mx_call:
+        # mxnet does not support 0-dimensional variables
+        pytest.skip()
+    x = tensor_fn(x, dtype_str, dev_str)
+    ret = ivy.isnan(x)
+    # type test
+    assert ivy.is_array(ret)
+    # cardinality test
+    assert ret.shape == x.shape
+    # value test
+    assert np.allclose(call(ivy.isnan, x), res)
+    # compilation test
+    helpers.assert_compilable(ivy.isnan)
+
+
 # reshape
 @pytest.mark.parametrize(
     "x_n_shp", [(1., (1, 1)), (1., []), ([[1.]], []), ([[0., 1.], [2., 3.]], (1, 4, 1))])

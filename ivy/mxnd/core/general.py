@@ -299,6 +299,7 @@ def indices_where(x):
     return res
 
 
+isnan = _mx.nd.contrib.isnan
 reshape = lambda x, new_shape: x.reshape(new_shape)
 
 
