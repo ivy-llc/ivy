@@ -247,6 +247,21 @@ def argmin(x, axis=0, f=None):
     return _get_framework(x, f=f).argmin(x, axis)
 
 
+def argsort(x, axis=-1, f=None):
+    """
+    Returns the indices of a tensor that give its sorted order along an axis.
+
+    :param x: Input array containing elements to argsort.
+    :type x: array
+    :param axis: Axis to perform the argsort, default is -1.
+    :type axis: int, optional
+    :param f: Machine learning framework. Inferred from inputs if None.
+    :type f: ml_framework, optional
+    :return: The indices that would sort each slice of the given values along the given axis.
+    """
+    return _get_framework(x, f=f).argsort(x, axis)
+
+
 # noinspection PyShadowingNames
 def cast(x, dtype_str, f=None):
     """
