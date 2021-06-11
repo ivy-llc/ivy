@@ -67,8 +67,23 @@ floormod = lambda x, y: _np.asarray(x % y)
 floor = lambda x: _np.asarray(_np.floor(x))
 ceil = lambda x: _np.asarray(_np.ceil(x))
 abs = lambda x: _np.asarray(_np.absolute(x))
-argmax = lambda x, axis=0: _np.asarray(_np.argmax(x, axis)).reshape(-1)
-argmin = lambda x, axis=0: _np.asarray(_np.argmin(x, axis)).reshape(-1)
+
+
+def argmax(x, axis=0):
+    ret = _np.asarray(_np.argmax(x, axis))
+    if ret.shape == ():
+        return ret.reshape(-1)
+    return ret
+
+
+def argmin(x, axis=0):
+    ret = _np.asarray(_np.argmin(x, axis))
+    if ret.shape == ():
+        return ret.reshape(-1)
+    return ret
+
+
+argsort = lambda x, axis=-1: _np.asarray(_np.argsort(x, axis))
 
 
 def cast(x, dtype_str):

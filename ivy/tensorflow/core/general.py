@@ -71,8 +71,23 @@ floor = _tf.floor
 ceil = _tf.math.ceil
 # noinspection PyShadowingBuiltins
 abs = _tf.abs
-argmax = lambda x, axis=None: _tf.reshape(_tf.argmax(x, axis), get_num_dims(x))
-argmin = lambda x, axis=None: _tf.reshape(_tf.argmin(x, axis), get_num_dims(x))
+
+
+def argmax(x, axis=0):
+    ret = _tf.argmax(x, axis)
+    if ret.shape == ():
+        return _tf.reshape(ret, (-1,))
+    return ret
+
+
+def argmin(x, axis=0):
+    ret = _tf.argmin(x, axis)
+    if ret.shape == ():
+        return _tf.reshape(ret, (-1,))
+    return ret
+
+
+argsort = lambda x, axis=-1: _tf.argsort(x, axis)
 
 
 def cast(x, dtype_str):
