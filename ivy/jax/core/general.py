@@ -64,8 +64,23 @@ floor = _jnp.floor
 ceil = _jnp.ceil
 # noinspection PyShadowingBuiltins
 abs = _jnp.absolute
-argmax = lambda x, axis=0: _jnp.argmax(x, axis).reshape(-1)
-argmin = lambda x, axis=0: _jnp.argmin(x, axis).reshape(-1)
+
+
+def argmax(x, axis=0):
+    ret = _jnp.argmax(x, axis)
+    if ret.shape == ():
+        return ret.reshape(-1)
+    return ret
+
+
+def argmin(x, axis=0):
+    ret = _jnp.argmin(x, axis)
+    if ret.shape == ():
+        return ret.reshape(-1)
+    return ret
+
+
+argsort = lambda x, axis=-1: _jnp.argsort(x, axis)
 
 
 def cast(x, dtype_str):

@@ -456,6 +456,28 @@ def test_argmin(x_n_axis_x_argmin, dtype_str, tensor_fn, dev_str, call):
     helpers.assert_compilable(ivy.argmin)
 
 
+# argsort
+@pytest.mark.parametrize(
+    "x_n_axis_x_argsort", [([1, 10, 26.9, 2.8, 166.32, 62.3], -1, [0, 3, 1, 2, 5, 4])])
+@pytest.mark.parametrize(
+    "dtype_str", ['float32'])
+@pytest.mark.parametrize(
+    "tensor_fn", [ivy.array, helpers.var_fn])
+def test_argsort(x_n_axis_x_argsort, dtype_str, tensor_fn, dev_str, call):
+    # smoke test
+    x = tensor_fn(x_n_axis_x_argsort[0], dtype_str, dev_str)
+    axis = x_n_axis_x_argsort[1]
+    ret = ivy.argsort(x, axis)
+    # type test
+    assert ivy.is_array(ret)
+    # cardinality test
+    assert tuple(ret.shape) == (6,)
+    # value test
+    assert np.allclose(call(ivy.argsort, x, axis), np.array(x_n_axis_x_argsort[2]))
+    # compilation test
+    helpers.assert_compilable(ivy.argsort)
+
+
 # cast
 @pytest.mark.parametrize(
     "object_in", [[1], [True], [[1., 2.]]])

@@ -111,11 +111,21 @@ def abs(x):
 
 
 def argmax(x, axis: int = 0):
-    return torch.argmax(x, axis).reshape(-1)
+    ret = torch.argmax(x, axis)
+    if ret.shape == ():
+        return ret.reshape(-1)
+    return ret
 
 
 def argmin(x, axis: int = 0):
-    return torch.argmin(x, axis).reshape(-1)
+    ret = torch.argmin(x, axis)
+    if ret.shape == ():
+        return ret.reshape(-1)
+    return ret
+
+
+def argsort(x, axis: int = -1):
+    return torch.argsort(x, axis)
 
 
 def cast(x, dtype_str_in: str):
