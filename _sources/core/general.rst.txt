@@ -28,6 +28,7 @@ General
    general/abs.rst
    general/argmax.rst
    general/argmin.rst
+   general/argsort.rst
    general/cast.rst
    general/arange.rst
    general/linspace.rst

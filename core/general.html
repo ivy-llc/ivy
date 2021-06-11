@@ -107,6 +107,7 @@
 <li class="toctree-l2"><a class="reference internal" href="general/abs.html">abs</a></li>
 <li class="toctree-l2"><a class="reference internal" href="general/argmax.html">argmax</a></li>
 <li class="toctree-l2"><a class="reference internal" href="general/argmin.html">argmin</a></li>
+<li class="toctree-l2"><a class="reference internal" href="general/argsort.html">argsort</a></li>
 <li class="toctree-l2"><a class="reference internal" href="general/cast.html">cast</a></li>
 <li class="toctree-l2"><a class="reference internal" href="general/arange.html">arange</a></li>
 <li class="toctree-l2"><a class="reference internal" href="general/linspace.html">linspace</a></li>
@@ -332,6 +333,24 @@ Because of floating point overflow, this rule may result in the last element of 
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>Tensor containing the indices of the minimum values across the specified axis.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.core.general.argsort">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">argsort</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">- 1</span></em>, <em class="sig-param"><span class="n">f</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#argsort"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.argsort" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the indices of a tensor that give its sorted order along an axis.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>array</em>) – Input array containing elements to argsort.</p></li>
+<li><p><strong>axis</strong> (<em>int</em><em>, </em><em>optional</em>) – Axis to perform the argsort, default is -1.</p></li>
+<li><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning framework. Inferred from inputs if None.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The indices that would sort each slice of the given values along the given axis.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1433,6 +1452,7 @@ If not given, then the type of the original array is used.</p></li>
 <li class="toctree-l1"><a class="reference internal" href="general/abs.html">abs</a></li>
 <li class="toctree-l1"><a class="reference internal" href="general/argmax.html">argmax</a></li>
 <li class="toctree-l1"><a class="reference internal" href="general/argmin.html">argmin</a></li>
+<li class="toctree-l1"><a class="reference internal" href="general/argsort.html">argsort</a></li>
 <li class="toctree-l1"><a class="reference internal" href="general/cast.html">cast</a></li>
 <li class="toctree-l1"><a class="reference internal" href="general/arange.html">arange</a></li>
 <li class="toctree-l1"><a class="reference internal" href="general/linspace.html">linspace</a></li>
