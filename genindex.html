@@ -105,6 +105,7 @@
 </ul>
 <p class="caption"><span class="caption-text">Neural net stateful</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="neural_net_stateful/initializers.html">Initializers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="neural_net_stateful/layers.html">Layers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="neural_net_stateful/module.html">Module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="neural_net_stateful/optimizers.html">Optimizers</a></li>
@@ -204,6 +205,7 @@
  | <a href="#U"><strong>U</strong></a>
  | <a href="#V"><strong>V</strong></a>
  | <a href="#W"><strong>W</strong></a>
+ | <a href="#X"><strong>X</strong></a>
  | <a href="#Z"><strong>Z</strong></a>
  
 </div>
@@ -214,6 +216,10 @@
 
       <ul>
         <li><a href="framework_handler.html#ivy.framework_handler.ContextManager.__init__">(ivy.framework_handler.ContextManager method)</a>
+</li>
+        <li><a href="neural_net_stateful/initializers.html#ivy.neural_net_stateful.initializers.Xavier.__init__">(ivy.neural_net_stateful.initializers.Xavier method)</a>
+</li>
+        <li><a href="neural_net_stateful/initializers.html#ivy.neural_net_stateful.initializers.Zeros.__init__">(ivy.neural_net_stateful.initializers.Zeros method)</a>
 </li>
         <li><a href="neural_net_stateful/layers.html#ivy.neural_net_stateful.layers.Conv1D.__init__">(ivy.neural_net_stateful.layers.Conv1D method)</a>, <a href="neural_net_stateful/layers/Conv1D.html#ivy.neural_net_stateful.layers.Conv1D.__init__">[1]</a>
 </li>
@@ -390,10 +396,10 @@
         <li><a href="numpy/nn/layers.html#ivy.numpy.nn.layers.conv1d_transpose">(in module ivy.numpy.nn.layers)</a>, <a href="numpy/nn/layers/conv1d_transpose.html#ivy.numpy.nn.layers.conv1d_transpose">[1]</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="neural_net_stateful/layers.html#ivy.neural_net_stateful.layers.Conv1DTranspose">Conv1DTranspose (class in ivy.neural_net_stateful.layers)</a>, <a href="neural_net_stateful/layers/Conv1DTranspose.html#ivy.neural_net_stateful.layers.Conv1DTranspose">[1]</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="neural_net_stateful/layers.html#ivy.neural_net_stateful.layers.Conv2D">Conv2D (class in ivy.neural_net_stateful.layers)</a>, <a href="neural_net_stateful/layers/Conv2D.html#ivy.neural_net_stateful.layers.Conv2D">[1]</a>
 </li>
       <li><a href="neural_net_functional/layers.html#ivy.neural_net_functional.layers.conv2d">conv2d() (in module ivy.neural_net_functional.layers)</a>, <a href="neural_net_functional/layers/conv2d.html#ivy.neural_net_functional.layers.conv2d">[1]</a>
@@ -434,6 +440,12 @@
 </li>
       <li><a href="verbosity.html#ivy.verbosity.cprint">cprint() (in module ivy.verbosity)</a>, <a href="verbosity/cprint.html#ivy.verbosity.cprint">[1]</a>
 </li>
+      <li><a href="neural_net_stateful/initializers.html#ivy.neural_net_stateful.initializers.Xavier.create_variables">create_variables() (ivy.neural_net_stateful.initializers.Xavier method)</a>
+
+      <ul>
+        <li><a href="neural_net_stateful/initializers.html#ivy.neural_net_stateful.initializers.Zeros.create_variables">(ivy.neural_net_stateful.initializers.Zeros method)</a>
+</li>
+      </ul></li>
       <li><a href="core/general.html#ivy.core.general.cross">cross() (in module ivy.core.general)</a>, <a href="core/general/cross.html#ivy.core.general.cross">[1]</a>
 </li>
       <li><a href="core/general.html#ivy.core.general.cumprod">cumprod() (in module ivy.core.general)</a>, <a href="core/general/cumprod.html#ivy.core.general.cumprod">[1]</a>
@@ -715,8 +727,6 @@
         <li><a href="neural_net_functional/activations.html#module-ivy.neural_net_functional.activations">module</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     ivy.neural_net_functional.layers
 
@@ -724,11 +734,20 @@
         <li><a href="neural_net_functional/layers.html#module-ivy.neural_net_functional.layers">module</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     ivy.neural_net_functional.losses
 
       <ul>
         <li><a href="neural_net_functional/losses.html#module-ivy.neural_net_functional.losses">module</a>
+</li>
+      </ul></li>
+      <li>
+    ivy.neural_net_stateful.initializers
+
+      <ul>
+        <li><a href="neural_net_stateful/initializers.html#module-ivy.neural_net_stateful.initializers">module</a>
 </li>
       </ul></li>
       <li>
@@ -926,6 +945,8 @@
         <li><a href="neural_net_functional/layers.html#module-ivy.neural_net_functional.layers">ivy.neural_net_functional.layers</a>
 </li>
         <li><a href="neural_net_functional/losses.html#module-ivy.neural_net_functional.losses">ivy.neural_net_functional.losses</a>
+</li>
+        <li><a href="neural_net_stateful/initializers.html#module-ivy.neural_net_stateful.initializers">ivy.neural_net_stateful.initializers</a>
 </li>
         <li><a href="neural_net_stateful/layers.html#module-ivy.neural_net_stateful.layers">ivy.neural_net_stateful.layers</a>
 </li>
@@ -1321,6 +1342,14 @@
   </ul></td>
 </tr></table>
 
+<h2 id="X">X</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="neural_net_stateful/initializers.html#ivy.neural_net_stateful.initializers.Xavier">Xavier (class in ivy.neural_net_stateful.initializers)</a>
+</li>
+  </ul></td>
+</tr></table>
+
 <h2 id="Z">Z</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
@@ -1330,14 +1359,16 @@
         <li><a href="numpy/core/general.html#ivy.numpy.core.general.zero_pad">(in module ivy.numpy.core.general)</a>
 </li>
       </ul></li>
+      <li><a href="neural_net_stateful/initializers.html#ivy.neural_net_stateful.initializers.Zeros">Zeros (class in ivy.neural_net_stateful.initializers)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="core/general.html#ivy.core.general.zeros">zeros() (in module ivy.core.general)</a>, <a href="core/general/zeros.html#ivy.core.general.zeros">[1]</a>
 
       <ul>
         <li><a href="numpy/core/general.html#ivy.numpy.core.general.zeros">(in module ivy.numpy.core.general)</a>, <a href="numpy/core/general/zeros.html#ivy.numpy.core.general.zeros">[1]</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="core/general.html#ivy.core.general.zeros_like">zeros_like() (in module ivy.core.general)</a>, <a href="core/general/zeros_like.html#ivy.core.general.zeros_like">[1]</a>
 
       <ul>
