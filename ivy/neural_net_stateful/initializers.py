@@ -2,74 +2,87 @@
 import ivy
 
 
-class Zeros:
+# Constant #
+# ---------#
 
-    def __init__(self, var_shape=None, input_channels=None, output_channels=None):
-        self._var_shape = var_shape
+class Constant:
 
-    def create_variables(self, dev_str, var_shape=None):
+    def __init__(self, constant):
+        self._constant = constant
+
+    def create_variables(self, var_shape, dev_str, fan_out=None, fan_in=None):
         """
         Create internal variables for the layer
         """
-        var_shape = var_shape if var_shape is not None else self._var_shape
-        return ivy.variable(ivy.zeros(var_shape, dev_str=dev_str))
+        return ivy.variable(ivy.ones(var_shape, dev_str=dev_str) * self._constant)
 
 
-class Xavier:
+class Zeros(Constant):
 
-    def __init__(self, var_shape=None, input_channels=None, output_channels=None):
-        self._var_shape = var_shape
-        if input_channels is None:
-            raise Exception('input_channels must be specified for Xavier initializer.')
-        self._input_channels = input_channels
-        if output_channels is None:
-            raise Exception('output_channels must be specified for Xavier initializer.')
-        self._output_channels = output_channels
+    def __init__(self):
+        super().__init__(0.)
 
-    def create_variables(self, dev_str, var_shape=None):
+
+class Ones(Constant):
+
+    def __init__(self):
+        super().__init__(1.)
+
+
+# Uniform #
+# --------#
+
+class Uniform:
+
+    def __init__(self, numerator, denominator_mode, power, gain):
+        if denominator_mode not in ['fan_in', 'fan_out', 'fan_sum', 'fan_avg']:
+            raise Exception('Invalid denominator mode, must be one of [ fan_in | fan_out | fan_sum | fan_avg ]')
+        self._numerator = numerator
+        self._denominator_mode = denominator_mode
+        self._power = power
+        self._gain = gain
+
+    def create_variables(self, var_shape, dev_str, fan_out=None, fan_in=None):
         """
         Create internal variables for the layer
         """
-        wlim = (6 / (self._output_channels + self._input_channels)) ** 0.5
-        var_shape = var_shape if var_shape is not None else self._var_shape
+        if self._denominator_mode == 'fan_in':
+            if fan_in is None:
+                raise Exception('input_channels must be specified for fan_in denominator mode.')
+            denom = fan_in
+        elif self._denominator_mode == 'fan_out':
+            if fan_in is None:
+                raise Exception('output_channels must be specified for fan_out denominator mode.')
+            denom = fan_out
+        elif self._denominator_mode == 'fan_sum':
+            if fan_in is None or fan_out is None:
+                raise Exception('input_channels and output_channels must both be specified for'
+                                'fan_sum denominator mode.')
+            denom = fan_in + fan_out
+        elif self._denominator_mode == 'fan_avg':
+            if fan_in is None or fan_out is None:
+                raise Exception('input_channels and output_channels must both be specified for'
+                                'fan_avg denominator mode.')
+            denom = (fan_in + fan_out) / 2
+        else:
+            raise Exception('Invalid denominator mode, must be one of [ fan_in | fan_out | fan_sum | fan_avg ]')
+        wlim = ((self._numerator / denom) ** self._power) * self._gain
         return ivy.variable(ivy.random_uniform(-wlim, wlim, var_shape, dev_str=dev_str))
 
 
-class FirstLayerSiren:
+class GlorotUniform(Uniform):
 
-    def __init__(self, var_shape=None, input_channels=None, output_channels=None):
-        self._var_shape = var_shape
-        if input_channels is None:
-            raise Exception('input_channels must be specified for Xavier initializer.')
-        self._input_channels = input_channels
-        if output_channels is None:
-            raise Exception('output_channels must be specified for Xavier initializer.')
-        self._output_channels = output_channels
-
-    def create_variables(self, dev_str, var_shape=None):
-        """
-        Create internal variables for the layer
-        """
-        wlim = 1 / self._input_channels
-        var_shape = var_shape if var_shape is not None else self._var_shape
-        return ivy.variable(ivy.random_uniform(-wlim, wlim, var_shape, dev_str=dev_str))
+    def __init__(self):
+        super().__init__(6, 'fan_sum', 0.5, 1)
 
 
-class Siren:
+class FirstLayerSiren(Uniform):
 
-    def __init__(self, var_shape=None, input_channels=None, output_channels=None):
-        self._var_shape = var_shape
-        if input_channels is None:
-            raise Exception('input_channels must be specified for Xavier initializer.')
-        self._input_channels = input_channels
-        if output_channels is None:
-            raise Exception('output_channels must be specified for Xavier initializer.')
-        self._output_channels = output_channels
+    def __init__(self):
+        super().__init__(1, 'fan_in', 1, 1)
 
-    def create_variables(self, dev_str, var_shape=None):
-        """
-        Create internal variables for the layer
-        """
-        wlim = ((6 / self._input_channels) ** 0.5) / 30
-        var_shape = var_shape if var_shape is not None else self._var_shape
-        return ivy.variable(ivy.random_uniform(-wlim, wlim, var_shape, dev_str=dev_str))
+
+class Siren(Uniform):
+
+    def __init__(self):
+        super().__init__(6, 'fan_in', 0.5, 30)
