@@ -3,10 +3,11 @@ Base Container Object
 """
 
 # global
-import random as _random
 import h5py as _h5py
-from functools import reduce as _reduce
+import random as _random
+import operator as _operator
 from operator import mul as _mul
+from functools import reduce as _reduce
 try:
     import jax.numpy as _jpn
 except ImportError:
@@ -111,6 +112,38 @@ class Container(dict):
                     return _ivy.concatenate(containers, dim)
             except Exception as e:
                 raise Exception(str(e) + '\nContainer concat operation only valid for containers of arrays')
+
+    @staticmethod
+    def reduce(containers, reduction_mode):
+        """
+        Reduce containers.
+
+        :param containers: containers to reduce
+        :type containers: sequence of Container objects
+        :param reduction_mode: the type of reduction to perform
+        :type reduction_mode: str
+        :return: reduced containers
+        """
+        # ToDo: add support for min and max reductions
+        list_size = len(containers)
+        try:
+            red = {'sum': sum,
+                   'prod': lambda x: _reduce(_mul, x, 1),
+                   'mean': lambda x: sum(x) / list_size}[reduction_mode]
+        except KeyError:
+            raise Exception('reduction_mode must be one of [ sum | prod | mean ], but found {}'.format(reduction_mode))
+        container0 = containers[0]
+        if isinstance(container0, dict):
+            return_dict = dict()
+            for key in container0.keys():
+                return_dict[key] = Container.reduce([container[key] for container in containers], reduction_mode)
+            return Container(return_dict)
+        else:
+            # noinspection PyBroadException
+            try:
+                return red(containers)
+            except Exception as e:
+                raise Exception(str(e) + '\nContainer reduce operation only valid for containers of arrays')
 
     @staticmethod
     def from_disk(h5_obj_or_filepath, slice_obj=slice(None)):
