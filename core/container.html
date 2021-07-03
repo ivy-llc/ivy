@@ -364,6 +364,23 @@ Returns None if the entire container is empty.</p>
 </dd></dl>
 
 <dl class="py method">
+<dt id="ivy.core.container.Container.reduce">
+<em class="property">static </em><code class="sig-name descname">reduce</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">containers</span></em>, <em class="sig-param"><span class="n">reduction_mode</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/container.html#Container.reduce"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.reduce" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reduce containers.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>containers</strong> (<em>sequence of Container objects</em>) – containers to reduce</p></li>
+<li><p><strong>reduction_mode</strong> (<em>str</em>) – the type of reduction to perform</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>reduced containers</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt id="ivy.core.container.Container.shuffle">
 <code class="sig-name descname">shuffle</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">seed_value</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/container.html#Container.shuffle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.shuffle" title="Permalink to this definition">¶</a></dt>
 <dd><p>Shuffle entries in all sub-arrays, such that they are still aligned along axis 0.</p>

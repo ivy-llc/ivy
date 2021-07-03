@@ -186,10 +186,11 @@
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="c1"># global</span>
-<span class="kn">import</span> <span class="nn">random</span> <span class="k">as</span> <span class="nn">_random</span>
 <span class="kn">import</span> <span class="nn">h5py</span> <span class="k">as</span> <span class="nn">_h5py</span>
-<span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">reduce</span> <span class="k">as</span> <span class="n">_reduce</span>
+<span class="kn">import</span> <span class="nn">random</span> <span class="k">as</span> <span class="nn">_random</span>
+<span class="kn">import</span> <span class="nn">operator</span> <span class="k">as</span> <span class="nn">_operator</span>
 <span class="kn">from</span> <span class="nn">operator</span> <span class="kn">import</span> <span class="n">mul</span> <span class="k">as</span> <span class="n">_mul</span>
+<span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">reduce</span> <span class="k">as</span> <span class="n">_reduce</span>
 <span class="k">try</span><span class="p">:</span>
     <span class="kn">import</span> <span class="nn">jax.numpy</span> <span class="k">as</span> <span class="nn">_jpn</span>
 <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
@@ -294,6 +295,38 @@
                     <span class="k">return</span> <span class="n">_ivy</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span><span class="n">containers</span><span class="p">,</span> <span class="n">dim</span><span class="p">)</span>
             <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">Container concat operation only valid for containers of arrays&#39;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Container.reduce"><a class="viewcode-back" href="../../../core/container/Container.html#ivy.core.container.Container.reduce">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">reduce</span><span class="p">(</span><span class="n">containers</span><span class="p">,</span> <span class="n">reduction_mode</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Reduce containers.</span>
+
+<span class="sd">        :param containers: containers to reduce</span>
+<span class="sd">        :type containers: sequence of Container objects</span>
+<span class="sd">        :param reduction_mode: the type of reduction to perform</span>
+<span class="sd">        :type reduction_mode: str</span>
+<span class="sd">        :return: reduced containers</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># ToDo: add support for min and max reductions</span>
+        <span class="n">list_size</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">containers</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">red</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;sum&#39;</span><span class="p">:</span> <span class="nb">sum</span><span class="p">,</span>
+                   <span class="s1">&#39;prod&#39;</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">_reduce</span><span class="p">(</span><span class="n">_mul</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+                   <span class="s1">&#39;mean&#39;</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">sum</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">/</span> <span class="n">list_size</span><span class="p">}[</span><span class="n">reduction_mode</span><span class="p">]</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;reduction_mode must be one of [ sum | prod | mean ], but found </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">reduction_mode</span><span class="p">))</span>
+        <span class="n">container0</span> <span class="o">=</span> <span class="n">containers</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">container0</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+            <span class="n">return_dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">container0</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                <span class="n">return_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">Container</span><span class="o">.</span><span class="n">reduce</span><span class="p">([</span><span class="n">container</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="k">for</span> <span class="n">container</span> <span class="ow">in</span> <span class="n">containers</span><span class="p">],</span> <span class="n">reduction_mode</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">Container</span><span class="p">(</span><span class="n">return_dict</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># noinspection PyBroadException</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">red</span><span class="p">(</span><span class="n">containers</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">Container reduce operation only valid for containers of arrays&#39;</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Container.from_disk"><a class="viewcode-back" href="../../../core/container/Container.html#ivy.core.container.Container.from_disk">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">from_disk</span><span class="p">(</span><span class="n">h5_obj_or_filepath</span><span class="p">,</span> <span class="n">slice_obj</span><span class="o">=</span><span class="nb">slice</span><span class="p">(</span><span class="kc">None</span><span class="p">)):</span>
