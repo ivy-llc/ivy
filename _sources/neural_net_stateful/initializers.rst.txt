@@ -18,4 +18,7 @@ Initializers
    initializers/Xavier:
 
     def __init__.rst
+   initializers/Siren:
+
+    def __init__.rst
 
