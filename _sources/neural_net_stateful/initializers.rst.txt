@@ -1,0 +1,21 @@
+Initializers
+============
+
+.. automodule:: ivy.neural_net_stateful.initializers
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :show-inheritance:
+
+
+.. toctree::
+   :maxdepth: -1
+   :caption: Initializers
+
+   initializers/Zeros:
+
+    def __init__.rst
+   initializers/Xavier:
+
+    def __init__.rst
+
