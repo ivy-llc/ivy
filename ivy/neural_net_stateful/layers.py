@@ -5,6 +5,7 @@ Collection of Ivy neural network layers as stateful classes.
 # local
 import ivy
 from ivy.neural_net_stateful.module import Module
+from ivy.neural_net_stateful.initializers import Zeros, Xavier
 
 
 # Linear #
@@ -12,7 +13,8 @@ from ivy.neural_net_stateful.module import Module
 
 class Linear(Module):
 
-    def __init__(self, input_channels, output_channels, dev_str='cpu', v=None):
+    def __init__(self, input_channels, output_channels, weight_initializer=Xavier, bias_initializer=Zeros,
+                 dev_str='cpu', v=None):
         """
         Linear layer, also referred to as dense or fully connected. The layer receives tensors with input_channels last
         dimension and returns a new tensor with output_channels last dimension, following matrix multiplication with the
@@ -22,26 +24,24 @@ class Linear(Module):
         :type input_channels: int
         :param output_channels: Number of output channels for the layer.
         :type output_channels: int
+        :param weight_initializer: Initializer for the weights. Default is Xavier.
+        :type weight_initializer: ivy.Initializer class, optional
+        :param bias_initializer: Initializer for the bias. Default is Zeros.
+        :type bias_initializer: ivy.Initializer class, optional
         :param dev_str: device on which to create the layer's variables 'cuda:0', 'cuda:1', 'cpu' etc. Default is cpu.
         :type dev_str: str, optional
         :param v: the variables for each of the linear layer, as a container, constructed internally by default.
         :type v: ivy container of variables, optional
         """
-        self._input_channels = input_channels
-        self._output_channels = output_channels
+        self._w_init = weight_initializer((output_channels, input_channels), input_channels, output_channels)
+        self._b_init = bias_initializer((output_channels,), input_channels, output_channels)
         Module.__init__(self, dev_str, v)
 
     def _create_variables(self, dev_str):
         """
-        Create internal variables for the Linear layer
+        Create internal variables for the layer
         """
-        # ToDo: support other initialization mechanisms, via class constructor options
-        # ToDo: tidy the construction of these variables, with helper functions
-        wlim = (6 / (self._output_channels + self._input_channels)) ** 0.5
-        w = ivy.variable(ivy.random_uniform(-wlim, wlim, (self._output_channels, self._input_channels),
-                                            dev_str=dev_str))
-        b = ivy.variable(ivy.zeros([self._output_channels], dev_str=dev_str))
-        return {'w': w, 'b': b}
+        return {'w': self._w_init.create_variables(dev_str), 'b': self._b_init.create_variables(dev_str)}
 
     def _forward(self, inputs):
         """
@@ -59,8 +59,8 @@ class Linear(Module):
 
 class Conv1D(Module):
 
-    def __init__(self, input_channels, output_channels, filter_size, strides, padding, data_format='NWC', dilations=1,
-                 dev_str='cpu', v=None):
+    def __init__(self, input_channels, output_channels, filter_size, strides, padding, weight_initializer=Xavier,
+                 bias_initializer=Zeros, data_format='NWC', dilations=1, dev_str='cpu', v=None):
         """
         1D convolutional layer.
 
@@ -74,6 +74,10 @@ class Conv1D(Module):
         :type strides: int or sequence of ints
         :param padding: "SAME" or "VALID" indicating the algorithm, or list indicating the per-dimension paddings.
         :type padding: string or sequence of ints
+        :param weight_initializer: Initializer for the weights. Default is Xavier.
+        :type weight_initializer: ivy.Initializer class, optional
+        :param bias_initializer: Initializer for the bias. Default is Zeros.
+        :type bias_initializer: ivy.Initializer class, optional
         :param data_format: "NWC" or "NCW". Defaults to "NWC".
         :type data_format: string
         :param dilations: The dilation factor for each dimension of input.
@@ -83,27 +87,22 @@ class Conv1D(Module):
         :param v: the variables for each of the linear layer, as a container, constructed internally by default.
         :type v: ivy container of variables, optional
         """
-        self._input_channels = input_channels
-        self._output_channels = output_channels
         self._filter_size = filter_size
         self._strides = strides
         self._padding = padding
+        w_shape = (filter_size, input_channels, output_channels) if data_format == 'NWC' \
+            else (input_channels, output_channels, self._filter_size)
+        self._w_init = weight_initializer(w_shape, input_channels, output_channels)
+        self._b_init = bias_initializer((1, 1, output_channels), input_channels, output_channels)
         self._data_format = data_format
         self._dilations = dilations
         Module.__init__(self, dev_str, v)
 
     def _create_variables(self, dev_str):
         """
-        Create internal variables for the Conv1D layer
+        Create internal variables for the layer
         """
-        # ToDo: support other initialization mechanisms, via class constructor options
-        # ToDo: tidy the construction of these variables, with helper functions
-        wlim = (6 / (self._output_channels + self._input_channels)) ** 0.5
-        w_shape = (self._filter_size, self._input_channels, self._output_channels) if self._data_format == 'NWC'\
-            else (self._input_channels, self._output_channels, self._filter_size)
-        w = ivy.variable(ivy.random_uniform(-wlim, wlim, w_shape, dev_str=dev_str))
-        b = ivy.variable(ivy.zeros([1, 1, self._output_channels], dev_str=dev_str))
-        return {'w': w, 'b': b}
+        return {'w': self._w_init.create_variables(dev_str), 'b': self._b_init.create_variables(dev_str)}
 
     def _forward(self, inputs):
         """
@@ -118,8 +117,8 @@ class Conv1D(Module):
 
 class Conv1DTranspose(Module):
 
-    def __init__(self, input_channels, output_channels, filter_size, strides, padding, output_shape=None,
-                 data_format='NWC', dilations=1, dev_str='cpu', v=None):
+    def __init__(self, input_channels, output_channels, filter_size, strides, padding, weight_initializer=Xavier,
+                 bias_initializer=Zeros, output_shape=None, data_format='NWC', dilations=1, dev_str='cpu', v=None):
         """
         1D transpose convolutional layer.
 
@@ -133,6 +132,10 @@ class Conv1DTranspose(Module):
         :type strides: int or sequence of ints
         :param padding: "SAME" or "VALID" indicating the algorithm, or list indicating the per-dimension paddings.
         :type padding: string or sequence of ints
+        :param weight_initializer: Initializer for the weights. Default is Xavier.
+        :type weight_initializer: ivy.Initializer class, optional
+        :param bias_initializer: Initializer for the bias. Default is Zeros.
+        :type bias_initializer: ivy.Initializer class, optional
         :param output_shape: Shape of the output
         :type output_shape: sequence of ints, needed for TensorFlow
         :param data_format: "NWC" or "NCW". Defaults to "NWC".
@@ -144,11 +147,13 @@ class Conv1DTranspose(Module):
         :param v: the variables for each of the linear layer, as a container, constructed internally by default.
         :type v: ivy container of variables, optional
         """
-        self._input_channels = input_channels
-        self._output_channels = output_channels
         self._filter_size = filter_size
         self._strides = strides
         self._padding = padding
+        w_shape = (filter_size, input_channels, output_channels) if data_format == 'NWC' \
+            else (input_channels, output_channels, filter_size)
+        self._w_init = weight_initializer(w_shape, input_channels, output_channels)
+        self._b_init = bias_initializer((1, 1, output_channels), input_channels, output_channels)
         self._output_shape = output_shape
         self._data_format = data_format
         self._dilations = dilations
@@ -156,16 +161,9 @@ class Conv1DTranspose(Module):
 
     def _create_variables(self, dev_str):
         """
-        Create internal variables for the Conv1DTranspose layer
+        Create internal variables for the layer
         """
-        # ToDo: support other initialization mechanisms, via class constructor options
-        # ToDo: tidy the construction of these variables, with helper functions
-        wlim = (6 / (self._output_channels + self._input_channels)) ** 0.5
-        w_shape = (self._filter_size, self._input_channels, self._output_channels) if self._data_format == 'NWC'\
-            else (self._input_channels, self._output_channels, self._filter_size)
-        w = ivy.variable(ivy.random_uniform(-wlim, wlim, w_shape, dev_str=dev_str))
-        b = ivy.variable(ivy.zeros([1, 1, self._output_channels], dev_str=dev_str))
-        return {'w': w, 'b': b}
+        return {'w': self._w_init.create_variables(dev_str), 'b': self._b_init.create_variables(dev_str)}
 
     def _forward(self, inputs):
         """
@@ -181,8 +179,8 @@ class Conv1DTranspose(Module):
 
 class Conv2D(Module):
 
-    def __init__(self, input_channels, output_channels, filter_shape, strides, padding, data_format='NHWC', dilations=1,
-                 dev_str='cpu', v=None):
+    def __init__(self, input_channels, output_channels, filter_shape, strides, padding, weight_initializer=Xavier,
+                 bias_initializer=Zeros, data_format='NHWC', dilations=1, dev_str='cpu', v=None):
         """
         2D convolutional layer.
 
@@ -196,6 +194,10 @@ class Conv2D(Module):
         :type strides: int or sequence of ints
         :param padding: "SAME" or "VALID" indicating the algorithm, or list indicating the per-dimension paddings.
         :type padding: string or sequence of ints
+        :param weight_initializer: Initializer for the weights. Default is Xavier.
+        :type weight_initializer: ivy.Initializer class, optional
+        :param bias_initializer: Initializer for the bias. Default is Zeros.
+        :type bias_initializer: ivy.Initializer class, optional
         :param data_format: "NHWC" or "NCHW". Defaults to "NHWC".
         :type data_format: string
         :param dilations: The dilation factor for each dimension of input.
@@ -205,27 +207,22 @@ class Conv2D(Module):
         :param v: the variables for each of the linear layer, as a container, constructed internally by default.
         :type v: ivy container of variables, optional
         """
-        self._input_channels = input_channels
-        self._output_channels = output_channels
         self._filter_shape = filter_shape
         self._strides = strides
         self._padding = padding
+        w_shape = filter_shape + [input_channels, output_channels] if data_format == 'NHWC' \
+            else [input_channels, output_channels] + filter_shape
+        self._w_init = weight_initializer(w_shape, input_channels, output_channels)
+        self._b_init = bias_initializer((1, 1, 1, output_channels), input_channels, output_channels)
         self._data_format = data_format
         self._dilations = dilations
         Module.__init__(self, dev_str, v)
 
     def _create_variables(self, dev_str):
         """
-        Create internal variables for the Conv2D layer
+        Create internal variables for the layer
         """
-        # ToDo: support other initialization mechanisms, via class constructor options
-        # ToDo: tidy the construction of these variables, with helper functions
-        wlim = (6 / (self._output_channels + self._input_channels)) ** 0.5
-        w_shape = self._filter_shape + [self._input_channels, self._output_channels] if self._data_format == 'NHWC'\
-            else [self._input_channels, self._output_channels] + self._filter_shape
-        w = ivy.variable(ivy.random_uniform(-wlim, wlim, w_shape, dev_str=dev_str))
-        b = ivy.variable(ivy.zeros([1, 1, 1, self._output_channels], dev_str=dev_str))
-        return {'w': w, 'b': b}
+        return {'w': self._w_init.create_variables(dev_str), 'b': self._b_init.create_variables(dev_str)}
 
     def _forward(self, inputs):
         """
@@ -240,8 +237,8 @@ class Conv2D(Module):
 
 class Conv2DTranspose(Module):
 
-    def __init__(self, input_channels, output_channels, filter_shape, strides, padding, output_shape=None,
-                 data_format='NHWC', dilations=1, dev_str='cpu', v=None):
+    def __init__(self, input_channels, output_channels, filter_shape, strides, padding, weight_initializer=Xavier,
+                 bias_initializer=Zeros, output_shape=None, data_format='NHWC', dilations=1, dev_str='cpu', v=None):
         """
         2D convolutional transpose layer.
 
@@ -255,6 +252,10 @@ class Conv2DTranspose(Module):
         :type strides: int or sequence of ints
         :param padding: "SAME" or "VALID" indicating the algorithm, or list indicating the per-dimension paddings.
         :type padding: string or sequence of ints
+        :param weight_initializer: Initializer for the weights. Default is Xavier.
+        :type weight_initializer: ivy.Initializer class, optional
+        :param bias_initializer: Initializer for the bias. Default is Zeros.
+        :type bias_initializer: ivy.Initializer class, optional
         :param output_shape: Shape of the output
         :type output_shape: sequence of ints, needed for TensorFlow
         :param data_format: "NHWC" or "NCHW". Defaults to "NHWC".
@@ -266,11 +267,13 @@ class Conv2DTranspose(Module):
         :param v: the variables for each of the linear layer, as a container, constructed internally by default.
         :type v: ivy container of variables, optional
         """
-        self._input_channels = input_channels
-        self._output_channels = output_channels
         self._filter_shape = filter_shape
         self._strides = strides
         self._padding = padding
+        w_shape = filter_shape + [input_channels, output_channels] if data_format == 'NHWC' \
+            else [input_channels, output_channels] + filter_shape
+        self._w_init = weight_initializer(w_shape, input_channels, output_channels)
+        self._b_init = bias_initializer((1, 1, 1, output_channels), input_channels, output_channels)
         self._output_shape = output_shape
         self._data_format = data_format
         self._dilations = dilations
@@ -278,16 +281,9 @@ class Conv2DTranspose(Module):
 
     def _create_variables(self, dev_str):
         """
-        Create internal variables for the Conv2DTranspose layer
+        Create internal variables for the layer
         """
-        # ToDo: support other initialization mechanisms, via class constructor options
-        # ToDo: tidy the construction of these variables, with helper functions
-        wlim = (6 / (self._output_channels + self._input_channels)) ** 0.5
-        w_shape = self._filter_shape + [self._input_channels, self._output_channels] if self._data_format == 'NHWC'\
-            else [self._input_channels, self._output_channels] + self._filter_shape
-        w = ivy.variable(ivy.random_uniform(-wlim, wlim, w_shape, dev_str=dev_str))
-        b = ivy.variable(ivy.zeros([1, 1, 1, self._output_channels], dev_str=dev_str))
-        return {'w': w, 'b': b}
+        return {'w': self._w_init.create_variables(dev_str), 'b': self._b_init.create_variables(dev_str)}
 
     def _forward(self, inputs):
         """
@@ -303,8 +299,8 @@ class Conv2DTranspose(Module):
 
 class DepthwiseConv2D(Module):
 
-    def __init__(self, num_channels, filter_shape, strides, padding, data_format='NHWC', dilations=1, dev_str='cpu',
-                 v=None):
+    def __init__(self, num_channels, filter_shape, strides, padding, weight_initializer=Xavier, bias_initializer=Zeros,
+                 data_format='NHWC', dilations=1, dev_str='cpu', v=None):
         """
         depthwise 2D convolutional layer.
 
@@ -316,6 +312,10 @@ class DepthwiseConv2D(Module):
         :type strides: int or sequence of ints
         :param padding: "SAME" or "VALID" indicating the algorithm, or list indicating the per-dimension paddings.
         :type padding: string or sequence of ints
+        :param weight_initializer: Initializer for the weights. Default is Xavier.
+        :type weight_initializer: ivy.Initializer class, optional
+        :param bias_initializer: Initializer for the bias. Default is Zeros.
+        :type bias_initializer: ivy.Initializer class, optional
         :param data_format: "NHWC" or "NCHW". Defaults to "NHWC".
         :type data_format: string
         :param dilations: The dilation factor for each dimension of input.
@@ -329,22 +329,19 @@ class DepthwiseConv2D(Module):
         self._filter_shape = filter_shape
         self._strides = strides
         self._padding = padding
+        w_shape = filter_shape + [num_channels] if data_format == 'NHWC' \
+            else [num_channels] + filter_shape
+        self._w_init = weight_initializer(w_shape, num_channels, num_channels)
+        self._b_init = bias_initializer((1, 1, num_channels), num_channels, num_channels)
         self._data_format = data_format
         self._dilations = dilations
         Module.__init__(self, dev_str, v)
 
     def _create_variables(self, dev_str):
         """
-        Create internal variables for the DepthwiseConv2D layer
+        Create internal variables for the layer
         """
-        # ToDo: support other initialization mechanisms, via class constructor options
-        # ToDo: tidy the construction of these variables, with helper functions
-        wlim = (6 / (self._num_channels*2)) ** 0.5
-        w_shape = self._filter_shape + [self._num_channels] if self._data_format == 'NHWC'\
-            else [self._num_channels] + self._filter_shape
-        w = ivy.variable(ivy.random_uniform(-wlim, wlim, w_shape, dev_str=dev_str))
-        b = ivy.variable(ivy.zeros([1, 1, self._num_channels], dev_str=dev_str))
-        return {'w': w, 'b': b}
+        return {'w': self._w_init.create_variables(dev_str), 'b': self._b_init.create_variables(dev_str)}
 
     def _forward(self, inputs):
         """
@@ -360,8 +357,8 @@ class DepthwiseConv2D(Module):
 
 class Conv3D(Module):
 
-    def __init__(self, input_channels, output_channels, filter_shape, strides, padding, data_format='NDHWC',
-                 dilations=1, dev_str='cpu', v=None):
+    def __init__(self, input_channels, output_channels, filter_shape, strides, padding, weight_initializer=Xavier,
+                 bias_initializer=Zeros, data_format='NDHWC', dilations=1, dev_str='cpu', v=None):
         """
         3D convolutional layer.
 
@@ -375,6 +372,10 @@ class Conv3D(Module):
         :type strides: int or sequence of ints
         :param padding: "SAME" or "VALID" indicating the algorithm, or list indicating the per-dimension paddings.
         :type padding: string or sequence of ints
+        :param weight_initializer: Initializer for the weights. Default is Xavier.
+        :type weight_initializer: ivy.Initializer class, optional
+        :param bias_initializer: Initializer for the bias. Default is Zeros.
+        :type bias_initializer: ivy.Initializer class, optional
         :param data_format: "NDHWC" or "NCDHW". Defaults to "NDHWC".
         :type data_format: string
         :param dilations: The dilation factor for each dimension of input.
@@ -384,27 +385,22 @@ class Conv3D(Module):
         :param v: the variables for each of the linear layer, as a container, constructed internally by default.
         :type v: ivy container of variables, optional
         """
-        self._input_channels = input_channels
-        self._output_channels = output_channels
         self._filter_shape = filter_shape
         self._strides = strides
         self._padding = padding
+        w_shape = filter_shape + [input_channels, output_channels] if data_format == 'NDHWC' \
+            else [input_channels, output_channels] + filter_shape
+        self._w_init = weight_initializer(w_shape, input_channels, output_channels)
+        self._b_init = bias_initializer((1, 1, 1, 1, output_channels), input_channels, output_channels)
         self._data_format = data_format
         self._dilations = dilations
         Module.__init__(self, dev_str, v)
 
     def _create_variables(self, dev_str):
         """
-        Create internal variables for the Conv3D layer
+        Create internal variables for the layer
         """
-        # ToDo: support other initialization mechanisms, via class constructor options
-        # ToDo: tidy the construction of these variables, with helper functions
-        wlim = (6 / (self._output_channels + self._input_channels)) ** 0.5
-        w_shape = self._filter_shape + [self._input_channels, self._output_channels] if self._data_format == 'NDHWC'\
-            else [self._input_channels, self._output_channels] + self._filter_shape
-        w = ivy.variable(ivy.random_uniform(-wlim, wlim, w_shape, dev_str=dev_str))
-        b = ivy.variable(ivy.zeros([1, 1, 1, 1, self._output_channels], dev_str=dev_str))
-        return {'w': w, 'b': b}
+        return {'w': self._w_init.create_variables(dev_str), 'b': self._b_init.create_variables(dev_str)}
 
     def _forward(self, inputs):
         """
@@ -419,8 +415,8 @@ class Conv3D(Module):
 
 class Conv3DTranspose(Module):
 
-    def __init__(self, input_channels, output_channels, filter_shape, strides, padding, output_shape=None,
-                 data_format='NDHWC', dilations=1, dev_str='cpu', v=None):
+    def __init__(self, input_channels, output_channels, filter_shape, strides, padding, weight_initializer=Xavier,
+                 bias_initializer=Zeros, output_shape=None, data_format='NDHWC', dilations=1, dev_str='cpu', v=None):
         """
         3D convolutional transpose layer.
 
@@ -434,6 +430,10 @@ class Conv3DTranspose(Module):
         :type strides: int or sequence of ints
         :param padding: "SAME" or "VALID" indicating the algorithm, or list indicating the per-dimension paddings.
         :type padding: string or sequence of ints
+        :param weight_initializer: Initializer for the weights. Default is Xavier.
+        :type weight_initializer: ivy.Initializer class, optional
+        :param bias_initializer: Initializer for the bias. Default is Zeros.
+        :type bias_initializer: ivy.Initializer class, optional
         :param output_shape: Shape of the output
         :type output_shape: sequence of ints, needed for TensorFlow
         :param data_format: "NDHWC" or "NCDHW". Defaults to "NDHWC".
@@ -445,11 +445,13 @@ class Conv3DTranspose(Module):
         :param v: the variables for each of the linear layer, as a container, constructed internally by default.
         :type v: ivy container of variables, optional
         """
-        self._input_channels = input_channels
-        self._output_channels = output_channels
         self._filter_shape = filter_shape
         self._strides = strides
         self._padding = padding
+        w_shape = filter_shape + [input_channels, output_channels] if data_format == 'NDHWC' \
+            else [input_channels, output_channels] + filter_shape
+        self._w_init = weight_initializer(w_shape, input_channels, output_channels)
+        self._b_init = bias_initializer((1, 1, 1, 1, output_channels), input_channels, output_channels)
         self._output_shape = output_shape
         self._data_format = data_format
         self._dilations = dilations
@@ -457,16 +459,9 @@ class Conv3DTranspose(Module):
 
     def _create_variables(self, dev_str):
         """
-        Create internal variables for the Conv3DTranspose layer
+        Create internal variables for the layer
         """
-        # ToDo: support other initialization mechanisms, via class constructor options
-        # ToDo: tidy the construction of these variables, with helper functions
-        wlim = (6 / (self._output_channels + self._input_channels)) ** 0.5
-        w_shape = self._filter_shape + [self._input_channels, self._output_channels] if self._data_format == 'NDHWC'\
-            else [self._input_channels, self._output_channels] + self._filter_shape
-        w = ivy.variable(ivy.random_uniform(-wlim, wlim, w_shape, dev_str=dev_str))
-        b = ivy.variable(ivy.zeros([1, 1, 1, 1, self._output_channels], dev_str=dev_str))
-        return {'w': w, 'b': b}
+        return {'w': self._w_init.create_variables(dev_str), 'b': self._b_init.create_variables(dev_str)}
 
     def _forward(self, inputs):
         """
@@ -485,8 +480,8 @@ class Conv3DTranspose(Module):
 
 class LSTM(Module):
 
-    def __init__(self, input_channels, output_channels, num_layers=1, return_sequence=True, return_state=True,
-                 dev_str='cpu', v=None):
+    def __init__(self, input_channels, output_channels, weight_initializer=Xavier, num_layers=1, return_sequence=True,
+                 return_state=True, dev_str='cpu', v=None):
         """
         LSTM layer, which is a set of stacked lstm cells.
 
@@ -494,6 +489,8 @@ class LSTM(Module):
         :type input_channels: int
         :param output_channels: Number of output channels for the layer
         :type output_channels: int
+        :param weight_initializer: Initializer for the weights. Default is Xavier.
+        :type weight_initializer: ivy.Initializer class, optional
         :param num_layers: Number of lstm cells in the lstm layer, default is 1.
         :type num_layers: int, optional
         :param return_sequence: Whether or not to return the entire output sequence, or just the latest timestep.
@@ -508,6 +505,7 @@ class LSTM(Module):
         """
         self._input_channels = input_channels
         self._output_channels = output_channels
+        self._w_init = weight_initializer(input_channels=input_channels, output_channels=output_channels)
         self._num_layers = num_layers
         self._return_sequence = return_sequence
         self._return_state = return_state
@@ -527,22 +525,16 @@ class LSTM(Module):
 
     def _create_variables(self, dev_str):
         """
-        Create internal variables for the LSTM layer
+        Create internal variables for the layer
         """
-        # ToDo: support other initialization mechanisms, via class constructor options
-        # ToDo: tidy the construction of these variables, with helper functions
-        wlim = (6 / (self._output_channels + self._input_channels)) ** 0.5
         input_weights = dict(zip(
             ['layer_' + str(i) for i in range(self._num_layers)],
-            [{'w': ivy.variable(
-                ivy.random_uniform(-wlim, wlim, (self._input_channels if i == 0 else self._output_channels,
-                                                 4 * self._output_channels), dev_str=dev_str))}
+            [{'w': self._w_init.create_variables(dev_str, (self._input_channels if i == 0 else self._output_channels,
+                                                           4 * self._output_channels))}
                 for i in range(self._num_layers)]))
-        wlim = (6 / (self._output_channels + self._output_channels)) ** 0.5
         recurrent_weights = dict(zip(
             ['layer_' + str(i) for i in range(self._num_layers)],
-            [{'w': ivy.variable(
-                ivy.random_uniform(-wlim, wlim, (self._output_channels, 4 * self._output_channels), dev_str=dev_str))}
+            [{'w': self._w_init.create_variables(dev_str, (self._output_channels, 4 * self._output_channels))}
              for i in range(self._num_layers)]))
         return {'input': input_weights, 'recurrent': recurrent_weights}
 
