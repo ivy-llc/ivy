@@ -206,7 +206,8 @@ def test_conv1d_transpose_layer_training(x_n_fs_n_pad_n_outshp_n_oc, with_v, dty
         v = Container({'w': w, 'b': b})
     else:
         v = None
-    conv1d_trans_layer = ivy.Conv1DTranspose(input_channels, output_channels, filter_size, 1, padding, out_shape, v=v)
+    conv1d_trans_layer = ivy.Conv1DTranspose(input_channels, output_channels, filter_size, 1, padding,
+                                             output_shape=out_shape, v=v)
 
     def loss_fn(v_):
         out = conv1d_trans_layer(x, v=v_)
@@ -387,7 +388,7 @@ def test_conv2d_transpose_layer_training(x_n_fs_n_pad_n_outshp_n_oc, with_v, dty
     else:
         v = None
     conv2d_transpose_layer = ivy.Conv2DTranspose(
-        input_channels, output_channels, filter_shape, 1, padding, out_shape, v=v)
+        input_channels, output_channels, filter_shape, 1, padding, output_shape=out_shape, v=v)
 
     def loss_fn(v_):
         out = conv2d_transpose_layer(x, v=v_)
@@ -649,7 +650,7 @@ def test_conv3d_transpose_layer_training(x_n_fs_n_pad_n_outshp_n_oc, with_v, dty
     else:
         v = None
     conv3d_transpose_layer = ivy.Conv3DTranspose(
-        input_channels, output_channels, filter_shape, 1, padding, out_shape, v=v)
+        input_channels, output_channels, filter_shape, 1, padding, output_shape=out_shape, v=v)
 
     def loss_fn(v_):
         out = conv3d_transpose_layer(x, v=v_)
