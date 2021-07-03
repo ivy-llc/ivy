@@ -12,16 +12,15 @@ Initializers
    :maxdepth: -1
    :caption: Initializers
 
-   initializers/Zeros:
+   initializers/Constant:
 
     def __init__.rst
-   initializers/Xavier:
+   initializers/Zeros.rst
+   initializers/Ones.rst
+   initializers/Uniform:
 
     def __init__.rst
-   initializers/FirstLayerSiren:
-
-    def __init__.rst
-   initializers/Siren:
-
-    def __init__.rst
+   initializers/GlorotUniform.rst
+   initializers/FirstLayerSiren.rst
+   initializers/Siren.rst
 
