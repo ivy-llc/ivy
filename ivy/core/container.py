@@ -8,10 +8,6 @@ import random as _random
 import operator as _operator
 from operator import mul as _mul
 from functools import reduce as _reduce
-try:
-    import jax.numpy as _jpn
-except ImportError:
-    _jpn = None
 
 # local
 import ivy as _ivy
