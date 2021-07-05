@@ -84,5 +84,5 @@ class FirstLayerSiren(Uniform):
 
 class Siren(Uniform):
 
-    def __init__(self):
-        super().__init__(6, 'fan_in', 0.5, 1/30)
+    def __init__(self, w0=30):
+        super().__init__(6, 'fan_in', 0.5, 1/w0)
