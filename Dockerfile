@@ -21,4 +21,4 @@ RUN pip3 install --no-cache-dir -r requirements.txt && \
 COPY optional.txt /ivy
 RUN pip3 install --no-cache-dir -r optional.txt && \
     rm -rf optional.txt
-RUN pip3 install torch-scatter -f https://pytorch-geometric.com/whl/torch-1.8.0+cpu.html
+RUN pip3 install torch-scatter -f https://pytorch-geometric.com/whl/torch-1.9.0+cpu.html
