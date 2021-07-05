@@ -215,6 +215,13 @@
 <span class="n">_framework_dict</span><span class="p">[</span><span class="s1">&#39;torch&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;ivy.torch&#39;</span>
 <span class="n">_framework_dict</span><span class="p">[</span><span class="s1">&#39;mxnd&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;ivy.mxnd&#39;</span>
 
+<span class="n">_framework_reverse_dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+<span class="n">_framework_reverse_dict</span><span class="p">[</span><span class="s1">&#39;ivy.numpy&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;numpy&#39;</span>
+<span class="n">_framework_reverse_dict</span><span class="p">[</span><span class="s1">&#39;ivy.jax&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;jax&#39;</span>
+<span class="n">_framework_reverse_dict</span><span class="p">[</span><span class="s1">&#39;ivy.tensorflow&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;tensorflow&#39;</span>
+<span class="n">_framework_reverse_dict</span><span class="p">[</span><span class="s1">&#39;ivy.torch&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;torch&#39;</span>
+<span class="n">_framework_reverse_dict</span><span class="p">[</span><span class="s1">&#39;ivy.mxnd&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;mxnd&#39;</span>
+
 
 <span class="k">def</span> <span class="nf">_get_framework_from_args</span><span class="p">(</span><span class="n">args</span><span class="p">):</span>
     <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="n">args</span><span class="p">:</span>
@@ -255,6 +262,11 @@
     <span class="k">if</span> <span class="n">verbosity</span><span class="o">.</span><span class="n">level</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
         <span class="n">verbosity</span><span class="o">.</span><span class="n">cprint</span><span class="p">(</span><span class="s1">&#39;Using framework from type: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">f</span><span class="p">))</span>
     <span class="k">return</span> <span class="n">f</span></div>
+
+
+<div class="viewcode-block" id="get_framework_str"><a class="viewcode-back" href="../../framework_handler/get_framework_str.html#ivy.framework_handler.get_framework_str">[docs]</a><span class="k">def</span> <span class="nf">get_framework_str</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="n">framework</span> <span class="o">=</span> <span class="n">get_framework</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">_framework_reverse_dict</span><span class="p">[</span><span class="n">framework</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;&lt;module &#39;&quot;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;&#39; &quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]]</span></div>
 
 
 <div class="viewcode-block" id="set_framework"><a class="viewcode-back" href="../../framework_handler/set_framework.html#ivy.framework_handler.set_framework">[docs]</a><span class="k">def</span> <span class="nf">set_framework</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
