@@ -45,7 +45,7 @@ def dtype_from_str(dtype_str_in: str) -> torch.dtype:
 
 
 def to_numpy(x) -> np.ndarray:
-    if isinstance(x, np.ndarray):
+    if isinstance(x, np.ndarray) or isinstance(x, (float, int, bool)):
         return x
     elif torch.is_tensor(x):
         return x.detach().cpu().numpy()
