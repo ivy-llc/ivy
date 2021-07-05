@@ -32,6 +32,13 @@ _framework_dict['tensorflow'] = 'ivy.tensorflow'
 _framework_dict['torch'] = 'ivy.torch'
 _framework_dict['mxnd'] = 'ivy.mxnd'
 
+_framework_reverse_dict = dict()
+_framework_reverse_dict['ivy.numpy'] = 'numpy'
+_framework_reverse_dict['ivy.jax'] = 'jax'
+_framework_reverse_dict['ivy.tensorflow'] = 'tensorflow'
+_framework_reverse_dict['ivy.torch'] = 'torch'
+_framework_reverse_dict['ivy.mxnd'] = 'mxnd'
+
 
 def _get_framework_from_args(args):
     for arg in args:
@@ -72,6 +79,11 @@ def get_framework(*args, f=None, **kwargs):
     if verbosity.level > 0:
         verbosity.cprint('Using framework from type: {}'.format(f))
     return f
+
+
+def get_framework_str(*args, f=None, **kwargs):
+    framework = get_framework(*args, f, **kwargs)
+    return _framework_reverse_dict[framework.__repr__().split("<module '")[-1].split("' ")[0]]
 
 
 def set_framework(f):
