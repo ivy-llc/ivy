@@ -334,6 +334,7 @@ _dev_str_callable = dev_str
 dev_to_str = lambda dev_in: 'cpu:0'
 str_to_dev = lambda dev_str: 'cpu:0'
 gpu_is_available = lambda: False
+num_gpus = lambda: 0
 tpu_is_available = lambda: False
 dtype = lambda x: x.dtype
 dtype_str = lambda x: DTYPE_DICT[x.dtype]

@@ -386,6 +386,7 @@ def str_to_dev(dev_str):
 dev_str = lambda x: dev_to_str(dev(x))
 _dev_str_callable = dev_str
 gpu_is_available = lambda: len(_tf.config.list_physical_devices('GPU')) > 0
+num_gpus = lambda: len(_tf.config.list_physical_devices('GPU'))
 
 
 def tpu_is_available():
