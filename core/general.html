@@ -149,6 +149,7 @@
 <li class="toctree-l2"><a class="reference internal" href="general/str_to_dev.html">str_to_dev</a></li>
 <li class="toctree-l2"><a class="reference internal" href="general/dev_str.html">dev_str</a></li>
 <li class="toctree-l2"><a class="reference internal" href="general/gpu_is_available.html">gpu_is_available</a></li>
+<li class="toctree-l2"><a class="reference internal" href="general/num_gpus.html">num_gpus</a></li>
 <li class="toctree-l2"><a class="reference internal" href="general/tpu_is_available.html">tpu_is_available</a></li>
 <li class="toctree-l2"><a class="reference internal" href="general/dtype.html">dtype</a></li>
 <li class="toctree-l2"><a class="reference internal" href="general/dtype_to_str.html">dtype_to_str</a></li>
@@ -988,6 +989,20 @@ The identity array is a square array with ones on the main diagonal.</p>
 </dd></dl>
 
 <dl class="py function">
+<dt id="ivy.core.general.num_gpus">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">num_gpus</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">f</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#num_gpus"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.num_gpus" title="Permalink to this definition">¶</a></dt>
+<dd><p>Determine the number of available GPUs, with the backend framework.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning framework. Inferred from inputs if None.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Number of available GPUs.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt id="ivy.core.general.one_hot">
 <code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">one_hot</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">indices</span></em>, <em class="sig-param"><span class="n">depth</span></em>, <em class="sig-param"><span class="n">dev_str</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">f</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#one_hot"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.one_hot" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a one-hot array
@@ -1495,6 +1510,7 @@ If not given, then the type of the original array is used.</p></li>
 <li class="toctree-l1"><a class="reference internal" href="general/str_to_dev.html">str_to_dev</a></li>
 <li class="toctree-l1"><a class="reference internal" href="general/dev_str.html">dev_str</a></li>
 <li class="toctree-l1"><a class="reference internal" href="general/gpu_is_available.html">gpu_is_available</a></li>
+<li class="toctree-l1"><a class="reference internal" href="general/num_gpus.html">num_gpus</a></li>
 <li class="toctree-l1"><a class="reference internal" href="general/tpu_is_available.html">tpu_is_available</a></li>
 <li class="toctree-l1"><a class="reference internal" href="general/dtype.html">dtype</a></li>
 <li class="toctree-l1"><a class="reference internal" href="general/dtype_to_str.html">dtype_to_str</a></li>

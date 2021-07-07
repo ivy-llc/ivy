@@ -70,6 +70,7 @@ General
    general/str_to_dev.rst
    general/dev_str.rst
    general/gpu_is_available.rst
+   general/num_gpus.rst
    general/tpu_is_available.rst
    general/dtype.rst
    general/dtype_to_str.rst

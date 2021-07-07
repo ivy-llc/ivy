@@ -1149,6 +1149,17 @@
     <span class="k">return</span> <span class="n">_get_framework</span><span class="p">(</span><span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">gpu_is_available</span><span class="p">()</span></div>
 
 
+<div class="viewcode-block" id="num_gpus"><a class="viewcode-back" href="../../../core/general/num_gpus.html#ivy.core.general.num_gpus">[docs]</a><span class="k">def</span> <span class="nf">num_gpus</span><span class="p">(</span><span class="n">f</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Determine the number of available GPUs, with the backend framework.</span>
+
+<span class="sd">    :param f: Machine learning framework. Inferred from inputs if None.</span>
+<span class="sd">    :type f: ml_framework, optional</span>
+<span class="sd">    :return: Number of available GPUs.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">_get_framework</span><span class="p">(</span><span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">num_gpus</span><span class="p">()</span></div>
+
+
 <div class="viewcode-block" id="tpu_is_available"><a class="viewcode-back" href="../../../core/general/tpu_is_available.html#ivy.core.general.tpu_is_available">[docs]</a><span class="k">def</span> <span class="nf">tpu_is_available</span><span class="p">(</span><span class="n">f</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Determine whether a TPU is available to use, with the backend framework.</span>
