@@ -546,6 +546,7 @@ def dev_str(x):
 
 _callable_dev_str = dev_str
 gpu_is_available = torch.cuda.is_available
+num_gpus = torch.cuda.device_count
 
 
 # noinspection PyUnresolvedReferences

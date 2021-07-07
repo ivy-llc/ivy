@@ -482,6 +482,7 @@ def str_to_dev(dev_str):
 dev_str = lambda x: dev_to_str(dev(x))
 _callable_dev_str = dev_str
 gpu_is_available = lambda: _mx.context.num_gpus() > 0
+num_gpus = lambda: _mx.context.num_gpus()
 tpu_is_available = lambda: False
 dtype = lambda x: x.dtype
 dtype_str = lambda x: DTYPE_DICT[x.dtype]
