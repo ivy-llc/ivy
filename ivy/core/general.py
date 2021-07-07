@@ -966,6 +966,17 @@ def gpu_is_available(f=None):
     return _get_framework(f=f).gpu_is_available()
 
 
+def num_gpus(f=None):
+    """
+    Determine the number of available GPUs, with the backend framework.
+
+    :param f: Machine learning framework. Inferred from inputs if None.
+    :type f: ml_framework, optional
+    :return: Number of available GPUs.
+    """
+    return _get_framework(f=f).num_gpus()
+
+
 def tpu_is_available(f=None):
     """
     Determine whether a TPU is available to use, with the backend framework.
