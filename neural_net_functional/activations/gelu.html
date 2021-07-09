@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>relu &mdash; Ivy 1.0 documentation</title>
+  <title>gelu &mdash; Ivy 1.0 documentation</title>
   
 
   
@@ -36,8 +36,8 @@
   <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="leaky_relu" href="leaky_relu.html" />
-    <link rel="prev" title="Activations" href="../activations.html" /> 
+    <link rel="next" title="tanh" href="tanh.html" />
+    <link rel="prev" title="leaky_relu" href="leaky_relu.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -102,9 +102,9 @@
 <p class="caption"><span class="caption-text">Neural net functional</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="../activations.html">Activations</a><ul class="current">
-<li class="toctree-l2 current"><a class="current reference internal" href="#">relu</a></li>
+<li class="toctree-l2"><a class="reference internal" href="relu.html">relu</a></li>
 <li class="toctree-l2"><a class="reference internal" href="leaky_relu.html">leaky_relu</a></li>
-<li class="toctree-l2"><a class="reference internal" href="gelu.html">gelu</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">gelu</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tanh.html">tanh</a></li>
 <li class="toctree-l2"><a class="reference internal" href="sigmoid.html">sigmoid</a></li>
 <li class="toctree-l2"><a class="reference internal" href="softmax.html">softmax</a></li>
@@ -177,13 +177,13 @@
         
           <li><a href="../activations.html">Activations</a> &raquo;</li>
         
-      <li>relu</li>
+      <li>gelu</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="../../_sources/neural_net_functional/activations/relu.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../_sources/neural_net_functional/activations/gelu.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -196,21 +196,22 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="relu">
-<h1>relu<a class="headerlink" href="#relu" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="gelu">
+<h1>gelu<a class="headerlink" href="#gelu" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
-<dt id="ivy.neural_net_functional.activations.relu">
-<code class="sig-prename descclassname">ivy.neural_net_functional.activations.</code><code class="sig-name descname">relu</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">f</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/neural_net_functional/activations.html#relu"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.neural_net_functional.activations.relu" title="Permalink to this definition">¶</a></dt>
-<dd><p>Applies the rectified linear unit function element-wise.</p>
+<dt id="ivy.neural_net_functional.activations.gelu">
+<code class="sig-prename descclassname">ivy.neural_net_functional.activations.</code><code class="sig-name descname">gelu</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">approximate</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">f</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/neural_net_functional/activations.html#gelu"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.neural_net_functional.activations.gelu" title="Permalink to this definition">¶</a></dt>
+<dd><p>Applies the Gaussian error linear unit (GELU) activation function.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>x</strong> (<em>array</em>) – Input array.</p></li>
+<li><p><strong>approximate</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to approximate, default is True.</p></li>
 <li><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning framework. Inferred from inputs if None.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>The input array with relu applied element-wise.</p>
+<dd class="field-even"><p>The input array with leaky relu applied element-wise.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -230,10 +231,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="leaky_relu.html" class="btn btn-neutral float-right" title="leaky_relu" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="tanh.html" class="btn btn-neutral float-right" title="tanh" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="../activations.html" class="btn btn-neutral float-left" title="Activations" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="leaky_relu.html" class="btn btn-neutral float-left" title="leaky_relu" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
