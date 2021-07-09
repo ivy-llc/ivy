@@ -298,6 +298,7 @@ Documentation Tree
    neural_net_functional/activations.rst
    neural_net_functional/layers.rst
    neural_net_functional/losses.rst
+   neural_net_functional/norms.rst
 
 
 .. toctree::
@@ -307,6 +308,7 @@ Documentation Tree
    neural_net_stateful/initializers.rst
    neural_net_stateful/layers.rst
    neural_net_stateful/module.rst
+   neural_net_stateful/norms.rst
    neural_net_stateful/optimizers.rst
    neural_net_stateful/sequential.rst
 

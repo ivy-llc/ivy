@@ -104,12 +104,14 @@
 <li class="toctree-l1"><a class="reference internal" href="../neural_net_functional/activations.html">Activations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../neural_net_functional/layers.html">Layers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../neural_net_functional/losses.html">Losses</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../neural_net_functional/norms.html">Norms</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Neural net stateful</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="initializers.html">Initializers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="layers.html">Layers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="module.html">Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="norms.html">Norms</a></li>
 <li class="toctree-l1"><a class="reference internal" href="optimizers.html">Optimizers</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Sequential</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="sequential/Sequential.html">Sequential</a></li>
@@ -201,7 +203,11 @@
 <dd><p>A sequential container. Modules will be added to it in the order they are passed in the constructor.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>sub_modules</strong> (<em>str</em><em>, </em><em>optional</em>) – device on which to create the layer’s variables ‘cuda:0’, ‘cuda:1’, ‘cpu’ etc.</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>submodules</strong> (<em>sequence of ivy.Module instances</em>) – Submodules to chain together into a sequence.</p></li>
+<li><p><strong>dev_str</strong> (<em>str</em><em>, </em><em>optional</em>) – device on which to create the layer’s variables ‘cuda:0’, ‘cuda:1’, ‘cpu’ etc.</p></li>
+<li><p><strong>v</strong> (<em>ivy container of variables</em><em>, </em><em>optional</em>) – the variables for each submodule in the sequence, constructed internally by default.</p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>
