@@ -42,6 +42,18 @@ def reduce_mean(x, axis=None, keepdims=False):
     return ret
 
 
+def reduce_var(x, axis=None, keepdims=False):
+    if axis is None:
+        num_dims = len(x.shape)
+        axis = tuple(range(num_dims))
+    elif isinstance(axis, list):
+        axis = tuple(axis)
+    ret = _np.asarray(_np.var(x, axis=axis, keepdims=keepdims))
+    if ret.shape == ():
+        return ret.reshape((1,))
+    return ret
+
+
 def reduce_min(x, axis=None, keepdims=False):
     if axis is None:
         num_dims = len(x.shape)

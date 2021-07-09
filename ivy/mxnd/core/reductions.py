@@ -46,6 +46,12 @@ def reduce_mean(x, axis=None, keepdims=False):
     return _mx.nd.mean(x, axis=axis, keepdims=keepdims)
 
 
+def reduce_var(x, axis=None, keepdims=False):
+    mean_of_x_sqrd = reduce_mean(x ** 2, axis, keepdims)
+    mean_of_x = reduce_mean(x, axis, keepdims)
+    return mean_of_x_sqrd - mean_of_x ** 2
+
+
 def reduce_min(x, axis=None, keepdims=False):
     axis_specified = True
     if axis is None:

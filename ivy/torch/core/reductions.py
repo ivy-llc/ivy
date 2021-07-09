@@ -47,6 +47,16 @@ def reduce_mean(x, axis: Optional[List[int]] = None, keepdims: bool = False):
     return ret
 
 
+def reduce_var(x, axis: Optional[List[int]] = None, keepdims: bool = False):
+    if axis is None:
+        num_dims = len(x.shape)
+        axis = list(range(num_dims))
+    ret = _torch.var(x, dim=axis, unbiased=False, keepdim=keepdims)
+    if ret.shape == ():
+        return ret.view((1,))
+    return ret
+
+
 def reduce_min(x, axis: Optional[List[int]] = None, keepdims: bool = False):
     if axis is None:
         num_dims = len(x.shape)
