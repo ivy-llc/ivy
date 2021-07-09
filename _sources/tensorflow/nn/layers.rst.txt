@@ -15,4 +15,5 @@ Layers
    layers/conv2d.rst
    layers/depthwise_conv2d.rst
    layers/conv3d.rst
+   layers/linear.rst
 
