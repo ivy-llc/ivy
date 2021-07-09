@@ -50,6 +50,35 @@ def test_linear(x_n_w_n_b_n_res, dtype_str, tensor_fn, dev_str, call):
     helpers.assert_compilable(ivy.linear)
 
 
+# Dropout #
+# --------#
+
+# dropout
+@pytest.mark.parametrize(
+    "x", [([[1., 2., 3.]]),
+          ([[[1., 2., 3.]]])])
+@pytest.mark.parametrize(
+    "dtype_str", ['float32'])
+@pytest.mark.parametrize(
+    "tensor_fn", [ivy.array, helpers.var_fn])
+def test_dropout(x, dtype_str, tensor_fn, dev_str, call):
+    # smoke test
+    x = tensor_fn(x, dtype_str, dev_str)
+    ret = ivy.dropout(x, 0.9)
+    # type test
+    assert ivy.is_array(ret)
+    # cardinality test
+    assert ret.shape == x.shape
+    # value test
+    ivy.seed(0)
+    assert np.min(call(ivy.dropout, x, 0.9)) == 0.
+    # compilation test
+    if call in [helpers.torch_call]:
+        # str_to_dev not supported by torch.jit due to Device and Str not seen as the same
+        pytest.skip()
+    helpers.assert_compilable(ivy.dropout)
+
+
 # Convolutions #
 # -------------#
 
