@@ -10,7 +10,7 @@ from ivy.framework_handler import get_framework as _get_framework
 # Linear #
 # -------#
 
-def linear(x, weight, bias, f=None):
+def linear(x, weight, bias=None, f=None):
     """
     Applies a linear transformation to the incoming data: y = x * t(weight) + bias,
     where t(...) indicates transpose.
@@ -19,8 +19,8 @@ def linear(x, weight, bias, f=None):
     :type x: array
     :param weight: The weight matrix. *[out_features,in_features]*
     :type weight: array
-    :param bias: The bias vector. *[out_features]*
-    :type bias: array
+    :param bias: The bias vector, default is None. *[out_features]*
+    :type bias: array, optional
     :param f: Machine learning framework. Inferred from inputs if None.
     :type f: ml_framework, optional
     :return: Result array of the linear transformation. *[N,∗,out_features]*

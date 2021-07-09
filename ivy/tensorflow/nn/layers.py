@@ -40,4 +40,10 @@ def conv3d(x, filters, strides, padding, data_format='NDHWC', dilations=1):
 
 conv3d_transpose = lambda x, filters, strides, padding, output_shape=None, data_format='NDHWC', dilations=1:\
     _tf.nn.conv3d_transpose(x, filters, output_shape, strides, padding, data_format, dilations)
-linear = lambda x, weight, bias: _tf.matmul(x, _tf.transpose(weight)) + bias
+
+
+def linear(x, weight, bias=None):
+    ret = _tf.matmul(x, _tf.transpose(weight))
+    if bias is not None:
+        ret += bias
+    return ret
