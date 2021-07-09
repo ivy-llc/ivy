@@ -136,5 +136,5 @@ def conv3d_transpose(x, filters, strides: int, padding: str, output_shape: Optio
 
 
 # noinspection PyUnresolvedReferences
-def linear(x, weight, bias=None):
+def linear(x, weight, bias: Optional[_torch.Tensor] = None):
     return _torch.nn.functional.linear(x, weight, bias)

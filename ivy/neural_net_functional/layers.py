@@ -28,6 +28,31 @@ def linear(x, weight, bias=None, f=None):
     return _get_framework(x, f=f).linear(x, weight, bias)
 
 
+# Dropout #
+# --------#
+
+def dropout(x, prob, scale=True, f=None):
+    """
+    Randomly zeroes some of the elements of the input tensor with probability p using samples from a Bernoull
+    distribution.
+
+    :param x: The input array x to perform dropout on.
+    :type x: array
+    :param prob: The probability of zeroing out each array element.
+    :type prob: float
+    :param scale: Whether to scale the output by 1/(1-prob), default is True.
+    :type scale: bool, optional
+    :param f: Machine learning framework. Inferred from inputs if None.
+    :type f: ml_framework, optional
+    :return: Result array of the linear transformation. *[N,∗,out_features]*
+    """
+    # noinspection PyUnresolvedReferences
+    x = x * ivy.where(ivy.random_uniform(shape=x.shape) < prob, ivy.zeros_like(x), ivy.ones_like(x))
+    if scale:
+        x *= (1 / (1 - prob))
+    return x
+
+
 # Convolutions #
 # -------------#
 
