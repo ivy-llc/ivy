@@ -36,7 +36,7 @@
   <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="binary_cross_entropy" href="losses/binary_cross_entropy.html" />
+    <link rel="next" title="cross_entropy" href="losses/cross_entropy.html" />
     <link rel="prev" title="lstm_update" href="layers/lstm_update.html" /> 
 </head>
 
@@ -104,7 +104,9 @@
 <li class="toctree-l1"><a class="reference internal" href="activations.html">Activations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="layers.html">Layers</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Losses</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="losses/cross_entropy.html">cross_entropy</a></li>
 <li class="toctree-l2"><a class="reference internal" href="losses/binary_cross_entropy.html">binary_cross_entropy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="losses/sparse_cross_entropy.html">sparse_cross_entropy</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="norms.html">Norms</a></li>
@@ -195,14 +197,14 @@
 <p>Collection of Ivy loss functions.</p>
 <dl class="py function">
 <dt id="ivy.neural_net_functional.losses.binary_cross_entropy">
-<code class="sig-prename descclassname">ivy.neural_net_functional.losses.</code><code class="sig-name descname">binary_cross_entropy</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">y</span></em>, <em class="sig-param"><span class="n">epsilon</span><span class="o">=</span><span class="default_value">1e-07</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/neural_net_functional/losses.html#binary_cross_entropy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.neural_net_functional.losses.binary_cross_entropy" title="Permalink to this definition">¶</a></dt>
-<dd><p>Computes the cross-entropy loss between true labels and predicted labels.</p>
+<code class="sig-prename descclassname">ivy.neural_net_functional.losses.</code><code class="sig-name descname">binary_cross_entropy</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">true</span></em>, <em class="sig-param"><span class="n">pred</span></em>, <em class="sig-param"><span class="n">epsilon</span><span class="o">=</span><span class="default_value">1e-07</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/neural_net_functional/losses.html#binary_cross_entropy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.neural_net_functional.losses.binary_cross_entropy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the binary cross entropy loss.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<em>array</em>) – Predicted labels</p></li>
-<li><p><strong>y</strong> (<em>array</em>) – true labels</p></li>
-<li><p><strong>epsilon</strong> (<em>constant</em>) – small constant to add to log functions</p></li>
+<li><p><strong>true</strong> (<em>array</em>) – true labels</p></li>
+<li><p><strong>pred</strong> (<em>array</em>) – Predicted labels</p></li>
+<li><p><strong>epsilon</strong> (<em>float</em><em>, </em><em>optional</em>) – small constant to add to log functions, default is 1e-7</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -211,10 +213,50 @@
 </dl>
 </dd></dl>
 
+<dl class="py function">
+<dt id="ivy.neural_net_functional.losses.cross_entropy">
+<code class="sig-prename descclassname">ivy.neural_net_functional.losses.</code><code class="sig-name descname">cross_entropy</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">true</span></em>, <em class="sig-param"><span class="n">pred</span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">- 1</span></em>, <em class="sig-param"><span class="n">epsilon</span><span class="o">=</span><span class="default_value">1e-07</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/neural_net_functional/losses.html#cross_entropy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.neural_net_functional.losses.cross_entropy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes cross entropy between predicted and true discrete distrubtions.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>true</strong> (<em>array</em>) – True labels</p></li>
+<li><p><strong>pred</strong> (<em>array</em>) – predicted labels.</p></li>
+<li><p><strong>axis</strong> (<em>int</em><em>, </em><em>optional</em>) – The class dimension, default is -1.</p></li>
+<li><p><strong>epsilon</strong> (<em>float</em><em>, </em><em>optional</em>) – small constant to add to log functions, default is 1e-7</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The cross entropy loss</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.neural_net_functional.losses.sparse_cross_entropy">
+<code class="sig-prename descclassname">ivy.neural_net_functional.losses.</code><code class="sig-name descname">sparse_cross_entropy</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">true</span></em>, <em class="sig-param"><span class="n">pred</span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">- 1</span></em>, <em class="sig-param"><span class="n">epsilon</span><span class="o">=</span><span class="default_value">1e-07</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/neural_net_functional/losses.html#sparse_cross_entropy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.neural_net_functional.losses.sparse_cross_entropy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes sparse cross entropy between logits and labels.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>true</strong> (<em>array</em>) – True labels as logits.</p></li>
+<li><p><strong>pred</strong> (<em>array</em>) – predicted labels as logits.</p></li>
+<li><p><strong>axis</strong> (<em>int</em><em>, </em><em>optional</em>) – The class dimension, default is -1.</p></li>
+<li><p><strong>epsilon</strong> (<em>float</em><em>, </em><em>optional</em>) – small constant to add to log functions, default is 1e-7</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The sparse cross entropy loss</p>
+</dd>
+</dl>
+</dd></dl>
+
 <div class="toctree-wrapper compound">
 <p class="caption"><span class="caption-text">Losses</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="losses/cross_entropy.html">cross_entropy</a></li>
 <li class="toctree-l1"><a class="reference internal" href="losses/binary_cross_entropy.html">binary_cross_entropy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="losses/sparse_cross_entropy.html">sparse_cross_entropy</a></li>
 </ul>
 </div>
 </div>
@@ -227,7 +269,7 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="losses/binary_cross_entropy.html" class="btn btn-neutral float-right" title="binary_cross_entropy" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="losses/cross_entropy.html" class="btn btn-neutral float-right" title="cross_entropy" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="layers/lstm_update.html" class="btn btn-neutral float-left" title="lstm_update" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>

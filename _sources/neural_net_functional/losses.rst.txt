@@ -12,5 +12,7 @@ Losses
    :maxdepth: -1
    :caption: Losses
 
+   losses/cross_entropy.rst
    losses/binary_cross_entropy.rst
+   losses/sparse_cross_entropy.rst
 
