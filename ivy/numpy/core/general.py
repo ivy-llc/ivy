@@ -112,6 +112,12 @@ def linspace(start, stop, num, axis=None, dev_str=None):
     return _to_dev(_np.linspace(start, stop, num, axis=axis), dev_str)
 
 
+def logspace(start, stop, num, base=10., axis=None, dev_str=None):
+    if axis is None:
+        axis = -1
+    return _to_dev(_np.logspace(start, stop, num, base=base, axis=axis), dev_str)
+
+
 def concatenate(xs, axis=-1):
     if xs[0].shape == ():
         return _np.concatenate([_np.expand_dims(x, 0) for x in xs], axis)

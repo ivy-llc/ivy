@@ -172,6 +172,11 @@ def linspace(start, stop, num, axis=None, dev_str=None):
     return res
 
 
+def logspace(start, stop, num, base=10., axis=None, dev_str=None):
+    power_seq = linspace(start, stop, num, axis, dev_str)
+    return base ** power_seq
+
+
 def concatenate(xs, axis=-1):
     if xs[0].shape == ():
         return _mx.nd.concat(*[_flat_array_to_1_dim_array(x) for x in xs], dim=axis)

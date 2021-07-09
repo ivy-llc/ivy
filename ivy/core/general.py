@@ -340,6 +340,32 @@ def linspace(start, stop, num, axis=None, dev_str=None, f=None):
     return _get_framework(start, f=f).linspace(start, stop, num, axis, dev_str)
 
 
+# noinspection PyShadowingNames
+def logspace(start, stop, num, base=10., axis=None, dev_str=None, f=None):
+    """
+    Generates a certain number of evenly-spaced values in log space, in an interval along a given axis.
+
+    See :math:`arange` that allows to specify the step size of evenly spaced values in an interval.
+
+    :param start: First entry in the range.
+    :type start: array
+    :param stop: Final entry in the range.
+    :type stop: array
+    :param num: Number of values to generate.
+    :type num: int
+    :param base: The base of the log space. Default is 10.0
+    :type base: float, optional
+    :param axis: Axis along which the operation is performed.
+    :type axis: int
+    :param dev_str: device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc.
+    :type dev_str: str
+    :param f: Machine learning framework. Inferred from inputs if None.
+    :type f: ml_framework, optional
+    :return: Tensor of evenly-spaced values.
+    """
+    return _get_framework(start, f=f).logspace(start, stop, num, base, axis, dev_str)
+
+
 def concatenate(xs, axis=-1, f=None):
     """
     Casts an array to a specified type.
