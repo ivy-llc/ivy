@@ -4,10 +4,10 @@ Base class for deriving trainable modules
 
 # global
 import os
-import ivy
 import abc
 
 # local
+import ivy
 from ivy.core.container import Container
 
 
