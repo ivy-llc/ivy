@@ -15,6 +15,7 @@ from ivy.core.container import Container
 # Linear #
 # -------#
 
+# linear
 @pytest.mark.parametrize(
     "bs_ic_oc_target", [
         ([1, 2], 4, 5, [[0.30230279, 0.65123089, 0.30132881, -0.90954636, 1.08810135]]),
@@ -57,6 +58,7 @@ def test_linear_layer(bs_ic_oc_target, with_v, dtype_str, tensor_fn, dev_str, ca
 # Dropout #
 # --------#
 
+# dropout
 @pytest.mark.parametrize(
     "x_shape", [(1, 2, 3)])
 @pytest.mark.parametrize(
@@ -686,3 +688,57 @@ def test_lstm_layer(b_t_ic_hc_otf_sctv, with_v, with_initial_state, dtype_str, t
         # this is not a backend implemented function
         pytest.skip()
     helpers.assert_compilable(ivy.lstm_update)
+
+
+# Sequential #
+# -----------#
+
+# sequential
+@pytest.mark.parametrize(
+    "bs_c_target", [
+        ([1, 2], 5, [[[0.2346137, 0.14160791, -0.5344236, 0.1690612, -0.19612627],
+                      [0.2346137, 0.14160791, -0.5344236, 0.1690612, -0.19612627]]]),
+    ])
+@pytest.mark.parametrize(
+    "with_v", [True, False])
+@pytest.mark.parametrize(
+    "seq_v", [True, False])
+@pytest.mark.parametrize(
+    "dtype_str", ['float32'])
+@pytest.mark.parametrize(
+    "tensor_fn", [ivy.array, helpers.var_fn])
+def test_sequential_layer(bs_c_target, with_v, seq_v, dtype_str, tensor_fn, dev_str, call):
+    # smoke test
+    batch_shape, channels, target = bs_c_target
+    x = ivy.cast(ivy.linspace(ivy.zeros(batch_shape), ivy.ones(batch_shape), channels), 'float32')
+    if with_v:
+        np.random.seed(0)
+        wlim = (6 / (channels + channels)) ** 0.5
+        w = ivy.variable(ivy.array(np.random.uniform(-wlim, wlim, (channels, channels)), 'float32'))
+        b = ivy.variable(ivy.zeros([channels]))
+        v = Container({'w': w, 'b': b})
+    else:
+        v = None
+    if seq_v:
+        seq = ivy.Sequential(ivy.Linear(channels, channels),
+                             ivy.Linear(channels, channels),
+                             ivy.Linear(channels, channels),
+                             v=Container({'submodules0': v, 'submodules1': v, 'submodules2': v}) if with_v else None)
+    else:
+        seq = ivy.Sequential(ivy.Linear(channels, channels, v=v),
+                             ivy.Linear(channels, channels, v=v),
+                             ivy.Linear(channels, channels, v=v))
+    ret = seq(x)
+    # type test
+    assert ivy.is_array(ret)
+    # cardinality test
+    assert ret.shape == tuple(batch_shape + [channels])
+    # value test
+    if not with_v:
+        return
+    assert np.allclose(call(seq, x), np.array(target))
+    # compilation test
+    if call is helpers.torch_call:
+        # pytest scripting does not **kwargs
+        return
+    helpers.assert_compilable(seq)

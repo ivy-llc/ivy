@@ -1,4 +1,4 @@
-# global
+# local
 import ivy
 
 

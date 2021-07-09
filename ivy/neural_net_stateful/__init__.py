@@ -6,3 +6,5 @@ from . import module
 from .module import *
 from . import optimizers
 from .optimizers import *
+from . import sequential
+from .sequential import *
