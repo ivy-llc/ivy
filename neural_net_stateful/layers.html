@@ -110,6 +110,7 @@
 <li class="toctree-l1"><a class="reference internal" href="initializers.html">Initializers</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Layers</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="layers/Linear.html">Linear</a></li>
+<li class="toctree-l2"><a class="reference internal" href="layers/Dropout.html">Dropout</a></li>
 <li class="toctree-l2"><a class="reference internal" href="layers/Conv1D.html">Conv1D</a></li>
 <li class="toctree-l2"><a class="reference internal" href="layers/Conv1DTranspose.html">Conv1DTranspose</a></li>
 <li class="toctree-l2"><a class="reference internal" href="layers/Conv2D.html">Conv2D</a></li>
@@ -404,6 +405,28 @@
 </dd></dl>
 
 <dl class="py class">
+<dt id="ivy.neural_net_stateful.layers.Dropout">
+<em class="property">class </em><code class="sig-prename descclassname">ivy.neural_net_stateful.layers.</code><code class="sig-name descname">Dropout</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">prob</span></em>, <em class="sig-param"><span class="n">scale</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">dev_str</span><span class="o">=</span><span class="default_value">'cpu'</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/neural_net_stateful/layers.html#Dropout"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.neural_net_stateful.layers.Dropout" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="module/Module.html#ivy.neural_net_stateful.module.Module" title="ivy.neural_net_stateful.module.Module"><code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.neural_net_stateful.module.Module</span></code></a></p>
+<dl class="py method">
+<dt id="ivy.neural_net_stateful.layers.Dropout.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">prob</span></em>, <em class="sig-param"><span class="n">scale</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">dev_str</span><span class="o">=</span><span class="default_value">'cpu'</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/neural_net_stateful/layers.html#Dropout.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.neural_net_stateful.layers.Dropout.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Dropout layer. The layer randomly zeroes some of the elements of the input tensor with probability p using
+samples from a Bernoull distribution.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>prob</strong> (<em>float</em>) – The probability of zeroing out each array element.</p></li>
+<li><p><strong>scale</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to scale the output by 1/(1-prob), default is True.</p></li>
+<li><p><strong>dev_str</strong> (<em>str</em><em>, </em><em>optional</em>) – device on which to create the layer’s variables ‘cuda:0’, ‘cuda:1’, ‘cpu’ etc. Default is cpu.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
 <dt id="ivy.neural_net_stateful.layers.LSTM">
 <em class="property">class </em><code class="sig-prename descclassname">ivy.neural_net_stateful.layers.</code><code class="sig-name descname">LSTM</code><span class="sig-paren">(</span><em class="sig-param">input_channels</em>, <em class="sig-param">output_channels</em>, <em class="sig-param">weight_initializer=&lt;ivy.neural_net_stateful.initializers.GlorotUniform object&gt;</em>, <em class="sig-param">num_layers=1</em>, <em class="sig-param">return_sequence=True</em>, <em class="sig-param">return_state=True</em>, <em class="sig-param">dev_str='cpu'</em>, <em class="sig-param">v=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/neural_net_stateful/layers.html#LSTM"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.neural_net_stateful.layers.LSTM" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="module/Module.html#ivy.neural_net_stateful.module.Module" title="ivy.neural_net_stateful.module.Module"><code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.neural_net_stateful.module.Module</span></code></a></p>
@@ -467,6 +490,7 @@ weight matrix and addition with the bias vector.</p>
 <p class="caption"><span class="caption-text">Layers</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="layers/Linear.html">Linear</a></li>
+<li class="toctree-l1"><a class="reference internal" href="layers/Dropout.html">Dropout</a></li>
 <li class="toctree-l1"><a class="reference internal" href="layers/Conv1D.html">Conv1D</a></li>
 <li class="toctree-l1"><a class="reference internal" href="layers/Conv1DTranspose.html">Conv1DTranspose</a></li>
 <li class="toctree-l1"><a class="reference internal" href="layers/Conv2D.html">Conv2D</a></li>

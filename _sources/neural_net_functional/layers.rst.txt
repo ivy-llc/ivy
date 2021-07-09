@@ -13,6 +13,7 @@ Layers
    :caption: Layers
 
    layers/linear.rst
+   layers/dropout.rst
    layers/conv1d.rst
    layers/conv1d_transpose.rst
    layers/conv2d.rst
