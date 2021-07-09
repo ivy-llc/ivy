@@ -54,6 +54,29 @@ def test_leaky_relu(x, dtype_str, tensor_fn, dev_str, call):
     helpers.assert_compilable(ivy.leaky_relu)
 
 
+# gelu
+@pytest.mark.parametrize(
+    "x", [[[-1., 1., 2.]]])
+@pytest.mark.parametrize(
+    "approx", [True, False])
+@pytest.mark.parametrize(
+    "dtype_str", ['float32'])
+@pytest.mark.parametrize(
+    "tensor_fn", [ivy.array, helpers.var_fn])
+def test_gelu(x, approx, dtype_str, tensor_fn, dev_str, call):
+    # smoke test
+    x = tensor_fn(x, dtype_str, dev_str)
+    ret = ivy.gelu(x, approx)
+    # type test
+    assert ivy.is_array(ret)
+    # cardinality test
+    assert ret.shape == x.shape
+    # value test
+    assert np.allclose(call(ivy.gelu, x, approx), ivy.numpy.gelu(ivy.to_numpy(x), approx))
+    # compilation test
+    helpers.assert_compilable(ivy.gelu)
+
+
 # tanh
 @pytest.mark.parametrize(
     "x", [[[-1., 1., 2.]]])
