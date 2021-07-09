@@ -115,6 +115,11 @@ def linspace(start, stop, num, axis=None, dev_str=None):
         return _tf.linspace(start, stop, num, axis=axis)
 
 
+def logspace(start, stop, num, base=10., axis=None, dev_str=None):
+    power_seq = linspace(start, stop, num, axis, dev_str)
+    return base ** power_seq
+
+
 def concatenate(xs, axis=-1):
     if xs[0].shape == ():
         return _tf.concat([_tf.expand_dims(x, 0) for x in xs], axis)
