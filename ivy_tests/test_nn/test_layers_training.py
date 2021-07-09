@@ -16,6 +16,7 @@ from ivy.core.container import Container
 # -------#
 
 
+# linear
 @pytest.mark.parametrize(
     "bs_ic_oc", [([1, 2], 4, 5)])
 @pytest.mark.parametrize(
@@ -741,6 +742,79 @@ def test_lstm_layer_training(b_t_ic_hc_otf_sctv, with_v, dtype_str, tensor_fn, d
     # value test
     for key, val in grads.to_iterator():
         assert ivy.reduce_max(ivy.abs(val)) > 0
+    # compilation test
+    if call is helpers.torch_call:
+        # pytest scripting does not **kwargs
+        return
+    helpers.assert_compilable(loss_fn)
+
+
+# Sequential #
+# -----------#
+
+
+# sequential
+@pytest.mark.parametrize(
+    "bs_c", [([1, 2], 5)])
+@pytest.mark.parametrize(
+    "with_v", [True, False])
+@pytest.mark.parametrize(
+    "seq_v", [True, False])
+@pytest.mark.parametrize(
+    "dtype_str", ['float32'])
+@pytest.mark.parametrize(
+    "tensor_fn", [ivy.array, helpers.var_fn])
+def test_sequential_layer_training(bs_c, with_v, seq_v, dtype_str, tensor_fn, dev_str, call):
+    # smoke test
+    if call is helpers.np_call:
+        # NumPy does not support gradients
+        pytest.skip()
+    batch_shape, channels = bs_c
+    x = ivy.cast(ivy.linspace(ivy.zeros(batch_shape), ivy.ones(batch_shape), channels), 'float32')
+    if with_v:
+        np.random.seed(0)
+        wlim = (6 / (channels + channels)) ** 0.5
+        w = ivy.variable(ivy.array(np.random.uniform(-wlim, wlim, (channels, channels)), 'float32'))
+        b = ivy.variable(ivy.zeros([channels]))
+        v = Container({'w': w, 'b': b})
+    else:
+        v = None
+    if seq_v:
+        seq = ivy.Sequential(ivy.Linear(channels, channels),
+                             ivy.Linear(channels, channels),
+                             ivy.Linear(channels, channels),
+                             v=Container({'submodules0': v, 'submodules1': v, 'submodules2': v}) if with_v else None)
+    else:
+        seq = ivy.Sequential(ivy.Linear(channels, channels, v=v),
+                             ivy.Linear(channels, channels, v=v),
+                             ivy.Linear(channels, channels, v=v))
+
+    def loss_fn(v_):
+        out = seq(x, v=v_)
+        return ivy.reduce_mean(out)[0]
+
+    # train
+    loss_tm1 = 1e12
+    loss = None
+    grads = None
+    for i in range(10):
+        loss, grads = ivy.execute_with_gradients(loss_fn, seq.v)
+        seq.v = ivy.gradient_descent_update(seq.v, grads, 1e-3)
+        assert loss < loss_tm1
+        loss_tm1 = loss
+
+    # type test
+    assert ivy.is_array(loss)
+    assert isinstance(grads, ivy.Container)
+    # cardinality test
+    if call is helpers.mx_call:
+        # mxnet slicing cannot reduce dimension to zero
+        assert loss.shape == (1,)
+    else:
+        assert loss.shape == ()
+    # value test
+    assert ivy.reduce_max(ivy.abs(grads.submodules0.b)) > 0
+    assert ivy.reduce_max(ivy.abs(grads.submodules0.w)) > 0
     # compilation test
     if call is helpers.torch_call:
         # pytest scripting does not **kwargs
