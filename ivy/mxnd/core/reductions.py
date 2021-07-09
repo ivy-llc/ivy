@@ -70,3 +70,10 @@ def reduce_max(x, axis=None, keepdims=False):
     elif isinstance(axis, list):
         axis = tuple(axis)
     return _mx.nd.max(x, axis=axis, keepdims=keepdims)
+
+
+def einsum(equation, *operands):
+    ret = _mx.np.einsum(equation, *[op.as_np_ndarray() for op in operands])
+    if ret.shape == ():
+        return _mx.np.resize(ret, (1,)).as_nd_ndarray()
+    return ret.as_nd_ndarray()

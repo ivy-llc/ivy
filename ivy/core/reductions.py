@@ -110,3 +110,19 @@ def reduce_max(x, axis=None, keepdims=False, f=None):
     :return: The array with maxes computed.
     """
     return _get_framework(x, f=f).reduce_max(x, axis, keepdims)
+
+
+def einsum(equation, *operands, f=None):
+    """
+    Sums the product of the elements of the input operands along dimensions specified using a notation based on the
+    Einstein summation convention.
+
+    :param equation: A str describing the contraction, in the same format as numpy.einsum.
+    :type equation: str
+    :param operands: the inputs to contract (each one an ivy.Array), whose shapes should be consistent with equation.
+    :type operands: seq of arrays
+    :param f: Machine learning framework. Inferred from inputs if None.
+    :type f: ml_framework, optional
+    :return: The array with sums computed.
+    """
+    return _get_framework(operands[0], f=f).einsum(equation, *operands)
