@@ -308,6 +308,7 @@ Documentation Tree
    neural_net_stateful/layers.rst
    neural_net_stateful/module.rst
    neural_net_stateful/optimizers.rst
+   neural_net_stateful/sequential.rst
 
 
 .. toctree::
