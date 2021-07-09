@@ -579,6 +579,40 @@ def test_linspace(start_n_stop_n_num_n_axis, dtype_str, tensor_fn, dev_str, call
     helpers.assert_compilable(ivy.linspace)
 
 
+# logspace
+@pytest.mark.parametrize(
+    "start_n_stop_n_num_n_base_n_axis", [[1, 10, 100, 10., None], [[[0., 1., 2.]], [[1., 2., 3.]], 150, 2., -1],
+                                         [[[[-0.1471, 0.4477, 0.2214]]], [[[-0.3048, 0.3308, 0.2721]]], 6, 5., -2]])
+@pytest.mark.parametrize(
+    "dtype_str", ['float32'])
+@pytest.mark.parametrize(
+    "tensor_fn", [ivy.array, helpers.var_fn])
+def test_logspace(start_n_stop_n_num_n_base_n_axis, dtype_str, tensor_fn, dev_str, call):
+    # smoke test
+    start, stop, num, base, axis = start_n_stop_n_num_n_base_n_axis
+    if (isinstance(start, Number) or isinstance(stop, Number))\
+            and tensor_fn == helpers.var_fn and call is helpers.mx_call:
+        # mxnet does not support 0-dimensional variables
+        pytest.skip()
+    start = tensor_fn(start, dtype_str, dev_str)
+    stop = tensor_fn(stop, dtype_str, dev_str)
+    ret = ivy.logspace(start, stop, num, base, axis, dev_str=dev_str)
+    # type test
+    assert ivy.is_array(ret)
+    # cardinality test
+    target_shape = list(start.shape)
+    target_shape.insert(axis + 1 if (axis and axis != -1) else len(target_shape), num)
+    assert ret.shape == tuple(target_shape)
+    # value test
+    assert np.allclose(call(ivy.logspace, start, stop, num, base, axis, dev_str=dev_str),
+                       ivy.numpy.logspace(ivy.to_numpy(start), ivy.to_numpy(stop), num, base, axis))
+    # compilation test
+    if call in [helpers.torch_call]:
+        # pytorch scripting does not support numpy conversion
+        return
+    helpers.assert_compilable(ivy.logspace)
+
+
 # concatenate
 @pytest.mark.parametrize(
     "x1_n_x2_n_axis", [(1, 10, 0), ([[0., 1., 2.]], [[1., 2., 3.]], 0), ([[0., 1., 2.]], [[1., 2., 3.]], 1),

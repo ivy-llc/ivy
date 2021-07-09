@@ -103,6 +103,12 @@ def linspace(start, stop, num, axis=None, dev_str=None):
     return to_dev(_jnp.linspace(start, stop, num, axis=axis), dev_str)
 
 
+def logspace(start, stop, num, base=10., axis=None, dev_str=None):
+    if axis is None:
+        axis = -1
+    return to_dev(_jnp.logspace(start, stop, num, base=base, axis=axis), dev_str)
+
+
 def concatenate(xs, axis=-1):
     if xs[0].shape == ():
         return _jnp.concatenate([_jnp.expand_dims(x, 0) for x in xs], axis)
