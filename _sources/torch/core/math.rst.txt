@@ -27,4 +27,5 @@ Math
    math/atanh.rst
    math/log.rst
    math/exp.rst
+   math/erf.rst
 
