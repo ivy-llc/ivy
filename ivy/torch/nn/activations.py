@@ -22,8 +22,8 @@ def sigmoid(x):
     return _torch.nn.functional.sigmoid(x)
 
 
-def softmax(x):
-    return _torch.nn.functional.softmax(x)
+def softmax(x, axis: int = -1):
+    return _torch.nn.functional.softmax(x, axis)
 
 
 def softplus(x):

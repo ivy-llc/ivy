@@ -60,17 +60,19 @@ def sigmoid(x, f=None):
     return _get_framework(x, f=f).sigmoid(x)
 
 
-def softmax(x, f=None):
+def softmax(x, axis=-1, f=None):
     """
     Applies the softmax function element-wise.
 
     :param x: Input array.
     :type x: array
+    :param axis: The dimension softmax would be performed on. The default is -1 which indicates the last dimension.
+    :type axis: int, optional
     :param f: Machine learning framework. Inferred from inputs if None.
     :type f: ml_framework, optional
     :return: The input array with softmax applied element-wise.
     """
-    return _get_framework(x, f=f).softmax(x)
+    return _get_framework(x, f=f).softmax(x, axis)
 
 
 def softplus(x, f=None):

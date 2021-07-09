@@ -11,9 +11,9 @@ tanh = _jnp.tanh
 sigmoid = lambda x: 1 / (1 + _jnp.exp(-x))
 
 
-def softmax(x):
+def softmax(x, axis=-1):
     exp_x = _jnp.exp(x)
-    return exp_x / _jnp.sum(exp_x, -1, keepdims=True)
+    return exp_x / _jnp.sum(exp_x, axis, keepdims=True)
 
 
 softplus = lambda x: _jnp.log(_jnp.exp(x) + 1)
