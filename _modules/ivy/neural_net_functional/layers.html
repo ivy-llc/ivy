@@ -211,6 +211,31 @@
     <span class="k">return</span> <span class="n">_get_framework</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">linear</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">weight</span><span class="p">,</span> <span class="n">bias</span><span class="p">)</span></div>
 
 
+<span class="c1"># Dropout #</span>
+<span class="c1"># --------#</span>
+
+<div class="viewcode-block" id="dropout"><a class="viewcode-back" href="../../../neural_net_functional/layers/dropout.html#ivy.neural_net_functional.layers.dropout">[docs]</a><span class="k">def</span> <span class="nf">dropout</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">prob</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Randomly zeroes some of the elements of the input tensor with probability p using samples from a Bernoull</span>
+<span class="sd">    distribution.</span>
+
+<span class="sd">    :param x: The input array x to perform dropout on.</span>
+<span class="sd">    :type x: array</span>
+<span class="sd">    :param prob: The probability of zeroing out each array element.</span>
+<span class="sd">    :type prob: float</span>
+<span class="sd">    :param scale: Whether to scale the output by 1/(1-prob), default is True.</span>
+<span class="sd">    :type scale: bool, optional</span>
+<span class="sd">    :param f: Machine learning framework. Inferred from inputs if None.</span>
+<span class="sd">    :type f: ml_framework, optional</span>
+<span class="sd">    :return: Result array of the linear transformation. *[N,∗,out_features]*</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># noinspection PyUnresolvedReferences</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">x</span> <span class="o">*</span> <span class="n">ivy</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">random_uniform</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">prob</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">ivy</span><span class="o">.</span><span class="n">ones_like</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">scale</span><span class="p">:</span>
+        <span class="n">x</span> <span class="o">*=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">prob</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">x</span></div>
+
+
 <span class="c1"># Convolutions #</span>
 <span class="c1"># -------------#</span>
 
