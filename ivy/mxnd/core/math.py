@@ -20,3 +20,4 @@ acosh = _mx.nd.arccosh
 atanh = _mx.nd.arctanh
 log = _mx.nd.log
 exp = _mx.nd.exp
+erf = _mx.nd.erf

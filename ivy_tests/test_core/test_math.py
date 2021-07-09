@@ -327,3 +327,24 @@ def test_exp(x, dtype_str, tensor_fn, dev_str, call):
     assert np.allclose(call(ivy.exp, x), ivy.numpy.exp(ivy.to_numpy(x)))
     # compilation test
     helpers.assert_compilable(ivy.exp)
+
+
+# erf
+@pytest.mark.parametrize(
+    "x", [[0.], [[1.]]])
+@pytest.mark.parametrize(
+    "dtype_str", ['float32'])
+@pytest.mark.parametrize(
+    "tensor_fn", [ivy.array, helpers.var_fn])
+def test_erf(x, dtype_str, tensor_fn, dev_str, call):
+    # smoke test
+    x = tensor_fn(x, dtype_str, dev_str)
+    ret = ivy.erf(x)
+    # type test
+    assert ivy.is_array(ret)
+    # cardinality test
+    assert ret.shape == x.shape
+    # value test
+    assert np.allclose(call(ivy.erf, x), ivy.numpy.erf(ivy.to_numpy(x)))
+    # compilation test
+    helpers.assert_compilable(ivy.erf)
