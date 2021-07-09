@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>binary_cross_entropy &mdash; Ivy 1.0 documentation</title>
+  <title>cross_entropy &mdash; Ivy 1.0 documentation</title>
   
 
   
@@ -36,8 +36,8 @@
   <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="sparse_cross_entropy" href="sparse_cross_entropy.html" />
-    <link rel="prev" title="cross_entropy" href="cross_entropy.html" /> 
+    <link rel="next" title="binary_cross_entropy" href="binary_cross_entropy.html" />
+    <link rel="prev" title="Losses" href="../losses.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -104,8 +104,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../activations.html">Activations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../layers.html">Layers</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../losses.html">Losses</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="cross_entropy.html">cross_entropy</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">binary_cross_entropy</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">cross_entropy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="binary_cross_entropy.html">binary_cross_entropy</a></li>
 <li class="toctree-l2"><a class="reference internal" href="sparse_cross_entropy.html">sparse_cross_entropy</a></li>
 </ul>
 </li>
@@ -175,13 +175,13 @@
         
           <li><a href="../losses.html">Losses</a> &raquo;</li>
         
-      <li>binary_cross_entropy</li>
+      <li>cross_entropy</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="../../_sources/neural_net_functional/losses/binary_cross_entropy.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../_sources/neural_net_functional/losses/cross_entropy.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -194,22 +194,23 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="binary-cross-entropy">
-<h1>binary_cross_entropy<a class="headerlink" href="#binary-cross-entropy" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="cross-entropy">
+<h1>cross_entropy<a class="headerlink" href="#cross-entropy" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
-<dt id="ivy.neural_net_functional.losses.binary_cross_entropy">
-<code class="sig-prename descclassname">ivy.neural_net_functional.losses.</code><code class="sig-name descname">binary_cross_entropy</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">true</span></em>, <em class="sig-param"><span class="n">pred</span></em>, <em class="sig-param"><span class="n">epsilon</span><span class="o">=</span><span class="default_value">1e-07</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/neural_net_functional/losses.html#binary_cross_entropy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.neural_net_functional.losses.binary_cross_entropy" title="Permalink to this definition">¶</a></dt>
-<dd><p>Computes the binary cross entropy loss.</p>
+<dt id="ivy.neural_net_functional.losses.cross_entropy">
+<code class="sig-prename descclassname">ivy.neural_net_functional.losses.</code><code class="sig-name descname">cross_entropy</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">true</span></em>, <em class="sig-param"><span class="n">pred</span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">- 1</span></em>, <em class="sig-param"><span class="n">epsilon</span><span class="o">=</span><span class="default_value">1e-07</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/neural_net_functional/losses.html#cross_entropy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.neural_net_functional.losses.cross_entropy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes cross entropy between predicted and true discrete distrubtions.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>true</strong> (<em>array</em>) – true labels</p></li>
-<li><p><strong>pred</strong> (<em>array</em>) – Predicted labels</p></li>
+<li><p><strong>true</strong> (<em>array</em>) – True labels</p></li>
+<li><p><strong>pred</strong> (<em>array</em>) – predicted labels.</p></li>
+<li><p><strong>axis</strong> (<em>int</em><em>, </em><em>optional</em>) – The class dimension, default is -1.</p></li>
 <li><p><strong>epsilon</strong> (<em>float</em><em>, </em><em>optional</em>) – small constant to add to log functions, default is 1e-7</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>The binary cross entropy loss array.</p>
+<dd class="field-even"><p>The cross entropy loss</p>
 </dd>
 </dl>
 </dd></dl>
@@ -229,10 +230,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="sparse_cross_entropy.html" class="btn btn-neutral float-right" title="sparse_cross_entropy" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="binary_cross_entropy.html" class="btn btn-neutral float-right" title="binary_cross_entropy" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="cross_entropy.html" class="btn btn-neutral float-left" title="cross_entropy" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="../losses.html" class="btn btn-neutral float-left" title="Losses" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

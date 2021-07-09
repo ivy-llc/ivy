@@ -192,21 +192,59 @@
 <span class="kn">import</span> <span class="nn">ivy</span>
 
 
-<span class="c1"># noinspection PyUnresolvedReferences</span>
-<div class="viewcode-block" id="binary_cross_entropy"><a class="viewcode-back" href="../../../neural_net_functional/losses/binary_cross_entropy.html#ivy.neural_net_functional.losses.binary_cross_entropy">[docs]</a><span class="k">def</span> <span class="nf">binary_cross_entropy</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">epsilon</span><span class="o">=</span><span class="mf">1e-7</span><span class="p">):</span>
+<div class="viewcode-block" id="cross_entropy"><a class="viewcode-back" href="../../../neural_net_functional/losses/cross_entropy.html#ivy.neural_net_functional.losses.cross_entropy">[docs]</a><span class="k">def</span> <span class="nf">cross_entropy</span><span class="p">(</span><span class="n">true</span><span class="p">,</span> <span class="n">pred</span><span class="p">,</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">epsilon</span><span class="o">=</span><span class="mf">1e-7</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Computes the cross-entropy loss between true labels and predicted labels.</span>
+<span class="sd">    Computes cross entropy between predicted and true discrete distrubtions.</span>
 
-<span class="sd">    :param x: Predicted labels</span>
-<span class="sd">    :type x: array</span>
-<span class="sd">    :param y: true labels</span>
-<span class="sd">    :type y: array</span>
-<span class="sd">    :param epsilon: small constant to add to log functions</span>
-<span class="sd">    :type epsilon: constant</span>
+<span class="sd">    :param true: True labels</span>
+<span class="sd">    :type true: array</span>
+<span class="sd">    :param pred: predicted labels.</span>
+<span class="sd">    :type pred: array</span>
+<span class="sd">    :param axis: The class dimension, default is -1.</span>
+<span class="sd">    :type axis: int, optional</span>
+<span class="sd">    :param epsilon: small constant to add to log functions, default is 1e-7</span>
+<span class="sd">    :type epsilon: float, optional</span>
+<span class="sd">    :return: The cross entropy loss</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">pred</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">pred</span><span class="p">,</span> <span class="n">epsilon</span><span class="p">,</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">epsilon</span><span class="p">)</span>
+    <span class="n">log_pred</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">pred</span><span class="p">)</span>
+    <span class="c1"># noinspection PyUnresolvedReferences</span>
+    <span class="k">return</span> <span class="o">-</span><span class="n">ivy</span><span class="o">.</span><span class="n">reduce_sum</span><span class="p">(</span><span class="n">true</span> <span class="o">*</span> <span class="n">log_pred</span><span class="p">,</span> <span class="n">axis</span><span class="p">)</span></div>
+
+
+<span class="c1"># noinspection PyUnresolvedReferences</span>
+<div class="viewcode-block" id="binary_cross_entropy"><a class="viewcode-back" href="../../../neural_net_functional/losses/binary_cross_entropy.html#ivy.neural_net_functional.losses.binary_cross_entropy">[docs]</a><span class="k">def</span> <span class="nf">binary_cross_entropy</span><span class="p">(</span><span class="n">true</span><span class="p">,</span> <span class="n">pred</span><span class="p">,</span> <span class="n">epsilon</span><span class="o">=</span><span class="mf">1e-7</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Computes the binary cross entropy loss.</span>
+
+<span class="sd">    :param true: true labels</span>
+<span class="sd">    :type true: array</span>
+<span class="sd">    :param pred: Predicted labels</span>
+<span class="sd">    :type pred: array</span>
+<span class="sd">    :param epsilon: small constant to add to log functions, default is 1e-7</span>
+<span class="sd">    :type epsilon: float, optional</span>
 <span class="sd">    :return: The binary cross entropy loss array.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">epsilon</span><span class="p">,</span> <span class="mi">1</span><span class="o">-</span><span class="n">epsilon</span><span class="p">)</span>
-    <span class="k">return</span> <span class="o">-</span><span class="p">(</span><span class="n">y</span> <span class="o">*</span> <span class="n">ivy</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">y</span><span class="p">)</span> <span class="o">*</span> <span class="n">ivy</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">x</span><span class="p">))</span></div>
+    <span class="n">pred</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">clip</span><span class="p">(</span><span class="n">pred</span><span class="p">,</span> <span class="n">epsilon</span><span class="p">,</span> <span class="mi">1</span><span class="o">-</span><span class="n">epsilon</span><span class="p">)</span>
+    <span class="k">return</span> <span class="o">-</span><span class="p">(</span><span class="n">true</span> <span class="o">*</span> <span class="n">ivy</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">pred</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">true</span><span class="p">)</span> <span class="o">*</span> <span class="n">ivy</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">pred</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="sparse_cross_entropy"><a class="viewcode-back" href="../../../neural_net_functional/losses/sparse_cross_entropy.html#ivy.neural_net_functional.losses.sparse_cross_entropy">[docs]</a><span class="k">def</span> <span class="nf">sparse_cross_entropy</span><span class="p">(</span><span class="n">true</span><span class="p">,</span> <span class="n">pred</span><span class="p">,</span> <span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">epsilon</span><span class="o">=</span><span class="mf">1e-7</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Computes sparse cross entropy between logits and labels.</span>
+
+<span class="sd">    :param true: True labels as logits.</span>
+<span class="sd">    :type true: array</span>
+<span class="sd">    :param pred: predicted labels as logits.</span>
+<span class="sd">    :type pred: array</span>
+<span class="sd">    :param axis: The class dimension, default is -1.</span>
+<span class="sd">    :type axis: int, optional</span>
+<span class="sd">    :param epsilon: small constant to add to log functions, default is 1e-7</span>
+<span class="sd">    :type epsilon: float, optional</span>
+<span class="sd">    :return: The sparse cross entropy loss</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">true</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">one_hot</span><span class="p">(</span><span class="n">true</span><span class="p">,</span> <span class="n">pred</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="n">axis</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">cross_entropy</span><span class="p">(</span><span class="n">true</span><span class="p">,</span> <span class="n">pred</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">epsilon</span><span class="p">)</span></div>
 </pre></div>
 
            </div>
