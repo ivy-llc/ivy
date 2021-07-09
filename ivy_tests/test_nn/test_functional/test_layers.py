@@ -538,5 +538,5 @@ def test_lstm(b_t_ic_hc_otf_sctv, dtype_str, tensor_fn, dev_str, call):
     # compilation test
     if call in [helpers.torch_call]:
         # this is not a backend implemented function
-        pytest.skip()
+        return
     helpers.assert_compilable(ivy.lstm_update)
