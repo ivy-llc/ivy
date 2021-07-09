@@ -64,6 +64,44 @@ class Linear(Module):
         return ivy.linear(inputs, self.v.w, self.v.b if self._with_bias else None)
 
 
+# Dropout #
+# --------#
+
+class Dropout(Module):
+
+    def __init__(self, prob, scale=True, dev_str='cpu'):
+        """
+        Dropout layer. The layer randomly zeroes some of the elements of the input tensor with probability p using
+        samples from a Bernoull distribution.
+
+        :param prob: The probability of zeroing out each array element.
+        :type prob: float
+        :param scale: Whether to scale the output by 1/(1-prob), default is True.
+        :type scale: bool, optional
+        :param dev_str: device on which to create the layer's variables 'cuda:0', 'cuda:1', 'cpu' etc. Default is cpu.
+        :type dev_str: str, optional
+        """
+        self._prob = prob
+        self._scale = scale
+        Module.__init__(self, dev_str, None)
+
+    def _create_variables(self, dev_str):
+        """
+        Create internal variables for the layer
+        """
+        return {}
+
+    def _forward(self, inputs):
+        """
+        Perform forward pass of the Linear layer.
+
+        :param inputs: Inputs to process *[batch_shape, in]*.
+        :type inputs: array
+        :return: The outputs following the linear operation and bias addition *[batch_shape, out]*
+        """
+        return ivy.dropout(inputs, self._prob, self._scale)
+
+
 # Convolutions #
 # -------------#
 
