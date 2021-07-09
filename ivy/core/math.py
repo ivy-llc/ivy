@@ -199,3 +199,16 @@ def exp(x, f=None):
     :return: The exponential of each element of x.
     """
     return _get_framework(x, f=f).exp(x)
+
+
+def erf(x, f=None):
+    """
+    Computes the Gauss error function of x element-wise.
+
+    :param x: Value to compute exponential for.
+    :type x: array
+    :param f: Machine learning framework. Inferred from inputs if None.
+    :type f: ml_framework, optional
+    :return: The Gauss error function of x.
+    """
+    return _get_framework(x, f=f).erf(x)

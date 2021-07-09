@@ -64,3 +64,7 @@ def log(x):
 
 def exp(x):
     return _torch.exp(x)
+
+
+def erf(x):
+    return _torch.erf(x)
