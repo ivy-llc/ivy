@@ -357,7 +357,7 @@
 
 <dl class="py function">
 <dt id="ivy.neural_net_functional.layers.linear">
-<code class="sig-prename descclassname">ivy.neural_net_functional.layers.</code><code class="sig-name descname">linear</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">weight</span></em>, <em class="sig-param"><span class="n">bias</span></em>, <em class="sig-param"><span class="n">f</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/neural_net_functional/layers.html#linear"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.neural_net_functional.layers.linear" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">ivy.neural_net_functional.layers.</code><code class="sig-name descname">linear</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">weight</span></em>, <em class="sig-param"><span class="n">bias</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">f</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/neural_net_functional/layers.html#linear"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.neural_net_functional.layers.linear" title="Permalink to this definition">¶</a></dt>
 <dd><p>Applies a linear transformation to the incoming data: y = x * t(weight) + bias,
 where t(…) indicates transpose.</p>
 <dl class="field-list simple">
@@ -365,7 +365,7 @@ where t(…) indicates transpose.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>x</strong> (<em>array</em>) – The input x compute linear transformation on. <em>[N,</em>,in_features]*</p></li>
 <li><p><strong>weight</strong> (<em>array</em>) – The weight matrix. <em>[out_features,in_features]</em></p></li>
-<li><p><strong>bias</strong> (<em>array</em>) – The bias vector. <em>[out_features]</em></p></li>
+<li><p><strong>bias</strong> (<em>array</em><em>, </em><em>optional</em>) – The bias vector, default is None. <em>[out_features]</em></p></li>
 <li><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning framework. Inferred from inputs if None.</p></li>
 </ul>
 </dd>

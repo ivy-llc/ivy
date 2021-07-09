@@ -19,4 +19,5 @@ Layers
    layers/conv2d_transpose.rst
    layers/conv3d.rst
    layers/conv3d_transpose.rst
+   layers/linear.rst
 

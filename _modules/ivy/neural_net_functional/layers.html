@@ -193,7 +193,7 @@
 <span class="c1"># Linear #</span>
 <span class="c1"># -------#</span>
 
-<div class="viewcode-block" id="linear"><a class="viewcode-back" href="../../../neural_net_functional/layers/linear.html#ivy.neural_net_functional.layers.linear">[docs]</a><span class="k">def</span> <span class="nf">linear</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">weight</span><span class="p">,</span> <span class="n">bias</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="linear"><a class="viewcode-back" href="../../../neural_net_functional/layers/linear.html#ivy.neural_net_functional.layers.linear">[docs]</a><span class="k">def</span> <span class="nf">linear</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">weight</span><span class="p">,</span> <span class="n">bias</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Applies a linear transformation to the incoming data: y = x * t(weight) + bias,</span>
 <span class="sd">    where t(...) indicates transpose.</span>
@@ -202,8 +202,8 @@
 <span class="sd">    :type x: array</span>
 <span class="sd">    :param weight: The weight matrix. *[out_features,in_features]*</span>
 <span class="sd">    :type weight: array</span>
-<span class="sd">    :param bias: The bias vector. *[out_features]*</span>
-<span class="sd">    :type bias: array</span>
+<span class="sd">    :param bias: The bias vector, default is None. *[out_features]*</span>
+<span class="sd">    :type bias: array, optional</span>
 <span class="sd">    :param f: Machine learning framework. Inferred from inputs if None.</span>
 <span class="sd">    :type f: ml_framework, optional</span>
 <span class="sd">    :return: Result array of the linear transformation. *[N,∗,out_features]*</span>
