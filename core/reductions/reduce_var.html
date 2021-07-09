@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>reduce_min &mdash; Ivy 1.0 documentation</title>
+  <title>reduce_var &mdash; Ivy 1.0 documentation</title>
   
 
   
@@ -36,8 +36,8 @@
   <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="reduce_max" href="reduce_max.html" />
-    <link rel="prev" title="reduce_var" href="reduce_var.html" /> 
+    <link rel="next" title="reduce_min" href="reduce_min.html" />
+    <link rel="prev" title="reduce_mean" href="reduce_mean.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -101,8 +101,8 @@
 <li class="toctree-l2"><a class="reference internal" href="reduce_sum.html">reduce_sum</a></li>
 <li class="toctree-l2"><a class="reference internal" href="reduce_prod.html">reduce_prod</a></li>
 <li class="toctree-l2"><a class="reference internal" href="reduce_mean.html">reduce_mean</a></li>
-<li class="toctree-l2"><a class="reference internal" href="reduce_var.html">reduce_var</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">reduce_min</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">reduce_var</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reduce_min.html">reduce_min</a></li>
 <li class="toctree-l2"><a class="reference internal" href="reduce_max.html">reduce_max</a></li>
 <li class="toctree-l2"><a class="reference internal" href="einsum.html">einsum</a></li>
 </ul>
@@ -177,13 +177,13 @@
         
           <li><a href="../reductions.html">Reductions</a> &raquo;</li>
         
-      <li>reduce_min</li>
+      <li>reduce_var</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="../../_sources/core/reductions/reduce_min.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../_sources/core/reductions/reduce_var.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -196,19 +196,20 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="reduce-min">
-<h1>reduce_min<a class="headerlink" href="#reduce-min" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="reduce-var">
+<h1>reduce_var<a class="headerlink" href="#reduce-var" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
-<dt id="ivy.core.reductions.reduce_min">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">reduce_min</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">keepdims</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">f</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/reductions.html#reduce_min"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.reductions.reduce_min" title="Permalink to this definition">¶</a></dt>
-<dd><p>Computes the minimum value along the specified axis. The minimum is taken over the flattened array by default,
-otherwise over the specified axis.</p>
+<dt id="ivy.core.reductions.reduce_var">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">reduce_var</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">keepdims</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">f</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/reductions.html#reduce_var"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.reductions.reduce_var" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the arithmetic variance along a given axis.
+Returns the average of the array elements. The average is taken over the flattened array by default, otherwise over
+the specified axis.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<em>array</em>) – Array containing numbers whose min is desired.</p></li>
-<li><p><strong>axis</strong> (<em>int</em><em> or </em><em>sequence of ints</em>) – Axis or axes along which the mins are computed. The default is to compute the min of the flattened
-array. If this is a tuple of ints, a min is performed over multiple axes, instead of a single axis
+<li><p><strong>x</strong> (<em>array</em>) – Array containing numbers whose mean is desired.</p></li>
+<li><p><strong>axis</strong> (<em>int</em><em> or </em><em>sequence of ints</em>) – Axis or axes along which the means are computed. The default is to compute the mean of the flattened
+array. If this is a tuple of ints, a mean is performed over multiple axes, instead of a single axis
 or all the axes as before.</p></li>
 <li><p><strong>keepdims</strong> (<em>bool</em><em>, </em><em>optional</em>) – If this is set to True, the axes which are reduced are left in the result as dimensions with size
 one. With this option, the result will broadcast correctly against the input array.</p></li>
@@ -216,7 +217,7 @@ one. With this option, the result will broadcast correctly against the input arr
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>The array with mins computed.</p>
+<dd class="field-even"><p>The array with means computed.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -236,10 +237,10 @@ one. With this option, the result will broadcast correctly against the input arr
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="reduce_max.html" class="btn btn-neutral float-right" title="reduce_max" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="reduce_min.html" class="btn btn-neutral float-right" title="reduce_min" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="reduce_var.html" class="btn btn-neutral float-left" title="reduce_var" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="reduce_mean.html" class="btn btn-neutral float-left" title="reduce_mean" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
