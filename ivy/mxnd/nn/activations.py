@@ -9,5 +9,5 @@ relu = _mx.nd.relu
 leaky_relu = lambda x, alpha=0.2: _mx.nd.LeakyReLU(x, slope=alpha)
 tanh = _mx.nd.tanh
 sigmoid = _mx.nd.sigmoid
-softmax = _mx.nd.softmax
+softmax = lambda x, axis=-1: _mx.nd.softmax(x, axis=axis)
 softplus = lambda x: _mx.nd.log(_mx.nd.exp(x) + 1)
