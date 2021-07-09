@@ -47,7 +47,7 @@ def test_linear_layer(bs_ic_oc_target, with_v, dtype_str, tensor_fn, dev_str, ca
     # value test
     if not with_v:
         return
-    assert np.allclose(call(linear_layer, x), np.array(target))
+    assert np.allclose(call(linear_layer, x), ivy.to_numpy(target))
     # compilation test
     if call is helpers.torch_call:
         # pytest scripting does not **kwargs

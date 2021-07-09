@@ -12,8 +12,12 @@ class Sequential(Module):
         """
         A sequential container. Modules will be added to it in the order they are passed in the constructor.
 
-        :param sub_modules: device on which to create the layer's variables 'cuda:0', 'cuda:1', 'cpu' etc.
-        :type sub_modules: str, optional
+        :param submodules: Submodules to chain together into a sequence.
+        :type submodules: sequence of ivy.Module instances
+        :param dev_str: device on which to create the layer's variables 'cuda:0', 'cuda:1', 'cpu' etc.
+        :type dev_str: str, optional
+        :param v: the variables for each submodule in the sequence, constructed internally by default.
+        :type v: ivy container of variables, optional
         """
         if v is not None:
             for i, submod in enumerate(sub_modules):
@@ -29,14 +33,11 @@ class Sequential(Module):
         """
         Perform forward pass of the Linear layer.
 
-        :param inputs: Inputs to process *[batch_shape, in]*.
+        :param inputs: Inputs to process.
         :type inputs: array
-        :return: The outputs following the linear operation and bias addition *[batch_shape, out]*
+        :return: The outputs following the linear operation and bias addition.
         """
         x = inputs
         for i, submod in enumerate(self._submodules):
-            try:
-                x = submod(x, v=self.v['submodules{}'.format(i)])
-            except:
-                d = 0
+            x = submod(x, v=self.v['submodules{}'.format(i)])
         return x
