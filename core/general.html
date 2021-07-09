@@ -111,6 +111,7 @@
 <li class="toctree-l2"><a class="reference internal" href="general/cast.html">cast</a></li>
 <li class="toctree-l2"><a class="reference internal" href="general/arange.html">arange</a></li>
 <li class="toctree-l2"><a class="reference internal" href="general/linspace.html">linspace</a></li>
+<li class="toctree-l2"><a class="reference internal" href="general/logspace.html">logspace</a></li>
 <li class="toctree-l2"><a class="reference internal" href="general/concatenate.html">concatenate</a></li>
 <li class="toctree-l2"><a class="reference internal" href="general/flip.html">flip</a></li>
 <li class="toctree-l2"><a class="reference internal" href="general/stack.html">stack</a></li>
@@ -917,6 +918,29 @@ The identity array is a square array with ones on the main diagonal.</p>
 </dd></dl>
 
 <dl class="py function">
+<dt id="ivy.core.general.logspace">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">logspace</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">start</span></em>, <em class="sig-param"><span class="n">stop</span></em>, <em class="sig-param"><span class="n">num</span></em>, <em class="sig-param"><span class="n">base</span><span class="o">=</span><span class="default_value">10.0</span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">dev_str</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">f</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#logspace"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.logspace" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generates a certain number of evenly-spaced values in log space, in an interval along a given axis.</p>
+<p>See <span class="math notranslate nohighlight">\(arange\)</span> that allows to specify the step size of evenly spaced values in an interval.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>start</strong> (<em>array</em>) – First entry in the range.</p></li>
+<li><p><strong>stop</strong> (<em>array</em>) – Final entry in the range.</p></li>
+<li><p><strong>num</strong> (<em>int</em>) – Number of values to generate.</p></li>
+<li><p><strong>base</strong> (<em>float</em><em>, </em><em>optional</em>) – The base of the log space. Default is 10.0</p></li>
+<li><p><strong>axis</strong> (<em>int</em>) – Axis along which the operation is performed.</p></li>
+<li><p><strong>dev_str</strong> (<em>str</em>) – device on which to create the array ‘cuda:0’, ‘cuda:1’, ‘cpu’ etc.</p></li>
+<li><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning framework. Inferred from inputs if None.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Tensor of evenly-spaced values.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt id="ivy.core.general.matmul">
 <code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">matmul</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x1</span></em>, <em class="sig-param"><span class="n">x2</span></em>, <em class="sig-param"><span class="n">f</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#matmul"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.matmul" title="Permalink to this definition">¶</a></dt>
 <dd><p>Computes the matrix product of two arrays x1 and x2.</p>
@@ -1472,6 +1496,7 @@ If not given, then the type of the original array is used.</p></li>
 <li class="toctree-l1"><a class="reference internal" href="general/cast.html">cast</a></li>
 <li class="toctree-l1"><a class="reference internal" href="general/arange.html">arange</a></li>
 <li class="toctree-l1"><a class="reference internal" href="general/linspace.html">linspace</a></li>
+<li class="toctree-l1"><a class="reference internal" href="general/logspace.html">logspace</a></li>
 <li class="toctree-l1"><a class="reference internal" href="general/concatenate.html">concatenate</a></li>
 <li class="toctree-l1"><a class="reference internal" href="general/flip.html">flip</a></li>
 <li class="toctree-l1"><a class="reference internal" href="general/stack.html">stack</a></li>
