@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="pytest for layers_functional" type="tests" factoryName="py.test" folderName="nn_tests">
+  <configuration default="false" name="pytest for functional activations" type="tests" factoryName="py.test" folderName="nn_tests">
     <module name="ivy" />
     <option name="INTERPRETER_OPTIONS" value="" />
     <option name="PARENT_ENVS" value="true" />
@@ -41,7 +41,7 @@
     <option name="_new_keywords" value="&quot;&quot;" />
     <option name="_new_parameters" value="&quot;&quot;" />
     <option name="_new_additionalArguments" value="&quot;&quot;" />
-    <option name="_new_target" value="&quot;ivy_tests.test_nn.test_layers_functional&quot;" />
+    <option name="_new_target" value="&quot;ivy_tests.test_nn.test_functional.test_activations&quot;" />
     <option name="_new_targetType" value="&quot;PYTHON&quot;" />
     <method v="2" />
   </configuration>

@@ -3,11 +3,11 @@ Collection of Ivy loss functions.
 """
 
 # local
-from ivy.framework_handler import get_framework as _get_framework
+import ivy
 
 
 # noinspection PyUnresolvedReferences
-def binary_cross_entropy(x, y, epsilon=1e-7, f=None):
+def binary_cross_entropy(x, y, epsilon=1e-7):
     """
     Computes the cross-entropy loss between true labels and predicted labels.
 
@@ -17,10 +17,7 @@ def binary_cross_entropy(x, y, epsilon=1e-7, f=None):
     :type y: array
     :param epsilon: small constant to add to log functions
     :type epsilon: constant
-    :param f: Machine learning framework. Inferred from inputs if None.
-    :type f: ml_framework, optional
     :return: The binary cross entropy loss array.
     """
-    f = _get_framework(x, f=f)
-    x = f.clip(x, epsilon, 1-epsilon)
-    return -(y * f.log(x) + (1 - y) * f.log(1 - x))
+    x = ivy.clip(x, epsilon, 1-epsilon)
+    return -(y * ivy.log(x) + (1 - y) * ivy.log(1 - x))

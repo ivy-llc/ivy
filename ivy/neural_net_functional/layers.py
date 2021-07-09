@@ -31,7 +31,7 @@ def linear(x, weight, bias=None, f=None):
 # Dropout #
 # --------#
 
-def dropout(x, prob, scale=True, f=None):
+def dropout(x, prob, scale=True):
     """
     Randomly zeroes some of the elements of the input tensor with probability p using samples from a Bernoull
     distribution.
@@ -42,8 +42,6 @@ def dropout(x, prob, scale=True, f=None):
     :type prob: float
     :param scale: Whether to scale the output by 1/(1-prob), default is True.
     :type scale: bool, optional
-    :param f: Machine learning framework. Inferred from inputs if None.
-    :type f: ml_framework, optional
     :return: Result array of the linear transformation. *[N,∗,out_features]*
     """
     # noinspection PyUnresolvedReferences
