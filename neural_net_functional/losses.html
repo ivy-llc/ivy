@@ -107,12 +107,14 @@
 <li class="toctree-l2"><a class="reference internal" href="losses/binary_cross_entropy.html">binary_cross_entropy</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="norms.html">Norms</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Neural net stateful</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../neural_net_stateful/initializers.html">Initializers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../neural_net_stateful/layers.html">Layers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../neural_net_stateful/module.html">Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../neural_net_stateful/norms.html">Norms</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../neural_net_stateful/optimizers.html">Optimizers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../neural_net_stateful/sequential.html">Sequential</a></li>
 </ul>
@@ -193,7 +195,7 @@
 <p>Collection of Ivy loss functions.</p>
 <dl class="py function">
 <dt id="ivy.neural_net_functional.losses.binary_cross_entropy">
-<code class="sig-prename descclassname">ivy.neural_net_functional.losses.</code><code class="sig-name descname">binary_cross_entropy</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">y</span></em>, <em class="sig-param"><span class="n">epsilon</span><span class="o">=</span><span class="default_value">1e-07</span></em>, <em class="sig-param"><span class="n">f</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/neural_net_functional/losses.html#binary_cross_entropy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.neural_net_functional.losses.binary_cross_entropy" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">ivy.neural_net_functional.losses.</code><code class="sig-name descname">binary_cross_entropy</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">y</span></em>, <em class="sig-param"><span class="n">epsilon</span><span class="o">=</span><span class="default_value">1e-07</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/neural_net_functional/losses.html#binary_cross_entropy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.neural_net_functional.losses.binary_cross_entropy" title="Permalink to this definition">¶</a></dt>
 <dd><p>Computes the cross-entropy loss between true labels and predicted labels.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -201,7 +203,6 @@
 <li><p><strong>x</strong> (<em>array</em>) – Predicted labels</p></li>
 <li><p><strong>y</strong> (<em>array</em>) – true labels</p></li>
 <li><p><strong>epsilon</strong> (<em>constant</em>) – small constant to add to log functions</p></li>
-<li><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning framework. Inferred from inputs if None.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
