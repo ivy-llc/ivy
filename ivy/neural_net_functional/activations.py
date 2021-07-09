@@ -34,6 +34,21 @@ def leaky_relu(x, alpha=0.2, f=None):
     return _get_framework(x, f=f).leaky_relu(x, alpha)
 
 
+def gelu(x, approximate=True, f=None):
+    """
+    Applies the Gaussian error linear unit (GELU) activation function.
+
+    :param x: Input array.
+    :type x: array
+    :param approximate: Whether to approximate, default is True.
+    :type approximate: bool, optional
+    :param f: Machine learning framework. Inferred from inputs if None.
+    :type f: ml_framework, optional
+    :return: The input array with leaky relu applied element-wise.
+    """
+    return _get_framework(x, f=f).gelu(x, approximate)
+
+
 def tanh(x, f=None):
     """
     Applies the tangent hyperbolic function element-wise.
