@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>atan2 &mdash; Ivy 1.0 documentation</title>
+  <title>erf &mdash; Ivy 1.0 documentation</title>
   
 
   
@@ -36,8 +36,8 @@
   <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="sinh" href="sinh.html" />
-    <link rel="prev" title="atan" href="atan.html" /> 
+    <link rel="next" title="Random" href="../random.html" />
+    <link rel="prev" title="exp" href="exp.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -102,7 +102,7 @@
 <li class="toctree-l2"><a class="reference internal" href="asin.html">asin</a></li>
 <li class="toctree-l2"><a class="reference internal" href="acos.html">acos</a></li>
 <li class="toctree-l2"><a class="reference internal" href="atan.html">atan</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">atan2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="atan2.html">atan2</a></li>
 <li class="toctree-l2"><a class="reference internal" href="sinh.html">sinh</a></li>
 <li class="toctree-l2"><a class="reference internal" href="cosh.html">cosh</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tanh.html">tanh</a></li>
@@ -111,7 +111,7 @@
 <li class="toctree-l2"><a class="reference internal" href="atanh.html">atanh</a></li>
 <li class="toctree-l2"><a class="reference internal" href="log.html">log</a></li>
 <li class="toctree-l2"><a class="reference internal" href="exp.html">exp</a></li>
-<li class="toctree-l2"><a class="reference internal" href="erf.html">erf</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">erf</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../random.html">Random</a></li>
@@ -186,13 +186,13 @@
         
           <li><a href="../math.html">Math</a> &raquo;</li>
         
-      <li>atan2</li>
+      <li>erf</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="../../_sources/core/math/atan2.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../_sources/core/math/erf.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -205,23 +205,21 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="atan2">
-<h1>atan2<a class="headerlink" href="#atan2" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="erf">
+<h1>erf<a class="headerlink" href="#erf" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
-<dt id="ivy.core.math.atan2">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">atan2</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x1</span></em>, <em class="sig-param"><span class="n">x2</span></em>, <em class="sig-param"><span class="n">f</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/math.html#atan2"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.math.atan2" title="Permalink to this definition">¶</a></dt>
-<dd><p>Computes element-wise arc tangent of x1/x2 choosing the quadrant correctly.</p>
+<dt id="ivy.core.math.erf">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">erf</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">f</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/math.html#erf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.math.erf" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the Gauss error function of x element-wise.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>x1</strong> (<em>array</em>) – y-coordinates.</p></li>
-<li><p><strong>x2</strong> (<em>array</em>) – x-coordinates. If x1.shape != x2.shape, they must be broadcastable to a common shape
-(which becomes the shape of the output).</p></li>
+<li><p><strong>x</strong> (<em>array</em>) – Value to compute exponential for.</p></li>
 <li><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning framework. Inferred from inputs if None.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Array of angles in radians, in the range [-pi, pi].</p>
+<dd class="field-even"><p>The Gauss error function of x.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -241,10 +239,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="sinh.html" class="btn btn-neutral float-right" title="sinh" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="../random.html" class="btn btn-neutral float-right" title="Random" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="atan.html" class="btn btn-neutral float-left" title="atan" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="exp.html" class="btn btn-neutral float-left" title="exp" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
