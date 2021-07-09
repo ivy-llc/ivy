@@ -64,3 +64,10 @@ def reduce_max(x, axis=None, keepdims=False):
     if ret.shape == ():
         return _jnp.reshape(ret, (1,))
     return ret
+
+
+def einsum(equation, *operands):
+    ret = _jnp.einsum(equation, *operands)
+    if ret.shape == ():
+        return _jnp.reshape(ret, (1,))
+    return ret

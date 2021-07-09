@@ -85,3 +85,10 @@ def reduce_max(x, axis: Optional[List[int]] = None, keepdims: bool = False):
     if ret.shape == ():
         return ret.view((1,))
     return ret
+
+
+def einsum(equation, *operands):
+    ret = _torch.einsum(equation, *operands)
+    if ret.shape == ():
+        return ret.view((1,))
+    return ret

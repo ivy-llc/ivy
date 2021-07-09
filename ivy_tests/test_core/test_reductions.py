@@ -190,3 +190,31 @@ def test_reduce_max(x, axis, kd, dtype_str, tensor_fn, dev_str, call):
     assert np.allclose(call(ivy.reduce_max, x), ivy.numpy.reduce_max(ivy.to_numpy(x)))
     # compilation test
     helpers.assert_compilable(ivy.reduce_max)
+
+
+# einsum
+@pytest.mark.parametrize(
+    "eq_n_op_n_shp", [("ii", (np.arange(25).reshape(5, 5),), (1,)),
+                      ("ii->i", (np.arange(25).reshape(5, 5),), (5,)),
+                      ("ij,j", (np.arange(25).reshape(5, 5), np.arange(5)), (5,))])
+@pytest.mark.parametrize(
+    "dtype_str", ['float32'])
+@pytest.mark.parametrize(
+    "tensor_fn", [ivy.array, helpers.var_fn])
+def test_einsum(eq_n_op_n_shp, dtype_str, tensor_fn, dev_str, call):
+    # smoke test
+    eq, operands, true_shape = eq_n_op_n_shp
+    operands = [tensor_fn(op, dtype_str, dev_str) for op in operands]
+    ret = ivy.einsum(eq, *operands)
+    # type test
+    assert ivy.is_array(ret)
+    # cardinality test
+    assert ret.shape == true_shape
+    # value test
+    assert np.allclose(call(ivy.einsum, eq, *operands),
+                       ivy.numpy.einsum(eq, *[ivy.to_numpy(op) for op in operands]))
+    # compilation test
+    if call is helpers.torch_call:
+        # torch.jit functions can't take variable number of arguments
+        return
+    helpers.assert_compilable(ivy.einsum)

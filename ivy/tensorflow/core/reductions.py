@@ -64,3 +64,10 @@ def reduce_max(x, axis=None, keepdims=False):
     if ret.shape == ():
         return _tf.reshape(ret, (1,))
     return ret
+
+
+def einsum(equation, *operands):
+    ret = _tf.einsum(equation, *operands)
+    if ret.shape == ():
+        return _tf.reshape(ret, (1,))
+    return ret
