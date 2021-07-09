@@ -17,4 +17,5 @@ Reductions
    reductions/reduce_mean.rst
    reductions/reduce_min.rst
    reductions/reduce_max.rst
+   reductions/einsum.rst
 

@@ -247,6 +247,13 @@
     <span class="k">if</span> <span class="n">ret</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">():</span>
         <span class="k">return</span> <span class="n">ret</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="mi">1</span><span class="p">,))</span>
     <span class="k">return</span> <span class="n">ret</span></div>
+
+
+<div class="viewcode-block" id="einsum"><a class="viewcode-back" href="../../../../numpy/core/reductions/einsum.html#ivy.numpy.core.reductions.einsum">[docs]</a><span class="k">def</span> <span class="nf">einsum</span><span class="p">(</span><span class="n">equation</span><span class="p">,</span> <span class="o">*</span><span class="n">operands</span><span class="p">):</span>
+    <span class="n">ret</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">_np</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="n">equation</span><span class="p">,</span> <span class="o">*</span><span class="n">operands</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">ret</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="p">():</span>
+        <span class="k">return</span> <span class="n">ret</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="mi">1</span><span class="p">,))</span>
+    <span class="k">return</span> <span class="n">ret</span></div>
 </pre></div>
 
            </div>
