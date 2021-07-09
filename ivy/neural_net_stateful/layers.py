@@ -14,7 +14,7 @@ from ivy.neural_net_stateful.initializers import Zeros, GlorotUniform
 class Linear(Module):
 
     def __init__(self, input_channels, output_channels, weight_initializer=GlorotUniform(), bias_initializer=Zeros(),
-                 dev_str='cpu', v=None):
+                 with_bias=True, dev_str='cpu', v=None):
         """
         Linear layer, also referred to as dense or fully connected. The layer receives tensors with input_channels last
         dimension and returns a new tensor with output_channels last dimension, following matrix multiplication with the
@@ -28,6 +28,8 @@ class Linear(Module):
         :type weight_initializer: ivy.Initializer, optional
         :param bias_initializer: Initializer for the bias. Default is Zeros.
         :type bias_initializer: ivy.Initializer, optional
+        :param with_bias: Whether or not to include a bias term, default is True.
+        :type with_bias: bool, optional
         :param dev_str: device on which to create the layer's variables 'cuda:0', 'cuda:1', 'cpu' etc. Default is cpu.
         :type dev_str: str, optional
         :param v: the variables for each of the linear layer, as a container, constructed internally by default.
@@ -39,14 +41,17 @@ class Linear(Module):
         self._b_shape = (output_channels,)
         self._w_init = weight_initializer
         self._b_init = bias_initializer
+        self._with_bias = with_bias
         Module.__init__(self, dev_str, v)
 
     def _create_variables(self, dev_str):
         """
         Create internal variables for the layer
         """
-        return {'w': self._w_init.create_variables(self._w_shape, dev_str, self._output_channels, self._input_channels),
-                'b': self._b_init.create_variables(self._b_shape, dev_str, self._output_channels)}
+        v = {'w': self._w_init.create_variables(self._w_shape, dev_str, self._output_channels, self._input_channels)}
+        if self._with_bias:
+            v = dict(**v, b=self._b_init.create_variables(self._b_shape, dev_str, self._output_channels))
+        return v
 
     def _forward(self, inputs):
         """
@@ -56,7 +61,7 @@ class Linear(Module):
         :type inputs: array
         :return: The outputs following the linear operation and bias addition *[batch_shape, out]*
         """
-        return ivy.linear(inputs, self.v.w, self.v.b)
+        return ivy.linear(inputs, self.v.w, self.v.b if self._with_bias else None)
 
 
 # Convolutions #
