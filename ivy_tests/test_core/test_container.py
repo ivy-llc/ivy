@@ -178,7 +178,7 @@ def test_container_with_entries_as_lists(dev_str, call):
         assert value == expected_value
 
 
-def test_container_to_and_from_disk(dev_str, call):
+def test_container_to_and_from_disk_as_hdf5(dev_str, call):
     if call in [helpers.tf_graph_call]:
         # container disk saving requires eager execution
         pytest.skip()
@@ -192,27 +192,27 @@ def test_container_to_and_from_disk(dev_str, call):
     container2 = Container(dict_in_2)
 
     # saving
-    container1.to_disk(save_filepath, max_batch_size=2)
+    container1.to_disk_as_hdf5(save_filepath, max_batch_size=2)
     assert os.path.exists(save_filepath)
 
     # loading
-    loaded_container = Container.from_disk(save_filepath, slice(1))
+    loaded_container = Container.from_disk_as_hdf5(save_filepath, slice(1))
     assert np.array_equal(loaded_container.a, container1.a)
     assert np.array_equal(loaded_container.b.c, container1.b.c)
     assert np.array_equal(loaded_container.b.d, container1.b.d)
 
     # appending
-    container1.to_disk(save_filepath, max_batch_size=2, starting_index=1)
+    container1.to_disk_as_hdf5(save_filepath, max_batch_size=2, starting_index=1)
     assert os.path.exists(save_filepath)
 
     # loading after append
-    loaded_container = Container.from_disk(save_filepath)
+    loaded_container = Container.from_disk_as_hdf5(save_filepath)
     assert np.array_equal(loaded_container.a, container2.a)
     assert np.array_equal(loaded_container.b.c, container2.b.c)
     assert np.array_equal(loaded_container.b.d, container2.b.d)
 
     # load slice
-    loaded_sliced_container = Container.from_disk(save_filepath, slice(1, 2))
+    loaded_sliced_container = Container.from_disk_as_hdf5(save_filepath, slice(1, 2))
     assert np.array_equal(loaded_sliced_container.a, container1.a)
     assert np.array_equal(loaded_sliced_container.b.c, container1.b.c)
     assert np.array_equal(loaded_sliced_container.b.d, container1.b.d)
@@ -225,7 +225,7 @@ def test_container_to_and_from_disk(dev_str, call):
     os.remove(save_filepath)
 
 
-def test_container_to_disk_shuffle_and_from_disk(dev_str, call):
+def test_container_to_disk_shuffle_and_from_disk_as_hdf5(dev_str, call):
     if call in [helpers.tf_graph_call]:
         # container disk saving requires eager execution
         pytest.skip()
@@ -235,14 +235,14 @@ def test_container_to_disk_shuffle_and_from_disk(dev_str, call):
     container = Container(dict_in)
 
     # saving
-    container.to_disk(save_filepath, max_batch_size=3)
+    container.to_disk_as_hdf5(save_filepath, max_batch_size=3)
     assert os.path.exists(save_filepath)
 
     # shuffling
     Container.shuffle_h5_file(save_filepath)
 
     # loading
-    container_shuffled = Container.from_disk(save_filepath, slice(3))
+    container_shuffled = Container.from_disk_as_hdf5(save_filepath, slice(3))
 
     # testing
     data = np.array([1, 2, 3])
@@ -255,5 +255,31 @@ def test_container_to_disk_shuffle_and_from_disk(dev_str, call):
     assert (ivy.to_numpy(container_shuffled.b.c) == data).all()
     assert (ivy.to_numpy(container_shuffled['b']['d']) == data).all()
     assert (ivy.to_numpy(container_shuffled.b.d) == data).all()
+
+    os.remove(save_filepath)
+
+
+def test_container_to_and_from_disk_as_pickled(dev_str, call):
+    if call in [helpers.tf_graph_call]:
+        # container disk saving requires eager execution
+        pytest.skip()
+    save_filepath = 'container_on_disk.p'
+    dict_in_1 = {'a': ivy.array([np.float32(1.)]),
+                 'b': {'c': ivy.array([np.float32(2.)]), 'd': ivy.array([np.float32(3.)])}}
+    container1 = Container(dict_in_1)
+    dict_in_2 = {'a': ivy.array([np.float32(1.), np.float32(1.)]),
+                 'b': {'c': ivy.array([np.float32(2.), np.float32(2.)]),
+                       'd': ivy.array([np.float32(3.), np.float32(3.)])}}
+    container2 = Container(dict_in_2)
+
+    # saving
+    container1.to_disk_as_pickled(save_filepath)
+    assert os.path.exists(save_filepath)
+
+    # loading
+    loaded_container = Container.from_disk_as_pickled(save_filepath)
+    assert np.array_equal(loaded_container.a, container1.a)
+    assert np.array_equal(loaded_container.b.c, container1.b.c)
+    assert np.array_equal(loaded_container.b.d, container1.b.d)
 
     os.remove(save_filepath)

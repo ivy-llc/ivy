@@ -4,8 +4,8 @@ Base Container Object
 
 # global
 import h5py as _h5py
+import pickle as _pickle
 import random as _random
-import operator as _operator
 from operator import mul as _mul
 from functools import reduce as _reduce
 
@@ -142,7 +142,7 @@ class Container(dict):
                 raise Exception(str(e) + '\nContainer reduce operation only valid for containers of arrays')
 
     @staticmethod
-    def from_disk(h5_obj_or_filepath, slice_obj=slice(None)):
+    def from_disk_as_hdf5(h5_obj_or_filepath, slice_obj=slice(None)):
         """
         Load container object from disk, as an h5py file, at the specified filepath.
 
@@ -160,12 +160,23 @@ class Container(dict):
 
         for key, value in sorted(h5_obj.items()):
             if isinstance(value, _h5py.Group):
-                container_dict[key] = Container.from_disk(value, slice_obj)
+                container_dict[key] = Container.from_disk_as_hdf5(value, slice_obj)
             elif isinstance(value, _h5py.Dataset):
                 container_dict[key] = _ivy.array(list(value[slice_obj]))
             else:
                 raise Exception('Item found inside h5_obj which was neither a Group nor a Dataset.')
         return Container(container_dict)
+
+    @staticmethod
+    def from_disk_as_pickled(pickle_filepath):
+        """
+        Load container object from disk at the specified filepath.
+
+        :param pickle_filepath: Filepath where the container object is saved to disk.
+        :type pickle_filepath: str
+        :return: Container loaded from disk
+        """
+        return _pickle.load(open(pickle_filepath, 'rb'))
 
     @staticmethod
     def h5_file_size(h5_obj_or_filepath):
@@ -320,7 +331,7 @@ class Container(dict):
         """
         return [self.slice(tuple([slice(None, None, None)] * dim + [slice(i, i + 1, 1)])) for i in range(dim_size)]
 
-    def to_disk(self, h5_obj_or_filepath, starting_index=0, mode='a', max_batch_size=None):
+    def to_disk_as_hdf5(self, h5_obj_or_filepath, starting_index=0, mode='a', max_batch_size=None):
         """
         Save container object to disk, as an h5py file, at the specified filepath.
 
@@ -344,7 +355,7 @@ class Container(dict):
                     h5_group = h5_obj.create_group(key)
                 else:
                     h5_group = h5_obj[key]
-                value.to_disk(h5_group, starting_index, mode, max_batch_size)
+                value.to_disk_as_hdf5(h5_group, starting_index, mode, max_batch_size)
             else:
                 value_as_np = _ivy.to_numpy(value)
                 value_shape = value_as_np.shape
@@ -358,6 +369,15 @@ class Container(dict):
                 space_left = max_batch_size - starting_index
                 amount_to_write = min(this_batch_size, space_left)
                 h5_obj[key][starting_index:starting_index + amount_to_write] = value_as_np[0:amount_to_write]
+
+    def to_disk_as_pickled(self, pickle_filepath):
+        """
+        Save container object to disk, as an h5py file, at the specified filepath.
+
+        :param pickle_filepath: Filepath for where to save the container to disk.
+        :type pickle_filepath: str
+        """
+        _pickle.dump(self, open(pickle_filepath, 'wb'))
 
     def to_list(self):
         """
