@@ -263,7 +263,7 @@ def test_container_to_and_from_disk_as_pickled(dev_str, call):
     if call in [helpers.tf_graph_call]:
         # container disk saving requires eager execution
         pytest.skip()
-    save_filepath = 'container_on_disk.p'
+    save_filepath = 'container_on_disk.pickled'
     dict_in_1 = {'a': ivy.array([np.float32(1.)]),
                  'b': {'c': ivy.array([np.float32(2.)]), 'd': ivy.array([np.float32(3.)])}}
     container1 = Container(dict_in_1)
