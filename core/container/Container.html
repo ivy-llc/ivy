@@ -269,8 +269,8 @@
 </dd></dl>
 
 <dl class="py method">
-<dt id="ivy.core.container.Container.from_disk">
-<em class="property">static </em><code class="sig-name descname">from_disk</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">h5_obj_or_filepath</span></em>, <em class="sig-param"><span class="n">slice_obj</span><span class="o">=</span><span class="default_value">slice(None, None, None)</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/container.html#Container.from_disk"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.from_disk" title="Permalink to this definition">¶</a></dt>
+<dt id="ivy.core.container.Container.from_disk_as_hdf5">
+<em class="property">static </em><code class="sig-name descname">from_disk_as_hdf5</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">h5_obj_or_filepath</span></em>, <em class="sig-param"><span class="n">slice_obj</span><span class="o">=</span><span class="default_value">slice(None, None, None)</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/container.html#Container.from_disk_as_hdf5"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.from_disk_as_hdf5" title="Permalink to this definition">¶</a></dt>
 <dd><p>Load container object from disk, as an h5py file, at the specified filepath.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -278,6 +278,20 @@
 <li><p><strong>h5_obj_or_filepath</strong> (<em>str</em><em> or </em><em>h5 obj</em>) – Filepath where the container object is saved to disk, or h5 object.</p></li>
 <li><p><strong>slice_obj</strong> (<em>slice</em><em> or </em><em>sequence of slices</em>) – slice object to slice all h5 elements.</p></li>
 </ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Container loaded from disk</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="ivy.core.container.Container.from_disk_as_pickled">
+<em class="property">static </em><code class="sig-name descname">from_disk_as_pickled</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">pickle_filepath</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/container.html#Container.from_disk_as_pickled"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.from_disk_as_pickled" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load container object from disk at the specified filepath.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>pickle_filepath</strong> (<em>str</em>) – Filepath where the container object is saved to disk.</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>Container loaded from disk</p>
@@ -440,8 +454,8 @@ Returns None if the entire container is empty.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="ivy.core.container.Container.to_disk">
-<code class="sig-name descname">to_disk</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">h5_obj_or_filepath</span></em>, <em class="sig-param"><span class="n">starting_index</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">mode</span><span class="o">=</span><span class="default_value">'a'</span></em>, <em class="sig-param"><span class="n">max_batch_size</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/container.html#Container.to_disk"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.to_disk" title="Permalink to this definition">¶</a></dt>
+<dt id="ivy.core.container.Container.to_disk_as_hdf5">
+<code class="sig-name descname">to_disk_as_hdf5</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">h5_obj_or_filepath</span></em>, <em class="sig-param"><span class="n">starting_index</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">mode</span><span class="o">=</span><span class="default_value">'a'</span></em>, <em class="sig-param"><span class="n">max_batch_size</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/container.html#Container.to_disk_as_hdf5"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.to_disk_as_hdf5" title="Permalink to this definition">¶</a></dt>
 <dd><p>Save container object to disk, as an h5py file, at the specified filepath.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -451,6 +465,17 @@ Returns None if the entire container is empty.</p>
 <li><p><strong>mode</strong> (<em>str</em>) – H5 read/write mode for writing to disk, [‘r’, ‘r+’, ‘w’, ‘w-‘, ‘a’], default is ‘a’.</p></li>
 <li><p><strong>max_batch_size</strong> (<em>int</em>) – Maximum batch size for the container on disk, this is useful if later appending to file.</p></li>
 </ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="ivy.core.container.Container.to_disk_as_pickled">
+<code class="sig-name descname">to_disk_as_pickled</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">pickle_filepath</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/container.html#Container.to_disk_as_pickled"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.to_disk_as_pickled" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save container object to disk, as an h5py file, at the specified filepath.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>pickle_filepath</strong> (<em>str</em>) – Filepath for where to save the container to disk.</p>
 </dd>
 </dl>
 </dd></dl>
