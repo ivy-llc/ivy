@@ -114,4 +114,4 @@ class Module(abc.ABC):
         :type weights_path: string
         """
         os.makedirs('/'.join(weights_path.split('/')[:-1]), exist_ok=True)
-        self.v.to_disk(weights_path)
+        self.v.to_disk_as_hdf5(weights_path)
