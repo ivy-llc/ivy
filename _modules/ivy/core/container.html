@@ -190,8 +190,8 @@
 
 <span class="c1"># global</span>
 <span class="kn">import</span> <span class="nn">h5py</span> <span class="k">as</span> <span class="nn">_h5py</span>
+<span class="kn">import</span> <span class="nn">pickle</span> <span class="k">as</span> <span class="nn">_pickle</span>
 <span class="kn">import</span> <span class="nn">random</span> <span class="k">as</span> <span class="nn">_random</span>
-<span class="kn">import</span> <span class="nn">operator</span> <span class="k">as</span> <span class="nn">_operator</span>
 <span class="kn">from</span> <span class="nn">operator</span> <span class="kn">import</span> <span class="n">mul</span> <span class="k">as</span> <span class="n">_mul</span>
 <span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">reduce</span> <span class="k">as</span> <span class="n">_reduce</span>
 
@@ -327,8 +327,8 @@
             <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">Container reduce operation only valid for containers of arrays&#39;</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Container.from_disk"><a class="viewcode-back" href="../../../core/container/Container.html#ivy.core.container.Container.from_disk">[docs]</a>    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">from_disk</span><span class="p">(</span><span class="n">h5_obj_or_filepath</span><span class="p">,</span> <span class="n">slice_obj</span><span class="o">=</span><span class="nb">slice</span><span class="p">(</span><span class="kc">None</span><span class="p">)):</span>
+<div class="viewcode-block" id="Container.from_disk_as_hdf5"><a class="viewcode-back" href="../../../core/container/Container.html#ivy.core.container.Container.from_disk_as_hdf5">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">from_disk_as_hdf5</span><span class="p">(</span><span class="n">h5_obj_or_filepath</span><span class="p">,</span> <span class="n">slice_obj</span><span class="o">=</span><span class="nb">slice</span><span class="p">(</span><span class="kc">None</span><span class="p">)):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Load container object from disk, as an h5py file, at the specified filepath.</span>
 
@@ -346,12 +346,23 @@
 
         <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">h5_obj</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">_h5py</span><span class="o">.</span><span class="n">Group</span><span class="p">):</span>
-                <span class="n">container_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">Container</span><span class="o">.</span><span class="n">from_disk</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">slice_obj</span><span class="p">)</span>
+                <span class="n">container_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">Container</span><span class="o">.</span><span class="n">from_disk_as_hdf5</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">slice_obj</span><span class="p">)</span>
             <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">_h5py</span><span class="o">.</span><span class="n">Dataset</span><span class="p">):</span>
                 <span class="n">container_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">_ivy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">value</span><span class="p">[</span><span class="n">slice_obj</span><span class="p">]))</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;Item found inside h5_obj which was neither a Group nor a Dataset.&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">Container</span><span class="p">(</span><span class="n">container_dict</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Container.from_disk_as_pickled"><a class="viewcode-back" href="../../../core/container/Container.html#ivy.core.container.Container.from_disk_as_pickled">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">from_disk_as_pickled</span><span class="p">(</span><span class="n">pickle_filepath</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Load container object from disk at the specified filepath.</span>
+
+<span class="sd">        :param pickle_filepath: Filepath where the container object is saved to disk.</span>
+<span class="sd">        :type pickle_filepath: str</span>
+<span class="sd">        :return: Container loaded from disk</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">_pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="n">pickle_filepath</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">))</span></div>
 
 <div class="viewcode-block" id="Container.h5_file_size"><a class="viewcode-back" href="../../../core/container/Container.html#ivy.core.container.Container.h5_file_size">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">h5_file_size</span><span class="p">(</span><span class="n">h5_obj_or_filepath</span><span class="p">):</span>
@@ -506,7 +517,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">slice</span><span class="p">(</span><span class="nb">tuple</span><span class="p">([</span><span class="nb">slice</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">)]</span> <span class="o">*</span> <span class="n">dim</span> <span class="o">+</span> <span class="p">[</span><span class="nb">slice</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)]))</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">dim_size</span><span class="p">)]</span></div>
 
-<div class="viewcode-block" id="Container.to_disk"><a class="viewcode-back" href="../../../core/container/Container.html#ivy.core.container.Container.to_disk">[docs]</a>    <span class="k">def</span> <span class="nf">to_disk</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">h5_obj_or_filepath</span><span class="p">,</span> <span class="n">starting_index</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="n">max_batch_size</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="Container.to_disk_as_hdf5"><a class="viewcode-back" href="../../../core/container/Container.html#ivy.core.container.Container.to_disk_as_hdf5">[docs]</a>    <span class="k">def</span> <span class="nf">to_disk_as_hdf5</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">h5_obj_or_filepath</span><span class="p">,</span> <span class="n">starting_index</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="n">max_batch_size</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Save container object to disk, as an h5py file, at the specified filepath.</span>
 
@@ -530,7 +541,7 @@
                     <span class="n">h5_group</span> <span class="o">=</span> <span class="n">h5_obj</span><span class="o">.</span><span class="n">create_group</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="n">h5_group</span> <span class="o">=</span> <span class="n">h5_obj</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
-                <span class="n">value</span><span class="o">.</span><span class="n">to_disk</span><span class="p">(</span><span class="n">h5_group</span><span class="p">,</span> <span class="n">starting_index</span><span class="p">,</span> <span class="n">mode</span><span class="p">,</span> <span class="n">max_batch_size</span><span class="p">)</span>
+                <span class="n">value</span><span class="o">.</span><span class="n">to_disk_as_hdf5</span><span class="p">(</span><span class="n">h5_group</span><span class="p">,</span> <span class="n">starting_index</span><span class="p">,</span> <span class="n">mode</span><span class="p">,</span> <span class="n">max_batch_size</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">value_as_np</span> <span class="o">=</span> <span class="n">_ivy</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
                 <span class="n">value_shape</span> <span class="o">=</span> <span class="n">value_as_np</span><span class="o">.</span><span class="n">shape</span>
@@ -544,6 +555,15 @@
                 <span class="n">space_left</span> <span class="o">=</span> <span class="n">max_batch_size</span> <span class="o">-</span> <span class="n">starting_index</span>
                 <span class="n">amount_to_write</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">this_batch_size</span><span class="p">,</span> <span class="n">space_left</span><span class="p">)</span>
                 <span class="n">h5_obj</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="n">starting_index</span><span class="p">:</span><span class="n">starting_index</span> <span class="o">+</span> <span class="n">amount_to_write</span><span class="p">]</span> <span class="o">=</span> <span class="n">value_as_np</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="n">amount_to_write</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="Container.to_disk_as_pickled"><a class="viewcode-back" href="../../../core/container/Container.html#ivy.core.container.Container.to_disk_as_pickled">[docs]</a>    <span class="k">def</span> <span class="nf">to_disk_as_pickled</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pickle_filepath</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Save container object to disk, as an h5py file, at the specified filepath.</span>
+
+<span class="sd">        :param pickle_filepath: Filepath for where to save the container to disk.</span>
+<span class="sd">        :type pickle_filepath: str</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">_pickle</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">open</span><span class="p">(</span><span class="n">pickle_filepath</span><span class="p">,</span> <span class="s1">&#39;wb&#39;</span><span class="p">))</span></div>
 
 <div class="viewcode-block" id="Container.to_list"><a class="viewcode-back" href="../../../core/container/Container.html#ivy.core.container.Container.to_list">[docs]</a>    <span class="k">def</span> <span class="nf">to_list</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
