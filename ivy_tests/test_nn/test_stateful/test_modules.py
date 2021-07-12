@@ -164,11 +164,19 @@ def test_module_w_none_attribute(bs_ic_oc, dev_str, call):
 
 class TrainableModuleWithDuplicate(ivy.Module):
 
-    def __init__(self, channels):
-        get_linear = lambda: ivy.Linear(channels, channels)
-        linear = get_linear()
-        self._linear0 = linear
-        self._linear1 = linear
+    def __init__(self, channels, same_layer):
+        if same_layer:
+            linear = ivy.Linear(channels, channels)
+            self._linear0 = linear
+            self._linear1 = linear
+        else:
+            w = ivy.variable(ivy.ones((channels, channels)))
+            b0 = ivy.variable(ivy.ones((channels,)))
+            b1 = ivy.variable(ivy.ones((channels,)))
+            v0 = ivy.Container({'w': w, 'b': b0})
+            v1 = ivy.Container({'w': w, 'b': b1})
+            self._linear0 = ivy.Linear(channels, channels, v=v0)
+            self._linear1 = ivy.Linear(channels, channels, v=v1)
         ivy.Module.__init__(self)
 
     def _forward(self, x):
@@ -179,14 +187,16 @@ class TrainableModuleWithDuplicate(ivy.Module):
 # module training with duplicate
 @pytest.mark.parametrize(
     "bs_c", [([1, 2], 64)])
-def test_module_training_with_duplicate(bs_c, dev_str, call):
+@pytest.mark.parametrize(
+    "same_layer", [True, False])
+def test_module_training_with_duplicate(bs_c, same_layer, dev_str, call):
     # smoke test
     if call is helpers.np_call:
         # NumPy does not support gradients
         pytest.skip()
     batch_shape, channels = bs_c
     x = ivy.cast(ivy.linspace(ivy.zeros(batch_shape), ivy.ones(batch_shape), channels), 'float32')
-    module = TrainableModuleWithDuplicate(channels)
+    module = TrainableModuleWithDuplicate(channels, same_layer)
 
     def loss_fn(v_):
         out = module(x, v=v_)
@@ -214,6 +224,8 @@ def test_module_training_with_duplicate(bs_c, dev_str, call):
     # value test
     assert ivy.reduce_max(ivy.abs(grads.linear0.b)) > 0
     assert ivy.reduce_max(ivy.abs(grads.linear0.w)) > 0
+    if not same_layer:
+        assert ivy.reduce_max(ivy.abs(grads.linear1.b)) > 0
     # compilation test
     if call is helpers.torch_call:
         # pytest scripting does not support **kwargs
