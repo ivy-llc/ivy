@@ -102,7 +102,8 @@ class SGD(Optimizer):
         :type grads: sequence of arrays
         :return: The new updated variables container, following gradient descent step.
         """
-        return ivy.gradient_descent_update(v, grads, self._lr if isinstance(self._lr, float) else self._lr())
+        new_v = ivy.gradient_descent_update(v, grads, self._lr if isinstance(self._lr, float) else self._lr())
+        return new_v.map(lambda x, kc: ivy.variable(ivy.stop_gradient(x)))
 
     def set_state(self, state):
         """
@@ -166,7 +167,7 @@ class Adam(Optimizer):
             v, grads, self._lr if isinstance(self._lr, float) else self._lr(), self._mw, self._vw, self._step,
             self._beta1, self._beta2, self._epsilon)
         self._step += 1
-        return new_v
+        return new_v.map(lambda x, kc: ivy.variable(ivy.stop_gradient(x)))
 
     def set_state(self, state):
         """
