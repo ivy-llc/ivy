@@ -38,6 +38,8 @@ class Module(abc.ABC):
 
     def _fn_with_var_arg(self, fn, key):
         def new_fn(*a, **kw):
+            if 'v' in kw:
+                return fn(*a, **kw)
             return fn(*a, **kw, v=self.v[key])
         new_fn.wrapped = True
         return new_fn
