@@ -450,6 +450,22 @@ class Container(dict):
             ret = ret[key]
         return ret
 
+    def set_at_key_chain(self, key_chain, val):
+        """
+        Set value of container object at a specified key-chain
+
+        :return: new container with updated value at key chain
+        """
+        keys = key_chain.split('/')
+        conts = list()
+        cont = self
+        for key in keys[:-1]:
+            if key not in cont:
+                cont[key] = Container({})
+            cont = cont[key]
+        cont[keys[-1]] = val
+        return self
+
     def prune_key_chain(self, key_chain):
         """
         Recursively prune chain of keys, specified as 'key1/key2/key3/...'
