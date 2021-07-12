@@ -76,7 +76,7 @@ class Module(abc.ABC):
             ret_cont = ivy.Container({})
         for old_kc, new_kc in keychain_mappings.items():
             if orig_key in old_kc:
-                ret_cont = ret_cont.set_at_key_chain(new_kc, v.at_key_chain(new_kc))
+                ret_cont = ret_cont.set_at_key_chain('/'.join(new_kc.split('/')[1:]), v.at_key_chain(new_kc))
         return ret_cont
 
     def _wrap_call_methods(self, keychain_mappings, key='', obj=None):

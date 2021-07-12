@@ -774,20 +774,29 @@ def test_sequential_layer_training(bs_c, with_v, seq_v, dtype_str, tensor_fn, de
     if with_v:
         np.random.seed(0)
         wlim = (6 / (channels + channels)) ** 0.5
-        w = ivy.variable(ivy.array(np.random.uniform(-wlim, wlim, (channels, channels)), 'float32'))
-        b = ivy.variable(ivy.zeros([channels]))
-        v = Container({'w': w, 'b': b})
+        v = Container({'submodules0':
+                           {'w': ivy.variable(ivy.array(np.random.uniform(
+                               -wlim, wlim, (channels, channels)), 'float32')),
+                               'b': ivy.variable(ivy.zeros([channels]))},
+                       'submodules1':
+                           {'w': ivy.variable(ivy.array(np.random.uniform(
+                               -wlim, wlim, (channels, channels)), 'float32')),
+                               'b': ivy.variable(ivy.zeros([channels]))},
+                       'submodules2':
+                           {'w': ivy.variable(ivy.array(np.random.uniform(
+                               -wlim, wlim, (channels, channels)), 'float32')),
+                               'b': ivy.variable(ivy.zeros([channels]))}})
     else:
         v = None
     if seq_v:
         seq = ivy.Sequential(ivy.Linear(channels, channels),
                              ivy.Linear(channels, channels),
                              ivy.Linear(channels, channels),
-                             v=Container({'submodules0': v, 'submodules1': v, 'submodules2': v}) if with_v else None)
+                             v=v if with_v else None)
     else:
-        seq = ivy.Sequential(ivy.Linear(channels, channels, v=v),
-                             ivy.Linear(channels, channels, v=v),
-                             ivy.Linear(channels, channels, v=v))
+        seq = ivy.Sequential(ivy.Linear(channels, channels, v=v['submodules0'] if with_v else None),
+                             ivy.Linear(channels, channels, v=v['submodules1'] if with_v else None),
+                             ivy.Linear(channels, channels, v=v['submodules2'] if with_v else None))
 
     def loss_fn(v_):
         out = seq(x, v=v_)
