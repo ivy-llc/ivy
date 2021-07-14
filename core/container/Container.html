@@ -383,13 +383,13 @@ Returns None if the entire container is empty.</p>
 
 <dl class="py method">
 <dt id="ivy.core.container.Container.reduce">
-<em class="property">static </em><code class="sig-name descname">reduce</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">containers</span></em>, <em class="sig-param"><span class="n">reduction_mode</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/container.html#Container.reduce"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.reduce" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="sig-name descname">reduce</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">containers</span></em>, <em class="sig-param"><span class="n">reduction</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/container.html#Container.reduce"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.reduce" title="Permalink to this definition">¶</a></dt>
 <dd><p>Reduce containers.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>containers</strong> (<em>sequence of Container objects</em>) – containers to reduce</p></li>
-<li><p><strong>reduction_mode</strong> (<em>str</em>) – the type of reduction to perform</p></li>
+<li><p><strong>reduction</strong> (<em>callable with single list input x</em>) – the reduction function</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
