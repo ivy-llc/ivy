@@ -195,6 +195,50 @@ def test_container_with_entries_as_lists(dev_str, call):
         assert value == expected_value
 
 
+def test_container_slice(dev_str, call):
+    dict_in = {'a': ivy.array([[0.], [1.]]),
+               'b': {'c': ivy.array([[1.], [2.]]), 'd': ivy.array([[2.], [3.]])}}
+    container = Container(dict_in)
+    container0 = container.slice(0)
+    container1 = container.slice(1)
+    assert np.array_equal(container0['a'], ivy.array([0.]))
+    assert np.array_equal(container0.a, ivy.array([0.]))
+    assert np.array_equal(container0['b']['c'], ivy.array([1.]))
+    assert np.array_equal(container0.b.c, ivy.array([1.]))
+    assert np.array_equal(container0['b']['d'], ivy.array([2.]))
+    assert np.array_equal(container0.b.d, ivy.array([2.]))
+    assert np.array_equal(container1['a'], ivy.array([1.]))
+    assert np.array_equal(container1.a, ivy.array([1.]))
+    assert np.array_equal(container1['b']['c'], ivy.array([2.]))
+    assert np.array_equal(container1.b.c, ivy.array([2.]))
+    assert np.array_equal(container1['b']['d'], ivy.array([3.]))
+    assert np.array_equal(container1.b.d, ivy.array([3.]))
+
+
+def test_container_slice_via_key(dev_str, call):
+    dict_in = {'a': {'x': ivy.array([0.]),
+                     'y': ivy.array([1.])},
+               'b': {'c': {'x': ivy.array([1.]),
+                           'y': ivy.array([2.])},
+                     'd': {'x': ivy.array([2.]),
+                           'y': ivy.array([3.])}}}
+    container = Container(dict_in)
+    containerx = container.slice_via_key('x')
+    containery = container.slice_via_key('y')
+    assert np.array_equal(containerx['a'], ivy.array([0.]))
+    assert np.array_equal(containerx.a, ivy.array([0.]))
+    assert np.array_equal(containerx['b']['c'], ivy.array([1.]))
+    assert np.array_equal(containerx.b.c, ivy.array([1.]))
+    assert np.array_equal(containerx['b']['d'], ivy.array([2.]))
+    assert np.array_equal(containerx.b.d, ivy.array([2.]))
+    assert np.array_equal(containery['a'], ivy.array([1.]))
+    assert np.array_equal(containery.a, ivy.array([1.]))
+    assert np.array_equal(containery['b']['c'], ivy.array([2.]))
+    assert np.array_equal(containery.b.c, ivy.array([2.]))
+    assert np.array_equal(containery['b']['d'], ivy.array([3.]))
+    assert np.array_equal(containery.b.d, ivy.array([3.]))
+
+
 def test_container_to_and_from_disk_as_hdf5(dev_str, call):
     if call in [helpers.tf_graph_call]:
         # container disk saving requires eager execution
