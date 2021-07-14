@@ -189,6 +189,7 @@
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="c1"># global</span>
+<span class="kn">import</span> <span class="nn">json</span> <span class="k">as</span> <span class="nn">_json</span>
 <span class="kn">import</span> <span class="nn">h5py</span> <span class="k">as</span> <span class="nn">_h5py</span>
 <span class="kn">import</span> <span class="nn">pickle</span> <span class="k">as</span> <span class="nn">_pickle</span>
 <span class="kn">import</span> <span class="nn">random</span> <span class="k">as</span> <span class="nn">_random</span>
@@ -310,7 +311,7 @@
 <div class="viewcode-block" id="Container.from_disk_as_hdf5"><a class="viewcode-back" href="../../../core/container/Container.html#ivy.core.container.Container.from_disk_as_hdf5">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">from_disk_as_hdf5</span><span class="p">(</span><span class="n">h5_obj_or_filepath</span><span class="p">,</span> <span class="n">slice_obj</span><span class="o">=</span><span class="nb">slice</span><span class="p">(</span><span class="kc">None</span><span class="p">)):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Load container object from disk, as an h5py file, at the specified filepath.</span>
+<span class="sd">        Load container object from disk, as an h5py file, at the specified hdf5 filepath.</span>
 
 <span class="sd">        :param h5_obj_or_filepath: Filepath where the container object is saved to disk, or h5 object.</span>
 <span class="sd">        :type h5_obj_or_filepath: str or h5 obj</span>
@@ -336,13 +337,26 @@
 <div class="viewcode-block" id="Container.from_disk_as_pickled"><a class="viewcode-back" href="../../../core/container/Container.html#ivy.core.container.Container.from_disk_as_pickled">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">from_disk_as_pickled</span><span class="p">(</span><span class="n">pickle_filepath</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Load container object from disk at the specified filepath.</span>
+<span class="sd">        Load container object from disk at the specified pickle filepath.</span>
 
 <span class="sd">        :param pickle_filepath: Filepath where the container object is saved to disk.</span>
 <span class="sd">        :type pickle_filepath: str</span>
 <span class="sd">        :return: Container loaded from disk</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">_pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="n">pickle_filepath</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="Container.from_disk_as_json"><a class="viewcode-back" href="../../../core/container/Container.html#ivy.core.container.Container.from_disk_as_json">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">from_disk_as_json</span><span class="p">(</span><span class="n">json_filepath</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Load container object from disk at the specified json filepath.</span>
+<span class="sd">        If some objects were not json-able during saving, then they will be loaded as strings.</span>
+
+<span class="sd">        :param json_filepath: Filepath where the container object is saved to disk.</span>
+<span class="sd">        :type json_filepath: str</span>
+<span class="sd">        :return: Container loaded from disk</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">json_filepath</span><span class="p">)</span> <span class="k">as</span> <span class="n">json_data_file</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">Container</span><span class="p">(</span><span class="n">_json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">json_data_file</span><span class="p">))</span></div>
 
 <div class="viewcode-block" id="Container.h5_file_size"><a class="viewcode-back" href="../../../core/container/Container.html#ivy.core.container.Container.h5_file_size">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">h5_file_size</span><span class="p">(</span><span class="n">h5_obj_or_filepath</span><span class="p">):</span>
@@ -563,12 +577,30 @@
 
 <div class="viewcode-block" id="Container.to_disk_as_pickled"><a class="viewcode-back" href="../../../core/container/Container.html#ivy.core.container.Container.to_disk_as_pickled">[docs]</a>    <span class="k">def</span> <span class="nf">to_disk_as_pickled</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pickle_filepath</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Save container object to disk, as an h5py file, at the specified filepath.</span>
+<span class="sd">        Save container object to disk, as an pickled file, at the specified filepath.</span>
 
 <span class="sd">        :param pickle_filepath: Filepath for where to save the container to disk.</span>
 <span class="sd">        :type pickle_filepath: str</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">_pickle</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">open</span><span class="p">(</span><span class="n">pickle_filepath</span><span class="p">,</span> <span class="s1">&#39;wb&#39;</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="Container.to_disk_as_json"><a class="viewcode-back" href="../../../core/container/Container.html#ivy.core.container.Container.to_disk_as_json">[docs]</a>    <span class="k">def</span> <span class="nf">to_disk_as_json</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">json_filepath</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Save container object to disk, as an json file, at the specified filepath.</span>
+
+<span class="sd">        :param json_filepath: Filepath for where to save the container to disk.</span>
+<span class="sd">        :type json_filepath: str</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">def</span> <span class="nf">_is_jsonable</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">_json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+                <span class="k">return</span> <span class="kc">True</span>
+            <span class="k">except</span> <span class="p">(</span><span class="ne">TypeError</span><span class="p">,</span> <span class="ne">OverflowError</span><span class="p">):</span>
+                <span class="k">return</span> <span class="kc">False</span>
+
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">json_filepath</span><span class="p">,</span> <span class="s1">&#39;w+&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">json_data_file</span><span class="p">:</span>
+            <span class="n">_json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">kc</span><span class="p">:</span> <span class="n">x</span> <span class="k">if</span> <span class="n">_is_jsonable</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">else</span> <span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="p">))</span><span class="o">.</span><span class="n">to_dict</span><span class="p">(),</span> <span class="n">json_data_file</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Container.to_list"><a class="viewcode-back" href="../../../core/container/Container.html#ivy.core.container.Container.to_list">[docs]</a>    <span class="k">def</span> <span class="nf">to_list</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
