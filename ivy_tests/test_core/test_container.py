@@ -303,7 +303,7 @@ def test_container_to_and_from_disk_as_json(dev_str, call):
         # container disk saving requires eager execution
         pytest.skip()
     save_filepath = 'container_on_disk.json'
-    dict_in = {'a': 3, 'b': {'c': True, 'd': ivy.array([np.float32(3.)])}}
+    dict_in = {'a': 1.274e-7, 'b': {'c': True, 'd': ivy.array([np.float32(3.)])}}
     container = Container(dict_in)
 
     # saving
