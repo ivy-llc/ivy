@@ -3,6 +3,7 @@ Base Container Object
 """
 
 # global
+import json as _json
 import h5py as _h5py
 import pickle as _pickle
 import random as _random
@@ -124,7 +125,7 @@ class Container(dict):
     @staticmethod
     def from_disk_as_hdf5(h5_obj_or_filepath, slice_obj=slice(None)):
         """
-        Load container object from disk, as an h5py file, at the specified filepath.
+        Load container object from disk, as an h5py file, at the specified hdf5 filepath.
 
         :param h5_obj_or_filepath: Filepath where the container object is saved to disk, or h5 object.
         :type h5_obj_or_filepath: str or h5 obj
@@ -150,13 +151,26 @@ class Container(dict):
     @staticmethod
     def from_disk_as_pickled(pickle_filepath):
         """
-        Load container object from disk at the specified filepath.
+        Load container object from disk at the specified pickle filepath.
 
         :param pickle_filepath: Filepath where the container object is saved to disk.
         :type pickle_filepath: str
         :return: Container loaded from disk
         """
         return _pickle.load(open(pickle_filepath, 'rb'))
+
+    @staticmethod
+    def from_disk_as_json(json_filepath):
+        """
+        Load container object from disk at the specified json filepath.
+        If some objects were not json-able during saving, then they will be loaded as strings.
+
+        :param json_filepath: Filepath where the container object is saved to disk.
+        :type json_filepath: str
+        :return: Container loaded from disk
+        """
+        with open(json_filepath) as json_data_file:
+            return Container(_json.load(json_data_file))
 
     @staticmethod
     def h5_file_size(h5_obj_or_filepath):
@@ -377,12 +391,30 @@ class Container(dict):
 
     def to_disk_as_pickled(self, pickle_filepath):
         """
-        Save container object to disk, as an h5py file, at the specified filepath.
+        Save container object to disk, as an pickled file, at the specified filepath.
 
         :param pickle_filepath: Filepath for where to save the container to disk.
         :type pickle_filepath: str
         """
         _pickle.dump(self, open(pickle_filepath, 'wb'))
+
+    def to_disk_as_json(self, json_filepath):
+        """
+        Save container object to disk, as an json file, at the specified filepath.
+
+        :param json_filepath: Filepath for where to save the container to disk.
+        :type json_filepath: str
+        """
+
+        def _is_jsonable(x):
+            try:
+                _json.dumps(x)
+                return True
+            except (TypeError, OverflowError):
+                return False
+
+        with open(json_filepath, 'w+') as json_data_file:
+            _json.dump(self.map(lambda x, kc: x if _is_jsonable(x) else str(x)).to_dict(), json_data_file, indent=4)
 
     def to_list(self):
         """
