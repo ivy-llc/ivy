@@ -281,23 +281,40 @@ def test_container_to_and_from_disk_as_pickled(dev_str, call):
         # container disk saving requires eager execution
         pytest.skip()
     save_filepath = 'container_on_disk.pickled'
-    dict_in_1 = {'a': ivy.array([np.float32(1.)]),
-                 'b': {'c': ivy.array([np.float32(2.)]), 'd': ivy.array([np.float32(3.)])}}
-    container1 = Container(dict_in_1)
-    dict_in_2 = {'a': ivy.array([np.float32(1.), np.float32(1.)]),
-                 'b': {'c': ivy.array([np.float32(2.), np.float32(2.)]),
-                       'd': ivy.array([np.float32(3.), np.float32(3.)])}}
-    container2 = Container(dict_in_2)
+    dict_in = {'a': ivy.array([np.float32(1.)]),
+               'b': {'c': ivy.array([np.float32(2.)]), 'd': ivy.array([np.float32(3.)])}}
+    container = Container(dict_in)
 
     # saving
-    container1.to_disk_as_pickled(save_filepath)
+    container.to_disk_as_pickled(save_filepath)
     assert os.path.exists(save_filepath)
 
     # loading
     loaded_container = Container.from_disk_as_pickled(save_filepath)
-    assert np.array_equal(loaded_container.a, container1.a)
-    assert np.array_equal(loaded_container.b.c, container1.b.c)
-    assert np.array_equal(loaded_container.b.d, container1.b.d)
+    assert np.array_equal(loaded_container.a, container.a)
+    assert np.array_equal(loaded_container.b.c, container.b.c)
+    assert np.array_equal(loaded_container.b.d, container.b.d)
+
+    os.remove(save_filepath)
+
+
+def test_container_to_and_from_disk_as_json(dev_str, call):
+    if call in [helpers.tf_graph_call]:
+        # container disk saving requires eager execution
+        pytest.skip()
+    save_filepath = 'container_on_disk.json'
+    dict_in = {'a': 3, 'b': {'c': True, 'd': ivy.array([np.float32(3.)])}}
+    container = Container(dict_in)
+
+    # saving
+    container.to_disk_as_json(save_filepath)
+    assert os.path.exists(save_filepath)
+
+    # loading
+    loaded_container = Container.from_disk_as_json(save_filepath)
+    assert np.array_equal(loaded_container.a, container.a)
+    assert np.array_equal(loaded_container.b.c, container.b.c)
+    assert isinstance(loaded_container.b.d, str)
 
     os.remove(save_filepath)
 
