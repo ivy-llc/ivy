@@ -6,8 +6,20 @@ Base Container Object
 import h5py as _h5py
 import pickle as _pickle
 import random as _random
+from operator import lt as _lt
+from operator import le as _le
+from operator import eq as _eq
+from operator import ne as _ne
+from operator import gt as _gt
+from operator import ge as _ge
+from operator import or_ as _or
 from operator import mul as _mul
+from operator import pow as _pow
+from operator import and_ as _and
+from operator import xor as _xor
 from functools import reduce as _reduce
+from operator import truediv as _truediv
+from operator import floordiv as _floordiv
 
 # local
 import ivy as _ivy
@@ -110,38 +122,6 @@ class Container(dict):
                 raise Exception(str(e) + '\nContainer concat operation only valid for containers of arrays')
 
     @staticmethod
-    def reduce(containers, reduction_mode):
-        """
-        Reduce containers.
-
-        :param containers: containers to reduce
-        :type containers: sequence of Container objects
-        :param reduction_mode: the type of reduction to perform
-        :type reduction_mode: str
-        :return: reduced containers
-        """
-        # ToDo: add support for min and max reductions
-        list_size = len(containers)
-        try:
-            red = {'sum': sum,
-                   'prod': lambda x: _reduce(_mul, x, 1),
-                   'mean': lambda x: sum(x) / list_size}[reduction_mode]
-        except KeyError:
-            raise Exception('reduction_mode must be one of [ sum | prod | mean ], but found {}'.format(reduction_mode))
-        container0 = containers[0]
-        if isinstance(container0, dict):
-            return_dict = dict()
-            for key in container0.keys():
-                return_dict[key] = Container.reduce([container[key] for container in containers], reduction_mode)
-            return Container(return_dict)
-        else:
-            # noinspection PyBroadException
-            try:
-                return red(containers)
-            except Exception as e:
-                raise Exception(str(e) + '\nContainer reduce operation only valid for containers of arrays')
-
-    @staticmethod
     def from_disk_as_hdf5(h5_obj_or_filepath, slice_obj=slice(None)):
         """
         Load container object from disk, as an h5py file, at the specified filepath.
@@ -233,6 +213,31 @@ class Container(dict):
                 raise Exception('Item found inside h5_obj which was neither a Group nor a Dataset.')
         if isinstance(h5_obj, _h5py.File):
             h5_obj.close()
+
+    @staticmethod
+    def reduce(containers, reduction):
+        """
+        Reduce containers.
+
+        :param containers: containers to reduce
+        :type containers: sequence of Container objects
+        :param reduction: the reduction function
+        :type reduction: callable with single list input x
+        :return: reduced containers
+        """
+        list_size = len(containers)
+        container0 = containers[0]
+        if isinstance(container0, dict):
+            return_dict = dict()
+            for key in container0.keys():
+                return_dict[key] = Container.reduce([container[key] for container in containers], reduction)
+            return Container(return_dict)
+        else:
+            # noinspection PyBroadException
+            try:
+                return reduction(containers)
+            except Exception as e:
+                raise Exception(str(e) + '\nContainer reduce operation only valid for containers of arrays')
 
     # Private Methods #
     # ----------------#
@@ -565,6 +570,99 @@ class Container(dict):
         except KeyError:
             # noinspection PyUnresolvedReferences
             return super.__getattr__(item)
+
+    def __pos__(self):
+        return self
+
+    def __neg__(self):
+        return self.map(lambda x, kc: -x)
+
+    def __pow__(self, power):
+        if isinstance(power, (float, int)):
+            return self.map(lambda x, kc: x ** power)
+        return self.reduce([self, power], lambda x: _reduce(_pow, x))
+
+    def __rpow__(self, power):
+        if not isinstance(power, (float, int)):
+            raise Exception('power must be float, int or ivy.Container, but found type: {}'.format(type(power)))
+        return self.map(lambda x, kc: power ** x)
+
+    def __add__(self, other):
+        if isinstance(other, (float, int)):
+            return self.map(lambda x, kc: x + other)
+        return self.reduce([self, other], sum)
+
+    def __radd__(self, other):
+        return self + other
+
+    def __sub__(self, other):
+        if isinstance(other, (float, int)):
+            return self.map(lambda x, kc: x - other)
+        return self.reduce([self, -other], sum)
+
+    def __rsub__(self, other):
+        return -self + other
+
+    def __mul__(self, other):
+        if isinstance(other, (float, int)):
+            return self.map(lambda x, kc: x * other)
+        return self.reduce([self, other], lambda x: _reduce(_mul, x))
+
+    def __rmul__(self, other):
+        return self * other
+
+    def __truediv__(self, other):
+        if isinstance(other, (float, int)):
+            return self.map(lambda x, kc: x / other)
+        return self.reduce([self, other], lambda x: _reduce(_truediv, x))
+
+    def __rtruediv__(self, other):
+        if not isinstance(other, (float, int)):
+            raise Exception('power must be float, int or ivy.Container, but found type: {}'.format(type(other)))
+        return self.map(lambda x, kc: other / x)
+
+    def __floordiv__(self, other):
+        if isinstance(other, (float, int)):
+            return self.map(lambda x, kc: x // other)
+        return self.reduce([self, other], lambda x: _reduce(_floordiv, x))
+
+    def __rfloordiv__(self, other):
+        if not isinstance(other, (float, int)):
+            raise Exception('power must be float, int or ivy.Container, but found type: {}'.format(type(other)))
+        return self.map(lambda x, kc: other // x)
+
+    def __abs__(self):
+        return self.map(lambda x, kc: _ivy.abs(x))
+
+    def __lt__(self, other):
+        return self.reduce([self, other], lambda x: _reduce(_lt, x))
+
+    def __le__(self, other):
+        return self.reduce([self, other], lambda x: _reduce(_le, x))
+
+    def __eq__(self, other):
+        return self.reduce([self, other], lambda x: _reduce(_eq, x))
+
+    def __ne__(self, other):
+        return self.reduce([self, other], lambda x: _reduce(_ne, x))
+
+    def __gt__(self, other):
+        return self.reduce([self, other], lambda x: _reduce(_gt, x))
+
+    def __ge__(self, other):
+        return self.reduce([self, other], lambda x: _reduce(_ge, x))
+
+    def __and__(self, other):
+        return self.reduce([self, other], lambda x: _reduce(_and, x))
+
+    def __or__(self, other):
+        return self.reduce([self, other], lambda x: _reduce(_or, x))
+
+    def __invert__(self):
+        return self.map(lambda x, kc: _ivy.logical_not(x))
+
+    def __xor__(self, other):
+        return self.reduce([self, other], lambda x: _reduce(_xor, x))
 
     # Getters #
     # --------#

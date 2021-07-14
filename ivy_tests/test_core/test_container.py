@@ -300,3 +300,368 @@ def test_container_to_and_from_disk_as_pickled(dev_str, call):
     assert np.array_equal(loaded_container.b.d, container1.b.d)
 
     os.remove(save_filepath)
+
+
+def test_container_positive(dev_str, call):
+    container = +Container({'a': ivy.array([1]), 'b': {'c': ivy.array([-2]), 'd': ivy.array([3])}})
+    assert container['a'] == ivy.array([1])
+    assert container.a == ivy.array([1])
+    assert container['b']['c'] == ivy.array([-2])
+    assert container.b.c == ivy.array([-2])
+    assert container['b']['d'] == ivy.array([3])
+    assert container.b.d == ivy.array([3])
+
+
+def test_container_negative(dev_str, call):
+    container = -Container({'a': ivy.array([1]), 'b': {'c': ivy.array([-2]), 'd': ivy.array([3])}})
+    assert container['a'] == ivy.array([-1])
+    assert container.a == ivy.array([-1])
+    assert container['b']['c'] == ivy.array([2])
+    assert container.b.c == ivy.array([2])
+    assert container['b']['d'] == ivy.array([-3])
+    assert container.b.d == ivy.array([-3])
+
+
+def test_container_pow(dev_str, call):
+    container_a = Container({'a': ivy.array([1]), 'b': {'c': ivy.array([2]), 'd': ivy.array([3])}})
+    container_b = Container({'a': ivy.array([2]), 'b': {'c': ivy.array([4]), 'd': ivy.array([6])}})
+    container = container_a ** container_b
+    assert container['a'] == ivy.array([1])
+    assert container.a == ivy.array([1])
+    assert container['b']['c'] == ivy.array([16])
+    assert container.b.c == ivy.array([16])
+    assert container['b']['d'] == ivy.array([729])
+    assert container.b.d == ivy.array([729])
+
+
+def test_container_scalar_pow(dev_str, call):
+    container_a = Container({'a': ivy.array([1]), 'b': {'c': ivy.array([2]), 'd': ivy.array([3])}})
+    container_b = Container({'a': ivy.array([2]), 'b': {'c': ivy.array([4]), 'd': ivy.array([6])}})
+    container = container_a ** 2
+    assert container['a'] == ivy.array([1])
+    assert container.a == ivy.array([1])
+    assert container['b']['c'] == ivy.array([4])
+    assert container.b.c == ivy.array([4])
+    assert container['b']['d'] == ivy.array([9])
+    assert container.b.d == ivy.array([9])
+
+
+def test_container_reverse_scalar_pow(dev_str, call):
+    container = Container({'a': ivy.array([1]), 'b': {'c': ivy.array([2]), 'd': ivy.array([3])}})
+    container = 2 ** container
+    assert container['a'] == ivy.array([2])
+    assert container.a == ivy.array([2])
+    assert container['b']['c'] == ivy.array([4])
+    assert container.b.c == ivy.array([4])
+    assert container['b']['d'] == ivy.array([8])
+    assert container.b.d == ivy.array([8])
+
+
+def test_container_scalar_addition(dev_str, call):
+    container = Container({'a': ivy.array([1]), 'b': {'c': ivy.array([2]), 'd': ivy.array([3])}})
+    container += 3
+    assert container['a'] == ivy.array([4])
+    assert container.a == ivy.array([4])
+    assert container['b']['c'] == ivy.array([5])
+    assert container.b.c == ivy.array([5])
+    assert container['b']['d'] == ivy.array([6])
+    assert container.b.d == ivy.array([6])
+
+
+def test_container_reverse_scalar_addition(dev_str, call):
+    container = Container({'a': ivy.array([1]), 'b': {'c': ivy.array([2]), 'd': ivy.array([3])}})
+    container = 3 + container
+    assert container['a'] == ivy.array([4])
+    assert container.a == ivy.array([4])
+    assert container['b']['c'] == ivy.array([5])
+    assert container.b.c == ivy.array([5])
+    assert container['b']['d'] == ivy.array([6])
+    assert container.b.d == ivy.array([6])
+
+
+def test_container_addition(dev_str, call):
+    container_a = Container({'a': ivy.array([1]), 'b': {'c': ivy.array([2]), 'd': ivy.array([3])}})
+    container_b = Container({'a': ivy.array([2]), 'b': {'c': ivy.array([4]), 'd': ivy.array([6])}})
+    container = container_a + container_b
+    assert container['a'] == ivy.array([3])
+    assert container.a == ivy.array([3])
+    assert container['b']['c'] == ivy.array([6])
+    assert container.b.c == ivy.array([6])
+    assert container['b']['d'] == ivy.array([9])
+    assert container.b.d == ivy.array([9])
+
+
+def test_container_scalar_subtraction(dev_str, call):
+    container = Container({'a': ivy.array([1]), 'b': {'c': ivy.array([2]), 'd': ivy.array([3])}})
+    container -= 1
+    assert container['a'] == ivy.array([0])
+    assert container.a == ivy.array([0])
+    assert container['b']['c'] == ivy.array([1])
+    assert container.b.c == ivy.array([1])
+    assert container['b']['d'] == ivy.array([2])
+    assert container.b.d == ivy.array([2])
+
+
+def test_container_reverse_scalar_subtraction(dev_str, call):
+    container = Container({'a': ivy.array([1]), 'b': {'c': ivy.array([2]), 'd': ivy.array([3])}})
+    container = 1 - container
+    assert container['a'] == ivy.array([0])
+    assert container.a == ivy.array([0])
+    assert container['b']['c'] == ivy.array([-1])
+    assert container.b.c == ivy.array([-1])
+    assert container['b']['d'] == ivy.array([-2])
+    assert container.b.d == ivy.array([-2])
+
+
+def test_container_subtraction(dev_str, call):
+    container_a = Container({'a': ivy.array([2]), 'b': {'c': ivy.array([4]), 'd': ivy.array([6])}})
+    container_b = Container({'a': ivy.array([1]), 'b': {'c': ivy.array([1]), 'd': ivy.array([4])}})
+    container = container_a - container_b
+    assert container['a'] == ivy.array([1])
+    assert container.a == ivy.array([1])
+    assert container['b']['c'] == ivy.array([3])
+    assert container.b.c == ivy.array([3])
+    assert container['b']['d'] == ivy.array([2])
+    assert container.b.d == ivy.array([2])
+
+
+def test_container_sum(dev_str, call):
+    container_a = Container({'a': ivy.array([1]), 'b': {'c': ivy.array([2]), 'd': ivy.array([3])}})
+    container_b = Container({'a': ivy.array([2]), 'b': {'c': ivy.array([4]), 'd': ivy.array([6])}})
+    container = sum([container_a, container_b])
+    assert container['a'] == ivy.array([3])
+    assert container.a == ivy.array([3])
+    assert container['b']['c'] == ivy.array([6])
+    assert container.b.c == ivy.array([6])
+    assert container['b']['d'] == ivy.array([9])
+    assert container.b.d == ivy.array([9])
+
+
+def test_container_scalar_multiplication(dev_str, call):
+    container = Container({'a': ivy.array([1.]), 'b': {'c': ivy.array([2.]), 'd': ivy.array([3.])}})
+    container *= 2.5
+    assert container['a'] == ivy.array([2.5])
+    assert container.a == ivy.array([2.5])
+    assert container['b']['c'] == ivy.array([5.])
+    assert container.b.c == ivy.array([5.])
+    assert container['b']['d'] == ivy.array([7.5])
+    assert container.b.d == ivy.array([7.5])
+
+
+def test_container_reverse_scalar_multiplication(dev_str, call):
+    container = Container({'a': ivy.array([1.]), 'b': {'c': ivy.array([2.]), 'd': ivy.array([3.])}})
+    container = 2.5 * container
+    assert container['a'] == ivy.array([2.5])
+    assert container.a == ivy.array([2.5])
+    assert container['b']['c'] == ivy.array([5.])
+    assert container.b.c == ivy.array([5.])
+    assert container['b']['d'] == ivy.array([7.5])
+    assert container.b.d == ivy.array([7.5])
+
+
+def test_container_multiplication(dev_str, call):
+    container_a = Container({'a': ivy.array([1]), 'b': {'c': ivy.array([2]), 'd': ivy.array([3])}})
+    container_b = Container({'a': ivy.array([2]), 'b': {'c': ivy.array([4]), 'd': ivy.array([6])}})
+    container = container_a * container_b
+    assert container['a'] == ivy.array([2])
+    assert container.a == ivy.array([2])
+    assert container['b']['c'] == ivy.array([8])
+    assert container.b.c == ivy.array([8])
+    assert container['b']['d'] == ivy.array([18])
+    assert container.b.d == ivy.array([18])
+
+
+def test_container_scalar_truediv(dev_str, call):
+    container = Container({'a': ivy.array([1.]), 'b': {'c': ivy.array([5.]), 'd': ivy.array([5.])}})
+    container /= 2
+    assert container['a'] == ivy.array([0.5])
+    assert container.a == ivy.array([0.5])
+    assert container['b']['c'] == ivy.array([2.5])
+    assert container.b.c == ivy.array([2.5])
+    assert container['b']['d'] == ivy.array([2.5])
+    assert container.b.d == ivy.array([2.5])
+
+
+def test_container_reverse_scalar_truediv(dev_str, call):
+    container = Container({'a': ivy.array([1.]), 'b': {'c': ivy.array([5.]), 'd': ivy.array([5.])}})
+    container = 2 / container
+    assert container['a'] == ivy.array([2.])
+    assert container.a == ivy.array([2.])
+    assert container['b']['c'] == ivy.array([0.4])
+    assert container.b.c == ivy.array([0.4])
+    assert container['b']['d'] == ivy.array([0.4])
+    assert container.b.d == ivy.array([0.4])
+
+
+def test_container_truediv(dev_str, call):
+    container_a = Container({'a': ivy.array([1.]), 'b': {'c': ivy.array([5.]), 'd': ivy.array([5.])}})
+    container_b = Container({'a': ivy.array([2.]), 'b': {'c': ivy.array([2.]), 'd': ivy.array([4.])}})
+    container = container_a / container_b
+    assert container['a'] == ivy.array([0.5])
+    assert container.a == ivy.array([0.5])
+    assert container['b']['c'] == ivy.array([2.5])
+    assert container.b.c == ivy.array([2.5])
+    assert container['b']['d'] == ivy.array([1.25])
+    assert container.b.d == ivy.array([1.25])
+
+
+def test_container_scalar_floordiv(dev_str, call):
+    if call is helpers.mx_call:
+        # MXnet arrays do not overload the // operator, can add if explicit ivy.floordiv is implemented at some point
+        pytest.skip()
+    container = Container({'a': ivy.array([1]), 'b': {'c': ivy.array([5]), 'd': ivy.array([5])}})
+    container //= 2
+    assert container['a'] == ivy.array([0])
+    assert container.a == ivy.array([0])
+    assert container['b']['c'] == ivy.array([2])
+    assert container.b.c == ivy.array([2])
+    assert container['b']['d'] == ivy.array([2])
+    assert container.b.d == ivy.array([2])
+
+
+def test_container_reverse_scalar_floordiv(dev_str, call):
+    if call is helpers.mx_call:
+        # MXnet arrays do not overload the // operator, can add if explicit ivy.floordiv is implemented at some point
+        pytest.skip()
+    container = Container({'a': ivy.array([2]), 'b': {'c': ivy.array([1]), 'd': ivy.array([7])}})
+    container = 5 // container
+    assert container['a'] == ivy.array([2])
+    assert container.a == ivy.array([2])
+    assert container['b']['c'] == ivy.array([5])
+    assert container.b.c == ivy.array([5])
+    assert container['b']['d'] == ivy.array([0])
+    assert container.b.d == ivy.array([0])
+
+
+def test_container_floordiv(dev_str, call):
+    if call is helpers.mx_call:
+        # MXnet arrays do not overload the // operator, can add if explicit ivy.floordiv is implemented at some point
+        pytest.skip()
+    container_a = Container({'a': ivy.array([1]), 'b': {'c': ivy.array([5]), 'd': ivy.array([5])}})
+    container_b = Container({'a': ivy.array([2]), 'b': {'c': ivy.array([2]), 'd': ivy.array([4])}})
+    container = container_a // container_b
+    assert container['a'] == ivy.array([0])
+    assert container.a == ivy.array([0])
+    assert container['b']['c'] == ivy.array([2])
+    assert container.b.c == ivy.array([2])
+    assert container['b']['d'] == ivy.array([1])
+    assert container.b.d == ivy.array([1])
+
+
+def test_container_abs(dev_str, call):
+    container = abs(Container({'a': ivy.array([1]), 'b': {'c': ivy.array([-2]), 'd': ivy.array([3])}}))
+    assert container['a'] == ivy.array([1])
+    assert container.a == ivy.array([1])
+    assert container['b']['c'] == ivy.array([2])
+    assert container.b.c == ivy.array([2])
+    assert container['b']['d'] == ivy.array([3])
+    assert container.b.d == ivy.array([3])
+
+
+def test_container_less_than(dev_str, call):
+    container_a = Container({'a': ivy.array([1]), 'b': {'c': ivy.array([5]), 'd': ivy.array([5])}})
+    container_b = Container({'a': ivy.array([2]), 'b': {'c': ivy.array([2]), 'd': ivy.array([5])}})
+    container = container_a < container_b
+    assert container['a'] == ivy.array([True])
+    assert container.a == ivy.array([True])
+    assert container['b']['c'] == ivy.array([False])
+    assert container.b.c == ivy.array([False])
+    assert container['b']['d'] == ivy.array([False])
+    assert container.b.d == ivy.array([False])
+
+
+def test_container_less_than_or_equal_to(dev_str, call):
+    container_a = Container({'a': ivy.array([1]), 'b': {'c': ivy.array([5]), 'd': ivy.array([5])}})
+    container_b = Container({'a': ivy.array([2]), 'b': {'c': ivy.array([2]), 'd': ivy.array([5])}})
+    container = container_a <= container_b
+    assert container['a'] == ivy.array([True])
+    assert container.a == ivy.array([True])
+    assert container['b']['c'] == ivy.array([False])
+    assert container.b.c == ivy.array([False])
+    assert container['b']['d'] == ivy.array([True])
+    assert container.b.d == ivy.array([True])
+
+
+def test_container_not_equal_to(dev_str, call):
+    container_a = Container({'a': ivy.array([1]), 'b': {'c': ivy.array([5]), 'd': ivy.array([5])}})
+    container_b = Container({'a': ivy.array([2]), 'b': {'c': ivy.array([2]), 'd': ivy.array([5])}})
+    container = container_a != container_b
+    assert container['a'] == ivy.array([True])
+    assert container.a == ivy.array([True])
+    assert container['b']['c'] == ivy.array([True])
+    assert container.b.c == ivy.array([True])
+    assert container['b']['d'] == ivy.array([False])
+    assert container.b.d == ivy.array([False])
+
+
+def test_container_greater_than(dev_str, call):
+    container_a = Container({'a': ivy.array([1]), 'b': {'c': ivy.array([5]), 'd': ivy.array([5])}})
+    container_b = Container({'a': ivy.array([2]), 'b': {'c': ivy.array([2]), 'd': ivy.array([5])}})
+    container = container_a > container_b
+    assert container['a'] == ivy.array([False])
+    assert container.a == ivy.array([False])
+    assert container['b']['c'] == ivy.array([True])
+    assert container.b.c == ivy.array([True])
+    assert container['b']['d'] == ivy.array([False])
+    assert container.b.d == ivy.array([False])
+
+
+def test_container_greater_than_or_equal_to(dev_str, call):
+    container_a = Container({'a': ivy.array([1]), 'b': {'c': ivy.array([5]), 'd': ivy.array([5])}})
+    container_b = Container({'a': ivy.array([2]), 'b': {'c': ivy.array([2]), 'd': ivy.array([5])}})
+    container = container_a >= container_b
+    assert container['a'] == ivy.array([False])
+    assert container.a == ivy.array([False])
+    assert container['b']['c'] == ivy.array([True])
+    assert container.b.c == ivy.array([True])
+    assert container['b']['d'] == ivy.array([True])
+    assert container.b.d == ivy.array([True])
+
+
+def test_container_and(dev_str, call):
+    container_a = Container({'a': ivy.array([True]), 'b': {'c': ivy.array([True]), 'd': ivy.array([False])}})
+    container_b = Container({'a': ivy.array([False]), 'b': {'c': ivy.array([True]), 'd': ivy.array([False])}})
+    container = container_a and container_b
+    assert container['a'] == ivy.array([False])
+    assert container.a == ivy.array([False])
+    assert container['b']['c'] == ivy.array([True])
+    assert container.b.c == ivy.array([True])
+    assert container['b']['d'] == ivy.array([False])
+    assert container.b.d == ivy.array([False])
+
+
+def test_container_or(dev_str, call):
+    container_a = Container({'a': ivy.array([True]), 'b': {'c': ivy.array([True]), 'd': ivy.array([False])}})
+    container_b = Container({'a': ivy.array([False]), 'b': {'c': ivy.array([True]), 'd': ivy.array([False])}})
+    container = container_a or container_b
+    assert container['a'] == ivy.array([True])
+    assert container.a == ivy.array([True])
+    assert container['b']['c'] == ivy.array([True])
+    assert container.b.c == ivy.array([True])
+    assert container['b']['d'] == ivy.array([False])
+    assert container.b.d == ivy.array([False])
+
+
+def test_container_not(dev_str, call):
+    container = ~Container({'a': ivy.array([True]), 'b': {'c': ivy.array([True]), 'd': ivy.array([False])}})
+    assert container['a'] == ivy.array([False])
+    assert container.a == ivy.array([False])
+    assert container['b']['c'] == ivy.array([False])
+    assert container.b.c == ivy.array([False])
+    assert container['b']['d'] == ivy.array([True])
+    assert container.b.d == ivy.array([True])
+
+
+def test_container_xor(dev_str, call):
+    if call is helpers.mx_call:
+        # MXnet arrays do not overload the ^ operator, can add if explicit ivy.logical_xor is implemented at some point
+        pytest.skip()
+    container_a = Container({'a': ivy.array([True]), 'b': {'c': ivy.array([True]), 'd': ivy.array([False])}})
+    container_b = Container({'a': ivy.array([False]), 'b': {'c': ivy.array([True]), 'd': ivy.array([False])}})
+    container = container_a ^ container_b
+    assert container['a'] == ivy.array([True])
+    assert container.a == ivy.array([True])
+    assert container['b']['c'] == ivy.array([False])
+    assert container.b.c == ivy.array([False])
+    assert container['b']['d'] == ivy.array([False])
+    assert container.b.d == ivy.array([False])
