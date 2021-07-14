@@ -320,6 +320,24 @@ class Container(dict):
 
         return Container(return_dict)
 
+    def slice_via_key(self, slice_key):
+        """
+        Get slice of container, based on key.
+
+        :param slice_key: key to slice container at.
+        :type slice_key: str
+        :return: Container object sliced at desired key.
+        """
+        return_dict = dict()
+        for key, value in sorted(self.items()):
+            if key == slice_key:
+                return value
+            elif isinstance(value, Container):
+                return_dict[key] = value.slice_via_key(slice_key)
+            else:
+                return_dict[key] = value
+        return Container(return_dict)
+
     def expand_dims(self, axis):
         """
         Expand dims of all sub-arrays of container object.
