@@ -215,7 +215,8 @@
         <span class="k">elif</span> <span class="s1">&#39;cpu&#39;</span> <span class="ow">in</span> <span class="n">dev_str</span><span class="p">:</span>
             <span class="k">pass</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;Invalid device specified, must be in the form [ &quot;cpu:idx&quot; | &quot;gpu:idx&quot; ]&#39;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;Invalid device specified, must be in the form [ &quot;cpu:idx&quot; | &quot;gpu:idx&quot; ],&#39;</span>
+                            <span class="s1">&#39;but found </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">dev_str</span><span class="p">))</span>
     <span class="k">return</span> <span class="n">x</span>
 
 
