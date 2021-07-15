@@ -29,7 +29,8 @@ def _to_dev(x, dev_str):
         elif 'cpu' in dev_str:
             pass
         else:
-            raise Exception('Invalid device specified, must be in the form [ "cpu:idx" | "gpu:idx" ]')
+            raise Exception('Invalid device specified, must be in the form [ "cpu:idx" | "gpu:idx" ],'
+                            'but found {}'.format(dev_str))
     return x
 
 
