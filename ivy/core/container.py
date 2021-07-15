@@ -285,7 +285,7 @@ class Container(dict):
         """
         return_dict = dict()
         if seed_value is None:
-            seed_value = _random.randint(0, 1000)
+            seed_value = _ivy.to_numpy(_ivy.random.randint(0, 1000, [])).item()
         for key, value in sorted(self.items()):
             if isinstance(value, Container):
                 return_dict[key] = value.shuffle(seed_value)
