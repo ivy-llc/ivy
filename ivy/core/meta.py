@@ -5,32 +5,39 @@ import ivy
 # Private #
 # --------#
 
-def _train_task(sub_batch, inner_cost_fn, inner_v, outer_v, inner_grad_steps, inner_learning_rate, first_order):
-    outer_v_in_loop = outer_v.map(lambda x, kc: ivy.stop_gradient(x)) if first_order else outer_v
+def _train_task(sub_batch, inner_cost_fn, inner_v, outer_v, inner_grad_steps, inner_learning_rate, first_order,
+                average_across_steps):
+    total_cost = 0
     for i in range(inner_grad_steps):
-        _, inner_grads = ivy.execute_with_gradients(lambda v: inner_cost_fn(sub_batch, v, outer_v_in_loop), inner_v,
-                                                    retain_grads=not first_order)
+        inner_v = inner_v.map(lambda x, kc: ivy.variable(ivy.stop_gradient(x))) if first_order else inner_v
+        cost, inner_grads = ivy.execute_with_gradients(lambda v: inner_cost_fn(sub_batch, v, outer_v), inner_v,
+                                                       retain_grads=not first_order or average_across_steps)
+        total_cost = total_cost + cost
         inner_v = ivy.gradient_descent_update(inner_v, inner_grads, inner_learning_rate)
-    return inner_cost_fn(sub_batch, inner_v, outer_v), inner_v
+    final_cost = inner_cost_fn(sub_batch, inner_v, outer_v)
+    if average_across_steps:
+        total_cost = total_cost + final_cost
+        return total_cost / (inner_grad_steps + 1), inner_v
+    return final_cost, inner_v
 
 
 def _train_tasks(batch, inner_cost_fn, outer_cost_fn, inner_v, outer_v, batch_size, inner_grad_steps,
-                 inner_learning_rate, first_order=True):
-    costs = list()
+                 inner_learning_rate, first_order, average_across_steps):
+    total_cost = 0
     for sub_batch in batch.unstack(0, batch_size):
         cost, inner_v = _train_task(sub_batch, inner_cost_fn, inner_v, outer_v, inner_grad_steps,
-                                    inner_learning_rate, first_order)
+                                    inner_learning_rate, first_order, average_across_steps)
         if outer_cost_fn is not None:
             cost = outer_cost_fn(sub_batch, inner_v, outer_v)
-        costs.append(cost)
-    return sum(costs) / len(costs)
+        total_cost = total_cost + cost
+    return total_cost / batch_size
 
 
 # Public #
 # -------#
 
 def fomaml_step(batch, inner_cost_fn, outer_cost_fn, inner_v, outer_v, batch_size, inner_grad_steps,
-                inner_learning_rate):
+                inner_learning_rate, average_across_steps=False):
     """
     Perform step of first order MAML.
 
@@ -50,7 +57,9 @@ def fomaml_step(batch, inner_cost_fn, outer_cost_fn, inner_v, outer_v, batch_siz
     :type inner_grad_steps: int
     :param inner_learning_rate: The learning rate of the inner loop.
     :type inner_learning_rate: float
+    :param average_across_steps: Whether to average the inner loop steps for the outer loop update. Default is False.
+    :type average_across_steps: bool, optional
     """
     return ivy.execute_with_gradients(lambda v: _train_tasks(
         batch, inner_cost_fn, outer_cost_fn, inner_v, v, batch_size, inner_grad_steps, inner_learning_rate,
-        first_order=True), outer_v)
+        first_order=True, average_across_steps=average_across_steps), outer_v)
