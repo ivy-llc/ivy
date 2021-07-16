@@ -19,7 +19,7 @@ def is_variable(x):
     return isinstance(x, _tf.Variable)
 
 
-def execute_with_gradients(func, xs):
+def execute_with_gradients(func, xs, retain_grads=False):
     with _tf.GradientTape() as tape:
         func_ret = func(xs)
     if isinstance(func_ret, tuple):

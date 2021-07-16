@@ -196,7 +196,7 @@ def test_adam_update(ws_n_grads_n_lr_n_wsnew, dtype_str, tensor_fn, dev_str, cal
     helpers.assert_compilable(ivy.adam_update)
 
 
-# gradient_descent_update
+# stop_gradient
 @pytest.mark.parametrize(
     "x_raw", [[0.]])
 @pytest.mark.parametrize(
