@@ -198,7 +198,22 @@
 <dl class="py function">
 <dt id="ivy.core.meta.fomaml_step">
 <code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">fomaml_step</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">batch</span></em>, <em class="sig-param"><span class="n">inner_cost_fn</span></em>, <em class="sig-param"><span class="n">outer_cost_fn</span></em>, <em class="sig-param"><span class="n">inner_v</span></em>, <em class="sig-param"><span class="n">outer_v</span></em>, <em class="sig-param"><span class="n">batch_size</span></em>, <em class="sig-param"><span class="n">inner_grad_steps</span></em>, <em class="sig-param"><span class="n">inner_learning_rate</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/meta.html#fomaml_step"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.meta.fomaml_step" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Perform step of first order MAML.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>batch</strong> (<em>ivy.Container</em>) – The input batch</p></li>
+<li><p><strong>inner_cost_fn</strong> (<em>callable</em>) – callable for the inner loop cost function, receing sub-batch, inner vars and outer vars</p></li>
+<li><p><strong>outer_cost_fn</strong> (<em>callable</em>) – callable for the outer loop cost function, receing sub-batch, inner vars and outer vars</p></li>
+<li><p><strong>inner_v</strong> (<em>ivy.Container</em>) – Variables to be optimized during the inner loop</p></li>
+<li><p><strong>outer_v</strong> (<em>ivy.Container</em>) – Variables to be optimized during the outer loop</p></li>
+<li><p><strong>batch_size</strong> (<em>int</em>) – size of the batch</p></li>
+<li><p><strong>inner_grad_steps</strong> (<em>int</em>) – Number of gradient steps to perform during the inner loop.</p></li>
+<li><p><strong>inner_learning_rate</strong> (<em>float</em>) – The learning rate of the inner loop.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
 
 <div class="line-block">
 <div class="line"><br /></div>
