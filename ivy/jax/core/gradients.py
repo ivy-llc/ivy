@@ -15,7 +15,7 @@ variable = lambda x: x
 is_variable = lambda x: True
 
 
-def execute_with_gradients(func, xs):
+def execute_with_gradients(func, xs, retain_grads=False):
     xs = xs.to_dict()
     func_ret = func(xs)
     if isinstance(func_ret, tuple):
