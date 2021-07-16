@@ -25,7 +25,7 @@ def execute_with_gradients(func, xs, retain_grads=False):
     else:
         y = func_ret
         rest = tuple()
-    y.backward(retain_graph=retain_grads)
+    y.backward(retain_graph=retain_grads, inputs=[v for k,v in xs.to_iterator()])
     xs_grad = xs.map(lambda x, _: x.grad.data.detach().clone())
     if not retain_grads:
         xs.map(lambda x, _: x.grad.data.zero_())
