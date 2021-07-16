@@ -12,6 +12,8 @@ from . import logic
 from .logic import *
 from . import math
 from .math import *
+from . import meta
+from .meta import *
 from . import random
 from .random import *
 from . import reductions
