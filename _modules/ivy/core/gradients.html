@@ -218,7 +218,7 @@
     <span class="k">return</span> <span class="n">_get_framework</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">is_variable</span><span class="p">(</span><span class="n">x</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="execute_with_gradients"><a class="viewcode-back" href="../../../core/gradients/execute_with_gradients.html#ivy.core.gradients.execute_with_gradients">[docs]</a><span class="k">def</span> <span class="nf">execute_with_gradients</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">xs</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="execute_with_gradients"><a class="viewcode-back" href="../../../core/gradients/execute_with_gradients.html#ivy.core.gradients.execute_with_gradients">[docs]</a><span class="k">def</span> <span class="nf">execute_with_gradients</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">xs</span><span class="p">,</span> <span class="n">retain_grads</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Call function func with input of xs variables, and return func first output y, the gradients [dy/dx for x in xs],</span>
 <span class="sd">    and any other function outputs after the returned y value</span>
@@ -227,11 +227,13 @@
 <span class="sd">    :type func: function</span>
 <span class="sd">    :param xs: Variables for which to compute the function gradients with respective to.</span>
 <span class="sd">    :type xs: sequence of variables</span>
+<span class="sd">    :param retain_grads: Whether to retain the gradients of the returned values.</span>
+<span class="sd">    :type retain_grads: bool</span>
 <span class="sd">    :param f: Machine learning framework. Inferred from inputs if None.</span>
 <span class="sd">    :type f: ml_framework, optional</span>
 <span class="sd">    :return: the function first output y, the gradients [dy/dx for x in xs], and any other extra function outputs</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">_get_framework</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">execute_with_gradients</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">xs</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">_get_framework</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">execute_with_gradients</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">xs</span><span class="p">,</span> <span class="n">retain_grads</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="gradient_descent_update"><a class="viewcode-back" href="../../../core/gradients/gradient_descent_update.html#ivy.core.gradients.gradient_descent_update">[docs]</a><span class="k">def</span> <span class="nf">gradient_descent_update</span><span class="p">(</span><span class="n">ws</span><span class="p">,</span> <span class="n">dcdws</span><span class="p">,</span> <span class="n">lr</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
