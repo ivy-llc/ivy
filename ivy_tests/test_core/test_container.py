@@ -148,6 +148,29 @@ def test_container_to_iterator(dev_str, call):
         assert value == expected_value
 
 
+def test_container_to_flat_list(dev_str, call):
+    dict_in = {'a': ivy.array([1]),
+               'b': {'c': ivy.array([2]), 'd': ivy.array([3])}}
+    container = Container(dict_in)
+    container_flat_list = container.to_flat_list()
+    for value, expected_value in zip(container_flat_list, [ivy.array([1]), ivy.array([2]), ivy.array([3])]):
+        assert value == expected_value
+
+
+def test_container_from_flat_list(dev_str, call):
+    dict_in = {'a': ivy.array([1]),
+               'b': {'c': ivy.array([2]), 'd': ivy.array([3])}}
+    container = Container(dict_in)
+    flat_list = [4, 5, 6]
+    container = container.from_flat_list(flat_list)
+    assert container['a'] == ivy.array([4])
+    assert container.a == ivy.array([4])
+    assert container['b']['c'] == ivy.array([5])
+    assert container.b.c == ivy.array([5])
+    assert container['b']['d'] == ivy.array([6])
+    assert container.b.d == ivy.array([6])
+
+
 def test_container_map(dev_str, call):
     dict_in = {'a': ivy.array([1]),
                'b': {'c': ivy.array([2]), 'd': ivy.array([3])}}
