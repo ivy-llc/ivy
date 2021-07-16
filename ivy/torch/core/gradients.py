@@ -17,7 +17,7 @@ def is_variable(x):
     return x.requires_grad
 
 
-def execute_with_gradients(func, xs):
+def execute_with_gradients(func, xs, retain_grads=False):
     func_ret = func(xs)
     if isinstance(func_ret, tuple):
         y = func_ret[0]
@@ -25,10 +25,11 @@ def execute_with_gradients(func, xs):
     else:
         y = func_ret
         rest = tuple()
-    y.backward()
+    y.backward(retain_graph=retain_grads)
     xs_grad = xs.map(lambda x, _: x.grad.data.detach().clone())
-    xs.map(lambda x, _: x.grad.data.zero_())
-    return (y.detach(), xs_grad, *rest)
+    if not retain_grads:
+        xs.map(lambda x, _: x.grad.data.zero_())
+    return (y, xs_grad, *rest)
 
 
 def gradient_descent_update(ws, dcdws, lr):

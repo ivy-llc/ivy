@@ -32,7 +32,7 @@ def is_variable(x, f=None):
     return _get_framework(x, f=f).is_variable(x)
 
 
-def execute_with_gradients(func, xs, f=None):
+def execute_with_gradients(func, xs, retain_grads=False, f=None):
     """
     Call function func with input of xs variables, and return func first output y, the gradients [dy/dx for x in xs],
     and any other function outputs after the returned y value
@@ -41,11 +41,13 @@ def execute_with_gradients(func, xs, f=None):
     :type func: function
     :param xs: Variables for which to compute the function gradients with respective to.
     :type xs: sequence of variables
+    :param retain_grads: Whether to retain the gradients of the returned values.
+    :type retain_grads: bool
     :param f: Machine learning framework. Inferred from inputs if None.
     :type f: ml_framework, optional
     :return: the function first output y, the gradients [dy/dx for x in xs], and any other extra function outputs
     """
-    return _get_framework(None, f=f).execute_with_gradients(func, xs)
+    return _get_framework(None, f=f).execute_with_gradients(func, xs, retain_grads)
 
 
 def gradient_descent_update(ws, dcdws, lr, f=None):
