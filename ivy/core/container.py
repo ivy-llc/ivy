@@ -483,6 +483,23 @@ class Container(dict):
         """
         return list([item for key, item in self.to_iterator()])
 
+    def from_flat_list(self, flat_list):
+        """
+        Return new container object with the same hierarchy, but with values replaced from flat list.
+
+        :param flat_list: flat list of values to populate container with.
+        :type flat_list: sequence of arrays
+        :return: Container.
+        """
+        new_dict = dict()
+        for key, value in sorted(self.items()):
+            if isinstance(value, Container):
+                new_value = value.from_flat_list(flat_list)
+            else:
+                new_value = flat_list.pop(0)
+            new_dict[key] = new_value
+        return Container(new_dict)
+
     def to_random(self):
         """
         Return new container, with all entries having same shape and type, but random values
