@@ -271,6 +271,7 @@ Documentation Tree
    core/linalg.rst
    core/logic.rst
    core/math.rst
+   core/meta.rst
    core/random.rst
    core/reductions.rst
 
