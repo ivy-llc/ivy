@@ -13,4 +13,5 @@ Meta
    :caption: Meta
 
    meta/fomaml_step.rst
+   meta/reptile_step.rst
 
