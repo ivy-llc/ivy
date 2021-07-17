@@ -209,22 +209,22 @@
     <span class="k">return</span> <span class="n">final_cost</span><span class="p">,</span> <span class="n">inner_v</span>
 
 
-<span class="k">def</span> <span class="nf">_train_tasks</span><span class="p">(</span><span class="n">batch</span><span class="p">,</span> <span class="n">inner_cost_fn</span><span class="p">,</span> <span class="n">outer_cost_fn</span><span class="p">,</span> <span class="n">inner_v</span><span class="p">,</span> <span class="n">outer_v</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">,</span> <span class="n">inner_grad_steps</span><span class="p">,</span>
+<span class="k">def</span> <span class="nf">_train_tasks</span><span class="p">(</span><span class="n">batch</span><span class="p">,</span> <span class="n">inner_cost_fn</span><span class="p">,</span> <span class="n">outer_cost_fn</span><span class="p">,</span> <span class="n">inner_v</span><span class="p">,</span> <span class="n">outer_v</span><span class="p">,</span> <span class="n">num_tasks</span><span class="p">,</span> <span class="n">inner_grad_steps</span><span class="p">,</span>
                  <span class="n">inner_learning_rate</span><span class="p">,</span> <span class="n">inner_optimization_step</span><span class="p">,</span> <span class="n">first_order</span><span class="p">,</span> <span class="n">average_across_steps</span><span class="p">):</span>
     <span class="n">total_cost</span> <span class="o">=</span> <span class="mi">0</span>
-    <span class="k">for</span> <span class="n">sub_batch</span> <span class="ow">in</span> <span class="n">batch</span><span class="o">.</span><span class="n">unstack</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">sub_batch</span> <span class="ow">in</span> <span class="n">batch</span><span class="o">.</span><span class="n">unstack</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">num_tasks</span><span class="p">):</span>
         <span class="n">cost</span><span class="p">,</span> <span class="n">inner_v</span> <span class="o">=</span> <span class="n">_train_task</span><span class="p">(</span><span class="n">sub_batch</span><span class="p">,</span> <span class="n">inner_cost_fn</span><span class="p">,</span> <span class="n">inner_v</span><span class="p">,</span> <span class="n">outer_v</span><span class="p">,</span> <span class="n">inner_grad_steps</span><span class="p">,</span>
                                     <span class="n">inner_learning_rate</span><span class="p">,</span> <span class="n">inner_optimization_step</span><span class="p">,</span> <span class="n">first_order</span><span class="p">,</span> <span class="n">average_across_steps</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">outer_cost_fn</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">cost</span> <span class="o">=</span> <span class="n">outer_cost_fn</span><span class="p">(</span><span class="n">sub_batch</span><span class="p">,</span> <span class="n">inner_v</span><span class="p">,</span> <span class="n">outer_v</span><span class="p">)</span>
         <span class="n">total_cost</span> <span class="o">=</span> <span class="n">total_cost</span> <span class="o">+</span> <span class="n">cost</span>
-    <span class="k">return</span> <span class="n">total_cost</span> <span class="o">/</span> <span class="n">batch_size</span>
+    <span class="k">return</span> <span class="n">total_cost</span> <span class="o">/</span> <span class="n">num_tasks</span>
 
 
 <span class="c1"># Public #</span>
 <span class="c1"># -------#</span>
 
-<div class="viewcode-block" id="fomaml_step"><a class="viewcode-back" href="../../../core/meta/fomaml_step.html#ivy.core.meta.fomaml_step">[docs]</a><span class="k">def</span> <span class="nf">fomaml_step</span><span class="p">(</span><span class="n">batch</span><span class="p">,</span> <span class="n">inner_cost_fn</span><span class="p">,</span> <span class="n">outer_cost_fn</span><span class="p">,</span> <span class="n">inner_v</span><span class="p">,</span> <span class="n">outer_v</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">,</span> <span class="n">inner_grad_steps</span><span class="p">,</span>
+<div class="viewcode-block" id="fomaml_step"><a class="viewcode-back" href="../../../core/meta/fomaml_step.html#ivy.core.meta.fomaml_step">[docs]</a><span class="k">def</span> <span class="nf">fomaml_step</span><span class="p">(</span><span class="n">batch</span><span class="p">,</span> <span class="n">inner_cost_fn</span><span class="p">,</span> <span class="n">outer_cost_fn</span><span class="p">,</span> <span class="n">inner_v</span><span class="p">,</span> <span class="n">outer_v</span><span class="p">,</span> <span class="n">num_tasks</span><span class="p">,</span> <span class="n">inner_grad_steps</span><span class="p">,</span>
                 <span class="n">inner_learning_rate</span><span class="p">,</span> <span class="n">inner_optimization_step</span><span class="o">=</span><span class="n">gradient_descent_update</span><span class="p">,</span> <span class="n">average_across_steps</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Perform step of first order MAML.</span>
@@ -239,8 +239,9 @@
 <span class="sd">    :type inner_v: ivy.Container</span>
 <span class="sd">    :param outer_v: Variables to be optimized during the outer loop</span>
 <span class="sd">    :type outer_v: ivy.Container</span>
-<span class="sd">    :param batch_size: size of the batch</span>
-<span class="sd">    :type batch_size: int</span>
+<span class="sd">    :param num_tasks: Number of unique tasks to inner-loop optimize for during the meta step.</span>
+<span class="sd">                        This must be the leading size of the input batch.</span>
+<span class="sd">    :type num_tasks: int</span>
 <span class="sd">    :param inner_grad_steps: Number of gradient steps to perform during the inner loop.</span>
 <span class="sd">    :type inner_grad_steps: int</span>
 <span class="sd">    :param inner_learning_rate: The learning rate of the inner loop.</span>
@@ -252,7 +253,7 @@
 <span class="sd">    :type average_across_steps: bool, optional</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">execute_with_gradients</span><span class="p">(</span><span class="k">lambda</span> <span class="n">v</span><span class="p">:</span> <span class="n">_train_tasks</span><span class="p">(</span>
-        <span class="n">batch</span><span class="p">,</span> <span class="n">inner_cost_fn</span><span class="p">,</span> <span class="n">outer_cost_fn</span><span class="p">,</span> <span class="n">inner_v</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">,</span> <span class="n">inner_grad_steps</span><span class="p">,</span> <span class="n">inner_learning_rate</span><span class="p">,</span>
+        <span class="n">batch</span><span class="p">,</span> <span class="n">inner_cost_fn</span><span class="p">,</span> <span class="n">outer_cost_fn</span><span class="p">,</span> <span class="n">inner_v</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">num_tasks</span><span class="p">,</span> <span class="n">inner_grad_steps</span><span class="p">,</span> <span class="n">inner_learning_rate</span><span class="p">,</span>
         <span class="n">inner_optimization_step</span><span class="p">,</span> <span class="n">first_order</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">average_across_steps</span><span class="o">=</span><span class="n">average_across_steps</span><span class="p">),</span> <span class="n">outer_v</span><span class="p">)</span></div>
 </pre></div>
 
