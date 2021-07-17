@@ -32,8 +32,30 @@ def execute_with_gradients(func, xs, retain_grads=False):
     return (y, grads, *rest)
 
 
+def _gradient_descent_update_inplace(ws, dcdws, lr):
+    ws.map(lambda w, key_chain: w.assign(w - dcdws.at_key_chain(key_chain) * lr))
+    return ws
+
+
+def _gradient_descent_update_trackable(ws, dcdws, lr):
+    ws = ws.map(lambda w, key_chain: w - dcdws.at_key_chain(key_chain) * lr)
+    return ws
+
+
 def gradient_descent_update(ws, dcdws, lr, inplace=True):
-    ws.map(lambda w, key_chain: w.assign(w - (dcdws if key_chain == '' else dcdws.at_key_chain(key_chain)) * lr))
+    if inplace:
+        return _gradient_descent_update_inplace(ws, dcdws, lr)
+    return _gradient_descent_update_trackable(ws, dcdws, lr)
+
+
+def _adam_update_inplace(ws, dcdws, alpha, mw, vw, epsilon):
+    ws.map(lambda w, kc: w.assign(w - alpha * mw.at_key_chain(kc) / (vw.at_key_chain(kc) ** 0.5 + epsilon)))
+    return ws, mw, vw
+
+
+def _adam_update_trackable(ws, dcdws, alpha, mw, vw, epsilon):
+    ws = ws.map(lambda w, key_chain: w - alpha * mw.at_key_chain(key_chain) /
+                                     (vw.at_key_chain(key_chain) ** 0.5 + epsilon))
     return ws
 
 
@@ -45,8 +67,10 @@ def adam_update(ws, dcdws, lr, mw, vw, step, beta1=0.9, beta2=0.999, epsilon=1e-
     beta1_pow = beta1 ** step
     beta2_pow = beta2 ** step
     alpha = lr * (1 - beta2_pow)**0.5 / (1 - beta1_pow + epsilon)
-    ws.map(lambda w, kc: w.assign(w - alpha * mw.at_key_chain(kc) / (vw.at_key_chain(kc) ** 0.5 + epsilon)))
-    return ws, mw, vw
+
+    if inplace:
+        return _adam_update_inplace(ws, dcdws, alpha, mw, vw, epsilon)
+    return _adam_update_trackable(ws, dcdws, alpha, mw, vw, epsilon)
 
 
 stop_gradient = _tf.stop_gradient

@@ -98,11 +98,6 @@ def test_maml_step(dev_str, call, igs_og_wocf):
         # Numpy does not support gradients, mxnet.autograd.grad() does not support allow_unused like PyTorch
         pytest.skip()
 
-    # ToDo: investigate why jax and pytorch are the only frameworks where the second order terms are correct, and fix.
-    if call not in [helpers.jnp_call, helpers.torch_call]:
-        # Currently only jax and pytorch treat the inner loop optimization as unrolled graph
-        pytest.skip()
-
     # config
     num_tasks = 1
     inner_learning_rate = 1e-2
