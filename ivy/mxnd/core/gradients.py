@@ -29,13 +29,13 @@ def execute_with_gradients(func, xs, retain_grads=False):
     return (y, xs.from_flat_list(xs_flat), *rest)
 
 
-def gradient_descent_update(ws, dcdws, lr):
+def gradient_descent_update(ws, dcdws, lr, inplace=True):
     ws = ws.map(lambda w, key_chain: (w - (dcdws if key_chain == '' else dcdws.at_key_chain(key_chain)) * lr))
     ws.map(lambda w, _: w.attach_grad())
     return ws
 
 
-def adam_update(ws, dcdws, lr, mw, vw, step, beta1=0.9, beta2=0.999, epsilon=1e-7):
+def adam_update(ws, dcdws, lr, mw, vw, step, beta1=0.9, beta2=0.999, epsilon=1e-7, inplace=True):
     step = step.reshape((1,)).astype('float32')
     mw = dcdws.map(lambda dcdw, kc: beta1 * mw.at_key_chain(kc) + (1 - beta1) * dcdw)
     dcdws_sqrd = dcdws.map(lambda dcdw, _: dcdw ** 2)

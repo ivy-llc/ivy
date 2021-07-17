@@ -9,11 +9,11 @@ def _train_task(sub_batch, inner_cost_fn, inner_v, outer_v, inner_grad_steps, in
                 average_across_steps):
     total_cost = 0
     for i in range(inner_grad_steps):
-        inner_v = inner_v.map(lambda x, kc: ivy.variable(ivy.stop_gradient(x))) if first_order else inner_v
         cost, inner_grads = ivy.execute_with_gradients(lambda v: inner_cost_fn(sub_batch, v, outer_v), inner_v,
                                                        retain_grads=not first_order or average_across_steps)
         total_cost = total_cost + cost
-        inner_v = ivy.gradient_descent_update(inner_v, inner_grads, inner_learning_rate)
+        inner_v = ivy.gradient_descent_update(inner_v, inner_grads, inner_learning_rate, inplace=False)
+        inner_v = inner_v.map(lambda x, kc: ivy.variable(ivy.stop_gradient(x))) if first_order else inner_v
     final_cost = inner_cost_fn(sub_batch, inner_v, outer_v)
     if average_across_steps:
         total_cost = total_cost + final_cost

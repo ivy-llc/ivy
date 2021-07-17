@@ -50,7 +50,7 @@ def execute_with_gradients(func, xs, retain_grads=False, f=None):
     return _get_framework(None, f=f).execute_with_gradients(func, xs, retain_grads)
 
 
-def gradient_descent_update(ws, dcdws, lr, f=None):
+def gradient_descent_update(ws, dcdws, lr, inplace=True, f=None):
     """
     Update weights ws of some function, given the derivatives of some cost c with respect to ws, [dc/dw for w in ws].
 
@@ -60,14 +60,19 @@ def gradient_descent_update(ws, dcdws, lr, f=None):
     :type dcdws: Ivy container
     :param lr: Learning rate, the rate at which the weights should be updated relative to the gradient.
     :type lr: float
+    :param inplace: Whether to perform the operation inplace, for backends which support inplace variable updates,
+                    and handle gradients behind the scenes such as PyTorch. If the update step should form part of a
+                    computation graph (i.e. higher order optimization), then this should be set to False.
+                    Default is True.
+    :type inplace: bool, optional
     :param f: Machine learning framework. Inferred from inputs if None.
     :type f: ml_framework, optional
     :return: The new function weights ws_new, following the gradient descent updates.
     """
-    return _get_framework(None, f=f).gradient_descent_update(ws, dcdws, lr)
+    return _get_framework(None, f=f).gradient_descent_update(ws, dcdws, lr, inplace)
 
 
-def adam_update(ws, dcdws, lr, mw, vw, step, beta1=0.9, beta2=0.999, epsilon=1e-7, f=None):
+def adam_update(ws, dcdws, lr, mw, vw, step, beta1=0.9, beta2=0.999, epsilon=1e-7, inplace=True, f=None):
     """
     Update weights ws of some function, given the derivatives of some cost c with respect to ws, using ADAM update.
     `[reference] <https://en.wikipedia.org/wiki/Stochastic_gradient_descent#Adam>`_
@@ -90,11 +95,16 @@ def adam_update(ws, dcdws, lr, mw, vw, step, beta1=0.9, beta2=0.999, epsilon=1e-
     :type beta2: float
     :param epsilon: divisor during adam update, preventing division by zero
     :type epsilon: float
+    :param inplace: Whether to perform the operation inplace, for backends which support inplace variable updates,
+                    and handle gradients behind the scenes such as PyTorch. If the update step should form part of a
+                    computation graph (i.e. higher order optimization), then this should be set to False.
+                    Default is True.
+    :type inplace: bool, optional
     :param f: Machine learning framework. Inferred from inputs if None.
     :type f: ml_framework, optional
     :return: The new function weights ws_new, and also new mw and vw, following the gradient descent updates.
     """
-    return _get_framework(None, f=f).adam_update(ws, dcdws, lr, mw, vw, step, beta1, beta2, epsilon)
+    return _get_framework(None, f=f).adam_update(ws, dcdws, lr, mw, vw, step, beta1, beta2, epsilon, inplace)
 
 
 def stop_gradient(x, f=None):
