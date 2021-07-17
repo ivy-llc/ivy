@@ -92,7 +92,7 @@ def test_reptile_step(dev_str, call, igs_og_aas):
 
 # maml_step
 @pytest.mark.parametrize(
-    "igs_og_wocf", [(1, -0.02, False)])
+    "igs_og_wocf", [(1, -0.02, False), (2, -0.04, False), (3, -0.06, False)])
 def test_maml_step(dev_str, call, igs_og_wocf):
 
     inner_grad_steps, true_outer_grad, with_outer_cost_fn = igs_og_wocf
