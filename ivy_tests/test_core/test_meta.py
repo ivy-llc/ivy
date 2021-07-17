@@ -20,7 +20,9 @@ import ivy_tests.helpers as helpers
     "igs_og_wocf_aas_nt", [(1, -0.01, False, False, 1), (2, -0.02, False, False, 1), (3, -0.03, False, False, 1),
                            (1, 0.01, True, False, 1), (2, 0.02, True, False, 1), (3, 0.03, True, False, 1),
                            (1, -0.005, False, True, 1), (2, -0.01, False, True, 1), (3, -0.015, False, True, 1),
-                           (1, -0.025, False, False, 2), (2, -0.05, False, False, 2), (3, -0.075, False, False, 2)])
+                           (1, -0.025, False, False, 2), (2, -0.05, False, False, 2), (3, -0.075, False, False, 2),
+                           (1, 0.025, True, False, 2), (2, 0.05, True, False, 2), (3, 0.075, True, False, 2),
+                           (1, -0.0125, False, True, 2), (2, -0.025, False, True, 2), (3, -0.0375, False, True, 2)])
 def test_fomaml_step(dev_str, call, igs_og_wocf_aas_nt):
 
     inner_grad_steps, true_outer_grad, with_outer_cost_fn, average_across_steps, num_tasks = igs_og_wocf_aas_nt
@@ -41,11 +43,11 @@ def test_fomaml_step(dev_str, call, igs_og_wocf_aas_nt):
 
     # inner cost function
     def inner_cost_fn(sub_batch, inner_v, outer_v):
-        return -(sub_batch['x']*(inner_v['latent'] * outer_v['weight']))[0]
+        return -(sub_batch['x']* inner_v['latent'] * outer_v['weight'])[0]
 
     # outer cost function
     def outer_cost_fn(sub_batch, inner_v, outer_v):
-        return (inner_v['latent'] * outer_v['weight'])[0]
+        return (sub_batch['x'] * inner_v['latent'] * outer_v['weight'])[0]
 
     # meta update
     outer_cost, outer_grads = ivy.fomaml_step(
@@ -56,29 +58,30 @@ def test_fomaml_step(dev_str, call, igs_og_wocf_aas_nt):
 
 # reptile_step
 @pytest.mark.parametrize(
-    "igs_og_aas", [(1, -1.005, True), (2, -1.01, True), (3, -1.015, True),
-                   (1, -1.01, False), (2, -1.02, False), (3, -1.03, False)])
-def test_reptile_step(dev_str, call, igs_og_aas):
+    "igs_og_aas_nt", [(1, -1.01, False, 1), (2, -1.02, False, 1), (3, -1.03, False, 1),
+                      (1, -1.005, True, 1), (2, -1.01, True, 1), (3, -1.015, True, 1),
+                      (1, -1.525, False, 2), (2, -1.55, False, 2), (3, -1.575, False, 2),
+                      (1, -1.5125, True, 2), (2, -1.525, True, 2), (3, -1.5375, True, 2)])
+def test_reptile_step(dev_str, call, igs_og_aas_nt):
 
-    inner_grad_steps, true_outer_grad, average_across_steps = igs_og_aas
+    inner_grad_steps, true_outer_grad, average_across_steps, num_tasks = igs_og_aas_nt
 
     if call in [helpers.np_call, helpers.jnp_call]:
         # Numpy does not support gradients, and jax does not support gradients on custom nested classes
         pytest.skip()
 
     # config
-    num_tasks = 1
     inner_learning_rate = 1e-2
 
     # create variables
     latent = ivy.Container({'latent': ivy.variable(ivy.array([1.]))})
 
     # batch
-    batch = ivy.Container({'x': ivy.array([[0.]])})
+    batch = ivy.Container({'x': ivy.arange(num_tasks+1, 1, dtype_str='float32')})
 
     # cost function
     def cost_fn(sub_batch, inner_v, outer_v):
-        return -(inner_v['latent'] * outer_v['latent'])[0]
+        return -(sub_batch['x'] * inner_v['latent'] * outer_v['latent'])[0]
 
     # meta update
     outer_cost, outer_grads = ivy.reptile_step(
@@ -92,19 +95,21 @@ def test_reptile_step(dev_str, call, igs_og_aas):
 
 # maml_step
 @pytest.mark.parametrize(
-    "igs_og_wocf_aas", [(1, -0.02, False, False), (2, -0.04, False, False), (3, -0.06, False, False),
-                        (1, 0.02, True, False), (2, 0.04, True, False), (3, 0.06, True, False),
-                        (1, -0.01, False, True), (2, -0.02, False, True), (3, -0.03, False, True)])
-def test_maml_step(dev_str, call, igs_og_wocf_aas):
+    "igs_og_wocf_aas_nt", [(1, -0.02, False, False, 1), (2, -0.04, False, False, 1), (3, -0.06, False, False, 1),
+                           (1, 0.02, True, False, 1), (2, 0.04, True, False, 1), (3, 0.06, True, False, 1),
+                           (1, -0.01, False, True, 1), (2, -0.02, False, True, 1), (3, -0.03, False, True, 1),
+                           (1, -0.05, False, False, 2), (2, -0.1, False, False, 2), (3, -0.15, False, False, 2),
+                           (1, 0.03, True, False, 2), (2, 0.06, True, False, 2), (3, 0.09, True, False, 2),
+                           (1, -0.025, False, True, 2), (2, -0.05, False, True, 2), (3, -0.075, False, True, 2)])
+def test_maml_step(dev_str, call, igs_og_wocf_aas_nt):
 
-    inner_grad_steps, true_outer_grad, with_outer_cost_fn, average_across_steps = igs_og_wocf_aas
+    inner_grad_steps, true_outer_grad, with_outer_cost_fn, average_across_steps, num_tasks = igs_og_wocf_aas_nt
 
     if call in [helpers.np_call, helpers.mx_call]:
         # Numpy does not support gradients, mxnet.autograd.grad() does not support allow_unused like PyTorch
         pytest.skip()
 
     # config
-    num_tasks = 1
     inner_learning_rate = 1e-2
 
     # create variables
@@ -112,11 +117,11 @@ def test_maml_step(dev_str, call, igs_og_wocf_aas):
     latent = ivy.Container({'latent': ivy.variable(ivy.array([0.]))})
 
     # batch
-    batch = ivy.Container({'x': ivy.array([[0.]])})
+    batch = ivy.Container({'x': ivy.arange(num_tasks+1, 1, dtype_str='float32')})
 
     # inner cost function
     def inner_cost_fn(sub_batch, inner_v, outer_v):
-        return -(inner_v['latent'] * outer_v['weight'])[0]
+        return -(sub_batch['x'] * inner_v['latent'] * outer_v['weight'])[0]
 
     # outer cost function
     def outer_cost_fn(sub_batch, inner_v, outer_v):
