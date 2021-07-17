@@ -92,11 +92,12 @@ def test_reptile_step(dev_str, call, igs_og_aas):
 
 # maml_step
 @pytest.mark.parametrize(
-    "igs_og_wocf", [(1, -0.02, False), (2, -0.04, False), (3, -0.06, False),
-                    (1, 0.02, True), (2, 0.04, True), (3, 0.06, True)])
-def test_maml_step(dev_str, call, igs_og_wocf):
+    "igs_og_wocf_aas", [(1, -0.02, False, False), (2, -0.04, False, False), (3, -0.06, False, False),
+                        (1, 0.02, True, False), (2, 0.04, True, False), (3, 0.06, True, False),
+                        (1, -0.01, False, True), (2, -0.02, False, True), (3, -0.03, False, True)])
+def test_maml_step(dev_str, call, igs_og_wocf_aas):
 
-    inner_grad_steps, true_outer_grad, with_outer_cost_fn = igs_og_wocf
+    inner_grad_steps, true_outer_grad, with_outer_cost_fn, average_across_steps = igs_og_wocf_aas
 
     if call in [helpers.np_call, helpers.mx_call]:
         # Numpy does not support gradients, mxnet.autograd.grad() does not support allow_unused like PyTorch
@@ -124,5 +125,5 @@ def test_maml_step(dev_str, call, igs_og_wocf):
     # meta update
     outer_cost, outer_grads = ivy.maml_step(
         batch, inner_cost_fn, outer_cost_fn if with_outer_cost_fn else None, latent, weight, num_tasks,
-        inner_grad_steps, inner_learning_rate)
+        inner_grad_steps, inner_learning_rate, average_across_steps=average_across_steps)
     assert np.allclose(ivy.to_numpy(outer_grads.weight[0]), np.array(true_outer_grad))
