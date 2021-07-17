@@ -108,7 +108,7 @@ def reptile_step(batch, cost_fn, variables, num_tasks, inner_grad_steps, inner_l
 # Second Order
 
 def maml_step(batch, inner_cost_fn, outer_cost_fn, inner_v, outer_v, num_tasks, inner_grad_steps, inner_learning_rate,
-              inner_optimization_step=gradient_descent_update):
+              inner_optimization_step=gradient_descent_update, average_across_steps=False):
     """
     Perform step of vanilla second order MAML.
 
@@ -132,8 +132,10 @@ def maml_step(batch, inner_cost_fn, outer_cost_fn, inner_v, outer_v, num_tasks, 
     :param inner_optimization_step: The function used for the inner loop optimization.
                                     Default is ivy.gradient_descent_update.
     :type inner_optimization_step: callable, optional
+    :param average_across_steps: Whether to average the inner loop steps for the outer loop update. Default is False.
+    :type average_across_steps: bool, optional
     :return: The cost and the gradients with respect to the outer loop variables.
     """
     return ivy.execute_with_gradients(lambda v: _train_tasks(
         batch, inner_cost_fn, outer_cost_fn, inner_v, v, num_tasks, inner_grad_steps, inner_learning_rate,
-        inner_optimization_step, order=2, average_across_steps=False), outer_v)
+        inner_optimization_step, order=2, average_across_steps=average_across_steps), outer_v)
