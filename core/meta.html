@@ -99,6 +99,7 @@
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Meta</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="meta/fomaml_step.html">fomaml_step</a></li>
 <li class="toctree-l2"><a class="reference internal" href="meta/reptile_step.html">reptile_step</a></li>
+<li class="toctree-l2"><a class="reference internal" href="meta/maml_step.html">maml_step</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="random.html">Random</a></li>
@@ -221,6 +222,32 @@ Default is ivy.gradient_descent_update.</p></li>
 </dd></dl>
 
 <dl class="py function">
+<dt id="ivy.core.meta.maml_step">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">maml_step</code><span class="sig-paren">(</span><em class="sig-param">batch</em>, <em class="sig-param">inner_cost_fn</em>, <em class="sig-param">outer_cost_fn</em>, <em class="sig-param">inner_v</em>, <em class="sig-param">outer_v</em>, <em class="sig-param">num_tasks</em>, <em class="sig-param">inner_grad_steps</em>, <em class="sig-param">inner_learning_rate</em>, <em class="sig-param">inner_optimization_step=&lt;function gradient_descent_update&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/meta.html#maml_step"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.meta.maml_step" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform step of vanilla second order MAML.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>batch</strong> (<em>ivy.Container</em>) – The input batch</p></li>
+<li><p><strong>inner_cost_fn</strong> (<em>callable</em>) – callable for the inner loop cost function, receing sub-batch, inner vars and outer vars</p></li>
+<li><p><strong>outer_cost_fn</strong> (<em>callable</em>) – callable for the outer loop cost function, receing sub-batch, inner vars and outer vars</p></li>
+<li><p><strong>inner_v</strong> (<em>ivy.Container</em>) – Variables to be optimized during the inner loop</p></li>
+<li><p><strong>outer_v</strong> (<em>ivy.Container</em>) – Variables to be optimized during the outer loop</p></li>
+<li><p><strong>num_tasks</strong> (<em>int</em>) – Number of unique tasks to inner-loop optimize for during the meta step.
+This must be the leading size of the input batch.</p></li>
+<li><p><strong>inner_grad_steps</strong> (<em>int</em>) – Number of gradient steps to perform during the inner loop.</p></li>
+<li><p><strong>inner_learning_rate</strong> (<em>float</em>) – The learning rate of the inner loop.</p></li>
+<li><p><strong>inner_optimization_step</strong> (<em>callable</em><em>, </em><em>optional</em>) – The function used for the inner loop optimization.
+Default is ivy.gradient_descent_update.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The cost and the gradients with respect to the outer loop variables.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt id="ivy.core.meta.reptile_step">
 <code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">reptile_step</code><span class="sig-paren">(</span><em class="sig-param">batch</em>, <em class="sig-param">inner_cost_fn</em>, <em class="sig-param">outer_cost_fn</em>, <em class="sig-param">inner_v</em>, <em class="sig-param">outer_v</em>, <em class="sig-param">num_tasks</em>, <em class="sig-param">inner_grad_steps</em>, <em class="sig-param">inner_learning_rate</em>, <em class="sig-param">inner_optimization_step=&lt;function gradient_descent_update&gt;</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/meta.html#reptile_step"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.meta.reptile_step" title="Permalink to this definition">¶</a></dt>
 <dd><p>Perform step of Reptile.</p>
@@ -251,6 +278,7 @@ Default is ivy.gradient_descent_update.</p></li>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="meta/fomaml_step.html">fomaml_step</a></li>
 <li class="toctree-l1"><a class="reference internal" href="meta/reptile_step.html">reptile_step</a></li>
+<li class="toctree-l1"><a class="reference internal" href="meta/maml_step.html">maml_step</a></li>
 </ul>
 </div>
 </div>
