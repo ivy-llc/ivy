@@ -44,7 +44,7 @@ def _train_tasks_w_unique_v(batch, inner_cost_fn, outer_cost_fn, inner_v, outer_
 def _train_task_w_shared_v(sub_batch, inner_cost_fn, inner_v, outer_v, inner_grad_steps, inner_learning_rate,
                            inner_optimization_step, order, average_across_steps):
     total_cost = 0
-    outer_v_ones = outer_v / outer_v.map(lambda x, kc: ivy.stop_gradient(x))
+    outer_v_ones = abs(outer_v) / (outer_v.map(lambda x, kc: ivy.stop_gradient(x)) + 1e-12)
     for i in range(inner_grad_steps):
         cost, inner_grads = ivy.execute_with_gradients(lambda v: inner_cost_fn(sub_batch, v), inner_v,
                                                        retain_grads=order > 1 or average_across_steps)
