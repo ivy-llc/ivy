@@ -295,7 +295,7 @@
 <span class="c1"># Second Order</span>
 
 <div class="viewcode-block" id="maml_step"><a class="viewcode-back" href="../../../core/meta/maml_step.html#ivy.core.meta.maml_step">[docs]</a><span class="k">def</span> <span class="nf">maml_step</span><span class="p">(</span><span class="n">batch</span><span class="p">,</span> <span class="n">inner_cost_fn</span><span class="p">,</span> <span class="n">outer_cost_fn</span><span class="p">,</span> <span class="n">inner_v</span><span class="p">,</span> <span class="n">outer_v</span><span class="p">,</span> <span class="n">num_tasks</span><span class="p">,</span> <span class="n">inner_grad_steps</span><span class="p">,</span> <span class="n">inner_learning_rate</span><span class="p">,</span>
-              <span class="n">inner_optimization_step</span><span class="o">=</span><span class="n">gradient_descent_update</span><span class="p">):</span>
+              <span class="n">inner_optimization_step</span><span class="o">=</span><span class="n">gradient_descent_update</span><span class="p">,</span> <span class="n">average_across_steps</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Perform step of vanilla second order MAML.</span>
 
@@ -319,11 +319,13 @@
 <span class="sd">    :param inner_optimization_step: The function used for the inner loop optimization.</span>
 <span class="sd">                                    Default is ivy.gradient_descent_update.</span>
 <span class="sd">    :type inner_optimization_step: callable, optional</span>
+<span class="sd">    :param average_across_steps: Whether to average the inner loop steps for the outer loop update. Default is False.</span>
+<span class="sd">    :type average_across_steps: bool, optional</span>
 <span class="sd">    :return: The cost and the gradients with respect to the outer loop variables.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">execute_with_gradients</span><span class="p">(</span><span class="k">lambda</span> <span class="n">v</span><span class="p">:</span> <span class="n">_train_tasks</span><span class="p">(</span>
         <span class="n">batch</span><span class="p">,</span> <span class="n">inner_cost_fn</span><span class="p">,</span> <span class="n">outer_cost_fn</span><span class="p">,</span> <span class="n">inner_v</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">num_tasks</span><span class="p">,</span> <span class="n">inner_grad_steps</span><span class="p">,</span> <span class="n">inner_learning_rate</span><span class="p">,</span>
-        <span class="n">inner_optimization_step</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">average_across_steps</span><span class="o">=</span><span class="kc">False</span><span class="p">),</span> <span class="n">outer_v</span><span class="p">)</span></div>
+        <span class="n">inner_optimization_step</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">average_across_steps</span><span class="o">=</span><span class="n">average_across_steps</span><span class="p">),</span> <span class="n">outer_v</span><span class="p">)</span></div>
 </pre></div>
 
            </div>
