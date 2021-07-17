@@ -17,6 +17,7 @@ def is_variable(x):
 
 # noinspection PyUnresolvedReferences
 def execute_with_gradients(func, xs, retain_grads=False):
+    xs.map(lambda x, kc: x.attach_grad())
     with _mx.autograd.record():
         func_ret = func(xs)
     if isinstance(func_ret, tuple):

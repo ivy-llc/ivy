@@ -58,16 +58,17 @@ def test_fomaml_step(dev_str, call, igs_og_wocf_aas_nt):
 
 # reptile_step
 @pytest.mark.parametrize(
-    "igs_og_aas_nt", [(1, -1.01, False, 1), (2, -1.02, False, 1), (3, -1.03, False, 1),
-                      (1, -1.005, True, 1), (2, -1.01, True, 1), (3, -1.015, True, 1),
-                      (1, -1.525, False, 2), (2, -1.55, False, 2), (3, -1.575, False, 2),
-                      (1, -1.5125, True, 2), (2, -1.525, True, 2), (3, -1.5375, True, 2)])
+    "igs_og_aas_nt", [(1, -2.0808, False, 1), (2, -2.1649, False, 1), (3, -2.2523, False, 1),
+                      (1, -2.0404, True, 1), (2, -2.0819, True, 1), (3, -2.1245, True, 1),
+                      (1, -3.2036, False, 2), (2, -3.4221, False, 2), (3, -3.6568, False, 2),
+                      (1, -3.1018, True, 2), (2, -3.2086, True, 2), (3, -3.3206, True, 2)])
 def test_reptile_step(dev_str, call, igs_og_aas_nt):
 
     inner_grad_steps, true_outer_grad, average_across_steps, num_tasks = igs_og_aas_nt
 
-    if call in [helpers.np_call, helpers.jnp_call]:
-        # Numpy does not support gradients, and jax does not support gradients on custom nested classes
+    if call in [helpers.np_call, helpers.jnp_call, helpers.mx_call]:
+        # Numpy does not support gradients, jax does not support gradients on custom nested classes,
+        # and mxnet does not support only_inputs argument to mx.autograd.grad
         pytest.skip()
 
     # config
@@ -80,8 +81,8 @@ def test_reptile_step(dev_str, call, igs_og_aas_nt):
     batch = ivy.Container({'x': ivy.arange(num_tasks+1, 1, dtype_str='float32')})
 
     # cost function
-    def cost_fn(sub_batch, inner_v, outer_v):
-        return -(sub_batch['x'] * inner_v['latent'] * outer_v['latent'])[0]
+    def cost_fn(sub_batch, v):
+        return -(sub_batch['x'] * v['latent'] ** 2)[0]
 
     # meta update
     outer_cost, outer_grads = ivy.reptile_step(
