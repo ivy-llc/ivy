@@ -17,11 +17,12 @@ import ivy_tests.helpers as helpers
 
 # fomaml_step
 @pytest.mark.parametrize(
-    "igs_og_wocf", [(1, -0.01, False), (2, -0.02, False), (3, -0.03, False),
-                    (1, 0.01, True), (2, 0.02, True), (3, 0.03, True)])
-def test_fomaml_step(dev_str, call, igs_og_wocf):
+    "igs_og_wocf_aas", [(1, -0.01, False, False), (2, -0.02, False, False), (3, -0.03, False, False),
+                        (1, 0.01, True, False), (2, 0.02, True, False), (3, 0.03, True, False),
+                        (1, -0.005, False, True), (2, -0.01, False, True), (3, -0.015, False, True)])
+def test_fomaml_step(dev_str, call, igs_og_wocf_aas):
 
-    inner_grad_steps, true_outer_grad, with_outer_cost_fn = igs_og_wocf
+    inner_grad_steps, true_outer_grad, with_outer_cost_fn, average_across_steps = igs_og_wocf_aas
 
     if call in [helpers.np_call, helpers.jnp_call]:
         # Numpy does not support gradients, and jax does not support gradients on custom nested classes
@@ -49,16 +50,17 @@ def test_fomaml_step(dev_str, call, igs_og_wocf):
     # meta update
     outer_cost, outer_grads = ivy.fomaml_step(
         batch, inner_cost_fn, outer_cost_fn if with_outer_cost_fn else None, latent, weight, num_tasks,
-        inner_grad_steps, inner_learning_rate)
+        inner_grad_steps, inner_learning_rate, average_across_steps=average_across_steps)
     assert np.allclose(ivy.to_numpy(outer_grads.weight[0]), np.array(true_outer_grad))
 
 
 # reptile_step
 @pytest.mark.parametrize(
-    "igs_og", [(1, -1.51), (2, -1.35), (3, -1.2726)])
-def test_reptile_step(dev_str, call, igs_og):
+    "igs_og_aas", [(1, -1.51, True), (2, -1.35, True), (3, -1.2726, True),
+                   (1, -1.02, False), (2, -1.03, False), (3, -1.04, False)])
+def test_reptile_step(dev_str, call, igs_og_aas):
 
-    inner_grad_steps, true_outer_grad = igs_og
+    inner_grad_steps, true_outer_grad, average_across_steps = igs_og_aas
 
     if call in [helpers.np_call, helpers.jnp_call]:
         # Numpy does not support gradients, and jax does not support gradients on custom nested classes
@@ -80,7 +82,8 @@ def test_reptile_step(dev_str, call, igs_og):
 
     # meta update
     outer_cost, outer_grads = ivy.reptile_step(
-        batch, cost_fn, latent, num_tasks, inner_grad_steps, inner_learning_rate)
+        batch, cost_fn, latent, num_tasks, inner_grad_steps, inner_learning_rate,
+        average_across_steps=average_across_steps)
     assert np.allclose(ivy.to_numpy(outer_grads.latent[0]), np.array(true_outer_grad), atol=1e-4)
 
 

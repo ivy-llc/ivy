@@ -40,15 +40,17 @@ def _train_tasks(batch, inner_cost_fn, outer_cost_fn, inner_v, outer_v, num_task
 # First Order
 
 def fomaml_step(batch, inner_cost_fn, outer_cost_fn, inner_v, outer_v, num_tasks, inner_grad_steps,
-                inner_learning_rate, inner_optimization_step=gradient_descent_update):
+                inner_learning_rate, inner_optimization_step=gradient_descent_update, average_across_steps=False):
     """
     Perform step of first order MAML.
 
     :param batch: The input batch
     :type batch: ivy.Container
-    :param inner_cost_fn: callable for the inner loop cost function, receing sub-batch, inner vars and outer vars
+    :param inner_cost_fn: callable for the inner loop cost function, receving task-specific sub-batch,
+                            inner vars and outer vars
     :type inner_cost_fn: callable
-    :param outer_cost_fn: callable for the outer loop cost function, receing sub-batch, inner vars and outer vars
+    :param outer_cost_fn: callable for the outer loop cost function, receving task-specific sub-batch,
+                            inner vars and outer vars
     :type outer_cost_fn: callable
     :param inner_v: Variables to be optimized during the inner loop
     :type inner_v: ivy.Container
@@ -64,21 +66,23 @@ def fomaml_step(batch, inner_cost_fn, outer_cost_fn, inner_v, outer_v, num_tasks
     :param inner_optimization_step: The function used for the inner loop optimization.
                                     Default is ivy.gradient_descent_update.
     :type inner_optimization_step: callable, optional
+    :param average_across_steps: Whether to average the inner loop steps for the outer loop update. Default is False.
+    :type average_across_steps: bool, optional
     :return: The cost and the gradients with respect to the outer loop variables.
     """
     return ivy.execute_with_gradients(lambda v: _train_tasks(
         batch, inner_cost_fn, outer_cost_fn, inner_v, v, num_tasks, inner_grad_steps, inner_learning_rate,
-        inner_optimization_step, order=1, average_across_steps=False), outer_v)
+        inner_optimization_step, order=1, average_across_steps=average_across_steps), outer_v)
 
 
-def reptile_step(batch, cost_fn, variables, num_tasks, inner_grad_steps,
-                 inner_learning_rate, inner_optimization_step=gradient_descent_update):
+def reptile_step(batch, cost_fn, variables, num_tasks, inner_grad_steps, inner_learning_rate,
+                 inner_optimization_step=gradient_descent_update, average_across_steps=True):
     """
     Perform step of Reptile.
 
     :param batch: The input batch
     :type batch: ivy.Container
-    :param cost_fn: callable for the inner loop cost function, receing sub-batch, inner vars and outer vars
+    :param cost_fn: callable for the cost function, receivng the task-specific sub-batch and variables
     :type cost_fn: callable
     :param variables: Variables to be optimized
     :type variables: ivy.Container
@@ -92,11 +96,13 @@ def reptile_step(batch, cost_fn, variables, num_tasks, inner_grad_steps,
     :param inner_optimization_step: The function used for the inner loop optimization.
                                     Default is ivy.gradient_descent_update.
     :type inner_optimization_step: callable, optional
+    :param average_across_steps: Whether to average the inner loop steps for the outer loop update. Default is True.
+    :type average_across_steps: bool, optional
     :return: The cost and the gradients with respect to the outer loop variables.
     """
     return ivy.execute_with_gradients(lambda v: _train_tasks(
         batch, cost_fn, None, variables, v, num_tasks, inner_grad_steps, inner_learning_rate,
-        inner_optimization_step, order=1, average_across_steps=True), variables)
+        inner_optimization_step, order=1, average_across_steps=average_across_steps), variables)
 
 
 # Second Order
