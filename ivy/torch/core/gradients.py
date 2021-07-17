@@ -25,16 +25,17 @@ def execute_with_gradients(func, xs, retain_grads=False):
     else:
         y = func_ret
         rest = tuple()
-    y.backward(retain_graph=retain_grads, inputs=[v for k,v in xs.to_iterator()])
-    xs_grad = xs.map(lambda x, _: x.grad.data.detach().clone())
-    if not retain_grads:
-        xs.map(lambda x, _: x.grad.data.zero_())
+    y.backward(retain_graph=retain_grads, inputs=[v for k, v in xs.to_iterator()])
+    xs_grad = xs.map(lambda x, _: x.grad.data)
     return (y, xs_grad, *rest)
 
 
 def gradient_descent_update(ws, dcdws, lr):
-    ws = ws.map(lambda w, key_chain: (w - (dcdws if key_chain == '' else dcdws.at_key_chain(key_chain)) * lr))
-    ws.map(lambda w, _: w.retain_grad())
+
+    def _inplace_update(x, key_chain):
+        x.data -= dcdws.at_key_chain(key_chain) * lr
+
+    ws.map(_inplace_update)
     return ws
 
 
@@ -46,8 +47,11 @@ def adam_update(ws, dcdws, lr, mw, vw, step, beta1=0.9, beta2=0.999, epsilon=1e-
     beta1_pow = beta1 ** step
     beta2_pow = beta2 ** step
     alpha = lr * (1 - beta2_pow)**0.5 / (1 - beta1_pow + epsilon)
-    ws = ws.map(lambda w, kc: w - alpha * mw.at_key_chain(kc) / (vw.at_key_chain(kc) ** 0.5 + epsilon))
-    ws.map(lambda w, _: w.retain_grad())
+
+    def _inplace_update(x, key_chain):
+        x.data -= alpha * mw.at_key_chain(key_chain) / (vw.at_key_chain(key_chain) ** 0.5 + epsilon)
+
+    ws.map(_inplace_update)
     return ws, mw, vw
 
 
