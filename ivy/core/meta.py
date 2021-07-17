@@ -71,21 +71,17 @@ def fomaml_step(batch, inner_cost_fn, outer_cost_fn, inner_v, outer_v, num_tasks
         inner_optimization_step, order=1, average_across_steps=False), outer_v)
 
 
-def reptile_step(batch, inner_cost_fn, outer_cost_fn, inner_v, outer_v, num_tasks, inner_grad_steps,
+def reptile_step(batch, cost_fn, variables, num_tasks, inner_grad_steps,
                  inner_learning_rate, inner_optimization_step=gradient_descent_update):
     """
     Perform step of Reptile.
 
     :param batch: The input batch
     :type batch: ivy.Container
-    :param inner_cost_fn: callable for the inner loop cost function, receing sub-batch, inner vars and outer vars
-    :type inner_cost_fn: callable
-    :param outer_cost_fn: callable for the outer loop cost function, receing sub-batch, inner vars and outer vars
-    :type outer_cost_fn: callable
-    :param inner_v: Variables to be optimized during the inner loop
-    :type inner_v: ivy.Container
-    :param outer_v: Variables to be optimized during the outer loop
-    :type outer_v: ivy.Container
+    :param cost_fn: callable for the inner loop cost function, receing sub-batch, inner vars and outer vars
+    :type cost_fn: callable
+    :param variables: Variables to be optimized
+    :type variables: ivy.Container
     :param num_tasks: Number of unique tasks to inner-loop optimize for during the meta step.
                         This must be the leading size of the input batch.
     :type num_tasks: int
@@ -99,8 +95,8 @@ def reptile_step(batch, inner_cost_fn, outer_cost_fn, inner_v, outer_v, num_task
     :return: The cost and the gradients with respect to the outer loop variables.
     """
     return ivy.execute_with_gradients(lambda v: _train_tasks(
-        batch, inner_cost_fn, outer_cost_fn, inner_v, v, num_tasks, inner_grad_steps, inner_learning_rate,
-        inner_optimization_step, order=1, average_across_steps=True), outer_v)
+        batch, cost_fn, None, variables, v, num_tasks, inner_grad_steps, inner_learning_rate,
+        inner_optimization_step, order=1, average_across_steps=True), variables)
 
 
 # Second Order
