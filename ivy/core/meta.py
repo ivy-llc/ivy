@@ -117,6 +117,8 @@ def fomaml_step(batch, inner_cost_fn, outer_cost_fn, inner_v, outer_v, num_tasks
     :type average_across_steps: bool, optional
     :return: The cost and the gradients with respect to the outer loop variables.
     """
+    if average_across_steps and outer_cost_fn:
+        raise Exception('Cannot average across steps when optimizing a separate loss function in the outer loop.')
     if outer_v is None:
         return ivy.execute_with_gradients(lambda v: _train_tasks_w_shared_v(
             batch, inner_cost_fn, outer_cost_fn, v, num_tasks, inner_grad_steps, inner_learning_rate,
@@ -190,6 +192,8 @@ def maml_step(batch, inner_cost_fn, outer_cost_fn, inner_v, outer_v, num_tasks, 
     :type average_across_steps: bool, optional
     :return: The cost and the gradients with respect to the outer loop variables.
     """
+    if average_across_steps and outer_cost_fn:
+        raise Exception('Cannot average across steps when optimizing a separate loss function in the outer loop.')
     if outer_v is None:
         return ivy.execute_with_gradients(lambda v: _train_tasks_w_shared_v(
             batch, inner_cost_fn, outer_cost_fn, v, num_tasks, inner_grad_steps, inner_learning_rate,
