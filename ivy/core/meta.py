@@ -25,7 +25,9 @@ def _train_task(sub_batch, inner_cost_fn, inner_v, outer_v, inner_grad_steps, in
 def _train_tasks(batch, inner_cost_fn, outer_cost_fn, inner_v, outer_v, num_tasks, inner_grad_steps,
                  inner_learning_rate, inner_optimization_step, order, average_across_steps):
     total_cost = 0
+    inner_v_orig = inner_v.map(lambda x, kc: ivy.stop_gradient(x))
     for sub_batch in batch.unstack(0, num_tasks):
+        inner_v = inner_v_orig.map(lambda x, kc: ivy.variable(x))
         cost, inner_v = _train_task(sub_batch, inner_cost_fn, inner_v, outer_v, inner_grad_steps,
                                     inner_learning_rate, inner_optimization_step, order, average_across_steps)
         if outer_cost_fn is not None:
