@@ -22,22 +22,22 @@ def _train_task(sub_batch, inner_cost_fn, inner_v, outer_v, inner_grad_steps, in
     return final_cost, inner_v
 
 
-def _train_tasks(batch, inner_cost_fn, outer_cost_fn, inner_v, outer_v, batch_size, inner_grad_steps,
+def _train_tasks(batch, inner_cost_fn, outer_cost_fn, inner_v, outer_v, num_tasks, inner_grad_steps,
                  inner_learning_rate, inner_optimization_step, first_order, average_across_steps):
     total_cost = 0
-    for sub_batch in batch.unstack(0, batch_size):
+    for sub_batch in batch.unstack(0, num_tasks):
         cost, inner_v = _train_task(sub_batch, inner_cost_fn, inner_v, outer_v, inner_grad_steps,
                                     inner_learning_rate, inner_optimization_step, first_order, average_across_steps)
         if outer_cost_fn is not None:
             cost = outer_cost_fn(sub_batch, inner_v, outer_v)
         total_cost = total_cost + cost
-    return total_cost / batch_size
+    return total_cost / num_tasks
 
 
 # Public #
 # -------#
 
-def fomaml_step(batch, inner_cost_fn, outer_cost_fn, inner_v, outer_v, batch_size, inner_grad_steps,
+def fomaml_step(batch, inner_cost_fn, outer_cost_fn, inner_v, outer_v, num_tasks, inner_grad_steps,
                 inner_learning_rate, inner_optimization_step=gradient_descent_update, average_across_steps=False):
     """
     Perform step of first order MAML.
@@ -52,8 +52,9 @@ def fomaml_step(batch, inner_cost_fn, outer_cost_fn, inner_v, outer_v, batch_siz
     :type inner_v: ivy.Container
     :param outer_v: Variables to be optimized during the outer loop
     :type outer_v: ivy.Container
-    :param batch_size: size of the batch
-    :type batch_size: int
+    :param num_tasks: Number of unique tasks to inner-loop optimize for during the meta step.
+                        This must be the leading size of the input batch.
+    :type num_tasks: int
     :param inner_grad_steps: Number of gradient steps to perform during the inner loop.
     :type inner_grad_steps: int
     :param inner_learning_rate: The learning rate of the inner loop.
@@ -65,5 +66,5 @@ def fomaml_step(batch, inner_cost_fn, outer_cost_fn, inner_v, outer_v, batch_siz
     :type average_across_steps: bool, optional
     """
     return ivy.execute_with_gradients(lambda v: _train_tasks(
-        batch, inner_cost_fn, outer_cost_fn, inner_v, v, batch_size, inner_grad_steps, inner_learning_rate,
+        batch, inner_cost_fn, outer_cost_fn, inner_v, v, num_tasks, inner_grad_steps, inner_learning_rate,
         inner_optimization_step, first_order=True, average_across_steps=average_across_steps), outer_v)
