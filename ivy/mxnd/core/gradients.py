@@ -25,8 +25,8 @@ def execute_with_gradients(func, xs, retain_grads=False):
     else:
         y = func_ret
         rest = tuple()
-    xs_flat = _mx.autograd.grad(y, retain_graph=retain_grads, variables=[v for k, v in xs.to_iterator()])
-    return (y, xs.from_flat_list(xs_flat), *rest)
+    x_grads_flat = _mx.autograd.grad(y, retain_graph=retain_grads, variables=[v for k, v in xs.to_iterator()])
+    return (y, xs.from_flat_list(x_grads_flat), *rest)
 
 
 def gradient_descent_update(ws, dcdws, lr, inplace=True):

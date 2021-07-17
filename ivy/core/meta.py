@@ -11,7 +11,7 @@ def _train_task(sub_batch, inner_cost_fn, inner_v, outer_v, inner_grad_steps, in
     total_cost = 0
     for i in range(inner_grad_steps):
         cost, inner_grads = ivy.execute_with_gradients(lambda v: inner_cost_fn(sub_batch, v, outer_v), inner_v,
-                                                       retain_grads=order != 1 or average_across_steps)
+                                                       retain_grads=order > 1 or average_across_steps)
         total_cost = total_cost + cost
         inner_v = inner_optimization_step(inner_v, inner_grads, inner_learning_rate, inplace=False)
         inner_v = inner_v.map(lambda x, kc: ivy.variable(ivy.stop_gradient(x))) if order == 1 else inner_v

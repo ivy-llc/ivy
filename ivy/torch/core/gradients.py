@@ -25,9 +25,9 @@ def execute_with_gradients(func, xs, retain_grads=False):
     else:
         y = func_ret
         rest = tuple()
-    y.backward(retain_graph=retain_grads, inputs=[v for k, v in xs.to_iterator()])
-    xs_grad = xs.map(lambda x, _: x.grad.data)
-    return (y, xs_grad, *rest)
+    x_grads_flat = list(_torch.autograd.grad([y], [v for k, v in xs.to_iterator()], retain_graph=retain_grads,
+                                             create_graph=retain_grads, only_inputs=False))
+    return (y, xs.from_flat_list(x_grads_flat), *rest)
 
 
 def _gradient_descent_update_trackable(ws, dcdws, lr):
