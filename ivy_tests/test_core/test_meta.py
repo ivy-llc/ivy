@@ -47,5 +47,5 @@ def test_fomaml_step(dev_str, call, igs_og_wocf_aas):
     # meta update
     outer_cost, outer_grads = ivy.fomaml_step(
         batch, inner_cost_fn, outer_cost_fn if with_outer_cost_fn else None, latent, weight, batch_size,
-        inner_grad_steps, inner_learning_rate, average_across_steps)
+        inner_grad_steps, inner_learning_rate, average_across_steps=average_across_steps)
     assert np.allclose(ivy.to_numpy(outer_grads.weight[0]), np.array(true_outer_grad))
