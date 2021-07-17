@@ -17,19 +17,19 @@ import ivy_tests.helpers as helpers
 
 # fomaml_step
 @pytest.mark.parametrize(
-    "igs_og_wocf_aas", [(1, -0.01, False, False), (2, -0.02, False, False), (3, -0.03, False, False),
-                        (1, 0.01, True, False), (2, 0.02, True, False), (3, 0.03, True, False),
-                        (1, -0.005, False, True), (2, -0.01, False, True), (3, -0.015, False, True)])
-def test_fomaml_step(dev_str, call, igs_og_wocf_aas):
+    "igs_og_wocf_aas_nt", [(1, -0.01, False, False, 1), (2, -0.02, False, False, 1), (3, -0.03, False, False, 1),
+                           (1, 0.01, True, False, 1), (2, 0.02, True, False, 1), (3, 0.03, True, False, 1),
+                           (1, -0.005, False, True, 1), (2, -0.01, False, True, 1), (3, -0.015, False, True, 1),
+                           (1, -0.025, False, False, 2), (2, -0.05, False, False, 2), (3, -0.075, False, False, 2)])
+def test_fomaml_step(dev_str, call, igs_og_wocf_aas_nt):
 
-    inner_grad_steps, true_outer_grad, with_outer_cost_fn, average_across_steps = igs_og_wocf_aas
+    inner_grad_steps, true_outer_grad, with_outer_cost_fn, average_across_steps, num_tasks = igs_og_wocf_aas_nt
 
     if call in [helpers.np_call, helpers.jnp_call]:
         # Numpy does not support gradients, and jax does not support gradients on custom nested classes
         pytest.skip()
 
     # config
-    num_tasks = 1
     inner_learning_rate = 1e-2
 
     # create variables
@@ -37,11 +37,11 @@ def test_fomaml_step(dev_str, call, igs_og_wocf_aas):
     latent = ivy.Container({'latent': ivy.variable(ivy.array([0.]))})
 
     # batch
-    batch = ivy.Container({'x': ivy.array([[0.]])})
+    batch = ivy.Container({'x': ivy.arange(num_tasks+1, 1, dtype_str='float32')})
 
     # inner cost function
     def inner_cost_fn(sub_batch, inner_v, outer_v):
-        return -(inner_v['latent'] * outer_v['weight'])[0]
+        return -(sub_batch['x']*(inner_v['latent'] * outer_v['weight']))[0]
 
     # outer cost function
     def outer_cost_fn(sub_batch, inner_v, outer_v):
@@ -56,8 +56,8 @@ def test_fomaml_step(dev_str, call, igs_og_wocf_aas):
 
 # reptile_step
 @pytest.mark.parametrize(
-    "igs_og_aas", [(1, -1.51, True), (2, -1.35, True), (3, -1.2726, True),
-                   (1, -1.02, False), (2, -1.03, False), (3, -1.04, False)])
+    "igs_og_aas", [(1, -1.005, True), (2, -1.01, True), (3, -1.015, True),
+                   (1, -1.01, False), (2, -1.02, False), (3, -1.03, False)])
 def test_reptile_step(dev_str, call, igs_og_aas):
 
     inner_grad_steps, true_outer_grad, average_across_steps = igs_og_aas
