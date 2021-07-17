@@ -205,10 +205,12 @@
 <li><p><strong>batch</strong> (<em>ivy.Container</em>) – The input batch</p></li>
 <li><p><strong>inner_cost_fn</strong> (<em>callable</em>) – callable for the inner loop cost function, receving task-specific sub-batch,
 inner vars and outer vars</p></li>
-<li><p><strong>outer_cost_fn</strong> (<em>callable</em>) – callable for the outer loop cost function, receving task-specific sub-batch,
-inner vars and outer vars</p></li>
+<li><p><strong>outer_cost_fn</strong> (<em>callable</em><em>, </em><em>optional</em>) – callable for the outer loop cost function, receving task-specific sub-batch,
+inner vars and outer vars. If None, the cost from the inner loop will also be
+optimized in the outer loop.</p></li>
 <li><p><strong>inner_v</strong> (<em>ivy.Container</em>) – Variables to be optimized during the inner loop</p></li>
-<li><p><strong>outer_v</strong> (<em>ivy.Container</em>) – Variables to be optimized during the outer loop</p></li>
+<li><p><strong>outer_v</strong> (<em>ivy.Container</em><em>, </em><em>optional</em>) – Variables to be optimized during the outer loop. If None, the same variables are optimized for
+in the inner loop and outer loop.</p></li>
 <li><p><strong>num_tasks</strong> (<em>int</em>) – Number of unique tasks to inner-loop optimize for during the meta step.
 This must be the leading size of the input batch.</p></li>
 <li><p><strong>inner_grad_steps</strong> (<em>int</em>) – Number of gradient steps to perform during the inner loop.</p></li>
@@ -233,9 +235,12 @@ Default is ivy.gradient_descent_update.</p></li>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>batch</strong> (<em>ivy.Container</em>) – The input batch</p></li>
 <li><p><strong>inner_cost_fn</strong> (<em>callable</em>) – callable for the inner loop cost function, receing sub-batch, inner vars and outer vars</p></li>
-<li><p><strong>outer_cost_fn</strong> (<em>callable</em>) – callable for the outer loop cost function, receing sub-batch, inner vars and outer vars</p></li>
+<li><p><strong>outer_cost_fn</strong> (<em>callable</em><em>, </em><em>optional</em>) – callable for the outer loop cost function, receving task-specific sub-batch,
+inner vars and outer vars. If None, the cost from the inner loop will also be
+optimized in the outer loop.</p></li>
 <li><p><strong>inner_v</strong> (<em>ivy.Container</em>) – Variables to be optimized during the inner loop</p></li>
-<li><p><strong>outer_v</strong> (<em>ivy.Container</em>) – Variables to be optimized during the outer loop</p></li>
+<li><p><strong>outer_v</strong> (<em>ivy.Container</em><em>, </em><em>optional</em>) – Variables to be optimized during the outer loop. If None, the same variables are optimized for
+in the inner loop and outer loop.</p></li>
 <li><p><strong>num_tasks</strong> (<em>int</em>) – Number of unique tasks to inner-loop optimize for during the meta step.
 This must be the leading size of the input batch.</p></li>
 <li><p><strong>inner_grad_steps</strong> (<em>int</em>) – Number of gradient steps to perform during the inner loop.</p></li>
