@@ -104,9 +104,9 @@ def test_maml_step(dev_str, call, igs_og_wocf):
         # Numpy does not support gradients
         pytest.skip()
 
-    # ToDo: investigate why jax is the only framework where the second order terms are correct, and fix.
-    if call is not helpers.jnp_call:
-        # Currently only jax treats the inner loop optimization as unrolled graph
+    # ToDo: investigate why jax and pytorch are the only frameworks where the second order terms are correct, and fix.
+    if call not in [helpers.jnp_call, helpers.torch_call]:
+        # Currently only jax and pytorch treat the inner loop optimization as unrolled graph
         pytest.skip()
 
     # config
@@ -132,5 +132,4 @@ def test_maml_step(dev_str, call, igs_og_wocf):
     outer_cost, outer_grads = ivy.maml_step(
         batch, inner_cost_fn, outer_cost_fn if with_outer_cost_fn else None, latent, weight, batch_size,
         inner_grad_steps, inner_learning_rate)
-    print('w {}'.format(outer_grads.weight[0]))
     assert np.allclose(ivy.to_numpy(outer_grads.weight[0]), np.array(true_outer_grad))
