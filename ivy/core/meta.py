@@ -8,16 +8,21 @@ from ivy.core.gradients import gradient_descent_update
 
 # unique variables for inner and outer loop
 
-def _train_task_w_unique_v(sub_batch, inner_cost_fn, inner_v, outer_v, inner_grad_steps, inner_learning_rate,
-                           inner_optimization_step, order, average_across_steps):
+def _train_task_w_unique_v(sub_batch, inner_cost_fn, outer_cost_fn, inner_v, outer_v, inner_grad_steps,
+                           inner_learning_rate, inner_optimization_step, order, average_across_steps):
     total_cost = 0
     for i in range(inner_grad_steps):
         cost, inner_grads = ivy.execute_with_gradients(lambda v: inner_cost_fn(sub_batch, v, outer_v), inner_v,
-                                                       retain_grads=order > 1 or average_across_steps)
+                                                       retain_grads=(order > 1 or average_across_steps))
+        if outer_cost_fn is not None:
+            cost = outer_cost_fn(sub_batch, inner_v, outer_v)
         total_cost = total_cost + cost
         inner_v = inner_optimization_step(inner_v, inner_grads, inner_learning_rate, inplace=False)
         inner_v = inner_v.map(lambda x, kc: ivy.variable(ivy.stop_gradient(x))) if order == 1 else inner_v
-    final_cost = inner_cost_fn(sub_batch, inner_v, outer_v)
+    if outer_cost_fn is not None:
+        final_cost = outer_cost_fn(sub_batch, inner_v, outer_v)
+    else:
+        final_cost = inner_cost_fn(sub_batch, inner_v, outer_v)
     if average_across_steps:
         total_cost = total_cost + final_cost
         return total_cost / (inner_grad_steps + 1), inner_v
@@ -30,11 +35,9 @@ def _train_tasks_w_unique_v(batch, inner_cost_fn, outer_cost_fn, inner_v, outer_
     inner_v_orig = inner_v.map(lambda x, kc: ivy.stop_gradient(x))
     for sub_batch in batch.unstack(0, num_tasks):
         inner_v = inner_v_orig.map(lambda x, kc: ivy.variable(x))
-        cost, inner_v = _train_task_w_unique_v(sub_batch, inner_cost_fn, inner_v, outer_v, inner_grad_steps,
-                                               inner_learning_rate, inner_optimization_step, order,
+        cost, inner_v = _train_task_w_unique_v(sub_batch, inner_cost_fn, outer_cost_fn, inner_v, outer_v,
+                                               inner_grad_steps, inner_learning_rate, inner_optimization_step, order,
                                                average_across_steps)
-        if outer_cost_fn is not None:
-            cost = outer_cost_fn(sub_batch, inner_v, outer_v)
         total_cost = total_cost + cost
     return total_cost / num_tasks
 
