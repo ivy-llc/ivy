@@ -15,6 +15,7 @@ import ivy_tests.helpers as helpers
 # First Order #
 # ------------#
 
+'''
 # fomaml step unique vars
 @pytest.mark.parametrize(
     "igs_og_wocf_aas_nt", [(1, -0.01, False, False, 1), (2, -0.02, False, False, 1), (3, -0.03, False, False, 1),
@@ -54,17 +55,19 @@ def test_fomaml_step_unique_vars(dev_str, call, igs_og_wocf_aas_nt):
         batch, inner_cost_fn, outer_cost_fn if with_outer_cost_fn else None, latent, weight, num_tasks,
         inner_grad_steps, inner_learning_rate, average_across_steps=average_across_steps)
     assert np.allclose(ivy.to_numpy(outer_grads.weight[0]), np.array(true_outer_grad))
+'''
 
 
 # fomaml step shared vars
 @pytest.mark.parametrize(
-    "igs_og_aas_nt", [(1, -2.0808, False, 1), (2, -2.1648645, False, 1), (3, -2.2523248, False, 1),
-                      (1, -2.0404, True, 1), (2, -2.0818882, True, 1), (3, -2.1244974, True, 1),
-                      (1, -3.2036, False, 2), (2, -3.4221492, False, 2), (3, -3.6568003, False, 2),
-                      (1, -3.1018, True, 2), (2, -3.2085829, True, 2), (3, -3.3206372, True, 2)])
-def test_fomaml_step_shared_vars(dev_str, call, igs_og_aas_nt):
-
-    inner_grad_steps, true_outer_grad, average_across_steps, num_tasks = igs_og_aas_nt
+    "inner_grad_steps", [1, 2, 3])
+@pytest.mark.parametrize(
+    "with_outer_cost_fn", [True, False])
+@pytest.mark.parametrize(
+    "average_across_steps", [True, False])
+@pytest.mark.parametrize(
+    "num_tasks", [1, 2])
+def test_fomaml_step_shared_vars(dev_str, call, inner_grad_steps, with_outer_cost_fn, average_across_steps, num_tasks):
 
     if call in [helpers.np_call, helpers.jnp_call, helpers.mx_call]:
         # Numpy does not support gradients, jax does not support gradients on custom nested classes,
@@ -80,17 +83,57 @@ def test_fomaml_step_shared_vars(dev_str, call, igs_og_aas_nt):
     # batch
     batch = ivy.Container({'x': ivy.arange(num_tasks+1, 1, dtype_str='float32')})
 
-    # cost function
-    def cost_fn(sub_batch_in, v):
+    # inner cost function
+    def inner_cost_fn(sub_batch_in, v):
         return -(sub_batch_in['x'] * v['latent'] ** 2)[0]
+
+    # outer cost function
+    def outer_cost_fn(sub_batch_in, v):
+        return (sub_batch_in['x'] * v['latent'] ** 2)[0]
+
+    # numpy
+    latent_np = latent.map(lambda x, kc: ivy.to_numpy(x))
+    batch_np = batch.map(lambda x, kc: ivy.to_numpy(x))
+
+    # loss grad function
+    def loss_grad_fn(sub_batch_in, w_in, outer=False):
+        return (1 if (with_outer_cost_fn and outer) else -1) * 2 * sub_batch_in['x'][0] * w_in
+
+    # true gradient
+    true_outer_grads = list()
+    for sub_batch in batch_np.unstack(0, num_tasks):
+        ws = list()
+        grads = list()
+        ws.append(latent_np)
+        for step in range(inner_grad_steps):
+            update_grad = loss_grad_fn(sub_batch, ws[-1])
+            w = ws[-1] - inner_learning_rate * update_grad
+            if with_outer_cost_fn:
+                grads.append(loss_grad_fn(sub_batch, ws[-1], outer=True))
+            else:
+                grads.append(update_grad)
+            ws.append(w)
+        if with_outer_cost_fn:
+            grads.append(loss_grad_fn(sub_batch, ws[-1], outer=True))
+        else:
+            grads.append(loss_grad_fn(sub_batch, ws[-1]))
+
+        # true outer grad
+        if average_across_steps:
+            true_outer_grad = sum(grads).latent / len(grads)
+        else:
+            true_outer_grad = grads[-1].latent
+        true_outer_grads.append(true_outer_grad)
+    true_outer_grad = sum(true_outer_grads) / len(true_outer_grads)
 
     # meta update
     outer_cost, outer_grads = ivy.fomaml_step(
-        batch, cost_fn, None, latent, None, num_tasks,
+        batch, inner_cost_fn, outer_cost_fn if with_outer_cost_fn else None, latent, None, num_tasks,
         inner_grad_steps, inner_learning_rate, average_across_steps=average_across_steps)
     assert np.allclose(ivy.to_numpy(outer_grads.latent[0]), np.array(true_outer_grad))
 
 
+'''
 # reptile_step
 @pytest.mark.parametrize(
     "igs_og_aas_nt", [(1, -2.0808, False, 1), (2, -2.1649, False, 1), (3, -2.2523, False, 1),
@@ -124,6 +167,7 @@ def test_reptile_step(dev_str, call, igs_og_aas_nt):
         batch, cost_fn, latent, num_tasks, inner_grad_steps, inner_learning_rate,
         average_across_steps=average_across_steps)
     assert np.allclose(ivy.to_numpy(outer_grads.latent[0]), np.array(true_outer_grad), atol=1e-4)
+'''
 
 
 # Second Order #
