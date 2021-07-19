@@ -41,13 +41,15 @@ def _train_tasks_w_unique_v(batch, inner_cost_fn, outer_cost_fn, inner_v, outer_
 
 # shared variables for inner and outer loop
 
-def _train_task_w_shared_v(sub_batch, inner_cost_fn, inner_v, outer_v, inner_grad_steps, inner_learning_rate,
-                           inner_optimization_step, order, average_across_steps):
+def _train_task_w_shared_v(sub_batch, inner_cost_fn, outer_cost_fn, inner_v, outer_v, inner_grad_steps,
+                           inner_learning_rate, inner_optimization_step, order, average_across_steps):
     total_cost = 0
     outer_v_ones = abs(outer_v) / (outer_v.map(lambda x, kc: ivy.abs(ivy.stop_gradient(x))) + 1e-12)
     for i in range(inner_grad_steps):
         cost, inner_grads = ivy.execute_with_gradients(lambda v: inner_cost_fn(sub_batch, v), inner_v,
                                                        retain_grads=order > 1 or average_across_steps)
+        if outer_cost_fn is not None:
+            cost = outer_cost_fn(sub_batch, inner_v)
         total_cost = total_cost + cost
         inner_v = inner_optimization_step(inner_v, inner_grads, inner_learning_rate, inplace=False)
         if average_across_steps or i == inner_grad_steps - 1:
@@ -55,7 +57,10 @@ def _train_task_w_shared_v(sub_batch, inner_cost_fn, inner_v, outer_v, inner_gra
         elif order == 1:
             inner_v = inner_v.map(lambda x, kc: ivy.variable(ivy.stop_gradient(x)))
 
-    final_cost = inner_cost_fn(sub_batch, inner_v)
+    if outer_cost_fn is not None:
+        final_cost = outer_cost_fn(sub_batch, inner_v)
+    else:
+        final_cost = inner_cost_fn(sub_batch, inner_v)
     if average_across_steps:
         total_cost = total_cost + final_cost
         return total_cost / (inner_grad_steps + 1), inner_v
@@ -70,11 +75,9 @@ def _train_tasks_w_shared_v(batch, inner_cost_fn, outer_cost_fn, v, num_tasks, i
             inner_v = v * 1
         else:
             inner_v = v.map(lambda x, kc: ivy.variable(ivy.stop_gradient(x)))
-        cost, inner_v = _train_task_w_shared_v(sub_batch, inner_cost_fn, inner_v, v, inner_grad_steps,
+        cost, inner_v = _train_task_w_shared_v(sub_batch, inner_cost_fn, outer_cost_fn, inner_v, v, inner_grad_steps,
                                                inner_learning_rate, inner_optimization_step, order,
                                                average_across_steps)
-        if outer_cost_fn is not None:
-            cost = outer_cost_fn(sub_batch, inner_v, v)
         total_cost = total_cost + cost
     return total_cost / num_tasks
 
