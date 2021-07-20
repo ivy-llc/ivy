@@ -58,6 +58,10 @@ def test_container_at_key_chains(dev_str, call):
     assert 'a' not in new_container
     assert (new_container['b']['c'] == ivy.array([2]))[0]
     assert (new_container['b']['d'] == ivy.array([3]))[0]
+    new_container = container.at_key_chains('b/c')
+    assert 'a' not in new_container
+    assert (new_container['b']['c'] == ivy.array([2]))[0]
+    assert 'd' not in new_container['b']
 
 
 def test_container_set_at_key_chain(dev_str, call):
