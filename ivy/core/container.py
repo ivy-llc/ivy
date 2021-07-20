@@ -553,6 +553,8 @@ class Container(dict):
             return self._at_key_chains_input_as_seq(key_chains)
         elif isinstance(key_chains, dict):
             return self._at_key_chains_input_as_dict(key_chains)
+        elif isinstance(key_chains, str):
+            return self._at_key_chains_input_as_seq([key_chains])
         else:
             raise Exception('Invalid type for input key_chains, must either be a list, tuple, dict, or ivy.Container,'
                             'but found type {}'.format(type(key_chains)))
