@@ -134,7 +134,7 @@ def fomaml_step(batch, inner_cost_fn, outer_cost_fn, variables, num_tasks, inner
 
 
 def reptile_step(batch, cost_fn, variables, num_tasks, inner_grad_steps, inner_learning_rate,
-                 inner_optimization_step=gradient_descent_update, average_across_steps=True):
+                 inner_optimization_step=gradient_descent_update):
     """
     Perform step of Reptile.
 
@@ -154,13 +154,12 @@ def reptile_step(batch, cost_fn, variables, num_tasks, inner_grad_steps, inner_l
     :param inner_optimization_step: The function used for the inner loop optimization.
                                     Default is ivy.gradient_descent_update.
     :type inner_optimization_step: callable, optional
-    :param average_across_steps: Whether to average the inner loop steps for the outer loop update. Default is True.
-    :type average_across_steps: bool, optional
     :return: The cost and the gradients with respect to the outer loop variables.
     """
-    return _train_tasks(
+    cost, grads = _train_tasks(
         batch, cost_fn, None, variables, num_tasks, inner_grad_steps, inner_learning_rate,
-        inner_optimization_step, 1, average_across_steps, None, None)
+        inner_optimization_step, 1, True, None, None)
+    return cost, grads / inner_learning_rate
 
 
 # Second Order
