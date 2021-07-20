@@ -117,10 +117,10 @@ def test_container_prune_key_chain(dev_str, call):
 
     assert _test_exception(container_pruned)
 
-    container_further_pruned = container.prune_key_chain('b')
-    assert (container_further_pruned['a'] == ivy.array([[1]]))[0, 0]
-    assert (container_further_pruned.a == ivy.array([[1]]))[0, 0]
-    assert ('b' not in container_further_pruned.keys())
+    container_pruned = container.prune_key_chain('b')
+    assert (container_pruned['a'] == ivy.array([[1]]))[0, 0]
+    assert (container_pruned.a == ivy.array([[1]]))[0, 0]
+    assert ('b' not in container_pruned.keys())
 
     def _test_exception(container_in):
         try:
@@ -129,7 +129,7 @@ def test_container_prune_key_chain(dev_str, call):
         except AttributeError:
             return True
 
-    assert _test_exception(container_further_pruned)
+    assert _test_exception(container_pruned)
 
 
 def test_container_prune_key_chains(dev_str, call):
