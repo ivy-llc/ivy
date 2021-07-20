@@ -321,7 +321,7 @@
 
 
 <div class="viewcode-block" id="reptile_step"><a class="viewcode-back" href="../../../core/meta/reptile_step.html#ivy.core.meta.reptile_step">[docs]</a><span class="k">def</span> <span class="nf">reptile_step</span><span class="p">(</span><span class="n">batch</span><span class="p">,</span> <span class="n">cost_fn</span><span class="p">,</span> <span class="n">variables</span><span class="p">,</span> <span class="n">num_tasks</span><span class="p">,</span> <span class="n">inner_grad_steps</span><span class="p">,</span> <span class="n">inner_learning_rate</span><span class="p">,</span>
-                 <span class="n">inner_optimization_step</span><span class="o">=</span><span class="n">gradient_descent_update</span><span class="p">,</span> <span class="n">average_across_steps</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+                 <span class="n">inner_optimization_step</span><span class="o">=</span><span class="n">gradient_descent_update</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Perform step of Reptile.</span>
 
@@ -341,13 +341,12 @@
 <span class="sd">    :param inner_optimization_step: The function used for the inner loop optimization.</span>
 <span class="sd">                                    Default is ivy.gradient_descent_update.</span>
 <span class="sd">    :type inner_optimization_step: callable, optional</span>
-<span class="sd">    :param average_across_steps: Whether to average the inner loop steps for the outer loop update. Default is True.</span>
-<span class="sd">    :type average_across_steps: bool, optional</span>
 <span class="sd">    :return: The cost and the gradients with respect to the outer loop variables.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">_train_tasks</span><span class="p">(</span>
+    <span class="n">cost</span><span class="p">,</span> <span class="n">grads</span> <span class="o">=</span> <span class="n">_train_tasks</span><span class="p">(</span>
         <span class="n">batch</span><span class="p">,</span> <span class="n">cost_fn</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">variables</span><span class="p">,</span> <span class="n">num_tasks</span><span class="p">,</span> <span class="n">inner_grad_steps</span><span class="p">,</span> <span class="n">inner_learning_rate</span><span class="p">,</span>
-        <span class="n">inner_optimization_step</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">average_across_steps</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span></div>
+        <span class="n">inner_optimization_step</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">cost</span><span class="p">,</span> <span class="n">grads</span> <span class="o">/</span> <span class="n">inner_learning_rate</span></div>
 
 
 <span class="c1"># Second Order</span>
