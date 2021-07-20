@@ -209,16 +209,12 @@ def test_fomaml_step_overlapping_vars(dev_str, call, inner_grad_steps, with_oute
     assert np.allclose(ivy.to_numpy(outer_grads.latent[0]), np.array(true_latent_grad))
 
 
-'''
-# reptile_step
+# reptile step
 @pytest.mark.parametrize(
-    "igs_og_aas_nt", [(1, -2.0808, False, 1), (2, -2.1649, False, 1), (3, -2.2523, False, 1),
-                      (1, -2.0404, True, 1), (2, -2.0819, True, 1), (3, -2.1245, True, 1),
-                      (1, -3.2036, False, 2), (2, -3.4221, False, 2), (3, -3.6568, False, 2),
-                      (1, -3.1018, True, 2), (2, -3.2086, True, 2), (3, -3.3206, True, 2)])
-def test_reptile_step(dev_str, call, igs_og_aas_nt):
-
-    inner_grad_steps, true_outer_grad, average_across_steps, num_tasks = igs_og_aas_nt
+    "inner_grad_steps", [1, 2, 3])
+@pytest.mark.parametrize(
+    "num_tasks", [1, 2])
+def test_reptile_step(dev_str, call, inner_grad_steps, num_tasks):
 
     if call in [helpers.np_call, helpers.jnp_call, helpers.mx_call]:
         # Numpy does not support gradients, jax does not support gradients on custom nested classes,
@@ -229,21 +225,49 @@ def test_reptile_step(dev_str, call, igs_og_aas_nt):
     inner_learning_rate = 1e-2
 
     # create variable
-    latent = ivy.Container({'latent': ivy.variable(ivy.array([1.]))})
+    variables = ivy.Container({'latent': ivy.variable(ivy.array([1.]))})
 
     # batch
     batch = ivy.Container({'x': ivy.arange(num_tasks+1, 1, dtype_str='float32')})
 
-    # cost function
-    def cost_fn(sub_batch, v):
-        return -(sub_batch['x'] * v['latent'] ** 2)[0]
+    # inner cost function
+    def inner_cost_fn(sub_batch_in, v):
+        return -(sub_batch_in['x'] * v['latent'] ** 2)[0]
+
+    # outer cost function
+    def outer_cost_fn(sub_batch_in, v):
+        return (sub_batch_in['x'] * v['latent'] ** 2)[0]
+
+    # numpy
+    latent_np = ivy.to_numpy(variables.latent)
+    batch_np = batch.map(lambda x, kc: ivy.to_numpy(x))
+
+    # loss grad function
+    def loss_grad_fn(sub_batch_in, w_in, outer=False):
+        return -2 * sub_batch_in['x'][0] * w_in
+
+    # true gradient
+    true_outer_grads = list()
+    for sub_batch in batch_np.unstack(0, num_tasks):
+        ws = list()
+        grads = list()
+        ws.append(latent_np)
+        for step in range(inner_grad_steps):
+            update_grad = loss_grad_fn(sub_batch, ws[-1])
+            w = ws[-1] - inner_learning_rate * update_grad
+            grads.append(update_grad)
+            ws.append(w)
+        grads.append(loss_grad_fn(sub_batch, ws[-1]))
+
+        # true outer grad
+        true_outer_grad = sum(grads) / len(grads)
+        true_outer_grads.append(true_outer_grad)
+    true_outer_grad = (sum(true_outer_grads) / len(true_outer_grads)) / inner_learning_rate
 
     # meta update
-    outer_cost, outer_grads = ivy.reptile_step(
-        batch, cost_fn, latent, num_tasks, inner_grad_steps, inner_learning_rate,
-        average_across_steps=average_across_steps)
-    assert np.allclose(ivy.to_numpy(outer_grads.latent[0]), np.array(true_outer_grad), atol=1e-4)
-'''
+    outer_cost, outer_grads = ivy.reptile_step(batch, inner_cost_fn, variables, num_tasks, inner_grad_steps,
+                                               inner_learning_rate)
+    assert np.allclose(ivy.to_numpy(outer_grads.latent[0]), np.array(true_outer_grad))
 
 
 # Second Order #
