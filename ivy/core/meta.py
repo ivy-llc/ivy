@@ -6,6 +6,19 @@ from ivy.core.gradients import gradient_descent_update
 # Private #
 # --------#
 
+def _compute_cost_and_update_grads(cost_fn, order, sub_batch, shared_vars, inner_v, outer_v,
+                                   average_across_steps_or_final, all_grads):
+    if order == 1:
+        cost, inner_grads = ivy.execute_with_gradients(
+            lambda v: cost_fn(sub_batch, v) if shared_vars else cost_fn(sub_batch, inner_v, v),
+            inner_v if shared_vars else outer_v, retain_grads=False)
+        if average_across_steps_or_final:
+            all_grads.append(inner_grads)
+    else:
+        cost = cost_fn(sub_batch, inner_v) if shared_vars else cost_fn(sub_batch, inner_v, outer_v)
+    return cost
+
+
 def _train_task(sub_batch, inner_cost_fn, outer_cost_fn, inner_v, outer_v, inner_grad_steps,
                 inner_learning_rate, inner_optimization_step, order, average_across_steps):
 
@@ -22,62 +35,19 @@ def _train_task(sub_batch, inner_cost_fn, outer_cost_fn, inner_v, outer_v, inner
             lambda v: inner_cost_fn(sub_batch, v) if shared_vars else inner_cost_fn(sub_batch, v, outer_v),
             inner_v, retain_grads=order > 1)
 
-        # store inner gradients if inner cost
-        if outer_cost_fn is None:
-            if order == 1:
-                cost, inner_grads = ivy.execute_with_gradients(
-                    lambda v: inner_cost_fn(sub_batch, v) if shared_vars
-                    else inner_cost_fn(sub_batch, inner_v, v),
-                    inner_v if shared_vars else outer_v, retain_grads=order > 1)
-                if average_across_steps:
-                    all_grads.append(inner_grads)
-            else:
-                cost = inner_cost_fn(sub_batch, inner_v) if shared_vars \
-                    else inner_cost_fn(sub_batch, inner_v, outer_v)
-
-        # else, update cost if using outer cost function
-        else:
-
-            # compute gradients if first order
-            if order == 1:
-                cost, outer_grads = ivy.execute_with_gradients(
-                    lambda v: outer_cost_fn(sub_batch, v) if shared_vars
-                    else outer_cost_fn(sub_batch, inner_v, v),
-                    inner_v if shared_vars else outer_v, retain_grads=False)
-                if average_across_steps:
-                    all_grads.append(outer_grads)
-            # otherwise just compute the cost, and an outer optimizer will compute higher order gradients
-            else:
-                cost = outer_cost_fn(sub_batch, inner_v) if shared_vars\
-                    else outer_cost_fn(sub_batch, inner_v, outer_v)
+        # compute the cost to be optimized, and update all_grads if fist order method
+        cost = _compute_cost_and_update_grads(
+            inner_cost_fn if outer_cost_fn is None else outer_cost_fn, order, sub_batch, shared_vars, inner_v,
+            outer_v, average_across_steps, all_grads)
 
         # update cost and update parameters
         total_cost = total_cost + cost
         inner_v = inner_optimization_step(inner_v, inner_update_grads, inner_learning_rate, inplace=False)
 
-        # stop gradient in variables if first order
-        if order == 1:
-            inner_v = inner_v.map(lambda x, kc: ivy.variable(ivy.stop_gradient(x)))
-
-    # once training is finished, compute the final cost
-    if outer_cost_fn is None:
-        if order == 1:
-            final_cost, inner_grads = ivy.execute_with_gradients(
-                lambda v: inner_cost_fn(sub_batch, v) if shared_vars else inner_cost_fn(sub_batch, inner_v, v),
-                inner_v if shared_vars else outer_v, retain_grads=False)
-            all_grads.append(inner_grads)
-        else:
-            final_cost = inner_cost_fn(sub_batch, inner_v) if shared_vars \
-                else inner_cost_fn(sub_batch, inner_v, outer_v)
-    else:
-        if order == 1:
-            final_cost, outer_grads = ivy.execute_with_gradients(
-                lambda v: outer_cost_fn(sub_batch, v) if shared_vars else outer_cost_fn(sub_batch, inner_v, v),
-                inner_v if shared_vars else outer_v, retain_grads=False)
-            all_grads.append(outer_grads)
-        else:
-            final_cost = outer_cost_fn(sub_batch, inner_v) if shared_vars \
-                else outer_cost_fn(sub_batch, inner_v, outer_v)
+    # once training is finished, compute the final cost, and update all_grads if fist order method
+    final_cost = _compute_cost_and_update_grads(
+        inner_cost_fn if outer_cost_fn is None else outer_cost_fn, order, sub_batch, shared_vars, inner_v, outer_v,
+        True, all_grads)
 
     # average the cost or gradients across all timesteps if this option is chosen
     if average_across_steps:
@@ -98,7 +68,7 @@ def _train_tasks(batch, inner_cost_fn, outer_cost_fn, inner_v, outer_v, num_task
     all_grads = list()
     inner_v_orig = inner_v * 1
     for sub_batch in batch.unstack(0, num_tasks):
-        cost, inner_v, grads = _train_task(sub_batch, inner_cost_fn, outer_cost_fn, inner_v_orig, outer_v,
+        cost, _, grads = _train_task(sub_batch, inner_cost_fn, outer_cost_fn, inner_v_orig, outer_v,
                                            inner_grad_steps, inner_learning_rate, inner_optimization_step,
                                            order, average_across_steps)
         total_cost = total_cost + cost
