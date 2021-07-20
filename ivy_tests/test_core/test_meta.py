@@ -15,18 +15,16 @@ import ivy_tests.helpers as helpers
 # First Order #
 # ------------#
 
-'''
 # fomaml step unique vars
 @pytest.mark.parametrize(
-    "igs_og_wocf_aas_nt", [(1, -0.01, False, False, 1), (2, -0.02, False, False, 1), (3, -0.03, False, False, 1),
-                           (1, 0.01, True, False, 1), (2, 0.02, True, False, 1), (3, 0.03, True, False, 1),
-                           (1, -0.005, False, True, 1), (2, -0.01, False, True, 1), (3, -0.015, False, True, 1),
-                           (1, -0.025, False, False, 2), (2, -0.05, False, False, 2), (3, -0.075, False, False, 2),
-                           (1, 0.025, True, False, 2), (2, 0.05, True, False, 2), (3, 0.075, True, False, 2),
-                           (1, -0.0125, False, True, 2), (2, -0.025, False, True, 2), (3, -0.0375, False, True, 2)])
-def test_fomaml_step_unique_vars(dev_str, call, igs_og_wocf_aas_nt):
-
-    inner_grad_steps, true_outer_grad, with_outer_cost_fn, average_across_steps, num_tasks = igs_og_wocf_aas_nt
+    "inner_grad_steps", [1, 2, 3])
+@pytest.mark.parametrize(
+    "with_outer_cost_fn", [True, False])
+@pytest.mark.parametrize(
+    "average_across_steps", [True, False])
+@pytest.mark.parametrize(
+    "num_tasks", [1, 2])
+def test_fomaml_step_unique_vars(dev_str, call, inner_grad_steps, with_outer_cost_fn, average_across_steps, num_tasks):
 
     if call in [helpers.np_call, helpers.jnp_call]:
         # Numpy does not support gradients, and jax does not support gradients on custom nested classes
@@ -43,19 +41,34 @@ def test_fomaml_step_unique_vars(dev_str, call, igs_og_wocf_aas_nt):
     batch = ivy.Container({'x': ivy.arange(num_tasks+1, 1, dtype_str='float32')})
 
     # inner cost function
-    def inner_cost_fn(sub_batch, inner_v, outer_v):
-        return -(sub_batch['x'] * inner_v['latent'] * outer_v['weight'])[0]
+    def inner_cost_fn(sub_batch_in, inner_v, outer_v):
+        return -(sub_batch_in['x'] * inner_v['latent'] * outer_v['weight'])[0]
 
     # outer cost function
-    def outer_cost_fn(sub_batch, inner_v, outer_v):
-        return (sub_batch['x'] * inner_v['latent'] * outer_v['weight'])[0]
+    def outer_cost_fn(sub_batch_in, inner_v, outer_v):
+        return (sub_batch_in['x'] * inner_v['latent'] * outer_v['weight'])[0]
+
+    # numpy
+    weight_np = weight.map(lambda x, kc: ivy.to_numpy(x))
+    latent_np = latent.map(lambda x, kc: ivy.to_numpy(x))
+    batch_np = batch.map(lambda x, kc: ivy.to_numpy(x))
+
+    # true gradient
+    all_outer_grads = list()
+    for sub_batch in batch_np.unstack(0, num_tasks):
+        all_outer_grads.append(
+            [(-i*inner_learning_rate*weight_np.weight*sub_batch['x'][0]**2 - sub_batch['x'][0]*latent_np.latent) *
+             (-1 if with_outer_cost_fn else 1) for i in range(inner_grad_steps+1)])
+    if average_across_steps:
+        true_outer_grad = sum([sum(og) / len(og) for og in all_outer_grads]) / num_tasks
+    else:
+        true_outer_grad = sum([og[-1] for og in all_outer_grads]) / num_tasks
 
     # meta update
     outer_cost, outer_grads = ivy.fomaml_step(
         batch, inner_cost_fn, outer_cost_fn if with_outer_cost_fn else None, latent, weight, num_tasks,
         inner_grad_steps, inner_learning_rate, average_across_steps=average_across_steps)
     assert np.allclose(ivy.to_numpy(outer_grads.weight[0]), np.array(true_outer_grad))
-'''
 
 
 # fomaml step shared vars
