@@ -541,12 +541,14 @@ class Container(dict):
             ret = ret[key]
         return ret
 
-    def at_key_chains(self, key_chains):
+    def at_key_chains(self, key_chains, ignore_none=True):
         """
-        Query container object at specified key-chains, either as list or nested dict
+        Query container object at specified key-chains, either as list or nested dict.
 
         :return: sub-container containing only the specified key chains
         """
+        if key_chains is None and ignore_none:
+            return self
         if isinstance(key_chains, (list, tuple)):
             return self._at_key_chains_input_as_seq(key_chains)
         elif isinstance(key_chains, dict):
