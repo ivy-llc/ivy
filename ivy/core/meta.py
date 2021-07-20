@@ -6,8 +6,6 @@ from ivy.core.gradients import gradient_descent_update
 # Private #
 # --------#
 
-# unique variables for inner and outer loop
-
 def _train_task(sub_batch, inner_cost_fn, outer_cost_fn, inner_v, outer_v, inner_grad_steps,
                 inner_learning_rate, inner_optimization_step, order, average_across_steps):
 
@@ -94,37 +92,15 @@ def _train_task(sub_batch, inner_cost_fn, outer_cost_fn, inner_v, outer_v, inner
     return final_cost, inner_v, all_grads
 
 
-def _train_tasks_w_unique_v(batch, inner_cost_fn, outer_cost_fn, inner_v, outer_v, num_tasks, inner_grad_steps,
-                            inner_learning_rate, inner_optimization_step, order, average_across_steps):
+def _train_tasks(batch, inner_cost_fn, outer_cost_fn, inner_v, outer_v, num_tasks, inner_grad_steps,
+                 inner_learning_rate, inner_optimization_step, order, average_across_steps):
     total_cost = 0
     all_grads = list()
-    inner_v_orig = inner_v.map(lambda x, kc: ivy.stop_gradient(x))
+    inner_v_orig = inner_v * 1
     for sub_batch in batch.unstack(0, num_tasks):
-        inner_v = inner_v_orig.map(lambda x, kc: ivy.variable(x))
-        cost, inner_v, grads = _train_task(sub_batch, inner_cost_fn, outer_cost_fn, inner_v, outer_v,
+        cost, inner_v, grads = _train_task(sub_batch, inner_cost_fn, outer_cost_fn, inner_v_orig, outer_v,
                                            inner_grad_steps, inner_learning_rate, inner_optimization_step,
                                            order, average_across_steps)
-        total_cost = total_cost + cost
-        all_grads.append(grads)
-    if order == 1:
-        return total_cost / num_tasks, sum(all_grads) / len(all_grads)
-    return total_cost / num_tasks
-
-
-# shared variables for inner and outer loop
-
-def _train_tasks_w_shared_v(batch, inner_cost_fn, outer_cost_fn, v, num_tasks, inner_grad_steps,
-                            inner_learning_rate, inner_optimization_step, order, average_across_steps):
-    total_cost = 0
-    all_grads = list()
-    for sub_batch in batch.unstack(0, num_tasks):
-        if order == 1:
-            v_copy = v.map(lambda x, kc: ivy.variable(ivy.stop_gradient(x)))
-        else:
-            v_copy = v * 1
-        cost, v_copy, grads = _train_task(
-            sub_batch, inner_cost_fn, outer_cost_fn, v_copy, None, inner_grad_steps, inner_learning_rate,
-            inner_optimization_step, order, average_across_steps)
         total_cost = total_cost + cost
         all_grads.append(grads)
     if order == 1:
@@ -175,10 +151,10 @@ def fomaml_step(batch, inner_cost_fn, outer_cost_fn, inner_v, outer_v, num_tasks
     # update the parameters in the direction of these gradients
 
     if outer_v is None:
-        return _train_tasks_w_shared_v(
-            batch, inner_cost_fn, outer_cost_fn, inner_v, num_tasks, inner_grad_steps, inner_learning_rate,
+        return _train_tasks(
+            batch, inner_cost_fn, outer_cost_fn, inner_v, None, num_tasks, inner_grad_steps, inner_learning_rate,
             inner_optimization_step, order=1, average_across_steps=average_across_steps)
-    return _train_tasks_w_unique_v(
+    return _train_tasks(
         batch, inner_cost_fn, outer_cost_fn, inner_v, outer_v, num_tasks, inner_grad_steps, inner_learning_rate,
         inner_optimization_step, order=1, average_across_steps=average_across_steps)
 
@@ -208,8 +184,8 @@ def reptile_step(batch, cost_fn, variables, num_tasks, inner_grad_steps, inner_l
     :type average_across_steps: bool, optional
     :return: The cost and the gradients with respect to the outer loop variables.
     """
-    return _train_tasks_w_shared_v(
-        batch, cost_fn, None, variables, num_tasks, inner_grad_steps, inner_learning_rate,
+    return _train_tasks(
+        batch, cost_fn, None, variables, None, num_tasks, inner_grad_steps, inner_learning_rate,
         inner_optimization_step, order=1, average_across_steps=average_across_steps)
 
 
@@ -248,9 +224,9 @@ def maml_step(batch, inner_cost_fn, outer_cost_fn, inner_v, outer_v, num_tasks, 
     :return: The cost and the gradients with respect to the outer loop variables.
     """
     if outer_v is None:
-        return ivy.execute_with_gradients(lambda v: _train_tasks_w_shared_v(
-            batch, inner_cost_fn, outer_cost_fn, v, num_tasks, inner_grad_steps, inner_learning_rate,
+        return ivy.execute_with_gradients(lambda v: _train_tasks(
+            batch, inner_cost_fn, outer_cost_fn, v, None, num_tasks, inner_grad_steps, inner_learning_rate,
             inner_optimization_step, order=2, average_across_steps=average_across_steps), inner_v)
-    return ivy.execute_with_gradients(lambda v: _train_tasks_w_unique_v(
+    return ivy.execute_with_gradients(lambda v: _train_tasks(
         batch, inner_cost_fn, outer_cost_fn, inner_v, v, num_tasks, inner_grad_steps, inner_learning_rate,
         inner_optimization_step, order=2, average_across_steps=average_across_steps), outer_v)
