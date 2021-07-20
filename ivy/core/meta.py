@@ -6,48 +6,59 @@ from ivy.core.gradients import gradient_descent_update
 # Private #
 # --------#
 
-def _compute_cost_and_update_grads(cost_fn, order, sub_batch, shared_vars, inner_v, outer_v,
-                                   average_across_steps_or_final, all_grads):
+def _compute_cost_and_update_grads(cost_fn, order, sub_batch, variables, inner_v, outer_v,
+                                   average_across_steps_or_final, all_grads, unique_outer):
     if order == 1:
         cost, inner_grads = ivy.execute_with_gradients(
-            lambda v: cost_fn(sub_batch, v) if shared_vars else cost_fn(sub_batch, inner_v, v),
-            inner_v if shared_vars else outer_v, retain_grads=False)
+            lambda v: cost_fn(sub_batch, variables.set_at_key_chains(v) if unique_outer else v),
+            variables.at_key_chains(outer_v, ignore_none=True), retain_grads=False)
         if average_across_steps_or_final:
             all_grads.append(inner_grads)
     else:
-        cost = cost_fn(sub_batch, inner_v) if shared_vars else cost_fn(sub_batch, inner_v, outer_v)
+        cost = cost_fn(sub_batch, variables)
     return cost
 
 
-def _train_task(sub_batch, inner_cost_fn, outer_cost_fn, inner_v, outer_v, inner_grad_steps,
-                inner_learning_rate, inner_optimization_step, order, average_across_steps):
+def _train_task(sub_batch, inner_cost_fn, outer_cost_fn, variables, inner_grad_steps,
+                inner_learning_rate, inner_optimization_step, order, average_across_steps, inner_v, outer_v):
 
     # init
     total_cost = 0
     all_grads = list()
-    shared_vars = outer_v is None
+
+    # inner and outer
+    unique_inner = inner_v is not None
+    unique_outer = outer_v is not None
 
     # iterate through inner loop training steps
     for i in range(inner_grad_steps):
 
         # compute inner gradient for update the inner variables
-        _, inner_update_grads = ivy.execute_with_gradients(
-            lambda v: inner_cost_fn(sub_batch, v) if shared_vars else inner_cost_fn(sub_batch, v, outer_v),
-            inner_v, retain_grads=order > 1)
+        cost, inner_update_grads = ivy.execute_with_gradients(
+            lambda v: inner_cost_fn(sub_batch, variables.set_at_key_chains(v) if unique_inner else v),
+            variables.at_key_chains(inner_v, ignore_none=True), retain_grads=order > 1)
 
         # compute the cost to be optimized, and update all_grads if fist order method
-        cost = _compute_cost_and_update_grads(
-            inner_cost_fn if outer_cost_fn is None else outer_cost_fn, order, sub_batch, shared_vars, inner_v,
-            outer_v, average_across_steps, all_grads)
+        if outer_cost_fn is None and not unique_inner and not unique_outer:
+            all_grads.append(inner_update_grads)
+        else:
+            cost = _compute_cost_and_update_grads(
+                inner_cost_fn if outer_cost_fn is None else outer_cost_fn, order, sub_batch, variables, inner_v,
+                outer_v, average_across_steps, all_grads, unique_outer)
 
         # update cost and update parameters
         total_cost = total_cost + cost
-        inner_v = inner_optimization_step(inner_v, inner_update_grads, inner_learning_rate, inplace=False)
+        if unique_inner:
+            variables = variables.set_at_key_chains(
+                inner_optimization_step(variables.at_key_chains(inner_v), inner_update_grads, inner_learning_rate,
+                                        inplace=False))
+        else:
+            variables = inner_optimization_step(variables, inner_update_grads, inner_learning_rate, inplace=False)
 
     # once training is finished, compute the final cost, and update all_grads if fist order method
     final_cost = _compute_cost_and_update_grads(
-        inner_cost_fn if outer_cost_fn is None else outer_cost_fn, order, sub_batch, shared_vars, inner_v, outer_v,
-        True, all_grads)
+        inner_cost_fn if outer_cost_fn is None else outer_cost_fn, order, sub_batch, variables, inner_v, outer_v,
+        True, all_grads, unique_outer)
 
     # average the cost or gradients across all timesteps if this option is chosen
     if average_across_steps:
@@ -62,15 +73,14 @@ def _train_task(sub_batch, inner_cost_fn, outer_cost_fn, inner_v, outer_v, inner
     return final_cost, inner_v, all_grads
 
 
-def _train_tasks(batch, inner_cost_fn, outer_cost_fn, inner_v, outer_v, num_tasks, inner_grad_steps,
-                 inner_learning_rate, inner_optimization_step, order, average_across_steps):
+def _train_tasks(batch, inner_cost_fn, outer_cost_fn, variables, num_tasks, inner_grad_steps,
+                 inner_learning_rate, inner_optimization_step, order, average_across_steps, inner_v, outer_v):
     total_cost = 0
     all_grads = list()
-    inner_v_orig = inner_v * 1
     for sub_batch in batch.unstack(0, num_tasks):
-        cost, _, grads = _train_task(sub_batch, inner_cost_fn, outer_cost_fn, inner_v_orig, outer_v,
-                                           inner_grad_steps, inner_learning_rate, inner_optimization_step,
-                                           order, average_across_steps)
+        cost, _, grads = _train_task(sub_batch, inner_cost_fn, outer_cost_fn, variables, inner_grad_steps,
+                                     inner_learning_rate, inner_optimization_step, order, average_across_steps,
+                                     inner_v, outer_v)
         total_cost = total_cost + cost
         all_grads.append(grads)
     if order == 1:
@@ -83,8 +93,9 @@ def _train_tasks(batch, inner_cost_fn, outer_cost_fn, inner_v, outer_v, num_task
 
 # First Order
 
-def fomaml_step(batch, inner_cost_fn, outer_cost_fn, inner_v, outer_v, num_tasks, inner_grad_steps,
-                inner_learning_rate, inner_optimization_step=gradient_descent_update, average_across_steps=False):
+def fomaml_step(batch, inner_cost_fn, outer_cost_fn, variables, num_tasks, inner_grad_steps, inner_learning_rate,
+                inner_optimization_step=gradient_descent_update, average_across_steps=False,
+                inner_v=None, outer_v=None):
     """
     Perform step of first order MAML.
 
@@ -97,11 +108,8 @@ def fomaml_step(batch, inner_cost_fn, outer_cost_fn, inner_v, outer_v, num_tasks
                             inner vars and outer vars. If None, the cost from the inner loop will also be
                             optimized in the outer loop.
     :type outer_cost_fn: callable, optional
-    :param inner_v: Variables to be optimized during the inner loop
-    :type inner_v: ivy.Container
-    :param outer_v: Variables to be optimized during the outer loop. If None, the same variables are optimized for
-                    in the inner loop and outer loop.
-    :type outer_v: ivy.Container, optional
+    :param variables: Variables to be optimized during the meta step
+    :type variables: ivy.Container
     :param num_tasks: Number of unique tasks to inner-loop optimize for during the meta step.
                         This must be the leading size of the input batch.
     :type num_tasks: int
@@ -114,19 +122,15 @@ def fomaml_step(batch, inner_cost_fn, outer_cost_fn, inner_v, outer_v, num_tasks
     :type inner_optimization_step: callable, optional
     :param average_across_steps: Whether to average the inner loop steps for the outer loop update. Default is False.
     :type average_across_steps: bool, optional
+    :param inner_v: Nested variable keys to be optimized during the inner loop
+    :type inner_v: ivy.Container, optional
+    :param outer_v: Nested variable keys to be optimized during the inner loop
+    :type outer_v: ivy.Container, optional
     :return: The cost and the gradients with respect to the outer loop variables.
     """
-
-    # iterate through batches and training task, collecting gradients
-    # update the parameters in the direction of these gradients
-
-    if outer_v is None:
-        return _train_tasks(
-            batch, inner_cost_fn, outer_cost_fn, inner_v, None, num_tasks, inner_grad_steps, inner_learning_rate,
-            inner_optimization_step, order=1, average_across_steps=average_across_steps)
     return _train_tasks(
-        batch, inner_cost_fn, outer_cost_fn, inner_v, outer_v, num_tasks, inner_grad_steps, inner_learning_rate,
-        inner_optimization_step, order=1, average_across_steps=average_across_steps)
+        batch, inner_cost_fn, outer_cost_fn, variables, num_tasks, inner_grad_steps, inner_learning_rate,
+        inner_optimization_step, 1, average_across_steps, inner_v, outer_v)
 
 
 def reptile_step(batch, cost_fn, variables, num_tasks, inner_grad_steps, inner_learning_rate,
@@ -155,14 +159,14 @@ def reptile_step(batch, cost_fn, variables, num_tasks, inner_grad_steps, inner_l
     :return: The cost and the gradients with respect to the outer loop variables.
     """
     return _train_tasks(
-        batch, cost_fn, None, variables, None, num_tasks, inner_grad_steps, inner_learning_rate,
-        inner_optimization_step, order=1, average_across_steps=average_across_steps)
+        batch, cost_fn, None, variables, num_tasks, inner_grad_steps, inner_learning_rate,
+        inner_optimization_step, 1, average_across_steps, None, None)
 
 
 # Second Order
 
-def maml_step(batch, inner_cost_fn, outer_cost_fn, inner_v, outer_v, num_tasks, inner_grad_steps, inner_learning_rate,
-              inner_optimization_step=gradient_descent_update, average_across_steps=False):
+def maml_step(batch, inner_cost_fn, outer_cost_fn, variables, num_tasks, inner_grad_steps, inner_learning_rate,
+              inner_optimization_step=gradient_descent_update, average_across_steps=False, inner_v=None, outer_v=None):
     """
     Perform step of vanilla second order MAML.
 
@@ -174,11 +178,8 @@ def maml_step(batch, inner_cost_fn, outer_cost_fn, inner_v, outer_v, num_tasks, 
                             inner vars and outer vars. If None, the cost from the inner loop will also be
                             optimized in the outer loop.
     :type outer_cost_fn: callable, optional
-    :param inner_v: Variables to be optimized during the inner loop
-    :type inner_v: ivy.Container
-    :param outer_v: Variables to be optimized during the outer loop. If None, the same variables are optimized for
-                    in the inner loop and outer loop.
-    :type outer_v: ivy.Container, optional
+    :param variables: Variables to be optimized during the meta step
+    :type variables: ivy.Container
     :param num_tasks: Number of unique tasks to inner-loop optimize for during the meta step.
                         This must be the leading size of the input batch.
     :type num_tasks: int
@@ -191,12 +192,14 @@ def maml_step(batch, inner_cost_fn, outer_cost_fn, inner_v, outer_v, num_tasks, 
     :type inner_optimization_step: callable, optional
     :param average_across_steps: Whether to average the inner loop steps for the outer loop update. Default is False.
     :type average_across_steps: bool, optional
+    :param inner_v: Nested variable keys to be optimized during the inner loop
+    :type inner_v: ivy.Container, optional
+    :param outer_v: Nested variable keys to be optimized during the inner loop
+    :type outer_v: ivy.Container, optional
     :return: The cost and the gradients with respect to the outer loop variables.
     """
-    if outer_v is None:
-        return ivy.execute_with_gradients(lambda v: _train_tasks(
-            batch, inner_cost_fn, outer_cost_fn, v, None, num_tasks, inner_grad_steps, inner_learning_rate,
-            inner_optimization_step, order=2, average_across_steps=average_across_steps), inner_v)
+    unique_outer = outer_v is not None
     return ivy.execute_with_gradients(lambda v: _train_tasks(
-        batch, inner_cost_fn, outer_cost_fn, inner_v, v, num_tasks, inner_grad_steps, inner_learning_rate,
-        inner_optimization_step, order=2, average_across_steps=average_across_steps), outer_v)
+        batch, inner_cost_fn, outer_cost_fn, variables.set_at_key_chains(v) if unique_outer else v, num_tasks,
+        inner_grad_steps, inner_learning_rate, inner_optimization_step, 2, average_across_steps, inner_v, outer_v),
+                                      variables.at_key_chains(outer_v, ignore_none=True))
