@@ -197,35 +197,92 @@
 
 <span class="k">def</span> <span class="nf">_train_task_w_unique_v</span><span class="p">(</span><span class="n">sub_batch</span><span class="p">,</span> <span class="n">inner_cost_fn</span><span class="p">,</span> <span class="n">outer_cost_fn</span><span class="p">,</span> <span class="n">inner_v</span><span class="p">,</span> <span class="n">outer_v</span><span class="p">,</span> <span class="n">inner_grad_steps</span><span class="p">,</span>
                            <span class="n">inner_learning_rate</span><span class="p">,</span> <span class="n">inner_optimization_step</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span> <span class="n">average_across_steps</span><span class="p">):</span>
+
+    <span class="c1"># init</span>
     <span class="n">total_cost</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">all_grads</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+
+    <span class="c1"># iterate through inner loop training steps</span>
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">inner_grad_steps</span><span class="p">):</span>
-        <span class="n">cost</span><span class="p">,</span> <span class="n">inner_grads</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">execute_with_gradients</span><span class="p">(</span><span class="k">lambda</span> <span class="n">v</span><span class="p">:</span> <span class="n">inner_cost_fn</span><span class="p">(</span><span class="n">sub_batch</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">outer_v</span><span class="p">),</span> <span class="n">inner_v</span><span class="p">,</span>
-                                                       <span class="n">retain_grads</span><span class="o">=</span><span class="p">(</span><span class="n">order</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="ow">or</span> <span class="n">average_across_steps</span><span class="p">))</span>
-        <span class="k">if</span> <span class="n">outer_cost_fn</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">cost</span> <span class="o">=</span> <span class="n">outer_cost_fn</span><span class="p">(</span><span class="n">sub_batch</span><span class="p">,</span> <span class="n">inner_v</span><span class="p">,</span> <span class="n">outer_v</span><span class="p">)</span>
+
+        <span class="c1"># compute inner gradient for update the inner variables</span>
+        <span class="n">_</span><span class="p">,</span> <span class="n">inner_update_grads</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">execute_with_gradients</span><span class="p">(</span><span class="k">lambda</span> <span class="n">v</span><span class="p">:</span> <span class="n">inner_cost_fn</span><span class="p">(</span><span class="n">sub_batch</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">outer_v</span><span class="p">),</span> <span class="n">inner_v</span><span class="p">,</span>
+                                                           <span class="n">retain_grads</span><span class="o">=</span><span class="n">order</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">)</span>
+
+        <span class="c1"># store inner gradients if inner cost</span>
+        <span class="k">if</span> <span class="n">outer_cost_fn</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">order</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">cost</span><span class="p">,</span> <span class="n">inner_grads</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">execute_with_gradients</span><span class="p">(</span><span class="k">lambda</span> <span class="n">v</span><span class="p">:</span> <span class="n">inner_cost_fn</span><span class="p">(</span><span class="n">sub_batch</span><span class="p">,</span> <span class="n">inner_v</span><span class="p">,</span> <span class="n">v</span><span class="p">),</span> <span class="n">outer_v</span><span class="p">,</span>
+                                                               <span class="n">retain_grads</span><span class="o">=</span><span class="n">order</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">average_across_steps</span><span class="p">:</span>
+                    <span class="n">all_grads</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">inner_grads</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">cost</span> <span class="o">=</span> <span class="n">inner_cost_fn</span><span class="p">(</span><span class="n">sub_batch</span><span class="p">,</span> <span class="n">inner_v</span><span class="p">,</span> <span class="n">outer_v</span><span class="p">)</span>
+
+        <span class="c1"># else, update cost if using outer cost function</span>
+        <span class="k">else</span><span class="p">:</span>
+
+            <span class="c1"># compute gradients if first order</span>
+            <span class="k">if</span> <span class="n">order</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">cost</span><span class="p">,</span> <span class="n">outer_grads</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">execute_with_gradients</span><span class="p">(</span><span class="k">lambda</span> <span class="n">v</span><span class="p">:</span> <span class="n">outer_cost_fn</span><span class="p">(</span><span class="n">sub_batch</span><span class="p">,</span> <span class="n">inner_v</span><span class="p">,</span> <span class="n">v</span><span class="p">),</span> <span class="n">outer_v</span><span class="p">,</span>
+                                                               <span class="n">retain_grads</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">average_across_steps</span><span class="p">:</span>
+                    <span class="n">all_grads</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">outer_grads</span><span class="p">)</span>
+            <span class="c1"># otherwise just compute the cost, and an outer optimizer will compute higher order gradients</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">cost</span> <span class="o">=</span> <span class="n">outer_cost_fn</span><span class="p">(</span><span class="n">sub_batch</span><span class="p">,</span> <span class="n">inner_v</span><span class="p">,</span> <span class="n">outer_v</span><span class="p">)</span>
+
+        <span class="c1"># update cost and update parameters</span>
         <span class="n">total_cost</span> <span class="o">=</span> <span class="n">total_cost</span> <span class="o">+</span> <span class="n">cost</span>
-        <span class="n">inner_v</span> <span class="o">=</span> <span class="n">inner_optimization_step</span><span class="p">(</span><span class="n">inner_v</span><span class="p">,</span> <span class="n">inner_grads</span><span class="p">,</span> <span class="n">inner_learning_rate</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-        <span class="n">inner_v</span> <span class="o">=</span> <span class="n">inner_v</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">kc</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">variable</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">stop_gradient</span><span class="p">(</span><span class="n">x</span><span class="p">)))</span> <span class="k">if</span> <span class="n">order</span> <span class="o">==</span> <span class="mi">1</span> <span class="k">else</span> <span class="n">inner_v</span>
-    <span class="k">if</span> <span class="n">outer_cost_fn</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">final_cost</span> <span class="o">=</span> <span class="n">outer_cost_fn</span><span class="p">(</span><span class="n">sub_batch</span><span class="p">,</span> <span class="n">inner_v</span><span class="p">,</span> <span class="n">outer_v</span><span class="p">)</span>
+        <span class="n">inner_v</span> <span class="o">=</span> <span class="n">inner_optimization_step</span><span class="p">(</span><span class="n">inner_v</span><span class="p">,</span> <span class="n">inner_update_grads</span><span class="p">,</span> <span class="n">inner_learning_rate</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+        <span class="c1"># stop gradient in variables if first order</span>
+        <span class="k">if</span> <span class="n">order</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">inner_v</span> <span class="o">=</span> <span class="n">inner_v</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">kc</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">variable</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">stop_gradient</span><span class="p">(</span><span class="n">x</span><span class="p">)))</span>
+
+    <span class="c1"># once training is finished, compute the final cost</span>
+    <span class="k">if</span> <span class="n">outer_cost_fn</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">order</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">final_cost</span><span class="p">,</span> <span class="n">inner_grads</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">execute_with_gradients</span><span class="p">(</span>
+                <span class="k">lambda</span> <span class="n">v</span><span class="p">:</span> <span class="n">inner_cost_fn</span><span class="p">(</span><span class="n">sub_batch</span><span class="p">,</span> <span class="n">inner_v</span><span class="p">,</span> <span class="n">v</span><span class="p">),</span> <span class="n">outer_v</span><span class="p">,</span> <span class="n">retain_grads</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+            <span class="n">all_grads</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">inner_grads</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">final_cost</span> <span class="o">=</span> <span class="n">inner_cost_fn</span><span class="p">(</span><span class="n">sub_batch</span><span class="p">,</span> <span class="n">inner_v</span><span class="p">,</span> <span class="n">outer_v</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">final_cost</span> <span class="o">=</span> <span class="n">inner_cost_fn</span><span class="p">(</span><span class="n">sub_batch</span><span class="p">,</span> <span class="n">inner_v</span><span class="p">,</span> <span class="n">outer_v</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">order</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">final_cost</span><span class="p">,</span> <span class="n">outer_grads</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">execute_with_gradients</span><span class="p">(</span>
+                <span class="k">lambda</span> <span class="n">v</span><span class="p">:</span> <span class="n">outer_cost_fn</span><span class="p">(</span><span class="n">sub_batch</span><span class="p">,</span> <span class="n">inner_v</span><span class="p">,</span> <span class="n">v</span><span class="p">),</span> <span class="n">outer_v</span><span class="p">,</span> <span class="n">retain_grads</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+            <span class="n">all_grads</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">outer_grads</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">final_cost</span> <span class="o">=</span> <span class="n">outer_cost_fn</span><span class="p">(</span><span class="n">sub_batch</span><span class="p">,</span> <span class="n">inner_v</span><span class="p">,</span> <span class="n">outer_v</span><span class="p">)</span>
+
+    <span class="c1"># average the cost or gradients across all timesteps if this option is chosen</span>
     <span class="k">if</span> <span class="n">average_across_steps</span><span class="p">:</span>
         <span class="n">total_cost</span> <span class="o">=</span> <span class="n">total_cost</span> <span class="o">+</span> <span class="n">final_cost</span>
-        <span class="k">return</span> <span class="n">total_cost</span> <span class="o">/</span> <span class="p">(</span><span class="n">inner_grad_steps</span> <span class="o">+</span> <span class="mi">1</span><span class="p">),</span> <span class="n">inner_v</span>
-    <span class="k">return</span> <span class="n">final_cost</span><span class="p">,</span> <span class="n">inner_v</span>
+        <span class="k">if</span> <span class="n">order</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">all_grads</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">all_grads</span><span class="p">)</span> <span class="o">/</span> <span class="nb">max</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">all_grads</span><span class="p">),</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">total_cost</span> <span class="o">/</span> <span class="p">(</span><span class="n">inner_grad_steps</span> <span class="o">+</span> <span class="mi">1</span><span class="p">),</span> <span class="n">inner_v</span><span class="p">,</span> <span class="n">all_grads</span>
+
+    <span class="c1"># else return only the final values</span>
+    <span class="k">if</span> <span class="n">order</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">all_grads</span> <span class="o">=</span> <span class="n">all_grads</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">final_cost</span><span class="p">,</span> <span class="n">inner_v</span><span class="p">,</span> <span class="n">all_grads</span>
 
 
 <span class="k">def</span> <span class="nf">_train_tasks_w_unique_v</span><span class="p">(</span><span class="n">batch</span><span class="p">,</span> <span class="n">inner_cost_fn</span><span class="p">,</span> <span class="n">outer_cost_fn</span><span class="p">,</span> <span class="n">inner_v</span><span class="p">,</span> <span class="n">outer_v</span><span class="p">,</span> <span class="n">num_tasks</span><span class="p">,</span> <span class="n">inner_grad_steps</span><span class="p">,</span>
                             <span class="n">inner_learning_rate</span><span class="p">,</span> <span class="n">inner_optimization_step</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span> <span class="n">average_across_steps</span><span class="p">):</span>
     <span class="n">total_cost</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">all_grads</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
     <span class="n">inner_v_orig</span> <span class="o">=</span> <span class="n">inner_v</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">kc</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">stop_gradient</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
     <span class="k">for</span> <span class="n">sub_batch</span> <span class="ow">in</span> <span class="n">batch</span><span class="o">.</span><span class="n">unstack</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">num_tasks</span><span class="p">):</span>
         <span class="n">inner_v</span> <span class="o">=</span> <span class="n">inner_v_orig</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">kc</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">variable</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
-        <span class="n">cost</span><span class="p">,</span> <span class="n">inner_v</span> <span class="o">=</span> <span class="n">_train_task_w_unique_v</span><span class="p">(</span><span class="n">sub_batch</span><span class="p">,</span> <span class="n">inner_cost_fn</span><span class="p">,</span> <span class="n">outer_cost_fn</span><span class="p">,</span> <span class="n">inner_v</span><span class="p">,</span> <span class="n">outer_v</span><span class="p">,</span>
-                                               <span class="n">inner_grad_steps</span><span class="p">,</span> <span class="n">inner_learning_rate</span><span class="p">,</span> <span class="n">inner_optimization_step</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span>
-                                               <span class="n">average_across_steps</span><span class="p">)</span>
+        <span class="n">cost</span><span class="p">,</span> <span class="n">inner_v</span><span class="p">,</span> <span class="n">grads</span> <span class="o">=</span> <span class="n">_train_task_w_unique_v</span><span class="p">(</span><span class="n">sub_batch</span><span class="p">,</span> <span class="n">inner_cost_fn</span><span class="p">,</span> <span class="n">outer_cost_fn</span><span class="p">,</span> <span class="n">inner_v</span><span class="p">,</span> <span class="n">outer_v</span><span class="p">,</span>
+                                                      <span class="n">inner_grad_steps</span><span class="p">,</span> <span class="n">inner_learning_rate</span><span class="p">,</span> <span class="n">inner_optimization_step</span><span class="p">,</span>
+                                                      <span class="n">order</span><span class="p">,</span> <span class="n">average_across_steps</span><span class="p">)</span>
         <span class="n">total_cost</span> <span class="o">=</span> <span class="n">total_cost</span> <span class="o">+</span> <span class="n">cost</span>
+        <span class="n">all_grads</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">grads</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">order</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">total_cost</span> <span class="o">/</span> <span class="n">num_tasks</span><span class="p">,</span> <span class="nb">sum</span><span class="p">(</span><span class="n">all_grads</span><span class="p">)</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">all_grads</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">total_cost</span> <span class="o">/</span> <span class="n">num_tasks</span>
 
 
@@ -237,8 +294,6 @@
     <span class="c1"># init</span>
     <span class="n">total_cost</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="n">all_grads</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
-    <span class="n">all_inner_grads</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
-    <span class="n">all_outer_grads</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
 
     <span class="c1"># iterate through inner loop training steps</span>
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">inner_grad_steps</span><span class="p">):</span>
@@ -247,18 +302,20 @@
         <span class="n">cost</span><span class="p">,</span> <span class="n">inner_grads</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">execute_with_gradients</span><span class="p">(</span><span class="k">lambda</span> <span class="n">v_</span><span class="p">:</span> <span class="n">inner_cost_fn</span><span class="p">(</span><span class="n">sub_batch</span><span class="p">,</span> <span class="n">v_</span><span class="p">),</span> <span class="n">v</span><span class="p">,</span>
                                                        <span class="n">retain_grads</span><span class="o">=</span><span class="n">order</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="n">order</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">average_across_steps</span><span class="p">:</span>
-            <span class="n">all_inner_grads</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">inner_grads</span><span class="p">)</span>
+        <span class="c1"># store inner gradients if inner cost</span>
+        <span class="k">if</span> <span class="n">outer_cost_fn</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">order</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">average_across_steps</span><span class="p">:</span>
+                <span class="n">all_grads</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">inner_grads</span><span class="p">)</span>
 
-        <span class="c1"># update cost if outer cost function is different from inner cost function used for updates</span>
-        <span class="k">if</span> <span class="n">outer_cost_fn</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="c1"># else, update cost if using outer cost function</span>
+        <span class="k">else</span><span class="p">:</span>
 
             <span class="c1"># compute gradients if first order</span>
             <span class="k">if</span> <span class="n">order</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
                 <span class="n">cost</span><span class="p">,</span> <span class="n">outer_grads</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">execute_with_gradients</span><span class="p">(</span><span class="k">lambda</span> <span class="n">v_</span><span class="p">:</span> <span class="n">outer_cost_fn</span><span class="p">(</span><span class="n">sub_batch</span><span class="p">,</span> <span class="n">v_</span><span class="p">),</span> <span class="n">v</span><span class="p">,</span>
                                                                <span class="n">retain_grads</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
                 <span class="k">if</span> <span class="n">average_across_steps</span><span class="p">:</span>
-                    <span class="n">all_outer_grads</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">outer_grads</span><span class="p">)</span>
+                    <span class="n">all_grads</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">outer_grads</span><span class="p">)</span>
             <span class="c1"># otherwise just compute the cost, and an outer optimizer will compute higher order gradients</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">cost</span> <span class="o">=</span> <span class="n">outer_cost_fn</span><span class="p">(</span><span class="n">sub_batch</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
@@ -272,32 +329,31 @@
             <span class="n">v</span> <span class="o">=</span> <span class="n">v</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">kc</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">variable</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">stop_gradient</span><span class="p">(</span><span class="n">x</span><span class="p">)))</span>
 
     <span class="c1"># once training is finished, compute the final cost</span>
-    <span class="k">if</span> <span class="n">outer_cost_fn</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">order</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="n">final_cost</span><span class="p">,</span> <span class="n">outer_grads</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">execute_with_gradients</span><span class="p">(</span><span class="k">lambda</span> <span class="n">v_</span><span class="p">:</span> <span class="n">outer_cost_fn</span><span class="p">(</span><span class="n">sub_batch</span><span class="p">,</span> <span class="n">v_</span><span class="p">),</span> <span class="n">v</span><span class="p">,</span>
-                                                                 <span class="n">retain_grads</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-            <span class="n">all_outer_grads</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">outer_grads</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">final_cost</span> <span class="o">=</span> <span class="n">outer_cost_fn</span><span class="p">(</span><span class="n">sub_batch</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
-    <span class="k">else</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">outer_cost_fn</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">order</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
             <span class="n">final_cost</span><span class="p">,</span> <span class="n">inner_grads</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">execute_with_gradients</span><span class="p">(</span><span class="k">lambda</span> <span class="n">v_</span><span class="p">:</span> <span class="n">inner_cost_fn</span><span class="p">(</span><span class="n">sub_batch</span><span class="p">,</span> <span class="n">v_</span><span class="p">),</span> <span class="n">v</span><span class="p">,</span>
                                                                  <span class="n">retain_grads</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-            <span class="n">all_inner_grads</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">inner_grads</span><span class="p">)</span>
+            <span class="n">all_grads</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">inner_grads</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">final_cost</span> <span class="o">=</span> <span class="n">inner_cost_fn</span><span class="p">(</span><span class="n">sub_batch</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">order</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">final_cost</span><span class="p">,</span> <span class="n">outer_grads</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">execute_with_gradients</span><span class="p">(</span><span class="k">lambda</span> <span class="n">v_</span><span class="p">:</span> <span class="n">outer_cost_fn</span><span class="p">(</span><span class="n">sub_batch</span><span class="p">,</span> <span class="n">v_</span><span class="p">),</span> <span class="n">v</span><span class="p">,</span>
+                                                                 <span class="n">retain_grads</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+            <span class="n">all_grads</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">outer_grads</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">final_cost</span> <span class="o">=</span> <span class="n">outer_cost_fn</span><span class="p">(</span><span class="n">sub_batch</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
 
-    <span class="c1"># averaged the cost or gradients across all timesteps if this option is chosen</span>
+    <span class="c1"># average the cost or gradients across all timesteps if this option is chosen</span>
     <span class="k">if</span> <span class="n">average_across_steps</span><span class="p">:</span>
         <span class="n">total_cost</span> <span class="o">=</span> <span class="n">total_cost</span> <span class="o">+</span> <span class="n">final_cost</span>
         <span class="k">if</span> <span class="n">order</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="n">all_grads</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">all_outer_grads</span><span class="p">)</span> <span class="o">/</span> <span class="nb">max</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">all_outer_grads</span><span class="p">),</span> <span class="mi">1</span><span class="p">)</span> <span class="k">if</span> <span class="n">outer_cost_fn</span> \
-                <span class="k">else</span> <span class="nb">sum</span><span class="p">(</span><span class="n">all_inner_grads</span><span class="p">)</span> <span class="o">/</span> <span class="nb">max</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">all_inner_grads</span><span class="p">),</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="n">all_grads</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">all_grads</span><span class="p">)</span> <span class="o">/</span> <span class="nb">max</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">all_grads</span><span class="p">),</span> <span class="mi">1</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">total_cost</span> <span class="o">/</span> <span class="p">(</span><span class="n">inner_grad_steps</span> <span class="o">+</span> <span class="mi">1</span><span class="p">),</span> <span class="n">v</span><span class="p">,</span> <span class="n">all_grads</span>
 
     <span class="c1"># else return only the final values</span>
     <span class="k">if</span> <span class="n">order</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-        <span class="n">all_grads</span> <span class="o">=</span> <span class="n">all_outer_grads</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="k">if</span> <span class="n">outer_cost_fn</span> <span class="k">else</span> <span class="n">all_inner_grads</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">all_grads</span> <span class="o">=</span> <span class="n">all_grads</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
     <span class="k">return</span> <span class="n">final_cost</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">all_grads</span>
 
 
