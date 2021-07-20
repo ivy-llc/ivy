@@ -740,6 +740,8 @@
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_at_key_chains_input_as_seq</span><span class="p">(</span><span class="n">key_chains</span><span class="p">)</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">key_chains</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_at_key_chains_input_as_dict</span><span class="p">(</span><span class="n">key_chains</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">key_chains</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_at_key_chains_input_as_seq</span><span class="p">([</span><span class="n">key_chains</span><span class="p">])</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;Invalid type for input key_chains, must either be a list, tuple, dict, or ivy.Container,&#39;</span>
                             <span class="s1">&#39;but found type </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">key_chains</span><span class="p">)))</span></div>
