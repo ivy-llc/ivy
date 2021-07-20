@@ -575,6 +575,21 @@ class Container(dict):
         cont[keys[-1]] = val
         return self
 
+    def set_at_key_chains(self, target_container, return_dict=None):
+        """
+        Set values of container object at specified key-chains
+
+        :return: new container with updated value at key chain
+        """
+        if return_dict is None:
+            return_dict = self.copy()
+        for k, v in target_container.items():
+            if isinstance(v, dict):
+                return_dict[k] = self.set_at_key_chains(v, return_dict[k])
+            else:
+                return_dict[k] = v
+        return Container(return_dict)
+
     def prune_key_chain(self, key_chain):
         """
         Recursively prune chain of keys, specified as 'key1/key2/key3/...'
