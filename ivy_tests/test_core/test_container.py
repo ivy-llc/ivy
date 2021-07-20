@@ -45,6 +45,21 @@ def test_container_at_key_chain(dev_str, call):
     assert (sub_container == ivy.array([2]))[0]
 
 
+def test_container_at_key_chains(dev_str, call):
+    dict_in = {'a': ivy.array([1]),
+               'b': {'c': ivy.array([2]), 'd': ivy.array([3])}}
+    container = Container(dict_in)
+    target_cont = Container({'a': True, 'b': {'c': True}})
+    new_container = container.at_key_chains(target_cont)
+    assert (new_container['a'] == ivy.array([1]))[0]
+    assert (new_container['b']['c'] == ivy.array([2]))[0]
+    assert 'd' not in new_container['b']
+    new_container = container.at_key_chains(['b/c', 'b/d'])
+    assert 'a' not in new_container
+    assert (new_container['b']['c'] == ivy.array([2]))[0]
+    assert (new_container['b']['d'] == ivy.array([3]))[0]
+
+
 def test_container_set_at_key_chain(dev_str, call):
     dict_in = {'a': ivy.array([1]),
                'b': {'c': ivy.array([2]), 'd': ivy.array([3])}}

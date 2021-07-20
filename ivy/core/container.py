@@ -273,6 +273,25 @@ class Container(dict):
             except (AttributeError, IndexError, TypeError):
                 return 0
 
+    def _at_key_chains_input_as_seq(self, key_chains):
+        return_cont = Container(dict())
+        for kc in key_chains:
+            return_cont.set_at_key_chain(kc, self.at_key_chain(kc))
+        return return_cont
+
+    def _at_key_chains_input_as_dict(self, key_chains, current_chain=''):
+        return_dict = dict()
+        for k, v in key_chains.items():
+            if current_chain == '':
+                new_current_chain = k
+            else:
+                new_current_chain = current_chain + '/' + k
+            if isinstance(v, dict):
+                return_dict[k] = self._at_key_chains_input_as_dict(v, new_current_chain)
+            else:
+                return_dict[k] = self.at_key_chain(new_current_chain)
+        return Container(return_dict)
+
     # Public Methods #
     # ---------------#
 
@@ -521,6 +540,20 @@ class Container(dict):
         for key in keys:
             ret = ret[key]
         return ret
+
+    def at_key_chains(self, key_chains):
+        """
+        Query container object at specified key-chains, either as list or nested dict
+
+        :return: sub-container containing only the specified key chains
+        """
+        if isinstance(key_chains, (list, tuple)):
+            return self._at_key_chains_input_as_seq(key_chains)
+        elif isinstance(key_chains, dict):
+            return self._at_key_chains_input_as_dict(key_chains)
+        else:
+            raise Exception('Invalid type for input key_chains, must either be a list, tuple, dict, or ivy.Container,'
+                            'but found type {}'.format(type(key_chains)))
 
     def set_at_key_chain(self, key_chain, val):
         """
