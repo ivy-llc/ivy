@@ -228,7 +228,7 @@ def test_maml_step_unique_vars(dev_str, call, inner_grad_steps, with_outer_cost_
     all_outer_grads = list()
     for sub_batch in batch_np.unstack(0, num_tasks):
         all_outer_grads.append(
-            [(-2*i*inner_learning_rate*weight_np.weight*sub_batch['x'][0]**2 - sub_batch['x'][0]*latent_np.latent) * \
+            [(-2*i*inner_learning_rate*weight_np.weight*sub_batch['x'][0]**2 - sub_batch['x'][0]*latent_np.latent) *
              (-1 if with_outer_cost_fn else 1) for i in range(inner_grad_steps+1)])
     if average_across_steps:
         true_outer_grad = sum([sum(og) / len(og) for og in all_outer_grads]) / num_tasks
