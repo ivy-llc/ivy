@@ -132,6 +132,42 @@ def test_container_prune_key_chain(dev_str, call):
     assert _test_exception(container_further_pruned)
 
 
+def test_container_prune_key_chains(dev_str, call):
+    dict_in = {'a': ivy.array([1]),
+               'b': {'c': ivy.array([2]), 'd': ivy.array([3])}}
+    container = Container(dict_in)
+    container_pruned = container.prune_key_chains(['a', 'b/c'])
+    assert 'a' not in container_pruned
+    assert (container_pruned['b']['d'] == ivy.array([[3]]))[0, 0]
+    assert (container_pruned.b.d == ivy.array([[3]]))[0, 0]
+    assert 'c' not in container_pruned['b']
+
+    def _test_a_exception(container_in):
+        try:
+            _ = container_in.a
+            return False
+        except AttributeError:
+            return True
+
+    def _test_bc_exception(container_in):
+        try:
+            _ = container_in.b.c
+            return False
+        except AttributeError:
+            return True
+
+    assert _test_a_exception(container_pruned)
+    assert _test_bc_exception(container_pruned)
+
+    container_pruned = container.prune_key_chains(Container({'a': True, 'b': {'c': True}}))
+    assert 'a' not in container_pruned
+    assert (container_pruned['b']['d'] == ivy.array([[3]]))[0, 0]
+    assert (container_pruned.b.d == ivy.array([[3]]))[0, 0]
+    assert 'c' not in container_pruned['b']
+    assert _test_a_exception(container_pruned)
+    assert _test_bc_exception(container_pruned)
+
+
 def test_container_prune_empty(dev_str, call):
     dict_in = {'a': ivy.array([1]),
                'b': {'c': {}, 'd': ivy.array([3])}}

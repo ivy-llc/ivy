@@ -292,6 +292,24 @@ class Container(dict):
                 return_dict[k] = self.at_key_chain(new_current_chain)
         return Container(return_dict)
 
+    def _prune_key_chains_input_as_seq(self, key_chains):
+        return_cont = self.copy()
+        for kc in key_chains:
+            return_cont = return_cont.prune_key_chain(kc)
+        return return_cont
+
+    def _prune_key_chains_input_as_dict(self, key_chains, return_cont=None):
+        if return_cont is None:
+            return_cont = self.copy()
+        for k, v in key_chains.items():
+            if isinstance(v, dict):
+                ret_cont = self._prune_key_chains_input_as_dict(v, return_cont[k])
+                if ret_cont.size == 0:
+                    del return_cont[k]
+            else:
+                del return_cont[k]
+        return return_cont
+
     # Public Methods #
     # ---------------#
 
@@ -615,6 +633,22 @@ class Container(dict):
                 if len(keys_in_chain) != 1 or key != keys_in_chain[0]:
                     out_dict[key] = value
         return Container(out_dict)
+
+    def prune_key_chains(self, key_chains):
+        """
+        Recursively prune set of key chains
+
+        :return: Container with keys in the set of key chains pruned.
+        """
+        if isinstance(key_chains, (list, tuple)):
+            return self._prune_key_chains_input_as_seq(key_chains)
+        elif isinstance(key_chains, dict):
+            return self._prune_key_chains_input_as_dict(key_chains)
+        elif isinstance(key_chains, str):
+            return self._prune_key_chains_input_as_seq([key_chains])
+        else:
+            raise Exception('Invalid type for input key_chains, must either be a list, tuple, dict, or ivy.Container,'
+                            'but found type {}'.format(type(key_chains)))
 
     def prune_empty(self):
         """
