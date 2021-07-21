@@ -1031,7 +1031,7 @@ def test_isnan(x_n_res, dtype_str, tensor_fn, dev_str, call):
 
 # reshape
 @pytest.mark.parametrize(
-    "x_n_shp", [(1., (1, 1)), (1., []), ([[1.]], []), ([[0., 1.], [2., 3.]], (1, 4, 1))])
+    "x_n_shp", [(1., (1, 1)), (1., 1), (1., []), ([[1.]], []), ([[0., 1.], [2., 3.]], (1, 4, 1))])
 @pytest.mark.parametrize(
     "dtype_str", ['float32'])
 @pytest.mark.parametrize(
@@ -1047,7 +1047,7 @@ def test_reshape(x_n_shp, dtype_str, tensor_fn, dev_str, call):
     # type test
     assert ivy.is_array(ret)
     # cardinality test
-    assert ret.shape == tuple(new_shape)
+    assert ret.shape == ((new_shape,) if isinstance(new_shape, int) else tuple(new_shape))
     # value test
     assert np.allclose(call(ivy.reshape, x, new_shape), ivy.numpy.reshape(ivy.to_numpy(x), new_shape))
     # compilation test
