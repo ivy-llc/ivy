@@ -44,58 +44,60 @@ class Module(abc.ABC):
         new_fn.wrapped = True
         return new_fn
 
-    def _find_variables(self, key='', obj=None):
+    def _find_variables(self, obj=None):
         obj = self if obj is None else obj
-        vs = dict()
+        vs = Container()
         # ToDo: add support for finding local variables, when JAX supports uniquely flagging variables
         if isinstance(obj, Module) and obj is not self:
-            vs[key[1:] if key[0] == '_' else key] = obj.v
-            return vs
+            return obj.v
         elif isinstance(obj, (list, tuple)):
             for i, v in enumerate(obj):
-                vs = dict(**vs, **self._find_variables(key + str(i), v))
+                ret = self._find_variables(v)
+                if ret:
+                    vs['v' + str(i)] = ret
             return vs
         elif isinstance(obj, dict):
             for k, v in obj.items():
-                k = (key + '/' + k) if key != '' else k
-                vs = dict(**vs, **self._find_variables(k, v))
+                ret = self._find_variables(v)
+                if ret:
+                    vs[k[1:] if k[0] == '_' else k] = ret
             return vs
-        if not hasattr(obj, '__dict__'):
+        elif not hasattr(obj, '__dict__'):
             return vs
-        for k, val in obj.__dict__.items():
-            k = (key + '/' + k) if key != '' else k
-            if val is not None:
-                vs = dict(**vs, **self._find_variables(k, val))
+        for k, v in obj.__dict__.items():
+            if v is not None:
+                ret = self._find_variables(v)
+                if ret:
+                    vs[k[1:] if k[0] == '_' else k] = ret
         return vs
 
     @staticmethod
-    def _extract_v(v, keychain_mappings, orig_key):
-        if orig_key in v.keys():
-            ret_cont = v[orig_key]
+    def _extract_v(v, keychain_mappings, orig_key_chain):
+        if v.has_key_chain(orig_key_chain):
+            ret_cont = v.at_key_chain(orig_key_chain)
         else:
             ret_cont = ivy.Container({})
         for old_kc, new_kc in keychain_mappings.items():
-            if orig_key in old_kc:
+            if orig_key_chain in old_kc:
                 ret_cont = ret_cont.set_at_key_chain('/'.join(new_kc.split('/')[1:]), v.at_key_chain(new_kc))
         return ret_cont
 
     def _wrap_call_methods(self, keychain_mappings, key='', obj=None):
-        # ToDo: check whether keychain_mappings need to be recursively refined for checks in the sub-calls
         obj = self if obj is None else obj
         if isinstance(obj, Module) and obj is not self:
-            orig_key = key[1:] if key[0] == '_' else key
+            orig_key_chain = key[1:] if key[0] == '_' else key
 
             obj.__call__ = self._fn_with_var_arg(obj.__call__,
-                                                 lambda v_: self._extract_v(v_, keychain_mappings, orig_key))
+                                                 lambda v_: self._extract_v(v_, keychain_mappings, orig_key_chain))
             return
         elif isinstance(obj, (list, tuple)):
-            for i, v in enumerate(obj):
-                self._wrap_call_methods(keychain_mappings, key + str(i), v)
+            for i, val in enumerate(obj):
+                self._wrap_call_methods(keychain_mappings, key + '/v' + str(i), val)
             return
         elif isinstance(obj, dict):
-            for k, v in obj.items():
+            for k, val in obj.items():
                 k = (key + '/' + k) if key != '' else k
-                self._wrap_call_methods(keychain_mappings, k)
+                self._wrap_call_methods(keychain_mappings, k, val)
             return
         if not hasattr(obj, '__dict__'):
             return
