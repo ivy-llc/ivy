@@ -35,6 +35,18 @@ def test_container_expand_dims(dev_str, call):
     assert (container_expanded_dims.b.d == ivy.array([[3]]))[0, 0]
 
 
+def test_container_has_key_chain(dev_str, call):
+    dict_in = {'a': ivy.array([1]),
+               'b': {'c': ivy.array([2]), 'd': ivy.array([3])}}
+    container = Container(dict_in)
+    assert container.has_key_chain('a')
+    assert container.has_key_chain('b')
+    assert container.has_key_chain('b/c')
+    assert container.has_key_chain('b/d')
+    assert not container.has_key_chain('b/e')
+    assert not container.has_key_chain('c')
+
+
 def test_container_at_key_chain(dev_str, call):
     dict_in = {'a': ivy.array([1]),
                'b': {'c': ivy.array([2]), 'd': ivy.array([3])}}
