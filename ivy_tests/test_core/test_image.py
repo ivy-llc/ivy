@@ -91,3 +91,59 @@ def test_gradient_image(x_n_dy_n_dx, dtype_str, tensor_fn, dev_str, call):
         # torch device cannot be assigned value of string while scripting
         return
     helpers.assert_compilable(ivy.gradient_image)
+
+
+# float_img_to_uint8_img
+@pytest.mark.parametrize(
+    "fi_tui", [([[0., 1.], [2., 3.]],
+               [[[0, 0, 0, 0], [0, 0, 128, 63]], [[0, 0, 0, 64], [0, 0, 64, 64]]])])
+@pytest.mark.parametrize(
+    "tensor_fn", [ivy.array, helpers.var_fn])
+def test_float_img_to_uint8_img(fi_tui, tensor_fn, dev_str, call):
+    # smoke test
+    if call is helpers.tf_graph_call:
+        # tensorflow tensors cannot be cast to numpy arrays in graph mode
+        pytest.skip()
+    float_img, true_uint8_img = fi_tui
+    float_img = tensor_fn(float_img, 'float32', dev_str)
+    true_uint8_img = np.array(true_uint8_img)
+    uint8_img = ivy.float_img_to_uint8_img(float_img)
+    # type test
+    assert ivy.is_array(float_img)
+    # cardinality test
+    assert uint8_img.shape == true_uint8_img.shape
+    # value test
+    uint8_img_np = call(ivy.float_img_to_uint8_img, float_img)
+    assert np.allclose(uint8_img_np, true_uint8_img)
+    # compilation test
+    if call in [helpers.torch_call]:
+        # torch device cannot be assigned value of string while scripting
+        return
+    helpers.assert_compilable(ivy.float_img_to_uint8_img)
+
+
+# uint8_img_to_float_img
+@pytest.mark.parametrize(
+    "ui_tfi", [([[[0, 0, 0, 0], [0, 0, 128, 63]], [[0, 0, 0, 64], [0, 0, 64, 64]]],
+                [[0., 1.], [2., 3.]])])
+def test_uint8_img_to_float_img(ui_tfi, dev_str, call):
+    # smoke test
+    if call is helpers.tf_graph_call:
+        # tensorflow tensors cannot be cast to numpy arrays in graph mode
+        pytest.skip()
+    uint8_img, true_float_img = ui_tfi
+    uint8_img = ivy.array(uint8_img, 'uint8', dev_str)
+    true_float_img = np.array(true_float_img)
+    float_img = ivy.uint8_img_to_float_img(uint8_img)
+    # type test
+    assert ivy.is_array(float_img)
+    # cardinality test
+    assert float_img.shape == true_float_img.shape
+    # value test
+    float_img_np = call(ivy.uint8_img_to_float_img, uint8_img)
+    assert np.allclose(float_img_np, true_float_img)
+    # compilation test
+    if call in [helpers.torch_call]:
+        # torch device cannot be assigned value of string while scripting
+        return
+    helpers.assert_compilable(ivy.uint8_img_to_float_img)
