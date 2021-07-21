@@ -15,4 +15,6 @@ Image
    image/stack_images.rst
    image/bilinear_resample.rst
    image/gradient_image.rst
+   image/float_img_to_uint8_img.rst
+   image/uint8_img_to_float_img.rst
 
