@@ -301,6 +301,20 @@ def test_container_with_entries_as_lists(dev_str, call):
         assert value == expected_value
 
 
+def test_container_reshape(dev_str, call):
+    container = Container({'a': ivy.array([[1.]]),
+                           'b': {'c': ivy.array([[3.], [4.]]), 'd': ivy.array([[5.], [6.], [7.]])}})
+    new_shapes = Container({'a': (1,),
+                           'b': {'c': (1, 2, 1), 'd': (3, 1, 1)}})
+    container_reshaped = container.reshape(new_shapes)
+    assert list(container_reshaped['a'].shape) == [1]
+    assert list(container_reshaped.a.shape) == [1]
+    assert list(container_reshaped['b']['c'].shape) == [1, 2, 1]
+    assert list(container_reshaped.b.c.shape) == [1, 2, 1]
+    assert list(container_reshaped['b']['d'].shape) == [3, 1, 1]
+    assert list(container_reshaped.b.d.shape) == [3, 1, 1]
+
+
 def test_container_slice(dev_str, call):
     dict_in = {'a': ivy.array([[0.], [1.]]),
                'b': {'c': ivy.array([[1.], [2.]]), 'd': ivy.array([[2.], [3.]])}}
