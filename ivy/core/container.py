@@ -547,6 +547,21 @@ class Container(dict):
             return value
         return self.map(_as_random)
 
+    def has_key_chain(self, key_chain):
+        """
+        Determine whether container object has specified key-chain
+
+        :return: Boolean
+        """
+        keys = key_chain.split('/')
+        ret = self
+        for key in keys:
+            try:
+                ret = ret[key]
+            except KeyError:
+                return False
+        return True
+
     def at_key_chain(self, key_chain):
         """
         Query container object at a specified key-chain
