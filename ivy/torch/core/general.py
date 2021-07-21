@@ -288,6 +288,8 @@ def isnan(x):
 
 
 def reshape(x, newshape: List[int]):
+    if isinstance(newshape, int):
+        newshape = [newshape]
     return torch.reshape(x, newshape)
 
 

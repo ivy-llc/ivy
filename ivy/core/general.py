@@ -599,7 +599,7 @@ def reshape(x, newshape, f=None):
     :type x: array
     :param newshape: The new shape should be compatible with the original shape. One shape dimension can be -1.
                         In this case, the value is inferred from the length of the array and remaining dimensions.
-    :type newshape: sequence of ints
+    :type newshape: int or sequence of ints
     :param f: Machine learning framework. Inferred from inputs if None.
     :type f: ml_framework, optional
     :return: Reshaped array.
