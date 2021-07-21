@@ -26,7 +26,7 @@ def execute_with_gradients(func, xs, retain_grads=False):
         y = func_ret
         rest = tuple()
     x_grads_flat = list(_torch.autograd.grad([y], [v for k, v in xs.to_iterator()], retain_graph=retain_grads,
-                                             create_graph=retain_grads, only_inputs=False))
+                                             create_graph=retain_grads))
     return (y, xs.from_flat_list(x_grads_flat), *rest)
 
 
