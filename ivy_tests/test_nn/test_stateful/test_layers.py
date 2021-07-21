@@ -714,18 +714,20 @@ def test_sequential_layer(bs_c_target, with_v, seq_v, dtype_str, tensor_fn, dev_
     if with_v:
         np.random.seed(0)
         wlim = (6 / (channels + channels)) ** 0.5
-        v = Container({'submodules0':
+        v = Container(
+            {'submodules':
+                      {'v0':
                            {'w': ivy.variable(ivy.array(np.random.uniform(
                                -wlim, wlim, (channels, channels)), 'float32')),
                                'b': ivy.variable(ivy.zeros([channels]))},
-                       'submodules1':
+                       'v1':
                            {'w': ivy.variable(ivy.array(np.random.uniform(
                                -wlim, wlim, (channels, channels)), 'float32')),
                                'b': ivy.variable(ivy.zeros([channels]))},
-                       'submodules2':
+                       'v2':
                            {'w': ivy.variable(ivy.array(np.random.uniform(
                                -wlim, wlim, (channels, channels)), 'float32')),
-                               'b': ivy.variable(ivy.zeros([channels]))}})
+                               'b': ivy.variable(ivy.zeros([channels]))}}})
     else:
         v = None
     if seq_v:
@@ -734,9 +736,9 @@ def test_sequential_layer(bs_c_target, with_v, seq_v, dtype_str, tensor_fn, dev_
                              ivy.Linear(channels, channels),
                              v=v if with_v else None)
     else:
-        seq = ivy.Sequential(ivy.Linear(channels, channels, v=v['submodules0'] if with_v else None),
-                             ivy.Linear(channels, channels, v=v['submodules1'] if with_v else None),
-                             ivy.Linear(channels, channels, v=v['submodules2'] if with_v else None))
+        seq = ivy.Sequential(ivy.Linear(channels, channels, v=v['submodules']['v0'] if with_v else None),
+                             ivy.Linear(channels, channels, v=v['submodules']['v1'] if with_v else None),
+                             ivy.Linear(channels, channels, v=v['submodules']['v2'] if with_v else None))
     ret = seq(x)
     # type test
     assert ivy.is_array(ret)
