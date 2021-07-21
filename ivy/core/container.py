@@ -729,6 +729,21 @@ class Container(dict):
                 return x
         return self.map(to_list)
 
+    def reshape(self, target_container, return_cont=None):
+        """
+        Set shapes of container entries to shapes specified by new container with the same key structure
+
+        :return: new container with values of updated shapes
+        """
+        if return_cont is None:
+            return_cont = self.copy()
+        for (_, v_shape), (k, v) in zip(target_container.items(), return_cont.items()):
+            if isinstance(v_shape, dict):
+                return_cont[k] = self.reshape(v_shape, return_cont[k])
+            else:
+                return_cont[k] = _ivy.reshape(v, v_shape)
+        return Container(return_cont)
+
     # Built-ins #
     # ----------#
 
