@@ -26,6 +26,14 @@ from operator import floordiv as _floordiv
 import ivy as _ivy
 
 
+def _is_jsonable(x):
+    try:
+        _json.dumps(x)
+        return True
+    except (TypeError, OverflowError):
+        return False
+
+
 # noinspection PyMissingConstructor
 class Container(dict):
 
@@ -453,6 +461,20 @@ class Container(dict):
         """
         _pickle.dump(self, open(pickle_filepath, 'wb'))
 
+    def to_jsonable(self, return_dict=None):
+        """
+        Return container with non-jsonable elements converted to string representations, which are jsonable.
+        """
+        if return_dict is None:
+            return_dict = self.copy()
+        for k, v in return_dict.items():
+            if not _is_jsonable(v):
+                if isinstance(v, dict):
+                    return_dict[k] = self.to_jsonable(v)
+                else:
+                    return_dict[k] = str(v)
+        return return_dict
+
     def to_disk_as_json(self, json_filepath):
         """
         Save container object to disk, as an json file, at the specified filepath.
@@ -461,15 +483,8 @@ class Container(dict):
         :type json_filepath: str
         """
 
-        def _is_jsonable(x):
-            try:
-                _json.dumps(x)
-                return True
-            except (TypeError, OverflowError):
-                return False
-
         with open(json_filepath, 'w+') as json_data_file:
-            _json.dump(self.map(lambda x, kc: x if _is_jsonable(x) else str(x)).to_dict(), json_data_file, indent=4)
+            _json.dump(self.to_jsonable().to_dict(), json_data_file, indent=4)
 
     def to_list(self):
         """
