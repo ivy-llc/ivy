@@ -49,21 +49,27 @@ def test_random_uniform(low, high, shape, dtype_str, tensor_fn, dev_str, call):
 
 # multinomial
 @pytest.mark.parametrize(
-    "probs", [[[1., 2.]], [[1., 0.5], [0.2, 0.3]]])
+    "probs", [[[1., 2.]], [[1., 0.5], [0.2, 0.3]], None])
 @pytest.mark.parametrize(
-    "num_samples", [1, 11])
+    "num_samples", [1, 2])
+@pytest.mark.parametrize(
+    "replace", [True, False])
 @pytest.mark.parametrize(
     "dtype_str", ['float32'])
 @pytest.mark.parametrize(
     "tensor_fn", [ivy.array, helpers.var_fn])
-def test_multinomial(probs, num_samples, dtype_str, tensor_fn, dev_str, call):
+def test_multinomial(probs, num_samples, replace, dtype_str, tensor_fn, dev_str, call):
+    population_size = 2
+    if call in [helpers.mx_call, helpers.tf_call, helpers.tf_graph_call] and not replace:
+        # mxnet and tenosorflow do not support multinomial without replacement
+        pytest.skip()
     # smoke test
-    probs = tensor_fn(probs, dtype_str, dev_str)
-    ret = ivy.multinomial(probs, num_samples)
+    probs = tensor_fn(probs, dtype_str, dev_str) if probs is not None else probs
+    ret = ivy.multinomial(population_size, num_samples, probs, replace)
     # type test
     assert ivy.is_array(ret)
     # cardinality test
-    assert ret.shape == tuple(list(probs.shape[:-1]) + [num_samples])
+    assert ret.shape == tuple((list(probs.shape[:-1]) if probs is not None else [1]) + [num_samples])
     # compilation test
     helpers.assert_compilable(ivy.multinomial)
 
