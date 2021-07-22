@@ -16,9 +16,10 @@ def random_uniform(low: float = 0.0, high: float = 1.0, shape: Optional[List[int
     return torch.rand(true_shape).to(dev_str.replace('gpu', 'cuda')) * rand_range + low
 
 
-def multinomial(population_size: int, num_samples: int, probs: Optional[torch.Tensor] = None, replace: bool = True):
+def multinomial(population_size: int, num_samples: int, batch_size: int, probs: Optional[torch.Tensor] = None,
+                replace: bool = True):
     if probs is None:
-        probs = torch.ones((1, population_size,)) / population_size
+        probs = torch.ones((batch_size, population_size,)) / population_size
     return torch.multinomial(probs, num_samples, replace)
 
 

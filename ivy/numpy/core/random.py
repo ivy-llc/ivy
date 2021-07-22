@@ -8,9 +8,9 @@ import numpy as _np
 random_uniform = lambda low=0., high=1., shape=None, dev_str='cpu': _np.asarray(_np.random.uniform(low, high, shape))
 
 
-def multinomial(population_size, num_samples, probs=None, replace=True):
+def multinomial(population_size, num_samples, batch_size, probs=None, replace=True):
     if probs is None:
-        probs = _np.ones((1, population_size,)) / population_size
+        probs = _np.ones((batch_size, population_size,)) / population_size
     orig_probs_shape = list(probs.shape)
     num_classes = orig_probs_shape[-1]
     probs_flat = _np.reshape(probs, (-1, orig_probs_shape[-1]))

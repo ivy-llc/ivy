@@ -65,11 +65,12 @@ def test_multinomial(probs, num_samples, replace, dtype_str, tensor_fn, dev_str,
         pytest.skip()
     # smoke test
     probs = tensor_fn(probs, dtype_str, dev_str) if probs is not None else probs
-    ret = ivy.multinomial(population_size, num_samples, probs, replace)
+    batch_size = probs.shape[0] if probs is not None else 2
+    ret = ivy.multinomial(population_size, num_samples, batch_size, probs, replace)
     # type test
     assert ivy.is_array(ret)
     # cardinality test
-    assert ret.shape == tuple((list(probs.shape[:-1]) if probs is not None else [1]) + [num_samples])
+    assert ret.shape == tuple([batch_size] + [num_samples])
     # compilation test
     helpers.assert_compilable(ivy.multinomial)
 
