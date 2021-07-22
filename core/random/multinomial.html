@@ -201,7 +201,7 @@
 <h1>multinomial<a class="headerlink" href="#multinomial" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
 <dt id="ivy.core.random.multinomial">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">multinomial</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">population_size</span></em>, <em class="sig-param"><span class="n">num_samples</span></em>, <em class="sig-param"><span class="n">probs</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">replace</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">f</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/random.html#multinomial"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.random.multinomial" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">multinomial</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">population_size</span></em>, <em class="sig-param"><span class="n">num_samples</span></em>, <em class="sig-param"><span class="n">batch_size</span></em>, <em class="sig-param"><span class="n">probs</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">replace</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">f</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/random.html#multinomial"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.random.multinomial" title="Permalink to this definition">¶</a></dt>
 <dd><p>Draws samples from a multinomial distribution. Specifcally, returns a tensor where each row contains num_samples
 indices sampled from the multinomial probability distribution located in the corresponding row of tensor input.</p>
 <dl class="field-list simple">
@@ -209,6 +209,7 @@ indices sampled from the multinomial probability distribution located in the cor
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>population_size</strong> (<em>int</em>) – The size of the population from which to draw samples.</p></li>
 <li><p><strong>num_samples</strong> (<em>int</em>) – Number of independent samples to draw from the population.</p></li>
+<li><p><strong>batch_size</strong> – Number of times to draw a new set of samples from the population.</p></li>
 <li><p><strong>probs</strong> (<em>array</em><em>, </em><em>optional</em>) – The unnormalized probabilities for all elemtns in population,
 default is uniform <em>[batch_shape, num_classes]</em></p></li>
 <li><p><strong>replace</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to replace samples once they’ve been drawn. Default is True.</p></li>
