@@ -18,11 +18,11 @@ def random_uniform(low=0.0, high=1.0, shape=None, dev_str='cpu'):
     return to_dev(_jax.random.uniform(rng_input, shape if shape else (), minval=low, maxval=high), dev_str)
 
 
-def multinomial(population_size, num_samples, probs=None, replace=True):
+def multinomial(population_size, num_samples, batch_size, probs=None, replace=True):
     global RNG
     RNG, rng_input = _jax.random.split(RNG)
     if probs is None:
-        probs = _jnp.ones((1, population_size,)) / population_size
+        probs = _jnp.ones((batch_size, population_size,)) / population_size
     orig_probs_shape = list(probs.shape)
     num_classes = orig_probs_shape[-1]
     probs_flat = _jnp.reshape(probs, (-1, orig_probs_shape[-1]))

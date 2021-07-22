@@ -23,11 +23,11 @@ def random_uniform(low=0., high=1., shape=None, dev_str='cpu'):
     return _mx.nd.random.uniform(low, high, shape, ctx=ctx)
 
 
-def multinomial(population_size, num_samples, probs=None, replace=True):
+def multinomial(population_size, num_samples, batch_size, probs=None, replace=True):
     if not replace:
         raise Exception('MXNet does not support multinomial without replacement')
     if probs is None:
-        probs = _mx.nd.ones((1, population_size,)) / population_size
+        probs = _mx.nd.ones((batch_size, population_size,)) / population_size
     probs = probs / _mx.nd.sum(probs, -1, True)
     return _mx.nd.sample_multinomial(probs, (num_samples,))
 

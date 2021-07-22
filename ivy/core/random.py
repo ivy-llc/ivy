@@ -29,7 +29,7 @@ def random_uniform(low=0.0, high=1.0, shape=None, dev_str='cpu', f=None):
     return _get_framework(f=f).random_uniform(low, high, shape, dev_str)
 
 
-def multinomial(population_size, num_samples, probs=None, replace=True, f=None):
+def multinomial(population_size, num_samples, batch_size, probs=None, replace=True, f=None):
     """
     Draws samples from a multinomial distribution. Specifcally, returns a tensor where each row contains num_samples
     indices sampled from the multinomial probability distribution located in the corresponding row of tensor input.
@@ -37,6 +37,8 @@ def multinomial(population_size, num_samples, probs=None, replace=True, f=None):
     :param population_size: The size of the population from which to draw samples.
     :type population_size: int
     :param num_samples: Number of independent samples to draw from the population.
+    :type num_samples: int
+    :param batch_size: Number of times to draw a new set of samples from the population.
     :type num_samples: int
     :param probs: The unnormalized probabilities for all elemtns in population,
                         default is uniform *[batch_shape, num_classes]*
@@ -47,7 +49,7 @@ def multinomial(population_size, num_samples, probs=None, replace=True, f=None):
     :type f: ml_framework, optional
     :return: Drawn samples indices from the multinomial distribution.
     """
-    return _get_framework(f=f).multinomial(population_size, num_samples, probs, replace)
+    return _get_framework(f=f).multinomial(population_size, num_samples, batch_size, probs, replace)
 
 
 def randint(low, high, shape, dev_str='cpu', f=None):
