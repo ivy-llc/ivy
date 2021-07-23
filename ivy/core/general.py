@@ -53,6 +53,19 @@ def to_numpy(x, f=None):
     return _get_framework(x, f=f).to_numpy(x)
 
 
+def to_scalar(x, f=None):
+    """
+    Converts an array with a single element into a scalar.
+
+    :param x: Input array with a single element.
+    :type x: array
+    :param f: Machine learning framework. Inferred from inputs if None.
+    :type f: ml_framework, optional
+    :return: A scalar.
+    """
+    return _get_framework(x, f=f).to_scalar(x)
+
+
 def to_list(x, f=None):
     """
     Creates a (possibly nested) list from input array.
