@@ -52,6 +52,10 @@ def to_numpy(x) -> np.ndarray:
     raise ValueError('Expected a pytroch tensor.')
 
 
+def to_scalar(x) -> Union[float, int, bool]:
+    return x.item()
+
+
 def to_list(x):
     if isinstance(x, np.ndarray):
         return x.tolist()

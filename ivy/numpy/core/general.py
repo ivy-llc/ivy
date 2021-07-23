@@ -57,6 +57,7 @@ def is_array(x):
 
 
 to_numpy = lambda x: x
+to_scalar = lambda x: x.item()
 to_list = lambda x: x.tolist()
 shape = lambda x, as_tensor=False: _np.asarray(_np.shape(x)) if as_tensor else x.shape
 get_num_dims = lambda x, as_tensor=False: _np.asarray(len(_np.shape(x))) if as_tensor else len(x.shape)
