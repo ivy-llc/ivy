@@ -16,6 +16,7 @@ General
    general/is_array.rst
    general/dtype_from_str.rst
    general/to_numpy.rst
+   general/to_scalar.rst
    general/to_list.rst
    general/shape.rst
    general/get_num_dims.rst
