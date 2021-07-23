@@ -445,23 +445,23 @@ def unstack(x, axis, f=None):
     return _get_framework(x, f=f).unstack(x, axis)
 
 
-def split(x, num_sections=None, axis=0, f=None):
+def split(x, num_or_size_splits=None, axis=0, f=None):
     """
     Splits an array into multiple sub-arrays.
 
     :param x: Tensor to be divided into sub-arrays.
     :type x: array
-    :param num_sections: Number of equal arrays to divide the array into, along the given axis.
-                         Size of axis dimension must be multiple of num_sections.
-                         Default is to divide into as many arrays as the axis dimension.
-    :type num_sections: int, optional
+    :param num_or_size_splits: Number of equal arrays to divide the array into along the given axis if an integer.
+                               The size of each split element if a sequence of integers.
+                               Default is to divide into as many 1-dimensional arrays as the axis dimension.
+    :type num_or_size_splits: int, optional
     :param axis: The axis along which to split, default is 0.
     :type axis: int, optional
     :param f: Machine learning framework. Inferred from inputs if None.
     :type f: ml_framework, optional
     :return: A list of sub-arrays.
     """
-    return _get_framework(x, f=f).split(x, num_sections, axis)
+    return _get_framework(x, f=f).split(x, num_or_size_splits, axis)
 
 
 def tile(x, reps, f=None):

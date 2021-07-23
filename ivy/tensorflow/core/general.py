@@ -152,15 +152,15 @@ def unstack(x, axis):
     return _tf.unstack(x, axis=axis)
 
 
-def split(x, num_sections=None, axis=0):
+def split(x, num_or_size_splits=None, axis=0):
     if x.shape == ():
-        if num_sections is not None and num_sections != 1:
-            raise Exception('input array had no shape, but num_sections specified was {}'.format(num_sections))
+        if num_or_size_splits is not None and num_or_size_splits != 1:
+            raise Exception('input array had no shape, but num_sections specified was {}'.format(num_or_size_splits))
         return [x]
-    if num_sections is None:
+    if num_or_size_splits is None:
         dim_size = _tf.shape(x)[axis]
-        num_sections = dim_size
-    return _tf.split(x, num_sections, axis)
+        num_or_size_splits = dim_size
+    return _tf.split(x, num_or_size_splits, axis)
 
 
 def tile(x, reps):
