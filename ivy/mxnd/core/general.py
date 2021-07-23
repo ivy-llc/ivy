@@ -214,13 +214,16 @@ def unstack(x, axis):
     return ret if isinstance(ret, list) else [ret]
 
 
-def split(x, num_sections=None, axis=0):
+def split(x, num_or_size_splits=None, axis=0):
+    if isinstance(num_or_size_splits, (list, tuple)):
+        raise Exception('MXNet does not support splitting based on section sizes,'
+                        'only number of sections as integer input is supported.')
     if x.shape == ():
-        if num_sections is not None and num_sections != 1:
-            raise Exception('input array had no shape, but num_sections specified was {}'.format(num_sections))
+        if num_or_size_splits is not None and num_or_size_splits != 1:
+            raise Exception('input array had no shape, but num_sections specified was {}'.format(num_or_size_splits))
         return [x]
-    num_sections = x.shape[axis] if not num_sections else num_sections
-    return _mx.nd.split(x, x.shape[axis] if not num_sections else num_sections, axis)
+    num_or_size_splits = x.shape[axis] if not num_or_size_splits else num_or_size_splits
+    return _mx.nd.split(x, x.shape[axis] if not num_or_size_splits else num_or_size_splits, axis)
 
 
 def tile(x, reps):

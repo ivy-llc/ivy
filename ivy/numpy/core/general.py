@@ -149,14 +149,16 @@ def unstack(x, axis):
     return res
 
 
-def split(x, num_sections=None, axis=0):
+def split(x, num_or_size_splits=None, axis=0):
     if x.shape == ():
-        if num_sections is not None and num_sections != 1:
-            raise Exception('input array had no shape, but num_sections specified was {}'.format(num_sections))
+        if num_or_size_splits is not None and num_or_size_splits != 1:
+            raise Exception('input array had no shape, but num_sections specified was {}'.format(num_or_size_splits))
         return [x]
-    if num_sections is None:
-        num_sections = x.shape[axis]
-    return _np.split(x, num_sections, axis)
+    if num_or_size_splits is None:
+        num_or_size_splits = x.shape[axis]
+    elif isinstance(num_or_size_splits, (list, tuple)):
+        num_or_size_splits = _np.cumsum(num_or_size_splits[:-1])
+    return _np.split(x, num_or_size_splits, axis)
 
 
 tile = _np.tile

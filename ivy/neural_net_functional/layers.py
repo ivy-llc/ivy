@@ -277,7 +277,7 @@ def lstm_update(x, init_h, init_c, kernel, recurrent_kernel, bias=None, recurren
         ctm1 = ct
 
         Wh_htm1 = ivy.matmul(htm1, Wh) + (recurrent_bias if recurrent_bias is not None else 0)
-        Whi_htm1, Whf_htm1, Whg_htm1, Who_htm1 = ivy.split(Wh_htm1, num_sections=4, axis=-1)
+        Whi_htm1, Whf_htm1, Whg_htm1, Who_htm1 = ivy.split(Wh_htm1, num_or_size_splits=4, axis=-1)
 
         it = ivy.sigmoid(Wii_xt + Whi_htm1)
         ft = ivy.sigmoid(Wif_xt + Whf_htm1)
