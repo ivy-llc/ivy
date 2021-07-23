@@ -765,7 +765,10 @@ def test_unstack(x_n_axis, dtype_str, tensor_fn, dev_str, call):
 
 # split
 @pytest.mark.parametrize(
-    "x_n_secs_n_axis", [(1, 1, -1), ([[0., 1., 2., 3.]], 2, 1), ([[0., 1., 2.], [3., 4., 5.]], 2, 0)])
+    "x_n_secs_n_axis", [(1, 1, -1),
+                        ([[0., 1., 2., 3.]], 2, 1),
+                        ([[0., 1., 2.], [3., 4., 5.]], 2, 0),
+                        ([[0., 1., 2.], [3., 4., 5.]], [2, 1], 1)])
 @pytest.mark.parametrize(
     "dtype_str", ['float32'])
 @pytest.mark.parametrize(
@@ -776,6 +779,9 @@ def test_split(x_n_secs_n_axis, dtype_str, tensor_fn, dev_str, call):
     if isinstance(x, Number) and tensor_fn == helpers.var_fn and call is helpers.mx_call:
         # mxnet does not support 0-dimensional variables
         pytest.skip()
+    if isinstance(secs, list) and call is helpers.mx_call:
+        # mxnet does not support split method with section sizes, only num_sections is supported.
+        pytest.skip()
     x = tensor_fn(x, dtype_str, dev_str)
     ret = ivy.split(x, secs, axis)
     # type test
@@ -784,11 +790,16 @@ def test_split(x_n_secs_n_axis, dtype_str, tensor_fn, dev_str, call):
     axis_val = (axis % len(x.shape) if (axis is not None and len(x.shape) != 0) else len(x.shape) - 1)
     if x.shape == ():
         expected_shape = ()
-    else:
+    elif isinstance(secs, int):
         expected_shape = tuple([int(item/secs) if i == axis_val else item for i, item in enumerate(x.shape)])
-    assert ret[0].shape == tuple(expected_shape)
+    else:
+        expected_shape = tuple([secs[0] if i == axis_val else item for i, item in enumerate(x.shape)])
+    assert ret[0].shape == expected_shape
     # value test
-    assert np.allclose(call(ivy.split, x, secs, axis), ivy.numpy.split(ivy.to_numpy(x), secs, axis))
+    pred_split = call(ivy.split, x, secs, axis)
+    true_split = ivy.numpy.split(ivy.to_numpy(x), secs, axis)
+    for pred, true in zip(pred_split, true_split):
+        assert np.allclose(pred, true)
     # compilation test
     helpers.assert_compilable(ivy.split)
 
