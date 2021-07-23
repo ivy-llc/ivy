@@ -29,7 +29,7 @@ def random_uniform(low=0.0, high=1.0, shape=None, dev_str='cpu', f=None):
     return _get_framework(f=f).random_uniform(low, high, shape, dev_str)
 
 
-def multinomial(population_size, num_samples, batch_size, probs=None, replace=True, f=None):
+def multinomial(population_size, num_samples, batch_size, probs=None, replace=True, dev_str='cpu', f=None):
     """
     Draws samples from a multinomial distribution. Specifcally, returns a tensor where each row contains num_samples
     indices sampled from the multinomial probability distribution located in the corresponding row of tensor input.
@@ -45,11 +45,13 @@ def multinomial(population_size, num_samples, batch_size, probs=None, replace=Tr
     :type probs: array, optional
     :param replace: Whether to replace samples once they've been drawn. Default is True.
     :type replace: bool, optional
+    :param dev_str: device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc.
+    :type dev_str: str
     :param f: Machine learning framework. Inferred from inputs if None.
     :type f: ml_framework, optional
     :return: Drawn samples indices from the multinomial distribution.
     """
-    return _get_framework(f=f).multinomial(population_size, num_samples, batch_size, probs, replace)
+    return _get_framework(f=f).multinomial(population_size, num_samples, batch_size, probs, replace, dev_str)
 
 
 def randint(low, high, shape, dev_str='cpu', f=None):

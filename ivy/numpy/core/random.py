@@ -8,7 +8,7 @@ import numpy as _np
 random_uniform = lambda low=0., high=1., shape=None, dev_str='cpu': _np.asarray(_np.random.uniform(low, high, shape))
 
 
-def multinomial(population_size, num_samples, batch_size, probs=None, replace=True):
+def multinomial(population_size, num_samples, batch_size, probs=None, replace=True, dev_str='cpu'):
     if probs is None:
         probs = _np.ones((batch_size, population_size,)) / population_size
     orig_probs_shape = list(probs.shape)
