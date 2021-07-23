@@ -96,6 +96,34 @@ def test_to_numpy(object_in, dtype_str, tensor_fn, dev_str, call):
     helpers.assert_compilable(ivy.to_numpy)
 
 
+# to_scalar
+@pytest.mark.parametrize(
+    "object_in", [[0.], [[[1]]], [True], [[1.]]])
+@pytest.mark.parametrize(
+    "dtype_str", [None, 'float16', 'float32', 'float64', 'int8', 'int16', 'int32', 'int64', 'bool'])
+@pytest.mark.parametrize(
+    "tensor_fn", [ivy.array])
+def test_to_scalar(object_in, dtype_str, tensor_fn, dev_str, call):
+    if call in [helpers.mx_call] and dtype_str == 'int16':
+        # mxnet does not support int16
+        pytest.skip()
+    if call in [helpers.tf_graph_call]:
+        # to_scalar() requires eager execution
+        pytest.skip()
+    # smoke test
+    ret = ivy.to_scalar(tensor_fn(object_in, dtype_str, dev_str))
+    true_val = ivy.to_numpy(ivy.array(object_in, dtype_str=dtype_str)).item()
+    # type test
+    assert isinstance(ret, type(true_val))
+    # value test
+    assert ivy.to_scalar(tensor_fn(object_in, dtype_str, dev_str)) == true_val
+    # compilation test
+    if call in [helpers.torch_call]:
+        # pytorch scripting does not support scalar conversion
+        return
+    helpers.assert_compilable(ivy.to_scalar)
+
+
 # to_list
 @pytest.mark.parametrize(
     "object_in", [[], [0.], [1], [True], [[1., 2.]]])
