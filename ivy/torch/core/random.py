@@ -17,14 +17,14 @@ def random_uniform(low: float = 0.0, high: float = 1.0, shape: Optional[List[int
 
 
 def multinomial(population_size: int, num_samples: int, batch_size: int, probs: Optional[torch.Tensor] = None,
-                replace: bool = True):
+                replace: bool = True, dev_str: str = 'cpu'):
     if probs is None:
         probs = torch.ones((batch_size, population_size,)) / population_size
-    return torch.multinomial(probs, num_samples, replace)
+    return torch.multinomial(probs, num_samples, replace).to(dev_str.replace('gpu', 'cuda'))
 
 
 def randint(low: int, high: int, shape: List[int], dev_str: str = 'cpu'):
-    return torch.randint(low, high, shape).to(dev_str)
+    return torch.randint(low, high, shape).to(dev_str.replace('gpu', 'cuda'))
 
 
 def seed(seed_value: int = 0) -> None:
