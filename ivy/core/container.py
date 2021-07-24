@@ -415,13 +415,13 @@ class Container(dict):
 
     def gather(self, indices, axis=-1):
         """
-        Expand dims of all sub-arrays of container object.
+        Gather slices from all container params at axis according to indices.
 
         :param indices: Index array.
         :type indices: array
         :param axis: The axis from which to gather from. Default is -1.
         :type axis: int, optional
-        :return: Container object at with all sub-array dimensions expanded along the axis.
+        :return: Container object at with all sub-array dimensions gathered along the axis.
         """
         return_dict = dict()
         for key, value in sorted(self.items()):
@@ -429,6 +429,24 @@ class Container(dict):
                 return_dict[key] = value.gather(indices, axis)
             elif value is not None:
                 return_dict[key] = _ivy.gather(value, indices, axis)
+            else:
+                return_dict[key] = value
+        return Container(return_dict)
+
+    def gather_nd(self, indices):
+        """
+        Gather slices from all container params into a arrays with shape specified by indices.
+
+        :param indices: Index array.
+        :type indices: array
+        :return: Container object at with all sub-array dimensions gathered.
+        """
+        return_dict = dict()
+        for key, value in sorted(self.items()):
+            if isinstance(value, Container):
+                return_dict[key] = value.gather_nd(indices)
+            elif value is not None:
+                return_dict[key] = _ivy.gather_nd(value, indices)
             else:
                 return_dict[key] = value
         return Container(return_dict)
