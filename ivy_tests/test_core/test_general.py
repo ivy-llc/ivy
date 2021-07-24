@@ -3,6 +3,7 @@ Collection of tests for templated general functions
 """
 
 # global
+import math
 import pytest
 import numpy as np
 from numbers import Number
@@ -765,42 +766,48 @@ def test_unstack(x_n_axis, dtype_str, tensor_fn, dev_str, call):
 
 # split
 @pytest.mark.parametrize(
-    "x_n_secs_n_axis", [(1, 1, -1),
-                        ([[0., 1., 2., 3.]], 2, 1),
-                        ([[0., 1., 2.], [3., 4., 5.]], 2, 0),
-                        ([[0., 1., 2.], [3., 4., 5.]], [2, 1], 1)])
+    "x_n_noss_n_axis_n_wr", [(1, 1, -1, False),
+                             ([[0., 1., 2., 3.]], 2, 1, False),
+                             ([[0., 1., 2.], [3., 4., 5.]], 2, 0, False),
+                             ([[0., 1., 2.], [3., 4., 5.]], 2, 1, True),
+                             ([[0., 1., 2.], [3., 4., 5.]], [2, 1], 1, False)])
 @pytest.mark.parametrize(
     "dtype_str", ['float32'])
 @pytest.mark.parametrize(
     "tensor_fn", [ivy.array, helpers.var_fn])
-def test_split(x_n_secs_n_axis, dtype_str, tensor_fn, dev_str, call):
+def test_split(x_n_noss_n_axis_n_wr, dtype_str, tensor_fn, dev_str, call):
     # smoke test
-    x, secs, axis = x_n_secs_n_axis
+    x, num_or_size_splits, axis, with_remainder = x_n_noss_n_axis_n_wr
     if isinstance(x, Number) and tensor_fn == helpers.var_fn and call is helpers.mx_call:
         # mxnet does not support 0-dimensional variables
         pytest.skip()
-    if isinstance(secs, list) and call is helpers.mx_call:
+    if (isinstance(num_or_size_splits, list) or with_remainder) and call is helpers.mx_call:
         # mxnet does not support split method with section sizes, only num_sections is supported.
+        # This only explains why remainders aren't supported, as this uses the same underlying mechanism.
         pytest.skip()
     x = tensor_fn(x, dtype_str, dev_str)
-    ret = ivy.split(x, secs, axis)
+    ret = ivy.split(x, num_or_size_splits, axis, with_remainder)
     # type test
     assert isinstance(ret, list)
     # cardinality test
     axis_val = (axis % len(x.shape) if (axis is not None and len(x.shape) != 0) else len(x.shape) - 1)
     if x.shape == ():
         expected_shape = ()
-    elif isinstance(secs, int):
-        expected_shape = tuple([int(item/secs) if i == axis_val else item for i, item in enumerate(x.shape)])
+    elif isinstance(num_or_size_splits, int):
+        expected_shape = tuple([math.ceil(item/num_or_size_splits) if i == axis_val else item
+                                for i, item in enumerate(x.shape)])
     else:
-        expected_shape = tuple([secs[0] if i == axis_val else item for i, item in enumerate(x.shape)])
+        expected_shape = tuple([num_or_size_splits[0] if i == axis_val else item for i, item in enumerate(x.shape)])
     assert ret[0].shape == expected_shape
     # value test
-    pred_split = call(ivy.split, x, secs, axis)
-    true_split = ivy.numpy.split(ivy.to_numpy(x), secs, axis)
+    pred_split = call(ivy.split, x, num_or_size_splits, axis, with_remainder)
+    true_split = ivy.numpy.split(ivy.to_numpy(x), num_or_size_splits, axis, with_remainder)
     for pred, true in zip(pred_split, true_split):
         assert np.allclose(pred, true)
     # compilation test
+    if call is helpers.torch_call:
+        # pytorch scripting does not support Union or Numbers for type hinting
+        return
     helpers.assert_compilable(ivy.split)
 
 

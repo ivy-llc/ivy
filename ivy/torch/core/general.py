@@ -7,6 +7,7 @@ import torch
 import importlib
 import numpy as np
 torch_scatter = None
+import math as _math
 from operator import mul
 from torch.types import Number
 from functools import reduce as _reduce
@@ -224,7 +225,8 @@ def unstack(x, axis: int) -> List[torch.Tensor]:
     return list(torch.unbind(x, axis))
 
 
-def split(x, num_or_size_splits: Optional[int] = None, axis: int = 0) -> List[torch.Tensor]:
+def split(x, num_or_size_splits: Optional[Union[int, List[int]]] = None, axis: int = 0, with_remainder: bool = False)\
+        -> List[torch.Tensor]:
     if x.shape == ():
         if num_or_size_splits is not None and num_or_size_splits != 1:
             raise Exception('input array had no shape, but num_sections specified was {}'.format(num_or_size_splits))
@@ -234,7 +236,16 @@ def split(x, num_or_size_splits: Optional[int] = None, axis: int = 0) -> List[to
         # noinspection PyUnboundLocalVariable
         num_or_size_splits = dim_size
     elif isinstance(num_or_size_splits, int):
-        num_or_size_splits = round(torch.tensor(dim_size) / torch.tensor(num_or_size_splits))
+        if with_remainder:
+            num_chunks = x.shape[axis] / num_or_size_splits
+            num_chunks_int = _math.floor(num_chunks)
+            remainder = num_chunks - num_chunks_int
+            if remainder == 0:
+                num_or_size_splits = round(torch.tensor(dim_size) / torch.tensor(num_or_size_splits))
+            else:
+                num_or_size_splits = [num_or_size_splits] * num_chunks_int + [int(remainder*num_or_size_splits)]
+        else:
+            num_or_size_splits = round(torch.tensor(dim_size) / torch.tensor(num_or_size_splits))
     return list(torch.split(x, num_or_size_splits, axis))
 
 

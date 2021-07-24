@@ -7,6 +7,7 @@ _round = round
 import logging
 import mxnet as _mx
 import numpy as _np
+import math as _math
 from numbers import Number
 
 
@@ -214,7 +215,7 @@ def unstack(x, axis):
     return ret if isinstance(ret, list) else [ret]
 
 
-def split(x, num_or_size_splits=None, axis=0):
+def split(x, num_or_size_splits=None, axis=0, with_remainder=False):
     if isinstance(num_or_size_splits, (list, tuple)):
         raise Exception('MXNet does not support splitting based on section sizes,'
                         'only number of sections as integer input is supported.')
@@ -222,7 +223,13 @@ def split(x, num_or_size_splits=None, axis=0):
         if num_or_size_splits is not None and num_or_size_splits != 1:
             raise Exception('input array had no shape, but num_sections specified was {}'.format(num_or_size_splits))
         return [x]
-    num_or_size_splits = x.shape[axis] if not num_or_size_splits else num_or_size_splits
+    elif with_remainder:
+        num_or_size_splits = x.shape[axis] if not num_or_size_splits else num_or_size_splits
+        num_chunks = x.shape[axis] / num_or_size_splits
+        num_chunks_int = _math.floor(num_chunks)
+        remainder = num_chunks - num_chunks_int
+        if remainder != 0:
+            raise Exception('MXNet does not support splitting along an axis with a remainder after division.')
     return _mx.nd.split(x, x.shape[axis] if not num_or_size_splits else num_or_size_splits, axis)
 
 
