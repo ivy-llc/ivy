@@ -358,7 +358,7 @@ class Container(dict):
                         return_dict[key] = value
                     else:
                         return_dict[key] = value[slice_obj]
-                elif value.shape == ():
+                elif value is None or value.shape == ():
                     return_dict[key] = value
                 else:
                     return_dict[key] = value[slice_obj]
@@ -548,7 +548,7 @@ class Container(dict):
         for key, value in sorted(self.items()):
             if isinstance(value, Container):
                 return_dict[key] = value.to_dict()
-            elif value is not None and key is not '_f':
+            elif key is not '_f':
                 return_dict[key] = value
         return return_dict
 

@@ -140,13 +140,13 @@ def test_container_set_at_key_chains(dev_str, call):
 
 def test_container_prune_key_chain(dev_str, call):
     dict_in = {'a': ivy.array([1]),
-               'b': {'c': ivy.array([2]), 'd': ivy.array([3])}}
+               'b': {'c': ivy.array([2]), 'd': None}}
     container = Container(dict_in)
     container_pruned = container.prune_key_chain('b/c')
     assert (container_pruned['a'] == ivy.array([[1]]))[0, 0]
     assert (container_pruned.a == ivy.array([[1]]))[0, 0]
-    assert (container_pruned['b']['d'] == ivy.array([[3]]))[0, 0]
-    assert (container_pruned.b.d == ivy.array([[3]]))[0, 0]
+    assert (container_pruned['b']['d'] is None)
+    assert (container_pruned.b.d is None)
     assert ('c' not in container_pruned['b'].keys())
 
     def _test_exception(container_in):
