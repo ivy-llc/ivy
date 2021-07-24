@@ -223,6 +223,8 @@ def split(x, num_or_size_splits=None, axis=0, with_remainder=False):
         if num_or_size_splits is not None and num_or_size_splits != 1:
             raise Exception('input array had no shape, but num_sections specified was {}'.format(num_or_size_splits))
         return [x]
+    if num_or_size_splits == 1:
+        return [x]
     elif with_remainder:
         num_or_size_splits = x.shape[axis] if not num_or_size_splits else num_or_size_splits
         num_chunks = x.shape[axis] / num_or_size_splits
