@@ -702,12 +702,14 @@ class Container(dict):
                     out_dict[key] = value
         return Container(out_dict)
 
-    def prune_key_chains(self, key_chains):
+    def prune_key_chains(self, key_chains, ignore_none=True):
         """
         Recursively prune set of key chains
 
         :return: Container with keys in the set of key chains pruned.
         """
+        if key_chains is None and ignore_none:
+            return self
         if isinstance(key_chains, (list, tuple)):
             return self._prune_key_chains_input_as_seq(key_chains)
         elif isinstance(key_chains, dict):
