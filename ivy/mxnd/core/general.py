@@ -32,10 +32,10 @@ def _raise(ex):
 def _mxnet_init_context(dev):
     if dev is None or dev.find("cpu") != -1:
         mx_dev = "cpu"
-    elif dev.find("cuda") != -1:
+    elif dev.find("gpu") != -1:
         mx_dev = "gpu"
     else:
-        raise Exception("dev type not supported.")
+        raise Exception("dev input {} not supported.".format(dev))
     if dev.find(":") != -1:
         mx_dev_id = int(dev[dev.find(":")+1:])
     else:
