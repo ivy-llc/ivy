@@ -81,11 +81,11 @@ def _train_tasks(batch, inner_cost_fn, outer_cost_fn, variables, num_tasks, inne
                  keep_innver_v, outer_v, keep_outer_v):
     total_cost = 0
     all_grads = list()
-    if isinstance(inner_v, (list, tuple)) and isinstance(inner_v[0], (list, tuple, dict)):
+    if isinstance(inner_v, (list, tuple)) and isinstance(inner_v[0], (list, tuple, dict, type(None))):
         inner_v_seq = True
     else:
         inner_v_seq = False
-    if isinstance(outer_v, (list, tuple)) and isinstance(outer_v[0], (list, tuple, dict)):
+    if isinstance(outer_v, (list, tuple)) and isinstance(outer_v[0], (list, tuple, dict, type(None))):
         outer_v_seq = True
     else:
         outer_v_seq = False
