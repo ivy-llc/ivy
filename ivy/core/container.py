@@ -413,6 +413,26 @@ class Container(dict):
         """
         return [self.slice(tuple([slice(None, None, None)] * dim + [slice(i, i + 1, 1)])) for i in range(dim_size)]
 
+    def gather(self, indices, axis=-1):
+        """
+        Expand dims of all sub-arrays of container object.
+
+        :param indices: Index array.
+        :type indices: array
+        :param axis: The axis from which to gather from. Default is -1.
+        :type axis: int, optional
+        :return: Container object at with all sub-array dimensions expanded along the axis.
+        """
+        return_dict = dict()
+        for key, value in sorted(self.items()):
+            if isinstance(value, Container):
+                return_dict[key] = value.gather(indices, axis)
+            elif value is not None:
+                return_dict[key] = _ivy.gather(value, indices, axis)
+            else:
+                return_dict[key] = value
+        return Container(return_dict)
+
     def to_disk_as_hdf5(self, h5_obj_or_filepath, starting_index=0, mode='a', max_batch_size=None):
         """
         Save container object to disk, as an h5py file, at the specified filepath.

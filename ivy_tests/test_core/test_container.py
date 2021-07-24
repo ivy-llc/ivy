@@ -35,6 +35,19 @@ def test_container_expand_dims(dev_str, call):
     assert (container_expanded_dims.b.d == ivy.array([[3]]))[0, 0]
 
 
+def test_container_gather(dev_str, call):
+    dict_in = {'a': ivy.array([1, 2, 3, 4, 5, 6]),
+               'b': {'c': ivy.array([2, 3, 4, 5]), 'd': ivy.array([10, 9, 8, 7, 6])}}
+    container = Container(dict_in)
+    container_gathered = container.gather(ivy.array([1, 3]))
+    assert np.allclose(ivy.to_numpy(container_gathered['a']), np.array([2, 4]))
+    assert np.allclose(ivy.to_numpy(container_gathered.a), np.array([2, 4]))
+    assert np.allclose(ivy.to_numpy(container_gathered['b']['c']), np.array([3, 5]))
+    assert np.allclose(ivy.to_numpy(container_gathered.b.c), np.array([3, 5]))
+    assert np.allclose(ivy.to_numpy(container_gathered['b']['d']), np.array([9, 7]))
+    assert np.allclose(ivy.to_numpy(container_gathered.b.d), np.array([9, 7]))
+
+
 def test_container_has_key_chain(dev_str, call):
     dict_in = {'a': ivy.array([1]),
                'b': {'c': ivy.array([2]), 'd': ivy.array([3])}}
