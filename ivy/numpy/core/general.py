@@ -3,10 +3,11 @@ Collection of Numpy general functions, wrapped to fit Ivy syntax and signature.
 """
 
 # global
-from functools import reduce as _reduce
-from operator import mul as _mul
-import numpy as _np
 import logging
+import numpy as _np
+import math as _math
+from operator import mul as _mul
+from functools import reduce as _reduce
 
 DTYPE_DICT = {_np.dtype('bool'): 'bool',
               _np.dtype('int8'): 'int8',
@@ -149,14 +150,20 @@ def unstack(x, axis):
     return res
 
 
-def split(x, num_or_size_splits=None, axis=0):
+def split(x, num_or_size_splits=None, axis=0, with_remainder=False):
     if x.shape == ():
         if num_or_size_splits is not None and num_or_size_splits != 1:
             raise Exception('input array had no shape, but num_sections specified was {}'.format(num_or_size_splits))
         return [x]
     if num_or_size_splits is None:
         num_or_size_splits = x.shape[axis]
-    elif isinstance(num_or_size_splits, (list, tuple)):
+    elif isinstance(num_or_size_splits, int) and with_remainder:
+        num_chunks = x.shape[axis] / num_or_size_splits
+        num_chunks_int = _math.floor(num_chunks)
+        remainder = num_chunks - num_chunks_int
+        if remainder != 0:
+            num_or_size_splits = [num_or_size_splits]*num_chunks_int + [int(remainder*num_or_size_splits)]
+    if isinstance(num_or_size_splits, (list, tuple)):
         num_or_size_splits = _np.cumsum(num_or_size_splits[:-1])
     return _np.split(x, num_or_size_splits, axis)
 

@@ -445,7 +445,7 @@ def unstack(x, axis, f=None):
     return _get_framework(x, f=f).unstack(x, axis)
 
 
-def split(x, num_or_size_splits=None, axis=0, f=None):
+def split(x, num_or_size_splits=None, axis=0, with_remainder=False, f=None):
     """
     Splits an array into multiple sub-arrays.
 
@@ -457,11 +457,13 @@ def split(x, num_or_size_splits=None, axis=0, f=None):
     :type num_or_size_splits: int, optional
     :param axis: The axis along which to split, default is 0.
     :type axis: int, optional
+    :param with_remainder: If the tensor does not split evenly, then store the last remainder entry. Defaul is False.
+    :type with_remainder: bool, optional
     :param f: Machine learning framework. Inferred from inputs if None.
     :type f: ml_framework, optional
     :return: A list of sub-arrays.
     """
-    return _get_framework(x, f=f).split(x, num_or_size_splits, axis)
+    return _get_framework(x, f=f).split(x, num_or_size_splits, axis, with_remainder)
 
 
 def tile(x, reps, f=None):

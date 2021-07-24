@@ -3,6 +3,7 @@ Collection of TensorFlow general functions, wrapped to fit Ivy syntax and signat
 """
 
 # global
+import math as _math
 from numbers import Number
 from operator import mul as _mul
 from functools import reduce as _reduce
@@ -152,7 +153,7 @@ def unstack(x, axis):
     return _tf.unstack(x, axis=axis)
 
 
-def split(x, num_or_size_splits=None, axis=0):
+def split(x, num_or_size_splits=None, axis=0, with_remainder=False):
     if x.shape == ():
         if num_or_size_splits is not None and num_or_size_splits != 1:
             raise Exception('input array had no shape, but num_sections specified was {}'.format(num_or_size_splits))
@@ -160,6 +161,12 @@ def split(x, num_or_size_splits=None, axis=0):
     if num_or_size_splits is None:
         dim_size = _tf.shape(x)[axis]
         num_or_size_splits = dim_size
+    elif isinstance(num_or_size_splits, int) and with_remainder:
+        num_chunks = x.shape[axis] / num_or_size_splits
+        num_chunks_int = _math.floor(num_chunks)
+        remainder = num_chunks - num_chunks_int
+        if remainder != 0:
+            num_or_size_splits = [num_or_size_splits]*num_chunks_int + [int(remainder*num_or_size_splits)]
     return _tf.split(x, num_or_size_splits, axis)
 
 
