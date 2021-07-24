@@ -36,7 +36,7 @@
   <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="Gradients" href="../gradients.html" />
+    <link rel="next" title="split_func_call" href="split_func_call.html" />
     <link rel="prev" title="dtype_str" href="dtype_str.html" /> 
 </head>
 
@@ -157,6 +157,7 @@
 <li class="toctree-l2"><a class="reference internal" href="dtype_to_str.html">dtype_to_str</a></li>
 <li class="toctree-l2"><a class="reference internal" href="dtype_str.html">dtype_str</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">compile_fn</a></li>
+<li class="toctree-l2"><a class="reference internal" href="split_func_call.html">split_func_call</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../gradients.html">Gradients</a></li>
@@ -268,7 +269,7 @@ The handle to the newly compiled function is returned.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>func</strong> (<em>function</em>) – Function to be compiled.</p></li>
+<li><p><strong>func</strong> (<em>callable</em>) – Function to be compiled.</p></li>
 <li><p><strong>dynamic</strong> (<em>bool</em><em>, </em><em>default True</em>) – Whether to compile all conditional branches, regardless of inputs during first invocation.</p></li>
 <li><p><strong>example_inputs</strong> (<em>single input of tuple of inputs.</em>) – Example of inputs to the function to be compiled.
 Required for torch in non-dynamic mode, unused by other frameworks.</p></li>
@@ -296,7 +297,7 @@ Required for torch in non-dynamic mode, unused by other frameworks.</p></li>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../gradients.html" class="btn btn-neutral float-right" title="Gradients" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="split_func_call.html" class="btn btn-neutral float-right" title="split_func_call" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="dtype_str.html" class="btn btn-neutral float-left" title="dtype_str" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
