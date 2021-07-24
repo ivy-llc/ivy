@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>reshape &mdash; Ivy 1.0 documentation</title>
+  <title>split_func_call &mdash; Ivy 1.0 documentation</title>
   
 
   
@@ -36,8 +36,8 @@
   <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="broadcast_to" href="broadcast_to.html" />
-    <link rel="prev" title="isnan" href="isnan.html" /> 
+    <link rel="next" title="Gradients" href="../gradients.html" />
+    <link rel="prev" title="compile_fn" href="compile_fn.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -127,7 +127,7 @@
 <li class="toctree-l2"><a class="reference internal" href="where.html">where</a></li>
 <li class="toctree-l2"><a class="reference internal" href="indices_where.html">indices_where</a></li>
 <li class="toctree-l2"><a class="reference internal" href="isnan.html">isnan</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">reshape</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reshape.html">reshape</a></li>
 <li class="toctree-l2"><a class="reference internal" href="broadcast_to.html">broadcast_to</a></li>
 <li class="toctree-l2"><a class="reference internal" href="squeeze.html">squeeze</a></li>
 <li class="toctree-l2"><a class="reference internal" href="zeros.html">zeros</a></li>
@@ -157,7 +157,7 @@
 <li class="toctree-l2"><a class="reference internal" href="dtype_to_str.html">dtype_to_str</a></li>
 <li class="toctree-l2"><a class="reference internal" href="dtype_str.html">dtype_str</a></li>
 <li class="toctree-l2"><a class="reference internal" href="compile_fn.html">compile_fn</a></li>
-<li class="toctree-l2"><a class="reference internal" href="split_func_call.html">split_func_call</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">split_func_call</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../gradients.html">Gradients</a></li>
@@ -240,13 +240,13 @@
         
           <li><a href="../general.html">General</a> &raquo;</li>
         
-      <li>reshape</li>
+      <li>split_func_call</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="../../_sources/core/general/reshape.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../_sources/core/general/split_func_call.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -259,23 +259,24 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="reshape">
-<h1>reshape<a class="headerlink" href="#reshape" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="split-func-call">
+<h1>split_func_call<a class="headerlink" href="#split-func-call" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
-<dt id="ivy.core.general.reshape">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">reshape</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">newshape</span></em>, <em class="sig-param"><span class="n">f</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/general.html#reshape"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.reshape" title="Permalink to this definition">¶</a></dt>
-<dd><p>Gives a new shape to an array without changing its data.</p>
+<dt id="ivy.core.general.split_func_call">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">split_func_call</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">func</span></em>, <em class="sig-param"><span class="n">inputs</span></em>, <em class="sig-param"><span class="n">chunk_size</span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">0</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/general.html#split_func_call"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.split_func_call" title="Permalink to this definition">¶</a></dt>
+<dd><p>Call a function by splitting its inputs along a given axis, and calling the function in chunks, rather than feeding
+the entire input array at once. This can be useful to reduce memory usage of the device the arrays are on.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<em>array</em>) – Tensor to be reshaped.</p></li>
-<li><p><strong>newshape</strong> (<em>int</em><em> or </em><em>sequence of ints</em>) – The new shape should be compatible with the original shape. One shape dimension can be -1.
-In this case, the value is inferred from the length of the array and remaining dimensions.</p></li>
-<li><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning framework. Inferred from inputs if None.</p></li>
+<li><p><strong>func</strong> (<em>callable</em>) – The function to be called.</p></li>
+<li><p><strong>inputs</strong> (<em>sequence of arrays</em>) – A list of inputs to pass into the function.</p></li>
+<li><p><strong>chunk_size</strong> (<em>int</em>) – The size of each of the chunks to be fed into the function.</p></li>
+<li><p><strong>axis</strong> (<em>int</em><em>, </em><em>optional</em>) – The axis along which to split each of the inputs, before passing to the function. Default is 0.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Reshaped array.</p>
+<dd class="field-even"><p>The return from the function, following input splitting and re-concattenation.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -295,10 +296,10 @@ In this case, the value is inferred from the length of the array and remaining d
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="broadcast_to.html" class="btn btn-neutral float-right" title="broadcast_to" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="../gradients.html" class="btn btn-neutral float-right" title="Gradients" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="isnan.html" class="btn btn-neutral float-left" title="isnan" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="compile_fn.html" class="btn btn-neutral float-left" title="compile_fn" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

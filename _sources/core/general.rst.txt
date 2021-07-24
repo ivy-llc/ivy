@@ -78,4 +78,5 @@ General
    general/dtype_to_str.rst
    general/dtype_str.rst
    general/compile_fn.rst
+   general/split_func_call.rst
 
