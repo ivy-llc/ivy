@@ -341,6 +341,23 @@ If some objects were not json-able during saving, then they will be loaded as st
 </dd></dl>
 
 <dl class="py method">
+<dt id="ivy.core.container.Container.gather">
+<code class="sig-name descname">gather</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">indices</span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">- 1</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/container.html#Container.gather"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.gather" title="Permalink to this definition">¶</a></dt>
+<dd><p>Expand dims of all sub-arrays of container object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>indices</strong> (<em>array</em>) – Index array.</p></li>
+<li><p><strong>axis</strong> (<em>int</em><em>, </em><em>optional</em>) – The axis from which to gather from. Default is -1.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Container object at with all sub-array dimensions expanded along the axis.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt id="ivy.core.container.Container.h5_file_size">
 <em class="property">static </em><code class="sig-name descname">h5_file_size</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">h5_obj_or_filepath</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/container.html#Container.h5_file_size"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.h5_file_size" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get file size of h5 file contents.</p>
