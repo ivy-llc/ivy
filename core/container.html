@@ -342,7 +342,7 @@ If some objects were not json-able during saving, then they will be loaded as st
 <dl class="py method">
 <dt id="ivy.core.container.Container.gather">
 <code class="sig-name descname">gather</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">indices</span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">- 1</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/container.html#Container.gather"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.gather" title="Permalink to this definition">¶</a></dt>
-<dd><p>Expand dims of all sub-arrays of container object.</p>
+<dd><p>Gather slices from all container params at axis according to indices.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -351,7 +351,21 @@ If some objects were not json-able during saving, then they will be loaded as st
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Container object at with all sub-array dimensions expanded along the axis.</p>
+<dd class="field-even"><p>Container object at with all sub-array dimensions gathered along the axis.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="ivy.core.container.Container.gather_nd">
+<code class="sig-name descname">gather_nd</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">indices</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/container.html#Container.gather_nd"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.gather_nd" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gather slices from all container params into a arrays with shape specified by indices.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>indices</strong> (<em>array</em>) – Index array.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Container object at with all sub-array dimensions gathered.</p>
 </dd>
 </dl>
 </dd></dl>
