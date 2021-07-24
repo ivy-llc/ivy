@@ -895,7 +895,7 @@ def scatter_nd(indices, updates, shape, reduction='sum', dev_str=None, f=None):
 # noinspection PyShadowingNames
 def gather(params, indices, axis=-1, dev_str=None, f=None):
     """
-    Gather slices from params axis axis according to indices.
+    Gather slices from params at axis according to indices.
 
     :param params: The array from which to gather values.
     :type params: array

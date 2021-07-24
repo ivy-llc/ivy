@@ -48,6 +48,22 @@ def test_container_gather(dev_str, call):
     assert np.allclose(ivy.to_numpy(container_gathered.b.d), np.array([9, 7]))
 
 
+def test_container_gather_nd(dev_str, call):
+    dict_in = {'a': ivy.array([[[1, 2], [3, 4]],
+                               [[5, 6], [7, 8]]]),
+               'b': {'c': ivy.array([[[8, 7], [6, 5]],
+                                     [[4, 3], [2, 1]]]), 'd': ivy.array([[[2, 4], [6, 8]],
+                                                                         [[10, 12], [14, 16]]])}}
+    container = Container(dict_in)
+    container_gathered = container.gather_nd(ivy.array([[0, 1], [1, 0]]))
+    assert np.allclose(ivy.to_numpy(container_gathered['a']), np.array([[3, 4], [5, 6]]))
+    assert np.allclose(ivy.to_numpy(container_gathered.a), np.array([[3, 4], [5, 6]]))
+    assert np.allclose(ivy.to_numpy(container_gathered['b']['c']), np.array([[6, 5], [4, 3]]))
+    assert np.allclose(ivy.to_numpy(container_gathered.b.c), np.array([[6, 5], [4, 3]]))
+    assert np.allclose(ivy.to_numpy(container_gathered['b']['d']), np.array([[6, 8], [10, 12]]))
+    assert np.allclose(ivy.to_numpy(container_gathered.b.d), np.array([[6, 8], [10, 12]]))
+
+
 def test_container_has_key_chain(dev_str, call):
     dict_in = {'a': ivy.array([1]),
                'b': {'c': ivy.array([2]), 'd': ivy.array([3])}}
