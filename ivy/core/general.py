@@ -1088,7 +1088,7 @@ def compile_fn(func, dynamic=True, example_inputs=None, f=None):
     return _get_framework(example_inputs, f=f).compile_fn(func, dynamic, example_inputs)
 
 
-def split_func_call(func, inputs, chunk_size, axis=0):
+def split_func_call(func, inputs, chunk_size, input_axes=0, output_axes=None):
     """
     Call a function by splitting its inputs along a given axis, and calling the function in chunks, rather than feeding
     the entire input array at once. This can be useful to reduce memory usage of the device the arrays are on.
@@ -1099,12 +1099,20 @@ def split_func_call(func, inputs, chunk_size, axis=0):
     :type inputs: sequence of arrays
     :param chunk_size: The size of each of the chunks to be fed into the function.
     :type chunk_size: int
-    :param axis: The axis along which to split each of the inputs, before passing to the function. Default is 0.
-    :type axis: int, optional
+    :param input_axes: The axes along which to split each of the inputs, before passing to the function. Default is 0.
+    :type input_axes: int or sequence of ints, optional
+    :param output_axes: The axes along which to concat each of the returned outputs. Default is same as fist input axis.
+    :type output_axes: int or sequence of ints, optional
     :return: The return from the function, following input splitting and re-concattenation.
     """
-    inputs_split = [ivy.split(i, chunk_size, axis, True) for i in inputs]
+    if isinstance(input_axes, int):
+        input_axes = [input_axes]*len(inputs)
+    inputs_split = [ivy.split(inp, chunk_size, input_axes[i], True) for i, inp in enumerate(inputs)]
     rets = [func(*i) for i in zip(*inputs_split)]
     num_outputs = len(rets[0])
-    rets = [ivy.concatenate([r[i] for r in rets], axis) for i in range(num_outputs)]
+    if output_axes is None:
+        output_axes = [input_axes[0]] * num_outputs
+    elif isinstance(output_axes, int):
+        output_axes = [output_axes] * num_outputs
+    rets = [ivy.concatenate([r[i] for r in rets], output_axes[i]) for i in range(num_outputs)]
     return rets
