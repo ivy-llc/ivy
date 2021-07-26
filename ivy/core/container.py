@@ -451,6 +451,19 @@ class Container(dict):
                 return_dict[key] = value
         return Container(return_dict)
 
+    def repeat(self, repeats, axis=None):
+        """
+        Repeat values along a given dimension for each array in the container.
+
+        :param repeats: The number of repetitions for each element. repeats is broadcast to fit the shape of the given axis.
+        :type repeats: int or sequence of ints.
+        :param axis: The axis along which to repeat values.
+                      By default, use the flattened input array, and return a flat output array.
+        :type axis: int, optional
+        :return: container with each array being repeated along the specified dimension.
+        """
+        return self.map(lambda x, kc: _ivy.repeat(x, repeats, axis) if _ivy.is_array(x) else x)
+
     def stop_gradients(self):
         """
         Stop gradients of all array entries in the container.
