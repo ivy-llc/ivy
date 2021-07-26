@@ -170,16 +170,41 @@ def linspace(start, stop, num, axis=None, dev_str=None):
         linspace_method = _differentiable_linspace if start.requires_grad else torch.linspace
         dev_str = _callable_dev_str(start)
     if stop_is_array:
-        start_shape = list(stop.shape)
+        stop_shape = list(stop.shape)
         stop = stop.reshape((-1,))
         linspace_method = _differentiable_linspace if stop.requires_grad else torch.linspace
         dev_str = _callable_dev_str(stop)
     if start_is_array and stop_is_array:
-        res = [linspace_method(strt, stp, num, device=str_to_dev(dev_str)) for strt, stp in zip(start, stop)]
+        if num < start.shape[0]:
+            start = start.unsqueeze(-1)
+            stop = stop.unsqueeze(-1)
+            diff = stop - start
+            inc = diff / (num-1)
+            res = [start]
+            res += [start + inc*i for i in range(1, num-1)]
+            res.append(stop)
+        else:
+            res = [linspace_method(strt, stp, num, device=str_to_dev(dev_str)) for strt, stp in zip(start, stop)]
     elif start_is_array and not stop_is_array:
-        res = [linspace_method(strt, stop, num, device=str_to_dev(dev_str)) for strt in start]
+        if num < start.shape[0]:
+            start = start.unsqueeze(-1)
+            diff = stop - start
+            inc = diff / (num - 1)
+            res = [start]
+            res += [start + inc * i for i in range(1, num - 1)]
+            res.append(torch.ones_like(start)*stop)
+        else:
+            res = [linspace_method(strt, stop, num, device=str_to_dev(dev_str)) for strt in start]
     elif not start_is_array and stop_is_array:
-        res = [linspace_method(start, stp, num, device=str_to_dev(dev_str)) for stp in stop]
+        if num < stop.shape[0]:
+            stop = stop.unsqueeze(-1)
+            diff = stop - start
+            inc = diff / (num - 1)
+            res = [torch.ones_like(stop)*start]
+            res += [start + inc * i for i in range(1, num - 1)]
+            res.append(stop)
+        else:
+            res = [linspace_method(start, stp, num, device=str_to_dev(dev_str)) for stp in stop]
     else:
         return linspace_method(start, stop, num, device=str_to_dev(dev_str))
     res = torch.cat(res, -1).reshape(start_shape + [num])
