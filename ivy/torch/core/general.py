@@ -166,11 +166,15 @@ def linspace(start, stop, num, axis=None, dev_str=None):
     linspace_method = torch.linspace
     if start_is_array:
         start_shape = list(start.shape)
+        if num == 1:
+            return start.unsqueeze(axis).to(str_to_dev(dev_str))
         start = start.reshape((-1,))
         linspace_method = _differentiable_linspace if start.requires_grad else torch.linspace
         dev_str = _callable_dev_str(start)
     if stop_is_array:
         stop_shape = list(stop.shape)
+        if num == 1:
+            return (torch.ones(stop_shape[:axis] + [1] + stop_shape[axis:]) * start).to(str_to_dev(dev_str))
         stop = stop.reshape((-1,))
         linspace_method = _differentiable_linspace if stop.requires_grad else torch.linspace
         dev_str = _callable_dev_str(stop)
@@ -185,6 +189,7 @@ def linspace(start, stop, num, axis=None, dev_str=None):
             res.append(stop)
         else:
             res = [linspace_method(strt, stp, num, device=str_to_dev(dev_str)) for strt, stp in zip(start, stop)]
+        torch.cat(res, -1).reshape(start_shape + [num])
     elif start_is_array and not stop_is_array:
         if num < start.shape[0]:
             start = start.unsqueeze(-1)
