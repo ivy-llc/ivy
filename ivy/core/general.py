@@ -2,6 +2,9 @@
 Collection of general Ivy functions.
 """
 
+# global
+import math
+
 # local
 import ivy
 from ivy.framework_handler import get_framework as _get_framework
@@ -1107,7 +1110,13 @@ def split_func_call(func, inputs, chunk_size, input_axes=0, output_axes=None):
     """
     if isinstance(input_axes, int):
         input_axes = [input_axes]*len(inputs)
-    inputs_split = [ivy.split(inp, chunk_size, input_axes[i], True) for i, inp in enumerate(inputs)]
+    dim_size = inputs[0].shape[input_axes[0]]
+    num_chunks = dim_size / chunk_size
+    num_chunks_floored = math.floor(dim_size / chunk_size)
+    chunk_sizes = [chunk_size]*num_chunks_floored
+    if num_chunks != num_chunks_floored:
+        chunk_sizes.append([dim_size - chunk_size * num_chunks_floored])
+    inputs_split = [ivy.split(inp, chunk_sizes, input_axes[i], True) for i, inp in enumerate(inputs)]
     rets = [func(*i) for i in zip(*inputs_split)]
     num_outputs = len(rets[0])
     if output_axes is None:
