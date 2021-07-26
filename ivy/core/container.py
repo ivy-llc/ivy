@@ -339,32 +339,6 @@ class Container(dict):
                 return_dict[key] = _ivy.shuffle(value)
         return Container(return_dict)
 
-    def slice(self, slice_obj):
-        """
-        Get slice of container object.
-
-        :param slice_obj: slice object to slice all container elements.
-        :type slice_obj: slice or sequence of slices
-        :return: Container object at desired slice.
-        """
-        return_dict = dict()
-        for key, value in sorted(self.items()):
-            if isinstance(value, Container):
-                return_dict[key] = value.slice(slice_obj)
-            else:
-                # noinspection PyBroadException
-                if isinstance(value, list) or isinstance(value, tuple):
-                    if len(value) == 0:
-                        return_dict[key] = value
-                    else:
-                        return_dict[key] = value[slice_obj]
-                elif value is None or value.shape == ():
-                    return_dict[key] = value
-                else:
-                    return_dict[key] = value[slice_obj]
-
-        return Container(return_dict)
-
     def slice_via_key(self, slice_key):
         """
         Get slice of container, based on key.
@@ -411,7 +385,7 @@ class Container(dict):
         :type dim_size: int
         :return: List of containers, unstacked along the specified dimension.
         """
-        return [self.slice(tuple([slice(None, None, None)] * dim + [slice(i, i + 1, 1)])) for i in range(dim_size)]
+        return [self[tuple([slice(None, None, None)] * dim + [slice(i, i + 1, 1)])] for i in range(dim_size)]
 
     def gather(self, indices, axis=-1):
         """
@@ -823,10 +797,38 @@ class Container(dict):
 
     def __getattr__(self, item):
         try:
-            return self[item]
+            return dict.__getitem__(self, item)
         except KeyError:
             # noinspection PyUnresolvedReferences
             return super.__getattr__(item)
+
+    def __getitem__(self, slice_obj):
+        """
+        Get slice of container object.
+
+        :param slice_obj: slice object to slice all container elements.
+        :type slice_obj: slice or sequence of slices
+        :return: Container object at desired slice.
+        """
+        if isinstance(slice_obj, str):
+            return dict.__getitem__(self, slice_obj)
+        return_dict = dict()
+        for key, value in sorted(self.items()):
+            if isinstance(value, Container):
+                return_dict[key] = value[slice_obj]
+            else:
+                # noinspection PyBroadException
+                if isinstance(value, list) or isinstance(value, tuple):
+                    if len(value) == 0:
+                        return_dict[key] = value
+                    else:
+                        return_dict[key] = value[slice_obj]
+                elif value is None or value.shape == ():
+                    return_dict[key] = value
+                else:
+                    return_dict[key] = value[slice_obj]
+
+        return Container(return_dict)
 
     def __pos__(self):
         return self
