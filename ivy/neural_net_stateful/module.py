@@ -37,10 +37,13 @@ class Module(abc.ABC):
     # --------#
 
     def _fn_with_var_arg(self, fn, v_fn):
-        def new_fn(*a, **kw):
+        def new_fn(*a, with_grads=True, **kw):
             if 'v' in kw.keys():
                 del kw['v']
-            return fn(*a, **kw, v=v_fn(self.v))
+            v = v_fn(self.v)
+            if not with_grads:
+                v = v.stop_gradients()
+            return fn(*a, **kw, v=v)
         new_fn.wrapped = True
         return new_fn
 
@@ -155,18 +158,26 @@ class Module(abc.ABC):
     # Public #
     # -------#
 
-    def __call__(self, *args, v=None, **kwargs):
+    def __call__(self, *args, v=None, with_grads=True, **kwargs):
         """
         the forward pass of the layer, treating layer instance as callable function.
         """
         if v is not None:
             v_orig = self.v
+            if not with_grads:
+                v = v.stop_gradients()
             self.v = Container(v)
             res = self._forward(*args, **kwargs)
             self.v = v_orig
             return res
-        if hasattr(self.__call__, 'wrapped'):
-            return self.__call__(*args, **kwargs)
+        elif hasattr(self.__call__, 'wrapped'):
+            return self.__call__(*args, with_grads=with_grads, **kwargs)
+        elif not with_grads:
+            v_orig = self.v
+            self.v = v_orig.stop_gradients()
+            ret = self._forward(*args, **kwargs)
+            self.v = v_orig
+            return ret
         return self._forward(*args, **kwargs)
 
     def save_weights(self, weights_path):
