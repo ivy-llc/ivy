@@ -64,6 +64,28 @@ def test_container_gather_nd(dev_str, call):
     assert np.allclose(ivy.to_numpy(container_gathered.b.d), np.array([[6, 8], [10, 12]]))
 
 
+def test_container_stop_gradients(dev_str, call):
+    dict_in = {'a': ivy.variable(ivy.array([[[1., 2.], [3., 4.]], [[5., 6.], [7., 8.]]])),
+               'b': {'c': ivy.variable(ivy.array([[[8., 7.], [6., 5.]], [[4., 3.], [2., 1.]]])),
+                     'd': ivy.variable(ivy.array([[[2., 4.], [6., 8.]], [[10., 12.], [14., 16.]]]))}}
+    container = Container(dict_in)
+    if call is not helpers.np_call:
+        # Numpy does not support variables or gradients
+        assert ivy.is_variable(container['a'])
+        assert ivy.is_variable(container.a)
+        assert ivy.is_variable(container['b']['c'])
+        assert ivy.is_variable(container.b.c)
+        assert ivy.is_variable(container['b']['d'])
+        assert ivy.is_variable(container.b.d)
+    container_gathered = container.stop_gradients()
+    assert ivy.is_array(container['a'])
+    assert ivy.is_array(container.a)
+    assert ivy.is_array(container['b']['c'])
+    assert ivy.is_array(container.b.c)
+    assert ivy.is_array(container['b']['d'])
+    assert ivy.is_array(container.b.d)
+
+
 def test_container_has_key_chain(dev_str, call):
     dict_in = {'a': ivy.array([1]),
                'b': {'c': ivy.array([2]), 'd': ivy.array([3])}}
