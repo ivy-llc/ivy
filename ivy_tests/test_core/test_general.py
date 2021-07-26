@@ -811,6 +811,56 @@ def test_split(x_n_noss_n_axis_n_wr, dtype_str, tensor_fn, dev_str, call):
     helpers.assert_compilable(ivy.split)
 
 
+# repeat
+@pytest.mark.parametrize(
+    "x_n_reps_n_axis", [(1, [1], 0), (1, 2, -1), (1, [2], None), ([[0., 1., 2., 3.]], (2, 1, 0, 3), -1)])
+@pytest.mark.parametrize(
+    "dtype_str", ['float32'])
+@pytest.mark.parametrize(
+    "tensor_fn", [ivy.array, helpers.var_fn])
+def test_repeat(x_n_reps_n_axis, dtype_str, tensor_fn, dev_str, call):
+    # smoke test
+    x, reps_raw, axis = x_n_reps_n_axis
+    if isinstance(x, Number) and tensor_fn == helpers.var_fn and call is helpers.mx_call:
+        # mxnet does not support 0-dimensional variables
+        pytest.skip()
+    if not isinstance(reps_raw, int) and call is helpers.mx_call:
+        # mxnet repeat only supports integer repeats
+        pytest.skip()
+    x = tensor_fn(x, dtype_str, dev_str)
+    x_shape = list(x.shape)
+    if call not in [helpers.jnp_call, helpers.torch_call]:
+        # jax and pytorch repeat do not support repeats specified as lists
+        ret_from_list = ivy.repeat(x, reps_raw, axis)
+    reps = ivy.array(reps_raw, 'int32', dev_str)
+    if call is helpers.mx_call:
+        # mxnet only supports repeats defined as as int
+        ret = ivy.repeat(x, reps_raw, axis)
+    else:
+        ret = ivy.repeat(x, reps, axis)
+    # type test
+    assert ivy.is_array(ret)
+    # cardinality test
+    if x.shape == ():
+        expected_shape = [reps_raw] if isinstance(reps_raw, int) else list(reps_raw)
+    else:
+        axis_wrapped = axis % len(x_shape)
+        expected_shape = x_shape[0:axis_wrapped] + [sum(reps_raw)] + x_shape[axis_wrapped+1:]
+    assert list(ret.shape) == expected_shape
+    # value test
+    if call is helpers.mx_call:
+        # mxnet only supports repeats defined as as int
+        assert np.allclose(call(ivy.repeat, x, reps_raw, axis),
+                           ivy.numpy.repeat(ivy.to_numpy(x), ivy.to_numpy(reps), axis))
+    else:
+        assert np.allclose(call(ivy.repeat, x, reps, axis), ivy.numpy.repeat(ivy.to_numpy(x), ivy.to_numpy(reps), axis))
+    # compilation test
+    if call in [helpers.torch_call]:
+        # pytorch scripting does not union of types
+        return
+    helpers.assert_compilable(ivy.repeat)
+
+
 # tile
 @pytest.mark.parametrize(
     "x_n_reps", [(1, [1]), (1, 2), (1, [2]), ([[0., 1., 2., 3.]], (2, 1))])

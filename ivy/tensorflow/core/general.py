@@ -171,6 +171,9 @@ def split(x, num_or_size_splits=None, axis=0, with_remainder=False):
     return _tf.split(x, num_or_size_splits, axis)
 
 
+repeat = _tf.repeat
+
+
 def tile(x, reps):
     if x.shape == ():
         x = _tf.reshape(x, (-1,))
