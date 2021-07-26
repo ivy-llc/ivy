@@ -657,6 +657,24 @@
     <span class="k">return</span> <span class="n">_get_framework</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">num_or_size_splits</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">with_remainder</span><span class="p">)</span></div>
 
 
+<div class="viewcode-block" id="repeat"><a class="viewcode-back" href="../../../core/general/repeat.html#ivy.core.general.repeat">[docs]</a><span class="k">def</span> <span class="nf">repeat</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">repeats</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Repeat values along a given dimension</span>
+
+<span class="sd">    :param x: Input array.</span>
+<span class="sd">    :type x: array</span>
+<span class="sd">    :param repeats: The number of repetitions for each element. repeats is broadcast to fit the shape of the given axis.</span>
+<span class="sd">    :type repeats: int or sequence of ints.</span>
+<span class="sd">    :param axis: The axis along which to repeat values.</span>
+<span class="sd">                  By default, use the flattened input array, and return a flat output array.</span>
+<span class="sd">    :type axis: int, optional</span>
+<span class="sd">    :param f: Machine learning framework. Inferred from inputs if None.</span>
+<span class="sd">    :type f: ml_framework, optional</span>
+<span class="sd">    :return: The repeated output array.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">_get_framework</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">repeat</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">repeats</span><span class="p">,</span> <span class="n">axis</span><span class="p">)</span></div>
+
+
 <div class="viewcode-block" id="tile"><a class="viewcode-back" href="../../../core/general/tile.html#ivy.core.general.tile">[docs]</a><span class="k">def</span> <span class="nf">tile</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">reps</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Constructs an array by repeating x the number of times given by reps.</span>
@@ -664,7 +682,7 @@
 <span class="sd">    :param x: Input array.</span>
 <span class="sd">    :type x: array</span>
 <span class="sd">    :param reps: The number of repetitions of x along each axis.</span>
-<span class="sd">    :type reps: sequence</span>
+<span class="sd">    :type reps: sequence of ints</span>
 <span class="sd">    :param f: Machine learning framework. Inferred from inputs if None.</span>
 <span class="sd">    :type f: ml_framework, optional</span>
 <span class="sd">    :return: The tiled output array.</span>

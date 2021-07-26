@@ -27,6 +27,7 @@ General
    general/stack.rst
    general/unstack.rst
    general/split.rst
+   general/repeat.rst
    general/tile.rst
    general/constant_pad.rst
    general/zero_pad.rst
