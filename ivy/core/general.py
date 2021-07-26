@@ -1115,7 +1115,7 @@ def split_func_call(func, inputs, chunk_size, input_axes=0, output_axes=None):
     num_chunks_floored = math.floor(dim_size / chunk_size)
     chunk_sizes = [chunk_size]*num_chunks_floored
     if num_chunks != num_chunks_floored:
-        chunk_sizes.append([dim_size - chunk_size * num_chunks_floored])
+        chunk_sizes.append(dim_size - chunk_size * num_chunks_floored)
     inputs_split = [ivy.split(inp, chunk_sizes, input_axes[i], True) for i, inp in enumerate(inputs)]
     rets = [func(*i) for i in zip(*inputs_split)]
     num_outputs = len(rets[0])
