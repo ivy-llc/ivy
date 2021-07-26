@@ -1906,6 +1906,10 @@ def test_compile_fn(x, fn, dtype_str, tensor_fn, dev_str, call):
     "tensor_fn", [ivy.array, helpers.var_fn])
 def test_split_func_call(x0, x1, chunk_size, axis, tensor_fn, dev_str, call):
 
+    if call is helpers.mx_call:
+        # MXNet does not support splitting based on section sizes, only integer number of sections input is supported.
+        pytest.skip()
+
     # inputs
     in0 = tensor_fn(x0, 'float32', dev_str)
     in1 = tensor_fn(x1, 'float32', dev_str)
