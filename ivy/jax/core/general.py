@@ -160,6 +160,7 @@ def split(x, num_or_size_splits=None, axis=0, with_remainder=False):
     return _jnp.split(x, num_or_size_splits, axis)
 
 
+repeat = _jnp.repeat
 tile = _jnp.tile
 constant_pad = lambda x, pad_width, value=0: _jnp.pad(_flat_array_to_1_dim_array(x), pad_width, constant_values=value)
 zero_pad = lambda x, pad_width: _jnp.pad(_flat_array_to_1_dim_array(x), pad_width, constant_values=0)

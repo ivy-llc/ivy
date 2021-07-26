@@ -237,6 +237,10 @@ def split(x, num_or_size_splits=None, axis=0, with_remainder=False):
     return _mx.nd.split(x, x.shape[axis] if not num_or_size_splits else num_or_size_splits, axis)
 
 
+def repeat(x, repeats, axis=None):
+    return _mx.nd.repeat(_flat_array_to_1_dim_array(x), repeats, axis)
+
+
 def tile(x, reps):
     if isinstance(reps, _mx.nd.ndarray.NDArray):
         reps = reps.asnumpy().tolist()

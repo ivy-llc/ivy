@@ -274,6 +274,12 @@ def split(x, num_or_size_splits: Optional[Union[int, List[int]]] = None, axis: i
     return list(torch.split(x, num_or_size_splits, axis))
 
 
+def repeat(x, repeats: Union[int, List[int]], axis: int = None):
+    if len(x.shape) == 0 and axis in [0, -1]:
+        axis = None
+    return torch.repeat_interleave(x, repeats, axis)
+
+
 def tile(x, reps):
     if isinstance(reps, torch.Tensor):
         reps = reps.detach().cpu().numpy().tolist()

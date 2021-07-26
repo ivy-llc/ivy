@@ -470,6 +470,24 @@ def split(x, num_or_size_splits=None, axis=0, with_remainder=False, f=None):
     return _get_framework(x, f=f).split(x, num_or_size_splits, axis, with_remainder)
 
 
+def repeat(x, repeats, axis=None, f=None):
+    """
+    Repeat values along a given dimension
+
+    :param x: Input array.
+    :type x: array
+    :param repeats: The number of repetitions for each element. repeats is broadcast to fit the shape of the given axis.
+    :type repeats: int or sequence of ints.
+    :param axis: The axis along which to repeat values.
+                  By default, use the flattened input array, and return a flat output array.
+    :type axis: int, optional
+    :param f: Machine learning framework. Inferred from inputs if None.
+    :type f: ml_framework, optional
+    :return: The repeated output array.
+    """
+    return _get_framework(x, f=f).repeat(x, repeats, axis)
+
+
 def tile(x, reps, f=None):
     """
     Constructs an array by repeating x the number of times given by reps.
@@ -477,7 +495,7 @@ def tile(x, reps, f=None):
     :param x: Input array.
     :type x: array
     :param reps: The number of repetitions of x along each axis.
-    :type reps: sequence
+    :type reps: sequence of ints
     :param f: Machine learning framework. Inferred from inputs if None.
     :type f: ml_framework, optional
     :return: The tiled output array.
