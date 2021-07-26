@@ -386,8 +386,8 @@ def test_container_slice(dev_str, call):
     dict_in = {'a': ivy.array([[0.], [1.]]),
                'b': {'c': ivy.array([[1.], [2.]]), 'd': ivy.array([[2.], [3.]])}}
     container = Container(dict_in)
-    container0 = container.slice(0)
-    container1 = container.slice(1)
+    container0 = container[0]
+    container1 = container[1]
     assert np.array_equal(container0['a'], ivy.array([0.]))
     assert np.array_equal(container0.a, ivy.array([0.]))
     assert np.array_equal(container0['b']['c'], ivy.array([1.]))
