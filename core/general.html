@@ -118,6 +118,7 @@
 <li class="toctree-l2"><a class="reference internal" href="general/stack.html">stack</a></li>
 <li class="toctree-l2"><a class="reference internal" href="general/unstack.html">unstack</a></li>
 <li class="toctree-l2"><a class="reference internal" href="general/split.html">split</a></li>
+<li class="toctree-l2"><a class="reference internal" href="general/repeat.html">repeat</a></li>
 <li class="toctree-l2"><a class="reference internal" href="general/tile.html">tile</a></li>
 <li class="toctree-l2"><a class="reference internal" href="general/constant_pad.html">constant_pad</a></li>
 <li class="toctree-l2"><a class="reference internal" href="general/zero_pad.html">zero_pad</a></li>
@@ -1109,6 +1110,26 @@ If not given, then the type of the original array is used.</p></li>
 </dd></dl>
 
 <dl class="py function">
+<dt id="ivy.core.general.repeat">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">repeat</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">repeats</span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">f</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#repeat"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.repeat" title="Permalink to this definition">¶</a></dt>
+<dd><p>Repeat values along a given dimension</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>array</em>) – Input array.</p></li>
+<li><p><strong>repeats</strong> (<em>int</em><em> or </em><em>sequence of ints.</em>) – The number of repetitions for each element. repeats is broadcast to fit the shape of the given axis.</p></li>
+<li><p><strong>axis</strong> (<em>int</em><em>, </em><em>optional</em>) – The axis along which to repeat values.
+By default, use the flattened input array, and return a flat output array.</p></li>
+<li><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning framework. Inferred from inputs if None.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The repeated output array.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt id="ivy.core.general.reshape">
 <code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">reshape</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">newshape</span></em>, <em class="sig-param"><span class="n">f</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#reshape"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.reshape" title="Permalink to this definition">¶</a></dt>
 <dd><p>Gives a new shape to an array without changing its data.</p>
@@ -1330,7 +1351,7 @@ For example, if axis=0, it will be the first dimension and if axis=-1, it will b
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>x</strong> (<em>array</em>) – Input array.</p></li>
-<li><p><strong>reps</strong> (<em>sequence</em>) – The number of repetitions of x along each axis.</p></li>
+<li><p><strong>reps</strong> (<em>sequence of ints</em>) – The number of repetitions of x along each axis.</p></li>
 <li><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning framework. Inferred from inputs if None.</p></li>
 </ul>
 </dd>
@@ -1568,6 +1589,7 @@ If not given, then the type of the original array is used.</p></li>
 <li class="toctree-l1"><a class="reference internal" href="general/stack.html">stack</a></li>
 <li class="toctree-l1"><a class="reference internal" href="general/unstack.html">unstack</a></li>
 <li class="toctree-l1"><a class="reference internal" href="general/split.html">split</a></li>
+<li class="toctree-l1"><a class="reference internal" href="general/repeat.html">repeat</a></li>
 <li class="toctree-l1"><a class="reference internal" href="general/tile.html">tile</a></li>
 <li class="toctree-l1"><a class="reference internal" href="general/constant_pad.html">constant_pad</a></li>
 <li class="toctree-l1"><a class="reference internal" href="general/zero_pad.html">zero_pad</a></li>
