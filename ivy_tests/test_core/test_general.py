@@ -1572,6 +1572,40 @@ def test_gather_nd(prms_n_inds, dtype_str, tensor_fn, dev_str, call):
     helpers.assert_compilable(ivy.gather_nd)
 
 
+# linear_resample
+@pytest.mark.parametrize(
+    "x_n_samples_n_axis_n_y_true", [([[10., 9., 8.]], 9, -1, [[10., 9.75, 9.5, 9.25, 9., 8.75, 8.5, 8.25, 8.]]),
+                                    ([[[10., 9.], [8., 7.]]], 5, -2,
+                                     [[[10., 9.], [9.5, 8.5], [9., 8.], [8.5, 7.5], [8., 7.]]]),
+                                    ([[[10., 9.], [8., 7.]]], 5, -1,
+                                     [[[10., 9.75, 9.5, 9.25, 9.], [8., 7.75, 7.5, 7.25, 7.]]])])
+@pytest.mark.parametrize(
+    "dtype_str", ['float32'])
+@pytest.mark.parametrize(
+    "tensor_fn", [ivy.array, helpers.var_fn])
+def test_linear_resample(x_n_samples_n_axis_n_y_true, dtype_str, tensor_fn, dev_str, call):
+    # smoke test
+    x, samples, axis, y_true = x_n_samples_n_axis_n_y_true
+    x = tensor_fn(x, dtype_str, dev_str)
+    ret = ivy.linear_resample(x, samples, axis)
+    # type test
+    assert ivy.is_array(ret)
+    # cardinality test
+    x_shape = list(x.shape)
+    num_x_dims = len(x_shape)
+    axis = axis % num_x_dims
+    x_pre_shape = x_shape[0:axis]
+    num_vals = x.shape[axis]
+    x_post_shape = x_shape[axis+1:]
+    assert list(ret.shape) == x_pre_shape + [samples] + x_post_shape
+    # value test
+    y_true = np.array(y_true)
+    y = call(ivy.linear_resample, x, samples, axis)
+    assert np.allclose(y, y_true)
+    # compilation test
+    helpers.assert_compilable(ivy.linear_resample)
+
+
 # dev
 @pytest.mark.parametrize(
     "x", [1, [], [1], [[0.0, 1.0], [2.0, 3.0]]])

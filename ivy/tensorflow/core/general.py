@@ -12,8 +12,9 @@ from tensorflow.python.types.core import Tensor
 _round = round
 
 # global
-import tensorflow as _tf
 import numpy as _np
+import tensorflow as _tf
+import tensorflow_probability as _tfp
 
 DTYPE_DICT = {_tf.bool: 'bool',
               _tf.int8: 'int8',
@@ -375,6 +376,19 @@ def gather_nd(params, indices, dev_str=None):
         dev_str = _dev_str_callable(params)
     with _tf.device('/' + dev_str.upper()):
         return _tf.gather_nd(params, indices)
+
+
+def linear_resample(x, num_samples, axis=-1):
+    x_shape = list(x.shape)
+    num_x_dims = len(x_shape)
+    axis = axis % num_x_dims
+    num_vals = x.shape[axis]
+    x_post_shape = x_shape[axis+1:]
+    num_post_dims = len(x_post_shape)
+    xp = _tf.range(num_vals, dtype=_tf.float32)
+    x_coords = _tf.range(num_samples, dtype=_tf.float32) * ((num_vals-1)/(num_samples-1))
+    x_coords = x_coords + xp[0:1]
+    return _tfp.math.interp_regular_1d_grid(x_coords, 0, num_vals-1, x, axis=axis)
 
 
 dev = lambda x: x.device
