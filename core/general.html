@@ -145,6 +145,7 @@
 <li class="toctree-l2"><a class="reference internal" href="general/scatter_nd.html">scatter_nd</a></li>
 <li class="toctree-l2"><a class="reference internal" href="general/gather.html">gather</a></li>
 <li class="toctree-l2"><a class="reference internal" href="general/gather_nd.html">gather_nd</a></li>
+<li class="toctree-l2"><a class="reference internal" href="general/linear_resample.html">linear_resample</a></li>
 <li class="toctree-l2"><a class="reference internal" href="general/dev.html">dev</a></li>
 <li class="toctree-l2"><a class="reference internal" href="general/to_dev.html">to_dev</a></li>
 <li class="toctree-l2"><a class="reference internal" href="general/dev_to_str.html">dev_to_str</a></li>
@@ -902,6 +903,25 @@ The identity array is a square array with ones on the main diagonal.</p>
 </dd></dl>
 
 <dl class="py function">
+<dt id="ivy.core.general.linear_resample">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">linear_resample</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">num_samples</span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">- 1</span></em>, <em class="sig-param"><span class="n">f</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#linear_resample"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.linear_resample" title="Permalink to this definition">¶</a></dt>
+<dd><p>Performs linear re-sampling on input image.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>array</em>) – Input array</p></li>
+<li><p><strong>num_samples</strong> (<em>int</em>) – The number of interpolated samples to take.</p></li>
+<li><p><strong>axis</strong> (<em>int</em><em>, </em><em>optional</em>) – The axis along which to perform the resample. Default is last dimension.</p></li>
+<li><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning framework. Inferred from inputs if None.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The array after the linear resampling.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt id="ivy.core.general.linspace">
 <code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">linspace</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">start</span></em>, <em class="sig-param"><span class="n">stop</span></em>, <em class="sig-param"><span class="n">num</span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">dev_str</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">f</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#linspace"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.linspace" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generates a certain number of evenly-spaced values in an interval along a given axis.</p>
@@ -1575,6 +1595,7 @@ If not given, then the type of the original array is used.</p></li>
 <li class="toctree-l1"><a class="reference internal" href="general/scatter_nd.html">scatter_nd</a></li>
 <li class="toctree-l1"><a class="reference internal" href="general/gather.html">gather</a></li>
 <li class="toctree-l1"><a class="reference internal" href="general/gather_nd.html">gather_nd</a></li>
+<li class="toctree-l1"><a class="reference internal" href="general/linear_resample.html">linear_resample</a></li>
 <li class="toctree-l1"><a class="reference internal" href="general/dev.html">dev</a></li>
 <li class="toctree-l1"><a class="reference internal" href="general/to_dev.html">to_dev</a></li>
 <li class="toctree-l1"><a class="reference internal" href="general/dev_to_str.html">dev_to_str</a></li>
