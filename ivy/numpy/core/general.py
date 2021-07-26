@@ -168,6 +168,7 @@ def split(x, num_or_size_splits=None, axis=0, with_remainder=False):
     return _np.split(x, num_or_size_splits, axis)
 
 
+repeat = _np.repeat
 tile = _np.tile
 constant_pad = lambda x, pad_width, value=0: _np.pad(_flat_array_to_1_dim_array(x), pad_width, constant_values=value)
 zero_pad = lambda x, pad_width: _np.pad(_flat_array_to_1_dim_array(x), pad_width)
