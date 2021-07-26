@@ -334,6 +334,31 @@ def gather_nd(params, indices, dev_str=None):
     return to_dev(ret, dev_str)
 
 
+def linear_resample(x, num_samples, axis=-1):
+    x_shape = list(x.shape)
+    num_x_dims = len(x_shape)
+    axis = axis % num_x_dims
+    x_pre_shape = x_shape[0:axis]
+    x_pre_size = _reduce(_mul, x_pre_shape) if x_pre_shape else 1
+    num_pre_dims = len(x_pre_shape)
+    num_vals = x.shape[axis]
+    x_post_shape = x_shape[axis+1:]
+    x_post_size = _reduce(_mul, x_post_shape) if x_post_shape else 1
+    num_post_dims = len(x_post_shape)
+    xp = _jnp.reshape(_jnp.arange(num_vals*x_pre_size*x_post_size), x_shape)
+    x_coords = _jnp.arange(num_samples) * ((num_vals-1)/(num_samples-1)) * x_post_size
+    x_coords = _jnp.reshape(x_coords, [1]*num_pre_dims + [num_samples] + [1]*num_post_dims)
+    x_coords = _jnp.broadcast_to(x_coords, x_pre_shape + [num_samples] + x_post_shape)
+    slc = [slice(None)] * num_x_dims
+    slc[axis] = slice(0, 1, 1)
+    x_coords = x_coords + xp[tuple(slc)]
+    x = _jnp.reshape(x, (-1,))
+    xp = _jnp.reshape(xp, (-1,))
+    x_coords = _jnp.reshape(x_coords, (-1,))
+    ret = _jnp.interp(x_coords, xp, x)
+    return _jnp.reshape(ret, x_pre_shape + [num_samples] + x_post_shape)
+
+
 dev = lambda x: x.device_buffer.device()
 
 
