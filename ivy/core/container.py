@@ -451,6 +451,12 @@ class Container(dict):
                 return_dict[key] = value
         return Container(return_dict)
 
+    def stop_gradients(self):
+        """
+        Stop gradients of all array entries in the container.
+        """
+        return self.map(lambda x, kc: _ivy.stop_gradient(x) if _ivy.is_array(x) else x)
+
     def to_disk_as_hdf5(self, h5_obj_or_filepath, starting_index=0, mode='a', max_batch_size=None):
         """
         Save container object to disk, as an h5py file, at the specified filepath.
