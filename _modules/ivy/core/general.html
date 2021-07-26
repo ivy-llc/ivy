@@ -189,6 +189,9 @@
 <span class="sd">Collection of general Ivy functions.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
+<span class="c1"># global</span>
+<span class="kn">import</span> <span class="nn">math</span>
+
 <span class="c1"># local</span>
 <span class="kn">import</span> <span class="nn">ivy</span>
 <span class="kn">from</span> <span class="nn">ivy.framework_handler</span> <span class="kn">import</span> <span class="n">get_framework</span> <span class="k">as</span> <span class="n">_get_framework</span>
@@ -1294,7 +1297,13 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">input_axes</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
         <span class="n">input_axes</span> <span class="o">=</span> <span class="p">[</span><span class="n">input_axes</span><span class="p">]</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span>
-    <span class="n">inputs_split</span> <span class="o">=</span> <span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">inp</span><span class="p">,</span> <span class="n">chunk_size</span><span class="p">,</span> <span class="n">input_axes</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="kc">True</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">inp</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">inputs</span><span class="p">)]</span>
+    <span class="n">dim_size</span> <span class="o">=</span> <span class="n">inputs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="n">input_axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
+    <span class="n">num_chunks</span> <span class="o">=</span> <span class="n">dim_size</span> <span class="o">/</span> <span class="n">chunk_size</span>
+    <span class="n">num_chunks_floored</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">dim_size</span> <span class="o">/</span> <span class="n">chunk_size</span><span class="p">)</span>
+    <span class="n">chunk_sizes</span> <span class="o">=</span> <span class="p">[</span><span class="n">chunk_size</span><span class="p">]</span><span class="o">*</span><span class="n">num_chunks_floored</span>
+    <span class="k">if</span> <span class="n">num_chunks</span> <span class="o">!=</span> <span class="n">num_chunks_floored</span><span class="p">:</span>
+        <span class="n">chunk_sizes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">dim_size</span> <span class="o">-</span> <span class="n">chunk_size</span> <span class="o">*</span> <span class="n">num_chunks_floored</span><span class="p">)</span>
+    <span class="n">inputs_split</span> <span class="o">=</span> <span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">inp</span><span class="p">,</span> <span class="n">chunk_sizes</span><span class="p">,</span> <span class="n">input_axes</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="kc">True</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">inp</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">inputs</span><span class="p">)]</span>
     <span class="n">rets</span> <span class="o">=</span> <span class="p">[</span><span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">inputs_split</span><span class="p">)]</span>
     <span class="n">num_outputs</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">rets</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
     <span class="k">if</span> <span class="n">output_axes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
