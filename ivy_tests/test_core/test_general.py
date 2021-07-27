@@ -1780,6 +1780,25 @@ def test_dev_str(x, dtype_str, tensor_fn, dev_str, call):
     helpers.assert_compilable(ivy.dev_str)
 
 
+# memory_on_dev
+@pytest.mark.parametrize(
+    "dev_str_to_check", ['cpu', 'cpu:0', 'gpu:0'])
+def test_memory_on_dev(dev_str_to_check, dev_str, call):
+    if 'gpu' in dev_str_to_check and ivy.num_gpus() == 0:
+        # cannot get amount of memory for gpu which is not present
+        pytest.skip()
+    ret = ivy.memory_on_dev(dev_str_to_check)
+    # type test
+    assert isinstance(ret, float)
+    # value test
+    assert 0 < ret < 64
+    # compilation test
+    if call is helpers.torch_call:
+        # global variables aren't supported for pytorch scripting
+        pytest.skip()
+    helpers.assert_compilable(ivy.memory_on_dev)
+
+
 # dtype
 @pytest.mark.parametrize(
     "x", [1, [], [1], [[0.0, 1.0], [2.0, 3.0]]])
