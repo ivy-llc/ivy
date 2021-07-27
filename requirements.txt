@@ -1,3 +1,5 @@
 h5py
 numpy
+psutil
 termcolor
+nvidia-ml-py3
