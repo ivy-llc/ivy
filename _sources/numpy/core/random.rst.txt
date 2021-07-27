@@ -13,5 +13,4 @@ Random
    :caption: Random
 
    random/multinomial.rst
-   random/shuffle.rst
 
