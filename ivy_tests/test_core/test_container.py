@@ -151,21 +151,41 @@ def test_container_at_key_chains(dev_str, call):
     assert 'd' not in new_container['b']
 
 
+# noinspection PyUnresolvedReferences
 def test_container_set_at_key_chain(dev_str, call):
     dict_in = {'a': ivy.array([1]),
                'b': {'c': ivy.array([2]), 'd': ivy.array([3])}}
-    container = Container(dict_in)
-    new_container = container.set_at_key_chain('b/e', ivy.array([4]))
-    assert (new_container['a'] == ivy.array([1]))[0]
-    assert (new_container['b']['c'] == ivy.array([2]))[0]
-    assert (new_container['b']['d'] == ivy.array([3]))[0]
-    assert (new_container['b']['e'] == ivy.array([4]))[0]
-    new_container = container.set_at_key_chain('f', ivy.array([5]))
-    assert (new_container['a'] == ivy.array([1]))[0]
-    assert (new_container['b']['c'] == ivy.array([2]))[0]
-    assert (new_container['b']['d'] == ivy.array([3]))[0]
-    assert (new_container['b']['e'] == ivy.array([4]))[0]
-    assert (new_container['f'] == ivy.array([5]))[0]
+    container_orig = Container(dict_in)
+
+    # explicit function call
+    container = container_orig.copy()
+    container.set_at_key_chain('b/e', ivy.array([4]))
+    assert (container['a'] == ivy.array([1]))[0]
+    assert (container['b']['c'] == ivy.array([2]))[0]
+    assert (container['b']['d'] == ivy.array([3]))[0]
+    assert (container['b']['e'] == ivy.array([4]))[0]
+    container.set_at_key_chain('f', ivy.array([5]))
+    assert (container['a'] == ivy.array([1]))[0]
+    assert (container['b']['c'] == ivy.array([2]))[0]
+    assert (container['b']['d'] == ivy.array([3]))[0]
+    assert (container['b']['e'] == ivy.array([4]))[0]
+    assert (container['f'] == ivy.array([5]))[0]
+
+    # overridden built-in function call
+    container = container_orig.copy()
+    assert 'b/e' not in container
+    container['b/e'] = ivy.array([4])
+    assert (container['a'] == ivy.array([1]))[0]
+    assert (container['b']['c'] == ivy.array([2]))[0]
+    assert (container['b']['d'] == ivy.array([3]))[0]
+    assert (container['b']['e'] == ivy.array([4]))[0]
+    assert 'f' not in container
+    container['f'] = ivy.array([5])
+    assert (container['a'] == ivy.array([1]))[0]
+    assert (container['b']['c'] == ivy.array([2]))[0]
+    assert (container['b']['d'] == ivy.array([3]))[0]
+    assert (container['b']['e'] == ivy.array([4]))[0]
+    assert (container['f'] == ivy.array([5]))[0]
 
 
 def test_container_set_at_key_chains(dev_str, call):

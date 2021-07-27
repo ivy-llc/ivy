@@ -802,35 +802,50 @@ class Container(dict):
             # noinspection PyUnresolvedReferences
             return super.__getattr__(item)
 
-    def __getitem__(self, slice_obj):
+    def __getitem__(self, query):
         """
-        Get slice or key of container object.
+        Get slice, key or key chain of container object.
 
-        :param slice_obj: slice object to slice all container elements.
-        :type slice_obj: slice or sequence of slices
-        :return: Container object at desired slice.
+        :param query: slice object, key or key chain to query all container elements.
+        :type query: slice or str
+        :return: Container object at desired query.
         """
-        if isinstance(slice_obj, str):
-            if '/' in slice_obj:
-                return self.at_key_chain(slice_obj)
-            return dict.__getitem__(self, slice_obj)
+        if isinstance(query, str):
+            if '/' in query:
+                return self.at_key_chain(query)
+            return dict.__getitem__(self, query)
         return_dict = dict()
         for key, value in sorted(self.items()):
             if isinstance(value, Container):
-                return_dict[key] = value[slice_obj]
+                return_dict[key] = value[query]
             else:
                 # noinspection PyBroadException
                 if isinstance(value, list) or isinstance(value, tuple):
                     if len(value) == 0:
                         return_dict[key] = value
                     else:
-                        return_dict[key] = value[slice_obj]
+                        return_dict[key] = value[query]
                 elif value is None or value.shape == ():
                     return_dict[key] = value
                 else:
-                    return_dict[key] = value[slice_obj]
+                    return_dict[key] = value[query]
 
         return Container(return_dict)
+
+    def __setitem__(self, query, val):
+        """
+        Set key or key chain of container object.
+
+        :param query: slice object, key or key chain at which to set all container elements.
+        :type query: slice or str
+        :param val: The value to set at the desired query.
+        :type val: ivy.Container, array, or other
+        :return: New container after updating.
+        """
+        if isinstance(query, str) and '/' in query:
+            return self.set_at_key_chain(query, val)
+        else:
+            return dict.__setitem__(self, query, val)
 
     def __contains__(self, key):
         if isinstance(key, str) and '/' in key:
