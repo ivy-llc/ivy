@@ -397,7 +397,15 @@ def _dev_is_available(base_dev_str):
 
 
 gpu_is_available = lambda: _dev_is_available('gpu')
-num_gpus = lambda: len(_jax.devices('gpu'))
+
+
+def num_gpus():
+    try:
+        return len(_jax.devices('gpu'))
+    except RuntimeError:
+        return 0
+
+
 tpu_is_available = lambda: _dev_is_available('tpu')
 dtype = lambda x: x.dtype
 dtype_to_str = lambda dtype_in: DTYPE_DICT[dtype_in]

@@ -4,6 +4,8 @@ Collection of general Ivy functions.
 
 # global
 import math
+import nvidia_smi
+from psutil import virtual_memory
 
 # local
 import ivy
@@ -1033,6 +1035,27 @@ def dev_str(x, f=None):
     :return: Device string for the array, e.g. 'cuda:0', 'cuda:1', 'cpu' etc..
     """
     return _get_framework(x, f=f).dev_str(x)
+
+
+def memory_on_dev(dev_str):
+    """
+    Get the total amount of memory for a given device string. In case of CPU, the total RAM is returned.
+
+    :param dev_str: The device string to conver to native device handle.
+    :type dev_str: str
+    :return: The total memory on the device in GB.
+    """
+    if 'gpu' in dev_str:
+        gpu_idx = dev_str.split(':')[-1]
+        nvidia_smi.nvmlInit()
+        handle = nvidia_smi.nvmlDeviceGetHandleByIndex(gpu_idx)
+        info = nvidia_smi.nvmlDeviceGetMemoryInfo(handle)
+        return info.total/1e9
+    elif 'cpu' in dev_str:
+        return virtual_memory().total/1e9
+    else:
+        raise Exception('Invalid device string input, must be on the form "gpu:idx" or "cpu:idx",'
+                        'but found {}'.format(dev_str))
 
 
 def gpu_is_available(f=None):
