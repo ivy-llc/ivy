@@ -406,7 +406,7 @@ class Container(dict):
         """
         return [self[tuple([slice(None, None, None)] * dim + [slice(i, i + 1, 1)])] for i in range(dim_size)]
 
-    def gather(self, indices, axis=-1):
+    def gather(self, indices, axis=-1, key_chains=None, to_apply=True, prune_unapplied=False):
         """
         Gather slices from all container params at axis according to indices.
 
@@ -414,17 +414,17 @@ class Container(dict):
         :type indices: array
         :param axis: The axis from which to gather from. Default is -1.
         :type axis: int, optional
+        :param key_chains: The key-chains to apply or not apply the method to. Default is None.
+        :type key_chains: list or dict of strs, optional
+        :param to_apply: If True, the method will be applied to key_chains, otherwise key_chains will be skipped.
+                         Default is True.
+        :type to_apply: bool, optional
+        :param prune_unapplied: Whether to prune key_chains for which the function was not applied. Default is False.
+        :type prune_unapplied: bool, optional
         :return: Container object at with all sub-array dimensions gathered along the axis.
         """
-        return_dict = dict()
-        for key, value in sorted(self.items()):
-            if isinstance(value, Container):
-                return_dict[key] = value.gather(indices, axis)
-            elif value is not None:
-                return_dict[key] = _ivy.gather(value, indices, axis)
-            else:
-                return_dict[key] = value
-        return Container(return_dict)
+        return self.map(lambda x, kc: _ivy.gather(x, indices, axis) if _ivy.is_array(x) else x, key_chains, to_apply,
+                        prune_unapplied)
 
     def gather_nd(self, indices):
         """
