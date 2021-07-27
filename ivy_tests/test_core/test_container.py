@@ -233,6 +233,58 @@ def test_container_repeat(dev_str, call):
     assert 'b/d' not in container_repeated
 
 
+def test_container_swapaxes(dev_str, call):
+    if call is helpers.mx_call:
+        # MXNet does not support repeats specified as array
+        pytest.skip()
+    dict_in = {'a': ivy.array([[0., 1., 2., 3.]]),
+               'b': {'c': ivy.array([[5., 10., 15., 20.]]), 'd': ivy.array([[10., 9., 8., 7.]])}}
+    container = Container(dict_in)
+
+    # without key_chains specification
+    container_swapped = container.swapaxes(0, 1)
+    assert np.allclose(ivy.to_numpy(container_swapped['a']), np.array([[0.], [1.], [2.], [3.]]))
+    assert np.allclose(ivy.to_numpy(container_swapped.a), np.array([[0.], [1.], [2.], [3.]]))
+    assert np.allclose(ivy.to_numpy(container_swapped['b']['c']), np.array([[5.], [10.], [15.], [20.]]))
+    assert np.allclose(ivy.to_numpy(container_swapped.b.c), np.array([[5.], [10.], [15.], [20.]]))
+    assert np.allclose(ivy.to_numpy(container_swapped['b']['d']), np.array([[10.], [9.], [8.], [7.]]))
+    assert np.allclose(ivy.to_numpy(container_swapped.b.d), np.array([[10.], [9.], [8.], [7.]]))
+
+    # with key_chains to apply
+    container_swapped = container.swapaxes(0, 1, ['a', 'b/c'])
+    assert np.allclose(ivy.to_numpy(container_swapped['a']), np.array([[0.], [1.], [2.], [3.]]))
+    assert np.allclose(ivy.to_numpy(container_swapped.a), np.array([[0.], [1.], [2.], [3.]]))
+    assert np.allclose(ivy.to_numpy(container_swapped['b']['c']), np.array([[5.], [10.], [15.], [20.]]))
+    assert np.allclose(ivy.to_numpy(container_swapped.b.c), np.array([[5.], [10.], [15.], [20.]]))
+    assert np.allclose(ivy.to_numpy(container_swapped['b']['d']), np.array([10., 9., 8., 7.]))
+    assert np.allclose(ivy.to_numpy(container_swapped.b.d), np.array([10., 9., 8., 7.]))
+
+    # with key_chains to apply pruned
+    container_swapped = container.swapaxes(0, 1, ['a', 'b/c'], prune_unapplied=True)
+    assert np.allclose(ivy.to_numpy(container_swapped['a']), np.array([[0.], [1.], [2.], [3.]]))
+    assert np.allclose(ivy.to_numpy(container_swapped.a), np.array([[0.], [1.], [2.], [3.]]))
+    assert np.allclose(ivy.to_numpy(container_swapped['b']['c']), np.array([[5.], [10.], [15.], [20.]]))
+    assert np.allclose(ivy.to_numpy(container_swapped.b.c), np.array([[5.], [10.], [15.], [20.]]))
+    assert 'b/d' not in container_swapped
+
+    # with key_chains to not apply
+    container_swapped = container.swapaxes(0, 1, Container({'a': None, 'b': {'d': None}}), to_apply=False)
+    assert np.allclose(ivy.to_numpy(container_swapped['a']), np.array([0., 1., 2., 3.]))
+    assert np.allclose(ivy.to_numpy(container_swapped.a), np.array([0., 1., 2., 3.]))
+    assert np.allclose(ivy.to_numpy(container_swapped['b']['c']), np.array([[5.], [10.], [15.], [20.]]))
+    assert np.allclose(ivy.to_numpy(container_swapped.b.c), np.array([[5.], [10.], [15.], [20.]]))
+    assert np.allclose(ivy.to_numpy(container_swapped['b']['d']), np.array([10., 9., 8., 7.]))
+    assert np.allclose(ivy.to_numpy(container_swapped.b.d), np.array([10., 9., 8., 7.]))
+
+    # with key_chains to not apply pruned
+    container_swapped = container.swapaxes(0, 1, Container({'a': None, 'b': {'d': None}}), to_apply=False,
+                                           prune_unapplied=True)
+    assert 'a' not in container_swapped
+    assert np.allclose(ivy.to_numpy(container_swapped['b']['c']), np.array([[5.], [10.], [15.], [20.]]))
+    assert np.allclose(ivy.to_numpy(container_swapped.b.c), np.array([[5.], [10.], [15.], [20.]]))
+    assert 'b/d' not in container_swapped
+
+
 def test_container_stop_gradients(dev_str, call):
     dict_in = {'a': ivy.variable(ivy.array([[[1., 2.], [3., 4.]], [[5., 6.], [7., 8.]]])),
                'b': {'c': ivy.variable(ivy.array([[[8., 7.], [6., 5.]], [[4., 3.], [2., 1.]]])),
