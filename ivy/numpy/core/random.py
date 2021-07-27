@@ -23,8 +23,4 @@ def multinomial(population_size, num_samples, batch_size, probs=None, replace=Tr
 
 randint = lambda low, high, shape, dev_str='cpu': _np.random.randint(low, high, shape)
 seed = lambda seed_value=0: _np.random.seed(seed_value)
-
-
-def shuffle(x):
-    _np.random.shuffle(x)
-    return x
+shuffle = _np.random.permutation
