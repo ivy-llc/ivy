@@ -321,20 +321,39 @@ class Container(dict):
     # Public Methods #
     # ---------------#
 
-    def shuffle(self, seed_value=None):
+    def shuffle(self, seed_value=None, key_chains=None, to_apply=True, prune_unapplied=False, key_chain=''):
         """
         Shuffle entries in all sub-arrays, such that they are still aligned along axis 0.
 
         :param seed_value: random seed to use for array shuffling
         :type seed_value: int
+        :param key_chains: The key-chains to apply or not apply the method to. Default is None.
+        :type key_chains: list or dict of strs, optional
+        :param to_apply: If True, the method will be applied to key_chains, otherwise key_chains will be skipped.
+                         Default is True.
+        :type to_apply: bool, optional
+        :param prune_unapplied: Whether to prune key_chains for which the function was not applied. Default is False.
+        :type prune_unapplied: bool, optional
+        :param key_chain: Chain of keys for this dict entry
+        :type key_chain: str
         """
         return_dict = dict()
         if seed_value is None:
             seed_value = _ivy.to_numpy(_ivy.random.randint(0, 1000, [])).item()
         for key, value in sorted(self.items()):
+            this_key_chain = key if key_chain == '' else (key_chain + '/' + key)
             if isinstance(value, Container):
-                return_dict[key] = value.shuffle(seed_value)
+                ret = value.shuffle(seed_value, key_chains, to_apply, prune_unapplied, this_key_chain)
+                if ret:
+                    return_dict[key] = ret
             else:
+                if key_chains is not None:
+                    if (this_key_chain in key_chains and not to_apply) or (
+                            this_key_chain not in key_chains and to_apply):
+                        if prune_unapplied:
+                            continue
+                        return_dict[key] = value
+                        continue
                 _ivy.seed(seed_value)
                 return_dict[key] = _ivy.shuffle(value)
         return Container(return_dict)

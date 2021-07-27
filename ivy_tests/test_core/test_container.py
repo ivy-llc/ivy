@@ -315,17 +315,64 @@ def test_container_shuffle(dev_str, call):
     dict_in = {'a': ivy.array([1, 2, 3]),
                'b': {'c': ivy.array([1, 2, 3]), 'd': ivy.array([1, 2, 3])}}
     container = Container(dict_in)
+
+    # without key_chains specification
     container_shuffled = container.shuffle(0)
     data = ivy.array([1, 2, 3])
     ivy.core.random.seed()
     shuffled_data = ivy.core.random.shuffle(data)
-
     assert np.array(container_shuffled['a'] == shuffled_data).all()
     assert np.array(container_shuffled.a == shuffled_data).all()
     assert np.array(container_shuffled['b']['c'] == shuffled_data).all()
     assert np.array(container_shuffled.b.c == shuffled_data).all()
     assert np.array(container_shuffled['b']['d'] == shuffled_data).all()
     assert np.array(container_shuffled.b.d == shuffled_data).all()
+
+    # with key_chains to apply
+    container_shuffled = container.shuffle(0, ['a', 'b/c'])
+    data = ivy.array([1, 2, 3])
+    ivy.core.random.seed()
+    shuffled_data = ivy.core.random.shuffle(data)
+    assert np.array(container_shuffled['a'] == shuffled_data).all()
+    assert np.array(container_shuffled.a == shuffled_data).all()
+    assert np.array(container_shuffled['b']['c'] == shuffled_data).all()
+    assert np.array(container_shuffled.b.c == shuffled_data).all()
+    assert np.array(container_shuffled['b']['d'] == data).all()
+    assert np.array(container_shuffled.b.d == data).all()
+
+    # with key_chains to apply pruned
+    container_shuffled = container.shuffle(0, ['a', 'b/c'], prune_unapplied=True)
+    data = ivy.array([1, 2, 3])
+    ivy.core.random.seed()
+    shuffled_data = ivy.core.random.shuffle(data)
+    assert np.array(container_shuffled['a'] == shuffled_data).all()
+    assert np.array(container_shuffled.a == shuffled_data).all()
+    assert np.array(container_shuffled['b']['c'] == shuffled_data).all()
+    assert np.array(container_shuffled.b.c == shuffled_data).all()
+    assert 'b/d' not in container_shuffled
+
+    # with key_chains to not apply pruned
+    container_shuffled = container.shuffle(0, Container({'a': None, 'b': {'d': None}}), to_apply=False)
+    data = ivy.array([1, 2, 3])
+    ivy.core.random.seed()
+    shuffled_data = ivy.core.random.shuffle(data)
+    assert np.array(container_shuffled['a'] == data).all()
+    assert np.array(container_shuffled.a == data).all()
+    assert np.array(container_shuffled['b']['c'] == shuffled_data).all()
+    assert np.array(container_shuffled.b.c == shuffled_data).all()
+    assert np.array(container_shuffled['b']['d'] == data).all()
+    assert np.array(container_shuffled.b.d == data).all()
+
+    # with key_chains to not apply pruned
+    container_shuffled = container.shuffle(0, Container({'a': None, 'b': {'d': None}}), to_apply=False,
+                                           prune_unapplied=True)
+    data = ivy.array([1, 2, 3])
+    ivy.core.random.seed()
+    shuffled_data = ivy.core.random.shuffle(data)
+    assert 'a' not in container_shuffled
+    assert np.array(container_shuffled['b']['c'] == shuffled_data).all()
+    assert np.array(container_shuffled.b.c == shuffled_data).all()
+    assert 'b/d' not in container_shuffled
 
 
 def test_container_to_iterator(dev_str, call):
