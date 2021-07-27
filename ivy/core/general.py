@@ -1045,8 +1045,8 @@ def memory_on_dev(dev_str):
     :type dev_str: str
     :return: The total memory on the device in GB.
     """
-    if 'gpu' in dev_str:
-        gpu_idx = dev_str.split(':')[-1]
+    if 'gpu' in dev_str or 'cuda' in dev_str:
+        gpu_idx = int(dev_str.split(':')[-1])
         nvidia_smi.nvmlInit()
         handle = nvidia_smi.nvmlDeviceGetHandleByIndex(gpu_idx)
         info = nvidia_smi.nvmlDeviceGetMemoryInfo(handle)
