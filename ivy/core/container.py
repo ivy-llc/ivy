@@ -426,23 +426,23 @@ class Container(dict):
         return self.map(lambda x, kc: _ivy.gather(x, indices, axis) if _ivy.is_array(x) else x, key_chains, to_apply,
                         prune_unapplied)
 
-    def gather_nd(self, indices):
+    def gather_nd(self, indices, key_chains=None, to_apply=True, prune_unapplied=False):
         """
         Gather slices from all container params into a arrays with shape specified by indices.
 
         :param indices: Index array.
         :type indices: array
+        :param key_chains: The key-chains to apply or not apply the method to. Default is None.
+        :type key_chains: list or dict of strs, optional
+        :param to_apply: If True, the method will be applied to key_chains, otherwise key_chains will be skipped.
+                         Default is True.
+        :type to_apply: bool, optional
+        :param prune_unapplied: Whether to prune key_chains for which the function was not applied. Default is False.
+        :type prune_unapplied: bool, optional
         :return: Container object at with all sub-array dimensions gathered.
         """
-        return_dict = dict()
-        for key, value in sorted(self.items()):
-            if isinstance(value, Container):
-                return_dict[key] = value.gather_nd(indices)
-            elif value is not None:
-                return_dict[key] = _ivy.gather_nd(value, indices)
-            else:
-                return_dict[key] = value
-        return Container(return_dict)
+        return self.map(lambda x, kc: _ivy.gather_nd(x, indices) if _ivy.is_array(x) else x, key_chains, to_apply,
+                        prune_unapplied)
 
     def repeat(self, repeats, axis=None):
         """
