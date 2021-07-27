@@ -804,13 +804,15 @@ class Container(dict):
 
     def __getitem__(self, slice_obj):
         """
-        Get slice of container object.
+        Get slice or key of container object.
 
         :param slice_obj: slice object to slice all container elements.
         :type slice_obj: slice or sequence of slices
         :return: Container object at desired slice.
         """
         if isinstance(slice_obj, str):
+            if '/' in slice_obj:
+                return self.at_key_chain(slice_obj)
             return dict.__getitem__(self, slice_obj)
         return_dict = dict()
         for key, value in sorted(self.items()):

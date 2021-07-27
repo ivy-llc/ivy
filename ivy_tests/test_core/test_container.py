@@ -118,9 +118,17 @@ def test_container_at_key_chain(dev_str, call):
     dict_in = {'a': ivy.array([1]),
                'b': {'c': ivy.array([2]), 'd': ivy.array([3])}}
     container = Container(dict_in)
+
+    # explicit function call
     sub_container = container.at_key_chain('b')
     assert (sub_container['c'] == ivy.array([2]))[0]
     sub_container = container.at_key_chain('b/c')
+    assert (sub_container == ivy.array([2]))[0]
+
+    # overridden built-in function call
+    sub_container = container['b']
+    assert (sub_container['c'] == ivy.array([2]))[0]
+    sub_container = container['b/c']
     assert (sub_container == ivy.array([2]))[0]
 
 
