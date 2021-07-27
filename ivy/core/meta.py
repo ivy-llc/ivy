@@ -68,18 +68,19 @@ def _train_task(sub_batch, inner_cost_fn, outer_cost_fn, variables, inner_grad_s
         total_cost = total_cost + final_cost
         if order == 1:
             all_grads = sum(all_grads) / max(len(all_grads), 1)
-        return total_cost / (inner_grad_steps + 1), inner_v, all_grads
+        return total_cost / (inner_grad_steps + 1), variables.stop_gradients(), all_grads
 
     # else return only the final values
     if order == 1:
         all_grads = all_grads[-1]
-    return final_cost, inner_v, all_grads
+    return final_cost, variables.stop_gradients(), all_grads
 
 
 def _train_tasks(batch, inner_cost_fn, outer_cost_fn, variables, num_tasks, inner_grad_steps,
                  inner_learning_rate, inner_optimization_step, order, average_across_steps, inner_v,
-                 keep_innver_v, outer_v, keep_outer_v):
+                 keep_innver_v, outer_v, keep_outer_v, return_inner_v):
     total_cost = 0
+    updated_iv_to_return = None
     all_grads = list()
     if isinstance(inner_v, (list, tuple)) and isinstance(inner_v[0], (list, tuple, dict, type(None))):
         inner_v_seq = True
@@ -92,13 +93,19 @@ def _train_tasks(batch, inner_cost_fn, outer_cost_fn, variables, num_tasks, inne
     for i, sub_batch in enumerate(batch.unstack(0, num_tasks)):
         iv = inner_v[i] if inner_v_seq else inner_v
         ov = outer_v[i] if outer_v_seq else outer_v
-        cost, _, grads = _train_task(sub_batch, inner_cost_fn, outer_cost_fn, variables, inner_grad_steps,
-                                     inner_learning_rate, inner_optimization_step, order, average_across_steps, iv,
-                                     keep_innver_v, ov, keep_outer_v)
+        cost, updated_iv, grads = _train_task(sub_batch, inner_cost_fn, outer_cost_fn, variables, inner_grad_steps,
+                                              inner_learning_rate, inner_optimization_step, order, average_across_steps,
+                                              iv, keep_innver_v, ov, keep_outer_v)#
+        if return_inner_v and i == 0:
+            updated_iv_to_return = updated_iv
         total_cost = total_cost + cost
         all_grads.append(grads)
     if order == 1:
+        if return_inner_v:
+            return total_cost / num_tasks, sum(all_grads) / len(all_grads), updated_iv_to_return
         return total_cost / num_tasks, sum(all_grads) / len(all_grads)
+    if return_inner_v:
+        return total_cost / num_tasks, updated_iv_to_return
     return total_cost / num_tasks
 
 
@@ -109,7 +116,7 @@ def _train_tasks(batch, inner_cost_fn, outer_cost_fn, variables, num_tasks, inne
 
 def fomaml_step(batch, inner_cost_fn, outer_cost_fn, variables, num_tasks, inner_grad_steps, inner_learning_rate,
                 inner_optimization_step=gradient_descent_update, average_across_steps=False,
-                inner_v=None, keep_inner_v=True, outer_v=None, keep_outer_v=True):
+                inner_v=None, keep_inner_v=True, outer_v=None, keep_outer_v=True, return_inner_v=False):
     """
     Perform step of first order MAML.
 
@@ -146,15 +153,18 @@ def fomaml_step(batch, inner_cost_fn, outer_cost_fn, variables, num_tasks, inner
     :param keep_outer_v: If True, the key chains in inner_v will be kept, otherwise they will be removed.
                             Default is True.
     :type keep_outer_v: bool, optional
+    :param return_inner_v: If True, the variables for the first task inner loop will also be returned. This is useful
+                            for running other assessments on inner loop task performance. Default is True.
+    :type return_inner_v: bool, optional
     :return: The cost and the gradients with respect to the outer loop variables.
     """
     return _train_tasks(
         batch, inner_cost_fn, outer_cost_fn, variables, num_tasks, inner_grad_steps, inner_learning_rate,
-        inner_optimization_step, 1, average_across_steps, inner_v, keep_inner_v, outer_v, keep_outer_v)
+        inner_optimization_step, 1, average_across_steps, inner_v, keep_inner_v, outer_v, keep_outer_v, return_inner_v)
 
 
 def reptile_step(batch, cost_fn, variables, num_tasks, inner_grad_steps, inner_learning_rate,
-                 inner_optimization_step=gradient_descent_update):
+                 inner_optimization_step=gradient_descent_update, return_inner_v=False):
     """
     Perform step of Reptile.
 
@@ -174,19 +184,26 @@ def reptile_step(batch, cost_fn, variables, num_tasks, inner_grad_steps, inner_l
     :param inner_optimization_step: The function used for the inner loop optimization.
                                     Default is ivy.gradient_descent_update.
     :type inner_optimization_step: callable, optional
+    :param return_inner_v: If True, the variables for the first task inner loop will also be returned. This is useful
+                            for running other assessments on inner loop task performance. Default is True.
+    :type return_inner_v: bool, optional
     :return: The cost and the gradients with respect to the outer loop variables.
     """
-    cost, grads = _train_tasks(
+    rets = _train_tasks(
         batch, cost_fn, None, variables, num_tasks, inner_grad_steps, inner_learning_rate,
-        inner_optimization_step, 1, True, None, True, None, True)
-    return cost, grads / inner_learning_rate
+        inner_optimization_step, 1, True, None, True, None, True, return_inner_v)
+    cost = rets[0]
+    grads = rets[1] / inner_learning_rate
+    if return_inner_v:
+        return cost, grads, rets[2]
+    return rets, grads
 
 
 # Second Order
 
 def maml_step(batch, inner_cost_fn, outer_cost_fn, variables, num_tasks, inner_grad_steps, inner_learning_rate,
               inner_optimization_step=gradient_descent_update, average_across_steps=False, inner_v=None,
-              keep_inner_v=True, outer_v=None, keep_outer_v=True):
+              keep_inner_v=True, outer_v=None, keep_outer_v=True, return_inner_v=False):
     """
     Perform step of vanilla second order MAML.
 
@@ -222,11 +239,14 @@ def maml_step(batch, inner_cost_fn, outer_cost_fn, variables, num_tasks, inner_g
     :param keep_outer_v: If True, the key chains in inner_v will be kept, otherwise they will be removed.
                             Default is True.
     :type keep_outer_v: bool, optional
+    :param return_inner_v: If True, the variables for the first task inner loop will also be returned. This is useful
+                            for running other assessments on inner loop task performance. Default is True.
+    :type return_inner_v: bool, optional
     :return: The cost and the gradients with respect to the outer loop variables.
     """
     unique_outer = outer_v is not None
     return ivy.execute_with_gradients(lambda v: _train_tasks(
         batch, inner_cost_fn, outer_cost_fn, variables.set_at_key_chains(v) if unique_outer else v, num_tasks,
         inner_grad_steps, inner_learning_rate, inner_optimization_step, 2, average_across_steps, inner_v,
-        keep_inner_v, outer_v, keep_outer_v), variables.at_key_chains(outer_v, ignore_none=True)
+        keep_inner_v, outer_v, keep_outer_v, return_inner_v), variables.at_key_chains(outer_v, ignore_none=True)
                                       if keep_outer_v else variables.prune_key_chains(outer_v, ignore_none=True))

@@ -24,7 +24,10 @@ import ivy_tests.helpers as helpers
     "average_across_steps", [True, False])
 @pytest.mark.parametrize(
     "num_tasks", [1, 2])
-def test_fomaml_step_unique_vars(dev_str, call, inner_grad_steps, with_outer_cost_fn, average_across_steps, num_tasks):
+@pytest.mark.parametrize(
+    "return_inner_v", [True, False])
+def test_fomaml_step_unique_vars(dev_str, call, inner_grad_steps, with_outer_cost_fn, average_across_steps, num_tasks,
+                                 return_inner_v):
 
     if call in [helpers.np_call, helpers.jnp_call]:
         # Numpy does not support gradients, and jax does not support gradients on custom nested classes
@@ -65,11 +68,16 @@ def test_fomaml_step_unique_vars(dev_str, call, inner_grad_steps, with_outer_cos
         true_weight_grad = sum([og[-1] for og in all_outer_grads]) / num_tasks
 
     # meta update
-    outer_cost, outer_grads = ivy.fomaml_step(
+    rets = ivy.fomaml_step(
         batch, inner_cost_fn, outer_cost_fn if with_outer_cost_fn else None, variables, num_tasks,
         inner_grad_steps, inner_learning_rate, average_across_steps=average_across_steps,
-        inner_v='latent', outer_v='weight')
+        inner_v='latent', outer_v='weight', return_inner_v=return_inner_v)
+    outer_cost = rets[0]
+    outer_grads = rets[1]
     assert np.allclose(ivy.to_numpy(outer_grads.weight[0]), np.array(true_weight_grad))
+    if return_inner_v:
+        inner_v_ret = rets[2]
+        assert isinstance(inner_v_ret, ivy.Container)
 
 
 # fomaml step shared vars
@@ -81,7 +89,10 @@ def test_fomaml_step_unique_vars(dev_str, call, inner_grad_steps, with_outer_cos
     "average_across_steps", [True, False])
 @pytest.mark.parametrize(
     "num_tasks", [1, 2])
-def test_fomaml_step_shared_vars(dev_str, call, inner_grad_steps, with_outer_cost_fn, average_across_steps, num_tasks):
+@pytest.mark.parametrize(
+    "return_inner_v", [True, False])
+def test_fomaml_step_shared_vars(dev_str, call, inner_grad_steps, with_outer_cost_fn, average_across_steps, num_tasks,
+                                 return_inner_v):
 
     if call in [helpers.np_call, helpers.jnp_call, helpers.mx_call]:
         # Numpy does not support gradients, jax does not support gradients on custom nested classes,
@@ -141,10 +152,15 @@ def test_fomaml_step_shared_vars(dev_str, call, inner_grad_steps, with_outer_cos
     true_outer_grad = sum(true_outer_grads) / len(true_outer_grads)
 
     # meta update
-    outer_cost, outer_grads = ivy.fomaml_step(
+    rets = ivy.fomaml_step(
         batch, inner_cost_fn, outer_cost_fn if with_outer_cost_fn else None, variables, num_tasks,
-        inner_grad_steps, inner_learning_rate, average_across_steps=average_across_steps)
+        inner_grad_steps, inner_learning_rate, average_across_steps=average_across_steps, return_inner_v=return_inner_v)
+    outer_cost = rets[0]
+    outer_grads = rets[1]
     assert np.allclose(ivy.to_numpy(outer_grads.latent[0]), np.array(true_outer_grad))
+    if return_inner_v:
+        inner_v_ret = rets[2]
+        assert isinstance(inner_v_ret, ivy.Container)
 
 
 # fomaml step overlapping vars
@@ -156,8 +172,10 @@ def test_fomaml_step_shared_vars(dev_str, call, inner_grad_steps, with_outer_cos
     "average_across_steps", [True, False])
 @pytest.mark.parametrize(
     "num_tasks", [1, 2])
+@pytest.mark.parametrize(
+    "return_inner_v", [True, False])
 def test_fomaml_step_overlapping_vars(dev_str, call, inner_grad_steps, with_outer_cost_fn, average_across_steps,
-                                      num_tasks):
+                                      num_tasks, return_inner_v):
 
     if call in [helpers.np_call, helpers.jnp_call, helpers.mx_call]:
         # Numpy does not support gradients, jax does not support gradients on custom nested classes,
@@ -202,11 +220,17 @@ def test_fomaml_step_overlapping_vars(dev_str, call, inner_grad_steps, with_oute
     true_latent_grad = np.array([(-1-(num_tasks-1)/2)*(-1 if with_outer_cost_fn else 1)])
 
     # meta update
-    outer_cost, outer_grads = ivy.fomaml_step(
+    rets = ivy.fomaml_step(
         batch, inner_cost_fn, outer_cost_fn if with_outer_cost_fn else None, variables, num_tasks,
-        inner_grad_steps, inner_learning_rate, average_across_steps=average_across_steps, inner_v='latent')
+        inner_grad_steps, inner_learning_rate, average_across_steps=average_across_steps, inner_v='latent',
+        return_inner_v=return_inner_v)
+    outer_cost = rets[0]
+    outer_grads = rets[1]
     assert np.allclose(ivy.to_numpy(outer_grads.weight[0]), np.array(true_weight_grad))
     assert np.allclose(ivy.to_numpy(outer_grads.latent[0]), np.array(true_latent_grad))
+    if return_inner_v:
+        inner_v_ret = rets[2]
+        assert isinstance(inner_v_ret, ivy.Container)
 
 
 # reptile step
@@ -214,7 +238,9 @@ def test_fomaml_step_overlapping_vars(dev_str, call, inner_grad_steps, with_oute
     "inner_grad_steps", [1, 2, 3])
 @pytest.mark.parametrize(
     "num_tasks", [1, 2])
-def test_reptile_step(dev_str, call, inner_grad_steps, num_tasks):
+@pytest.mark.parametrize(
+    "return_inner_v", [True, False])
+def test_reptile_step(dev_str, call, inner_grad_steps, num_tasks, return_inner_v):
 
     if call in [helpers.np_call, helpers.jnp_call, helpers.mx_call]:
         # Numpy does not support gradients, jax does not support gradients on custom nested classes,
@@ -265,9 +291,14 @@ def test_reptile_step(dev_str, call, inner_grad_steps, num_tasks):
     true_outer_grad = (sum(true_outer_grads) / len(true_outer_grads)) / inner_learning_rate
 
     # meta update
-    outer_cost, outer_grads = ivy.reptile_step(batch, inner_cost_fn, variables, num_tasks, inner_grad_steps,
-                                               inner_learning_rate)
+    rets = ivy.reptile_step(batch, inner_cost_fn, variables, num_tasks, inner_grad_steps, inner_learning_rate,
+                            return_inner_v=return_inner_v)
+    outer_cost = rets[0]
+    outer_grads = rets[1]
     assert np.allclose(ivy.to_numpy(outer_grads.latent[0]), np.array(true_outer_grad))
+    if return_inner_v:
+        inner_v_ret = rets[2]
+        assert isinstance(inner_v_ret, ivy.Container)
 
 
 # Second Order #
@@ -282,7 +313,10 @@ def test_reptile_step(dev_str, call, inner_grad_steps, num_tasks):
     "average_across_steps", [True, False])
 @pytest.mark.parametrize(
     "num_tasks", [1, 2])
-def test_maml_step_unique_vars(dev_str, call, inner_grad_steps, with_outer_cost_fn, average_across_steps, num_tasks):
+@pytest.mark.parametrize(
+    "return_inner_v", [True, False])
+def test_maml_step_unique_vars(dev_str, call, inner_grad_steps, with_outer_cost_fn, average_across_steps, num_tasks,
+                               return_inner_v):
 
     if call in [helpers.np_call, helpers.jnp_call, helpers.mx_call]:
         # Numpy does not support gradients, jax does not support gradients on custom nested classes,
@@ -324,11 +358,16 @@ def test_maml_step_unique_vars(dev_str, call, inner_grad_steps, with_outer_cost_
         true_outer_grad = sum([og[-1] for og in all_outer_grads]) / num_tasks
 
     # meta update
-    outer_cost, outer_grads = ivy.maml_step(
+    rets = ivy.maml_step(
         batch, inner_cost_fn, outer_cost_fn if with_outer_cost_fn else None, variables, num_tasks,
         inner_grad_steps, inner_learning_rate, average_across_steps=average_across_steps,
-        inner_v='latent', outer_v='weight')
+        inner_v='latent', outer_v='weight', return_inner_v=return_inner_v)
+    outer_cost = rets[0]
+    outer_grads = rets[1]
     assert np.allclose(ivy.to_numpy(outer_grads.weight[0]), np.array(true_outer_grad))
+    if return_inner_v:
+        inner_v_ret = rets[2]
+        assert isinstance(inner_v_ret, ivy.Container)
 
 
 # maml step shared vars
@@ -340,7 +379,10 @@ def test_maml_step_unique_vars(dev_str, call, inner_grad_steps, with_outer_cost_
     "average_across_steps", [True, False])
 @pytest.mark.parametrize(
     "num_tasks", [1, 2])
-def test_maml_step_shared_vars(dev_str, call, inner_grad_steps, with_outer_cost_fn, average_across_steps, num_tasks):
+@pytest.mark.parametrize(
+    "return_inner_v", [True, False])
+def test_maml_step_shared_vars(dev_str, call, inner_grad_steps, with_outer_cost_fn, average_across_steps, num_tasks,
+                               return_inner_v):
 
     if call in [helpers.np_call, helpers.jnp_call, helpers.mx_call]:
         # Numpy does not support gradients, jax does not support gradients on custom nested classes,
@@ -417,10 +459,15 @@ def test_maml_step_shared_vars(dev_str, call, inner_grad_steps, with_outer_cost_
     true_outer_grad = sum(true_outer_grads) / len(true_outer_grads)
 
     # meta update
-    outer_cost, outer_grads = ivy.maml_step(
+    rets = ivy.maml_step(
         batch, inner_cost_fn, outer_cost_fn if with_outer_cost_fn else None, variables, num_tasks,
-        inner_grad_steps, inner_learning_rate, average_across_steps=average_across_steps)
+        inner_grad_steps, inner_learning_rate, average_across_steps=average_across_steps, return_inner_v=return_inner_v)
+    outer_cost = rets[0]
+    outer_grads = rets[1]
     assert np.allclose(ivy.to_numpy(outer_grads.latent[0]), true_outer_grad[0])
+    if return_inner_v:
+        inner_v_ret = rets[2]
+        assert isinstance(inner_v_ret, ivy.Container)
 
 
 # maml step overlapping vars
@@ -432,8 +479,10 @@ def test_maml_step_shared_vars(dev_str, call, inner_grad_steps, with_outer_cost_
     "average_across_steps", [True, False])
 @pytest.mark.parametrize(
     "num_tasks", [1, 2])
+@pytest.mark.parametrize(
+    "return_inner_v", [True, False])
 def test_maml_step_overlapping_vars(dev_str, call, inner_grad_steps, with_outer_cost_fn, average_across_steps,
-                                    num_tasks):
+                                    num_tasks, return_inner_v):
 
     if call in [helpers.np_call, helpers.jnp_call, helpers.mx_call]:
         # Numpy does not support gradients, jax does not support gradients on custom nested classes,
@@ -478,8 +527,14 @@ def test_maml_step_overlapping_vars(dev_str, call, inner_grad_steps, with_outer_
     true_latent_grad = np.array([(-1-(num_tasks-1)/2)*(-1 if with_outer_cost_fn else 1)])
 
     # meta update
-    outer_cost, outer_grads = ivy.maml_step(
+    rets = ivy.maml_step(
         batch, inner_cost_fn, outer_cost_fn if with_outer_cost_fn else None, variables, num_tasks,
-        inner_grad_steps, inner_learning_rate, average_across_steps=average_across_steps, inner_v='latent')
+        inner_grad_steps, inner_learning_rate, average_across_steps=average_across_steps, inner_v='latent',
+        return_inner_v=return_inner_v)
+    outer_cost = rets[0]
+    outer_grads = rets[1]
     assert np.allclose(ivy.to_numpy(outer_grads.weight[0]), np.array(true_weight_grad))
     assert np.allclose(ivy.to_numpy(outer_grads.latent[0]), np.array(true_latent_grad))
+    if return_inner_v:
+        inner_v_ret = rets[2]
+        assert isinstance(inner_v_ret, ivy.Container)
