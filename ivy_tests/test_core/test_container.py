@@ -26,6 +26,8 @@ def test_container_expand_dims(dev_str, call):
     dict_in = {'a': ivy.array([1]),
                'b': {'c': ivy.array([2]), 'd': ivy.array([3])}}
     container = Container(dict_in)
+
+    # without key_chains specification
     container_expanded_dims = container.expand_dims(0)
     assert (container_expanded_dims['a'] == ivy.array([[1]]))[0, 0]
     assert (container_expanded_dims.a == ivy.array([[1]]))[0, 0]
@@ -33,6 +35,40 @@ def test_container_expand_dims(dev_str, call):
     assert (container_expanded_dims.b.c == ivy.array([[2]]))[0, 0]
     assert (container_expanded_dims['b']['d'] == ivy.array([[3]]))[0, 0]
     assert (container_expanded_dims.b.d == ivy.array([[3]]))[0, 0]
+
+    # with key_chains to apply
+    container_expanded_dims = container.expand_dims(0, ['a', 'b/c'])
+    assert (container_expanded_dims['a'] == ivy.array([[1]]))[0, 0]
+    assert (container_expanded_dims.a == ivy.array([[1]]))[0, 0]
+    assert (container_expanded_dims['b']['c'] == ivy.array([[2]]))[0, 0]
+    assert (container_expanded_dims.b.c == ivy.array([[2]]))[0, 0]
+    assert (container_expanded_dims['b']['d'] == ivy.array([3]))[0]
+    assert (container_expanded_dims.b.d == ivy.array([3]))[0]
+
+    # with key_chains to apply pruned
+    container_expanded_dims = container.expand_dims(0, ['a', 'b/c'], prune_unapplied=True)
+    assert (container_expanded_dims['a'] == ivy.array([[1]]))[0, 0]
+    assert (container_expanded_dims.a == ivy.array([[1]]))[0, 0]
+    assert (container_expanded_dims['b']['c'] == ivy.array([[2]]))[0, 0]
+    assert (container_expanded_dims.b.c == ivy.array([[2]]))[0, 0]
+    assert 'b/d' not in container_expanded_dims
+
+    # with key_chains to not apply
+    container_expanded_dims = container.expand_dims(0, Container({'a': None, 'b': {'d': None}}), to_apply=False)
+    assert (container_expanded_dims['a'] == ivy.array([1]))[0]
+    assert (container_expanded_dims.a == ivy.array([1]))[0]
+    assert (container_expanded_dims['b']['c'] == ivy.array([[2]]))[0, 0]
+    assert (container_expanded_dims.b.c == ivy.array([[2]]))[0, 0]
+    assert (container_expanded_dims['b']['d'] == ivy.array([3]))[0]
+    assert (container_expanded_dims.b.d == ivy.array([3]))[0]
+
+    # with key_chains to not apply pruned
+    container_expanded_dims = container.expand_dims(0, Container({'a': None, 'b': {'d': None}}), to_apply=False,
+                                                    prune_unapplied=True)
+    assert 'a' not in container_expanded_dims
+    assert (container_expanded_dims['b']['c'] == ivy.array([[2]]))[0, 0]
+    assert (container_expanded_dims.b.c == ivy.array([[2]]))[0, 0]
+    assert 'b/d' not in container_expanded_dims
 
 
 def test_container_gather(dev_str, call):
