@@ -376,23 +376,23 @@ class Container(dict):
                 return_dict[key] = value
         return Container(return_dict)
 
-    def expand_dims(self, axis):
+    def expand_dims(self, axis, key_chains=None, to_apply=True, prune_unapplied=False):
         """
         Expand dims of all sub-arrays of container object.
 
         :param axis: Axis along which to expand dimensions of the sub-arrays.
         :type axis: int
+        :param key_chains: The key-chains to apply or not apply the method to. Default is None.
+        :type key_chains: list or dict of strs, optional
+        :param to_apply: If True, the method will be applied to key_chains, otherwise key_chains will be skipped.
+                         Default is True.
+        :type to_apply: bool, optional
+        :param prune_unapplied: Whether to prune key_chains for which the function was not applied. Default is False.
+        :type prune_unapplied: bool, optional
         :return: Container object at with all sub-array dimensions expanded along the axis.
         """
-        return_dict = dict()
-        for key, value in sorted(self.items()):
-            if isinstance(value, Container):
-                return_dict[key] = value.expand_dims(axis)
-            elif value is not None:
-                return_dict[key] = _ivy.expand_dims(value, axis)
-            else:
-                return_dict[key] = value
-        return Container(return_dict)
+        return self.map(lambda x, kc: _ivy.expand_dims(x, axis) if _ivy.is_array(x) else x, key_chains, to_apply,
+                        prune_unapplied)
 
     def unstack(self, dim, dim_size):
         """
