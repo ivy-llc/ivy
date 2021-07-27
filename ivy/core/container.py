@@ -465,6 +465,26 @@ class Container(dict):
         return self.map(lambda x, kc: _ivy.repeat(x, repeats, axis) if _ivy.is_array(x) else x, key_chains, to_apply,
                         prune_unapplied)
 
+    def swapaxes(self, axis0, axis1, key_chains=None, to_apply=True, prune_unapplied=False):
+        """
+        Interchange two axes for each array in the container.
+
+        :param axis0: First axis to be swapped.
+        :type axis0: int
+        :param axis1: Second axis to be swapped.
+        :type axis1: int
+        :param key_chains: The key-chains to apply or not apply the method to. Default is None.
+        :type key_chains: list or dict of strs, optional
+        :param to_apply: If True, the method will be applied to key_chains, otherwise key_chains will be skipped.
+                         Default is True.
+        :type to_apply: bool, optional
+        :param prune_unapplied: Whether to prune key_chains for which the function was not applied. Default is False.
+        :type prune_unapplied: bool, optional
+        :return: ivy.Container with each chosen array having the axes swapped.
+        """
+        return self.map(lambda x, kc: _ivy.swapaxes(x, axis0, axis1) if _ivy.is_array(x) else x, key_chains, to_apply,
+                        prune_unapplied)
+
     def stop_gradients(self, key_chains=None, to_apply=True, prune_unapplied=False):
         """
         Stop gradients of all array entries in the container.
