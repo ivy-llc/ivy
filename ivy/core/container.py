@@ -830,6 +830,12 @@ class Container(dict):
 
         return Container(return_dict)
 
+    def __contains__(self, key):
+        if isinstance(key, str) and '/' in key:
+            return self.has_key_chain(key)
+        else:
+            return dict.__contains__(self, key)
+
     def __pos__(self):
         return self
 

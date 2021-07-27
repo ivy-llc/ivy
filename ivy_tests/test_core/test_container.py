@@ -268,6 +268,18 @@ def test_container_prune_empty(dev_str, call):
     assert _test_exception(container_pruned)
 
 
+def test_container_contains(dev_str, call):
+    dict_in = {'a': ivy.array([0.]),
+               'b': {'c': ivy.array([1.]), 'd': ivy.array([2.])}}
+    container = Container(dict_in)
+    assert 'a' in container
+    assert 'b' in container
+    assert 'c' not in container
+    assert 'b/c' in container
+    assert 'd' not in container
+    assert 'b/d' in container
+
+
 def test_container_shuffle(dev_str, call):
     if call is helpers.tf_graph_call:
         # tf.random.set_seed is not compiled. The shuffle is then not aligned between container items.
