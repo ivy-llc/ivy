@@ -444,7 +444,7 @@ class Container(dict):
         return self.map(lambda x, kc: _ivy.gather_nd(x, indices) if _ivy.is_array(x) else x, key_chains, to_apply,
                         prune_unapplied)
 
-    def repeat(self, repeats, axis=None):
+    def repeat(self, repeats, axis=None, key_chains=None, to_apply=True, prune_unapplied=False):
         """
         Repeat values along a given dimension for each array in the container.
 
@@ -453,9 +453,17 @@ class Container(dict):
         :param axis: The axis along which to repeat values.
                       By default, use the flattened input array, and return a flat output array.
         :type axis: int, optional
+        :param key_chains: The key-chains to apply or not apply the method to. Default is None.
+        :type key_chains: list or dict of strs, optional
+        :param to_apply: If True, the method will be applied to key_chains, otherwise key_chains will be skipped.
+                         Default is True.
+        :type to_apply: bool, optional
+        :param prune_unapplied: Whether to prune key_chains for which the function was not applied. Default is False.
+        :type prune_unapplied: bool, optional
         :return: container with each array being repeated along the specified dimension.
         """
-        return self.map(lambda x, kc: _ivy.repeat(x, repeats, axis) if _ivy.is_array(x) else x)
+        return self.map(lambda x, kc: _ivy.repeat(x, repeats, axis) if _ivy.is_array(x) else x, key_chains, to_apply,
+                        prune_unapplied)
 
     def stop_gradients(self):
         """
