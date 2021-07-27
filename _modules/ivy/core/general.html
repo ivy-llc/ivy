@@ -1232,8 +1232,8 @@
 <span class="sd">    :type dev_str: str</span>
 <span class="sd">    :return: The total memory on the device in GB.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="s1">&#39;gpu&#39;</span> <span class="ow">in</span> <span class="n">dev_str</span><span class="p">:</span>
-        <span class="n">gpu_idx</span> <span class="o">=</span> <span class="n">dev_str</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;:&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+    <span class="k">if</span> <span class="s1">&#39;gpu&#39;</span> <span class="ow">in</span> <span class="n">dev_str</span> <span class="ow">or</span> <span class="s1">&#39;cuda&#39;</span> <span class="ow">in</span> <span class="n">dev_str</span><span class="p">:</span>
+        <span class="n">gpu_idx</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">dev_str</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;:&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
         <span class="n">nvidia_smi</span><span class="o">.</span><span class="n">nvmlInit</span><span class="p">()</span>
         <span class="n">handle</span> <span class="o">=</span> <span class="n">nvidia_smi</span><span class="o">.</span><span class="n">nvmlDeviceGetHandleByIndex</span><span class="p">(</span><span class="n">gpu_idx</span><span class="p">)</span>
         <span class="n">info</span> <span class="o">=</span> <span class="n">nvidia_smi</span><span class="o">.</span><span class="n">nvmlDeviceGetMemoryInfo</span><span class="p">(</span><span class="n">handle</span><span class="p">)</span>
