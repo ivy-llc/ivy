@@ -128,6 +128,8 @@ def test_container_gather_nd(dev_str, call):
                                      [[4, 3], [2, 1]]]), 'd': ivy.array([[[2, 4], [6, 8]],
                                                                          [[10, 12], [14, 16]]])}}
     container = Container(dict_in)
+
+    # without key_chains specification
     container_gathered = container.gather_nd(ivy.array([[0, 1], [1, 0]]))
     assert np.allclose(ivy.to_numpy(container_gathered['a']), np.array([[3, 4], [5, 6]]))
     assert np.allclose(ivy.to_numpy(container_gathered.a), np.array([[3, 4], [5, 6]]))
@@ -135,6 +137,47 @@ def test_container_gather_nd(dev_str, call):
     assert np.allclose(ivy.to_numpy(container_gathered.b.c), np.array([[6, 5], [4, 3]]))
     assert np.allclose(ivy.to_numpy(container_gathered['b']['d']), np.array([[6, 8], [10, 12]]))
     assert np.allclose(ivy.to_numpy(container_gathered.b.d), np.array([[6, 8], [10, 12]]))
+
+    # with key_chains to apply
+    container_gathered = container.gather_nd(ivy.array([[0, 1], [1, 0]]), ['a', 'b/c'])
+    assert np.allclose(ivy.to_numpy(container_gathered['a']), np.array([[3, 4], [5, 6]]))
+    assert np.allclose(ivy.to_numpy(container_gathered.a), np.array([[3, 4], [5, 6]]))
+    assert np.allclose(ivy.to_numpy(container_gathered['b']['c']), np.array([[6, 5], [4, 3]]))
+    assert np.allclose(ivy.to_numpy(container_gathered.b.c), np.array([[6, 5], [4, 3]]))
+    assert np.allclose(ivy.to_numpy(container_gathered['b']['d']), np.array([[[2, 4], [6, 8]],
+                                                                             [[10, 12], [14, 16]]]))
+    assert np.allclose(ivy.to_numpy(container_gathered.b.d), np.array([[[2, 4], [6, 8]],
+                                                                       [[10, 12], [14, 16]]]))
+
+    # with key_chains to apply pruned
+    container_gathered = container.gather_nd(ivy.array([[0, 1], [1, 0]]), ['a', 'b/c'], prune_unapplied=True)
+    assert np.allclose(ivy.to_numpy(container_gathered['a']), np.array([[3, 4], [5, 6]]))
+    assert np.allclose(ivy.to_numpy(container_gathered.a), np.array([[3, 4], [5, 6]]))
+    assert np.allclose(ivy.to_numpy(container_gathered['b']['c']), np.array([[6, 5], [4, 3]]))
+    assert np.allclose(ivy.to_numpy(container_gathered.b.c), np.array([[6, 5], [4, 3]]))
+    assert 'b/d' not in container_gathered
+
+    # with key_chains to not apply
+    container_gathered = container.gather_nd(ivy.array([[0, 1], [1, 0]]), Container({'a': None, 'b': {'d': None}}),
+                                             to_apply=False)
+    assert np.allclose(ivy.to_numpy(container_gathered['a']), np.array([[[1, 2], [3, 4]],
+                                                                        [[5, 6], [7, 8]]]))
+    assert np.allclose(ivy.to_numpy(container_gathered.a), np.array([[[1, 2], [3, 4]],
+                                                                     [[5, 6], [7, 8]]]))
+    assert np.allclose(ivy.to_numpy(container_gathered['b']['c']), np.array([[6, 5], [4, 3]]))
+    assert np.allclose(ivy.to_numpy(container_gathered.b.c), np.array([[6, 5], [4, 3]]))
+    assert np.allclose(ivy.to_numpy(container_gathered['b']['d']), np.array([[[2, 4], [6, 8]],
+                                                                             [[10, 12], [14, 16]]]))
+    assert np.allclose(ivy.to_numpy(container_gathered.b.d), np.array([[[2, 4], [6, 8]],
+                                                                       [[10, 12], [14, 16]]]))
+
+    # with key_chains to not apply pruned
+    container_gathered = container.gather_nd(ivy.array([[0, 1], [1, 0]]), Container({'a': None, 'b': {'d': None}}),
+                                             to_apply=False, prune_unapplied=True)
+    assert 'a' not in container_gathered
+    assert np.allclose(ivy.to_numpy(container_gathered['b']['c']), np.array([[6, 5], [4, 3]]))
+    assert np.allclose(ivy.to_numpy(container_gathered.b.c), np.array([[6, 5], [4, 3]]))
+    assert 'b/d' not in container_gathered
 
 
 def test_container_repeat(dev_str, call):
