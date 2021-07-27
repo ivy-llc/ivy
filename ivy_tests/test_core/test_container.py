@@ -362,6 +362,8 @@ def test_container_from_flat_list(dev_str, call):
 
 
 def test_container_map(dev_str, call):
+
+    # without key_chains specification
     dict_in = {'a': ivy.array([1]),
                'b': {'c': ivy.array([2]), 'd': ivy.array([3])}}
     container = Container(dict_in)
@@ -369,6 +371,27 @@ def test_container_map(dev_str, call):
     for (key, value), expected_value in zip(container_iterator,
                                             [ivy.array([2]), ivy.array([3]), ivy.array([4])]):
         assert call(lambda x: x, value) == call(lambda x: x, expected_value)
+
+    # with key_chains to apply
+    dict_in = {'a': ivy.array([1]),
+               'b': {'c': ivy.array([2]), 'd': ivy.array([3])}}
+    container = Container(dict_in)
+    container_mapped = container.map(lambda x, _: x + 1, ['a', 'b/c'])
+    assert (container_mapped['a'] == ivy.array([[2]]))[0]
+    assert (container_mapped.a == ivy.array([[2]]))[0]
+    assert (container_mapped['b']['c'] == ivy.array([[3]]))[0]
+    assert (container_mapped.b.c == ivy.array([[3]]))[0]
+    assert 'b/d' not in container_mapped
+
+    # with key_chains to not apply
+    dict_in = {'a': ivy.array([1]),
+               'b': {'c': ivy.array([2]), 'd': ivy.array([3])}}
+    container = Container(dict_in)
+    container_mapped = container.map(lambda x, _: x + 1, Container({'a': None, 'b': {'d': None}}), to_apply=False)
+    assert 'a' not in container_mapped
+    assert 'b/d' not in container_mapped
+    assert (container_mapped['b']['c'] == ivy.array([[3]]))[0]
+    assert (container_mapped.b.c == ivy.array([[3]]))[0]
 
 
 def test_container_to_random(dev_str, call):
