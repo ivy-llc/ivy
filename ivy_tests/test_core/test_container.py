@@ -187,6 +187,8 @@ def test_container_repeat(dev_str, call):
     dict_in = {'a': ivy.array([[0., 1., 2., 3.]]),
                'b': {'c': ivy.array([[5., 10., 15., 20.]]), 'd': ivy.array([[10., 9., 8., 7.]])}}
     container = Container(dict_in)
+
+    # without key_chains specification
     container_repeated = container.repeat(ivy.array([2, 1, 0, 3]), -1)
     assert np.allclose(ivy.to_numpy(container_repeated['a']), np.array([[0., 0., 1., 3., 3., 3.]]))
     assert np.allclose(ivy.to_numpy(container_repeated.a), np.array([[0., 0., 1., 3., 3., 3.]]))
@@ -194,6 +196,41 @@ def test_container_repeat(dev_str, call):
     assert np.allclose(ivy.to_numpy(container_repeated.b.c), np.array([[5., 5., 10., 20., 20., 20.]]))
     assert np.allclose(ivy.to_numpy(container_repeated['b']['d']), np.array([[10., 10., 9., 7., 7., 7.]]))
     assert np.allclose(ivy.to_numpy(container_repeated.b.d), np.array([[10., 10., 9., 7., 7., 7.]]))
+
+    # with key_chains to apply
+    container_repeated = container.repeat(ivy.array([2, 1, 0, 3]), -1, ['a', 'b/c'])
+    assert np.allclose(ivy.to_numpy(container_repeated['a']), np.array([[0., 0., 1., 3., 3., 3.]]))
+    assert np.allclose(ivy.to_numpy(container_repeated.a), np.array([[0., 0., 1., 3., 3., 3.]]))
+    assert np.allclose(ivy.to_numpy(container_repeated['b']['c']), np.array([[5., 5., 10., 20., 20., 20.]]))
+    assert np.allclose(ivy.to_numpy(container_repeated.b.c), np.array([[5., 5., 10., 20., 20., 20.]]))
+    assert np.allclose(ivy.to_numpy(container_repeated['b']['d']), np.array([[10., 9., 8., 7.]]))
+    assert np.allclose(ivy.to_numpy(container_repeated.b.d), np.array([[10., 9., 8., 7.]]))
+
+    # with key_chains to apply pruned
+    container_repeated = container.repeat(ivy.array([2, 1, 0, 3]), -1, ['a', 'b/c'], prune_unapplied=True)
+    assert np.allclose(ivy.to_numpy(container_repeated['a']), np.array([[0., 0., 1., 3., 3., 3.]]))
+    assert np.allclose(ivy.to_numpy(container_repeated.a), np.array([[0., 0., 1., 3., 3., 3.]]))
+    assert np.allclose(ivy.to_numpy(container_repeated['b']['c']), np.array([[5., 5., 10., 20., 20., 20.]]))
+    assert np.allclose(ivy.to_numpy(container_repeated.b.c), np.array([[5., 5., 10., 20., 20., 20.]]))
+    assert 'b/d' not in container_repeated
+
+    # with key_chains to not apply
+    container_repeated = container.repeat(ivy.array([2, 1, 0, 3]), -1, Container({'a': None, 'b': {'d': None}}),
+                                          to_apply=False)
+    assert np.allclose(ivy.to_numpy(container_repeated['a']), np.array([[0., 1., 2., 3.]]))
+    assert np.allclose(ivy.to_numpy(container_repeated.a), np.array([[0., 1., 2., 3.]]))
+    assert np.allclose(ivy.to_numpy(container_repeated['b']['c']), np.array([[5., 5., 10., 20., 20., 20.]]))
+    assert np.allclose(ivy.to_numpy(container_repeated.b.c), np.array([[5., 5., 10., 20., 20., 20.]]))
+    assert np.allclose(ivy.to_numpy(container_repeated['b']['d']), np.array([[10., 9., 8., 7.]]))
+    assert np.allclose(ivy.to_numpy(container_repeated.b.d), np.array([[10., 9., 8., 7.]]))
+
+    # with key_chains to not apply pruned
+    container_repeated = container.repeat(ivy.array([2, 1, 0, 3]), -1, Container({'a': None, 'b': {'d': None}}),
+                                          to_apply=False, prune_unapplied=True)
+    assert 'a' not in container_repeated
+    assert np.allclose(ivy.to_numpy(container_repeated['b']['c']), np.array([[5., 5., 10., 20., 20., 20.]]))
+    assert np.allclose(ivy.to_numpy(container_repeated.b.c), np.array([[5., 5., 10., 20., 20., 20.]]))
+    assert 'b/d' not in container_repeated
 
 
 def test_container_stop_gradients(dev_str, call):
