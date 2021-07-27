@@ -563,23 +563,23 @@
                 <span class="n">return_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
         <span class="k">return</span> <span class="n">Container</span><span class="p">(</span><span class="n">return_dict</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Container.expand_dims"><a class="viewcode-back" href="../../../core/container/Container.html#ivy.core.container.Container.expand_dims">[docs]</a>    <span class="k">def</span> <span class="nf">expand_dims</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">axis</span><span class="p">):</span>
+<div class="viewcode-block" id="Container.expand_dims"><a class="viewcode-back" href="../../../core/container/Container.html#ivy.core.container.Container.expand_dims">[docs]</a>    <span class="k">def</span> <span class="nf">expand_dims</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">key_chains</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">to_apply</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">prune_unapplied</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Expand dims of all sub-arrays of container object.</span>
 
 <span class="sd">        :param axis: Axis along which to expand dimensions of the sub-arrays.</span>
 <span class="sd">        :type axis: int</span>
+<span class="sd">        :param key_chains: The key-chains to apply or not apply the method to. Default is None.</span>
+<span class="sd">        :type key_chains: list or dict of strs, optional</span>
+<span class="sd">        :param to_apply: If True, the method will be applied to key_chains, otherwise key_chains will be skipped.</span>
+<span class="sd">                         Default is True.</span>
+<span class="sd">        :type to_apply: bool, optional</span>
+<span class="sd">        :param prune_unapplied: Whether to prune key_chains for which the function was not applied. Default is False.</span>
+<span class="sd">        :type prune_unapplied: bool, optional</span>
 <span class="sd">        :return: Container object at with all sub-array dimensions expanded along the axis.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">return_dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
-        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
-            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">Container</span><span class="p">):</span>
-                <span class="n">return_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">expand_dims</span><span class="p">(</span><span class="n">axis</span><span class="p">)</span>
-            <span class="k">elif</span> <span class="n">value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">return_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">_ivy</span><span class="o">.</span><span class="n">expand_dims</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">axis</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">return_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
-        <span class="k">return</span> <span class="n">Container</span><span class="p">(</span><span class="n">return_dict</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">kc</span><span class="p">:</span> <span class="n">_ivy</span><span class="o">.</span><span class="n">expand_dims</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="p">)</span> <span class="k">if</span> <span class="n">_ivy</span><span class="o">.</span><span class="n">is_array</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">else</span> <span class="n">x</span><span class="p">,</span> <span class="n">key_chains</span><span class="p">,</span> <span class="n">to_apply</span><span class="p">,</span>
+                        <span class="n">prune_unapplied</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Container.unstack"><a class="viewcode-back" href="../../../core/container/Container.html#ivy.core.container.Container.unstack">[docs]</a>    <span class="k">def</span> <span class="nf">unstack</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dim</span><span class="p">,</span> <span class="n">dim_size</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
