@@ -246,13 +246,55 @@ def test_container_stop_gradients(dev_str, call):
         assert ivy.is_variable(container.b.c)
         assert ivy.is_variable(container['b']['d'])
         assert ivy.is_variable(container.b.d)
-    container_gathered = container.stop_gradients()
-    assert ivy.is_array(container['a'])
-    assert ivy.is_array(container.a)
-    assert ivy.is_array(container['b']['c'])
-    assert ivy.is_array(container.b.c)
-    assert ivy.is_array(container['b']['d'])
-    assert ivy.is_array(container.b.d)
+
+    # without key_chains specification
+    container_stopped_grads = container.stop_gradients()
+    assert ivy.is_array(container_stopped_grads['a'])
+    assert ivy.is_array(container_stopped_grads.a)
+    assert ivy.is_array(container_stopped_grads['b']['c'])
+    assert ivy.is_array(container_stopped_grads.b.c)
+    assert ivy.is_array(container_stopped_grads['b']['d'])
+    assert ivy.is_array(container_stopped_grads.b.d)
+
+    # with key_chains to apply
+    container_stopped_grads = container.stop_gradients(['a', 'b/c'])
+    assert ivy.is_array(container_stopped_grads['a'])
+    assert ivy.is_array(container_stopped_grads.a)
+    assert ivy.is_array(container_stopped_grads['b']['c'])
+    assert ivy.is_array(container_stopped_grads.b.c)
+    if call is not helpers.np_call:
+        # Numpy does not support variables or gradients
+        assert ivy.is_variable(container_stopped_grads['b']['d'])
+        assert ivy.is_variable(container_stopped_grads.b.d)
+
+    # with key_chains to apply pruned
+    container_stopped_grads = container.stop_gradients(['a', 'b/c'], prune_unapplied=True)
+    assert ivy.is_array(container_stopped_grads['a'])
+    assert ivy.is_array(container_stopped_grads.a)
+    assert ivy.is_array(container_stopped_grads['b']['c'])
+    assert ivy.is_array(container_stopped_grads.b.c)
+    assert 'b/d' not in container_stopped_grads
+
+    # with key_chains to not apply
+    container_stopped_grads = container.stop_gradients(Container({'a': None, 'b': {'d': None}}), to_apply=False)
+    if call is not helpers.np_call:
+        # Numpy does not support variables or gradients
+        assert ivy.is_variable(container_stopped_grads['a'])
+        assert ivy.is_variable(container_stopped_grads.a)
+    assert ivy.is_array(container_stopped_grads['b']['c'])
+    assert ivy.is_array(container_stopped_grads.b.c)
+    if call is not helpers.np_call:
+        # Numpy does not support variables or gradients
+        assert ivy.is_variable(container_stopped_grads['b']['d'])
+        assert ivy.is_variable(container_stopped_grads.b.d)
+
+    # with key_chains to not apply pruned
+    container_stopped_grads = container.stop_gradients(Container({'a': None, 'b': {'d': None}}), to_apply=False,
+                                                       prune_unapplied=True)
+    assert 'a' not in container_stopped_grads
+    assert ivy.is_array(container_stopped_grads['b']['c'])
+    assert ivy.is_array(container_stopped_grads.b.c)
+    assert 'b/d' not in container_stopped_grads
 
 
 def test_container_has_key_chain(dev_str, call):
