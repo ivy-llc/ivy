@@ -42,4 +42,5 @@ General
    general/to_dev.rst
    general/dev_to_str.rst
    general/str_to_dev.rst
+   general/num_gpus.rst
 

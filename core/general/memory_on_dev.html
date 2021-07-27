@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>maximum &mdash; Ivy 1.0 documentation</title>
+  <title>memory_on_dev &mdash; Ivy 1.0 documentation</title>
   
 
   
@@ -36,8 +36,8 @@
   <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="clip" href="clip.html" />
-    <link rel="prev" title="minimum" href="minimum.html" /> 
+    <link rel="next" title="gpu_is_available" href="gpu_is_available.html" />
+    <link rel="prev" title="dev_str" href="dev_str.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -99,7 +99,7 @@
 <li class="toctree-l2"><a class="reference internal" href="shape.html">shape</a></li>
 <li class="toctree-l2"><a class="reference internal" href="get_num_dims.html">get_num_dims</a></li>
 <li class="toctree-l2"><a class="reference internal" href="minimum.html">minimum</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">maximum</a></li>
+<li class="toctree-l2"><a class="reference internal" href="maximum.html">maximum</a></li>
 <li class="toctree-l2"><a class="reference internal" href="clip.html">clip</a></li>
 <li class="toctree-l2"><a class="reference internal" href="round.html">round</a></li>
 <li class="toctree-l2"><a class="reference internal" href="floormod.html">floormod</a></li>
@@ -152,7 +152,7 @@
 <li class="toctree-l2"><a class="reference internal" href="dev_to_str.html">dev_to_str</a></li>
 <li class="toctree-l2"><a class="reference internal" href="str_to_dev.html">str_to_dev</a></li>
 <li class="toctree-l2"><a class="reference internal" href="dev_str.html">dev_str</a></li>
-<li class="toctree-l2"><a class="reference internal" href="memory_on_dev.html">memory_on_dev</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">memory_on_dev</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gpu_is_available.html">gpu_is_available</a></li>
 <li class="toctree-l2"><a class="reference internal" href="num_gpus.html">num_gpus</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tpu_is_available.html">tpu_is_available</a></li>
@@ -243,13 +243,13 @@
         
           <li><a href="../general.html">General</a> &raquo;</li>
         
-      <li>maximum</li>
+      <li>memory_on_dev</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="../../_sources/core/general/maximum.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../_sources/core/general/memory_on_dev.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -262,22 +262,18 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="maximum">
-<h1>maximum<a class="headerlink" href="#maximum" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="memory-on-dev">
+<h1>memory_on_dev<a class="headerlink" href="#memory-on-dev" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
-<dt id="ivy.core.general.maximum">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">maximum</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">y</span></em>, <em class="sig-param"><span class="n">f</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/general.html#maximum"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.maximum" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns the max of x and y (i.e. x &gt; y ? x : y) element-wise.</p>
+<dt id="ivy.core.general.memory_on_dev">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">memory_on_dev</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dev_str</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/general.html#memory_on_dev"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.memory_on_dev" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the total amount of memory for a given device string. In case of CPU, the total RAM is returned.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<em>array</em>) – Input array containing elements to maximum threshold.</p></li>
-<li><p><strong>y</strong> (<em>array</em>) – Tensor containing maximum values, must be broadcastable to x.</p></li>
-<li><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning framework. Inferred from inputs if None.</p></li>
-</ul>
+<dd class="field-odd"><p><strong>dev_str</strong> (<em>str</em>) – The device string to conver to native device handle.</p>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>An array with the elements of x, but clipped to not be lower than the y values.</p>
+<dd class="field-even"><p>The total memory on the device in GB.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -297,10 +293,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="clip.html" class="btn btn-neutral float-right" title="clip" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="gpu_is_available.html" class="btn btn-neutral float-right" title="gpu_is_available" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="minimum.html" class="btn btn-neutral float-left" title="minimum" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="dev_str.html" class="btn btn-neutral float-left" title="dev_str" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

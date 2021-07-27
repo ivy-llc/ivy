@@ -191,6 +191,8 @@
 
 <span class="c1"># global</span>
 <span class="kn">import</span> <span class="nn">math</span>
+<span class="kn">import</span> <span class="nn">nvidia_smi</span>
+<span class="kn">from</span> <span class="nn">psutil</span> <span class="kn">import</span> <span class="n">virtual_memory</span>
 
 <span class="c1"># local</span>
 <span class="kn">import</span> <span class="nn">ivy</span>
@@ -1220,6 +1222,27 @@
 <span class="sd">    :return: Device string for the array, e.g. &#39;cuda:0&#39;, &#39;cuda:1&#39;, &#39;cpu&#39; etc..</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_get_framework</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">dev_str</span><span class="p">(</span><span class="n">x</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="memory_on_dev"><a class="viewcode-back" href="../../../core/general/memory_on_dev.html#ivy.core.general.memory_on_dev">[docs]</a><span class="k">def</span> <span class="nf">memory_on_dev</span><span class="p">(</span><span class="n">dev_str</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get the total amount of memory for a given device string. In case of CPU, the total RAM is returned.</span>
+
+<span class="sd">    :param dev_str: The device string to conver to native device handle.</span>
+<span class="sd">    :type dev_str: str</span>
+<span class="sd">    :return: The total memory on the device in GB.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="s1">&#39;gpu&#39;</span> <span class="ow">in</span> <span class="n">dev_str</span><span class="p">:</span>
+        <span class="n">gpu_idx</span> <span class="o">=</span> <span class="n">dev_str</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;:&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">nvidia_smi</span><span class="o">.</span><span class="n">nvmlInit</span><span class="p">()</span>
+        <span class="n">handle</span> <span class="o">=</span> <span class="n">nvidia_smi</span><span class="o">.</span><span class="n">nvmlDeviceGetHandleByIndex</span><span class="p">(</span><span class="n">gpu_idx</span><span class="p">)</span>
+        <span class="n">info</span> <span class="o">=</span> <span class="n">nvidia_smi</span><span class="o">.</span><span class="n">nvmlDeviceGetMemoryInfo</span><span class="p">(</span><span class="n">handle</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">info</span><span class="o">.</span><span class="n">total</span><span class="o">/</span><span class="mf">1e9</span>
+    <span class="k">elif</span> <span class="s1">&#39;cpu&#39;</span> <span class="ow">in</span> <span class="n">dev_str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">virtual_memory</span><span class="p">()</span><span class="o">.</span><span class="n">total</span><span class="o">/</span><span class="mf">1e9</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;Invalid device string input, must be on the form &quot;gpu:idx&quot; or &quot;cpu:idx&quot;,&#39;</span>
+                        <span class="s1">&#39;but found </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">dev_str</span><span class="p">))</span></div>
 
 
 <div class="viewcode-block" id="gpu_is_available"><a class="viewcode-back" href="../../../core/general/gpu_is_available.html#ivy.core.general.gpu_is_available">[docs]</a><span class="k">def</span> <span class="nf">gpu_is_available</span><span class="p">(</span><span class="n">f</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>

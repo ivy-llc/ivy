@@ -152,6 +152,7 @@
 <li class="toctree-l2"><a class="reference internal" href="general/dev_to_str.html">dev_to_str</a></li>
 <li class="toctree-l2"><a class="reference internal" href="general/str_to_dev.html">str_to_dev</a></li>
 <li class="toctree-l2"><a class="reference internal" href="general/dev_str.html">dev_str</a></li>
+<li class="toctree-l2"><a class="reference internal" href="general/memory_on_dev.html">memory_on_dev</a></li>
 <li class="toctree-l2"><a class="reference internal" href="general/gpu_is_available.html">gpu_is_available</a></li>
 <li class="toctree-l2"><a class="reference internal" href="general/num_gpus.html">num_gpus</a></li>
 <li class="toctree-l2"><a class="reference internal" href="general/tpu_is_available.html">tpu_is_available</a></li>
@@ -1004,6 +1005,20 @@ The identity array is a square array with ones on the main diagonal.</p>
 </dd></dl>
 
 <dl class="py function">
+<dt id="ivy.core.general.memory_on_dev">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">memory_on_dev</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dev_str</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#memory_on_dev"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.memory_on_dev" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the total amount of memory for a given device string. In case of CPU, the total RAM is returned.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>dev_str</strong> (<em>str</em>) – The device string to conver to native device handle.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The total memory on the device in GB.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt id="ivy.core.general.meshgrid">
 <code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">meshgrid</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">xs</span></em>, <em class="sig-param"><span class="n">indexing</span><span class="o">=</span><span class="default_value">'ij'</span></em>, <em class="sig-param"><span class="n">f</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#meshgrid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.meshgrid" title="Permalink to this definition">¶</a></dt>
 <dd><p>Broadcasts parameters for evaluation on an N-D grid.</p>
@@ -1623,6 +1638,7 @@ If not given, then the type of the original array is used.</p></li>
 <li class="toctree-l1"><a class="reference internal" href="general/dev_to_str.html">dev_to_str</a></li>
 <li class="toctree-l1"><a class="reference internal" href="general/str_to_dev.html">str_to_dev</a></li>
 <li class="toctree-l1"><a class="reference internal" href="general/dev_str.html">dev_str</a></li>
+<li class="toctree-l1"><a class="reference internal" href="general/memory_on_dev.html">memory_on_dev</a></li>
 <li class="toctree-l1"><a class="reference internal" href="general/gpu_is_available.html">gpu_is_available</a></li>
 <li class="toctree-l1"><a class="reference internal" href="general/num_gpus.html">num_gpus</a></li>
 <li class="toctree-l1"><a class="reference internal" href="general/tpu_is_available.html">tpu_is_available</a></li>
