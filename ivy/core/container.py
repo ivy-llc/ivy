@@ -740,21 +740,31 @@ class Container(dict):
         """
         return Container(self.to_dict())
 
-    def map(self, func, key_chain=''):
+    def map(self, func, key_chains=None, to_apply=True, key_chain=''):
         """
         Apply function to all array values of container
 
         :param func: Function to apply to each container entry
         :type func: python function
         :param key_chain: Chain of keys for this dict entry
-        :type key_chain: str
+        :param key_chains: The key-chains to apply or not apply the method to. Default is None.
+        :type key_chains: list or dict of strs, optional
+        :param to_apply: If True, the method will be applied to key_chains, otherwise key_chains will be skipped.
+                         Default is True.
+        :type to_apply: bool, optional
         """
         return_dict = dict()
         for key, value in sorted(self.items()):
             this_key_chain = key if key_chain == '' else (key_chain + '/' + key)
             if isinstance(value, Container):
-                return_dict[key] = value.map(func, this_key_chain)
+                ret = value.map(func, key_chains, to_apply, this_key_chain)
+                if ret:
+                    return_dict[key] = ret
             else:
+                if key_chains is not None:
+                    if (this_key_chain in key_chains and not to_apply) or (
+                            this_key_chain not in key_chains and to_apply):
+                        continue
                 return_dict[key] = func(value, this_key_chain)
         return Container(return_dict)
 
