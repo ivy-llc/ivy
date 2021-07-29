@@ -2,9 +2,6 @@
 Collection of runtime tests for templated math functions
 """
 
-DIM = int(1e4)
-
-
 # global
 import os
 import random
@@ -12,7 +9,7 @@ import random
 # local
 import ivy.core.general as ivy_gen
 import ivy.core.math as ivy_math
-this_file_dir = os.path.dirname(os.path.realpath(__file__))
+
 import with_time_logs.ivy.core.math as ivy_math_w_time
 
 from ivy import torch as _ivy_torch
@@ -27,26 +24,38 @@ from with_time_logs.ivy import mxnd as _ivy_mxnd_w_time
 from with_time_logs.ivy import jax as _ivy_jnp_w_time
 from with_time_logs.ivy import numpy as _ivy_np_w_time
 
-LIB_DICT = {_ivy_torch: _ivy_torch_w_time,
-            _ivy_tf: _ivy_tf_w_time,
-            _ivy_mxnd: _ivy_mxnd_w_time,
-            _ivy_jnp: _ivy_jnp_w_time,
-            _ivy_np: _ivy_np_w_time}
-
 # local
 import ivy_tests.helpers as helpers
 from test_runtime.utils import append_to_file, log_time, write_times, TIMES_DICT
 
 
-def test_sin():
+DIM = int(1e4)
 
-    fname = os.path.join(this_file_dir, 'runtime_analysis/{}/math/sin.txt'.format(DIM))
+LIB_DICT = {
+    _ivy_torch: _ivy_torch_w_time,
+    _ivy_tf: _ivy_tf_w_time,
+    _ivy_mxnd: _ivy_mxnd_w_time,
+    _ivy_jnp: _ivy_jnp_w_time,
+    _ivy_np: _ivy_np_w_time
+}
+
+this_file_dir = os.path.dirname(os.path.realpath(__file__))
+
+
+def test_sin():
+    fname = os.path.join(
+        this_file_dir, 'runtime_analysis/{}/math/sin.txt'.format(DIM)
+    )
+
     if os.path.exists(fname):
         os.remove(fname)
-    for lib, call in [(l, c) for l, c in helpers.calls if c not in [helpers.tf_graph_call, helpers.mx_graph_call]]:
+
+    for lib, call in [
+        (l, c) for l, c in helpers.calls
+        if c not in [helpers.tf_graph_call, helpers.mx_graph_call]
+    ]:
 
         time_lib = LIB_DICT[lib]
-
         append_to_file(fname, '{}'.format(lib))
 
         x0 = ivy_gen.tensor([random.uniform(0, 1) for _ in range(DIM)], f=lib)
@@ -56,7 +65,6 @@ def test_sin():
         TIMES_DICT.clear()
 
         for _ in range(100):
-
             log_time(fname, 'tb0')
             ivy_math_w_time.sin(x0, f=time_lib)
             log_time(fname, 'tb4', time_at_start=True)
@@ -71,14 +79,19 @@ def test_sin():
 
 
 def test_cos():
+    fname = os.path.join(
+        this_file_dir, 'runtime_analysis/{}/math/cos.txt'.format(DIM)
+    )
 
-    fname = os.path.join(this_file_dir, 'runtime_analysis/{}/math/cos.txt'.format(DIM))
     if os.path.exists(fname):
         os.remove(fname)
-    for lib, call in [(l, c) for l, c in helpers.calls if c not in [helpers.tf_graph_call, helpers.mx_graph_call]]:
+
+    for lib, call in [
+        (l, c) for l, c in helpers.calls
+        if c not in [helpers.tf_graph_call, helpers.mx_graph_call]
+    ]:
 
         time_lib = LIB_DICT[lib]
-
         append_to_file(fname, '{}'.format(lib))
 
         x0 = ivy_gen.tensor([random.uniform(0, 1) for _ in range(DIM)], f=lib)
@@ -88,7 +101,6 @@ def test_cos():
         TIMES_DICT.clear()
 
         for _ in range(100):
-
             log_time(fname, 'tb0')
             ivy_math_w_time.cos(x0, f=time_lib)
             log_time(fname, 'tb4', time_at_start=True)
@@ -103,14 +115,19 @@ def test_cos():
 
 
 def test_tan():
+    fname = os.path.join(
+        this_file_dir, 'runtime_analysis/{}/math/tan.txt'.format(DIM)
+    )
 
-    fname = os.path.join(this_file_dir, 'runtime_analysis/{}/math/tan.txt'.format(DIM))
     if os.path.exists(fname):
         os.remove(fname)
-    for lib, call in [(l, c) for l, c in helpers.calls if c not in [helpers.tf_graph_call, helpers.mx_graph_call]]:
+
+    for lib, call in [
+        (l, c) for l, c in helpers.calls
+        if c not in [helpers.tf_graph_call, helpers.mx_graph_call]
+    ]:
 
         time_lib = LIB_DICT[lib]
-
         append_to_file(fname, '{}'.format(lib))
 
         x0 = ivy_gen.tensor([random.uniform(0, 1) for _ in range(DIM)], f=lib)
@@ -120,7 +137,6 @@ def test_tan():
         TIMES_DICT.clear()
 
         for _ in range(100):
-
             log_time(fname, 'tb0')
             ivy_math_w_time.tan(x0, f=time_lib)
             log_time(fname, 'tb4', time_at_start=True)
@@ -135,14 +151,19 @@ def test_tan():
 
 
 def test_asin():
+    fname = os.path.join(
+        this_file_dir, 'runtime_analysis/{}/math/asin.txt'.format(DIM)
+    )
 
-    fname = os.path.join(this_file_dir, 'runtime_analysis/{}/math/asin.txt'.format(DIM))
     if os.path.exists(fname):
         os.remove(fname)
-    for lib, call in [(l, c) for l, c in helpers.calls if c not in [helpers.tf_graph_call, helpers.mx_graph_call]]:
+
+    for lib, call in [
+        (l, c) for l, c in helpers.calls
+        if c not in [helpers.tf_graph_call, helpers.mx_graph_call]
+    ]:
 
         time_lib = LIB_DICT[lib]
-
         append_to_file(fname, '{}'.format(lib))
 
         x0 = ivy_gen.tensor([random.uniform(0, 1) for _ in range(DIM)], f=lib)
@@ -152,7 +173,6 @@ def test_asin():
         TIMES_DICT.clear()
 
         for _ in range(100):
-
             log_time(fname, 'tb0')
             ivy_math_w_time.asin(x0, f=time_lib)
             log_time(fname, 'tb4', time_at_start=True)
@@ -167,14 +187,19 @@ def test_asin():
 
 
 def test_acos():
+    fname = os.path.join(
+        this_file_dir, 'runtime_analysis/{}/math/acos.txt'.format(DIM)
+    )
 
-    fname = os.path.join(this_file_dir, 'runtime_analysis/{}/math/acos.txt'.format(DIM))
     if os.path.exists(fname):
         os.remove(fname)
-    for lib, call in [(l, c) for l, c in helpers.calls if c not in [helpers.tf_graph_call, helpers.mx_graph_call]]:
+
+    for lib, call in [
+        (l, c) for l, c in helpers.calls
+        if c not in [helpers.tf_graph_call, helpers.mx_graph_call]
+    ]:
 
         time_lib = LIB_DICT[lib]
-
         append_to_file(fname, '{}'.format(lib))
 
         x0 = ivy_gen.tensor([random.uniform(0, 1) for _ in range(DIM)], f=lib)
@@ -184,7 +209,6 @@ def test_acos():
         TIMES_DICT.clear()
 
         for _ in range(100):
-
             log_time(fname, 'tb0')
             ivy_math_w_time.acos(x0, f=time_lib)
             log_time(fname, 'tb4', time_at_start=True)
@@ -199,14 +223,19 @@ def test_acos():
 
 
 def test_atan():
+    fname = os.path.join(
+        this_file_dir, 'runtime_analysis/{}/math/atan.txt'.format(DIM)
+    )
 
-    fname = os.path.join(this_file_dir, 'runtime_analysis/{}/math/atan.txt'.format(DIM))
     if os.path.exists(fname):
         os.remove(fname)
-    for lib, call in [(l, c) for l, c in helpers.calls if c not in [helpers.tf_graph_call, helpers.mx_graph_call]]:
+
+    for lib, call in [
+        (l, c) for l, c in helpers.calls
+        if c not in [helpers.tf_graph_call, helpers.mx_graph_call]
+    ]:
 
         time_lib = LIB_DICT[lib]
-
         append_to_file(fname, '{}'.format(lib))
 
         x0 = ivy_gen.tensor([random.uniform(0, 1) for _ in range(DIM)], f=lib)
@@ -216,7 +245,6 @@ def test_atan():
         TIMES_DICT.clear()
 
         for _ in range(100):
-
             log_time(fname, 'tb0')
             ivy_math_w_time.atan(x0, f=time_lib)
             log_time(fname, 'tb4', time_at_start=True)
@@ -231,14 +259,19 @@ def test_atan():
 
 
 def test_atan2():
+    fname = os.path.join(
+        this_file_dir, 'runtime_analysis/{}/math/atan2.txt'.format(DIM)
+    )
 
-    fname = os.path.join(this_file_dir, 'runtime_analysis/{}/math/atan2.txt'.format(DIM))
     if os.path.exists(fname):
         os.remove(fname)
-    for lib, call in [(l, c) for l, c in helpers.calls if c not in [helpers.tf_graph_call, helpers.mx_graph_call]]:
+
+    for lib, call in [
+        (l, c) for l, c in helpers.calls
+        if c not in [helpers.tf_graph_call, helpers.mx_graph_call]
+    ]:
 
         time_lib = LIB_DICT[lib]
-
         append_to_file(fname, '{}'.format(lib))
 
         x0 = ivy_gen.tensor([random.uniform(0, 1) for _ in range(DIM)], f=lib)
@@ -249,7 +282,6 @@ def test_atan2():
         TIMES_DICT.clear()
 
         for _ in range(100):
-
             log_time(fname, 'tb0')
             ivy_math_w_time.atan2(x0, x1, f=time_lib)
             log_time(fname, 'tb4', time_at_start=True)
@@ -264,14 +296,20 @@ def test_atan2():
 
 
 def test_sinh():
+    fname = os.path.join(
+        this_file_dir,
+        'runtime_analysis/{}/math/sinh.txt'.format(DIM)
+    )
 
-    fname = os.path.join(this_file_dir, 'runtime_analysis/{}/math/sinh.txt'.format(DIM))
     if os.path.exists(fname):
         os.remove(fname)
-    for lib, call in [(l, c) for l, c in helpers.calls if c not in [helpers.tf_graph_call, helpers.mx_graph_call]]:
+
+    for lib, call in [
+        (l, c) for l, c in helpers.calls
+        if c not in [helpers.tf_graph_call, helpers.mx_graph_call]
+    ]:
 
         time_lib = LIB_DICT[lib]
-
         append_to_file(fname, '{}'.format(lib))
 
         x0 = ivy_gen.tensor([random.uniform(0, 1) for _ in range(DIM)], f=lib)
@@ -281,7 +319,6 @@ def test_sinh():
         TIMES_DICT.clear()
 
         for _ in range(100):
-
             log_time(fname, 'tb0')
             ivy_math_w_time.sinh(x0, f=time_lib)
             log_time(fname, 'tb4', time_at_start=True)
@@ -296,14 +333,19 @@ def test_sinh():
 
 
 def test_cosh():
+    fname = os.path.join(
+        this_file_dir, 'runtime_analysis/{}/math/cosh.txt'.format(DIM)
+    )
 
-    fname = os.path.join(this_file_dir, 'runtime_analysis/{}/math/cosh.txt'.format(DIM))
     if os.path.exists(fname):
         os.remove(fname)
-    for lib, call in [(l, c) for l, c in helpers.calls if c not in [helpers.tf_graph_call, helpers.mx_graph_call]]:
+
+    for lib, call in [
+        (l, c) for l, c in helpers.calls
+        if c not in [helpers.tf_graph_call, helpers.mx_graph_call]
+    ]:
 
         time_lib = LIB_DICT[lib]
-
         append_to_file(fname, '{}'.format(lib))
 
         x0 = ivy_gen.tensor([random.uniform(0, 1) for _ in range(DIM)], f=lib)
@@ -313,7 +355,6 @@ def test_cosh():
         TIMES_DICT.clear()
 
         for _ in range(100):
-
             log_time(fname, 'tb0')
             ivy_math_w_time.cosh(x0, f=time_lib)
             log_time(fname, 'tb4', time_at_start=True)
@@ -328,14 +369,19 @@ def test_cosh():
 
 
 def test_tanh():
+    fname = os.path.join(
+        this_file_dir, 'runtime_analysis/{}/math/tanh.txt'.format(DIM)
+    )
 
-    fname = os.path.join(this_file_dir, 'runtime_analysis/{}/math/tanh.txt'.format(DIM))
     if os.path.exists(fname):
         os.remove(fname)
-    for lib, call in [(l, c) for l, c in helpers.calls if c not in [helpers.tf_graph_call, helpers.mx_graph_call]]:
+
+    for lib, call in [
+        (l, c) for l, c in helpers.calls
+        if c not in [helpers.tf_graph_call, helpers.mx_graph_call]
+    ]:
 
         time_lib = LIB_DICT[lib]
-
         append_to_file(fname, '{}'.format(lib))
 
         x0 = ivy_gen.tensor([random.uniform(0, 1) for _ in range(DIM)], f=lib)
@@ -345,7 +391,6 @@ def test_tanh():
         TIMES_DICT.clear()
 
         for _ in range(100):
-
             log_time(fname, 'tb0')
             ivy_math_w_time.tanh(x0, f=time_lib)
             log_time(fname, 'tb4', time_at_start=True)
@@ -360,14 +405,19 @@ def test_tanh():
 
 
 def test_asinh():
+    fname = os.path.join(
+        this_file_dir, 'runtime_analysis/{}/math/asinh.txt'.format(DIM)
+    )
 
-    fname = os.path.join(this_file_dir, 'runtime_analysis/{}/math/asinh.txt'.format(DIM))
     if os.path.exists(fname):
         os.remove(fname)
-    for lib, call in [(l, c) for l, c in helpers.calls if c not in [helpers.tf_graph_call, helpers.mx_graph_call]]:
+
+    for lib, call in [
+        (l, c) for l, c in helpers.calls
+        if c not in [helpers.tf_graph_call, helpers.mx_graph_call]
+    ]:
 
         time_lib = LIB_DICT[lib]
-
         append_to_file(fname, '{}'.format(lib))
 
         x0 = ivy_gen.tensor([random.uniform(0, 1) for _ in range(DIM)], f=lib)
@@ -377,7 +427,6 @@ def test_asinh():
         TIMES_DICT.clear()
 
         for _ in range(100):
-
             log_time(fname, 'tb0')
             ivy_math_w_time.asinh(x0, f=time_lib)
             log_time(fname, 'tb4', time_at_start=True)
@@ -392,14 +441,19 @@ def test_asinh():
 
 
 def test_acosh():
+    fname = os.path.join(
+        this_file_dir, 'runtime_analysis/{}/math/acosh.txt'.format(DIM)
+    )
 
-    fname = os.path.join(this_file_dir, 'runtime_analysis/{}/math/acosh.txt'.format(DIM))
     if os.path.exists(fname):
         os.remove(fname)
-    for lib, call in [(l, c) for l, c in helpers.calls if c not in [helpers.tf_graph_call, helpers.mx_graph_call]]:
+
+    for lib, call in [
+        (l, c) for l, c in helpers.calls
+        if c not in [helpers.tf_graph_call, helpers.mx_graph_call]
+    ]:
 
         time_lib = LIB_DICT[lib]
-
         append_to_file(fname, '{}'.format(lib))
 
         x0 = ivy_gen.tensor([random.uniform(0, 1) for _ in range(DIM)], f=lib)
@@ -409,7 +463,6 @@ def test_acosh():
         TIMES_DICT.clear()
 
         for _ in range(100):
-
             log_time(fname, 'tb0')
             ivy_math_w_time.acosh(x0, f=time_lib)
             log_time(fname, 'tb4', time_at_start=True)
@@ -424,14 +477,19 @@ def test_acosh():
 
 
 def test_atanh():
+    fname = os.path.join(
+        this_file_dir, 'runtime_analysis/{}/math/atanh.txt'.format(DIM)
+    )
 
-    fname = os.path.join(this_file_dir, 'runtime_analysis/{}/math/atanh.txt'.format(DIM))
     if os.path.exists(fname):
         os.remove(fname)
-    for lib, call in [(l, c) for l, c in helpers.calls if c not in [helpers.tf_graph_call, helpers.mx_graph_call]]:
+
+    for lib, call in [
+        (l, c) for l, c in helpers.calls
+        if c not in [helpers.tf_graph_call, helpers.mx_graph_call]
+    ]:
 
         time_lib = LIB_DICT[lib]
-
         append_to_file(fname, '{}'.format(lib))
 
         x0 = ivy_gen.tensor([random.uniform(0, 1) for _ in range(DIM)], f=lib)
@@ -441,7 +499,6 @@ def test_atanh():
         TIMES_DICT.clear()
 
         for _ in range(100):
-
             log_time(fname, 'tb0')
             ivy_math_w_time.atanh(x0, f=time_lib)
             log_time(fname, 'tb4', time_at_start=True)
@@ -456,14 +513,19 @@ def test_atanh():
 
 
 def test_log():
+    fname = os.path.join(
+        this_file_dir, 'runtime_analysis/{}/math/log.txt'.format(DIM)
+    )
 
-    fname = os.path.join(this_file_dir, 'runtime_analysis/{}/math/log.txt'.format(DIM))
     if os.path.exists(fname):
         os.remove(fname)
-    for lib, call in [(l, c) for l, c in helpers.calls if c not in [helpers.tf_graph_call, helpers.mx_graph_call]]:
+
+    for lib, call in [
+        (l, c) for l, c in helpers.calls
+        if c not in [helpers.tf_graph_call, helpers.mx_graph_call]
+    ]:
 
         time_lib = LIB_DICT[lib]
-
         append_to_file(fname, '{}'.format(lib))
 
         x0 = ivy_gen.tensor([random.uniform(0, 1) for _ in range(DIM)], f=lib)
@@ -473,7 +535,6 @@ def test_log():
         TIMES_DICT.clear()
 
         for _ in range(100):
-
             log_time(fname, 'tb0')
             ivy_math_w_time.log(x0, f=time_lib)
             log_time(fname, 'tb4', time_at_start=True)
@@ -488,14 +549,19 @@ def test_log():
 
 
 def test_exp():
+    fname = os.path.join(
+        this_file_dir, 'runtime_analysis/{}/math/exp.txt'.format(DIM)
+    )
 
-    fname = os.path.join(this_file_dir, 'runtime_analysis/{}/math/exp.txt'.format(DIM))
     if os.path.exists(fname):
         os.remove(fname)
-    for lib, call in [(l, c) for l, c in helpers.calls if c not in [helpers.tf_graph_call, helpers.mx_graph_call]]:
+
+    for lib, call in [
+        (l, c) for l, c in helpers.calls
+        if c not in [helpers.tf_graph_call, helpers.mx_graph_call]
+    ]:
 
         time_lib = LIB_DICT[lib]
-
         append_to_file(fname, '{}'.format(lib))
 
         x0 = ivy_gen.tensor([random.uniform(0, 1) for _ in range(DIM)], f=lib)
@@ -505,7 +571,6 @@ def test_exp():
         TIMES_DICT.clear()
 
         for _ in range(100):
-
             log_time(fname, 'tb0')
             ivy_math_w_time.exp(x0, f=time_lib)
             log_time(fname, 'tb4', time_at_start=True)

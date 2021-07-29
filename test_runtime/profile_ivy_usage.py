@@ -53,17 +53,28 @@ def main(lib_strings):
     for lib_string, all_code in lib_usgae_dict.items():
         ivy_method_occurances[lib_string] = dict()
         for ivy_method_name in ivy_dict.keys():
-            ivy_method_occurances[lib_string][ivy_method_name] = all_code.count('.' + ivy_method_name)
+            ivy_method_occurances[lib_string][ivy_method_name] = all_code.count(
+                '.' + ivy_method_name
+            )
 
     ivy_method_occurances['all'] = dict()
     for ivy_method_name in ivy_dict.keys():
-        ivy_method_occurances['all'][ivy_method_name] =\
-            sum([ivy_method_occurances[lib_string][ivy_method_name] for lib_string in lib_usgae_dict.keys()])
+        ivy_method_occurances['all'][ivy_method_name] = sum(
+            [
+                ivy_method_occurances[lib_string][ivy_method_name]
+                for lib_string in lib_usgae_dict.keys()
+            ]
+        )
 
     # sort values
     for lib_string, method_dict in ivy_method_occurances.items():
-        ivy_method_occurances[lib_string] =\
-            OrderedDict({k: v for k, v in sorted(method_dict.items(), key=lambda item: -item[1])})
+        ivy_method_occurances[lib_string] = OrderedDict(
+            {
+                k: v for k, v in sorted(
+                    method_dict.items(), key=lambda item: -item[1]
+                )
+            }
+        )
 
     # save to json file
     with open('library_usage.json', 'w+') as file:
