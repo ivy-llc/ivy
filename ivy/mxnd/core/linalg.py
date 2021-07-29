@@ -16,7 +16,8 @@ def svd(x):
 
 
 # noinspection PyShadowingBuiltins
-norm = lambda x, ord=2, axis=-1, keepdims=False: _mx.nd.norm(x, ord=ord, axis=axis, keepdims=keepdims)
+norm = lambda x, ord=2, axis=-1, keepdims=False: \
+    _mx.nd.norm(x, ord=ord, axis=axis, keepdims=keepdims)
 inv = _mx.nd.linalg_inverse
 
 

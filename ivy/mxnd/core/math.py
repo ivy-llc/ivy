@@ -11,7 +11,8 @@ tan = _mx.nd.tan
 asin = _mx.nd.arcsin
 acos = _mx.nd.arccos
 atan = _mx.nd.arctan
-atan2 = lambda x1, x2: _mx.np.arctan2(x1.as_np_ndarray(), x2.as_np_ndarray()).as_nd_ndarray()
+atan2 = lambda x1, x2: \
+    _mx.np.arctan2(x1.as_np_ndarray(), x2.as_np_ndarray()).as_nd_ndarray()
 sinh = _mx.nd.sinh
 cosh = _mx.nd.cosh
 tanh = _mx.nd.tanh

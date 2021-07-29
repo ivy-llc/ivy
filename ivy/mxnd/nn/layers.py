@@ -13,105 +13,187 @@ def conv1d(x, filters, strides, padding, data_format='NWC', dilations=1):
     filter_shape = filters.shape[0:-2]
     num_filters = filters.shape[-1]
     kernel = filter_shape
+
     if padding == 'VALID':
         padding = [0]
     elif padding == 'SAME':
         padding = [_math.floor(item / 2) for item in filter_shape]
     else:
-        raise Exception('Invalid padding arg {}\n'
-                        'Must be one of: "VALID" or "SAME"'.format(padding))
-    res = _mx.nd.Convolution(data=x, weight=_mx.nd.transpose(filters, (1, 2, 0)), kernel=kernel, stride=strides, dilate=dilations, pad=padding, no_bias=True, num_filter=num_filters)
+        raise Exception(
+            'Invalid padding arg {}\n'
+            'Must be one of: "VALID" or "SAME"'.format(padding)
+        )
+
+    res = _mx.nd.Convolution(
+        data=x, weight=_mx.nd.transpose(
+            filters, (1, 2, 0)
+        ),
+        kernel=kernel,
+        stride=strides,
+        dilate=dilations,
+        pad=padding,
+        no_bias=True,
+        num_filter=num_filters
+    )
+
     if data_format == 'NWC':
         return _mx.nd.transpose(res, (0, 2, 1))
-    else:
-        return res
+    return res
 
 
-def conv1d_transpose(x, filters, strides, padding, _=None, data_format='NWC', dilations=1):
+def conv1d_transpose(
+        x, filters, strides, padding, _=None, data_format='NWC', dilations=1
+):
     if data_format == 'NWC':
         x = _mx.nd.transpose(x, (0, 2, 1))
+
     filter_shape = filters.shape[0:-2]
     num_filters = filters.shape[-1]
     kernel = filter_shape
+
     if padding == 'VALID':
         padding = [0]
     elif padding == 'SAME':
         padding = [_math.floor(item / 2) for item in filter_shape]
     else:
-        raise Exception('Invalid padding arg {}\n'
-                        'Must be one of: "VALID" or "SAME"'.format(padding))
-    res = _mx.nd.Deconvolution(data=x, weight=_mx.nd.transpose(filters, (1, 2, 0)), kernel=kernel, stride=strides, dilate=dilations, pad=padding, no_bias=True, num_filter=num_filters)
+        raise Exception(
+            'Invalid padding arg {}\n'
+            'Must be one of: "VALID" or "SAME"'.format(padding)
+        )
+
+    res = _mx.nd.Deconvolution(
+        data=x, weight=_mx.nd.transpose(
+            filters, (1, 2, 0)
+        ), kernel=kernel,
+        stride=strides,
+        dilate=dilations,
+        pad=padding,
+        no_bias=True,
+        num_filter=num_filters
+    )
+
     if data_format == 'NWC':
         return _mx.nd.transpose(res, (0, 2, 1))
-    else:
-        return res
+
+    return res
 
 
 def conv2d(x, filters, strides, padding, data_format='NHWC', dilations=1):
     if data_format == 'NHWC':
         x = _mx.nd.transpose(x, (0, 3, 1, 2))
+
     filter_shape = filters.shape[0:-2]
     num_filters = filters.shape[-1]
     kernel = filter_shape
+
     if padding == 'VALID':
         padding = [0, 0]
     elif padding == 'SAME':
         padding = [_math.floor(item / 2) for item in filter_shape]
     else:
-        raise Exception('Invalid padding arg {}\n'
-                        'Must be one of: "VALID" or "SAME"'.format(padding))
+        raise Exception(
+            'Invalid padding arg {}\n'
+            'Must be one of: "VALID" or "SAME"'.format(padding)
+        )
+
     strides = [strides]*2 if isinstance(strides, int) else strides
     dilations = [dilations]*2 if isinstance(dilations, int) else dilations
-    res = _mx.nd.Convolution(data=x, weight=_mx.nd.transpose(filters, (2, 3, 0, 1)), kernel=kernel, stride=strides, dilate=dilations, pad=padding, no_bias=True, num_filter=num_filters)
+
+    res = _mx.nd.Convolution(
+        data=x, weight=_mx.nd.transpose(
+            filters, (2, 3, 0, 1)
+        ), kernel=kernel,
+        stride=strides,
+        dilate=dilations,
+        pad=padding,
+        no_bias=True,
+        num_filter=num_filters
+    )
+
     if data_format == 'NHWC':
         return _mx.nd.transpose(res, (0, 2, 3, 1))
-    else:
-        return res
+    return res
 
 
-def conv2d_transpose(x, filters, strides, padding, _=None, data_format='NHWC', dilations=1):
+def conv2d_transpose(
+        x, filters, strides, padding, _=None, data_format='NHWC', dilations=1
+):
     if data_format == 'NHWC':
         x = _mx.nd.transpose(x, (0, 3, 1, 2))
+
     filter_shape = filters.shape[0:-2]
     num_filters = filters.shape[-1]
     kernel = filter_shape
+
     if padding == 'VALID':
         padding = [0, 0]
     elif padding == 'SAME':
         padding = [_math.floor(item / 2) for item in filter_shape]
     else:
-        raise Exception('Invalid padding arg {}\n'
-                        'Must be one of: "VALID" or "SAME"'.format(padding))
+        raise Exception(
+            'Invalid padding arg {}\n'
+            'Must be one of: "VALID" or "SAME"'.format(padding))
+
     strides = [strides]*2 if isinstance(strides, int) else strides
     dilations = [dilations]*2 if isinstance(dilations, int) else dilations
-    res = _mx.nd.Deconvolution(data=x, weight=_mx.nd.transpose(filters, (2, 3, 0, 1)), kernel=kernel, stride=strides, dilate=dilations, pad=padding, no_bias=True, num_filter=num_filters)
+
+    res = _mx.nd.Deconvolution(
+        data=x, weight=_mx.nd.transpose(
+            filters, (2, 3, 0, 1)
+        ), kernel=kernel,
+        stride=strides,
+        dilate=dilations,
+        pad=padding,
+        no_bias=True,
+        num_filter=num_filters
+    )
+
     if data_format == 'NHWC':
         return _mx.nd.transpose(res, (0, 2, 3, 1))
-    else:
-        return res
+
+    return res
 
 
-def depthwise_conv2d(x, filters, strides, padding, data_format='NHWC', dilations=1):
+def depthwise_conv2d(
+        x, filters, strides, padding, data_format='NHWC', dilations=1
+):
     num_filters = filters.shape[-1]
     num_channels = num_filters
+
     if data_format == 'NHWC':
         x = _mx.nd.transpose(x, (0, 3, 1, 2))
     filter_shape = filters.shape[0:-1]
     kernel = filter_shape
+
     if padding == 'VALID':
         padding = [0, 0]
     elif padding == 'SAME':
         padding = [_math.floor(item / 2) for item in filter_shape]
     else:
-        raise Exception('Invalid padding arg {}\n'
-                        'Must be one of: "VALID" or "SAME"'.format(padding))
+        raise Exception(
+            'Invalid padding arg {}\n'
+            'Must be one of: "VALID" or "SAME"'.format(padding)
+        )
+
     strides = [strides]*2 if isinstance(strides, int) else strides
     dilations = [dilations]*2 if isinstance(dilations, int) else dilations
-    res = _mx.nd.Convolution(data=x, weight=_mx.nd.transpose(_mx.nd.expand_dims(filters, -1), (2, 3, 0, 1)), kernel=kernel, stride=strides, dilate=dilations, pad=padding, no_bias=True, num_filter=num_filters, num_group=num_channels)
+
+    res = _mx.nd.Convolution(
+        data=x, weight=_mx.nd.transpose(
+            _mx.nd.expand_dims(filters, -1), (2, 3, 0, 1)
+        ), kernel=kernel,
+        stride=strides,
+        dilate=dilations,
+        pad=padding,
+        no_bias=True,
+        num_filter=num_filters,
+        num_group=num_channels
+    )
+
     if data_format == 'NHWC':
         return _mx.nd.transpose(res, (0, 2, 3, 1))
-    else:
-        return res
+
+    return res
 
 
 # noinspection PyDefaultArgument
@@ -126,37 +208,69 @@ def conv3d(x, filters, strides, padding, data_format='NDHWC', dilations=1):
     elif padding == 'SAME':
         padding = [_math.floor(item / 2) for item in filter_shape]
     else:
-        raise Exception('Invalid padding arg {}\n'
-                        'Must be one of: "VALID" or "SAME"'.format(padding))
+        raise Exception(
+            'Invalid padding arg {}\n'
+            'Must be one of: "VALID" or "SAME"'.format(padding)
+        )
+
     strides = [strides]*3 if isinstance(strides, int) else strides
     dilations = [dilations]*3 if isinstance(dilations, int) else dilations
-    res = _mx.nd.Convolution(data=x, weight=_mx.nd.transpose(filters, (3, 4, 0, 1, 2)), kernel=kernel, stride=strides, dilate=dilations, pad=padding, no_bias=True, num_filter=num_filters)
+
+    res = _mx.nd.Convolution(
+        data=x, weight=_mx.nd.transpose(
+            filters, (3, 4, 0, 1, 2)
+        ),
+        kernel=kernel,
+        stride=strides,
+        dilate=dilations,
+        pad=padding,
+        no_bias=True,
+        num_filter=num_filters
+    )
+
     if data_format == 'NDHWC':
         return _mx.nd.transpose(res, (0, 2, 3, 4, 1))
-    else:
-        return res
+
+    return res
 
 
-def conv3d_transpose(x, filters, strides, padding, _=None, data_format='NDHWC', dilations=1):
+def conv3d_transpose(
+        x, filters, strides, padding, _=None, data_format='NDHWC', dilations=1
+):
     if data_format == 'NDHWC':
         x = _mx.nd.transpose(x, (0, 4, 1, 2, 3))
     filter_shape = filters.shape[0:-2]
     num_filters = filters.shape[-1]
     kernel = filter_shape
+
     if padding == 'VALID':
         padding = [0, 0, 0]
     elif padding == 'SAME':
         padding = [_math.floor(item / 2) for item in filter_shape]
     else:
-        raise Exception('Invalid padding arg {}\n'
-                        'Must be one of: "VALID" or "SAME"'.format(padding))
+        raise Exception(
+            'Invalid padding arg {}\n'
+            'Must be one of: "VALID" or "SAME"'.format(padding)
+        )
+
     strides = [strides]*3 if isinstance(strides, int) else strides
     dilations = [dilations]*3 if isinstance(dilations, int) else dilations
-    res = _mx.nd.Deconvolution(data=x, weight=_mx.nd.transpose(filters, (3, 4, 0, 1, 2)), kernel=kernel, stride=strides, dilate=dilations, pad=padding, no_bias=True, num_filter=num_filters)
+
+    res = _mx.nd.Deconvolution(
+        data=x, weight=_mx.nd.transpose(
+            filters, (3, 4, 0, 1, 2)
+        ), kernel=kernel,
+        stride=strides,
+        dilate=dilations,
+        pad=padding,
+        no_bias=True,
+        num_filter=num_filters
+    )
+
     if data_format == 'NDHWC':
         return _mx.nd.transpose(res, (0, 2, 3, 4, 1))
-    else:
-        return res
+
+    return res
 
 
 def linear(x, weight, bias=None):
@@ -165,5 +279,9 @@ def linear(x, weight, bias=None):
     batch_shape = orig_x_shape[:-1]
     feats_in = orig_x_shape[-1]
     x_flat = _mx.nd.reshape(x, [-1, feats_in])
-    ret = _mx.nd.FullyConnected(x_flat, weight, bias, num_hidden=num_hidden, no_bias=bias is None)
+
+    ret = _mx.nd.FullyConnected(
+        x_flat, weight, bias, num_hidden=num_hidden, no_bias=bias is None
+    )
+
     return _mx.nd.reshape(ret, batch_shape + [-1])

@@ -12,7 +12,10 @@ leaky_relu = lambda x, alpha=0.2: _mx.nd.LeakyReLU(x, slope=alpha)
 
 def gelu(x, approximate=True):
     if approximate:
-        return 0.5 * x * (1 + _mx.nd.tanh(((2 / _np.pi) ** 0.5) * (x + 0.044715 * x ** 3)))
+        return 0.5 * x * (
+                1 + _mx.nd.tanh(((2 / _np.pi) ** 0.5) * (x + 0.044715 * x ** 3))
+        )
+
     return _mx.nd.LeakyReLU(x, act_type='gelu')
 
 
