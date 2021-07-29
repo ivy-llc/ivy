@@ -295,8 +295,8 @@ def test_clip(x_min_n_max, dtype_str, tensor_fn, dev_str, call):
     min_val = tensor_fn(x_min_n_max[1], dtype_str, dev_str)
     max_val = tensor_fn(x_min_n_max[2], dtype_str, dev_str)
     if ((min_val.shape != [] and min_val.shape != [1]) or (max_val.shape != [] and max_val.shape != [1]))\
-            and call in [helpers.torch_call, helpers.mx_call]:
-        # pytorch and mxnet only support numbers or 0 or 1 dimensional arrays for min and max while performing clip
+            and call in [helpers.mx_call]:
+        # mxnet only supports numbers or 0 or 1 dimensional arrays for min and max while performing clip
         pytest.skip()
     ret = ivy.clip(x, min_val, max_val)
     # type test
