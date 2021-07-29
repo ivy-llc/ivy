@@ -9,129 +9,231 @@ from typing import List, Optional
 
 
 # noinspection PyUnresolvedReferences
-def conv1d(x, filters, strides: int, padding: str, data_format: str = 'NWC', dilations: int = 1):
+def conv1d(
+    x, filters, strides: int, padding: str,
+    data_format: str = 'NWC', dilations: int = 1
+):
     filter_shape = list(filters.shape[0:1])
     filters = filters.permute(1, 2, 0)
+
     if data_format == 'NWC':
         x = x.permute(0, 2, 1)
+
     if padding == 'VALID':
         padding_list: List[int] = [0]
+
     elif padding == 'SAME':
-        padding_list: List[int] = [_math.floor(item / 2) for item in filter_shape]
+        padding_list: List[int] = [
+            _math.floor(item / 2) for item in filter_shape
+        ]
+
     else:
-        raise Exception('Invalid padding arg {}\n'
-                        'Must be one of: "VALID" or "SAME"'.format(padding))
+        raise Exception(
+            'Invalid padding arg {}\n'
+            'Must be one of: "VALID" or "SAME"'.format(padding)
+        )
+
     res = _torch.nn.functional.conv1d(x, filters, None, strides, padding_list, dilations)
     return res.permute(0, 2, 1)
 
 
 # noinspection PyUnresolvedReferences
-def conv1d_transpose(x, filters, strides: int, padding: str, output_shape: Optional[List[int]] = None,
-                     data_format: str = 'NWC', dilations: int = 1):
+def conv1d_transpose(
+    x, filters, strides: int, padding: str,
+    output_shape: Optional[List[int]] = None,
+    data_format: str = 'NWC', dilations: int = 1
+):
     filter_shape = list(filters.shape[0:1])
     filters = filters.permute(1, 2, 0)
+
     if data_format == 'NWC':
         x = x.permute(0, 2, 1)
+
     if padding == 'VALID':
         padding_list: List[int] = [0]
+
     elif padding == 'SAME':
-        padding_list: List[int] = [_math.floor(item / 2) for item in filter_shape]
+        padding_list: List[int] = [
+            _math.floor(item / 2) for item in filter_shape
+        ]
+
     else:
-        raise Exception('Invalid padding arg {}\n'
-                        'Must be one of: "VALID" or "SAME"'.format(padding))
-    res = _torch.nn.functional.conv_transpose1d(x, filters, None, strides, padding_list, dilation=dilations)
+        raise Exception(
+            'Invalid padding arg {}\n'
+            'Must be one of: "VALID" or "SAME"'.format(padding)
+        )
+
+    res = _torch.nn.functional.conv_transpose1d(
+        x, filters, None, strides, padding_list, dilation=dilations
+    )
+
     return res.permute(0, 2, 1)
 
 
 # noinspection PyUnresolvedReferences
-def conv2d(x, filters, strides: int, padding: str, data_format: str = 'NHWC', dilations: int = 1):
+def conv2d(
+    x, filters, strides: int, padding: str,
+    data_format: str = 'NHWC', dilations: int = 1
+):
     filter_shape = list(filters.shape[0:2])
     filters = filters.permute(3, 2, 0, 1)
+
     if data_format == 'NHWC':
         x = x.permute(0, 3, 1, 2)
+
     if padding == 'VALID':
         padding_list: List[int] = [0, 0]
+
     elif padding == 'SAME':
-        padding_list: List[int] = [int(_math.floor(item / 2)) for item in filter_shape]
+        padding_list: List[int] = [
+            int(_math.floor(item / 2)) for item in filter_shape
+        ]
+
     else:
-        raise Exception('Invalid padding arg {}\n'
-                        'Must be one of: "VALID" or "SAME"'.format(padding))
-    res = _torch.nn.functional.conv2d(x, filters, None, strides, padding_list, dilations)
+        raise Exception(
+            'Invalid padding arg {}\n'
+            'Must be one of: "VALID" or "SAME"'.format(padding)
+        )
+
+    res = _torch.nn.functional.conv2d(
+        x, filters, None, strides, padding_list, dilations
+    )
+
     if data_format == 'NHWC':
         return res.permute(0, 2, 3, 1)
     return res
 
 
 # noinspection PyUnresolvedReferences
-def conv2d_transpose(x, filters, strides: int, padding: str, output_shape: Optional[List[int]] = None,
-                     data_format: str = 'NHWC', dilations: int = 1):
+def conv2d_transpose(
+    x, filters, strides: int, padding: str,
+    output_shape: Optional[List[int]] = None,
+    data_format: str = 'NHWC', dilations: int = 1
+):
     filter_shape = list(filters.shape[0:1])
     filters = filters.permute(2, 3, 0, 1)
+
     if data_format == 'NHWC':
         x = x.permute(0, 3, 1, 2)
+
     if padding == 'VALID':
         padding_list: List[int] = [0, 0]
+
     elif padding == 'SAME':
-        padding_list: List[int] = [_math.floor(item / 2) for item in filter_shape]
+        padding_list: List[int] = [
+            _math.floor(item / 2) for item in filter_shape
+        ]
+
     else:
-        raise Exception('Invalid padding arg {}\n'
-                        'Must be one of: "VALID" or "SAME"'.format(padding))
-    res = _torch.nn.functional.conv_transpose2d(x, filters, None, strides, padding_list, dilation=dilations)
+        raise Exception(
+            'Invalid padding arg {}\n'
+            'Must be one of: "VALID" or "SAME"'.format(padding)
+        )
+
+    res = _torch.nn.functional.conv_transpose2d(
+        x, filters, None, strides, padding_list, dilation=dilations
+    )
+
     return res.permute(0, 2, 3, 1)
 
 
 # noinspection PyUnresolvedReferences
-def depthwise_conv2d(x, filters, strides: int, padding: str, data_format: str = 'NHWC', dilations: int = 1):
+def depthwise_conv2d(
+    x, filters, strides: int, padding: str,
+    data_format: str = 'NHWC', dilations: int = 1
+):
     filter_shape = list(filters.shape[0:2])
     dims_in = filters.shape[-1]
     filters = _torch.unsqueeze(filters, -1)
     filters = filters.permute(2, 3, 0, 1)
+
     if data_format == 'NHWC':
         x = x.permute(0, 3, 1, 2)
+
     if padding == 'VALID':
         padding_list: List[int] = [0, 0]
+
     elif padding == 'SAME':
-        padding_list: List[int] = [_math.floor(item / 2) for item in filter_shape]
+        padding_list: List[int] = [
+            _math.floor(item / 2) for item in filter_shape
+        ]
+
     else:
-        raise Exception('Invalid padding arg {}\n'
-                        'Must be one of: "VALID" or "SAME"'.format(padding))
+        raise Exception(
+            'Invalid padding arg {}\n'
+            'Must be one of: "VALID" or "SAME"'.format(padding)
+        )
+
     # noinspection PyArgumentEqualDefault
-    res = _torch.nn.functional.conv2d(x, filters, None, strides, padding_list, dilations, dims_in)
+    res = _torch.nn.functional.conv2d(
+        x, filters, None, strides, padding_list, dilations, dims_in
+    )
+
     return res.permute(0, 2, 3, 1)
 
 
 # noinspection PyUnresolvedReferences
-def conv3d(x, filters, strides: int, padding: str, data_format: str = 'NDHWC', dilations: int = 1):
+def conv3d(
+    x, filters, strides: int, padding: str,
+    data_format: str = 'NDHWC', dilations: int = 1
+):
     filter_shape = list(filters.shape[0:3])
     filters = filters.permute(3, 4, 0, 1, 2)
+
     if data_format == 'NDHWC':
         x = x.permute(0, 4, 1, 2, 3)
+
     if padding == 'VALID':
         padding_list: List[int] = [0, 0, 0]
+
     elif padding == 'SAME':
-        padding_list: List[int] = [_math.floor(item / 2) for item in filter_shape]
+        padding_list: List[int] = [
+            _math.floor(item / 2) for item in filter_shape
+        ]
+
     else:
-        raise Exception('Invalid padding arg {}\n'
-                        'Must be one of: "VALID" or "SAME"'.format(padding))
-    res = _torch.nn.functional.conv3d(x, filters, None, strides, padding_list, dilations)
+        raise Exception(
+            'Invalid padding arg {}\n'
+            'Must be one of: "VALID" or "SAME"'.format(padding)
+        )
+
+    res = _torch.nn.functional.conv3d(
+        x, filters, None, strides, padding_list, dilations
+    )
+
     return res.permute(0, 2, 3, 4, 1)
 
 
 # noinspection PyUnresolvedReferences
-def conv3d_transpose(x, filters, strides: int, padding: str, output_shape: Optional[List[int]] = None,
-                     data_format: str = 'NDHWC', dilations: int = 1):
+def conv3d_transpose(
+    x, filters, strides: int, padding: str,
+    output_shape: Optional[List[int]] = None,
+    data_format: str = 'NDHWC', dilations: int = 1
+):
     filter_shape = list(filters.shape[0:1])
     filters = filters.permute(3, 4, 0, 1, 2)
+
     if data_format == 'NDHWC':
         x = x.permute(0, 4, 1, 2, 3)
+
     if padding == 'VALID':
         padding_list: List[int] = [0, 0, 0]
+
     elif padding == 'SAME':
-        padding_list: List[int] = [_math.floor(item / 2) for item in filter_shape]
+        padding_list: List[int] = [
+            _math.floor(item / 2) for item in filter_shape
+        ]
+
     else:
-        raise Exception('Invalid padding arg {}\n'
-                        'Must be one of: "VALID" or "SAME"'.format(padding))
-    res = _torch.nn.functional.conv_transpose3d(x, filters, None, strides, padding_list, dilation=dilations)
+        raise Exception(
+            'Invalid padding arg {}\n'
+            'Must be one of: "VALID" or "SAME"'.format(padding)
+        )
+
+    res = _torch.nn.functional.conv_transpose3d(
+        x, filters, None, strides, padding_list, dilation=dilations
+    )
+
     return res.permute(0, 2, 3, 4, 1)
 
 
