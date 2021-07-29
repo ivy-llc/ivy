@@ -665,6 +665,49 @@ def test_container_swapaxes(dev_str, call):
     assert 'b/d' not in container_swapped
 
 
+def test_container_reshape(dev_str, call):
+    dict_in = {'a': ivy.array([[0., 1., 2., 3.]]),
+               'b': {'c': ivy.array([[5., 10., 15., 20.]]), 'd': ivy.array([[10., 9., 8., 7.]])}}
+    container = Container(dict_in)
+
+    # pre_shape only
+    container_reshaped = container.reshape((1, 2, 2))
+    assert np.allclose(ivy.to_numpy(container_reshaped['a']), np.array([[0., 1.], [2., 3.]]))
+    assert np.allclose(ivy.to_numpy(container_reshaped.a), np.array([[0., 1.], [2., 3.]]))
+    assert np.allclose(ivy.to_numpy(container_reshaped['b']['c']), np.array([[5., 10.], [15., 20.]]))
+    assert np.allclose(ivy.to_numpy(container_reshaped.b.c), np.array([[5., 10.], [15., 20.]]))
+    assert np.allclose(ivy.to_numpy(container_reshaped['b']['d']), np.array([[10., 9.], [8., 7.]]))
+    assert np.allclose(ivy.to_numpy(container_reshaped.b.d), np.array([[10., 9.], [8., 7.]]))
+
+    # pre_shape and slice
+    dict_in = {'a': ivy.array([[[0., 1., 2., 3.], [0., 1., 2., 3.]]]),
+               'b': {'c': ivy.array([[[5., 10., 15.], [20., 25., 30.]]]), 'd': ivy.array([[[10.], [9.]]])}}
+    container = Container(dict_in)
+    container_reshaped = container.reshape((-1,), slice(2, None))
+    assert np.allclose(ivy.to_numpy(container_reshaped['a']), np.array([[0., 1., 2., 3.], [0., 1., 2., 3.]]))
+    assert np.allclose(ivy.to_numpy(container_reshaped.a), np.array([[0., 1., 2., 3.], [0., 1., 2., 3.]]))
+    assert np.allclose(ivy.to_numpy(container_reshaped['b']['c']), np.array([[5., 10., 15.], [20., 25., 30.]]))
+    assert np.allclose(ivy.to_numpy(container_reshaped.b.c), np.array([[5., 10., 15.], [20., 25., 30.]]))
+    assert np.allclose(ivy.to_numpy(container_reshaped['b']['d']), np.array([[10.], [9.]]))
+    assert np.allclose(ivy.to_numpy(container_reshaped.b.d), np.array([[10.], [9.]]))
+
+    # pre_shape, slice and post_shape
+    dict_in = {'a': ivy.array([[[0., 1., 2., 3.], [0., 1., 2., 3.]]]),
+               'b': {'c': ivy.array([[[5., 10., 15.], [20., 25., 30.]]]), 'd': ivy.array([[[10.], [9.]]])}}
+    container = Container(dict_in)
+    container_reshaped = container.reshape((-1,), slice(2, None), (1,))
+    assert np.allclose(ivy.to_numpy(container_reshaped['a']), np.array([[[0.], [1.], [2.], [3.]],
+                                                                        [[0.], [1.], [2.], [3.]]]))
+    assert np.allclose(ivy.to_numpy(container_reshaped.a), np.array([[[0.], [1.], [2.], [3.]],
+                                                                     [[0.], [1.], [2.], [3.]]]))
+    assert np.allclose(ivy.to_numpy(container_reshaped['b']['c']), np.array([[[5.], [10.], [15.]],
+                                                                             [[20.], [25.], [30.]]]))
+    assert np.allclose(ivy.to_numpy(container_reshaped.b.c), np.array([[[5.], [10.], [15.]],
+                                                                       [[20.], [25.], [30.]]]))
+    assert np.allclose(ivy.to_numpy(container_reshaped['b']['d']), np.array([[[10.]], [[9.]]]))
+    assert np.allclose(ivy.to_numpy(container_reshaped.b.d), np.array([[[10.]], [[9.]]]))
+
+
 def test_container_stop_gradients(dev_str, call):
     dict_in = {
         'a': ivy.variable(
@@ -1306,6 +1349,7 @@ def test_container_reshape(dev_str, call):
     )
 
     container_reshaped = container.reshape(new_shapes)
+
     assert list(container_reshaped['a'].shape) == [1]
     assert list(container_reshaped.a.shape) == [1]
     assert list(container_reshaped['b']['c'].shape) == [1, 2, 1]

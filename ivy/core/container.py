@@ -632,9 +632,39 @@ class Container(dict):
             prune_unapplied
         )
 
-    def stop_gradients(
-            self, key_chains=None, to_apply=True, prune_unapplied=False
-    ):
+
+    def reshape(self, pre_shape, shape_slice=None, post_shape=None, key_chains=None, to_apply=True,
+                prune_unapplied=False):
+        """
+        Reshapes each array x in the container, to a new shape given by pre_shape + x.shape[shape_slice] + post_shape.
+        If shape_slice or post_shape are not specified, then the term is ignored.
+
+        :param pre_shape: The first elements in the new array shape.
+        :type pre_shape: sequence of ints
+        :param shape_slice: The slice of the original shape to use in the new shape. Default is None.
+        :type shape_slice: sequence of ints, optional
+        :param post_shape: The final elements in the new array shape. Default is None.
+        :type post_shape: sequence of ints, optional
+        :param key_chains: The key-chains to apply or not apply the method to. Default is None.
+        :type key_chains: list or dict of strs, optional
+        :param to_apply: If True, the method will be applied to key_chains, otherwise key_chains will be skipped.
+                         Default is True.
+        :type to_apply: bool, optional
+        :param prune_unapplied: Whether to prune key_chains for which the function was not applied. Default is False.
+        :type prune_unapplied: bool, optional
+        :return: ivy.Container with each array reshaped as specified.
+        """
+        pre_shape = list(pre_shape)
+        post_shape = [] if post_shape is None else list(post_shape)
+        if shape_slice is None:
+            return self.map(lambda x, kc: _ivy.reshape(x, pre_shape + post_shape) if _ivy.is_array(x) else x,
+                            key_chains, to_apply, prune_unapplied)
+        return self.map(lambda x, kc:
+                        _ivy.reshape(x, pre_shape + list(x.shape[shape_slice]) + post_shape) if _ivy.is_array(x) else
+                        x, key_chains, to_apply, prune_unapplied)
+
+    def stop_gradients(self, key_chains=None, to_apply=True, prune_unapplied=False):
+
         """
         Stop gradients of all array entries in the container.
 
@@ -1064,7 +1094,7 @@ class Container(dict):
                 return x
         return self.map(to_list)
 
-    def reshape(self, target_container, return_cont=None):
+    def reshape_like(self, target_container, return_cont=None):
         """
         Set shapes of container entries to shapes specified by new container
             with the same key structure
@@ -1077,7 +1107,7 @@ class Container(dict):
                 target_container.items(), return_cont.items()
         ):
             if isinstance(v_shape, dict):
-                return_cont[k] = self.reshape(v_shape, return_cont[k])
+                return_cont[k] = self.reshape_like(v_shape, return_cont[k])
             else:
                 return_cont[k] = _ivy.reshape(v, v_shape)
         return Container(return_cont)
