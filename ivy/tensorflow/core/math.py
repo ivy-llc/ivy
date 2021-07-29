@@ -1,5 +1,6 @@
 """
-Collection of TensorFlow math functions, wrapped to fit Ivy syntax and signature.
+Collection of TensorFlow math functions,
+wrapped to fit Ivy syntax and signature.
 """
 
 # global

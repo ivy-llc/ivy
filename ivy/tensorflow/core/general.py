@@ -16,22 +16,28 @@ import numpy as _np
 import tensorflow as _tf
 import tensorflow_probability as _tfp
 
-DTYPE_DICT = {_tf.bool: 'bool',
-              _tf.int8: 'int8',
-              _tf.uint8: 'uint8',
-              _tf.int16: 'int16',
-              _tf.int32: 'int32',
-              _tf.int64: 'int64',
-              _tf.float16: 'float16',
-              _tf.float32: 'float32',
-              _tf.float64: 'float64'}
+DTYPE_DICT = {
+    _tf.bool: 'bool',
+    _tf.int8: 'int8',
+    _tf.uint8: 'uint8',
+    _tf.int16: 'int16',
+    _tf.int32: 'int32',
+    _tf.int64: 'int64',
+    _tf.float16: 'float16',
+    _tf.float32: 'float32',
+    _tf.float64: 'float64'
+}
 
 
 # Helpers #
 # --------#
 
 def _same_device(dev_a, dev_b):
-    return '/' + ':'.join(dev_a[1:].split(':')[-2:]) == '/' + ':'.join(dev_b[1:].split(':')[-2:])
+    return '/' + ':'.join(
+        dev_a[1:].split(':')[-2:]
+    ) == '/' + ':'.join(
+        dev_b[1:].split(':')[-2:]
+    )
 
 
 # API #
@@ -63,7 +69,12 @@ to_numpy = lambda x: _np.asarray(_tf.convert_to_tensor(x))
 to_scalar = lambda x: to_numpy(x).item()
 to_list = lambda x: x.numpy().tolist()
 shape = lambda x, as_tensor=False: _tf.shape(x) if as_tensor else tuple(x.shape)
-get_num_dims = lambda x, as_tensor=False: _tf.shape(_tf.shape(x))[0] if as_tensor else int(_tf.shape(_tf.shape(x)))
+
+get_num_dims = (
+    lambda x, as_tensor=False:
+    _tf.shape(_tf.shape(x))[0] if as_tensor else int(_tf.shape(_tf.shape(x)))
+)
+
 minimum = _tf.minimum
 maximum = _tf.maximum
 clip = _tf.clip_by_value
@@ -157,17 +168,28 @@ def unstack(x, axis):
 def split(x, num_or_size_splits=None, axis=0, with_remainder=False):
     if x.shape == ():
         if num_or_size_splits is not None and num_or_size_splits != 1:
-            raise Exception('input array had no shape, but num_sections specified was {}'.format(num_or_size_splits))
+            raise Exception(
+                'input array had no shape,'
+                ' but num_sections specified was {}'.format(num_or_size_splits)
+            )
+
         return [x]
+
     if num_or_size_splits is None:
         dim_size = _tf.shape(x)[axis]
         num_or_size_splits = dim_size
+
     elif isinstance(num_or_size_splits, int) and with_remainder:
         num_chunks = x.shape[axis] / num_or_size_splits
         num_chunks_int = _math.floor(num_chunks)
         remainder = num_chunks - num_chunks_int
+
         if remainder != 0:
-            num_or_size_splits = [num_or_size_splits]*num_chunks_int + [int(remainder*num_or_size_splits)]
+            num_or_size_splits = (
+                [num_or_size_splits] * num_chunks_int
+                + [int(remainder*num_or_size_splits)]
+            )
+
     return _tf.split(x, num_or_size_splits, axis)
 
 
@@ -177,10 +199,13 @@ repeat = _tf.repeat
 def tile(x, reps):
     if x.shape == ():
         x = _tf.reshape(x, (-1,))
+
     if isinstance(reps, Number):
         reps = [reps]
+
     if isinstance(reps, Tensor) and reps.shape == ():
         reps = _tf.reshape(reps, (-1,))
+
     return _tf.tile(x, reps)
 
 
@@ -211,10 +236,18 @@ def swapaxes(x, axis0, axis1):
 
 transpose = _tf.transpose
 expand_dims = _tf.expand_dims
-where = lambda condition, x1, x2: _tf.where(_tf.cast(condition, _tf.bool), x1, x2)
+
+where = lambda condition, x1, x2: _tf.where(
+    _tf.cast(condition, _tf.bool), x1, x2
+)
+
 indices_where = _tf.where
 isnan = _tf.math.is_nan
-reshape = lambda x, newshape: _tf.reshape(x, (newshape,) if isinstance(newshape, int) else newshape)
+
+reshape = lambda x, newshape: _tf.reshape(
+    x, (newshape,) if isinstance(newshape, int) else newshape
+)
+
 broadcast_to = _tf.broadcast_to
 
 
@@ -222,7 +255,9 @@ def squeeze(x, axis=None):
     if x.shape == ():
         if axis is None or axis == 0 or axis == -1:
             return x
-        raise Exception('tried to squeeze a zero-dimensional input by axis {}'.format(axis))
+        raise Exception(
+            'tried to squeeze a zero-dimensional input by axis {}'.format(axis)
+        )
     return _tf.squeeze(x, axis)
 
 
@@ -232,8 +267,8 @@ def zeros(shape, dtype_str='float32', dev_str=None):
     if dev_str:
         with _tf.device('/' + dev_str.upper()):
             return _tf.zeros(shape, dtype)
-    else:
-        return _tf.zeros(shape, dtype)
+
+    return _tf.zeros(shape, dtype)
 
 
 # noinspection PyShadowingNames
@@ -242,8 +277,8 @@ def zeros_like(x, dtype_str=None, dev_str=None):
     if dev_str:
         with _tf.device('/' + dev_str.upper()):
             return _tf.zeros_like(x, dtype=dtype)
-    else:
-        return _tf.zeros_like(x, dtype=dtype)
+
+    return _tf.zeros_like(x, dtype=dtype)
 
 
 # noinspection PyShadowingNames
@@ -252,8 +287,8 @@ def ones(shape, dtype_str='float32', dev_str=None):
     if dev_str:
         with _tf.device('/' + dev_str.upper()):
             return _tf.ones(shape, dtype)
-    else:
-        return _tf.ones(shape, dtype)
+
+    return _tf.ones(shape, dtype)
 
 
 # noinspection PyShadowingNames
@@ -262,8 +297,8 @@ def ones_like(x, dtype_str=None, dev_str=None):
     if dev_str:
         with _tf.device('/' + dev_str.upper()):
             return _tf.ones_like(x, dtype=dtype)
-    else:
-        return _tf.ones_like(x, dtype=dtype)
+
+    return _tf.ones_like(x, dtype=dtype)
 
 
 def one_hot(indices, depth, dev_str=None):
@@ -300,25 +335,50 @@ def scatter_flat(indices, updates, size, reduction='sum', dev_str=None):
     if dev_str is None:
         dev_str = _dev_str_callable(updates)
     dtype = updates.dtype
+
     if reduction == 'sum':
         return _tf.scatter_nd(_tf.expand_dims(indices, -1), updates, [size])
+
     elif reduction == 'min':
         func = _tf.compat.v1.scatter_min
         initial_val = _tf.cast(_tf.constant(2 ** 31 - 1), dtype)
+
     elif reduction == 'max':
         func = _tf.compat.v1.scatter_max
         initial_val = _tf.cast(_tf.constant(-(2 ** 31 - 1)), dtype)
+
     else:
-        raise Exception('reduction is {}, but it must be one of "sum", "min" or "max"'.format(reduction))
+        raise Exception(
+            'reduction is {}, '
+            'but it must be one of "sum", "min" or "max"'.format(reduction)
+        )
+
     global TF_SCATTER_VAR
     if size not in TF_SCATTER_VAR:
-        TF_SCATTER_VAR[size] = {dtype: _tf.Variable(_tf.ones(size, dtype=dtype) * initial_val, trainable=False)}
+        TF_SCATTER_VAR[size] = {
+            dtype: _tf.Variable(
+                _tf.ones(size, dtype=dtype) * initial_val, trainable=False
+            )
+        }
+
     elif dtype not in TF_SCATTER_VAR[size]:
-        TF_SCATTER_VAR[size][dtype] = _tf.Variable(_tf.ones(size, dtype=dtype) * initial_val, trainable=False)
+        TF_SCATTER_VAR[size][dtype] = _tf.Variable(
+            _tf.ones(size, dtype=dtype) * initial_val, trainable=False
+        )
+
     else:
-        TF_SCATTER_VAR[size][dtype].assign(_tf.ones(size, dtype=dtype) * initial_val)
-    res = _tf.convert_to_tensor(func(TF_SCATTER_VAR[size][dtype], indices, updates))
-    res = _tf.where(res == initial_val, _tf.zeros(size, dtype=updates.dtype), res)
+        TF_SCATTER_VAR[size][dtype].assign(
+            _tf.ones(size, dtype=dtype) * initial_val
+        )
+
+    res = _tf.convert_to_tensor(
+        func(TF_SCATTER_VAR[size][dtype], indices, updates)
+    )
+
+    res = _tf.where(
+        res == initial_val, _tf.zeros(size, dtype=updates.dtype), res
+    )
+
     with _tf.device('/' + dev_str.upper()):
         return res
 
@@ -329,38 +389,88 @@ def scatter_nd(indices, updates, shape, reduction='sum', dev_str=None):
         dev_str = _dev_str_callable(updates)
     shape = list(shape)
     dtype = updates.dtype
+
     if reduction == 'sum':
         return _tf.scatter_nd(indices, updates, shape)
+
     elif reduction == 'min':
         func = _tf.compat.v1.scatter_min
         initial_val = _tf.cast(_tf.constant(2 ** 31 - 1), dtype)
+
     elif reduction == 'max':
         func = _tf.compat.v1.scatter_max
         initial_val = _tf.cast(_tf.constant(-(2 ** 31 - 1)), dtype)
+
     else:
-        raise Exception('reduction is {}, but it must be one of "sum", "min" or "max"'.format(reduction))
+        raise Exception(
+            'reduction is {},'
+            ' but it must be one of "sum", "min" or "max"'.format(reduction)
+        )
+
     indices_shape = indices.shape
     num_index_dims = indices_shape[-1]
-    result_dim_sizes_list = [_reduce(_mul, shape[i + 1:], 1) for i in range(len(shape) - 1)] + [1]
+
+    result_dim_sizes_list = (
+        [_reduce(_mul, shape[i + 1:], 1) for i in range(len(shape) - 1)] + [1]
+    )
+
     result_dim_sizes = _tf.constant(result_dim_sizes_list)
     implicit_indices_factor = result_dim_sizes[num_index_dims - 1]
     flat_result_size = _reduce(_mul, shape, 1)
+
     global TF_SCATTER_VAR
+
     if flat_result_size not in TF_SCATTER_VAR:
-        TF_SCATTER_VAR[flat_result_size] = {dtype: _tf.Variable(_tf.ones(flat_result_size, dtype=dtype) * initial_val, trainable=False)}
+        TF_SCATTER_VAR[flat_result_size] = {
+            dtype: _tf.Variable(
+                _tf.ones(flat_result_size, dtype=dtype) * initial_val,
+                trainable=False
+            )
+        }
+
     elif dtype not in TF_SCATTER_VAR[flat_result_size]:
-        TF_SCATTER_VAR[flat_result_size][dtype] = _tf.Variable(_tf.ones(flat_result_size, dtype=dtype) * initial_val, trainable=False)
+        TF_SCATTER_VAR[flat_result_size][dtype] = (
+            _tf.Variable(
+                _tf.ones(flat_result_size, dtype=dtype) * initial_val,
+                trainable=False
+            )
+        )
+
     else:
-        TF_SCATTER_VAR[flat_result_size][dtype].assign(_tf.ones(flat_result_size, dtype=dtype) * initial_val)
+        TF_SCATTER_VAR[flat_result_size][dtype].assign(
+            _tf.ones(flat_result_size, dtype=dtype) * initial_val
+        )
+
     flat_updates = _tf.reshape(updates, (-1,))
     new_shape = [1] * (len(indices_shape) - 1) + [num_index_dims]
     indices_scales = _tf.reshape(result_dim_sizes[0:num_index_dims], new_shape)
-    indices_for_flat_tiled = _tf.tile(_tf.reshape(_tf.reduce_sum(indices * indices_scales, -1, keepdims=True), (-1, 1)), [1, implicit_indices_factor])
-    implicit_indices = _tf.tile(_tf.expand_dims(_tf.range(implicit_indices_factor), 0), _tf.stack((_tf.shape(indices_for_flat_tiled)[0], _tf.constant(1))))
+
+    indices_for_flat_tiled = _tf.tile(
+        _tf.reshape(
+            _tf.reduce_sum(indices * indices_scales, -1, keepdims=True), (-1, 1)
+        ), [1, implicit_indices_factor]
+    )
+
+    implicit_indices = _tf.tile(
+        _tf.expand_dims(
+            _tf.range(implicit_indices_factor), 0
+        ),
+        _tf.stack((_tf.shape(indices_for_flat_tiled)[0], _tf.constant(1)))
+    )
+
     indices_for_flat = indices_for_flat_tiled + implicit_indices
     flat_indices_for_flat = _tf.reshape(indices_for_flat, (-1,))
-    flat_scatter = _tf.convert_to_tensor(func(TF_SCATTER_VAR[flat_result_size][dtype], flat_indices_for_flat, flat_updates))
-    flat_scatter = _tf.where(flat_scatter == initial_val, _tf.zeros(flat_result_size, dtype=updates.dtype), flat_scatter)
+
+    flat_scatter = _tf.convert_to_tensor(
+        func(TF_SCATTER_VAR[flat_result_size][dtype],
+             flat_indices_for_flat, flat_updates)
+    )
+
+    flat_scatter = _tf.where(
+        flat_scatter == initial_val,
+        _tf.zeros(flat_result_size, dtype=updates.dtype), flat_scatter
+    )
+
     with _tf.device('/' + dev_str.upper()):
         res = _tf.reshape(flat_scatter, list(shape))
         return res
@@ -389,7 +499,11 @@ def linear_resample(x, num_samples, axis=-1):
     x_post_shape = x_shape[axis+1:]
     num_post_dims = len(x_post_shape)
     xp = _tf.range(num_vals, dtype=_tf.float32)
-    x_coords = _tf.range(num_samples, dtype=_tf.float32) * ((num_vals-1)/(num_samples-1))
+
+    x_coords = _tf.range(
+        num_samples, dtype=_tf.float32
+    ) * ((num_vals-1)/(num_samples-1))
+
     x_coords = x_coords + xp[0:1]
     return _tfp.math.interp_regular_1d_grid(x_coords, 0, num_vals-1, x, axis=axis)
 

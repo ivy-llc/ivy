@@ -10,14 +10,21 @@ import tensorflow as _tf
 def svd(x):
     batch_shape = _tf.shape(x)[:-2]
     num_batch_dims = len(batch_shape)
-    transpose_dims = list(range(num_batch_dims)) + [num_batch_dims + 1, num_batch_dims]
+    transpose_dims = list(
+        range(num_batch_dims)
+    ) + [num_batch_dims + 1, num_batch_dims]
+
     D, U, V = _tf.linalg.svd(x)
     VT = _tf.transpose(V, transpose_dims)
     return U, D, VT
 
 
 # noinspection PyShadowingBuiltins
-norm = lambda x, ord=2, axis=-1, keepdims=False: _tf.linalg.norm(x, ord, axis, keepdims)
+norm = (
+    lambda x, ord=2, axis=-1, keepdims=False:
+    _tf.linalg.norm(x, ord, axis, keepdims)
+)
+
 inv = _tf.linalg.inv
 pinv = _tf.linalg.pinv
 
