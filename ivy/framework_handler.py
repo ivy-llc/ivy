@@ -75,7 +75,9 @@ def get_framework(*args, f=None, **kwargs):
     if f is None:
         raise ValueError(
             'get_framework failed to find a valid library from the inputs: '
-            '{} {}'.format(args, kwargs))
+            '{} {}'.format(args, kwargs)
+        )
+
     if verbosity.level > 0:
         verbosity.cprint('Using framework from type: {}'.format(f))
     return f
@@ -83,18 +85,23 @@ def get_framework(*args, f=None, **kwargs):
 
 def get_framework_str(*args, f=None, **kwargs):
     framework = get_framework(*args, f, **kwargs)
-    return _framework_reverse_dict[framework.__repr__().split("<module '")[-1].split("' ")[0]]
+    return _framework_reverse_dict[
+        framework.__repr__().split("<module '")[-1].split("' ")[0]
+    ]
 
 
 def set_framework(f):
     if not framework_stack:
         global ivy_original_dict
         ivy_original_dict = ivy.__dict__.copy()
+
     if isinstance(f, str):
         f = importlib.import_module(_framework_dict[f])
     framework_stack.append(f)
+
     for k, v in f.__dict__.items():
         ivy.__dict__[k] = v
+
     if verbosity.level > 0:
         verbosity.cprint(
             'framework stack: {}'.format(framework_stack))
@@ -103,9 +110,13 @@ def set_framework(f):
 def unset_framework():
     if framework_stack:
         framework_stack.pop(-1)
-        f_dict = framework_stack[-1].__dict__ if framework_stack else ivy_original_dict
+        f_dict = (
+            framework_stack[-1].__dict__ if framework_stack else ivy_original_dict
+        )
+
         for k, v in f_dict.items():
             ivy.__dict__[k] = v
+
     if verbosity.level > 0:
         verbosity.cprint(
             'framework stack: {}'.format(framework_stack))

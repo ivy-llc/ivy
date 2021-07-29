@@ -15,9 +15,16 @@ leaky_relu = lambda x, alpha=0.2: _np.where(x > 0, x, x * alpha)
 
 def gelu(x, approximate=True):
     if _erf is None:
-        raise Exception('scipy must be installed in order to call ivy.gelu with a numpy backend.')
+        raise Exception(
+            'scipy must be installed in order to call ivy.'
+            'gelu with a numpy backend.'
+        )
+
     if approximate:
-        return 0.5 * x * (1 + _np.tanh(_np.sqrt(2 / _np.pi) * (x + 0.044715 * x ** 3)))
+        return 0.5 * x * (
+                1 + _np.tanh(_np.sqrt(2 / _np.pi) * (x + 0.044715 * x ** 3))
+        )
+
     return 0.5 * x * (1 + _erf(x/_np.sqrt(2)))
 
 

@@ -28,5 +28,9 @@ exp = _np.exp
 
 def erf(x):
     if _erf is None:
-        raise Exception('scipy must be installed in order to call ivy.erf with a numpy backend.')
+        raise Exception(
+            'scipy must be installed in order to call ivy.erf'
+            ' with a numpy backend.'
+        )
+
     return _erf(x)

@@ -4,7 +4,9 @@ from .neural_net_functional import *
 from . import neural_net_stateful
 from .neural_net_stateful import *
 from . import verbosity
-from .framework_handler import get_framework, get_framework_str, set_framework, unset_framework, framework_stack
+from .framework_handler import (
+    get_framework, get_framework_str, set_framework, unset_framework, framework_stack
+)
 
 
 class Array:

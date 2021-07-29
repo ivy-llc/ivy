@@ -1,5 +1,6 @@
 """
-Collection of Numpy linear algebra functions, wrapped to fit Ivy syntax and signature.
+Collection of Numpy linear algebra functions,
+wrapped to fit Ivy syntax and signature.
 """
 
 # global
