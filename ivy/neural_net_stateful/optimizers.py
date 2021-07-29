@@ -27,10 +27,9 @@ class Optimizer(abc.ABC):
         """
         self._lr = lr
         self._compile_step = compile_step
-        if compile_step:
-            self._step_fn = ivy.compile_fn(self._step)
-        else:
-            self._step_fn = self._step
+        self._step_fn = (
+            ivy.compile_fn(self._step) if compile_step else self._step
+        )
 
     # Public #
     # -------#

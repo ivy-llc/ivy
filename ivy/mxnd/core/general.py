@@ -180,8 +180,7 @@ def _linspace(start, stop, num, cont):
         _mx.nd.np.linspace(1, num - 1, num - 1).tolist(), ctx=cont
     )
 
-    ret = _mx.nd.concat(start, start + increments, dim=0)
-    return ret
+    return _mx.nd.concat(start, start + increments, dim=0)
 
 
 def linspace(start, stop, num, axis=None, dev_str=None):
@@ -204,10 +203,10 @@ def linspace(start, stop, num, axis=None, dev_str=None):
             _linspace(strt, stp, num, cont) for strt, stp in zip(start, stop)
         ]
 
-    elif start_is_array and not stop_is_array:
+    elif start_is_array:
         res = [_linspace(strt, stop, num, cont) for strt in start]
 
-    elif not start_is_array and stop_is_array:
+    elif stop_is_array:
         res = [_linspace(start, stp, num, cont) for stp in stop]
     else:
         return _linspace(start, stop, num, cont)
@@ -239,14 +238,8 @@ def flip(x, axis=None, batch_shape=None):
     if not num_dims:
         return x
 
-    if axis is None:
-        new_axis = list(range(num_dims))
-    else:
-        new_axis = axis
-    if type(new_axis) is int:
-        new_axis = [new_axis]
-    else:
-        new_axis = new_axis
+    new_axis = list(range(num_dims)) if axis is None else axis
+    new_axis = [new_axis] if type(new_axis) is int else new_axis
     new_axis = [item + num_dims if item < 0 else item for item in new_axis]
     return _mx.nd.flip(x, new_axis)
 
@@ -350,8 +343,7 @@ def constant_pad(x, pad_width, value=0):
         for orig_dim, pad_width_item in zip(x_shape, pad_width)
     ]
 
-    res = _mx.nd.reshape(pad_expanded_dims, tuple(new_shape))
-    return res
+    return _mx.nd.reshape(pad_expanded_dims, tuple(new_shape))
 
 
 def zero_pad(x, pad_width):
@@ -500,8 +492,7 @@ def cross(x1, x2):
     res1 = a2*b3 - a3*b2
     res2 = a3*b1 - a1*b3
     res3 = a1*b2 - a2*b1
-    res = _mx.nd.concat(res1, res2, res3, dim=-1)
-    return res
+    return _mx.nd.concat(res1, res2, res3, dim=-1)
 
 
 def matmul(x1, x2):
@@ -541,8 +532,7 @@ def identity(n, dtype_str='float32', batch_shape=None, dev_str=None):
 
     reshape_dims = [1]*len(batch_shape) + [n, n]
     tile_dims = list(batch_shape) + [1, 1]
-    res = _mx.nd.tile(_mx.nd.reshape(mat, reshape_dims), tile_dims)
-    return res
+    return _mx.nd.tile(_mx.nd.reshape(mat, reshape_dims), tile_dims)
 
 
 def meshgrid(*xs, indexing='ij'):
@@ -689,10 +679,7 @@ dev_to_str = lambda dev_in:\
 def str_to_dev(dev_str):
     dev_split = dev_str.split(':')
     dev_str = dev_split[0]
-    if len(dev_split) > 1:
-        idx = int(dev_split[1])
-    else:
-        idx = 0
+    idx = int(dev_split[1]) if len(dev_split) > 1 else 0
     return _mx.context.Context(dev_str, idx)
 
 

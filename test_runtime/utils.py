@@ -20,7 +20,8 @@ def log_time(f_path, time_name, time_in=None, time_at_start=False):
     if f_path not in TIMES_DICT:
         TIMES_DICT[f_path] = collections.OrderedDict()
     if time_name not in TIMES_DICT[f_path]:
-        TIMES_DICT[f_path][time_name] = list()
+        TIMES_DICT[f_path][time_name] = []
+
     if time_in is not None:
         TIMES_DICT[f_path][time_name].append(time_in)
     elif time_at_start:
@@ -72,7 +73,7 @@ def modify_ivy_file(filepath, this_dir, offsets, namespace_dict, dim):
 
     for i, (method, def_idx) in enumerate(zip(all_methods, all_def_indices)):
         new_src_lines.insert(
-            def_idx+i+2,
+            def_idx + i + 2,
             '    fname = "{}"\n'.format(
                 os.path.join(log_dir, '{}.txt'.format(method))
             )
@@ -88,7 +89,7 @@ def modify_ivy_file(filepath, this_dir, offsets, namespace_dict, dim):
     found_a_return = False
     num_added_to_file = 0
     for i, (method, def_idx) in enumerate(zip(ivy_methods, ivy_def_indices)):
-        ret_idxs = list()
+        ret_idxs = []
         idx = def_idx + num_added_to_file
 
         while True:
@@ -125,7 +126,7 @@ def modify_ivy_file(filepath, this_dir, offsets, namespace_dict, dim):
                             skip_val = 1
                         else:
                             skip_val = 2
-                        new_idx = ret_idxs[-1] + offset - j*2
+                        new_idx = ret_idxs[-1] + offset - j * 2
 
                         new_idx -= len(
                             [ret_idx for ret_idx in ret_idxs
@@ -167,7 +168,7 @@ def modify_ivy_file(filepath, this_dir, offsets, namespace_dict, dim):
 
         overhead_line = (
             (
-                max([item in line for item in namespace_dict[fw]])
+                max(item in line for item in namespace_dict[fw])
                 or '.astype(' in line
                 or '.type(' in line
                 or '.reshape(' in line
@@ -192,8 +193,8 @@ def modify_ivy_file(filepath, this_dir, offsets, namespace_dict, dim):
             grouping = False
 
             spaces_str = ' ' * (
-                len(final_src_lines[group_start_idx])
-                - len(final_src_lines[group_start_idx].lstrip(' '))
+                    len(final_src_lines[group_start_idx])
+                    - len(final_src_lines[group_start_idx].lstrip(' '))
             )
 
             final_src_lines.insert(
@@ -202,13 +203,13 @@ def modify_ivy_file(filepath, this_dir, offsets, namespace_dict, dim):
 
             if '    if ' in final_src_lines[group_end_idx + 1]:
                 spaces_str = ' ' * (
-                    len(final_src_lines[group_end_idx + 2])
-                    - len(final_src_lines[group_end_idx + 2].lstrip(' '))
+                        len(final_src_lines[group_end_idx + 2])
+                        - len(final_src_lines[group_end_idx + 2].lstrip(' '))
                 )
             else:
                 spaces_str = ' ' * (
-                    len(final_src_lines[group_end_idx + 1])
-                    - len(final_src_lines[group_end_idx + 1].lstrip(' '))
+                        len(final_src_lines[group_end_idx + 1])
+                        - len(final_src_lines[group_end_idx + 1].lstrip(' '))
                 )
 
             final_src_lines.insert(

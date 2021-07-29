@@ -117,7 +117,10 @@ def test_leaky_relu():
 
 
 def test_tanh():
-    fname = os.path.join(this_file_dir, 'runtime_analysis/{}/activations/tanh.txt'.format(DIM))
+    fname = os.path.join(
+        this_file_dir,
+        'runtime_analysis/{}/activations/tanh.txt'.format(DIM)
+    )
     if os.path.exists(fname):
         os.remove(fname)
 

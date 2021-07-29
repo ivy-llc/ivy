@@ -92,7 +92,9 @@ class Uniform:
             )
 
         wlim = ((self._numerator / denom) ** self._power) * self._gain
-        return ivy.variable(ivy.random_uniform(-wlim, wlim, var_shape, dev_str=dev_str))
+        return ivy.variable(ivy.random_uniform(
+            -wlim, wlim, var_shape, dev_str=dev_str)
+        )
 
 
 class GlorotUniform(Uniform):

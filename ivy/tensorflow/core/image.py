@@ -32,7 +32,7 @@ def stack_images(images, desired_aspect_ratio=(1, 1)):
     stack_height = (num_images/stack_ratio)**0.5
     stack_height_int = math.ceil(stack_height)
     stack_width_int = math.ceil(num_images/stack_height)
-    image_rows = list()
+    image_rows = []
 
     for i in range(stack_width_int):
         images_to_concat = images[i*stack_height_int:(i+1)*stack_height_int]

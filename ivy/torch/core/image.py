@@ -35,7 +35,7 @@ def stack_images(
     stack_height = (num_images / stack_ratio) ** 0.5
     stack_height_int = math.ceil(stack_height)
     stack_width_int: int = math.ceil(num_images / stack_height)
-    image_rows = list()
+    image_rows = []
 
     for i in range(stack_width_int):
         images_to_concat = images[

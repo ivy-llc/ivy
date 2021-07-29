@@ -31,17 +31,15 @@ def pinv(x):
     x_dim, y_dim = x.shape[-2:]
     if x_dim == y_dim and _mx.nd.sum(_mx.nd.linalg.det(x) > DET_THRESHOLD) > 0:
         return inv(x)
+    xT = _mx.nd.swapaxes(x, -1, -2)
+    xT_x = _matmul(xT, x)
+    if _mx.nd.linalg.det(xT_x) > DET_THRESHOLD:
+        return _matmul(inv(xT_x), xT)
+    x_xT = _matmul(x, xT)
+    if _mx.nd.linalg.det(x_xT) > DET_THRESHOLD:
+        return _matmul(xT, inv(x_xT))
     else:
-        xT = _mx.nd.swapaxes(x, -1, -2)
-        xT_x = _matmul(xT, x)
-        if _mx.nd.linalg.det(xT_x) > DET_THRESHOLD:
-            return _matmul(inv(xT_x), xT)
-        else:
-            x_xT = _matmul(x, xT)
-            if _mx.nd.linalg.det(x_xT) > DET_THRESHOLD:
-                return _matmul(xT, inv(x_xT))
-            else:
-                return xT
+        return xT
 
 
 def vector_to_skew_symmetric_matrix(vector):

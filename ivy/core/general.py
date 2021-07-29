@@ -1325,12 +1325,21 @@ def split_func_call(func, inputs, chunk_size, input_axes=0, output_axes=None):
     chunk_sizes = [chunk_size]*num_chunks_floored
     if num_chunks != num_chunks_floored:
         chunk_sizes.append(dim_size - chunk_size * num_chunks_floored)
-    inputs_split = [ivy.split(inp, chunk_sizes, input_axes[i], True) for i, inp in enumerate(inputs)]
+
+    inputs_split = [
+        ivy.split(inp, chunk_sizes, input_axes[i], True)
+        for i, inp in enumerate(inputs)
+    ]
+
     rets = [func(*i) for i in zip(*inputs_split)]
     num_outputs = len(rets[0])
     if output_axes is None:
         output_axes = [input_axes[0]] * num_outputs
     elif isinstance(output_axes, int):
         output_axes = [output_axes] * num_outputs
-    rets = [ivy.concatenate([r[i] for r in rets], output_axes[i]) for i in range(num_outputs)]
+
+    rets = [
+        ivy.concatenate([r[i] for r in rets], output_axes[i])
+        for i in range(num_outputs)
+    ]
     return rets

@@ -42,15 +42,11 @@ class Container(dict):
         Initialize container object from input dict representation.
         """
         if dict_in is None:
-            dict_in = dict()
+            dict_in = {}
         if not isinstance(dict_in, dict):
             dict_in = dict(dict_in)
         for key, value in sorted(dict_in.items()):
-            if isinstance(value, dict):
-                self[key] = Container(value)
-            else:
-                self[key] = value
-
+            self[key] = Container(value) if isinstance(value, dict) else value
         self._size = self._get_size()
 
     # Class Methods #
@@ -68,16 +64,14 @@ class Container(dict):
 
         container0 = containers[0]
 
-        if isinstance(container0, dict):
-            return_dict = dict()
-            for key in container0.keys():
-                new_list = list()
-                for container in containers:
-                    new_list.append(container[key])
-                return_dict[key] = Container.list_join(new_list)
-            return Container(return_dict)
-        else:
+        if not isinstance(container0, dict):
             return [item for sublist in containers for item in sublist]
+
+        return_dict = {}
+        for key in container0.keys():
+            new_list = [container[key] for container in containers]
+            return_dict[key] = Container.list_join(new_list)
+        return Container(return_dict)
     
     @staticmethod
     def list_stack(containers, dim):
@@ -94,11 +88,11 @@ class Container(dict):
         container0 = containers[0]
 
         if isinstance(container0, dict):
-            return_dict = dict()
-            for key in container0.keys():
-                return_dict[key] = Container.list_stack(
+            return_dict = {
+                key: Container.list_stack(
                     [container[key] for container in containers], dim
-                )
+                ) for key in container0.keys()
+            }
             return Container(return_dict)
         else:
             return containers

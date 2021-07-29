@@ -329,7 +329,7 @@ def lstm_update(
 
     # lstm outputs
     ot = x
-    hts_list = list()
+    hts_list = []
 
     # unrolled time dimension with lstm steps
     for Wii_xt, Wif_xt, Wig_xt, Wio_xt in zip(

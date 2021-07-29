@@ -21,7 +21,7 @@ def multinomial(
     orig_probs_shape = list(probs.shape)
     num_classes = orig_probs_shape[-1]
     probs_flat = _np.reshape(probs, (-1, orig_probs_shape[-1]))
-    probs_flat = probs_flat / _np.sum(probs_flat, -1, keepdims=True)
+    probs_flat /= _np.sum(probs_flat, -1, keepdims=True)
     probs_stack = _np.split(probs_flat, probs_flat.shape[0])
 
     samples_stack = [

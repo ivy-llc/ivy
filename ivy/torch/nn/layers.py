@@ -33,7 +33,9 @@ def conv1d(
             'Must be one of: "VALID" or "SAME"'.format(padding)
         )
 
-    res = _torch.nn.functional.conv1d(x, filters, None, strides, padding_list, dilations)
+    res = _torch.nn.functional.conv1d(
+        x, filters, None, strides, padding_list, dilations
+    )
     return res.permute(0, 2, 1)
 
 

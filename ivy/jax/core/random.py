@@ -16,9 +16,8 @@ def random_uniform(low=0.0, high=1.0, shape=None, dev_str='cpu'):
     global RNG
     RNG, rng_input = _jax.random.split(RNG)
     return to_dev(
-        _jax.random.uniform(
-            rng_input, shape if shape else (), minval=low, maxval=high
-        ), dev_str
+        _jax.random.uniform(rng_input, shape or (), minval=low, maxval=high),
+        dev_str,
     )
 
 

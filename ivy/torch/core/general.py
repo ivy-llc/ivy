@@ -296,11 +296,7 @@ def flip(
     else:
         new_axis: List[int] = axis
 
-    if isinstance(new_axis, int):
-        new_axis = [new_axis]
-    else:
-        new_axis = new_axis
-
+    new_axis = [new_axis] if isinstance(new_axis, int) else new_axis
     new_axis = [item + num_dims if item < 0 else item for item in new_axis]
     return torch.flip(x, new_axis)
 
@@ -363,7 +359,7 @@ def split(
 
 
 def repeat(x, repeats: Union[int, List[int]], axis: int = None):
-    if len(x.shape) == 0 and axis in [0, -1]:
+    if len(x.shape) == 0 and axis in {0, -1}:
         axis = None
     return torch.repeat_interleave(x, repeats, axis)
 
@@ -391,7 +387,7 @@ def constant_pad(x, pad_width: List[List[int]], value: Number = 0.):
 
 
 def zero_pad(x, pad_width: List[List[int]]):
-    return constant_pad(x, pad_width, 0.)
+    return constant_pad(x, pad_width)
 
 
 def swapaxes(x, axis0, axis1):
@@ -589,18 +585,17 @@ def identity(
     mat = torch.eye(n, n, dtype=dtype_val).to(str_to_dev(dev_str))
     if batch_shape is None:
         return mat
-    else:
-        reshape_dims = [1] * len(batch_shape) + [n, n]
-        tile_dims = list(batch_shape) + [1, 1]
-        res = torch.reshape(mat, reshape_dims).repeat(tile_dims)
-        return res
+
+    reshape_dims = [1] * len(batch_shape) + [n, n]
+    tile_dims = list(batch_shape) + [1, 1]
+    return torch.reshape(mat, reshape_dims).repeat(tile_dims)
 
 
 def meshgrid(*xs, indexing='ij'):
     ret = torch.meshgrid(*xs)
     if indexing == 'xy':
         # ToDo: verify if this is correct
-        return tuple([torch.transpose(x, 1, 0) for x in ret])
+        return tuple(torch.transpose(x, 1, 0) for x in ret)
     return ret
 
 
@@ -741,8 +736,7 @@ def scatter_nd(indices, updates, shape, reduction='sum', dev_str=None):
         ).to(str_to_dev(dev_str)), flat_scatter
     )
 
-    res = torch.reshape(flat_scatter, list(shape))
-    return res
+    return torch.reshape(flat_scatter, list(shape))
 
 
 # noinspection PyShadowingNames
@@ -794,12 +788,10 @@ def gather_nd(params, indices, dev_str: Optional[str] = None):
     ).type(torch.long)
 
     flat_gather = torch.gather(flat_params, 0, flat_indices_for_flat)
-    res = torch.reshape(
+    return torch.reshape(
         flat_gather,
         list(indices_shape[:-1]) + list(params_shape[num_index_dims:])
     )
-
-    return res
 
 
 def linear_resample(x, num_samples: int, axis: int = -1):
@@ -856,9 +848,7 @@ num_gpus = torch.cuda.device_count
 
 # noinspection PyUnresolvedReferences
 def tpu_is_available():
-    if importlib.util.find_spec("torch_xla") is not None:
-        return True
-    return False
+    return importlib.util.find_spec("torch_xla") is not None
 
 
 def dtype(x):
@@ -866,27 +856,31 @@ def dtype(x):
 
 
 def dtype_str(x):
-    return {torch.bool: 'bool',
-            torch.int8: 'int8',
-            torch.uint8: 'uint8',
-            torch.int16: 'int16',
-            torch.int32: 'int32',
-            torch.int64: 'int64',
-            torch.float16: 'float16',
-            torch.float32: 'float32',
-            torch.float64: 'float64'}[x.dtype]
+    return {
+        torch.bool: 'bool',
+        torch.int8: 'int8',
+        torch.uint8: 'uint8',
+        torch.int16: 'int16',
+        torch.int32: 'int32',
+        torch.int64: 'int64',
+        torch.float16: 'float16',
+        torch.float32: 'float32',
+        torch.float64: 'float64'
+    }[x.dtype]
 
 
 def dtype_to_str(dtype_in):
-    return {torch.bool: 'bool',
-            torch.int8: 'int8',
-            torch.uint8: 'uint8',
-            torch.int16: 'int16',
-            torch.int32: 'int32',
-            torch.int64: 'int64',
-            torch.float16: 'float16',
-            torch.float32: 'float32',
-            torch.float64: 'float64'}[dtype_in]
+    return {
+        torch.bool: 'bool',
+        torch.int8: 'int8',
+        torch.uint8: 'uint8',
+        torch.int16: 'int16',
+        torch.int32: 'int32',
+        torch.int64: 'int64',
+        torch.float16: 'float16',
+        torch.float32: 'float32',
+        torch.float64: 'float64'
+    }[dtype_in]
 
 
 def compile_fn(fn, dynamic=True, example_inputs=None):

@@ -221,12 +221,10 @@ def exclude(exclusion_list):
 
 def frameworks():
     return list(
-        set(
-            [
-                ivy_fw for fw_str, ivy_fw in _ivy_fws_dict.items()
-                if ivy_fw is not None and fw_str not in _excluded
-            ]
-        )
+        {
+            ivy_fw for fw_str, ivy_fw in _ivy_fws_dict.items()
+            if ivy_fw is not None and fw_str not in _excluded
+        }
     )
 
 

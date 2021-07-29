@@ -34,6 +34,7 @@ class Sequential(Module):
                         'chains in the form of "submodules/v{}",'
                         ' where {} is an idx'
                     )
+
         self._submodules = list(sub_modules)
         Module.__init__(self, dev_str, v)
 
@@ -49,6 +50,7 @@ class Sequential(Module):
         for i, submod in enumerate(self._submodules):
             try:
                 x = submod(x, v=self.v['submodules']['v' + str(i)])
+
             except:
                 d = 0
         return x

@@ -9,9 +9,9 @@ import tensorflow as _tf
 def random_uniform(low=0., high=1., shape=None, dev_str='cpu'):
     if dev_str:
         with _tf.device('/' + dev_str.upper()):
-            return _tf.random.uniform(shape if shape else (), low, high)
+            return _tf.random.uniform(shape or (), low, high)
     else:
-        return _tf.random.uniform(shape if shape else (), low, high)
+        return _tf.random.uniform(shape or (), low, high)
 
 
 def multinomial(

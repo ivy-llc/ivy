@@ -197,7 +197,8 @@ class Conv1D(Module):
         """
         return {
             'w': self._w_init.create_variables(
-                self._w_shape, dev_str, self._output_channels, self._input_channels
+                self._w_shape, dev_str,
+                self._output_channels, self._input_channels
             ),
             'b': self._b_init.create_variables(
                 self._b_shape, dev_str, self._output_channels

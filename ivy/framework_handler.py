@@ -51,10 +51,9 @@ def _get_framework_from_args(args):
             lib = _get_framework_from_args(list(arg.values()))
             if lib:
                 return lib
-        else:
-            if arg.__class__.__module__ in _array_types:
-                module_name = _array_types[arg.__class__.__module__]
-                return importlib.import_module(module_name)
+        elif arg.__class__.__module__ in _array_types:
+            module_name = _array_types[arg.__class__.__module__]
+            return importlib.import_module(module_name)
 
 
 def get_framework(*args, f=None, **kwargs):

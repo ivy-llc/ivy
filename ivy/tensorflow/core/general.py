@@ -144,14 +144,8 @@ def flip(x, axis=None, batch_shape=None):
     num_dims = len(batch_shape) if batch_shape is not None else len(x.shape)
     if not num_dims:
         return x
-    if axis is None:
-        new_axis = list(range(num_dims))
-    else:
-        new_axis = axis
-    if type(new_axis) is int:
-        new_axis = [new_axis]
-    else:
-        new_axis = new_axis
+    new_axis = list(range(num_dims)) if axis is None else axis
+    new_axis = [new_axis] if type(new_axis) is int else new_axis
     new_axis = [item + num_dims if item < 0 else item for item in new_axis]
     return _tf.reverse(x, new_axis)
 
@@ -334,6 +328,7 @@ meshgrid = lambda *xs, indexing='ij': _tf.meshgrid(*xs, indexing=indexing)
 def scatter_flat(indices, updates, size, reduction='sum', dev_str=None):
     if dev_str is None:
         dev_str = _dev_str_callable(updates)
+
     dtype = updates.dtype
 
     if reduction == 'sum':
@@ -472,12 +467,11 @@ def scatter_nd(indices, updates, shape, reduction='sum', dev_str=None):
     )
 
     with _tf.device('/' + dev_str.upper()):
-        res = _tf.reshape(flat_scatter, list(shape))
-        return res
+        return _tf.reshape(flat_scatter, list(shape))
 
 
 def gather(params, indices, axis=-1, dev_str=None):
-    axis = axis % len(indices.shape)
+    axis %= len(indices.shape)
     if dev_str is None:
         dev_str = _dev_str_callable(params)
     with _tf.device('/' + dev_str.upper()):
@@ -494,7 +488,7 @@ def gather_nd(params, indices, dev_str=None):
 def linear_resample(x, num_samples, axis=-1):
     x_shape = list(x.shape)
     num_x_dims = len(x_shape)
-    axis = axis % num_x_dims
+    axis %= num_x_dims
     num_vals = x.shape[axis]
     x_post_shape = x_shape[axis+1:]
     num_post_dims = len(x_post_shape)

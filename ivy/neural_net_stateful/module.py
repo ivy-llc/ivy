@@ -34,10 +34,9 @@ class Module(abc.ABC):
             dev_str = 'gpu:0' if ivy.gpu_is_available() else 'cpu'
         self._dev_str = dev_str
 
-        if v is None:
-            self.v = self._find_and_create_variables()
-        else:
-            self.v = Container(v)
+        self.v = (
+            self._find_and_create_variables() if v is None else Container(v)
+        )
 
     # Private #
     # --------#

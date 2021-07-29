@@ -108,11 +108,7 @@ def cast(x, dtype_str):
 
 # noinspection PyShadowingNames
 def arange(stop, start=0, step=1, dtype_str=None, dev_str=None):
-    if dtype_str:
-        dtype = _jnp.__dict__[dtype_str]
-    else:
-        dtype = None
-
+    dtype = _jnp.__dict__[dtype_str] if dtype_str else None
     return to_dev(_jnp.arange(start, stop, step=step, dtype=dtype), dev_str)
 
 
@@ -139,7 +135,7 @@ def flip(x, axis=None, batch_shape=None):
     if not num_dims:
         return x
 
-    if isinstance(axis, list) or isinstance(axis, tuple):
+    if isinstance(axis, (list, tuple)):
         if len(axis) == 1:
             axis = axis[0]
         else:
@@ -157,8 +153,7 @@ def unstack(x, axis):
     # ToDo: make this faster somehow, jnp.split is VERY slow for large dim_size
     x_split = _jnp.split(x, dim_size, axis)
 
-    res = [_jnp.squeeze(item, axis) for item in x_split]
-    return res
+    return [_jnp.squeeze(item, axis) for item in x_split]
 
 
 def split(x, num_or_size_splits=None, axis=0, with_remainder=False):
@@ -219,8 +214,9 @@ where = lambda condition, x1, x2: _jnp.where(condition, x1, x2)
 
 def indices_where(x):
     where_x = _jnp.where(x)
-    ret = _jnp.concatenate([_jnp.expand_dims(item, -1) for item in where_x], -1)
-    return ret
+    return _jnp.concatenate(
+        [_jnp.expand_dims(item, -1) for item in where_x], -1
+    )
 
 
 isnan = _jnp.isnan
@@ -246,10 +242,7 @@ def zeros(shape, dtype_str='float32', dev_str=None):
 
 # noinspection PyShadowingNames
 def zeros_like(x, dtype_str=None, dev_str=None):
-    if dtype_str:
-        dtype = _jnp.__dict__[dtype_str]
-    else:
-        dtype = x.dtype
+    dtype = _jnp.__dict__[dtype_str] if dtype_str else x.dtype
     return to_dev(_jnp.zeros_like(x, dtype=dtype), dev_str)
 
 
@@ -261,10 +254,7 @@ def ones(shape, dtype_str='float32', dev_str=None):
 
 # noinspection PyShadowingNames
 def ones_like(x, dtype_str=None, dev_str=None):
-    if dtype_str:
-        dtype = _jnp.__dict__[dtype_str]
-    else:
-        dtype = x.dtype
+    dtype = _jnp.__dict__[dtype_str] if dtype_str else x.dtype
     return to_dev(_jnp.ones_like(x, dtype=dtype), dev_str)
 
 
@@ -455,10 +445,7 @@ def dev_to_str(dev_in):
 def str_to_dev(dev_str):
     dev_split = dev_str.split(':')
     dev_str = dev_split[0]
-    if len(dev_split) > 1:
-        idx = int(dev_split[1])
-    else:
-        idx = 0
+    idx = int(dev_split[1]) if len(dev_split) > 1 else 0
     return _jax.devices(dev_str)[idx]
 
 

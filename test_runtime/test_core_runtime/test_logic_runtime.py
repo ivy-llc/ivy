@@ -101,8 +101,13 @@ def test_logical_or():
         time_lib = LIB_DICT[lib]
         append_to_file(fname, '{}'.format(lib))
 
-        x0 = ivy_gen.tensor([random.uniform(0, 1) for _ in range(DIM)], f=lib) > 0.3
-        x1 = ivy_gen.tensor([random.uniform(0, 1) for _ in range(DIM)], f=lib) > 0.6
+        x0 = ivy_gen.tensor(
+            [random.uniform(0, 1) for _ in range(DIM)], f=lib
+        ) > 0.3
+
+        x1 = ivy_gen.tensor(
+            [random.uniform(0, 1) for _ in range(DIM)], f=lib
+        ) > 0.6
 
         ivy_logic.logical_or(x0, x1, f=lib)
         ivy_logic_w_time.logical_or(x0, x1, f=time_lib)

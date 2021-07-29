@@ -33,10 +33,7 @@ def _to_dev(x, dev_str):
                 ' consider using Jax instead'
             )
 
-        elif 'cpu' in dev_str:
-            pass
-
-        else:
+        elif 'cpu' not in dev_str:
             raise Exception(
                 'Invalid device specified, must be in the form'
                 ' [ "cpu:idx" | "gpu:idx" ], but found {}'.format(dev_str)
@@ -53,18 +50,12 @@ def _flat_array_to_1_dim_array(x):
 
 # noinspection PyShadowingNames
 def array(object_in, dtype_str=None, dev_str=None):
-    if dtype_str:
-        dtype = _np.__dict__[dtype_str]
-    else:
-        dtype = None
-
+    dtype = _np.__dict__[dtype_str] if dtype_str else None
     return _to_dev(_np.array(object_in, dtype=dtype), dev_str)
 
 
 def is_array(x):
-    if isinstance(x, _np.ndarray):
-        return True
-    return False
+    return isinstance(x, _np.ndarray)
 
 
 to_numpy = lambda x: x
@@ -114,10 +105,7 @@ def cast(x, dtype_str):
 
 # noinspection PyShadowingNames
 def arange(stop, start=0, step=1, dtype_str=None, dev_str=None):
-    if dtype_str:
-        dtype = _np.__dict__[dtype_str]
-    else:
-        dtype = None
+    dtype = _np.__dict__[dtype_str] if dtype_str else None
     res = _to_dev(_np.arange(start, stop, step=step, dtype=dtype), dev_str)
     if not dtype:
         if res.dtype == _np.dtype('float64'):
@@ -166,8 +154,7 @@ def unstack(x, axis):
     if x.shape == ():
         return [x]
     x_split = _np.split(x, x.shape[axis], axis)
-    res = [_np.squeeze(item, axis) for item in x_split]
-    return res
+    return [_np.squeeze(item, axis) for item in x_split]
 
 
 def split(x, num_or_size_splits=None, axis=0, with_remainder=False):
@@ -229,8 +216,7 @@ def indices_where(x):
     where_x = _np.where(x)
     if len(where_x) == 1:
         return _np.expand_dims(where_x[0], -1)
-    res = _np.concatenate([_np.expand_dims(item, -1) for item in where_x], -1)
-    return res
+    return _np.concatenate([_np.expand_dims(item, -1) for item in where_x], -1)
 
 
 isnan = _np.isnan
@@ -273,10 +259,7 @@ def ones(shape, dtype_str='float32', dev_str=None):
 
 # noinspection PyShadowingNames
 def ones_like(x, dtype_str=None, dev_str=None):
-    if dtype_str:
-        dtype = _np.__dict__[dtype_str]
-    else:
-        dtype = x.dtype
+    dtype = _np.__dict__[dtype_str] if dtype_str else x.dtype
     return _to_dev(_np.ones_like(x, dtype=dtype), dev_str)
 
 
