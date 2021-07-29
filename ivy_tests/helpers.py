@@ -82,17 +82,20 @@ def _convert_vars(
     keep_other=True,
     to_type=None
 ):
-    new_vars = list()
+    new_vars = []
     for var in vars_in:
         if type(var) in _iterable_types:
-            return_val = _convert_vars(var, from_type, to_type_callable, to_type_attribute_method_str)
+            return_val = _convert_vars(
+                var, from_type, to_type_callable, to_type_attribute_method_str
+            )
+
             new_vars.append(return_val)
 
         elif isinstance(var, from_type):
             if isinstance(var, _np.ndarray):
                 if var.dtype == _np.float64:
                     var = var.astype(_np.float32)
-                if bool(sum([stride < 0 for stride in var.strides])):
+                if bool(sum(stride < 0 for stride in var.strides)):
                     var = var.copy()
             if to_type_callable:
                 new_vars.append(to_type_callable(var))
@@ -128,7 +131,10 @@ def jnp_call(func, *args, **kwargs):
 
 def tf_call(func, *args, **kwargs):
     new_args = _convert_vars(args, _np.ndarray, _tf.convert_to_tensor)
-    new_kw_vals = _convert_vars(kwargs.values(), _np.ndarray, _tf.convert_to_tensor)
+    new_kw_vals = _convert_vars(
+        kwargs.values(), _np.ndarray, _tf.convert_to_tensor
+    )
+
     new_kwargs = dict(zip(kwargs.keys(), new_kw_vals))
     output = func(*new_args, **new_kwargs)
 
@@ -140,7 +146,10 @@ def tf_call(func, *args, **kwargs):
 
 def tf_graph_call(func, *args, **kwargs):
     new_args = _convert_vars(args, _np.ndarray, _tf.convert_to_tensor)
-    new_kw_vals = _convert_vars(kwargs.values(), _np.ndarray, _tf.convert_to_tensor)
+    new_kw_vals = _convert_vars(
+        kwargs.values(), _np.ndarray, _tf.convert_to_tensor
+    )
+
     new_kwargs = dict(zip(kwargs.keys(), new_kw_vals))
 
     @_tf.function
@@ -162,9 +171,15 @@ def torch_call(func, *args, **kwargs):
     output = func(*new_args, **new_kwargs)
 
     if isinstance(output, tuple):
-        return tuple(_convert_vars(output, _torch.Tensor, lambda x: x.cpu().detach().numpy()))
+        return tuple(
+            _convert_vars(
+                output, _torch.Tensor, lambda x: x.cpu().detach().numpy()
+            )
+        )
 
-    return _convert_vars([output], _torch.Tensor, lambda x: x.cpu().detach().numpy())[0]
+    return _convert_vars(
+        [output], _torch.Tensor, lambda x: x.cpu().detach().numpy()
+    )[0]
 
 
 def mx_call(func, *args, **kwargs):
@@ -174,9 +189,15 @@ def mx_call(func, *args, **kwargs):
     output = func(*new_args, **new_kwargs)
 
     if isinstance(output, tuple):
-        return tuple(_convert_vars(output, _mx_nd.ndarray.NDArray, to_type_attribute_method_str='asnumpy'))
+        return tuple(_convert_vars(
+            output, _mx_nd.ndarray.NDArray,
+            to_type_attribute_method_str='asnumpy')
+        )
 
-    return _convert_vars([output], _mx_nd.ndarray.NDArray, to_type_attribute_method_str='asnumpy')[0]
+    return _convert_vars(
+        [output], _mx_nd.ndarray.NDArray,
+        to_type_attribute_method_str='asnumpy'
+    )[0]
 
 
 _calls = [np_call, jnp_call, tf_call, tf_graph_call, torch_call, mx_call]
@@ -218,6 +239,7 @@ def calls():
 
 def f_n_calls():
     return [
-        (ivy_fw, call) for (fw_str, ivy_fw), call in zip(_ivy_fws_dict.items(), _calls)
-        if ivy_fw is not None and fw_str not in _excluded
+        (ivy_fw, call) for (fw_str, ivy_fw), call in zip(
+            _ivy_fws_dict.items(), _calls
+        ) if ivy_fw is not None and fw_str not in _excluded
     ]
