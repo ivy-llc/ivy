@@ -26,15 +26,20 @@ class TrainableModule(ivy.Module):
 
 
 # module training
-@pytest.mark.parametrize(
-    "bs_ic_oc", [([1, 2], 4, 5)])
+@pytest.mark.parametrize("bs_ic_oc", [([1, 2], 4, 5)])
 def test_module_training(bs_ic_oc, dev_str, call):
     # smoke test
     if call is helpers.np_call:
         # NumPy does not support gradients
         pytest.skip()
+
     batch_shape, input_channels, output_channels = bs_ic_oc
-    x = ivy.cast(ivy.linspace(ivy.zeros(batch_shape), ivy.ones(batch_shape), input_channels), 'float32')
+    x = ivy.cast(
+        ivy.linspace(
+            ivy.zeros(batch_shape), ivy.ones(batch_shape), input_channels),
+        'float32'
+    )
+
     module = TrainableModule(input_channels, output_channels)
 
     def loss_fn(v_):
@@ -45,6 +50,7 @@ def test_module_training(bs_ic_oc, dev_str, call):
     loss_tm1 = 1e12
     loss = None
     grads = None
+
     for i in range(10):
         loss, grads = ivy.execute_with_gradients(loss_fn, module.v)
         module.v = ivy.gradient_descent_update(module.v, grads, 1e-3)
@@ -60,6 +66,7 @@ def test_module_training(bs_ic_oc, dev_str, call):
         assert loss.shape == (1,)
     else:
         assert loss.shape == ()
+
     # value test
     assert ivy.reduce_max(ivy.abs(grads.linear0.b)) > 0
     assert ivy.reduce_max(ivy.abs(grads.linear0.w)) > 0
@@ -68,9 +75,11 @@ def test_module_training(bs_ic_oc, dev_str, call):
     assert ivy.reduce_max(ivy.abs(grads.linear2.b)) > 0
     assert ivy.reduce_max(ivy.abs(grads.linear2.w)) > 0
     # compilation test
+
     if call is helpers.torch_call:
         # pytest scripting does not support **kwargs
         return
+
     helpers.assert_compilable(loss_fn)
 
 
@@ -91,15 +100,20 @@ class TrainableModuleWithList(ivy.Module):
 
 
 # module with list training
-@pytest.mark.parametrize(
-    "bs_ic_oc", [([1, 2], 4, 5)])
+@pytest.mark.parametrize("bs_ic_oc", [([1, 2], 4, 5)])
 def test_module_w_list_training(bs_ic_oc, dev_str, call):
     # smoke test
     if call is helpers.np_call:
         # NumPy does not support gradients
         pytest.skip()
+
     batch_shape, input_channels, output_channels = bs_ic_oc
-    x = ivy.cast(ivy.linspace(ivy.zeros(batch_shape), ivy.ones(batch_shape), input_channels), 'float32')
+    x = ivy.cast(
+        ivy.linspace(
+            ivy.zeros(batch_shape), ivy.ones(batch_shape), input_channels
+        ), 'float32'
+    )
+
     module = TrainableModuleWithList(input_channels, output_channels)
 
     def loss_fn(v_):
@@ -110,6 +124,7 @@ def test_module_w_list_training(bs_ic_oc, dev_str, call):
     loss_tm1 = 1e12
     loss = None
     grads = None
+
     for i in range(10):
         loss, grads = ivy.execute_with_gradients(loss_fn, module.v)
         module.v = ivy.gradient_descent_update(module.v, grads, 1e-3)
@@ -119,12 +134,14 @@ def test_module_w_list_training(bs_ic_oc, dev_str, call):
     # type test
     assert ivy.is_array(loss)
     assert isinstance(grads, ivy.Container)
+
     # cardinality test
     if call is helpers.mx_call:
         # mxnet slicing cannot reduce dimension to zero
         assert loss.shape == (1,)
     else:
         assert loss.shape == ()
+
     # value test
     assert ivy.reduce_max(ivy.abs(grads.layers.v0.b)) > 0
     assert ivy.reduce_max(ivy.abs(grads.layers.v0.w)) > 0
@@ -132,6 +149,7 @@ def test_module_w_list_training(bs_ic_oc, dev_str, call):
     assert ivy.reduce_max(ivy.abs(grads.layers.v1.w)) > 0
     assert ivy.reduce_max(ivy.abs(grads.layers.v2.b)) > 0
     assert ivy.reduce_max(ivy.abs(grads.layers.v2.w)) > 0
+
     # compilation test
     if call is helpers.torch_call:
         # pytest scripting does not support **kwargs
@@ -150,13 +168,13 @@ class ModuleWithNoneAttribute(ivy.Module):
 
 
 # module with none attribute
-@pytest.mark.parametrize(
-    "bs_ic_oc", [([1, 2], 4, 5)])
+@pytest.mark.parametrize("bs_ic_oc", [([1, 2], 4, 5)])
 def test_module_w_none_attribute(bs_ic_oc, dev_str, call):
     # smoke test
     if call is helpers.np_call:
         # NumPy does not support gradients
         pytest.skip()
+
     batch_shape, input_channels, output_channels = bs_ic_oc
     x = ivy.cast(ivy.linspace(ivy.zeros(batch_shape), ivy.ones(batch_shape), input_channels), 'float32')
     module = ModuleWithNoneAttribute()
@@ -169,12 +187,14 @@ class TrainableModuleWithDuplicate(ivy.Module):
             linear = ivy.Linear(channels, channels)
             self._linear0 = linear
             self._linear1 = linear
+
         else:
             w = ivy.variable(ivy.ones((channels, channels)))
             b0 = ivy.variable(ivy.ones((channels,)))
             b1 = ivy.variable(ivy.ones((channels,)))
             v0 = ivy.Container({'w': w, 'b': b0})
             v1 = ivy.Container({'w': w, 'b': b1})
+
             self._linear0 = ivy.Linear(channels, channels, v=v0)
             self._linear1 = ivy.Linear(channels, channels, v=v1)
         ivy.Module.__init__(self)
@@ -185,17 +205,21 @@ class TrainableModuleWithDuplicate(ivy.Module):
 
 
 # module training with duplicate
-@pytest.mark.parametrize(
-    "bs_c", [([1, 2], 64)])
-@pytest.mark.parametrize(
-    "same_layer", [True, False])
+@pytest.mark.parametrize("bs_c", [([1, 2], 64)])
+@pytest.mark.parametrize("same_layer", [True, False])
 def test_module_training_with_duplicate(bs_c, same_layer, dev_str, call):
     # smoke test
     if call is helpers.np_call:
         # NumPy does not support gradients
         pytest.skip()
+
     batch_shape, channels = bs_c
-    x = ivy.cast(ivy.linspace(ivy.zeros(batch_shape), ivy.ones(batch_shape), channels), 'float32')
+    x = ivy.cast(
+        ivy.linspace(
+            ivy.zeros(batch_shape), ivy.ones(batch_shape), channels),
+        'float32'
+    )
+
     module = TrainableModuleWithDuplicate(channels, same_layer)
 
     def loss_fn(v_):
@@ -206,6 +230,7 @@ def test_module_training_with_duplicate(bs_c, same_layer, dev_str, call):
     loss_tm1 = 1e12
     loss = None
     grads = None
+
     for i in range(10):
         loss, grads = ivy.execute_with_gradients(loss_fn, module.v)
         module.v = ivy.gradient_descent_update(module.v, grads, 1e-3)
@@ -215,17 +240,20 @@ def test_module_training_with_duplicate(bs_c, same_layer, dev_str, call):
     # type test
     assert ivy.is_array(loss)
     assert isinstance(grads, ivy.Container)
+
     # cardinality test
     if call is helpers.mx_call:
         # mxnet slicing cannot reduce dimension to zero
         assert loss.shape == (1,)
     else:
         assert loss.shape == ()
+
     # value test
     assert ivy.reduce_max(ivy.abs(grads.linear0.b)) > 0
     assert ivy.reduce_max(ivy.abs(grads.linear0.w)) > 0
     if not same_layer:
         assert ivy.reduce_max(ivy.abs(grads.linear1.b)) > 0
+
     # compilation test
     if call is helpers.torch_call:
         # pytest scripting does not support **kwargs
@@ -250,13 +278,13 @@ class TrainableModuleWithDict(ivy.Module):
 
 
 # module with dict training
-@pytest.mark.parametrize(
-    "bs_ic_oc", [([1, 2], 4, 5)])
+@pytest.mark.parametrize("bs_ic_oc", [([1, 2], 4, 5)])
 def test_module_w_dict_training(bs_ic_oc, dev_str, call):
     # smoke test
     if call is helpers.np_call:
         # NumPy does not support gradients
         pytest.skip()
+
     batch_shape, input_channels, output_channels = bs_ic_oc
     x = ivy.cast(ivy.linspace(ivy.zeros(batch_shape), ivy.ones(batch_shape), input_channels), 'float32')
     module = TrainableModuleWithDict(input_channels, output_channels)
@@ -269,6 +297,7 @@ def test_module_w_dict_training(bs_ic_oc, dev_str, call):
     loss_tm1 = 1e12
     loss = None
     grads = None
+
     for i in range(10):
         loss, grads = ivy.execute_with_gradients(loss_fn, module.v)
         module.v = ivy.gradient_descent_update(module.v, grads, 1e-3)
@@ -278,12 +307,14 @@ def test_module_w_dict_training(bs_ic_oc, dev_str, call):
     # type test
     assert ivy.is_array(loss)
     assert isinstance(grads, ivy.Container)
+
     # cardinality test
     if call is helpers.mx_call:
         # mxnet slicing cannot reduce dimension to zero
         assert loss.shape == (1,)
     else:
         assert loss.shape == ()
+
     # value test
     assert ivy.reduce_max(ivy.abs(grads.layers.linear0.b)) > 0
     assert ivy.reduce_max(ivy.abs(grads.layers.linear0.w)) > 0

@@ -17,14 +17,10 @@ from ivy.core.container import Container
 
 
 # linear
-@pytest.mark.parametrize(
-    "bs_ic_oc", [([1, 2], 4, 5)])
-@pytest.mark.parametrize(
-    "with_v", [True, False])
-@pytest.mark.parametrize(
-    "dtype_str", ['float32'])
-@pytest.mark.parametrize(
-    "tensor_fn", [ivy.array, helpers.var_fn])
+@pytest.mark.parametrize("bs_ic_oc", [([1, 2], 4, 5)])
+@pytest.mark.parametrize("with_v", [True, False])
+@pytest.mark.parametrize("dtype_str", ['float32'])
+@pytest.mark.parametrize("tensor_fn", [ivy.array, helpers.var_fn])
 def test_linear_layer_training(bs_ic_oc, with_v, dtype_str, tensor_fn, dev_str, call):
     # smoke test
     if call is helpers.np_call:
