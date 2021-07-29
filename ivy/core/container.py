@@ -96,7 +96,9 @@ class Container(dict):
         if isinstance(container0, dict):
             return_dict = dict()
             for key in container0.keys():
-                return_dict[key] = Container.list_stack([container[key] for container in containers], dim)
+                return_dict[key] = Container.list_stack(
+                    [container[key] for container in containers], dim
+                )
             return Container(return_dict)
         else:
             return containers
@@ -116,19 +118,32 @@ class Container(dict):
         container0 = containers[0]
 
         if isinstance(container0, dict):
-            return_dict = dict()
-            for key in container0.keys():
-                return_dict[key] = Container.concat([container[key] for container in containers], dim)
+            return_dict = {
+                key: Container.concat(
+                    [container[key] for container in containers], dim
+                )
+                for key in container0.keys()
+            }
+
             return Container(return_dict)
         else:
             # noinspection PyBroadException
             try:
                 if len(containers[0].shape) == 0:
-                    return _ivy.concatenate([_ivy.reshape(item, [1] * (dim + 1)) for item in containers], dim)
+                    return _ivy.concatenate(
+                        [
+                            _ivy.reshape(item, [1] * (dim + 1))
+                            for item in containers
+                        ], dim
+                    )
                 else:
                     return _ivy.concatenate(containers, dim)
             except Exception as e:
-                raise Exception(str(e) + '\nContainer concat operation only valid for containers of arrays')
+                raise Exception(
+                    str(e) + '\n'
+                    'Container concat operation only valid'
+                    ' for containers of arrays'
+                )
 
     @staticmethod
     def from_disk_as_hdf5(h5_obj_or_filepath, slice_obj=slice(None)):
@@ -141,7 +156,8 @@ class Container(dict):
         :type slice_obj: slice or sequence of slices
         :return: Container loaded from disk
         """
-        container_dict = dict()
+        container_dict = {}
+
         if type(h5_obj_or_filepath) is str:
             h5_obj = _h5py.File(h5_obj_or_filepath, 'r')
         else:
@@ -149,11 +165,19 @@ class Container(dict):
 
         for key, value in sorted(h5_obj.items()):
             if isinstance(value, _h5py.Group):
-                container_dict[key] = Container.from_disk_as_hdf5(value, slice_obj)
+                container_dict[key] = Container.from_disk_as_hdf5(
+                    value, slice_obj
+                )
+
             elif isinstance(value, _h5py.Dataset):
                 container_dict[key] = _ivy.array(list(value[slice_obj]))
+
             else:
-                raise Exception('Item found inside h5_obj which was neither a Group nor a Dataset.')
+                raise Exception(
+                    'Item found inside h5_obj which was neither a Group'
+                    ' nor a Dataset.'
+                )
+
         return Container(container_dict)
 
     @staticmethod
@@ -161,7 +185,8 @@ class Container(dict):
         """
         Load container object from disk at the specified pickle filepath.
 
-        :param pickle_filepath: Filepath where the container object is saved to disk.
+        :param pickle_filepath: Filepath where the container object
+            is saved to disk.
         :type pickle_filepath: str
         :return: Container loaded from disk
         """
@@ -171,9 +196,11 @@ class Container(dict):
     def from_disk_as_json(json_filepath):
         """
         Load container object from disk at the specified json filepath.
-        If some objects were not json-able during saving, then they will be loaded as strings.
+        If some objects were not json-able during saving,
+            then they will be loaded as strings.
 
-        :param json_filepath: Filepath where the container object is saved to disk.
+        :param json_filepath: Filepath where the container
+            object is saved to disk.
         :type json_filepath: str
         :return: Container loaded from disk
         """
@@ -185,7 +212,9 @@ class Container(dict):
         """
         Get file size of h5 file contents.
 
-        :param h5_obj_or_filepath: Filepath where the container object is saved to disk, or h5 object.
+        :param h5_obj_or_filepath: Filepath where the container
+            object is saved to disk, or h5 object.
+
         :type h5_obj_or_filepath: str or h5 obj
         :return: Size of h5 file contents, and batch size.
         """
@@ -205,15 +234,21 @@ class Container(dict):
                 size += _reduce(_mul, value_shape, 1) * value.dtype.itemsize
                 batch_size = value_shape[0]
             else:
-                raise Exception('Item found inside h5_obj which was neither a Group nor a Dataset.')
+                raise Exception(
+                    'Item found inside h5_obj which '
+                    'was neither a Group nor a Dataset.'
+                )
         return size, batch_size
 
     @staticmethod
     def shuffle_h5_file(h5_obj_or_filepath, seed_value=0):
         """
-        Shuffle entries in all datasets of h5 file, such that they are still aligned along axis 0.
+        Shuffle entries in all datasets of h5 file,
+            such that they are still aligned along axis 0.
 
-        :param h5_obj_or_filepath: Filepath where the container object is saved to disk, or h5 object.
+        :param h5_obj_or_filepath: Filepath where the container
+            object is saved to disk, or h5 object.
+
         :type h5_obj_or_filepath: str or h5 obj
         :param seed_value: random seed to use for array shuffling
         :type seed_value: int
@@ -232,7 +267,10 @@ class Container(dict):
                 _random.seed(seed_value)
                 _random.shuffle(value)
             else:
-                raise Exception('Item found inside h5_obj which was neither a Group nor a Dataset.')
+                raise Exception(
+                    'Item found inside h5_obj which'
+                    ' was neither a Group nor a Dataset.'
+                )
         if isinstance(h5_obj, _h5py.File):
             h5_obj.close()
 
@@ -250,16 +288,24 @@ class Container(dict):
         list_size = len(containers)
         container0 = containers[0]
         if isinstance(container0, dict):
-            return_dict = dict()
-            for key in container0.keys():
-                return_dict[key] = Container.reduce([container[key] for container in containers], reduction)
+            return_dict = {
+                key: Container.reduce(
+                    [container[key] for container in containers], reduction
+                )
+                for key in container0.keys()
+            }
+
             return Container(return_dict)
         else:
             # noinspection PyBroadException
             try:
                 return reduction(containers)
             except Exception as e:
-                raise Exception(str(e) + '\nContainer reduce operation only valid for containers of arrays')
+                raise Exception(
+                    str(e) + '\n'
+                    'Container reduce operation only '
+                    'valid for containers of arrays'
+                )
 
     # Private Methods #
     # ----------------#
@@ -271,10 +317,10 @@ class Container(dict):
         val = vals[0]
         if isinstance(val, Container):
             return val._get_size()
-        elif isinstance(val, list):
+
+        elif isinstance(val, (list, tuple)):
             return len(val)
-        elif isinstance(val, tuple):
-            return len(val)
+
         else:
             try:
                 return val.shape[0]
@@ -288,14 +334,17 @@ class Container(dict):
         return return_cont
 
     def _at_key_chains_input_as_dict(self, key_chains, current_chain=''):
-        return_dict = dict()
+        return_dict = {}
         for k, v in key_chains.items():
-            if current_chain == '':
-                new_current_chain = k
-            else:
-                new_current_chain = current_chain + '/' + k
+            new_current_chain = (
+                k if current_chain == '' else current_chain + '/' + k
+            )
+
             if isinstance(v, dict):
-                return_dict[k] = self._at_key_chains_input_as_dict(v, new_current_chain)
+                return_dict[k] = self._at_key_chains_input_as_dict(
+                    v, new_current_chain
+                )
+
             else:
                 return_dict[k] = self.at_key_chain(new_current_chain)
         return Container(return_dict)
@@ -311,7 +360,10 @@ class Container(dict):
             return_cont = self.copy()
         for k, v in key_chains.items():
             if isinstance(v, dict):
-                ret_cont = self._prune_key_chains_input_as_dict(v, return_cont[k])
+                ret_cont = self._prune_key_chains_input_as_dict(
+                    v, return_cont[k]
+                )
+
                 if ret_cont.size == 0:
                     del return_cont[k]
             else:
@@ -321,41 +373,60 @@ class Container(dict):
     # Public Methods #
     # ---------------#
 
-    def shuffle(self, seed_value=None, key_chains=None, to_apply=True, prune_unapplied=False, key_chain=''):
+    def shuffle(
+        self, seed_value=None, key_chains=None,
+        to_apply=True, prune_unapplied=False, key_chain=''
+    ):
         """
-        Shuffle entries in all sub-arrays, such that they are still aligned along axis 0.
+        Shuffle entries in all sub-arrays,
+        such that they are still aligned along axis 0.
 
         :param seed_value: random seed to use for array shuffling
         :type seed_value: int
-        :param key_chains: The key-chains to apply or not apply the method to. Default is None.
+        :param key_chains: The key-chains to apply or not apply the method to.
+            Default is None.
+
         :type key_chains: list or dict of strs, optional
-        :param to_apply: If True, the method will be applied to key_chains, otherwise key_chains will be skipped.
-                         Default is True.
+        :param to_apply: If True, the method will be applied to key_chains,
+            otherwise key_chains will be skipped.
+            Default is True.
+
         :type to_apply: bool, optional
-        :param prune_unapplied: Whether to prune key_chains for which the function was not applied. Default is False.
+        :param prune_unapplied: Whether to prune key_chains
+            for which the function was not applied. Default is False.
+
         :type prune_unapplied: bool, optional
         :param key_chain: Chain of keys for this dict entry
         :type key_chain: str
         """
-        return_dict = dict()
+        return_dict = {}
         if seed_value is None:
-            seed_value = _ivy.to_numpy(_ivy.random.randint(0, 1000, [])).item()
+            seed_value = _ivy.to_numpy(
+                _ivy.random.randint(0, 1000, [])
+            ).item()
+
         for key, value in sorted(self.items()):
             this_key_chain = key if key_chain == '' else (key_chain + '/' + key)
             if isinstance(value, Container):
-                ret = value.shuffle(seed_value, key_chains, to_apply, prune_unapplied, this_key_chain)
+                ret = value.shuffle(
+                    seed_value, key_chains, to_apply,
+                    prune_unapplied, this_key_chain
+                )
+
                 if ret:
                     return_dict[key] = ret
             else:
-                if key_chains is not None:
-                    if (this_key_chain in key_chains and not to_apply) or (
-                            this_key_chain not in key_chains and to_apply):
-                        if prune_unapplied:
-                            continue
-                        return_dict[key] = value
+                if key_chains is not None and (
+                    (this_key_chain in key_chains and not to_apply)
+                    or (this_key_chain not in key_chains and to_apply)
+                ):
+                    if prune_unapplied:
                         continue
+                    return_dict[key] = value
+                    continue
                 _ivy.seed(seed_value)
                 return_dict[key] = _ivy.shuffle(value)
+
         return Container(return_dict)
 
     def slice_via_key(self, slice_key):
@@ -366,7 +437,7 @@ class Container(dict):
         :type slice_key: str
         :return: Container object sliced at desired key.
         """
-        return_dict = dict()
+        return_dict = {}
         for key, value in sorted(self.items()):
             if key == slice_key:
                 return value
@@ -376,23 +447,37 @@ class Container(dict):
                 return_dict[key] = value
         return Container(return_dict)
 
-    def expand_dims(self, axis, key_chains=None, to_apply=True, prune_unapplied=False):
+    def expand_dims(
+            self, axis, key_chains=None, to_apply=True, prune_unapplied=False
+    ):
         """
         Expand dims of all sub-arrays of container object.
 
         :param axis: Axis along which to expand dimensions of the sub-arrays.
         :type axis: int
-        :param key_chains: The key-chains to apply or not apply the method to. Default is None.
+        :param key_chains: The key-chains to apply or not apply the method to.
+            Default is None.
         :type key_chains: list or dict of strs, optional
-        :param to_apply: If True, the method will be applied to key_chains, otherwise key_chains will be skipped.
-                         Default is True.
+        :param to_apply: If True, the method will be applied to key_chains,
+            otherwise key_chains will be skipped.
+            Default is True.
+
         :type to_apply: bool, optional
-        :param prune_unapplied: Whether to prune key_chains for which the function was not applied. Default is False.
+        :param prune_unapplied: Whether to prune key_chains
+            for which the function was not applied. Default is False.
+
         :type prune_unapplied: bool, optional
-        :return: Container object at with all sub-array dimensions expanded along the axis.
+        :return: Container object at with all sub-array
+            dimensions expanded along the axis.
+
         """
-        return self.map(lambda x, kc: _ivy.expand_dims(x, axis) if _ivy.is_array(x) else x, key_chains, to_apply,
-                        prune_unapplied)
+        return self.map(
+            lambda x, kc: (
+                _ivy.expand_dims(x, axis)
+                if _ivy.is_array(x) else x, key_chains, to_apply
+            ),
+            prune_unapplied
+        )
 
     def unstack(self, dim, dim_size):
         """
@@ -404,9 +489,16 @@ class Container(dict):
         :type dim_size: int
         :return: List of containers, unstacked along the specified dimension.
         """
-        return [self[tuple([slice(None, None, None)] * dim + [slice(i, i + 1, 1)])] for i in range(dim_size)]
+        return [
+            self[
+                tuple([slice(None, None, None)] * dim + [slice(i, i + 1, 1)])
+            ] for i in range(dim_size)
+        ]
 
-    def gather(self, indices, axis=-1, key_chains=None, to_apply=True, prune_unapplied=False):
+    def gather(
+        self, indices, axis=-1,
+        key_chains=None, to_apply=True, prune_unapplied=False
+    ):
         """
         Gather slices from all container params at axis according to indices.
 
@@ -414,58 +506,107 @@ class Container(dict):
         :type indices: array
         :param axis: The axis from which to gather from. Default is -1.
         :type axis: int, optional
-        :param key_chains: The key-chains to apply or not apply the method to. Default is None.
-        :type key_chains: list or dict of strs, optional
-        :param to_apply: If True, the method will be applied to key_chains, otherwise key_chains will be skipped.
-                         Default is True.
-        :type to_apply: bool, optional
-        :param prune_unapplied: Whether to prune key_chains for which the function was not applied. Default is False.
-        :type prune_unapplied: bool, optional
-        :return: Container object at with all sub-array dimensions gathered along the axis.
-        """
-        return self.map(lambda x, kc: _ivy.gather(x, indices, axis) if _ivy.is_array(x) else x, key_chains, to_apply,
-                        prune_unapplied)
+        :param key_chains: The key-chains to apply or not apply the method to.
+            Default is None.
 
-    def gather_nd(self, indices, key_chains=None, to_apply=True, prune_unapplied=False):
+        :type key_chains: list or dict of strs, optional
+        :param to_apply: If True, the method will be applied to key_chains,
+            otherwise key_chains will be skipped.
+            Default is True.
+
+        :type to_apply: bool, optional
+        :param prune_unapplied: Whether to prune key_chains
+            for which the function was not applied. Default is False.
+
+        :type prune_unapplied: bool, optional
+        :return: Container object at with all sub-array dimensions
+            gathered along the axis.
+
         """
-        Gather slices from all container params into a arrays with shape specified by indices.
+        return self.map(
+            lambda x, kc: (
+                _ivy.gather(x, indices, axis)
+                if _ivy.is_array(x) else x, key_chains, to_apply
+            ),
+            prune_unapplied
+        )
+
+    def gather_nd(
+        self, indices,
+        key_chains=None, to_apply=True, prune_unapplied=False
+    ):
+        """
+        Gather slices from all container params into a arrays
+            with shape specified by indices.
 
         :param indices: Index array.
         :type indices: array
-        :param key_chains: The key-chains to apply or not apply the method to. Default is None.
+        :param key_chains: The key-chains to apply or not apply the method to.
+         Default is None.
+
         :type key_chains: list or dict of strs, optional
-        :param to_apply: If True, the method will be applied to key_chains, otherwise key_chains will be skipped.
-                         Default is True.
+        :param to_apply: If True, the method will be applied to key_chains,
+         otherwise key_chains will be skipped.
+        Default is True.
+
         :type to_apply: bool, optional
-        :param prune_unapplied: Whether to prune key_chains for which the function was not applied. Default is False.
+        :param prune_unapplied: Whether to prune key_chains for which the
+            function was not applied. Default is False.
+
         :type prune_unapplied: bool, optional
         :return: Container object at with all sub-array dimensions gathered.
         """
-        return self.map(lambda x, kc: _ivy.gather_nd(x, indices) if _ivy.is_array(x) else x, key_chains, to_apply,
-                        prune_unapplied)
+        return self.map(
+            lambda x, kc: (
+                _ivy.gather_nd(x, indices)
+                if _ivy.is_array(x) else x, key_chains)
+            , to_apply, prune_unapplied
+        )
 
-    def repeat(self, repeats, axis=None, key_chains=None, to_apply=True, prune_unapplied=False):
+    def repeat(
+        self, repeats,
+        axis=None, key_chains=None, to_apply=True, prune_unapplied=False
+    ):
         """
         Repeat values along a given dimension for each array in the container.
 
-        :param repeats: The number of repetitions for each element. repeats is broadcast to fit the shape of the given axis.
+        :param repeats: The number of repetitions for each element.
+            repeats is broadcast to fit the shape of the given axis.
+
         :type repeats: int or sequence of ints.
         :param axis: The axis along which to repeat values.
-                      By default, use the flattened input array, and return a flat output array.
-        :type axis: int, optional
-        :param key_chains: The key-chains to apply or not apply the method to. Default is None.
-        :type key_chains: list or dict of strs, optional
-        :param to_apply: If True, the method will be applied to key_chains, otherwise key_chains will be skipped.
-                         Default is True.
-        :type to_apply: bool, optional
-        :param prune_unapplied: Whether to prune key_chains for which the function was not applied. Default is False.
-        :type prune_unapplied: bool, optional
-        :return: container with each array being repeated along the specified dimension.
-        """
-        return self.map(lambda x, kc: _ivy.repeat(x, repeats, axis) if _ivy.is_array(x) else x, key_chains, to_apply,
-                        prune_unapplied)
+            By default, use the flattened input array,
+            and return a flat output array.
 
-    def swapaxes(self, axis0, axis1, key_chains=None, to_apply=True, prune_unapplied=False):
+        :type axis: int, optional
+        :param key_chains: The key-chains to apply or not apply the method to.
+            Default is None.
+
+        :type key_chains: list or dict of strs, optional
+        :param to_apply: If True, the method will be applied to key_chains,
+            otherwise key_chains will be skipped.
+            Default is True.
+
+        :type to_apply: bool, optional
+        :param prune_unapplied: Whether to prune key_chains
+            for which the function was not applied. Default is False.
+
+        :type prune_unapplied: bool, optional
+        :return: container with each array being
+            repeated along the specified dimension.
+        """
+        return self.map(
+            lambda x, kc: (
+                _ivy.repeat(x, repeats, axis)
+                if _ivy.is_array(x) else x, key_chains, to_apply
+            ),
+            prune_unapplied
+        )
+
+    def swapaxes(
+        self, axis0, axis1,
+        key_chains=None, to_apply=True, prune_unapplied=False
+    ):
         """
         Interchange two axes for each array in the container.
 
@@ -473,45 +614,80 @@ class Container(dict):
         :type axis0: int
         :param axis1: Second axis to be swapped.
         :type axis1: int
-        :param key_chains: The key-chains to apply or not apply the method to. Default is None.
+        :param key_chains: The key-chains to apply or not apply the method to.
+         Default is None.
+
         :type key_chains: list or dict of strs, optional
-        :param to_apply: If True, the method will be applied to key_chains, otherwise key_chains will be skipped.
-                         Default is True.
+        :param to_apply: If True, the method will be applied to key_chains,
+        otherwise key_chains will be skipped.
+        Default is True.
+
         :type to_apply: bool, optional
-        :param prune_unapplied: Whether to prune key_chains for which the function was not applied. Default is False.
+        :param prune_unapplied: Whether to prune key_chains
+        for which the function was not applied.
+        Default is False.
+
         :type prune_unapplied: bool, optional
         :return: ivy.Container with each chosen array having the axes swapped.
         """
-        return self.map(lambda x, kc: _ivy.swapaxes(x, axis0, axis1) if _ivy.is_array(x) else x, key_chains, to_apply,
-                        prune_unapplied)
+        return self.map(
+            lambda x, kc: (
+                _ivy.swapaxes(x, axis0, axis1)
+                if _ivy.is_array(x) else x, key_chains, to_apply
+            ),
+            prune_unapplied
+        )
 
-    def stop_gradients(self, key_chains=None, to_apply=True, prune_unapplied=False):
+    def stop_gradients(
+            self, key_chains=None, to_apply=True, prune_unapplied=False
+    ):
         """
         Stop gradients of all array entries in the container.
 
-        :param key_chains: The key-chains to apply or not apply the method to. Default is None.
+        :param key_chains: The key-chains to apply or not apply the method to.
+        Default is None.
+
         :type key_chains: list or dict of strs, optional
-        :param to_apply: If True, the method will be applied to key_chains, otherwise key_chains will be skipped.
-                         Default is True.
+        :param to_apply: If True, the method will be applied to key_chains,
+            otherwise key_chains will be skipped.
+            Default is True.
+
         :type to_apply: bool, optional
-        :param prune_unapplied: Whether to prune key_chains for which the function was not applied. Default is False.
+        :param prune_unapplied: Whether to prune key_chains
+            for which the function was not applied. Default is False.
+
         :type prune_unapplied: bool, optional
         :return: container with each array having their gradients stopped.
         """
-        return self.map(lambda x, kc: _ivy.stop_gradient(x) if _ivy.is_array(x) else x, key_chains, to_apply,
-                        prune_unapplied)
+        return self.map(
+            lambda x, kc: (
+                _ivy.stop_gradient(x)
+                if _ivy.is_array(x) else x, key_chains, to_apply
+            ),
+            prune_unapplied
+        )
 
-    def to_disk_as_hdf5(self, h5_obj_or_filepath, starting_index=0, mode='a', max_batch_size=None):
+    def to_disk_as_hdf5(
+        self, h5_obj_or_filepath,
+        starting_index=0, mode='a', max_batch_size=None
+    ):
         """
-        Save container object to disk, as an h5py file, at the specified filepath.
+        Save container object to disk, as an h5py file,
+            at the specified filepath.
 
-        :param h5_obj_or_filepath: Filepath for where to save the container to disk, or h5 object.
+        :param h5_obj_or_filepath: Filepath for where to save the container
+            to disk, or h5 object.
         :type h5_obj_or_filepath: str or h5 object
-        :param starting_index: Batch index for which to start writing to file, if it already exists
+        :param starting_index: Batch index for which to start writing to file,
+            if it already exists
+
         :type starting_index: int
-        :param mode: H5 read/write mode for writing to disk, ['r', 'r+', 'w', 'w-', 'a'], default is 'a'.
+        :param mode: H5 read/write mode for writing to disk,
+            ['r', 'r+', 'w', 'w-', 'a'], default is 'a'.
+
         :type mode: str
-        :param max_batch_size: Maximum batch size for the container on disk, this is useful if later appending to file.
+        :param max_batch_size: Maximum batch size for the container on disk,
+            this is useful if later appending to file.
         :type max_batch_size: int
         :type h5_obj_or_filepath: str or h5 object
         """
@@ -521,11 +697,15 @@ class Container(dict):
             h5_obj = h5_obj_or_filepath
         for key, value in sorted(self.items()):
             if isinstance(value, Container):
-                if key not in h5_obj.keys():
-                    h5_group = h5_obj.create_group(key)
-                else:
-                    h5_group = h5_obj[key]
-                value.to_disk_as_hdf5(h5_group, starting_index, mode, max_batch_size)
+                h5_group = (
+                    h5_obj[key] if key in h5_obj.keys()
+                    else h5_obj.create_group(key)
+                )
+
+                value.to_disk_as_hdf5(
+                    h5_group, starting_index, mode, max_batch_size
+                )
+
             else:
                 value_as_np = _ivy.to_numpy(value)
                 value_shape = value_as_np.shape
@@ -535,37 +715,48 @@ class Container(dict):
                 if key not in h5_obj.keys():
                     dataset_shape = [max_batch_size] + list(value_shape[1:])
                     maxshape = ([None for _ in dataset_shape])
-                    h5_obj.create_dataset(key, dataset_shape, dtype=value_as_np.dtype, maxshape=maxshape)
+
+                    h5_obj.create_dataset(
+                        key, dataset_shape,
+                        dtype=value_as_np.dtype, maxshape=maxshape
+                    )
                 space_left = max_batch_size - starting_index
                 amount_to_write = min(this_batch_size, space_left)
-                h5_obj[key][starting_index:starting_index + amount_to_write] = value_as_np[0:amount_to_write]
+
+                h5_obj[key][starting_index:starting_index + amount_to_write] = (
+                    value_as_np[0:amount_to_write]
+                )
 
     def to_disk_as_pickled(self, pickle_filepath):
         """
-        Save container object to disk, as an pickled file, at the specified filepath.
+        Save container object to disk, as an pickled file,
+            at the specified filepath.
 
-        :param pickle_filepath: Filepath for where to save the container to disk.
+        :param pickle_filepath: Filepath for where to save
+            the container to disk.
+
         :type pickle_filepath: str
         """
         _pickle.dump(self, open(pickle_filepath, 'wb'))
 
     def to_jsonable(self, return_dict=None):
         """
-        Return container with non-jsonable elements converted to string representations, which are jsonable.
+        Return container with non-jsonable elements converted
+            to string representations, which are jsonable.
         """
         if return_dict is None:
             return_dict = self.copy()
         for k, v in return_dict.items():
             if not _is_jsonable(v):
-                if isinstance(v, dict):
-                    return_dict[k] = self.to_jsonable(v)
-                else:
-                    return_dict[k] = str(v)
+                return_dict[k] = (
+                    self.to_jsonable(v) if isinstance(v, dict) else str(v)
+                )
         return return_dict
 
     def to_disk_as_json(self, json_filepath):
         """
-        Save container object to disk, as an json file, at the specified filepath.
+        Save container object to disk, as an json file,
+            at the specified filepath.
 
         :param json_filepath: Filepath for where to save the container to disk.
         :type json_filepath: str
@@ -580,7 +771,7 @@ class Container(dict):
 
         :return: Container as nested list.
         """
-        return_list = list()
+        return_list = []
         for key, value in sorted(self.items()):
             if isinstance(value, Container):
                 return_list.append(value.to_list())
@@ -594,7 +785,7 @@ class Container(dict):
 
         :return: Container as nested dict.
         """
-        return_dict = dict()
+        return_dict = {}
         for key, value in sorted(self.items()):
             if isinstance(value, Container):
                 return_dict[key] = value.to_dict()
@@ -604,7 +795,8 @@ class Container(dict):
 
     def to_iterator(self):
         """
-        Return iterator for traversing through the nested elements of container object.
+        Return iterator for traversing through the nested elements of
+            container object.
 
         :return: Iterator for the container elements.
         """
@@ -621,17 +813,18 @@ class Container(dict):
 
         :return: Container as flat list.
         """
-        return list([item for key, item in self.to_iterator()])
+        return [item for key, item in self.to_iterator()]
 
     def from_flat_list(self, flat_list):
         """
-        Return new container object with the same hierarchy, but with values replaced from flat list.
+        Return new container object with the same hierarchy,
+            but with values replaced from flat list.
 
         :param flat_list: flat list of values to populate container with.
         :type flat_list: sequence of arrays
         :return: Container.
         """
-        new_dict = dict()
+        new_dict = {}
         for key, value in sorted(self.items()):
             if isinstance(value, Container):
                 new_value = value.from_flat_list(flat_list)
@@ -642,7 +835,8 @@ class Container(dict):
 
     def to_random(self):
         """
-        Return new container, with all entries having same shape and type, but random values
+        Return new container, with all entries having same shape and type,
+            but random values
         """
         def _as_random(value, _=''):
             if hasattr(value, 'shape'):
@@ -679,7 +873,8 @@ class Container(dict):
 
     def at_key_chains(self, key_chains, ignore_none=True):
         """
-        Query container object at specified key-chains, either as list or nested dict.
+        Query container object at specified key-chains,
+            either as list or nested dict.
 
         :return: sub-container containing only the specified key chains
         """
@@ -692,8 +887,11 @@ class Container(dict):
         elif isinstance(key_chains, str):
             return self._at_key_chains_input_as_seq([key_chains])
         else:
-            raise Exception('Invalid type for input key_chains, must either be a list, tuple, dict, or ivy.Container,'
-                            'but found type {}'.format(type(key_chains)))
+            raise Exception(
+                'Invalid type for input key_chains, must either be a list,'
+                ' tuple, dict, or ivy.Container, '
+                'but found type {}'.format(type(key_chains))
+            )
 
     def set_at_key_chain(self, key_chain, val):
         """
@@ -702,7 +900,8 @@ class Container(dict):
         :return: new container with updated value at key chain
         """
         keys = key_chain.split('/')
-        conts = list()
+
+        conts = []
         cont = self
         for key in keys[:-1]:
             if key not in cont:
@@ -733,23 +932,26 @@ class Container(dict):
         :return: Container with keys in key chain pruned.
         """
         keys_in_chain = key_chain.split('/')
-        out_dict = dict()
+        out_dict = {}
+
         for key, value in sorted(self.items()):
             if isinstance(value, Container):
                 if key == keys_in_chain[0]:
                     if len(keys_in_chain) == 1:
                         new_val = []
                     else:
-                        new_val = value.prune_key_chain('/'.join(keys_in_chain[1:]))
+                        new_val = value.prune_key_chain(
+                            '/'.join(keys_in_chain[1:])
+                        )
+
                     if len(new_val) > 0:
                         out_dict[key] = new_val
                 else:
                     new_val = value.to_dict()
                     if len(new_val) > 0:
                         out_dict[key] = value.to_dict()
-            else:
-                if len(keys_in_chain) != 1 or key != keys_in_chain[0]:
-                    out_dict[key] = value
+            elif len(keys_in_chain) != 1 or key != keys_in_chain[0]:
+                out_dict[key] = value
         return Container(out_dict)
 
     def prune_key_chains(self, key_chains, ignore_none=True):
@@ -767,8 +969,11 @@ class Container(dict):
         elif isinstance(key_chains, str):
             return self._prune_key_chains_input_as_seq([key_chains])
         else:
-            raise Exception('Invalid type for input key_chains, must either be a list, tuple, dict, or ivy.Container,'
-                            'but found type {}'.format(type(key_chains)))
+            raise Exception(
+                'Invalid type for input key_chains, must either be a list,'
+                ' tuple, dict, or ivy.Container,'
+                'but found type {}'.format(type(key_chains))
+            )
 
     def prune_empty(self):
         """
@@ -777,7 +982,7 @@ class Container(dict):
 
         :return: Container with empty keys pruned.
         """
-        out_dict = dict()
+        out_dict = {}
         for key, value in sorted(self.items()):
             if isinstance(value, Container):
                 new_value = value.prune_empty()
@@ -797,37 +1002,51 @@ class Container(dict):
         """
         return Container(self.to_dict())
 
-    def map(self, func, key_chains=None, to_apply=True, prune_unapplied=False, key_chain=''):
+    def map(
+            self, func,
+            key_chains=None, to_apply=True, prune_unapplied=False, key_chain=''
+    ):
         """
         Apply function to all array values of container
 
         :param func: Function to apply to each container entry
         :type func: python function
-        :param key_chains: The key-chains to apply or not apply the method to. Default is None.
+        :param key_chains: The key-chains to apply or not apply the method to.
+            Default is None.
+
         :type key_chains: list or dict of strs, optional
-        :param to_apply: If True, the method will be applied to key_chains, otherwise key_chains will be skipped.
-                         Default is True.
+        :param to_apply: If True, the method will be applied to key_chains,
+            otherwise key_chains will be skipped.
+            Default is True.
+
         :type to_apply: bool, optional
-        :param prune_unapplied: Whether to prune key_chains for which the function was not applied. Default is False.
+        :param prune_unapplied: Whether to prune key_chains
+            for which the function was not applied.
+            Default is False.
+
         :type prune_unapplied: bool, optional
         :param key_chain: Chain of keys for this dict entry
         :type key_chain: str
         """
-        return_dict = dict()
+        return_dict = {}
         for key, value in sorted(self.items()):
             this_key_chain = key if key_chain == '' else (key_chain + '/' + key)
             if isinstance(value, Container):
-                ret = value.map(func, key_chains, to_apply, prune_unapplied, this_key_chain)
+                ret = value.map(
+                    func, key_chains, to_apply, prune_unapplied, this_key_chain
+                )
+
                 if ret:
                     return_dict[key] = ret
             else:
-                if key_chains is not None:
-                    if (this_key_chain in key_chains and not to_apply) or (
-                            this_key_chain not in key_chains and to_apply):
-                        if prune_unapplied:
-                            continue
-                        return_dict[key] = value
+                if key_chains is not None and (
+                    (this_key_chain in key_chains and not to_apply)
+                    or (this_key_chain not in key_chains and to_apply)
+                ):
+                    if prune_unapplied:
                         continue
+                    return_dict[key] = value
+                    continue
                 return_dict[key] = func(value, this_key_chain)
         return Container(return_dict)
 
@@ -841,7 +1060,8 @@ class Container(dict):
 
     def with_entries_as_lists(self):
         """
-        Return container object, with each array entry in the container cast to a list
+        Return container object, with each array entry in
+            the container cast to a list
         """
         def to_list(x, _=''):
             try:
@@ -852,13 +1072,16 @@ class Container(dict):
 
     def reshape(self, target_container, return_cont=None):
         """
-        Set shapes of container entries to shapes specified by new container with the same key structure
+        Set shapes of container entries to shapes specified by new container
+            with the same key structure
 
         :return: new container with values of updated shapes
         """
         if return_cont is None:
             return_cont = self.copy()
-        for (_, v_shape), (k, v) in zip(target_container.items(), return_cont.items()):
+        for (_, v_shape), (k, v) in zip(
+                target_container.items(), return_cont.items()
+        ):
             if isinstance(v_shape, dict):
                 return_cont[k] = self.reshape(v_shape, return_cont[k])
             else:
@@ -879,7 +1102,8 @@ class Container(dict):
         """
         Get slice, key or key chain of container object.
 
-        :param query: slice object, key or key chain to query all container elements.
+        :param query: slice object, key or key chain to query
+            all container elements.
         :type query: slice or str
         :return: Container object at desired query.
         """
@@ -887,21 +1111,17 @@ class Container(dict):
             if '/' in query:
                 return self.at_key_chain(query)
             return dict.__getitem__(self, query)
-        return_dict = dict()
+
+        return_dict = {}
         for key, value in sorted(self.items()):
             if isinstance(value, Container):
                 return_dict[key] = value[query]
+            elif isinstance(value, (list, tuple)):
+                return_dict[key] = value if len(value) == 0 else value[query]
+            elif value is None or value.shape == ():
+                return_dict[key] = value
             else:
-                # noinspection PyBroadException
-                if isinstance(value, list) or isinstance(value, tuple):
-                    if len(value) == 0:
-                        return_dict[key] = value
-                    else:
-                        return_dict[key] = value[query]
-                elif value is None or value.shape == ():
-                    return_dict[key] = value
-                else:
-                    return_dict[key] = value[query]
+                return_dict[key] = value[query]
 
         return Container(return_dict)
 
@@ -909,7 +1129,9 @@ class Container(dict):
         """
         Set key or key chain of container object.
 
-        :param query: slice object, key or key chain at which to set all container elements.
+        :param query: slice object, key or key chain at which
+            to set all container elements.
+
         :type query: slice or str
         :param val: The value to set at the desired query.
         :type val: ivy.Container, array, or other
@@ -939,7 +1161,11 @@ class Container(dict):
 
     def __rpow__(self, power):
         if not isinstance(power, (float, int)):
-            raise Exception('power must be float, int or ivy.Container, but found type: {}'.format(type(power)))
+            raise Exception(
+                'power must be float, int or ivy.Container, '
+                'but found type: {}'.format(type(power))
+            )
+
         return self.map(lambda x, kc: power ** x)
 
     def __add__(self, other):
@@ -973,7 +1199,10 @@ class Container(dict):
 
     def __rtruediv__(self, other):
         if not isinstance(other, (float, int)):
-            raise Exception('power must be float, int or ivy.Container, but found type: {}'.format(type(other)))
+            raise Exception(
+                'power must be float, int or ivy.Container, '
+                'but found type: {}'.format(type(other))
+            )
         return self.map(lambda x, kc: other / x)
 
     def __floordiv__(self, other):
@@ -983,7 +1212,10 @@ class Container(dict):
 
     def __rfloordiv__(self, other):
         if not isinstance(other, (float, int)):
-            raise Exception('power must be float, int or ivy.Container, but found type: {}'.format(type(other)))
+            raise Exception(
+                'power must be float, int or ivy.Container, '
+                'but found type: {}'.format(type(other))
+            )
         return self.map(lambda x, kc: other // x)
 
     def __abs__(self):

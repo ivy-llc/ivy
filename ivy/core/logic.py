@@ -16,7 +16,8 @@ def logical_and(x1, x2, f=None):
     :type x2: array
     :param f: Machine learning framework. Inferred from inputs if None.
     :type f: ml_framework, optional
-    :return: Boolean result of the logical AND operation applied element-wise to x1 and x2.
+    :return: Boolean result of the logical AND operation applied
+        element-wise to x1 and x2.
     """
     return _get_framework(x1, f=f).logical_and(x1, x2)
 
@@ -31,7 +32,8 @@ def logical_or(x1, x2, f=None):
     :type x2: array
     :param f: Machine learning framework. Inferred from inputs if None.
     :type f: ml_framework, optional
-    :return: Boolean result of the logical OR operation applied element-wise x1 and x2.
+    :return: Boolean result of the logical OR operation applied element-wise
+        x1 and x2.
     """
     return _get_framework(x1, f=f).logical_or(x1, x2)
 
@@ -44,6 +46,7 @@ def logical_not(x, f=None):
     :type x: array
     :param f: Machine learning framework. Inferred from inputs if None.
     :type f: ml_framework, optional
-    :return: Boolean result of the logical OR operation applied element-wise to x1 and x2.
+    :return: Boolean result of the logical OR operation applied element-wise
+        to x1 and x2.
     """
     return _get_framework(x, f=f).logical_not(x)

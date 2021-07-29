@@ -18,17 +18,21 @@ def array(object_in, dtype_str=None, dev_str=None, f=None):
     Creates an array.
     
     :param object_in: An array_like object, which exposes the array interface,
-            an object whose __array__ method returns an array, or any (nested) sequence.
+        an object whose __array__ method returns an array,
+        or any (nested) sequence.
     :type object_in: array
-    :param dtype_str: The desired data-type for the array in string format, i.e. 'float32' or 'int64'.
-        If not given, then the type will be determined as the minimum type required to hold the objects in the
-        sequence.
+    :param dtype_str: The desired data-type for the array in string format,
+        i.e. 'float32' or 'int64'.
+        If not given, then the type will be determined as the minimum type
+        required to hold the objects in the sequence.
     :type dtype_str: data-type string, optional
-    :param dev_str: device string on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc..
+    :param dev_str: device string on which to create the array
+        'cuda:0', 'cuda:1', 'cpu' etc..
     :type dev_str: str
     :param f: Machine learning framework. Inferred from inputs if None.
     :type f: ml_framework, optional
-    :return: An array object satisfying the specified requirements, in the form of the selected framework.
+    :return: An array object satisfying the specified requirements,
+        in the form of the selected framework.
     """
     return _get_framework(object_in, f=f).array(object_in, dtype_str, dev_str)
 
@@ -125,7 +129,8 @@ def minimum(x, y, f=None):
     :type y: array
     :param f: Machine learning framework. Inferred from inputs if None.
     :type f: ml_framework, optional
-    :return: An array with the elements of x, but clipped to not exceed the y values.
+    :return: An array with the elements of x, but clipped to not exceed
+        the y values.
     """
     return _get_framework(x, f=f).minimum(x, y)
 
@@ -140,7 +145,8 @@ def maximum(x, y, f=None):
     :type y: array
     :param f: Machine learning framework. Inferred from inputs if None.
     :type f: ml_framework, optional
-    :return: An array with the elements of x, but clipped to not be lower than the y values.
+    :return: An array with the elements of x, but clipped to not be lower than
+        the y values.
     """
     return _get_framework(x, f=f).maximum(x, y)
 
@@ -149,8 +155,10 @@ def clip(x, x_min, x_max, f=None):
     """
     Clips (limits) the values in an array.
 
-    Given an interval, values outside the interval are clipped to the interval edges (element-wise).
-    For example, if an interval of [0, 1] is specified, values smaller than 0 become 0,
+    Given an interval, values outside the interval are clipped to the interval
+        edges (element-wise).
+    For example, if an interval of [0, 1] is specified, values smaller than 0
+        become 0,
     and values larger than 1 become 1.
 
     :param x: Input array containing elements to clip.
@@ -161,8 +169,8 @@ def clip(x, x_min, x_max, f=None):
     :type x_max: scalar or array
     :param f: Machine learning framework. Inferred from inputs if None.
     :type f: ml_framework, optional
-    :return: An array with the elements of x, but where values < x_min are replaced with x_min,
-                and those > x_max with x_max.
+    :return: An array with the elements of x, but where values < x_min are
+        replaced with x_min, and those > x_max with x_max.
     """
     return _get_framework(x, f=f).clip(x, x_min, x_max)
 
@@ -176,7 +184,8 @@ def round(x, f=None):
     :type x: array
     :param f: Machine learning framework. Inferred from inputs if None.
     :type f: ml_framework, optional
-    :return: An array of the same shape and type as x, with the elements rounded to integers.
+    :return: An array of the same shape and type as x,
+        with the elements rounded to integers.
     """
     return _get_framework(x, f=f).round(x)
 
@@ -191,7 +200,8 @@ def floormod(x, y, f=None):
     :type y: array
     :param f: Machine learning framework. Inferred from inputs if None.
     :type f: ml_framework, optional
-    :return: An array of the same shape and type as x, with the elements floor modded.
+    :return: An array of the same shape and type as x,
+        with the elements floor modded.
     """
     return _get_framework(x, f=f).floormod(x, y)
 
@@ -204,7 +214,8 @@ def floor(x, f=None):
     :type x: array
     :param f: Machine learning framework. Inferred from inputs if None.
     :type f: ml_framework, optional
-    :return: An array of the same shape and type as x, with the elements floored to integers.
+    :return: An array of the same shape and type as x,
+        with the elements floored to integers.
     """
     return _get_framework(x, f=f).floor(x)
 
@@ -217,7 +228,8 @@ def ceil(x, f=None):
     :type x: array
     :param f: Machine learning framework. Inferred from inputs if None.
     :type f: ml_framework, optional
-    :return: An array of the same shape and type as x, with the elements ceiled to integers.
+    :return: An array of the same shape and type as x,
+        with the elements ceiled to integers.
     """
     return _get_framework(x, f=f).ceil(x)
 
@@ -231,7 +243,8 @@ def abs(x, f=None):
     :type x: array
     :param f: Machine learning framework. Inferred from inputs if None.
     :type f: ml_framework, optional
-    :return: A new array of the same shape as input array a, with all values now positive.
+    :return: A new array of the same shape as input array a,
+        with all values now positive.
     """
     return _get_framework(x, f=f).abs(x)
 
@@ -246,7 +259,8 @@ def argmax(x, axis=0, f=None):
     :type axis: int, optional
     :param f: Machine learning framework. Inferred from inputs if None.
     :type f: ml_framework, optional
-    :return: Tensor containing the indices of the maximum values across the specified axis.
+    :return: Tensor containing the indices of the maximum values across the
+        specified axis.
     """
     return _get_framework(x, f=f).argmax(x, axis)
 
@@ -261,7 +275,8 @@ def argmin(x, axis=0, f=None):
     :type axis: int, optional
     :param f: Machine learning framework. Inferred from inputs if None.
     :type f: ml_framework, optional
-    :return: Tensor containing the indices of the minimum values across the specified axis.
+    :return: Tensor containing the indices of the minimum values across the
+        specified axis.
     """
     return _get_framework(x, f=f).argmin(x, axis)
 
@@ -276,7 +291,8 @@ def argsort(x, axis=-1, f=None):
     :type axis: int, optional
     :param f: Machine learning framework. Inferred from inputs if None.
     :type f: ml_framework, optional
-    :return: The indices that would sort each slice of the given values along the given axis.
+    :return: The indices that would sort each slice of the given values along
+        the given axis.
     """
     return _get_framework(x, f=f).argsort(x, axis)
 
@@ -288,13 +304,15 @@ def cast(x, dtype_str, f=None):
 
     :param x: Input array containing elements to cast.
     :type x: array
-    :param dtype_str: The desired data-type for the array in string format, i.e. 'float32' or 'int64'.
-            If not given, then the type will be determined as the minimum type required to hold the objects in the
-            sequence.
+    :param dtype_str: The desired data-type for the array in string format,
+        i.e. 'float32' or 'int64'.
+            If not given, then the type will be determined as the minimum type
+            required to hold the objects in the sequence.
     :type dtype_str: data-type string
     :param f: Machine learning framework. Inferred from inputs if None.
     :type f: ml_framework, optional
-    :return: A new array of the same shape as input array a, with data type given by dtype_str.
+    :return: A new array of the same shape as input array a,
+        with data type given by dtype_str.
     """
     return _get_framework(x, f=f).cast(x, dtype_str)
 
@@ -302,35 +320,53 @@ def cast(x, dtype_str, f=None):
 # noinspection PyShadowingNames
 def arange(stop, start=0, step=1, dtype_str=None, dev_str=None, f=None):
     """
-    Returns evenly spaced values within a given interval, with the spacing being specified.
+    Returns evenly spaced values within a given interval,
+        with the spacing being specified.
 
-    Values are generated within the half-open interval [start, stop) (in other words, the interval including start but
-    excluding stop). For integer arguments the function is equivalent to the Python built-in range function,
+    Values are generated within the half-open interval [start, stop)
+        (in other words, the interval including start but excluding stop).
+
+    For integer arguments the function is equivalent to the
+        Python built-in range function,
     but returns an array in the chosen ml_framework rather than a list.
 
-    See :math:`linspace` for a certain number of evenly spaced values in an interval.
+    See :math:`linspace`
+        for a certain number of evenly spaced values in an interval.
 
-    :param stop: End of interval. The interval does not include this value, except in some cases where step is not an
-                integer and floating point round-off affects the length of out.
+    :param stop: End of interval. The interval does not include this value,
+        except in some cases where step is not an integer and floating point
+        round-off affects the length of out.
+
     :type stop: number
-    :param start: Start of interval. The interval includes this value. The default start value is 0.
+    :param start: Start of interval. The interval includes this value.
+    The default start value is 0.
+
     :type start: number, optional
-    :param step: Spacing between values. For any output out, this is the distance between two adjacent values,
-                    out[i+1] - out[i]. The default step size is 1. If step is specified as a position argument,
-                    start must also be given.
+    :param step: Spacing between values.
+        For any output out, this is the distance between two adjacent values,
+            out[i+1] - out[i].
+        The default step size is 1.
+        If step is specified as a position argument, start must also be given.
+
     :type step: number, optional
-    :param dtype_str: The desired data-type for the array in string format, i.e. 'float32' or 'int64'.
-        If not given, then the type will be determined as the minimum type required to hold the objects in the
-        sequence.
+    :param dtype_str: The desired data-type for the array in string format,
+        i.e. 'float32' or 'int64'.
+        If not given, then the type will be determined as the minimum type
+            required to hold the objects in the sequence.
+
     :type dtype_str: data-type string, optional
-    :param dev_str: device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc.
+    :param dev_str: device on which to create the array
+        'cuda:0', 'cuda:1', 'cpu' etc.
     :type dev_str: str
     :param f: Machine learning framework. Inferred from inputs if None.
     :type f: ml_framework, optional
     :return: Tensor of evenly spaced values.
 
-            For floating point arguments, the length of the result is ceil((stop - start)/step).
-            Because of floating point overflow, this rule may result in the last element of out being greater than stop.
+            For floating point arguments,
+                the length of the result is ceil((stop - start)/step).
+
+            Because of floating point overflow, this rule may result
+                in the last element of out being greater than stop.
     """
     return _get_framework(f=f).arange(stop, start, step, dtype_str, dev_str)
 
@@ -338,9 +374,11 @@ def arange(stop, start=0, step=1, dtype_str=None, dev_str=None, f=None):
 # noinspection PyShadowingNames
 def linspace(start, stop, num, axis=None, dev_str=None, f=None):
     """
-    Generates a certain number of evenly-spaced values in an interval along a given axis.
+    Generates a certain number of evenly-spaced values
+        in an interval along a given axis.
 
-    See :math:`arange` that allows to specify the step size of evenly spaced values in an interval.
+    See :math:`arange` that allows to specify the step size of
+        evenly spaced values in an interval.
 
     :param start: First entry in the range.
     :type start: array
@@ -350,7 +388,9 @@ def linspace(start, stop, num, axis=None, dev_str=None, f=None):
     :type num: int
     :param axis: Axis along which the operation is performed.
     :type axis: int
-    :param dev_str: device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc.
+    :param dev_str: device on which to create the array
+        'cuda:0', 'cuda:1', 'cpu' etc.
+
     :type dev_str: str
     :param f: Machine learning framework. Inferred from inputs if None.
     :type f: ml_framework, optional
@@ -362,9 +402,11 @@ def linspace(start, stop, num, axis=None, dev_str=None, f=None):
 # noinspection PyShadowingNames
 def logspace(start, stop, num, base=10., axis=None, dev_str=None, f=None):
     """
-    Generates a certain number of evenly-spaced values in log space, in an interval along a given axis.
+    Generates a certain number of evenly-spaced values in log space,
+        in an interval along a given axis.
 
-    See :math:`arange` that allows to specify the step size of evenly spaced values in an interval.
+    See :math:`arange` that allows to specify
+        the step size of evenly spaced values in an interval.
 
     :param start: First entry in the range.
     :type start: array
@@ -376,21 +418,26 @@ def logspace(start, stop, num, base=10., axis=None, dev_str=None, f=None):
     :type base: float, optional
     :param axis: Axis along which the operation is performed.
     :type axis: int
-    :param dev_str: device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc.
+    :param dev_str: device on which to create the array
+        'cuda:0', 'cuda:1', 'cpu' etc.
+
     :type dev_str: str
     :param f: Machine learning framework. Inferred from inputs if None.
     :type f: ml_framework, optional
     :return: Tensor of evenly-spaced values.
     """
-    return _get_framework(start, f=f).logspace(start, stop, num, base, axis, dev_str)
+    return _get_framework(start, f=f).logspace(
+        start, stop, num, base, axis, dev_str
+    )
 
 
 def concatenate(xs, axis=-1, f=None):
     """
     Casts an array to a specified type.
 
-    :param xs: The input arrays must have the same shape, except in the dimension corresponding to axis
-                        (the first, by default).
+    :param xs: The input arrays must have the same shape, except in
+        the dimension corresponding to axis (the first, by default).
+
     :type xs: sequence of arrays
     :param axis: The axis along which the arrays will be joined. Default is -1.
     :type axis: int, optional
@@ -408,7 +455,8 @@ def flip(x, axis=None, batch_shape=None, f=None):
 
     :param x: Input array.
     :type x: array
-    :param axis: Axis or axes along which to flip over. The default, axis=None, will flip over all axes.
+    :param axis: Axis or axes along which to flip over. The default, axis=None,
+        will flip over all axes.
     :type axis: None or int or sequence of ints, optional
     :param batch_shape: Shape of batch. Inferred from inputs if None.
     :type batch_shape: sequence of ints, optional
@@ -422,12 +470,15 @@ def flip(x, axis=None, batch_shape=None, f=None):
 def stack(xs, axis=0, f=None):
     """
     Joins a sequence of arrays along a new axis.
-    The axis parameter specifies the index of the new axis in the dimensions of the result.
-    For example, if axis=0, it will be the first dimension and if axis=-1, it will be the last dimension.
+    The axis parameter specifies the index of
+        the new axis in the dimensions of the result.
+    For example, if axis=0, it will be the first dimension and if axis=-1,
+        it will be the last dimension.
 
     :param xs: Input arrays, each array must have the same shape.
     :type xs: sequence of arrays
-    :param axis: The axis in the result array along which the input arrays are stacked.
+    :param axis: The axis in the result array along which
+        the input arrays are stacked.
     :type axis: int, optional
     :param f: Machine learning framework. Inferred from inputs if None.
     :type f: ml_framework, optional
@@ -457,19 +508,25 @@ def split(x, num_or_size_splits=None, axis=0, with_remainder=False, f=None):
 
     :param x: Tensor to be divided into sub-arrays.
     :type x: array
-    :param num_or_size_splits: Number of equal arrays to divide the array into along the given axis if an integer.
-                               The size of each split element if a sequence of integers.
-                               Default is to divide into as many 1-dimensional arrays as the axis dimension.
+    :param num_or_size_splits: Number of equal arrays to divide the array into
+        along the given axis if an integer.
+        The size of each split element if a sequence of integers.
+        Default is to divide into as many 1-dimensional
+            arrays as the axis dimension.
+
     :type num_or_size_splits: int, optional
     :param axis: The axis along which to split, default is 0.
     :type axis: int, optional
-    :param with_remainder: If the tensor does not split evenly, then store the last remainder entry. Defaul is False.
+    :param with_remainder: If the tensor does not split evenly,
+        then store the last remainder entry. Defaul is False.
     :type with_remainder: bool, optional
     :param f: Machine learning framework. Inferred from inputs if None.
     :type f: ml_framework, optional
     :return: A list of sub-arrays.
     """
-    return _get_framework(x, f=f).split(x, num_or_size_splits, axis, with_remainder)
+    return _get_framework(x, f=f).split(
+        x, num_or_size_splits, axis, with_remainder
+    )
 
 
 def repeat(x, repeats, axis=None, f=None):
@@ -478,10 +535,12 @@ def repeat(x, repeats, axis=None, f=None):
 
     :param x: Input array.
     :type x: array
-    :param repeats: The number of repetitions for each element. repeats is broadcast to fit the shape of the given axis.
+    :param repeats: The number of repetitions for each element.
+        repeats is broadcast to fit the shape of the given axis.
     :type repeats: int or sequence of ints.
     :param axis: The axis along which to repeat values.
-                  By default, use the flattened input array, and return a flat output array.
+        By default, use the flattened input array,
+        and return a flat output array.
     :type axis: int, optional
     :param f: Machine learning framework. Inferred from inputs if None.
     :type f: ml_framework, optional
@@ -512,13 +571,16 @@ def constant_pad(x, pad_width, value=0, f=None):
     :param x: Input array to pad.
     :type x: array
     :param pad_width: Number of values padded to the edges of each axis.
-                      Specified as ((before_1, after_1), … (before_N, after_N)), where N is number of axes of x.
+        Specified as ((before_1, after_1), … (before_N, after_N)),
+        where N is number of axes of x.
+
     :type pad_width: sequence of tuples of ints
     :param value: The constant value to pad the array with.
     :type value: float or int, default zero
     :param f: Machine learning framework. Inferred from inputs if None.
     :type f: ml_framework, optional
-    :return: Padded array of rank equal to x with shape increased according to pad_width.
+    :return: Padded array of rank equal
+        to x with shape increased according to pad_width.
     """
     return _get_framework(x, f=f).constant_pad(x, pad_width, value)
 
@@ -530,11 +592,13 @@ def zero_pad(x, pad_width, f=None):
     :param x: Input array to pad.
     :type x: array
     :param pad_width: Number of values padded to the edges of each axis.
-                      Specified as ((before_1, after_1), … (before_N, after_N)), where N is number of axes of x.
+        Specified as ((before_1, after_1), … (before_N, after_N)),
+        where N is number of axes of x.
     :type pad_width: sequence of tuples of ints
     :param f: Machine learning framework. Inferred from inputs if None.
     :type f: ml_framework, optional
-    :return: Padded array of rank equal to x with shape increased according to pad_width.
+    :return: Padded array of rank equal to x with shape increased according
+        to pad_width.
     """
     return _get_framework(x, f=f).zero_pad(x, pad_width)
 
@@ -562,7 +626,8 @@ def transpose(x, axes=None, f=None):
 
     :param x: Input array.
     :type x: array
-    :param axes: By default, reverse the dimensions, otherwise permute the axes according to the values given.
+    :param axes: By default, reverse the dimensions, otherwise permute
+        the axes according to the values given.
     :type axes: sequence of ints of length N
     :param f: Machine learning framework. Inferred from inputs if None.
     :type f: ml_framework, optional
@@ -574,7 +639,8 @@ def transpose(x, axes=None, f=None):
 def expand_dims(x, axis, f=None):
     """
     Expands the shape of an array.
-    Inserts a new axis that will appear at the axis position in the expanded array shape.
+    Inserts a new axis that will
+        appear at the axis position in the expanded array shape.
 
     :param x: Input array.
     :type x: array
@@ -582,7 +648,8 @@ def expand_dims(x, axis, f=None):
     :type axis: int
     :param f: Machine learning framework. Inferred from inputs if None.
     :type f: ml_framework, optional
-    :return: array with the number of dimensions increased by onearray
+    :return: array with the number
+        of dimensions increased by onearray
     """
     return _get_framework(x, f=f).expand_dims(x, axis)
 
@@ -599,7 +666,8 @@ def where(condition, x1, x2, f=None):
     :type x2: array
     :param f: Machine learning framework. Inferred from inputs if None.
     :type f: ml_framework, optional
-    :return: An array with elements from x1 where condition is True, and elements from x2 elsewhere.
+    :return: An array with elements from x1 where condition is True,
+        and elements from x2 elsewhere.
     """
     return _get_framework(x1, f=f).where(condition, x1, x2)
 
@@ -636,8 +704,10 @@ def reshape(x, newshape, f=None):
 
     :param x: Tensor to be reshaped.
     :type x: array
-    :param newshape: The new shape should be compatible with the original shape. One shape dimension can be -1.
-                        In this case, the value is inferred from the length of the array and remaining dimensions.
+    :param newshape: The new shape should be compatible with the original shape.
+        One shape dimension can be -1.
+        In this case, the value is inferred from the length of
+            the array and remaining dimensions.
     :type newshape: int or sequence of ints
     :param f: Machine learning framework. Inferred from inputs if None.
     :type f: ml_framework, optional
@@ -648,7 +718,8 @@ def reshape(x, newshape, f=None):
 
 def broadcast_to(x, newshape, f=None):
     """
-    Broadcast the input tensor to newshape, adding dimensions of size 1 where the dimensions do not align.
+    Broadcast the input tensor to newshape, adding dimensions of size 1 where
+        the dimensions do not align.
 
     :param x: Tensor to be broadcast to new shape.
     :type x: array
@@ -668,11 +739,14 @@ def squeeze(x, axis=None, f=None):
     :param x: Input data.
     :type x: array
     :param axis: Index for one of the single-dimensional entries in the shape.
-                 If an axis is selected with shape entry greater than one, an error is raised.
+        If an axis is selected with shape entry greater than one,
+        an error is raised.
+
     :type axis: int, optional
     :param f: Machine learning framework. Inferred from inputs if None.
     :type f: ml_framework, optional
-    :return: The input array, but with all (axis=None) or one (axis is int) of the dimensions of length 1 removed.
+    :return: The input array, but with all (axis=None) or one (axis is int)
+        of the dimensions of length 1 removed.
     """
     return _get_framework(x, f=f).squeeze(x, axis)
 
@@ -684,10 +758,13 @@ def zeros(shape, dtype_str='float32', dev_str=None, f=None):
 
     :param shape: Shape of the new array, e.g. (2, 3).
     :type shape: sequence of ints
-    :param dtype_str: The desired data-type for the array in string format, i.e. 'float32' or 'int64'.
+    :param dtype_str: The desired data-type for the array in string format,
+        i.e. 'float32' or 'int64'.
+
     Default is 'float32'.
     :type dtype_str: data-type string, optional
-    :param dev_str: device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc..
+    :param dev_str: device on which to create the array
+        'cuda:0', 'cuda:1', 'cpu' etc..
     :type dev_str: str
     :param f: Machine learning framework. Inferred from inputs if None.
     :type f: ml_framework, optional
@@ -699,18 +776,26 @@ def zeros(shape, dtype_str='float32', dev_str=None, f=None):
 # noinspection PyShadowingNames
 def zeros_like(x, dtype_str=None, dev_str=None, f=None):
     """
-    Returns an array of zeros with the same shape and type as x, unless dtype_str provided which overrides.
+    Returns an array of zeros with the same shape and type as x,
+        unless dtype_str provided which overrides.
 
-    :param x: The shape and data-type of x define these same attributes of the returned array.
+    :param x: The shape and data-type of x define these same attributes
+        of the returned array.
+
     :type x: array
-    :param dtype_str: The desired data-type for the array in string format, i.e. 'float32' or 'int64'.
-                    If not given, then the type of the original array is used.
+    :param dtype_str: The desired data-type for the array in string format,
+        i.e. 'float32' or 'int64'.
+        If not given, then the type of the original array is used.
+
     :type dtype_str: data-type string, optional
-    :param dev_str: device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc. Same as x if None.
+    :param dev_str: device on which to create the array
+        'cuda:0', 'cuda:1', 'cpu' etc. Same as x if None.
+
     :type dev_str: str, optional
     :param f: Machine learning framework. Inferred from inputs if None.
     :type f: ml_framework, optional
-    :return: Tensor of zeros with the same shape and type as a, unless dtype_str provided which overrides.
+    :return: Tensor of zeros with the same shape and type as a,
+        unless dtype_str provided which overrides.
     """
     return _get_framework(x, f=f).zeros_like(x, dtype_str, dev_str)
 
@@ -722,10 +807,14 @@ def ones(shape, dtype_str='float32', dev_str=None, f=None):
 
     :param shape: Shape of the new array, e.g. (2, 3).
     :type shape: sequence of ints
-    :param dtype_str: The desired data-type for the array in string format, i.e. 'float32' or 'int64'.
+    :param dtype_str: The desired data-type for the array in string format,
+        i.e. 'float32' or 'int64'.
     Default is 'float32'.
+
     :type dtype_str: data-type string, optional
-    :param dev_str: device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc..
+    :param dev_str: device on which to create the array
+        'cuda:0', 'cuda:1', 'cpu' etc..
+
     :type dev_str: str
     :param f: Machine learning framework. Inferred from inputs if None.
     :type f: ml_framework, optional
@@ -737,18 +826,28 @@ def ones(shape, dtype_str='float32', dev_str=None, f=None):
 # noinspection PyShadowingNames
 def ones_like(x, dtype_str=None, dev_str=None, f=None):
     """
-    Returns an array of ones with the same shape and type as x, unless dtype_str provided which overrides.
+    Returns an array of ones with the same shape and type as x,
+        unless dtype_str provided which overrides.
 
-    :param x: The shape and data-type of a define these same attributes of the returned array.
+    :param x: The shape and data-type of a define these same
+        attributes of the returned array.
+
     :type x: array
-    :param dtype_str: The desired data-type for the array in string format, i.e. 'float32' or 'int64'.
-                    If not given, then the type of the original array is used.
+    :param dtype_str: The desired data-type for the array in string format,
+        i.e. 'float32' or 'int64'.
+        If not given, then the type of the original array is used.
+
     :type dtype_str: data-type string, optional
-    :param dev_str: device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc. Same as x if None.
+    :param dev_str: device on which to create the array
+        'cuda:0', 'cuda:1', 'cpu' etc. Same as x if None.
+
     :type dev_str: str, optional
     :param f: Machine learning framework. Inferred from inputs if None.
     :type f: ml_framework, optional
-    :return: Tensor of zeros with the same shape and type as a, unless dtype_str provided which overrides.
+
+    :return: Tensor of zeros with the same shape and type as a,
+        unless dtype_str provided which overrides.
+
     """
     return _get_framework(x, f=f).ones_like(x, dtype_str, dev_str)
 
@@ -757,15 +856,20 @@ def ones_like(x, dtype_str=None, dev_str=None, f=None):
 def one_hot(indices, depth, dev_str=None, f=None):
     """
     Returns a one-hot array
-    :param indices: Indices for where the ones should be scattered *[batch_shape, dim]*
+    :param indices: Indices for where the ones should be scattered
+        *[batch_shape, dim]*
+
     :type indices: array
     :param depth: Scalar defining the depth of the one-hot dimension.
     :type depth: int
-    :param dev_str: device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc. Same as x if None.
+    :param dev_str: device on which to create the array
+        'cuda:0', 'cuda:1', 'cpu' etc. Same as x if None.
+
     :type dev_str: str, optional
     :param f: Machine learning framework. Inferred from inputs if None.
     :type f: ml_framework, optional
-    :return: Tensor of zeros with the same shape and type as a, unless dtype provided which overrides.
+    :return: Tensor of zeros with the same shape and type as a,
+        unless dtype provided which overrides.
     """
     return _get_framework(indices, f=f).one_hot(indices, depth, dev_str)
 
@@ -773,8 +877,11 @@ def one_hot(indices, depth, dev_str=None, f=None):
 def cross(x1, x2, f=None):
     """
     Returns the cross product of two (arrays of) vectors in R^3.
-    The cross product of x1 and x2 in R^3 is a vector perpendicular to both x1 and x2.
-    If x1 and x2 are arrays of vectors, the vectors are defined by the last axis of x1 and x2 by default which must have
+    The cross product of x1 and x2 in R^3 is a vector
+        perpendicular to both x1 and x2.
+    If x1 and x2 are arrays of vectors,
+        the vectors are defined by the last axis of x1 and x2
+        by default which must have
     dimension 3.
 
     :param x1: Components of the first vector(s).
@@ -824,9 +931,11 @@ def cumprod(x, axis=0, exclusive=False, f=None):
 
     :param x: Input array.
     :type x: array
-    :param axis: Axis along which the cumulative product is computed. By default 0.
+    :param axis: Axis along which the cumulative product is computed.
+        By default 0.
     :type axis: int
-    :param exclusive: Whether to perform the cumprod exclusively. Defaults is False.
+    :param exclusive: Whether to perform the cumprod exclusively.
+        Defaults is False.
     :type exclusive: bool, optional
     :param f: Machine learning framework. Inferred from inputs if None.
     :type f: ml_framework, optional
@@ -843,15 +952,19 @@ def identity(n, dtype_str='float32', batch_shape=None, dev_str=None, f=None):
 
     :param n: Number of rows (and columns) in n x n output.
     :type n: int
-    :param dtype_str: The desired data-type for the array in string format, i.e. 'float32' or 'int64'. Default is 'float32'.
+    :param dtype_str: The desired data-type for the array in string format,
+        i.e. 'float32' or 'int64'. Default is 'float32'.
+
     :type dtype_str: data-type string, optional
     :param batch_shape: Shape of batch. Inferred from inputs if None.
     :type batch_shape: sequence of ints, optional
-    :param dev_str: device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc..
+    :param dev_str: device on which to create the array
+        'cuda:0', 'cuda:1', 'cpu' etc..
     :type dev_str: str
     :param f: Machine learning framework. Inferred from inputs if None.
     :type f: ml_framework, optional
-    :return: n x n array of type dtype_str, with its main diagonal set to one, and all other elements 0.
+    :return: n x n array of type dtype_str, with its main diagonal set to one,
+        and all other elements 0.
     """
     return _get_framework(f=f).identity(n, dtype_str, batch_shape, dev_str)
 
@@ -866,7 +979,8 @@ def meshgrid(*xs, indexing='ij', f=None):
     :type indexing: str, optional
     :param f: Machine learning framework. Inferred from inputs if None.
     :type f: ml_framework, optional
-    :return: list of N-D coordinate arrays for evaluating expressions on an N-D grid
+    :return: list of N-D coordinate arrays for evaluating expressions
+        on an N-D grid
     """
     return _get_framework(f=f).meshgrid(*xs, indexing=indexing)
 
@@ -882,15 +996,20 @@ def scatter_flat(indices, updates, size, reduction='sum', dev_str=None, f=None):
     :type updates: array
     :param size: The size of the result.
     :type size: int
-    :param reduction: The reduction method for the scatter, one of 'sum', 'min', 'max' or 'replace'
+    :param reduction: The reduction method for the scatter,
+        one of 'sum', 'min', 'max' or 'replace'
     :type reduction: str
-    :param dev_str: device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc. Same as updates if None.
+    :param dev_str: device on which to create the array
+        'cuda:0', 'cuda:1', 'cpu' etc. Same as updates if None.
+
     :type dev_str: str, optional
     :param f: Machine learning framework. Inferred from inputs if None.
     :type f: ml_framework, optional
     :return: New array of given shape, with the values scattered at the indices.
     """
-    return _get_framework(indices, f=f).scatter_flat(indices, updates, size, reduction, dev_str)
+    return _get_framework(indices, f=f).scatter_flat(
+        indices, updates, size, reduction, dev_str
+    )
 
 
 # noinspection PyShadowingNames
@@ -904,15 +1023,22 @@ def scatter_nd(indices, updates, shape, reduction='sum', dev_str=None, f=None):
     :type updates: array
     :param shape: The shape of the result.
     :type shape: sequence of ints
-    :param reduction: The reduction method for the scatter, one of 'sum', 'min' or 'max'
+    :param reduction: The reduction method for the scatter,
+        one of 'sum', 'min' or 'max'
+
     :type reduction: str
-    :param dev_str: device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc. Same as updates if None.
+    :param dev_str: device on which to create the array
+        'cuda:0', 'cuda:1', 'cpu' etc.
+        Same as updates if None.
+
     :type dev_str: str, optional
     :param f: Machine learning framework. Inferred from inputs if None.
     :type f: ml_framework, optional
     :return: New array of given shape, with the values scattered at the indices.
     """
-    return _get_framework(indices, f=f).scatter_nd(indices, updates, shape, reduction, dev_str)
+    return _get_framework(indices, f=f).scatter_nd(
+        indices, updates, shape, reduction, dev_str
+    )
 
 
 # noinspection PyShadowingNames
@@ -926,11 +1052,15 @@ def gather(params, indices, axis=-1, dev_str=None, f=None):
     :type indices: array
     :param axis: The axis from which to gather from. Default is -1.
     :type axis: int, optional
-    :param dev_str: device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc. Same as x if None.
+    :param dev_str: device on which to create the array
+        'cuda:0', 'cuda:1', 'cpu' etc.
+        Same as x if None.
+
     :type dev_str: str, optional
     :param f: Machine learning framework. Inferred from inputs if None.
     :type f: ml_framework, optional
-    :return: New array with the values gathered at the specified indices along the specified axis.
+    :return: New array with the values gathered at the specified indices
+        along the specified axis.
     """
     return _get_framework(params, f=f).gather(params, indices, axis, dev_str)
 
@@ -944,7 +1074,9 @@ def gather_nd(params, indices, dev_str=None, f=None):
     :type params: array
     :param indices: Index array.
     :type indices: array
-    :param dev_str: device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc. Same as x if None.
+    :param dev_str: device on which to create the array
+        'cuda:0', 'cuda:1', 'cpu' etc. Same as x if None.
+
     :type dev_str: str, optional
     :param f: Machine learning framework. Inferred from inputs if None.
     :type f: ml_framework, optional
@@ -961,7 +1093,8 @@ def linear_resample(x, num_samples, axis=-1, f=None):
     :type x: array
     :param num_samples: The number of interpolated samples to take.
     :type num_samples: int
-    :param axis: The axis along which to perform the resample. Default is last dimension.
+    :param axis: The axis along which to perform the resample.
+        Default is last dimension.
     :type axis: int, optional
     :param f: Machine learning framework. Inferred from inputs if None.
     :type f: ml_framework, optional
@@ -989,7 +1122,8 @@ def to_dev(x, dev_str=None, f=None):
 
     :param x: Array to move onto the device.
     :type x: array
-    :param dev_str: device to move the array to 'cuda:0', 'cuda:1', 'cpu' etc. Keep same device if None.
+    :param dev_str: device to move the array to 'cuda:0', 'cuda:1', 'cpu' etc.
+        Keep same device if None.
     :type dev_str: str, optional
     :param f: Machine learning framework. Inferred from inputs if None.
     :type f: ml_framework, optional
@@ -1039,7 +1173,8 @@ def dev_str(x, f=None):
 
 def memory_on_dev(dev_str):
     """
-    Get the total amount of memory for a given device string. In case of CPU, the total RAM is returned.
+    Get the total amount of memory for a given device string. In case of CPU,
+        the total RAM is returned.
 
     :param dev_str: The device string to conver to native device handle.
     :type dev_str: str
@@ -1054,8 +1189,11 @@ def memory_on_dev(dev_str):
     elif 'cpu' in dev_str:
         return virtual_memory().total/1e9
     else:
-        raise Exception('Invalid device string input, must be on the form "gpu:idx" or "cpu:idx",'
-                        'but found {}'.format(dev_str))
+        raise Exception(
+            'Invalid device string input, '
+            'must be on the form "gpu:idx" or "cpu:idx",'
+            ' but found {}'.format(dev_str)
+        )
 
 
 def gpu_is_available(f=None):
@@ -1137,34 +1275,47 @@ def compile_fn(func, dynamic=True, example_inputs=None, f=None):
 
     :param func: Function to be compiled.
     :type func: callable
-    :param dynamic: Whether to compile all conditional branches, regardless of inputs during first invocation.
+    :param dynamic: Whether to compile all conditional branches,
+        regardless of inputs during first invocation.
+
     :type dynamic: bool, default True
     :param example_inputs: Example of inputs to the function to be compiled.
-                            Required for torch in non-dynamic mode, unused by other frameworks.
+        Required for torch in non-dynamic mode, unused by other frameworks.
+
     :type example_inputs: single input of tuple of inputs.
     :param f: Machine learning framework. Inferred from inputs if None.
     :type f: ml_framework, optional
     :return: The handle to the newly compiled function.
     """
-    return _get_framework(example_inputs, f=f).compile_fn(func, dynamic, example_inputs)
+    return _get_framework(example_inputs, f=f).compile_fn(
+        func, dynamic, example_inputs
+    )
 
 
 def split_func_call(func, inputs, chunk_size, input_axes=0, output_axes=None):
     """
-    Call a function by splitting its inputs along a given axis, and calling the function in chunks, rather than feeding
-    the entire input array at once. This can be useful to reduce memory usage of the device the arrays are on.
+    Call a function by splitting its inputs along a given axis,
+        and calling the function in chunks, rather than feeding
+    the entire input array at once.
+    This can be useful to reduce memory usage of the device the arrays are on.
 
     :param func: The function to be called.
     :type func: callable
     :param inputs: A list of inputs to pass into the function.
     :type inputs: sequence of arrays
-    :param chunk_size: The size of each of the chunks to be fed into the function.
+    :param chunk_size: The size of each of
+        the chunks to be fed into the function.
     :type chunk_size: int
-    :param input_axes: The axes along which to split each of the inputs, before passing to the function. Default is 0.
+    :param input_axes: The axes along which to split each of the inputs,
+        before passing to the function. Default is 0.
+
     :type input_axes: int or sequence of ints, optional
-    :param output_axes: The axes along which to concat each of the returned outputs. Default is same as fist input axis.
+    :param output_axes: The axes along which to concat each of the returned
+        outputs. Default is same as fist input axis.
+
     :type output_axes: int or sequence of ints, optional
-    :return: The return from the function, following input splitting and re-concattenation.
+    :return: The return from the function,
+        following input splitting and re-concattenation.
     """
     if isinstance(input_axes, int):
         input_axes = [input_axes]*len(inputs)

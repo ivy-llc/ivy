@@ -54,7 +54,8 @@ def asin(x, f=None):
     :type x: array
     :param f: Machine learning framework. Inferred from inputs if None.
     :type f: ml_framework, optional
-    :return: The inverse sine of each element in x, in radians and in the closed interval [-pi/2, pi/2].
+    :return: The inverse sine of each element in x,
+        in radians and in the closed interval [-pi/2, pi/2].
     """
     return _get_framework(x, f=f).asin(x)
 
@@ -64,11 +65,13 @@ def acos(x, f=None):
     Computes trigonometric inverse cosine element-wise.
     The inverse of cos so that, if y = cos(x), then x = arccos(y).
 
-    :param x: x-coordinate on the unit circle. For real arguments, the domain is [-1, 1].
+    :param x: x-coordinate on the unit circle. For real arguments,
+        the domain is [-1, 1].
     :type x: array
     :param f: Machine learning framework. Inferred from inputs if None.
     :type f: ml_framework, optional
-    :return: The angle of the ray intersecting the unit circle at the given x-coordinate in radians [0, pi].
+    :return: The angle of the ray intersecting the unit circle at
+        the given x-coordinate in radians [0, pi].
     """
     return _get_framework(x, f=f).acos(x)
 
@@ -82,7 +85,8 @@ def atan(x, f=None):
     :type x: array
     :param f: Machine learning framework. Inferred from inputs if None.
     :type f: ml_framework, optional
-    :return: Out has the same shape as x. Its real part is in [-pi/2, pi/2] (arctan(+/-inf) returns +/-pi/2).
+    :return: Out has the same shape as x. Its real part is in [-pi/2, pi/2]
+        (arctan(+/-inf) returns +/-pi/2).
     """
     return _get_framework(x, f=f).atan(x)
 
@@ -93,8 +97,10 @@ def atan2(x1, x2, f=None):
 
     :param x1: y-coordinates.
     :type x1: array
-    :param x2: x-coordinates. If x1.shape != x2.shape, they must be broadcastable to a common shape
-                    (which becomes the shape of the output).
+    :param x2: x-coordinates. If x1.shape != x2.shape,
+        they must be broadcastable to a common shape
+        (which becomes the shape of the output).
+
     :type x2: array
     :param f: Machine learning framework. Inferred from inputs if None.
     :type f: ml_framework, optional
@@ -158,19 +164,22 @@ def acosh(x, f=None):
     :param x: Input array.
     :param f: Machine learning framework. Inferred from inputs if None.
     :type f: ml_framework, optional
-    :return: A new array with the inverse hyperbolic cosine of the elements of x.
+    :return: A new array with the inverse hyperbolic cosine
+        of the elements of x.
     """
     return _get_framework(x, f=f).acosh(x)
 
 
 def atanh(x, f=None):
     """
-    Returns a new array with the inverse hyperbolic tangent of the elements of x.
+    Returns a new array with the inverse hyperbolic tangent
+        of the elements of x.
 
     :param x: Input array.
     :param f: Machine learning framework. Inferred from inputs if None.
     :type f: ml_framework, optional
-    :return: A new array with the inverse hyperbolic tangent of the elements of x.
+    :return: A new array with the inverse hyperbolic tangent
+        of the elements of x.
     """
     return _get_framework(x, f=f).atanh(x)
 
