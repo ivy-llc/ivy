@@ -156,9 +156,9 @@ def clip(x, x_min, x_max, f=None):
     :param x: Input array containing elements to clip.
     :type x: array
     :param x_min: Minimum value.
-    :type x_min: scalar
+    :type x_min: scalar or array
     :param x_max: Maximum value.
-    :type x_max: scalar
+    :type x_max: scalar or array
     :param f: Machine learning framework. Inferred from inputs if None.
     :type f: ml_framework, optional
     :return: An array with the elements of x, but where values < x_min are replaced with x_min,
