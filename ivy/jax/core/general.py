@@ -12,15 +12,17 @@ from operator import mul as _mul
 from functools import reduce as _reduce
 from jaxlib.xla_extension import Buffer
 
-DTYPE_DICT = {_jnp.dtype('bool'): 'bool',
-              _jnp.dtype('int8'): 'int8',
-              _jnp.dtype('uint8'): 'uint8',
-              _jnp.dtype('int16'): 'int16',
-              _jnp.dtype('int32'): 'int32',
-              _jnp.dtype('int64'): 'int64',
-              _jnp.dtype('float16'): 'float16',
-              _jnp.dtype('float32'): 'float32',
-              _jnp.dtype('float64'): 'float64'}
+DTYPE_DICT = {
+    _jnp.dtype('bool'): 'bool',
+    _jnp.dtype('int8'): 'int8',
+    _jnp.dtype('uint8'): 'uint8',
+    _jnp.dtype('int16'): 'int16',
+    _jnp.dtype('int32'): 'int32',
+    _jnp.dtype('int64'): 'int64',
+    _jnp.dtype('float16'): 'float16',
+    _jnp.dtype('float32'): 'float32',
+    _jnp.dtype('float64'): 'float64'
+}
 
 
 # Helpers #
@@ -46,16 +48,30 @@ def array(object_in, dtype_str=None, dev_str=None):
 
 # noinspection PyUnresolvedReferences,PyProtectedMember
 def is_array(x):
-    if isinstance(x, (_jax.interpreters.xla._DeviceArray, _jaxlib.xla_extension.DeviceArray, Buffer)):
-        return True
-    return False
+    return isinstance(
+        x,
+        (
+            _jax.interpreters.xla._DeviceArray,
+            _jaxlib.xla_extension.DeviceArray,
+            Buffer,
+        ),
+    )
 
 
 to_numpy = _onp.asarray
 to_scalar = lambda x: x.item()
 to_list = lambda x: x.tolist()
-shape = lambda x, as_tensor=False: _jnp.asarray(_jnp.shape(x)) if as_tensor else x.shape
-get_num_dims = lambda x, as_tensor=False: _jnp.asarray(len(_jnp.shape(x))) if as_tensor else len(x.shape)
+
+shape = (
+    lambda x, as_tensor=False:
+        _jnp.asarray(_jnp.shape(x)) if as_tensor else x.shape
+)
+
+
+get_num_dims = (
+    lambda x, as_tensor=False:
+        _jnp.asarray(len(_jnp.shape(x))) if as_tensor else len(x.shape)
+)
 minimum = _jnp.minimum
 maximum = _jnp.maximum
 clip = _jnp.clip
@@ -96,6 +112,7 @@ def arange(stop, start=0, step=1, dtype_str=None, dev_str=None):
         dtype = _jnp.__dict__[dtype_str]
     else:
         dtype = None
+
     return to_dev(_jnp.arange(start, stop, step=step, dtype=dtype), dev_str)
 
 
@@ -121,6 +138,7 @@ def flip(x, axis=None, batch_shape=None):
     num_dims = len(batch_shape) if batch_shape is not None else len(x.shape)
     if not num_dims:
         return x
+
     if isinstance(axis, list) or isinstance(axis, tuple):
         if len(axis) == 1:
             axis = axis[0]
@@ -138,6 +156,7 @@ def unstack(x, axis):
     dim_size = x.shape[axis]
     # ToDo: make this faster somehow, jnp.split is VERY slow for large dim_size
     x_split = _jnp.split(x, dim_size, axis)
+
     res = [_jnp.squeeze(item, axis) for item in x_split]
     return res
 
@@ -147,14 +166,21 @@ def split(x, num_or_size_splits=None, axis=0, with_remainder=False):
         if num_or_size_splits is not None and num_or_size_splits != 1:
             raise Exception('input array had no shape, but num_sections specified was {}'.format(num_or_size_splits))
         return [x]
+
     if num_or_size_splits is None:
         num_or_size_splits = x.shape[axis]
+
     elif isinstance(num_or_size_splits, int) and with_remainder:
         num_chunks = x.shape[axis] / num_or_size_splits
         num_chunks_int = _math.floor(num_chunks)
         remainder = num_chunks - num_chunks_int
         if remainder != 0:
-            num_or_size_splits = [num_or_size_splits]*num_chunks_int + [int(remainder*num_or_size_splits)]
+            num_or_size_splits = (
+                [num_or_size_splits]
+                * num_chunks_int
+                + [int(remainder*num_or_size_splits)]
+            )
+
     if isinstance(num_or_size_splits, (list, tuple)):
         num_or_size_splits = _jnp.cumsum(_jnp.array(num_or_size_splits[:-1]))
     return _jnp.split(x, num_or_size_splits, axis)
@@ -162,8 +188,20 @@ def split(x, num_or_size_splits=None, axis=0, with_remainder=False):
 
 repeat = _jnp.repeat
 tile = _jnp.tile
-constant_pad = lambda x, pad_width, value=0: _jnp.pad(_flat_array_to_1_dim_array(x), pad_width, constant_values=value)
-zero_pad = lambda x, pad_width: _jnp.pad(_flat_array_to_1_dim_array(x), pad_width, constant_values=0)
+constant_pad = (
+    lambda x, pad_width, value=0:
+        _jnp.pad(
+            _flat_array_to_1_dim_array(x), pad_width, constant_values=value
+        )
+)
+
+zero_pad = (
+    lambda x, pad_width:
+        _jnp.pad(
+            _flat_array_to_1_dim_array(x), pad_width, constant_values=0
+        )
+)
+
 swapaxes = _jnp.swapaxes
 
 
@@ -194,7 +232,9 @@ def squeeze(x, axis=None):
     if x.shape == ():
         if axis is None or axis == 0 or axis == -1:
             return x
-        raise Exception('tried to squeeze a zero-dimensional input by axis {}'.format(axis))
+        raise Exception(
+            'tried to squeeze a zero-dimensional input by axis {}'.format(axis)
+        )
     return _jnp.squeeze(x, axis)
 
 
@@ -230,7 +270,8 @@ def ones_like(x, dtype_str=None, dev_str=None):
 
 # noinspection PyUnusedLocal
 def one_hot(indices, depth, dev_str=None):
-    # from https://stackoverflow.com/questions/38592324/one-hot-encoding-using-numpy
+    # from:
+    # https://stackoverflow.com/questions/38592324/one-hot-encoding-using-numpy
     res = _jnp.eye(depth)[_jnp.array(indices).reshape(-1)]
     return to_dev(res.reshape(list(indices.shape) + [depth]), dev_str)
 
@@ -280,7 +321,10 @@ def scatter_flat(indices, updates, size, reduction='sum', dev_str=None):
         target = target.at[indices].max(updates)
         target = _jnp.where(target == -1e12, 0., target)
     else:
-        raise Exception('reduction is {}, but it must be one of "sum", "min" or "max"'.format(reduction))
+        raise Exception(
+            'reduction is {}, but it must be one of "sum", '
+            '"min" or "max"'.format(reduction)
+        )
     return to_dev(target, dev_str)
 
 
@@ -303,7 +347,10 @@ def scatter_nd(indices, updates, shape, reduction='sum', dev_str=None):
         target = target.at[indices_tuple].max(updates)
         target = _jnp.where(target == -1e12, 0., target)
     else:
-        raise Exception('reduction is {}, but it must be one of "sum", "min" or "max"'.format(reduction))
+        raise Exception(
+            'reduction is {}, but it must be one of "sum",'
+            ' "min" or "max"'.format(reduction)
+        )
     return to_dev(target, dev_str)
 
 
@@ -316,19 +363,39 @@ def gather(params, indices, axis=-1, dev_str=None):
 def gather_nd(params, indices, dev_str=None):
     if dev_str is None:
         dev_str = _callable_dev_str(params)
+
     indices_shape = indices.shape
     params_shape = params.shape
     num_index_dims = indices_shape[-1]
-    res_dim_sizes_list = [_reduce(_mul, params_shape[i + 1:], 1) for i in range(len(params_shape) - 1)] + [1]
+
+    res_dim_sizes_list = [
+        _reduce(_mul, params_shape[i + 1:], 1)
+        for i in range(len(params_shape) - 1)
+    ] + [1]
+
     result_dim_sizes = _jnp.array(res_dim_sizes_list)
     implicit_indices_factor = int(result_dim_sizes[num_index_dims - 1].item())
     flat_params = _jnp.reshape(params, (-1,))
     new_shape = [1] * (len(indices_shape) - 1) + [num_index_dims]
     indices_scales = _jnp.reshape(result_dim_sizes[0:num_index_dims], new_shape)
-    indices_for_flat_tiled = _jnp.tile(_jnp.reshape(_jnp.sum(indices * indices_scales, -1, keepdims=True), (-1, 1)), (1, implicit_indices_factor))
-    implicit_indices = _jnp.tile(_jnp.expand_dims(_jnp.arange(implicit_indices_factor), 0), (indices_for_flat_tiled.shape[0], 1))
+
+    indices_for_flat_tiled = _jnp.tile(
+        _jnp.reshape(
+            _jnp.sum(indices * indices_scales, -1, keepdims=True), (-1, 1)
+        ), (1, implicit_indices_factor)
+    )
+
+    implicit_indices = _jnp.tile(
+        _jnp.expand_dims(_jnp.arange(implicit_indices_factor), 0),
+        (indices_for_flat_tiled.shape[0], 1)
+    )
+
     indices_for_flat = indices_for_flat_tiled + implicit_indices
-    flat_indices_for_flat = _jnp.reshape(indices_for_flat, (-1,)).astype(_jnp.int32)
+
+    flat_indices_for_flat = _jnp.reshape(
+        indices_for_flat, (-1,)
+    ).astype(_jnp.int32)
+
     flat_gather = _jnp.take(flat_params, flat_indices_for_flat, 0)
     new_shape = list(indices_shape[:-1]) + list(params_shape[num_index_dims:])
     ret = _jnp.reshape(flat_gather, new_shape)
@@ -338,7 +405,8 @@ def gather_nd(params, indices, dev_str=None):
 def linear_resample(x, num_samples, axis=-1):
     x_shape = list(x.shape)
     num_x_dims = len(x_shape)
-    axis = axis % num_x_dims
+    axis %= num_x_dims
+
     x_pre_shape = x_shape[0:axis]
     x_pre_size = _reduce(_mul, x_pre_shape) if x_pre_shape else 1
     num_pre_dims = len(x_pre_shape)
@@ -346,10 +414,20 @@ def linear_resample(x, num_samples, axis=-1):
     x_post_shape = x_shape[axis+1:]
     x_post_size = _reduce(_mul, x_post_shape) if x_post_shape else 1
     num_post_dims = len(x_post_shape)
+
     xp = _jnp.reshape(_jnp.arange(num_vals*x_pre_size*x_post_size), x_shape)
-    x_coords = _jnp.arange(num_samples) * ((num_vals-1)/(num_samples-1)) * x_post_size
-    x_coords = _jnp.reshape(x_coords, [1]*num_pre_dims + [num_samples] + [1]*num_post_dims)
-    x_coords = _jnp.broadcast_to(x_coords, x_pre_shape + [num_samples] + x_post_shape)
+    x_coords = (
+        _jnp.arange(num_samples) * ((num_vals-1)/(num_samples-1)) * x_post_size
+    )
+
+    x_coords = (
+        _jnp.reshape(x_coords, [1]*num_pre_dims + [num_samples] + [1]*num_post_dims)
+    )
+
+    x_coords = (
+        _jnp.broadcast_to(x_coords, x_pre_shape + [num_samples] + x_post_shape)
+    )
+
     slc = [slice(None)] * num_x_dims
     slc[axis] = slice(0, 1, 1)
     x_coords = x_coords + xp[tuple(slc)]

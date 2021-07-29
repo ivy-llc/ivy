@@ -1,5 +1,6 @@
 """
-Collection of Jax linear algebra functions, wrapped to fit Ivy syntax and signature.
+Collection of Jax linear algebra functions,
+    wrapped to fit Ivy syntax and signature.
 """
 
 # global
