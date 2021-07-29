@@ -17,7 +17,8 @@ def layer_norm(x, normalized_idxs, epsilon=1e-5, gamma=None, beta=None):
     :type normalized_idxs: int or sequence of ints
     :param epsilon: small constant to add to the denominator, default is 1e-5
     :type epsilon: float, optional
-    :param gamma: Learnable gamma variables for post-multiplication, default is None.
+    :param gamma: Learnable gamma variables for post-multiplication,
+        default is None.
     :type gamma: array, optional
     :param beta: Learnable beta variables for post-addition, default is None.
     :type beta: array, optional

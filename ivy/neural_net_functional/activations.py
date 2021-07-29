@@ -81,7 +81,8 @@ def softmax(x, axis=-1, f=None):
 
     :param x: Input array.
     :type x: array
-    :param axis: The dimension softmax would be performed on. The default is -1 which indicates the last dimension.
+    :param axis: The dimension softmax would be performed on.
+        The default is -1 which indicates the last dimension.
     :type axis: int, optional
     :param f: Machine learning framework. Inferred from inputs if None.
     :type f: ml_framework, optional
