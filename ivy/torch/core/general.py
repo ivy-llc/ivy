@@ -86,10 +86,6 @@ def maximum(x, y):
 
 
 def clip(x, x_min, x_max):
-    if isinstance(x_min, torch.Tensor):
-        x_min = x_min.item()
-    if isinstance(x_max, torch.Tensor):
-        x_max = x_max.item()
     return torch.clamp(x, x_min, x_max)
 
 
