@@ -614,7 +614,7 @@ class Container(dict):
         for key, value in sorted(self.items()):
             if isinstance(value, Container):
                 return_list.append(value.to_list())
-            elif value is not None and key is not '_f':
+            elif value is not None and key != '_f':
                 return_list.append(value)
         return return_list
 
@@ -628,7 +628,7 @@ class Container(dict):
         for key, value in sorted(self.items()):
             if isinstance(value, Container):
                 return_dict[key] = value.to_dict()
-            elif key is not '_f':
+            elif key != '_f':
                 return_dict[key] = value
         return return_dict
 
