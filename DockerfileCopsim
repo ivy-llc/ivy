@@ -1,19 +1,11 @@
 FROM ivydl/ivy:latest
 
-# General #
-# --------#
-
-ENV DEBIAN_FRONTEND=noninteractive
-RUN apt-get update && \
-    apt-get install -y git
-
 # CoppeliaSim #
 # ------------#
 
 # From https://github.com/CoppeliaRobotics/docker-image-coppeliasim
 RUN apt-get update -q && \
     apt-get install -y wget && \
-	export DEBIAN_FRONTEND=noninteractive && \
     apt-get install -y --no-install-recommends \
         vim tar xz-utils \
         libx11-6 libxcb1 libxau6 libgl1-mesa-dev \
