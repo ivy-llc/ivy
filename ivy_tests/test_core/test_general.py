@@ -1891,22 +1891,32 @@ def _fn_2(x):
 @pytest.mark.parametrize(
     "x", [[1], [[0.0, 1.0], [2.0, 3.0]]])
 @pytest.mark.parametrize(
-    "fn", [_fn_1, _fn_2])
-@pytest.mark.parametrize(
     "dtype_str", ['float32'])
 @pytest.mark.parametrize(
     "tensor_fn", [ivy.array, helpers.var_fn])
-def test_compile_fn(x, fn, dtype_str, tensor_fn, dev_str, call):
+def test_compile_fn(x, dtype_str, tensor_fn, dev_str, call):
     # smoke test
     if (isinstance(x, Number) or len(x) == 0) and tensor_fn == helpers.var_fn and call is helpers.mx_call:
         # mxnet does not support 0-dimensional variables
         pytest.skip()
+
+    # function 1
     x = tensor_fn(x, dtype_str, dev_str)
-    comp_fn = ivy.compile_fn(fn)
+    comp_fn = ivy.compile_fn(_fn_1)
     # type test
     assert callable(comp_fn)
     # value test
-    non_compiled_return = fn(x)
+    non_compiled_return = _fn_1(x)
+    compiled_return = comp_fn(x)
+    assert np.allclose(ivy.to_numpy(non_compiled_return), ivy.to_numpy(compiled_return))
+
+    # function 2
+    x = tensor_fn(x, dtype_str, dev_str)
+    comp_fn = ivy.compile_fn(_fn_2)
+    # type test
+    assert callable(comp_fn)
+    # value test
+    non_compiled_return = _fn_2(x)
     compiled_return = comp_fn(x)
     assert np.allclose(ivy.to_numpy(non_compiled_return), ivy.to_numpy(compiled_return))
 
