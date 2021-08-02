@@ -20,4 +20,6 @@ RUN pip3 install --no-cache-dir -r requirements.txt && \
 COPY optional.txt /
 RUN pip3 install --no-cache-dir -r optional.txt && \
     rm -rf optional.txt
+
+RUN pip3 install torch==1.9.0+cu111 -f https://download.pytorch.org/whl/torch_stable.html
 RUN pip3 install --upgrade torch-scatter -f https://pytorch-geometric.com/whl/torch-1.9.0+cu111.html
