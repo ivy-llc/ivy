@@ -3,7 +3,6 @@ FROM ivydl/ivy:latest
 # General #
 # --------#
 
-WORKDIR /
 ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update && \
     apt-get install -y git
@@ -43,8 +42,3 @@ RUN git clone https://github.com/stepjam/PyRep.git && \
     cd PyRep && \
     pip3 install -r requirements.txt && \
     python3 setup.py install
-
-# Base Dir #
-# ---------#
-
-WORKDIR /ivy
