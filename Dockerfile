@@ -13,14 +13,11 @@ RUN apt-get update && \
 
 RUN pip3 install pytest
 
-RUN mkdir ivy
-WORKDIR /ivy
-
-COPY requirements.txt /ivy
+COPY requirements.txt /
 RUN pip3 install --no-cache-dir -r requirements.txt && \
     rm -rf requirements.txt
 
-COPY optional.txt /ivy
+COPY optional.txt /
 RUN pip3 install --no-cache-dir -r optional.txt && \
     rm -rf optional.txt
 RUN pip3 install torch-scatter -f https://pytorch-geometric.com/whl/torch-1.9.0+cpu.html
