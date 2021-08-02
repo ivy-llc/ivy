@@ -2,7 +2,7 @@ FROM ubuntu:20.04
 
 ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update && \
-    apt-get install -y python3 python3-pip && \
+    apt-get install -y python3 python3-pip python3-tk && \
     apt-get install -y libsm6 libxext6 libxrender-dev libgl1-mesa-glx && \
     apt-get install -y python-opengl && \
     apt-get install -y git && \
