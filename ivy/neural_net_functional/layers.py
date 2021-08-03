@@ -2,6 +2,9 @@
 Collection of Ivy neural network layers in functional form.
 """
 
+# global
+import numpy as np
+
 # local
 import ivy
 from ivy.framework_handler import get_framework as _get_framework
@@ -49,6 +52,41 @@ def dropout(x, prob, scale=True):
     if scale:
         x *= (1 / (1 - prob))
     return x
+
+
+# Attention #
+# ----------#
+
+def scaled_dot_product_attention(q, k, v, scale, mask=None):
+    """
+    Applies scaled dot product attention to inputs x using optional mask.
+
+    :param q: The queries *[batch_shape,num_queries,feat_dim]*.
+    :type q: array
+    :param k: The keys *[batch_shape,num_values,feat_dim]*.
+    :type k: array
+    :param v: The values *[batch_shape,num_values,feat_dim]*.
+    :type v: array
+    :param scale: The value by which to scale the query-key pairs before softmax.
+    :type scale: float
+    :param mask: The mask to apply to the query-key values. Default is None. *[batch_shape,num_queries,num_values]*
+    :type mask: array, optional
+    :return The output following application of scaled dot-product attention.
+    """
+
+    # BS x NQ x NV
+    sim = ivy.einsum('... q f, ... v f -> ... q v', q, k)* scale
+
+    if ivy.exists(mask):
+
+        # BS x NQ x NV
+        sim = ivy.where(ivy.logical_not(mask), -ivy.ones_like(sim)*np.finfo(np.dtype(ivy.dtype_str(sim))).max, sim)
+
+    # BS x NQ x NV
+    attn = ivy.softmax(sim, -1)
+
+    # BS x NQ x FD
+    return ivy.einsum('... q v, ... v f -> ... q f', attn, v)
 
 
 # Convolutions #
