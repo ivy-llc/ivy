@@ -443,7 +443,7 @@
     <span class="c1"># input kernel</span>
     <span class="n">Wi</span> <span class="o">=</span> <span class="n">kernel</span>
     <span class="n">Wi_x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">x_flat</span><span class="p">,</span> <span class="n">Wi</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="n">bias</span> <span class="k">if</span> <span class="n">bias</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="mi">0</span><span class="p">),</span>
-                        <span class="n">batch_shape</span> <span class="o">+</span> <span class="p">[</span><span class="n">timesteps</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+                       <span class="n">batch_shape</span> <span class="o">+</span> <span class="p">[</span><span class="n">timesteps</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">])</span>
     <span class="n">Wii_x</span><span class="p">,</span> <span class="n">Wif_x</span><span class="p">,</span> <span class="n">Wig_x</span><span class="p">,</span> <span class="n">Wio_x</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">Wi_x</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
 
     <span class="c1"># recurrent kernel</span>
@@ -454,7 +454,6 @@
     <span class="n">ct</span> <span class="o">=</span> <span class="n">init_c</span>
 
     <span class="c1"># lstm outputs</span>
-    <span class="n">ot</span> <span class="o">=</span> <span class="n">x</span>
     <span class="n">hts_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
 
     <span class="c1"># unrolled time dimension with lstm steps</span>
