@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>linear &mdash; Ivy 1.0 documentation</title>
+  <title>multi_head_attention &mdash; Ivy 1.0 documentation</title>
   
 
   
@@ -36,8 +36,8 @@
   <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="dropout" href="dropout.html" />
-    <link rel="prev" title="Layers" href="../layers.html" /> 
+    <link rel="next" title="conv1d" href="conv1d.html" />
+    <link rel="prev" title="scaled_dot_product_attention" href="scaled_dot_product_attention.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -104,10 +104,10 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../activations.html">Activations</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../layers.html">Layers</a><ul class="current">
-<li class="toctree-l2 current"><a class="current reference internal" href="#">linear</a></li>
+<li class="toctree-l2"><a class="reference internal" href="linear.html">linear</a></li>
 <li class="toctree-l2"><a class="reference internal" href="dropout.html">dropout</a></li>
 <li class="toctree-l2"><a class="reference internal" href="scaled_dot_product_attention.html">scaled_dot_product_attention</a></li>
-<li class="toctree-l2"><a class="reference internal" href="multi_head_attention.html">multi_head_attention</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">multi_head_attention</a></li>
 <li class="toctree-l2"><a class="reference internal" href="conv1d.html">conv1d</a></li>
 <li class="toctree-l2"><a class="reference internal" href="conv1d_transpose.html">conv1d_transpose</a></li>
 <li class="toctree-l2"><a class="reference internal" href="conv2d.html">conv2d</a></li>
@@ -186,13 +186,13 @@
         
           <li><a href="../layers.html">Layers</a> &raquo;</li>
         
-      <li>linear</li>
+      <li>multi_head_attention</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="../../_sources/neural_net_functional/layers/linear.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../_sources/neural_net_functional/layers/multi_head_attention.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -205,26 +205,31 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="linear">
-<h1>linear<a class="headerlink" href="#linear" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="multi-head-attention">
+<h1>multi_head_attention<a class="headerlink" href="#multi-head-attention" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
-<dt id="ivy.neural_net_functional.layers.linear">
-<code class="sig-prename descclassname">ivy.neural_net_functional.layers.</code><code class="sig-name descname">linear</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">weight</span></em>, <em class="sig-param"><span class="n">bias</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">f</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/neural_net_functional/layers.html#linear"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.neural_net_functional.layers.linear" title="Permalink to this definition">¶</a></dt>
-<dd><p>Applies a linear transformation to the incoming data: y = x * t(weight) + bias,
-where t(…) indicates transpose.</p>
+<dt id="ivy.neural_net_functional.layers.multi_head_attention">
+<code class="sig-prename descclassname">ivy.neural_net_functional.layers.</code><code class="sig-name descname">multi_head_attention</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">to_q_fn</span></em>, <em class="sig-param"><span class="n">to_kv_fn</span></em>, <em class="sig-param"><span class="n">to_out_fn</span></em>, <em class="sig-param"><span class="n">scale</span></em>, <em class="sig-param"><span class="n">num_heads</span></em>, <em class="sig-param"><span class="n">context</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">mask</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">to_q_v</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">to_kv_v</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">to_out_v</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/neural_net_functional/layers.html#multi_head_attention"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.neural_net_functional.layers.multi_head_attention" title="Permalink to this definition">¶</a></dt>
+<dd><p>Applies multi-head attention to inputs x.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<em>array</em>) – The input x compute linear transformation on. <em>[N,</em>,in_features]*</p></li>
-<li><p><strong>weight</strong> (<em>array</em>) – The weight matrix. <em>[out_features,in_features]</em></p></li>
-<li><p><strong>bias</strong> (<em>array</em><em>, </em><em>optional</em>) – The bias vector, default is None. <em>[out_features]</em></p></li>
-<li><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning framework. Inferred from inputs if None.</p></li>
+<li><p><strong>x</strong> (<em>array</em>) – The array to determine the queries from <em>[batch_shape,num_queries,x_feats]</em>.</p></li>
+<li><p><strong>to_q_fn</strong> (<em>callable</em>) – The function to compute queries from input x.</p></li>
+<li><p><strong>to_kv_fn</strong> (<em>callable</em>) – The function to compute keys and values from the context.</p></li>
+<li><p><strong>to_out_fn</strong> (<em>callable</em>) – The function to compute the output from the scaled dot-product attention.</p></li>
+<li><p><strong>scale</strong> (<em>float</em>) – The value by which to scale the query-key similarity measure before softmax.</p></li>
+<li><p><strong>num_heads</strong> (<em>int</em>) – The number of attention heads to use.</p></li>
+<li><p><strong>context</strong> (<em>array</em><em>, </em><em>optional</em>) – The array to determine the keys and values from. Default is None.
+<em>[batch_shape,num_values,cont_feats]</em>.</p></li>
+<li><p><strong>mask</strong> (<em>array</em><em>, </em><em>optional</em>) – The mask to apply to the query-key values. Default is None. <em>[batch_shape,num_queries,num_values]</em></p></li>
+<li><p><strong>to_q_v</strong> (<em>variables array</em><em>, </em><em>optional</em>) – The variables for function to_q_fn. Default is None.</p></li>
+<li><p><strong>to_kv_v</strong> (<em>variables array</em><em>, </em><em>optional</em>) – The variables for function to_kv_fn. Default is None.</p></li>
+<li><p><strong>to_out_v</strong> (<em>variables array</em><em>, </em><em>optional</em>) – The variables for function to_out_fn. Default is None.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Result array of the linear transformation. <em>[N,∗,out_features]</em></p>
-</dd>
 </dl>
+<p>:return The output following application of scaled dot-product attention. <em>[batch_shape,num_queries,out_feats]</em></p>
 </dd></dl>
 
 <div class="line-block">
@@ -242,10 +247,10 @@ where t(…) indicates transpose.</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="dropout.html" class="btn btn-neutral float-right" title="dropout" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="conv1d.html" class="btn btn-neutral float-right" title="conv1d" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="../layers.html" class="btn btn-neutral float-left" title="Layers" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="scaled_dot_product_attention.html" class="btn btn-neutral float-left" title="scaled_dot_product_attention" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
