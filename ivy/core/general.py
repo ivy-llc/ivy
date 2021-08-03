@@ -993,6 +993,30 @@ def linear_resample(x, num_samples, axis=-1, f=None):
     return _get_framework(x, f=f).linear_resample(x, num_samples, axis)
 
 
+def exists(x):
+    """
+    Simple check as to whether the input is None or not.
+
+    :param x: Input to check.
+    :type x: any
+    :return: True if x is not None, else False.
+    """
+    return x is not None
+
+
+def default(x, default_val):
+    """
+    Returns x provided it exists (is not None), else returns default.
+
+    :param x: Input which may or may not exist.
+    :type x: any
+    :param default_val: The default value.
+    :type default_val: any
+    :return: x if x exists (is not None), else default.
+    """
+    return x if exists(x) else default_val
+
+
 def dev(x, f=None):
     """
     Get the native device handle for input array x.
