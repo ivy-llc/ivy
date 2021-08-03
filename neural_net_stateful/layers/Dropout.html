@@ -109,6 +109,7 @@
 </ul>
 <p class="caption"><span class="caption-text">Neural net stateful</span></p>
 <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../activations.html">Activations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../initializers.html">Initializers</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../layers.html">Layers</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="Linear.html">Linear</a></li>
@@ -206,11 +207,11 @@
 <h1>Dropout<a class="headerlink" href="#dropout" title="Permalink to this headline">¶</a></h1>
 <dl class="py class">
 <dt id="ivy.neural_net_stateful.layers.Dropout">
-<em class="property">class </em><code class="sig-prename descclassname">ivy.neural_net_stateful.layers.</code><code class="sig-name descname">Dropout</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">prob</span></em>, <em class="sig-param"><span class="n">scale</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">dev_str</span><span class="o">=</span><span class="default_value">'cpu'</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/neural_net_stateful/layers.html#Dropout"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.neural_net_stateful.layers.Dropout" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">ivy.neural_net_stateful.layers.</code><code class="sig-name descname">Dropout</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">prob</span></em>, <em class="sig-param"><span class="n">scale</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/neural_net_stateful/layers.html#Dropout"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.neural_net_stateful.layers.Dropout" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="../module/Module.html#ivy.neural_net_stateful.module.Module" title="ivy.neural_net_stateful.module.Module"><code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.neural_net_stateful.module.Module</span></code></a></p>
 <dl class="py method">
 <dt id="ivy.neural_net_stateful.layers.Dropout.__init__">
-<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">prob</span></em>, <em class="sig-param"><span class="n">scale</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">dev_str</span><span class="o">=</span><span class="default_value">'cpu'</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/neural_net_stateful/layers.html#Dropout.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.neural_net_stateful.layers.Dropout.__init__" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">prob</span></em>, <em class="sig-param"><span class="n">scale</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/neural_net_stateful/layers.html#Dropout.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.neural_net_stateful.layers.Dropout.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Dropout layer. The layer randomly zeroes some of the elements of the input tensor with probability p using
 samples from a Bernoull distribution.</p>
 <dl class="field-list simple">
@@ -218,7 +219,6 @@ samples from a Bernoull distribution.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>prob</strong> (<em>float</em>) – The probability of zeroing out each array element.</p></li>
 <li><p><strong>scale</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to scale the output by 1/(1-prob), default is True.</p></li>
-<li><p><strong>dev_str</strong> (<em>str</em><em>, </em><em>optional</em>) – device on which to create the layer’s variables ‘cuda:0’, ‘cuda:1’, ‘cpu’ etc. Default is cpu.</p></li>
 </ul>
 </dd>
 </dl>
