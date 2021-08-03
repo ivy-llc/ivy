@@ -14,7 +14,7 @@ from ivy.neural_net_stateful.initializers import Zeros, GlorotUniform
 class Linear(Module):
 
     def __init__(self, input_channels, output_channels, weight_initializer=GlorotUniform(), bias_initializer=Zeros(),
-                 with_bias=True, dev_str='cpu', v=None):
+                 with_bias=True, dev_str=None, v=None):
         """
         Linear layer, also referred to as dense or fully connected. The layer receives tensors with input_channels last
         dimension and returns a new tensor with output_channels last dimension, following matrix multiplication with the
@@ -98,6 +98,31 @@ class Dropout(Module):
         :return: The outputs following the linear operation and bias addition *[batch_shape, out]*
         """
         return ivy.dropout(inputs, self._prob, self._scale)
+
+
+# Attention #
+# ----------#
+
+class MultiHeadAttention(Module):
+    def __init__(self, query_dim, heads=8, dim_head=64, dropout=0., context_dim=None, scale=None, dev_str=None, v=None):
+        v_exists = ivy.exists(v)
+        v = ivy.default(v, ivy.Container({'to_q': None, 'to_kv': None, 'to_out': None}))
+        inner_dim = dim_head * heads
+        context_dim = ivy.default(context_dim, query_dim)
+        self._scale = ivy.default(scale, dim_head ** -0.5)
+        self._num_heads = heads
+        self._to_q = ivy.Linear(query_dim, inner_dim, with_bias=False, dev_str=dev_str, v=v.to_q)
+        self._to_kv = ivy.Linear(context_dim, inner_dim * 2, with_bias=False, dev_str=dev_str, v=v.to_kv)
+        self._to_out = ivy.Sequential(
+            ivy.Linear(inner_dim, query_dim, dev_str=dev_str, v=v.to_out),
+            ivy.Dropout(dropout), dev_str=dev_str
+        )
+        ivy.Module.__init__(self, dev_str, v if v_exists else None)
+
+    def _forward(self, x, context=None, mask=None):
+        return ivy.multi_head_attention(
+            x, self._to_q, self._to_kv, self._to_out, self._scale, self._num_heads, context, mask,
+            self.v.to_q, self.v.to_kv, self.v.to_out)
 
 
 # Convolutions #
