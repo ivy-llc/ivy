@@ -135,7 +135,8 @@ def multi_head_attention(x, to_q_fn, to_kv_fn, to_out_fn, scale, num_heads, cont
     q, k, v = map(lambda t: rearrange(t, '... n (h f) -> ... h n f', h=num_heads), (q, k, v))
 
     # BS x H x Q x V
-    mask = repeat(mask, '... q v -> ... h q v', h=num_heads)
+    if ivy.exists(mask):
+        mask = repeat(mask, '... q v -> ... h q v', h=num_heads)
 
     # BS x H x Q x F
     sdpa = scaled_dot_product_attention(q, k, v, scale, mask)
