@@ -79,6 +79,37 @@ def test_dropout(x, dtype_str, tensor_fn, dev_str, call):
     helpers.assert_compilable(ivy.dropout)
 
 
+# Attention #
+# ----------#
+
+# scaled_dot_product_attention
+@pytest.mark.parametrize(
+    "q_n_k_n_v_n_s_n_m_n_gt", [([[1.]], [[2.]], [[3.]], 2., [[1.]], [[3.]])])
+@pytest.mark.parametrize(
+    "dtype_str", ['float32'])
+@pytest.mark.parametrize(
+    "tensor_fn", [ivy.array, helpers.var_fn])
+def test_scaled_dot_product_attention(q_n_k_n_v_n_s_n_m_n_gt, dtype_str, tensor_fn, dev_str, call):
+    q, k, v, scale, mask, ground_truth = q_n_k_n_v_n_s_n_m_n_gt
+    # smoke test
+    q = tensor_fn(q, dtype_str, dev_str)
+    k = tensor_fn(k, dtype_str, dev_str)
+    v = tensor_fn(v, dtype_str, dev_str)
+    mask = tensor_fn(mask, dtype_str, dev_str)
+    ret = ivy.scaled_dot_product_attention(q, k, v, scale, mask)
+    # type test
+    assert ivy.is_array(ret)
+    # cardinality test
+    assert ret.shape == q.shape
+    # value test
+    assert np.allclose(call(ivy.scaled_dot_product_attention, q, k, v, scale, mask), np.array(ground_truth))
+    # compilation test
+    if call in [helpers.torch_call]:
+        # torch.jit compiled functions can't take variable number of arguments, which torch.einsum takes
+        pytest.skip()
+    helpers.assert_compilable(ivy.scaled_dot_product_attention)
+
+
 # Convolutions #
 # -------------#
 
