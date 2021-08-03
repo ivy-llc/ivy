@@ -8,7 +8,7 @@ import torch as _torch
 
 
 def relu(x):
-    return _torch.nn.functional.relu(x)
+    return _torch.relu(x)
 
 
 def leaky_relu(x, alpha: float = 0.2):
@@ -22,15 +22,15 @@ def gelu(x, approximate: bool = True):
 
 
 def tanh(x):
-    return _torch.nn.functional.tanh(x)
+    return _torch.tanh(x)
 
 
 def sigmoid(x):
-    return _torch.nn.functional.sigmoid(x)
+    return _torch.sigmoid(x)
 
 
 def softmax(x, axis: int = -1):
-    return _torch.nn.functional.softmax(x, axis)
+    return _torch.softmax(x, axis)
 
 
 def softplus(x):
