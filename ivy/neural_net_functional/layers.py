@@ -4,6 +4,8 @@ Collection of Ivy neural network layers in functional form.
 
 # global
 import numpy as np
+# noinspection PyProtectedMember
+from einops import rearrange, repeat
 
 # local
 import ivy
@@ -74,19 +76,75 @@ def scaled_dot_product_attention(q, k, v, scale, mask=None):
     :return The output following application of scaled dot-product attention.
     """
 
-    # BS x NQ x NV
-    sim = ivy.einsum('... q f, ... v f -> ... q v', q, k)* scale
+    # BS x Q x V
+    sim = ivy.einsum('... q f, ... v f -> ... q v', q, k) * scale
 
     if ivy.exists(mask):
 
-        # BS x NQ x NV
+        # BS x Q x V
         sim = ivy.where(ivy.logical_not(mask), -ivy.ones_like(sim)*np.finfo(np.dtype(ivy.dtype_str(sim))).max, sim)
 
-    # BS x NQ x NV
+    # BS x Q x V
     attn = ivy.softmax(sim, -1)
 
-    # BS x NQ x FD
+    # BS x Q x F
     return ivy.einsum('... q v, ... v f -> ... q f', attn, v)
+
+
+def multi_head_attention(x, to_q_fn, to_kv_fn, to_out_fn, scale, num_heads, context=None, mask=None, to_q_v=None,
+                         to_kv_v=None, to_out_v=None):
+    """
+    Applies multi-head attention to inputs x.
+
+    :param x: The array to determine the queries from *[batch_shape,num_queries,x_feats]*.
+    :type x: array
+    :param to_q_fn: The function to compute queries from input x.
+    :type to_q_fn: callable
+    :param to_kv_fn: The function to compute keys and values from the context.
+    :type to_kv_fn: callable
+    :param to_out_fn: The function to compute the output from the scaled dot-product attention.
+    :type to_out_fn: callable
+    :param scale: The value by which to scale the query-key similarity measure before softmax.
+    :type scale: float
+    :param num_heads: The number of attention heads to use.
+    :type num_heads: int
+    :param context: The array to determine the keys and values from. Default is None.
+                    *[batch_shape,num_values,cont_feats]*.
+    :type context: array, optional
+    :param mask: The mask to apply to the query-key values. Default is None. *[batch_shape,num_queries,num_values]*
+    :type mask: array, optional
+    :param to_q_v: The variables for function to_q_fn. Default is None.
+    :type to_q_v: variables array, optional
+    :param to_kv_v: The variables for function to_kv_fn. Default is None.
+    :type to_kv_v: variables array, optional
+    :param to_out_v: The variables for function to_out_fn. Default is None.
+    :type to_out_v: variables array, optional
+    :return The output following application of scaled dot-product attention. *[batch_shape,num_queries,out_feats]*
+    """
+
+    # BS x Q x (HxF)
+    q = to_q_fn(x, v=to_q_v)
+
+    # BS x IS
+    context = ivy.default(context, x)
+
+    # BS x V x (HxF),  BS x V x (HxF)
+    k, v = ivy.split(to_kv_fn(context, v=to_kv_v), 2, -1)
+
+    # BS x H x Q x F,  BS x H x V x F,  BS x H x V x F
+    q, k, v = map(lambda t: rearrange(t, '... n (h f) -> ... h n f', h=num_heads), (q, k, v))
+
+    # BS x H x Q x V
+    mask = repeat(mask, '... q v -> ... h q v', h=num_heads)
+
+    # BS x H x Q x F
+    sdpa = scaled_dot_product_attention(q, k, v, scale, mask)
+
+    # BS x Q x (HxF)
+    sdpa = rearrange(sdpa, '... h q f -> ... q (h f)')
+
+    # BS x Q x OF
+    return to_out_fn(sdpa, v=to_out_v)
 
 
 # Convolutions #
