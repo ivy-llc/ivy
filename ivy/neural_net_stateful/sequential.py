@@ -24,8 +24,9 @@ class Sequential(Module):
                 try:
                     submod.v = v['submodules']['v' + str(i)]
                 except KeyError:
-                    raise Exception('variables v passed to Sequential class must have key chains in the form of'
-                                    '"submodules/v{}", where {} is an idx')
+                    if submod.v:
+                        raise Exception('variables v passed to Sequential class must have key chains in the form of'
+                                        '"submodules/v{}", where {} is an idx')
         self._submodules = list(sub_modules)
         Module.__init__(self, dev_str, v)
 
@@ -39,5 +40,11 @@ class Sequential(Module):
         """
         x = inputs
         for i, submod in enumerate(self._submodules):
-            x = submod(x, v=self.v['submodules']['v' + str(i)])
+            try:
+                x = submod(x, v=self.v.submodules['v' + str(i)])
+            except KeyError:
+                if submod.v:
+                    raise Exception('variables v passed to Sequential class must have key chains in the form of'
+                                    '"submodules/v{}", where {} is an idx')
+                x = submod(x)
         return x
