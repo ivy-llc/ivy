@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>dropout &mdash; Ivy 1.0 documentation</title>
+  <title>scaled_dot_product_attention &mdash; Ivy 1.0 documentation</title>
   
 
   
@@ -36,8 +36,8 @@
   <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="scaled_dot_product_attention" href="scaled_dot_product_attention.html" />
-    <link rel="prev" title="linear" href="linear.html" /> 
+    <link rel="next" title="conv1d" href="conv1d.html" />
+    <link rel="prev" title="dropout" href="dropout.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -105,8 +105,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../activations.html">Activations</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../layers.html">Layers</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="linear.html">linear</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">dropout</a></li>
-<li class="toctree-l2"><a class="reference internal" href="scaled_dot_product_attention.html">scaled_dot_product_attention</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dropout.html">dropout</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">scaled_dot_product_attention</a></li>
 <li class="toctree-l2"><a class="reference internal" href="conv1d.html">conv1d</a></li>
 <li class="toctree-l2"><a class="reference internal" href="conv1d_transpose.html">conv1d_transpose</a></li>
 <li class="toctree-l2"><a class="reference internal" href="conv2d.html">conv2d</a></li>
@@ -185,13 +185,13 @@
         
           <li><a href="../layers.html">Layers</a> &raquo;</li>
         
-      <li>dropout</li>
+      <li>scaled_dot_product_attention</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="../../_sources/neural_net_functional/layers/dropout.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../_sources/neural_net_functional/layers/scaled_dot_product_attention.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -204,25 +204,24 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="dropout">
-<h1>dropout<a class="headerlink" href="#dropout" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="scaled-dot-product-attention">
+<h1>scaled_dot_product_attention<a class="headerlink" href="#scaled-dot-product-attention" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
-<dt id="ivy.neural_net_functional.layers.dropout">
-<code class="sig-prename descclassname">ivy.neural_net_functional.layers.</code><code class="sig-name descname">dropout</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">prob</span></em>, <em class="sig-param"><span class="n">scale</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/neural_net_functional/layers.html#dropout"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.neural_net_functional.layers.dropout" title="Permalink to this definition">¶</a></dt>
-<dd><p>Randomly zeroes some of the elements of the input tensor with probability p using samples from a Bernoull
-distribution.</p>
+<dt id="ivy.neural_net_functional.layers.scaled_dot_product_attention">
+<code class="sig-prename descclassname">ivy.neural_net_functional.layers.</code><code class="sig-name descname">scaled_dot_product_attention</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">q</span></em>, <em class="sig-param"><span class="n">k</span></em>, <em class="sig-param"><span class="n">v</span></em>, <em class="sig-param"><span class="n">scale</span></em>, <em class="sig-param"><span class="n">mask</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/neural_net_functional/layers.html#scaled_dot_product_attention"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.neural_net_functional.layers.scaled_dot_product_attention" title="Permalink to this definition">¶</a></dt>
+<dd><p>Applies scaled dot product attention to inputs x using optional mask.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<em>array</em>) – The input array x to perform dropout on.</p></li>
-<li><p><strong>prob</strong> (<em>float</em>) – The probability of zeroing out each array element.</p></li>
-<li><p><strong>scale</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to scale the output by 1/(1-prob), default is True.</p></li>
+<li><p><strong>q</strong> (<em>array</em>) – The queries <em>[batch_shape,num_queries,feat_dim]</em>.</p></li>
+<li><p><strong>k</strong> (<em>array</em>) – The keys <em>[batch_shape,num_values,feat_dim]</em>.</p></li>
+<li><p><strong>v</strong> (<em>array</em>) – The values <em>[batch_shape,num_values,feat_dim]</em>.</p></li>
+<li><p><strong>scale</strong> (<em>float</em>) – The value by which to scale the query-key pairs before softmax.</p></li>
+<li><p><strong>mask</strong> (<em>array</em><em>, </em><em>optional</em>) – The mask to apply to the query-key values. Default is None. <em>[batch_shape,num_queries,num_values]</em></p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Result array of the linear transformation. <em>[N,∗,out_features]</em></p>
-</dd>
 </dl>
+<p>:return The output following application of scaled dot-product attention.</p>
 </dd></dl>
 
 <div class="line-block">
@@ -240,10 +239,10 @@ distribution.</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="scaled_dot_product_attention.html" class="btn btn-neutral float-right" title="scaled_dot_product_attention" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="conv1d.html" class="btn btn-neutral float-right" title="conv1d" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="linear.html" class="btn btn-neutral float-left" title="linear" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="dropout.html" class="btn btn-neutral float-left" title="dropout" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

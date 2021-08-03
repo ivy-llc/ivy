@@ -106,6 +106,7 @@
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Layers</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="layers/linear.html">linear</a></li>
 <li class="toctree-l2"><a class="reference internal" href="layers/dropout.html">dropout</a></li>
+<li class="toctree-l2"><a class="reference internal" href="layers/scaled_dot_product_attention.html">scaled_dot_product_attention</a></li>
 <li class="toctree-l2"><a class="reference internal" href="layers/conv1d.html">conv1d</a></li>
 <li class="toctree-l2"><a class="reference internal" href="layers/conv1d_transpose.html">conv1d_transpose</a></li>
 <li class="toctree-l2"><a class="reference internal" href="layers/conv2d.html">conv2d</a></li>
@@ -422,11 +423,30 @@ where t(…) indicates transpose.</p>
 </dl>
 </dd></dl>
 
+<dl class="py function">
+<dt id="ivy.neural_net_functional.layers.scaled_dot_product_attention">
+<code class="sig-prename descclassname">ivy.neural_net_functional.layers.</code><code class="sig-name descname">scaled_dot_product_attention</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">q</span></em>, <em class="sig-param"><span class="n">k</span></em>, <em class="sig-param"><span class="n">v</span></em>, <em class="sig-param"><span class="n">scale</span></em>, <em class="sig-param"><span class="n">mask</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/neural_net_functional/layers.html#scaled_dot_product_attention"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.neural_net_functional.layers.scaled_dot_product_attention" title="Permalink to this definition">¶</a></dt>
+<dd><p>Applies scaled dot product attention to inputs x using optional mask.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>q</strong> (<em>array</em>) – The queries <em>[batch_shape,num_queries,feat_dim]</em>.</p></li>
+<li><p><strong>k</strong> (<em>array</em>) – The keys <em>[batch_shape,num_values,feat_dim]</em>.</p></li>
+<li><p><strong>v</strong> (<em>array</em>) – The values <em>[batch_shape,num_values,feat_dim]</em>.</p></li>
+<li><p><strong>scale</strong> (<em>float</em>) – The value by which to scale the query-key pairs before softmax.</p></li>
+<li><p><strong>mask</strong> (<em>array</em><em>, </em><em>optional</em>) – The mask to apply to the query-key values. Default is None. <em>[batch_shape,num_queries,num_values]</em></p></li>
+</ul>
+</dd>
+</dl>
+<p>:return The output following application of scaled dot-product attention.</p>
+</dd></dl>
+
 <div class="toctree-wrapper compound">
 <p class="caption"><span class="caption-text">Layers</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="layers/linear.html">linear</a></li>
 <li class="toctree-l1"><a class="reference internal" href="layers/dropout.html">dropout</a></li>
+<li class="toctree-l1"><a class="reference internal" href="layers/scaled_dot_product_attention.html">scaled_dot_product_attention</a></li>
 <li class="toctree-l1"><a class="reference internal" href="layers/conv1d.html">conv1d</a></li>
 <li class="toctree-l1"><a class="reference internal" href="layers/conv1d_transpose.html">conv1d_transpose</a></li>
 <li class="toctree-l1"><a class="reference internal" href="layers/conv2d.html">conv2d</a></li>
