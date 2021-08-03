@@ -1700,6 +1700,48 @@ def test_linear_resample(x_n_samples_n_axis_n_y_true, dtype_str, tensor_fn, dev_
     helpers.assert_compilable(ivy.linear_resample)
 
 
+# exists
+@pytest.mark.parametrize(
+    "x", [[1.], None, [[10., 9., 8.]]])
+@pytest.mark.parametrize(
+    "dtype_str", ['float32'])
+@pytest.mark.parametrize(
+    "tensor_fn", [ivy.array, helpers.var_fn])
+def test_exists(x, dtype_str, tensor_fn, dev_str, call):
+    # smoke test
+    x = tensor_fn(x, dtype_str, dev_str) if x is not None else None
+    ret = ivy.exists(x)
+    # type test
+    assert isinstance(ret, bool)
+    # value test
+    y_true = x is not None
+    assert ret == y_true
+    # compilation test
+    helpers.assert_compilable(ivy.exists)
+
+
+# default
+@pytest.mark.parametrize(
+    "x_n_dv", [([1.], [2.]), (None, [2.]), ([[10., 9., 8.]], [2.])])
+@pytest.mark.parametrize(
+    "dtype_str", ['float32'])
+@pytest.mark.parametrize(
+    "tensor_fn", [ivy.array, helpers.var_fn])
+def test_default(x_n_dv, dtype_str, tensor_fn, dev_str, call):
+    x, dv = x_n_dv
+    # smoke test
+    x = tensor_fn(x, dtype_str, dev_str) if x is not None else None
+    dv = tensor_fn(dv, dtype_str, dev_str)
+    ret = ivy.default(x, dv)
+    # type test
+    assert ivy.is_array(ret)
+    # value test
+    y_true = ivy.to_numpy(x if x is not None else dv)
+    assert np.allclose(call(ivy.default, x, dv), y_true)
+    # compilation test
+    helpers.assert_compilable(ivy.default)
+
+
 # dev
 @pytest.mark.parametrize(
     "x", [1, [], [1], [[0.0, 1.0], [2.0, 3.0]]])
