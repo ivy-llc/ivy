@@ -2043,3 +2043,21 @@ def test_split_func_call(x0, x1, chunk_size, axis, tensor_fn, dev_str, call):
     assert np.allclose(ivy.to_numpy(a), ivy.to_numpy(a_true))
     assert np.allclose(ivy.to_numpy(b), ivy.to_numpy(b_true))
     assert np.allclose(ivy.to_numpy(c), ivy.to_numpy(c_true))
+
+
+def test_cache_fn(dev_str, call):
+
+    def func():
+        return ivy.random_uniform()
+
+    # smoke test
+    cached_func = ivy.cache_fn(func)
+    ret0 = cached_func()
+    ret0_again = cached_func()
+    ret1 = cached_func(cache=False)
+
+    # value test
+    assert ivy.to_numpy(ret0).item() == ivy.to_numpy(ret0_again).item()
+    assert ivy.to_numpy(ret0).item() != ivy.to_numpy(ret1).item()
+    assert ret0 is ret0_again
+    assert ret0 is not ret1
