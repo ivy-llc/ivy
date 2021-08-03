@@ -14,6 +14,7 @@ Layers
 
    layers/Linear.rst
    layers/Dropout.rst
+   layers/MultiHeadAttention.rst
    layers/Conv1D.rst
    layers/Conv1DTranspose.rst
    layers/Conv2D.rst

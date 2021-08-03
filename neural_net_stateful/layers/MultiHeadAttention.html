@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>LSTM &mdash; Ivy 1.0 documentation</title>
+  <title>MultiHeadAttention &mdash; Ivy 1.0 documentation</title>
   
 
   
@@ -36,8 +36,8 @@
   <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="Module" href="../module.html" />
-    <link rel="prev" title="Conv3DTranspose" href="Conv3DTranspose.html" /> 
+    <link rel="next" title="Conv1D" href="Conv1D.html" />
+    <link rel="prev" title="Dropout" href="Dropout.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -114,7 +114,7 @@
 <li class="toctree-l1 current"><a class="reference internal" href="../layers.html">Layers</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="Linear.html">Linear</a></li>
 <li class="toctree-l2"><a class="reference internal" href="Dropout.html">Dropout</a></li>
-<li class="toctree-l2"><a class="reference internal" href="MultiHeadAttention.html">MultiHeadAttention</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">MultiHeadAttention</a></li>
 <li class="toctree-l2"><a class="reference internal" href="Conv1D.html">Conv1D</a></li>
 <li class="toctree-l2"><a class="reference internal" href="Conv1DTranspose.html">Conv1DTranspose</a></li>
 <li class="toctree-l2"><a class="reference internal" href="Conv2D.html">Conv2D</a></li>
@@ -122,7 +122,7 @@
 <li class="toctree-l2"><a class="reference internal" href="DepthwiseConv2D.html">DepthwiseConv2D</a></li>
 <li class="toctree-l2"><a class="reference internal" href="Conv3D.html">Conv3D</a></li>
 <li class="toctree-l2"><a class="reference internal" href="Conv3DTranspose.html">Conv3DTranspose</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">LSTM</a></li>
+<li class="toctree-l2"><a class="reference internal" href="LSTM.html">LSTM</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../module.html">Module</a></li>
@@ -185,13 +185,13 @@
         
           <li><a href="../layers.html">Layers</a> &raquo;</li>
         
-      <li>LSTM</li>
+      <li>MultiHeadAttention</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="../../_sources/neural_net_stateful/layers/LSTM.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../_sources/neural_net_stateful/layers/MultiHeadAttention.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -204,37 +204,24 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="lstm">
-<h1>LSTM<a class="headerlink" href="#lstm" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="multiheadattention">
+<h1>MultiHeadAttention<a class="headerlink" href="#multiheadattention" title="Permalink to this headline">¶</a></h1>
 <dl class="py class">
-<dt id="ivy.neural_net_stateful.layers.LSTM">
-<em class="property">class </em><code class="sig-prename descclassname">ivy.neural_net_stateful.layers.</code><code class="sig-name descname">LSTM</code><span class="sig-paren">(</span><em class="sig-param">input_channels</em>, <em class="sig-param">output_channels</em>, <em class="sig-param">weight_initializer=&lt;ivy.neural_net_stateful.initializers.GlorotUniform object&gt;</em>, <em class="sig-param">num_layers=1</em>, <em class="sig-param">return_sequence=True</em>, <em class="sig-param">return_state=True</em>, <em class="sig-param">dev_str='cpu'</em>, <em class="sig-param">v=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/neural_net_stateful/layers.html#LSTM"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.neural_net_stateful.layers.LSTM" title="Permalink to this definition">¶</a></dt>
+<dt id="ivy.neural_net_stateful.layers.MultiHeadAttention">
+<em class="property">class </em><code class="sig-prename descclassname">ivy.neural_net_stateful.layers.</code><code class="sig-name descname">MultiHeadAttention</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">query_dim</span></em>, <em class="sig-param"><span class="n">heads</span><span class="o">=</span><span class="default_value">8</span></em>, <em class="sig-param"><span class="n">dim_head</span><span class="o">=</span><span class="default_value">64</span></em>, <em class="sig-param"><span class="n">dropout</span><span class="o">=</span><span class="default_value">0.0</span></em>, <em class="sig-param"><span class="n">context_dim</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">scale</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">dev_str</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">v</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/neural_net_stateful/layers.html#MultiHeadAttention"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.neural_net_stateful.layers.MultiHeadAttention" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="../module/Module.html#ivy.neural_net_stateful.module.Module" title="ivy.neural_net_stateful.module.Module"><code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.neural_net_stateful.module.Module</span></code></a></p>
 <dl class="py method">
-<dt id="ivy.neural_net_stateful.layers.LSTM.__init__">
-<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param">input_channels</em>, <em class="sig-param">output_channels</em>, <em class="sig-param">weight_initializer=&lt;ivy.neural_net_stateful.initializers.GlorotUniform object&gt;</em>, <em class="sig-param">num_layers=1</em>, <em class="sig-param">return_sequence=True</em>, <em class="sig-param">return_state=True</em>, <em class="sig-param">dev_str='cpu'</em>, <em class="sig-param">v=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/neural_net_stateful/layers.html#LSTM.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.neural_net_stateful.layers.LSTM.__init__" title="Permalink to this definition">¶</a></dt>
-<dd><p>LSTM layer, which is a set of stacked lstm cells.</p>
+<dt id="ivy.neural_net_stateful.layers.MultiHeadAttention.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">query_dim</span></em>, <em class="sig-param"><span class="n">heads</span><span class="o">=</span><span class="default_value">8</span></em>, <em class="sig-param"><span class="n">dim_head</span><span class="o">=</span><span class="default_value">64</span></em>, <em class="sig-param"><span class="n">dropout</span><span class="o">=</span><span class="default_value">0.0</span></em>, <em class="sig-param"><span class="n">context_dim</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">scale</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">dev_str</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">v</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/neural_net_stateful/layers.html#MultiHeadAttention.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.neural_net_stateful.layers.MultiHeadAttention.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialze Ivy layer, which is a stateful object consisting of trainable variables.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>input_channels</strong> (<em>int</em>) – Number of input channels for the layer</p></li>
-<li><p><strong>output_channels</strong> (<em>int</em>) – Number of output channels for the layer</p></li>
-<li><p><strong>weight_initializer</strong> (<em>ivy.Initializer</em><em>, </em><em>optional</em>) – Initializer for the weights. Default is GlorotUniform.</p></li>
-<li><p><strong>num_layers</strong> (<em>int</em><em>, </em><em>optional</em>) – Number of lstm cells in the lstm layer, default is 1.</p></li>
-<li><p><strong>return_sequence</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether or not to return the entire output sequence, or just the latest timestep.
-Default is True.</p></li>
-<li><p><strong>return_state</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether or not to return the latest hidden and cell states. Default is True.</p></li>
-<li><p><strong>dev_str</strong> (<em>str</em><em>, </em><em>optional</em>) – device on which to create the layer’s variables ‘cuda:0’, ‘cuda:1’, ‘cpu’ etc. Default is cpu.</p></li>
-<li><p><strong>v</strong> (<em>ivy container of parameter arrays</em><em>, </em><em>optional</em>) – the variables for each of the lstm cells, as a container, constructed internally by default.</p></li>
+<li><p><strong>dev_str</strong> (<em>str</em><em>, </em><em>optional</em>) – device on which to create the layer’s variables ‘cuda:0’, ‘cuda:1’, ‘cpu’ etc.</p></li>
+<li><p><strong>v</strong> (<em>ivy container</em><em>, </em><em>optional</em>) – Ivy container of trainable variables. Created internally by default.</p></li>
 </ul>
 </dd>
 </dl>
-</dd></dl>
-
-<dl class="py method">
-<dt id="ivy.neural_net_stateful.layers.LSTM.get_initial_state">
-<code class="sig-name descname">get_initial_state</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">batch_shape</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/neural_net_stateful/layers.html#LSTM.get_initial_state"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.neural_net_stateful.layers.LSTM.get_initial_state" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the initial state of the hidden and cell states, if not provided explicitly</p>
 </dd></dl>
 
 </dd></dl>
@@ -254,10 +241,10 @@ Default is True.</p></li>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../module.html" class="btn btn-neutral float-right" title="Module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="Conv1D.html" class="btn btn-neutral float-right" title="Conv1D" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="Conv3DTranspose.html" class="btn btn-neutral float-left" title="Conv3DTranspose" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="Dropout.html" class="btn btn-neutral float-left" title="Dropout" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
