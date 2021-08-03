@@ -32,7 +32,7 @@ class Linear(Module):
         :type with_bias: bool, optional
         :param dev_str: device on which to create the layer's variables 'cuda:0', 'cuda:1', 'cpu' etc. Default is cpu.
         :type dev_str: str, optional
-        :param v: the variables for each of the linear layer, as a container, constructed internally by default.
+        :param v: the variables for the linear layer, as a container, constructed internally by default.
         :type v: ivy container of variables, optional
         """
         self._input_channels = input_channels
@@ -104,24 +104,57 @@ class Dropout(Module):
 # ----------#
 
 class MultiHeadAttention(Module):
-    def __init__(self, query_dim, heads=8, dim_head=64, dropout=0., context_dim=None, scale=None, dev_str=None, v=None):
+    def __init__(self, query_dim, num_heads=8, head_dim=64, dropout_rate=0., context_dim=None, scale=None, dev_str=None,
+                 v=None):
+        """
+        Multi Head Attention layer.
+
+        :param query_dim: The dimension of the attention queries.
+        :type query_dim: int
+        :param num_heads: Number of attention heads. Default is 8.
+        :type num_heads: int, optional
+        :param head_dim: The dimension of each of the heads. Default is 64.
+        :type head_dim: int, optional
+        :param dropout_rate: The rate of dropout. Default is 0.
+        :type dropout_rate: float, optional
+        :param context_dim: The dimension of the context array. Default is None, in which case the query dim is used.
+        :type context_dim: int, optional.
+        :param scale: The value by which to scale the query-key similarity measure. Default is head_dim^-0.5
+        :type scale: float, optional
+        :param dev_str: device on which to create the layer's variables 'cuda:0', 'cuda:1', 'cpu' etc. Default is cpu.
+        :type dev_str: str, optional
+        :param v: the variables for the attention layer, as a container, constructed internally by default.
+        :type v: ivy container of variables, optional
+        """
         v_exists = ivy.exists(v)
         v = ivy.default(v, ivy.Container({'to_q': None, 'to_kv': None, 'to_out': None}))
-        inner_dim = dim_head * heads
+        inner_dim = head_dim * num_heads
         context_dim = ivy.default(context_dim, query_dim)
-        self._scale = ivy.default(scale, dim_head ** -0.5)
-        self._num_heads = heads
+        self._scale = ivy.default(scale, head_dim ** -0.5)
+        self._num_heads = num_heads
         self._to_q = ivy.Linear(query_dim, inner_dim, with_bias=False, dev_str=dev_str, v=v.to_q)
         self._to_kv = ivy.Linear(context_dim, inner_dim * 2, with_bias=False, dev_str=dev_str, v=v.to_kv)
         self._to_out = ivy.Sequential(
             ivy.Linear(inner_dim, query_dim, dev_str=dev_str, v=v.to_out),
-            ivy.Dropout(dropout), dev_str=dev_str
+            ivy.Dropout(dropout_rate), dev_str=dev_str
         )
         ivy.Module.__init__(self, dev_str, v if v_exists else None)
 
-    def _forward(self, x, context=None, mask=None):
+    def _forward(self, inputs, context=None, mask=None):
+        """
+        Perform forward pass of the MultiHeadAttention layer.
+
+        :param inputs: The array to determine the queries from *[batch_shape,num_queries,x_feats]*.
+        :type inputs: array
+        :param context: The array to determine the keys and values from. Default is None.
+                        *[batch_shape,num_values,cont_feats]*.
+        :type context: array, optional
+        :param mask: The mask to apply to the query-key values. Default is None. *[batch_shape,num_queries,num_values]*
+        :type mask: array, optional
+        :return The output following application of scaled dot-product attention. *[batch_shape,num_queries,out_feats]*
+        """
         return ivy.multi_head_attention(
-            x, self._to_q, self._to_kv, self._to_out, self._scale, self._num_heads, context, mask,
+            inputs, self._to_q, self._to_kv, self._to_out, self._scale, self._num_heads, context, mask,
             self.v.to_q, self.v.to_kv, self.v.to_out)
 
 

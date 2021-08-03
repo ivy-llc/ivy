@@ -119,7 +119,7 @@ def multi_head_attention(x, to_q_fn, to_kv_fn, to_out_fn, scale, num_heads, cont
     :type to_kv_v: variables array, optional
     :param to_out_v: The variables for function to_out_fn. Default is None.
     :type to_out_v: variables array, optional
-    :return The output following application of scaled dot-product attention. *[batch_shape,num_queries,out_feats]*
+    :return The output following application of multi-head attention. *[batch_shape,num_queries,out_feats]*
     """
 
     # BS x Q x (HxF)
