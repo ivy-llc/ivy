@@ -898,6 +898,9 @@ class Container(dict):
     # Built-ins #
     # ----------#
 
+    def __dir__(self):
+        return list(super.__dir__(self)) + list(self.keys())
+
     def __getattr__(self, item):
         try:
             return dict.__getitem__(self, item)
