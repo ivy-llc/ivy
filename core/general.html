@@ -148,6 +148,8 @@
 <li class="toctree-l2"><a class="reference internal" href="general/gather.html">gather</a></li>
 <li class="toctree-l2"><a class="reference internal" href="general/gather_nd.html">gather_nd</a></li>
 <li class="toctree-l2"><a class="reference internal" href="general/linear_resample.html">linear_resample</a></li>
+<li class="toctree-l2"><a class="reference internal" href="general/exists.html">exists</a></li>
+<li class="toctree-l2"><a class="reference internal" href="general/default.html">default</a></li>
 <li class="toctree-l2"><a class="reference internal" href="general/dev.html">dev</a></li>
 <li class="toctree-l2"><a class="reference internal" href="general/to_dev.html">to_dev</a></li>
 <li class="toctree-l2"><a class="reference internal" href="general/dev_to_str.html">dev_to_str</a></li>
@@ -587,6 +589,23 @@ dimension 3.</p>
 </dd></dl>
 
 <dl class="py function">
+<dt id="ivy.core.general.default">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">default</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">default_val</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#default"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.default" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns x provided it exists (is not None), else returns default.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>any</em>) – Input which may or may not exist.</p></li>
+<li><p><strong>default_val</strong> (<em>any</em>) – The default value.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>x if x exists (is not None), else default.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt id="ivy.core.general.dev">
 <code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">dev</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">f</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#dev"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.dev" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the native device handle for input array x.</p>
@@ -684,6 +703,20 @@ dimension 3.</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>Device string e.g. ‘float32’.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.core.general.exists">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">exists</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#exists"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.exists" title="Permalink to this definition">¶</a></dt>
+<dd><p>Simple check as to whether the input is None or not.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>x</strong> (<em>any</em>) – Input to check.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>True if x is not None, else False.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1654,6 +1687,8 @@ If not given, then the type of the original array is used.</p></li>
 <li class="toctree-l1"><a class="reference internal" href="general/gather.html">gather</a></li>
 <li class="toctree-l1"><a class="reference internal" href="general/gather_nd.html">gather_nd</a></li>
 <li class="toctree-l1"><a class="reference internal" href="general/linear_resample.html">linear_resample</a></li>
+<li class="toctree-l1"><a class="reference internal" href="general/exists.html">exists</a></li>
+<li class="toctree-l1"><a class="reference internal" href="general/default.html">default</a></li>
 <li class="toctree-l1"><a class="reference internal" href="general/dev.html">dev</a></li>
 <li class="toctree-l1"><a class="reference internal" href="general/to_dev.html">to_dev</a></li>
 <li class="toctree-l1"><a class="reference internal" href="general/dev_to_str.html">dev_to_str</a></li>
