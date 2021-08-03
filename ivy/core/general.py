@@ -539,6 +539,29 @@ def zero_pad(x, pad_width, f=None):
     return _get_framework(x, f=f).zero_pad(x, pad_width)
 
 
+def fourier_encode(x, max_freq, num_bands=4, base=2.):
+    """
+    Pads an array with fourier encodings.
+
+    :param x: Input array to encode.
+    :type x: array
+    :param max_freq: The maximum frequency of the encoding.
+    :type max_freq: float
+    :param num_bands: The number of frequency bands for the encoding. Default is 4.
+    :type num_bands: int, optional
+    :param base: The base of the encoding.
+    :type base: float, optional
+    :return: New array with the final dimension expanded, and the encodings stored in this channel.
+    """
+    x = ivy.expand_dims(x, -1)
+    orig_x = x
+    scales = ivy.cast(ivy.logspace(0., math.log(max_freq / 2) / math.log(base), num_bands,
+                                   base=base, dev_str=dev_str(x)), ivy.dtype_str(x))
+    scales = scales[(*((None,) * (len(x.shape) - 1)), Ellipsis)]
+    x = x * scales * math.pi
+    return ivy.concatenate((orig_x, ivy.sin(x), ivy.cos(x)), -1)
+
+
 def swapaxes(x, axis0, axis1, f=None):
     """
     Interchange two axes of an array.
