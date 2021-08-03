@@ -905,6 +905,12 @@ class Container(dict):
             # noinspection PyUnresolvedReferences
             return super.__getattr__(item)
 
+    def __setattr__(self, name, value):
+        if name[0] != '_':
+            self[name] = value
+        else:
+            super.__setattr__(self, name, value)
+
     def __getitem__(self, query):
         """
         Get slice, key or key chain of container object.
