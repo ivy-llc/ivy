@@ -256,7 +256,7 @@ def lstm_update(x, init_h, init_c, kernel, recurrent_kernel, bias=None, recurren
     # input kernel
     Wi = kernel
     Wi_x = ivy.reshape(ivy.matmul(x_flat, Wi) + (bias if bias is not None else 0),
-                        batch_shape + [timesteps, -1])
+                       batch_shape + [timesteps, -1])
     Wii_x, Wif_x, Wig_x, Wio_x = ivy.split(Wi_x, 4, -1)
 
     # recurrent kernel
@@ -267,7 +267,6 @@ def lstm_update(x, init_h, init_c, kernel, recurrent_kernel, bias=None, recurren
     ct = init_c
 
     # lstm outputs
-    ot = x
     hts_list = list()
 
     # unrolled time dimension with lstm steps
