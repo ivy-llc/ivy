@@ -75,7 +75,7 @@ def test_dropout(x, dtype_str, tensor_fn, dev_str, call):
     # compilation test
     if call in [helpers.torch_call]:
         # str_to_dev not supported by torch.jit due to Device and Str not seen as the same
-        pytest.skip()
+        return
     helpers.assert_compilable(ivy.dropout)
 
 
@@ -106,8 +106,36 @@ def test_scaled_dot_product_attention(q_n_k_n_v_n_s_n_m_n_gt, dtype_str, tensor_
     # compilation test
     if call in [helpers.torch_call]:
         # torch.jit compiled functions can't take variable number of arguments, which torch.einsum takes
-        pytest.skip()
+        return
     helpers.assert_compilable(ivy.scaled_dot_product_attention)
+
+
+# multi_head_attention
+@pytest.mark.parametrize(
+    "x_n_s_n_m_n_c_n_gt", [([[3.]], 2., [[1.]], [[4., 5.]], [[4., 5., 4., 5.]])])
+@pytest.mark.parametrize(
+    "dtype_str", ['float32'])
+@pytest.mark.parametrize(
+    "tensor_fn", [ivy.array, helpers.var_fn])
+def test_multi_head_attention(x_n_s_n_m_n_c_n_gt, dtype_str, tensor_fn, dev_str, call):
+    x, scale, mask, context, ground_truth = x_n_s_n_m_n_c_n_gt
+    # smoke test
+    x = tensor_fn(x, dtype_str, dev_str)
+    context = tensor_fn(context, dtype_str, dev_str)
+    mask = tensor_fn(mask, dtype_str, dev_str)
+    fn = lambda x_, v: ivy.tile(x_, (1, 2))
+    ret = ivy.multi_head_attention(x, fn, fn, fn, scale, 2, context, mask)
+    # type test
+    assert ivy.is_array(ret)
+    # cardinality test
+    assert list(ret.shape) == list(np.array(ground_truth).shape)
+    # value test
+    assert np.allclose(call(ivy.multi_head_attention, x, fn, fn, fn, scale, 2, context, mask), np.array(ground_truth))
+    # compilation test
+    if call in [helpers.torch_call]:
+        # torch.jit compiled functions can't take variable number of arguments, which torch.einsum takes
+        return
+    helpers.assert_compilable(ivy.multi_head_attention)
 
 
 # Convolutions #
