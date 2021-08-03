@@ -104,5 +104,5 @@ RUN pip3 install --no-cache-dir -r optional.txt && \
 RUN pip3 install torch==1.9.0+cu111 -f https://download.pytorch.org/whl/torch_stable.html
 
 # CUDA-specific Installations
-RUN pip3 install --upgrade jaxlib==0.1.64+cuda110 -f https://storage.googleapis.com/jax-releases/jax_releases.html
+RUN pip3 install --upgrade jaxlib==0.1.65+cuda110 -f https://storage.googleapis.com/jax-releases/jax_releases.html
 RUN pip3 install --upgrade torch-scatter -f https://pytorch-geometric.com/whl/torch-1.9.0+cu111.html
