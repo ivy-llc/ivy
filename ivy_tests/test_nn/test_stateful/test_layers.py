@@ -696,9 +696,8 @@ def test_lstm_layer(b_t_ic_hc_otf_sctv, with_v, with_initial_state, dtype_str, t
 # sequential
 @pytest.mark.parametrize(
     "bs_c_target", [
-        ([1, 2], 5, [[[1.1688471, 0.2358207, 0.73665226, -0.29896182, -0.04109899],
-                      [1.1688471, 0.2358207, 0.73665226, -0.29896182, -0.04109899]]]),
-    ])
+        ([1, 2], 5, [[[-0.34784955,  0.47909835,  0.7241975 , -0.82175905, -0.43836743],
+                      [-0.34784955,  0.47909835,  0.7241975 , -0.82175905, -0.43836743]]])])
 @pytest.mark.parametrize(
     "with_v", [True, False])
 @pytest.mark.parametrize(
@@ -720,10 +719,6 @@ def test_sequential_layer(bs_c_target, with_v, seq_v, dtype_str, tensor_fn, dev_
                            {'w': ivy.variable(ivy.array(np.random.uniform(
                                -wlim, wlim, (channels, channels)), 'float32')),
                                'b': ivy.variable(ivy.zeros([channels]))},
-                       'v1':
-                           {'w': ivy.variable(ivy.array(np.random.uniform(
-                               -wlim, wlim, (channels, channels)), 'float32')),
-                               'b': ivy.variable(ivy.zeros([channels]))},
                        'v2':
                            {'w': ivy.variable(ivy.array(np.random.uniform(
                                -wlim, wlim, (channels, channels)), 'float32')),
@@ -732,12 +727,12 @@ def test_sequential_layer(bs_c_target, with_v, seq_v, dtype_str, tensor_fn, dev_
         v = None
     if seq_v:
         seq = ivy.Sequential(ivy.Linear(channels, channels),
-                             ivy.Linear(channels, channels),
+                             ivy.Dropout(0.),
                              ivy.Linear(channels, channels),
                              v=v if with_v else None)
     else:
         seq = ivy.Sequential(ivy.Linear(channels, channels, v=v['submodules']['v0'] if with_v else None),
-                             ivy.Linear(channels, channels, v=v['submodules']['v1'] if with_v else None),
+                             ivy.Dropout(0.),
                              ivy.Linear(channels, channels, v=v['submodules']['v2'] if with_v else None))
     ret = seq(x)
     # type test
