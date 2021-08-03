@@ -927,6 +927,50 @@ def test_zero_pad(x_n_pw, dtype_str, tensor_fn, dev_str, call):
     helpers.assert_compilable(ivy.zero_pad)
 
 
+# fourier_encode
+@pytest.mark.parametrize(
+    "x_n_mf_n_nb_n_b_n_gt", [([2.], 4., 4, 2., [[2.,  1.7484555e-07,  0.99805772, -0.52196848,
+                                                 3.4969111e-07, 1., -0.062295943, -0.85296476, 1.]]),
+                             ([[0.5, 1.5, 2.5, 3.5]], 8., 6, 3.,
+                              [[[5.0000000e-01, 1.0000000e+00, 8.7667871e-01, 3.9555991e-01,
+                                 -4.5034310e-01, -9.9878132e-01, 1.7484555e-07, -4.3711388e-08,
+                                 -4.8107630e-01, -9.1844016e-01, -8.9285558e-01, 4.9355008e-02, 1.0000000e+00],
+                                [1.5000000e+00, -1.0000000e+00, -6.5104485e-02,  9.3911028e-01, -9.8569500e-01,
+                                 9.8904943e-01,  4.7699523e-08,  1.1924881e-08, 9.9787843e-01, -3.4361595e-01,
+                                 -1.6853882e-01, -1.4758460e-01, 1.0000000e+00],
+                                [2.5000000e+00, 1.0000000e+00, -8.0673981e-01, 8.9489913e-01, -7.2141492e-01,
+                                 -9.6968061e-01, 1.3510650e-06, -3.3776624e-07, -5.9090680e-01, 4.4626841e-01,
+                                 6.9250309e-01,  2.4437571e-01, 1.0000000e+00],
+                                [3.5000000e+00, -1.0000000e+00, 9.3175411e-01, 2.9059762e-01, 1.2810004e-01,
+                                 9.4086391e-01,  2.6544303e-06,  6.6360758e-07, -3.6308998e-01, 9.5684534e-01,
+                                 9.9176127e-01, -3.3878478e-01, 1.0000000e+00]]])])
+@pytest.mark.parametrize(
+    "dtype_str", ['float32'])
+@pytest.mark.parametrize(
+    "tensor_fn", [ivy.array, helpers.var_fn])
+def test_fourier_encode(x_n_mf_n_nb_n_b_n_gt, dtype_str, tensor_fn, dev_str, call):
+    # smoke test
+    x, max_freq, num_bands, base, ground_truth = x_n_mf_n_nb_n_b_n_gt
+    if isinstance(x, Number) and tensor_fn == helpers.var_fn and call is helpers.mx_call:
+        # mxnet does not support 0-dimensional variables
+        pytest.skip()
+    x = tensor_fn(x, dtype_str, dev_str)
+    ret = ivy.fourier_encode(x, max_freq, num_bands, base)
+    # type test
+    assert ivy.is_array(ret)
+    # cardinality test
+    x_shape = [1] if x.shape == () else list(x.shape)
+    expected_shape = x_shape + [1 + 2*num_bands]
+    assert list(ret.shape) == expected_shape
+    # value test
+    assert np.allclose(call(ivy.fourier_encode, x, max_freq, num_bands, base), np.array(ground_truth), atol=1e-5)
+    # compilation test
+    if call is helpers.torch_call:
+        # pytorch scripting does not support Union or Numbers for type hinting
+        return
+    helpers.assert_compilable(ivy.fourier_encode)
+
+
 # constant_pad
 @pytest.mark.parametrize(
     "x_n_pw_n_val", [(1, [[1, 1]], 1.5), (1, [[0, 0]], -2.7), ([[0., 1., 2., 3.]], [[0, 1], [1, 2]], 11.)])
