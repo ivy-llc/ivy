@@ -5,6 +5,7 @@ Collection of general Ivy functions.
 # global
 import math
 import nvidia_smi
+from functools import wraps
 from psutil import virtual_memory
 
 # local
@@ -1230,3 +1231,26 @@ def split_func_call(func, inputs, chunk_size, input_axes=0, output_axes=None):
         output_axes = [output_axes] * num_outputs
     rets = [ivy.concatenate([r[i] for r in rets], output_axes[i]) for i in range(num_outputs)]
     return rets
+
+
+def cache_fn(func):
+    """
+    Wrap a function, such that when cache=True is passed as an argument, a previously cached output is returned.
+
+    :param func: The function to wrap, whose output should be cached for later.
+    :type func: callable
+    :return: The newly cache wrapped function.
+    """
+    _cache = None
+
+    @wraps(func)
+    def cached_fn(*args, cache=True, **kwargs):
+        if not cache:
+            return func(*args, **kwargs)
+        nonlocal _cache
+        if _cache is not None:
+            return _cache
+        _cache = func(*args, **kwargs)
+        return _cache
+
+    return cached_fn
