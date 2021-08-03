@@ -15,6 +15,7 @@ Layers
    layers/linear.rst
    layers/dropout.rst
    layers/scaled_dot_product_attention.rst
+   layers/multi_head_attention.rst
    layers/conv1d.rst
    layers/conv1d_transpose.rst
    layers/conv2d.rst
