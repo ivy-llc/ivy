@@ -1,3 +1,5 @@
+from . import activations
+from .activations import *
 from . import initializers
 from .initializers import *
 from . import layers
