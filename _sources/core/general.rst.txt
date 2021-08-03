@@ -43,6 +43,7 @@ General
    general/tile.rst
    general/constant_pad.rst
    general/zero_pad.rst
+   general/fourier_encode.rst
    general/swapaxes.rst
    general/transpose.rst
    general/expand_dims.rst

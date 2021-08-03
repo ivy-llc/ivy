@@ -122,6 +122,7 @@
 <li class="toctree-l2"><a class="reference internal" href="general/tile.html">tile</a></li>
 <li class="toctree-l2"><a class="reference internal" href="general/constant_pad.html">constant_pad</a></li>
 <li class="toctree-l2"><a class="reference internal" href="general/zero_pad.html">zero_pad</a></li>
+<li class="toctree-l2"><a class="reference internal" href="general/fourier_encode.html">fourier_encode</a></li>
 <li class="toctree-l2"><a class="reference internal" href="general/swapaxes.html">swapaxes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="general/transpose.html">transpose</a></li>
 <li class="toctree-l2"><a class="reference internal" href="general/expand_dims.html">expand_dims</a></li>
@@ -757,6 +758,25 @@ The shape of the array is preserved, but the elements are reordered.</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>An array of the same shape and type as x, with the elements floor modded.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.core.general.fourier_encode">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">fourier_encode</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">max_freq</span></em>, <em class="sig-param"><span class="n">num_bands</span><span class="o">=</span><span class="default_value">4</span></em>, <em class="sig-param"><span class="n">base</span><span class="o">=</span><span class="default_value">2.0</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#fourier_encode"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.fourier_encode" title="Permalink to this definition">¶</a></dt>
+<dd><p>Pads an array with fourier encodings.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>array</em>) – Input array to encode.</p></li>
+<li><p><strong>max_freq</strong> (<em>float</em>) – The maximum frequency of the encoding.</p></li>
+<li><p><strong>num_bands</strong> (<em>int</em><em>, </em><em>optional</em>) – The number of frequency bands for the encoding. Default is 4.</p></li>
+<li><p><strong>base</strong> (<em>float</em><em>, </em><em>optional</em>) – The base of the encoding.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>New array with the final dimension expanded, and the encodings stored in this channel.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1608,6 +1628,7 @@ If not given, then the type of the original array is used.</p></li>
 <li class="toctree-l1"><a class="reference internal" href="general/tile.html">tile</a></li>
 <li class="toctree-l1"><a class="reference internal" href="general/constant_pad.html">constant_pad</a></li>
 <li class="toctree-l1"><a class="reference internal" href="general/zero_pad.html">zero_pad</a></li>
+<li class="toctree-l1"><a class="reference internal" href="general/fourier_encode.html">fourier_encode</a></li>
 <li class="toctree-l1"><a class="reference internal" href="general/swapaxes.html">swapaxes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="general/transpose.html">transpose</a></li>
 <li class="toctree-l1"><a class="reference internal" href="general/expand_dims.html">expand_dims</a></li>
