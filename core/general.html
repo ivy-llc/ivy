@@ -164,6 +164,7 @@
 <li class="toctree-l2"><a class="reference internal" href="general/dtype_str.html">dtype_str</a></li>
 <li class="toctree-l2"><a class="reference internal" href="general/compile_fn.html">compile_fn</a></li>
 <li class="toctree-l2"><a class="reference internal" href="general/split_func_call.html">split_func_call</a></li>
+<li class="toctree-l2"><a class="reference internal" href="general/cache_fn.html">cache_fn</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="gradients.html">Gradients</a></li>
@@ -407,6 +408,20 @@ sequence.</p></li>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>Newly broadcast array.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.core.general.cache_fn">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">cache_fn</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">func</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#cache_fn"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.cache_fn" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wrap a function, such that when cache=True is passed as an argument, a previously cached output is returned.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>func</strong> (<em>callable</em>) – The function to wrap, whose output should be cached for later.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The newly cache wrapped function.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1704,6 +1719,7 @@ If not given, then the type of the original array is used.</p></li>
 <li class="toctree-l1"><a class="reference internal" href="general/dtype_str.html">dtype_str</a></li>
 <li class="toctree-l1"><a class="reference internal" href="general/compile_fn.html">compile_fn</a></li>
 <li class="toctree-l1"><a class="reference internal" href="general/split_func_call.html">split_func_call</a></li>
+<li class="toctree-l1"><a class="reference internal" href="general/cache_fn.html">cache_fn</a></li>
 </ul>
 </div>
 </div>
