@@ -69,7 +69,7 @@ class Linear(Module):
 
 class Dropout(Module):
 
-    def __init__(self, prob, scale=True, dev_str='cpu'):
+    def __init__(self, prob, scale=True):
         """
         Dropout layer. The layer randomly zeroes some of the elements of the input tensor with probability p using
         samples from a Bernoull distribution.
@@ -78,12 +78,10 @@ class Dropout(Module):
         :type prob: float
         :param scale: Whether to scale the output by 1/(1-prob), default is True.
         :type scale: bool, optional
-        :param dev_str: device on which to create the layer's variables 'cuda:0', 'cuda:1', 'cpu' etc. Default is cpu.
-        :type dev_str: str, optional
         """
         self._prob = prob
         self._scale = scale
-        Module.__init__(self, dev_str, None)
+        Module.__init__(self, None, None)
 
     def _create_variables(self, dev_str):
         """
