@@ -39,8 +39,5 @@ class Sequential(Module):
         """
         x = inputs
         for i, submod in enumerate(self._submodules):
-            try:
-                x = submod(x, v=self.v['submodules']['v' + str(i)])
-            except:
-                d = 0
+            x = submod(x, v=self.v['submodules']['v' + str(i)])
         return x
