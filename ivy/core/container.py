@@ -37,14 +37,19 @@ def _is_jsonable(x):
 # noinspection PyMissingConstructor
 class Container(dict):
 
-    def __init__(self, dict_in=None):
+    def __init__(self, dict_in=None, **kwargs):
         """
         Initialize container object from input dict representation.
         """
         if dict_in is None:
-            dict_in = dict()
-        if not isinstance(dict_in, dict):
-            dict_in = dict(dict_in)
+            if kwargs:
+                dict_in = dict(**kwargs)
+            else:
+                dict_in = dict()
+        elif kwargs:
+            raise Exception('dict_in and **kwargs cannot both be specified for ivy.Container constructor,'
+                            'please specify one or the other, not both.')
+        dict_in = dict_in if isinstance(dict_in, dict) else dict(dict_in)
         for key, value in sorted(dict_in.items()):
             if isinstance(value, dict):
                 self[key] = Container(value)
