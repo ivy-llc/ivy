@@ -213,7 +213,7 @@ def reptile_step(batch, cost_fn, variables, num_tasks, inner_grad_steps, inner_l
     grads = rets[1] / inner_learning_rate
     if return_inner_v:
         return cost, grads, rets[2]
-    return rets, grads
+    return cost, grads
 
 
 # Second Order
