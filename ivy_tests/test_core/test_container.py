@@ -22,6 +22,16 @@ def test_container_from_dict(dev_str, call):
     assert container.b.d == ivy.array([3])
 
 
+def test_container_from_kwargs(dev_str, call):
+    container = Container(a=ivy.array([1]), b={'c': ivy.array([2]), 'd': ivy.array([3])})
+    assert container['a'] == ivy.array([1])
+    assert container.a == ivy.array([1])
+    assert container['b']['c'] == ivy.array([2])
+    assert container.b.c == ivy.array([2])
+    assert container['b']['d'] == ivy.array([3])
+    assert container.b.d == ivy.array([3])
+
+
 def test_container_expand_dims(dev_str, call):
     dict_in = {'a': ivy.array([1]),
                'b': {'c': ivy.array([2]), 'd': ivy.array([3])}}
