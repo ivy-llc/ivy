@@ -194,7 +194,7 @@
 <span class="c1"># Private #</span>
 <span class="c1"># --------#</span>
 
-<span class="k">def</span> <span class="nf">_compute_cost_and_update_grads</span><span class="p">(</span><span class="n">cost_fn</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span> <span class="n">sub_batch</span><span class="p">,</span> <span class="n">variables</span><span class="p">,</span> <span class="n">inner_v</span><span class="p">,</span> <span class="n">outer_v</span><span class="p">,</span> <span class="n">keep_outer_v</span><span class="p">,</span>
+<span class="k">def</span> <span class="nf">_compute_cost_and_update_grads</span><span class="p">(</span><span class="n">cost_fn</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span> <span class="n">sub_batch</span><span class="p">,</span> <span class="n">variables</span><span class="p">,</span> <span class="n">outer_v</span><span class="p">,</span> <span class="n">keep_outer_v</span><span class="p">,</span>
                                    <span class="n">average_across_steps_or_final</span><span class="p">,</span> <span class="n">all_grads</span><span class="p">,</span> <span class="n">unique_outer</span><span class="p">):</span>
     <span class="k">if</span> <span class="n">order</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
         <span class="n">cost</span><span class="p">,</span> <span class="n">inner_grads</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">execute_with_gradients</span><span class="p">(</span>
@@ -234,8 +234,8 @@
             <span class="n">all_grads</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">inner_update_grads</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">cost</span> <span class="o">=</span> <span class="n">_compute_cost_and_update_grads</span><span class="p">(</span>
-                <span class="n">inner_cost_fn</span> <span class="k">if</span> <span class="n">outer_cost_fn</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">outer_cost_fn</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span> <span class="n">outer_sub_batch</span><span class="p">,</span> <span class="n">variables</span><span class="p">,</span> <span class="n">inner_v</span><span class="p">,</span>
-                <span class="n">outer_v</span><span class="p">,</span> <span class="n">keep_outer_v</span><span class="p">,</span> <span class="n">average_across_steps</span><span class="p">,</span> <span class="n">all_grads</span><span class="p">,</span> <span class="n">unique_outer</span><span class="p">)</span>
+                <span class="n">inner_cost_fn</span> <span class="k">if</span> <span class="n">outer_cost_fn</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">outer_cost_fn</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span> <span class="n">outer_sub_batch</span><span class="p">,</span> <span class="n">variables</span><span class="p">,</span> <span class="n">outer_v</span><span class="p">,</span>
+                <span class="n">keep_outer_v</span><span class="p">,</span> <span class="n">average_across_steps</span><span class="p">,</span> <span class="n">all_grads</span><span class="p">,</span> <span class="n">unique_outer</span><span class="p">)</span>
 
         <span class="c1"># update cost and update parameters</span>
         <span class="n">total_cost</span> <span class="o">=</span> <span class="n">total_cost</span> <span class="o">+</span> <span class="n">cost</span>
@@ -249,7 +249,7 @@
 
     <span class="c1"># once training is finished, compute the final cost, and update all_grads if fist order method</span>
     <span class="n">final_cost</span> <span class="o">=</span> <span class="n">_compute_cost_and_update_grads</span><span class="p">(</span>
-        <span class="n">inner_cost_fn</span> <span class="k">if</span> <span class="n">outer_cost_fn</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">outer_cost_fn</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span> <span class="n">outer_sub_batch</span><span class="p">,</span> <span class="n">variables</span><span class="p">,</span> <span class="n">inner_v</span><span class="p">,</span> <span class="n">outer_v</span><span class="p">,</span>
+        <span class="n">inner_cost_fn</span> <span class="k">if</span> <span class="n">outer_cost_fn</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">outer_cost_fn</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span> <span class="n">outer_sub_batch</span><span class="p">,</span> <span class="n">variables</span><span class="p">,</span> <span class="n">outer_v</span><span class="p">,</span>
         <span class="n">keep_outer_v</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="n">all_grads</span><span class="p">,</span> <span class="n">unique_outer</span><span class="p">)</span>
 
     <span class="c1"># average the cost or gradients across all timesteps if this option is chosen</span>
@@ -269,7 +269,7 @@
                  <span class="n">inner_grad_steps</span><span class="p">,</span> <span class="n">inner_learning_rate</span><span class="p">,</span> <span class="n">inner_optimization_step</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span> <span class="n">average_across_steps</span><span class="p">,</span> <span class="n">inner_v</span><span class="p">,</span>
                  <span class="n">keep_innver_v</span><span class="p">,</span> <span class="n">outer_v</span><span class="p">,</span> <span class="n">keep_outer_v</span><span class="p">,</span> <span class="n">return_inner_v</span><span class="p">):</span>
     <span class="n">total_cost</span> <span class="o">=</span> <span class="mi">0</span>
-    <span class="n">updated_iv_to_return</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">updated_ivs_to_return</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
     <span class="n">all_grads</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">inner_v</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">))</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">inner_v</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">,</span> <span class="nb">dict</span><span class="p">,</span> <span class="nb">type</span><span class="p">(</span><span class="kc">None</span><span class="p">))):</span>
         <span class="n">inner_v_seq</span> <span class="o">=</span> <span class="kc">True</span>
@@ -293,16 +293,16 @@
         <span class="n">cost</span><span class="p">,</span> <span class="n">updated_iv</span><span class="p">,</span> <span class="n">grads</span> <span class="o">=</span> <span class="n">_train_task</span><span class="p">(</span><span class="n">inner_sub_batch</span><span class="p">,</span> <span class="n">outer_sub_batch</span><span class="p">,</span> <span class="n">inner_cost_fn</span><span class="p">,</span> <span class="n">outer_cost_fn</span><span class="p">,</span> <span class="n">variables</span><span class="p">,</span>
                                               <span class="n">inner_grad_steps</span><span class="p">,</span> <span class="n">inner_learning_rate</span><span class="p">,</span> <span class="n">inner_optimization_step</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span>
                                               <span class="n">average_across_steps</span><span class="p">,</span> <span class="n">iv</span><span class="p">,</span> <span class="n">keep_innver_v</span><span class="p">,</span> <span class="n">ov</span><span class="p">,</span> <span class="n">keep_outer_v</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">return_inner_v</span> <span class="ow">and</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="n">updated_iv_to_return</span> <span class="o">=</span> <span class="n">updated_iv</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">return_inner_v</span> <span class="o">==</span> <span class="s1">&#39;first&#39;</span> <span class="ow">and</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">or</span> <span class="n">return_inner_v</span> <span class="o">==</span> <span class="s1">&#39;all&#39;</span><span class="p">:</span>
+            <span class="n">updated_ivs_to_return</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">updated_iv</span><span class="p">)</span>
         <span class="n">total_cost</span> <span class="o">=</span> <span class="n">total_cost</span> <span class="o">+</span> <span class="n">cost</span>
         <span class="n">all_grads</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">grads</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">order</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">return_inner_v</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">total_cost</span> <span class="o">/</span> <span class="n">num_tasks</span><span class="p">,</span> <span class="nb">sum</span><span class="p">(</span><span class="n">all_grads</span><span class="p">)</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">all_grads</span><span class="p">),</span> <span class="n">updated_iv_to_return</span>
+            <span class="k">return</span> <span class="n">total_cost</span> <span class="o">/</span> <span class="n">num_tasks</span><span class="p">,</span> <span class="nb">sum</span><span class="p">(</span><span class="n">all_grads</span><span class="p">)</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">all_grads</span><span class="p">),</span> <span class="n">updated_ivs_to_return</span>
         <span class="k">return</span> <span class="n">total_cost</span> <span class="o">/</span> <span class="n">num_tasks</span><span class="p">,</span> <span class="nb">sum</span><span class="p">(</span><span class="n">all_grads</span><span class="p">)</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">all_grads</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">return_inner_v</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">total_cost</span> <span class="o">/</span> <span class="n">num_tasks</span><span class="p">,</span> <span class="n">updated_iv_to_return</span>
+        <span class="k">return</span> <span class="n">total_cost</span> <span class="o">/</span> <span class="n">num_tasks</span><span class="p">,</span> <span class="n">updated_ivs_to_return</span>
     <span class="k">return</span> <span class="n">total_cost</span> <span class="o">/</span> <span class="n">num_tasks</span>
 
 
@@ -357,9 +357,9 @@
 <span class="sd">    :param keep_outer_v: If True, the key chains in inner_v will be kept, otherwise they will be removed.</span>
 <span class="sd">                            Default is True.</span>
 <span class="sd">    :type keep_outer_v: bool, optional</span>
-<span class="sd">    :param return_inner_v: If True, the variables for the first task inner loop will also be returned. This is useful</span>
-<span class="sd">                            for running other assessments on inner loop task performance. Default is True.</span>
-<span class="sd">    :type return_inner_v: bool, optional</span>
+<span class="sd">    :param return_inner_v: Either &#39;first&#39;, &#39;all&#39;, or False. &#39;first&#39; means the variables for the first task inner loop</span>
+<span class="sd">                           will also be returned. variables for all tasks will be returned with &#39;all&#39;. Default is False.</span>
+<span class="sd">    :type return_inner_v: str, optional</span>
 <span class="sd">    :return: The cost and the gradients with respect to the outer loop variables.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_train_tasks</span><span class="p">(</span>
@@ -389,9 +389,9 @@
 <span class="sd">    :param inner_optimization_step: The function used for the inner loop optimization.</span>
 <span class="sd">                                    Default is ivy.gradient_descent_update.</span>
 <span class="sd">    :type inner_optimization_step: callable, optional</span>
-<span class="sd">    :param return_inner_v: If True, the variables for the first task inner loop will also be returned. This is useful</span>
-<span class="sd">                            for running other assessments on inner loop task performance. Default is True.</span>
-<span class="sd">    :type return_inner_v: bool, optional</span>
+<span class="sd">    :param return_inner_v: Either &#39;first&#39;, &#39;all&#39;, or False. &#39;first&#39; means the variables for the first task inner loop</span>
+<span class="sd">                           will also be returned. variables for all tasks will be returned with &#39;all&#39;. Default is False.</span>
+<span class="sd">    :type return_inner_v: str, optional</span>
 <span class="sd">    :return: The cost and the gradients with respect to the outer loop variables.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">rets</span> <span class="o">=</span> <span class="n">_train_tasks</span><span class="p">(</span>
@@ -451,9 +451,9 @@
 <span class="sd">    :param keep_outer_v: If True, the key chains in inner_v will be kept, otherwise they will be removed.</span>
 <span class="sd">                            Default is True.</span>
 <span class="sd">    :type keep_outer_v: bool, optional</span>
-<span class="sd">    :param return_inner_v: If True, the variables for the first task inner loop will also be returned. This is useful</span>
-<span class="sd">                            for running other assessments on inner loop task performance. Default is True.</span>
-<span class="sd">    :type return_inner_v: bool, optional</span>
+<span class="sd">    :param return_inner_v: Either &#39;first&#39;, &#39;all&#39;, or False. &#39;first&#39; means the variables for the first task inner loop</span>
+<span class="sd">                           will also be returned. variables for all tasks will be returned with &#39;all&#39;. Default is False.</span>
+<span class="sd">    :type return_inner_v: str, optional</span>
 <span class="sd">    :return: The cost and the gradients with respect to the outer loop variables.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">unique_outer</span> <span class="o">=</span> <span class="n">outer_v</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>

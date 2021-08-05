@@ -228,8 +228,8 @@ Default is True.</p></li>
 <li><p><strong>outer_v</strong> (<em>dict str</em><em> or </em><em>list</em><em>, </em><em>optional</em>) – Nested variable keys to be optimized during the inner loop, with same keys and boolean values.</p></li>
 <li><p><strong>keep_outer_v</strong> (<em>bool</em><em>, </em><em>optional</em>) – If True, the key chains in inner_v will be kept, otherwise they will be removed.
 Default is True.</p></li>
-<li><p><strong>return_inner_v</strong> (<em>bool</em><em>, </em><em>optional</em>) – If True, the variables for the first task inner loop will also be returned. This is useful
-for running other assessments on inner loop task performance. Default is True.</p></li>
+<li><p><strong>return_inner_v</strong> (<em>str</em><em>, </em><em>optional</em>) – Either ‘first’, ‘all’, or False. ‘first’ means the variables for the first task inner loop
+will also be returned. variables for all tasks will be returned with ‘all’. Default is False.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
