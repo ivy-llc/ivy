@@ -214,8 +214,8 @@ This must be the leading size of the input batch.</p></li>
 <li><p><strong>inner_learning_rate</strong> (<em>float</em>) – The learning rate of the inner loop.</p></li>
 <li><p><strong>inner_optimization_step</strong> (<em>callable</em><em>, </em><em>optional</em>) – The function used for the inner loop optimization.
 Default is ivy.gradient_descent_update.</p></li>
-<li><p><strong>return_inner_v</strong> (<em>bool</em><em>, </em><em>optional</em>) – If True, the variables for the first task inner loop will also be returned. This is useful
-for running other assessments on inner loop task performance. Default is True.</p></li>
+<li><p><strong>return_inner_v</strong> (<em>str</em><em>, </em><em>optional</em>) – Either ‘first’, ‘all’, or False. ‘first’ means the variables for the first task inner loop
+will also be returned. variables for all tasks will be returned with ‘all’. Default is False.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
