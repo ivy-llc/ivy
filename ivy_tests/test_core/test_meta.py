@@ -25,7 +25,7 @@ import ivy_tests.helpers as helpers
 @pytest.mark.parametrize(
     "num_tasks", [1, 2])
 @pytest.mark.parametrize(
-    "return_inner_v", [True, False])
+    "return_inner_v", ['first', 'all', False])
 def test_fomaml_step_unique_vars(dev_str, call, inner_grad_steps, with_outer_cost_fn, average_across_steps, num_tasks,
                                  return_inner_v):
 
@@ -76,8 +76,8 @@ def test_fomaml_step_unique_vars(dev_str, call, inner_grad_steps, with_outer_cos
     outer_grads = rets[1]
     assert np.allclose(ivy.to_numpy(outer_grads.weight[0]), np.array(true_weight_grad))
     if return_inner_v:
-        inner_v_ret = rets[2]
-        assert isinstance(inner_v_ret, ivy.Container)
+        inner_v_rets = rets[2]
+        assert isinstance(inner_v_rets[0], ivy.Container)
 
 
 # fomaml step shared vars
@@ -90,7 +90,7 @@ def test_fomaml_step_unique_vars(dev_str, call, inner_grad_steps, with_outer_cos
 @pytest.mark.parametrize(
     "num_tasks", [1, 2])
 @pytest.mark.parametrize(
-    "return_inner_v", [True, False])
+    "return_inner_v", ['first', 'all', False])
 def test_fomaml_step_shared_vars(dev_str, call, inner_grad_steps, with_outer_cost_fn, average_across_steps, num_tasks,
                                  return_inner_v):
 
@@ -159,8 +159,8 @@ def test_fomaml_step_shared_vars(dev_str, call, inner_grad_steps, with_outer_cos
     outer_grads = rets[1]
     assert np.allclose(ivy.to_numpy(outer_grads.latent[0]), np.array(true_outer_grad))
     if return_inner_v:
-        inner_v_ret = rets[2]
-        assert isinstance(inner_v_ret, ivy.Container)
+        inner_v_rets = rets[2]
+        assert isinstance(inner_v_rets[0], ivy.Container)
 
 
 # fomaml step overlapping vars
@@ -173,7 +173,7 @@ def test_fomaml_step_shared_vars(dev_str, call, inner_grad_steps, with_outer_cos
 @pytest.mark.parametrize(
     "num_tasks", [1, 2])
 @pytest.mark.parametrize(
-    "return_inner_v", [True, False])
+    "return_inner_v", ['first', 'all', False])
 def test_fomaml_step_overlapping_vars(dev_str, call, inner_grad_steps, with_outer_cost_fn, average_across_steps,
                                       num_tasks, return_inner_v):
 
@@ -229,8 +229,8 @@ def test_fomaml_step_overlapping_vars(dev_str, call, inner_grad_steps, with_oute
     assert np.allclose(ivy.to_numpy(outer_grads.weight[0]), np.array(true_weight_grad))
     assert np.allclose(ivy.to_numpy(outer_grads.latent[0]), np.array(true_latent_grad))
     if return_inner_v:
-        inner_v_ret = rets[2]
-        assert isinstance(inner_v_ret, ivy.Container)
+        inner_v_rets = rets[2]
+        assert isinstance(inner_v_rets[0], ivy.Container)
 
 
 # reptile step
@@ -239,7 +239,7 @@ def test_fomaml_step_overlapping_vars(dev_str, call, inner_grad_steps, with_oute
 @pytest.mark.parametrize(
     "num_tasks", [1, 2])
 @pytest.mark.parametrize(
-    "return_inner_v", [True, False])
+    "return_inner_v", ['first', 'all', False])
 def test_reptile_step(dev_str, call, inner_grad_steps, num_tasks, return_inner_v):
 
     if call in [helpers.np_call, helpers.jnp_call, helpers.mx_call]:
@@ -297,8 +297,8 @@ def test_reptile_step(dev_str, call, inner_grad_steps, num_tasks, return_inner_v
     outer_grads = rets[1]
     assert np.allclose(ivy.to_numpy(outer_grads.latent[0]), np.array(true_outer_grad))
     if return_inner_v:
-        inner_v_ret = rets[2]
-        assert isinstance(inner_v_ret, ivy.Container)
+        inner_v_rets = rets[2]
+        assert isinstance(inner_v_rets[0], ivy.Container)
 
 
 # Second Order #
@@ -314,7 +314,7 @@ def test_reptile_step(dev_str, call, inner_grad_steps, num_tasks, return_inner_v
 @pytest.mark.parametrize(
     "num_tasks", [1, 2])
 @pytest.mark.parametrize(
-    "return_inner_v", [True, False])
+    "return_inner_v", ['first', 'all', False])
 def test_maml_step_unique_vars(dev_str, call, inner_grad_steps, with_outer_cost_fn, average_across_steps, num_tasks,
                                return_inner_v):
 
@@ -366,8 +366,8 @@ def test_maml_step_unique_vars(dev_str, call, inner_grad_steps, with_outer_cost_
     outer_grads = rets[1]
     assert np.allclose(ivy.to_numpy(outer_grads.weight[0]), np.array(true_outer_grad))
     if return_inner_v:
-        inner_v_ret = rets[2]
-        assert isinstance(inner_v_ret, ivy.Container)
+        inner_v_rets = rets[2]
+        assert isinstance(inner_v_rets[0], ivy.Container)
 
 
 # maml step shared vars
@@ -380,7 +380,7 @@ def test_maml_step_unique_vars(dev_str, call, inner_grad_steps, with_outer_cost_
 @pytest.mark.parametrize(
     "num_tasks", [1, 2])
 @pytest.mark.parametrize(
-    "return_inner_v", [True, False])
+    "return_inner_v", ['first', 'all', False])
 def test_maml_step_shared_vars(dev_str, call, inner_grad_steps, with_outer_cost_fn, average_across_steps, num_tasks,
                                return_inner_v):
 
@@ -466,8 +466,8 @@ def test_maml_step_shared_vars(dev_str, call, inner_grad_steps, with_outer_cost_
     outer_grads = rets[1]
     assert np.allclose(ivy.to_numpy(outer_grads.latent[0]), true_outer_grad[0])
     if return_inner_v:
-        inner_v_ret = rets[2]
-        assert isinstance(inner_v_ret, ivy.Container)
+        inner_v_rets = rets[2]
+        assert isinstance(inner_v_rets[0], ivy.Container)
 
 
 # maml step overlapping vars
@@ -480,7 +480,7 @@ def test_maml_step_shared_vars(dev_str, call, inner_grad_steps, with_outer_cost_
 @pytest.mark.parametrize(
     "num_tasks", [1, 2])
 @pytest.mark.parametrize(
-    "return_inner_v", [True, False])
+    "return_inner_v", ['first', 'all', False])
 def test_maml_step_overlapping_vars(dev_str, call, inner_grad_steps, with_outer_cost_fn, average_across_steps,
                                     num_tasks, return_inner_v):
 
@@ -536,5 +536,5 @@ def test_maml_step_overlapping_vars(dev_str, call, inner_grad_steps, with_outer_
     assert np.allclose(ivy.to_numpy(outer_grads.weight[0]), np.array(true_weight_grad))
     assert np.allclose(ivy.to_numpy(outer_grads.latent[0]), np.array(true_latent_grad))
     if return_inner_v:
-        inner_v_ret = rets[2]
-        assert isinstance(inner_v_ret, ivy.Container)
+        inner_v_rets = rets[2]
+        assert isinstance(inner_v_rets[0], ivy.Container)
