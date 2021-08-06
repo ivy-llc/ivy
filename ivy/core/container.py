@@ -903,6 +903,18 @@ class Container(dict):
     # Built-ins #
     # ----------#
 
+    def __repr__(self, as_repr=True):
+        new_dict = dict()
+        for k, v in self.items():
+            if isinstance(v, _ivy.Container):
+                rep = v.__repr__(as_repr=False)
+            else:
+                rep = (type(v), list(v.shape) if _ivy.is_array(v) else [])
+            new_dict[k] = rep
+        if as_repr:
+            return dict.__repr__(new_dict)
+        return new_dict
+
     def __dir__(self):
         return list(super.__dir__(self)) + list(self.keys())
 
