@@ -79,4 +79,5 @@ def adam_update(ws, dcdws, lr, mw, vw, step, beta1=0.9, beta2=0.999, epsilon=1e-
 
 
 def stop_gradient(x):
-    return x.detach()
+    # ToDo: work out why _torch.tensor() wrapping is necessary in certain cases, presumably .detach() should be enough.
+    return _torch.tensor(x.detach())
