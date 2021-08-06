@@ -1076,7 +1076,10 @@ class Container(dict):
             if isinstance(v, _ivy.Container):
                 rep = v.__repr__(as_repr=False)
             else:
-                rep = (type(v), list(v.shape) if _ivy.is_array(v) else [])
+                if _ivy.is_array(v) and _reduce(_mul, v.shape) > 10:
+                    rep = (type(v), list(v.shape))
+                else:
+                    rep = v
             new_dict[k] = rep
         if as_repr:
             return dict.__repr__(new_dict)
