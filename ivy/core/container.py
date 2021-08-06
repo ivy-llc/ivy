@@ -520,10 +520,13 @@ class Container(dict):
                         _ivy.reshape(x, pre_shape + list(x.shape[shape_slice]) + post_shape) if _ivy.is_array(x) else
                         x, key_chains, to_apply, prune_unapplied)
 
-    def stop_gradients(self, key_chains=None, to_apply=True, prune_unapplied=False):
+    def stop_gradients(self, preserve_type=True, key_chains=None, to_apply=True, prune_unapplied=False):
         """
         Stop gradients of all array entries in the container.
 
+        :param preserve_type: Whether to preserve the input type (ivy.Variable or ivy.Array),
+                              otherwise an array is always returned. Default is True.
+        :param preserve_type: bool, optional
         :param key_chains: The key-chains to apply or not apply the method to. Default is None.
         :type key_chains: list or dict of strs, optional
         :param to_apply: If True, the method will be applied to key_chains, otherwise key_chains will be skipped.
@@ -533,8 +536,9 @@ class Container(dict):
         :type prune_unapplied: bool, optional
         :return: container with each array having their gradients stopped.
         """
-        return self.map(lambda x, kc: _ivy.stop_gradient(x) if _ivy.is_array(x) else x, key_chains, to_apply,
-                        prune_unapplied)
+        return self.map(
+            lambda x, kc: _ivy.stop_gradient(x, preserve_type) if _ivy.is_array(x)
+            else x, key_chains, to_apply, prune_unapplied)
 
     def to_disk_as_hdf5(self, h5_obj_or_filepath, starting_index=0, mode='a', max_batch_size=None):
         """
