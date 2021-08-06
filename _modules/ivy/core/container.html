@@ -514,6 +514,169 @@
     <span class="c1"># Public Methods #</span>
     <span class="c1"># ---------------#</span>
 
+<div class="viewcode-block" id="Container.reduce_sum"><a class="viewcode-back" href="../../../core/container/Container.html#ivy.core.container.Container.reduce_sum">[docs]</a>    <span class="k">def</span> <span class="nf">reduce_sum</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">key_chains</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">to_apply</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">prune_unapplied</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Computes sum of array elements along a given axis for all sub-arrays of container object.</span>
+
+<span class="sd">        :param axis: Axis or axes along which a sum is performed. The default, axis=None, will sum all of the elements</span>
+<span class="sd">                     of the input array. If axis is negative it counts from the last to the first axis. If axis is a</span>
+<span class="sd">                     tuple of ints, a sum is performed on all of the axes specified in the tuple instead of a single</span>
+<span class="sd">                     axis or all the axes as before.</span>
+<span class="sd">        :type axis: int or sequence of ints</span>
+<span class="sd">        :param keepdims: If this is set to True, the axes which are reduced are left in the result as dimensions with</span>
+<span class="sd">                         size one. With this option, the result will broadcast correctly against the input array.</span>
+<span class="sd">        :type keepdims: bool, optional</span>
+<span class="sd">        :param key_chains: The key-chains to apply or not apply the method to. Default is None.</span>
+<span class="sd">        :type key_chains: list or dict of strs, optional</span>
+<span class="sd">        :param to_apply: If True, the method will be applied to key_chains, otherwise key_chains will be skipped.</span>
+<span class="sd">                         Default is True.</span>
+<span class="sd">        :type to_apply: bool, optional</span>
+<span class="sd">        :param prune_unapplied: Whether to prune key_chains for which the function was not applied. Default is False.</span>
+<span class="sd">        :type prune_unapplied: bool, optional</span>
+<span class="sd">        :return: Container object at with all sub-array dimensions expanded along the axis.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">kc</span><span class="p">:</span> <span class="n">_ivy</span><span class="o">.</span><span class="n">reduce_sum</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">keepdims</span><span class="p">)</span> <span class="k">if</span> <span class="n">_ivy</span><span class="o">.</span><span class="n">is_array</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">else</span> <span class="n">x</span><span class="p">,</span>
+                        <span class="n">key_chains</span><span class="p">,</span> <span class="n">to_apply</span><span class="p">,</span> <span class="n">prune_unapplied</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Container.reduce_prod"><a class="viewcode-back" href="../../../core/container/Container.html#ivy.core.container.Container.reduce_prod">[docs]</a>    <span class="k">def</span> <span class="nf">reduce_prod</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">key_chains</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">to_apply</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">prune_unapplied</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Computes product of array elements along a given axis for all sub-arrays of container object.</span>
+
+<span class="sd">        :param axis: Axis or axes along which a product is performed. The default, axis=None, will multiply all of the</span>
+<span class="sd">                     elements of the input array. If axis is negative it counts from the last to the first axis. If axis</span>
+<span class="sd">                     is a tuple of ints, a multiplication is performed on all of the axes specified in the tuple instead</span>
+<span class="sd">                     of a single axis or all the axes as before.</span>
+<span class="sd">        :type axis: int or sequence of ints</span>
+<span class="sd">        :param keepdims: If this is set to True, the axes which are reduced are left in the result as dimensions with</span>
+<span class="sd">                         size one. With this option, the result will broadcast correctly against the input array.</span>
+<span class="sd">        :type keepdims: bool, optional</span>
+<span class="sd">        :param key_chains: The key-chains to apply or not apply the method to. Default is None.</span>
+<span class="sd">        :type key_chains: list or dict of strs, optional</span>
+<span class="sd">        :param to_apply: If True, the method will be applied to key_chains, otherwise key_chains will be skipped.</span>
+<span class="sd">                         Default is True.</span>
+<span class="sd">        :type to_apply: bool, optional</span>
+<span class="sd">        :param prune_unapplied: Whether to prune key_chains for which the function was not applied. Default is False.</span>
+<span class="sd">        :type prune_unapplied: bool, optional</span>
+<span class="sd">        :return: Container object at with all sub-array dimensions expanded along the axis.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">kc</span><span class="p">:</span> <span class="n">_ivy</span><span class="o">.</span><span class="n">reduce_prod</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">keepdims</span><span class="p">)</span> <span class="k">if</span> <span class="n">_ivy</span><span class="o">.</span><span class="n">is_array</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">else</span> <span class="n">x</span><span class="p">,</span>
+                        <span class="n">key_chains</span><span class="p">,</span> <span class="n">to_apply</span><span class="p">,</span> <span class="n">prune_unapplied</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Container.reduce_mean"><a class="viewcode-back" href="../../../core/container/Container.html#ivy.core.container.Container.reduce_mean">[docs]</a>    <span class="k">def</span> <span class="nf">reduce_mean</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">key_chains</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">to_apply</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">prune_unapplied</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Computes mean of array elements along a given axis for all sub-arrays of container object.</span>
+
+<span class="sd">        :param axis: Axis or axes along which a mean is performed. The default, axis=None, will mean all of the elements</span>
+<span class="sd">                     of the input array. If axis is negative it counts from the last to the first axis. If axis is a</span>
+<span class="sd">                     tuple of ints, a mean is performed on all of the axes specified in the tuple instead of a single</span>
+<span class="sd">                     axis or all the axes as before.</span>
+<span class="sd">        :type axis: int or sequence of ints</span>
+<span class="sd">        :param keepdims: If this is set to True, the axes which are reduced are left in the result as dimensions with</span>
+<span class="sd">                         size one. With this option, the result will broadcast correctly against the input array.</span>
+<span class="sd">        :type keepdims: bool, optional</span>
+<span class="sd">        :param key_chains: The key-chains to apply or not apply the method to. Default is None.</span>
+<span class="sd">        :type key_chains: list or dict of strs, optional</span>
+<span class="sd">        :param to_apply: If True, the method will be applied to key_chains, otherwise key_chains will be skipped.</span>
+<span class="sd">                         Default is True.</span>
+<span class="sd">        :type to_apply: bool, optional</span>
+<span class="sd">        :param prune_unapplied: Whether to prune key_chains for which the function was not applied. Default is False.</span>
+<span class="sd">        :type prune_unapplied: bool, optional</span>
+<span class="sd">        :return: Container object at with all sub-array dimensions expanded along the axis.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">kc</span><span class="p">:</span> <span class="n">_ivy</span><span class="o">.</span><span class="n">reduce_mean</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">keepdims</span><span class="p">)</span> <span class="k">if</span> <span class="n">_ivy</span><span class="o">.</span><span class="n">is_array</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">else</span> <span class="n">x</span><span class="p">,</span>
+                        <span class="n">key_chains</span><span class="p">,</span> <span class="n">to_apply</span><span class="p">,</span> <span class="n">prune_unapplied</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Container.reduce_var"><a class="viewcode-back" href="../../../core/container/Container.html#ivy.core.container.Container.reduce_var">[docs]</a>    <span class="k">def</span> <span class="nf">reduce_var</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">key_chains</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">to_apply</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">prune_unapplied</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Computes variance of array elements along a given axis for all sub-arrays of container object.</span>
+
+<span class="sd">        :param axis: Axis or axes along which a var is performed. The default, axis=None, will var all of the elements</span>
+<span class="sd">                     of the input array. If axis is negative it counts from the last to the first axis. If axis is a</span>
+<span class="sd">                     tuple of ints, a var is performed on all of the axes specified in the tuple instead of a single</span>
+<span class="sd">                     axis or all the axes as before.</span>
+<span class="sd">        :type axis: int or sequence of ints</span>
+<span class="sd">        :param keepdims: If this is set to True, the axes which are reduced are left in the result as dimensions with</span>
+<span class="sd">                         size one. With this option, the result will broadcast correctly against the input array.</span>
+<span class="sd">        :type keepdims: bool, optional</span>
+<span class="sd">        :param key_chains: The key-chains to apply or not apply the method to. Default is None.</span>
+<span class="sd">        :type key_chains: list or dict of strs, optional</span>
+<span class="sd">        :param to_apply: If True, the method will be applied to key_chains, otherwise key_chains will be skipped.</span>
+<span class="sd">                         Default is True.</span>
+<span class="sd">        :type to_apply: bool, optional</span>
+<span class="sd">        :param prune_unapplied: Whether to prune key_chains for which the function was not applied. Default is False.</span>
+<span class="sd">        :type prune_unapplied: bool, optional</span>
+<span class="sd">        :return: Container object at with all sub-array dimensions expanded along the axis.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">kc</span><span class="p">:</span> <span class="n">_ivy</span><span class="o">.</span><span class="n">reduce_var</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">keepdims</span><span class="p">)</span> <span class="k">if</span> <span class="n">_ivy</span><span class="o">.</span><span class="n">is_array</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">else</span> <span class="n">x</span><span class="p">,</span>
+                        <span class="n">key_chains</span><span class="p">,</span> <span class="n">to_apply</span><span class="p">,</span> <span class="n">prune_unapplied</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Container.reduce_min"><a class="viewcode-back" href="../../../core/container/Container.html#ivy.core.container.Container.reduce_min">[docs]</a>    <span class="k">def</span> <span class="nf">reduce_min</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">key_chains</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">to_apply</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">prune_unapplied</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Computes min of array elements along a given axis for all sub-arrays of container object.</span>
+
+<span class="sd">        :param axis: Axis or axes along which a min is performed. The default, axis=None, will min all of the elements</span>
+<span class="sd">                     of the input array. If axis is negative it counts from the last to the first axis. If axis is a</span>
+<span class="sd">                     tuple of ints, a min is performed on all of the axes specified in the tuple instead of a single</span>
+<span class="sd">                     axis or all the axes as before.</span>
+<span class="sd">        :type axis: int or sequence of ints</span>
+<span class="sd">        :param keepdims: If this is set to True, the axes which are reduced are left in the result as dimensions with</span>
+<span class="sd">                         size one. With this option, the result will broadcast correctly against the input array.</span>
+<span class="sd">        :type keepdims: bool, optional</span>
+<span class="sd">        :param key_chains: The key-chains to apply or not apply the method to. Default is None.</span>
+<span class="sd">        :type key_chains: list or dict of strs, optional</span>
+<span class="sd">        :param to_apply: If True, the method will be applied to key_chains, otherwise key_chains will be skipped.</span>
+<span class="sd">                         Default is True.</span>
+<span class="sd">        :type to_apply: bool, optional</span>
+<span class="sd">        :param prune_unapplied: Whether to prune key_chains for which the function was not applied. Default is False.</span>
+<span class="sd">        :type prune_unapplied: bool, optional</span>
+<span class="sd">        :return: Container object at with all sub-array dimensions expanded along the axis.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">kc</span><span class="p">:</span> <span class="n">_ivy</span><span class="o">.</span><span class="n">reduce_min</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">keepdims</span><span class="p">)</span> <span class="k">if</span> <span class="n">_ivy</span><span class="o">.</span><span class="n">is_array</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">else</span> <span class="n">x</span><span class="p">,</span>
+                        <span class="n">key_chains</span><span class="p">,</span> <span class="n">to_apply</span><span class="p">,</span> <span class="n">prune_unapplied</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Container.reduce_max"><a class="viewcode-back" href="../../../core/container/Container.html#ivy.core.container.Container.reduce_max">[docs]</a>    <span class="k">def</span> <span class="nf">reduce_max</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">key_chains</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">to_apply</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">prune_unapplied</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Computes max of array elements along a given axis for all sub-arrays of container object.</span>
+
+<span class="sd">        :param axis: Axis or axes along which a max is performed. The default, axis=None, will max all of the elements</span>
+<span class="sd">                     of the input array. If axis is negative it counts from the last to the first axis. If axis is a</span>
+<span class="sd">                     tuple of ints, a max is performed on all of the axes specified in the tuple instead of a single</span>
+<span class="sd">                     axis or all the axes as before.</span>
+<span class="sd">        :type axis: int or sequence of ints</span>
+<span class="sd">        :param keepdims: If this is set to True, the axes which are reduced are left in the result as dimensions with</span>
+<span class="sd">                         size one. With this option, the result will broadcast correctly against the input array.</span>
+<span class="sd">        :type keepdims: bool, optional</span>
+<span class="sd">        :param key_chains: The key-chains to apply or not apply the method to. Default is None.</span>
+<span class="sd">        :type key_chains: list or dict of strs, optional</span>
+<span class="sd">        :param to_apply: If True, the method will be applied to key_chains, otherwise key_chains will be skipped.</span>
+<span class="sd">                         Default is True.</span>
+<span class="sd">        :type to_apply: bool, optional</span>
+<span class="sd">        :param prune_unapplied: Whether to prune key_chains for which the function was not applied. Default is False.</span>
+<span class="sd">        :type prune_unapplied: bool, optional</span>
+<span class="sd">        :return: Container object at with all sub-array dimensions expanded along the axis.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">kc</span><span class="p">:</span> <span class="n">_ivy</span><span class="o">.</span><span class="n">reduce_max</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">keepdims</span><span class="p">)</span> <span class="k">if</span> <span class="n">_ivy</span><span class="o">.</span><span class="n">is_array</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">else</span> <span class="n">x</span><span class="p">,</span>
+                        <span class="n">key_chains</span><span class="p">,</span> <span class="n">to_apply</span><span class="p">,</span> <span class="n">prune_unapplied</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Container.einsum"><a class="viewcode-back" href="../../../core/container/Container.html#ivy.core.container.Container.einsum">[docs]</a>    <span class="k">def</span> <span class="nf">einsum</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">equation</span><span class="p">,</span> <span class="n">key_chains</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">to_apply</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">prune_unapplied</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Sums the product of the elements of the input operands along dimensions specified using a notation based on the</span>
+<span class="sd">        Einstein summation convention, for each array in the container.</span>
+
+<span class="sd">        :param equation: A str describing the contraction, in the same format as numpy.einsum.</span>
+<span class="sd">        :type equation: str</span>
+<span class="sd">        :param key_chains: The key-chains to apply or not apply the method to. Default is None.</span>
+<span class="sd">        :type key_chains: list or dict of strs, optional</span>
+<span class="sd">        :param to_apply: If True, the method will be applied to key_chains, otherwise key_chains will be skipped.</span>
+<span class="sd">                         Default is True.</span>
+<span class="sd">        :type to_apply: bool, optional</span>
+<span class="sd">        :param prune_unapplied: Whether to prune key_chains for which the function was not applied. Default is False.</span>
+<span class="sd">        :type prune_unapplied: bool, optional</span>
+<span class="sd">        :return: Container object at with all sub-array dimensions expanded along the axis.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">kc</span><span class="p">:</span> <span class="n">_ivy</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="n">equation</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span> <span class="k">if</span> <span class="n">_ivy</span><span class="o">.</span><span class="n">is_array</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">else</span> <span class="n">x</span><span class="p">,</span>
+                        <span class="n">key_chains</span><span class="p">,</span> <span class="n">to_apply</span><span class="p">,</span> <span class="n">prune_unapplied</span><span class="p">)</span></div>
+
 <div class="viewcode-block" id="Container.shuffle"><a class="viewcode-back" href="../../../core/container/Container.html#ivy.core.container.Container.shuffle">[docs]</a>    <span class="k">def</span> <span class="nf">shuffle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">seed_value</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">key_chains</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">to_apply</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">prune_unapplied</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">key_chain</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Shuffle entries in all sub-arrays, such that they are still aligned along axis 0.</span>
@@ -532,7 +695,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">return_dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">seed_value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">seed_value</span> <span class="o">=</span> <span class="n">_ivy</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">(</span><span class="n">_ivy</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1000</span><span class="p">,</span> <span class="p">[]))</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
+            <span class="n">seed_value</span> <span class="o">=</span> <span class="n">_ivy</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">(</span><span class="n">_ivy</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1000</span><span class="p">,</span> <span class="p">()))</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
         <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
             <span class="n">this_key_chain</span> <span class="o">=</span> <span class="n">key</span> <span class="k">if</span> <span class="n">key_chain</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span> <span class="k">else</span> <span class="p">(</span><span class="n">key_chain</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span> <span class="o">+</span> <span class="n">key</span><span class="p">)</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">Container</span><span class="p">):</span>
