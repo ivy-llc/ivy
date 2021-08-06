@@ -78,6 +78,10 @@ def adam_update(ws, dcdws, lr, mw, vw, step, beta1=0.9, beta2=0.999, epsilon=1e-
     return _adam_update_trackable(ws, dcdws, alpha, mw, vw, epsilon)
 
 
-def stop_gradient(x):
+def stop_gradient(x, preserve_type=True):
+    is_var = is_variable(x)
     # ToDo: work out why _torch.tensor() wrapping is necessary in certain cases, presumably .detach() should be enough.
-    return _torch.tensor(x.detach())
+    x = _torch.tensor(x.detach())
+    if is_var and preserve_type:
+        return variable(x)
+    return x

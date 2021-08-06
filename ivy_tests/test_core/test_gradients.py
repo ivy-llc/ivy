@@ -202,17 +202,24 @@ def test_adam_update(ws_n_grads_n_lr_n_wsnew, dtype_str, tensor_fn, dev_str, cal
 @pytest.mark.parametrize(
     "dtype_str", ['float32'])
 @pytest.mark.parametrize(
-    "tensor_fn", [ivy.array, helpers.var_fn])
+    "tensor_fn", [('array', ivy.array), ('var', helpers.var_fn)])
 def test_stop_gradient(x_raw, dtype_str, tensor_fn, dev_str, call):
     # smoke test
+    fn_name, tensor_fn = tensor_fn
     x = tensor_fn(x_raw, dtype_str, dev_str)
     ret = ivy.stop_gradient(x)
     # type test
-    assert ivy.is_array(ret)
+    if fn_name == 'array':
+        assert ivy.is_array(ret)
+    elif call is not helpers.np_call:
+        # Numpy does not support variables, is_variable() always returns False
+        assert ivy.is_variable(ret)
     # cardinality test
     assert ret.shape == x.shape
     # value test
-    assert np.array_equal(call(ivy.stop_gradient, x), ivy.numpy.array(x_raw, dtype_str, dev_str))
+    if call is not helpers.tf_graph_call:
+        # Tf graph mode cannot create variables as part of the computation graph
+        assert np.array_equal(call(ivy.stop_gradient, x), ivy.numpy.array(x_raw, dtype_str, dev_str))
     # compilation test
     if call in [helpers.torch_call]:
         # pytorch scripting does not support attribute setting
