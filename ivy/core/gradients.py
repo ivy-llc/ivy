@@ -107,14 +107,17 @@ def adam_update(ws, dcdws, lr, mw, vw, step, beta1=0.9, beta2=0.999, epsilon=1e-
     return _get_framework(None, f=f).adam_update(ws, dcdws, lr, mw, vw, step, beta1, beta2, epsilon, inplace)
 
 
-def stop_gradient(x, f=None):
+def stop_gradient(x, preserve_type=True, f=None):
     """
     Stops gradient computation.
 
     :param x: Array for which to stop the gradient.
     :type x: array
+    :param preserve_type: Whether to preserve the input type (ivy.Variable or ivy.Array),
+                          otherwise an array is always returned. Default is True.
+    :param preserve_type: bool, optional
     :param f: Machine learning framework. Inferred from inputs if None.
     :type f: ml_framework, optional
     :return: The same array x, but with no gradient information.
     """
-    return _get_framework(x, f=f).stop_gradient(x)
+    return _get_framework(x, f=f).stop_gradient(x, preserve_type)

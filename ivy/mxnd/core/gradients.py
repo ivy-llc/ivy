@@ -50,4 +50,9 @@ def adam_update(ws, dcdws, lr, mw, vw, step, beta1=0.9, beta2=0.999, epsilon=1e-
     return ws, mw, vw
 
 
-stop_gradient = _mx.nd.stop_gradient
+def stop_gradient(x, preserve_type=True):
+    is_var = is_variable(x)
+    x = _mx.nd.stop_gradient(x)
+    if is_var and preserve_type:
+        return variable(x)
+    return x
