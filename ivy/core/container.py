@@ -326,6 +326,169 @@ class Container(dict):
     # Public Methods #
     # ---------------#
 
+    def reduce_sum(self, axis=None, keepdims=False, key_chains=None, to_apply=True, prune_unapplied=False):
+        """
+        Computes sum of array elements along a given axis for all sub-arrays of container object.
+
+        :param axis: Axis or axes along which a sum is performed. The default, axis=None, will sum all of the elements
+                     of the input array. If axis is negative it counts from the last to the first axis. If axis is a
+                     tuple of ints, a sum is performed on all of the axes specified in the tuple instead of a single
+                     axis or all the axes as before.
+        :type axis: int or sequence of ints
+        :param keepdims: If this is set to True, the axes which are reduced are left in the result as dimensions with
+                         size one. With this option, the result will broadcast correctly against the input array.
+        :type keepdims: bool, optional
+        :param key_chains: The key-chains to apply or not apply the method to. Default is None.
+        :type key_chains: list or dict of strs, optional
+        :param to_apply: If True, the method will be applied to key_chains, otherwise key_chains will be skipped.
+                         Default is True.
+        :type to_apply: bool, optional
+        :param prune_unapplied: Whether to prune key_chains for which the function was not applied. Default is False.
+        :type prune_unapplied: bool, optional
+        :return: Container object at with all sub-array dimensions expanded along the axis.
+        """
+        return self.map(lambda x, kc: _ivy.reduce_sum(x, axis, keepdims) if _ivy.is_array(x) else x,
+                        key_chains, to_apply, prune_unapplied)
+
+    def reduce_prod(self, axis=None, keepdims=False, key_chains=None, to_apply=True, prune_unapplied=False):
+        """
+        Computes product of array elements along a given axis for all sub-arrays of container object.
+
+        :param axis: Axis or axes along which a product is performed. The default, axis=None, will multiply all of the
+                     elements of the input array. If axis is negative it counts from the last to the first axis. If axis
+                     is a tuple of ints, a multiplication is performed on all of the axes specified in the tuple instead
+                     of a single axis or all the axes as before.
+        :type axis: int or sequence of ints
+        :param keepdims: If this is set to True, the axes which are reduced are left in the result as dimensions with
+                         size one. With this option, the result will broadcast correctly against the input array.
+        :type keepdims: bool, optional
+        :param key_chains: The key-chains to apply or not apply the method to. Default is None.
+        :type key_chains: list or dict of strs, optional
+        :param to_apply: If True, the method will be applied to key_chains, otherwise key_chains will be skipped.
+                         Default is True.
+        :type to_apply: bool, optional
+        :param prune_unapplied: Whether to prune key_chains for which the function was not applied. Default is False.
+        :type prune_unapplied: bool, optional
+        :return: Container object at with all sub-array dimensions expanded along the axis.
+        """
+        return self.map(lambda x, kc: _ivy.reduce_prod(x, axis, keepdims) if _ivy.is_array(x) else x,
+                        key_chains, to_apply, prune_unapplied)
+
+    def reduce_mean(self, axis=None, keepdims=False, key_chains=None, to_apply=True, prune_unapplied=False):
+        """
+        Computes mean of array elements along a given axis for all sub-arrays of container object.
+
+        :param axis: Axis or axes along which a mean is performed. The default, axis=None, will mean all of the elements
+                     of the input array. If axis is negative it counts from the last to the first axis. If axis is a
+                     tuple of ints, a mean is performed on all of the axes specified in the tuple instead of a single
+                     axis or all the axes as before.
+        :type axis: int or sequence of ints
+        :param keepdims: If this is set to True, the axes which are reduced are left in the result as dimensions with
+                         size one. With this option, the result will broadcast correctly against the input array.
+        :type keepdims: bool, optional
+        :param key_chains: The key-chains to apply or not apply the method to. Default is None.
+        :type key_chains: list or dict of strs, optional
+        :param to_apply: If True, the method will be applied to key_chains, otherwise key_chains will be skipped.
+                         Default is True.
+        :type to_apply: bool, optional
+        :param prune_unapplied: Whether to prune key_chains for which the function was not applied. Default is False.
+        :type prune_unapplied: bool, optional
+        :return: Container object at with all sub-array dimensions expanded along the axis.
+        """
+        return self.map(lambda x, kc: _ivy.reduce_mean(x, axis, keepdims) if _ivy.is_array(x) else x,
+                        key_chains, to_apply, prune_unapplied)
+
+    def reduce_var(self, axis=None, keepdims=False, key_chains=None, to_apply=True, prune_unapplied=False):
+        """
+        Computes variance of array elements along a given axis for all sub-arrays of container object.
+
+        :param axis: Axis or axes along which a var is performed. The default, axis=None, will var all of the elements
+                     of the input array. If axis is negative it counts from the last to the first axis. If axis is a
+                     tuple of ints, a var is performed on all of the axes specified in the tuple instead of a single
+                     axis or all the axes as before.
+        :type axis: int or sequence of ints
+        :param keepdims: If this is set to True, the axes which are reduced are left in the result as dimensions with
+                         size one. With this option, the result will broadcast correctly against the input array.
+        :type keepdims: bool, optional
+        :param key_chains: The key-chains to apply or not apply the method to. Default is None.
+        :type key_chains: list or dict of strs, optional
+        :param to_apply: If True, the method will be applied to key_chains, otherwise key_chains will be skipped.
+                         Default is True.
+        :type to_apply: bool, optional
+        :param prune_unapplied: Whether to prune key_chains for which the function was not applied. Default is False.
+        :type prune_unapplied: bool, optional
+        :return: Container object at with all sub-array dimensions expanded along the axis.
+        """
+        return self.map(lambda x, kc: _ivy.reduce_var(x, axis, keepdims) if _ivy.is_array(x) else x,
+                        key_chains, to_apply, prune_unapplied)
+
+    def reduce_min(self, axis=None, keepdims=False, key_chains=None, to_apply=True, prune_unapplied=False):
+        """
+        Computes min of array elements along a given axis for all sub-arrays of container object.
+
+        :param axis: Axis or axes along which a min is performed. The default, axis=None, will min all of the elements
+                     of the input array. If axis is negative it counts from the last to the first axis. If axis is a
+                     tuple of ints, a min is performed on all of the axes specified in the tuple instead of a single
+                     axis or all the axes as before.
+        :type axis: int or sequence of ints
+        :param keepdims: If this is set to True, the axes which are reduced are left in the result as dimensions with
+                         size one. With this option, the result will broadcast correctly against the input array.
+        :type keepdims: bool, optional
+        :param key_chains: The key-chains to apply or not apply the method to. Default is None.
+        :type key_chains: list or dict of strs, optional
+        :param to_apply: If True, the method will be applied to key_chains, otherwise key_chains will be skipped.
+                         Default is True.
+        :type to_apply: bool, optional
+        :param prune_unapplied: Whether to prune key_chains for which the function was not applied. Default is False.
+        :type prune_unapplied: bool, optional
+        :return: Container object at with all sub-array dimensions expanded along the axis.
+        """
+        return self.map(lambda x, kc: _ivy.reduce_min(x, axis, keepdims) if _ivy.is_array(x) else x,
+                        key_chains, to_apply, prune_unapplied)
+
+    def reduce_max(self, axis=None, keepdims=False, key_chains=None, to_apply=True, prune_unapplied=False):
+        """
+        Computes max of array elements along a given axis for all sub-arrays of container object.
+
+        :param axis: Axis or axes along which a max is performed. The default, axis=None, will max all of the elements
+                     of the input array. If axis is negative it counts from the last to the first axis. If axis is a
+                     tuple of ints, a max is performed on all of the axes specified in the tuple instead of a single
+                     axis or all the axes as before.
+        :type axis: int or sequence of ints
+        :param keepdims: If this is set to True, the axes which are reduced are left in the result as dimensions with
+                         size one. With this option, the result will broadcast correctly against the input array.
+        :type keepdims: bool, optional
+        :param key_chains: The key-chains to apply or not apply the method to. Default is None.
+        :type key_chains: list or dict of strs, optional
+        :param to_apply: If True, the method will be applied to key_chains, otherwise key_chains will be skipped.
+                         Default is True.
+        :type to_apply: bool, optional
+        :param prune_unapplied: Whether to prune key_chains for which the function was not applied. Default is False.
+        :type prune_unapplied: bool, optional
+        :return: Container object at with all sub-array dimensions expanded along the axis.
+        """
+        return self.map(lambda x, kc: _ivy.reduce_max(x, axis, keepdims) if _ivy.is_array(x) else x,
+                        key_chains, to_apply, prune_unapplied)
+
+    def einsum(self, equation, key_chains=None, to_apply=True, prune_unapplied=False):
+        """
+        Sums the product of the elements of the input operands along dimensions specified using a notation based on the
+        Einstein summation convention, for each array in the container.
+
+        :param equation: A str describing the contraction, in the same format as numpy.einsum.
+        :type equation: str
+        :param key_chains: The key-chains to apply or not apply the method to. Default is None.
+        :type key_chains: list or dict of strs, optional
+        :param to_apply: If True, the method will be applied to key_chains, otherwise key_chains will be skipped.
+                         Default is True.
+        :type to_apply: bool, optional
+        :param prune_unapplied: Whether to prune key_chains for which the function was not applied. Default is False.
+        :type prune_unapplied: bool, optional
+        :return: Container object at with all sub-array dimensions expanded along the axis.
+        """
+        return self.map(lambda x, kc: _ivy.einsum(equation, x) if _ivy.is_array(x) else x,
+                        key_chains, to_apply, prune_unapplied)
+
     def shuffle(self, seed_value=None, key_chains=None, to_apply=True, prune_unapplied=False, key_chain=''):
         """
         Shuffle entries in all sub-arrays, such that they are still aligned along axis 0.
@@ -344,7 +507,7 @@ class Container(dict):
         """
         return_dict = dict()
         if seed_value is None:
-            seed_value = _ivy.to_numpy(_ivy.random.randint(0, 1000, [])).item()
+            seed_value = _ivy.to_numpy(_ivy.random.randint(0, 1000, ())).item()
         for key, value in sorted(self.items()):
             this_key_chain = key if key_chain == '' else (key_chain + '/' + key)
             if isinstance(value, Container):
