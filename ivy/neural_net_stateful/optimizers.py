@@ -103,7 +103,7 @@ class SGD(Optimizer):
         :return: The new updated variables container, following gradient descent step.
         """
         new_v = ivy.gradient_descent_update(v, grads, self._lr if isinstance(self._lr, float) else self._lr())
-        return new_v.map(lambda x, kc: ivy.variable(ivy.stop_gradient(x)))
+        return new_v.stop_gradients()
 
     def set_state(self, state):
         """
@@ -161,13 +161,13 @@ class Adam(Optimizer):
         """
         if self._first_pass:
             self._mw = grads
-            self._vw = grads.map(lambda x, _: x ** 2)
+            self._vw = grads ** 2
             self._first_pass = False
         new_v, self._mw, self._vw = ivy.adam_update(
             v, grads, self._lr if isinstance(self._lr, float) else self._lr(), self._mw, self._vw, self._step,
             self._beta1, self._beta2, self._epsilon)
         self._step += 1
-        return new_v.map(lambda x, kc: ivy.variable(ivy.stop_gradient(x)))
+        return new_v.stop_gradients()
 
     def set_state(self, state):
         """
