@@ -8,9 +8,8 @@ import torch as _torch
 
 def variable(x):
     if not x.is_leaf:
-        x = x.detach()
-    x.requires_grad = True
-    return x
+        return x.detach().requires_grad_()
+    return x.clone().requires_grad_()
 
 
 def is_variable(x):
@@ -80,8 +79,7 @@ def adam_update(ws, dcdws, lr, mw, vw, step, beta1=0.9, beta2=0.999, epsilon=1e-
 
 def stop_gradient(x, preserve_type=True):
     is_var = is_variable(x)
-    # ToDo: work out why _torch.tensor() wrapping is necessary in certain cases, presumably .detach() should be enough.
-    x = _torch.tensor(x.detach())
+    x = x.detach()
     if is_var and preserve_type:
-        return variable(x)
+        return x.requires_grad_()
     return x
