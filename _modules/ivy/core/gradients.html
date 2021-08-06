@@ -295,17 +295,20 @@
     <span class="k">return</span> <span class="n">_get_framework</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">adam_update</span><span class="p">(</span><span class="n">ws</span><span class="p">,</span> <span class="n">dcdws</span><span class="p">,</span> <span class="n">lr</span><span class="p">,</span> <span class="n">mw</span><span class="p">,</span> <span class="n">vw</span><span class="p">,</span> <span class="n">step</span><span class="p">,</span> <span class="n">beta1</span><span class="p">,</span> <span class="n">beta2</span><span class="p">,</span> <span class="n">epsilon</span><span class="p">,</span> <span class="n">inplace</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="stop_gradient"><a class="viewcode-back" href="../../../core/gradients/stop_gradient.html#ivy.core.gradients.stop_gradient">[docs]</a><span class="k">def</span> <span class="nf">stop_gradient</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="stop_gradient"><a class="viewcode-back" href="../../../core/gradients/stop_gradient.html#ivy.core.gradients.stop_gradient">[docs]</a><span class="k">def</span> <span class="nf">stop_gradient</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">preserve_type</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Stops gradient computation.</span>
 
 <span class="sd">    :param x: Array for which to stop the gradient.</span>
 <span class="sd">    :type x: array</span>
+<span class="sd">    :param preserve_type: Whether to preserve the input type (ivy.Variable or ivy.Array),</span>
+<span class="sd">                          otherwise an array is always returned. Default is True.</span>
+<span class="sd">    :param preserve_type: bool, optional</span>
 <span class="sd">    :param f: Machine learning framework. Inferred from inputs if None.</span>
 <span class="sd">    :type f: ml_framework, optional</span>
 <span class="sd">    :return: The same array x, but with no gradient information.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">_get_framework</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">stop_gradient</span><span class="p">(</span><span class="n">x</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">_get_framework</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">stop_gradient</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">preserve_type</span><span class="p">)</span></div>
 </pre></div>
 
            </div>
