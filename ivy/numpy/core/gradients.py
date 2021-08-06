@@ -49,7 +49,7 @@ def adam_update(ws, dcdws, lr, mw, vw, step, beta1=0.9, beta2=0.999, epsilon=1e-
     return ws, mw, vw
 
 
-def stop_gradient(array_in):
+def stop_gradient(x, preserve_type=True):
     logging.warning('NumPy does not support autograd, '
                     '"stop_gradient" has no effect on the array, as gradients are not supported in the first place.')
-    return array_in
+    return x

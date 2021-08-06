@@ -47,4 +47,4 @@ def adam_update(ws, dcdws, lr, mw, vw, step, beta1=0.9, beta2=0.999, epsilon=1e-
     return ws, mw, vw
 
 
-stop_gradient = _jlax.stop_gradient
+stop_gradient = lambda x, preserve_type=True: _jlax.stop_gradient(x)
