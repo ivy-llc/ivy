@@ -362,7 +362,7 @@ def test_container_stop_gradients(dev_str, call):
     assert ivy.is_array(container_stopped_grads.b.d)
 
     # with key_chains to apply
-    container_stopped_grads = container.stop_gradients(['a', 'b/c'])
+    container_stopped_grads = container.stop_gradients(key_chains=['a', 'b/c'])
     assert ivy.is_array(container_stopped_grads['a'])
     assert ivy.is_array(container_stopped_grads.a)
     assert ivy.is_array(container_stopped_grads['b']['c'])
@@ -373,7 +373,7 @@ def test_container_stop_gradients(dev_str, call):
         assert ivy.is_variable(container_stopped_grads.b.d)
 
     # with key_chains to apply pruned
-    container_stopped_grads = container.stop_gradients(['a', 'b/c'], prune_unapplied=True)
+    container_stopped_grads = container.stop_gradients(key_chains=['a', 'b/c'], prune_unapplied=True)
     assert ivy.is_array(container_stopped_grads['a'])
     assert ivy.is_array(container_stopped_grads.a)
     assert ivy.is_array(container_stopped_grads['b']['c'])
@@ -381,7 +381,8 @@ def test_container_stop_gradients(dev_str, call):
     assert 'b/d' not in container_stopped_grads
 
     # with key_chains to not apply
-    container_stopped_grads = container.stop_gradients(Container({'a': None, 'b': {'d': None}}), to_apply=False)
+    container_stopped_grads = container.stop_gradients(key_chains=Container({'a': None, 'b': {'d': None}}),
+                                                       to_apply=False)
     if call is not helpers.np_call:
         # Numpy does not support variables or gradients
         assert ivy.is_variable(container_stopped_grads['a'])
@@ -394,8 +395,8 @@ def test_container_stop_gradients(dev_str, call):
         assert ivy.is_variable(container_stopped_grads.b.d)
 
     # with key_chains to not apply pruned
-    container_stopped_grads = container.stop_gradients(Container({'a': None, 'b': {'d': None}}), to_apply=False,
-                                                       prune_unapplied=True)
+    container_stopped_grads = container.stop_gradients(key_chains=Container({'a': None, 'b': {'d': None}}),
+                                                       to_apply=False, prune_unapplied=True)
     assert 'a' not in container_stopped_grads
     assert ivy.is_array(container_stopped_grads['b']['c'])
     assert ivy.is_array(container_stopped_grads.b.c)
