@@ -237,10 +237,10 @@
     <span class="k">return</span> <span class="n">ws</span><span class="p">,</span> <span class="n">mw</span><span class="p">,</span> <span class="n">vw</span></div>
 
 
-<div class="viewcode-block" id="stop_gradient"><a class="viewcode-back" href="../../../../numpy/core/gradients/stop_gradient.html#ivy.numpy.core.gradients.stop_gradient">[docs]</a><span class="k">def</span> <span class="nf">stop_gradient</span><span class="p">(</span><span class="n">array_in</span><span class="p">):</span>
+<div class="viewcode-block" id="stop_gradient"><a class="viewcode-back" href="../../../../numpy/core/gradients/stop_gradient.html#ivy.numpy.core.gradients.stop_gradient">[docs]</a><span class="k">def</span> <span class="nf">stop_gradient</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">preserve_type</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
     <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;NumPy does not support autograd, &#39;</span>
                     <span class="s1">&#39;&quot;stop_gradient&quot; has no effect on the array, as gradients are not supported in the first place.&#39;</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">array_in</span></div>
+    <span class="k">return</span> <span class="n">x</span></div>
 </pre></div>
 
            </div>
