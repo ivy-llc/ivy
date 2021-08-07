@@ -417,9 +417,33 @@ class Container(dict):
         :type to_apply: bool, optional
         :param prune_unapplied: Whether to prune key_chains for which the function was not applied. Default is False.
         :type prune_unapplied: bool, optional
-        :return: Container object at with all sub-array dimensions expanded along the axis.
+        :return: Container object with the variance computed for all sub-arrays.
         """
         return self.map(lambda x, kc: _ivy.reduce_var(x, axis, keepdims) if _ivy.is_array(x) else x,
+                        key_chains, to_apply, prune_unapplied)
+
+    def reduce_std(self, axis=None, keepdims=False, key_chains=None, to_apply=True, prune_unapplied=False):
+        """
+        Computes standard deviation of array elements along a given axis for all sub-arrays of container object.
+
+        :param axis: Axis or axes along which a var is performed. The default, axis=None, will var all of the elements
+                     of the input array. If axis is negative it counts from the last to the first axis. If axis is a
+                     tuple of ints, a var is performed on all of the axes specified in the tuple instead of a single
+                     axis or all the axes as before.
+        :type axis: int or sequence of ints
+        :param keepdims: If this is set to True, the axes which are reduced are left in the result as dimensions with
+                         size one. With this option, the result will broadcast correctly against the input array.
+        :type keepdims: bool, optional
+        :param key_chains: The key-chains to apply or not apply the method to. Default is None.
+        :type key_chains: list or dict of strs, optional
+        :param to_apply: If True, the method will be applied to key_chains, otherwise key_chains will be skipped.
+                         Default is True.
+        :type to_apply: bool, optional
+        :param prune_unapplied: Whether to prune key_chains for which the function was not applied. Default is False.
+        :type prune_unapplied: bool, optional
+        :return: Container object with the standard deviation computed for all sub-arrays.
+        """
+        return self.map(lambda x, kc: _ivy.reduce_std(x, axis, keepdims) if _ivy.is_array(x) else x,
                         key_chains, to_apply, prune_unapplied)
 
     def reduce_min(self, axis=None, keepdims=False, key_chains=None, to_apply=True, prune_unapplied=False):
