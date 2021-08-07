@@ -733,6 +733,31 @@ Default is True.</p></li>
 </dd></dl>
 
 <dl class="py method">
+<dt id="ivy.core.container.Container.reduce_std">
+<code class="sig-name descname">reduce_std</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">keepdims</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">key_chains</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">to_apply</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">prune_unapplied</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/container.html#Container.reduce_std"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.reduce_std" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes standard deviation of array elements along a given axis for all sub-arrays of container object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>axis</strong> (<em>int</em><em> or </em><em>sequence of ints</em>) – Axis or axes along which a var is performed. The default, axis=None, will var all of the elements
+of the input array. If axis is negative it counts from the last to the first axis. If axis is a
+tuple of ints, a var is performed on all of the axes specified in the tuple instead of a single
+axis or all the axes as before.</p></li>
+<li><p><strong>keepdims</strong> (<em>bool</em><em>, </em><em>optional</em>) – If this is set to True, the axes which are reduced are left in the result as dimensions with
+size one. With this option, the result will broadcast correctly against the input array.</p></li>
+<li><p><strong>key_chains</strong> (<em>list</em><em> or </em><em>dict of strs</em><em>, </em><em>optional</em>) – The key-chains to apply or not apply the method to. Default is None.</p></li>
+<li><p><strong>to_apply</strong> (<em>bool</em><em>, </em><em>optional</em>) – If True, the method will be applied to key_chains, otherwise key_chains will be skipped.
+Default is True.</p></li>
+<li><p><strong>prune_unapplied</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to prune key_chains for which the function was not applied. Default is False.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Container object with the standard deviation computed for all sub-arrays.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt id="ivy.core.container.Container.reduce_sum">
 <code class="sig-name descname">reduce_sum</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">keepdims</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">key_chains</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">to_apply</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">prune_unapplied</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/container.html#Container.reduce_sum"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.reduce_sum" title="Permalink to this definition">¶</a></dt>
 <dd><p>Computes sum of array elements along a given axis for all sub-arrays of container object.</p>
@@ -777,7 +802,7 @@ Default is True.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Container object at with all sub-array dimensions expanded along the axis.</p>
+<dd class="field-even"><p>Container object with the variance computed for all sub-arrays.</p>
 </dd>
 </dl>
 </dd></dl>
