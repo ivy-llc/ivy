@@ -124,6 +124,48 @@ def test_container_einsum(dev_str, call):
     assert np.allclose(ivy.to_numpy(container_einsummed.b.d), np.array([-6., -14., -22.]))
 
 
+def test_container_ones_like(dev_str, call):
+    dict_in = {'a': ivy.array([1]),
+               'b': {'c': ivy.array([2]), 'd': ivy.array([3])}}
+    container = Container(dict_in)
+
+    container_ones = container.ones_like()
+    assert (container_ones['a'] == ivy.array([1]))[0]
+    assert (container_ones.a == ivy.array([1]))[0]
+    assert (container_ones['b']['c'] == ivy.array([1]))[0]
+    assert (container_ones.b.c == ivy.array([1]))[0]
+    assert (container_ones['b']['d'] == ivy.array([1]))[0]
+    assert (container_ones.b.d == ivy.array([1]))[0]
+
+
+def test_container_zeros_like(dev_str, call):
+    dict_in = {'a': ivy.array([1]),
+               'b': {'c': ivy.array([2]), 'd': ivy.array([3])}}
+    container = Container(dict_in)
+
+    container_zeros = container.zeros_like()
+    assert (container_zeros['a'] == ivy.array([0]))[0]
+    assert (container_zeros.a == ivy.array([0]))[0]
+    assert (container_zeros['b']['c'] == ivy.array([0]))[0]
+    assert (container_zeros.b.c == ivy.array([0]))[0]
+    assert (container_zeros['b']['d'] == ivy.array([0]))[0]
+    assert (container_zeros.b.d == ivy.array([0]))[0]
+
+
+def test_container_random_uniform_like(dev_str, call):
+    dict_in = {'a': ivy.array([1.]),
+               'b': {'c': ivy.array([2.]), 'd': ivy.array([3.])}}
+    container = Container(dict_in)
+
+    container_random = container.random_uniform_like()
+    assert (container_random['a'] != ivy.array([1.]))[0]
+    assert (container_random.a != ivy.array([1.]))[0]
+    assert (container_random['b']['c'] != ivy.array([2.]))[0]
+    assert (container_random.b.c != ivy.array([2.]))[0]
+    assert (container_random['b']['d'] != ivy.array([3.]))[0]
+    assert (container_random.b.d != ivy.array([3.]))[0]
+
+
 def test_container_expand_dims(dev_str, call):
     dict_in = {'a': ivy.array([1]),
                'b': {'c': ivy.array([2]), 'd': ivy.array([3])}}
