@@ -340,7 +340,7 @@ Default is True.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Container object at with all sub-array dimensions expanded along the axis.</p>
+<dd class="field-even"><p>Container object with all sub-array dimensions expanded along the axis.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -421,7 +421,7 @@ Default is True.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Container object at with all sub-array dimensions gathered along the axis.</p>
+<dd class="field-even"><p>Container object with all sub-array dimensions gathered along the axis.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -441,7 +441,7 @@ Default is True.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Container object at with all sub-array dimensions gathered.</p>
+<dd class="field-even"><p>Container object with all sub-array dimensions gathered.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -521,6 +521,25 @@ Default is True.</p></li>
 </dd></dl>
 
 <dl class="py method">
+<dt id="ivy.core.container.Container.ones_like">
+<code class="sig-name descname">ones_like</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">key_chains</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">to_apply</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">prune_unapplied</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/container.html#Container.ones_like"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.ones_like" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return arrays of ones for all nested arrays in the container.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>key_chains</strong> (<em>list</em><em> or </em><em>dict of strs</em><em>, </em><em>optional</em>) – The key-chains to apply or not apply the method to. Default is None.</p></li>
+<li><p><strong>to_apply</strong> (<em>bool</em><em>, </em><em>optional</em>) – If True, the method will be applied to key_chains, otherwise key_chains will be skipped.
+Default is True.</p></li>
+<li><p><strong>prune_unapplied</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to prune key_chains for which the function was not applied. Default is False.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Container object with all sub-arrays filled with ones.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt id="ivy.core.container.Container.prune_empty">
 <code class="sig-name descname">prune_empty</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/container.html#Container.prune_empty"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.prune_empty" title="Permalink to this definition">¶</a></dt>
 <dd><p>Recursively prunes empty keys from the container dict structure.
@@ -550,6 +569,29 @@ Returns None if the entire container is empty.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>Container with keys in the set of key chains pruned.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="ivy.core.container.Container.random_uniform_like">
+<code class="sig-name descname">random_uniform_like</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">low</span><span class="o">=</span><span class="default_value">0.0</span></em>, <em class="sig-param"><span class="n">high</span><span class="o">=</span><span class="default_value">1.0</span></em>, <em class="sig-param"><span class="n">key_chains</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">to_apply</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">prune_unapplied</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/container.html#Container.random_uniform_like"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.random_uniform_like" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return arrays of random uniform values for all nested arrays in the container.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>low</strong> (<em>float</em>) – Lower boundary of the output interval. All values generated will be greater than or equal to low.
+The default value is 0.</p></li>
+<li><p><strong>high</strong> (<em>float</em>) – Upper boundary of the output interval. All values generated will be less than high.
+The default value is 1.0.</p></li>
+<li><p><strong>key_chains</strong> (<em>list</em><em> or </em><em>dict of strs</em><em>, </em><em>optional</em>) – The key-chains to apply or not apply the method to. Default is None.</p></li>
+<li><p><strong>to_apply</strong> (<em>bool</em><em>, </em><em>optional</em>) – If True, the method will be applied to key_chains, otherwise key_chains will be skipped.
+Default is True.</p></li>
+<li><p><strong>prune_unapplied</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to prune key_chains for which the function was not applied. Default is False.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Container object with all sub-arrays filled with random uniform values.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1008,6 +1050,25 @@ Default is True.</p></li>
 <dt id="ivy.core.container.Container.with_entries_as_lists">
 <code class="sig-name descname">with_entries_as_lists</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/container.html#Container.with_entries_as_lists"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.with_entries_as_lists" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return container object, with each array entry in the container cast to a list</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="ivy.core.container.Container.zeros_like">
+<code class="sig-name descname">zeros_like</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">key_chains</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">to_apply</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">prune_unapplied</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/container.html#Container.zeros_like"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.zeros_like" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return arrays of zeros for all nested arrays in the container.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>key_chains</strong> (<em>list</em><em> or </em><em>dict of strs</em><em>, </em><em>optional</em>) – The key-chains to apply or not apply the method to. Default is None.</p></li>
+<li><p><strong>to_apply</strong> (<em>bool</em><em>, </em><em>optional</em>) – If True, the method will be applied to key_chains, otherwise key_chains will be skipped.
+Default is True.</p></li>
+<li><p><strong>prune_unapplied</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to prune key_chains for which the function was not applied. Default is False.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Container object with all sub-arrays filled with zeros.</p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
