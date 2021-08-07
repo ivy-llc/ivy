@@ -700,8 +700,39 @@ class Container(dict):
         :return: container with each array having their gradients stopped.
         """
         return self.map(
-            lambda x, kc: _ivy.stop_gradient(x, preserve_type) if _ivy.is_array(x)
+            lambda x, kc: _ivy.stop_gradient(x, preserve_type) if _ivy.is_variable(x)
             else x, key_chains, to_apply, prune_unapplied)
+
+    def as_variables(self, key_chains=None, to_apply=True, prune_unapplied=False):
+        """
+        Converts all nested arrays to variables, which support gradient computation.
+
+        :param key_chains: The key-chains to apply or not apply the method to. Default is None.
+        :type key_chains: list or dict of strs, optional
+        :param to_apply: If True, the method will be applied to key_chains, otherwise key_chains will be skipped.
+                         Default is True.
+        :type to_apply: bool, optional
+        :param prune_unapplied: Whether to prune key_chains for which the function was not applied. Default is False.
+        :type prune_unapplied: bool, optional
+        :return: container with each array converted to a variable.
+        """
+        return self.map(lambda x, kc: _ivy.variable(x) if _ivy.is_array(x) else x,
+                        key_chains, to_apply, prune_unapplied)
+
+    def as_arrays(self, key_chains=None, to_apply=True, prune_unapplied=False):
+        """
+        Converts all nested variables to arrays, which do not support gradient computation.
+
+        :param key_chains: The key-chains to apply or not apply the method to. Default is None.
+        :type key_chains: list or dict of strs, optional
+        :param to_apply: If True, the method will be applied to key_chains, otherwise key_chains will be skipped.
+                         Default is True.
+        :type to_apply: bool, optional
+        :param prune_unapplied: Whether to prune key_chains for which the function was not applied. Default is False.
+        :type prune_unapplied: bool, optional
+        :return: container with each variable converted to an array.
+        """
+        return self.stop_gradients(False, key_chains, to_apply, prune_unapplied)
 
     def to_disk_as_hdf5(self, h5_obj_or_filepath, starting_index=0, mode='a', max_batch_size=None):
         """
