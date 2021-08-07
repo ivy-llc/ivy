@@ -1108,13 +1108,13 @@ def test_zeros_like():
         x0 = ivy_gen.tensor([random.uniform(0, 1) for _ in range(DIM)], f=lib)
 
         ivy_gen.zeros_like(x0, f=lib)
-        ivy_gen_w_time.zeros_like(x0, f=time_lib)
+        ivy_gen_w_time.as_zeros(x0, f=time_lib)
         TIMES_DICT.clear()
 
         for _ in range(100):
 
             log_time(fname, 'tb0')
-            ivy_gen_w_time.zeros_like(x0, f=time_lib)
+            ivy_gen_w_time.as_zeros(x0, f=time_lib)
             log_time(fname, 'tb4', time_at_start=True)
 
             log_time(fname, 'tt0')
@@ -1170,13 +1170,13 @@ def test_ones_like():
         x0 = ivy_gen.tensor([random.uniform(0, 1) for _ in range(DIM)], f=lib)
 
         ivy_gen.ones_like(x0, f=lib)
-        ivy_gen_w_time.ones_like(x0, f=time_lib)
+        ivy_gen_w_time.as_ones(x0, f=time_lib)
         TIMES_DICT.clear()
 
         for _ in range(100):
 
             log_time(fname, 'tb0')
-            ivy_gen_w_time.ones_like(x0, f=time_lib)
+            ivy_gen_w_time.as_ones(x0, f=time_lib)
             log_time(fname, 'tb4', time_at_start=True)
 
             log_time(fname, 'tt0')

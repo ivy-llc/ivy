@@ -124,12 +124,12 @@ def test_container_einsum(dev_str, call):
     assert np.allclose(ivy.to_numpy(container_einsummed.b.d), np.array([-6., -14., -22.]))
 
 
-def test_container_ones_like(dev_str, call):
+def test_container_as_ones(dev_str, call):
     dict_in = {'a': ivy.array([1]),
                'b': {'c': ivy.array([2]), 'd': ivy.array([3])}}
     container = Container(dict_in)
 
-    container_ones = container.ones_like()
+    container_ones = container.as_ones()
     assert (container_ones['a'] == ivy.array([1]))[0]
     assert (container_ones.a == ivy.array([1]))[0]
     assert (container_ones['b']['c'] == ivy.array([1]))[0]
@@ -138,12 +138,12 @@ def test_container_ones_like(dev_str, call):
     assert (container_ones.b.d == ivy.array([1]))[0]
 
 
-def test_container_zeros_like(dev_str, call):
+def test_container_as_zeros(dev_str, call):
     dict_in = {'a': ivy.array([1]),
                'b': {'c': ivy.array([2]), 'd': ivy.array([3])}}
     container = Container(dict_in)
 
-    container_zeros = container.zeros_like()
+    container_zeros = container.as_zeros()
     assert (container_zeros['a'] == ivy.array([0]))[0]
     assert (container_zeros.a == ivy.array([0]))[0]
     assert (container_zeros['b']['c'] == ivy.array([0]))[0]
@@ -152,12 +152,12 @@ def test_container_zeros_like(dev_str, call):
     assert (container_zeros.b.d == ivy.array([0]))[0]
 
 
-def test_container_random_uniform_like(dev_str, call):
+def test_container_as_random_uniform(dev_str, call):
     dict_in = {'a': ivy.array([1.]),
                'b': {'c': ivy.array([2.]), 'd': ivy.array([3.])}}
     container = Container(dict_in)
 
-    container_random = container.random_uniform_like()
+    container_random = container.as_random_uniform()
     assert (container_random['a'] != ivy.array([1.]))[0]
     assert (container_random.a != ivy.array([1.]))[0]
     assert (container_random['b']['c'] != ivy.array([2.]))[0]
