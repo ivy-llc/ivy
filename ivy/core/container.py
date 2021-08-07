@@ -544,7 +544,7 @@ class Container(dict):
                 return_dict[key] = value
         return Container(return_dict)
 
-    def ones_like(self, key_chains=None, to_apply=True, prune_unapplied=False):
+    def as_ones(self, key_chains=None, to_apply=True, prune_unapplied=False):
         """
         Return arrays of ones for all nested arrays in the container.
 
@@ -560,7 +560,7 @@ class Container(dict):
         return self.map(lambda x, kc: _ivy.ones_like(x) if _ivy.is_array(x) else x, key_chains, to_apply,
                         prune_unapplied)
 
-    def zeros_like(self, key_chains=None, to_apply=True, prune_unapplied=False):
+    def as_zeros(self, key_chains=None, to_apply=True, prune_unapplied=False):
         """
         Return arrays of zeros for all nested arrays in the container.
 
@@ -576,7 +576,7 @@ class Container(dict):
         return self.map(lambda x, kc: _ivy.zeros_like(x) if _ivy.is_array(x) else x, key_chains, to_apply,
                         prune_unapplied)
 
-    def random_uniform_like(self, low=0.0, high=1.0, key_chains=None, to_apply=True, prune_unapplied=False):
+    def as_random_uniform(self, low=0.0, high=1.0, key_chains=None, to_apply=True, prune_unapplied=False):
         """
         Return arrays of random uniform values for all nested arrays in the container.
 
