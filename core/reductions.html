@@ -103,6 +103,7 @@
 <li class="toctree-l2"><a class="reference internal" href="reductions/reduce_prod.html">reduce_prod</a></li>
 <li class="toctree-l2"><a class="reference internal" href="reductions/reduce_mean.html">reduce_mean</a></li>
 <li class="toctree-l2"><a class="reference internal" href="reductions/reduce_var.html">reduce_var</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reductions/reduce_std.html">reduce_std</a></li>
 <li class="toctree-l2"><a class="reference internal" href="reductions/reduce_min.html">reduce_min</a></li>
 <li class="toctree-l2"><a class="reference internal" href="reductions/reduce_max.html">reduce_max</a></li>
 <li class="toctree-l2"><a class="reference internal" href="reductions/einsum.html">einsum</a></li>
@@ -314,6 +315,29 @@ one. With this option, the result will broadcast correctly against the input arr
 </dd></dl>
 
 <dl class="py function">
+<dt id="ivy.core.reductions.reduce_std">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">reduce_std</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">keepdims</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">f</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/reductions.html#reduce_std"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.reductions.reduce_std" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the arithmetic standard deviation along a given axis. The standard deviation is taken over
+the flattened array by default, otherwise over the specified axis.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>array</em>) – Array containing numbers whose standard deviation is desired.</p></li>
+<li><p><strong>axis</strong> (<em>int</em><em> or </em><em>sequence of ints</em>) – Axis or axes along which the means are computed. The default is to compute the mean of the flattened
+array. If this is a tuple of ints, a mean is performed over multiple axes, instead of a single axis
+or all the axes as before.</p></li>
+<li><p><strong>keepdims</strong> (<em>bool</em><em>, </em><em>optional</em>) – If this is set to True, the axes which are reduced are left in the result as dimensions with size
+one. With this option, the result will broadcast correctly against the input array.</p></li>
+<li><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning framework. Inferred from inputs if None.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The array with standard deviations computed.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt id="ivy.core.reductions.reduce_sum">
 <code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">reduce_sum</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">keepdims</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">f</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/reductions.html#reduce_sum"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.reductions.reduce_sum" title="Permalink to this definition">¶</a></dt>
 <dd><p>Computes sum of array elements along a given axis.</p>
@@ -339,13 +363,12 @@ one. With this option, the result will broadcast correctly against the input arr
 <dl class="py function">
 <dt id="ivy.core.reductions.reduce_var">
 <code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">reduce_var</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">keepdims</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">f</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/reductions.html#reduce_var"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.reductions.reduce_var" title="Permalink to this definition">¶</a></dt>
-<dd><p>Computes the arithmetic variance along a given axis.
-Returns the average of the array elements. The average is taken over the flattened array by default, otherwise over
-the specified axis.</p>
+<dd><p>Computes the arithmetic variance along a given axis. The variance is taken over the flattened array by default,
+otherwise over the specified axis.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<em>array</em>) – Array containing numbers whose mean is desired.</p></li>
+<li><p><strong>x</strong> (<em>array</em>) – Array containing numbers whose variance is desired.</p></li>
 <li><p><strong>axis</strong> (<em>int</em><em> or </em><em>sequence of ints</em>) – Axis or axes along which the means are computed. The default is to compute the mean of the flattened
 array. If this is a tuple of ints, a mean is performed over multiple axes, instead of a single axis
 or all the axes as before.</p></li>
@@ -355,7 +378,7 @@ one. With this option, the result will broadcast correctly against the input arr
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>The array with means computed.</p>
+<dd class="field-even"><p>The array with variances computed.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -367,6 +390,7 @@ one. With this option, the result will broadcast correctly against the input arr
 <li class="toctree-l1"><a class="reference internal" href="reductions/reduce_prod.html">reduce_prod</a></li>
 <li class="toctree-l1"><a class="reference internal" href="reductions/reduce_mean.html">reduce_mean</a></li>
 <li class="toctree-l1"><a class="reference internal" href="reductions/reduce_var.html">reduce_var</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reductions/reduce_std.html">reduce_std</a></li>
 <li class="toctree-l1"><a class="reference internal" href="reductions/reduce_min.html">reduce_min</a></li>
 <li class="toctree-l1"><a class="reference internal" href="reductions/reduce_max.html">reduce_max</a></li>
 <li class="toctree-l1"><a class="reference internal" href="reductions/einsum.html">einsum</a></li>
