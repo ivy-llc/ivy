@@ -72,11 +72,10 @@ def reduce_mean(x, axis=None, keepdims=False, f=None):
 
 def reduce_var(x, axis=None, keepdims=False, f=None):
     """
-    Computes the arithmetic variance along a given axis.
-    Returns the average of the array elements. The average is taken over the flattened array by default, otherwise over
-    the specified axis.
+    Computes the arithmetic variance along a given axis. The variance is taken over the flattened array by default,
+    otherwise over the specified axis.
 
-    :param x: Array containing numbers whose mean is desired.
+    :param x: Array containing numbers whose variance is desired.
     :type x: array
     :param axis: Axis or axes along which the means are computed. The default is to compute the mean of the flattened
                     array. If this is a tuple of ints, a mean is performed over multiple axes, instead of a single axis
@@ -87,9 +86,30 @@ def reduce_var(x, axis=None, keepdims=False, f=None):
     :type keepdims: bool, optional
     :param f: Machine learning framework. Inferred from inputs if None.
     :type f: ml_framework, optional
-    :return: The array with means computed.
+    :return: The array with variances computed.
     """
     return _get_framework(x, f=f).reduce_var(x, axis, keepdims)
+
+
+def reduce_std(x, axis=None, keepdims=False, f=None):
+    """
+    Computes the arithmetic standard deviation along a given axis. The standard deviation is taken over
+    the flattened array by default, otherwise over the specified axis.
+
+    :param x: Array containing numbers whose standard deviation is desired.
+    :type x: array
+    :param axis: Axis or axes along which the means are computed. The default is to compute the mean of the flattened
+                    array. If this is a tuple of ints, a mean is performed over multiple axes, instead of a single axis
+                    or all the axes as before.
+    :type axis: int or sequence of ints
+    :param keepdims: If this is set to True, the axes which are reduced are left in the result as dimensions with size
+                        one. With this option, the result will broadcast correctly against the input array.
+    :type keepdims: bool, optional
+    :param f: Machine learning framework. Inferred from inputs if None.
+    :type f: ml_framework, optional
+    :return: The array with standard deviations computed.
+    """
+    return reduce_var(x, axis, keepdims, f) ** 0.5
 
 
 def reduce_min(x, axis=None, keepdims=False, f=None):
