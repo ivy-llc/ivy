@@ -544,6 +544,61 @@ class Container(dict):
                 return_dict[key] = value
         return Container(return_dict)
 
+    def ones_like(self, key_chains=None, to_apply=True, prune_unapplied=False):
+        """
+        Return arrays of ones for all nested arrays in the container.
+
+        :param key_chains: The key-chains to apply or not apply the method to. Default is None.
+        :type key_chains: list or dict of strs, optional
+        :param to_apply: If True, the method will be applied to key_chains, otherwise key_chains will be skipped.
+                         Default is True.
+        :type to_apply: bool, optional
+        :param prune_unapplied: Whether to prune key_chains for which the function was not applied. Default is False.
+        :type prune_unapplied: bool, optional
+        :return: Container object with all sub-arrays filled with ones.
+        """
+        return self.map(lambda x, kc: _ivy.ones_like(x) if _ivy.is_array(x) else x, key_chains, to_apply,
+                        prune_unapplied)
+
+    def zeros_like(self, key_chains=None, to_apply=True, prune_unapplied=False):
+        """
+        Return arrays of zeros for all nested arrays in the container.
+
+        :param key_chains: The key-chains to apply or not apply the method to. Default is None.
+        :type key_chains: list or dict of strs, optional
+        :param to_apply: If True, the method will be applied to key_chains, otherwise key_chains will be skipped.
+                         Default is True.
+        :type to_apply: bool, optional
+        :param prune_unapplied: Whether to prune key_chains for which the function was not applied. Default is False.
+        :type prune_unapplied: bool, optional
+        :return: Container object with all sub-arrays filled with zeros.
+        """
+        return self.map(lambda x, kc: _ivy.zeros_like(x) if _ivy.is_array(x) else x, key_chains, to_apply,
+                        prune_unapplied)
+
+    def random_uniform_like(self, low=0.0, high=1.0, key_chains=None, to_apply=True, prune_unapplied=False):
+        """
+        Return arrays of random uniform values for all nested arrays in the container.
+
+        :param low: Lower boundary of the output interval. All values generated will be greater than or equal to low.
+                    The default value is 0.
+        :type low: float
+        :param high: Upper boundary of the output interval. All values generated will be less than high.
+                    The default value is 1.0.
+        :type high: float
+        :param key_chains: The key-chains to apply or not apply the method to. Default is None.
+        :type key_chains: list or dict of strs, optional
+        :param to_apply: If True, the method will be applied to key_chains, otherwise key_chains will be skipped.
+                         Default is True.
+        :type to_apply: bool, optional
+        :param prune_unapplied: Whether to prune key_chains for which the function was not applied. Default is False.
+        :type prune_unapplied: bool, optional
+        :return: Container object with all sub-arrays filled with random uniform values.
+        """
+        return self.map(lambda x, kc: _ivy.random_uniform(
+            low, high, x.shape, _ivy.dev_str(x)) if _ivy.is_array(x) else x,
+                        key_chains, to_apply, prune_unapplied)
+
     def expand_dims(self, axis, key_chains=None, to_apply=True, prune_unapplied=False):
         """
         Expand dims of all sub-arrays of container object.
@@ -557,7 +612,7 @@ class Container(dict):
         :type to_apply: bool, optional
         :param prune_unapplied: Whether to prune key_chains for which the function was not applied. Default is False.
         :type prune_unapplied: bool, optional
-        :return: Container object at with all sub-array dimensions expanded along the axis.
+        :return: Container object with all sub-array dimensions expanded along the axis.
         """
         return self.map(lambda x, kc: _ivy.expand_dims(x, axis) if _ivy.is_array(x) else x, key_chains, to_apply,
                         prune_unapplied)
@@ -589,7 +644,7 @@ class Container(dict):
         :type to_apply: bool, optional
         :param prune_unapplied: Whether to prune key_chains for which the function was not applied. Default is False.
         :type prune_unapplied: bool, optional
-        :return: Container object at with all sub-array dimensions gathered along the axis.
+        :return: Container object with all sub-array dimensions gathered along the axis.
         """
         return self.map(lambda x, kc: _ivy.gather(x, indices, axis) if _ivy.is_array(x) else x, key_chains, to_apply,
                         prune_unapplied)
@@ -607,7 +662,7 @@ class Container(dict):
         :type to_apply: bool, optional
         :param prune_unapplied: Whether to prune key_chains for which the function was not applied. Default is False.
         :type prune_unapplied: bool, optional
-        :return: Container object at with all sub-array dimensions gathered.
+        :return: Container object with all sub-array dimensions gathered.
         """
         return self.map(lambda x, kc: _ivy.gather_nd(x, indices) if _ivy.is_array(x) else x, key_chains, to_apply,
                         prune_unapplied)
