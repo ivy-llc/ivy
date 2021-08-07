@@ -156,6 +156,45 @@ def test_reduce_var(x, axis, kd, dtype_str, tensor_fn, dev_str, call):
     helpers.assert_compilable(ivy.reduce_var)
 
 
+# reduce_std
+@pytest.mark.parametrize(
+    "x", [[1., 2., 3.], [[1., 2., 3.]]])
+@pytest.mark.parametrize(
+    "axis", [None, 0, -1, (0,), (-1,)])
+@pytest.mark.parametrize(
+    "kd", [True, False])
+@pytest.mark.parametrize(
+    "dtype_str", ['float32'])
+@pytest.mark.parametrize(
+    "tensor_fn", [ivy.array, helpers.var_fn])
+def test_reduce_std(x, axis, kd, dtype_str, tensor_fn, dev_str, call):
+    # smoke test
+    x = tensor_fn(x, dtype_str, dev_str)
+    ret = ivy.reduce_std(x, axis, kd)
+    # type test
+    assert ivy.is_array(ret)
+    # cardinality test
+    if axis is None:
+        expected_shape = [1]*len(x.shape) if kd else []
+    else:
+        axis_ = [axis] if isinstance(axis, int) else axis
+        axis_ = [item % len(x.shape) for item in axis_]
+        expected_shape = list(x.shape)
+        if kd:
+            expected_shape = [1 if i % len(x.shape) in axis_ else item for i, item in enumerate(expected_shape)]
+        else:
+            [expected_shape.pop(item) for item in axis_]
+    expected_shape = [1] if expected_shape == [] else expected_shape
+    assert ret.shape == tuple(expected_shape)
+    # value test
+    assert np.allclose(call(ivy.reduce_std, x), ivy.numpy.reduce_var(ivy.to_numpy(x)) ** 0.5)
+    # compilation test
+    if call is helpers.torch_call:
+        # PyTorch cannot yet compile ivy.core only functions, without a direct backend implementation
+        return
+    helpers.assert_compilable(ivy.reduce_std)
+
+
 # reduce_min
 @pytest.mark.parametrize(
     "x", [[1., 2., 3.], [[1., 2., 3.]]])
