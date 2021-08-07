@@ -605,9 +605,33 @@
 <span class="sd">        :type to_apply: bool, optional</span>
 <span class="sd">        :param prune_unapplied: Whether to prune key_chains for which the function was not applied. Default is False.</span>
 <span class="sd">        :type prune_unapplied: bool, optional</span>
-<span class="sd">        :return: Container object at with all sub-array dimensions expanded along the axis.</span>
+<span class="sd">        :return: Container object with the variance computed for all sub-arrays.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">kc</span><span class="p">:</span> <span class="n">_ivy</span><span class="o">.</span><span class="n">reduce_var</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">keepdims</span><span class="p">)</span> <span class="k">if</span> <span class="n">_ivy</span><span class="o">.</span><span class="n">is_array</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">else</span> <span class="n">x</span><span class="p">,</span>
+                        <span class="n">key_chains</span><span class="p">,</span> <span class="n">to_apply</span><span class="p">,</span> <span class="n">prune_unapplied</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Container.reduce_std"><a class="viewcode-back" href="../../../core/container/Container.html#ivy.core.container.Container.reduce_std">[docs]</a>    <span class="k">def</span> <span class="nf">reduce_std</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">key_chains</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">to_apply</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">prune_unapplied</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Computes standard deviation of array elements along a given axis for all sub-arrays of container object.</span>
+
+<span class="sd">        :param axis: Axis or axes along which a var is performed. The default, axis=None, will var all of the elements</span>
+<span class="sd">                     of the input array. If axis is negative it counts from the last to the first axis. If axis is a</span>
+<span class="sd">                     tuple of ints, a var is performed on all of the axes specified in the tuple instead of a single</span>
+<span class="sd">                     axis or all the axes as before.</span>
+<span class="sd">        :type axis: int or sequence of ints</span>
+<span class="sd">        :param keepdims: If this is set to True, the axes which are reduced are left in the result as dimensions with</span>
+<span class="sd">                         size one. With this option, the result will broadcast correctly against the input array.</span>
+<span class="sd">        :type keepdims: bool, optional</span>
+<span class="sd">        :param key_chains: The key-chains to apply or not apply the method to. Default is None.</span>
+<span class="sd">        :type key_chains: list or dict of strs, optional</span>
+<span class="sd">        :param to_apply: If True, the method will be applied to key_chains, otherwise key_chains will be skipped.</span>
+<span class="sd">                         Default is True.</span>
+<span class="sd">        :type to_apply: bool, optional</span>
+<span class="sd">        :param prune_unapplied: Whether to prune key_chains for which the function was not applied. Default is False.</span>
+<span class="sd">        :type prune_unapplied: bool, optional</span>
+<span class="sd">        :return: Container object with the standard deviation computed for all sub-arrays.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">kc</span><span class="p">:</span> <span class="n">_ivy</span><span class="o">.</span><span class="n">reduce_std</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">keepdims</span><span class="p">)</span> <span class="k">if</span> <span class="n">_ivy</span><span class="o">.</span><span class="n">is_array</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">else</span> <span class="n">x</span><span class="p">,</span>
                         <span class="n">key_chains</span><span class="p">,</span> <span class="n">to_apply</span><span class="p">,</span> <span class="n">prune_unapplied</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Container.reduce_min"><a class="viewcode-back" href="../../../core/container/Container.html#ivy.core.container.Container.reduce_min">[docs]</a>    <span class="k">def</span> <span class="nf">reduce_min</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">key_chains</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">to_apply</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">prune_unapplied</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
