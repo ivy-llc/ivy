@@ -137,6 +137,20 @@ def test_container_einsum(dev_str, call):
     assert np.allclose(ivy.to_numpy(container_einsummed.b.d), np.array([-6., -14., -22.]))
 
 
+def test_container_flip(dev_str, call):
+    dict_in = {'a': ivy.array([[1., 2.], [3., 4.], [5., 6.]]),
+               'b': {'c': ivy.array([[2., 4.], [6., 8.], [10., 12.]]),
+                     'd': ivy.array([[-2., -4.], [-6., -8.], [-10., -12.]])}}
+    container = Container(dict_in)
+    container_flipped = container.flip(-1)
+    assert np.allclose(ivy.to_numpy(container_flipped['a']), np.array([[2., 1.], [4., 3.], [6., 5.]]))
+    assert np.allclose(ivy.to_numpy(container_flipped.a), np.array([[2., 1.], [4., 3.], [6., 5.]]))
+    assert np.allclose(ivy.to_numpy(container_flipped['b']['c']), np.array([[4., 2.], [8., 6.], [12., 10.]]))
+    assert np.allclose(ivy.to_numpy(container_flipped.b.c), np.array([[4., 2.], [8., 6.], [12., 10.]]))
+    assert np.allclose(ivy.to_numpy(container_flipped['b']['d']), np.array([[-4., -2.], [-8., -6.], [-12., -10.]]))
+    assert np.allclose(ivy.to_numpy(container_flipped.b.d), np.array([[-4., -2.], [-8., -6.], [-12., -10.]]))
+
+
 def test_container_as_ones(dev_str, call):
     dict_in = {'a': ivy.array([1]),
                'b': {'c': ivy.array([2]), 'd': ivy.array([3])}}
