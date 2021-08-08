@@ -260,7 +260,7 @@ def split(x, num_or_size_splits: Optional[Union[int, List[int]]] = None, axis: i
     dim_size: int = x.shape[axis]
     if num_or_size_splits is None:
         # noinspection PyUnboundLocalVariable
-        num_or_size_splits = dim_size
+        num_or_size_splits = 1
     elif isinstance(num_or_size_splits, int):
         if with_remainder:
             num_chunks = x.shape[axis] / num_or_size_splits
