@@ -437,7 +437,7 @@ def stack(xs, axis=0, f=None):
     return _get_framework(xs[0], f=f).stack(xs, axis)
 
 
-def unstack(x, axis, f=None):
+def unstack(x, axis, keepdims=False, f=None):
     """
     Unpacks the given dimension of a rank-R array into rank-(R-1) arrays.
 
@@ -445,11 +445,13 @@ def unstack(x, axis, f=None):
     :type x: array
     :param axis: Axis for which to unpack the array.
     :type axis: int
+    :param keepdims: Whether to keep dimension 1 in the unstack dimensions. Default is False.
+    :type keepdims: bool, optional
     :param f: Machine learning framework. Inferred from inputs if None.
     :type f: ml_framework, optional
     :return: List of arrays, unpacked along specified dimensions.
     """
-    return _get_framework(x, f=f).unstack(x, axis)
+    return _get_framework(x, f=f).unstack(x, axis, keepdims)
 
 
 def split(x, num_or_size_splits=None, axis=0, with_remainder=False, f=None):

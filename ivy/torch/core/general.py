@@ -245,10 +245,13 @@ def stack(xs: List[torch.Tensor], axis: int = 0):
     return torch.stack(xs, axis)
 
 
-def unstack(x, axis: int) -> List[torch.Tensor]:
+def unstack(x, axis: int, keepdims: bool = False) -> List[torch.Tensor]:
     if x.shape == ():
         return [x]
-    return list(torch.unbind(x, axis))
+    ret = list(torch.unbind(x, axis))
+    if keepdims:
+        return [r.unsqueeze(axis) for r in ret]
+    return ret
 
 
 def split(x, num_or_size_splits: Optional[Union[int, List[int]]] = None, axis: int = 0, with_remainder: bool = False)\
