@@ -91,7 +91,7 @@ def _train_tasks(batch, inner_sub_batch_fn, outer_sub_batch_fn, inner_cost_fn, o
         outer_v_seq = True
     else:
         outer_v_seq = False
-    for i, sub_batch in enumerate(batch.unstack(0, num_tasks)):
+    for i, sub_batch in enumerate(batch.unstack(0, True, num_tasks)):
         if inner_sub_batch_fn is not None:
             inner_sub_batch = inner_sub_batch_fn(sub_batch)
         else:

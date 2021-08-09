@@ -58,7 +58,7 @@ def test_fomaml_step_unique_vars(dev_str, call, inner_grad_steps, with_outer_cos
 
     # true gradient
     all_outer_grads = list()
-    for sub_batch in batch_np.unstack(0, num_tasks):
+    for sub_batch in batch_np.unstack(0, True, num_tasks):
         all_outer_grads.append(
             [(-i*inner_learning_rate*weight_np*sub_batch['x'][0]**2 - sub_batch['x'][0]*latent_np) *
              (-1 if with_outer_cost_fn else 1) for i in range(inner_grad_steps+1)])
@@ -72,7 +72,6 @@ def test_fomaml_step_unique_vars(dev_str, call, inner_grad_steps, with_outer_cos
         batch, inner_cost_fn, outer_cost_fn if with_outer_cost_fn else None, variables, num_tasks,
         inner_grad_steps, inner_learning_rate, average_across_steps=average_across_steps,
         inner_v='latent', outer_v='weight', return_inner_v=return_inner_v)
-    outer_cost = rets[0]
     outer_grads = rets[1]
     assert np.allclose(ivy.to_numpy(outer_grads.weight[0]), np.array(true_weight_grad))
     if return_inner_v:
@@ -126,7 +125,7 @@ def test_fomaml_step_shared_vars(dev_str, call, inner_grad_steps, with_outer_cos
 
     # true gradient
     true_outer_grads = list()
-    for sub_batch in batch_np.unstack(0, num_tasks):
+    for sub_batch in batch_np.unstack(0, True, num_tasks):
         ws = list()
         grads = list()
         ws.append(latent_np)
@@ -155,7 +154,6 @@ def test_fomaml_step_shared_vars(dev_str, call, inner_grad_steps, with_outer_cos
     rets = ivy.fomaml_step(
         batch, inner_cost_fn, outer_cost_fn if with_outer_cost_fn else None, variables, num_tasks,
         inner_grad_steps, inner_learning_rate, average_across_steps=average_across_steps, return_inner_v=return_inner_v)
-    outer_cost = rets[0]
     outer_grads = rets[1]
     assert np.allclose(ivy.to_numpy(outer_grads.latent[0]), np.array(true_outer_grad))
     if return_inner_v:
@@ -207,7 +205,7 @@ def test_fomaml_step_overlapping_vars(dev_str, call, inner_grad_steps, with_oute
 
     # true gradient
     all_outer_grads = list()
-    for sub_batch in batch_np.unstack(0, num_tasks):
+    for sub_batch in batch_np.unstack(0, True, num_tasks):
         all_outer_grads.append(
             [(-i*inner_learning_rate*weight_np*sub_batch['x'][0]**2 - sub_batch['x'][0]*latent_np) *
              (-1 if with_outer_cost_fn else 1) for i in range(inner_grad_steps+1)])
@@ -224,7 +222,6 @@ def test_fomaml_step_overlapping_vars(dev_str, call, inner_grad_steps, with_oute
         batch, inner_cost_fn, outer_cost_fn if with_outer_cost_fn else None, variables, num_tasks,
         inner_grad_steps, inner_learning_rate, average_across_steps=average_across_steps, inner_v='latent',
         return_inner_v=return_inner_v)
-    outer_cost = rets[0]
     outer_grads = rets[1]
     assert np.allclose(ivy.to_numpy(outer_grads.weight[0]), np.array(true_weight_grad))
     assert np.allclose(ivy.to_numpy(outer_grads.latent[0]), np.array(true_latent_grad))
@@ -260,10 +257,6 @@ def test_reptile_step(dev_str, call, inner_grad_steps, num_tasks, return_inner_v
     def inner_cost_fn(sub_batch_in, v):
         return -(sub_batch_in['x'] * v['latent'] ** 2)[0]
 
-    # outer cost function
-    def outer_cost_fn(sub_batch_in, v):
-        return (sub_batch_in['x'] * v['latent'] ** 2)[0]
-
     # numpy
     latent_np = ivy.to_numpy(variables.latent)
     batch_np = batch.map(lambda x, kc: ivy.to_numpy(x))
@@ -274,7 +267,7 @@ def test_reptile_step(dev_str, call, inner_grad_steps, num_tasks, return_inner_v
 
     # true gradient
     true_outer_grads = list()
-    for sub_batch in batch_np.unstack(0, num_tasks):
+    for sub_batch in batch_np.unstack(0, True, num_tasks):
         ws = list()
         grads = list()
         ws.append(latent_np)
@@ -293,7 +286,6 @@ def test_reptile_step(dev_str, call, inner_grad_steps, num_tasks, return_inner_v
     # meta update
     rets = ivy.reptile_step(batch, inner_cost_fn, variables, num_tasks, inner_grad_steps, inner_learning_rate,
                             return_inner_v=return_inner_v)
-    outer_cost = rets[0]
     outer_grads = rets[1]
     assert np.allclose(ivy.to_numpy(outer_grads.latent[0]), np.array(true_outer_grad))
     if return_inner_v:
@@ -348,7 +340,7 @@ def test_maml_step_unique_vars(dev_str, call, inner_grad_steps, with_outer_cost_
 
     # true gradient
     all_outer_grads = list()
-    for sub_batch in batch_np.unstack(0, num_tasks):
+    for sub_batch in batch_np.unstack(0, True, num_tasks):
         all_outer_grads.append(
             [(-2*i*inner_learning_rate*weight_np*sub_batch['x'][0]**2 - sub_batch['x'][0]*latent_np) *
              (-1 if with_outer_cost_fn else 1) for i in range(inner_grad_steps+1)])
@@ -362,7 +354,6 @@ def test_maml_step_unique_vars(dev_str, call, inner_grad_steps, with_outer_cost_
         batch, inner_cost_fn, outer_cost_fn if with_outer_cost_fn else None, variables, num_tasks,
         inner_grad_steps, inner_learning_rate, average_across_steps=average_across_steps,
         inner_v='latent', outer_v='weight', return_inner_v=return_inner_v)
-    outer_cost = rets[0]
     outer_grads = rets[1]
     assert np.allclose(ivy.to_numpy(outer_grads.weight[0]), np.array(true_outer_grad))
     if return_inner_v:
@@ -431,7 +422,7 @@ def test_maml_step_shared_vars(dev_str, call, inner_grad_steps, with_outer_cost_
     
     # true gradient
     true_outer_grads = list()
-    for sub_batch in batch_np.unstack(0, num_tasks):
+    for sub_batch in batch_np.unstack(0, True, num_tasks):
         ws = list()
         grads = list()
         ws.append(variables_np)
@@ -462,7 +453,6 @@ def test_maml_step_shared_vars(dev_str, call, inner_grad_steps, with_outer_cost_
     rets = ivy.maml_step(
         batch, inner_cost_fn, outer_cost_fn if with_outer_cost_fn else None, variables, num_tasks,
         inner_grad_steps, inner_learning_rate, average_across_steps=average_across_steps, return_inner_v=return_inner_v)
-    outer_cost = rets[0]
     outer_grads = rets[1]
     assert np.allclose(ivy.to_numpy(outer_grads.latent[0]), true_outer_grad[0])
     if return_inner_v:
@@ -514,7 +504,7 @@ def test_maml_step_overlapping_vars(dev_str, call, inner_grad_steps, with_outer_
 
     # true weight gradient
     all_outer_grads = list()
-    for sub_batch in batch_np.unstack(0, num_tasks):
+    for sub_batch in batch_np.unstack(0, True, num_tasks):
         all_outer_grads.append(
             [(-2*i*inner_learning_rate*weight_np*sub_batch['x'][0]**2 - sub_batch['x'][0]*latent_np) *
              (-1 if with_outer_cost_fn else 1) for i in range(inner_grad_steps+1)])
@@ -531,7 +521,6 @@ def test_maml_step_overlapping_vars(dev_str, call, inner_grad_steps, with_outer_
         batch, inner_cost_fn, outer_cost_fn if with_outer_cost_fn else None, variables, num_tasks,
         inner_grad_steps, inner_learning_rate, average_across_steps=average_across_steps, inner_v='latent',
         return_inner_v=return_inner_v)
-    outer_cost = rets[0]
     outer_grads = rets[1]
     assert np.allclose(ivy.to_numpy(outer_grads.weight[0]), np.array(true_weight_grad))
     assert np.allclose(ivy.to_numpy(outer_grads.latent[0]), np.array(true_latent_grad))
