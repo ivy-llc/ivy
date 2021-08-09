@@ -5,6 +5,7 @@ Collection of general Ivy functions.
 # global
 import math
 import nvidia_smi
+import numpy as np
 from functools import wraps
 from psutil import virtual_memory
 
@@ -1240,6 +1241,45 @@ def split_func_call(func, inputs, chunk_size, input_axes=0, output_axes=None):
             else ivy.Container.concat([r[i] for r in rets], output_axes[i])
             for i in range(num_outputs)]
     return rets
+
+
+def split_func_call_across_gpus(func, inputs, dev_strs, input_axes=0, output_axes=None):
+    """
+    Call a function by splitting its inputs along a given axis, and calling each chunk on a different device.
+
+    :param func: The function to be called.
+    :type func: callable
+    :param inputs: A list of inputs to pass into the function.
+    :type inputs: sequence of arrays
+    :param dev_strs: The gpu device strings, in the format "gpu:idx".
+    :type dev_strs: int sequence of ints or sequence of strs
+    :param input_axes: The axes along which to split each of the inputs, before passing to the function. Default is 0.
+    :type input_axes: int or sequence of ints, optional
+    :param output_axes: The axes along which to concat each of the returned outputs. Default is same as fist input axis.
+    :type output_axes: int or sequence of ints, optional
+    :return: The return from the function, following input splitting and re-concattenation across devices.
+    """
+    if isinstance(input_axes, int):
+        input_axes = [input_axes]*len(inputs)
+    if isinstance(dev_strs, int):
+        dev_strs = ["gpu:{}".format(dev_strs)]
+    elif isinstance(dev_strs[0], int):
+        dev_strs = ["gpu:{}".format(i) for i in dev_strs]
+    input_0 = inputs[0]
+    start_dev = ivy.dev_str(input_0)
+    dim_size = input_0.shape[input_axes[0]]
+    num_chunks = len(dev_strs)
+    chunk_size = dim_size / num_chunks
+    chunk_size_rounded = int(np.round(chunk_size))
+    chunk_size_diff = chunk_size - chunk_size_rounded
+    total_diff = int(np.round(chunk_size_diff*num_chunks))
+    chunk_sizes = [chunk_size_rounded]*num_chunks
+    for i in range(np.abs(total_diff)):
+        chunk_sizes[i] += np.sign(total_diff)
+    inputs_split = [ivy.split(inp, chunk_sizes, input_axes[i], True) for i, inp in enumerate(inputs)]
+    rets = [[ivy.to_dev(ret, start_dev) for ret in func(*[ivy.to_dev(i, d_str) for i, d_str in zip(inp, dev_strs)])]
+            for inp in zip(*inputs_split)]
+    num_outputs = len(rets[0])
     if output_axes is None:
         output_axes = [input_axes[0]] * num_outputs
     elif isinstance(output_axes, int):
