@@ -1237,10 +1237,9 @@ def split_func_call(func, inputs, chunk_size, input_axes=0, output_axes=None):
         output_axes = [input_axes[0]] * num_outputs
     elif isinstance(output_axes, int):
         output_axes = [output_axes] * num_outputs
-    rets = [ivy.concatenate([r[i] for r in rets], output_axes[i]) if ivy.is_array(rets[0][i])
+    return [ivy.concatenate([r[i] for r in rets], output_axes[i]) if ivy.is_array(rets[0][i])
             else ivy.Container.concat([r[i] for r in rets], output_axes[i])
             for i in range(num_outputs)]
-    return rets
 
 
 def split_func_call_across_gpus(func, inputs, dev_strs, input_axes=0, output_axes=None):
@@ -1266,7 +1265,7 @@ def split_func_call_across_gpus(func, inputs, dev_strs, input_axes=0, output_axe
     elif isinstance(dev_strs[0], int):
         dev_strs = ["gpu:{}".format(i) for i in dev_strs]
     input_0 = inputs[0]
-    start_dev = ivy.dev_str(input_0)
+    start_dev = ivy.dev_str(input_0) if ivy.is_array(input_0) else input_0.dev_str
     dim_size = input_0.shape[input_axes[0]]
     num_chunks = len(dev_strs)
     chunk_size = dim_size / num_chunks
