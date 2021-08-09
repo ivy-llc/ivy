@@ -6,21 +6,21 @@ from ivy.core.gradients import gradient_descent_update
 # Private #
 # --------#
 
-def _compute_cost_and_update_grads(cost_fn, order, sub_batch, variables, outer_v, keep_outer_v,
+def _compute_cost_and_update_grads(cost_fn, order, batch, variables, outer_v, keep_outer_v,
                                    average_across_steps_or_final, all_grads, unique_outer):
     if order == 1:
         cost, inner_grads = ivy.execute_with_gradients(
-            lambda v: cost_fn(sub_batch, v=variables.set_at_key_chains(v) if unique_outer else v),
+            lambda v: cost_fn(batch, v=variables.set_at_key_chains(v) if unique_outer else v),
             variables.at_key_chains(outer_v, ignore_none=True) if keep_outer_v else
             variables.prune_key_chains(outer_v, ignore_none=True), retain_grads=False)
         if average_across_steps_or_final:
             all_grads.append(inner_grads)
     else:
-        cost = cost_fn(sub_batch, v=variables)
+        cost = cost_fn(batch, v=variables)
     return cost
 
 
-def _train_task(inner_sub_batch, outer_sub_batch, inner_cost_fn, outer_cost_fn, variables, inner_grad_steps,
+def _train_task(inner_batch, outer_batch, inner_cost_fn, outer_cost_fn, variables, inner_grad_steps,
                 inner_learning_rate, inner_optimization_step, order, average_across_steps, inner_v, keep_innver_v,
                 outer_v, keep_outer_v):
 
@@ -37,7 +37,7 @@ def _train_task(inner_sub_batch, outer_sub_batch, inner_cost_fn, outer_cost_fn, 
 
         # compute inner gradient for update the inner variables
         cost, inner_update_grads = ivy.execute_with_gradients(
-            lambda v: inner_cost_fn(inner_sub_batch, v=variables.set_at_key_chains(v) if unique_inner else v),
+            lambda v: inner_cost_fn(inner_batch, v=variables.set_at_key_chains(v) if unique_inner else v),
             variables.at_key_chains(inner_v, ignore_none=True) if keep_innver_v else
             variables.prune_key_chains(inner_v, ignore_none=True), retain_grads=order > 1)
 
@@ -46,7 +46,7 @@ def _train_task(inner_sub_batch, outer_sub_batch, inner_cost_fn, outer_cost_fn, 
             all_grads.append(inner_update_grads)
         else:
             cost = _compute_cost_and_update_grads(
-                inner_cost_fn if outer_cost_fn is None else outer_cost_fn, order, outer_sub_batch, variables, outer_v,
+                inner_cost_fn if outer_cost_fn is None else outer_cost_fn, order, outer_batch, variables, outer_v,
                 keep_outer_v, average_across_steps, all_grads, unique_outer)
 
         # update cost and update parameters
@@ -61,7 +61,7 @@ def _train_task(inner_sub_batch, outer_sub_batch, inner_cost_fn, outer_cost_fn, 
 
     # once training is finished, compute the final cost, and update all_grads if fist order method
     final_cost = _compute_cost_and_update_grads(
-        inner_cost_fn if outer_cost_fn is None else outer_cost_fn, order, outer_sub_batch, variables, outer_v,
+        inner_cost_fn if outer_cost_fn is None else outer_cost_fn, order, outer_batch, variables, outer_v,
         keep_outer_v, True, all_grads, unique_outer)
 
     # average the cost or gradients across all timesteps if this option is chosen
@@ -77,45 +77,29 @@ def _train_task(inner_sub_batch, outer_sub_batch, inner_cost_fn, outer_cost_fn, 
     return final_cost, variables.stop_gradients(), all_grads
 
 
-def _train_tasks(batch, inner_sub_batch_fn, outer_sub_batch_fn, inner_cost_fn, outer_cost_fn, variables, num_tasks,
-                 inner_grad_steps, inner_learning_rate, inner_optimization_step, order, average_across_steps, inner_v,
-                 keep_innver_v, outer_v, keep_outer_v, return_inner_v):
-    total_cost = 0
-    updated_ivs_to_return = list()
-    all_grads = list()
-    if isinstance(inner_v, (list, tuple)) and isinstance(inner_v[0], (list, tuple, dict, type(None))):
-        inner_v_seq = True
+def _train_tasks(batch, inner_batch_fn, outer_batch_fn, inner_cost_fn, outer_cost_fn, variables, inner_grad_steps,
+                 inner_learning_rate, inner_optimization_step, order, average_across_steps, inner_v, keep_innver_v,
+                 outer_v, keep_outer_v, return_inner_v):
+    if inner_batch_fn is not None:
+        inner_batch = inner_batch_fn(batch)
     else:
-        inner_v_seq = False
-    if isinstance(outer_v, (list, tuple)) and isinstance(outer_v[0], (list, tuple, dict, type(None))):
-        outer_v_seq = True
+        inner_batch = batch
+    if outer_batch_fn is not None:
+        outer_batch = outer_batch_fn(batch)
     else:
-        outer_v_seq = False
-    for i, sub_batch in enumerate(batch.unstack(0, True, num_tasks)):
-        if inner_sub_batch_fn is not None:
-            inner_sub_batch = inner_sub_batch_fn(sub_batch)
-        else:
-            inner_sub_batch = sub_batch
-        if outer_sub_batch_fn is not None:
-            outer_sub_batch = outer_sub_batch_fn(sub_batch)
-        else:
-            outer_sub_batch = sub_batch
-        iv = inner_v[i] if inner_v_seq else inner_v
-        ov = outer_v[i] if outer_v_seq else outer_v
-        cost, updated_iv, grads = _train_task(inner_sub_batch, outer_sub_batch, inner_cost_fn, outer_cost_fn, variables,
-                                              inner_grad_steps, inner_learning_rate, inner_optimization_step, order,
-                                              average_across_steps, iv, keep_innver_v, ov, keep_outer_v)
-        if (return_inner_v == 'first' and i == 0) or return_inner_v == 'all':
-            updated_ivs_to_return.append(updated_iv)
-        total_cost = total_cost + cost
-        all_grads.append(grads)
+        outer_batch = batch
+    cost, updated_ivs, grads = _train_task(inner_batch, outer_batch, inner_cost_fn, outer_cost_fn, variables,
+                                          inner_grad_steps, inner_learning_rate, inner_optimization_step, order,
+                                          average_across_steps, inner_v, keep_innver_v, outer_v, keep_outer_v)
+    updated_ivs = updated_ivs.reduce_mean(0) if isinstance(updated_ivs, ivy.Container) else updated_ivs
+    grads = grads.reduce_mean(0) if isinstance(grads, ivy.Container) else grads
     if order == 1:
         if return_inner_v:
-            return total_cost / num_tasks, sum(all_grads) / len(all_grads), updated_ivs_to_return
-        return total_cost / num_tasks, sum(all_grads) / len(all_grads)
+            return cost, grads, updated_ivs
+        return cost, grads
     if return_inner_v:
-        return total_cost / num_tasks, updated_ivs_to_return
-    return total_cost / num_tasks
+        return cost, updated_ivs
+    return cost
 
 
 # Public #
@@ -124,9 +108,9 @@ def _train_tasks(batch, inner_sub_batch_fn, outer_sub_batch_fn, inner_cost_fn, o
 # First Order
 
 def fomaml_step(batch, inner_cost_fn, outer_cost_fn, variables, inner_grad_steps, inner_learning_rate,
-                inner_optimization_step=gradient_descent_update, inner_sub_batch_fn=None, outer_sub_batch_fn=None,
+                inner_optimization_step=gradient_descent_update, inner_batch_fn=None, outer_batch_fn=None,
                 average_across_steps=False, inner_v=None, keep_inner_v=True, outer_v=None, keep_outer_v=True,
-                return_inner_v=False, num_tasks=None):
+                return_inner_v=False):
     """
     Perform step of first order MAML.
 
@@ -148,12 +132,12 @@ def fomaml_step(batch, inner_cost_fn, outer_cost_fn, variables, inner_grad_steps
     :param inner_optimization_step: The function used for the inner loop optimization.
                                     Default is ivy.gradient_descent_update.
     :type inner_optimization_step: callable, optional
-    :param inner_sub_batch_fn: Function to apply to the task sub-batch, before passing to the inner_cost_fn.
+    :param inner_batch_fn: Function to apply to the task sub-batch, before passing to the inner_cost_fn.
                                Default is None.
-    :type inner_sub_batch_fn: callable, optional
-    :param outer_sub_batch_fn: Function to apply to the task sub-batch, before passing to the outer_cost_fn.
+    :type inner_batch_fn: callable, optional
+    :param outer_batch_fn: Function to apply to the task sub-batch, before passing to the outer_cost_fn.
                                Default is None.
-    :type outer_sub_batch_fn: callable, optional
+    :type outer_batch_fn: callable, optional
     :param average_across_steps: Whether to average the inner loop steps for the outer loop update. Default is False.
     :type average_across_steps: bool, optional
     :param inner_v: Nested variable keys to be optimized during the inner loop, with same keys and boolean values.
@@ -169,21 +153,16 @@ def fomaml_step(batch, inner_cost_fn, outer_cost_fn, variables, inner_grad_steps
     :param return_inner_v: Either 'first', 'all', or False. 'first' means the variables for the first task inner loop
                            will also be returned. variables for all tasks will be returned with 'all'. Default is False.
     :type return_inner_v: str, optional
-    :param num_tasks: Number of unique tasks to inner-loop optimize for during the meta step.
-                      This must be the leading size of the input batch. Determined from the input batch by default.
-    :type num_tasks: int, optional
     :return: The cost and the gradients with respect to the outer loop variables.
     """
-    if num_tasks is None:
-        num_tasks = batch.shape[0]
     return _train_tasks(
-        batch, inner_sub_batch_fn, outer_sub_batch_fn, inner_cost_fn, outer_cost_fn, variables, num_tasks,
-        inner_grad_steps, inner_learning_rate, inner_optimization_step, 1, average_across_steps, inner_v, keep_inner_v,
-        outer_v, keep_outer_v, return_inner_v)
+        batch, inner_batch_fn, outer_batch_fn, inner_cost_fn, outer_cost_fn, variables, inner_grad_steps,
+        inner_learning_rate, inner_optimization_step, 1, average_across_steps, inner_v, keep_inner_v, outer_v,
+        keep_outer_v, return_inner_v)
 
 
 def reptile_step(batch, cost_fn, variables, inner_grad_steps, inner_learning_rate,
-                 inner_optimization_step=gradient_descent_update, return_inner_v=False, num_tasks=None):
+                 inner_optimization_step=gradient_descent_update, return_inner_v=False):
     """
     Perform step of Reptile.
 
@@ -203,16 +182,11 @@ def reptile_step(batch, cost_fn, variables, inner_grad_steps, inner_learning_rat
     :param return_inner_v: Either 'first', 'all', or False. 'first' means the variables for the first task inner loop
                            will also be returned. variables for all tasks will be returned with 'all'. Default is False.
     :type return_inner_v: str, optional
-    :param num_tasks: Number of unique tasks to inner-loop optimize for during the meta step.
-                      This must be the leading size of the input batch. Determined from the input batch by default.
-    :type num_tasks: int, optional
     :return: The cost and the gradients with respect to the outer loop variables.
     """
-    if num_tasks is None:
-        num_tasks = batch.shape[0]
     rets = _train_tasks(
-        batch, None, None, cost_fn, None, variables, num_tasks, inner_grad_steps, inner_learning_rate,
-        inner_optimization_step, 1, True, None, True, None, True, return_inner_v)
+        batch, None, None, cost_fn, None, variables, inner_grad_steps, inner_learning_rate, inner_optimization_step,
+        1, True, None, True, None, True, return_inner_v)
     cost = rets[0]
     grads = rets[1] / inner_learning_rate
     if return_inner_v:
@@ -223,9 +197,9 @@ def reptile_step(batch, cost_fn, variables, inner_grad_steps, inner_learning_rat
 # Second Order
 
 def maml_step(batch, inner_cost_fn, outer_cost_fn, variables, inner_grad_steps, inner_learning_rate,
-              inner_optimization_step=gradient_descent_update, inner_sub_batch_fn=None, outer_sub_batch_fn=None,
+              inner_optimization_step=gradient_descent_update, inner_batch_fn=None, outer_batch_fn=None,
               average_across_steps=False, inner_v=None, keep_inner_v=True, outer_v=None, keep_outer_v=True,
-              return_inner_v=False, num_tasks=None):
+              return_inner_v=False):
     """
     Perform step of vanilla second order MAML.
 
@@ -246,12 +220,12 @@ def maml_step(batch, inner_cost_fn, outer_cost_fn, variables, inner_grad_steps, 
     :param inner_optimization_step: The function used for the inner loop optimization.
                                     Default is ivy.gradient_descent_update.
     :type inner_optimization_step: callable, optional
-    :param inner_sub_batch_fn: Function to apply to the task sub-batch, before passing to the inner_cost_fn.
+    :param inner_batch_fn: Function to apply to the task sub-batch, before passing to the inner_cost_fn.
                                Default is None.
-    :type inner_sub_batch_fn: callable, optional
-    :param outer_sub_batch_fn: Function to apply to the task sub-batch, before passing to the outer_cost_fn.
+    :type inner_batch_fn: callable, optional
+    :param outer_batch_fn: Function to apply to the task sub-batch, before passing to the outer_cost_fn.
                                Default is None.
-    :type outer_sub_batch_fn: callable, optional
+    :type outer_batch_fn: callable, optional
     :param average_across_steps: Whether to average the inner loop steps for the outer loop update. Default is False.
     :type average_across_steps: bool, optional
     :param inner_v: Nested variable keys to be optimized during the inner loop, with same keys and boolean values.
@@ -267,17 +241,13 @@ def maml_step(batch, inner_cost_fn, outer_cost_fn, variables, inner_grad_steps, 
     :param return_inner_v: Either 'first', 'all', or False. 'first' means the variables for the first task inner loop
                            will also be returned. variables for all tasks will be returned with 'all'. Default is False.
     :type return_inner_v: str, optional
-    :param num_tasks: Number of unique tasks to inner-loop optimize for during the meta step.
-                      This must be the leading size of the input batch. Determined from the input batch by default.
-    :type num_tasks: int, optional
     :return: The cost and the gradients with respect to the outer loop variables.
     """
-    if num_tasks is None:
-        num_tasks = batch.shape[0]
     unique_outer = outer_v is not None
-    return ivy.execute_with_gradients(lambda v: _train_tasks(
-        batch, inner_sub_batch_fn, outer_sub_batch_fn, inner_cost_fn, outer_cost_fn,
-        variables.set_at_key_chains(v) if unique_outer else v, num_tasks, inner_grad_steps, inner_learning_rate,
+    cost, grads, *rets = ivy.execute_with_gradients(lambda v: _train_tasks(
+        batch, inner_batch_fn, outer_batch_fn, inner_cost_fn, outer_cost_fn,
+        variables.set_at_key_chains(v) if unique_outer else v, inner_grad_steps, inner_learning_rate,
         inner_optimization_step, 2, average_across_steps, inner_v, keep_inner_v, outer_v, keep_outer_v, return_inner_v),
         variables.at_key_chains(outer_v, ignore_none=True)
         if keep_outer_v else variables.prune_key_chains(outer_v, ignore_none=True))
+    return cost, grads.reduce_mean(0), *rets
