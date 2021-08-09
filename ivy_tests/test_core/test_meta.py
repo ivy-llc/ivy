@@ -37,23 +37,29 @@ def test_fomaml_step_unique_vars(dev_str, call, inner_grad_steps, with_outer_cos
     inner_learning_rate = 1e-2
 
     # create variables
-    variables = ivy.Container({'latent': ivy.variable(ivy.array([0.])),
-                               'weight': ivy.variable(ivy.array([1.]))})
+    variables = ivy.Container({'latent': ivy.variable(ivy.repeat(ivy.array([0.]), num_tasks, 0)),
+                               'weight': ivy.variable(ivy.repeat(ivy.array([1.]), num_tasks, 0))})
 
     # batch
     batch = ivy.Container({'x': ivy.arange(num_tasks+1, 1, dtype_str='float32')})
 
     # inner cost function
-    def inner_cost_fn(sub_batch_in, v):
-        return -(sub_batch_in['x'] * v['latent'] * v['weight'])[0]
+    def inner_cost_fn(batch_in, v):
+        cost = 0
+        for sub_batch_in, sub_v in zip(batch_in.unstack(0, keepdims=True), v.unstack(0, keepdims=True)):
+            cost = cost - (sub_batch_in['x'] * sub_v['latent'] * sub_v['weight'])[0]
+        return cost
 
     # outer cost function
-    def outer_cost_fn(sub_batch_in, v):
-        return (sub_batch_in['x'] * v['latent'] * v['weight'])[0]
+    def outer_cost_fn(batch_in, v):
+        cost = 0
+        for sub_batch_in, sub_v in zip(batch_in.unstack(0, keepdims=True), v.unstack(0, keepdims=True)):
+            cost = cost + (sub_batch_in['x'] * sub_v['latent'] * sub_v['weight'])[0]
+        return cost
 
     # numpy
-    weight_np = ivy.to_numpy(variables.weight)
-    latent_np = ivy.to_numpy(variables.latent)
+    weight_np = ivy.to_numpy(variables.weight[0:1])
+    latent_np = ivy.to_numpy(variables.latent[0:1])
     batch_np = batch.map(lambda x, kc: ivy.to_numpy(x))
 
     # true gradient
@@ -102,21 +108,27 @@ def test_fomaml_step_shared_vars(dev_str, call, inner_grad_steps, with_outer_cos
     inner_learning_rate = 1e-2
 
     # create variable
-    variables = ivy.Container({'latent': ivy.variable(ivy.array([1.]))})
+    variables = ivy.Container({'latent': ivy.variable(ivy.repeat(ivy.array([1.]), num_tasks, 0))})
 
     # batch
     batch = ivy.Container({'x': ivy.arange(num_tasks+1, 1, dtype_str='float32')})
 
     # inner cost function
-    def inner_cost_fn(sub_batch_in, v):
-        return -(sub_batch_in['x'] * v['latent'] ** 2)[0]
+    def inner_cost_fn(batch_in, v):
+        cost = 0
+        for sub_batch_in, sub_v in zip(batch_in.unstack(0, keepdims=True), v.unstack(0, keepdims=True)):
+            cost = cost - (sub_batch_in['x'] * sub_v['latent'] ** 2)[0]
+        return cost
 
     # outer cost function
-    def outer_cost_fn(sub_batch_in, v):
-        return (sub_batch_in['x'] * v['latent'] ** 2)[0]
+    def outer_cost_fn(batch_in, v):
+        cost = 0
+        for sub_batch_in, sub_v in zip(batch_in.unstack(0, keepdims=True), v.unstack(0, keepdims=True)):
+            cost = cost + (sub_batch_in['x'] * sub_v['latent'] ** 2)[0]
+        return cost
 
     # numpy
-    latent_np = ivy.to_numpy(variables.latent)
+    latent_np = ivy.to_numpy(variables.latent[0:1])
     batch_np = batch.map(lambda x, kc: ivy.to_numpy(x))
 
     # loss grad function
@@ -184,23 +196,29 @@ def test_fomaml_step_overlapping_vars(dev_str, call, inner_grad_steps, with_oute
     inner_learning_rate = 1e-2
 
     # create variables
-    variables = ivy.Container({'latent': ivy.variable(ivy.array([0.])),
-                               'weight': ivy.variable(ivy.array([1.]))})
+    variables = ivy.Container({'latent': ivy.variable(ivy.repeat(ivy.array([0.]), num_tasks, 0)),
+                               'weight': ivy.variable(ivy.repeat(ivy.array([1.]), num_tasks, 0))})
 
     # batch
     batch = ivy.Container({'x': ivy.arange(num_tasks+1, 1, dtype_str='float32')})
 
     # inner cost function
-    def inner_cost_fn(sub_batch_in, v):
-        return -(sub_batch_in['x'] * v['latent'] * v['weight'])[0]
+    def inner_cost_fn(batch_in, v):
+        cost = 0
+        for sub_batch_in, sub_v in zip(batch_in.unstack(0, keepdims=True), v.unstack(0, keepdims=True)):
+            cost = cost - (sub_batch_in['x'] * sub_v['latent'] * sub_v['weight'])[0]
+        return cost
 
     # outer cost function
-    def outer_cost_fn(sub_batch_in, v):
-        return (sub_batch_in['x'] * v['latent'] * v['weight'])[0]
+    def outer_cost_fn(batch_in, v):
+        cost = 0
+        for sub_batch_in, sub_v in zip(batch_in.unstack(0, keepdims=True), v.unstack(0, keepdims=True)):
+            cost = cost + (sub_batch_in['x'] * sub_v['latent'] * sub_v['weight'])[0]
+        return cost
 
     # numpy
-    latent_np = ivy.to_numpy(variables.latent)
-    weight_np = ivy.to_numpy(variables.weight)
+    latent_np = ivy.to_numpy(variables.latent[0:1])
+    weight_np = ivy.to_numpy(variables.weight[0:1])
     batch_np = batch.map(lambda x, kc: ivy.to_numpy(x))
 
     # true gradient
@@ -248,17 +266,20 @@ def test_reptile_step(dev_str, call, inner_grad_steps, num_tasks, return_inner_v
     inner_learning_rate = 1e-2
 
     # create variable
-    variables = ivy.Container({'latent': ivy.variable(ivy.array([1.]))})
+    variables = ivy.Container({'latent': ivy.variable(ivy.repeat(ivy.array([1.]), num_tasks, 0))})
 
     # batch
     batch = ivy.Container({'x': ivy.arange(num_tasks+1, 1, dtype_str='float32')})
 
     # inner cost function
-    def inner_cost_fn(sub_batch_in, v):
-        return -(sub_batch_in['x'] * v['latent'] ** 2)[0]
+    def inner_cost_fn(batch_in, v):
+        cost = 0
+        for sub_batch_in, sub_v in zip(batch_in.unstack(0, keepdims=True), v.unstack(0, keepdims=True)):
+            cost = cost - (sub_batch_in['x'] * sub_v['latent'] ** 2)[0]
+        return cost
 
     # numpy
-    latent_np = ivy.to_numpy(variables.latent)
+    latent_np = ivy.to_numpy(variables.latent[0:1])
     batch_np = batch.map(lambda x, kc: ivy.to_numpy(x))
 
     # loss grad function
@@ -310,6 +331,9 @@ def test_reptile_step(dev_str, call, inner_grad_steps, num_tasks, return_inner_v
 def test_maml_step_unique_vars(dev_str, call, inner_grad_steps, with_outer_cost_fn, average_across_steps, num_tasks,
                                return_inner_v):
 
+    if call in [helpers.tf_call, helpers.tf_graph_call]:
+        pytest.skip()
+
     if call in [helpers.np_call, helpers.jnp_call, helpers.mx_call]:
         # Numpy does not support gradients, jax does not support gradients on custom nested classes,
         # and mxnet does not support only_inputs argument to mx.autograd.grad
@@ -319,23 +343,29 @@ def test_maml_step_unique_vars(dev_str, call, inner_grad_steps, with_outer_cost_
     inner_learning_rate = 1e-2
 
     # create variables
-    variables = ivy.Container({'latent': ivy.variable(ivy.array([0.])),
-                               'weight': ivy.variable(ivy.array([1.]))})
+    variables = ivy.Container({'latent': ivy.variable(ivy.repeat(ivy.array([0.]), num_tasks, 0)),
+                               'weight': ivy.variable(ivy.repeat(ivy.array([1.]), num_tasks, 0))})
 
     # batch
     batch = ivy.Container({'x': ivy.arange(num_tasks+1, 1, dtype_str='float32')})
 
     # inner cost function
-    def inner_cost_fn(sub_batch_in, v):
-        return -(sub_batch_in['x'] * v['latent'] * v['weight'])[0]
+    def inner_cost_fn(batch_in, v):
+        cost = 0
+        for sub_batch_in, sub_v in zip(batch_in.unstack(0, keepdims=True), v.unstack(0, keepdims=True)):
+            cost = cost - (sub_batch_in['x'] * sub_v['latent'] * sub_v['weight'])[0]
+        return cost
 
     # outer cost function
-    def outer_cost_fn(sub_batch_in, v):
-        return (sub_batch_in['x'] * v['latent'] * v['weight'])[0]
+    def outer_cost_fn(batch_in, v):
+        cost = 0
+        for sub_batch_in, sub_v in zip(batch_in.unstack(0, keepdims=True), v.unstack(0, keepdims=True)):
+            cost = cost + (sub_batch_in['x'] * sub_v['latent'] * sub_v['weight'])[0]
+        return cost
 
     # numpy
-    weight_np = ivy.to_numpy(variables.weight)
-    latent_np = ivy.to_numpy(variables.latent)
+    weight_np = ivy.to_numpy(variables.weight[0:1])
+    latent_np = ivy.to_numpy(variables.latent[0:1])
     batch_np = batch.map(lambda x, kc: ivy.to_numpy(x))
 
     # true gradient
@@ -384,18 +414,24 @@ def test_maml_step_shared_vars(dev_str, call, inner_grad_steps, with_outer_cost_
     inner_learning_rate = 1e-2
 
     # create variable
-    variables = ivy.Container({'latent': ivy.variable(ivy.array([1.]))})
+    variables = ivy.Container({'latent': ivy.variable(ivy.repeat(ivy.array([1.]), num_tasks, 0))})
 
     # batch
     batch = ivy.Container({'x': ivy.arange(num_tasks+1, 1, dtype_str='float32')})
 
     # inner cost function
-    def inner_cost_fn(sub_batch_in, v):
-        return -(sub_batch_in['x'] * v['latent'] ** 2)[0]
+    def inner_cost_fn(batch_in, v):
+        cost = 0
+        for sub_batch_in, sub_v in zip(batch_in.unstack(0, keepdims=True), v.unstack(0, keepdims=True)):
+            cost = cost - (sub_batch_in['x'] * sub_v['latent'] ** 2)[0]
+        return cost
 
     # outer cost function
-    def outer_cost_fn(sub_batch_in, v):
-        return (sub_batch_in['x'] * v['latent'] ** 2)[0]
+    def outer_cost_fn(batch_in, v):
+        cost = 0
+        for sub_batch_in, sub_v in zip(batch_in.unstack(0, keepdims=True), v.unstack(0, keepdims=True)):
+            cost = cost + (sub_batch_in['x'] * sub_v['latent'] ** 2)[0]
+        return cost
 
     # numpy
     variables_np = variables.map(lambda x, kc: ivy.to_numpy(x))
@@ -483,19 +519,25 @@ def test_maml_step_overlapping_vars(dev_str, call, inner_grad_steps, with_outer_
     inner_learning_rate = 1e-2
 
     # create variables
-    variables = ivy.Container({'latent': ivy.variable(ivy.array([0.])),
-                               'weight': ivy.variable(ivy.array([1.]))})
+    variables = ivy.Container({'latent': ivy.variable(ivy.repeat(ivy.array([0.]), num_tasks, 0)),
+                               'weight': ivy.variable(ivy.repeat(ivy.array([1.]), num_tasks, 0))})
 
     # batch
     batch = ivy.Container({'x': ivy.arange(num_tasks+1, 1, dtype_str='float32')})
 
     # inner cost function
-    def inner_cost_fn(sub_batch_in, v):
-        return -(sub_batch_in['x'] * v['latent'] * v['weight'])[0]
+    def inner_cost_fn(batch_in, v):
+        cost = 0
+        for sub_batch_in, sub_v in zip(batch_in.unstack(0, keepdims=True), v.unstack(0, keepdims=True)):
+            cost = cost - (sub_batch_in['x'] * sub_v['latent'] * sub_v['weight'])[0]
+        return cost
 
     # outer cost function
-    def outer_cost_fn(sub_batch_in, v):
-        return (sub_batch_in['x'] * v['latent'] * v['weight'])[0]
+    def outer_cost_fn(batch_in, v):
+        cost = 0
+        for sub_batch_in, sub_v in zip(batch_in.unstack(0, keepdims=True), v.unstack(0, keepdims=True)):
+            cost = cost + (sub_batch_in['x'] * sub_v['latent'] * sub_v['weight'])[0]
+        return cost
 
     # numpy
     latent_np = ivy.to_numpy(variables.latent)
