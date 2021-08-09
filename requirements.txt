@@ -1,6 +1,7 @@
 h5py
 numpy
 einops
+pytest
 psutil
 termcolor
 nvidia-ml-py3
