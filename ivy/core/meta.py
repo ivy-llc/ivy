@@ -10,13 +10,13 @@ def _compute_cost_and_update_grads(cost_fn, order, sub_batch, variables, outer_v
                                    average_across_steps_or_final, all_grads, unique_outer):
     if order == 1:
         cost, inner_grads = ivy.execute_with_gradients(
-            lambda v: cost_fn(sub_batch, variables.set_at_key_chains(v) if unique_outer else v),
+            lambda v: cost_fn(sub_batch, v=variables.set_at_key_chains(v) if unique_outer else v),
             variables.at_key_chains(outer_v, ignore_none=True) if keep_outer_v else
             variables.prune_key_chains(outer_v, ignore_none=True), retain_grads=False)
         if average_across_steps_or_final:
             all_grads.append(inner_grads)
     else:
-        cost = cost_fn(sub_batch, variables)
+        cost = cost_fn(sub_batch, v=variables)
     return cost
 
 
@@ -37,7 +37,7 @@ def _train_task(inner_sub_batch, outer_sub_batch, inner_cost_fn, outer_cost_fn, 
 
         # compute inner gradient for update the inner variables
         cost, inner_update_grads = ivy.execute_with_gradients(
-            lambda v: inner_cost_fn(inner_sub_batch, variables.set_at_key_chains(v) if unique_inner else v),
+            lambda v: inner_cost_fn(inner_sub_batch, v=variables.set_at_key_chains(v) if unique_inner else v),
             variables.at_key_chains(inner_v, ignore_none=True) if keep_innver_v else
             variables.prune_key_chains(inner_v, ignore_none=True), retain_grads=order > 1)
 

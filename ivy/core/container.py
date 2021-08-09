@@ -25,6 +25,7 @@ from operator import floordiv as _floordiv
 
 # local
 import ivy as _ivy
+import numpy as np
 
 
 def _is_jsonable(x):
@@ -82,7 +83,7 @@ class Container(dict):
             return Container(return_dict)
         else:
             return [item for sublist in containers for item in sublist]
-    
+
     @staticmethod
     def list_stack(containers, dim):
         """
@@ -270,7 +271,8 @@ class Container(dict):
 
     def _get_shape(self):
         sub_shapes =\
-            [v for k, v in self.map(lambda x, kc: list(x.shape) if _ivy.is_array(x) else None).to_iterator() if v]
+            [v for k, v in self.map(lambda x, kc: list(x.shape) if _ivy.is_array(x)
+                else ([len(x)] if isinstance(x, (list, tuple)) else None)).to_iterator() if v]
         min_num_dims = min([len(sub_shape) for sub_shape in sub_shapes])
         sub_shapes_array = _np.asarray([sub_shape[0:min_num_dims] for sub_shape in sub_shapes])
         mask = _np.prod(sub_shapes_array / sub_shapes_array[0:1], 0) == 1
