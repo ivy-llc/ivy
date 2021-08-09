@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>array &mdash; Ivy 1.0 documentation</title>
+  <title>split_func_call_across_gpus &mdash; Ivy 1.0 documentation</title>
   
 
   
@@ -36,8 +36,8 @@
   <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="is_array" href="is_array.html" />
-    <link rel="prev" title="General" href="../general.html" /> 
+    <link rel="next" title="cache_fn" href="cache_fn.html" />
+    <link rel="prev" title="split_func_call" href="split_func_call.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -91,7 +91,7 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../container.html">Container</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../general.html">General</a><ul class="current">
-<li class="toctree-l2 current"><a class="current reference internal" href="#">array</a></li>
+<li class="toctree-l2"><a class="reference internal" href="array.html">array</a></li>
 <li class="toctree-l2"><a class="reference internal" href="is_array.html">is_array</a></li>
 <li class="toctree-l2"><a class="reference internal" href="to_numpy.html">to_numpy</a></li>
 <li class="toctree-l2"><a class="reference internal" href="to_scalar.html">to_scalar</a></li>
@@ -164,7 +164,7 @@
 <li class="toctree-l2"><a class="reference internal" href="dtype_str.html">dtype_str</a></li>
 <li class="toctree-l2"><a class="reference internal" href="compile_fn.html">compile_fn</a></li>
 <li class="toctree-l2"><a class="reference internal" href="split_func_call.html">split_func_call</a></li>
-<li class="toctree-l2"><a class="reference internal" href="split_func_call_across_gpus.html">split_func_call_across_gpus</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">split_func_call_across_gpus</a></li>
 <li class="toctree-l2"><a class="reference internal" href="cache_fn.html">cache_fn</a></li>
 </ul>
 </li>
@@ -249,13 +249,13 @@
         
           <li><a href="../general.html">General</a> &raquo;</li>
         
-      <li>array</li>
+      <li>split_func_call_across_gpus</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="../../_sources/core/general/array.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../_sources/core/general/split_func_call_across_gpus.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -268,26 +268,24 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="array">
-<h1>array<a class="headerlink" href="#array" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="split-func-call-across-gpus">
+<h1>split_func_call_across_gpus<a class="headerlink" href="#split-func-call-across-gpus" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
-<dt id="ivy.core.general.array">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">array</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">object_in</span></em>, <em class="sig-param"><span class="n">dtype_str</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">dev_str</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">f</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/general.html#array"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.array" title="Permalink to this definition">¶</a></dt>
-<dd><p>Creates an array.</p>
+<dt id="ivy.core.general.split_func_call_across_gpus">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">split_func_call_across_gpus</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">func</span></em>, <em class="sig-param"><span class="n">inputs</span></em>, <em class="sig-param"><span class="n">dev_strs</span></em>, <em class="sig-param"><span class="n">input_axes</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">output_axes</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/general.html#split_func_call_across_gpus"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.split_func_call_across_gpus" title="Permalink to this definition">¶</a></dt>
+<dd><p>Call a function by splitting its inputs along a given axis, and calling each chunk on a different device.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>object_in</strong> (<em>array</em>) – An array_like object, which exposes the array interface,
-an object whose __array__ method returns an array, or any (nested) sequence.</p></li>
-<li><p><strong>dtype_str</strong> (<em>data-type string</em><em>, </em><em>optional</em>) – The desired data-type for the array in string format, i.e. ‘float32’ or ‘int64’.
-If not given, then the type will be determined as the minimum type required to hold the objects in the
-sequence.</p></li>
-<li><p><strong>dev_str</strong> (<em>str</em>) – device string on which to create the array ‘cuda:0’, ‘cuda:1’, ‘cpu’ etc..</p></li>
-<li><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning framework. Inferred from inputs if None.</p></li>
+<li><p><strong>func</strong> (<em>callable</em>) – The function to be called.</p></li>
+<li><p><strong>inputs</strong> (<em>sequence of arrays</em>) – A list of inputs to pass into the function.</p></li>
+<li><p><strong>dev_strs</strong> (<em>int sequence of ints</em><em> or </em><em>sequence of strs</em>) – The gpu device strings, in the format “gpu:idx”.</p></li>
+<li><p><strong>input_axes</strong> (<em>int</em><em> or </em><em>sequence of ints</em><em>, </em><em>optional</em>) – The axes along which to split each of the inputs, before passing to the function. Default is 0.</p></li>
+<li><p><strong>output_axes</strong> (<em>int</em><em> or </em><em>sequence of ints</em><em>, </em><em>optional</em>) – The axes along which to concat each of the returned outputs. Default is same as fist input axis.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>An array object satisfying the specified requirements, in the form of the selected framework.</p>
+<dd class="field-even"><p>The return from the function, following input splitting and re-concattenation across devices.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -307,10 +305,10 @@ sequence.</p></li>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="is_array.html" class="btn btn-neutral float-right" title="is_array" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="cache_fn.html" class="btn btn-neutral float-right" title="cache_fn" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="../general.html" class="btn btn-neutral float-left" title="General" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="split_func_call.html" class="btn btn-neutral float-left" title="split_func_call" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
