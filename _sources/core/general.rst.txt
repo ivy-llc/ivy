@@ -85,5 +85,6 @@ General
    general/dtype_str.rst
    general/compile_fn.rst
    general/split_func_call.rst
+   general/split_func_call_across_gpus.rst
    general/cache_fn.rst
 

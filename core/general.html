@@ -164,6 +164,7 @@
 <li class="toctree-l2"><a class="reference internal" href="general/dtype_str.html">dtype_str</a></li>
 <li class="toctree-l2"><a class="reference internal" href="general/compile_fn.html">compile_fn</a></li>
 <li class="toctree-l2"><a class="reference internal" href="general/split_func_call.html">split_func_call</a></li>
+<li class="toctree-l2"><a class="reference internal" href="general/split_func_call_across_gpus.html">split_func_call_across_gpus</a></li>
 <li class="toctree-l2"><a class="reference internal" href="general/cache_fn.html">cache_fn</a></li>
 </ul>
 </li>
@@ -1354,6 +1355,26 @@ the entire input array at once. This can be useful to reduce memory usage of the
 </dd></dl>
 
 <dl class="py function">
+<dt id="ivy.core.general.split_func_call_across_gpus">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">split_func_call_across_gpus</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">func</span></em>, <em class="sig-param"><span class="n">inputs</span></em>, <em class="sig-param"><span class="n">dev_strs</span></em>, <em class="sig-param"><span class="n">input_axes</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">output_axes</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#split_func_call_across_gpus"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.split_func_call_across_gpus" title="Permalink to this definition">¶</a></dt>
+<dd><p>Call a function by splitting its inputs along a given axis, and calling each chunk on a different device.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>func</strong> (<em>callable</em>) – The function to be called.</p></li>
+<li><p><strong>inputs</strong> (<em>sequence of arrays</em>) – A list of inputs to pass into the function.</p></li>
+<li><p><strong>dev_strs</strong> (<em>int sequence of ints</em><em> or </em><em>sequence of strs</em>) – The gpu device strings, in the format “gpu:idx”.</p></li>
+<li><p><strong>input_axes</strong> (<em>int</em><em> or </em><em>sequence of ints</em><em>, </em><em>optional</em>) – The axes along which to split each of the inputs, before passing to the function. Default is 0.</p></li>
+<li><p><strong>output_axes</strong> (<em>int</em><em> or </em><em>sequence of ints</em><em>, </em><em>optional</em>) – The axes along which to concat each of the returned outputs. Default is same as fist input axis.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The return from the function, following input splitting and re-concattenation across devices.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt id="ivy.core.general.squeeze">
 <code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">squeeze</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">f</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#squeeze"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.squeeze" title="Permalink to this definition">¶</a></dt>
 <dd><p>Removes a single-dimensional entry from the shape of an array.</p>
@@ -1721,6 +1742,7 @@ If not given, then the type of the original array is used.</p></li>
 <li class="toctree-l1"><a class="reference internal" href="general/dtype_str.html">dtype_str</a></li>
 <li class="toctree-l1"><a class="reference internal" href="general/compile_fn.html">compile_fn</a></li>
 <li class="toctree-l1"><a class="reference internal" href="general/split_func_call.html">split_func_call</a></li>
+<li class="toctree-l1"><a class="reference internal" href="general/split_func_call_across_gpus.html">split_func_call_across_gpus</a></li>
 <li class="toctree-l1"><a class="reference internal" href="general/cache_fn.html">cache_fn</a></li>
 </ul>
 </div>
