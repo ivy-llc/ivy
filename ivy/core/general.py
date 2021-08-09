@@ -867,7 +867,8 @@ def identity(n, dtype_str='float32', batch_shape=None, dev_str=None, f=None):
 
     :param n: Number of rows (and columns) in n x n output.
     :type n: int
-    :param dtype_str: The desired data-type for the array in string format, i.e. 'float32' or 'int64'. Default is 'float32'.
+    :param dtype_str: The desired data-type for the array in string format, i.e. 'float32' or 'int64'.
+                      Default is 'float32'.
     :type dtype_str: data-type string, optional
     :param batch_shape: Shape of batch. Inferred from inputs if None.
     :type batch_shape: sequence of ints, optional
@@ -1031,6 +1032,7 @@ def dev(x, f=None):
     return _get_framework(x, f=f).dev(x)
 
 
+# noinspection PyShadowingNames
 def to_dev(x, dev_str=None, f=None):
     """
     Move the input array x to the desired device, specified by device string.
@@ -1059,6 +1061,7 @@ def dev_to_str(dev_in, f=None):
     return _get_framework(None, f=f).dev_to_str(dev_in)
 
 
+# noinspection PyShadowingNames
 def str_to_dev(dev_str, f=None):
     """
     Convert device string representation to native device type.
@@ -1085,6 +1088,7 @@ def dev_str(x, f=None):
     return _get_framework(x, f=f).dev_str(x)
 
 
+# noinspection PyShadowingNames
 def memory_on_dev(dev_str):
     """
     Get the total amount of memory for a given device string. In case of CPU, the total RAM is returned.
