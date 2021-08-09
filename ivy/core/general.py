@@ -1242,7 +1242,7 @@ def split_func_call(func, inputs, chunk_size, input_axes=0, output_axes=None):
             for i in range(num_outputs)]
 
 
-def split_func_call_across_gpus(func, inputs, dev_strs, input_axes=0, output_axes=None):
+def split_func_call_across_gpus(func, inputs, dev_strs, input_axes=0, output_axes=None, concat_output=False):
     """
     Call a function by splitting its inputs along a given axis, and calling each chunk on a different device.
 
@@ -1256,6 +1256,8 @@ def split_func_call_across_gpus(func, inputs, dev_strs, input_axes=0, output_axe
     :type input_axes: int or sequence of ints, optional
     :param output_axes: The axes along which to concat each of the returned outputs. Default is same as fist input axis.
     :type output_axes: int or sequence of ints, optional
+    :param concat_output: Whether to concatenate each return values into a single array. Default is False.
+    :type concat_output: bool, optional
     :return: The return from the function, following input splitting and re-concattenation across devices.
     """
     if isinstance(input_axes, int):
@@ -1277,18 +1279,41 @@ def split_func_call_across_gpus(func, inputs, dev_strs, input_axes=0, output_axe
         chunk_sizes[i] += np.sign(total_diff)
     inputs_split = [ivy.split(inp, chunk_sizes, input_axes[i], True) if ivy.is_array(inp)
                     else inp.split(chunk_sizes, input_axes[i], True) for i, inp in enumerate(inputs)]
-    rets = [[ivy.to_dev(ret, start_dev) if ivy.is_array(ret) else ret.to_dev(start_dev)
-             for ret in func(*[ivy.to_dev(i, d_str) if ivy.is_array(i) else i.to_dev(d_str)
-                               for i, d_str in zip(inp, dev_strs)])]
-            for inp in zip(*inputs_split)]
+    inputs_split_to_devs = [[ivy.to_dev(inp, d_str) if ivy.is_array(inp) else inp.to_dev(d_str)
+                             for inp, d_str in zip(inps, dev_strs)] for inps in inputs_split]
+    rets = [func(*inps, dev_str=dev_strs[i]) for i, inps in enumerate(zip(*inputs_split_to_devs))]
+    # ToDo: make the line below more readable, there is a lot going on
+    rets = [[ivy.to_dev(ret, start_dev) if ivy.is_array(ret) else
+             (ret.to_dev(start_dev) if isinstance(ret, ivy.Container) else
+              ([ivy.to_dev(r, start_dev) if ivy.is_array(r) else r.to_dev(start_dev)
+                for r in ret] if isinstance(ret, (list, tuple)) else ret)) for ret in rts] for rts in rets]
     num_outputs = len(rets[0])
+    if not concat_output:
+        return [[r[i] for r in rets] for i in range(num_outputs)]
     if output_axes is None:
         output_axes = [input_axes[0]] * num_outputs
     elif isinstance(output_axes, int):
         output_axes = [output_axes] * num_outputs
-    return [ivy.concatenate([r[i] for r in rets], output_axes[i]) if ivy.is_array(rets[0][i])
-            else ivy.Container.concat([r[i] for r in rets], output_axes[i])
-            for i in range(num_outputs)]
+    returns = list()
+    ret0 = rets[0]
+    # ToDo: possibly make this cleaner using list comprehension or recursion
+    for i in range(num_outputs):
+        if ivy.is_array(ret0[i]):
+            returns.append(ivy.concatenate([r[i] for r in rets], output_axes[i]))
+        elif isinstance(ret0[i], ivy.Container):
+            returns.append(ivy.Container.concat([r[i] for r in rets], output_axes[i]))
+        elif isinstance(ret0[i], (tuple, list)):
+            ret0i_len = len(ret0[i])
+            if ivy.is_array(ret0[i][0]):
+                returns.append([ivy.concatenate([r[i][j] for r in rets], output_axes[i]) for j in range(ret0i_len)])
+            elif isinstance(ret0[i][0], ivy.Container):
+                returns.append([ivy.Container.concat([r[i][j] for r in rets], output_axes[i])
+                                for j in range(ret0i_len)])
+            else:
+                returns.append([r[i] for r in rets])
+        else:
+            returns.append([r[i] for r in rets])
+    return returns
 
 
 def cache_fn(func):

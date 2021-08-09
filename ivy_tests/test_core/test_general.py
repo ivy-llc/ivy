@@ -2106,11 +2106,12 @@ def test_split_func_call_across_gpus(x0, x1, chunk_size, axis, tensor_fn, dev_st
     in1 = tensor_fn(x1, 'float32', dev_str)
 
     # function
-    def func(t0, t1):
+    # noinspection PyShadowingNames
+    def func(t0, t1, dev_str=None):
         return t0 * t1, t0 - t1, t1 - t0
 
     # predictions
-    a, b, c = ivy.split_func_call_across_gpus(func, [in0, in1], ["cpu:0", "cpu:0"], axis)
+    a, b, c = ivy.split_func_call_across_gpus(func, [in0, in1], ["cpu:0", "cpu:0"], axis, concat_output=True)
 
     # true
     a_true, b_true, c_true = func(in0, in1)
@@ -2144,11 +2145,12 @@ def test_split_func_call_across_gpus_with_cont_input(x0, x1, chunk_size, axis, t
     in1 = ivy.Container(cont_key=tensor_fn(x1, 'float32', dev_str))
 
     # function
-    def func(t0, t1):
+    # noinspection PyShadowingNames
+    def func(t0, t1, dev_str=None):
         return t0 * t1, t0 - t1, t1 - t0
 
     # predictions
-    a, b, c = ivy.split_func_call_across_gpus(func, [in0, in1], ["cpu:0", "cpu:0"], axis)
+    a, b, c = ivy.split_func_call_across_gpus(func, [in0, in1], ["cpu:0", "cpu:0"], axis, concat_output=True)
 
     # true
     a_true, b_true, c_true = func(in0, in1)
