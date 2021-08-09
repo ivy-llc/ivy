@@ -198,7 +198,7 @@
 <span id="meta"></span><h1>Meta<a class="headerlink" href="#module-ivy.core.meta" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
 <dt id="ivy.core.meta.fomaml_step">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">fomaml_step</code><span class="sig-paren">(</span><em class="sig-param">batch</em>, <em class="sig-param">inner_cost_fn</em>, <em class="sig-param">outer_cost_fn</em>, <em class="sig-param">variables</em>, <em class="sig-param">inner_grad_steps</em>, <em class="sig-param">inner_learning_rate</em>, <em class="sig-param">inner_optimization_step=&lt;function gradient_descent_update&gt;</em>, <em class="sig-param">inner_sub_batch_fn=None</em>, <em class="sig-param">outer_sub_batch_fn=None</em>, <em class="sig-param">average_across_steps=False</em>, <em class="sig-param">inner_v=None</em>, <em class="sig-param">keep_inner_v=True</em>, <em class="sig-param">outer_v=None</em>, <em class="sig-param">keep_outer_v=True</em>, <em class="sig-param">return_inner_v=False</em>, <em class="sig-param">num_tasks=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/meta.html#fomaml_step"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.meta.fomaml_step" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">fomaml_step</code><span class="sig-paren">(</span><em class="sig-param">batch</em>, <em class="sig-param">inner_cost_fn</em>, <em class="sig-param">outer_cost_fn</em>, <em class="sig-param">variables</em>, <em class="sig-param">inner_grad_steps</em>, <em class="sig-param">inner_learning_rate</em>, <em class="sig-param">inner_optimization_step=&lt;function gradient_descent_update&gt;</em>, <em class="sig-param">inner_batch_fn=None</em>, <em class="sig-param">outer_batch_fn=None</em>, <em class="sig-param">average_across_steps=False</em>, <em class="sig-param">inner_v=None</em>, <em class="sig-param">keep_inner_v=True</em>, <em class="sig-param">outer_v=None</em>, <em class="sig-param">keep_outer_v=True</em>, <em class="sig-param">return_inner_v=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/meta.html#fomaml_step"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.meta.fomaml_step" title="Permalink to this definition">¶</a></dt>
 <dd><p>Perform step of first order MAML.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -214,9 +214,9 @@ optimized in the outer loop.</p></li>
 <li><p><strong>inner_learning_rate</strong> (<em>float</em>) – The learning rate of the inner loop.</p></li>
 <li><p><strong>inner_optimization_step</strong> (<em>callable</em><em>, </em><em>optional</em>) – The function used for the inner loop optimization.
 Default is ivy.gradient_descent_update.</p></li>
-<li><p><strong>inner_sub_batch_fn</strong> (<em>callable</em><em>, </em><em>optional</em>) – Function to apply to the task sub-batch, before passing to the inner_cost_fn.
+<li><p><strong>inner_batch_fn</strong> (<em>callable</em><em>, </em><em>optional</em>) – Function to apply to the task sub-batch, before passing to the inner_cost_fn.
 Default is None.</p></li>
-<li><p><strong>outer_sub_batch_fn</strong> (<em>callable</em><em>, </em><em>optional</em>) – Function to apply to the task sub-batch, before passing to the outer_cost_fn.
+<li><p><strong>outer_batch_fn</strong> (<em>callable</em><em>, </em><em>optional</em>) – Function to apply to the task sub-batch, before passing to the outer_cost_fn.
 Default is None.</p></li>
 <li><p><strong>average_across_steps</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to average the inner loop steps for the outer loop update. Default is False.</p></li>
 <li><p><strong>inner_v</strong> (<em>dict str</em><em> or </em><em>list</em><em>, </em><em>optional</em>) – Nested variable keys to be optimized during the inner loop, with same keys and boolean values.</p></li>
@@ -227,8 +227,6 @@ Default is True.</p></li>
 Default is True.</p></li>
 <li><p><strong>return_inner_v</strong> (<em>str</em><em>, </em><em>optional</em>) – Either ‘first’, ‘all’, or False. ‘first’ means the variables for the first task inner loop
 will also be returned. variables for all tasks will be returned with ‘all’. Default is False.</p></li>
-<li><p><strong>num_tasks</strong> (<em>int</em><em>, </em><em>optional</em>) – Number of unique tasks to inner-loop optimize for during the meta step.
-This must be the leading size of the input batch. Determined from the input batch by default.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -239,7 +237,7 @@ This must be the leading size of the input batch. Determined from the input batc
 
 <dl class="py function">
 <dt id="ivy.core.meta.maml_step">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">maml_step</code><span class="sig-paren">(</span><em class="sig-param">batch</em>, <em class="sig-param">inner_cost_fn</em>, <em class="sig-param">outer_cost_fn</em>, <em class="sig-param">variables</em>, <em class="sig-param">inner_grad_steps</em>, <em class="sig-param">inner_learning_rate</em>, <em class="sig-param">inner_optimization_step=&lt;function gradient_descent_update&gt;</em>, <em class="sig-param">inner_sub_batch_fn=None</em>, <em class="sig-param">outer_sub_batch_fn=None</em>, <em class="sig-param">average_across_steps=False</em>, <em class="sig-param">inner_v=None</em>, <em class="sig-param">keep_inner_v=True</em>, <em class="sig-param">outer_v=None</em>, <em class="sig-param">keep_outer_v=True</em>, <em class="sig-param">return_inner_v=False</em>, <em class="sig-param">num_tasks=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/meta.html#maml_step"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.meta.maml_step" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">maml_step</code><span class="sig-paren">(</span><em class="sig-param">batch</em>, <em class="sig-param">inner_cost_fn</em>, <em class="sig-param">outer_cost_fn</em>, <em class="sig-param">variables</em>, <em class="sig-param">inner_grad_steps</em>, <em class="sig-param">inner_learning_rate</em>, <em class="sig-param">inner_optimization_step=&lt;function gradient_descent_update&gt;</em>, <em class="sig-param">inner_batch_fn=None</em>, <em class="sig-param">outer_batch_fn=None</em>, <em class="sig-param">average_across_steps=False</em>, <em class="sig-param">inner_v=None</em>, <em class="sig-param">keep_inner_v=True</em>, <em class="sig-param">outer_v=None</em>, <em class="sig-param">keep_outer_v=True</em>, <em class="sig-param">return_inner_v=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/meta.html#maml_step"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.meta.maml_step" title="Permalink to this definition">¶</a></dt>
 <dd><p>Perform step of vanilla second order MAML.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -254,9 +252,9 @@ optimized in the outer loop.</p></li>
 <li><p><strong>inner_learning_rate</strong> (<em>float</em>) – The learning rate of the inner loop.</p></li>
 <li><p><strong>inner_optimization_step</strong> (<em>callable</em><em>, </em><em>optional</em>) – The function used for the inner loop optimization.
 Default is ivy.gradient_descent_update.</p></li>
-<li><p><strong>inner_sub_batch_fn</strong> (<em>callable</em><em>, </em><em>optional</em>) – Function to apply to the task sub-batch, before passing to the inner_cost_fn.
+<li><p><strong>inner_batch_fn</strong> (<em>callable</em><em>, </em><em>optional</em>) – Function to apply to the task sub-batch, before passing to the inner_cost_fn.
 Default is None.</p></li>
-<li><p><strong>outer_sub_batch_fn</strong> (<em>callable</em><em>, </em><em>optional</em>) – Function to apply to the task sub-batch, before passing to the outer_cost_fn.
+<li><p><strong>outer_batch_fn</strong> (<em>callable</em><em>, </em><em>optional</em>) – Function to apply to the task sub-batch, before passing to the outer_cost_fn.
 Default is None.</p></li>
 <li><p><strong>average_across_steps</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to average the inner loop steps for the outer loop update. Default is False.</p></li>
 <li><p><strong>inner_v</strong> (<em>dict str</em><em> or </em><em>list</em><em>, </em><em>optional</em>) – Nested variable keys to be optimized during the inner loop, with same keys and boolean values.</p></li>
@@ -267,8 +265,6 @@ Default is True.</p></li>
 Default is True.</p></li>
 <li><p><strong>return_inner_v</strong> (<em>str</em><em>, </em><em>optional</em>) – Either ‘first’, ‘all’, or False. ‘first’ means the variables for the first task inner loop
 will also be returned. variables for all tasks will be returned with ‘all’. Default is False.</p></li>
-<li><p><strong>num_tasks</strong> (<em>int</em><em>, </em><em>optional</em>) – Number of unique tasks to inner-loop optimize for during the meta step.
-This must be the leading size of the input batch. Determined from the input batch by default.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -279,7 +275,7 @@ This must be the leading size of the input batch. Determined from the input batc
 
 <dl class="py function">
 <dt id="ivy.core.meta.reptile_step">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">reptile_step</code><span class="sig-paren">(</span><em class="sig-param">batch</em>, <em class="sig-param">cost_fn</em>, <em class="sig-param">variables</em>, <em class="sig-param">inner_grad_steps</em>, <em class="sig-param">inner_learning_rate</em>, <em class="sig-param">inner_optimization_step=&lt;function gradient_descent_update&gt;</em>, <em class="sig-param">return_inner_v=False</em>, <em class="sig-param">num_tasks=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/meta.html#reptile_step"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.meta.reptile_step" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">reptile_step</code><span class="sig-paren">(</span><em class="sig-param">batch</em>, <em class="sig-param">cost_fn</em>, <em class="sig-param">variables</em>, <em class="sig-param">inner_grad_steps</em>, <em class="sig-param">inner_learning_rate</em>, <em class="sig-param">inner_optimization_step=&lt;function gradient_descent_update&gt;</em>, <em class="sig-param">return_inner_v=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/meta.html#reptile_step"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.meta.reptile_step" title="Permalink to this definition">¶</a></dt>
 <dd><p>Perform step of Reptile.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -293,8 +289,6 @@ This must be the leading size of the input batch. Determined from the input batc
 Default is ivy.gradient_descent_update.</p></li>
 <li><p><strong>return_inner_v</strong> (<em>str</em><em>, </em><em>optional</em>) – Either ‘first’, ‘all’, or False. ‘first’ means the variables for the first task inner loop
 will also be returned. variables for all tasks will be returned with ‘all’. Default is False.</p></li>
-<li><p><strong>num_tasks</strong> (<em>int</em><em>, </em><em>optional</em>) – Number of unique tasks to inner-loop optimize for during the meta step.
-This must be the leading size of the input batch. Determined from the input batch by default.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
