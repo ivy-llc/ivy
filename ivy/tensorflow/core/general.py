@@ -148,10 +148,13 @@ def flip(x, axis=None, batch_shape=None):
 stack = _tf.stack
 
 
-def unstack(x, axis):
+def unstack(x, axis, keepdims=False):
     if x.shape == ():
         return [x]
-    return _tf.unstack(x, axis=axis)
+    ret = _tf.unstack(x, axis=axis)
+    if keepdims:
+        return [_tf.expand_dims(r, axis) for r in ret]
+    return ret
 
 
 def split(x, num_or_size_splits=None, axis=0, with_remainder=False):
