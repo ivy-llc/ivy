@@ -283,7 +283,7 @@ def test_reptile_step(dev_str, call, inner_grad_steps, num_tasks, return_inner_v
     batch_np = batch.map(lambda x, kc: ivy.to_numpy(x))
 
     # loss grad function
-    def loss_grad_fn(sub_batch_in, w_in, outer=False):
+    def loss_grad_fn(sub_batch_in, w_in):
         return -2 * sub_batch_in['x'][0] * w_in
 
     # true gradient
