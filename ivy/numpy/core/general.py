@@ -142,12 +142,13 @@ def flip(x, axis=None, batch_shape=None):
 stack = _np.stack
 
 
-def unstack(x, axis):
+def unstack(x, axis, keepdims=False):
     if x.shape == ():
         return [x]
     x_split = _np.split(x, x.shape[axis], axis)
-    res = [_np.squeeze(item, axis) for item in x_split]
-    return res
+    if keepdims:
+        return x_split
+    return [_np.squeeze(item, axis) for item in x_split]
 
 
 def split(x, num_or_size_splits=None, axis=0, with_remainder=False):

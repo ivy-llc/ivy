@@ -209,11 +209,11 @@ def stack(xs, axis=0):
     return _mx.nd.stack(*xs, axis=axis)
 
 
-def unstack(x, axis):
+def unstack(x, axis, keepdims=False):
     if x.shape == ():
         return [x]
     num_outputs = x.shape[axis]
-    ret = _mx.nd.split(x, num_outputs, axis, squeeze_axis=True)
+    ret = _mx.nd.split(x, num_outputs, axis, squeeze_axis=not keepdims)
     return ret if isinstance(ret, list) else [ret]
 
 
