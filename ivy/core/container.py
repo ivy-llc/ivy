@@ -668,11 +668,40 @@ class Container(dict):
             dim_size = self.shape[axis]
         if keepdims:
             # noinspection PyTypeChecker
-            return [self[tuple([slice(None, None, None)] * axis + [slice(i, i+1, 1)])] for i in range(dim_size)]
+            return [self[slice(i, i+1, 1) if axis == 0
+                         else tuple([slice(None, None, None)] * axis + [slice(i, i+1, 1)])] for i in range(dim_size)]
         # noinspection PyTypeChecker
-        return [self[tuple([slice(None, None, None)] * axis + [i])] for i in range(dim_size)]
+        return [self[i if axis == 0 else tuple([slice(None, None, None)] * axis + [i])] for i in range(dim_size)]
+
+    def split(self, num_or_size_splits=None, axis=0, with_remainder=False, key_chains=None, to_apply=True,
+              prune_unapplied=False):
+        """
+        Splits a container into multiple sub-containers, by splitting their constituent arrays.
+
+        :param num_or_size_splits: Number of equal arrays to divide the array into along the given axis if an integer.
+                                   The size of each split element if a sequence of integers.
+                                   Default is to divide into as many 1-dimensional arrays as the axis dimension.
+        :type num_or_size_splits: int, optional
+        :param axis: The axis along which to split, default is 0.
+        :type axis: int, optional
+        :param with_remainder: If the tensor does not split evenly, then store the last remainder entry. Defaul is False.
+        :type with_remainder: bool, optional
+        :param key_chains: The key-chains to apply or not apply the method to. Default is None.
+        :type key_chains: list or dict of strs, optional
+        :param to_apply: If True, the method will be applied to key_chains, otherwise key_chains will be skipped.
+                         Default is True.
+        :type to_apply: bool, optional
+        :param prune_unapplied: Whether to prune key_chains for which the function was not applied. Default is False.
+        :type prune_unapplied: bool, optional
+        :return: A list of sub-arrays.
+        """
+        # ToDo: make this more efficient, without so many recursive container calls. For example the splits indices
+        #  can be calculated here, and then slices applied directly only once
+        dim_size = num_or_size_splits if isinstance(num_or_size_splits, int) else len(num_or_size_splits)
         # noinspection PyTypeChecker
-        return [self[tuple([slice(None, None, None)] * dim + [slice(i, i + 1, 1)])] for i in range(dim_size)]
+        return self.map(
+            lambda x, kc: _ivy.split(x, num_or_size_splits, axis, with_remainder) if _ivy.is_array(x)
+            else x, key_chains, to_apply, prune_unapplied).unstack(0, dim_size=dim_size)
 
     def gather(self, indices, axis=-1, key_chains=None, to_apply=True, prune_unapplied=False):
         """
