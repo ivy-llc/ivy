@@ -1547,3 +1547,19 @@ def test_container_xor(dev_str, call):
     assert container.b.c == ivy.array([False])
     assert container['b']['d'] == ivy.array([False])
     assert container.b.d == ivy.array([False])
+
+
+def test_container_shape(dev_str, call):
+    dict_in = {'a': ivy.array([[[1.], [2.], [3.]]]),
+               'b': {'c': ivy.array([[[2.], [4.], [6.]]]), 'd': ivy.array([[[3.], [6.], [9.]]])}}
+    container = Container(dict_in)
+    assert container.shape == [1, 3, 1]
+    dict_in = {'a': ivy.array([[[1.], [2.], [3.]]]),
+               'b': {'c': ivy.array([[[2., 3.], [4., 5.], [6., 7.]]]), 'd': ivy.array([[[3.], [6.], [9.]]])}}
+    container = Container(dict_in)
+    assert container.shape == [1, 3, None]
+    dict_in = {'a': ivy.array([[[1., 2.], [2., 3.], [3., 4.]]]),
+               'b': {'c': ivy.array([[[2., 3.], [4., 5.], [6., 7.]]]),
+                     'd': ivy.array([[[3., 4.], [6., 7.], [9., 10.]]])}}
+    container = Container(dict_in)
+    assert container.shape == [1, 3, 2]

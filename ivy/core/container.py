@@ -3,6 +3,7 @@ Base Container Object
 """
 
 # global
+import numpy as _np
 import json as _json
 import h5py as _h5py
 import pickle as _pickle
@@ -55,8 +56,6 @@ class Container(dict):
                 self[key] = Container(value)
             else:
                 self[key] = value
-
-        self._size = self._get_size()
 
     # Class Methods #
     # --------------#
@@ -235,6 +234,7 @@ class Container(dict):
                 Container.shuffle_h5_file(value, seed_value)
             elif isinstance(value, _h5py.Dataset):
                 _random.seed(seed_value)
+                # noinspection PyTypeChecker
                 _random.shuffle(value)
             else:
                 raise Exception('Item found inside h5_obj which was neither a Group nor a Dataset.')
@@ -252,7 +252,6 @@ class Container(dict):
         :type reduction: callable with single list input x
         :return: reduced containers
         """
-        list_size = len(containers)
         container0 = containers[0]
         if isinstance(container0, dict):
             return_dict = dict()
@@ -269,22 +268,14 @@ class Container(dict):
     # Private Methods #
     # ----------------#
 
-    def _get_size(self):
-        vals = list(self.values())
-        if not vals:
-            return 0
-        val = vals[0]
-        if isinstance(val, Container):
-            return val._get_size()
-        elif isinstance(val, list):
-            return len(val)
-        elif isinstance(val, tuple):
-            return len(val)
-        else:
-            try:
-                return val.shape[0]
-            except (AttributeError, IndexError, TypeError):
-                return 0
+    def _get_shape(self):
+        sub_shapes = [v for k, v in self.map(lambda x, kc: list(x.shape) if _ivy.is_array(x) else x).to_iterator()]
+        min_num_dims = min([len(sub_shape) for sub_shape in sub_shapes])
+        sub_shapes_array = _np.asarray([sub_shape[0:min_num_dims] for sub_shape in sub_shapes])
+        mask = _np.prod(sub_shapes_array / sub_shapes_array[0:1], 0) == 1
+        # noinspection PyTypeChecker
+        return [None if _np.isnan(i) else int(i)
+                for i in _np.where(mask, sub_shapes_array[0], _np.ones(min_num_dims)*float('nan')).tolist()]
 
     def _at_key_chains_input_as_seq(self, key_chains):
         return_cont = Container(dict())
@@ -317,7 +308,7 @@ class Container(dict):
         for k, v in key_chains.items():
             if isinstance(v, dict):
                 ret_cont = self._prune_key_chains_input_as_dict(v, return_cont[k])
-                if ret_cont.size == 0:
+                if ret_cont.shape[0] == 0:
                     del return_cont[k]
             else:
                 del return_cont[k]
@@ -670,6 +661,7 @@ class Container(dict):
         :type dim_size: int
         :return: List of containers, unstacked along the specified dimension.
         """
+        # noinspection PyTypeChecker
         return [self[tuple([slice(None, None, None)] * dim + [slice(i, i + 1, 1)])] for i in range(dim_size)]
 
     def gather(self, indices, axis=-1, key_chains=None, to_apply=True, prune_unapplied=False):
@@ -714,7 +706,7 @@ class Container(dict):
         """
         Repeat values along a given dimension for each array in the container.
 
-        :param repeats: The number of repetitions for each element. repeats is broadcast to fit the shape of the given axis.
+        :param repeats: Number of repetitions for each element. repeats is broadcast to fit the shape of the given axis.
         :type repeats: int or sequence of ints.
         :param axis: The axis along which to repeat values.
                       By default, use the flattened input array, and return a flat output array.
@@ -1033,7 +1025,6 @@ class Container(dict):
         :return: new container with updated value at key chain
         """
         keys = key_chain.split('/')
-        conts = list()
         cont = self
         for key in keys[:-1]:
             if key not in cont:
@@ -1378,5 +1369,8 @@ class Container(dict):
     # --------#
 
     @property
-    def size(self):
-        return self._size
+    def shape(self):
+        """
+        The shape of the arrays in the container, with None placed in indices which are not consistent across arrays
+        """
+        return self._get_shape()
