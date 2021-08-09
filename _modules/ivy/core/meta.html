@@ -311,10 +311,10 @@
 
 <span class="c1"># First Order</span>
 
-<div class="viewcode-block" id="fomaml_step"><a class="viewcode-back" href="../../../core/meta/fomaml_step.html#ivy.core.meta.fomaml_step">[docs]</a><span class="k">def</span> <span class="nf">fomaml_step</span><span class="p">(</span><span class="n">batch</span><span class="p">,</span> <span class="n">inner_cost_fn</span><span class="p">,</span> <span class="n">outer_cost_fn</span><span class="p">,</span> <span class="n">variables</span><span class="p">,</span> <span class="n">num_tasks</span><span class="p">,</span> <span class="n">inner_grad_steps</span><span class="p">,</span> <span class="n">inner_learning_rate</span><span class="p">,</span>
+<div class="viewcode-block" id="fomaml_step"><a class="viewcode-back" href="../../../core/meta/fomaml_step.html#ivy.core.meta.fomaml_step">[docs]</a><span class="k">def</span> <span class="nf">fomaml_step</span><span class="p">(</span><span class="n">batch</span><span class="p">,</span> <span class="n">inner_cost_fn</span><span class="p">,</span> <span class="n">outer_cost_fn</span><span class="p">,</span> <span class="n">variables</span><span class="p">,</span> <span class="n">inner_grad_steps</span><span class="p">,</span> <span class="n">inner_learning_rate</span><span class="p">,</span>
                 <span class="n">inner_optimization_step</span><span class="o">=</span><span class="n">gradient_descent_update</span><span class="p">,</span> <span class="n">inner_sub_batch_fn</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">outer_sub_batch_fn</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                 <span class="n">average_across_steps</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">inner_v</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">keep_inner_v</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">outer_v</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">keep_outer_v</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-                <span class="n">return_inner_v</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+                <span class="n">return_inner_v</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">num_tasks</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Perform step of first order MAML.</span>
 
@@ -329,9 +329,6 @@
 <span class="sd">    :type outer_cost_fn: callable, optional</span>
 <span class="sd">    :param variables: Variables to be optimized during the meta step</span>
 <span class="sd">    :type variables: ivy.Container</span>
-<span class="sd">    :param num_tasks: Number of unique tasks to inner-loop optimize for during the meta step.</span>
-<span class="sd">                        This must be the leading size of the input batch.</span>
-<span class="sd">    :type num_tasks: int</span>
 <span class="sd">    :param inner_grad_steps: Number of gradient steps to perform during the inner loop.</span>
 <span class="sd">    :type inner_grad_steps: int</span>
 <span class="sd">    :param inner_learning_rate: The learning rate of the inner loop.</span>
@@ -360,16 +357,21 @@
 <span class="sd">    :param return_inner_v: Either &#39;first&#39;, &#39;all&#39;, or False. &#39;first&#39; means the variables for the first task inner loop</span>
 <span class="sd">                           will also be returned. variables for all tasks will be returned with &#39;all&#39;. Default is False.</span>
 <span class="sd">    :type return_inner_v: str, optional</span>
+<span class="sd">    :param num_tasks: Number of unique tasks to inner-loop optimize for during the meta step.</span>
+<span class="sd">                      This must be the leading size of the input batch. Determined from the input batch by default.</span>
+<span class="sd">    :type num_tasks: int, optional</span>
 <span class="sd">    :return: The cost and the gradients with respect to the outer loop variables.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">num_tasks</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">num_tasks</span> <span class="o">=</span> <span class="n">batch</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
     <span class="k">return</span> <span class="n">_train_tasks</span><span class="p">(</span>
         <span class="n">batch</span><span class="p">,</span> <span class="n">inner_sub_batch_fn</span><span class="p">,</span> <span class="n">outer_sub_batch_fn</span><span class="p">,</span> <span class="n">inner_cost_fn</span><span class="p">,</span> <span class="n">outer_cost_fn</span><span class="p">,</span> <span class="n">variables</span><span class="p">,</span> <span class="n">num_tasks</span><span class="p">,</span>
         <span class="n">inner_grad_steps</span><span class="p">,</span> <span class="n">inner_learning_rate</span><span class="p">,</span> <span class="n">inner_optimization_step</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">average_across_steps</span><span class="p">,</span> <span class="n">inner_v</span><span class="p">,</span> <span class="n">keep_inner_v</span><span class="p">,</span>
         <span class="n">outer_v</span><span class="p">,</span> <span class="n">keep_outer_v</span><span class="p">,</span> <span class="n">return_inner_v</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="reptile_step"><a class="viewcode-back" href="../../../core/meta/reptile_step.html#ivy.core.meta.reptile_step">[docs]</a><span class="k">def</span> <span class="nf">reptile_step</span><span class="p">(</span><span class="n">batch</span><span class="p">,</span> <span class="n">cost_fn</span><span class="p">,</span> <span class="n">variables</span><span class="p">,</span> <span class="n">num_tasks</span><span class="p">,</span> <span class="n">inner_grad_steps</span><span class="p">,</span> <span class="n">inner_learning_rate</span><span class="p">,</span>
-                 <span class="n">inner_optimization_step</span><span class="o">=</span><span class="n">gradient_descent_update</span><span class="p">,</span> <span class="n">return_inner_v</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="reptile_step"><a class="viewcode-back" href="../../../core/meta/reptile_step.html#ivy.core.meta.reptile_step">[docs]</a><span class="k">def</span> <span class="nf">reptile_step</span><span class="p">(</span><span class="n">batch</span><span class="p">,</span> <span class="n">cost_fn</span><span class="p">,</span> <span class="n">variables</span><span class="p">,</span> <span class="n">inner_grad_steps</span><span class="p">,</span> <span class="n">inner_learning_rate</span><span class="p">,</span>
+                 <span class="n">inner_optimization_step</span><span class="o">=</span><span class="n">gradient_descent_update</span><span class="p">,</span> <span class="n">return_inner_v</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">num_tasks</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Perform step of Reptile.</span>
 
@@ -379,9 +381,6 @@
 <span class="sd">    :type cost_fn: callable</span>
 <span class="sd">    :param variables: Variables to be optimized</span>
 <span class="sd">    :type variables: ivy.Container</span>
-<span class="sd">    :param num_tasks: Number of unique tasks to inner-loop optimize for during the meta step.</span>
-<span class="sd">                        This must be the leading size of the input batch.</span>
-<span class="sd">    :type num_tasks: int</span>
 <span class="sd">    :param inner_grad_steps: Number of gradient steps to perform during the inner loop.</span>
 <span class="sd">    :type inner_grad_steps: int</span>
 <span class="sd">    :param inner_learning_rate: The learning rate of the inner loop.</span>
@@ -392,8 +391,13 @@
 <span class="sd">    :param return_inner_v: Either &#39;first&#39;, &#39;all&#39;, or False. &#39;first&#39; means the variables for the first task inner loop</span>
 <span class="sd">                           will also be returned. variables for all tasks will be returned with &#39;all&#39;. Default is False.</span>
 <span class="sd">    :type return_inner_v: str, optional</span>
+<span class="sd">    :param num_tasks: Number of unique tasks to inner-loop optimize for during the meta step.</span>
+<span class="sd">                      This must be the leading size of the input batch. Determined from the input batch by default.</span>
+<span class="sd">    :type num_tasks: int, optional</span>
 <span class="sd">    :return: The cost and the gradients with respect to the outer loop variables.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">num_tasks</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">num_tasks</span> <span class="o">=</span> <span class="n">batch</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
     <span class="n">rets</span> <span class="o">=</span> <span class="n">_train_tasks</span><span class="p">(</span>
         <span class="n">batch</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">cost_fn</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">variables</span><span class="p">,</span> <span class="n">num_tasks</span><span class="p">,</span> <span class="n">inner_grad_steps</span><span class="p">,</span> <span class="n">inner_learning_rate</span><span class="p">,</span>
         <span class="n">inner_optimization_step</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="n">return_inner_v</span><span class="p">)</span>
@@ -406,10 +410,10 @@
 
 <span class="c1"># Second Order</span>
 
-<div class="viewcode-block" id="maml_step"><a class="viewcode-back" href="../../../core/meta/maml_step.html#ivy.core.meta.maml_step">[docs]</a><span class="k">def</span> <span class="nf">maml_step</span><span class="p">(</span><span class="n">batch</span><span class="p">,</span> <span class="n">inner_cost_fn</span><span class="p">,</span> <span class="n">outer_cost_fn</span><span class="p">,</span> <span class="n">variables</span><span class="p">,</span> <span class="n">num_tasks</span><span class="p">,</span> <span class="n">inner_grad_steps</span><span class="p">,</span> <span class="n">inner_learning_rate</span><span class="p">,</span>
+<div class="viewcode-block" id="maml_step"><a class="viewcode-back" href="../../../core/meta/maml_step.html#ivy.core.meta.maml_step">[docs]</a><span class="k">def</span> <span class="nf">maml_step</span><span class="p">(</span><span class="n">batch</span><span class="p">,</span> <span class="n">inner_cost_fn</span><span class="p">,</span> <span class="n">outer_cost_fn</span><span class="p">,</span> <span class="n">variables</span><span class="p">,</span> <span class="n">inner_grad_steps</span><span class="p">,</span> <span class="n">inner_learning_rate</span><span class="p">,</span>
               <span class="n">inner_optimization_step</span><span class="o">=</span><span class="n">gradient_descent_update</span><span class="p">,</span> <span class="n">inner_sub_batch_fn</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">outer_sub_batch_fn</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
               <span class="n">average_across_steps</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">inner_v</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">keep_inner_v</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">outer_v</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">keep_outer_v</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-              <span class="n">return_inner_v</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+              <span class="n">return_inner_v</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">num_tasks</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Perform step of vanilla second order MAML.</span>
 
@@ -423,9 +427,6 @@
 <span class="sd">    :type outer_cost_fn: callable, optional</span>
 <span class="sd">    :param variables: Variables to be optimized during the meta step</span>
 <span class="sd">    :type variables: ivy.Container</span>
-<span class="sd">    :param num_tasks: Number of unique tasks to inner-loop optimize for during the meta step.</span>
-<span class="sd">                        This must be the leading size of the input batch.</span>
-<span class="sd">    :type num_tasks: int</span>
 <span class="sd">    :param inner_grad_steps: Number of gradient steps to perform during the inner loop.</span>
 <span class="sd">    :type inner_grad_steps: int</span>
 <span class="sd">    :param inner_learning_rate: The learning rate of the inner loop.</span>
@@ -454,8 +455,13 @@
 <span class="sd">    :param return_inner_v: Either &#39;first&#39;, &#39;all&#39;, or False. &#39;first&#39; means the variables for the first task inner loop</span>
 <span class="sd">                           will also be returned. variables for all tasks will be returned with &#39;all&#39;. Default is False.</span>
 <span class="sd">    :type return_inner_v: str, optional</span>
+<span class="sd">    :param num_tasks: Number of unique tasks to inner-loop optimize for during the meta step.</span>
+<span class="sd">                      This must be the leading size of the input batch. Determined from the input batch by default.</span>
+<span class="sd">    :type num_tasks: int, optional</span>
 <span class="sd">    :return: The cost and the gradients with respect to the outer loop variables.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">num_tasks</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">num_tasks</span> <span class="o">=</span> <span class="n">batch</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
     <span class="n">unique_outer</span> <span class="o">=</span> <span class="n">outer_v</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
     <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">execute_with_gradients</span><span class="p">(</span><span class="k">lambda</span> <span class="n">v</span><span class="p">:</span> <span class="n">_train_tasks</span><span class="p">(</span>
         <span class="n">batch</span><span class="p">,</span> <span class="n">inner_sub_batch_fn</span><span class="p">,</span> <span class="n">outer_sub_batch_fn</span><span class="p">,</span> <span class="n">inner_cost_fn</span><span class="p">,</span> <span class="n">outer_cost_fn</span><span class="p">,</span>
