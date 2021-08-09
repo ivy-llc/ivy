@@ -1055,7 +1055,8 @@
 
 <span class="sd">    :param n: Number of rows (and columns) in n x n output.</span>
 <span class="sd">    :type n: int</span>
-<span class="sd">    :param dtype_str: The desired data-type for the array in string format, i.e. &#39;float32&#39; or &#39;int64&#39;. Default is &#39;float32&#39;.</span>
+<span class="sd">    :param dtype_str: The desired data-type for the array in string format, i.e. &#39;float32&#39; or &#39;int64&#39;.</span>
+<span class="sd">                      Default is &#39;float32&#39;.</span>
 <span class="sd">    :type dtype_str: data-type string, optional</span>
 <span class="sd">    :param batch_shape: Shape of batch. Inferred from inputs if None.</span>
 <span class="sd">    :type batch_shape: sequence of ints, optional</span>
@@ -1219,6 +1220,7 @@
     <span class="k">return</span> <span class="n">_get_framework</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">dev</span><span class="p">(</span><span class="n">x</span><span class="p">)</span></div>
 
 
+<span class="c1"># noinspection PyShadowingNames</span>
 <div class="viewcode-block" id="to_dev"><a class="viewcode-back" href="../../../core/general/to_dev.html#ivy.core.general.to_dev">[docs]</a><span class="k">def</span> <span class="nf">to_dev</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">dev_str</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Move the input array x to the desired device, specified by device string.</span>
@@ -1247,6 +1249,7 @@
     <span class="k">return</span> <span class="n">_get_framework</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">dev_to_str</span><span class="p">(</span><span class="n">dev_in</span><span class="p">)</span></div>
 
 
+<span class="c1"># noinspection PyShadowingNames</span>
 <div class="viewcode-block" id="str_to_dev"><a class="viewcode-back" href="../../../core/general/str_to_dev.html#ivy.core.general.str_to_dev">[docs]</a><span class="k">def</span> <span class="nf">str_to_dev</span><span class="p">(</span><span class="n">dev_str</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Convert device string representation to native device type.</span>
@@ -1273,6 +1276,7 @@
     <span class="k">return</span> <span class="n">_get_framework</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">dev_str</span><span class="p">(</span><span class="n">x</span><span class="p">)</span></div>
 
 
+<span class="c1"># noinspection PyShadowingNames</span>
 <div class="viewcode-block" id="memory_on_dev"><a class="viewcode-back" href="../../../core/general/memory_on_dev.html#ivy.core.general.memory_on_dev">[docs]</a><span class="k">def</span> <span class="nf">memory_on_dev</span><span class="p">(</span><span class="n">dev_str</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Get the total amount of memory for a given device string. In case of CPU, the total RAM is returned.</span>
