@@ -242,6 +242,22 @@ def test_container_expand_dims(dev_str, call):
     assert 'b/d' not in container_expanded_dims
 
 
+def test_container_unstack(dev_str, call):
+    dict_in = {'a': ivy.array([[1], [2], [3]]),
+               'b': {'c': ivy.array([[2], [3], [4]]), 'd': ivy.array([[3], [4], [5]])}}
+    container = Container(dict_in)
+
+    # without key_chains specification
+    container_unstacked = container.unstack(0)
+    for cont, a, bc, bd in zip(container_unstacked, [1, 2, 3], [2, 3, 4], [3, 4, 5]):
+        assert (cont['a'] == ivy.array([a]))[0]
+        assert (cont.a == ivy.array([a]))[0]
+        assert (cont['b']['c'] == ivy.array([bc]))[0]
+        assert (cont.b.c == ivy.array([bc]))[0]
+        assert (cont['b']['d'] == ivy.array([bd]))[0]
+        assert (cont.b.d == ivy.array([bd]))[0]
+
+
 def test_container_gather(dev_str, call):
     dict_in = {'a': ivy.array([1, 2, 3, 4, 5, 6]),
                'b': {'c': ivy.array([2, 3, 4, 5]), 'd': ivy.array([10, 9, 8, 7, 6])}}
