@@ -123,10 +123,10 @@ def _train_tasks(batch, inner_sub_batch_fn, outer_sub_batch_fn, inner_cost_fn, o
 
 # First Order
 
-def fomaml_step(batch, inner_cost_fn, outer_cost_fn, variables, num_tasks, inner_grad_steps, inner_learning_rate,
+def fomaml_step(batch, inner_cost_fn, outer_cost_fn, variables, inner_grad_steps, inner_learning_rate,
                 inner_optimization_step=gradient_descent_update, inner_sub_batch_fn=None, outer_sub_batch_fn=None,
                 average_across_steps=False, inner_v=None, keep_inner_v=True, outer_v=None, keep_outer_v=True,
-                return_inner_v=False):
+                return_inner_v=False, num_tasks=None):
     """
     Perform step of first order MAML.
 
@@ -141,9 +141,6 @@ def fomaml_step(batch, inner_cost_fn, outer_cost_fn, variables, num_tasks, inner
     :type outer_cost_fn: callable, optional
     :param variables: Variables to be optimized during the meta step
     :type variables: ivy.Container
-    :param num_tasks: Number of unique tasks to inner-loop optimize for during the meta step.
-                        This must be the leading size of the input batch.
-    :type num_tasks: int
     :param inner_grad_steps: Number of gradient steps to perform during the inner loop.
     :type inner_grad_steps: int
     :param inner_learning_rate: The learning rate of the inner loop.
@@ -172,16 +169,21 @@ def fomaml_step(batch, inner_cost_fn, outer_cost_fn, variables, num_tasks, inner
     :param return_inner_v: Either 'first', 'all', or False. 'first' means the variables for the first task inner loop
                            will also be returned. variables for all tasks will be returned with 'all'. Default is False.
     :type return_inner_v: str, optional
+    :param num_tasks: Number of unique tasks to inner-loop optimize for during the meta step.
+                      This must be the leading size of the input batch. Determined from the input batch by default.
+    :type num_tasks: int, optional
     :return: The cost and the gradients with respect to the outer loop variables.
     """
+    if num_tasks is None:
+        num_tasks = batch.shape[0]
     return _train_tasks(
         batch, inner_sub_batch_fn, outer_sub_batch_fn, inner_cost_fn, outer_cost_fn, variables, num_tasks,
         inner_grad_steps, inner_learning_rate, inner_optimization_step, 1, average_across_steps, inner_v, keep_inner_v,
         outer_v, keep_outer_v, return_inner_v)
 
 
-def reptile_step(batch, cost_fn, variables, num_tasks, inner_grad_steps, inner_learning_rate,
-                 inner_optimization_step=gradient_descent_update, return_inner_v=False):
+def reptile_step(batch, cost_fn, variables, inner_grad_steps, inner_learning_rate,
+                 inner_optimization_step=gradient_descent_update, return_inner_v=False, num_tasks=None):
     """
     Perform step of Reptile.
 
@@ -191,9 +193,6 @@ def reptile_step(batch, cost_fn, variables, num_tasks, inner_grad_steps, inner_l
     :type cost_fn: callable
     :param variables: Variables to be optimized
     :type variables: ivy.Container
-    :param num_tasks: Number of unique tasks to inner-loop optimize for during the meta step.
-                        This must be the leading size of the input batch.
-    :type num_tasks: int
     :param inner_grad_steps: Number of gradient steps to perform during the inner loop.
     :type inner_grad_steps: int
     :param inner_learning_rate: The learning rate of the inner loop.
@@ -204,8 +203,13 @@ def reptile_step(batch, cost_fn, variables, num_tasks, inner_grad_steps, inner_l
     :param return_inner_v: Either 'first', 'all', or False. 'first' means the variables for the first task inner loop
                            will also be returned. variables for all tasks will be returned with 'all'. Default is False.
     :type return_inner_v: str, optional
+    :param num_tasks: Number of unique tasks to inner-loop optimize for during the meta step.
+                      This must be the leading size of the input batch. Determined from the input batch by default.
+    :type num_tasks: int, optional
     :return: The cost and the gradients with respect to the outer loop variables.
     """
+    if num_tasks is None:
+        num_tasks = batch.shape[0]
     rets = _train_tasks(
         batch, None, None, cost_fn, None, variables, num_tasks, inner_grad_steps, inner_learning_rate,
         inner_optimization_step, 1, True, None, True, None, True, return_inner_v)
@@ -218,10 +222,10 @@ def reptile_step(batch, cost_fn, variables, num_tasks, inner_grad_steps, inner_l
 
 # Second Order
 
-def maml_step(batch, inner_cost_fn, outer_cost_fn, variables, num_tasks, inner_grad_steps, inner_learning_rate,
+def maml_step(batch, inner_cost_fn, outer_cost_fn, variables, inner_grad_steps, inner_learning_rate,
               inner_optimization_step=gradient_descent_update, inner_sub_batch_fn=None, outer_sub_batch_fn=None,
               average_across_steps=False, inner_v=None, keep_inner_v=True, outer_v=None, keep_outer_v=True,
-              return_inner_v=False):
+              return_inner_v=False, num_tasks=None):
     """
     Perform step of vanilla second order MAML.
 
@@ -235,9 +239,6 @@ def maml_step(batch, inner_cost_fn, outer_cost_fn, variables, num_tasks, inner_g
     :type outer_cost_fn: callable, optional
     :param variables: Variables to be optimized during the meta step
     :type variables: ivy.Container
-    :param num_tasks: Number of unique tasks to inner-loop optimize for during the meta step.
-                        This must be the leading size of the input batch.
-    :type num_tasks: int
     :param inner_grad_steps: Number of gradient steps to perform during the inner loop.
     :type inner_grad_steps: int
     :param inner_learning_rate: The learning rate of the inner loop.
@@ -266,8 +267,13 @@ def maml_step(batch, inner_cost_fn, outer_cost_fn, variables, num_tasks, inner_g
     :param return_inner_v: Either 'first', 'all', or False. 'first' means the variables for the first task inner loop
                            will also be returned. variables for all tasks will be returned with 'all'. Default is False.
     :type return_inner_v: str, optional
+    :param num_tasks: Number of unique tasks to inner-loop optimize for during the meta step.
+                      This must be the leading size of the input batch. Determined from the input batch by default.
+    :type num_tasks: int, optional
     :return: The cost and the gradients with respect to the outer loop variables.
     """
+    if num_tasks is None:
+        num_tasks = batch.shape[0]
     unique_outer = outer_v is not None
     return ivy.execute_with_gradients(lambda v: _train_tasks(
         batch, inner_sub_batch_fn, outer_sub_batch_fn, inner_cost_fn, outer_cost_fn,

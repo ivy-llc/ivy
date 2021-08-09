@@ -69,7 +69,7 @@ def test_fomaml_step_unique_vars(dev_str, call, inner_grad_steps, with_outer_cos
 
     # meta update
     rets = ivy.fomaml_step(
-        batch, inner_cost_fn, outer_cost_fn if with_outer_cost_fn else None, variables, num_tasks,
+        batch, inner_cost_fn, outer_cost_fn if with_outer_cost_fn else None, variables,
         inner_grad_steps, inner_learning_rate, average_across_steps=average_across_steps,
         inner_v='latent', outer_v='weight', return_inner_v=return_inner_v)
     outer_grads = rets[1]
@@ -152,7 +152,7 @@ def test_fomaml_step_shared_vars(dev_str, call, inner_grad_steps, with_outer_cos
 
     # meta update
     rets = ivy.fomaml_step(
-        batch, inner_cost_fn, outer_cost_fn if with_outer_cost_fn else None, variables, num_tasks,
+        batch, inner_cost_fn, outer_cost_fn if with_outer_cost_fn else None, variables,
         inner_grad_steps, inner_learning_rate, average_across_steps=average_across_steps, return_inner_v=return_inner_v)
     outer_grads = rets[1]
     assert np.allclose(ivy.to_numpy(outer_grads.latent[0]), np.array(true_outer_grad))
@@ -219,7 +219,7 @@ def test_fomaml_step_overlapping_vars(dev_str, call, inner_grad_steps, with_oute
 
     # meta update
     rets = ivy.fomaml_step(
-        batch, inner_cost_fn, outer_cost_fn if with_outer_cost_fn else None, variables, num_tasks,
+        batch, inner_cost_fn, outer_cost_fn if with_outer_cost_fn else None, variables,
         inner_grad_steps, inner_learning_rate, average_across_steps=average_across_steps, inner_v='latent',
         return_inner_v=return_inner_v)
     outer_grads = rets[1]
@@ -284,7 +284,7 @@ def test_reptile_step(dev_str, call, inner_grad_steps, num_tasks, return_inner_v
     true_outer_grad = (sum(true_outer_grads) / len(true_outer_grads)) / inner_learning_rate
 
     # meta update
-    rets = ivy.reptile_step(batch, inner_cost_fn, variables, num_tasks, inner_grad_steps, inner_learning_rate,
+    rets = ivy.reptile_step(batch, inner_cost_fn, variables, inner_grad_steps, inner_learning_rate,
                             return_inner_v=return_inner_v)
     outer_grads = rets[1]
     assert np.allclose(ivy.to_numpy(outer_grads.latent[0]), np.array(true_outer_grad))
@@ -351,7 +351,7 @@ def test_maml_step_unique_vars(dev_str, call, inner_grad_steps, with_outer_cost_
 
     # meta update
     rets = ivy.maml_step(
-        batch, inner_cost_fn, outer_cost_fn if with_outer_cost_fn else None, variables, num_tasks,
+        batch, inner_cost_fn, outer_cost_fn if with_outer_cost_fn else None, variables,
         inner_grad_steps, inner_learning_rate, average_across_steps=average_across_steps,
         inner_v='latent', outer_v='weight', return_inner_v=return_inner_v)
     outer_grads = rets[1]
@@ -451,7 +451,7 @@ def test_maml_step_shared_vars(dev_str, call, inner_grad_steps, with_outer_cost_
 
     # meta update
     rets = ivy.maml_step(
-        batch, inner_cost_fn, outer_cost_fn if with_outer_cost_fn else None, variables, num_tasks,
+        batch, inner_cost_fn, outer_cost_fn if with_outer_cost_fn else None, variables,
         inner_grad_steps, inner_learning_rate, average_across_steps=average_across_steps, return_inner_v=return_inner_v)
     outer_grads = rets[1]
     assert np.allclose(ivy.to_numpy(outer_grads.latent[0]), true_outer_grad[0])
@@ -518,7 +518,7 @@ def test_maml_step_overlapping_vars(dev_str, call, inner_grad_steps, with_outer_
 
     # meta update
     rets = ivy.maml_step(
-        batch, inner_cost_fn, outer_cost_fn if with_outer_cost_fn else None, variables, num_tasks,
+        batch, inner_cost_fn, outer_cost_fn if with_outer_cost_fn else None, variables,
         inner_grad_steps, inner_learning_rate, average_across_steps=average_across_steps, inner_v='latent',
         return_inner_v=return_inner_v)
     outer_grads = rets[1]
