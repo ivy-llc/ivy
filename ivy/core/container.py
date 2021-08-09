@@ -278,6 +278,13 @@ class Container(dict):
         return [None if _np.isnan(i) else int(i)
                 for i in _np.where(mask, sub_shapes_array[0], _np.ones(min_num_dims)*float('nan')).tolist()]
 
+    def _get_dev_str(self):
+        sub_dev_strs =\
+            [v for k, v in self.map(lambda x, kc: _ivy.dev_str(x) if _ivy.is_array(x) else None).to_iterator() if v]
+        if len(set(sub_dev_strs)) <= 1:
+            return sub_dev_strs[0]
+        return None
+
     def _at_key_chains_input_as_seq(self, key_chains):
         return_cont = Container(dict())
         for kc in key_chains:
@@ -1431,3 +1438,10 @@ class Container(dict):
         The shape of the arrays in the container, with None placed in indices which are not consistent across arrays
         """
         return self._get_shape()
+
+    @property
+    def dev_str(self):
+        """
+        The device to which the arrays in the container belong, with None returned if the devices are not consistent
+        """
+        return self._get_dev_str()

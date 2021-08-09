@@ -1609,3 +1609,11 @@ def test_container_shape(dev_str, call):
                      'd': ivy.array([[[3., 4.], [6., 7.], [9., 10.]]])}}
     container = Container(dict_in)
     assert container.shape == [1, 3, 2]
+
+
+def test_container_dev_str(dev_str, call):
+    dict_in = {'a': ivy.array([[[1.], [2.], [3.]]], dev_str='cpu:0'),
+               'b': {'c': ivy.array([[[2.], [4.], [6.]]], dev_str='cpu:0'),
+                     'd': ivy.array([[[3.], [6.], [9.]]], dev_str='cpu:0')}}
+    container = Container(dict_in)
+    assert container.dev_str == 'cpu:0'
