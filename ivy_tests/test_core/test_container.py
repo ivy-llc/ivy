@@ -531,6 +531,20 @@ def test_container_reshape(dev_str, call):
     assert np.allclose(ivy.to_numpy(container_reshaped.b.d), np.array([[[10.]], [[9.]]]))
 
 
+def test_container_to_dev(dev_str, call):
+    dict_in = {'a': ivy.array([[0., 1., 2., 3.]]),
+               'b': {'c': ivy.array([[5., 10., 15., 20.]]), 'd': ivy.array([[10., 9., 8., 7.]])}}
+    container = Container(dict_in)
+
+    container_to_cpu = container.to_dev('cpu:0')
+    assert ivy.dev_str(container_to_cpu['a']) == 'cpu:0'
+    assert ivy.dev_str(container_to_cpu.a) == 'cpu:0'
+    assert ivy.dev_str(container_to_cpu['b']['c']) == 'cpu:0'
+    assert ivy.dev_str(container_to_cpu.b.c) == 'cpu:0'
+    assert ivy.dev_str(container_to_cpu['b']['d']) == 'cpu:0'
+    assert ivy.dev_str(container_to_cpu.b.d) == 'cpu:0'
+
+
 def test_container_stop_gradients(dev_str, call):
     dict_in = {'a': ivy.variable(ivy.array([[[1., 2.], [3., 4.]], [[5., 6.], [7., 8.]]])),
                'b': {'c': ivy.variable(ivy.array([[[8., 7.], [6., 5.]], [[4., 3.], [2., 1.]]])),
