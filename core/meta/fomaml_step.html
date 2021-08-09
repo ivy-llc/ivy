@@ -200,7 +200,7 @@
 <h1>fomaml_step<a class="headerlink" href="#fomaml-step" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
 <dt id="ivy.core.meta.fomaml_step">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">fomaml_step</code><span class="sig-paren">(</span><em class="sig-param">batch</em>, <em class="sig-param">inner_cost_fn</em>, <em class="sig-param">outer_cost_fn</em>, <em class="sig-param">variables</em>, <em class="sig-param">num_tasks</em>, <em class="sig-param">inner_grad_steps</em>, <em class="sig-param">inner_learning_rate</em>, <em class="sig-param">inner_optimization_step=&lt;function gradient_descent_update&gt;</em>, <em class="sig-param">inner_sub_batch_fn=None</em>, <em class="sig-param">outer_sub_batch_fn=None</em>, <em class="sig-param">average_across_steps=False</em>, <em class="sig-param">inner_v=None</em>, <em class="sig-param">keep_inner_v=True</em>, <em class="sig-param">outer_v=None</em>, <em class="sig-param">keep_outer_v=True</em>, <em class="sig-param">return_inner_v=False</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/meta.html#fomaml_step"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.meta.fomaml_step" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">fomaml_step</code><span class="sig-paren">(</span><em class="sig-param">batch</em>, <em class="sig-param">inner_cost_fn</em>, <em class="sig-param">outer_cost_fn</em>, <em class="sig-param">variables</em>, <em class="sig-param">inner_grad_steps</em>, <em class="sig-param">inner_learning_rate</em>, <em class="sig-param">inner_optimization_step=&lt;function gradient_descent_update&gt;</em>, <em class="sig-param">inner_sub_batch_fn=None</em>, <em class="sig-param">outer_sub_batch_fn=None</em>, <em class="sig-param">average_across_steps=False</em>, <em class="sig-param">inner_v=None</em>, <em class="sig-param">keep_inner_v=True</em>, <em class="sig-param">outer_v=None</em>, <em class="sig-param">keep_outer_v=True</em>, <em class="sig-param">return_inner_v=False</em>, <em class="sig-param">num_tasks=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/meta.html#fomaml_step"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.meta.fomaml_step" title="Permalink to this definition">¶</a></dt>
 <dd><p>Perform step of first order MAML.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -212,8 +212,6 @@ inner vars and outer vars</p></li>
 inner vars and outer vars. If None, the cost from the inner loop will also be
 optimized in the outer loop.</p></li>
 <li><p><strong>variables</strong> (<em>ivy.Container</em>) – Variables to be optimized during the meta step</p></li>
-<li><p><strong>num_tasks</strong> (<em>int</em>) – Number of unique tasks to inner-loop optimize for during the meta step.
-This must be the leading size of the input batch.</p></li>
 <li><p><strong>inner_grad_steps</strong> (<em>int</em>) – Number of gradient steps to perform during the inner loop.</p></li>
 <li><p><strong>inner_learning_rate</strong> (<em>float</em>) – The learning rate of the inner loop.</p></li>
 <li><p><strong>inner_optimization_step</strong> (<em>callable</em><em>, </em><em>optional</em>) – The function used for the inner loop optimization.
@@ -231,6 +229,8 @@ Default is True.</p></li>
 Default is True.</p></li>
 <li><p><strong>return_inner_v</strong> (<em>str</em><em>, </em><em>optional</em>) – Either ‘first’, ‘all’, or False. ‘first’ means the variables for the first task inner loop
 will also be returned. variables for all tasks will be returned with ‘all’. Default is False.</p></li>
+<li><p><strong>num_tasks</strong> (<em>int</em><em>, </em><em>optional</em>) – Number of unique tasks to inner-loop optimize for during the meta step.
+This must be the leading size of the input batch. Determined from the input batch by default.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
