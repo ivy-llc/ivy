@@ -652,18 +652,23 @@ class Container(dict):
         return self.map(lambda x, kc: _ivy.expand_dims(x, axis) if _ivy.is_array(x) else x, key_chains, to_apply,
                         prune_unapplied)
 
-    def unstack(self, axis, dim_size=None):
+    def unstack(self, axis, keepdims=False, dim_size=None):
         """
         Unstack containers along specified dimension.
 
         :param axis: Dimensions along which to unstack.
         :type axis: int
+        :param keepdims: Whether to keep dimension 1 in the unstack dimensions. Default is False.
+        :type keepdims: bool, optional
         :param dim_size: Size of the dimension to unstack. Determined from inputs by default.
         :type dim_size: int, optional
         :return: List of containers, unstacked along the specified dimension.
         """
         if dim_size is None:
             dim_size = self.shape[axis]
+        if keepdims:
+            # noinspection PyTypeChecker
+            return [self[tuple([slice(None, None, None)] * axis + [slice(i, i+1, 1)])] for i in range(dim_size)]
         # noinspection PyTypeChecker
         return [self[tuple([slice(None, None, None)] * axis + [i])] for i in range(dim_size)]
         # noinspection PyTypeChecker
