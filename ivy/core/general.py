@@ -1275,16 +1275,20 @@ def split_func_call_across_gpus(func, inputs, dev_strs, input_axes=0, output_axe
     chunk_sizes = [chunk_size_rounded]*num_chunks
     for i in range(np.abs(total_diff)):
         chunk_sizes[i] += np.sign(total_diff)
-    inputs_split = [ivy.split(inp, chunk_sizes, input_axes[i], True) for i, inp in enumerate(inputs)]
-    rets = [[ivy.to_dev(ret, start_dev) for ret in func(*[ivy.to_dev(i, d_str) for i, d_str in zip(inp, dev_strs)])]
+    inputs_split = [ivy.split(inp, chunk_sizes, input_axes[i], True) if ivy.is_array(inp)
+                    else inp.split(chunk_sizes, input_axes[i], True) for i, inp in enumerate(inputs)]
+    rets = [[ivy.to_dev(ret, start_dev) if ivy.is_array(ret) else ret.to_dev(start_dev)
+             for ret in func(*[ivy.to_dev(i, d_str) if ivy.is_array(i) else i.to_dev(d_str)
+                               for i, d_str in zip(inp, dev_strs)])]
             for inp in zip(*inputs_split)]
     num_outputs = len(rets[0])
     if output_axes is None:
         output_axes = [input_axes[0]] * num_outputs
     elif isinstance(output_axes, int):
         output_axes = [output_axes] * num_outputs
-    rets = [ivy.concatenate([r[i] for r in rets], output_axes[i]) for i in range(num_outputs)]
-    return rets
+    return [ivy.concatenate([r[i] for r in rets], output_axes[i]) if ivy.is_array(rets[0][i])
+            else ivy.Container.concat([r[i] for r in rets], output_axes[i])
+            for i in range(num_outputs)]
 
 
 def cache_fn(func):
