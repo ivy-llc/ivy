@@ -325,4 +325,5 @@ def maml_step(batch, inner_cost_fn, outer_cost_fn, variables, inner_grad_steps, 
         return_inner_v, num_tasks),
         variables.at_key_chains(outer_v, ignore_none=True)
         if keep_outer_v else variables.prune_key_chains(outer_v, ignore_none=True))
-    return cost, grads.reduce_mean(0), *rets
+    # noinspection PyRedundantParentheses
+    return (cost, grads.reduce_mean(0), *rets)
