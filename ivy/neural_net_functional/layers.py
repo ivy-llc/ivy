@@ -32,9 +32,11 @@ def linear(x, weight, bias=None):
     num_outer_batch_dims = len(outer_batch_shape)
     inner_batch_shape = list(x.shape[num_outer_batch_dims:-1])
     num_inner_batch_dims = len(inner_batch_shape)
+    weight_shape = list(weight.shape[-2:])
 
     # OBS x IBS x OF
-    y = ivy.matmul(x, ivy.swapaxes(weight, -1, -2))
+    y = ivy.matmul(x, ivy.swapaxes(
+        ivy.reshape(weight, outer_batch_shape + [1]*max(num_inner_batch_dims-1, 0) + weight_shape), -1, -2))
 
     if ivy.exists(bias):
 
