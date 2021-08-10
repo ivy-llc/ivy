@@ -203,22 +203,27 @@
 <span class="c1"># Linear #</span>
 <span class="c1"># -------#</span>
 
-<div class="viewcode-block" id="linear"><a class="viewcode-back" href="../../../neural_net_functional/layers/linear.html#ivy.neural_net_functional.layers.linear">[docs]</a><span class="k">def</span> <span class="nf">linear</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">weight</span><span class="p">,</span> <span class="n">bias</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="linear"><a class="viewcode-back" href="../../../neural_net_functional/layers/linear.html#ivy.neural_net_functional.layers.linear">[docs]</a><span class="k">def</span> <span class="nf">linear</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">weight</span><span class="p">,</span> <span class="n">bias</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Applies a linear transformation to the incoming data: y = x * t(weight) + bias,</span>
 <span class="sd">    where t(...) indicates transpose.</span>
 
-<span class="sd">    :param x: The input x compute linear transformation on. *[N,*,in_features]*</span>
+<span class="sd">    :param x: The input x compute linear transformation on. *[batch_shape,in_features]*</span>
 <span class="sd">    :type x: array</span>
 <span class="sd">    :param weight: The weight matrix. *[out_features,in_features]*</span>
 <span class="sd">    :type weight: array</span>
 <span class="sd">    :param bias: The bias vector, default is None. *[out_features]*</span>
 <span class="sd">    :type bias: array, optional</span>
-<span class="sd">    :param f: Machine learning framework. Inferred from inputs if None.</span>
-<span class="sd">    :type f: ml_framework, optional</span>
-<span class="sd">    :return: Result array of the linear transformation. *[N,∗,out_features]*</span>
+<span class="sd">    :return: Result array of the linear transformation. *[batch_shape,out_features]*</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">_get_framework</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">linear</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">weight</span><span class="p">,</span> <span class="n">bias</span><span class="p">)</span></div>
+    <span class="n">x_shape</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+    <span class="n">weight_shape</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">weight</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+    <span class="n">num_out_feats</span> <span class="o">=</span> <span class="n">weight_shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">num_in_feats</span> <span class="o">=</span> <span class="n">weight_shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">y</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">num_in_feats</span><span class="p">]),</span> <span class="n">ivy</span><span class="o">.</span><span class="n">swapaxes</span><span class="p">(</span><span class="n">weight</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">2</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">bias</span><span class="p">):</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="n">y</span> <span class="o">+</span> <span class="n">bias</span>
+    <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">x_shape</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span><span class="n">num_out_feats</span><span class="p">])</span></div>
 
 
 <span class="c1"># Dropout #</span>
