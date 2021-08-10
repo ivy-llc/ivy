@@ -17,20 +17,34 @@ from ivy.framework_handler import get_framework as _get_framework
 
 def linear(x, weight, bias=None):
     """
-    Applies a linear transformation to the incoming data: y = x * t(weight) + bias,
-    where t(...) indicates transpose.
+    Applies a linear transformation to the incoming data: y = x * t(weight) + bias. The operation also supports batching
+    of the weight matrices. This is useful if a batch of different network parameters are to be represented.
 
-    :param x: The input x compute linear transformation on. *[batch_shape,in_features]*
+    :param x: The input x compute linear transformation on. *[outer_batch_shape,inner_batch_shape,in_features]*
     :type x: array
-    :param weight: The weight matrix. *[out_features,in_features]*
+    :param weight: The weight matrix. *[outer_batch_shape,out_features,in_features]*
     :type weight: array
-    :param bias: The bias vector, default is None. *[out_features]*
+    :param bias: The bias vector, default is None. *[outer_batch_shape,out_features]*
     :type bias: array, optional
-    :return: Result array of the linear transformation. *[batch_shape,out_features]*
+    :return: Result array of the linear transformation. *[outer_batch_shape,inner_batch_shape,out_features]*
     """
+    outer_batch_shape = list(weight.shape[:-2])
+    num_outer_batch_dims = len(outer_batch_shape)
+    inner_batch_shape = list(x.shape[num_outer_batch_dims:-1])
+    num_inner_batch_dims = len(inner_batch_shape)
+
+    # OBS x IBS x OF
     y = ivy.matmul(x, ivy.swapaxes(weight, -1, -2))
+
     if ivy.exists(bias):
-        y = y + bias
+
+        # OBS x [1]*len(IBS) x OF
+        bias_broadcast = ivy.reshape(bias, outer_batch_shape + [1]*num_inner_batch_dims + [-1])
+
+        # OBS x IBS x OF
+        y = y + bias_broadcast
+
+    # OBS x IBS x OF
     return y
 
 
