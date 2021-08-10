@@ -191,6 +191,7 @@
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="c1"># global</span>
+<span class="kn">import</span> <span class="nn">pprint</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">_np</span>
 <span class="kn">import</span> <span class="nn">json</span> <span class="k">as</span> <span class="nn">_json</span>
 <span class="kn">import</span> <span class="nn">h5py</span> <span class="k">as</span> <span class="nn">_h5py</span>
@@ -1456,7 +1457,7 @@
                     <span class="n">rep</span> <span class="o">=</span> <span class="n">v</span>
             <span class="n">new_dict</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">rep</span>
         <span class="k">if</span> <span class="n">as_repr</span><span class="p">:</span>
-            <span class="k">return</span> <span class="nb">dict</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">(</span><span class="n">new_dict</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">pprint</span><span class="o">.</span><span class="n">pformat</span><span class="p">(</span><span class="n">new_dict</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">new_dict</span>
 
     <span class="k">def</span> <span class="fm">__dir__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
