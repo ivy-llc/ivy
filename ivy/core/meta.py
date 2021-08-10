@@ -79,7 +79,7 @@ def _train_task(inner_batch, outer_batch, inner_cost_fn, outer_cost_fn, variable
 
 def _train_tasks_batched(batch, inner_batch_fn, outer_batch_fn, inner_cost_fn, outer_cost_fn, variables,
                          inner_grad_steps, inner_learning_rate, inner_optimization_step, order, average_across_steps,
-                         inner_v, keep_innver_v, outer_v, keep_outer_v, return_inner_v):
+                         inner_v, keep_innver_v, outer_v, keep_outer_v, return_inner_v, num_tasks):
     inner_batch = batch
     outer_batch = batch
     if inner_batch_fn is not None:
@@ -90,7 +90,7 @@ def _train_tasks_batched(batch, inner_batch_fn, outer_batch_fn, inner_cost_fn, o
     cost, updated_ivs, grads = _train_task(inner_batch, outer_batch, inner_cost_fn, outer_cost_fn, variables,
                                            inner_grad_steps, inner_learning_rate, inner_optimization_step, order,
                                            average_across_steps, inner_v, keep_innver_v, outer_v, keep_outer_v)
-    updated_ivs = updated_ivs.reduce_mean(0) if isinstance(updated_ivs, ivy.Container) else updated_ivs
+    updated_ivs = updated_ivs.unstack(0, dim_size=num_tasks) if isinstance(updated_ivs, ivy.Container) else updated_ivs
     grads = grads.reduce_mean(0) if isinstance(grads, ivy.Container) else grads
     if order == 1:
         if return_inner_v:
@@ -150,7 +150,7 @@ def _train_tasks(batch, inner_batch_fn, outer_batch_fn, inner_cost_fn, outer_cos
         return _train_tasks_batched(
             batch, inner_batch_fn, outer_batch_fn, inner_cost_fn, outer_cost_fn, variables, inner_grad_steps,
             inner_learning_rate, inner_optimization_step, order, average_across_steps, inner_v, keep_innver_v, outer_v,
-            keep_outer_v, return_inner_v)
+            keep_outer_v, return_inner_v, num_tasks)
     return _train_tasks_with_for_loop(
         batch, inner_batch_fn, outer_batch_fn, inner_cost_fn, outer_cost_fn, variables, inner_grad_steps,
         inner_learning_rate, inner_optimization_step, order, average_across_steps, inner_v, keep_innver_v, outer_v,
