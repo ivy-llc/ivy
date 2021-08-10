@@ -399,12 +399,21 @@ def cross(x1, x2):
 
 
 def matmul(x1, x2):
-    expand = len(x1.shape) < 3
-    if expand:
-        x1 = _mx.nd.expand_dims(x1, 0)
-        x2 = _mx.nd.expand_dims(x2, 0)
+    expanded = False
+    x1_shape = list(x1.shape)
+    x2_shape = list(x2.shape)
+    if len(x1_shape) != 3:
+        num_x1_dims = len(x1_shape)
+        x1 = _mx.nd.reshape(x1, [1]*max(2-num_x1_dims, 0) + [-1] + x1_shape[-min(num_x1_dims, 2):])
+        expanded = True
+    if len(x2_shape) != 3:
+        num_x2_dims = len(x2_shape)
+        x2 = _mx.nd.reshape(x2, [1]*max(2-num_x2_dims, 0) + [-1] + x2_shape[-min(num_x2_dims, 2):])
+        expanded = True
     res = _mx.nd.batch_dot(x1, x2)
-    return res[0] if expand else res
+    if expanded:
+        return _mx.nd.reshape(res, list(x1_shape[:-1]) + [res.shape[-1]])
+    return res
 
 
 cumsum = lambda x, axis=0: _mx.nd.cumsum(x, axis if axis >= 0 else axis % len(x.shape))
