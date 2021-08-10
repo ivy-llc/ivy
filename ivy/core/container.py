@@ -1288,7 +1288,7 @@ class Container(dict):
                 ':', termcolor.colored(':', 'magenta')).replace('{', termcolor.colored('{', 'blue')).replace(
                 '}', termcolor.colored('}', 'blue')).replace('shape=', termcolor.colored('shape=', 'magenta')).replace(
                 'device=', termcolor.colored('device=', 'magenta')).replace("<class'", "<class '").replace(
-                "'", "").replace('class', termcolor.colored('class', 'blue'))
+                "'", "").replace('<class', '<' + termcolor.colored('class', 'blue'))
         return new_dict
 
     def __dir__(self):
