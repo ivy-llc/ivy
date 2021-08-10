@@ -3,6 +3,7 @@ Base Container Object
 """
 
 # global
+import pprint
 import numpy as _np
 import json as _json
 import h5py as _h5py
@@ -1268,7 +1269,7 @@ class Container(dict):
                     rep = v
             new_dict[k] = rep
         if as_repr:
-            return dict.__repr__(new_dict)
+            return pprint.pformat(new_dict)
         return new_dict
 
     def __dir__(self):
