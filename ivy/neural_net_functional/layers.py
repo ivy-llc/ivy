@@ -15,22 +15,27 @@ from ivy.framework_handler import get_framework as _get_framework
 # Linear #
 # -------#
 
-def linear(x, weight, bias=None, f=None):
+def linear(x, weight, bias=None):
     """
     Applies a linear transformation to the incoming data: y = x * t(weight) + bias,
     where t(...) indicates transpose.
 
-    :param x: The input x compute linear transformation on. *[N,*,in_features]*
+    :param x: The input x compute linear transformation on. *[batch_shape,in_features]*
     :type x: array
     :param weight: The weight matrix. *[out_features,in_features]*
     :type weight: array
     :param bias: The bias vector, default is None. *[out_features]*
     :type bias: array, optional
-    :param f: Machine learning framework. Inferred from inputs if None.
-    :type f: ml_framework, optional
-    :return: Result array of the linear transformation. *[N,∗,out_features]*
+    :return: Result array of the linear transformation. *[batch_shape,out_features]*
     """
-    return _get_framework(x, f=f).linear(x, weight, bias)
+    x_shape = list(x.shape)
+    weight_shape = list(weight.shape)
+    num_out_feats = weight_shape[0]
+    num_in_feats = weight_shape[1]
+    y = ivy.matmul(ivy.reshape(x, [-1, num_in_feats]), ivy.swapaxes(weight, -1, -2))
+    if ivy.exists(bias):
+        y = y + bias
+    return ivy.reshape(y, x_shape[:-1] + [num_out_feats])
 
 
 # Dropout #

@@ -133,8 +133,3 @@ def conv3d_transpose(x, filters, strides: int, padding: str, output_shape: Optio
                         'Must be one of: "VALID" or "SAME"'.format(padding))
     res = _torch.nn.functional.conv_transpose3d(x, filters, None, strides, padding_list, dilation=dilations)
     return res.permute(0, 2, 3, 4, 1)
-
-
-# noinspection PyUnresolvedReferences
-def linear(x, weight, bias: Optional[_torch.Tensor] = None):
-    return _torch.nn.functional.linear(x, weight, bias)
