@@ -513,7 +513,8 @@
         <span class="n">return_inner_v</span><span class="p">,</span> <span class="n">num_tasks</span><span class="p">),</span>
         <span class="n">variables</span><span class="o">.</span><span class="n">at_key_chains</span><span class="p">(</span><span class="n">outer_v</span><span class="p">,</span> <span class="n">ignore_none</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">keep_outer_v</span> <span class="k">else</span> <span class="n">variables</span><span class="o">.</span><span class="n">prune_key_chains</span><span class="p">(</span><span class="n">outer_v</span><span class="p">,</span> <span class="n">ignore_none</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
-    <span class="k">return</span> <span class="n">cost</span><span class="p">,</span> <span class="n">grads</span><span class="o">.</span><span class="n">reduce_mean</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="o">*</span><span class="n">rets</span></div>
+    <span class="c1"># noinspection PyRedundantParentheses</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">cost</span><span class="p">,</span> <span class="n">grads</span><span class="o">.</span><span class="n">reduce_mean</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="o">*</span><span class="n">rets</span><span class="p">)</span></div>
 </pre></div>
 
            </div>
