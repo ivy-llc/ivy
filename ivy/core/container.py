@@ -3,6 +3,7 @@ Base Container Object
 """
 
 # global
+import termcolor
 import numpy as _np
 import json as _json
 import h5py as _h5py
@@ -1262,14 +1263,29 @@ class Container(dict):
                 rep = v.__repr__(as_repr=False)
             else:
                 if _ivy.is_array(v) and _reduce(_mul, v.shape) > 10:
-                    rep = (type(v), list(v.shape))
+                    rep = (type(v), "shape=", list(v.shape))
                 else:
                     rep = v
             new_dict[k] = rep
         if as_repr:
-            return _json.dumps(
+            json_dumped_str = _json.dumps(
                 _ivy.Container(new_dict).map(
-                    lambda x, kc: x if _is_jsonable(x) else x.__repr__()).to_dict(), indent=4).replace('"', '')
+                    lambda x, kc: x if _is_jsonable(x)
+                    else x.__repr__().replace('\n', '').replace(' ', '').replace(',', ', ')).to_dict(),
+                indent=4)
+            # make keys green
+            json_dumped_str_split = json_dumped_str.split('":')
+            split_size = len(json_dumped_str_split)
+            json_dumped_str =\
+                '":'.join([' "'.join(sub_str.split(' "')[:-1] + [termcolor.colored(sub_str.split(' "')[-1], 'green')])
+                           if i < split_size - 1 else sub_str
+                           for i, sub_str in enumerate(json_dumped_str_split)])
+            # remove quotation marks, shape tuple, and color other elements of the dict
+            return json_dumped_str.replace('"', '').replace(", 'shape=', [", " shape=[").replace(
+                ':', termcolor.colored(':', 'magenta')).replace('{', termcolor.colored('{', 'blue')).replace(
+                '}', termcolor.colored('}', 'blue')).replace('shape=', termcolor.colored('shape=', 'magenta')).replace(
+                'device=', termcolor.colored('device=', 'magenta')).replace("<class'", "<class '").replace(
+                "'", "").replace('class', termcolor.colored('class', 'blue'))
         return new_dict
 
     def __dir__(self):
