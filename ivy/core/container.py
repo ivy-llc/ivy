@@ -275,6 +275,7 @@ class Container(dict):
                 else ([len(x)] if isinstance(x, (list, tuple)) else None)).to_iterator() if v]
         min_num_dims = min([len(sub_shape) for sub_shape in sub_shapes])
         sub_shapes_array = _np.asarray([sub_shape[0:min_num_dims] for sub_shape in sub_shapes])
+        sub_shapes_array = _np.where(sub_shapes_array == 0, -1, sub_shapes_array)
         mask = _np.prod(sub_shapes_array / sub_shapes_array[0:1], 0) == 1
         # noinspection PyTypeChecker
         return [None if _np.isnan(i) else int(i)
@@ -693,7 +694,8 @@ class Container(dict):
         :type num_or_size_splits: int, optional
         :param axis: The axis along which to split, default is 0.
         :type axis: int, optional
-        :param with_remainder: If the tensor does not split evenly, then store the last remainder entry. Defaul is False.
+        :param with_remainder: If the tensor does not split evenly, then store the last remainder entry.
+                               Defaul is False.
         :type with_remainder: bool, optional
         :param key_chains: The key-chains to apply or not apply the method to. Default is None.
         :type key_chains: list or dict of strs, optional
@@ -1260,6 +1262,7 @@ class Container(dict):
         new_dict = dict()
         for k, v in self.items():
             if isinstance(v, _ivy.Container):
+                # noinspection PyArgumentList
                 rep = v.__repr__(as_repr=False)
             else:
                 if _ivy.is_array(v) and _reduce(_mul, v.shape) > 10:
