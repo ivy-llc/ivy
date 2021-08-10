@@ -56,10 +56,3 @@ def conv3d(*_):
 
 def conv3d_transpose(*_):
     raise Exception('Convolutions not yet implemented for numpy library')
-
-
-def linear(x, weight, bias=None):
-    ret = _np.matmul(x, _np.transpose(weight))
-    if bias is not None:
-        ret += bias
-    return ret

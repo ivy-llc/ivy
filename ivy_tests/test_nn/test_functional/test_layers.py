@@ -47,6 +47,9 @@ def test_linear(x_n_w_n_b_n_res, dtype_str, tensor_fn, dev_str, call):
     # value test
     assert np.allclose(call(ivy.linear, x, weight, bias), ivy.to_numpy(true_res))
     # compilation test
+    if call in [helpers.torch_call]:
+        # optional Tensors in framework agnostic implementations not supported by torch.jit
+        return
     helpers.assert_compilable(ivy.linear)
 
 

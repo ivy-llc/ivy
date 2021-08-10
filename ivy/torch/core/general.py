@@ -310,7 +310,7 @@ def zero_pad(x, pad_width: List[List[int]]):
     return constant_pad(x, pad_width, 0.)
 
 
-def swapaxes(x, axis0, axis1):
+def swapaxes(x, axis0: int, axis1: int):
     return torch.transpose(x, axis0, axis1)
 
 
