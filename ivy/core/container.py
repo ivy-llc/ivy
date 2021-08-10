@@ -3,7 +3,6 @@ Base Container Object
 """
 
 # global
-import pprint
 import numpy as _np
 import json as _json
 import h5py as _h5py
@@ -26,7 +25,6 @@ from operator import floordiv as _floordiv
 
 # local
 import ivy as _ivy
-import numpy as np
 
 
 def _is_jsonable(x):
@@ -1269,7 +1267,9 @@ class Container(dict):
                     rep = v
             new_dict[k] = rep
         if as_repr:
-            return pprint.pformat(new_dict)
+            return _json.dumps(
+                _ivy.Container(new_dict).map(
+                    lambda x, kc: x if _is_jsonable(x) else x.__repr__()).to_dict(), indent=4).replace('"', '')
         return new_dict
 
     def __dir__(self):
