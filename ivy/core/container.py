@@ -57,6 +57,7 @@ class Container(dict):
                 self[key] = Container(value)
             else:
                 self[key] = value
+        self._return_none_for_invalid = False
 
     # Class Methods #
     # --------------#
@@ -1298,8 +1299,13 @@ class Container(dict):
         try:
             return dict.__getitem__(self, item)
         except KeyError:
-            # noinspection PyUnresolvedReferences
-            return super.__getattr__(item)
+            try:
+                # noinspection PyUnresolvedReferences
+                return super.__getattr__(item)
+            except AttributeError as e:
+                if self._return_none_for_invalid:
+                    return
+                raise e
 
     def __setattr__(self, name, value):
         if name[0] != '_':
@@ -1318,7 +1324,12 @@ class Container(dict):
         if isinstance(query, str):
             if '/' in query:
                 return self.at_key_chain(query)
-            return dict.__getitem__(self, query)
+            try:
+                return dict.__getitem__(self, query)
+            except KeyError as e:
+                if self._return_none_for_invalid:
+                    return
+                raise e
         return_dict = dict()
         for key, value in sorted(self.items()):
             if isinstance(value, Container):
@@ -1467,3 +1478,13 @@ class Container(dict):
         The device to which the arrays in the container belong, with None returned if the devices are not consistent
         """
         return self._get_dev_str()
+
+    @property
+    def if_exists(self):
+        """
+        Returns the following keychain if
+        """
+        ret = self.copy()
+        # noinspection PyStatementEffect
+        ret._return_none_for_invalid = True
+        return ret
