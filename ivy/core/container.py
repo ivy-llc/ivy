@@ -57,7 +57,7 @@ class Container(dict):
                 self[key] = Container(value)
             else:
                 self[key] = value
-        self._return_none_for_invalid = False
+        self['_return_none_for_invalid'] = False
 
     # Class Methods #
     # --------------#
@@ -1303,7 +1303,7 @@ class Container(dict):
                 # noinspection PyUnresolvedReferences
                 return super.__getattr__(item)
             except AttributeError as e:
-                if self._return_none_for_invalid:
+                if self['_return_none_for_invalid']:
                     return
                 raise e
 
@@ -1486,5 +1486,5 @@ class Container(dict):
         """
         ret = self.copy()
         # noinspection PyStatementEffect
-        ret._return_none_for_invalid = True
+        ret['_return_none_for_invalid'] = True
         return ret
