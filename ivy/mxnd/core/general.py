@@ -410,6 +410,12 @@ def matmul(x1, x2):
         num_x2_dims = len(x2_shape)
         x2 = _mx.nd.reshape(x2, [1]*max(2-num_x2_dims, 0) + [-1] + x2_shape[-min(num_x2_dims, 2):])
         expanded = True
+    x1_batch_size = x1.shape[0]
+    x2_batch_size = x2.shape[0]
+    if x1_batch_size > x2_batch_size:
+        x2 = _mx.nd.tile(x2, (int(x1_batch_size/x2_batch_size), 1, 1))
+    elif x2_batch_size > x1_batch_size:
+        x1 = _mx.nd.tile(x1, (int(x2_batch_size / x1_batch_size), 1, 1))
     res = _mx.nd.batch_dot(x1, x2)
     if expanded:
         return _mx.nd.reshape(res, list(x1_shape[:-1]) + [res.shape[-1]])
