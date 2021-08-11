@@ -245,7 +245,7 @@
                 <span class="bp">self</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">Container</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="bp">self</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_return_none_for_invalid</span> <span class="o">=</span> <span class="kc">False</span></div>
+        <span class="bp">self</span><span class="p">[</span><span class="s1">&#39;_return_none_for_invalid&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span></div>
 
     <span class="c1"># Class Methods #</span>
     <span class="c1"># --------------#</span>
@@ -1491,7 +1491,7 @@
                 <span class="c1"># noinspection PyUnresolvedReferences</span>
                 <span class="k">return</span> <span class="nb">super</span><span class="o">.</span><span class="fm">__getattr__</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
             <span class="k">except</span> <span class="ne">AttributeError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_return_none_for_invalid</span><span class="p">:</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="p">[</span><span class="s1">&#39;_return_none_for_invalid&#39;</span><span class="p">]:</span>
                     <span class="k">return</span>
                 <span class="k">raise</span> <span class="n">e</span>
 
@@ -1674,7 +1674,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">ret</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
         <span class="c1"># noinspection PyStatementEffect</span>
-        <span class="n">ret</span><span class="o">.</span><span class="n">_return_none_for_invalid</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="n">ret</span><span class="p">[</span><span class="s1">&#39;_return_none_for_invalid&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="k">return</span> <span class="n">ret</span></div>
 </pre></div>
 
