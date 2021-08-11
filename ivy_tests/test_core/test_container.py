@@ -1627,3 +1627,8 @@ def test_container_if_exists(dev_str, call):
     assert np.allclose(ivy.to_numpy(container.if_exists('a')), np.array([[[1.], [2.], [3.]]]))
     assert 'c' not in container
     assert container.if_exists('c') is None
+    container['c'] = ivy.array([[[1.], [2.], [3.]]], dev_str='cpu:0')
+    assert np.allclose(ivy.to_numpy(container.if_exists('c')), np.array([[[1.], [2.], [3.]]]))
+    assert container.if_exists('d') is None
+    container.d = ivy.array([[[1.], [2.], [3.]]], dev_str='cpu:0')
+    assert np.allclose(ivy.to_numpy(container.if_exists('d')), np.array([[[1.], [2.], [3.]]]))
