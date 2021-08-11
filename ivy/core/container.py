@@ -57,7 +57,6 @@ class Container(dict):
                 self[key] = Container(value)
             else:
                 self[key] = value
-        self['_return_none_for_invalid'] = False
 
     # Class Methods #
     # --------------#
@@ -1256,6 +1255,15 @@ class Container(dict):
                 return_cont[k] = _ivy.reshape(v, v_shape)
         return Container(return_cont)
 
+    def if_exists(self, key):
+        """
+        Returns the sub-container at the following key if it exists, otherwise None.
+        """
+        try:
+            return self[key]
+        except KeyError:
+            return
+
     # Built-ins #
     # ----------#
 
@@ -1299,13 +1307,8 @@ class Container(dict):
         try:
             return dict.__getitem__(self, item)
         except KeyError:
-            try:
-                # noinspection PyUnresolvedReferences
-                return super.__getattr__(item)
-            except AttributeError as e:
-                if self['_return_none_for_invalid']:
-                    return
-                raise e
+            # noinspection PyUnresolvedReferences
+            return super.__getattr__(item)
 
     def __setattr__(self, name, value):
         if name[0] != '_':
@@ -1324,12 +1327,7 @@ class Container(dict):
         if isinstance(query, str):
             if '/' in query:
                 return self.at_key_chain(query)
-            try:
-                return dict.__getitem__(self, query)
-            except KeyError as e:
-                if self._return_none_for_invalid:
-                    return
-                raise e
+            return dict.__getitem__(self, query)
         return_dict = dict()
         for key, value in sorted(self.items()):
             if isinstance(value, Container):
@@ -1478,13 +1476,3 @@ class Container(dict):
         The device to which the arrays in the container belong, with None returned if the devices are not consistent
         """
         return self._get_dev_str()
-
-    @property
-    def if_exists(self):
-        """
-        Returns the following keychain if
-        """
-        ret = self.copy()
-        # noinspection PyStatementEffect
-        ret['_return_none_for_invalid'] = True
-        return ret
