@@ -3,7 +3,6 @@ Base Container Object
 """
 
 # global
-import numbers
 import termcolor
 import numpy as _np
 import json as _json
@@ -1330,17 +1329,15 @@ class Container(dict):
             super.__setattr__(self, name, value)
 
     def _get_queue_item(self, query):
-        cont_slices = None
-        if isinstance(query, numbers.Number):
-            queries = [query]
+        if isinstance(query, int):
+            queue_queries = [query]
         elif isinstance(query, slice):
-            queries = list(range(query.start, query.stop, query.step))
+            queue_queries = list(range(query.start, query.stop, query.step))
         elif isinstance(query, (list, tuple)):
-            queries = list(range(query[0].start, query[0].stop, query[0].step))
-            cont_slices = query[1:]
+            queue_queries = list(range(query[0].start, query[0].stop, query[0].step))
         else:
             raise Exception('Invalid slice type, must be one of integer, slice, or sequences of slices.')
-        queue_idxs = set([_np.sum(q >= self._queue_load_sizes_cum).item() for q in queries])
+        queue_idxs = set([_np.sum(q >= self._queue_load_sizes_cum).item() for q in queue_queries])
         conts = list()
         for i in queue_idxs:
             if i not in self._loaded_containers_from_queues:
@@ -1351,9 +1348,15 @@ class Container(dict):
                 cont = self._loaded_containers_from_queues[i]
             conts.append(cont)
         combined_cont = self._container_combine_method(conts)
-        if _ivy.exists(cont_slices):
-            return combined_cont[cont_slices]
-        return combined_cont
+        idx = list(queue_idxs)[0]
+        offset = 0 if idx == 0 else self._queue_load_sizes_cum[idx - 1]
+        if isinstance(query, int):
+            shifted_query = query - offset
+        elif isinstance(query, slice):
+            shifted_query = slice(query.start-offset, query.stop-offset, query.step)
+        elif isinstance(query, (list, tuple)):
+            shifted_query = tuple([slice(slc.start-offset, slc.stop-offset, slc.step) for slc in query])
+        return combined_cont[shifted_query]
 
     def __getitem__(self, query):
         """

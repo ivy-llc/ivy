@@ -1670,8 +1670,8 @@ def test_container_from_queues(dev_str, call):
         queue_was_empty = True
     assert queue_was_empty
     in_queues[0].put(True)
-    assert np.allclose(ivy.to_numpy(container[0].a[0]), np.array([1., 2., 3.]))
-    assert np.allclose(ivy.to_numpy(container[0].a[0]), np.array([1., 2., 3.]))
+    assert np.allclose(ivy.to_numpy(container[0].a), np.array([1., 2., 3.]))
+    assert np.allclose(ivy.to_numpy(container[0].a), np.array([1., 2., 3.]))
 
     # queue 1
     queue_was_empty = False
@@ -1687,10 +1687,10 @@ def test_container_from_queues(dev_str, call):
         queue_was_empty = True
     assert queue_was_empty
     in_queues[1].put(True)
-    assert np.allclose(ivy.to_numpy(container[1].a[0]), np.array([2., 4., 6.]))
-    assert np.allclose(ivy.to_numpy(container[1].a[0]), np.array([2., 4., 6.]))
-    assert np.allclose(ivy.to_numpy(container[2].a[0]), np.array([2., 4., 6.]))
-    assert np.allclose(ivy.to_numpy(container[2].a[0]), np.array([2., 4., 6.]))
+    assert np.allclose(ivy.to_numpy(container[1].a), np.array([2., 4., 6.]))
+    assert np.allclose(ivy.to_numpy(container[1].a), np.array([2., 4., 6.]))
+    assert np.allclose(ivy.to_numpy(container[2].a), np.array([2., 4., 6.]))
+    assert np.allclose(ivy.to_numpy(container[2].a), np.array([2., 4., 6.]))
 
     # queue 2
     queue_was_empty = False
@@ -1700,8 +1700,8 @@ def test_container_from_queues(dev_str, call):
         queue_was_empty = True
     assert queue_was_empty
     in_queues[2].put(True)
-    assert np.allclose(ivy.to_numpy(container[3].a[0]), np.array([3., 6., 9.]))
-    assert np.allclose(ivy.to_numpy(container[3].a[0]), np.array([3., 6., 9.]))
+    assert np.allclose(ivy.to_numpy(container[3].a), np.array([3., 6., 9.]))
+    assert np.allclose(ivy.to_numpy(container[3].a), np.array([3., 6., 9.]))
 
     # stop workers
     in_queues[0].put(False)
