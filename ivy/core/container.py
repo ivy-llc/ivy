@@ -1343,7 +1343,6 @@ class Container(dict):
             if i not in self._loaded_containers_from_queues:
                 cont = self._queues[i].get(timeout=0.1)
                 self._loaded_containers_from_queues[i] = cont
-                self._queues[i].close()
             else:
                 cont = self._loaded_containers_from_queues[i]
             conts.append(cont)
@@ -1503,15 +1502,6 @@ class Container(dict):
 
     def __xor__(self, other):
         return self.reduce([self, other], lambda x: _reduce(_xor, x))
-
-    def __del__(self):
-        if _ivy.exists(self._queues):
-            try:
-                for q in self._queues:
-                    q.cancel_join_thread()
-                    q.close()
-            finally:
-                del self._queues
 
     # Getters #
     # --------#
