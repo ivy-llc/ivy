@@ -3,6 +3,7 @@ Base Container Object
 """
 
 # global
+import numbers
 import termcolor
 import numpy as _np
 import json as _json
@@ -39,10 +40,18 @@ def _is_jsonable(x):
 # noinspection PyMissingConstructor
 class Container(dict):
 
-    def __init__(self, dict_in=None, **kwargs):
+    def __init__(self, dict_in=None, queues=None, queue_load_sizes=None, container_combine_method='list_join',
+                 **kwargs):
         """
         Initialize container object from input dict representation.
         """
+        self._queues = queues
+        if _ivy.exists(self._queues):
+            self._queue_load_sizes = queue_load_sizes
+            self._container_combine_method = {'list_join': self.list_join,
+                                              'concat': lambda conts: self.concat(conts, 0)}[container_combine_method]
+            self._loaded_containers_from_queues = dict()
+            self._queue_load_sizes_cum = _np.cumsum(self._queue_load_sizes)
         if dict_in is None:
             if kwargs:
                 dict_in = dict(**kwargs)
@@ -270,6 +279,10 @@ class Container(dict):
     # ----------------#
 
     def _get_shape(self):
+        if not len(self.keys()):
+            if _ivy.exists(self._queues):
+                return [self._queue_load_sizes_cum[-1]]
+            return [0]
         sub_shapes =\
             [v for k, v in self.map(lambda x, kc: list(x.shape) if _ivy.is_array(x)
                 else ([len(x)] if isinstance(x, (list, tuple)) else None)).to_iterator() if v]
@@ -1316,6 +1329,32 @@ class Container(dict):
         else:
             super.__setattr__(self, name, value)
 
+    def _get_queue_item(self, query):
+        cont_slices = None
+        if isinstance(query, numbers.Number):
+            queries = [query]
+        elif isinstance(query, slice):
+            queries = list(range(query.start, query.stop, query.step))
+        elif isinstance(query, (list, tuple)):
+            queries = list(range(query[0].start, query[0].stop, query[0].step))
+            cont_slices = query[1:]
+        else:
+            raise Exception('Invalid slice type, must be one of integer, slice, or sequences of slices.')
+        queue_idxs = set([_np.sum(q >= self._queue_load_sizes_cum).item() for q in queries])
+        conts = list()
+        for i in queue_idxs:
+            if i not in self._loaded_containers_from_queues:
+                cont = self._queues[i].get(timeout=0.1)
+                self._loaded_containers_from_queues[i] = cont
+                self._queues[i].close()
+            else:
+                cont = self._loaded_containers_from_queues[i]
+            conts.append(cont)
+        combined_cont = self._container_combine_method(conts)
+        if _ivy.exists(cont_slices):
+            return combined_cont[cont_slices]
+        return combined_cont
+
     def __getitem__(self, query):
         """
         Get slice, key or key chain of container object.
@@ -1328,6 +1367,8 @@ class Container(dict):
             if '/' in query:
                 return self.at_key_chain(query)
             return dict.__getitem__(self, query)
+        elif _ivy.exists(self._queues):
+            return self._get_queue_item(query)
         return_dict = dict()
         for key, value in sorted(self.items()):
             if isinstance(value, Container):
@@ -1459,6 +1500,15 @@ class Container(dict):
 
     def __xor__(self, other):
         return self.reduce([self, other], lambda x: _reduce(_xor, x))
+
+    def __del__(self):
+        if _ivy.exists(self._queues):
+            try:
+                for q in self._queues:
+                    q.cancel_join_thread()
+                    q.close()
+            finally:
+                del self._queues
 
     # Getters #
     # --------#
