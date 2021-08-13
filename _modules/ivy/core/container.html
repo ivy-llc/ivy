@@ -191,6 +191,7 @@
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="c1"># global</span>
+<span class="kn">import</span> <span class="nn">einops</span>
 <span class="kn">import</span> <span class="nn">termcolor</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">_np</span>
 <span class="kn">import</span> <span class="nn">json</span> <span class="k">as</span> <span class="nn">_json</span>
@@ -1052,6 +1053,26 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">kc</span><span class="p">:</span>
                         <span class="n">_ivy</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">pre_shape</span> <span class="o">+</span> <span class="nb">list</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="n">shape_slice</span><span class="p">])</span> <span class="o">+</span> <span class="n">post_shape</span><span class="p">)</span> <span class="k">if</span> <span class="n">_ivy</span><span class="o">.</span><span class="n">is_array</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">else</span>
                         <span class="n">x</span><span class="p">,</span> <span class="n">key_chains</span><span class="p">,</span> <span class="n">to_apply</span><span class="p">,</span> <span class="n">prune_unapplied</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Container.einops_rearrange"><a class="viewcode-back" href="../../../core/container/Container.html#ivy.core.container.Container.einops_rearrange">[docs]</a>    <span class="k">def</span> <span class="nf">einops_rearrange</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pattern</span><span class="p">,</span>  <span class="n">key_chains</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">to_apply</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">prune_unapplied</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">axes_lengths</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Perform einops rearrange operation on each sub array in the container.</span>
+
+<span class="sd">        :param pattern: Rearrangement pattern.</span>
+<span class="sd">        :type pattern: str</span>
+<span class="sd">        :param axes_lengths: Any additional specifications for dimensions.</span>
+<span class="sd">        :type axes_lengths: keyword parameter args</span>
+<span class="sd">        :param key_chains: The key-chains to apply or not apply the method to. Default is None.</span>
+<span class="sd">        :type key_chains: list or dict of strs, optional</span>
+<span class="sd">        :param to_apply: If True, the method will be applied to key_chains, otherwise key_chains will be skipped.</span>
+<span class="sd">                         Default is True.</span>
+<span class="sd">        :type to_apply: bool, optional</span>
+<span class="sd">        :param prune_unapplied: Whether to prune key_chains for which the function was not applied. Default is False.</span>
+<span class="sd">        :type prune_unapplied: bool, optional</span>
+<span class="sd">        :return: ivy.Container with each chosen array having the axes swapped.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">kc</span><span class="p">:</span> <span class="n">einops</span><span class="o">.</span><span class="n">rearrange</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">pattern</span><span class="p">,</span> <span class="o">**</span><span class="n">axes_lengths</span><span class="p">)</span> <span class="k">if</span> <span class="n">_ivy</span><span class="o">.</span><span class="n">is_array</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">else</span> <span class="n">x</span><span class="p">,</span>
+                        <span class="n">key_chains</span><span class="p">,</span> <span class="n">to_apply</span><span class="p">,</span> <span class="n">prune_unapplied</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Container.to_dev"><a class="viewcode-back" href="../../../core/container/Container.html#ivy.core.container.Container.to_dev">[docs]</a>    <span class="k">def</span> <span class="nf">to_dev</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dev_str</span><span class="p">,</span> <span class="n">key_chains</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">to_apply</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">prune_unapplied</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
