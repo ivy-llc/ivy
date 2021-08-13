@@ -145,6 +145,35 @@ class Container(dict):
                 raise Exception(str(e) + '\nContainer concat operation only valid for containers of arrays')
 
     @staticmethod
+    def stack(containers, dim):
+        """
+        Stack containers together along the specified dimension.
+
+        :param containers: containers to stack
+        :type containers: sequence of Container objects
+        :param dim: dimension along which to stack
+        :type dim: int
+        :return: Stacked containers
+        """
+
+        container0 = containers[0]
+
+        if isinstance(container0, dict):
+            return_dict = dict()
+            for key in container0.keys():
+                return_dict[key] = Container.stack([container[key] for container in containers], dim)
+            return Container(return_dict)
+        else:
+            # noinspection PyBroadException
+            try:
+                if len(containers[0].shape) == 0:
+                    return _ivy.stack([_ivy.reshape(item, [1] * (dim + 1)) for item in containers], dim)
+                else:
+                    return _ivy.stack(containers, dim)
+            except Exception as e:
+                raise Exception(str(e) + '\nContainer stack operation only valid for containers of arrays')
+
+    @staticmethod
     def from_disk_as_hdf5(h5_obj_or_filepath, slice_obj=slice(None)):
         """
         Load container object from disk, as an h5py file, at the specified hdf5 filepath.
