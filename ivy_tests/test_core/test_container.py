@@ -66,6 +66,20 @@ def test_container_concat(dev_str, call):
     assert np.allclose(ivy.to_numpy(container_concatenated.b.d), np.array([3, 6]))
 
 
+def test_container_stack(dev_str, call):
+    container_0 = Container({'a': ivy.array([1]),
+                             'b': {'c': ivy.array([2]), 'd': ivy.array([3])}})
+    container_1 = Container({'a': ivy.array([4]),
+                             'b': {'c': ivy.array([5]), 'd': ivy.array([6])}})
+    container_stacked = ivy.Container.stack([container_0, container_1], 0)
+    assert np.allclose(ivy.to_numpy(container_stacked['a']), np.array([[1], [4]]))
+    assert np.allclose(ivy.to_numpy(container_stacked.a), np.array([[1], [4]]))
+    assert np.allclose(ivy.to_numpy(container_stacked['b']['c']), np.array([[2], [5]]))
+    assert np.allclose(ivy.to_numpy(container_stacked.b.c), np.array([[2], [5]]))
+    assert np.allclose(ivy.to_numpy(container_stacked['b']['d']), np.array([[3], [6]]))
+    assert np.allclose(ivy.to_numpy(container_stacked.b.d), np.array([[3], [6]]))
+
+
 def test_container_from_dict(dev_str, call):
     dict_in = {'a': ivy.array([1]),
                'b': {'c': ivy.array([2]), 'd': ivy.array([3])}}
