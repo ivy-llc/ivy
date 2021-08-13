@@ -601,6 +601,20 @@ def test_container_reshape(dev_str, call):
     assert np.allclose(ivy.to_numpy(container_reshaped.b.d), np.array([[[10.]], [[9.]]]))
 
 
+def test_container_einops_rearrange(dev_str, call):
+    dict_in = {'a': ivy.array([[0., 1., 2., 3.]]),
+               'b': {'c': ivy.array([[5., 10., 15., 20.]]), 'd': ivy.array([[10., 9., 8., 7.]])}}
+    container = Container(dict_in)
+
+    container_reshaped = container.einops_rearrange('b n -> n b')
+    assert np.allclose(ivy.to_numpy(container_reshaped['a']), np.array([[0.], [1.], [2.], [3.]]))
+    assert np.allclose(ivy.to_numpy(container_reshaped.a), np.array([[0.], [1.], [2.], [3.]]))
+    assert np.allclose(ivy.to_numpy(container_reshaped['b']['c']), np.array([[5.], [10.], [15.], [20.]]))
+    assert np.allclose(ivy.to_numpy(container_reshaped.b.c), np.array([[5.], [10.], [15.], [20.]]))
+    assert np.allclose(ivy.to_numpy(container_reshaped['b']['d']), np.array([[10.], [9.], [8.], [7.]]))
+    assert np.allclose(ivy.to_numpy(container_reshaped.b.d), np.array([[10.], [9.], [8.], [7.]]))
+
+
 def test_container_to_dev(dev_str, call):
     dict_in = {'a': ivy.array([[0., 1., 2., 3.]]),
                'b': {'c': ivy.array([[5., 10., 15., 20.]]), 'd': ivy.array([[10., 9., 8., 7.]])}}
