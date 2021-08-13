@@ -17,19 +17,39 @@ def test_container_list_join(dev_str, call):
                              'b': {'c': [ivy.array([2])], 'd': [ivy.array([3])]}})
     container_1 = Container({'a': [ivy.array([4])],
                              'b': {'c': [ivy.array([5])], 'd': [ivy.array([6])]}})
-    container_joined = ivy.Container.list_join([container_0, container_1])
-    assert ivy.to_numpy(container_joined['a'][0]) == np.array([1])
-    assert ivy.to_numpy(container_joined.a[0]) == np.array([1])
-    assert ivy.to_numpy(container_joined['b']['c'][0]) == np.array([2])
-    assert ivy.to_numpy(container_joined.b.c[0]) == np.array([2])
-    assert ivy.to_numpy(container_joined['b']['d'][0]) == np.array([3])
-    assert ivy.to_numpy(container_joined.b.d[0]) == np.array([3])
-    assert ivy.to_numpy(container_joined['a'][1]) == np.array([4])
-    assert ivy.to_numpy(container_joined.a[1]) == np.array([4])
-    assert ivy.to_numpy(container_joined['b']['c'][1]) == np.array([5])
-    assert ivy.to_numpy(container_joined.b.c[1]) == np.array([5])
-    assert ivy.to_numpy(container_joined['b']['d'][1]) == np.array([6])
-    assert ivy.to_numpy(container_joined.b.d[1]) == np.array([6])
+    container_list_joined = ivy.Container.list_join([container_0, container_1])
+    assert ivy.to_numpy(container_list_joined['a'][0]) == np.array([1])
+    assert ivy.to_numpy(container_list_joined.a[0]) == np.array([1])
+    assert ivy.to_numpy(container_list_joined['b']['c'][0]) == np.array([2])
+    assert ivy.to_numpy(container_list_joined.b.c[0]) == np.array([2])
+    assert ivy.to_numpy(container_list_joined['b']['d'][0]) == np.array([3])
+    assert ivy.to_numpy(container_list_joined.b.d[0]) == np.array([3])
+    assert ivy.to_numpy(container_list_joined['a'][1]) == np.array([4])
+    assert ivy.to_numpy(container_list_joined.a[1]) == np.array([4])
+    assert ivy.to_numpy(container_list_joined['b']['c'][1]) == np.array([5])
+    assert ivy.to_numpy(container_list_joined.b.c[1]) == np.array([5])
+    assert ivy.to_numpy(container_list_joined['b']['d'][1]) == np.array([6])
+    assert ivy.to_numpy(container_list_joined.b.d[1]) == np.array([6])
+
+
+def test_container_list_stack(dev_str, call):
+    container_0 = Container({'a': ivy.array([1]),
+                             'b': {'c': ivy.array([2]), 'd': ivy.array([3])}})
+    container_1 = Container({'a': ivy.array([4]),
+                             'b': {'c': ivy.array([5]), 'd': ivy.array([6])}})
+    container_list_stacked = ivy.Container.list_stack([container_0, container_1], 0)
+    assert ivy.to_numpy(container_list_stacked['a'][0]) == np.array([1])
+    assert ivy.to_numpy(container_list_stacked.a[0]) == np.array([1])
+    assert ivy.to_numpy(container_list_stacked['b']['c'][0]) == np.array([2])
+    assert ivy.to_numpy(container_list_stacked.b.c[0]) == np.array([2])
+    assert ivy.to_numpy(container_list_stacked['b']['d'][0]) == np.array([3])
+    assert ivy.to_numpy(container_list_stacked.b.d[0]) == np.array([3])
+    assert ivy.to_numpy(container_list_stacked['a'][1]) == np.array([4])
+    assert ivy.to_numpy(container_list_stacked.a[1]) == np.array([4])
+    assert ivy.to_numpy(container_list_stacked['b']['c'][1]) == np.array([5])
+    assert ivy.to_numpy(container_list_stacked.b.c[1]) == np.array([5])
+    assert ivy.to_numpy(container_list_stacked['b']['d'][1]) == np.array([6])
+    assert ivy.to_numpy(container_list_stacked.b.d[1]) == np.array([6])
 
 
 def test_container_from_dict(dev_str, call):
