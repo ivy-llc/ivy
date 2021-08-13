@@ -629,6 +629,26 @@ def test_container_einops_reduce(dev_str, call):
     assert np.allclose(ivy.to_numpy(container_reduced.b.d), np.array([8.5]))
 
 
+def test_container_einops_repeat(dev_str, call):
+    dict_in = {'a': ivy.array([[0., 1., 2., 3.]]),
+               'b': {'c': ivy.array([[5., 10., 15., 20.]]), 'd': ivy.array([[10., 9., 8., 7.]])}}
+    container = Container(dict_in)
+
+    container_repeated = container.einops_repeat('b n -> b n c', c=2)
+    assert np.allclose(ivy.to_numpy(container_repeated['a']),
+                       np.array([[[0., 0.], [1., 1.], [2., 2.], [3., 3.]]]))
+    assert np.allclose(ivy.to_numpy(container_repeated.a),
+                       np.array([[[0., 0.], [1., 1.], [2., 2.], [3., 3.]]]))
+    assert np.allclose(ivy.to_numpy(container_repeated['b']['c']),
+                       np.array([[[5., 5.], [10., 10.], [15., 15.], [20., 20.]]]))
+    assert np.allclose(ivy.to_numpy(container_repeated.b.c),
+                       np.array([[[5., 5.], [10., 10.], [15., 15.], [20., 20.]]]))
+    assert np.allclose(ivy.to_numpy(container_repeated['b']['d']),
+                       np.array([[[10., 10.], [9., 9.], [8., 8.], [7., 7.]]]))
+    assert np.allclose(ivy.to_numpy(container_repeated.b.d),
+                       np.array([[[10., 10.], [9., 9.], [8., 8.], [7., 7.]]]))
+
+
 def test_container_to_dev(dev_str, call):
     dict_in = {'a': ivy.array([[0., 1., 2., 3.]]),
                'b': {'c': ivy.array([[5., 10., 15., 20.]]), 'd': ivy.array([[10., 9., 8., 7.]])}}
