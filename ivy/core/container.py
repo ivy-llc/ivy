@@ -872,8 +872,6 @@ class Container(dict):
 
         :param pattern: Rearrangement pattern.
         :type pattern: str
-        :param axes_lengths: Any additional specifications for dimensions.
-        :type axes_lengths: keyword parameter args
         :param key_chains: The key-chains to apply or not apply the method to. Default is None.
         :type key_chains: list or dict of strs, optional
         :param to_apply: If True, the method will be applied to key_chains, otherwise key_chains will be skipped.
@@ -881,7 +879,9 @@ class Container(dict):
         :type to_apply: bool, optional
         :param prune_unapplied: Whether to prune key_chains for which the function was not applied. Default is False.
         :type prune_unapplied: bool, optional
-        :return: ivy.Container with each chosen array having the axes swapped.
+        :param axes_lengths: Any additional specifications for dimensions.
+        :type axes_lengths: keyword parameter args
+        :return: ivy.Container with each array having einops.rearrange applied.
         """
         return self.map(lambda x, kc: einops.rearrange(x, pattern, **axes_lengths) if _ivy.is_array(x) else x,
                         key_chains, to_apply, prune_unapplied)
@@ -894,8 +894,6 @@ class Container(dict):
         :type pattern: str
         :param reduction: One of available reductions ('min', 'max', 'sum', 'mean', 'prod'), or callable.
         :type reduction: str or callable
-        :param axes_lengths: Any additional specifications for dimensions.
-        :type axes_lengths: keyword parameter args
         :param key_chains: The key-chains to apply or not apply the method to. Default is None.
         :type key_chains: list or dict of strs, optional
         :param to_apply: If True, the method will be applied to key_chains, otherwise key_chains will be skipped.
@@ -903,9 +901,31 @@ class Container(dict):
         :type to_apply: bool, optional
         :param prune_unapplied: Whether to prune key_chains for which the function was not applied. Default is False.
         :type prune_unapplied: bool, optional
-        :return: ivy.Container with each chosen array having the axes swapped.
+        :param axes_lengths: Any additional specifications for dimensions.
+        :type axes_lengths: keyword parameter args
+        :return: ivy.Container with each array having einops.reduce applied.
         """
         return self.map(lambda x, kc: einops.reduce(x, pattern, reduction, **axes_lengths) if _ivy.is_array(x) else x,
+                        key_chains, to_apply, prune_unapplied)
+
+    def einops_repeat(self, pattern, key_chains=None, to_apply=True, prune_unapplied=False, **axes_lengths):
+        """
+        Perform einops repeat operation on each sub array in the container.
+
+        :param pattern: Rearrangement pattern.
+        :type pattern: str
+        :param key_chains: The key-chains to apply or not apply the method to. Default is None.
+        :type key_chains: list or dict of strs, optional
+        :param to_apply: If True, the method will be applied to key_chains, otherwise key_chains will be skipped.
+                         Default is True.
+        :type to_apply: bool, optional
+        :param prune_unapplied: Whether to prune key_chains for which the function was not applied. Default is False.
+        :type prune_unapplied: bool, optional
+        :param axes_lengths: Any additional specifications for dimensions.
+        :type axes_lengths: keyword parameter args
+        :return: ivy.Container with each array having einops.repeat applied.
+        """
+        return self.map(lambda x, kc: einops.repeat(x, pattern, **axes_lengths) if _ivy.is_array(x) else x,
                         key_chains, to_apply, prune_unapplied)
 
     def to_dev(self, dev_str, key_chains=None, to_apply=True, prune_unapplied=False):
