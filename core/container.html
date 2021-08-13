@@ -996,6 +996,23 @@ Default is True.</p></li>
 </dd></dl>
 
 <dl class="py method">
+<dt id="ivy.core.container.Container.stack">
+<em class="property">static </em><code class="sig-name descname">stack</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">containers</span></em>, <em class="sig-param"><span class="n">dim</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/container.html#Container.stack"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.stack" title="Permalink to this definition">¶</a></dt>
+<dd><p>Stack containers together along the specified dimension.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>containers</strong> (<em>sequence of Container objects</em>) – containers to stack</p></li>
+<li><p><strong>dim</strong> (<em>int</em>) – dimension along which to stack</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Stacked containers</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt id="ivy.core.container.Container.stop_gradients">
 <code class="sig-name descname">stop_gradients</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">preserve_type</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">key_chains</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">to_apply</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">prune_unapplied</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/container.html#Container.stop_gradients"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.stop_gradients" title="Permalink to this definition">¶</a></dt>
 <dd><p>Stop gradients of all array entries in the container.</p>
