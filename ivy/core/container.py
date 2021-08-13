@@ -1379,7 +1379,7 @@ class Container(dict):
                 # noinspection PyArgumentList
                 rep = v.__repr__(as_repr=False)
             else:
-                if _ivy.is_array(v) and _reduce(_mul, v.shape) > 10:
+                if _ivy.is_array(v) and len(list(v.shape)) > 0 and _reduce(_mul, v.shape) > 10:
                     rep = (type(v), "shape=", list(v.shape))
                 else:
                     rep = v
