@@ -606,13 +606,27 @@ def test_container_einops_rearrange(dev_str, call):
                'b': {'c': ivy.array([[5., 10., 15., 20.]]), 'd': ivy.array([[10., 9., 8., 7.]])}}
     container = Container(dict_in)
 
-    container_reshaped = container.einops_rearrange('b n -> n b')
-    assert np.allclose(ivy.to_numpy(container_reshaped['a']), np.array([[0.], [1.], [2.], [3.]]))
-    assert np.allclose(ivy.to_numpy(container_reshaped.a), np.array([[0.], [1.], [2.], [3.]]))
-    assert np.allclose(ivy.to_numpy(container_reshaped['b']['c']), np.array([[5.], [10.], [15.], [20.]]))
-    assert np.allclose(ivy.to_numpy(container_reshaped.b.c), np.array([[5.], [10.], [15.], [20.]]))
-    assert np.allclose(ivy.to_numpy(container_reshaped['b']['d']), np.array([[10.], [9.], [8.], [7.]]))
-    assert np.allclose(ivy.to_numpy(container_reshaped.b.d), np.array([[10.], [9.], [8.], [7.]]))
+    container_rearranged = container.einops_rearrange('b n -> n b')
+    assert np.allclose(ivy.to_numpy(container_rearranged['a']), np.array([[0.], [1.], [2.], [3.]]))
+    assert np.allclose(ivy.to_numpy(container_rearranged.a), np.array([[0.], [1.], [2.], [3.]]))
+    assert np.allclose(ivy.to_numpy(container_rearranged['b']['c']), np.array([[5.], [10.], [15.], [20.]]))
+    assert np.allclose(ivy.to_numpy(container_rearranged.b.c), np.array([[5.], [10.], [15.], [20.]]))
+    assert np.allclose(ivy.to_numpy(container_rearranged['b']['d']), np.array([[10.], [9.], [8.], [7.]]))
+    assert np.allclose(ivy.to_numpy(container_rearranged.b.d), np.array([[10.], [9.], [8.], [7.]]))
+
+
+def test_container_einops_reduce(dev_str, call):
+    dict_in = {'a': ivy.array([[0., 1., 2., 3.]]),
+               'b': {'c': ivy.array([[5., 10., 15., 20.]]), 'd': ivy.array([[10., 9., 8., 7.]])}}
+    container = Container(dict_in)
+
+    container_reduced = container.einops_reduce('b n -> b', 'mean')
+    assert np.allclose(ivy.to_numpy(container_reduced['a']), np.array([1.5]))
+    assert np.allclose(ivy.to_numpy(container_reduced.a), np.array([1.5]))
+    assert np.allclose(ivy.to_numpy(container_reduced['b']['c']), np.array([12.5]))
+    assert np.allclose(ivy.to_numpy(container_reduced.b.c), np.array([12.5]))
+    assert np.allclose(ivy.to_numpy(container_reduced['b']['d']), np.array([8.5]))
+    assert np.allclose(ivy.to_numpy(container_reduced.b.d), np.array([8.5]))
 
 
 def test_container_to_dev(dev_str, call):
