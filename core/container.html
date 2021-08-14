@@ -653,11 +653,14 @@ Default is True.</p></li>
 
 <dl class="py method">
 <dt id="ivy.core.container.Container.list_join">
-<em class="property">static </em><code class="sig-name descname">list_join</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">containers</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/container.html#Container.list_join"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.list_join" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="sig-name descname">list_join</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">containers</span></em>, <em class="sig-param"><span class="n">ivyh</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/container.html#Container.list_join"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.list_join" title="Permalink to this definition">¶</a></dt>
 <dd><p>Join containers of lists together along the specified dimension.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>containers</strong> (<em>sequence of Container objects</em>) – containers to list join</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>containers</strong> (<em>sequence of Container objects</em>) – containers to list join</p></li>
+<li><p><strong>ivyh</strong> (<em>handle to ivy module</em><em>, </em><em>optional</em>) – Handle to ivy module to use for the calculations. Default is None, which results in the global ivy.</p></li>
+</ul>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>List joined containers, with each entry being a list of arrays</p>
@@ -667,13 +670,14 @@ Default is True.</p></li>
 
 <dl class="py method">
 <dt id="ivy.core.container.Container.list_stack">
-<em class="property">static </em><code class="sig-name descname">list_stack</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">containers</span></em>, <em class="sig-param"><span class="n">dim</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/container.html#Container.list_stack"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.list_stack" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="sig-name descname">list_stack</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">containers</span></em>, <em class="sig-param"><span class="n">dim</span></em>, <em class="sig-param"><span class="n">ivyh</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/container.html#Container.list_stack"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.list_stack" title="Permalink to this definition">¶</a></dt>
 <dd><p>List stack containers together along the specified dimension.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>containers</strong> (<em>sequence of Container objects</em>) – containers to list stack</p></li>
 <li><p><strong>dim</strong> (<em>int</em>) – dimension along which to list stack</p></li>
+<li><p><strong>ivyh</strong> (<em>handle to ivy module</em><em>, </em><em>optional</em>) – Handle to ivy module to use for the calculations. Default is None, which results in the global ivy.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -736,13 +740,14 @@ Returns None if the entire container is empty.</p>
 
 <dl class="py method">
 <dt id="ivy.core.container.Container.reduce">
-<em class="property">static </em><code class="sig-name descname">reduce</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">containers</span></em>, <em class="sig-param"><span class="n">reduction</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/container.html#Container.reduce"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.reduce" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="sig-name descname">reduce</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">containers</span></em>, <em class="sig-param"><span class="n">reduction</span></em>, <em class="sig-param"><span class="n">ivyh</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/container.html#Container.reduce"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.reduce" title="Permalink to this definition">¶</a></dt>
 <dd><p>Reduce containers.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>containers</strong> (<em>sequence of Container objects</em>) – containers to reduce</p></li>
 <li><p><strong>reduction</strong> (<em>callable with single list input x</em>) – the reduction function</p></li>
+<li><p><strong>ivyh</strong> (<em>handle to ivy module</em><em>, </em><em>optional</em>) – Handle to ivy module to use for the calculations. Default is None, which results in the global ivy.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
