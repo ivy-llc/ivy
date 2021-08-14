@@ -193,7 +193,7 @@
 <span class="c1"># local</span>
 <span class="kn">import</span> <span class="nn">ivy</span> <span class="k">as</span> <span class="nn">_ivy</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">_np</span>
-<span class="kn">from</span> <span class="nn">ivy.framework_handler</span> <span class="kn">import</span> <span class="n">get_framework</span> <span class="k">as</span> <span class="n">_get_framework</span>
+<span class="kn">from</span> <span class="nn">ivy.framework_handler</span> <span class="kn">import</span> <span class="n">current_framework</span> <span class="k">as</span> <span class="n">_cur_framework</span>
 
 
 <div class="viewcode-block" id="stack_images"><a class="viewcode-back" href="../../../core/image/stack_images.html#ivy.core.image.stack_images">[docs]</a><span class="k">def</span> <span class="nf">stack_images</span><span class="p">(</span><span class="n">images</span><span class="p">,</span> <span class="n">desired_aspect_ratio</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">f</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -208,7 +208,7 @@
 <span class="sd">    :type f: ml_framework, optional</span>
 <span class="sd">    :return: Stacked image, suitable for viewing in a single window.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">_get_framework</span><span class="p">(</span><span class="n">images</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">stack_images</span><span class="p">(</span><span class="n">images</span><span class="p">,</span> <span class="n">desired_aspect_ratio</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">images</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">stack_images</span><span class="p">(</span><span class="n">images</span><span class="p">,</span> <span class="n">desired_aspect_ratio</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="bilinear_resample"><a class="viewcode-back" href="../../../core/image/bilinear_resample.html#ivy.core.image.bilinear_resample">[docs]</a><span class="k">def</span> <span class="nf">bilinear_resample</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">warp</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -223,7 +223,7 @@
 <span class="sd">    :type f: ml_framework, optional</span>
 <span class="sd">    :return: Image after bilinear re-sampling.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">_get_framework</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">bilinear_resample</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">warp</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">bilinear_resample</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">warp</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="gradient_image"><a class="viewcode-back" href="../../../core/image/gradient_image.html#ivy.core.image.gradient_image">[docs]</a><span class="k">def</span> <span class="nf">gradient_image</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -236,7 +236,7 @@
 <span class="sd">    :type f: ml_framework, optional</span>
 <span class="sd">    :return: Gradient images dy *[batch_shape,h,w,d]* and dx *[batch_shape,h,w,d]* .</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">_get_framework</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">gradient_image</span><span class="p">(</span><span class="n">x</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">gradient_image</span><span class="p">(</span><span class="n">x</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="float_img_to_uint8_img"><a class="viewcode-back" href="../../../core/image/float_img_to_uint8_img.html#ivy.core.image.float_img_to_uint8_img">[docs]</a><span class="k">def</span> <span class="nf">float_img_to_uint8_img</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>

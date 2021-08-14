@@ -199,7 +199,7 @@
 
 <span class="c1"># local</span>
 <span class="kn">import</span> <span class="nn">ivy</span>
-<span class="kn">from</span> <span class="nn">ivy.framework_handler</span> <span class="kn">import</span> <span class="n">get_framework</span> <span class="k">as</span> <span class="n">_get_framework</span>
+<span class="kn">from</span> <span class="nn">ivy.framework_handler</span> <span class="kn">import</span> <span class="n">current_framework</span> <span class="k">as</span> <span class="n">_get_framework</span>
 
 
 <span class="c1"># noinspection PyShadowingNames</span>
@@ -1525,6 +1525,20 @@
         <span class="k">return</span> <span class="n">_cache</span>
 
     <span class="k">return</span> <span class="n">cached_fn</span></div>
+
+
+<div class="viewcode-block" id="current_framework_str"><a class="viewcode-back" href="../../../core/general/current_framework_str.html#ivy.core.general.current_framework_str">[docs]</a><span class="k">def</span> <span class="nf">current_framework_str</span><span class="p">(</span><span class="n">f</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return the string of the current globally set framework. Returns None if no framework is set.</span>
+
+<span class="sd">    :param f: Machine learning framework. Inferred from inputs if None.</span>
+<span class="sd">    :type f: ml_framework, optional</span>
+<span class="sd">    :return: The framework string.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">fw</span> <span class="o">=</span> <span class="n">_get_framework</span><span class="p">(</span><span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">fw</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span>
+    <span class="k">return</span> <span class="n">fw</span><span class="o">.</span><span class="n">current_framework_str</span><span class="p">()</span></div>
 </pre></div>
 
            </div>
