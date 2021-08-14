@@ -1018,7 +1018,9 @@ class Container(dict):
         :type prune_unapplied: bool, optional
         :return: container with each variable converted to an array.
         """
-        return self.stop_gradients(False, key_chains, to_apply, prune_unapplied)
+        return self.map(
+            lambda x, kc: self._ivy.stop_gradient(x, False) if self._ivy.is_variable(x)
+            else (x if self._ivy.is_array(x) else self._ivy.array(x)), key_chains, to_apply, prune_unapplied)
 
     def to_disk_as_hdf5(self, h5_obj_or_filepath, starting_index=0, mode='a', max_batch_size=None):
         """
