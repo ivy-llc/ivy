@@ -3,7 +3,7 @@ Collection of logic Ivy functions.
 """
 
 # local
-from ivy.framework_handler import get_framework as _get_framework
+from ivy.framework_handler import current_framework as _cur_framework
 
 
 def logical_and(x1, x2, f=None):
@@ -18,7 +18,7 @@ def logical_and(x1, x2, f=None):
     :type f: ml_framework, optional
     :return: Boolean result of the logical AND operation applied element-wise to x1 and x2.
     """
-    return _get_framework(x1, f=f).logical_and(x1, x2)
+    return _cur_framework(x1, f=f).logical_and(x1, x2)
 
 
 def logical_or(x1, x2, f=None):
@@ -33,7 +33,7 @@ def logical_or(x1, x2, f=None):
     :type f: ml_framework, optional
     :return: Boolean result of the logical OR operation applied element-wise x1 and x2.
     """
-    return _get_framework(x1, f=f).logical_or(x1, x2)
+    return _cur_framework(x1, f=f).logical_or(x1, x2)
 
 
 def logical_not(x, f=None):
@@ -46,4 +46,4 @@ def logical_not(x, f=None):
     :type f: ml_framework, optional
     :return: Boolean result of the logical OR operation applied element-wise to x1 and x2.
     """
-    return _get_framework(x, f=f).logical_not(x)
+    return _cur_framework(x, f=f).logical_not(x)

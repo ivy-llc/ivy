@@ -3,7 +3,7 @@ Collection of random Ivy functions
 """
 
 # local
-from ivy.framework_handler import get_framework as _get_framework
+from ivy.framework_handler import current_framework as _cur_framework
 
 
 def random_uniform(low=0.0, high=1.0, shape=None, dev_str='cpu', f=None):
@@ -26,7 +26,7 @@ def random_uniform(low=0.0, high=1.0, shape=None, dev_str='cpu', f=None):
     :type f: ml_framework, optional
     :return: Drawn samples from the parameterized uniform distribution.
     """
-    return _get_framework(f=f).random_uniform(low, high, shape, dev_str)
+    return _cur_framework(f=f).random_uniform(low, high, shape, dev_str)
 
 
 def multinomial(population_size, num_samples, batch_size, probs=None, replace=True, dev_str='cpu', f=None):
@@ -51,7 +51,7 @@ def multinomial(population_size, num_samples, batch_size, probs=None, replace=Tr
     :type f: ml_framework, optional
     :return: Drawn samples indices from the multinomial distribution.
     """
-    return _get_framework(f=f).multinomial(population_size, num_samples, batch_size, probs, replace, dev_str)
+    return _cur_framework(f=f).multinomial(population_size, num_samples, batch_size, probs, replace, dev_str)
 
 
 def randint(low, high, shape, dev_str='cpu', f=None):
@@ -70,7 +70,7 @@ def randint(low, high, shape, dev_str='cpu', f=None):
     :type f: ml_framework, optional
     :return:
     """
-    return _get_framework(f=f).randint(low, high, shape, dev_str)
+    return _cur_framework(f=f).randint(low, high, shape, dev_str)
 
 
 def seed(seed_value=0, f=None):
@@ -82,7 +82,7 @@ def seed(seed_value=0, f=None):
     :param f: Machine learning framework. Inferred from inputs if None.
     :type f: ml_framework, optional
     """
-    return _get_framework(f=f).seed(seed_value)
+    return _cur_framework(f=f).seed(seed_value)
 
 
 def shuffle(x, f=None):
@@ -95,4 +95,4 @@ def shuffle(x, f=None):
     :type f: ml_framework, optional
     :return: An array object, shuffled along the first dimension.
     """
-    return _get_framework(x, f=f).shuffle(x)
+    return _cur_framework(x, f=f).shuffle(x)

@@ -438,3 +438,4 @@ dtype = lambda x: x.dtype
 dtype_str = lambda x: DTYPE_DICT[x.dtype]
 dtype_to_str = lambda dtype_in: DTYPE_DICT[dtype_in]
 compile_fn = lambda fn, dynamic=True, example_inputs=None: _tf.function(fn)
+current_framework_str = lambda: 'tensorflow'

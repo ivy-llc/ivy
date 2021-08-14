@@ -2199,7 +2199,7 @@ def test_framework_setting_with_threading(dev_str, call):
         return True
 
     # get original framework string and array
-    fws = ivy.get_framework_str()
+    fws = ivy.current_framework_str()
     x = ivy.array([0., 1., 2.])
 
     # start numpy loop thread
@@ -2234,7 +2234,7 @@ def test_framework_setting_with_multiprocessing(dev_str, call):
         out_queue.put(True)
 
     # get original framework string and array
-    fws = ivy.get_framework_str()
+    fws = ivy.current_framework_str()
     x = ivy.array([0., 1., 2.])
 
     # start numpy loop thread
@@ -2250,3 +2250,36 @@ def test_framework_setting_with_multiprocessing(dev_str, call):
 
     worker.join()
     assert output_queue.get_nowait()
+
+
+def test_explicit_ivy_framework_handles(dev_str, call):
+
+    if call is helpers.np_call:
+        # Numpy is the conflicting framework being tested against
+        pytest.skip()
+
+    # store original framework string and unset
+    fw_str = ivy.current_framework_str()
+    ivy.unset_framework()
+
+    # set with explicit handle caught
+    ivy_exp = ivy.get_framework(fw_str)
+    assert ivy_exp.current_framework_str() == fw_str
+
+    # assert backend implemented function is accessible
+    assert 'array' in ivy_exp.__dict__
+    assert callable(ivy_exp.array)
+
+    # assert joint implemented function is also accessible
+    assert 'cache_fn' in ivy_exp.__dict__
+    assert callable(ivy_exp.cache_fn)
+
+    # set global ivy to numpy
+    ivy.set_framework('numpy')
+
+    # assert the explicit handle is still unchanged
+    assert ivy.current_framework_str() == 'numpy'
+    assert ivy_exp.current_framework_str() == fw_str
+
+    # unset global ivy from numpy
+    ivy.unset_framework()
