@@ -40,10 +40,21 @@ def _is_jsonable(x):
 # noinspection PyMissingConstructor
 class Container(dict):
 
-    def __init__(self, dict_in=None, **kwargs):
+    def __init__(self, dict_in=None, ivyh=None, **kwargs):
         """
         Initialize container object from input dict representation.
+
+        :param dict_in: the dictionary the container should wrap around. Default is None.
+        :type dict_in: dict, optional
+        :param ivyh: Handle to ivy module to use for the calculations. Default is None, which results in the global ivy.
+        :type ivyh: handle to ivy module, optional
+        :param kwargs: keyword arguments for dict creation. Default is None.
+        :type kwargs: keyword arguments.
         """
+        if ivyh is None:
+            self._ivy = _ivy
+        else:
+            self._ivy = ivyh
         if dict_in is None:
             if kwargs:
                 dict_in = dict(**kwargs)
@@ -108,7 +119,7 @@ class Container(dict):
             return containers
 
     @staticmethod
-    def concat(containers, dim):
+    def concat(containers, dim, ivyh=None):
         """
         Concatenate containers together along the specified dimension.
 
@@ -116,9 +127,12 @@ class Container(dict):
         :type containers: sequence of Container objects
         :param dim: dimension along which to concatenate
         :type dim: int
+        :param ivyh: Handle to ivy module to use for the calculations. Default is None, which results in the global ivy.
+        :type ivyh: handle to ivy module, optional
         :return: Concatenated containers
         """
 
+        ivyh = _ivy.default(ivyh, _ivy)
         container0 = containers[0]
 
         if isinstance(container0, dict):
@@ -130,14 +144,14 @@ class Container(dict):
             # noinspection PyBroadException
             try:
                 if len(containers[0].shape) == 0:
-                    return _ivy.concatenate([_ivy.reshape(item, [1] * (dim + 1)) for item in containers], dim)
+                    return ivyh.concatenate([ivyh.reshape(item, [1] * (dim + 1)) for item in containers], dim)
                 else:
-                    return _ivy.concatenate(containers, dim)
+                    return ivyh.concatenate(containers, dim)
             except Exception as e:
                 raise Exception(str(e) + '\nContainer concat operation only valid for containers of arrays')
 
     @staticmethod
-    def stack(containers, dim):
+    def stack(containers, dim, ivyh=None):
         """
         Stack containers together along the specified dimension.
 
@@ -145,9 +159,12 @@ class Container(dict):
         :type containers: sequence of Container objects
         :param dim: dimension along which to stack
         :type dim: int
+        :param ivyh: Handle to ivy module to use for the calculations. Default is None, which results in the global ivy.
+        :type ivyh: handle to ivy module, optional
         :return: Stacked containers
         """
 
+        ivyh = _ivy.default(ivyh, _ivy)
         container0 = containers[0]
 
         if isinstance(container0, dict):
@@ -159,14 +176,14 @@ class Container(dict):
             # noinspection PyBroadException
             try:
                 if len(containers[0].shape) == 0:
-                    return _ivy.stack([_ivy.reshape(item, [1] * (dim + 1)) for item in containers], dim)
+                    return ivyh.stack([ivyh.reshape(item, [1] * (dim + 1)) for item in containers], dim)
                 else:
-                    return _ivy.stack(containers, dim)
+                    return ivyh.stack(containers, dim)
             except Exception as e:
                 raise Exception(str(e) + '\nContainer stack operation only valid for containers of arrays')
 
     @staticmethod
-    def from_disk_as_hdf5(h5_obj_or_filepath, slice_obj=slice(None)):
+    def from_disk_as_hdf5(h5_obj_or_filepath, slice_obj=slice(None), ivyh=None):
         """
         Load container object from disk, as an h5py file, at the specified hdf5 filepath.
 
@@ -174,8 +191,11 @@ class Container(dict):
         :type h5_obj_or_filepath: str or h5 obj
         :param slice_obj: slice object to slice all h5 elements.
         :type slice_obj: slice or sequence of slices
+        :param ivyh: Handle to ivy module to use for the calculations. Default is None, which results in the global ivy.
+        :type ivyh: handle to ivy module, optional
         :return: Container loaded from disk
         """
+        ivyh = _ivy.default(ivyh, _ivy)
         container_dict = dict()
         if type(h5_obj_or_filepath) is str:
             h5_obj = _h5py.File(h5_obj_or_filepath, 'r')
@@ -186,21 +206,25 @@ class Container(dict):
             if isinstance(value, _h5py.Group):
                 container_dict[key] = Container.from_disk_as_hdf5(value, slice_obj)
             elif isinstance(value, _h5py.Dataset):
-                container_dict[key] = _ivy.array(list(value[slice_obj]))
+                container_dict[key] = ivyh.array(list(value[slice_obj]))
             else:
                 raise Exception('Item found inside h5_obj which was neither a Group nor a Dataset.')
         return Container(container_dict)
 
     @staticmethod
-    def from_disk_as_pickled(pickle_filepath):
+    def from_disk_as_pickled(pickle_filepath, ivyh=None):
         """
         Load container object from disk at the specified pickle filepath.
 
         :param pickle_filepath: Filepath where the container object is saved to disk.
         :type pickle_filepath: str
+        :param ivyh: Handle to ivy module to use for the calculations. Default is None, which results in the global ivy.
+        :type ivyh: handle to ivy module, optional
         :return: Container loaded from disk
         """
-        return _pickle.load(open(pickle_filepath, 'rb'))
+        cont = Container(_pickle.load(open(pickle_filepath, 'rb')))
+        cont._ivy = _ivy.default(ivyh, _ivy)
+        return cont
 
     @staticmethod
     def from_disk_as_json(json_filepath):
@@ -303,7 +327,7 @@ class Container(dict):
         if not len(self.keys()):
             return [0]
         sub_shapes =\
-            [v for k, v in self.map(lambda x, kc: list(x.shape) if _ivy.is_array(x)
+            [v for k, v in self.map(lambda x, kc: list(x.shape) if self._ivy.is_array(x)
                 else ([len(x)] if isinstance(x, (list, tuple)) else None)).to_iterator() if v]
         min_num_dims = min([len(sub_shape) for sub_shape in sub_shapes])
         sub_shapes_array = _np.asarray([sub_shape[0:min_num_dims] for sub_shape in sub_shapes])
@@ -315,7 +339,8 @@ class Container(dict):
 
     def _get_dev_str(self):
         sub_dev_strs =\
-            [v for k, v in self.map(lambda x, kc: _ivy.dev_str(x) if _ivy.is_array(x) else None).to_iterator() if v]
+            [v for k, v in self.map(lambda x, kc: self._ivy.dev_str(x)
+            if self._ivy.is_array(x) else None).to_iterator() if v]
         if len(set(sub_dev_strs)) <= 1:
             return sub_dev_strs[0]
         return None
@@ -381,7 +406,7 @@ class Container(dict):
         :type prune_unapplied: bool, optional
         :return: Container object at with all sub-array dimensions expanded along the axis.
         """
-        return self.map(lambda x, kc: _ivy.reduce_sum(x, axis, keepdims) if _ivy.is_array(x) else x,
+        return self.map(lambda x, kc: self._ivy.reduce_sum(x, axis, keepdims) if self._ivy.is_array(x) else x,
                         key_chains, to_apply, prune_unapplied)
 
     def reduce_prod(self, axis=None, keepdims=False, key_chains=None, to_apply=True, prune_unapplied=False):
@@ -405,7 +430,7 @@ class Container(dict):
         :type prune_unapplied: bool, optional
         :return: Container object at with all sub-array dimensions expanded along the axis.
         """
-        return self.map(lambda x, kc: _ivy.reduce_prod(x, axis, keepdims) if _ivy.is_array(x) else x,
+        return self.map(lambda x, kc: self._ivy.reduce_prod(x, axis, keepdims) if self._ivy.is_array(x) else x,
                         key_chains, to_apply, prune_unapplied)
 
     def reduce_mean(self, axis=None, keepdims=False, key_chains=None, to_apply=True, prune_unapplied=False):
@@ -429,7 +454,7 @@ class Container(dict):
         :type prune_unapplied: bool, optional
         :return: Container object at with all sub-array dimensions expanded along the axis.
         """
-        return self.map(lambda x, kc: _ivy.reduce_mean(x, axis, keepdims) if _ivy.is_array(x) else x,
+        return self.map(lambda x, kc: self._ivy.reduce_mean(x, axis, keepdims) if self._ivy.is_array(x) else x,
                         key_chains, to_apply, prune_unapplied)
 
     def reduce_var(self, axis=None, keepdims=False, key_chains=None, to_apply=True, prune_unapplied=False):
@@ -453,7 +478,7 @@ class Container(dict):
         :type prune_unapplied: bool, optional
         :return: Container object with the variance computed for all sub-arrays.
         """
-        return self.map(lambda x, kc: _ivy.reduce_var(x, axis, keepdims) if _ivy.is_array(x) else x,
+        return self.map(lambda x, kc: self._ivy.reduce_var(x, axis, keepdims) if self._ivy.is_array(x) else x,
                         key_chains, to_apply, prune_unapplied)
 
     def reduce_std(self, axis=None, keepdims=False, key_chains=None, to_apply=True, prune_unapplied=False):
@@ -477,7 +502,7 @@ class Container(dict):
         :type prune_unapplied: bool, optional
         :return: Container object with the standard deviation computed for all sub-arrays.
         """
-        return self.map(lambda x, kc: _ivy.reduce_std(x, axis, keepdims) if _ivy.is_array(x) else x,
+        return self.map(lambda x, kc: self._ivy.reduce_std(x, axis, keepdims) if self._ivy.is_array(x) else x,
                         key_chains, to_apply, prune_unapplied)
 
     def reduce_min(self, axis=None, keepdims=False, key_chains=None, to_apply=True, prune_unapplied=False):
@@ -501,7 +526,7 @@ class Container(dict):
         :type prune_unapplied: bool, optional
         :return: Container object at with all sub-array dimensions expanded along the axis.
         """
-        return self.map(lambda x, kc: _ivy.reduce_min(x, axis, keepdims) if _ivy.is_array(x) else x,
+        return self.map(lambda x, kc: self._ivy.reduce_min(x, axis, keepdims) if self._ivy.is_array(x) else x,
                         key_chains, to_apply, prune_unapplied)
 
     def reduce_max(self, axis=None, keepdims=False, key_chains=None, to_apply=True, prune_unapplied=False):
@@ -525,7 +550,7 @@ class Container(dict):
         :type prune_unapplied: bool, optional
         :return: Container object at with all sub-array dimensions expanded along the axis.
         """
-        return self.map(lambda x, kc: _ivy.reduce_max(x, axis, keepdims) if _ivy.is_array(x) else x,
+        return self.map(lambda x, kc: self._ivy.reduce_max(x, axis, keepdims) if self._ivy.is_array(x) else x,
                         key_chains, to_apply, prune_unapplied)
 
     def einsum(self, equation, key_chains=None, to_apply=True, prune_unapplied=False):
@@ -544,7 +569,7 @@ class Container(dict):
         :type prune_unapplied: bool, optional
         :return: Container object at with all sub-array dimensions expanded along the axis.
         """
-        return self.map(lambda x, kc: _ivy.einsum(equation, x) if _ivy.is_array(x) else x,
+        return self.map(lambda x, kc: self._ivy.einsum(equation, x) if self._ivy.is_array(x) else x,
                         key_chains, to_apply, prune_unapplied)
 
     def flip(self, axis=None, key_chains=None, to_apply=True, prune_unapplied=False):
@@ -563,7 +588,7 @@ class Container(dict):
         :type prune_unapplied: bool, optional
         :return: Container object at with all sub-array dimensions expanded along the axis.
         """
-        return self.map(lambda x, kc: _ivy.flip(x, axis) if _ivy.is_array(x) else x,
+        return self.map(lambda x, kc: self._ivy.flip(x, axis) if self._ivy.is_array(x) else x,
                         key_chains, to_apply, prune_unapplied)
 
     def shuffle(self, seed_value=None, key_chains=None, to_apply=True, prune_unapplied=False, key_chain=''):
@@ -584,7 +609,7 @@ class Container(dict):
         """
         return_dict = dict()
         if seed_value is None:
-            seed_value = _ivy.to_numpy(_ivy.random.randint(0, 1000, ())).item()
+            seed_value = self._ivy.to_numpy(self._ivy.random.randint(0, 1000, ())).item()
         for key, value in sorted(self.items()):
             this_key_chain = key if key_chain == '' else (key_chain + '/' + key)
             if isinstance(value, Container):
@@ -599,8 +624,8 @@ class Container(dict):
                             continue
                         return_dict[key] = value
                         continue
-                _ivy.seed(seed_value)
-                return_dict[key] = _ivy.shuffle(value)
+                self._ivy.seed(seed_value)
+                return_dict[key] = self._ivy.shuffle(value)
         return Container(return_dict)
 
     def slice_via_key(self, slice_key):
@@ -634,7 +659,7 @@ class Container(dict):
         :type prune_unapplied: bool, optional
         :return: Container object with all sub-arrays filled with ones.
         """
-        return self.map(lambda x, kc: _ivy.ones_like(x) if _ivy.is_array(x) else x, key_chains, to_apply,
+        return self.map(lambda x, kc: self._ivy.ones_like(x) if self._ivy.is_array(x) else x, key_chains, to_apply,
                         prune_unapplied)
 
     def as_zeros(self, key_chains=None, to_apply=True, prune_unapplied=False):
@@ -650,7 +675,7 @@ class Container(dict):
         :type prune_unapplied: bool, optional
         :return: Container object with all sub-arrays filled with zeros.
         """
-        return self.map(lambda x, kc: _ivy.zeros_like(x) if _ivy.is_array(x) else x, key_chains, to_apply,
+        return self.map(lambda x, kc: self._ivy.zeros_like(x) if self._ivy.is_array(x) else x, key_chains, to_apply,
                         prune_unapplied)
 
     def as_random_uniform(self, low=0.0, high=1.0, key_chains=None, to_apply=True, prune_unapplied=False):
@@ -672,8 +697,8 @@ class Container(dict):
         :type prune_unapplied: bool, optional
         :return: Container object with all sub-arrays filled with random uniform values.
         """
-        return self.map(lambda x, kc: _ivy.random_uniform(
-            low, high, x.shape, _ivy.dev_str(x)) if _ivy.is_array(x) else x,
+        return self.map(lambda x, kc: self._ivy.random_uniform(
+            low, high, x.shape, self._ivy.dev_str(x)) if self._ivy.is_array(x) else x,
                         key_chains, to_apply, prune_unapplied)
 
     def expand_dims(self, axis, key_chains=None, to_apply=True, prune_unapplied=False):
@@ -691,8 +716,8 @@ class Container(dict):
         :type prune_unapplied: bool, optional
         :return: Container object with all sub-array dimensions expanded along the axis.
         """
-        return self.map(lambda x, kc: _ivy.expand_dims(x, axis) if _ivy.is_array(x) else x, key_chains, to_apply,
-                        prune_unapplied)
+        return self.map(lambda x, kc: self._ivy.expand_dims(x, axis) if self._ivy.is_array(x) else x,
+                        key_chains, to_apply, prune_unapplied)
 
     def unstack(self, axis, keepdims=False, dim_size=None):
         """
@@ -743,7 +768,7 @@ class Container(dict):
         dim_size = num_or_size_splits if isinstance(num_or_size_splits, int) else len(num_or_size_splits)
         # noinspection PyTypeChecker
         return self.map(
-            lambda x, kc: _ivy.split(x, num_or_size_splits, axis, with_remainder) if _ivy.is_array(x)
+            lambda x, kc: self._ivy.split(x, num_or_size_splits, axis, with_remainder) if self._ivy.is_array(x)
             else x, key_chains, to_apply, prune_unapplied).unstack(0, dim_size=dim_size)
 
     def gather(self, indices, axis=-1, key_chains=None, to_apply=True, prune_unapplied=False):
@@ -763,8 +788,8 @@ class Container(dict):
         :type prune_unapplied: bool, optional
         :return: Container object with all sub-array dimensions gathered along the axis.
         """
-        return self.map(lambda x, kc: _ivy.gather(x, indices, axis) if _ivy.is_array(x) else x, key_chains, to_apply,
-                        prune_unapplied)
+        return self.map(lambda x, kc: self._ivy.gather(x, indices, axis) if self._ivy.is_array(x) else x,
+                        key_chains, to_apply, prune_unapplied)
 
     def gather_nd(self, indices, key_chains=None, to_apply=True, prune_unapplied=False):
         """
@@ -781,8 +806,8 @@ class Container(dict):
         :type prune_unapplied: bool, optional
         :return: Container object with all sub-array dimensions gathered.
         """
-        return self.map(lambda x, kc: _ivy.gather_nd(x, indices) if _ivy.is_array(x) else x, key_chains, to_apply,
-                        prune_unapplied)
+        return self.map(lambda x, kc: self._ivy.gather_nd(x, indices) if self._ivy.is_array(x) else x,
+                        key_chains, to_apply, prune_unapplied)
 
     def repeat(self, repeats, axis=None, key_chains=None, to_apply=True, prune_unapplied=False):
         """
@@ -802,8 +827,8 @@ class Container(dict):
         :type prune_unapplied: bool, optional
         :return: container with each array being repeated along the specified dimension.
         """
-        return self.map(lambda x, kc: _ivy.repeat(x, repeats, axis) if _ivy.is_array(x) else x, key_chains, to_apply,
-                        prune_unapplied)
+        return self.map(lambda x, kc: self._ivy.repeat(x, repeats, axis) if self._ivy.is_array(x) else x,
+                        key_chains, to_apply, prune_unapplied)
 
     def swapaxes(self, axis0, axis1, key_chains=None, to_apply=True, prune_unapplied=False):
         """
@@ -822,8 +847,8 @@ class Container(dict):
         :type prune_unapplied: bool, optional
         :return: ivy.Container with each chosen array having the axes swapped.
         """
-        return self.map(lambda x, kc: _ivy.swapaxes(x, axis0, axis1) if _ivy.is_array(x) else x, key_chains, to_apply,
-                        prune_unapplied)
+        return self.map(lambda x, kc: self._ivy.swapaxes(x, axis0, axis1) if self._ivy.is_array(x) else x,
+                        key_chains, to_apply, prune_unapplied)
 
     def reshape(self, pre_shape, shape_slice=None, post_shape=None, key_chains=None, to_apply=True,
                 prune_unapplied=False):
@@ -849,11 +874,11 @@ class Container(dict):
         pre_shape = list(pre_shape)
         post_shape = [] if post_shape is None else list(post_shape)
         if shape_slice is None:
-            return self.map(lambda x, kc: _ivy.reshape(x, pre_shape + post_shape) if _ivy.is_array(x) else x,
+            return self.map(lambda x, kc: self._ivy.reshape(x, pre_shape + post_shape) if self._ivy.is_array(x) else x,
                             key_chains, to_apply, prune_unapplied)
         return self.map(lambda x, kc:
-                        _ivy.reshape(x, pre_shape + list(x.shape[shape_slice]) + post_shape) if _ivy.is_array(x) else
-                        x, key_chains, to_apply, prune_unapplied)
+                        self._ivy.reshape(x, pre_shape + list(x.shape[shape_slice]) + post_shape)
+                        if self._ivy.is_array(x) else x, key_chains, to_apply, prune_unapplied)
 
     def einops_rearrange(self, pattern,  key_chains=None, to_apply=True, prune_unapplied=False, **axes_lengths):
         """
@@ -872,7 +897,7 @@ class Container(dict):
         :type axes_lengths: keyword parameter args
         :return: ivy.Container with each array having einops.rearrange applied.
         """
-        return self.map(lambda x, kc: einops.rearrange(x, pattern, **axes_lengths) if _ivy.is_array(x) else x,
+        return self.map(lambda x, kc: einops.rearrange(x, pattern, **axes_lengths) if self._ivy.is_array(x) else x,
                         key_chains, to_apply, prune_unapplied)
 
     def einops_reduce(self, pattern,  reduction, key_chains=None, to_apply=True, prune_unapplied=False, **axes_lengths):
@@ -894,8 +919,8 @@ class Container(dict):
         :type axes_lengths: keyword parameter args
         :return: ivy.Container with each array having einops.reduce applied.
         """
-        return self.map(lambda x, kc: einops.reduce(x, pattern, reduction, **axes_lengths) if _ivy.is_array(x) else x,
-                        key_chains, to_apply, prune_unapplied)
+        return self.map(lambda x, kc: einops.reduce(x, pattern, reduction, **axes_lengths) if self._ivy.is_array(x)
+                        else x, key_chains, to_apply, prune_unapplied)
 
     def einops_repeat(self, pattern, key_chains=None, to_apply=True, prune_unapplied=False, **axes_lengths):
         """
@@ -914,7 +939,7 @@ class Container(dict):
         :type axes_lengths: keyword parameter args
         :return: ivy.Container with each array having einops.repeat applied.
         """
-        return self.map(lambda x, kc: einops.repeat(x, pattern, **axes_lengths) if _ivy.is_array(x) else x,
+        return self.map(lambda x, kc: einops.repeat(x, pattern, **axes_lengths) if self._ivy.is_array(x) else x,
                         key_chains, to_apply, prune_unapplied)
 
     def to_dev(self, dev_str, key_chains=None, to_apply=True, prune_unapplied=False):
@@ -932,8 +957,8 @@ class Container(dict):
         :type prune_unapplied: bool, optional
         :return: The container, but with each sub-array now placed on the target device.
         """
-        return self.map(lambda x, kc: _ivy.to_dev(x, dev_str) if _ivy.is_array(x) else x, key_chains, to_apply,
-                        prune_unapplied)
+        return self.map(lambda x, kc: self._ivy.to_dev(x, dev_str) if self._ivy.is_array(x) else x,
+                        key_chains, to_apply, prune_unapplied)
 
     def stop_gradients(self, preserve_type=True, key_chains=None, to_apply=True, prune_unapplied=False):
         """
@@ -952,7 +977,7 @@ class Container(dict):
         :return: container with each array having their gradients stopped.
         """
         return self.map(
-            lambda x, kc: _ivy.stop_gradient(x, preserve_type) if _ivy.is_variable(x)
+            lambda x, kc: self._ivy.stop_gradient(x, preserve_type) if self._ivy.is_variable(x)
             else x, key_chains, to_apply, prune_unapplied)
 
     def as_variables(self, key_chains=None, to_apply=True, prune_unapplied=False):
@@ -968,7 +993,7 @@ class Container(dict):
         :type prune_unapplied: bool, optional
         :return: container with each array converted to a variable.
         """
-        return self.map(lambda x, kc: _ivy.variable(x) if _ivy.is_array(x) else x,
+        return self.map(lambda x, kc: self._ivy.variable(x) if self._ivy.is_array(x) else x,
                         key_chains, to_apply, prune_unapplied)
 
     def as_arrays(self, key_chains=None, to_apply=True, prune_unapplied=False):
@@ -1012,7 +1037,7 @@ class Container(dict):
                     h5_group = h5_obj[key]
                 value.to_disk_as_hdf5(h5_group, starting_index, mode, max_batch_size)
             else:
-                value_as_np = _ivy.to_numpy(value)
+                value_as_np = self._ivy.to_numpy(value)
                 value_shape = value_as_np.shape
                 this_batch_size = value_shape[0]
                 if not max_batch_size:
@@ -1032,7 +1057,7 @@ class Container(dict):
         :param pickle_filepath: Filepath for where to save the container to disk.
         :type pickle_filepath: str
         """
-        _pickle.dump(self, open(pickle_filepath, 'wb'))
+        _pickle.dump(self.to_dict(), open(pickle_filepath, 'wb'))
 
     def to_jsonable(self, return_dict=None):
         """
@@ -1131,7 +1156,7 @@ class Container(dict):
         """
         def _as_random(value, _=''):
             if hasattr(value, 'shape'):
-                return _ivy.random_uniform(0., 1., value.shape)
+                return self._ivy.random_uniform(0., 1., value.shape)
             return value
         return self.map(_as_random)
 
@@ -1321,7 +1346,7 @@ class Container(dict):
 
         :return: New datatype container
         """
-        return self.map(lambda x, _: _ivy.dtype(x))
+        return self.map(lambda x, _: self._ivy.dtype(x))
 
     def with_entries_as_lists(self):
         """
@@ -1329,7 +1354,7 @@ class Container(dict):
         """
         def to_list(x, _=''):
             try:
-                return _ivy.to_list(x)
+                return self._ivy.to_list(x)
             except (AttributeError, ValueError):
                 return x
         return self.map(to_list)
@@ -1346,7 +1371,7 @@ class Container(dict):
             if isinstance(v_shape, dict):
                 return_cont[k] = self.reshape_like(v_shape, return_cont[k])
             else:
-                return_cont[k] = _ivy.reshape(v, v_shape)
+                return_cont[k] = self._ivy.reshape(v, v_shape)
         return Container(return_cont)
 
     def if_exists(self, key):
@@ -1364,18 +1389,18 @@ class Container(dict):
     def __repr__(self, as_repr=True):
         new_dict = dict()
         for k, v in self.items():
-            if isinstance(v, _ivy.Container):
+            if isinstance(v, self._ivy.Container):
                 # noinspection PyArgumentList
                 rep = v.__repr__(as_repr=False)
             else:
-                if _ivy.is_array(v) and len(list(v.shape)) > 0 and _reduce(_mul, v.shape) > 10:
+                if self._ivy.is_array(v) and len(list(v.shape)) > 0 and _reduce(_mul, v.shape) > 10:
                     rep = (type(v), "shape=", list(v.shape))
                 else:
                     rep = v
             new_dict[k] = rep
         if as_repr:
             json_dumped_str = _json.dumps(
-                _ivy.Container(new_dict).map(
+                self._ivy.Container(new_dict).map(
                     lambda x, kc: x if _is_jsonable(x)
                     else x.__repr__().replace('\n', '').replace(' ', '').replace(',', ', ')).to_dict(),
                 indent=4)
@@ -1522,7 +1547,7 @@ class Container(dict):
         return self.map(lambda x, kc: other // x)
 
     def __abs__(self):
-        return self.map(lambda x, kc: _ivy.abs(x))
+        return self.map(lambda x, kc: self._ivy.abs(x))
 
     def __lt__(self, other):
         return self.reduce([self, other], lambda x: _reduce(_lt, x))
@@ -1549,7 +1574,7 @@ class Container(dict):
         return self.reduce([self, other], lambda x: _reduce(_or, x))
 
     def __invert__(self):
-        return self.map(lambda x, kc: _ivy.logical_not(x))
+        return self.map(lambda x, kc: self._ivy.logical_not(x))
 
     def __xor__(self, other):
         return self.reduce([self, other], lambda x: _reduce(_xor, x))
