@@ -96,10 +96,14 @@ def set_framework(f):
             'framework stack: {}'.format(framework_stack))
 
 
-def get_framework(f):
+def get_framework(f=None):
     global ivy_original_dict
     if not framework_stack:
         ivy_original_dict = ivy.__dict__.copy()
+    if f is None:
+        f = ivy.current_framework()
+    if f is None:
+        return None
     if isinstance(f, str):
         f = importlib.import_module(_framework_dict[f])
     for k, v in ivy_original_dict.items():
