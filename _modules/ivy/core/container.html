@@ -262,30 +262,33 @@
     <span class="c1"># --------------#</span>
 
 <div class="viewcode-block" id="Container.list_join"><a class="viewcode-back" href="../../../core/container/Container.html#ivy.core.container.Container.list_join">[docs]</a>    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">list_join</span><span class="p">(</span><span class="n">containers</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">list_join</span><span class="p">(</span><span class="n">containers</span><span class="p">,</span> <span class="n">ivyh</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Join containers of lists together along the specified dimension.</span>
 
 <span class="sd">        :param containers: containers to list join</span>
 <span class="sd">        :type containers: sequence of Container objects</span>
+<span class="sd">        :param ivyh: Handle to ivy module to use for the calculations. Default is None, which results in the global ivy.</span>
+<span class="sd">        :type ivyh: handle to ivy module, optional</span>
 <span class="sd">        :return: List joined containers, with each entry being a list of arrays</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="n">container0</span> <span class="o">=</span> <span class="n">containers</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">container0</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">container0</span><span class="p">,</span> <span class="n">Container</span><span class="p">):</span>
+            <span class="n">ivyh</span> <span class="o">=</span> <span class="n">_ivy</span><span class="o">.</span><span class="n">default</span><span class="p">(</span><span class="n">_ivy</span><span class="o">.</span><span class="n">default</span><span class="p">(</span><span class="n">ivyh</span><span class="p">,</span> <span class="n">container0</span><span class="o">.</span><span class="n">ivy</span><span class="p">),</span> <span class="n">_ivy</span><span class="p">)</span>
             <span class="n">return_dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
             <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">container0</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
                 <span class="n">new_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
                 <span class="k">for</span> <span class="n">container</span> <span class="ow">in</span> <span class="n">containers</span><span class="p">:</span>
                     <span class="n">new_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">container</span><span class="p">[</span><span class="n">key</span><span class="p">])</span>
-                <span class="n">return_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">Container</span><span class="o">.</span><span class="n">list_join</span><span class="p">(</span><span class="n">new_list</span><span class="p">)</span>
-            <span class="k">return</span> <span class="n">Container</span><span class="p">(</span><span class="n">return_dict</span><span class="p">,</span> <span class="n">ivyh</span><span class="o">=</span><span class="n">container0</span><span class="o">.</span><span class="n">ivy</span><span class="p">)</span>
+                <span class="n">return_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">Container</span><span class="o">.</span><span class="n">list_join</span><span class="p">(</span><span class="n">new_list</span><span class="p">,</span> <span class="n">ivyh</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">Container</span><span class="p">(</span><span class="n">return_dict</span><span class="p">,</span> <span class="n">ivyh</span><span class="o">=</span><span class="n">ivyh</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="p">[</span><span class="n">item</span> <span class="k">for</span> <span class="n">sublist</span> <span class="ow">in</span> <span class="n">containers</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">sublist</span><span class="p">]</span></div>
 
 <div class="viewcode-block" id="Container.list_stack"><a class="viewcode-back" href="../../../core/container/Container.html#ivy.core.container.Container.list_stack">[docs]</a>    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">list_stack</span><span class="p">(</span><span class="n">containers</span><span class="p">,</span> <span class="n">dim</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">list_stack</span><span class="p">(</span><span class="n">containers</span><span class="p">,</span> <span class="n">dim</span><span class="p">,</span> <span class="n">ivyh</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        List stack containers together along the specified dimension.</span>
 
@@ -293,16 +296,19 @@
 <span class="sd">        :type containers: sequence of Container objects</span>
 <span class="sd">        :param dim: dimension along which to list stack</span>
 <span class="sd">        :type dim: int</span>
+<span class="sd">        :param ivyh: Handle to ivy module to use for the calculations. Default is None, which results in the global ivy.</span>
+<span class="sd">        :type ivyh: handle to ivy module, optional</span>
 <span class="sd">        :return: Stacked containers, with each entry being a list of arrays</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="n">container0</span> <span class="o">=</span> <span class="n">containers</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">container0</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">container0</span><span class="p">,</span> <span class="n">Container</span><span class="p">):</span>
+            <span class="n">ivyh</span> <span class="o">=</span> <span class="n">_ivy</span><span class="o">.</span><span class="n">default</span><span class="p">(</span><span class="n">_ivy</span><span class="o">.</span><span class="n">default</span><span class="p">(</span><span class="n">ivyh</span><span class="p">,</span> <span class="n">container0</span><span class="o">.</span><span class="n">ivy</span><span class="p">),</span> <span class="n">_ivy</span><span class="p">)</span>
             <span class="n">return_dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
             <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">container0</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
-                <span class="n">return_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">Container</span><span class="o">.</span><span class="n">list_stack</span><span class="p">([</span><span class="n">container</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="k">for</span> <span class="n">container</span> <span class="ow">in</span> <span class="n">containers</span><span class="p">],</span> <span class="n">dim</span><span class="p">)</span>
-            <span class="k">return</span> <span class="n">Container</span><span class="p">(</span><span class="n">return_dict</span><span class="p">,</span> <span class="n">ivyh</span><span class="o">=</span><span class="n">container0</span><span class="o">.</span><span class="n">ivy</span><span class="p">)</span>
+                <span class="n">return_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">Container</span><span class="o">.</span><span class="n">list_stack</span><span class="p">([</span><span class="n">container</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="k">for</span> <span class="n">container</span> <span class="ow">in</span> <span class="n">containers</span><span class="p">],</span> <span class="n">dim</span><span class="p">,</span> <span class="n">ivyh</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">Container</span><span class="p">(</span><span class="n">return_dict</span><span class="p">,</span> <span class="n">ivyh</span><span class="o">=</span><span class="n">ivyh</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">containers</span></div>
 
@@ -320,15 +326,16 @@
 <span class="sd">        :return: Concatenated containers</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="n">ivyh</span> <span class="o">=</span> <span class="n">_ivy</span><span class="o">.</span><span class="n">default</span><span class="p">(</span><span class="n">ivyh</span><span class="p">,</span> <span class="n">_ivy</span><span class="p">)</span>
         <span class="n">container0</span> <span class="o">=</span> <span class="n">containers</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">container0</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">container0</span><span class="p">,</span> <span class="n">Container</span><span class="p">):</span>
+            <span class="n">ivyh</span> <span class="o">=</span> <span class="n">_ivy</span><span class="o">.</span><span class="n">default</span><span class="p">(</span><span class="n">_ivy</span><span class="o">.</span><span class="n">default</span><span class="p">(</span><span class="n">ivyh</span><span class="p">,</span> <span class="n">container0</span><span class="o">.</span><span class="n">ivy</span><span class="p">),</span> <span class="n">_ivy</span><span class="p">)</span>
             <span class="n">return_dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
             <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">container0</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
                 <span class="n">return_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">Container</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">container</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="k">for</span> <span class="n">container</span> <span class="ow">in</span> <span class="n">containers</span><span class="p">],</span> <span class="n">dim</span><span class="p">,</span> <span class="n">ivyh</span><span class="p">)</span>
-            <span class="k">return</span> <span class="n">Container</span><span class="p">(</span><span class="n">return_dict</span><span class="p">,</span> <span class="n">ivyh</span><span class="o">=</span><span class="n">container0</span><span class="o">.</span><span class="n">ivy</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">Container</span><span class="p">(</span><span class="n">return_dict</span><span class="p">,</span> <span class="n">ivyh</span><span class="o">=</span><span class="n">ivyh</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
+            <span class="n">ivyh</span> <span class="o">=</span> <span class="n">_ivy</span><span class="o">.</span><span class="n">default</span><span class="p">(</span><span class="n">ivyh</span><span class="p">,</span> <span class="n">_ivy</span><span class="p">)</span>
             <span class="c1"># noinspection PyBroadException</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">containers</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
@@ -352,15 +359,16 @@
 <span class="sd">        :return: Stacked containers</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="n">ivyh</span> <span class="o">=</span> <span class="n">_ivy</span><span class="o">.</span><span class="n">default</span><span class="p">(</span><span class="n">ivyh</span><span class="p">,</span> <span class="n">_ivy</span><span class="p">)</span>
         <span class="n">container0</span> <span class="o">=</span> <span class="n">containers</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">container0</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">container0</span><span class="p">,</span> <span class="n">Container</span><span class="p">):</span>
+            <span class="n">ivyh</span> <span class="o">=</span> <span class="n">_ivy</span><span class="o">.</span><span class="n">default</span><span class="p">(</span><span class="n">_ivy</span><span class="o">.</span><span class="n">default</span><span class="p">(</span><span class="n">ivyh</span><span class="p">,</span> <span class="n">container0</span><span class="o">.</span><span class="n">ivy</span><span class="p">),</span> <span class="n">_ivy</span><span class="p">)</span>
             <span class="n">return_dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
             <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">container0</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
                 <span class="n">return_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">Container</span><span class="o">.</span><span class="n">stack</span><span class="p">([</span><span class="n">container</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="k">for</span> <span class="n">container</span> <span class="ow">in</span> <span class="n">containers</span><span class="p">],</span> <span class="n">dim</span><span class="p">,</span> <span class="n">ivyh</span><span class="p">)</span>
-            <span class="k">return</span> <span class="n">Container</span><span class="p">(</span><span class="n">return_dict</span><span class="p">,</span> <span class="n">ivyh</span><span class="o">=</span><span class="n">container0</span><span class="o">.</span><span class="n">ivy</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">Container</span><span class="p">(</span><span class="n">return_dict</span><span class="p">,</span> <span class="n">ivyh</span><span class="o">=</span><span class="n">ivyh</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
+            <span class="n">ivyh</span> <span class="o">=</span> <span class="n">_ivy</span><span class="o">.</span><span class="n">default</span><span class="p">(</span><span class="n">ivyh</span><span class="p">,</span> <span class="n">_ivy</span><span class="p">)</span>
             <span class="c1"># noinspection PyBroadException</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">containers</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
@@ -485,7 +493,7 @@
             <span class="n">h5_obj</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
 
 <div class="viewcode-block" id="Container.reduce"><a class="viewcode-back" href="../../../core/container/Container.html#ivy.core.container.Container.reduce">[docs]</a>    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">reduce</span><span class="p">(</span><span class="n">containers</span><span class="p">,</span> <span class="n">reduction</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">reduce</span><span class="p">(</span><span class="n">containers</span><span class="p">,</span> <span class="n">reduction</span><span class="p">,</span> <span class="n">ivyh</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Reduce containers.</span>
 
@@ -493,14 +501,18 @@
 <span class="sd">        :type containers: sequence of Container objects</span>
 <span class="sd">        :param reduction: the reduction function</span>
 <span class="sd">        :type reduction: callable with single list input x</span>
+<span class="sd">        :param ivyh: Handle to ivy module to use for the calculations. Default is None, which results in the global ivy.</span>
+<span class="sd">        :type ivyh: handle to ivy module, optional</span>
 <span class="sd">        :return: reduced containers</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">container0</span> <span class="o">=</span> <span class="n">containers</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">container0</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">container0</span><span class="p">,</span> <span class="n">Container</span><span class="p">):</span>
+            <span class="n">ivyh</span> <span class="o">=</span> <span class="n">_ivy</span><span class="o">.</span><span class="n">default</span><span class="p">(</span><span class="n">_ivy</span><span class="o">.</span><span class="n">default</span><span class="p">(</span><span class="n">ivyh</span><span class="p">,</span> <span class="n">container0</span><span class="o">.</span><span class="n">ivy</span><span class="p">),</span> <span class="n">_ivy</span><span class="p">)</span>
             <span class="n">return_dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
             <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">container0</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
-                <span class="n">return_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">Container</span><span class="o">.</span><span class="n">reduce</span><span class="p">([</span><span class="n">container</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="k">for</span> <span class="n">container</span> <span class="ow">in</span> <span class="n">containers</span><span class="p">],</span> <span class="n">reduction</span><span class="p">)</span>
-            <span class="k">return</span> <span class="n">Container</span><span class="p">(</span><span class="n">return_dict</span><span class="p">,</span> <span class="n">ivyh</span><span class="o">=</span><span class="n">container0</span><span class="o">.</span><span class="n">ivy</span><span class="p">)</span>
+                <span class="n">return_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">Container</span><span class="o">.</span><span class="n">reduce</span><span class="p">([</span><span class="n">container</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="k">for</span> <span class="n">container</span> <span class="ow">in</span> <span class="n">containers</span><span class="p">],</span> <span class="n">reduction</span><span class="p">,</span> <span class="n">ivyh</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">Container</span><span class="p">(</span><span class="n">return_dict</span><span class="p">,</span> <span class="n">ivyh</span><span class="o">=</span><span class="n">ivyh</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="c1"># noinspection PyBroadException</span>
             <span class="k">try</span><span class="p">:</span>
