@@ -52,8 +52,7 @@ class Container(dict):
         :param kwargs: keyword arguments for dict creation. Default is None.
         :type kwargs: keyword arguments.
         """
-        if ivy.exists(ivyh):
-            self._local_ivy = ivyh
+        self._local_ivy = ivyh
         if dict_in is None:
             if kwargs:
                 dict_in = dict(**kwargs)
