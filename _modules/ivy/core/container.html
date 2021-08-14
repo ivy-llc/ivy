@@ -240,8 +240,7 @@
 <span class="sd">        :param kwargs: keyword arguments for dict creation. Default is None.</span>
 <span class="sd">        :type kwargs: keyword arguments.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">ivyh</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_local_ivy</span> <span class="o">=</span> <span class="n">ivyh</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_local_ivy</span> <span class="o">=</span> <span class="n">ivyh</span>
         <span class="k">if</span> <span class="n">dict_in</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">kwargs</span><span class="p">:</span>
                 <span class="n">dict_in</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
