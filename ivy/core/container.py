@@ -385,6 +385,15 @@ class Container(dict):
     # Public Methods #
     # ---------------#
 
+    def set_framework(self, ivyh):
+        """
+        Update the framework to use for the container.
+
+        :param ivyh: Handle to ivy module to use for the calculations. Default is None, which results in the global ivy.
+        :type ivyh: handle to ivy module, optional
+        """
+        self._ivy = ivyh
+
     def reduce_sum(self, axis=None, keepdims=False, key_chains=None, to_apply=True, prune_unapplied=False):
         """
         Computes sum of array elements along a given axis for all sub-arrays of container object.
