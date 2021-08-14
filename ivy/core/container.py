@@ -66,7 +66,7 @@ class Container(dict):
         dict_in = dict_in if isinstance(dict_in, dict) else dict(dict_in)
         for key, value in sorted(dict_in.items()):
             if isinstance(value, dict):
-                self[key] = Container(value)
+                self[key] = Container(value, ivyh=self._ivy)
             else:
                 self[key] = value
 
@@ -92,7 +92,7 @@ class Container(dict):
                 for container in containers:
                     new_list.append(container[key])
                 return_dict[key] = Container.list_join(new_list)
-            return Container(return_dict)
+            return Container(return_dict, ivyh=container0.ivy)
         else:
             return [item for sublist in containers for item in sublist]
 
@@ -114,7 +114,7 @@ class Container(dict):
             return_dict = dict()
             for key in container0.keys():
                 return_dict[key] = Container.list_stack([container[key] for container in containers], dim)
-            return Container(return_dict)
+            return Container(return_dict, ivyh=container0.ivy)
         else:
             return containers
 
@@ -139,7 +139,7 @@ class Container(dict):
             return_dict = dict()
             for key in container0.keys():
                 return_dict[key] = Container.concat([container[key] for container in containers], dim)
-            return Container(return_dict)
+            return Container(return_dict, ivyh=container0.ivy)
         else:
             # noinspection PyBroadException
             try:
@@ -171,7 +171,7 @@ class Container(dict):
             return_dict = dict()
             for key in container0.keys():
                 return_dict[key] = Container.stack([container[key] for container in containers], dim)
-            return Container(return_dict)
+            return Container(return_dict, ivyh=container0.ivy)
         else:
             # noinspection PyBroadException
             try:
@@ -204,12 +204,12 @@ class Container(dict):
 
         for key, value in sorted(h5_obj.items()):
             if isinstance(value, _h5py.Group):
-                container_dict[key] = Container.from_disk_as_hdf5(value, slice_obj)
+                container_dict[key] = Container.from_disk_as_hdf5(value, slice_obj, ivyh)
             elif isinstance(value, _h5py.Dataset):
                 container_dict[key] = ivyh.array(list(value[slice_obj]))
             else:
                 raise Exception('Item found inside h5_obj which was neither a Group nor a Dataset.')
-        return Container(container_dict)
+        return Container(container_dict, ivyh=ivyh)
 
     @staticmethod
     def from_disk_as_pickled(pickle_filepath, ivyh=None):
@@ -222,22 +222,22 @@ class Container(dict):
         :type ivyh: handle to ivy module, optional
         :return: Container loaded from disk
         """
-        cont = Container(_pickle.load(open(pickle_filepath, 'rb')))
-        cont._ivy = _ivy.default(ivyh, _ivy)
-        return cont
+        return Container(_pickle.load(open(pickle_filepath, 'rb')), ivyh=ivyh)
 
     @staticmethod
-    def from_disk_as_json(json_filepath):
+    def from_disk_as_json(json_filepath, ivyh=None):
         """
         Load container object from disk at the specified json filepath.
         If some objects were not json-able during saving, then they will be loaded as strings.
 
         :param json_filepath: Filepath where the container object is saved to disk.
         :type json_filepath: str
+        :param ivyh: Handle to ivy module to use for the calculations. Default is None, which results in the global ivy.
+        :type ivyh: handle to ivy module, optional
         :return: Container loaded from disk
         """
         with open(json_filepath) as json_data_file:
-            return Container(_json.load(json_data_file))
+            return Container(_json.load(json_data_file), ivyh=ivyh)
 
     @staticmethod
     def h5_file_size(h5_obj_or_filepath):
@@ -312,7 +312,7 @@ class Container(dict):
             return_dict = dict()
             for key in container0.keys():
                 return_dict[key] = Container.reduce([container[key] for container in containers], reduction)
-            return Container(return_dict)
+            return Container(return_dict, ivyh=container0.ivy)
         else:
             # noinspection PyBroadException
             try:
@@ -346,7 +346,7 @@ class Container(dict):
         return None
 
     def _at_key_chains_input_as_seq(self, key_chains):
-        return_cont = Container(dict())
+        return_cont = Container(dict(), ivyh=self._ivy)
         for kc in key_chains:
             return_cont.set_at_key_chain(kc, self.at_key_chain(kc))
         return return_cont
@@ -362,7 +362,7 @@ class Container(dict):
                 return_dict[k] = self._at_key_chains_input_as_dict(v, new_current_chain)
             else:
                 return_dict[k] = self.at_key_chain(new_current_chain)
-        return Container(return_dict)
+        return Container(return_dict, ivyh=self._ivy)
 
     def _prune_key_chains_input_as_seq(self, key_chains):
         return_cont = self.copy()
@@ -635,7 +635,7 @@ class Container(dict):
                         continue
                 self._ivy.seed(seed_value)
                 return_dict[key] = self._ivy.shuffle(value)
-        return Container(return_dict)
+        return Container(return_dict, ivyh=self._ivy)
 
     def slice_via_key(self, slice_key):
         """
@@ -653,7 +653,7 @@ class Container(dict):
                 return_dict[key] = value.slice_via_key(slice_key)
             else:
                 return_dict[key] = value
-        return Container(return_dict)
+        return Container(return_dict, ivyh=self._ivy)
 
     def as_ones(self, key_chains=None, to_apply=True, prune_unapplied=False):
         """
@@ -1159,7 +1159,7 @@ class Container(dict):
             else:
                 new_value = flat_list.pop(0)
             new_dict[key] = new_value
-        return Container(new_dict)
+        return Container(new_dict, ivyh=self._ivy)
 
     def to_random(self):
         """
@@ -1226,7 +1226,7 @@ class Container(dict):
         cont = self
         for key in keys[:-1]:
             if key not in cont:
-                cont[key] = Container({})
+                cont[key] = Container(ivyh=self._ivy)
             cont = cont[key]
         cont[keys[-1]] = val
         return self
@@ -1244,7 +1244,7 @@ class Container(dict):
                 return_dict[k] = self.set_at_key_chains(v, return_dict[k])
             else:
                 return_dict[k] = v
-        return Container(return_dict)
+        return Container(return_dict, ivyh=self._ivy)
 
     def prune_key_chain(self, key_chain):
         """
@@ -1270,7 +1270,7 @@ class Container(dict):
             else:
                 if len(keys_in_chain) != 1 or key != keys_in_chain[0]:
                     out_dict[key] = value
-        return Container(out_dict)
+        return Container(out_dict, ivyh=self._ivy)
 
     def prune_key_chains(self, key_chains, ignore_none=True):
         """
@@ -1306,7 +1306,7 @@ class Container(dict):
             else:
                 out_dict[key] = value
         if len(out_dict):
-            return Container(out_dict)
+            return Container(out_dict, ivyh=self._ivy)
         return
 
     def copy(self):
@@ -1315,7 +1315,7 @@ class Container(dict):
 
         :return: A copy of the container
         """
-        return Container(self.to_dict())
+        return Container(self.to_dict(), ivyh=self._ivy)
 
     def map(self, func, key_chains=None, to_apply=True, prune_unapplied=False, key_chain=''):
         """
@@ -1349,7 +1349,7 @@ class Container(dict):
                         return_dict[key] = value
                         continue
                 return_dict[key] = func(value, this_key_chain)
-        return Container(return_dict)
+        return Container(return_dict, ivyh=self._ivy)
 
     def dtype(self):
         """
@@ -1383,7 +1383,7 @@ class Container(dict):
                 return_cont[k] = self.reshape_like(v_shape, return_cont[k])
             else:
                 return_cont[k] = self._ivy.reshape(v, v_shape)
-        return Container(return_cont)
+        return Container(return_cont, ivyh=self._ivy)
 
     def if_exists(self, key):
         """
@@ -1400,7 +1400,7 @@ class Container(dict):
     def __repr__(self, as_repr=True):
         new_dict = dict()
         for k, v in self.items():
-            if isinstance(v, self._ivy.Container):
+            if isinstance(v, Container):
                 # noinspection PyArgumentList
                 rep = v.__repr__(as_repr=False)
             else:
@@ -1411,7 +1411,7 @@ class Container(dict):
             new_dict[k] = rep
         if as_repr:
             json_dumped_str = _json.dumps(
-                self._ivy.Container(new_dict).map(
+                Container(new_dict).map(
                     lambda x, kc: x if _is_jsonable(x)
                     else x.__repr__().replace('\n', '').replace(' ', '').replace(',', ', ')).to_dict(),
                 indent=4)
@@ -1474,7 +1474,7 @@ class Container(dict):
                 else:
                     return_dict[key] = value[query]
 
-        return Container(return_dict)
+        return Container(return_dict, ivyh=self._ivy)
 
     def __setitem__(self, query, val):
         """
@@ -1606,3 +1606,7 @@ class Container(dict):
         The device to which the arrays in the container belong, with None returned if the devices are not consistent
         """
         return self._get_dev_str()
+
+    @property
+    def ivy(self):
+        return self._ivy
