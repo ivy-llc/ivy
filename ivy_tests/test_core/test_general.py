@@ -5,6 +5,7 @@ Collection of tests for templated general functions
 # global
 import math
 import pytest
+import threading
 import numpy as np
 from numbers import Number
 from collections.abc import Sequence
@@ -2177,3 +2178,37 @@ def test_cache_fn(dev_str, call):
     assert ivy.to_numpy(ret0).item() != ivy.to_numpy(ret1).item()
     assert ret0 is ret0_again
     assert ret0 is not ret1
+
+
+def test_framework_setting_with_threading(dev_str, call):
+
+    if call is helpers.np_call:
+        # Numpy is the conflicting framework being tested against
+        pytest.skip()
+
+    def thread_fn():
+        ivy.set_framework('numpy')
+        x_ = np.array([0., 1., 2.])
+        for _ in range(1000):
+            try:
+                ivy.reduce_mean(x_)
+            except TypeError:
+                return False
+        ivy.unset_framework()
+        return True
+
+    # get original framework string and array
+    fws = ivy.get_framework_str()
+    x = ivy.array([0., 1., 2.])
+
+    # start numpy loop thread
+    thread = threading.Thread(target=thread_fn)
+    thread.start()
+
+    # start local original framework loop
+    ivy.set_framework(fws)
+    for _ in range(1000):
+        ivy.reduce_mean(x)
+    ivy.unset_framework()
+
+    assert not thread.join()
