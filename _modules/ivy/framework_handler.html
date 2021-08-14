@@ -284,10 +284,14 @@
             <span class="s1">&#39;framework stack: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">framework_stack</span><span class="p">))</span></div>
 
 
-<div class="viewcode-block" id="get_framework"><a class="viewcode-back" href="../../framework_handler/get_framework.html#ivy.framework_handler.get_framework">[docs]</a><span class="k">def</span> <span class="nf">get_framework</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
+<div class="viewcode-block" id="get_framework"><a class="viewcode-back" href="../../framework_handler/get_framework.html#ivy.framework_handler.get_framework">[docs]</a><span class="k">def</span> <span class="nf">get_framework</span><span class="p">(</span><span class="n">f</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="k">global</span> <span class="n">ivy_original_dict</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">framework_stack</span><span class="p">:</span>
         <span class="n">ivy_original_dict</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">f</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">current_framework</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">f</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
         <span class="n">f</span> <span class="o">=</span> <span class="n">importlib</span><span class="o">.</span><span class="n">import_module</span><span class="p">(</span><span class="n">_framework_dict</span><span class="p">[</span><span class="n">f</span><span class="p">])</span>
     <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">ivy_original_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
