@@ -528,12 +528,15 @@ Default is True.</p></li>
 
 <dl class="py method">
 <dt id="ivy.core.container.Container.from_disk_as_json">
-<em class="property">static </em><code class="sig-name descname">from_disk_as_json</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">json_filepath</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/container.html#Container.from_disk_as_json"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.from_disk_as_json" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="sig-name descname">from_disk_as_json</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">json_filepath</span></em>, <em class="sig-param"><span class="n">ivyh</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/container.html#Container.from_disk_as_json"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.from_disk_as_json" title="Permalink to this definition">¶</a></dt>
 <dd><p>Load container object from disk at the specified json filepath.
 If some objects were not json-able during saving, then they will be loaded as strings.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>json_filepath</strong> (<em>str</em>) – Filepath where the container object is saved to disk.</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>json_filepath</strong> (<em>str</em>) – Filepath where the container object is saved to disk.</p></li>
+<li><p><strong>ivyh</strong> (<em>handle to ivy module</em><em>, </em><em>optional</em>) – Handle to ivy module to use for the calculations. Default is None, which results in the global ivy.</p></li>
+</ul>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>Container loaded from disk</p>
@@ -643,6 +646,11 @@ Default is True.</p></li>
 <code class="sig-name descname">if_exists</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">key</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/container.html#Container.if_exists"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.if_exists" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the sub-container at the following key if it exists, otherwise None.</p>
 </dd></dl>
+
+<dl class="py method">
+<dt id="ivy.core.container.Container.ivy">
+<em class="property">property </em><code class="sig-name descname">ivy</code><a class="headerlink" href="#ivy.core.container.Container.ivy" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 <dl class="py method">
 <dt id="ivy.core.container.Container.list_join">

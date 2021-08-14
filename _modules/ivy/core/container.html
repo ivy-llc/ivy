@@ -254,7 +254,7 @@
         <span class="n">dict_in</span> <span class="o">=</span> <span class="n">dict_in</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">dict_in</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span> <span class="k">else</span> <span class="nb">dict</span><span class="p">(</span><span class="n">dict_in</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">dict_in</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
-                <span class="bp">self</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">Container</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+                <span class="bp">self</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">Container</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">ivyh</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_ivy</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="bp">self</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span></div>
 
@@ -280,7 +280,7 @@
                 <span class="k">for</span> <span class="n">container</span> <span class="ow">in</span> <span class="n">containers</span><span class="p">:</span>
                     <span class="n">new_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">container</span><span class="p">[</span><span class="n">key</span><span class="p">])</span>
                 <span class="n">return_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">Container</span><span class="o">.</span><span class="n">list_join</span><span class="p">(</span><span class="n">new_list</span><span class="p">)</span>
-            <span class="k">return</span> <span class="n">Container</span><span class="p">(</span><span class="n">return_dict</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">Container</span><span class="p">(</span><span class="n">return_dict</span><span class="p">,</span> <span class="n">ivyh</span><span class="o">=</span><span class="n">container0</span><span class="o">.</span><span class="n">ivy</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="p">[</span><span class="n">item</span> <span class="k">for</span> <span class="n">sublist</span> <span class="ow">in</span> <span class="n">containers</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">sublist</span><span class="p">]</span></div>
 
@@ -302,7 +302,7 @@
             <span class="n">return_dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
             <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">container0</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
                 <span class="n">return_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">Container</span><span class="o">.</span><span class="n">list_stack</span><span class="p">([</span><span class="n">container</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="k">for</span> <span class="n">container</span> <span class="ow">in</span> <span class="n">containers</span><span class="p">],</span> <span class="n">dim</span><span class="p">)</span>
-            <span class="k">return</span> <span class="n">Container</span><span class="p">(</span><span class="n">return_dict</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">Container</span><span class="p">(</span><span class="n">return_dict</span><span class="p">,</span> <span class="n">ivyh</span><span class="o">=</span><span class="n">container0</span><span class="o">.</span><span class="n">ivy</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">containers</span></div>
 
@@ -327,7 +327,7 @@
             <span class="n">return_dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
             <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">container0</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
                 <span class="n">return_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">Container</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">container</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="k">for</span> <span class="n">container</span> <span class="ow">in</span> <span class="n">containers</span><span class="p">],</span> <span class="n">dim</span><span class="p">)</span>
-            <span class="k">return</span> <span class="n">Container</span><span class="p">(</span><span class="n">return_dict</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">Container</span><span class="p">(</span><span class="n">return_dict</span><span class="p">,</span> <span class="n">ivyh</span><span class="o">=</span><span class="n">container0</span><span class="o">.</span><span class="n">ivy</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="c1"># noinspection PyBroadException</span>
             <span class="k">try</span><span class="p">:</span>
@@ -359,7 +359,7 @@
             <span class="n">return_dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
             <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">container0</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
                 <span class="n">return_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">Container</span><span class="o">.</span><span class="n">stack</span><span class="p">([</span><span class="n">container</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="k">for</span> <span class="n">container</span> <span class="ow">in</span> <span class="n">containers</span><span class="p">],</span> <span class="n">dim</span><span class="p">)</span>
-            <span class="k">return</span> <span class="n">Container</span><span class="p">(</span><span class="n">return_dict</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">Container</span><span class="p">(</span><span class="n">return_dict</span><span class="p">,</span> <span class="n">ivyh</span><span class="o">=</span><span class="n">container0</span><span class="o">.</span><span class="n">ivy</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="c1"># noinspection PyBroadException</span>
             <span class="k">try</span><span class="p">:</span>
@@ -392,12 +392,12 @@
 
         <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">h5_obj</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">_h5py</span><span class="o">.</span><span class="n">Group</span><span class="p">):</span>
-                <span class="n">container_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">Container</span><span class="o">.</span><span class="n">from_disk_as_hdf5</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">slice_obj</span><span class="p">)</span>
+                <span class="n">container_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">Container</span><span class="o">.</span><span class="n">from_disk_as_hdf5</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">slice_obj</span><span class="p">,</span> <span class="n">ivyh</span><span class="p">)</span>
             <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">_h5py</span><span class="o">.</span><span class="n">Dataset</span><span class="p">):</span>
                 <span class="n">container_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">ivyh</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">value</span><span class="p">[</span><span class="n">slice_obj</span><span class="p">]))</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;Item found inside h5_obj which was neither a Group nor a Dataset.&#39;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">Container</span><span class="p">(</span><span class="n">container_dict</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">Container</span><span class="p">(</span><span class="n">container_dict</span><span class="p">,</span> <span class="n">ivyh</span><span class="o">=</span><span class="n">ivyh</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Container.from_disk_as_pickled"><a class="viewcode-back" href="../../../core/container/Container.html#ivy.core.container.Container.from_disk_as_pickled">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">from_disk_as_pickled</span><span class="p">(</span><span class="n">pickle_filepath</span><span class="p">,</span> <span class="n">ivyh</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -410,22 +410,22 @@
 <span class="sd">        :type ivyh: handle to ivy module, optional</span>
 <span class="sd">        :return: Container loaded from disk</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">cont</span> <span class="o">=</span> <span class="n">Container</span><span class="p">(</span><span class="n">_pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="n">pickle_filepath</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)))</span>
-        <span class="n">cont</span><span class="o">.</span><span class="n">_ivy</span> <span class="o">=</span> <span class="n">_ivy</span><span class="o">.</span><span class="n">default</span><span class="p">(</span><span class="n">ivyh</span><span class="p">,</span> <span class="n">_ivy</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">cont</span></div>
+        <span class="k">return</span> <span class="n">Container</span><span class="p">(</span><span class="n">_pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="n">pickle_filepath</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)),</span> <span class="n">ivyh</span><span class="o">=</span><span class="n">ivyh</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Container.from_disk_as_json"><a class="viewcode-back" href="../../../core/container/Container.html#ivy.core.container.Container.from_disk_as_json">[docs]</a>    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">from_disk_as_json</span><span class="p">(</span><span class="n">json_filepath</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">from_disk_as_json</span><span class="p">(</span><span class="n">json_filepath</span><span class="p">,</span> <span class="n">ivyh</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Load container object from disk at the specified json filepath.</span>
 <span class="sd">        If some objects were not json-able during saving, then they will be loaded as strings.</span>
 
 <span class="sd">        :param json_filepath: Filepath where the container object is saved to disk.</span>
 <span class="sd">        :type json_filepath: str</span>
+<span class="sd">        :param ivyh: Handle to ivy module to use for the calculations. Default is None, which results in the global ivy.</span>
+<span class="sd">        :type ivyh: handle to ivy module, optional</span>
 <span class="sd">        :return: Container loaded from disk</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">json_filepath</span><span class="p">)</span> <span class="k">as</span> <span class="n">json_data_file</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">Container</span><span class="p">(</span><span class="n">_json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">json_data_file</span><span class="p">))</span></div>
+            <span class="k">return</span> <span class="n">Container</span><span class="p">(</span><span class="n">_json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">json_data_file</span><span class="p">),</span> <span class="n">ivyh</span><span class="o">=</span><span class="n">ivyh</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Container.h5_file_size"><a class="viewcode-back" href="../../../core/container/Container.html#ivy.core.container.Container.h5_file_size">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">h5_file_size</span><span class="p">(</span><span class="n">h5_obj_or_filepath</span><span class="p">):</span>
@@ -500,7 +500,7 @@
             <span class="n">return_dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
             <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">container0</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
                 <span class="n">return_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">Container</span><span class="o">.</span><span class="n">reduce</span><span class="p">([</span><span class="n">container</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="k">for</span> <span class="n">container</span> <span class="ow">in</span> <span class="n">containers</span><span class="p">],</span> <span class="n">reduction</span><span class="p">)</span>
-            <span class="k">return</span> <span class="n">Container</span><span class="p">(</span><span class="n">return_dict</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">Container</span><span class="p">(</span><span class="n">return_dict</span><span class="p">,</span> <span class="n">ivyh</span><span class="o">=</span><span class="n">container0</span><span class="o">.</span><span class="n">ivy</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="c1"># noinspection PyBroadException</span>
             <span class="k">try</span><span class="p">:</span>
@@ -534,7 +534,7 @@
         <span class="k">return</span> <span class="kc">None</span>
 
     <span class="k">def</span> <span class="nf">_at_key_chains_input_as_seq</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key_chains</span><span class="p">):</span>
-        <span class="n">return_cont</span> <span class="o">=</span> <span class="n">Container</span><span class="p">(</span><span class="nb">dict</span><span class="p">())</span>
+        <span class="n">return_cont</span> <span class="o">=</span> <span class="n">Container</span><span class="p">(</span><span class="nb">dict</span><span class="p">(),</span> <span class="n">ivyh</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_ivy</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">kc</span> <span class="ow">in</span> <span class="n">key_chains</span><span class="p">:</span>
             <span class="n">return_cont</span><span class="o">.</span><span class="n">set_at_key_chain</span><span class="p">(</span><span class="n">kc</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">at_key_chain</span><span class="p">(</span><span class="n">kc</span><span class="p">))</span>
         <span class="k">return</span> <span class="n">return_cont</span>
@@ -550,7 +550,7 @@
                 <span class="n">return_dict</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_at_key_chains_input_as_dict</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">new_current_chain</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">return_dict</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">at_key_chain</span><span class="p">(</span><span class="n">new_current_chain</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">Container</span><span class="p">(</span><span class="n">return_dict</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">Container</span><span class="p">(</span><span class="n">return_dict</span><span class="p">,</span> <span class="n">ivyh</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_ivy</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_prune_key_chains_input_as_seq</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key_chains</span><span class="p">):</span>
         <span class="n">return_cont</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
@@ -823,7 +823,7 @@
                         <span class="k">continue</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_ivy</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="n">seed_value</span><span class="p">)</span>
                 <span class="n">return_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ivy</span><span class="o">.</span><span class="n">shuffle</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">Container</span><span class="p">(</span><span class="n">return_dict</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">Container</span><span class="p">(</span><span class="n">return_dict</span><span class="p">,</span> <span class="n">ivyh</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_ivy</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Container.slice_via_key"><a class="viewcode-back" href="../../../core/container/Container.html#ivy.core.container.Container.slice_via_key">[docs]</a>    <span class="k">def</span> <span class="nf">slice_via_key</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">slice_key</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -841,7 +841,7 @@
                 <span class="n">return_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">slice_via_key</span><span class="p">(</span><span class="n">slice_key</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">return_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
-        <span class="k">return</span> <span class="n">Container</span><span class="p">(</span><span class="n">return_dict</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">Container</span><span class="p">(</span><span class="n">return_dict</span><span class="p">,</span> <span class="n">ivyh</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_ivy</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Container.as_ones"><a class="viewcode-back" href="../../../core/container/Container.html#ivy.core.container.Container.as_ones">[docs]</a>    <span class="k">def</span> <span class="nf">as_ones</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key_chains</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">to_apply</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">prune_unapplied</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -1347,7 +1347,7 @@
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">new_value</span> <span class="o">=</span> <span class="n">flat_list</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
             <span class="n">new_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_value</span>
-        <span class="k">return</span> <span class="n">Container</span><span class="p">(</span><span class="n">new_dict</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">Container</span><span class="p">(</span><span class="n">new_dict</span><span class="p">,</span> <span class="n">ivyh</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_ivy</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Container.to_random"><a class="viewcode-back" href="../../../core/container/Container.html#ivy.core.container.Container.to_random">[docs]</a>    <span class="k">def</span> <span class="nf">to_random</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -1414,7 +1414,7 @@
         <span class="n">cont</span> <span class="o">=</span> <span class="bp">self</span>
         <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
             <span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">cont</span><span class="p">:</span>
-                <span class="n">cont</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">Container</span><span class="p">({})</span>
+                <span class="n">cont</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">Container</span><span class="p">(</span><span class="n">ivyh</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_ivy</span><span class="p">)</span>
             <span class="n">cont</span> <span class="o">=</span> <span class="n">cont</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
         <span class="n">cont</span><span class="p">[</span><span class="n">keys</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span> <span class="o">=</span> <span class="n">val</span>
         <span class="k">return</span> <span class="bp">self</span></div>
@@ -1432,7 +1432,7 @@
                 <span class="n">return_dict</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">set_at_key_chains</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">return_dict</span><span class="p">[</span><span class="n">k</span><span class="p">])</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">return_dict</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
-        <span class="k">return</span> <span class="n">Container</span><span class="p">(</span><span class="n">return_dict</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">Container</span><span class="p">(</span><span class="n">return_dict</span><span class="p">,</span> <span class="n">ivyh</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_ivy</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Container.prune_key_chain"><a class="viewcode-back" href="../../../core/container/Container.html#ivy.core.container.Container.prune_key_chain">[docs]</a>    <span class="k">def</span> <span class="nf">prune_key_chain</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key_chain</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -1458,7 +1458,7 @@
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">keys_in_chain</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">1</span> <span class="ow">or</span> <span class="n">key</span> <span class="o">!=</span> <span class="n">keys_in_chain</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
                     <span class="n">out_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
-        <span class="k">return</span> <span class="n">Container</span><span class="p">(</span><span class="n">out_dict</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">Container</span><span class="p">(</span><span class="n">out_dict</span><span class="p">,</span> <span class="n">ivyh</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_ivy</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Container.prune_key_chains"><a class="viewcode-back" href="../../../core/container/Container.html#ivy.core.container.Container.prune_key_chains">[docs]</a>    <span class="k">def</span> <span class="nf">prune_key_chains</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key_chains</span><span class="p">,</span> <span class="n">ignore_none</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -1494,7 +1494,7 @@
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">out_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">out_dict</span><span class="p">):</span>
-            <span class="k">return</span> <span class="n">Container</span><span class="p">(</span><span class="n">out_dict</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">Container</span><span class="p">(</span><span class="n">out_dict</span><span class="p">,</span> <span class="n">ivyh</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_ivy</span><span class="p">)</span>
         <span class="k">return</span></div>
 
 <div class="viewcode-block" id="Container.copy"><a class="viewcode-back" href="../../../core/container/Container.html#ivy.core.container.Container.copy">[docs]</a>    <span class="k">def</span> <span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -1503,7 +1503,7 @@
 
 <span class="sd">        :return: A copy of the container</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">Container</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">to_dict</span><span class="p">())</span></div>
+        <span class="k">return</span> <span class="n">Container</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">to_dict</span><span class="p">(),</span> <span class="n">ivyh</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_ivy</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Container.map"><a class="viewcode-back" href="../../../core/container/Container.html#ivy.core.container.Container.map">[docs]</a>    <span class="k">def</span> <span class="nf">map</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">func</span><span class="p">,</span> <span class="n">key_chains</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">to_apply</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">prune_unapplied</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">key_chain</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -1537,7 +1537,7 @@
                         <span class="n">return_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
                         <span class="k">continue</span>
                 <span class="n">return_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">func</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">this_key_chain</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">Container</span><span class="p">(</span><span class="n">return_dict</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">Container</span><span class="p">(</span><span class="n">return_dict</span><span class="p">,</span> <span class="n">ivyh</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_ivy</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Container.dtype"><a class="viewcode-back" href="../../../core/container/Container.html#ivy.core.container.Container.dtype">[docs]</a>    <span class="k">def</span> <span class="nf">dtype</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -1571,7 +1571,7 @@
                 <span class="n">return_cont</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reshape_like</span><span class="p">(</span><span class="n">v_shape</span><span class="p">,</span> <span class="n">return_cont</span><span class="p">[</span><span class="n">k</span><span class="p">])</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">return_cont</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ivy</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">v_shape</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">Container</span><span class="p">(</span><span class="n">return_cont</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="n">Container</span><span class="p">(</span><span class="n">return_cont</span><span class="p">,</span> <span class="n">ivyh</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_ivy</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Container.if_exists"><a class="viewcode-back" href="../../../core/container/Container.html#ivy.core.container.Container.if_exists">[docs]</a>    <span class="k">def</span> <span class="nf">if_exists</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -1588,7 +1588,7 @@
     <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">as_repr</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="n">new_dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
         <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">Container</span><span class="p">):</span>
                 <span class="c1"># noinspection PyArgumentList</span>
                 <span class="n">rep</span> <span class="o">=</span> <span class="n">v</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">(</span><span class="n">as_repr</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
@@ -1599,7 +1599,7 @@
             <span class="n">new_dict</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">rep</span>
         <span class="k">if</span> <span class="n">as_repr</span><span class="p">:</span>
             <span class="n">json_dumped_str</span> <span class="o">=</span> <span class="n">_json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">new_dict</span><span class="p">)</span><span class="o">.</span><span class="n">map</span><span class="p">(</span>
+                <span class="n">Container</span><span class="p">(</span><span class="n">new_dict</span><span class="p">)</span><span class="o">.</span><span class="n">map</span><span class="p">(</span>
                     <span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">kc</span><span class="p">:</span> <span class="n">x</span> <span class="k">if</span> <span class="n">_is_jsonable</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
                     <span class="k">else</span> <span class="n">x</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">()</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="s1">&#39;, &#39;</span><span class="p">))</span><span class="o">.</span><span class="n">to_dict</span><span class="p">(),</span>
                 <span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
@@ -1662,7 +1662,7 @@
                 <span class="k">else</span><span class="p">:</span>
                     <span class="n">return_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span><span class="p">[</span><span class="n">query</span><span class="p">]</span>
 
-        <span class="k">return</span> <span class="n">Container</span><span class="p">(</span><span class="n">return_dict</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">Container</span><span class="p">(</span><span class="n">return_dict</span><span class="p">,</span> <span class="n">ivyh</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_ivy</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="fm">__setitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -1793,7 +1793,11 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        The device to which the arrays in the container belong, with None returned if the devices are not consistent</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_dev_str</span><span class="p">()</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_dev_str</span><span class="p">()</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">ivy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ivy</span></div>
 </pre></div>
 
            </div>
