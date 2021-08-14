@@ -138,7 +138,7 @@ class Container(dict):
         if isinstance(container0, dict):
             return_dict = dict()
             for key in container0.keys():
-                return_dict[key] = Container.concat([container[key] for container in containers], dim)
+                return_dict[key] = Container.concat([container[key] for container in containers], dim, ivyh)
             return Container(return_dict, ivyh=container0.ivy)
         else:
             # noinspection PyBroadException
@@ -170,7 +170,7 @@ class Container(dict):
         if isinstance(container0, dict):
             return_dict = dict()
             for key in container0.keys():
-                return_dict[key] = Container.stack([container[key] for container in containers], dim)
+                return_dict[key] = Container.stack([container[key] for container in containers], dim, ivyh)
             return Container(return_dict, ivyh=container0.ivy)
         else:
             # noinspection PyBroadException
