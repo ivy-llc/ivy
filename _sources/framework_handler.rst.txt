@@ -12,9 +12,9 @@ Framework handler
    :maxdepth: -1
    :caption: Framework handler
 
-   framework_handler/get_framework.rst
-   framework_handler/get_framework_str.rst
+   framework_handler/current_framework.rst
    framework_handler/set_framework.rst
+   framework_handler/get_framework.rst
    framework_handler/unset_framework.rst
    framework_handler/ContextManager:
     def __init__.rst

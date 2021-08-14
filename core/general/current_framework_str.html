@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>linear_resample &mdash; Ivy 1.0 documentation</title>
+  <title>current_framework_str &mdash; Ivy 1.0 documentation</title>
   
 
   
@@ -36,8 +36,8 @@
   <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="exists" href="exists.html" />
-    <link rel="prev" title="gather_nd" href="gather_nd.html" /> 
+    <link rel="next" title="Gradients" href="../gradients.html" />
+    <link rel="prev" title="cache_fn" href="cache_fn.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -147,7 +147,7 @@
 <li class="toctree-l2"><a class="reference internal" href="scatter_nd.html">scatter_nd</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gather.html">gather</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gather_nd.html">gather_nd</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">linear_resample</a></li>
+<li class="toctree-l2"><a class="reference internal" href="linear_resample.html">linear_resample</a></li>
 <li class="toctree-l2"><a class="reference internal" href="exists.html">exists</a></li>
 <li class="toctree-l2"><a class="reference internal" href="default.html">default</a></li>
 <li class="toctree-l2"><a class="reference internal" href="dev.html">dev</a></li>
@@ -166,7 +166,7 @@
 <li class="toctree-l2"><a class="reference internal" href="split_func_call.html">split_func_call</a></li>
 <li class="toctree-l2"><a class="reference internal" href="split_func_call_across_gpus.html">split_func_call_across_gpus</a></li>
 <li class="toctree-l2"><a class="reference internal" href="cache_fn.html">cache_fn</a></li>
-<li class="toctree-l2"><a class="reference internal" href="current_framework_str.html">current_framework_str</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">current_framework_str</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../gradients.html">Gradients</a></li>
@@ -250,13 +250,13 @@
         
           <li><a href="../general.html">General</a> &raquo;</li>
         
-      <li>linear_resample</li>
+      <li>current_framework_str</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="../../_sources/core/general/linear_resample.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../_sources/core/general/current_framework_str.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -269,23 +269,18 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="linear-resample">
-<h1>linear_resample<a class="headerlink" href="#linear-resample" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="current-framework-str">
+<h1>current_framework_str<a class="headerlink" href="#current-framework-str" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
-<dt id="ivy.core.general.linear_resample">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">linear_resample</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">num_samples</span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">- 1</span></em>, <em class="sig-param"><span class="n">f</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/general.html#linear_resample"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.linear_resample" title="Permalink to this definition">¶</a></dt>
-<dd><p>Performs linear re-sampling on input image.</p>
+<dt id="ivy.core.general.current_framework_str">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">current_framework_str</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">f</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/general.html#current_framework_str"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.current_framework_str" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the string of the current globally set framework. Returns None if no framework is set.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<em>array</em>) – Input array</p></li>
-<li><p><strong>num_samples</strong> (<em>int</em>) – The number of interpolated samples to take.</p></li>
-<li><p><strong>axis</strong> (<em>int</em><em>, </em><em>optional</em>) – The axis along which to perform the resample. Default is last dimension.</p></li>
-<li><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning framework. Inferred from inputs if None.</p></li>
-</ul>
+<dd class="field-odd"><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning framework. Inferred from inputs if None.</p>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>The array after the linear resampling.</p>
+<dd class="field-even"><p>The framework string.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -305,10 +300,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="exists.html" class="btn btn-neutral float-right" title="exists" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="../gradients.html" class="btn btn-neutral float-right" title="Gradients" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="gather_nd.html" class="btn btn-neutral float-left" title="gather_nd" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="cache_fn.html" class="btn btn-neutral float-left" title="cache_fn" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
