@@ -3,7 +3,7 @@ Collection of linear algebra Ivy functions.
 """
 
 # local
-from ivy.framework_handler import get_framework as _get_framework
+from ivy.framework_handler import current_framework as _cur_framework
 
 
 def svd(x, f=None):
@@ -29,7 +29,7 @@ def svd(x, f=None):
         Unitary array(s). The first (number of dims - 2) dimensions have the same size as those of the input a.
         The size of the last two dimensions depends on the value of full_matrices.
     """
-    return _get_framework(x, f=f).svd(x)
+    return _cur_framework(x, f=f).svd(x)
 
 
 # noinspection PyShadowingBuiltins
@@ -54,7 +54,7 @@ def norm(x, ord=2, axis=-1, keepdims=False, f=None):
     :type f: ml_framework, optional
     :return: Norm of the matrix or vector(s).
     """
-    return _get_framework(x, f=f).norm(x, ord, axis, keepdims)
+    return _cur_framework(x, f=f).norm(x, ord, axis, keepdims)
 
 
 def inv(x, f=None):
@@ -68,7 +68,7 @@ def inv(x, f=None):
     :type f: ml_framework, optional
     :return: (Multiplicative) inverse of the matrix x.
     """
-    return _get_framework(x, f=f).inv(x)
+    return _cur_framework(x, f=f).inv(x)
 
 
 def pinv(x, f=None):
@@ -81,7 +81,7 @@ def pinv(x, f=None):
     :type f: ml_framework, optional
     :return: pseudo inverse of the matrix x.
     """
-    return _get_framework(x, f=f).pinv(x)
+    return _cur_framework(x, f=f).pinv(x)
 
 
 def vector_to_skew_symmetric_matrix(vector, f=None):
@@ -96,4 +96,4 @@ def vector_to_skew_symmetric_matrix(vector, f=None):
     :type f: ml_framework, optional
     :return: Skew-symmetric matrix *[batch_shape,3,3]*.
     """
-    return _get_framework(vector, f=f).vector_to_skew_symmetric_matrix(vector)
+    return _cur_framework(vector, f=f).vector_to_skew_symmetric_matrix(vector)

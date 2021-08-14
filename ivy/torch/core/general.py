@@ -668,3 +668,7 @@ def compile_fn(fn, dynamic=True, example_inputs=None):
     if dynamic:
         return torch.jit.script(fn)
     return torch.jit.trace(fn, example_inputs)
+
+
+def current_framework_str():
+    return 'torch'

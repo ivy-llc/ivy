@@ -3,7 +3,7 @@ Collection of gradient Ivy functions.
 """
 
 # local
-from ivy.framework_handler import get_framework as _get_framework
+from ivy.framework_handler import current_framework as _cur_framework
 
 
 def variable(x, f=None):
@@ -16,7 +16,7 @@ def variable(x, f=None):
     :type f: ml_framework, optional
     :return: An ivy variable, supporting gradient computation.
     """
-    return _get_framework(x, f=f).variable(x)
+    return _cur_framework(x, f=f).variable(x)
 
 
 def is_variable(x, f=None):
@@ -29,7 +29,7 @@ def is_variable(x, f=None):
     :type f: ml_framework, optional
     :return: Boolean, true if x is a trainable variable, false otherwise.
     """
-    return _get_framework(x, f=f).is_variable(x)
+    return _cur_framework(x, f=f).is_variable(x)
 
 
 def execute_with_gradients(func, xs, retain_grads=False, f=None):
@@ -47,7 +47,7 @@ def execute_with_gradients(func, xs, retain_grads=False, f=None):
     :type f: ml_framework, optional
     :return: the function first output y, the gradients [dy/dx for x in xs], and any other extra function outputs
     """
-    return _get_framework(None, f=f).execute_with_gradients(func, xs, retain_grads)
+    return _cur_framework(None, f=f).execute_with_gradients(func, xs, retain_grads)
 
 
 def gradient_descent_update(ws, dcdws, lr, inplace=True, f=None):
@@ -69,7 +69,7 @@ def gradient_descent_update(ws, dcdws, lr, inplace=True, f=None):
     :type f: ml_framework, optional
     :return: The new function weights ws_new, following the gradient descent updates.
     """
-    return _get_framework(None, f=f).gradient_descent_update(ws, dcdws, lr, inplace)
+    return _cur_framework(None, f=f).gradient_descent_update(ws, dcdws, lr, inplace)
 
 
 def adam_update(ws, dcdws, lr, mw, vw, step, beta1=0.9, beta2=0.999, epsilon=1e-7, inplace=True, f=None):
@@ -104,7 +104,7 @@ def adam_update(ws, dcdws, lr, mw, vw, step, beta1=0.9, beta2=0.999, epsilon=1e-
     :type f: ml_framework, optional
     :return: The new function weights ws_new, and also new mw and vw, following the gradient descent updates.
     """
-    return _get_framework(None, f=f).adam_update(ws, dcdws, lr, mw, vw, step, beta1, beta2, epsilon, inplace)
+    return _cur_framework(None, f=f).adam_update(ws, dcdws, lr, mw, vw, step, beta1, beta2, epsilon, inplace)
 
 
 def stop_gradient(x, preserve_type=True, f=None):
@@ -120,4 +120,4 @@ def stop_gradient(x, preserve_type=True, f=None):
     :type f: ml_framework, optional
     :return: The same array x, but with no gradient information.
     """
-    return _get_framework(x, f=f).stop_gradient(x, preserve_type)
+    return _cur_framework(x, f=f).stop_gradient(x, preserve_type)

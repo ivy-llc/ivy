@@ -390,3 +390,6 @@ def compile_fn(func, dynamic=True, example_inputs=None):
     logging.warning('Numpy does not support compiling functions.\n'
                     'Now returning the unmodified function.')
     return func
+
+
+current_framework_str = lambda: 'numpy'

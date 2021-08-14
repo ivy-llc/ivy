@@ -5,7 +5,7 @@ Collection of image Ivy functions.
 # local
 import ivy as _ivy
 import numpy as _np
-from ivy.framework_handler import get_framework as _get_framework
+from ivy.framework_handler import current_framework as _cur_framework
 
 
 def stack_images(images, desired_aspect_ratio=(1, 1), f=None):
@@ -20,7 +20,7 @@ def stack_images(images, desired_aspect_ratio=(1, 1), f=None):
     :type f: ml_framework, optional
     :return: Stacked image, suitable for viewing in a single window.
     """
-    return _get_framework(images[0], f=f).stack_images(images, desired_aspect_ratio)
+    return _cur_framework(images[0], f=f).stack_images(images, desired_aspect_ratio)
 
 
 def bilinear_resample(x, warp, f=None):
@@ -35,7 +35,7 @@ def bilinear_resample(x, warp, f=None):
     :type f: ml_framework, optional
     :return: Image after bilinear re-sampling.
     """
-    return _get_framework(x, f=f).bilinear_resample(x, warp)
+    return _cur_framework(x, f=f).bilinear_resample(x, warp)
 
 
 def gradient_image(x, f=None):
@@ -48,7 +48,7 @@ def gradient_image(x, f=None):
     :type f: ml_framework, optional
     :return: Gradient images dy *[batch_shape,h,w,d]* and dx *[batch_shape,h,w,d]* .
     """
-    return _get_framework(x, f=f).gradient_image(x)
+    return _cur_framework(x, f=f).gradient_image(x)
 
 
 def float_img_to_uint8_img(x, f=None):

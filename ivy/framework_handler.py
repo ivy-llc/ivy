@@ -4,7 +4,7 @@ from ivy import verbosity
 
 
 framework_stack = []
-ivy_original_dict = dict()
+ivy_original_dict = ivy.__dict__.copy()
 
 
 class ContextManager:
@@ -40,15 +40,15 @@ _framework_reverse_dict['ivy.torch'] = 'torch'
 _framework_reverse_dict['ivy.mxnd'] = 'mxnd'
 
 
-def _get_framework_from_args(args):
+def _determine_framework_from_args(args):
     for arg in args:
         arg_type = type(arg)
         if arg_type in [list, tuple]:
-            lib = _get_framework_from_args(arg)
+            lib = _determine_framework_from_args(arg)
             if lib:
                 return lib
         elif arg_type is dict:
-            lib = _get_framework_from_args(list(arg.values()))
+            lib = _determine_framework_from_args(list(arg.values()))
             if lib:
                 return lib
         else:
@@ -57,7 +57,7 @@ def _get_framework_from_args(args):
                 return importlib.import_module(module_name)
 
 
-def get_framework(*args, f=None, **kwargs):
+def current_framework(*args, f=None, **kwargs):
     """Priorities: framework > global_framework > input's framework."""
 
     if f:
@@ -71,7 +71,7 @@ def get_framework(*args, f=None, **kwargs):
             verbosity.cprint('Using framework from stack: {}'.format(f))
         return f
 
-    f = _get_framework_from_args(list(args) + list(kwargs.values()))
+    f = _determine_framework_from_args(list(args) + list(kwargs.values()))
     if f is None:
         raise ValueError(
             'get_framework failed to find a valid library from the inputs: '
@@ -81,23 +81,31 @@ def get_framework(*args, f=None, **kwargs):
     return f
 
 
-def get_framework_str(*args, f=None, **kwargs):
-    framework = get_framework(*args, f, **kwargs)
-    return _framework_reverse_dict[framework.__repr__().split("<module '")[-1].split("' ")[0]]
-
-
 def set_framework(f):
+    global ivy_original_dict
     if not framework_stack:
-        global ivy_original_dict
         ivy_original_dict = ivy.__dict__.copy()
     if isinstance(f, str):
         f = importlib.import_module(_framework_dict[f])
     framework_stack.append(f)
-    for k, v in f.__dict__.items():
-        ivy.__dict__[k] = v
+    for k, v in ivy_original_dict.items():
+        if k in f.__dict__:
+            ivy.__dict__[k] = f.__dict__[k]
     if verbosity.level > 0:
         verbosity.cprint(
             'framework stack: {}'.format(framework_stack))
+
+
+def get_framework(f):
+    global ivy_original_dict
+    if not framework_stack:
+        ivy_original_dict = ivy.__dict__.copy()
+    if isinstance(f, str):
+        f = importlib.import_module(_framework_dict[f])
+    for k, v in ivy_original_dict.items():
+        if k not in f.__dict__:
+            f.__dict__[k] = v
+    return f
 
 
 def unset_framework():

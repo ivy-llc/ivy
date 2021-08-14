@@ -3,7 +3,7 @@ Collection of math Ivy functions.
 """
 
 # local
-from ivy.framework_handler import get_framework as _get_framework
+from ivy.framework_handler import current_framework as _cur_framework
 
 
 def sin(x, f=None):
@@ -16,7 +16,7 @@ def sin(x, f=None):
     :type f: ml_framework, optional
     :return: The sine of x element-wise.
     """
-    return _get_framework(x, f=f).sin(x)
+    return _cur_framework(x, f=f).sin(x)
 
 
 def cos(x, f=None):
@@ -29,7 +29,7 @@ def cos(x, f=None):
     :type f: ml_framework, optional
     :return: The cosine of x element-wise.
     """
-    return _get_framework(x, f=f).cos(x)
+    return _cur_framework(x, f=f).cos(x)
 
 
 def tan(x, f=None):
@@ -43,7 +43,7 @@ def tan(x, f=None):
     :type f: ml_framework, optional
     :return: The tangent of x element-wise.
     """
-    return _get_framework(x, f=f).tan(x)
+    return _cur_framework(x, f=f).tan(x)
 
 
 def asin(x, f=None):
@@ -56,7 +56,7 @@ def asin(x, f=None):
     :type f: ml_framework, optional
     :return: The inverse sine of each element in x, in radians and in the closed interval [-pi/2, pi/2].
     """
-    return _get_framework(x, f=f).asin(x)
+    return _cur_framework(x, f=f).asin(x)
 
 
 def acos(x, f=None):
@@ -70,7 +70,7 @@ def acos(x, f=None):
     :type f: ml_framework, optional
     :return: The angle of the ray intersecting the unit circle at the given x-coordinate in radians [0, pi].
     """
-    return _get_framework(x, f=f).acos(x)
+    return _cur_framework(x, f=f).acos(x)
 
 
 def atan(x, f=None):
@@ -84,7 +84,7 @@ def atan(x, f=None):
     :type f: ml_framework, optional
     :return: Out has the same shape as x. Its real part is in [-pi/2, pi/2] (arctan(+/-inf) returns +/-pi/2).
     """
-    return _get_framework(x, f=f).atan(x)
+    return _cur_framework(x, f=f).atan(x)
 
 
 def atan2(x1, x2, f=None):
@@ -100,7 +100,7 @@ def atan2(x1, x2, f=None):
     :type f: ml_framework, optional
     :return: Array of angles in radians, in the range [-pi, pi].
     """
-    return _get_framework(x1, f=f).atan2(x1, x2)
+    return _cur_framework(x1, f=f).atan2(x1, x2)
 
 
 def sinh(x, f=None):
@@ -112,7 +112,7 @@ def sinh(x, f=None):
     :type f: ml_framework, optional
     :return: A new array with the hyperbolic sine of the elements of x.
     """
-    return _get_framework(x, f=f).sinh(x)
+    return _cur_framework(x, f=f).sinh(x)
 
 
 def cosh(x, f=None):
@@ -124,7 +124,7 @@ def cosh(x, f=None):
     :type f: ml_framework, optional
     :return: A new array with the hyperbolic cosine of the elements of x.
     """
-    return _get_framework(x, f=f).cosh(x)
+    return _cur_framework(x, f=f).cosh(x)
 
 
 def tanh(x, f=None):
@@ -136,7 +136,7 @@ def tanh(x, f=None):
     :type f: ml_framework, optional
     :return: A new array with the hyperbolic tangent of the elements of x.
     """
-    return _get_framework(x, f=f).tanh(x)
+    return _cur_framework(x, f=f).tanh(x)
 
 
 def asinh(x, f=None):
@@ -148,7 +148,7 @@ def asinh(x, f=None):
     :type f: ml_framework, optional
     :return: A new array with the inverse hyperbolic sine of the elements of x.
     """
-    return _get_framework(x, f=f).asinh(x)
+    return _cur_framework(x, f=f).asinh(x)
 
 
 def acosh(x, f=None):
@@ -160,7 +160,7 @@ def acosh(x, f=None):
     :type f: ml_framework, optional
     :return: A new array with the inverse hyperbolic cosine of the elements of x.
     """
-    return _get_framework(x, f=f).acosh(x)
+    return _cur_framework(x, f=f).acosh(x)
 
 
 def atanh(x, f=None):
@@ -172,7 +172,7 @@ def atanh(x, f=None):
     :type f: ml_framework, optional
     :return: A new array with the inverse hyperbolic tangent of the elements of x.
     """
-    return _get_framework(x, f=f).atanh(x)
+    return _cur_framework(x, f=f).atanh(x)
 
 
 def log(x, f=None):
@@ -185,7 +185,7 @@ def log(x, f=None):
     :type f: ml_framework, optional
     :return: The natural logarithm of each element of x.
     """
-    return _get_framework(x, f=f).log(x)
+    return _cur_framework(x, f=f).log(x)
 
 
 def exp(x, f=None):
@@ -198,7 +198,7 @@ def exp(x, f=None):
     :type f: ml_framework, optional
     :return: The exponential of each element of x.
     """
-    return _get_framework(x, f=f).exp(x)
+    return _cur_framework(x, f=f).exp(x)
 
 
 def erf(x, f=None):
@@ -211,4 +211,4 @@ def erf(x, f=None):
     :type f: ml_framework, optional
     :return: The Gauss error function of x.
     """
-    return _get_framework(x, f=f).erf(x)
+    return _cur_framework(x, f=f).erf(x)

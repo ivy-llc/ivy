@@ -559,3 +559,6 @@ def compile_fn(func, dynamic=True, example_inputs=None):
                     'consider writing a function using MXNet Symbolic backend instead for compiling.\n'
                     'Now returning the unmodified function.')
     return func
+
+
+current_framework_str = lambda: 'mxnd'

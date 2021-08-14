@@ -11,7 +11,7 @@ from psutil import virtual_memory
 
 # local
 import ivy
-from ivy.framework_handler import get_framework as _get_framework
+from ivy.framework_handler import current_framework as _get_framework
 
 
 # noinspection PyShadowingNames
@@ -1337,3 +1337,17 @@ def cache_fn(func):
         return _cache
 
     return cached_fn
+
+
+def current_framework_str(f=None):
+    """
+    Return the string of the current globally set framework. Returns None if no framework is set.
+
+    :param f: Machine learning framework. Inferred from inputs if None.
+    :type f: ml_framework, optional
+    :return: The framework string.
+    """
+    fw = _get_framework(f=f)
+    if fw is None:
+        return None
+    return fw.current_framework_str()

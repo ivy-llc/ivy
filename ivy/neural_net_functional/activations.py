@@ -3,7 +3,7 @@ Collection of Ivy activation functions.
 """
 
 # local
-from ivy.framework_handler import get_framework as _get_framework
+from ivy.framework_handler import current_framework as _get_framework
 
 
 def relu(x, f=None):
