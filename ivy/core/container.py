@@ -26,6 +26,7 @@ from operator import truediv as _truediv
 from operator import floordiv as _floordiv
 
 # local
+import ivy
 import ivy as _ivy
 
 
@@ -51,10 +52,8 @@ class Container(dict):
         :param kwargs: keyword arguments for dict creation. Default is None.
         :type kwargs: keyword arguments.
         """
-        if ivyh is None:
-            self._ivy = _ivy
-        else:
-            self._ivy = ivyh
+        if ivy.exists(ivyh):
+            self._local_ivy = ivyh
         if dict_in is None:
             if kwargs:
                 dict_in = dict(**kwargs)
@@ -1602,8 +1601,20 @@ class Container(dict):
     def __xor__(self, other):
         return self.reduce([self, other], lambda x: _reduce(_xor, x))
 
-    # Getters #
-    # --------#
+    # Getters and Setters #
+    # --------------------#
+
+    # private
+
+    @property
+    def _ivy(self):
+        return ivy.default(self._local_ivy, ivy)
+
+    @_ivy.setter
+    def _ivy(self, local_ivy):
+        self._local_ivy = local_ivy
+
+    # public
 
     @property
     def shape(self):

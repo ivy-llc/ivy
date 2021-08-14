@@ -1,5 +1,6 @@
 # global
 import os
+import pickle
 import pytest
 import random
 import numpy as np
@@ -1748,3 +1749,17 @@ def test_container_if_exists(dev_str, call):
     assert container.if_exists('d') is None
     container.d = ivy.array([[[1.], [2.], [3.]]], dev_str='cpu:0')
     assert np.allclose(ivy.to_numpy(container.if_exists('d')), np.array([[[1.], [2.], [3.]]]))
+
+
+def test_container_pickling_with_ivy_attribute(dev_str, call):
+
+    # verify container with local ivy cannot be pickled
+    cannot_pickle = False
+    try:
+        pickle.dumps(Container(ivyh=ivy.get_framework(ivy.current_framework_str())))
+    except TypeError:
+        cannot_pickle = True
+    assert cannot_pickle
+
+    # verify container without local ivy can be pickled
+    pickle.dumps(Container())
