@@ -3,7 +3,7 @@ Collection of reduction Ivy functions
 """
 
 # local
-from ivy.framework_handler import get_framework as _get_framework
+from ivy.framework_handler import current_framework as _cur_framework
 
 
 def reduce_sum(x, axis=None, keepdims=False, f=None):
@@ -24,7 +24,7 @@ def reduce_sum(x, axis=None, keepdims=False, f=None):
     :type f: ml_framework, optional
     :return: The array with sums computed.
     """
-    return _get_framework(x, f=f).reduce_sum(x, axis, keepdims)
+    return _cur_framework(x, f=f).reduce_sum(x, axis, keepdims)
 
 
 def reduce_prod(x, axis=None, keepdims=False, f=None):
@@ -45,7 +45,7 @@ def reduce_prod(x, axis=None, keepdims=False, f=None):
     :type f: ml_framework, optional
     :return: The array with multiplications computed.
     """
-    return _get_framework(x, f=f).reduce_prod(x, axis, keepdims)
+    return _cur_framework(x, f=f).reduce_prod(x, axis, keepdims)
 
 
 def reduce_mean(x, axis=None, keepdims=False, f=None):
@@ -67,7 +67,7 @@ def reduce_mean(x, axis=None, keepdims=False, f=None):
     :type f: ml_framework, optional
     :return: The array with means computed.
     """
-    return _get_framework(x, f=f).reduce_mean(x, axis, keepdims)
+    return _cur_framework(x, f=f).reduce_mean(x, axis, keepdims)
 
 
 def reduce_var(x, axis=None, keepdims=False, f=None):
@@ -88,7 +88,7 @@ def reduce_var(x, axis=None, keepdims=False, f=None):
     :type f: ml_framework, optional
     :return: The array with variances computed.
     """
-    return _get_framework(x, f=f).reduce_var(x, axis, keepdims)
+    return _cur_framework(x, f=f).reduce_var(x, axis, keepdims)
 
 
 def reduce_std(x, axis=None, keepdims=False, f=None):
@@ -130,7 +130,7 @@ def reduce_min(x, axis=None, keepdims=False, f=None):
     :type f: ml_framework, optional
     :return: The array with mins computed.
     """
-    return _get_framework(x, f=f).reduce_min(x, axis, keepdims)
+    return _cur_framework(x, f=f).reduce_min(x, axis, keepdims)
 
 
 def reduce_max(x, axis=None, keepdims=False, f=None):
@@ -151,7 +151,7 @@ def reduce_max(x, axis=None, keepdims=False, f=None):
     :type f: ml_framework, optional
     :return: The array with maxes computed.
     """
-    return _get_framework(x, f=f).reduce_max(x, axis, keepdims)
+    return _cur_framework(x, f=f).reduce_max(x, axis, keepdims)
 
 
 def einsum(equation, *operands, f=None):
@@ -167,4 +167,4 @@ def einsum(equation, *operands, f=None):
     :type f: ml_framework, optional
     :return: The array with sums computed.
     """
-    return _get_framework(operands[0], f=f).einsum(equation, *operands)
+    return _cur_framework(operands[0], f=f).einsum(equation, *operands)

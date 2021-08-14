@@ -9,7 +9,7 @@ from einops import rearrange, repeat
 
 # local
 import ivy
-from ivy.framework_handler import get_framework as _get_framework
+from ivy.framework_handler import current_framework as _get_framework
 
 
 # Linear #

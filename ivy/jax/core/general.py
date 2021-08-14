@@ -412,3 +412,4 @@ dtype = lambda x: x.dtype
 dtype_to_str = lambda dtype_in: DTYPE_DICT[dtype_in]
 dtype_str = lambda x: dtype_to_str(dtype(x))
 compile_fn = lambda fn, dynamic=True, example_inputs=None: _jax.jit(fn)
+current_framework_str = lambda: 'jax'
