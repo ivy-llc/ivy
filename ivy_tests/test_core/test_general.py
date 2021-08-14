@@ -2283,3 +2283,36 @@ def test_explicit_ivy_framework_handles(dev_str, call):
 
     # unset global ivy from numpy
     ivy.unset_framework()
+
+
+def test_class_ivy_handles(dev_str, call):
+
+    if call is helpers.np_call:
+        # Numpy is the conflicting framework being tested against
+        pytest.skip()
+
+    class ArrayGen:
+
+        def __init__(self, ivyh):
+            self._ivy = ivyh
+
+        def get_array(self):
+            return self._ivy.array([0., 1., 2.])
+
+    # create instance
+    ag = ArrayGen(ivy.get_framework())
+
+    # create array from array generator
+    x = ag.get_array()
+
+    # verify this is not a numpy array
+    assert not isinstance(x, np.ndarray)
+
+    # change global framework to numpy
+    ivy.set_framework('numpy')
+
+    # create another array from array generator
+    x = ag.get_array()
+
+    # verify this is not still a numpy array
+    assert not isinstance(x, np.ndarray)
