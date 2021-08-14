@@ -573,6 +573,15 @@
     <span class="c1"># Public Methods #</span>
     <span class="c1"># ---------------#</span>
 
+<div class="viewcode-block" id="Container.set_framework"><a class="viewcode-back" href="../../../core/container/Container.html#ivy.core.container.Container.set_framework">[docs]</a>    <span class="k">def</span> <span class="nf">set_framework</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ivyh</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Update the framework to use for the container.</span>
+
+<span class="sd">        :param ivyh: Handle to ivy module to use for the calculations. Default is None, which results in the global ivy.</span>
+<span class="sd">        :type ivyh: handle to ivy module, optional</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ivy</span> <span class="o">=</span> <span class="n">ivyh</span></div>
+
 <div class="viewcode-block" id="Container.reduce_sum"><a class="viewcode-back" href="../../../core/container/Container.html#ivy.core.container.Container.reduce_sum">[docs]</a>    <span class="k">def</span> <span class="nf">reduce_sum</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">key_chains</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">to_apply</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">prune_unapplied</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Computes sum of array elements along a given axis for all sub-arrays of container object.</span>
