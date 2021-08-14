@@ -74,30 +74,33 @@ class Container(dict):
     # --------------#
 
     @staticmethod
-    def list_join(containers):
+    def list_join(containers, ivyh=None):
         """
         Join containers of lists together along the specified dimension.
 
         :param containers: containers to list join
         :type containers: sequence of Container objects
+        :param ivyh: Handle to ivy module to use for the calculations. Default is None, which results in the global ivy.
+        :type ivyh: handle to ivy module, optional
         :return: List joined containers, with each entry being a list of arrays
         """
 
         container0 = containers[0]
 
-        if isinstance(container0, dict):
+        if isinstance(container0, Container):
+            ivyh = _ivy.default(_ivy.default(ivyh, container0.ivy), _ivy)
             return_dict = dict()
             for key in container0.keys():
                 new_list = list()
                 for container in containers:
                     new_list.append(container[key])
-                return_dict[key] = Container.list_join(new_list)
-            return Container(return_dict, ivyh=container0.ivy)
+                return_dict[key] = Container.list_join(new_list, ivyh)
+            return Container(return_dict, ivyh=ivyh)
         else:
             return [item for sublist in containers for item in sublist]
 
     @staticmethod
-    def list_stack(containers, dim):
+    def list_stack(containers, dim, ivyh=None):
         """
         List stack containers together along the specified dimension.
 
@@ -105,16 +108,19 @@ class Container(dict):
         :type containers: sequence of Container objects
         :param dim: dimension along which to list stack
         :type dim: int
+        :param ivyh: Handle to ivy module to use for the calculations. Default is None, which results in the global ivy.
+        :type ivyh: handle to ivy module, optional
         :return: Stacked containers, with each entry being a list of arrays
         """
 
         container0 = containers[0]
 
-        if isinstance(container0, dict):
+        if isinstance(container0, Container):
+            ivyh = _ivy.default(_ivy.default(ivyh, container0.ivy), _ivy)
             return_dict = dict()
             for key in container0.keys():
-                return_dict[key] = Container.list_stack([container[key] for container in containers], dim)
-            return Container(return_dict, ivyh=container0.ivy)
+                return_dict[key] = Container.list_stack([container[key] for container in containers], dim, ivyh)
+            return Container(return_dict, ivyh=ivyh)
         else:
             return containers
 
@@ -132,15 +138,16 @@ class Container(dict):
         :return: Concatenated containers
         """
 
-        ivyh = _ivy.default(ivyh, _ivy)
         container0 = containers[0]
 
-        if isinstance(container0, dict):
+        if isinstance(container0, Container):
+            ivyh = _ivy.default(_ivy.default(ivyh, container0.ivy), _ivy)
             return_dict = dict()
             for key in container0.keys():
                 return_dict[key] = Container.concat([container[key] for container in containers], dim, ivyh)
-            return Container(return_dict, ivyh=container0.ivy)
+            return Container(return_dict, ivyh=ivyh)
         else:
+            ivyh = _ivy.default(ivyh, _ivy)
             # noinspection PyBroadException
             try:
                 if len(containers[0].shape) == 0:
@@ -164,15 +171,16 @@ class Container(dict):
         :return: Stacked containers
         """
 
-        ivyh = _ivy.default(ivyh, _ivy)
         container0 = containers[0]
 
-        if isinstance(container0, dict):
+        if isinstance(container0, Container):
+            ivyh = _ivy.default(_ivy.default(ivyh, container0.ivy), _ivy)
             return_dict = dict()
             for key in container0.keys():
                 return_dict[key] = Container.stack([container[key] for container in containers], dim, ivyh)
-            return Container(return_dict, ivyh=container0.ivy)
+            return Container(return_dict, ivyh=ivyh)
         else:
+            ivyh = _ivy.default(ivyh, _ivy)
             # noinspection PyBroadException
             try:
                 if len(containers[0].shape) == 0:
@@ -297,7 +305,7 @@ class Container(dict):
             h5_obj.close()
 
     @staticmethod
-    def reduce(containers, reduction):
+    def reduce(containers, reduction, ivyh=None):
         """
         Reduce containers.
 
@@ -305,14 +313,18 @@ class Container(dict):
         :type containers: sequence of Container objects
         :param reduction: the reduction function
         :type reduction: callable with single list input x
+        :param ivyh: Handle to ivy module to use for the calculations. Default is None, which results in the global ivy.
+        :type ivyh: handle to ivy module, optional
         :return: reduced containers
         """
         container0 = containers[0]
-        if isinstance(container0, dict):
+
+        if isinstance(container0, Container):
+            ivyh = _ivy.default(_ivy.default(ivyh, container0.ivy), _ivy)
             return_dict = dict()
             for key in container0.keys():
-                return_dict[key] = Container.reduce([container[key] for container in containers], reduction)
-            return Container(return_dict, ivyh=container0.ivy)
+                return_dict[key] = Container.reduce([container[key] for container in containers], reduction, ivyh)
+            return Container(return_dict, ivyh=ivyh)
         else:
             # noinspection PyBroadException
             try:
