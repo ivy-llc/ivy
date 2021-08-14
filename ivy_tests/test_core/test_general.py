@@ -9,6 +9,7 @@ import threading
 import numpy as np
 from numbers import Number
 from collections.abc import Sequence
+import torch.multiprocessing as multiprocessing
 
 # local
 import ivy
@@ -2212,3 +2213,40 @@ def test_framework_setting_with_threading(dev_str, call):
     ivy.unset_framework()
 
     assert not thread.join()
+
+
+def test_framework_setting_with_multiprocessing(dev_str, call):
+
+    if call is helpers.np_call:
+        # Numpy is the conflicting framework being tested against
+        pytest.skip()
+
+    def worker_fn(out_queue):
+        ivy.set_framework('numpy')
+        x_ = np.array([0., 1., 2.])
+        for _ in range(1000):
+            try:
+                ivy.reduce_mean(x_)
+            except TypeError:
+                out_queue.put(False)
+                return
+        ivy.unset_framework()
+        out_queue.put(True)
+
+    # get original framework string and array
+    fws = ivy.get_framework_str()
+    x = ivy.array([0., 1., 2.])
+
+    # start numpy loop thread
+    output_queue = multiprocessing.Queue()
+    worker = multiprocessing.Process(target=worker_fn, args=(output_queue,))
+    worker.start()
+
+    # start local original framework loop
+    ivy.set_framework(fws)
+    for _ in range(1000):
+        ivy.reduce_mean(x)
+    ivy.unset_framework()
+
+    worker.join()
+    assert output_queue.get_nowait()
