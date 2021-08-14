@@ -197,12 +197,21 @@
 <p>Base Container Object</p>
 <dl class="py class">
 <dt id="ivy.core.container.Container">
-<em class="property">class </em><code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">Container</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dict_in</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/container.html#Container"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">Container</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dict_in</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">ivyh</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/container.html#Container"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></p>
 <dl class="py method">
 <dt id="ivy.core.container.Container.__init__">
-<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dict_in</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/container.html#Container.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.__init__" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dict_in</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">ivyh</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/container.html#Container.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initialize container object from input dict representation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dict_in</strong> (<em>dict</em><em>, </em><em>optional</em>) – the dictionary the container should wrap around. Default is None.</p></li>
+<li><p><strong>ivyh</strong> (<em>handle to ivy module</em><em>, </em><em>optional</em>) – Handle to ivy module to use for the calculations. Default is None, which results in the global ivy.</p></li>
+<li><p><strong>kwargs</strong> (<em>keyword arguments.</em>) – keyword arguments for dict creation. Default is None.</p></li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
@@ -328,13 +337,14 @@ Default is True.</p></li>
 
 <dl class="py method">
 <dt id="ivy.core.container.Container.concat">
-<em class="property">static </em><code class="sig-name descname">concat</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">containers</span></em>, <em class="sig-param"><span class="n">dim</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/container.html#Container.concat"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.concat" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="sig-name descname">concat</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">containers</span></em>, <em class="sig-param"><span class="n">dim</span></em>, <em class="sig-param"><span class="n">ivyh</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/container.html#Container.concat"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.concat" title="Permalink to this definition">¶</a></dt>
 <dd><p>Concatenate containers together along the specified dimension.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>containers</strong> (<em>sequence of Container objects</em>) – containers to concatenate</p></li>
 <li><p><strong>dim</strong> (<em>int</em>) – dimension along which to concatenate</p></li>
+<li><p><strong>ivyh</strong> (<em>handle to ivy module</em><em>, </em><em>optional</em>) – Handle to ivy module to use for the calculations. Default is None, which results in the global ivy.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -499,13 +509,14 @@ Default is True.</p></li>
 
 <dl class="py method">
 <dt id="ivy.core.container.Container.from_disk_as_hdf5">
-<em class="property">static </em><code class="sig-name descname">from_disk_as_hdf5</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">h5_obj_or_filepath</span></em>, <em class="sig-param"><span class="n">slice_obj</span><span class="o">=</span><span class="default_value">slice(None, None, None)</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/container.html#Container.from_disk_as_hdf5"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.from_disk_as_hdf5" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="sig-name descname">from_disk_as_hdf5</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">h5_obj_or_filepath</span></em>, <em class="sig-param"><span class="n">slice_obj</span><span class="o">=</span><span class="default_value">slice(None, None, None)</span></em>, <em class="sig-param"><span class="n">ivyh</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/container.html#Container.from_disk_as_hdf5"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.from_disk_as_hdf5" title="Permalink to this definition">¶</a></dt>
 <dd><p>Load container object from disk, as an h5py file, at the specified hdf5 filepath.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>h5_obj_or_filepath</strong> (<em>str</em><em> or </em><em>h5 obj</em>) – Filepath where the container object is saved to disk, or h5 object.</p></li>
 <li><p><strong>slice_obj</strong> (<em>slice</em><em> or </em><em>sequence of slices</em>) – slice object to slice all h5 elements.</p></li>
+<li><p><strong>ivyh</strong> (<em>handle to ivy module</em><em>, </em><em>optional</em>) – Handle to ivy module to use for the calculations. Default is None, which results in the global ivy.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -531,11 +542,14 @@ If some objects were not json-able during saving, then they will be loaded as st
 
 <dl class="py method">
 <dt id="ivy.core.container.Container.from_disk_as_pickled">
-<em class="property">static </em><code class="sig-name descname">from_disk_as_pickled</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">pickle_filepath</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/container.html#Container.from_disk_as_pickled"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.from_disk_as_pickled" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="sig-name descname">from_disk_as_pickled</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">pickle_filepath</span></em>, <em class="sig-param"><span class="n">ivyh</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/container.html#Container.from_disk_as_pickled"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.from_disk_as_pickled" title="Permalink to this definition">¶</a></dt>
 <dd><p>Load container object from disk at the specified pickle filepath.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>pickle_filepath</strong> (<em>str</em>) – Filepath where the container object is saved to disk.</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>pickle_filepath</strong> (<em>str</em>) – Filepath where the container object is saved to disk.</p></li>
+<li><p><strong>ivyh</strong> (<em>handle to ivy module</em><em>, </em><em>optional</em>) – Handle to ivy module to use for the calculations. Default is None, which results in the global ivy.</p></li>
+</ul>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>Container loaded from disk</p>
@@ -1061,13 +1075,14 @@ Default is True.</p></li>
 
 <dl class="py method">
 <dt id="ivy.core.container.Container.stack">
-<em class="property">static </em><code class="sig-name descname">stack</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">containers</span></em>, <em class="sig-param"><span class="n">dim</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/container.html#Container.stack"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.stack" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="sig-name descname">stack</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">containers</span></em>, <em class="sig-param"><span class="n">dim</span></em>, <em class="sig-param"><span class="n">ivyh</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/container.html#Container.stack"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.stack" title="Permalink to this definition">¶</a></dt>
 <dd><p>Stack containers together along the specified dimension.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>containers</strong> (<em>sequence of Container objects</em>) – containers to stack</p></li>
 <li><p><strong>dim</strong> (<em>int</em>) – dimension along which to stack</p></li>
+<li><p><strong>ivyh</strong> (<em>handle to ivy module</em><em>, </em><em>optional</em>) – Handle to ivy module to use for the calculations. Default is None, which results in the global ivy.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
