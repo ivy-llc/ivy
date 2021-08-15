@@ -776,6 +776,29 @@ def test_container_as_arrays(dev_str, call):
     assert ivy.is_array(container_as_arrays.b.d)
 
 
+def test_container_arrays_as_lists(dev_str, call):
+    dict_in = {'a': ivy.array([[[1., 2.], [3., 4.]], [[5., 6.], [7., 8.]]]),
+               'b': {'c': ivy.array([[[8., 7.], [6., 5.]], [[4., 3.], [2., 1.]]]),
+                     'd': ivy.array([[[2., 4.], [6., 8.]], [[10., 12.], [14., 16.]]])}}
+    container = Container(dict_in)
+
+    assert ivy.is_array(container['a'])
+    assert ivy.is_array(container.a)
+    assert ivy.is_array(container['b']['c'])
+    assert ivy.is_array(container.b.c)
+    assert ivy.is_array(container['b']['d'])
+    assert ivy.is_array(container.b.d)
+
+    # without key_chains specification
+    container_arrays_as_lists = container.arrays_as_lists()
+    assert isinstance(container_arrays_as_lists['a'], list)
+    assert isinstance(container_arrays_as_lists.a, list)
+    assert isinstance(container_arrays_as_lists['b']['c'], list)
+    assert isinstance(container_arrays_as_lists.b.c, list)
+    assert isinstance(container_arrays_as_lists['b']['d'], list)
+    assert isinstance(container_arrays_as_lists.b.d, list)
+
+
 def test_container_has_key_chain(dev_str, call):
     dict_in = {'a': ivy.array([1]),
                'b': {'c': ivy.array([2]), 'd': ivy.array([3])}}
