@@ -403,6 +403,7 @@ class Container(dict):
         :type ivyh: handle to ivy module, optional
         """
         self._ivy = ivyh
+        return self
 
     def reduce_sum(self, axis=None, keepdims=False, key_chains=None, to_apply=True, prune_unapplied=False):
         """
@@ -1030,7 +1031,8 @@ class Container(dict):
         """
         return self.map(
             lambda x, kc: self._ivy.stop_gradient(x, False) if self._ivy.is_variable(x)
-            else (x if self._ivy.is_array(x) else self._ivy.array(x)), key_chains, to_apply, prune_unapplied)
+            else (x if self._ivy.is_array(x) else self._ivy.array(self._ivy.to_list(x))),
+            key_chains, to_apply, prune_unapplied)
 
     def to_disk_as_hdf5(self, h5_obj_or_filepath, starting_index=0, mode='a', max_batch_size=None):
         """
