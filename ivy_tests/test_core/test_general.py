@@ -51,10 +51,15 @@ def test_set_framework(fw_str, dev_str, call):
     "object_in", [[], [0.], [1], [True], [[1., 2.]]])
 @pytest.mark.parametrize(
     "dtype_str", [None, 'float16', 'float32', 'float64', 'int8', 'int16', 'int32', 'int64', 'bool'])
-def test_array(object_in, dtype_str, dev_str, call):
+@pytest.mark.parametrize(
+    "from_numpy", [True, False])
+def test_array(object_in, dtype_str, from_numpy, dev_str, call):
     if call in [helpers.mx_call] and dtype_str == 'int16':
         # mxnet does not support int16
         pytest.skip()
+    # to numpy
+    if from_numpy:
+        object_in = np.array(object_in)
     # smoke test
     ret = ivy.array(object_in, dtype_str, dev_str)
     # type test
