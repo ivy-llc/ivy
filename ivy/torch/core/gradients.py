@@ -13,7 +13,7 @@ def variable(x):
 
 
 def is_variable(x):
-    return x.requires_grad
+    return isinstance(x, _torch.Tensor) and x.requires_grad
 
 
 def execute_with_gradients(func, xs, retain_grads=False):
