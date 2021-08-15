@@ -202,8 +202,7 @@
 
 
 <div class="viewcode-block" id="is_variable"><a class="viewcode-back" href="../../../../numpy/core/gradients/is_variable.html#ivy.numpy.core.gradients.is_variable">[docs]</a><span class="k">def</span> <span class="nf">is_variable</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
-    <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;NumPy does not support autograd, &#39;</span>
-                    <span class="s1">&#39;checking if x is a variable does have any meaning for NumPy. Returning False.&#39;</span><span class="p">)</span>
+    <span class="c1"># NumPy does not support autograd, checking if x is a variable does have any meaning for NumPy. Return False.</span>
     <span class="k">return</span> <span class="kc">False</span></div>
 
 
