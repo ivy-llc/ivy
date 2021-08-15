@@ -1031,8 +1031,23 @@ class Container(dict):
         """
         return self.map(
             lambda x, kc: self._ivy.stop_gradient(x, False) if self._ivy.is_variable(x)
-            else (x if self._ivy.is_array(x) else self._ivy.array(self._ivy.to_list(x))),
-            key_chains, to_apply, prune_unapplied)
+            else (x if self._ivy.is_array(x) else self._ivy.array(x)), key_chains, to_apply, prune_unapplied)
+
+    def arrays_as_lists(self, key_chains=None, to_apply=True, prune_unapplied=False):
+        """
+        Converts all nested arrays to lists, a useful intermediate step for conversion to other framework array types.
+
+        :param key_chains: The key-chains to apply or not apply the method to. Default is None.
+        :type key_chains: list or dict of strs, optional
+        :param to_apply: If True, the method will be applied to key_chains, otherwise key_chains will be skipped.
+                         Default is True.
+        :type to_apply: bool, optional
+        :param prune_unapplied: Whether to prune key_chains for which the function was not applied. Default is False.
+        :type prune_unapplied: bool, optional
+        :return: container with each array converted to a list.
+        """
+        return self.map(
+            lambda x, kc: self._ivy.to_list(x) if self._ivy.is_array(x) else x, key_chains, to_apply, prune_unapplied)
 
     def to_disk_as_hdf5(self, h5_obj_or_filepath, starting_index=0, mode='a', max_batch_size=None):
         """
