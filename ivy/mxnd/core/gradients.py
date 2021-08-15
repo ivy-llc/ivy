@@ -12,7 +12,7 @@ def variable(x):
 
 
 def is_variable(x):
-    return x.grad is not None
+    return isinstance(x, _mx.ndarray.ndarray.NDArray) and x.grad is not None
 
 
 # noinspection PyUnresolvedReferences
