@@ -5,14 +5,17 @@ Collection of Jax gradient functions, wrapped to fit Ivy syntax and signature.
 # global
 import jax as _jax
 import jax.lax as _jlax
+import jaxlib as _jaxlib
 import jax.numpy as _jnp
+from jaxlib.xla_extension import Buffer
 
 # local
 from ivy.core.container import Container
 
 # ToDo: modify these functions to track whether variable() has been called
 variable = lambda x: x
-is_variable = lambda x: True
+# noinspection PyUnresolvedReferences,PyProtectedMember
+is_variable = lambda x: isinstance(x, (_jax.interpreters.xla._DeviceArray, _jaxlib.xla_extension.DeviceArray, Buffer))
 
 
 def execute_with_gradients(func, xs, retain_grads=False):
