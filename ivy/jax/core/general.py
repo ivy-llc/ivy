@@ -46,9 +46,7 @@ def array(object_in, dtype_str=None, dev_str=None):
 
 # noinspection PyUnresolvedReferences,PyProtectedMember
 def is_array(x):
-    if isinstance(x, (_jax.interpreters.xla._DeviceArray, _jaxlib.xla_extension.DeviceArray, Buffer)):
-        return True
-    return False
+    return isinstance(x, (_jax.interpreters.xla._DeviceArray, _jaxlib.xla_extension.DeviceArray, Buffer))
 
 
 to_numpy = _onp.asarray
