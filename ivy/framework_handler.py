@@ -102,10 +102,14 @@ def get_framework(f=None):
         ivy_original_dict = ivy.__dict__.copy()
     if f is None:
         f = ivy.current_framework()
-    if f is None:
-        return None
     if isinstance(f, str):
+        if framework_stack:
+            for k, v in ivy_original_dict.items():
+                ivy.__dict__[k] = v
         f = importlib.import_module(_framework_dict[f])
+        if framework_stack:
+            for k, v in framework_stack[-1].__dict__.items():
+                ivy.__dict__[k] = v
     for k, v in ivy_original_dict.items():
         if k not in f.__dict__:
             f.__dict__[k] = v
