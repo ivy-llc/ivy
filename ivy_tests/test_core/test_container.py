@@ -1,9 +1,11 @@
 # global
 import os
+import queue
 import pickle
 import pytest
 import random
 import numpy as np
+import torch.multiprocessing as multiprocessing
 
 # local
 import ivy
@@ -1786,3 +1788,85 @@ def test_container_pickling_with_ivy_attribute(dev_str, call):
 
     # verify container without local ivy can be pickled
     pickle.dumps(Container())
+
+
+def test_container_from_queues(dev_str, call):
+
+    def worker_fn(in_queue, out_queue, load_size, worker_id):
+        keep_going = True
+        while keep_going:
+            try:
+                keep_going = in_queue.get(timeout=0.1)
+            except queue.Empty:
+                continue
+            out_queue.put({'a': [ivy.array([1., 2., 3.])*worker_id]*load_size})
+
+    workers = list()
+    in_queues = list()
+    out_queues = list()
+    queue_load_sizes = [1, 2, 1]
+    for i, queue_load_size in enumerate(queue_load_sizes):
+        input_queue = multiprocessing.Queue()
+        output_queue = multiprocessing.Queue()
+        worker = multiprocessing.Process(target=worker_fn, args=(input_queue, output_queue, queue_load_size, i+1))
+        worker.start()
+        in_queues.append(input_queue)
+        out_queues.append(output_queue)
+        workers.append(worker)
+
+    container = Container(queues=out_queues, queue_load_sizes=queue_load_sizes, queue_timeout=0.1)
+
+    # queue 0
+    queue_was_empty = False
+    try:
+        container[0]
+    except queue.Empty:
+        queue_was_empty = True
+    assert queue_was_empty
+    in_queues[0].put(True)
+    assert np.allclose(ivy.to_numpy(container[0].a), np.array([1., 2., 3.]))
+    assert np.allclose(ivy.to_numpy(container[0].a), np.array([1., 2., 3.]))
+
+    # queue 1
+    queue_was_empty = False
+    try:
+        container[1]
+    except queue.Empty:
+        queue_was_empty = True
+    assert queue_was_empty
+    queue_was_empty = False
+    try:
+        container[2]
+    except queue.Empty:
+        queue_was_empty = True
+    assert queue_was_empty
+    in_queues[1].put(True)
+    assert np.allclose(ivy.to_numpy(container[1].a), np.array([2., 4., 6.]))
+    assert np.allclose(ivy.to_numpy(container[1].a), np.array([2., 4., 6.]))
+    assert np.allclose(ivy.to_numpy(container[2].a), np.array([2., 4., 6.]))
+    assert np.allclose(ivy.to_numpy(container[2].a), np.array([2., 4., 6.]))
+
+    # queue 2
+    queue_was_empty = False
+    try:
+        container[3]
+    except queue.Empty:
+        queue_was_empty = True
+    assert queue_was_empty
+    in_queues[2].put(True)
+    assert np.allclose(ivy.to_numpy(container[3].a), np.array([3., 6., 9.]))
+    assert np.allclose(ivy.to_numpy(container[3].a), np.array([3., 6., 9.]))
+
+    # stop workers
+    in_queues[0].put(False)
+    in_queues[1].put(False)
+    in_queues[2].put(False)
+    in_queues[0].close()
+    in_queues[1].close()
+    in_queues[2].close()
+
+    # join workers
+    for worker in workers:
+        worker.join()
+
+    del container
