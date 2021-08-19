@@ -13,7 +13,7 @@ def random_uniform(low: float = 0.0, high: float = 1.0, shape: Optional[List[int
         true_shape: List[int] = []
     else:
         true_shape: List[int] = shape
-    return torch.rand(true_shape).to(dev_str.replace('gpu', 'cuda')) * rand_range + low
+    return torch.rand(true_shape, device=dev_str.replace('gpu', 'cuda')) * rand_range + low
 
 
 def multinomial(population_size: int, num_samples: int, batch_size: int, probs: Optional[torch.Tensor] = None,
@@ -24,7 +24,7 @@ def multinomial(population_size: int, num_samples: int, batch_size: int, probs: 
 
 
 def randint(low: int, high: int, shape: List[int], dev_str: str = 'cpu'):
-    return torch.randint(low, high, shape).to(dev_str.replace('gpu', 'cuda'))
+    return torch.randint(low, high, shape, device=dev_str.replace('gpu', 'cuda'))
 
 
 def seed(seed_value: int = 0) -> None:
