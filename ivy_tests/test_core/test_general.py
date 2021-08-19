@@ -2173,13 +2173,22 @@ def test_cache_fn(dev_str, call):
     def func():
         return ivy.random_uniform()
 
-    # smoke test
-    cached_func = ivy.cache_fn(func)
-    ret0 = cached_func()
-    ret0_again = cached_func()
+    # return a single cached_fn and then query this
+    cached_fn = ivy.cache_fn(func)
+    ret0 = cached_fn()
+    ret0_again = cached_fn()
     ret1 = func()
 
-    # value test
+    assert ivy.to_numpy(ret0).item() == ivy.to_numpy(ret0_again).item()
+    assert ivy.to_numpy(ret0).item() != ivy.to_numpy(ret1).item()
+    assert ret0 is ret0_again
+    assert ret0 is not ret1
+
+    # call ivy.cache_fn repeatedly, the new cached functions each use the same global dict
+    ret0 = ivy.cache_fn(func)()
+    ret0_again = ivy.cache_fn(func)()
+    ret1 = func()
+
     assert ivy.to_numpy(ret0).item() == ivy.to_numpy(ret0_again).item()
     assert ivy.to_numpy(ret0).item() != ivy.to_numpy(ret1).item()
     assert ret0 is ret0_again
@@ -2191,13 +2200,22 @@ def test_cache_fn_with_args(dev_str, call):
     def func(_):
         return ivy.random_uniform()
 
-    # smoke test
-    cached_func = ivy.cache_fn(func)
-    ret0 = cached_func(0)
-    ret0_again = cached_func(0)
-    ret1 = cached_func(1)
+    # return a single cached_fn and then query this
+    cached_fn = ivy.cache_fn(func)
+    ret0 = cached_fn(0)
+    ret0_again = cached_fn(0)
+    ret1 = cached_fn(1)
 
-    # value test
+    assert ivy.to_numpy(ret0).item() == ivy.to_numpy(ret0_again).item()
+    assert ivy.to_numpy(ret0).item() != ivy.to_numpy(ret1).item()
+    assert ret0 is ret0_again
+    assert ret0 is not ret1
+
+    # call ivy.cache_fn repeatedly, the new cached functions each use the same global dict
+    ret0 = ivy.cache_fn(func)(0)
+    ret0_again = ivy.cache_fn(func)(0)
+    ret1 = ivy.cache_fn(func)(1)
+
     assert ivy.to_numpy(ret0).item() == ivy.to_numpy(ret0_again).item()
     assert ivy.to_numpy(ret0).item() != ivy.to_numpy(ret1).item()
     assert ret0 is ret0_again
