@@ -20,13 +20,13 @@ from typing import List, Dict, Optional, Union
 # noinspection PyShadowingNames
 def array(object_in, dtype_str: Optional[str] = None, dev_str: Optional[str] = None):
     if isinstance(object_in, np.ndarray):
-        return torch.Tensor(object_in)
+        return torch.Tensor(object_in, device=str_to_dev(dev_str))
     if dtype_str is not None:
-        return torch.tensor(object_in, dtype=dtype_from_str(dtype_str)).to(str_to_dev(dev_str))
+        return torch.tensor(object_in, dtype=dtype_from_str(dtype_str), device=str_to_dev(dev_str))
     elif isinstance(object_in, torch.Tensor):
         return object_in.to(str_to_dev(dev_str))
     else:
-        return torch.tensor(object_in).to(str_to_dev(dev_str))
+        return torch.tensor(object_in, device=str_to_dev(dev_str))
 
 
 def is_array(x):
@@ -140,9 +140,9 @@ def cast(x, dtype_str_in: str):
 def arange(stop: Number, start: Number = 0, step: Number = 1, dtype_str: Optional[str] = None,
            dev_str: Optional[str] = None):
     if dtype_str is not None:
-        return torch.arange(start, stop, step=step, dtype=dtype_from_str(dtype_str)).to(str_to_dev(dev_str))
+        return torch.arange(start, stop, step=step, dtype=dtype_from_str(dtype_str), device=str_to_dev(dev_str))
     else:
-        return torch.arange(start, stop, step=step).to(str_to_dev(dev_str))
+        return torch.arange(start, stop, step=step, device=str_to_dev(dev_str))
 
 
 def _differentiable_linspace(start, stop, num, device):
@@ -172,7 +172,7 @@ def linspace(start, stop, num, axis=None, dev_str=None):
     if stop_is_array:
         stop_shape = list(stop.shape)
         if num == 1:
-            return (torch.ones(stop_shape[:axis] + [1] + stop_shape[axis:]) * start).to(str_to_dev(dev_str))
+            return torch.ones(stop_shape[:axis] + [1] + stop_shape[axis:], device=str_to_dev(dev_str)) * start
         stop = stop.reshape((-1,))
         linspace_method = _differentiable_linspace if stop.requires_grad else torch.linspace
         dev_str = _callable_dev_str(stop)
@@ -195,7 +195,7 @@ def linspace(start, stop, num, axis=None, dev_str=None):
             inc = diff / (num - 1)
             res = [start]
             res += [start + inc * i for i in range(1, num - 1)]
-            res.append(torch.ones_like(start)*stop)
+            res.append(torch.ones_like(start, device=str_to_dev(dev_str))*stop)
         else:
             res = [linspace_method(strt, stop, num, device=str_to_dev(dev_str)) for strt in start]
     elif not start_is_array and stop_is_array:
@@ -203,7 +203,7 @@ def linspace(start, stop, num, axis=None, dev_str=None):
             stop = stop.unsqueeze(-1)
             diff = stop - start
             inc = diff / (num - 1)
-            res = [torch.ones_like(stop)*start]
+            res = [torch.ones_like(stop, device=str_to_dev(dev_str))*start]
             res += [start + inc * i for i in range(1, num - 1)]
             res.append(stop)
         else:
@@ -370,7 +370,7 @@ def zeros(shape: List[int], dtype_str: str = 'float32', dev_str: Optional[str] =
                                          'float32': torch.float32,
                                          'float64': torch.float64}
     dtype_val: torch.dtype = type_dict[dtype_str]
-    return torch.zeros(shape, dtype=dtype_val).to(str_to_dev(dev_str))
+    return torch.zeros(shape, dtype=dtype_val, device=str_to_dev(dev_str))
 
 
 # noinspection PyShadowingNames
@@ -387,8 +387,8 @@ def zeros_like(x, dtype_str: Optional[str] = None, dev_str: Optional[str] = None
                                              'float16': torch.float16,
                                              'float32': torch.float32,
                                              'float64': torch.float64}
-        return torch.zeros_like(x, dtype=type_dict[dtype_str]).to(str_to_dev(dev_str))
-    return torch.zeros_like(x).to(str_to_dev(dev_str))
+        return torch.zeros_like(x, dtype=type_dict[dtype_str], device=str_to_dev(dev_str))
+    return torch.zeros_like(x, device=str_to_dev(dev_str))
 
 
 # noinspection PyShadowingNames
@@ -403,7 +403,7 @@ def ones(shape: List[int], dtype_str: str = 'float32', dev_str: Optional[str] = 
                                          'float32': torch.float32,
                                          'float64': torch.float64}
     dtype_val: torch.dtype = type_dict[dtype_str]
-    return torch.ones(shape, dtype=dtype_val).to(str_to_dev(dev_str))
+    return torch.ones(shape, dtype=dtype_val, device=str_to_dev(dev_str))
 
 
 # noinspection PyShadowingNames
@@ -420,8 +420,8 @@ def ones_like(x, dtype_str: Optional[str] = None, dev_str: Optional[str] = None)
                                              'float16': torch.float16,
                                              'float32': torch.float32,
                                              'float64': torch.float64}
-        return torch.ones_like(x, dtype=type_dict[dtype_str]).to(str_to_dev(dev_str))
-    return torch.ones_like(x).to(str_to_dev(dev_str))
+        return torch.ones_like(x, dtype=type_dict[dtype_str], device=str_to_dev(dev_str))
+    return torch.ones_like(x, device=str_to_dev(dev_str))
 
 
 # noinspection PyUnresolvedReferences,PyShadowingNames
@@ -465,7 +465,7 @@ def identity(n: int, dtype_str: str = 'float32', batch_shape: Optional[List[int]
                                          'float32': torch.float32,
                                          'float64': torch.float64}
     dtype_val: torch.dtype = type_dict[dtype_str]
-    mat = torch.eye(n, n, dtype=dtype_val).to(str_to_dev(dev_str))
+    mat = torch.eye(n, n, dtype=dtype_val, device=str_to_dev(dev_str))
     if batch_shape is None:
         return mat
     else:
