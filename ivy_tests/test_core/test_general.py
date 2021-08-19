@@ -2177,7 +2177,25 @@ def test_cache_fn(dev_str, call):
     cached_func = ivy.cache_fn(func)
     ret0 = cached_func()
     ret0_again = cached_func()
-    ret1 = cached_func(cache=False)
+    ret1 = func()
+
+    # value test
+    assert ivy.to_numpy(ret0).item() == ivy.to_numpy(ret0_again).item()
+    assert ivy.to_numpy(ret0).item() != ivy.to_numpy(ret1).item()
+    assert ret0 is ret0_again
+    assert ret0 is not ret1
+
+
+def test_cache_fn_with_args(dev_str, call):
+
+    def func(_):
+        return ivy.random_uniform()
+
+    # smoke test
+    cached_func = ivy.cache_fn(func)
+    ret0 = cached_func(0)
+    ret0_again = cached_func(0)
+    ret1 = cached_func(1)
 
     # value test
     assert ivy.to_numpy(ret0).item() == ivy.to_numpy(ret0_again).item()

@@ -1324,17 +1324,17 @@ def cache_fn(func):
     :type func: callable
     :return: The newly cache wrapped function.
     """
-    _cache = None
+    _cache = dict()
 
     @wraps(func)
-    def cached_fn(*args, cache=True, **kwargs):
-        if not cache:
-            return func(*args, **kwargs)
+    def cached_fn(*args, **kwargs):
         nonlocal _cache
-        if _cache is not None:
-            return _cache
-        _cache = func(*args, **kwargs)
-        return _cache
+        key = ''.join([str(i) + ', ' for i in args] + [' kw, '] + [str(i) + ', ' for i in sorted(kwargs.items())])
+        if key in _cache:
+            return _cache[key]
+        ret = func(*args, **kwargs)
+        _cache[key] = ret
+        return ret
 
     return cached_fn
 
