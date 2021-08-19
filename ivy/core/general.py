@@ -13,6 +13,8 @@ from psutil import virtual_memory
 import ivy
 from ivy.framework_handler import current_framework as _get_framework
 
+FN_CACHE = dict()
+
 
 # noinspection PyShadowingNames
 def array(object_in, dtype_str=None, dev_str=None, f=None):
@@ -1324,16 +1326,18 @@ def cache_fn(func):
     :type func: callable
     :return: The newly cache wrapped function.
     """
-    _cache = dict()
 
-    @wraps(func)
+    global FN_CACHE
+    if func not in FN_CACHE:
+        FN_CACHE[func] = dict()
+
     def cached_fn(*args, **kwargs):
-        nonlocal _cache
         key = ''.join([str(i) + ', ' for i in args] + [' kw, '] + [str(i) + ', ' for i in sorted(kwargs.items())])
-        if key in _cache:
-            return _cache[key]
+        cache = FN_CACHE[func]
+        if key in cache:
+            return cache[key]
         ret = func(*args, **kwargs)
-        _cache[key] = ret
+        cache[key] = ret
         return ret
 
     return cached_fn
