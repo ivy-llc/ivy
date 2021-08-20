@@ -741,7 +741,7 @@ def zeros_like(x, dtype_str=None, dev_str=None, f=None):
     :type f: ml_framework, optional
     :return: Tensor of zeros with the same shape and type as a, unless dtype_str provided which overrides.
     """
-    return _get_framework(x, f=f).as_zeros(x, dtype_str, dev_str)
+    return _get_framework(x, f=f).zeros_like(x, dtype_str, dev_str)
 
 
 # noinspection PyShadowingNames
@@ -779,7 +779,7 @@ def ones_like(x, dtype_str=None, dev_str=None, f=None):
     :type f: ml_framework, optional
     :return: Tensor of zeros with the same shape and type as a, unless dtype_str provided which overrides.
     """
-    return _get_framework(x, f=f).as_ones(x, dtype_str, dev_str)
+    return _get_framework(x, f=f).ones_like(x, dtype_str, dev_str)
 
 
 # noinspection PyShadowingNames
