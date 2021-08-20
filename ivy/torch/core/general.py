@@ -19,8 +19,6 @@ from typing import List, Dict, Optional, Union
 
 # noinspection PyShadowingNames
 def array(object_in, dtype_str: Optional[str] = None, dev_str: Optional[str] = None):
-    if isinstance(object_in, np.ndarray):
-        return torch.Tensor(object_in, device=str_to_dev(dev_str))
     if dtype_str is not None:
         return torch.tensor(object_in, dtype=dtype_from_str(dtype_str), device=str_to_dev(dev_str))
     elif isinstance(object_in, torch.Tensor):
