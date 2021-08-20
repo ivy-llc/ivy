@@ -22,7 +22,7 @@ def _compute_cost_and_update_grads(cost_fn, order, batch, variables, outer_v, ke
 
 def _train_task(inner_batch, outer_batch, inner_cost_fn, outer_cost_fn, variables, inner_grad_steps,
                 inner_learning_rate, inner_optimization_step, order, average_across_steps, inner_v, keep_innver_v,
-                outer_v, keep_outer_v):
+                outer_v, keep_outer_v, batched):
 
     # init
     total_cost = 0
@@ -64,17 +64,22 @@ def _train_task(inner_batch, outer_batch, inner_cost_fn, outer_cost_fn, variable
         inner_cost_fn if outer_cost_fn is None else outer_cost_fn, order, outer_batch, variables, outer_v,
         keep_outer_v, True, all_grads, unique_outer)
 
+    # update variables
+    variables = variables.stop_gradients()
+    if not batched:
+        variables = variables.expand_dims(0)
+
     # average the cost or gradients across all timesteps if this option is chosen
     if average_across_steps:
         total_cost = total_cost + final_cost
         if order == 1:
             all_grads = sum(all_grads) / max(len(all_grads), 1)
-        return total_cost / (inner_grad_steps + 1), variables.stop_gradients(), all_grads
+        return total_cost / (inner_grad_steps + 1), variables, all_grads
 
     # else return only the final values
     if order == 1:
         all_grads = all_grads[-1]
-    return final_cost, variables.stop_gradients(), all_grads
+    return final_cost, variables, all_grads
 
 
 def _train_tasks_batched(batch, inner_batch_fn, outer_batch_fn, inner_cost_fn, outer_cost_fn, variables,
@@ -89,7 +94,8 @@ def _train_tasks_batched(batch, inner_batch_fn, outer_batch_fn, inner_cost_fn, o
 
     cost, updated_ivs, grads = _train_task(inner_batch, outer_batch, inner_cost_fn, outer_cost_fn, variables,
                                            inner_grad_steps, inner_learning_rate, inner_optimization_step, order,
-                                           average_across_steps, inner_v, keep_innver_v, outer_v, keep_outer_v)
+                                           average_across_steps, inner_v, keep_innver_v, outer_v, keep_outer_v,
+                                           batched=True)
     grads = grads.reduce_mean(0) if isinstance(grads, ivy.Container) else grads
     if order == 1:
         if return_inner_v == 'all':
@@ -132,7 +138,7 @@ def _train_tasks_with_for_loop(batch, inner_sub_batch_fn, outer_sub_batch_fn, in
         ov = outer_v[i] if outer_v_seq else outer_v
         cost, updated_iv, grads = _train_task(inner_sub_batch, outer_sub_batch, inner_cost_fn, outer_cost_fn, variables,
                                               inner_grad_steps, inner_learning_rate, inner_optimization_step, order,
-                                              average_across_steps, iv, keep_innver_v, ov, keep_outer_v)
+                                              average_across_steps, iv, keep_innver_v, ov, keep_outer_v, batched=False)
         if (return_inner_v == 'first' and i == 0) or return_inner_v == 'all':
             updated_ivs_to_return.append(updated_iv)
         total_cost = total_cost + cost

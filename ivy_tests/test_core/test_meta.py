@@ -40,8 +40,8 @@ def test_fomaml_step_unique_vars(dev_str, call, inner_grad_steps, with_outer_cos
 
     # create variables
     if batched:
-        variables = ivy.Container({'latent': ivy.variable(ivy.repeat(ivy.array([0.]), num_tasks, 0)),
-                                   'weight': ivy.variable(ivy.repeat(ivy.array([1.]), num_tasks, 0))})
+        variables = ivy.Container({'latent': ivy.variable(ivy.repeat(ivy.array([[0.]]), num_tasks, 0)),
+                                   'weight': ivy.variable(ivy.repeat(ivy.array([[1.]]), num_tasks, 0))})
     else:
         variables = ivy.Container({'latent': ivy.variable(ivy.array([0.])),
                                    'weight': ivy.variable(ivy.array([1.]))})
@@ -102,9 +102,9 @@ def test_fomaml_step_unique_vars(dev_str, call, inner_grad_steps, with_outer_cos
         inner_v_rets = rets[2]
         assert isinstance(inner_v_rets, ivy.Container)
         if return_inner_v == 'all':
-            assert list(inner_v_rets.shape) == [num_tasks]
+            assert list(inner_v_rets.shape) == [num_tasks, 1]
         elif return_inner_v == 'first':
-            assert list(inner_v_rets.shape) == [1]
+            assert list(inner_v_rets.shape) == [1, 1]
 
 
 # fomaml step shared vars
@@ -133,7 +133,7 @@ def test_fomaml_step_shared_vars(dev_str, call, inner_grad_steps, with_outer_cos
 
     # create variable
     if batched:
-        variables = ivy.Container({'latent': ivy.variable(ivy.repeat(ivy.array([1.]), num_tasks, 0))})
+        variables = ivy.Container({'latent': ivy.variable(ivy.repeat(ivy.array([[1.]]), num_tasks, 0))})
     else:
         variables = ivy.Container({'latent': ivy.variable(ivy.array([1.]))})
 
@@ -212,9 +212,9 @@ def test_fomaml_step_shared_vars(dev_str, call, inner_grad_steps, with_outer_cos
         inner_v_rets = rets[2]
         assert isinstance(inner_v_rets, ivy.Container)
         if return_inner_v == 'all':
-            assert list(inner_v_rets.shape) == [num_tasks]
+            assert list(inner_v_rets.shape) == [num_tasks, 1]
         elif return_inner_v == 'first':
-            assert list(inner_v_rets.shape) == [1]
+            assert list(inner_v_rets.shape) == [1, 1]
 
 
 # fomaml step overlapping vars
@@ -243,8 +243,8 @@ def test_fomaml_step_overlapping_vars(dev_str, call, inner_grad_steps, with_oute
 
     # create variables
     if batched:
-        variables = ivy.Container({'latent': ivy.variable(ivy.repeat(ivy.array([0.]), num_tasks, 0)),
-                                   'weight': ivy.variable(ivy.repeat(ivy.array([1.]), num_tasks, 0))})
+        variables = ivy.Container({'latent': ivy.variable(ivy.repeat(ivy.array([[0.]]), num_tasks, 0)),
+                                   'weight': ivy.variable(ivy.repeat(ivy.array([[1.]]), num_tasks, 0))})
     else:
         variables = ivy.Container({'latent': ivy.variable(ivy.array([0.])),
                                    'weight': ivy.variable(ivy.array([1.]))})
@@ -309,9 +309,9 @@ def test_fomaml_step_overlapping_vars(dev_str, call, inner_grad_steps, with_oute
         inner_v_rets = rets[2]
         assert isinstance(inner_v_rets, ivy.Container)
         if return_inner_v == 'all':
-            assert list(inner_v_rets.shape) == [num_tasks]
+            assert list(inner_v_rets.shape) == [num_tasks, 1]
         elif return_inner_v == 'first':
-            assert list(inner_v_rets.shape) == [1]
+            assert list(inner_v_rets.shape) == [1, 1]
 
 
 # reptile step
@@ -335,7 +335,7 @@ def test_reptile_step(dev_str, call, inner_grad_steps, batched, num_tasks, retur
 
     # create variable
     if batched:
-        variables = ivy.Container({'latent': ivy.variable(ivy.repeat(ivy.array([1.]), num_tasks, 0))})
+        variables = ivy.Container({'latent': ivy.variable(ivy.repeat(ivy.array([[1.]]), num_tasks, 0))})
     else:
         variables = ivy.Container({'latent': ivy.variable(ivy.array([1.]))})
 
@@ -392,9 +392,9 @@ def test_reptile_step(dev_str, call, inner_grad_steps, batched, num_tasks, retur
         inner_v_rets = rets[2]
         assert isinstance(inner_v_rets, ivy.Container)
         if return_inner_v == 'all':
-            assert list(inner_v_rets.shape) == [num_tasks]
+            assert list(inner_v_rets.shape) == [num_tasks, 1]
         elif return_inner_v == 'first':
-            assert list(inner_v_rets.shape) == [1]
+            assert list(inner_v_rets.shape) == [1, 1]
 
 
 # Second Order #
@@ -426,8 +426,8 @@ def test_maml_step_unique_vars(dev_str, call, inner_grad_steps, with_outer_cost_
 
     # create variables
     if batched:
-        variables = ivy.Container({'latent': ivy.variable(ivy.repeat(ivy.array([0.]), num_tasks, 0)),
-                                   'weight': ivy.variable(ivy.repeat(ivy.array([1.]), num_tasks, 0))})
+        variables = ivy.Container({'latent': ivy.variable(ivy.repeat(ivy.array([[0.]]), num_tasks, 0)),
+                                   'weight': ivy.variable(ivy.repeat(ivy.array([[1.]]), num_tasks, 0))})
     else:
         variables = ivy.Container({'latent': ivy.variable(ivy.array([0.])),
                                    'weight': ivy.variable(ivy.array([1.]))})
@@ -488,9 +488,9 @@ def test_maml_step_unique_vars(dev_str, call, inner_grad_steps, with_outer_cost_
         inner_v_rets = rets[2]
         assert isinstance(inner_v_rets, ivy.Container)
         if return_inner_v == 'all':
-            assert list(inner_v_rets.shape) == [num_tasks]
+            assert list(inner_v_rets.shape) == [num_tasks, 1]
         elif return_inner_v == 'first':
-            assert list(inner_v_rets.shape) == [1]
+            assert list(inner_v_rets.shape) == [1, 1]
 
 
 # maml step shared vars
@@ -519,7 +519,7 @@ def test_maml_step_shared_vars(dev_str, call, inner_grad_steps, with_outer_cost_
 
     # create variable
     if batched:
-        variables = ivy.Container({'latent': ivy.variable(ivy.repeat(ivy.array([1.]), num_tasks, 0))})
+        variables = ivy.Container({'latent': ivy.variable(ivy.repeat(ivy.array([[1.]]), num_tasks, 0))})
     else:
         variables = ivy.Container({'latent': ivy.variable(ivy.array([1.]))})
 
@@ -615,9 +615,9 @@ def test_maml_step_shared_vars(dev_str, call, inner_grad_steps, with_outer_cost_
         inner_v_rets = rets[2]
         assert isinstance(inner_v_rets, ivy.Container)
         if return_inner_v == 'all':
-            assert list(inner_v_rets.shape) == [num_tasks]
+            assert list(inner_v_rets.shape) == [num_tasks, 1]
         elif return_inner_v == 'first':
-            assert list(inner_v_rets.shape) == [1]
+            assert list(inner_v_rets.shape) == [1, 1]
 
 
 # maml step overlapping vars
@@ -646,8 +646,8 @@ def test_maml_step_overlapping_vars(dev_str, call, inner_grad_steps, with_outer_
 
     # create variables
     if batched:
-        variables = ivy.Container({'latent': ivy.variable(ivy.repeat(ivy.array([0.]), num_tasks, 0)),
-                                   'weight': ivy.variable(ivy.repeat(ivy.array([1.]), num_tasks, 0))})
+        variables = ivy.Container({'latent': ivy.variable(ivy.repeat(ivy.array([[0.]]), num_tasks, 0)),
+                                   'weight': ivy.variable(ivy.repeat(ivy.array([[1.]]), num_tasks, 0))})
     else:
         variables = ivy.Container({'latent': ivy.variable(ivy.array([0.])),
                                    'weight': ivy.variable(ivy.array([1.]))})
@@ -712,6 +712,6 @@ def test_maml_step_overlapping_vars(dev_str, call, inner_grad_steps, with_outer_
         inner_v_rets = rets[2]
         assert isinstance(inner_v_rets, ivy.Container)
         if return_inner_v == 'all':
-            assert list(inner_v_rets.shape) == [num_tasks]
+            assert list(inner_v_rets.shape) == [num_tasks, 1]
         elif return_inner_v == 'first':
-            assert list(inner_v_rets.shape) == [1]
+            assert list(inner_v_rets.shape) == [1, 1]
