@@ -100,7 +100,11 @@ def test_fomaml_step_unique_vars(dev_str, call, inner_grad_steps, with_outer_cos
     assert np.allclose(ivy.to_numpy(outer_grads.weight[0]), np.array(true_weight_grad))
     if return_inner_v:
         inner_v_rets = rets[2]
-        assert isinstance(inner_v_rets[0], ivy.Container)
+        assert isinstance(inner_v_rets, ivy.Container)
+        if return_inner_v == 'all':
+            assert list(inner_v_rets.shape) == [num_tasks]
+        elif return_inner_v == 'first':
+            assert list(inner_v_rets.shape) == [1]
 
 
 # fomaml step shared vars
@@ -206,7 +210,11 @@ def test_fomaml_step_shared_vars(dev_str, call, inner_grad_steps, with_outer_cos
     assert np.allclose(ivy.to_numpy(outer_grads.latent[0]), np.array(true_outer_grad))
     if return_inner_v:
         inner_v_rets = rets[2]
-        assert isinstance(inner_v_rets[0], ivy.Container)
+        assert isinstance(inner_v_rets, ivy.Container)
+        if return_inner_v == 'all':
+            assert list(inner_v_rets.shape) == [num_tasks]
+        elif return_inner_v == 'first':
+            assert list(inner_v_rets.shape) == [1]
 
 
 # fomaml step overlapping vars
@@ -299,7 +307,11 @@ def test_fomaml_step_overlapping_vars(dev_str, call, inner_grad_steps, with_oute
     assert np.allclose(ivy.to_numpy(outer_grads.latent[0]), np.array(true_latent_grad))
     if return_inner_v:
         inner_v_rets = rets[2]
-        assert isinstance(inner_v_rets[0], ivy.Container)
+        assert isinstance(inner_v_rets, ivy.Container)
+        if return_inner_v == 'all':
+            assert list(inner_v_rets.shape) == [num_tasks]
+        elif return_inner_v == 'first':
+            assert list(inner_v_rets.shape) == [1]
 
 
 # reptile step
@@ -378,7 +390,11 @@ def test_reptile_step(dev_str, call, inner_grad_steps, batched, num_tasks, retur
     assert np.allclose(ivy.to_numpy(outer_grads.latent[0]), np.array(true_outer_grad))
     if return_inner_v:
         inner_v_rets = rets[2]
-        assert isinstance(inner_v_rets[0], ivy.Container)
+        assert isinstance(inner_v_rets, ivy.Container)
+        if return_inner_v == 'all':
+            assert list(inner_v_rets.shape) == [num_tasks]
+        elif return_inner_v == 'first':
+            assert list(inner_v_rets.shape) == [1]
 
 
 # Second Order #
@@ -470,7 +486,11 @@ def test_maml_step_unique_vars(dev_str, call, inner_grad_steps, with_outer_cost_
     assert np.allclose(ivy.to_numpy(outer_grads.weight[0]), np.array(true_outer_grad))
     if return_inner_v:
         inner_v_rets = rets[2]
-        assert isinstance(inner_v_rets[0], ivy.Container)
+        assert isinstance(inner_v_rets, ivy.Container)
+        if return_inner_v == 'all':
+            assert list(inner_v_rets.shape) == [num_tasks]
+        elif return_inner_v == 'first':
+            assert list(inner_v_rets.shape) == [1]
 
 
 # maml step shared vars
@@ -593,7 +613,11 @@ def test_maml_step_shared_vars(dev_str, call, inner_grad_steps, with_outer_cost_
     assert np.allclose(ivy.to_numpy(outer_grads.latent[0]), true_outer_grad[0])
     if return_inner_v:
         inner_v_rets = rets[2]
-        assert isinstance(inner_v_rets[0], ivy.Container)
+        assert isinstance(inner_v_rets, ivy.Container)
+        if return_inner_v == 'all':
+            assert list(inner_v_rets.shape) == [num_tasks]
+        elif return_inner_v == 'first':
+            assert list(inner_v_rets.shape) == [1]
 
 
 # maml step overlapping vars
@@ -686,4 +710,8 @@ def test_maml_step_overlapping_vars(dev_str, call, inner_grad_steps, with_outer_
     assert np.allclose(ivy.to_numpy(outer_grads.latent[0]), np.array(true_latent_grad))
     if return_inner_v:
         inner_v_rets = rets[2]
-        assert isinstance(inner_v_rets[0], ivy.Container)
+        assert isinstance(inner_v_rets, ivy.Container)
+        if return_inner_v == 'all':
+            assert list(inner_v_rets.shape) == [num_tasks]
+        elif return_inner_v == 'first':
+            assert list(inner_v_rets.shape) == [1]
