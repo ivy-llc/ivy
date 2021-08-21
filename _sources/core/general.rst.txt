@@ -89,4 +89,5 @@ General
    general/cache_fn.rst
    general/current_framework_str.rst
    general/einops_rearrange.rst
+   general/einops_reduce.rst
 
