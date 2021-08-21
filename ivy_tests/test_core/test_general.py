@@ -2410,3 +2410,30 @@ def test_einops_reduce(x_n_pattern_n_red_n_newx, dtype_str, tensor_fn, dev_str, 
         # torch jit cannot compile **args
         pytest.skip()
     helpers.assert_compilable(ivy.einops_reduce)
+
+
+# einops_repeat
+@pytest.mark.parametrize(
+    "x_n_pattern_n_al_n_newx", [([[0., 1., 2., 3.]], 'b n -> b n c', {'c': 2},
+                                 [[[0., 0.], [1., 1.], [2., 2.], [3., 3.]]])])
+@pytest.mark.parametrize(
+    "dtype_str", ['float32'])
+@pytest.mark.parametrize(
+    "tensor_fn", [ivy.array, helpers.var_fn])
+def test_einops_repeat(x_n_pattern_n_al_n_newx, dtype_str, tensor_fn, dev_str, call):
+    # smoke test
+    x, pattern, axes_lengths, new_x = x_n_pattern_n_al_n_newx
+    x = tensor_fn(x, dtype_str, dev_str)
+    ret = ivy.einops_repeat(x, pattern, **axes_lengths)
+    true_ret = einops.repeat(x, pattern, **axes_lengths)
+    # type test
+    assert ivy.is_array(ret)
+    # cardinality test
+    assert list(ret.shape) == list(true_ret.shape)
+    # value test
+    assert np.allclose(ivy.to_numpy(ret), ivy.to_numpy(true_ret))
+    # compilation test
+    if call is helpers.torch_call:
+        # torch jit cannot compile **args
+        pytest.skip()
+    helpers.assert_compilable(ivy.einops_repeat)
