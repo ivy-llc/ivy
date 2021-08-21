@@ -98,6 +98,7 @@
 <li class="toctree-l2"><a class="reference internal" href="image/gradient_image.html">gradient_image</a></li>
 <li class="toctree-l2"><a class="reference internal" href="image/float_img_to_uint8_img.html">float_img_to_uint8_img</a></li>
 <li class="toctree-l2"><a class="reference internal" href="image/uint8_img_to_float_img.html">uint8_img_to_float_img</a></li>
+<li class="toctree-l2"><a class="reference internal" href="image/random_crop.html">random_crop</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="linalg.html">Linalg</a></li>
@@ -252,6 +253,26 @@
 </dd></dl>
 
 <dl class="py function">
+<dt id="ivy.core.image.random_crop">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">random_crop</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">crop_size</span></em>, <em class="sig-param"><span class="n">batch_shape</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">image_dims</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">f</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/image.html#random_crop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.image.random_crop" title="Permalink to this definition">¶</a></dt>
+<dd><p>Randomly crops the input images.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>array</em>) – Input images to crop <em>[batch_shape,h,w,f]</em></p></li>
+<li><p><strong>crop_size</strong> (<em>sequence of ints</em>) – The 2D crop size.</p></li>
+<li><p><strong>batch_shape</strong> (<em>sequence of ints</em><em>, </em><em>optional</em>) – Shape of batch. Inferred from inputs if None.</p></li>
+<li><p><strong>image_dims</strong> (<em>sequence of ints</em><em>, </em><em>optional</em>) – Image dimensions. Inferred from inputs in None.</p></li>
+<li><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning library. Inferred from inputs if None.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The new cropped image <em>[batch_shape,nh,nw,f]</em></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt id="ivy.core.image.stack_images">
 <code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">stack_images</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">images</span></em>, <em class="sig-param"><span class="n">desired_aspect_ratio</span><span class="o">=</span><span class="default_value">(1, 1)</span></em>, <em class="sig-param"><span class="n">f</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/image.html#stack_images"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.image.stack_images" title="Permalink to this definition">¶</a></dt>
 <dd><p>Stacks a group of images into a combined windowed image, fitting the desired aspect ratio as closely as possible.</p>
@@ -281,7 +302,7 @@
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>The new float image <em>[batch_shape,h,w]</em> .</p>
+<dd class="field-even"><p>The new float image <em>[batch_shape,h,w]</em></p>
 </dd>
 </dl>
 </dd></dl>
@@ -294,6 +315,7 @@
 <li class="toctree-l1"><a class="reference internal" href="image/gradient_image.html">gradient_image</a></li>
 <li class="toctree-l1"><a class="reference internal" href="image/float_img_to_uint8_img.html">float_img_to_uint8_img</a></li>
 <li class="toctree-l1"><a class="reference internal" href="image/uint8_img_to_float_img.html">uint8_img_to_float_img</a></li>
+<li class="toctree-l1"><a class="reference internal" href="image/random_crop.html">random_crop</a></li>
 </ul>
 </div>
 </div>
