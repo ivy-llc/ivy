@@ -4,6 +4,7 @@ Collection of general Ivy functions.
 
 # global
 import math
+import einops
 import nvidia_smi
 import numpy as np
 from functools import wraps
@@ -1355,3 +1356,18 @@ def current_framework_str(f=None):
     if fw is None:
         return None
     return fw.current_framework_str()
+
+
+def einops_rearrange(x, pattern, **axes_lengths):
+    """
+    Perform einops rearrange operation on input array x.
+
+    :param x: Input array to be re-arranged.
+    :type x: array
+    :param pattern: Rearrangement pattern.
+    :type pattern: str
+    :param axes_lengths: Any additional specifications for dimensions.
+    :type axes_lengths: keyword parameter args
+    :return: New array with einops.rearrange having been applied.
+    """
+    return einops.rearrange(x, pattern, **axes_lengths)
