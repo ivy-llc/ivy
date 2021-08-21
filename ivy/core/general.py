@@ -7,12 +7,11 @@ import math
 import einops
 import nvidia_smi
 import numpy as np
-from functools import wraps
 from psutil import virtual_memory
 
 # local
 import ivy
-from ivy.framework_handler import current_framework as _get_framework
+from ivy.framework_handler import current_framework as _cur_framework
 
 FN_CACHE = dict()
 
@@ -35,7 +34,7 @@ def array(object_in, dtype_str=None, dev_str=None, f=None):
     :type f: ml_framework, optional
     :return: An array object satisfying the specified requirements, in the form of the selected framework.
     """
-    return _get_framework(object_in, f=f).array(object_in, dtype_str, dev_str)
+    return _cur_framework(object_in, f=f).array(object_in, dtype_str, dev_str)
 
 
 def is_array(x, f=None):
@@ -48,7 +47,7 @@ def is_array(x, f=None):
     :type f: ml_framework, optional
     :return: Boolean, whether or not x is an array.
     """
-    return _get_framework(x, f=f).is_array(x)
+    return _cur_framework(x, f=f).is_array(x)
 
 
 def to_numpy(x, f=None):
@@ -61,7 +60,7 @@ def to_numpy(x, f=None):
     :type f: ml_framework, optional
     :return: A numpy array.
     """
-    return _get_framework(x, f=f).to_numpy(x)
+    return _cur_framework(x, f=f).to_numpy(x)
 
 
 def to_scalar(x, f=None):
@@ -74,7 +73,7 @@ def to_scalar(x, f=None):
     :type f: ml_framework, optional
     :return: A scalar.
     """
-    return _get_framework(x, f=f).to_scalar(x)
+    return _cur_framework(x, f=f).to_scalar(x)
 
 
 def to_list(x, f=None):
@@ -87,7 +86,7 @@ def to_list(x, f=None):
     :type f: ml_framework, optional
     :return: A list representation of the input array.
     """
-    return _get_framework(x, f=f).to_list(x)
+    return _cur_framework(x, f=f).to_list(x)
 
 
 def shape(x, as_array=False, f=None):
@@ -102,7 +101,7 @@ def shape(x, as_array=False, f=None):
     :type f: ml_framework, optional
     :return: Shape of the array
     """
-    return _get_framework(x, f=f).shape(x, as_array)
+    return _cur_framework(x, f=f).shape(x, as_array)
 
 
 def get_num_dims(x, as_array=False, f=None):
@@ -117,7 +116,7 @@ def get_num_dims(x, as_array=False, f=None):
     :type f: ml_framework, optional
     :return: Shape of the array
     """
-    return _get_framework(x, f=f).get_num_dims(x, as_array)
+    return _cur_framework(x, f=f).get_num_dims(x, as_array)
 
 
 def minimum(x, y, f=None):
@@ -132,7 +131,7 @@ def minimum(x, y, f=None):
     :type f: ml_framework, optional
     :return: An array with the elements of x, but clipped to not exceed the y values.
     """
-    return _get_framework(x, f=f).minimum(x, y)
+    return _cur_framework(x, f=f).minimum(x, y)
 
 
 def maximum(x, y, f=None):
@@ -147,7 +146,7 @@ def maximum(x, y, f=None):
     :type f: ml_framework, optional
     :return: An array with the elements of x, but clipped to not be lower than the y values.
     """
-    return _get_framework(x, f=f).maximum(x, y)
+    return _cur_framework(x, f=f).maximum(x, y)
 
 
 def clip(x, x_min, x_max, f=None):
@@ -169,7 +168,7 @@ def clip(x, x_min, x_max, f=None):
     :return: An array with the elements of x, but where values < x_min are replaced with x_min,
                 and those > x_max with x_max.
     """
-    return _get_framework(x, f=f).clip(x, x_min, x_max)
+    return _cur_framework(x, f=f).clip(x, x_min, x_max)
 
 
 # noinspection PyShadowingBuiltins
@@ -183,7 +182,7 @@ def round(x, f=None):
     :type f: ml_framework, optional
     :return: An array of the same shape and type as x, with the elements rounded to integers.
     """
-    return _get_framework(x, f=f).round(x)
+    return _cur_framework(x, f=f).round(x)
 
 
 def floormod(x, y, f=None):
@@ -198,7 +197,7 @@ def floormod(x, y, f=None):
     :type f: ml_framework, optional
     :return: An array of the same shape and type as x, with the elements floor modded.
     """
-    return _get_framework(x, f=f).floormod(x, y)
+    return _cur_framework(x, f=f).floormod(x, y)
 
 
 def floor(x, f=None):
@@ -211,7 +210,7 @@ def floor(x, f=None):
     :type f: ml_framework, optional
     :return: An array of the same shape and type as x, with the elements floored to integers.
     """
-    return _get_framework(x, f=f).floor(x)
+    return _cur_framework(x, f=f).floor(x)
 
 
 def ceil(x, f=None):
@@ -224,7 +223,7 @@ def ceil(x, f=None):
     :type f: ml_framework, optional
     :return: An array of the same shape and type as x, with the elements ceiled to integers.
     """
-    return _get_framework(x, f=f).ceil(x)
+    return _cur_framework(x, f=f).ceil(x)
 
 
 # noinspection PyShadowingBuiltins
@@ -238,7 +237,7 @@ def abs(x, f=None):
     :type f: ml_framework, optional
     :return: A new array of the same shape as input array a, with all values now positive.
     """
-    return _get_framework(x, f=f).abs(x)
+    return _cur_framework(x, f=f).abs(x)
 
 
 def argmax(x, axis=0, f=None):
@@ -253,7 +252,7 @@ def argmax(x, axis=0, f=None):
     :type f: ml_framework, optional
     :return: Tensor containing the indices of the maximum values across the specified axis.
     """
-    return _get_framework(x, f=f).argmax(x, axis)
+    return _cur_framework(x, f=f).argmax(x, axis)
 
 
 def argmin(x, axis=0, f=None):
@@ -268,7 +267,7 @@ def argmin(x, axis=0, f=None):
     :type f: ml_framework, optional
     :return: Tensor containing the indices of the minimum values across the specified axis.
     """
-    return _get_framework(x, f=f).argmin(x, axis)
+    return _cur_framework(x, f=f).argmin(x, axis)
 
 
 def argsort(x, axis=-1, f=None):
@@ -283,7 +282,7 @@ def argsort(x, axis=-1, f=None):
     :type f: ml_framework, optional
     :return: The indices that would sort each slice of the given values along the given axis.
     """
-    return _get_framework(x, f=f).argsort(x, axis)
+    return _cur_framework(x, f=f).argsort(x, axis)
 
 
 # noinspection PyShadowingNames
@@ -301,7 +300,7 @@ def cast(x, dtype_str, f=None):
     :type f: ml_framework, optional
     :return: A new array of the same shape as input array a, with data type given by dtype_str.
     """
-    return _get_framework(x, f=f).cast(x, dtype_str)
+    return _cur_framework(x, f=f).cast(x, dtype_str)
 
 
 # noinspection PyShadowingNames
@@ -337,7 +336,7 @@ def arange(stop, start=0, step=1, dtype_str=None, dev_str=None, f=None):
             For floating point arguments, the length of the result is ceil((stop - start)/step).
             Because of floating point overflow, this rule may result in the last element of out being greater than stop.
     """
-    return _get_framework(f=f).arange(stop, start, step, dtype_str, dev_str)
+    return _cur_framework(f=f).arange(stop, start, step, dtype_str, dev_str)
 
 
 # noinspection PyShadowingNames
@@ -361,7 +360,7 @@ def linspace(start, stop, num, axis=None, dev_str=None, f=None):
     :type f: ml_framework, optional
     :return: Tensor of evenly-spaced values.
     """
-    return _get_framework(start, f=f).linspace(start, stop, num, axis, dev_str)
+    return _cur_framework(start, f=f).linspace(start, stop, num, axis, dev_str)
 
 
 # noinspection PyShadowingNames
@@ -387,7 +386,7 @@ def logspace(start, stop, num, base=10., axis=None, dev_str=None, f=None):
     :type f: ml_framework, optional
     :return: Tensor of evenly-spaced values.
     """
-    return _get_framework(start, f=f).logspace(start, stop, num, base, axis, dev_str)
+    return _cur_framework(start, f=f).logspace(start, stop, num, base, axis, dev_str)
 
 
 def concatenate(xs, axis=-1, f=None):
@@ -403,7 +402,7 @@ def concatenate(xs, axis=-1, f=None):
     :type f: ml_framework, optional
     :return: The concatenated array.
     """
-    return _get_framework(xs[0], f=f).concatenate(xs, axis)
+    return _cur_framework(xs[0], f=f).concatenate(xs, axis)
 
 
 def flip(x, axis=None, batch_shape=None, f=None):
@@ -421,7 +420,7 @@ def flip(x, axis=None, batch_shape=None, f=None):
     :type f: ml_framework, optional
     :return: An array with the entries of axis reversed.
     """
-    return _get_framework(x, f=f).flip(x, axis, batch_shape)
+    return _cur_framework(x, f=f).flip(x, axis, batch_shape)
 
 
 def stack(xs, axis=0, f=None):
@@ -438,7 +437,7 @@ def stack(xs, axis=0, f=None):
     :type f: ml_framework, optional
     :return: The stacked array has one more dimension than the input arrays.
     """
-    return _get_framework(xs[0], f=f).stack(xs, axis)
+    return _cur_framework(xs[0], f=f).stack(xs, axis)
 
 
 def unstack(x, axis, keepdims=False, f=None):
@@ -455,7 +454,7 @@ def unstack(x, axis, keepdims=False, f=None):
     :type f: ml_framework, optional
     :return: List of arrays, unpacked along specified dimensions.
     """
-    return _get_framework(x, f=f).unstack(x, axis, keepdims)
+    return _cur_framework(x, f=f).unstack(x, axis, keepdims)
 
 
 def split(x, num_or_size_splits=None, axis=0, with_remainder=False, f=None):
@@ -476,7 +475,7 @@ def split(x, num_or_size_splits=None, axis=0, with_remainder=False, f=None):
     :type f: ml_framework, optional
     :return: A list of sub-arrays.
     """
-    return _get_framework(x, f=f).split(x, num_or_size_splits, axis, with_remainder)
+    return _cur_framework(x, f=f).split(x, num_or_size_splits, axis, with_remainder)
 
 
 def repeat(x, repeats, axis=None, f=None):
@@ -494,7 +493,7 @@ def repeat(x, repeats, axis=None, f=None):
     :type f: ml_framework, optional
     :return: The repeated output array.
     """
-    return _get_framework(x, f=f).repeat(x, repeats, axis)
+    return _cur_framework(x, f=f).repeat(x, repeats, axis)
 
 
 def tile(x, reps, f=None):
@@ -509,7 +508,7 @@ def tile(x, reps, f=None):
     :type f: ml_framework, optional
     :return: The tiled output array.
     """
-    return _get_framework(x, f=f).tile(x, reps)
+    return _cur_framework(x, f=f).tile(x, reps)
 
 
 def constant_pad(x, pad_width, value=0, f=None):
@@ -527,7 +526,7 @@ def constant_pad(x, pad_width, value=0, f=None):
     :type f: ml_framework, optional
     :return: Padded array of rank equal to x with shape increased according to pad_width.
     """
-    return _get_framework(x, f=f).constant_pad(x, pad_width, value)
+    return _cur_framework(x, f=f).constant_pad(x, pad_width, value)
 
 
 def zero_pad(x, pad_width, f=None):
@@ -543,7 +542,7 @@ def zero_pad(x, pad_width, f=None):
     :type f: ml_framework, optional
     :return: Padded array of rank equal to x with shape increased according to pad_width.
     """
-    return _get_framework(x, f=f).zero_pad(x, pad_width)
+    return _cur_framework(x, f=f).zero_pad(x, pad_width)
 
 
 def fourier_encode(x, max_freq, num_bands=4, base=2.):
@@ -583,7 +582,7 @@ def swapaxes(x, axis0, axis1, f=None):
     :type f: ml_framework, optional
     :return: x with its axes permuted.
     """
-    return _get_framework(x, f=f).swapaxes(x, axis0, axis1)
+    return _cur_framework(x, f=f).swapaxes(x, axis0, axis1)
 
 
 def transpose(x, axes=None, f=None):
@@ -598,7 +597,7 @@ def transpose(x, axes=None, f=None):
     :type f: ml_framework, optional
     :return: x with its axes permuted.
     """
-    return _get_framework(x, f=f).transpose(x, axes)
+    return _cur_framework(x, f=f).transpose(x, axes)
 
 
 def expand_dims(x, axis, f=None):
@@ -614,7 +613,7 @@ def expand_dims(x, axis, f=None):
     :type f: ml_framework, optional
     :return: array with the number of dimensions increased by onearray
     """
-    return _get_framework(x, f=f).expand_dims(x, axis)
+    return _cur_framework(x, f=f).expand_dims(x, axis)
 
 
 def where(condition, x1, x2, f=None):
@@ -631,7 +630,7 @@ def where(condition, x1, x2, f=None):
     :type f: ml_framework, optional
     :return: An array with elements from x1 where condition is True, and elements from x2 elsewhere.
     """
-    return _get_framework(x1, f=f).where(condition, x1, x2)
+    return _cur_framework(x1, f=f).where(condition, x1, x2)
 
 
 def indices_where(x, f=None):
@@ -644,7 +643,7 @@ def indices_where(x, f=None):
     :type f: ml_framework, optional
     :return: Indices for where the boolean array is True.
     """
-    return _get_framework(x, f=f).indices_where(x)
+    return _cur_framework(x, f=f).indices_where(x)
 
 
 def isnan(x, f=None):
@@ -657,7 +656,7 @@ def isnan(x, f=None):
     :type f: ml_framework, optional
     :return: Boolean values for where the values of the array are nan.
     """
-    return _get_framework(x, f=f).isnan(x)
+    return _cur_framework(x, f=f).isnan(x)
 
 
 def reshape(x, newshape, f=None):
@@ -673,7 +672,7 @@ def reshape(x, newshape, f=None):
     :type f: ml_framework, optional
     :return: Reshaped array.
     """
-    return _get_framework(x, f=f).reshape(x, newshape)
+    return _cur_framework(x, f=f).reshape(x, newshape)
 
 
 def broadcast_to(x, newshape, f=None):
@@ -688,7 +687,7 @@ def broadcast_to(x, newshape, f=None):
     :type f: ml_framework, optional
     :return: Newly broadcast array.
     """
-    return _get_framework(x, f=f).broadcast_to(x, newshape)
+    return _cur_framework(x, f=f).broadcast_to(x, newshape)
 
 
 def squeeze(x, axis=None, f=None):
@@ -704,7 +703,7 @@ def squeeze(x, axis=None, f=None):
     :type f: ml_framework, optional
     :return: The input array, but with all (axis=None) or one (axis is int) of the dimensions of length 1 removed.
     """
-    return _get_framework(x, f=f).squeeze(x, axis)
+    return _cur_framework(x, f=f).squeeze(x, axis)
 
 
 # noinspection PyShadowingNames
@@ -723,7 +722,7 @@ def zeros(shape, dtype_str='float32', dev_str=None, f=None):
     :type f: ml_framework, optional
     :return: Tensor of zeros with the given shape and dtype_str.
     """
-    return _get_framework(f=f).zeros(shape, dtype_str, dev_str)
+    return _cur_framework(f=f).zeros(shape, dtype_str, dev_str)
 
 
 # noinspection PyShadowingNames
@@ -742,7 +741,7 @@ def zeros_like(x, dtype_str=None, dev_str=None, f=None):
     :type f: ml_framework, optional
     :return: Tensor of zeros with the same shape and type as a, unless dtype_str provided which overrides.
     """
-    return _get_framework(x, f=f).zeros_like(x, dtype_str, dev_str)
+    return _cur_framework(x, f=f).zeros_like(x, dtype_str, dev_str)
 
 
 # noinspection PyShadowingNames
@@ -761,7 +760,7 @@ def ones(shape, dtype_str='float32', dev_str=None, f=None):
     :type f: ml_framework, optional
     :return: Tensor of ones with the given shape and dtype_str.
     """
-    return _get_framework(f=f).ones(shape, dtype_str, dev_str)
+    return _cur_framework(f=f).ones(shape, dtype_str, dev_str)
 
 
 # noinspection PyShadowingNames
@@ -780,7 +779,7 @@ def ones_like(x, dtype_str=None, dev_str=None, f=None):
     :type f: ml_framework, optional
     :return: Tensor of zeros with the same shape and type as a, unless dtype_str provided which overrides.
     """
-    return _get_framework(x, f=f).ones_like(x, dtype_str, dev_str)
+    return _cur_framework(x, f=f).ones_like(x, dtype_str, dev_str)
 
 
 # noinspection PyShadowingNames
@@ -797,7 +796,7 @@ def one_hot(indices, depth, dev_str=None, f=None):
     :type f: ml_framework, optional
     :return: Tensor of zeros with the same shape and type as a, unless dtype provided which overrides.
     """
-    return _get_framework(indices, f=f).one_hot(indices, depth, dev_str)
+    return _cur_framework(indices, f=f).one_hot(indices, depth, dev_str)
 
 
 def cross(x1, x2, f=None):
@@ -815,7 +814,7 @@ def cross(x1, x2, f=None):
     :type f: ml_framework, optional
     :return: Vector cross product(s).
     """
-    return _get_framework(x1, f=f).cross(x1, x2)
+    return _cur_framework(x1, f=f).cross(x1, x2)
 
 
 def matmul(x1, x2, f=None):
@@ -830,7 +829,7 @@ def matmul(x1, x2, f=None):
     :type f: ml_framework, optional
     :return: The matrix product of the input arrays.
     """
-    return _get_framework(x1, f=f).matmul(x1, x2)
+    return _cur_framework(x1, f=f).matmul(x1, x2)
 
 
 def cumsum(x, axis=0, f=None):
@@ -845,7 +844,7 @@ def cumsum(x, axis=0, f=None):
     :type f: ml_framework, optional
     :return: Input array with cumulatively summed elements along axis.
     """
-    return _get_framework(x, f=f).cumsum(x, axis)
+    return _cur_framework(x, f=f).cumsum(x, axis)
 
 
 def cumprod(x, axis=0, exclusive=False, f=None):
@@ -862,7 +861,7 @@ def cumprod(x, axis=0, exclusive=False, f=None):
     :type f: ml_framework, optional
     :return: Input array with cumulatively multiplied elements along axis.
     """
-    return _get_framework(x, f=f).cumprod(x, axis, exclusive)
+    return _cur_framework(x, f=f).cumprod(x, axis, exclusive)
 
 
 # noinspection PyShadowingNames
@@ -884,7 +883,7 @@ def identity(n, dtype_str='float32', batch_shape=None, dev_str=None, f=None):
     :type f: ml_framework, optional
     :return: n x n array of type dtype_str, with its main diagonal set to one, and all other elements 0.
     """
-    return _get_framework(f=f).identity(n, dtype_str, batch_shape, dev_str)
+    return _cur_framework(f=f).identity(n, dtype_str, batch_shape, dev_str)
 
 
 def meshgrid(*xs, indexing='ij', f=None):
@@ -899,7 +898,7 @@ def meshgrid(*xs, indexing='ij', f=None):
     :type f: ml_framework, optional
     :return: list of N-D coordinate arrays for evaluating expressions on an N-D grid
     """
-    return _get_framework(f=f).meshgrid(*xs, indexing=indexing)
+    return _cur_framework(f=f).meshgrid(*xs, indexing=indexing)
 
 
 # noinspection PyShadowingNames
@@ -921,7 +920,7 @@ def scatter_flat(indices, updates, size, reduction='sum', dev_str=None, f=None):
     :type f: ml_framework, optional
     :return: New array of given shape, with the values scattered at the indices.
     """
-    return _get_framework(indices, f=f).scatter_flat(indices, updates, size, reduction, dev_str)
+    return _cur_framework(indices, f=f).scatter_flat(indices, updates, size, reduction, dev_str)
 
 
 # noinspection PyShadowingNames
@@ -943,7 +942,7 @@ def scatter_nd(indices, updates, shape, reduction='sum', dev_str=None, f=None):
     :type f: ml_framework, optional
     :return: New array of given shape, with the values scattered at the indices.
     """
-    return _get_framework(indices, f=f).scatter_nd(indices, updates, shape, reduction, dev_str)
+    return _cur_framework(indices, f=f).scatter_nd(indices, updates, shape, reduction, dev_str)
 
 
 # noinspection PyShadowingNames
@@ -963,7 +962,7 @@ def gather(params, indices, axis=-1, dev_str=None, f=None):
     :type f: ml_framework, optional
     :return: New array with the values gathered at the specified indices along the specified axis.
     """
-    return _get_framework(params, f=f).gather(params, indices, axis, dev_str)
+    return _cur_framework(params, f=f).gather(params, indices, axis, dev_str)
 
 
 # noinspection PyShadowingNames
@@ -981,7 +980,7 @@ def gather_nd(params, indices, dev_str=None, f=None):
     :type f: ml_framework, optional
     :return: New array of given shape, with the values gathered at the indices.
     """
-    return _get_framework(params, f=f).gather_nd(params, indices, dev_str)
+    return _cur_framework(params, f=f).gather_nd(params, indices, dev_str)
 
 
 def linear_resample(x, num_samples, axis=-1, f=None):
@@ -998,7 +997,7 @@ def linear_resample(x, num_samples, axis=-1, f=None):
     :type f: ml_framework, optional
     :return: The array after the linear resampling.
     """
-    return _get_framework(x, f=f).linear_resample(x, num_samples, axis)
+    return _cur_framework(x, f=f).linear_resample(x, num_samples, axis)
 
 
 def exists(x):
@@ -1035,7 +1034,7 @@ def dev(x, f=None):
     :type f: ml_framework, optional
     :return: Device handle for the array, in native framework format.
     """
-    return _get_framework(x, f=f).dev(x)
+    return _cur_framework(x, f=f).dev(x)
 
 
 # noinspection PyShadowingNames
@@ -1051,7 +1050,7 @@ def to_dev(x, dev_str=None, f=None):
     :type f: ml_framework, optional
     :return: The array x, but now placed on the target device.
     """
-    return _get_framework(x, f=f).to_dev(x, dev_str)
+    return _cur_framework(x, f=f).to_dev(x, dev_str)
 
 
 def dev_to_str(dev_in, f=None):
@@ -1064,7 +1063,7 @@ def dev_to_str(dev_in, f=None):
     :type f: ml_framework, optional
     :return: Device string e.g. 'cuda:0'.
     """
-    return _get_framework(None, f=f).dev_to_str(dev_in)
+    return _cur_framework(None, f=f).dev_to_str(dev_in)
 
 
 # noinspection PyShadowingNames
@@ -1078,7 +1077,7 @@ def str_to_dev(dev_str, f=None):
     :type f: ml_framework, optional
     :return: Native device handle.
     """
-    return _get_framework(None, f=f).str_to_dev(dev_str)
+    return _cur_framework(None, f=f).str_to_dev(dev_str)
 
 
 def dev_str(x, f=None):
@@ -1091,7 +1090,7 @@ def dev_str(x, f=None):
     :type f: ml_framework, optional
     :return: Device string for the array, e.g. 'cuda:0', 'cuda:1', 'cpu' etc..
     """
-    return _get_framework(x, f=f).dev_str(x)
+    return _cur_framework(x, f=f).dev_str(x)
 
 
 # noinspection PyShadowingNames
@@ -1124,7 +1123,7 @@ def gpu_is_available(f=None):
     :type f: ml_framework, optional
     :return: Boolean, as to whether a gpu is available.
     """
-    return _get_framework(f=f).gpu_is_available()
+    return _cur_framework(f=f).gpu_is_available()
 
 
 def num_gpus(f=None):
@@ -1135,7 +1134,7 @@ def num_gpus(f=None):
     :type f: ml_framework, optional
     :return: Number of available GPUs.
     """
-    return _get_framework(f=f).num_gpus()
+    return _cur_framework(f=f).num_gpus()
 
 
 def tpu_is_available(f=None):
@@ -1146,7 +1145,7 @@ def tpu_is_available(f=None):
     :type f: ml_framework, optional
     :return: Boolean, as to whether a tpu is available.
     """
-    return _get_framework(f=f).tpu_is_available()
+    return _cur_framework(f=f).tpu_is_available()
 
 
 def dtype(x, f=None):
@@ -1159,7 +1158,7 @@ def dtype(x, f=None):
     :type f: ml_framework, optional
     :return: Data type of the array
     """
-    return _get_framework(x, f=f).dtype(x)
+    return _cur_framework(x, f=f).dtype(x)
 
 
 def dtype_to_str(dtype_in, f=None):
@@ -1172,7 +1171,7 @@ def dtype_to_str(dtype_in, f=None):
     :type f: ml_framework, optional
     :return: Device string e.g. 'float32'.
     """
-    return _get_framework(None, f=f).dtype_to_str(dtype_in)
+    return _cur_framework(None, f=f).dtype_to_str(dtype_in)
 
 
 def dtype_str(x, f=None):
@@ -1185,7 +1184,7 @@ def dtype_str(x, f=None):
     :type f: ml_framework, optional
     :return: Device string e.g. 'float32'.
     """
-    return _get_framework(None, f=f).dtype_str(x)
+    return _cur_framework(None, f=f).dtype_str(x)
 
 
 def compile_fn(func, dynamic=True, example_inputs=None, f=None):
@@ -1204,7 +1203,7 @@ def compile_fn(func, dynamic=True, example_inputs=None, f=None):
     :type f: ml_framework, optional
     :return: The handle to the newly compiled function.
     """
-    return _get_framework(example_inputs, f=f).compile_fn(func, dynamic, example_inputs)
+    return _cur_framework(example_inputs, f=f).compile_fn(func, dynamic, example_inputs)
 
 
 def split_func_call(func, inputs, chunk_size, input_axes=0, output_axes=None):
@@ -1352,7 +1351,7 @@ def current_framework_str(f=None):
     :type f: ml_framework, optional
     :return: The framework string.
     """
-    fw = _get_framework(f=f)
+    fw = _cur_framework(f=f)
     if fw is None:
         return None
     return fw.current_framework_str()
