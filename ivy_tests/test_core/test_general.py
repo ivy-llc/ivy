@@ -4,6 +4,7 @@ Collection of tests for templated general functions
 
 # global
 import math
+import einops
 import pytest
 import threading
 import numpy as np
@@ -2357,3 +2358,29 @@ def test_class_ivy_handles(dev_str, call):
 
     # verify this is not still a numpy array
     assert not isinstance(x, np.ndarray)
+
+
+# einops_rearrange
+@pytest.mark.parametrize(
+    "x_n_pattern_n_newx", [([[0., 1., 2., 3.]], 'b n -> n b', [[0.], [1.], [2.], [3.]])])
+@pytest.mark.parametrize(
+    "dtype_str", ['float32'])
+@pytest.mark.parametrize(
+    "tensor_fn", [ivy.array, helpers.var_fn])
+def test_einops_rearrange(x_n_pattern_n_newx, dtype_str, tensor_fn, dev_str, call):
+    # smoke test
+    x, pattern, new_x = x_n_pattern_n_newx
+    x = tensor_fn(x, dtype_str, dev_str)
+    ret = ivy.einops_rearrange(x, pattern)
+    true_ret = einops.rearrange(x, pattern)
+    # type test
+    assert ivy.is_array(ret)
+    # cardinality test
+    assert list(ret.shape) == list(true_ret.shape)
+    # value test
+    assert np.allclose(ivy.to_numpy(ret), ivy.to_numpy(true_ret))
+    # compilation test
+    if call is helpers.torch_call:
+        # torch jit cannot compile **args
+        pytest.skip()
+    helpers.assert_compilable(ivy.einops_rearrange)
