@@ -3,7 +3,7 @@ Collection of Ivy activation functions.
 """
 
 # local
-from ivy.framework_handler import current_framework as _get_framework
+from ivy.framework_handler import current_framework as _cur_framework
 
 
 def relu(x, f=None):
@@ -16,7 +16,7 @@ def relu(x, f=None):
     :type f: ml_framework, optional
     :return: The input array with relu applied element-wise.
     """
-    return _get_framework(x, f=f).relu(x)
+    return _cur_framework(x, f=f).relu(x)
 
 
 def leaky_relu(x, alpha=0.2, f=None):
@@ -31,7 +31,7 @@ def leaky_relu(x, alpha=0.2, f=None):
     :type f: ml_framework, optional
     :return: The input array with leaky relu applied element-wise.
     """
-    return _get_framework(x, f=f).leaky_relu(x, alpha)
+    return _cur_framework(x, f=f).leaky_relu(x, alpha)
 
 
 def gelu(x, approximate=True, f=None):
@@ -46,7 +46,7 @@ def gelu(x, approximate=True, f=None):
     :type f: ml_framework, optional
     :return: The input array with leaky relu applied element-wise.
     """
-    return _get_framework(x, f=f).gelu(x, approximate)
+    return _cur_framework(x, f=f).gelu(x, approximate)
 
 
 def tanh(x, f=None):
@@ -59,7 +59,7 @@ def tanh(x, f=None):
     :type f: ml_framework, optional
     :return: The input array with tanh applied element-wise.
     """
-    return _get_framework(x, f=f).tanh(x)
+    return _cur_framework(x, f=f).tanh(x)
 
 
 def sigmoid(x, f=None):
@@ -72,7 +72,7 @@ def sigmoid(x, f=None):
     :type f: ml_framework, optional
     :return: The input array with sigmoid applied element-wise.
     """
-    return _get_framework(x, f=f).sigmoid(x)
+    return _cur_framework(x, f=f).sigmoid(x)
 
 
 def softmax(x, axis=-1, f=None):
@@ -87,7 +87,7 @@ def softmax(x, axis=-1, f=None):
     :type f: ml_framework, optional
     :return: The input array with softmax applied element-wise.
     """
-    return _get_framework(x, f=f).softmax(x, axis)
+    return _cur_framework(x, f=f).softmax(x, axis)
 
 
 def softplus(x, f=None):
@@ -100,4 +100,4 @@ def softplus(x, f=None):
     :type f: ml_framework, optional
     :return: The input array with softplus applied element-wise.
     """
-    return _get_framework(x, f=f).softplus(x)
+    return _cur_framework(x, f=f).softplus(x)
