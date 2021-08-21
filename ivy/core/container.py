@@ -1488,9 +1488,9 @@ class Container(dict):
         if isinstance(query, int):
             queue_queries = [query]
         elif isinstance(query, slice):
-            queue_queries = list(range(query.start, query.stop, ivy.default(query.step, 1)))
+            queue_queries = list(range(query.start, query.stop, _ivy.default(query.step, 1)))
         elif isinstance(query, (list, tuple)):
-            queue_queries = list(range(query[0].start, query[0].stop, ivy.default(query[0].step, 1)))
+            queue_queries = list(range(query[0].start, query[0].stop, _ivy.default(query[0].step, 1)))
         else:
             raise Exception('Invalid slice type, must be one of integer, slice, or sequences of slices.')
         queue_idxs = set([_np.sum(q >= self._queue_load_sizes_cum).item() for q in queue_queries])
@@ -1666,7 +1666,7 @@ class Container(dict):
 
     @property
     def _ivy(self):
-        return ivy.default(self._local_ivy, ivy)
+        return _ivy.default(self._local_ivy, _ivy)
 
     @_ivy.setter
     def _ivy(self, local_ivy):
