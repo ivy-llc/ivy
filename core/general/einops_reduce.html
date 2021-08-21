@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>floor &mdash; Ivy 1.0 documentation</title>
+  <title>einops_reduce &mdash; Ivy 1.0 documentation</title>
   
 
   
@@ -36,8 +36,8 @@
   <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="ceil" href="ceil.html" />
-    <link rel="prev" title="floormod" href="floormod.html" /> 
+    <link rel="next" title="Gradients" href="../gradients.html" />
+    <link rel="prev" title="einops_rearrange" href="einops_rearrange.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -103,7 +103,7 @@
 <li class="toctree-l2"><a class="reference internal" href="clip.html">clip</a></li>
 <li class="toctree-l2"><a class="reference internal" href="round.html">round</a></li>
 <li class="toctree-l2"><a class="reference internal" href="floormod.html">floormod</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">floor</a></li>
+<li class="toctree-l2"><a class="reference internal" href="floor.html">floor</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ceil.html">ceil</a></li>
 <li class="toctree-l2"><a class="reference internal" href="abs.html">abs</a></li>
 <li class="toctree-l2"><a class="reference internal" href="argmax.html">argmax</a></li>
@@ -168,7 +168,7 @@
 <li class="toctree-l2"><a class="reference internal" href="cache_fn.html">cache_fn</a></li>
 <li class="toctree-l2"><a class="reference internal" href="current_framework_str.html">current_framework_str</a></li>
 <li class="toctree-l2"><a class="reference internal" href="einops_rearrange.html">einops_rearrange</a></li>
-<li class="toctree-l2"><a class="reference internal" href="einops_reduce.html">einops_reduce</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">einops_reduce</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../gradients.html">Gradients</a></li>
@@ -252,13 +252,13 @@
         
           <li><a href="../general.html">General</a> &raquo;</li>
         
-      <li>floor</li>
+      <li>einops_reduce</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="../../_sources/core/general/floor.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../_sources/core/general/einops_reduce.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -271,21 +271,23 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="floor">
-<h1>floor<a class="headerlink" href="#floor" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="einops-reduce">
+<h1>einops_reduce<a class="headerlink" href="#einops-reduce" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
-<dt id="ivy.core.general.floor">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">floor</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">f</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/general.html#floor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.floor" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns element-wise largest integer not greater than x.</p>
+<dt id="ivy.core.general.einops_reduce">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">einops_reduce</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">pattern</span></em>, <em class="sig-param"><span class="n">reduction</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">axes_lengths</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/general.html#einops_reduce"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.einops_reduce" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform einops reduce operation on input array x.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<em>array</em>) – Input array to floor.</p></li>
-<li><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning framework. Inferred from inputs if None.</p></li>
+<li><p><strong>x</strong> (<em>array</em>) – Input array to be reduced.</p></li>
+<li><p><strong>pattern</strong> (<em>str</em>) – Reduction pattern.</p></li>
+<li><p><strong>reduction</strong> (<em>str</em><em> or </em><em>callable</em>) – One of available reductions (‘min’, ‘max’, ‘sum’, ‘mean’, ‘prod’), or callable.</p></li>
+<li><p><strong>axes_lengths</strong> (<em>keyword parameter args</em>) – Any additional specifications for dimensions.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>An array of the same shape and type as x, with the elements floored to integers.</p>
+<dd class="field-even"><p>New array with einops.reduce having been applied.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -305,10 +307,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="ceil.html" class="btn btn-neutral float-right" title="ceil" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="../gradients.html" class="btn btn-neutral float-right" title="Gradients" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="floormod.html" class="btn btn-neutral float-left" title="floormod" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="einops_rearrange.html" class="btn btn-neutral float-left" title="einops_rearrange" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
