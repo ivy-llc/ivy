@@ -307,6 +307,7 @@ Documentation Tree
    :caption: Neural net stateful
 
    neural_net_stateful/activations.rst
+   neural_net_stateful/converters.rst
    neural_net_stateful/initializers.rst
    neural_net_stateful/layers.rst
    neural_net_stateful/module.rst
