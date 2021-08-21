@@ -1371,3 +1371,20 @@ def einops_rearrange(x, pattern, **axes_lengths):
     :return: New array with einops.rearrange having been applied.
     """
     return einops.rearrange(x, pattern, **axes_lengths)
+
+
+def einops_reduce(x, pattern, reduction, **axes_lengths):
+    """
+    Perform einops reduce operation on input array x.
+
+    :param x: Input array to be reduced.
+    :type x: array
+    :param pattern: Reduction pattern.
+    :type pattern: str
+    :param reduction: One of available reductions ('min', 'max', 'sum', 'mean', 'prod'), or callable.
+    :type reduction: str or callable
+    :param axes_lengths: Any additional specifications for dimensions.
+    :type axes_lengths: keyword parameter args
+    :return: New array with einops.reduce having been applied.
+    """
+    return einops.reduce(x, pattern, reduction, **axes_lengths)
