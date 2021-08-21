@@ -167,6 +167,7 @@
 <li class="toctree-l2"><a class="reference internal" href="general/split_func_call_across_gpus.html">split_func_call_across_gpus</a></li>
 <li class="toctree-l2"><a class="reference internal" href="general/cache_fn.html">cache_fn</a></li>
 <li class="toctree-l2"><a class="reference internal" href="general/current_framework_str.html">current_framework_str</a></li>
+<li class="toctree-l2"><a class="reference internal" href="general/einops_rearrange.html">einops_rearrange</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="gradients.html">Gradients</a></li>
@@ -735,6 +736,24 @@ dimension 3.</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>Device string e.g. ‘float32’.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.core.general.einops_rearrange">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">einops_rearrange</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">pattern</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">axes_lengths</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#einops_rearrange"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.einops_rearrange" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform einops rearrange operation on input array x.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>array</em>) – Input array to be re-arranged.</p></li>
+<li><p><strong>pattern</strong> (<em>str</em>) – Rearrangement pattern.</p></li>
+<li><p><strong>axes_lengths</strong> (<em>keyword parameter args</em>) – Any additional specifications for dimensions.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>New array with einops.rearrange having been applied.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1761,6 +1780,7 @@ If not given, then the type of the original array is used.</p></li>
 <li class="toctree-l1"><a class="reference internal" href="general/split_func_call_across_gpus.html">split_func_call_across_gpus</a></li>
 <li class="toctree-l1"><a class="reference internal" href="general/cache_fn.html">cache_fn</a></li>
 <li class="toctree-l1"><a class="reference internal" href="general/current_framework_str.html">current_framework_str</a></li>
+<li class="toctree-l1"><a class="reference internal" href="general/einops_rearrange.html">einops_rearrange</a></li>
 </ul>
 </div>
 </div>
