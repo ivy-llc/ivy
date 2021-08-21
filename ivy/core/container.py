@@ -3,7 +3,6 @@ Base Container Object
 """
 
 # global
-import einops
 import termcolor
 import numpy as _np
 import json as _json
@@ -26,7 +25,6 @@ from operator import truediv as _truediv
 from operator import floordiv as _floordiv
 
 # local
-import ivy
 import ivy as _ivy
 
 
@@ -928,7 +926,7 @@ class Container(dict):
         :type axes_lengths: keyword parameter args
         :return: ivy.Container with each array having einops.rearrange applied.
         """
-        return self.map(lambda x, kc: einops.rearrange(x, pattern, **axes_lengths) if self._ivy.is_array(x) else x,
+        return self.map(lambda x, kc: _ivy.einops_rearrange(x, pattern, **axes_lengths) if self._ivy.is_array(x) else x,
                         key_chains, to_apply, prune_unapplied)
 
     def einops_reduce(self, pattern,  reduction, key_chains=None, to_apply=True, prune_unapplied=False, **axes_lengths):
@@ -950,7 +948,7 @@ class Container(dict):
         :type axes_lengths: keyword parameter args
         :return: ivy.Container with each array having einops.reduce applied.
         """
-        return self.map(lambda x, kc: einops.reduce(x, pattern, reduction, **axes_lengths) if self._ivy.is_array(x)
+        return self.map(lambda x, kc: _ivy.einops_reduce(x, pattern, reduction, **axes_lengths) if self._ivy.is_array(x)
                         else x, key_chains, to_apply, prune_unapplied)
 
     def einops_repeat(self, pattern, key_chains=None, to_apply=True, prune_unapplied=False, **axes_lengths):
@@ -970,7 +968,7 @@ class Container(dict):
         :type axes_lengths: keyword parameter args
         :return: ivy.Container with each array having einops.repeat applied.
         """
-        return self.map(lambda x, kc: einops.repeat(x, pattern, **axes_lengths) if self._ivy.is_array(x) else x,
+        return self.map(lambda x, kc: _ivy.einops_repeat(x, pattern, **axes_lengths) if self._ivy.is_array(x) else x,
                         key_chains, to_apply, prune_unapplied)
 
     def to_dev(self, dev_str, key_chains=None, to_apply=True, prune_unapplied=False):
