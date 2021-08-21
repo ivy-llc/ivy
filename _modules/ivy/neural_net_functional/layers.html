@@ -192,8 +192,6 @@
 
 <span class="c1"># global</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="c1"># noinspection PyProtectedMember</span>
-<span class="kn">from</span> <span class="nn">einops</span> <span class="kn">import</span> <span class="n">rearrange</span><span class="p">,</span> <span class="n">repeat</span>
 
 <span class="c1"># local</span>
 <span class="kn">import</span> <span class="nn">ivy</span>
@@ -338,17 +336,17 @@
     <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">to_kv_fn</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">v</span><span class="o">=</span><span class="n">to_kv_v</span><span class="p">),</span> <span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
 
     <span class="c1"># BS x H x Q x F,  BS x H x V x F,  BS x H x V x F</span>
-    <span class="n">q</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">t</span><span class="p">:</span> <span class="n">rearrange</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="s1">&#39;... n (h f) -&gt; ... h n f&#39;</span><span class="p">,</span> <span class="n">h</span><span class="o">=</span><span class="n">num_heads</span><span class="p">),</span> <span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">))</span>
+    <span class="n">q</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">t</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">einops_rearrange</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="s1">&#39;... n (h f) -&gt; ... h n f&#39;</span><span class="p">,</span> <span class="n">h</span><span class="o">=</span><span class="n">num_heads</span><span class="p">),</span> <span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">))</span>
 
     <span class="c1"># BS x H x Q x V</span>
     <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">mask</span><span class="p">):</span>
-        <span class="n">mask</span> <span class="o">=</span> <span class="n">repeat</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span> <span class="s1">&#39;... q v -&gt; ... h q v&#39;</span><span class="p">,</span> <span class="n">h</span><span class="o">=</span><span class="n">num_heads</span><span class="p">)</span>
+        <span class="n">mask</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">einops_repeat</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span> <span class="s1">&#39;... q v -&gt; ... h q v&#39;</span><span class="p">,</span> <span class="n">h</span><span class="o">=</span><span class="n">num_heads</span><span class="p">)</span>
 
     <span class="c1"># BS x H x Q x F</span>
     <span class="n">sdpa</span> <span class="o">=</span> <span class="n">scaled_dot_product_attention</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">scale</span><span class="p">,</span> <span class="n">mask</span><span class="p">)</span>
 
     <span class="c1"># BS x Q x (HxF)</span>
-    <span class="n">sdpa</span> <span class="o">=</span> <span class="n">rearrange</span><span class="p">(</span><span class="n">sdpa</span><span class="p">,</span> <span class="s1">&#39;... h q f -&gt; ... q (h f)&#39;</span><span class="p">)</span>
+    <span class="n">sdpa</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">einops_rearrange</span><span class="p">(</span><span class="n">sdpa</span><span class="p">,</span> <span class="s1">&#39;... h q f -&gt; ... q (h f)&#39;</span><span class="p">)</span>
 
     <span class="c1"># BS x Q x OF</span>
     <span class="k">return</span> <span class="n">to_out_fn</span><span class="p">(</span><span class="n">sdpa</span><span class="p">,</span> <span class="n">v</span><span class="o">=</span><span class="n">to_out_v</span><span class="p">)</span></div>
