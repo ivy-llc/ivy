@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>float_img_to_uint8_img &mdash; Ivy 1.0 documentation</title>
+  <title>random_crop &mdash; Ivy 1.0 documentation</title>
   
 
   
@@ -36,8 +36,8 @@
   <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="uint8_img_to_float_img" href="uint8_img_to_float_img.html" />
-    <link rel="prev" title="gradient_image" href="gradient_image.html" /> 
+    <link rel="next" title="Linalg" href="../linalg.html" />
+    <link rel="prev" title="uint8_img_to_float_img" href="uint8_img_to_float_img.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -96,9 +96,9 @@
 <li class="toctree-l2"><a class="reference internal" href="stack_images.html">stack_images</a></li>
 <li class="toctree-l2"><a class="reference internal" href="bilinear_resample.html">bilinear_resample</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gradient_image.html">gradient_image</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">float_img_to_uint8_img</a></li>
+<li class="toctree-l2"><a class="reference internal" href="float_img_to_uint8_img.html">float_img_to_uint8_img</a></li>
 <li class="toctree-l2"><a class="reference internal" href="uint8_img_to_float_img.html">uint8_img_to_float_img</a></li>
-<li class="toctree-l2"><a class="reference internal" href="random_crop.html">random_crop</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">random_crop</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../linalg.html">Linalg</a></li>
@@ -180,13 +180,13 @@
         
           <li><a href="../image.html">Image</a> &raquo;</li>
         
-      <li>float_img_to_uint8_img</li>
+      <li>random_crop</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="../../_sources/core/image/float_img_to_uint8_img.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../_sources/core/image/random_crop.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -199,21 +199,24 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="float-img-to-uint8-img">
-<h1>float_img_to_uint8_img<a class="headerlink" href="#float-img-to-uint8-img" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="random-crop">
+<h1>random_crop<a class="headerlink" href="#random-crop" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
-<dt id="ivy.core.image.float_img_to_uint8_img">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">float_img_to_uint8_img</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">f</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/image.html#float_img_to_uint8_img"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.image.float_img_to_uint8_img" title="Permalink to this definition">¶</a></dt>
-<dd><p>Converts an image of floats into a bit-cast 4-channel image of uint8s, which can be saved to disk.</p>
+<dt id="ivy.core.image.random_crop">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">random_crop</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">crop_size</span></em>, <em class="sig-param"><span class="n">batch_shape</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">image_dims</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">f</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/image.html#random_crop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.image.random_crop" title="Permalink to this definition">¶</a></dt>
+<dd><p>Randomly crops the input images.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<em>array</em>) – Input float image <em>[batch_shape,h,w]</em>.</p></li>
+<li><p><strong>x</strong> (<em>array</em>) – Input images to crop <em>[batch_shape,h,w,f]</em></p></li>
+<li><p><strong>crop_size</strong> (<em>sequence of ints</em>) – The 2D crop size.</p></li>
+<li><p><strong>batch_shape</strong> (<em>sequence of ints</em><em>, </em><em>optional</em>) – Shape of batch. Inferred from inputs if None.</p></li>
+<li><p><strong>image_dims</strong> (<em>sequence of ints</em><em>, </em><em>optional</em>) – Image dimensions. Inferred from inputs in None.</p></li>
 <li><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning library. Inferred from inputs if None.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>The new encoded uint8 image <em>[batch_shape,h,w,4]</em> .</p>
+<dd class="field-even"><p>The new cropped image <em>[batch_shape,nh,nw,f]</em></p>
 </dd>
 </dl>
 </dd></dl>
@@ -233,10 +236,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="uint8_img_to_float_img.html" class="btn btn-neutral float-right" title="uint8_img_to_float_img" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="../linalg.html" class="btn btn-neutral float-right" title="Linalg" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="gradient_image.html" class="btn btn-neutral float-left" title="gradient_image" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="uint8_img_to_float_img.html" class="btn btn-neutral float-left" title="uint8_img_to_float_img" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
