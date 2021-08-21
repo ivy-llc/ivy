@@ -63,7 +63,7 @@ def randint(low, high, shape, dev_str='cpu', f=None):
     :param high: One above the highest integer to be drawn from the distribution.
     :type high: int
     :param shape: a tuple defining the shape of the output tensor.
-    :type shape: tuple
+    :type shape: sequence of ints
     :param dev_str: device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc.
     :type dev_str: str
     :param f: Machine learning framework. Inferred from inputs if None.
