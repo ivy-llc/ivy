@@ -7,7 +7,7 @@ import numpy as np
 
 # local
 import ivy
-from ivy.framework_handler import current_framework as _get_framework
+from ivy.framework_handler import current_framework as _cur_framework
 
 
 # Linear #
@@ -187,7 +187,7 @@ def conv1d(x, filters, strides, padding, data_format='NWC', dilations=1, f=None)
     :type f: ml_framework, optional
     :return: The result of the convolution operation.
     """
-    return _get_framework(x, f=f).conv1d(x, filters, strides, padding, data_format, dilations)
+    return _cur_framework(x, f=f).conv1d(x, filters, strides, padding, data_format, dilations)
 
 
 def conv1d_transpose(x, filters, strides, padding, output_shape=None, data_format='NWC', dilations=1, f=None):
@@ -212,7 +212,7 @@ def conv1d_transpose(x, filters, strides, padding, output_shape=None, data_forma
     :type f: ml_framework, optional
     :return: The result of the transpose convolution operation.
     """
-    return _get_framework(x, f=f).conv1d_transpose(x, filters, strides, padding, output_shape, data_format, dilations)
+    return _cur_framework(x, f=f).conv1d_transpose(x, filters, strides, padding, output_shape, data_format, dilations)
 
 
 def conv2d(x, filters, strides, padding, data_format='NHWC', dilations=1, f=None):
@@ -235,7 +235,7 @@ def conv2d(x, filters, strides, padding, data_format='NHWC', dilations=1, f=None
     :type f: ml_framework, optional
     :return: The result of the convolution operation.
     """
-    return _get_framework(x, f=f).conv2d(x, filters, strides, padding, data_format, dilations)
+    return _cur_framework(x, f=f).conv2d(x, filters, strides, padding, data_format, dilations)
 
 
 def conv2d_transpose(x, filters, strides, padding, output_shape=None, data_format='NHWC', dilations=1, f=None):
@@ -260,7 +260,7 @@ def conv2d_transpose(x, filters, strides, padding, output_shape=None, data_forma
     :type f: ml_framework, optional
     :return: The result of the transpose convolution operation.
     """
-    return _get_framework(x, f=f).conv2d_transpose(x, filters, strides, padding, output_shape, data_format, dilations)
+    return _cur_framework(x, f=f).conv2d_transpose(x, filters, strides, padding, output_shape, data_format, dilations)
 
 
 def depthwise_conv2d(x, filters, strides, padding, data_format='NHWC', dilations=1, f=None):
@@ -283,7 +283,7 @@ def depthwise_conv2d(x, filters, strides, padding, data_format='NHWC', dilations
     :type f: ml_framework, optional
     :return: The result of the convolution operation.
     """
-    return _get_framework(x, f=f).depthwise_conv2d(x, filters, strides, padding, data_format, dilations)
+    return _cur_framework(x, f=f).depthwise_conv2d(x, filters, strides, padding, data_format, dilations)
 
 
 # noinspection PyDefaultArgument
@@ -307,7 +307,7 @@ def conv3d(x, filters, strides, padding, data_format='NDHWC', dilations=1, f=Non
     :type f: ml_framework, optional
     :return: The result of the convolution operation.
     """
-    return _get_framework(x, f=f).conv3d(x, filters, strides, padding, data_format, dilations)
+    return _cur_framework(x, f=f).conv3d(x, filters, strides, padding, data_format, dilations)
 
 
 def conv3d_transpose(x, filters, strides, padding, output_shape=None, data_format='NDHWC', dilations=1, f=None):
@@ -332,7 +332,7 @@ def conv3d_transpose(x, filters, strides, padding, output_shape=None, data_forma
     :type f: ml_framework, optional
     :return: The result of the transpose convolution operation.
     """
-    return _get_framework(x, f=f).conv3d_transpose(x, filters, strides, padding, output_shape, data_format, dilations)
+    return _cur_framework(x, f=f).conv3d_transpose(x, filters, strides, padding, output_shape, data_format, dilations)
 
 
 # LSTM #
