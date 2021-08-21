@@ -5,6 +5,10 @@ Collection of tests for templated image-related functions
 # global
 import pytest
 import numpy as np
+from operator import mul
+# noinspection PyProtectedMember
+from einops import repeat
+from functools import reduce
 
 # local
 import ivy
@@ -147,3 +151,34 @@ def test_uint8_img_to_float_img(ui_tfi, dev_str, call):
         # torch device cannot be assigned value of string while scripting
         return
     helpers.assert_compilable(ivy.uint8_img_to_float_img)
+
+
+# random_crop
+@pytest.mark.parametrize(
+    "xshp_n_cs", [([2, 5, 6, 3], [2, 2])])
+def test_random_crop(xshp_n_cs, dev_str, call):
+    # seed
+    ivy.seed(0)
+    np.random.seed(0)
+    # smoke test
+    x_shape, crop_size = xshp_n_cs
+    batch_size = x_shape[0]
+    x_size = reduce(mul, x_shape[1:], 1)
+    x = repeat(ivy.reshape(ivy.arange(x_size), x_shape[1:]), '... -> b ...', b=batch_size)
+    cropped = ivy.random_crop(x, crop_size)
+    # type test
+    assert ivy.is_array(cropped)
+    # cardinality test
+    true_shape = [item for item in x_shape]
+    true_shape[-3] = crop_size[0]
+    true_shape[-2] = crop_size[1]
+    assert list(cropped.shape) == true_shape
+    # value test
+    assert np.allclose(ivy.to_numpy(x[0]), ivy.to_numpy(x[1]))
+    cropped = call(ivy.random_crop, x, crop_size)
+    assert not np.allclose(cropped[0], cropped[1])
+    # compilation test
+    if call in [helpers.torch_call]:
+        # reduce(mul) used for flat batch size computation is not torch jit compilable
+        return
+    helpers.assert_compilable(ivy.random_crop)

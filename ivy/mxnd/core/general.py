@@ -71,7 +71,7 @@ def is_array(x):
     return False
 
 
-to_numpy = lambda x: x.asnumpy()
+to_numpy = lambda x: x if isinstance(x, _np.ndarray) else x.asnumpy()
 to_scalar = lambda x: x.asscalar().item()
 to_list = lambda x: x.asnumpy().tolist()
 shape = lambda x, as_tensor=False: _mx.nd.shape_array(x) if as_tensor else x.shape
