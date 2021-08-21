@@ -1442,7 +1442,7 @@ class Container(dict):
             else:
                 if self._ivy.is_array(v) and len(list(v.shape)) > 0 and _reduce(_mul, v.shape) > 10:
                     rep = (type(v), "shape=", list(v.shape))
-                elif isinstance(v, (list, tuple)) and self._ivy.is_array(v[0]):
+                elif isinstance(v, (list, tuple)) and v and self._ivy.is_array(v[0]):
                     rep = ("list[{}]".format(len(v)), type(v[0]), "shape=", list(v[0].shape))
                 else:
                     rep = v
