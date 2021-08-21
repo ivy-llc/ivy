@@ -7,7 +7,6 @@ import pytest
 import numpy as np
 from operator import mul
 # noinspection PyProtectedMember
-from einops import repeat
 from functools import reduce
 
 # local
@@ -164,7 +163,7 @@ def test_random_crop(xshp_n_cs, dev_str, call):
     x_shape, crop_size = xshp_n_cs
     batch_size = x_shape[0]
     x_size = reduce(mul, x_shape[1:], 1)
-    x = repeat(ivy.reshape(ivy.arange(x_size), x_shape[1:]), '... -> b ...', b=batch_size)
+    x = ivy.einops_repeat(ivy.reshape(ivy.arange(x_size), x_shape[1:]), '... -> b ...', b=batch_size)
     cropped = ivy.random_crop(x, crop_size)
     # type test
     assert ivy.is_array(cropped)

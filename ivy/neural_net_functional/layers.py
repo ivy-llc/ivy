@@ -4,8 +4,6 @@ Collection of Ivy neural network layers in functional form.
 
 # global
 import numpy as np
-# noinspection PyProtectedMember
-from einops import rearrange, repeat
 
 # local
 import ivy
@@ -150,17 +148,17 @@ def multi_head_attention(x, to_q_fn, to_kv_fn, to_out_fn, scale, num_heads, cont
     k, v = ivy.split(to_kv_fn(context, v=to_kv_v), 2, -1)
 
     # BS x H x Q x F,  BS x H x V x F,  BS x H x V x F
-    q, k, v = map(lambda t: rearrange(t, '... n (h f) -> ... h n f', h=num_heads), (q, k, v))
+    q, k, v = map(lambda t: ivy.einops_rearrange(t, '... n (h f) -> ... h n f', h=num_heads), (q, k, v))
 
     # BS x H x Q x V
     if ivy.exists(mask):
-        mask = repeat(mask, '... q v -> ... h q v', h=num_heads)
+        mask = ivy.einops_repeat(mask, '... q v -> ... h q v', h=num_heads)
 
     # BS x H x Q x F
     sdpa = scaled_dot_product_attention(q, k, v, scale, mask)
 
     # BS x Q x (HxF)
-    sdpa = rearrange(sdpa, '... h q f -> ... q (h f)')
+    sdpa = ivy.einops_rearrange(sdpa, '... h q f -> ... q (h f)')
 
     # BS x Q x OF
     return to_out_fn(sdpa, v=to_out_v)
