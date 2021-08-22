@@ -16,7 +16,8 @@ def to_ivy_module(native_module):
         def __init__(self):
             self._native_module = native_module
             self._native_params = OrderedDict(sorted(dict(native_module.named_parameters()).items()))
-            ivy.Module.__init__(self, v=self._native_params)
+            ivy.Module.__init__(
+                self, dev_str=ivy.dev_to_str(next(native_module.parameters()).device), v=self._native_params)
 
         @staticmethod
         def _inplace_update(p, v):
