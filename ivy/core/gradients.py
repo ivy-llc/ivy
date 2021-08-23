@@ -50,7 +50,7 @@ def execute_with_gradients(func, xs, retain_grads=False, f=None):
     return _cur_framework(None, f=f).execute_with_gradients(func, xs, retain_grads)
 
 
-def gradient_descent_update(ws, dcdws, lr, inplace=True, f=None):
+def gradient_descent_update(ws, dcdws, lr, inplace=True, stop_gradients=True, f=None):
     """
     Update weights ws of some function, given the derivatives of some cost c with respect to ws, [dc/dw for w in ws].
 
@@ -65,14 +65,17 @@ def gradient_descent_update(ws, dcdws, lr, inplace=True, f=None):
                     computation graph (i.e. higher order optimization), then this should be set to False.
                     Default is True.
     :type inplace: bool, optional
+    :param stop_gradients: Whether to stop the gradients of the variables after each gradient step. Default is True.
+    :type stop_gradients: bool, optional
     :param f: Machine learning framework. Inferred from inputs if None.
     :type f: ml_framework, optional
     :return: The new function weights ws_new, following the gradient descent updates.
     """
-    return _cur_framework(None, f=f).gradient_descent_update(ws, dcdws, lr, inplace)
+    return _cur_framework(None, f=f).gradient_descent_update(ws, dcdws, lr, inplace, stop_gradients)
 
 
-def adam_update(ws, dcdws, lr, mw, vw, step, beta1=0.9, beta2=0.999, epsilon=1e-7, inplace=True, f=None):
+def adam_update(ws, dcdws, lr, mw, vw, step, beta1=0.9, beta2=0.999, epsilon=1e-7, inplace=True, stop_gradients=True,
+                f=None):
     """
     Update weights ws of some function, given the derivatives of some cost c with respect to ws, using ADAM update.
     `[reference] <https://en.wikipedia.org/wiki/Stochastic_gradient_descent#Adam>`_
@@ -100,11 +103,14 @@ def adam_update(ws, dcdws, lr, mw, vw, step, beta1=0.9, beta2=0.999, epsilon=1e-
                     computation graph (i.e. higher order optimization), then this should be set to False.
                     Default is True.
     :type inplace: bool, optional
+    :param stop_gradients: Whether to stop the gradients of the variables after each gradient step. Default is True.
+    :type stop_gradients: bool, optional
     :param f: Machine learning framework. Inferred from inputs if None.
     :type f: ml_framework, optional
     :return: The new function weights ws_new, and also new mw and vw, following the gradient descent updates.
     """
-    return _cur_framework(None, f=f).adam_update(ws, dcdws, lr, mw, vw, step, beta1, beta2, epsilon, inplace)
+    return _cur_framework(None, f=f).adam_update(ws, dcdws, lr, mw, vw, step, beta1, beta2, epsilon, inplace,
+                                                 stop_gradients)
 
 
 def stop_gradient(x, preserve_type=True, f=None):
