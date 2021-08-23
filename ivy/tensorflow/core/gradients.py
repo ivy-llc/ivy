@@ -43,9 +43,11 @@ def _gradient_descent_update_trackable(ws, dcdws, lr):
     return ws
 
 
-def gradient_descent_update(ws, dcdws, lr, inplace=True):
+def gradient_descent_update(ws, dcdws, lr, inplace=True, stop_gradients=True):
     if inplace:
         return _gradient_descent_update_inplace(ws, dcdws, lr)
+    if stop_gradients:
+        dcdws.stop_gradients(preserve_type=True)
     return _gradient_descent_update_trackable(ws, dcdws, lr)
 
 
@@ -60,7 +62,7 @@ def _adam_update_trackable(ws, dcdws, alpha, mw, vw, epsilon):
     return ws
 
 
-def adam_update(ws, dcdws, lr, mw, vw, step, beta1=0.9, beta2=0.999, epsilon=1e-7, inplace=True):
+def adam_update(ws, dcdws, lr, mw, vw, step, beta1=0.9, beta2=0.999, epsilon=1e-7, inplace=True, stop_gradients=True):
     step = _tf.cast(step, _tf.float32)
     mw = dcdws.map(lambda dcdw, kc: beta1 * mw.at_key_chain(kc) + (1 - beta1) * dcdw)
     dcdws_sqrd = dcdws.map(lambda dcdw, _: dcdw ** 2)
@@ -68,9 +70,10 @@ def adam_update(ws, dcdws, lr, mw, vw, step, beta1=0.9, beta2=0.999, epsilon=1e-
     beta1_pow = beta1 ** step
     beta2_pow = beta2 ** step
     alpha = lr * (1 - beta2_pow)**0.5 / (1 - beta1_pow + epsilon)
-
     if inplace:
         return _adam_update_inplace(ws, dcdws, alpha, mw, vw, epsilon)
+    if stop_gradients:
+        dcdws.stop_gradients(preserve_type=True)
     return _adam_update_trackable(ws, dcdws, alpha, mw, vw, epsilon)
 
 
