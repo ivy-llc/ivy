@@ -14,7 +14,7 @@ import ivy
 
 class Optimizer(abc.ABC):
 
-    def __init__(self, lr, dev_str, compile_step=False):
+    def __init__(self, lr, compile_step=False, inplace=True, stop_gradients=True):
         """
         Construct an general Optimizer. This is an abstract class, and must be derived.
 
@@ -22,6 +22,11 @@ class Optimizer(abc.ABC):
         :type lr: function or float.
         :param compile_step: Whether to compile the optimizer step, default is False.
         :type compile_step: bool, option
+        :param inplace: Whether to update the variables in-place, or to create new variable handles.
+                        This is only relevant for frameworks with stateful variables such as PyTorch. Default is True.
+        :type inplace: bool, optional
+        :param stop_gradients: Whether to stop the gradients of the variables after each gradient step. Default is True.
+        :type stop_gradients: bool, optional
         """
         self._lr = lr
         self._compile_step = compile_step
@@ -29,6 +34,8 @@ class Optimizer(abc.ABC):
             self._step_fn = ivy.compile_fn(self._step)
         else:
             self._step_fn = self._step
+        self._inplace = inplace
+        self._stop_gradients = stop_gradients
 
     # Public #
     # -------#
@@ -79,7 +86,7 @@ class Optimizer(abc.ABC):
 
 class SGD(Optimizer):
 
-    def __init__(self, lr=lambda: 1e-4, compile_step=False):
+    def __init__(self, lr=lambda: 1e-4, compile_step=False, inplace=True, stop_gradients=True):
         """
         Construct a Stochastic-Gradient-Descent (SGD) optimizer.
 
@@ -87,8 +94,13 @@ class SGD(Optimizer):
         :type lr: float, optional
         :param compile_step: Whether to compile the optimizer step, default is False.
         :type compile_step: bool, option
+        :param inplace: Whether to update the variables in-place, or to create new variable handles.
+                        This is only relevant for frameworks with stateful variables such as PyTorch. Default is True.
+        :type inplace: bool, optional
+        :param stop_gradients: Whether to stop the gradients of the variables after each gradient step. Default is True.
+        :type stop_gradients: bool, optional
         """
-        Optimizer.__init__(self, lr, compile_step)
+        Optimizer.__init__(self, lr, compile_step, inplace, stop_gradients)
 
     # Custom Step
 
@@ -102,8 +114,8 @@ class SGD(Optimizer):
         :type grads: sequence of arrays
         :return: The new updated variables container, following gradient descent step.
         """
-        new_v = ivy.gradient_descent_update(v, grads, self._lr if isinstance(self._lr, float) else self._lr())
-        return new_v.stop_gradients()
+        return ivy.gradient_descent_update(v, grads, self._lr if isinstance(self._lr, float) else self._lr(),
+                                           self._inplace, self._stop_gradients)
 
     def set_state(self, state):
         """
@@ -121,7 +133,8 @@ class SGD(Optimizer):
 
 class Adam(Optimizer):
 
-    def __init__(self, lr=1e-4, beta1=0.9, beta2=0.999, epsilon=1e-07, compile_step=False, dev_str=None):
+    def __init__(self, lr=1e-4, beta1=0.9, beta2=0.999, epsilon=1e-07, compile_step=False, inplace=True,
+                 stop_gradients=True, dev_str=None):
         """
         Construct an ADAM optimizer.
 
@@ -135,10 +148,15 @@ class Adam(Optimizer):
         :type epsilon: float, optional
         :param compile_step: Whether to compile the optimizer step, default is False.
         :type compile_step: bool, option
+        :param inplace: Whether to update the variables in-place, or to create new variable handles.
+                        This is only relevant for frameworks with stateful variables such as PyTorch. Default is True.
+        :type inplace: bool, optional
+        :param stop_gradients: Whether to stop the gradients of the variables after each gradient step. Default is True.
+        :type stop_gradients: bool, optional
         :param dev_str: device on which to create the layer's variables 'cuda:0', 'cuda:1', 'cpu' etc.
         :type dev_str: str, optional
         """
-        Optimizer.__init__(self, lr, compile_step)
+        Optimizer.__init__(self, lr, compile_step, inplace, stop_gradients)
         self._beta1 = beta1
         self._beta2 = beta2
         self._epsilon = epsilon
@@ -165,9 +183,9 @@ class Adam(Optimizer):
             self._first_pass = False
         new_v, self._mw, self._vw = ivy.adam_update(
             v, grads, self._lr if isinstance(self._lr, float) else self._lr(), self._mw, self._vw, self._step,
-            self._beta1, self._beta2, self._epsilon)
+            self._beta1, self._beta2, self._epsilon, self._inplace, self._stop_gradients)
         self._step += 1
-        return new_v.stop_gradients()
+        return new_v
 
     def set_state(self, state):
         """
