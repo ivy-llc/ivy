@@ -1554,7 +1554,7 @@ class Container(dict):
                         return_dict[key] = value
                     else:
                         return_dict[key] = value[query]
-                elif value is None or value.shape == ():
+                elif value is None or hasattr(value, 'shape') and value.shape == ():
                     return_dict[key] = value
                 else:
                     return_dict[key] = value[query]
