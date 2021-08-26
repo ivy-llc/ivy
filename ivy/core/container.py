@@ -40,7 +40,7 @@ def _is_jsonable(x):
 class Container(dict):
 
     def __init__(self, dict_in=None, queues=None, queue_load_sizes=None, container_combine_method='list_join',
-                 queue_timeout=5.0, ivyh=None, **kwargs):
+                 queue_timeout=5.0, ivyh=None, keyword_color_dict=None, **kwargs):
         """
         Initialize container object from input dict representation.
 
@@ -60,6 +60,7 @@ class Container(dict):
             self._queue_load_sizes_cum = _np.cumsum(self._queue_load_sizes)
             self._queue_timeout = queue_timeout
         self._local_ivy = ivyh
+        self._keyword_color_dict = _ivy.default(keyword_color_dict, {})
         if dict_in is None:
             if kwargs:
                 dict_in = dict(**kwargs)
@@ -1558,6 +1559,8 @@ class Container(dict):
             # ToDo: make the solution below more elegant
             for i in range(10):
                 ret = ret.replace('diff_{}'.format(i), termcolor.colored('diff_{}'.format(i), 'red'))
+            for keyword, color in self._keyword_color_dict.items():
+                ret = ret.replace(keyword, termcolor.colored(keyword, color))
             return ret
         return new_dict
 
