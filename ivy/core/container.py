@@ -196,7 +196,7 @@ class Container(dict):
                 raise Exception(str(e) + '\nContainer stack operation only valid for containers of arrays')
 
     @staticmethod
-    def diff(*containers, mode='all', ivyh=None):
+    def diff(*containers, mode='all', diff_key='diff', detect_key_diffs=True, ivyh=None):
         """
         Compare keys and values in a sequence of containers, returning the single shared values where they are the same,
         and new nested sub-dicts with all values where they are different.
@@ -206,6 +206,12 @@ class Container(dict):
         :param mode: The mode of the diff operation, returning either all keys and values,
                      only those that are consist across the containers, or only the differences. Default is all.
         :type mode: str, optional
+        :param diff_key: The key add to the returned container when differences are found. Default is "diff".
+        :type diff_key: str, optional
+        :param detect_key_diffs: Whether to treat different keys as detected differences.
+                                 If not, the keys among the input containers are simply combined without flagging
+                                 differences. Default is True.
+        :type detect_key_diffs: bool, optional
         :param ivyh: Handle to ivy module to use for the calculations. Default is None, which results in the global ivy.
         :type ivyh: handle to ivy module, optional
         :return: Compared containers
@@ -234,7 +240,7 @@ class Container(dict):
                     if idx not in idxs_added:
                         idxs_to_add = _ivy.indices_where(equal_mat[idx])
                         idxs_to_add_list = sorted(_ivy.to_numpy(idxs_to_add).reshape(-1).tolist())
-                        key = 'diff_' + str(idxs_to_add_list)[1:-1]
+                        key = diff_key + '_' + str(idxs_to_add_list)[1:-1]
                         diff_dict[key] = cont_dict[idx]
                         idxs_added += idxs_to_add_list
                 return _ivy.Container(diff_dict)
@@ -250,10 +256,14 @@ class Container(dict):
                 if not isinstance(res, dict) or res:
                     return_dict[key] = res
                 continue
+            elif sum(keys_present) == 1 and not detect_key_diffs:
+                return_dict[key] = containers[keys_present.index(True)][key]
+                continue
             diff_dict = dict()
             for i, (key_present, cont) in enumerate(zip(keys_present, containers)):
-                if key_present and mode != 'same_only':
-                    diff_dict['diff_' + str(i)] = cont[key]
+                if detect_key_diffs:
+                    if key_present and mode != 'same_only':
+                        diff_dict['diff_' + str(i)] = cont[key]
             if diff_dict:
                 return_dict[key] = diff_dict
         return _ivy.Container(return_dict)
