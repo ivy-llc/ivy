@@ -59,6 +59,7 @@ def is_array(x):
     return False
 
 
+array_equal = _tf.experimental.numpy.array_equal
 to_numpy = lambda x: _np.asarray(_tf.convert_to_tensor(x))
 to_scalar = lambda x: to_numpy(x).item()
 to_list = lambda x: x.numpy().tolist()

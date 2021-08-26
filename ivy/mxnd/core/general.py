@@ -71,6 +71,7 @@ def is_array(x):
     return False
 
 
+array_equal = lambda x0, x1: _mx.nd.min(_mx.nd.broadcast_equal(x0, x1)) == 1
 to_numpy = lambda x: x if isinstance(x, _np.ndarray) else x.asnumpy()
 to_scalar = lambda x: x.asscalar().item()
 to_list = lambda x: x.asnumpy().tolist()

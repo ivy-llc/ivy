@@ -50,6 +50,21 @@ def is_array(x, f=None):
     return _cur_framework(x, f=f).is_array(x)
 
 
+def array_equal(x0, x1, f=None):
+    """
+    Determines whether two input arrays are equal across all elements.
+
+    :param x0: The first input array to compare.
+    :type x0: array
+    :param x1: The second input array to compare.
+    :type x1: array
+    :param f: Machine learning framework. Inferred from inputs if None.
+    :type f: ml_framework, optional
+    :return: Boolean, whether or not the input arrays are equal across all elements.
+    """
+    return _cur_framework(x0, f=f).array_equal(x0, x1)
+
+
 def to_numpy(x, f=None):
     """
     Converts array into a numpy array.
