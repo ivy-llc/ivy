@@ -57,6 +57,7 @@ def is_array(x):
     return False
 
 
+array_equal = _np.array_equal
 to_numpy = lambda x: x
 to_scalar = lambda x: x.item()
 to_list = lambda x: x.tolist()

@@ -49,6 +49,7 @@ def is_array(x):
     return isinstance(x, (_jax.interpreters.xla._DeviceArray, _jaxlib.xla_extension.DeviceArray, Buffer))
 
 
+array_equal = _jnp.array_equal
 to_numpy = _onp.asarray
 to_scalar = lambda x: x.item()
 to_list = lambda x: x.tolist()

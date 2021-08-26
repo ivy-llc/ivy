@@ -76,6 +76,32 @@ def test_array(object_in, dtype_str, from_numpy, dev_str, call):
     helpers.assert_compilable(ivy.array)
 
 
+# array_equal
+@pytest.mark.parametrize(
+    "x0_n_x1_n_res", [([0.], [0.], True), ([0.], [1.], False),
+                      ([[0.], [1.]], [[0.], [1.]], True),
+                      ([[0.], [1.]], [[1.], [2.]], False)])
+@pytest.mark.parametrize(
+    "dtype_str", [None, 'float16', 'float32', 'float64', 'int8', 'int16', 'int32', 'int64', 'bool'])
+def test_array_equal(x0_n_x1_n_res, dtype_str, dev_str, call):
+    if call in [helpers.mx_call] and dtype_str in ['int16', 'bool']:
+        # mxnet does not support int16, and does not support bool for broadcast_equal method used
+        pytest.skip()
+    x0, x1, true_res = x0_n_x1_n_res
+    # smoke test
+    x0 = ivy.array(x0, dtype_str, dev_str)
+    x1 = ivy.array(x1, dtype_str, dev_str)
+    res = ivy.array_equal(x0, x1)
+    # type test
+    assert ivy.is_array(x0)
+    assert ivy.is_array(x1)
+    assert isinstance(res, bool) or ivy.is_array(res)
+    # value test
+    assert res == true_res
+    # compilation test
+    helpers.assert_compilable(ivy.array_equal)
+
+
 # to_numpy
 @pytest.mark.parametrize(
     "object_in", [[], [0.], [1], [True], [[1., 2.]]])
