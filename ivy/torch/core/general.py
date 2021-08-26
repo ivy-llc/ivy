@@ -35,6 +35,10 @@ def is_array(x):
     return False
 
 
+def array_equal(x0, x1):
+    return torch.equal(x0, x1)
+
+
 def dtype_from_str(dtype_str_in: str) -> torch.dtype:
     return {'bool': torch.bool,
             'int8': torch.int8,
