@@ -1540,11 +1540,15 @@ class Container(dict):
                            if i < split_size - 1 else sub_str
                            for i, sub_str in enumerate(json_dumped_str_split)])
             # remove quotation marks, shape tuple, and color other elements of the dict
-            return json_dumped_str.replace('"', '').replace(", 'shape=', [", " shape=[").replace(
+            ret = json_dumped_str.replace('"', '').replace(", 'shape=', [", " shape=[").replace(
                 ':', termcolor.colored(':', 'magenta')).replace('{', termcolor.colored('{', 'blue')).replace(
                 '}', termcolor.colored('}', 'blue')).replace('shape=', termcolor.colored('shape=', 'magenta')).replace(
                 'device=', termcolor.colored('device=', 'magenta')).replace("<class'", "<class '").replace(
                 "'", "").replace('<class', '<' + termcolor.colored('class', 'blue'))
+            # ToDo: make the solution below more elegant
+            for i in range(10):
+                ret = ret.replace('diff_{}'.format(i), termcolor.colored('diff_{}'.format(i), 'red'))
+            return ret
         return new_dict
 
     def __dir__(self):
