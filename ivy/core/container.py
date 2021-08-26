@@ -196,6 +196,56 @@ class Container(dict):
                 raise Exception(str(e) + '\nContainer stack operation only valid for containers of arrays')
 
     @staticmethod
+    def diff(*containers, ivyh=None):
+        """
+        Compare keys and values in a sequence of containers, returning the single shared values where they are the same,
+        and new nested sub-dicts with all values where they are different.
+
+        :param containers: containers to compare
+        :type containers: sequence of Container objects
+        :param ivyh: Handle to ivy module to use for the calculations. Default is None, which results in the global ivy.
+        :type ivyh: handle to ivy module, optional
+        :return: Compared containers
+        """
+
+        # if inputs are not dicts, then compare their values to determine the diff dict
+        num_containers = len(containers)
+        container0 = containers[0]
+        if not isinstance(container0, dict):
+            equal_mat = _ivy.equal(*containers, equality_matrix=True)
+            if _ivy.reduce_min(_ivy.cast(equal_mat, 'int32')) == 1:
+                return container0
+            else:
+                cont_range = range(num_containers)
+                diff_dict = dict()
+                cont_dict = dict(zip(cont_range, containers))
+                idxs_added = list()
+                for idx in cont_range:
+                    if idx not in idxs_added:
+                        idxs_to_add = _ivy.indices_where(equal_mat[idx])
+                        idxs_to_add_list = sorted(_ivy.to_numpy(idxs_to_add).reshape(-1).tolist())
+                        key = 'diff_' + str(idxs_to_add_list)[1:-1]
+                        diff_dict[key] = cont_dict[idx]
+                        idxs_added += idxs_to_add_list
+                return _ivy.Container(diff_dict)
+
+        # otherwise, check that the keys are aligned between each container, and apply this method recursively
+        return_dict = dict()
+        all_Keys = set([item for sublist in [list(cont.keys()) for cont in containers] for item in sublist])
+        for key in all_Keys:
+            keys_present = [key in cont for cont in containers]
+            all_Keys_present = sum(keys_present) == num_containers
+            if all_Keys_present:
+                return_dict[key] = _ivy.Container.diff(*[cont[key] for cont in containers], ivyh=ivyh)
+                continue
+            diff_dict = dict()
+            for i, (key_present, cont) in enumerate(zip(keys_present, containers)):
+                if key_present:
+                    diff_dict['diff_' + str(i)] = cont[key]
+            return_dict[key] = diff_dict
+        return _ivy.Container(return_dict)
+
+    @staticmethod
     def from_disk_as_hdf5(h5_obj_or_filepath, slice_obj=slice(None), ivyh=None):
         """
         Load container object from disk, as an h5py file, at the specified hdf5 filepath.
