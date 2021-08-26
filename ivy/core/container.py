@@ -196,17 +196,23 @@ class Container(dict):
                 raise Exception(str(e) + '\nContainer stack operation only valid for containers of arrays')
 
     @staticmethod
-    def diff(*containers, ivyh=None):
+    def diff(*containers, mode='all', ivyh=None):
         """
         Compare keys and values in a sequence of containers, returning the single shared values where they are the same,
         and new nested sub-dicts with all values where they are different.
 
         :param containers: containers to compare
         :type containers: sequence of Container objects
+        :param mode: The mode of the diff operation, returning either all keys and values,
+                     only those that are consist across the containers, or only the differences. Default is all.
+        :type mode: str, optional
         :param ivyh: Handle to ivy module to use for the calculations. Default is None, which results in the global ivy.
         :type ivyh: handle to ivy module, optional
         :return: Compared containers
         """
+
+        if mode not in ['all', 'same_only', 'diff_only']:
+            raise Exception('mode must be one of [ "all" | "same_only" | "diff_only" ], but found {}'.format(mode))
 
         # if inputs are not dicts, then compare their values to determine the diff dict
         num_containers = len(containers)
@@ -214,7 +220,11 @@ class Container(dict):
         if not isinstance(container0, dict):
             equal_mat = _ivy.equal(*containers, equality_matrix=True)
             if _ivy.reduce_min(_ivy.cast(equal_mat, 'int32')) == 1:
+                if mode == 'diff_only':
+                    return _ivy.Container()
                 return container0
+            elif mode == 'same_only':
+                return _ivy.Container()
             else:
                 cont_range = range(num_containers)
                 diff_dict = dict()
@@ -236,13 +246,16 @@ class Container(dict):
             keys_present = [key in cont for cont in containers]
             all_Keys_present = sum(keys_present) == num_containers
             if all_Keys_present:
-                return_dict[key] = _ivy.Container.diff(*[cont[key] for cont in containers], ivyh=ivyh)
+                res = _ivy.Container.diff(*[cont[key] for cont in containers], mode=mode, ivyh=ivyh)
+                if not isinstance(res, dict) or res:
+                    return_dict[key] = res
                 continue
             diff_dict = dict()
             for i, (key_present, cont) in enumerate(zip(keys_present, containers)):
-                if key_present:
+                if key_present and mode != 'same_only':
                     diff_dict['diff_' + str(i)] = cont[key]
-            return_dict[key] = diff_dict
+            if diff_dict:
+                return_dict[key] = diff_dict
         return _ivy.Container(return_dict)
 
     @staticmethod
