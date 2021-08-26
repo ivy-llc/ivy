@@ -81,6 +81,80 @@ def test_container_stack(dev_str, call):
     assert np.allclose(ivy.to_numpy(container_stacked.b.d), np.array([[3], [6]]))
 
 
+def test_container_diff(dev_str, call):
+
+    # all different arrays
+    container_0 = Container({'a': ivy.array([1]),
+                             'b': {'c': ivy.array([2]), 'd': ivy.array([3])}})
+    container_1 = Container({'a': ivy.array([4]),
+                             'b': {'c': ivy.array([5]), 'd': ivy.array([6])}})
+    container_diff = ivy.Container.diff(container_0, container_1)
+    assert np.equal(ivy.to_numpy(container_diff.a.diff_0), np.array([1]))
+    assert np.equal(ivy.to_numpy(container_diff.a.diff_1), np.array([4]))
+    assert np.equal(ivy.to_numpy(container_diff.b.c.diff_0), np.array([2]))
+    assert np.equal(ivy.to_numpy(container_diff.b.c.diff_1), np.array([5]))
+    assert np.equal(ivy.to_numpy(container_diff.b.d.diff_0), np.array([3]))
+    assert np.equal(ivy.to_numpy(container_diff.b.d.diff_1), np.array([6]))
+
+    # some different arrays
+    container_0 = Container({'a': ivy.array([1]),
+                             'b': {'c': ivy.array([2]), 'd': ivy.array([3])}})
+    container_1 = Container({'a': ivy.array([1]),
+                             'b': {'c': ivy.array([5]), 'd': ivy.array([3])}})
+    container_diff = ivy.Container.diff(container_0, container_1)
+    assert np.equal(ivy.to_numpy(container_diff.a), np.array([1]))
+    assert np.equal(ivy.to_numpy(container_diff.b.c.diff_0), np.array([2]))
+    assert np.equal(ivy.to_numpy(container_diff.b.c.diff_1), np.array([5]))
+    assert np.equal(ivy.to_numpy(container_diff.b.d), np.array([3]))
+
+    # all different keys
+    container_0 = Container({'a': ivy.array([1]),
+                             'b': {'c': ivy.array([2]), 'd': ivy.array([3])}})
+    container_1 = Container({'e': ivy.array([1]),
+                             'f': {'g': ivy.array([2]), 'h': ivy.array([3])}})
+    container_diff = ivy.Container.diff(container_0, container_1)
+    assert np.equal(ivy.to_numpy(container_diff.a.diff_0), np.array([1]))
+    assert np.equal(ivy.to_numpy(container_diff.b.diff_0.c), np.array([2]))
+    assert np.equal(ivy.to_numpy(container_diff.b.diff_0.d), np.array([3]))
+    assert np.equal(ivy.to_numpy(container_diff.e.diff_1), np.array([1]))
+    assert np.equal(ivy.to_numpy(container_diff.f.diff_1.g), np.array([2]))
+    assert np.equal(ivy.to_numpy(container_diff.f.diff_1.h), np.array([3]))
+
+    # some different keys
+    container_0 = Container({'a': ivy.array([1]),
+                             'b': {'c': ivy.array([2]), 'd': ivy.array([3])}})
+    container_1 = Container({'a': ivy.array([1]),
+                             'b': {'c': ivy.array([2]), 'e': ivy.array([3])}})
+    container_diff = ivy.Container.diff(container_0, container_1)
+    assert np.equal(ivy.to_numpy(container_diff.a), np.array([1]))
+    assert np.equal(ivy.to_numpy(container_diff.b.c), np.array([2]))
+    assert np.equal(ivy.to_numpy(container_diff.b.d.diff_0), np.array([3]))
+    assert np.equal(ivy.to_numpy(container_diff.b.e.diff_1), np.array([3]))
+
+    # same containers
+    container_0 = Container({'a': ivy.array([1]),
+                             'b': {'c': ivy.array([2]), 'd': ivy.array([3])}})
+    container_1 = Container({'a': ivy.array([1]),
+                             'b': {'c': ivy.array([2]), 'd': ivy.array([3])}})
+    container_diff = ivy.Container.diff(container_0, container_1)
+    assert np.equal(ivy.to_numpy(container_diff.a), np.array([1]))
+    assert np.equal(ivy.to_numpy(container_diff.b.c), np.array([2]))
+    assert np.equal(ivy.to_numpy(container_diff.b.d), np.array([3]))
+
+    # all different strings
+    container_0 = Container({'a': '1',
+                             'b': {'c': '2', 'd': '3'}})
+    container_1 = Container({'a': '4',
+                             'b': {'c': '5', 'd': '6'}})
+    container_diff = ivy.Container.diff(container_0, container_1)
+    assert container_diff.a.diff_0 == '1'
+    assert container_diff.a.diff_1 == '4'
+    assert container_diff.b.c.diff_0 == '2'
+    assert container_diff.b.c.diff_1 == '5'
+    assert container_diff.b.d.diff_0 == '3'
+    assert container_diff.b.d.diff_1 == '6'
+
+
 def test_container_from_dict(dev_str, call):
     dict_in = {'a': ivy.array([1]),
                'b': {'c': ivy.array([2]), 'd': ivy.array([3])}}
