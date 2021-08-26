@@ -95,6 +95,10 @@ def test_container_diff(dev_str, call):
     assert np.equal(ivy.to_numpy(container_diff.b.c.diff_1), np.array([5]))
     assert np.equal(ivy.to_numpy(container_diff.b.d.diff_0), np.array([3]))
     assert np.equal(ivy.to_numpy(container_diff.b.d.diff_1), np.array([6]))
+    container_diff_diff_only = ivy.Container.diff(container_0, container_1, mode='diff_only')
+    assert container_diff_diff_only.to_dict() == container_diff.to_dict()
+    container_diff_same_only = ivy.Container.diff(container_0, container_1, mode='same_only')
+    assert container_diff_same_only.to_dict() == {}
 
     # some different arrays
     container_0 = Container({'a': ivy.array([1]),
@@ -106,6 +110,16 @@ def test_container_diff(dev_str, call):
     assert np.equal(ivy.to_numpy(container_diff.b.c.diff_0), np.array([2]))
     assert np.equal(ivy.to_numpy(container_diff.b.c.diff_1), np.array([5]))
     assert np.equal(ivy.to_numpy(container_diff.b.d), np.array([3]))
+    container_diff_diff_only = ivy.Container.diff(container_0, container_1, mode='diff_only')
+    assert 'a' not in container_diff_diff_only
+    assert 'b' in container_diff_diff_only
+    assert 'c' in container_diff_diff_only['b']
+    assert 'd' not in container_diff_diff_only['b']
+    container_diff_same_only = ivy.Container.diff(container_0, container_1, mode='same_only')
+    assert 'a' in container_diff_same_only
+    assert 'b' in container_diff_same_only
+    assert 'c' not in container_diff_same_only['b']
+    assert 'd' in container_diff_same_only['b']
 
     # all different keys
     container_0 = Container({'a': ivy.array([1]),
@@ -119,6 +133,10 @@ def test_container_diff(dev_str, call):
     assert np.equal(ivy.to_numpy(container_diff.e.diff_1), np.array([1]))
     assert np.equal(ivy.to_numpy(container_diff.f.diff_1.g), np.array([2]))
     assert np.equal(ivy.to_numpy(container_diff.f.diff_1.h), np.array([3]))
+    container_diff_diff_only = ivy.Container.diff(container_0, container_1, mode='diff_only')
+    assert container_diff_diff_only.to_dict() == container_diff.to_dict()
+    container_diff_same_only = ivy.Container.diff(container_0, container_1, mode='same_only')
+    assert container_diff_same_only.to_dict() == {}
 
     # some different keys
     container_0 = Container({'a': ivy.array([1]),
@@ -130,6 +148,18 @@ def test_container_diff(dev_str, call):
     assert np.equal(ivy.to_numpy(container_diff.b.c), np.array([2]))
     assert np.equal(ivy.to_numpy(container_diff.b.d.diff_0), np.array([3]))
     assert np.equal(ivy.to_numpy(container_diff.b.e.diff_1), np.array([3]))
+    container_diff_diff_only = ivy.Container.diff(container_0, container_1, mode='diff_only')
+    assert 'a' not in container_diff_diff_only
+    assert 'b' in container_diff_diff_only
+    assert 'c' not in container_diff_diff_only['b']
+    assert 'd' in container_diff_diff_only['b']
+    assert 'e' in container_diff_diff_only['b']
+    container_diff_same_only = ivy.Container.diff(container_0, container_1, mode='same_only')
+    assert 'a' in container_diff_same_only
+    assert 'b' in container_diff_same_only
+    assert 'c' in container_diff_same_only['b']
+    assert 'd' not in container_diff_same_only['b']
+    assert 'e' not in container_diff_same_only['b']
 
     # same containers
     container_0 = Container({'a': ivy.array([1]),
@@ -140,6 +170,10 @@ def test_container_diff(dev_str, call):
     assert np.equal(ivy.to_numpy(container_diff.a), np.array([1]))
     assert np.equal(ivy.to_numpy(container_diff.b.c), np.array([2]))
     assert np.equal(ivy.to_numpy(container_diff.b.d), np.array([3]))
+    container_diff_diff_only = ivy.Container.diff(container_0, container_1, mode='diff_only')
+    assert container_diff_diff_only.to_dict() == {}
+    container_diff_same_only = ivy.Container.diff(container_0, container_1, mode='same_only')
+    assert container_diff_same_only.to_dict() == container_diff.to_dict()
 
     # all different strings
     container_0 = Container({'a': '1',
@@ -153,6 +187,10 @@ def test_container_diff(dev_str, call):
     assert container_diff.b.c.diff_1 == '5'
     assert container_diff.b.d.diff_0 == '3'
     assert container_diff.b.d.diff_1 == '6'
+    container_diff_diff_only = ivy.Container.diff(container_0, container_1, mode='diff_only')
+    assert container_diff_diff_only.to_dict() == container_diff.to_dict()
+    container_diff_same_only = ivy.Container.diff(container_0, container_1, mode='same_only')
+    assert container_diff_same_only.to_dict() == {}
 
 
 def test_container_from_dict(dev_str, call):
