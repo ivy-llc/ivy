@@ -384,6 +384,56 @@
             <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">Container stack operation only valid for containers of arrays&#39;</span><span class="p">)</span></div>
 
+<div class="viewcode-block" id="Container.diff"><a class="viewcode-back" href="../../../core/container/Container.html#ivy.core.container.Container.diff">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">diff</span><span class="p">(</span><span class="o">*</span><span class="n">containers</span><span class="p">,</span> <span class="n">ivyh</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Compare keys and values in a sequence of containers, returning the single shared values where they are the same,</span>
+<span class="sd">        and new nested sub-dicts with all values where they are different.</span>
+
+<span class="sd">        :param containers: containers to compare</span>
+<span class="sd">        :type containers: sequence of Container objects</span>
+<span class="sd">        :param ivyh: Handle to ivy module to use for the calculations. Default is None, which results in the global ivy.</span>
+<span class="sd">        :type ivyh: handle to ivy module, optional</span>
+<span class="sd">        :return: Compared containers</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># if inputs are not dicts, then compare their values to determine the diff dict</span>
+        <span class="n">num_containers</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">containers</span><span class="p">)</span>
+        <span class="n">container0</span> <span class="o">=</span> <span class="n">containers</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">container0</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+            <span class="n">equal_mat</span> <span class="o">=</span> <span class="n">_ivy</span><span class="o">.</span><span class="n">equal</span><span class="p">(</span><span class="o">*</span><span class="n">containers</span><span class="p">,</span> <span class="n">equality_matrix</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">_ivy</span><span class="o">.</span><span class="n">reduce_min</span><span class="p">(</span><span class="n">_ivy</span><span class="o">.</span><span class="n">cast</span><span class="p">(</span><span class="n">equal_mat</span><span class="p">,</span> <span class="s1">&#39;int32&#39;</span><span class="p">))</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">container0</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">cont_range</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_containers</span><span class="p">)</span>
+                <span class="n">diff_dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+                <span class="n">cont_dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">cont_range</span><span class="p">,</span> <span class="n">containers</span><span class="p">))</span>
+                <span class="n">idxs_added</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+                <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="n">cont_range</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">idx</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">idxs_added</span><span class="p">:</span>
+                        <span class="n">idxs_to_add</span> <span class="o">=</span> <span class="n">_ivy</span><span class="o">.</span><span class="n">indices_where</span><span class="p">(</span><span class="n">equal_mat</span><span class="p">[</span><span class="n">idx</span><span class="p">])</span>
+                        <span class="n">idxs_to_add_list</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">_ivy</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">(</span><span class="n">idxs_to_add</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">tolist</span><span class="p">())</span>
+                        <span class="n">key</span> <span class="o">=</span> <span class="s1">&#39;diff_&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">idxs_to_add_list</span><span class="p">)[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+                        <span class="n">diff_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">cont_dict</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
+                        <span class="n">idxs_added</span> <span class="o">+=</span> <span class="n">idxs_to_add_list</span>
+                <span class="k">return</span> <span class="n">_ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">diff_dict</span><span class="p">)</span>
+
+        <span class="c1"># otherwise, check that the keys are aligned between each container, and apply this method recursively</span>
+        <span class="n">return_dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+        <span class="n">all_Keys</span> <span class="o">=</span> <span class="nb">set</span><span class="p">([</span><span class="n">item</span> <span class="k">for</span> <span class="n">sublist</span> <span class="ow">in</span> <span class="p">[</span><span class="nb">list</span><span class="p">(</span><span class="n">cont</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="k">for</span> <span class="n">cont</span> <span class="ow">in</span> <span class="n">containers</span><span class="p">]</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">sublist</span><span class="p">])</span>
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">all_Keys</span><span class="p">:</span>
+            <span class="n">keys_present</span> <span class="o">=</span> <span class="p">[</span><span class="n">key</span> <span class="ow">in</span> <span class="n">cont</span> <span class="k">for</span> <span class="n">cont</span> <span class="ow">in</span> <span class="n">containers</span><span class="p">]</span>
+            <span class="n">all_Keys_present</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">keys_present</span><span class="p">)</span> <span class="o">==</span> <span class="n">num_containers</span>
+            <span class="k">if</span> <span class="n">all_Keys_present</span><span class="p">:</span>
+                <span class="n">return_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">_ivy</span><span class="o">.</span><span class="n">Container</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="o">*</span><span class="p">[</span><span class="n">cont</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="k">for</span> <span class="n">cont</span> <span class="ow">in</span> <span class="n">containers</span><span class="p">],</span> <span class="n">ivyh</span><span class="o">=</span><span class="n">ivyh</span><span class="p">)</span>
+                <span class="k">continue</span>
+            <span class="n">diff_dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">key_present</span><span class="p">,</span> <span class="n">cont</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">keys_present</span><span class="p">,</span> <span class="n">containers</span><span class="p">)):</span>
+                <span class="k">if</span> <span class="n">key_present</span><span class="p">:</span>
+                    <span class="n">diff_dict</span><span class="p">[</span><span class="s1">&#39;diff_&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)]</span> <span class="o">=</span> <span class="n">cont</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+            <span class="n">return_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">diff_dict</span>
+        <span class="k">return</span> <span class="n">_ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">return_dict</span><span class="p">)</span></div>
+
 <div class="viewcode-block" id="Container.from_disk_as_hdf5"><a class="viewcode-back" href="../../../core/container/Container.html#ivy.core.container.Container.from_disk_as_hdf5">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">from_disk_as_hdf5</span><span class="p">(</span><span class="n">h5_obj_or_filepath</span><span class="p">,</span> <span class="n">slice_obj</span><span class="o">=</span><span class="nb">slice</span><span class="p">(</span><span class="kc">None</span><span class="p">),</span> <span class="n">ivyh</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
