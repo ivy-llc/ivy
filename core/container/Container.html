@@ -392,6 +392,24 @@ Default is True.</p></li>
 </dd></dl>
 
 <dl class="py method">
+<dt id="ivy.core.container.Container.diff">
+<em class="property">static </em><code class="sig-name descname">diff</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">containers</span></em>, <em class="sig-param"><span class="n">ivyh</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/container.html#Container.diff"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.diff" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compare keys and values in a sequence of containers, returning the single shared values where they are the same,
+and new nested sub-dicts with all values where they are different.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>containers</strong> (<em>sequence of Container objects</em>) – containers to compare</p></li>
+<li><p><strong>ivyh</strong> (<em>handle to ivy module</em><em>, </em><em>optional</em>) – Handle to ivy module to use for the calculations. Default is None, which results in the global ivy.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Compared containers</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt id="ivy.core.container.Container.dtype">
 <code class="sig-name descname">dtype</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/container.html#Container.dtype"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.dtype" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return container, with all entries replaced with their data types.</p>
