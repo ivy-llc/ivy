@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>ones_like &mdash; Ivy 1.0 documentation</title>
+  <title>equal &mdash; Ivy 1.0 documentation</title>
   
 
   
@@ -36,8 +36,8 @@
   <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="one_hot" href="one_hot.html" />
-    <link rel="prev" title="ones" href="ones.html" /> 
+    <link rel="next" title="to_numpy" href="to_numpy.html" />
+    <link rel="prev" title="array_equal" href="array_equal.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -94,7 +94,7 @@
 <li class="toctree-l2"><a class="reference internal" href="array.html">array</a></li>
 <li class="toctree-l2"><a class="reference internal" href="is_array.html">is_array</a></li>
 <li class="toctree-l2"><a class="reference internal" href="array_equal.html">array_equal</a></li>
-<li class="toctree-l2"><a class="reference internal" href="equal.html">equal</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">equal</a></li>
 <li class="toctree-l2"><a class="reference internal" href="to_numpy.html">to_numpy</a></li>
 <li class="toctree-l2"><a class="reference internal" href="to_scalar.html">to_scalar</a></li>
 <li class="toctree-l2"><a class="reference internal" href="to_list.html">to_list</a></li>
@@ -137,7 +137,7 @@
 <li class="toctree-l2"><a class="reference internal" href="zeros.html">zeros</a></li>
 <li class="toctree-l2"><a class="reference internal" href="zeros_like.html">zeros_like</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ones.html">ones</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">ones_like</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ones_like.html">ones_like</a></li>
 <li class="toctree-l2"><a class="reference internal" href="one_hot.html">one_hot</a></li>
 <li class="toctree-l2"><a class="reference internal" href="cross.html">cross</a></li>
 <li class="toctree-l2"><a class="reference internal" href="matmul.html">matmul</a></li>
@@ -256,13 +256,13 @@
         
           <li><a href="../general.html">General</a> &raquo;</li>
         
-      <li>ones_like</li>
+      <li>equal</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="../../_sources/core/general/ones_like.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../_sources/core/general/equal.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -275,24 +275,22 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="ones-like">
-<h1>ones_like<a class="headerlink" href="#ones-like" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="equal">
+<h1>equal<a class="headerlink" href="#equal" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
-<dt id="ivy.core.general.ones_like">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">ones_like</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">dtype_str</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">dev_str</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">f</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/general.html#ones_like"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.ones_like" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns an array of ones with the same shape and type as x, unless dtype_str provided which overrides.</p>
+<dt id="ivy.core.general.equal">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">equal</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">xs</span></em>, <em class="sig-param"><span class="n">equality_matrix</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/general.html#equal"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.equal" title="Permalink to this definition">¶</a></dt>
+<dd><p>Determines whether the inputs are all equal.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<em>array</em>) – The shape and data-type of a define these same attributes of the returned array.</p></li>
-<li><p><strong>dtype_str</strong> (<em>data-type string</em><em>, </em><em>optional</em>) – The desired data-type for the array in string format, i.e. ‘float32’ or ‘int64’.
-If not given, then the type of the original array is used.</p></li>
-<li><p><strong>dev_str</strong> (<em>str</em><em>, </em><em>optional</em>) – device on which to create the array ‘cuda:0’, ‘cuda:1’, ‘cpu’ etc. Same as x if None.</p></li>
-<li><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning framework. Inferred from inputs if None.</p></li>
+<li><p><strong>xs</strong> (<em>any</em>) – inputs to compare.</p></li>
+<li><p><strong>equality_matrix</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to return a matrix of equalities comparing each input with every other.
+Default is False.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Tensor of zeros with the same shape and type as a, unless dtype_str provided which overrides.</p>
+<dd class="field-even"><p>Boolean, whether or not the inputs are equal, or matrix array of booleans if equality_matrix=True is set.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -312,10 +310,10 @@ If not given, then the type of the original array is used.</p></li>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="one_hot.html" class="btn btn-neutral float-right" title="one_hot" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="to_numpy.html" class="btn btn-neutral float-right" title="to_numpy" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="ones.html" class="btn btn-neutral float-left" title="ones" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="array_equal.html" class="btn btn-neutral float-left" title="array_equal" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
