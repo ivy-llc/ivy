@@ -197,7 +197,7 @@ class Container(dict):
                 raise Exception(str(e) + '\nContainer stack operation only valid for containers of arrays')
 
     @staticmethod
-    def diff(*containers, mode='all', diff_key='diff', detect_key_diffs=True, ivyh=None):
+    def diff(*containers, mode='all', diff_keys='diff', detect_key_diffs=True, ivyh=None):
         """
         Compare keys and values in a sequence of containers, returning the single shared values where they are the same,
         and new nested sub-dicts with all values where they are different.
@@ -207,8 +207,8 @@ class Container(dict):
         :param mode: The mode of the diff operation, returning either all keys and values,
                      only those that are consist across the containers, or only the differences. Default is all.
         :type mode: str, optional
-        :param diff_key: The key add to the returned container when differences are found. Default is "diff".
-        :type diff_key: str, optional
+        :param diff_keys: The key/keys to add to the returned container when differences are found. Default is "diff".
+        :type diff_keys: str or list of strs, optional
         :param detect_key_diffs: Whether to treat different keys as detected differences.
                                  If not, the keys among the input containers are simply combined without flagging
                                  differences. Default is True.
@@ -241,7 +241,13 @@ class Container(dict):
                     if idx not in idxs_added:
                         idxs_to_add = _ivy.indices_where(equal_mat[idx])
                         idxs_to_add_list = sorted(_ivy.to_numpy(idxs_to_add).reshape(-1).tolist())
-                        key = diff_key + '_' + str(idxs_to_add_list)[1:-1]
+                        if isinstance(diff_keys, str):
+                            key = diff_keys + '_' + str(idxs_to_add_list)[1:-1]
+                        elif isinstance(diff_keys, (list, tuple)):
+                            key = diff_keys[idx]
+                        else:
+                            raise Exception('diff_keys must be either a string or list of strings,'
+                                            'but found {} of type {}'.format(diff_keys, type(diff_keys)))
                         diff_dict[key] = cont_dict[idx]
                         idxs_added += idxs_to_add_list
                 return _ivy.Container(diff_dict)
@@ -253,7 +259,8 @@ class Container(dict):
             keys_present = [key in cont for cont in containers]
             all_Keys_present = sum(keys_present) == num_containers
             if all_Keys_present:
-                res = _ivy.Container.diff(*[cont[key] for cont in containers], mode=mode, ivyh=ivyh)
+                res = _ivy.Container.diff(*[cont[key] for cont in containers],
+                                          mode=mode, diff_keys=diff_keys, detect_key_diffs=detect_key_diffs, ivyh=ivyh)
                 if not isinstance(res, dict) or res:
                     return_dict[key] = res
                 continue
