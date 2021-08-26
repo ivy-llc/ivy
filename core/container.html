@@ -392,13 +392,15 @@ Default is True.</p></li>
 
 <dl class="py method">
 <dt id="ivy.core.container.Container.diff">
-<em class="property">static </em><code class="sig-name descname">diff</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">containers</span></em>, <em class="sig-param"><span class="n">ivyh</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/container.html#Container.diff"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.diff" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="sig-name descname">diff</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">containers</span></em>, <em class="sig-param"><span class="n">mode</span><span class="o">=</span><span class="default_value">'all'</span></em>, <em class="sig-param"><span class="n">ivyh</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/container.html#Container.diff"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.diff" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compare keys and values in a sequence of containers, returning the single shared values where they are the same,
 and new nested sub-dicts with all values where they are different.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>containers</strong> (<em>sequence of Container objects</em>) – containers to compare</p></li>
+<li><p><strong>mode</strong> (<em>str</em><em>, </em><em>optional</em>) – The mode of the diff operation, returning either all keys and values,
+only those that are consist across the containers, or only the differences. Default is all.</p></li>
 <li><p><strong>ivyh</strong> (<em>handle to ivy module</em><em>, </em><em>optional</em>) – Handle to ivy module to use for the calculations. Default is None, which results in the global ivy.</p></li>
 </ul>
 </dd>
