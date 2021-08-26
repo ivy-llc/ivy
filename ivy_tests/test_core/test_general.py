@@ -102,6 +102,38 @@ def test_array_equal(x0_n_x1_n_res, dtype_str, dev_str, call):
     helpers.assert_compilable(ivy.array_equal)
 
 
+# equal
+@pytest.mark.parametrize(
+    "x0_n_x1_n_x2_em_n_res", [([0.], [0.], [0.], False, True),
+                              ([0.], [1.], [0.], False, False),
+                              ([0.], [1.], [0.], True, [[True, False, True],
+                                                        [False, True, False],
+                                                        [True, False, True]]),
+                              ({'a': 0}, {'a': 0}, {'a': 1}, True, [[True, True, False],
+                                                                    [True, True, False],
+                                                                    [False, False, True]])])
+@pytest.mark.parametrize(
+    "to_array", [True, False])
+def test_equal(x0_n_x1_n_x2_em_n_res, to_array, dev_str, call):
+    x0, x1, x2, equality_matrix, true_res = x0_n_x1_n_x2_em_n_res
+    # smoke test
+    if isinstance(x0, list) and to_array:
+        x0 = ivy.array(x0, dev_str=dev_str)
+        x1 = ivy.array(x1, dev_str=dev_str)
+        x2 = ivy.array(x2, dev_str=dev_str)
+    res = ivy.equal(x0, x1, x2, equality_matrix=equality_matrix)
+    # value test
+    if equality_matrix:
+        assert np.array_equal(ivy.to_numpy(res), np.array(true_res))
+    else:
+        assert res == true_res
+    # compilation test
+    if call in [helpers.torch_call]:
+        # pytorch scripting does not support variable number of input arguments
+        return
+    helpers.assert_compilable(ivy.equal)
+
+
 # to_numpy
 @pytest.mark.parametrize(
     "object_in", [[], [0.], [1], [True], [[1., 2.]]])
