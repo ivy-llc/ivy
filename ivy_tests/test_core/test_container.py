@@ -935,6 +935,18 @@ def test_container_arrays_as_lists(dev_str, call):
     assert isinstance(container_arrays_as_lists.b.d, list)
 
 
+def test_container_has_key(dev_str, call):
+    dict_in = {'a': ivy.array([1]),
+               'b': {'c': ivy.array([2]), 'd': ivy.array([3])}}
+    container = Container(dict_in)
+    assert container.has_key('a')
+    assert container.has_key('b')
+    assert container.has_key('c')
+    assert container.has_key('d')
+    assert not container.has_key('e')
+    assert not container.has_key('f')
+
+
 def test_container_has_key_chain(dev_str, call):
     dict_in = {'a': ivy.array([1]),
                'b': {'c': ivy.array([2]), 'd': ivy.array([3])}}
