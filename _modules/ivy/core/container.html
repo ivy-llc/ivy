@@ -1499,6 +1499,23 @@
             <span class="k">return</span> <span class="n">value</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">_as_random</span><span class="p">)</span></div>
 
+<div class="viewcode-block" id="Container.has_key"><a class="viewcode-back" href="../../../core/container/Container.html#ivy.core.container.Container.has_key">[docs]</a>    <span class="k">def</span> <span class="nf">has_key</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query_key</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Determine whether container object has specified key somewhere in the nested structure</span>
+
+<span class="sd">        :return: Boolean</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">has_key</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="k">def</span> <span class="nf">map_fn</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">kc</span><span class="p">):</span>
+            <span class="k">nonlocal</span> <span class="n">has_key</span>
+            <span class="k">if</span> <span class="n">query_key</span> <span class="ow">in</span> <span class="n">kc</span><span class="p">:</span>
+                <span class="n">has_key</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="k">return</span> <span class="n">x</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">map_fn</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">has_key</span></div>
+
 <div class="viewcode-block" id="Container.has_key_chain"><a class="viewcode-back" href="../../../core/container/Container.html#ivy.core.container.Container.has_key_chain">[docs]</a>    <span class="k">def</span> <span class="nf">has_key_chain</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key_chain</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Determine whether container object has specified key-chain</span>
