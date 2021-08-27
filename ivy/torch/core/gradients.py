@@ -4,6 +4,7 @@ Collection of PyTorch gradient functions, wrapped to fit Ivy syntax and signatur
 
 # global
 import torch as _torch
+import warnings as _warnings
 
 
 def variable(x):
@@ -87,7 +88,9 @@ def adam_update(ws, dcdws, lr, mw, vw, step, beta1=0.9, beta2=0.999, epsilon=1e-
 
 def stop_gradient(x, preserve_type=True):
     if is_variable(x) and preserve_type:
-        if x.grad:
-            x.grad.data.zero_()
+        with _warnings.catch_warnings():
+            _warnings.simplefilter("ignore")
+            if x.grad:
+                x.grad.data.zero_()
         return x
     return x.detach()
