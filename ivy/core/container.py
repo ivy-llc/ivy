@@ -1394,6 +1394,22 @@ class Container(dict):
             raise Exception('Invalid type for input key_chains, must either be a list, tuple, dict, or ivy.Container,'
                             'but found type {}'.format(type(key_chains)))
 
+    def set_at_keys(self, target_dict):
+        """
+        Set values of container object at specified keys
+
+        :return: new container with updated value at each key
+        """
+        return_dict = dict()
+        for key, val in self.items():
+            if key in target_dict:
+                return_dict[key] = target_dict[key]
+            elif isinstance(val, Container):
+                return_dict[key] = val.set_at_keys(target_dict)
+            else:
+                return_dict[key] = val
+        return Container(return_dict, ivyh=self._ivy)
+
     def set_at_key_chain(self, key_chain, val):
         """
         Set value of container object at a specified key-chain
@@ -1409,7 +1425,7 @@ class Container(dict):
         cont[keys[-1]] = val
         return self
 
-    def set_at_key_chains(self, target_container, return_dict=None):
+    def set_at_key_chains(self, target_dict, return_dict=None):
         """
         Set values of container object at specified key-chains
 
@@ -1417,7 +1433,7 @@ class Container(dict):
         """
         if return_dict is None:
             return_dict = self.copy()
-        for k, v in target_container.items():
+        for k, v in target_dict.items():
             if isinstance(v, dict):
                 return_dict[k] = self.set_at_key_chains(v, return_dict[k])
             else:
@@ -1548,7 +1564,7 @@ class Container(dict):
                 return x
         return self.map(to_list)
 
-    def reshape_like(self, target_container, return_cont=None):
+    def reshape_like(self, target_dict, return_cont=None):
         """
         Set shapes of container entries to shapes specified by new container with the same key structure
 
@@ -1556,7 +1572,7 @@ class Container(dict):
         """
         if return_cont is None:
             return_cont = self.copy()
-        for (_, v_shape), (k, v) in zip(target_container.items(), return_cont.items()):
+        for (_, v_shape), (k, v) in zip(target_dict.items(), return_cont.items()):
             if isinstance(v_shape, dict):
                 return_cont[k] = self.reshape_like(v_shape, return_cont[k])
             else:
