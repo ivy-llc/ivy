@@ -81,6 +81,18 @@ def test_container_stack(dev_str, call):
     assert np.allclose(ivy.to_numpy(container_stacked.b.d), np.array([[3], [6]]))
 
 
+def test_container_combine(dev_str, call):
+    container_0 = Container({'a': ivy.array([1]),
+                             'b': {'c': ivy.array([2]), 'd': ivy.array([3])}})
+    container_1 = Container({'a': ivy.array([4]),
+                             'b': {'c': ivy.array([5]), 'e': ivy.array([6])}})
+    container_comb = ivy.Container.combine(container_0, container_1)
+    assert np.equal(ivy.to_numpy(container_comb.a), np.array([1]))
+    assert np.equal(ivy.to_numpy(container_comb.b.c), np.array([2]))
+    assert np.equal(ivy.to_numpy(container_comb.b.d), np.array([3]))
+    assert np.equal(ivy.to_numpy(container_comb.b.e), np.array([6]))
+
+
 def test_container_diff(dev_str, call):
 
     # all different arrays

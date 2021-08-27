@@ -197,6 +197,34 @@ class Container(dict):
                 raise Exception(str(e) + '\nContainer stack operation only valid for containers of arrays')
 
     @staticmethod
+    def combine(*containers, ivyh=None):
+        """
+        Combine keys and values in a sequence of containers, with priority given to the left-most container in the case
+        of duplicates.
+
+        :param containers: containers to compare
+        :type containers: sequence of Container objects
+        :param ivyh: Handle to ivy module to use for the calculations. Default is None, which results in the global ivy.
+        :type ivyh: handle to ivy module, optional
+        :return: Combined containers
+        """
+
+        # if inputs are not dicts, then simply return the left-most value
+        container0 = containers[0]
+        if not isinstance(container0, dict):
+            return container0
+
+        # otherwise, check that the keys are aligned between each container, and apply this method recursively
+        return_dict = dict()
+        all_Keys = set([item for sublist in [list(cont.keys()) for cont in containers] for item in sublist])
+        for key in all_Keys:
+            keys_present = [key in cont for cont in containers]
+            res = _ivy.Container.combine(*[cont[key] for cont, kp in zip(containers, keys_present) if kp], ivyh=ivyh)
+            if not isinstance(res, dict) or res:
+                return_dict[key] = res
+        return _ivy.Container(return_dict)
+
+    @staticmethod
     def diff(*containers, mode='all', diff_keys='diff', detect_key_diffs=True, ivyh=None):
         """
         Compare keys and values in a sequence of containers, returning the single shared values where they are the same,
