@@ -1310,6 +1310,23 @@ class Container(dict):
             return value
         return self.map(_as_random)
 
+    def has_key(self, query_key):
+        """
+        Determine whether container object has specified key somewhere in the nested structure
+
+        :return: Boolean
+        """
+        has_key = False
+
+        def map_fn(x, kc):
+            nonlocal has_key
+            if query_key in kc:
+                has_key = True
+            return x
+
+        self.map(map_fn)
+        return has_key
+
     def has_key_chain(self, key_chain):
         """
         Determine whether container object has specified key-chain
