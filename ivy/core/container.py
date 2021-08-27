@@ -1342,6 +1342,28 @@ class Container(dict):
                 return False
         return True
 
+    def at_keys(self, query_keys, ignore_none=True):
+        """
+        Query container object at specified keys, either as list or nested dict.
+
+        :return: sub-container containing only key-chains containing the specified keys.
+        """
+        if query_keys is None and ignore_none:
+            return self
+        key_chains_to_keep = list()
+        if isinstance(query_keys, str):
+            query_keys = [query_keys]
+
+        def map_fn(x, kc):
+            nonlocal key_chains_to_keep
+            for query_key in query_keys:
+                if query_key in kc:
+                    key_chains_to_keep.append(kc)
+            return x
+
+        self.map(map_fn)
+        return self.at_key_chains(key_chains_to_keep)
+
     def at_key_chain(self, key_chain):
         """
         Query container object at a specified key-chain
