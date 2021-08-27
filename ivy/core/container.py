@@ -271,7 +271,13 @@ class Container(dict):
             for i, (key_present, cont) in enumerate(zip(keys_present, containers)):
                 if detect_key_diffs:
                     if key_present and mode != 'same_only':
-                        diff_dict['diff_' + str(i)] = cont[key]
+                        if isinstance(diff_keys, str):
+                            diff_dict[diff_keys + '_' + str(i)] = cont[key]
+                        elif isinstance(diff_keys, (list, tuple)):
+                            diff_dict[diff_keys[i]] = cont[key]
+                        else:
+                            raise Exception('diff_keys must be either a string or list of strings,'
+                                            'but found {} of type {}'.format(diff_keys, type(diff_keys)))
             if diff_dict:
                 return_dict[key] = diff_dict
         return _ivy.Container(return_dict)
