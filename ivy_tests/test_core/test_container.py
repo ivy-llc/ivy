@@ -1015,6 +1015,25 @@ def test_container_at_key_chains(dev_str, call):
 
 
 # noinspection PyUnresolvedReferences
+def test_container_set_at_keys(dev_str, call):
+    dict_in = {'a': ivy.array([1]),
+               'b': {'c': ivy.array([2]), 'd': ivy.array([3])}}
+    container_orig = Container(dict_in)
+
+    # explicit function call
+    orig_container = container_orig.copy()
+    container = orig_container.set_at_keys({'b': ivy.array([4])})
+    assert (container['a'] == ivy.array([1]))[0]
+    assert (container['b'] == ivy.array([4]))[0]
+    assert not container.has_key('c')
+    assert not container.has_key('d')
+    container = orig_container.set_at_keys({'a': ivy.array([5]), 'c': ivy.array([6])})
+    assert (container['a'] == ivy.array([5]))[0]
+    assert (container['b']['c'] == ivy.array([6]))[0]
+    assert (container['b']['d'] == ivy.array([3]))[0]
+
+
+# noinspection PyUnresolvedReferences
 def test_container_set_at_key_chain(dev_str, call):
     dict_in = {'a': ivy.array([1]),
                'b': {'c': ivy.array([2]), 'd': ivy.array([3])}}
