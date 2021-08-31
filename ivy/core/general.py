@@ -1252,7 +1252,7 @@ def compile_fn(func, dynamic=True, example_inputs=None, f=None):
     return _cur_framework(example_inputs, f=f).compile_fn(func, dynamic, example_inputs)
 
 
-def split_func_call(func, inputs, chunk_size, input_axes=0, output_axes=None):
+def split_func_call(func, inputs, chunk_size, input_axes=0, output_axes=None, mean=False):
     """
     Call a function by splitting its inputs along a given axis, and calling the function in chunks, rather than feeding
     the entire input array at once. This can be useful to reduce memory usage of the device the arrays are on.
@@ -1267,6 +1267,8 @@ def split_func_call(func, inputs, chunk_size, input_axes=0, output_axes=None):
     :type input_axes: int or sequence of ints, optional
     :param output_axes: The axes along which to concat each of the returned outputs. Default is same as fist input axis.
     :type output_axes: int or sequence of ints, optional
+    :param mean: Whether to compute a weighted mean based on the return from each chunk. Default is False.
+    :type mean: bool, optional
     :return: The return from the function, following input splitting and re-concattenation.
     """
     if isinstance(input_axes, int):
@@ -1285,9 +1287,17 @@ def split_func_call(func, inputs, chunk_size, input_axes=0, output_axes=None):
         output_axes = [input_axes[0]] * num_outputs
     elif isinstance(output_axes, int):
         output_axes = [output_axes] * num_outputs
-    return [ivy.concatenate([r[i] for r in rets], output_axes[i]) if ivy.is_array(rets[0][i])
-            else ivy.Container.concat([r[i] for r in rets], output_axes[i])
-            for i in range(num_outputs)]
+    if mean:
+        rets = [[(r.expand_dims(output_axis) if isinstance(r, ivy.Container) else ivy.expand_dims(r, output_axis)) * cs
+                 for output_axis, r in zip(output_axes, ret)] for ret, cs in zip(rets, chunk_sizes)]
+    concatted = [ivy.concatenate([r[i] for r in rets], output_axes[i]) if ivy.is_array(rets[0][i])
+                 else ivy.Container.concat([r[i] for r in rets], output_axes[i])
+                 for i in range(num_outputs)]
+    if mean:
+        return [(item.reduce_sum(output_axis) if isinstance(item, ivy.Container)
+                 else ivy.reduce_sum(item, output_axis))/sum(chunk_sizes)
+                for item, output_axis in zip(concatted, output_axes)]
+    return concatted
 
 
 def split_func_call_across_gpus(func, inputs, dev_strs, input_axes=0, output_axes=None, concat_output=False):
