@@ -49,31 +49,21 @@ def test_fomaml_step_unique_vars(dev_str, call, inner_grad_steps, with_outer_cos
     # batch
     batch = ivy.Container({'x': ivy.arange(num_tasks+1, 1, dtype_str='float32')})
 
-    if batched:
+    # inner cost function
+    def inner_cost_fn(batch_in, v):
+        cost = 0
+        batch_size = batch_in.shape[0]
+        for sub_batch_in, sub_v in zip(batch_in.unstack(0, keepdims=True), v.unstack(0, keepdims=True)):
+            cost = cost - (sub_batch_in['x'] * sub_v['latent'] * sub_v['weight'])[0]
+        return cost / batch_size
 
-        # inner cost function
-        def inner_cost_fn(batch_in, v):
-            cost = 0
-            for sub_batch_in, sub_v in zip(batch_in.unstack(0, keepdims=True), v.unstack(0, keepdims=True)):
-                cost = cost - (sub_batch_in['x'] * sub_v['latent'] * sub_v['weight'])[0]
-            return cost / num_tasks
-
-        # outer cost function
-        def outer_cost_fn(batch_in, v):
-            cost = 0
-            for sub_batch_in, sub_v in zip(batch_in.unstack(0, keepdims=True), v.unstack(0, keepdims=True)):
-                cost = cost + (sub_batch_in['x'] * sub_v['latent'] * sub_v['weight'])[0]
-            return cost / num_tasks
-
-    else:
-
-        # inner cost function
-        def inner_cost_fn(sub_batch_in, v):
-            return -(sub_batch_in['x'] * v['latent'] * v['weight'])[0]
-
-        # outer cost function
-        def outer_cost_fn(sub_batch_in, v):
-            return (sub_batch_in['x'] * v['latent'] * v['weight'])[0]
+    # outer cost function
+    def outer_cost_fn(batch_in, v):
+        cost = 0
+        batch_size = batch_in.shape[0]
+        for sub_batch_in, sub_v in zip(batch_in.unstack(0, keepdims=True), v.unstack(0, keepdims=True)):
+            cost = cost + (sub_batch_in['x'] * sub_v['latent'] * sub_v['weight'])[0]
+        return cost / batch_size
 
     # numpy
     weight_np = ivy.to_numpy(variables.weight[0:1])
@@ -140,31 +130,21 @@ def test_fomaml_step_shared_vars(dev_str, call, inner_grad_steps, with_outer_cos
     # batch
     batch = ivy.Container({'x': ivy.arange(num_tasks+1, 1, dtype_str='float32')})
 
-    if batched:
+    # inner cost function
+    def inner_cost_fn(batch_in, v):
+        cost = 0
+        batch_size = batch_in.shape[0]
+        for sub_batch_in, sub_v in zip(batch_in.unstack(0, keepdims=True), v.unstack(0, keepdims=True)):
+            cost = cost - (sub_batch_in['x'] * sub_v['latent'] ** 2)[0]
+        return cost / batch_size
 
-        # inner cost function
-        def inner_cost_fn(batch_in, v):
-            cost = 0
-            for sub_batch_in, sub_v in zip(batch_in.unstack(0, keepdims=True), v.unstack(0, keepdims=True)):
-                cost = cost - (sub_batch_in['x'] * sub_v['latent'] ** 2)[0]
-            return cost / num_tasks
-
-        # outer cost function
-        def outer_cost_fn(batch_in, v):
-            cost = 0
-            for sub_batch_in, sub_v in zip(batch_in.unstack(0, keepdims=True), v.unstack(0, keepdims=True)):
-                cost = cost + (sub_batch_in['x'] * sub_v['latent'] ** 2)[0]
-            return cost / num_tasks
-
-    else:
-
-        # inner cost function
-        def inner_cost_fn(sub_batch_in, v):
-            return -(sub_batch_in['x'] * v['latent'] ** 2)[0]
-
-        # outer cost function
-        def outer_cost_fn(sub_batch_in, v):
-            return (sub_batch_in['x'] * v['latent'] ** 2)[0]
+    # outer cost function
+    def outer_cost_fn(batch_in, v):
+        cost = 0
+        batch_size = batch_in.shape[0]
+        for sub_batch_in, sub_v in zip(batch_in.unstack(0, keepdims=True), v.unstack(0, keepdims=True)):
+            cost = cost + (sub_batch_in['x'] * sub_v['latent'] ** 2)[0]
+        return cost / batch_size
 
     # numpy
     latent_np = ivy.to_numpy(variables.latent[0:1])
@@ -252,31 +232,21 @@ def test_fomaml_step_overlapping_vars(dev_str, call, inner_grad_steps, with_oute
     # batch
     batch = ivy.Container({'x': ivy.arange(num_tasks+1, 1, dtype_str='float32')})
 
-    if batched:
+    # inner cost function
+    def inner_cost_fn(batch_in, v):
+        cost = 0
+        batch_size = batch_in.shape[0]
+        for sub_batch_in, sub_v in zip(batch_in.unstack(0, keepdims=True), v.unstack(0, keepdims=True)):
+            cost = cost - (sub_batch_in['x'] * sub_v['latent'] * sub_v['weight'])[0]
+        return cost / batch_size
 
-        # inner cost function
-        def inner_cost_fn(batch_in, v):
-            cost = 0
-            for sub_batch_in, sub_v in zip(batch_in.unstack(0, keepdims=True), v.unstack(0, keepdims=True)):
-                cost = cost - (sub_batch_in['x'] * sub_v['latent'] * sub_v['weight'])[0]
-            return cost / num_tasks
-
-        # outer cost function
-        def outer_cost_fn(batch_in, v):
-            cost = 0
-            for sub_batch_in, sub_v in zip(batch_in.unstack(0, keepdims=True), v.unstack(0, keepdims=True)):
-                cost = cost + (sub_batch_in['x'] * sub_v['latent'] * sub_v['weight'])[0]
-            return cost / num_tasks
-
-    else:
-
-        # inner cost function
-        def inner_cost_fn(sub_batch_in, v):
-            return -(sub_batch_in['x'] * v['latent'] * v['weight'])[0]
-
-        # outer cost function
-        def outer_cost_fn(sub_batch_in, v):
-            return (sub_batch_in['x'] * v['latent'] * v['weight'])[0]
+    # outer cost function
+    def outer_cost_fn(batch_in, v):
+        cost = 0
+        batch_size = batch_in.shape[0]
+        for sub_batch_in, sub_v in zip(batch_in.unstack(0, keepdims=True), v.unstack(0, keepdims=True)):
+            cost = cost + (sub_batch_in['x'] * sub_v['latent'] * sub_v['weight'])[0]
+        return cost / batch_size
 
     # numpy
     latent_np = ivy.to_numpy(variables.latent[0:1])
@@ -342,20 +312,13 @@ def test_reptile_step(dev_str, call, inner_grad_steps, batched, num_tasks, retur
     # batch
     batch = ivy.Container({'x': ivy.arange(num_tasks+1, 1, dtype_str='float32')})
 
-    if batched:
-
-        # inner cost function
-        def inner_cost_fn(batch_in, v):
-            cost = 0
-            for sub_batch_in, sub_v in zip(batch_in.unstack(0, keepdims=True), v.unstack(0, keepdims=True)):
-                cost = cost - (sub_batch_in['x'] * sub_v['latent'] ** 2)[0]
-            return cost / num_tasks
-
-    else:
-
-        # inner cost function
-        def inner_cost_fn(sub_batch_in, v):
-            return -(sub_batch_in['x'] * v['latent'] ** 2)[0]
+    # inner cost function
+    def inner_cost_fn(batch_in, v):
+        cost = 0
+        batch_size = batch_in.shape[0]
+        for sub_batch_in, sub_v in zip(batch_in.unstack(0, keepdims=True), v.unstack(0, keepdims=True)):
+            cost = cost - (sub_batch_in['x'] * sub_v['latent'] ** 2)[0]
+        return cost / batch_size
 
     # numpy
     latent_np = ivy.to_numpy(variables.latent[0:1])
@@ -435,31 +398,21 @@ def test_maml_step_unique_vars(dev_str, call, inner_grad_steps, with_outer_cost_
     # batch
     batch = ivy.Container({'x': ivy.arange(num_tasks+1, 1, dtype_str='float32')})
 
-    if batched:
+    # inner cost function
+    def inner_cost_fn(batch_in, v):
+        cost = 0
+        batch_size = batch_in.shape[0]
+        for sub_batch_in, sub_v in zip(batch_in.unstack(0, keepdims=True), v.unstack(0, keepdims=True)):
+            cost = cost - (sub_batch_in['x'] * sub_v['latent'] * sub_v['weight'])[0]
+        return cost / batch_size
 
-        # inner cost function
-        def inner_cost_fn(batch_in, v):
-            cost = 0
-            for sub_batch_in, sub_v in zip(batch_in.unstack(0, keepdims=True), v.unstack(0, keepdims=True)):
-                cost = cost - (sub_batch_in['x'] * sub_v['latent'] * sub_v['weight'])[0]
-            return cost / num_tasks
-
-        # outer cost function
-        def outer_cost_fn(batch_in, v):
-            cost = 0
-            for sub_batch_in, sub_v in zip(batch_in.unstack(0, keepdims=True), v.unstack(0, keepdims=True)):
-                cost = cost + (sub_batch_in['x'] * sub_v['latent'] * sub_v['weight'])[0]
-            return cost / num_tasks
-
-    else:
-
-        # inner cost function
-        def inner_cost_fn(sub_batch_in, v):
-            return -(sub_batch_in['x'] * v['latent'] * v['weight'])[0]
-
-        # outer cost function
-        def outer_cost_fn(sub_batch_in, v):
-            return (sub_batch_in['x'] * v['latent'] * v['weight'])[0]
+    # outer cost function
+    def outer_cost_fn(batch_in, v):
+        cost = 0
+        batch_size = batch_in.shape[0]
+        for sub_batch_in, sub_v in zip(batch_in.unstack(0, keepdims=True), v.unstack(0, keepdims=True)):
+            cost = cost + (sub_batch_in['x'] * sub_v['latent'] * sub_v['weight'])[0]
+        return cost / batch_size
 
     # numpy
     weight_np = ivy.to_numpy(variables.weight[0:1])
@@ -526,31 +479,21 @@ def test_maml_step_shared_vars(dev_str, call, inner_grad_steps, with_outer_cost_
     # batch
     batch = ivy.Container({'x': ivy.arange(num_tasks+1, 1, dtype_str='float32')})
 
-    if batched:
+    # inner cost function
+    def inner_cost_fn(batch_in, v):
+        cost = 0
+        batch_size = batch_in.shape[0]
+        for sub_batch_in, sub_v in zip(batch_in.unstack(0, keepdims=True), v.unstack(0, keepdims=True)):
+            cost = cost - (sub_batch_in['x'] * sub_v['latent'] ** 2)[0]
+        return cost / batch_size
 
-        # inner cost function
-        def inner_cost_fn(batch_in, v):
-            cost = 0
-            for sub_batch_in, sub_v in zip(batch_in.unstack(0, keepdims=True), v.unstack(0, keepdims=True)):
-                cost = cost - (sub_batch_in['x'] * sub_v['latent'] ** 2)[0]
-            return cost / num_tasks
-
-        # outer cost function
-        def outer_cost_fn(batch_in, v):
-            cost = 0
-            for sub_batch_in, sub_v in zip(batch_in.unstack(0, keepdims=True), v.unstack(0, keepdims=True)):
-                cost = cost + (sub_batch_in['x'] * sub_v['latent'] ** 2)[0]
-            return cost / num_tasks
-
-    else:
-
-        # inner cost function
-        def inner_cost_fn(sub_batch_in, v):
-            return -(sub_batch_in['x'] * v['latent'] ** 2)[0]
-
-        # outer cost function
-        def outer_cost_fn(sub_batch_in, v):
-            return (sub_batch_in['x'] * v['latent'] ** 2)[0]
+    # outer cost function
+    def outer_cost_fn(batch_in, v):
+        cost = 0
+        batch_size = batch_in.shape[0]
+        for sub_batch_in, sub_v in zip(batch_in.unstack(0, keepdims=True), v.unstack(0, keepdims=True)):
+            cost = cost + (sub_batch_in['x'] * sub_v['latent'] ** 2)[0]
+        return cost / batch_size
 
     # numpy
     variables_np = variables.map(lambda x, kc: ivy.to_numpy(x))
@@ -655,31 +598,21 @@ def test_maml_step_overlapping_vars(dev_str, call, inner_grad_steps, with_outer_
     # batch
     batch = ivy.Container({'x': ivy.arange(num_tasks+1, 1, dtype_str='float32')})
 
-    if batched:
+    # inner cost function
+    def inner_cost_fn(batch_in, v):
+        cost = 0
+        batch_size = batch_in.shape[0]
+        for sub_batch_in, sub_v in zip(batch_in.unstack(0, keepdims=True), v.unstack(0, keepdims=True)):
+            cost = cost - (sub_batch_in['x'] * sub_v['latent'] * sub_v['weight'])[0]
+        return cost / batch_size
 
-        # inner cost function
-        def inner_cost_fn(batch_in, v):
-            cost = 0
-            for sub_batch_in, sub_v in zip(batch_in.unstack(0, keepdims=True), v.unstack(0, keepdims=True)):
-                cost = cost - (sub_batch_in['x'] * sub_v['latent'] * sub_v['weight'])[0]
-            return cost / num_tasks
-
-        # outer cost function
-        def outer_cost_fn(batch_in, v):
-            cost = 0
-            for sub_batch_in, sub_v in zip(batch_in.unstack(0, keepdims=True), v.unstack(0, keepdims=True)):
-                cost = cost + (sub_batch_in['x'] * sub_v['latent'] * sub_v['weight'])[0]
-            return cost / num_tasks
-
-    else:
-
-        # inner cost function
-        def inner_cost_fn(sub_batch_in, v):
-            return -(sub_batch_in['x'] * v['latent'] * v['weight'])[0]
-
-        # outer cost function
-        def outer_cost_fn(sub_batch_in, v):
-            return (sub_batch_in['x'] * v['latent'] * v['weight'])[0]
+    # outer cost function
+    def outer_cost_fn(batch_in, v):
+        cost = 0
+        batch_size = batch_in.shape[0]
+        for sub_batch_in, sub_v in zip(batch_in.unstack(0, keepdims=True), v.unstack(0, keepdims=True)):
+            cost = cost + (sub_batch_in['x'] * sub_v['latent'] * sub_v['weight'])[0]
+        return cost / batch_size
 
     # numpy
     latent_np = ivy.to_numpy(variables.latent)
