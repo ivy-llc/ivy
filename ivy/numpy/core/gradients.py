@@ -9,7 +9,7 @@ import numpy as _np
 
 def variable(x):
     logging.warning('NumPy does not support autograd, '
-                    'declaring a "variable" is identical to declaring an "array" when using numpy backend')
+                    'declaring a "variable" is identical to declaring an "array" when using numpy backend.')
     return x
 
 
