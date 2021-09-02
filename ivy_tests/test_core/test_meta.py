@@ -56,14 +56,14 @@ def test_fomaml_step_unique_vars(dev_str, call, inner_grad_steps, with_outer_cos
             cost = 0
             for sub_batch_in, sub_v in zip(batch_in.unstack(0, keepdims=True), v.unstack(0, keepdims=True)):
                 cost = cost - (sub_batch_in['x'] * sub_v['latent'] * sub_v['weight'])[0]
-            return cost
+            return cost / num_tasks
 
         # outer cost function
         def outer_cost_fn(batch_in, v):
             cost = 0
             for sub_batch_in, sub_v in zip(batch_in.unstack(0, keepdims=True), v.unstack(0, keepdims=True)):
                 cost = cost + (sub_batch_in['x'] * sub_v['latent'] * sub_v['weight'])[0]
-            return cost
+            return cost / num_tasks
 
     else:
 
@@ -147,14 +147,14 @@ def test_fomaml_step_shared_vars(dev_str, call, inner_grad_steps, with_outer_cos
             cost = 0
             for sub_batch_in, sub_v in zip(batch_in.unstack(0, keepdims=True), v.unstack(0, keepdims=True)):
                 cost = cost - (sub_batch_in['x'] * sub_v['latent'] ** 2)[0]
-            return cost
+            return cost / num_tasks
 
         # outer cost function
         def outer_cost_fn(batch_in, v):
             cost = 0
             for sub_batch_in, sub_v in zip(batch_in.unstack(0, keepdims=True), v.unstack(0, keepdims=True)):
                 cost = cost + (sub_batch_in['x'] * sub_v['latent'] ** 2)[0]
-            return cost
+            return cost / num_tasks
 
     else:
 
@@ -259,14 +259,14 @@ def test_fomaml_step_overlapping_vars(dev_str, call, inner_grad_steps, with_oute
             cost = 0
             for sub_batch_in, sub_v in zip(batch_in.unstack(0, keepdims=True), v.unstack(0, keepdims=True)):
                 cost = cost - (sub_batch_in['x'] * sub_v['latent'] * sub_v['weight'])[0]
-            return cost
+            return cost / num_tasks
 
         # outer cost function
         def outer_cost_fn(batch_in, v):
             cost = 0
             for sub_batch_in, sub_v in zip(batch_in.unstack(0, keepdims=True), v.unstack(0, keepdims=True)):
                 cost = cost + (sub_batch_in['x'] * sub_v['latent'] * sub_v['weight'])[0]
-            return cost
+            return cost / num_tasks
 
     else:
 
@@ -349,7 +349,7 @@ def test_reptile_step(dev_str, call, inner_grad_steps, batched, num_tasks, retur
             cost = 0
             for sub_batch_in, sub_v in zip(batch_in.unstack(0, keepdims=True), v.unstack(0, keepdims=True)):
                 cost = cost - (sub_batch_in['x'] * sub_v['latent'] ** 2)[0]
-            return cost
+            return cost / num_tasks
 
     else:
 
@@ -442,14 +442,14 @@ def test_maml_step_unique_vars(dev_str, call, inner_grad_steps, with_outer_cost_
             cost = 0
             for sub_batch_in, sub_v in zip(batch_in.unstack(0, keepdims=True), v.unstack(0, keepdims=True)):
                 cost = cost - (sub_batch_in['x'] * sub_v['latent'] * sub_v['weight'])[0]
-            return cost
+            return cost / num_tasks
 
         # outer cost function
         def outer_cost_fn(batch_in, v):
             cost = 0
             for sub_batch_in, sub_v in zip(batch_in.unstack(0, keepdims=True), v.unstack(0, keepdims=True)):
                 cost = cost + (sub_batch_in['x'] * sub_v['latent'] * sub_v['weight'])[0]
-            return cost
+            return cost / num_tasks
 
     else:
 
@@ -533,14 +533,14 @@ def test_maml_step_shared_vars(dev_str, call, inner_grad_steps, with_outer_cost_
             cost = 0
             for sub_batch_in, sub_v in zip(batch_in.unstack(0, keepdims=True), v.unstack(0, keepdims=True)):
                 cost = cost - (sub_batch_in['x'] * sub_v['latent'] ** 2)[0]
-            return cost
+            return cost / num_tasks
 
         # outer cost function
         def outer_cost_fn(batch_in, v):
             cost = 0
             for sub_batch_in, sub_v in zip(batch_in.unstack(0, keepdims=True), v.unstack(0, keepdims=True)):
                 cost = cost + (sub_batch_in['x'] * sub_v['latent'] ** 2)[0]
-            return cost
+            return cost / num_tasks
 
     else:
 
@@ -662,14 +662,14 @@ def test_maml_step_overlapping_vars(dev_str, call, inner_grad_steps, with_outer_
             cost = 0
             for sub_batch_in, sub_v in zip(batch_in.unstack(0, keepdims=True), v.unstack(0, keepdims=True)):
                 cost = cost - (sub_batch_in['x'] * sub_v['latent'] * sub_v['weight'])[0]
-            return cost
+            return cost / num_tasks
 
         # outer cost function
         def outer_cost_fn(batch_in, v):
             cost = 0
             for sub_batch_in, sub_v in zip(batch_in.unstack(0, keepdims=True), v.unstack(0, keepdims=True)):
                 cost = cost + (sub_batch_in['x'] * sub_v['latent'] * sub_v['weight'])[0]
-            return cost
+            return cost / num_tasks
 
     else:
 
