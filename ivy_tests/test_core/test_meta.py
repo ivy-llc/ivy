@@ -11,6 +11,8 @@ import ivy
 import ivy.numpy
 import ivy_tests.helpers as helpers
 
+# ToDo: replace dict checks for verifying costs with analytic calculations
+
 
 # First Order #
 # ------------#
@@ -193,11 +195,23 @@ def test_fomaml_step_shared_vars(dev_str, call, inner_grad_steps, with_outer_cos
         true_outer_grads.append(true_outer_grad)
     true_outer_grad = sum(true_outer_grads) / len(true_outer_grads)
 
+    # true cost
+    true_cost_dict =\
+        {1: {True: {True: {1: 1.0202, 2: 1.5509}, False: {1: 1.0404, 2: 1.6018}},
+             False: {True: {1: -1.0202, 2: -1.5509}, False: {1: -1.0404, 2: -1.6018}}},
+         2: {True: {True: {1: 1.0409441, 2: 1.6042916}, False: {1: 1.0824323, 2: 1.7110746}},
+             False: {True: {1: -1.0409441, 2: -1.6042916}, False: {1: -1.0824323, 2: -1.7110746}}},
+         3: {True: {True: {1: 1.0622487, 2: 1.6603187}, False: {1: 1.1261624, 2: 1.8284001}},
+             False: {True: {1: -1.0622487, 2: -1.6603187}, False: {1: -1.1261624, 2: -1.8284001}}}}
+    true_cost = true_cost_dict[inner_grad_steps][with_outer_cost_fn][average_across_steps][num_tasks]
+
     # meta update
     rets = ivy.fomaml_step(
         batch, inner_cost_fn, outer_cost_fn if with_outer_cost_fn else None, variables,
         inner_grad_steps, inner_learning_rate, average_across_steps=average_across_steps, batched=batched,
         return_inner_v=return_inner_v)
+    calc_cost = rets[0]
+    assert np.allclose(ivy.to_scalar(calc_cost), true_cost)
     outer_grads = rets[1]
     assert np.allclose(ivy.to_numpy(outer_grads.latent[0]), np.array(true_outer_grad))
     if return_inner_v:
@@ -279,11 +293,23 @@ def test_fomaml_step_overlapping_vars(dev_str, call, inner_grad_steps, with_oute
     # true latent gradient
     true_latent_grad = np.array([(-1-(num_tasks-1)/2)*(-1 if with_outer_cost_fn else 1)])
 
+    # true cost
+    true_cost_dict =\
+        {1: {True: {True: {1: 0.005, 2: 0.0125}, False: {1: 0.01, 2: 0.025}},
+             False: {True: {1: -0.005, 2: -0.0125}, False: {1: -0.01, 2: -0.025}}},
+         2: {True: {True: {1: 0.01, 2: 0.025}, False: {1: 0.02, 2: 0.05}},
+             False: {True: {1: -0.01, 2: -0.025}, False: {1: -0.02, 2: -0.05}}},
+         3: {True: {True: {1: 0.015, 2: 0.0375}, False: {1: 0.03, 2: 0.075}},
+             False: {True: {1: -0.015, 2: -0.0375}, False: {1: -0.03, 2: -0.075}}}}
+    true_cost = true_cost_dict[inner_grad_steps][with_outer_cost_fn][average_across_steps][num_tasks]
+
     # meta update
     rets = ivy.fomaml_step(
         batch, inner_cost_fn, outer_cost_fn if with_outer_cost_fn else None, variables,
         inner_grad_steps, inner_learning_rate, average_across_steps=average_across_steps, batched=batched,
         inner_v='latent', return_inner_v=return_inner_v)
+    calc_cost = rets[0]
+    assert np.allclose(ivy.to_scalar(calc_cost), true_cost)
     outer_grads = rets[1]
     assert np.allclose(ivy.to_numpy(outer_grads.weight[0]), np.array(true_weight_grad))
     assert np.allclose(ivy.to_numpy(outer_grads.latent[0]), np.array(true_latent_grad))
@@ -358,9 +384,18 @@ def test_reptile_step(dev_str, call, inner_grad_steps, batched, num_tasks, retur
         true_outer_grads.append(true_outer_grad)
     true_outer_grad = (sum(true_outer_grads) / len(true_outer_grads)) / inner_learning_rate
 
+    # true cost
+    true_cost_dict =\
+        {1: {1: -1.0202, 2: -1.5509},
+         2: {1: -1.0409441, 2: -1.6042916},
+         3: {1: -1.0622487, 2: -1.6603187}}
+    true_cost = true_cost_dict[inner_grad_steps][num_tasks]
+
     # meta update
     rets = ivy.reptile_step(batch, inner_cost_fn, variables, inner_grad_steps, inner_learning_rate,
                             batched=batched, return_inner_v=return_inner_v)
+    calc_cost = rets[0]
+    assert np.allclose(ivy.to_scalar(calc_cost), true_cost)
     outer_grads = rets[1]
     assert np.allclose(ivy.to_numpy(outer_grads.latent[0]), np.array(true_outer_grad))
     if return_inner_v:
@@ -442,11 +477,23 @@ def test_maml_step_unique_vars(dev_str, call, inner_grad_steps, with_outer_cost_
     else:
         true_outer_grad = sum([og[-1] for og in all_outer_grads]) / num_tasks
 
+    # true cost
+    true_cost_dict =\
+        {1: {True: {True: {1: 0.005, 2: 0.0125}, False: {1: 0.01, 2: 0.025}},
+             False: {True: {1: -0.005, 2: -0.0125}, False: {1: -0.01, 2: -0.025}}},
+         2: {True: {True: {1: 0.01, 2: 0.025}, False: {1: 0.02, 2: 0.05}},
+             False: {True: {1: -0.01, 2: -0.025}, False: {1: -0.02, 2: -0.05}}},
+         3: {True: {True: {1: 0.015, 2: 0.0375}, False: {1: 0.03, 2: 0.075}},
+             False: {True: {1: -0.015, 2: -0.0375}, False: {1: -0.03, 2: -0.075}}}}
+    true_cost = true_cost_dict[inner_grad_steps][with_outer_cost_fn][average_across_steps][num_tasks]
+
     # meta update
     rets = ivy.maml_step(
         batch, inner_cost_fn, outer_cost_fn if with_outer_cost_fn else None, variables,
         inner_grad_steps, inner_learning_rate, average_across_steps=average_across_steps, batched=batched,
         inner_v='latent', outer_v='weight', return_inner_v=return_inner_v)
+    calc_cost = rets[0]
+    assert np.allclose(ivy.to_scalar(calc_cost), true_cost)
     outer_grads = rets[1]
     assert np.allclose(ivy.to_numpy(outer_grads.weight[0]), np.array(true_outer_grad))
     if return_inner_v:
@@ -559,11 +606,23 @@ def test_maml_step_shared_vars(dev_str, call, inner_grad_steps, with_outer_cost_
         true_outer_grads.append(true_outer_grad)
     true_outer_grad = sum(true_outer_grads) / len(true_outer_grads)
 
+    # true cost
+    true_cost_dict =\
+        {1: {True: {True: {1: 1.0202, 2: 1.5509}, False: {1: 1.0404, 2: 1.6018}},
+             False: {True: {1: -1.0202, 2: -1.5509}, False: {1: -1.0404, 2: -1.6018}}},
+         2: {True: {True: {1: 1.0409441, 2: 1.6042916}, False: {1: 1.0824323, 2: 1.7110746}},
+             False: {True: {1: -1.0409441, 2: -1.6042916}, False: {1: -1.0824323, 2: -1.7110746}}},
+         3: {True: {True: {1: 1.0622487, 2: 1.6603187}, False: {1: 1.1261624, 2: 1.8284001}},
+             False: {True: {1: -1.0622487, 2: -1.6603187}, False: {1: -1.1261624, 2: -1.8284001}}}}
+    true_cost = true_cost_dict[inner_grad_steps][with_outer_cost_fn][average_across_steps][num_tasks]
+
     # meta update
     rets = ivy.maml_step(
         batch, inner_cost_fn, outer_cost_fn if with_outer_cost_fn else None, variables,
         inner_grad_steps, inner_learning_rate, average_across_steps=average_across_steps, batched=batched,
         return_inner_v=return_inner_v)
+    calc_cost = rets[0]
+    assert np.allclose(ivy.to_scalar(calc_cost), true_cost)
     outer_grads = rets[1]
     assert np.allclose(ivy.to_numpy(outer_grads.latent[0]), true_outer_grad[0])
     if return_inner_v:
@@ -645,11 +704,23 @@ def test_maml_step_overlapping_vars(dev_str, call, inner_grad_steps, with_outer_
     # true latent gradient
     true_latent_grad = np.array([(-1-(num_tasks-1)/2)*(-1 if with_outer_cost_fn else 1)])
 
+    # true cost
+    true_cost_dict =\
+        {1: {True: {True: {1: 0.005, 2: 0.0125}, False: {1: 0.01, 2: 0.025}},
+             False: {True: {1: -0.005, 2: -0.0125}, False: {1: -0.01, 2: -0.025}}},
+         2: {True: {True: {1: 0.01, 2: 0.025}, False: {1: 0.02, 2: 0.05}},
+             False: {True: {1: -0.01, 2: -0.025}, False: {1: -0.02, 2: -0.05}}},
+         3: {True: {True: {1: 0.015, 2: 0.0375}, False: {1: 0.03, 2: 0.075}},
+             False: {True: {1: -0.015, 2: -0.0375}, False: {1: -0.03, 2: -0.075}}}}
+    true_cost = true_cost_dict[inner_grad_steps][with_outer_cost_fn][average_across_steps][num_tasks]
+
     # meta update
     rets = ivy.maml_step(
         batch, inner_cost_fn, outer_cost_fn if with_outer_cost_fn else None, variables,
         inner_grad_steps, inner_learning_rate, average_across_steps=average_across_steps, batched=batched,
         inner_v='latent', return_inner_v=return_inner_v)
+    calc_cost = rets[0]
+    assert np.allclose(ivy.to_scalar(calc_cost), true_cost)
     outer_grads = rets[1]
     assert np.allclose(ivy.to_numpy(outer_grads.weight[0]), np.array(true_weight_grad))
     assert np.allclose(ivy.to_numpy(outer_grads.latent[0]), np.array(true_latent_grad))
