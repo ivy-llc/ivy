@@ -81,11 +81,23 @@ def test_fomaml_step_unique_vars(dev_str, call, inner_grad_steps, with_outer_cos
     else:
         true_weight_grad = sum([og[-1] for og in all_outer_grads]) / num_tasks
 
+    # true cost
+    true_cost_dict =\
+        {1: {True: {True: {1: 0.005, 2: 0.0125}, False: {1: 0.01, 2: 0.025}},
+             False: {True: {1: -0.005, 2: -0.0125}, False: {1: -0.01, 2: -0.025}}},
+         2: {True: {True: {1: 0.01, 2: 0.025}, False: {1: 0.02, 2: 0.05}},
+             False: {True: {1: -0.01, 2: -0.025}, False: {1: -0.02, 2: -0.05}}},
+         3: {True: {True: {1: 0.015, 2: 0.0375}, False: {1: 0.03, 2: 0.075}},
+             False: {True: {1: -0.015, 2: -0.0375}, False: {1: -0.03, 2: -0.075}}}}
+    true_cost = true_cost_dict[inner_grad_steps][with_outer_cost_fn][average_across_steps][num_tasks]
+
     # meta update
     rets = ivy.fomaml_step(
         batch, inner_cost_fn, outer_cost_fn if with_outer_cost_fn else None, variables,
         inner_grad_steps, inner_learning_rate, average_across_steps=average_across_steps,
         batched=batched, inner_v='latent', outer_v='weight', return_inner_v=return_inner_v)
+    calc_cost = rets[0]
+    assert np.allclose(ivy.to_scalar(calc_cost), true_cost)
     outer_grads = rets[1]
     assert np.allclose(ivy.to_numpy(outer_grads.weight[0]), np.array(true_weight_grad))
     if return_inner_v:
