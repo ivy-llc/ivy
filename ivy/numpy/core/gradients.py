@@ -4,7 +4,6 @@ Collection of NumPy gradient functions, wrapped to fit Ivy syntax and signature.
 
 # global
 import logging
-import numpy as _np
 
 
 def variable(x):
@@ -44,18 +43,6 @@ def execute_with_gradients(func, xs, retain_grads=False):
         y = func_ret
         rest = tuple()
     return y, None, *rest
-
-
-def adam_update(ws, dcdws, lr, mw, vw, step, beta1=0.9, beta2=0.999, epsilon=1e-7, inplace=True, stop_gradients=True):
-    step = step.astype(_np.float32)
-    mw = dcdws.map(lambda dcdw, kc: beta1 * mw.at_key_chain(kc) + (1 - beta1) * dcdw)
-    dcdws_sqrd = dcdws.map(lambda dcdw, _: dcdw ** 2)
-    vw = dcdws_sqrd.map(lambda dcdw_sqrd, kc: beta2 * vw.at_key_chain(kc) + (1 - beta2) * dcdw_sqrd)
-    beta1_pow = beta1 ** step
-    beta2_pow = beta2 ** step
-    alpha = lr * (1 - beta2_pow)**0.5 / (1 - beta1_pow + epsilon)
-    ws = ws.map(lambda w, kc: w - alpha * mw.at_key_chain(kc) / (vw.at_key_chain(kc) ** 0.5 + epsilon))
-    return ws, mw, vw
 
 
 def stop_gradient(x, preserve_type=True):
