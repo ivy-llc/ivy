@@ -207,6 +207,11 @@
     <span class="k">return</span> <span class="kc">False</span></div>
 
 
+<div class="viewcode-block" id="inplace_update"><a class="viewcode-back" href="../../../../numpy/core/gradients/inplace_update.html#ivy.numpy.core.gradients.inplace_update">[docs]</a><span class="k">def</span> <span class="nf">inplace_update</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">val</span>
+    <span class="k">return</span> <span class="n">x</span></div>
+
+
 <div class="viewcode-block" id="execute_with_gradients"><a class="viewcode-back" href="../../../../numpy/core/gradients/execute_with_gradients.html#ivy.numpy.core.gradients.execute_with_gradients">[docs]</a><span class="k">def</span> <span class="nf">execute_with_gradients</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">xs</span><span class="p">,</span> <span class="n">retain_grads</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
     <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;NumPy does not support autograd, &#39;</span>
                     <span class="s1">&#39;&quot;execute_with_gradients&quot; returns None in place of function gradients.&#39;</span><span class="p">)</span>
