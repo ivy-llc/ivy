@@ -43,21 +43,7 @@ def execute_with_gradients(func, xs, retain_grads=False):
         rest = tuple()
     x_grads_flat = _mx.autograd.grad(y, [v for k, v in xs.to_iterator()], retain_graph=retain_grads,
                                      create_graph=retain_grads)
-    return (y, xs.from_flat_list(x_grads_flat), *rest)
-
-
-def _gradient_descent_update_trackable(ws, dcdws, lr):
-    ws = ws.map(lambda w, key_chain: (w - dcdws.at_key_chain(key_chain) * lr))
-    ws.map(lambda w, _: w.attach_grad())
-    return ws
-
-
-def gradient_descent_update(ws, dcdws, lr, inplace=True, stop_gradients=True):
-    # ToDo: see if more efficient in-place method can be implemented
-    ret = _gradient_descent_update_trackable(ws, dcdws, lr)
-    if stop_gradients:
-        dcdws.stop_gradients(preserve_type=True)
-    return ret
+    return y, xs.from_flat_list(x_grads_flat), *rest
 
 
 def _adam_update_trackable(ws, dcdws, alpha, mw, vw, epsilon):
