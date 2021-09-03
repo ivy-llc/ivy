@@ -17,7 +17,7 @@ def svd(x):
 
 
 # noinspection PyShadowingBuiltins
-norm = lambda x, ord=2, axis=-1, keepdims=False: _tf.linalg.norm(x, ord, axis, keepdims)
+norm = lambda x, ord='fro', axis=None, keepdims=False: _tf.linalg.norm(x, ord, axis, keepdims)
 inv = _tf.linalg.inv
 pinv = _tf.linalg.pinv
 
