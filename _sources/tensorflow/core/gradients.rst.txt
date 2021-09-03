@@ -18,6 +18,5 @@ Gradients
    gradients/inplace_decrement.rst
    gradients/inplace_increment.rst
    gradients/execute_with_gradients.rst
-   gradients/adam_update.rst
    gradients/stop_gradient.rst
 
