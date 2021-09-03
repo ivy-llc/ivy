@@ -332,6 +332,20 @@ def test_container_einsum(dev_str, call):
     assert np.allclose(ivy.to_numpy(container_einsummed.b.d), np.array([-6., -14., -22.]))
 
 
+def test_container_norm(dev_str, call):
+    dict_in = {'a': ivy.array([[1., 2.], [3., 4.], [5., 6.]]),
+               'b': {'c': ivy.array([[2., 4.], [6., 8.], [10., 12.]]),
+                     'd': ivy.array([[3., 6.], [9., 12.], [15., 18.]])}}
+    container = Container(dict_in)
+    container_normed = container.norm(axis=(-1, -2))
+    assert np.allclose(ivy.to_numpy(container_normed['a']), 9.5394)
+    assert np.allclose(ivy.to_numpy(container_normed.a), 9.5394)
+    assert np.allclose(ivy.to_numpy(container_normed['b']['c']), 19.0788)
+    assert np.allclose(ivy.to_numpy(container_normed.b.c), 19.0788)
+    assert np.allclose(ivy.to_numpy(container_normed['b']['d']), 28.6182)
+    assert np.allclose(ivy.to_numpy(container_normed.b.d), 28.6182)
+
+
 def test_container_flip(dev_str, call):
     dict_in = {'a': ivy.array([[1., 2.], [3., 4.], [5., 6.]]),
                'b': {'c': ivy.array([[2., 4.], [6., 8.], [10., 12.]]),

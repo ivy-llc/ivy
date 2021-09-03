@@ -710,6 +710,34 @@ class Container(dict):
         return self.map(lambda x, kc: self._ivy.einsum(equation, x) if self._ivy.is_array(x) else x,
                         key_chains, to_apply, prune_unapplied)
 
+    # noinspection PyShadowingBuiltins
+    def norm(self, ord='fro', axis=None, keepdims=False, key_chains=None, to_apply=True, prune_unapplied=False):
+        """
+        Compute matrix or vector norm for each array in the container.
+        This function is able to return ord-1 and ord-2 vector-norms and matrix-norms.
+
+        :param ord: Order of the norm. Default is Frobenius norm.
+        :type ord: int or str, optional
+        :param axis: If axis is an integer, it specifies the axis of x along which to compute the vector norms. If axis is a
+                     2-tuple, it specifies the axes that hold 2-D matrices, and the matrix norms of these matrices are
+                     computed. Default is None, in which case the axes are inferred from the input shape.
+        :type axis: int or 2-sequence of ints, optional
+        :param keepdims: If this is set to True, the axes which are normed over are left in the result as dimensions with
+                         size one. With this option the result will broadcast correctly against the original x.
+                         Default is False.
+        :type keepdims: bool, optional
+        :param key_chains: The key-chains to apply or not apply the method to. Default is None.
+        :type key_chains: list or dict of strs, optional
+        :param to_apply: If True, the method will be applied to key_chains, otherwise key_chains will be skipped.
+                         Default is True.
+        :type to_apply: bool, optional
+        :param prune_unapplied: Whether to prune key_chains for which the function was not applied. Default is False.
+        :type prune_unapplied: bool, optional
+        :return: Container object at with all sub-array dimensions expanded along the axis.
+        """
+        return self.map(lambda x, kc: self._ivy.norm(x, ord, axis, keepdims) if self._ivy.is_array(x) else x,
+                        key_chains, to_apply, prune_unapplied)
+
     def flip(self, axis=None, key_chains=None, to_apply=True, prune_unapplied=False):
         """
         Reverses the order of elements in for each array in the container, along the given axis.
