@@ -20,6 +20,16 @@ def inplace_update(x, val):
     return x
 
 
+def inplace_decrement(x, val):
+    x -= val
+    return x
+
+
+def inplace_increment(x, val):
+    x += val
+    return x
+
+
 # noinspection PyUnresolvedReferences
 def execute_with_gradients(func, xs, retain_grads=False):
     xs.map(lambda x, kc: x.attach_grad())

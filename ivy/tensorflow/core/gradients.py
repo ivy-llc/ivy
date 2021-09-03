@@ -24,6 +24,16 @@ def inplace_update(x, val):
     return x
 
 
+def inplace_decrement(x, val):
+    x.assign(x - val)
+    return x
+
+
+def inplace_increment(x, val):
+    x.assign(x + val)
+    return x
+
+
 def execute_with_gradients(func, xs, retain_grads=False):
     with _tf.GradientTape(persistent=retain_grads, watch_accessed_variables=False) as tape:
         tape.watch(xs)
