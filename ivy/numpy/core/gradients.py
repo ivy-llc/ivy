@@ -18,6 +18,11 @@ def is_variable(x):
     return False
 
 
+def inplace_update(x, val):
+    x = val
+    return x
+
+
 def execute_with_gradients(func, xs, retain_grads=False):
     logging.warning('NumPy does not support autograd, '
                     '"execute_with_gradients" returns None in place of function gradients.')

@@ -15,6 +15,11 @@ def is_variable(x):
     return isinstance(x, _mx.ndarray.ndarray.NDArray) and x.grad is not None
 
 
+def inplace_update(x, val):
+    x = val
+    return x
+
+
 # noinspection PyUnresolvedReferences
 def execute_with_gradients(func, xs, retain_grads=False):
     xs.map(lambda x, kc: x.attach_grad())
