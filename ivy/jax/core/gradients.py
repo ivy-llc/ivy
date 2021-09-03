@@ -23,6 +23,16 @@ def inplace_update(x, val):
     return x
 
 
+def inplace_decrement(x, val):
+    x -= val
+    return x
+
+
+def inplace_increment(x, val):
+    x += val
+    return x
+
+
 def execute_with_gradients(func, xs, retain_grads=False):
     xs = xs.to_dict()
     func_ret = func(xs)
