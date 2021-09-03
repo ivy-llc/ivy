@@ -42,9 +42,36 @@ def inplace_update(x, val, f=None):
     :type val: array
     :param f: Machine learning framework. Inferred from inputs if None.
     :type f: ml_framework, optional
-    :return: Boolean, true if x is a trainable variable, false otherwise.
     """
     return _cur_framework(x, f=f).inplace_update(x, val)
+
+
+def inplace_decrement(x, val, f=None):
+    """
+    Perform in-place decrement for the input variable.
+
+    :param x: The variable to decrement.
+    :type x: variable
+    :param val: The array to decrement the variable with.
+    :type val: array
+    :param f: Machine learning framework. Inferred from inputs if None.
+    :type f: ml_framework, optional
+    """
+    return _cur_framework(x, f=f).inplace_decrement(x, val)
+
+
+def inplace_increment(x, val, f=None):
+    """
+    Perform in-place increment for the input variable.
+
+    :param x: The variable to increment.
+    :type x: variable
+    :param val: The array to increment the variable with.
+    :type val: array
+    :param f: Machine learning framework. Inferred from inputs if None.
+    :type f: ml_framework, optional
+    """
+    return _cur_framework(x, f=f).inplace_increment(x, val)
 
 
 def execute_with_gradients(func, xs, retain_grads=False, f=None):
