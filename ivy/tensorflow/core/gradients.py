@@ -19,6 +19,11 @@ def is_variable(x):
     return isinstance(x, _tf.Variable)
 
 
+def inplace_update(x, val):
+    x.assign(val)
+    return x
+
+
 def execute_with_gradients(func, xs, retain_grads=False):
     with _tf.GradientTape(persistent=retain_grads, watch_accessed_variables=False) as tape:
         tape.watch(xs)

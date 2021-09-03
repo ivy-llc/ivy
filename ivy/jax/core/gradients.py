@@ -18,6 +18,11 @@ variable = lambda x: x
 is_variable = lambda x: isinstance(x, (_jax.interpreters.xla._DeviceArray, _jaxlib.xla_extension.DeviceArray, Buffer))
 
 
+def inplace_update(x, val):
+    x = val
+    return x
+
+
 def execute_with_gradients(func, xs, retain_grads=False):
     xs = xs.to_dict()
     func_ret = func(xs)

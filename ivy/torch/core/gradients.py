@@ -17,6 +17,11 @@ def is_variable(x):
     return isinstance(x, _torch.Tensor) and x.requires_grad
 
 
+def inplace_update(x, val):
+    x.data = val
+    return x
+
+
 def execute_with_gradients(func, xs, retain_grads=False):
     func_ret = func(xs)
     if isinstance(func_ret, tuple):
