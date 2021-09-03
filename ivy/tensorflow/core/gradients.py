@@ -45,25 +45,7 @@ def execute_with_gradients(func, xs, retain_grads=False):
         y = func_ret
         rest = tuple()
     grads = Container(tape.gradient(y, xs))
-    return (y, grads, *rest)
-
-
-def _gradient_descent_update_inplace(ws, dcdws, lr):
-    ws.map(lambda w, key_chain: w.assign(w - dcdws.at_key_chain(key_chain) * lr))
-    return ws
-
-
-def _gradient_descent_update_trackable(ws, dcdws, lr):
-    ws = ws.map(lambda w, key_chain: w - dcdws.at_key_chain(key_chain) * lr)
-    return ws
-
-
-def gradient_descent_update(ws, dcdws, lr, inplace=True, stop_gradients=True):
-    if inplace:
-        return _gradient_descent_update_inplace(ws, dcdws, lr)
-    if stop_gradients:
-        dcdws.stop_gradients(preserve_type=True)
-    return _gradient_descent_update_trackable(ws, dcdws, lr)
+    return y, grads, *rest
 
 
 def _adam_update_inplace(ws, dcdws, alpha, mw, vw, epsilon):

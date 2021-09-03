@@ -43,12 +43,7 @@ def execute_with_gradients(func, xs, retain_grads=False):
     else:
         y = func_ret
         rest = tuple()
-    return (y, None, *rest)
-
-
-def gradient_descent_update(ws, dcdws, lr, inplace=True, stop_gradients=True):
-    ws = ws.map(lambda w, key_chain: (w - (dcdws if key_chain == '' else dcdws.at_key_chain(key_chain)) * lr))
-    return ws
+    return y, None, *rest
 
 
 def adam_update(ws, dcdws, lr, mw, vw, step, beta1=0.9, beta2=0.999, epsilon=1e-7, inplace=True, stop_gradients=True):

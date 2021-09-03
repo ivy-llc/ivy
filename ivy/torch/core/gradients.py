@@ -42,30 +42,7 @@ def execute_with_gradients(func, xs, retain_grads=False):
         rest = tuple()
     x_grads_flat = list(_torch.autograd.grad([y], [v for k, v in xs.to_iterator()], retain_graph=retain_grads,
                                              create_graph=retain_grads))
-    return (y, xs.from_flat_list(x_grads_flat), *rest)
-
-
-def _gradient_descent_update_trackable(ws, dcdws, lr):
-    return ws.map(lambda w, key_chain: (w - dcdws.at_key_chain(key_chain) * lr))
-
-
-def _gradient_descent_update_inplace(ws, dcdws, lr):
-
-    def _inplace_update(x, key_chain):
-        x.data -= dcdws.at_key_chain(key_chain) * lr
-
-    ws.map(_inplace_update)
-    return ws
-
-
-def gradient_descent_update(ws, dcdws, lr, inplace=True, stop_gradients=True):
-    if inplace:
-        ret = _gradient_descent_update_inplace(ws, dcdws, lr)
-    else:
-        ret = _gradient_descent_update_trackable(ws, dcdws, lr)
-    if stop_gradients:
-        dcdws.stop_gradients(preserve_type=True)
-    return ret
+    return y, xs.from_flat_list(x_grads_flat), *rest
 
 
 def _adam_update_trackable(ws, dcdws, alpha, mw, vw, epsilon):
