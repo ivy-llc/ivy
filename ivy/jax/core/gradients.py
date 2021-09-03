@@ -6,7 +6,6 @@ Collection of Jax gradient functions, wrapped to fit Ivy syntax and signature.
 import jax as _jax
 import jax.lax as _jlax
 import jaxlib as _jaxlib
-import jax.numpy as _jnp
 from jaxlib.xla_extension import Buffer
 
 # local
@@ -46,18 +45,6 @@ def execute_with_gradients(func, xs, retain_grads=False):
         grad_fn = func
     grads = Container(_jax.grad(grad_fn)(xs))
     return y, grads, *rest
-
-
-def adam_update(ws, dcdws, lr, mw, vw, step, beta1=0.9, beta2=0.999, epsilon=1e-7, inplace=True, stop_gradients=True):
-    step = step.astype(_jnp.float32)
-    mw = dcdws.map(lambda dcdw, kc: beta1 * mw.at_key_chain(kc) + (1 - beta1) * dcdw)
-    dcdws_sqrd = dcdws.map(lambda dcdw, _: dcdw ** 2)
-    vw = dcdws_sqrd.map(lambda dcdw_sqrd, kc: beta2 * vw.at_key_chain(kc) + (1 - beta2) * dcdw_sqrd)
-    beta1_pow = beta1 ** step
-    beta2_pow = beta2 ** step
-    alpha = lr * (1 - beta2_pow)**0.5 / (1 - beta1_pow + epsilon)
-    ws = ws.map(lambda w, kc: w - alpha * mw.at_key_chain(kc) / (vw.at_key_chain(kc) ** 0.5 + epsilon))
-    return ws, mw, vw
 
 
 stop_gradient = lambda x, preserve_type=True: _jlax.stop_gradient(x)

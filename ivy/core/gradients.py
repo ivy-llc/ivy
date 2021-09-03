@@ -3,6 +3,7 @@ Collection of gradient Ivy functions.
 """
 
 # local
+import ivy as _ivy
 from ivy.framework_handler import current_framework as _cur_framework
 
 
@@ -116,16 +117,14 @@ def gradient_descent_update(ws, dcdws, lr, inplace=True, stop_gradients=True):
     """
     if inplace:
         ws = ws.map(lambda x, kc: _ivy.inplace_decrement(x, dcdws.at_key_chain(kc) * lr))
-        ret = ws
     else:
-        ret = ws.map(lambda w, key_chain: (w - dcdws.at_key_chain(key_chain) * lr))
+        ws = ws.map(lambda w, key_chain: (w - dcdws.at_key_chain(key_chain) * lr))
     if stop_gradients:
         dcdws.stop_gradients(preserve_type=True)
-    return ret
+    return ws
 
 
-def adam_update(ws, dcdws, lr, mw, vw, step, beta1=0.9, beta2=0.999, epsilon=1e-7, inplace=True, stop_gradients=True,
-                f=None):
+def adam_update(ws, dcdws, lr, mw, vw, step, beta1=0.9, beta2=0.999, epsilon=1e-7, inplace=True, stop_gradients=True):
     """
     Update weights ws of some function, given the derivatives of some cost c with respect to ws, using ADAM update.
     `[reference] <https://en.wikipedia.org/wiki/Stochastic_gradient_descent#Adam>`_
@@ -155,12 +154,25 @@ def adam_update(ws, dcdws, lr, mw, vw, step, beta1=0.9, beta2=0.999, epsilon=1e-
     :type inplace: bool, optional
     :param stop_gradients: Whether to stop the gradients of the variables after each gradient step. Default is True.
     :type stop_gradients: bool, optional
-    :param f: Machine learning framework. Inferred from inputs if None.
-    :type f: ml_framework, optional
     :return: The new function weights ws_new, and also new mw and vw, following the gradient descent updates.
     """
-    return _cur_framework(None, f=f).adam_update(ws, dcdws, lr, mw, vw, step, beta1, beta2, epsilon, inplace,
-                                                 stop_gradients)
+    step = float(_ivy.to_scalar(step))
+    mw = dcdws.map(lambda dcdw, kc: beta1 * mw.at_key_chain(kc) + (1 - beta1) * dcdw)
+    dcdws_sqrd = dcdws.map(lambda dcdw, _: dcdw ** 2)
+    vw = dcdws_sqrd.map(lambda dcdw_sqrd, kc: beta2 * vw.at_key_chain(kc) + (1 - beta2) * dcdw_sqrd)
+    beta1_pow = beta1 ** step
+    beta2_pow = beta2 ** step
+    alpha = lr * (1 - beta2_pow)**0.5 / (1 - beta1_pow + epsilon)
+
+    if inplace:
+        ws = ws.map(lambda x, kc:
+                    _ivy.inplace_decrement(x, alpha * mw.at_key_chain(kc) / (vw.at_key_chain(kc) ** 0.5 + epsilon)))
+    else:
+        ws = ws.map(lambda w, key_chain: (w - alpha * mw.at_key_chain(key_chain) /
+                                          (vw.at_key_chain(key_chain) ** 0.5 + epsilon)))
+    if stop_gradients:
+        dcdws.stop_gradients(preserve_type=True)
+    return ws, mw, vw
 
 
 def stop_gradient(x, preserve_type=True, f=None):
