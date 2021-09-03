@@ -4,7 +4,7 @@ Collection of PyTorch linear algebra functions, wrapped to fit Ivy syntax and si
 
 # global
 import torch
-from typing import Optional, List
+from typing import Optional, List, Union
 
 
 # noinspection PyPep8Naming
@@ -15,7 +15,7 @@ def svd(x) -> List[torch.Tensor]:
 
 
 # noinspection PyShadowingBuiltins
-def norm(x, ord: int = 2, axis: int = -1, keepdims: bool = False):
+def norm(x, ord: Union[int, str] = 'fro', axis: Optional[int] = None, keepdims: bool = False):
     return torch.norm(x, p=ord, dim=axis, keepdim=keepdims)
 
 

@@ -71,6 +71,9 @@ def test_norm(x_n_ord_n_ax_n_kd, dtype_str, tensor_fn, dev_str, call):
     kwargs.pop('x', None)
     assert np.allclose(call(ivy.norm, x, **kwargs), ivy.numpy.norm(ivy.to_numpy(x), **kwargs))
     # compilation test
+    if call is helpers.torch_call:
+        # pytorch jit does not support Union typing.
+        return
     helpers.assert_compilable(ivy.norm)
 
 
