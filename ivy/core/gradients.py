@@ -104,8 +104,8 @@ def gradient_descent_update(ws, dcdws, lr, inplace=True, stop_gradients=True):
     :type ws: Ivy container
     :param dcdws: Derivates of the cost c with respect to the weights ws, [dc/dw for w in ws].
     :type dcdws: Ivy container
-    :param lr: Learning rate, the rate at which the weights should be updated relative to the gradient.
-    :type lr: float
+    :param lr: Learning rate(s), the rate(s) at which the weights should be updated relative to the gradient.
+    :type lr: float or container of layer-wise rates.
     :param inplace: Whether to perform the operation inplace, for backends which support inplace variable updates,
                     and handle gradients behind the scenes such as PyTorch. If the update step should form part of a
                     computation graph (i.e. higher order optimization), then this should be set to False.
@@ -115,10 +115,13 @@ def gradient_descent_update(ws, dcdws, lr, inplace=True, stop_gradients=True):
     :type stop_gradients: bool, optional
     :return: The new function weights ws_new, following the gradient descent updates.
     """
+    layerwise_lr = isinstance(lr, _ivy.Container)
     if inplace:
-        ws = ws.map(lambda x, kc: _ivy.inplace_decrement(x, dcdws.at_key_chain(kc) * lr))
+        ws = ws.map(lambda x, kc:
+                    _ivy.inplace_decrement(x, dcdws.at_key_chain(kc) * (lr.at_key_chain(kc) if layerwise_lr else lr)))
     else:
-        ws = ws.map(lambda w, key_chain: (w - dcdws.at_key_chain(key_chain) * lr))
+        ws = ws.map(lambda w, kc:
+                    (w - dcdws.at_key_chain(kc) * (lr.at_key_chain(kc) if layerwise_lr else lr)))
     if stop_gradients:
         dcdws.stop_gradients(preserve_type=True)
     return ws
@@ -133,8 +136,8 @@ def adam_update(ws, dcdws, lr, mw, vw, step, beta1=0.9, beta2=0.999, epsilon=1e-
     :type ws: container of variables
     :param dcdws: Derivates of the cost c with respect to the weights ws, [dc/dw for w in ws].
     :type dcdws: container of arrays
-    :param lr: Learning rate, the rate at which the weights should be updated relative to the gradient.
-    :type lr: float
+    :param lr: Learning rate(s), the rate(s) at which the weights should be updated relative to the gradient.
+    :type lr: float or container of layer-wise rates.
     :param mw: running average of the gradients
     :type mw: container of arrays
     :param vw: running average of second moments of the gradients
@@ -156,6 +159,7 @@ def adam_update(ws, dcdws, lr, mw, vw, step, beta1=0.9, beta2=0.999, epsilon=1e-
     :type stop_gradients: bool, optional
     :return: The new function weights ws_new, and also new mw and vw, following the gradient descent updates.
     """
+    layerwise_lr = isinstance(lr, _ivy.Container)
     step = float(_ivy.to_scalar(step))
     mw = dcdws.map(lambda dcdw, kc: beta1 * mw.at_key_chain(kc) + (1 - beta1) * dcdw)
     dcdws_sqrd = dcdws.map(lambda dcdw, _: dcdw ** 2)
@@ -166,10 +170,12 @@ def adam_update(ws, dcdws, lr, mw, vw, step, beta1=0.9, beta2=0.999, epsilon=1e-
 
     if inplace:
         ws = ws.map(lambda x, kc:
-                    _ivy.inplace_decrement(x, alpha * mw.at_key_chain(kc) / (vw.at_key_chain(kc) ** 0.5 + epsilon)))
+                    _ivy.inplace_decrement(x, (alpha.at_key_chain(kc) if layerwise_lr else alpha) * mw.at_key_chain(kc)
+                                           / (vw.at_key_chain(kc) ** 0.5 + epsilon)))
     else:
-        ws = ws.map(lambda w, key_chain: (w - alpha * mw.at_key_chain(key_chain) /
-                                          (vw.at_key_chain(key_chain) ** 0.5 + epsilon)))
+        ws = ws.map(lambda w, kc:
+                    (w - (alpha.at_key_chain(kc) if layerwise_lr else alpha) * mw.at_key_chain(kc) /
+                     (vw.at_key_chain(kc) ** 0.5 + epsilon)))
     if stop_gradients:
         dcdws.stop_gradients(preserve_type=True)
     return ws, mw, vw
