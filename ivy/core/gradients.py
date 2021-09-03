@@ -32,6 +32,21 @@ def is_variable(x, f=None):
     return _cur_framework(x, f=f).is_variable(x)
 
 
+def inplace_update(x, val, f=None):
+    """
+    Perform in-place update for the input variable.
+
+    :param x: The variable to update.
+    :type x: variable
+    :param val: The array to update the variable with.
+    :type val: array
+    :param f: Machine learning framework. Inferred from inputs if None.
+    :type f: ml_framework, optional
+    :return: Boolean, true if x is a trainable variable, false otherwise.
+    """
+    return _cur_framework(x, f=f).inplace_update(x, val)
+
+
 def execute_with_gradients(func, xs, retain_grads=False, f=None):
     """
     Call function func with input of xs variables, and return func first output y, the gradients [dy/dx for x in xs],
