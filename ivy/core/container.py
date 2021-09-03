@@ -72,7 +72,7 @@ class Container(dict):
         dict_in = dict_in if isinstance(dict_in, dict) else dict(dict_in)
         for key, value in sorted(dict_in.items()):
             if isinstance(value, dict):
-                self[key] = Container(value, ivyh=self._ivy)
+                self[key] = Container(value, ivyh=ivyh)
             else:
                 self[key] = value
 
@@ -94,7 +94,6 @@ class Container(dict):
         container0 = containers[0]
 
         if isinstance(container0, Container):
-            ivyh = _ivy.default(_ivy.default(ivyh, container0.ivy), _ivy)
             return_dict = dict()
             for key in container0.keys():
                 new_list = list()
@@ -122,7 +121,6 @@ class Container(dict):
         container0 = containers[0]
 
         if isinstance(container0, Container):
-            ivyh = _ivy.default(_ivy.default(ivyh, container0.ivy), _ivy)
             return_dict = dict()
             for key in container0.keys():
                 return_dict[key] = Container.list_stack([container[key] for container in containers], dim, ivyh)
@@ -147,7 +145,6 @@ class Container(dict):
         container0 = containers[0]
 
         if isinstance(container0, Container):
-            ivyh = _ivy.default(_ivy.default(ivyh, container0.ivy), _ivy)
             return_dict = dict()
             for key in container0.keys():
                 return_dict[key] = Container.concat([container[key] for container in containers], dim, ivyh)
@@ -180,7 +177,6 @@ class Container(dict):
         container0 = containers[0]
 
         if isinstance(container0, Container):
-            ivyh = _ivy.default(_ivy.default(ivyh, container0.ivy), _ivy)
             return_dict = dict()
             for key in container0.keys():
                 return_dict[key] = Container.stack([container[key] for container in containers], dim, ivyh)
@@ -323,7 +319,6 @@ class Container(dict):
         :type ivyh: handle to ivy module, optional
         :return: Container loaded from disk
         """
-        ivyh = _ivy.default(ivyh, _ivy)
         container_dict = dict()
         if type(h5_obj_or_filepath) is str:
             h5_obj = _h5py.File(h5_obj_or_filepath, 'r')
@@ -334,7 +329,7 @@ class Container(dict):
             if isinstance(value, _h5py.Group):
                 container_dict[key] = Container.from_disk_as_hdf5(value, slice_obj, ivyh)
             elif isinstance(value, _h5py.Dataset):
-                container_dict[key] = ivyh.array(list(value[slice_obj]))
+                container_dict[key] = _ivy.default(ivyh, _ivy).array(list(value[slice_obj]))
             else:
                 raise Exception('Item found inside h5_obj which was neither a Group nor a Dataset.')
         return Container(container_dict, ivyh=ivyh)
@@ -440,7 +435,6 @@ class Container(dict):
         container0 = containers[0]
 
         if isinstance(container0, Container):
-            ivyh = _ivy.default(_ivy.default(ivyh, container0.ivy), _ivy)
             return_dict = dict()
             for key in container0.keys():
                 return_dict[key] = Container.reduce([container[key] for container in containers], reduction, ivyh)
@@ -480,7 +474,7 @@ class Container(dict):
         return None
 
     def _at_key_chains_input_as_seq(self, key_chains):
-        return_cont = Container(dict(), ivyh=self._ivy)
+        return_cont = Container(dict(), ivyh=self._local_ivy)
         for kc in key_chains:
             return_cont.set_at_key_chain(kc, self.at_key_chain(kc))
         return return_cont
@@ -496,7 +490,7 @@ class Container(dict):
                 return_dict[k] = self._at_key_chains_input_as_dict(v, new_current_chain)
             else:
                 return_dict[k] = self.at_key_chain(new_current_chain)
-        return Container(return_dict, ivyh=self._ivy)
+        return Container(return_dict, ivyh=self._local_ivy)
 
     def _prune_key_chains_input_as_seq(self, key_chains):
         return_cont = self.copy()
@@ -770,7 +764,7 @@ class Container(dict):
                         continue
                 self._ivy.seed(seed_value)
                 return_dict[key] = self._ivy.shuffle(value)
-        return Container(return_dict, ivyh=self._ivy)
+        return Container(return_dict, ivyh=self._local_ivy)
 
     def slice_via_key(self, slice_key):
         """
@@ -788,7 +782,7 @@ class Container(dict):
                 return_dict[key] = value.slice_via_key(slice_key)
             else:
                 return_dict[key] = value
-        return Container(return_dict, ivyh=self._ivy)
+        return Container(return_dict, ivyh=self._local_ivy)
 
     def as_ones(self, key_chains=None, to_apply=True, prune_unapplied=False):
         """
@@ -1326,7 +1320,7 @@ class Container(dict):
             else:
                 new_value = flat_list.pop(0)
             new_dict[key] = new_value
-        return Container(new_dict, ivyh=self._ivy)
+        return Container(new_dict, ivyh=self._local_ivy)
 
     def to_random(self):
         """
@@ -1436,7 +1430,7 @@ class Container(dict):
                 return_dict[key] = val.set_at_keys(target_dict)
             else:
                 return_dict[key] = val
-        return Container(return_dict, ivyh=self._ivy)
+        return Container(return_dict, ivyh=self._local_ivy)
 
     def set_at_key_chain(self, key_chain, val):
         """
@@ -1448,7 +1442,7 @@ class Container(dict):
         cont = self
         for key in keys[:-1]:
             if key not in cont:
-                cont[key] = Container(ivyh=self._ivy)
+                cont[key] = Container(ivyh=self._local_ivy)
             cont = cont[key]
         cont[keys[-1]] = val
         return self
@@ -1466,7 +1460,7 @@ class Container(dict):
                 return_dict[k] = self.set_at_key_chains(v, return_dict[k])
             else:
                 return_dict[k] = v
-        return Container(return_dict, ivyh=self._ivy)
+        return Container(return_dict, ivyh=self._local_ivy)
 
     def prune_keys(self, query_keys, ignore_none=True):
         """
@@ -1514,7 +1508,7 @@ class Container(dict):
             else:
                 if len(keys_in_chain) != 1 or key != keys_in_chain[0]:
                     out_dict[key] = value
-        return Container(out_dict, ivyh=self._ivy)
+        return Container(out_dict, ivyh=self._local_ivy)
 
     def prune_key_chains(self, key_chains, ignore_none=True):
         """
@@ -1550,7 +1544,7 @@ class Container(dict):
             else:
                 out_dict[key] = value
         if len(out_dict):
-            return Container(out_dict, ivyh=self._ivy)
+            return Container(out_dict, ivyh=self._local_ivy)
         return
 
     def copy(self):
@@ -1559,7 +1553,7 @@ class Container(dict):
 
         :return: A copy of the container
         """
-        return Container(self.to_dict(), ivyh=self._ivy)
+        return Container(self.to_dict(), ivyh=self._local_ivy)
 
     def map(self, func, key_chains=None, to_apply=True, prune_unapplied=False, key_chain=''):
         """
@@ -1593,7 +1587,7 @@ class Container(dict):
                         return_dict[key] = value
                         continue
                 return_dict[key] = func(value, this_key_chain)
-        return Container(return_dict, ivyh=self._ivy)
+        return Container(return_dict, ivyh=self._local_ivy)
 
     def dtype(self):
         """
@@ -1627,7 +1621,7 @@ class Container(dict):
                 return_cont[k] = self.reshape_like(v_shape, return_cont[k])
             else:
                 return_cont[k] = self._ivy.reshape(v, v_shape)
-        return Container(return_cont, ivyh=self._ivy)
+        return Container(return_cont, ivyh=self._local_ivy)
 
     def if_exists(self, key):
         """
@@ -1711,7 +1705,7 @@ class Container(dict):
         conts = list()
         for i in queue_idxs:
             if i not in self._loaded_containers_from_queues:
-                cont = Container(self._queues[i].get(timeout=self._queue_timeout), ivyh=self._ivy)
+                cont = Container(self._queues[i].get(timeout=self._queue_timeout), ivyh=self._local_ivy)
                 self._loaded_containers_from_queues[i] = cont
             else:
                 cont = self._loaded_containers_from_queues[i]
@@ -1757,7 +1751,7 @@ class Container(dict):
                 else:
                     return_dict[key] = value[query]
 
-        return Container(return_dict, ivyh=self._ivy)
+        return Container(return_dict, ivyh=self._local_ivy)
 
     def __setitem__(self, query, val):
         """
