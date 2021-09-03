@@ -203,17 +203,17 @@
 <h1>norm<a class="headerlink" href="#norm" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
 <dt id="ivy.core.linalg.norm">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">norm</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">ord</span><span class="o">=</span><span class="default_value">2</span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">- 1</span></em>, <em class="sig-param"><span class="n">keepdims</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">f</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/linalg.html#norm"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.linalg.norm" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">norm</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">ord</span><span class="o">=</span><span class="default_value">'fro'</span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">keepdims</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">f</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/linalg.html#norm"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.linalg.norm" title="Permalink to this definition">¶</a></dt>
 <dd><p>Matrix or vector norm.
 This function is able to return ord-1 and ord-2 vector-norms and matrix-norms.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>x</strong> (<em>array</em>) – Input array. If axis is None, x must be 1-D or 2-D.</p></li>
-<li><p><strong>ord</strong> (<em>int</em>) – Order of the norm.</p></li>
-<li><p><strong>axis</strong> (<em>{int</em><em>, </em><em>2-sequence of ints}</em><em>, </em><em>optional</em>) – If axis is an integer, it specifies the axis of x along which to compute the vector norms. If axis is a
+<li><p><strong>ord</strong> (<em>int</em><em> or </em><em>str</em><em>, </em><em>optional</em>) – Order of the norm. Default is Frobenius norm.</p></li>
+<li><p><strong>axis</strong> (<em>int</em><em> or </em><em>2-sequence of ints</em><em>, </em><em>optional</em>) – If axis is an integer, it specifies the axis of x along which to compute the vector norms. If axis is a
 2-tuple, it specifies the axes that hold 2-D matrices, and the matrix norms of these matrices are
-computed.</p></li>
+computed. Default is None, in which case the axes are inferred from the input shape.</p></li>
 <li><p><strong>keepdims</strong> (<em>bool</em><em>, </em><em>optional</em>) – If this is set to True, the axes which are normed over are left in the result as dimensions with
 size one. With this option the result will broadcast correctly against the original x.
 Default is False.</p></li>
