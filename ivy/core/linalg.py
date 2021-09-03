@@ -33,22 +33,22 @@ def svd(x, f=None):
 
 
 # noinspection PyShadowingBuiltins
-def norm(x, ord=2, axis=-1, keepdims=False, f=None):
+def norm(x, ord='fro', axis=None, keepdims=False, f=None):
     """
     Matrix or vector norm.
     This function is able to return ord-1 and ord-2 vector-norms and matrix-norms.
 
     :param x: Input array. If axis is None, x must be 1-D or 2-D.
     :type x: array
-    :param ord: Order of the norm.
-    :type ord: int
+    :param ord: Order of the norm. Default is Frobenius norm.
+    :type ord: int or str, optional
     :param axis: If axis is an integer, it specifies the axis of x along which to compute the vector norms. If axis is a
-                    2-tuple, it specifies the axes that hold 2-D matrices, and the matrix norms of these matrices are
-                    computed.
-    :type axis: {int, 2-sequence of ints}, optional
+                 2-tuple, it specifies the axes that hold 2-D matrices, and the matrix norms of these matrices are
+                 computed. Default is None, in which case the axes are inferred from the input shape.
+    :type axis: int or 2-sequence of ints, optional
     :param keepdims: If this is set to True, the axes which are normed over are left in the result as dimensions with
-                        size one. With this option the result will broadcast correctly against the original x.
-                        Default is False.
+                     size one. With this option the result will broadcast correctly against the original x.
+                     Default is False.
     :type keepdims: bool, optional
     :param f: Machine learning framework. Inferred from inputs if None.
     :type f: ml_framework, optional
