@@ -42,6 +42,7 @@ def inplace_update(x, val, f=None):
     :type val: array
     :param f: Machine learning framework. Inferred from inputs if None.
     :type f: ml_framework, optional
+    :return: The variable following the in-place update.
     """
     return _cur_framework(x, f=f).inplace_update(x, val)
 
@@ -56,6 +57,7 @@ def inplace_decrement(x, val, f=None):
     :type val: array
     :param f: Machine learning framework. Inferred from inputs if None.
     :type f: ml_framework, optional
+    :return: The variable following the in-place decrement.
     """
     return _cur_framework(x, f=f).inplace_decrement(x, val)
 
@@ -70,6 +72,7 @@ def inplace_increment(x, val, f=None):
     :type val: array
     :param f: Machine learning framework. Inferred from inputs if None.
     :type f: ml_framework, optional
+    :return: The variable following the in-place increment.
     """
     return _cur_framework(x, f=f).inplace_increment(x, val)
 
@@ -92,7 +95,7 @@ def execute_with_gradients(func, xs, retain_grads=False, f=None):
     return _cur_framework(None, f=f).execute_with_gradients(func, xs, retain_grads)
 
 
-def gradient_descent_update(ws, dcdws, lr, inplace=True, stop_gradients=True, f=None):
+def gradient_descent_update(ws, dcdws, lr, inplace=True, stop_gradients=True):
     """
     Update weights ws of some function, given the derivatives of some cost c with respect to ws, [dc/dw for w in ws].
 
@@ -109,11 +112,16 @@ def gradient_descent_update(ws, dcdws, lr, inplace=True, stop_gradients=True, f=
     :type inplace: bool, optional
     :param stop_gradients: Whether to stop the gradients of the variables after each gradient step. Default is True.
     :type stop_gradients: bool, optional
-    :param f: Machine learning framework. Inferred from inputs if None.
-    :type f: ml_framework, optional
     :return: The new function weights ws_new, following the gradient descent updates.
     """
-    return _cur_framework(None, f=f).gradient_descent_update(ws, dcdws, lr, inplace, stop_gradients)
+    if inplace:
+        ws = ws.map(lambda x, kc: _ivy.inplace_decrement(x, dcdws.at_key_chain(kc) * lr))
+        ret = ws
+    else:
+        ret = ws.map(lambda w, key_chain: (w - dcdws.at_key_chain(key_chain) * lr))
+    if stop_gradients:
+        dcdws.stop_gradients(preserve_type=True)
+    return ret
 
 
 def adam_update(ws, dcdws, lr, mw, vw, step, beta1=0.9, beta2=0.999, epsilon=1e-7, inplace=True, stop_gradients=True,
