@@ -6,6 +6,8 @@ Collection of gradient Ivy functions.
 import ivy as _ivy
 from ivy.framework_handler import current_framework as _cur_framework
 
+MIN_DENOMINATOR = 1e-12
+
 
 # Variables #
 # ----------#
@@ -118,32 +120,16 @@ def execute_with_gradients(func, xs, retain_grads=False, f=None):
     return _cur_framework(None, f=f).execute_with_gradients(func, xs, retain_grads)
 
 
-# Optimizer Deltas #
-# -----------------#
+# Optimizer Effective Gradients #
+# ------------------------------#
 
-def gradient_descent_delta(dcdws, lr):
-    """
-    Compute gradient descent delta, given the derivatives of some cost c with respect to ws, [dc/dw for w in ws].
-
-    :param dcdws: Derivates of the cost c with respect to the weights ws, [dc/dw for w in ws].
-    :type dcdws: Ivy container
-    :param lr: Learning rate(s), the rate(s) at which the weights should be updated relative to the gradient.
-    :type lr: float or container of layer-wise rates.
-    :return: The gradient descent delta.
-    """
-    layerwise_lr = isinstance(lr, _ivy.Container)
-    return dcdws.map(lambda dcdw, kc: (dcdw * (lr[kc] if layerwise_lr else lr)))
-
-
-def adam_delta(dcdws, lr, mw, vw, step, beta1=0.9, beta2=0.999, epsilon=1e-7):
+def adam_effective_gradient(dcdws, mw, vw, step, beta1=0.9, beta2=0.999, epsilon=1e-7):
     """
     Compute adam step delta, given the derivatives of some cost c with respect to ws, using ADAM update.
     `[reference] <https://en.wikipedia.org/wiki/Stochastic_gradient_descent#Adam>`_
 
     :param dcdws: Derivates of the cost c with respect to the weights ws, [dc/dw for w in ws].
     :type dcdws: container of arrays
-    :param lr: Learning rate(s), the rate(s) at which the weights should be updated relative to the gradient.
-    :type lr: float or container of layer-wise rates.
     :param mw: running average of the gradients
     :type mw: container of arrays
     :param vw: running average of second moments of the gradients
@@ -158,15 +144,14 @@ def adam_delta(dcdws, lr, mw, vw, step, beta1=0.9, beta2=0.999, epsilon=1e-7):
     :type epsilon: float
     :return: The adam step delta.
     """
-    layerwise_lr = isinstance(lr, _ivy.Container)
     step = float(_ivy.to_scalar(step))
     mw = dcdws.map(lambda dcdw, kc: beta1 * mw[kc] + (1 - beta1) * dcdw)
     dcdws_sqrd = dcdws ** 2
     vw = dcdws_sqrd.map(lambda dcdw_sqrd, kc: beta2 * vw[kc] + (1 - beta2) * dcdw_sqrd)
     beta1_pow = beta1 ** step
     beta2_pow = beta2 ** step
-    alpha = lr * (1 - beta2_pow)**0.5 / (1 - beta1_pow + epsilon)
-    return mw.map(lambda m, kc: ((alpha[kc] if layerwise_lr else alpha) * m / (vw[kc] ** 0.5 + epsilon)))
+    alpha = (1 - beta2_pow)**0.5 / (1 - beta1_pow + epsilon)
+    return mw.map(lambda m, kc: (alpha * m / (vw[kc] ** 0.5 + epsilon)))
 
 
 # Optimizer Updates #
@@ -191,7 +176,8 @@ def gradient_descent_update(ws, dcdws, lr, inplace=True, stop_gradients=True):
     :type stop_gradients: bool, optional
     :return: The new function weights ws_new, following the gradient descent updates.
     """
-    deltas = gradient_descent_delta(dcdws, lr)
+    layerwise_lr = isinstance(lr, _ivy.Container)
+    deltas = dcdws.map(lambda dcdw, kc: (dcdw * (lr[kc] if layerwise_lr else lr)))
     if inplace:
         ws = ws.map(lambda w, kc: _ivy.inplace_decrement(w, deltas[kc]))
     else:
@@ -221,11 +207,12 @@ def lars_update(ws, dcdws, lr, inplace=True, stop_gradients=True):
     :type stop_gradients: bool, optional
     :return: The new function weights ws_new, following the LARS updates.
     """
-    lr = lr * ws.norm() / dcdws.norm()
+    lr = lr * ws.norm() / (dcdws.norm() + MIN_DENOMINATOR)
     return gradient_descent_update(ws, dcdws, lr, inplace, stop_gradients)
 
 
-def adam_update(ws, dcdws, lr, mw, vw, step, beta1=0.9, beta2=0.999, epsilon=1e-7, inplace=True, stop_gradients=True):
+def adam_update(ws, dcdws, lr, mw, vw, step, beta1=0.9, beta2=0.999, epsilon=1e-7, inplace=True, stop_gradients=True,
+                effective_grads=None):
     """
     Update weights ws of some function, given the derivatives of some cost c with respect to ws, using ADAM update.
     `[reference] <https://en.wikipedia.org/wiki/Stochastic_gradient_descent#Adam>`_
@@ -255,9 +242,13 @@ def adam_update(ws, dcdws, lr, mw, vw, step, beta1=0.9, beta2=0.999, epsilon=1e-
     :type inplace: bool, optional
     :param stop_gradients: Whether to stop the gradients of the variables after each gradient step. Default is True.
     :type stop_gradients: bool, optional
+    :param effective_grads: The effective gradients for updating the weights. Computed internally by default.
+    :type effective_grads: Ivy container, optional
     :return: The new function weights ws_new, and also new mw and vw, following the adam updates.
     """
-    deltas = adam_delta(dcdws, lr, mw, vw, step, beta1, beta2, epsilon)
+    layerwise_lr = isinstance(lr, _ivy.Container)
+    effective_grads = _ivy.default(effective_grads, adam_effective_gradient(dcdws, mw, vw, step, beta1, beta2, epsilon))
+    deltas = effective_grads.map(lambda eff_grad, kc: (eff_grad * (lr[kc] if layerwise_lr else lr)))
     if inplace:
         ws = ws.map(lambda w, kc: _ivy.inplace_decrement(w, deltas[kc]))
     else:
@@ -265,3 +256,46 @@ def adam_update(ws, dcdws, lr, mw, vw, step, beta1=0.9, beta2=0.999, epsilon=1e-
     if stop_gradients:
         dcdws.stop_gradients(preserve_type=True)
     return ws, mw, vw
+
+
+def lamb_update(ws, dcdws, lr, mw, vw, step, beta1=0.9, beta2=0.999, epsilon=1e-7, max_trust_ratio=10, inplace=True,
+                stop_gradients=True):
+    """
+    Update weights ws of some function, given the derivatives of some cost c with respect to ws, [dc/dw for w in ws],
+    by applying LAMB method.
+
+    :param ws: Weights of the function to be updated.
+    :type ws: container of variables
+    :param dcdws: Derivates of the cost c with respect to the weights ws, [dc/dw for w in ws].
+    :type dcdws: container of arrays
+    :param lr: Learning rate(s), the rate(s) at which the weights should be updated relative to the gradient.
+    :type lr: float or container of layer-wise rates.
+    :param mw: running average of the gradients
+    :type mw: container of arrays
+    :param vw: running average of second moments of the gradients
+    :type vw: container of arrays
+    :param step: training step
+    :type step: int
+    :param beta1: gradient forgetting factor
+    :type beta1: float
+    :param beta2: second moment of gradient forgetting factor
+    :type beta2: float
+    :param epsilon: divisor during adam update, preventing division by zero
+    :type epsilon: float
+    :param max_trust_ratio: The maximum value for the trust ratio. Default is 10.
+    :type max_trust_ratio: float, optional
+    :param inplace: Whether to perform the operation inplace, for backends which support inplace variable updates,
+                    and handle gradients behind the scenes such as PyTorch. If the update step should form part of a
+                    computation graph (i.e. higher order optimization), then this should be set to False.
+                    Default is True.
+    :type inplace: bool, optional
+    :param stop_gradients: Whether to stop the gradients of the variables after each gradient step. Default is True.
+    :type stop_gradients: bool, optional
+    :return: The new function weights ws_new, following the LARS updates.
+    """
+    r1 = ws.norm()
+    eff_grads = adam_effective_gradient(dcdws, mw, vw, step, beta1, beta2, epsilon)
+    r2 = eff_grads.norm()
+    r = (r1/(r2 + MIN_DENOMINATOR)).minimum(max_trust_ratio)
+    lr = lr * r
+    return adam_update(ws, dcdws, lr, mw, vw, step, beta1, beta2, epsilon, inplace, stop_gradients, eff_grads)

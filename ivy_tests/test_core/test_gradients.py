@@ -80,6 +80,37 @@ def test_is_variable(object_in, dtype_str, dev_str, call):
     helpers.assert_compilable(ivy.is_variable)
 
 
+# stop_gradient
+@pytest.mark.parametrize(
+    "x_raw", [[0.]])
+@pytest.mark.parametrize(
+    "dtype_str", ['float32'])
+@pytest.mark.parametrize(
+    "tensor_fn", [('array', ivy.array), ('var', helpers.var_fn)])
+def test_stop_gradient(x_raw, dtype_str, tensor_fn, dev_str, call):
+    # smoke test
+    fn_name, tensor_fn = tensor_fn
+    x = tensor_fn(x_raw, dtype_str, dev_str)
+    ret = ivy.stop_gradient(x)
+    # type test
+    if fn_name == 'array':
+        assert ivy.is_array(ret)
+    elif call is not helpers.np_call:
+        # Numpy does not support variables, is_variable() always returns False
+        assert ivy.is_variable(ret)
+    # cardinality test
+    assert ret.shape == x.shape
+    # value test
+    if call is not helpers.tf_graph_call:
+        # Tf graph mode cannot create variables as part of the computation graph
+        assert np.array_equal(call(ivy.stop_gradient, x), ivy.numpy.array(x_raw, dtype_str, dev_str))
+    # compilation test
+    if call in [helpers.torch_call]:
+        # pytorch scripting does not support attribute setting
+        return
+    helpers.assert_compilable(ivy.stop_gradient)
+
+
 # execute_with_gradients
 @pytest.mark.parametrize(
     "func_n_xs_n_ty_n_te_n_tg", [(lambda xs_in: (xs_in['w'] * xs_in['w'])[0],
@@ -297,32 +328,40 @@ def test_layerwise_adam_update(ws_n_grads_n_lr_n_wsnew, dtype_str, tensor_fn, de
     helpers.assert_compilable(ivy.adam_update)
 
 
-# stop_gradient
+# lamb_update
 @pytest.mark.parametrize(
-    "x_raw", [[0.]])
+    "ws_n_grads_n_lr_n_wsnew", [(Container({'a': [3.], 'b': [3.]}), Container({'a': [6.], 'b': [6.]}),
+                                 Container({'a': [0.1], 'b': [0.2]}), Container({'a': [2.7], 'b': [2.4]}))])
 @pytest.mark.parametrize(
     "dtype_str", ['float32'])
 @pytest.mark.parametrize(
-    "tensor_fn", [('array', ivy.array), ('var', helpers.var_fn)])
-def test_stop_gradient(x_raw, dtype_str, tensor_fn, dev_str, call):
+    "tensor_fn", [ivy.array, helpers.var_fn])
+def test_lamb_update(ws_n_grads_n_lr_n_wsnew, dtype_str, tensor_fn, dev_str, call):
     # smoke test
-    fn_name, tensor_fn = tensor_fn
-    x = tensor_fn(x_raw, dtype_str, dev_str)
-    ret = ivy.stop_gradient(x)
+    ws_raw, dcdws_raw, lr_raw, ws_raw_new = ws_n_grads_n_lr_n_wsnew
+    ws = ws_raw.map(lambda x, _: ivy.variable(ivy.array(x)))
+    dcdws = dcdws_raw.map(lambda x, _: ivy.array(x))
+    lr = lr_raw.map(lambda x, _: ivy.array(x))
+    ws_true_new = ws_raw_new.map(lambda x, _: ivy.variable(ivy.array(x)))
+    mw = dcdws
+    vw = dcdws.map(lambda x, _: x ** 2)
+    ws_new, mw_new, vw_new = ivy.lamb_update(ws, dcdws, lr, mw, vw, ivy.array(1))
     # type test
-    if fn_name == 'array':
-        assert ivy.is_array(ret)
-    elif call is not helpers.np_call:
-        # Numpy does not support variables, is_variable() always returns False
-        assert ivy.is_variable(ret)
+    assert isinstance(ws_new, dict)
+    assert isinstance(mw_new, dict)
+    assert isinstance(vw_new, dict)
     # cardinality test
-    assert ret.shape == x.shape
+    for (w_new, w_true_new) in zip(ws_new.values(), ws_true_new.values()):
+        assert w_new.shape == w_true_new.shape
+    for (m_new, m_orig) in zip(mw_new.values(), mw.values()):
+        assert m_new.shape == m_orig.shape
+    for (v_new, v_orig) in zip(vw_new.values(), vw.values()):
+        assert v_new.shape == v_orig.shape
     # value test
-    if call is not helpers.tf_graph_call:
-        # Tf graph mode cannot create variables as part of the computation graph
-        assert np.array_equal(call(ivy.stop_gradient, x), ivy.numpy.array(x_raw, dtype_str, dev_str))
+    for (w_new, w_true_new) in zip(ws_new.values(), ws_true_new.values()):
+        assert np.allclose(ivy.to_numpy(w_new), ivy.to_numpy(w_true_new))
     # compilation test
     if call in [helpers.torch_call]:
-        # pytorch scripting does not support attribute setting
+        # pytorch scripting does not support internal function definitions
         return
-    helpers.assert_compilable(ivy.stop_gradient)
+    helpers.assert_compilable(ivy.lamb_update)
