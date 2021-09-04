@@ -691,6 +691,70 @@ class Container(dict):
         return self.map(lambda x, kc: self._ivy.reduce_max(x, axis, keepdims) if self._ivy.is_array(x) else x,
                         key_chains, to_apply, prune_unapplied)
 
+    def minimum(self, other, key_chains=None, to_apply=True, prune_unapplied=False):
+        """
+        Computes the elementwise minimum between this container and another container or number.
+
+        :param other: The other container or number to compute the minimum against.
+        :type other: Ivy container or number
+        :param key_chains: The key-chains to apply or not apply the method to. Default is None.
+        :type key_chains: list or dict of strs, optional
+        :param to_apply: If True, the method will be applied to key_chains, otherwise key_chains will be skipped.
+                         Default is True.
+        :type to_apply: bool, optional
+        :param prune_unapplied: Whether to prune key_chains for which the function was not applied. Default is False.
+        :type prune_unapplied: bool, optional
+        :return: Container object at with all sub-arrays having the minimum values computed.
+        """
+        is_container = isinstance(other, Container)
+        return self.map(lambda x, kc:
+                        self._ivy.minimum(x, other[kc] if is_container else other) if self._ivy.is_array(x) else x,
+                        key_chains, to_apply, prune_unapplied)
+
+    def maximum(self, other, key_chains=None, to_apply=True, prune_unapplied=False):
+        """
+        Computes the elementwise maximum between this container and another container or number.
+
+        :param other: The other container or number to compute the maximum against.
+        :type other: Ivy container or number
+        :param key_chains: The key-chains to apply or not apply the method to. Default is None.
+        :type key_chains: list or dict of strs, optional
+        :param to_apply: If True, the method will be applied to key_chains, otherwise key_chains will be skipped.
+                         Default is True.
+        :type to_apply: bool, optional
+        :param prune_unapplied: Whether to prune key_chains for which the function was not applied. Default is False.
+        :type prune_unapplied: bool, optional
+        :return: Container object at with all sub-arrays having the maximum values computed.
+        """
+        is_container = isinstance(other, Container)
+        return self.map(lambda x, kc:
+                        self._ivy.maximum(x, other[kc] if is_container else other) if self._ivy.is_array(x) else x,
+                        key_chains, to_apply, prune_unapplied)
+
+    def clip(self, clip_min, clip_max, key_chains=None, to_apply=True, prune_unapplied=False):
+        """
+        Computes the elementwise clipped values between this container and clip_min and clip_max containers or numbers.
+
+        :param clip_min: The minimum container or number to clip against.
+        :type clip_min: Ivy container or number
+        :param clip_max: The maximum container or number to clip against.
+        :type clip_max: Ivy container or number
+        :param key_chains: The key-chains to apply or not apply the method to. Default is None.
+        :type key_chains: list or dict of strs, optional
+        :param to_apply: If True, the method will be applied to key_chains, otherwise key_chains will be skipped.
+                         Default is True.
+        :type to_apply: bool, optional
+        :param prune_unapplied: Whether to prune key_chains for which the function was not applied. Default is False.
+        :type prune_unapplied: bool, optional
+        :return: Container object at with all sub-arrays having the clipped values computed.
+        """
+        min_is_container = isinstance(clip_min, Container)
+        max_is_container = isinstance(clip_max, Container)
+        return self.map(lambda x, kc:
+                        self._ivy.clip(x, clip_min[kc] if min_is_container else clip_min,
+                                       clip_max[kc] if max_is_container else clip_max) if self._ivy.is_array(x) else x,
+                        key_chains, to_apply, prune_unapplied)
+
     def einsum(self, equation, key_chains=None, to_apply=True, prune_unapplied=False):
         """
         Sums the product of the elements of the input operands along dimensions specified using a notation based on the
