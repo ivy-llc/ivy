@@ -160,7 +160,7 @@ def adam_update(ws, dcdws, lr, mw, vw, step, beta1=0.9, beta2=0.999, epsilon=1e-
     layerwise_lr = isinstance(lr, _ivy.Container)
     step = float(_ivy.to_scalar(step))
     mw = dcdws.map(lambda dcdw, kc: beta1 * mw[kc] + (1 - beta1) * dcdw)
-    dcdws_sqrd = dcdws.map(lambda dcdw, _: dcdw ** 2)
+    dcdws_sqrd = dcdws ** 2
     vw = dcdws_sqrd.map(lambda dcdw_sqrd, kc: beta2 * vw[kc] + (1 - beta2) * dcdw_sqrd)
     beta1_pow = beta1 ** step
     beta2_pow = beta2 ** step
