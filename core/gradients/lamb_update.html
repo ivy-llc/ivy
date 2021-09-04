@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>adam_update &mdash; Ivy 1.0 documentation</title>
+  <title>lamb_update &mdash; Ivy 1.0 documentation</title>
   
 
   
@@ -36,8 +36,8 @@
   <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="lamb_update" href="lamb_update.html" />
-    <link rel="prev" title="lars_update" href="lars_update.html" /> 
+    <link rel="next" title="Image" href="../image.html" />
+    <link rel="prev" title="adam_update" href="adam_update.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -102,8 +102,8 @@
 <li class="toctree-l2"><a class="reference internal" href="adam_effective_gradient.html">adam_effective_gradient</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gradient_descent_update.html">gradient_descent_update</a></li>
 <li class="toctree-l2"><a class="reference internal" href="lars_update.html">lars_update</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">adam_update</a></li>
-<li class="toctree-l2"><a class="reference internal" href="lamb_update.html">lamb_update</a></li>
+<li class="toctree-l2"><a class="reference internal" href="adam_update.html">adam_update</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">lamb_update</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../image.html">Image</a></li>
@@ -187,13 +187,13 @@
         
           <li><a href="../gradients.html">Gradients</a> &raquo;</li>
         
-      <li>adam_update</li>
+      <li>lamb_update</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="../../_sources/core/gradients/adam_update.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../_sources/core/gradients/lamb_update.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -206,13 +206,13 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="adam-update">
-<h1>adam_update<a class="headerlink" href="#adam-update" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="lamb-update">
+<h1>lamb_update<a class="headerlink" href="#lamb-update" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
-<dt id="ivy.core.gradients.adam_update">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">adam_update</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ws</span></em>, <em class="sig-param"><span class="n">dcdws</span></em>, <em class="sig-param"><span class="n">lr</span></em>, <em class="sig-param"><span class="n">mw</span></em>, <em class="sig-param"><span class="n">vw</span></em>, <em class="sig-param"><span class="n">step</span></em>, <em class="sig-param"><span class="n">beta1</span><span class="o">=</span><span class="default_value">0.9</span></em>, <em class="sig-param"><span class="n">beta2</span><span class="o">=</span><span class="default_value">0.999</span></em>, <em class="sig-param"><span class="n">epsilon</span><span class="o">=</span><span class="default_value">1e-07</span></em>, <em class="sig-param"><span class="n">inplace</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">stop_gradients</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">effective_grads</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/gradients.html#adam_update"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.gradients.adam_update" title="Permalink to this definition">¶</a></dt>
-<dd><p>Update weights ws of some function, given the derivatives of some cost c with respect to ws, using ADAM update.
-<a class="reference external" href="https://en.wikipedia.org/wiki/Stochastic_gradient_descent#Adam">[reference]</a></p>
+<dt id="ivy.core.gradients.lamb_update">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">lamb_update</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ws</span></em>, <em class="sig-param"><span class="n">dcdws</span></em>, <em class="sig-param"><span class="n">lr</span></em>, <em class="sig-param"><span class="n">mw</span></em>, <em class="sig-param"><span class="n">vw</span></em>, <em class="sig-param"><span class="n">step</span></em>, <em class="sig-param"><span class="n">beta1</span><span class="o">=</span><span class="default_value">0.9</span></em>, <em class="sig-param"><span class="n">beta2</span><span class="o">=</span><span class="default_value">0.999</span></em>, <em class="sig-param"><span class="n">epsilon</span><span class="o">=</span><span class="default_value">1e-07</span></em>, <em class="sig-param"><span class="n">max_trust_ratio</span><span class="o">=</span><span class="default_value">10</span></em>, <em class="sig-param"><span class="n">inplace</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">stop_gradients</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/gradients.html#lamb_update"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.gradients.lamb_update" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update weights ws of some function, given the derivatives of some cost c with respect to ws, [dc/dw for w in ws],
+by applying LAMB method.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -225,16 +225,16 @@
 <li><p><strong>beta1</strong> (<em>float</em>) – gradient forgetting factor</p></li>
 <li><p><strong>beta2</strong> (<em>float</em>) – second moment of gradient forgetting factor</p></li>
 <li><p><strong>epsilon</strong> (<em>float</em>) – divisor during adam update, preventing division by zero</p></li>
+<li><p><strong>max_trust_ratio</strong> (<em>float</em><em>, </em><em>optional</em>) – The maximum value for the trust ratio. Default is 10.</p></li>
 <li><p><strong>inplace</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to perform the operation inplace, for backends which support inplace variable updates,
 and handle gradients behind the scenes such as PyTorch. If the update step should form part of a
 computation graph (i.e. higher order optimization), then this should be set to False.
 Default is True.</p></li>
 <li><p><strong>stop_gradients</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to stop the gradients of the variables after each gradient step. Default is True.</p></li>
-<li><p><strong>effective_grads</strong> (<em>Ivy container</em><em>, </em><em>optional</em>) – The effective gradients for updating the weights. Computed internally by default.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>The new function weights ws_new, and also new mw and vw, following the adam updates.</p>
+<dd class="field-even"><p>The new function weights ws_new, following the LARS updates.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -254,10 +254,10 @@ Default is True.</p></li>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="lamb_update.html" class="btn btn-neutral float-right" title="lamb_update" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="../image.html" class="btn btn-neutral float-right" title="Image" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="lars_update.html" class="btn btn-neutral float-left" title="lars_update" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="adam_update.html" class="btn btn-neutral float-left" title="adam_update" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

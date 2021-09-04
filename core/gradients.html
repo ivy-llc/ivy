@@ -99,11 +99,11 @@
 <li class="toctree-l2"><a class="reference internal" href="gradients/inplace_increment.html">inplace_increment</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gradients/stop_gradient.html">stop_gradient</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gradients/execute_with_gradients.html">execute_with_gradients</a></li>
-<li class="toctree-l2"><a class="reference internal" href="gradients/gradient_descent_delta.html">gradient_descent_delta</a></li>
-<li class="toctree-l2"><a class="reference internal" href="gradients/adam_delta.html">adam_delta</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gradients/adam_effective_gradient.html">adam_effective_gradient</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gradients/gradient_descent_update.html">gradient_descent_update</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gradients/lars_update.html">lars_update</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gradients/adam_update.html">adam_update</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gradients/lamb_update.html">lamb_update</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="image.html">Image</a></li>
@@ -208,15 +208,14 @@
 <span id="gradients"></span><h1>Gradients<a class="headerlink" href="#module-ivy.core.gradients" title="Permalink to this headline">¶</a></h1>
 <p>Collection of gradient Ivy functions.</p>
 <dl class="py function">
-<dt id="ivy.core.gradients.adam_delta">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">adam_delta</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dcdws</span></em>, <em class="sig-param"><span class="n">lr</span></em>, <em class="sig-param"><span class="n">mw</span></em>, <em class="sig-param"><span class="n">vw</span></em>, <em class="sig-param"><span class="n">step</span></em>, <em class="sig-param"><span class="n">beta1</span><span class="o">=</span><span class="default_value">0.9</span></em>, <em class="sig-param"><span class="n">beta2</span><span class="o">=</span><span class="default_value">0.999</span></em>, <em class="sig-param"><span class="n">epsilon</span><span class="o">=</span><span class="default_value">1e-07</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/gradients.html#adam_delta"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.gradients.adam_delta" title="Permalink to this definition">¶</a></dt>
+<dt id="ivy.core.gradients.adam_effective_gradient">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">adam_effective_gradient</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dcdws</span></em>, <em class="sig-param"><span class="n">mw</span></em>, <em class="sig-param"><span class="n">vw</span></em>, <em class="sig-param"><span class="n">step</span></em>, <em class="sig-param"><span class="n">beta1</span><span class="o">=</span><span class="default_value">0.9</span></em>, <em class="sig-param"><span class="n">beta2</span><span class="o">=</span><span class="default_value">0.999</span></em>, <em class="sig-param"><span class="n">epsilon</span><span class="o">=</span><span class="default_value">1e-07</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/gradients.html#adam_effective_gradient"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.gradients.adam_effective_gradient" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute adam step delta, given the derivatives of some cost c with respect to ws, using ADAM update.
 <a class="reference external" href="https://en.wikipedia.org/wiki/Stochastic_gradient_descent#Adam">[reference]</a></p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>dcdws</strong> (<em>container of arrays</em>) – Derivates of the cost c with respect to the weights ws, [dc/dw for w in ws].</p></li>
-<li><p><strong>lr</strong> (<em>float</em><em> or </em><em>container of layer-wise rates.</em>) – Learning rate(s), the rate(s) at which the weights should be updated relative to the gradient.</p></li>
 <li><p><strong>mw</strong> (<em>container of arrays</em>) – running average of the gradients</p></li>
 <li><p><strong>vw</strong> (<em>container of arrays</em>) – running average of second moments of the gradients</p></li>
 <li><p><strong>step</strong> (<em>int</em>) – training step</p></li>
@@ -233,7 +232,7 @@
 
 <dl class="py function">
 <dt id="ivy.core.gradients.adam_update">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">adam_update</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ws</span></em>, <em class="sig-param"><span class="n">dcdws</span></em>, <em class="sig-param"><span class="n">lr</span></em>, <em class="sig-param"><span class="n">mw</span></em>, <em class="sig-param"><span class="n">vw</span></em>, <em class="sig-param"><span class="n">step</span></em>, <em class="sig-param"><span class="n">beta1</span><span class="o">=</span><span class="default_value">0.9</span></em>, <em class="sig-param"><span class="n">beta2</span><span class="o">=</span><span class="default_value">0.999</span></em>, <em class="sig-param"><span class="n">epsilon</span><span class="o">=</span><span class="default_value">1e-07</span></em>, <em class="sig-param"><span class="n">inplace</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">stop_gradients</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/gradients.html#adam_update"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.gradients.adam_update" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">adam_update</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ws</span></em>, <em class="sig-param"><span class="n">dcdws</span></em>, <em class="sig-param"><span class="n">lr</span></em>, <em class="sig-param"><span class="n">mw</span></em>, <em class="sig-param"><span class="n">vw</span></em>, <em class="sig-param"><span class="n">step</span></em>, <em class="sig-param"><span class="n">beta1</span><span class="o">=</span><span class="default_value">0.9</span></em>, <em class="sig-param"><span class="n">beta2</span><span class="o">=</span><span class="default_value">0.999</span></em>, <em class="sig-param"><span class="n">epsilon</span><span class="o">=</span><span class="default_value">1e-07</span></em>, <em class="sig-param"><span class="n">inplace</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">stop_gradients</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">effective_grads</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/gradients.html#adam_update"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.gradients.adam_update" title="Permalink to this definition">¶</a></dt>
 <dd><p>Update weights ws of some function, given the derivatives of some cost c with respect to ws, using ADAM update.
 <a class="reference external" href="https://en.wikipedia.org/wiki/Stochastic_gradient_descent#Adam">[reference]</a></p>
 <dl class="field-list simple">
@@ -253,6 +252,7 @@ and handle gradients behind the scenes such as PyTorch. If the update step shoul
 computation graph (i.e. higher order optimization), then this should be set to False.
 Default is True.</p></li>
 <li><p><strong>stop_gradients</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to stop the gradients of the variables after each gradient step. Default is True.</p></li>
+<li><p><strong>effective_grads</strong> (<em>Ivy container</em><em>, </em><em>optional</em>) – The effective gradients for updating the weights. Computed internally by default.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -277,23 +277,6 @@ and any other function outputs after the returned y value</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>the function first output y, the gradients [dy/dx for x in xs], and any other extra function outputs</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt id="ivy.core.gradients.gradient_descent_delta">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">gradient_descent_delta</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dcdws</span></em>, <em class="sig-param"><span class="n">lr</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/gradients.html#gradient_descent_delta"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.gradients.gradient_descent_delta" title="Permalink to this definition">¶</a></dt>
-<dd><p>Compute gradient descent delta, given the derivatives of some cost c with respect to ws, [dc/dw for w in ws].</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>dcdws</strong> (<em>Ivy container</em>) – Derivates of the cost c with respect to the weights ws, [dc/dw for w in ws].</p></li>
-<li><p><strong>lr</strong> (<em>float</em><em> or </em><em>container of layer-wise rates.</em>) – Learning rate(s), the rate(s) at which the weights should be updated relative to the gradient.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>The gradient descent delta.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -393,6 +376,37 @@ Default is True.</p></li>
 </dd></dl>
 
 <dl class="py function">
+<dt id="ivy.core.gradients.lamb_update">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">lamb_update</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ws</span></em>, <em class="sig-param"><span class="n">dcdws</span></em>, <em class="sig-param"><span class="n">lr</span></em>, <em class="sig-param"><span class="n">mw</span></em>, <em class="sig-param"><span class="n">vw</span></em>, <em class="sig-param"><span class="n">step</span></em>, <em class="sig-param"><span class="n">beta1</span><span class="o">=</span><span class="default_value">0.9</span></em>, <em class="sig-param"><span class="n">beta2</span><span class="o">=</span><span class="default_value">0.999</span></em>, <em class="sig-param"><span class="n">epsilon</span><span class="o">=</span><span class="default_value">1e-07</span></em>, <em class="sig-param"><span class="n">max_trust_ratio</span><span class="o">=</span><span class="default_value">10</span></em>, <em class="sig-param"><span class="n">inplace</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">stop_gradients</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/gradients.html#lamb_update"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.gradients.lamb_update" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update weights ws of some function, given the derivatives of some cost c with respect to ws, [dc/dw for w in ws],
+by applying LAMB method.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ws</strong> (<em>container of variables</em>) – Weights of the function to be updated.</p></li>
+<li><p><strong>dcdws</strong> (<em>container of arrays</em>) – Derivates of the cost c with respect to the weights ws, [dc/dw for w in ws].</p></li>
+<li><p><strong>lr</strong> (<em>float</em><em> or </em><em>container of layer-wise rates.</em>) – Learning rate(s), the rate(s) at which the weights should be updated relative to the gradient.</p></li>
+<li><p><strong>mw</strong> (<em>container of arrays</em>) – running average of the gradients</p></li>
+<li><p><strong>vw</strong> (<em>container of arrays</em>) – running average of second moments of the gradients</p></li>
+<li><p><strong>step</strong> (<em>int</em>) – training step</p></li>
+<li><p><strong>beta1</strong> (<em>float</em>) – gradient forgetting factor</p></li>
+<li><p><strong>beta2</strong> (<em>float</em>) – second moment of gradient forgetting factor</p></li>
+<li><p><strong>epsilon</strong> (<em>float</em>) – divisor during adam update, preventing division by zero</p></li>
+<li><p><strong>max_trust_ratio</strong> (<em>float</em><em>, </em><em>optional</em>) – The maximum value for the trust ratio. Default is 10.</p></li>
+<li><p><strong>inplace</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to perform the operation inplace, for backends which support inplace variable updates,
+and handle gradients behind the scenes such as PyTorch. If the update step should form part of a
+computation graph (i.e. higher order optimization), then this should be set to False.
+Default is True.</p></li>
+<li><p><strong>stop_gradients</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to stop the gradients of the variables after each gradient step. Default is True.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The new function weights ws_new, following the LARS updates.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt id="ivy.core.gradients.lars_update">
 <code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">lars_update</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ws</span></em>, <em class="sig-param"><span class="n">dcdws</span></em>, <em class="sig-param"><span class="n">lr</span></em>, <em class="sig-param"><span class="n">inplace</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">stop_gradients</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/gradients.html#lars_update"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.gradients.lars_update" title="Permalink to this definition">¶</a></dt>
 <dd><p>Update weights ws of some function, given the derivatives of some cost c with respect to ws, [dc/dw for w in ws],
@@ -463,11 +477,11 @@ otherwise an array is always returned. Default is True.</p></li>
 <li class="toctree-l1"><a class="reference internal" href="gradients/inplace_increment.html">inplace_increment</a></li>
 <li class="toctree-l1"><a class="reference internal" href="gradients/stop_gradient.html">stop_gradient</a></li>
 <li class="toctree-l1"><a class="reference internal" href="gradients/execute_with_gradients.html">execute_with_gradients</a></li>
-<li class="toctree-l1"><a class="reference internal" href="gradients/gradient_descent_delta.html">gradient_descent_delta</a></li>
-<li class="toctree-l1"><a class="reference internal" href="gradients/adam_delta.html">adam_delta</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gradients/adam_effective_gradient.html">adam_effective_gradient</a></li>
 <li class="toctree-l1"><a class="reference internal" href="gradients/gradient_descent_update.html">gradient_descent_update</a></li>
 <li class="toctree-l1"><a class="reference internal" href="gradients/lars_update.html">lars_update</a></li>
 <li class="toctree-l1"><a class="reference internal" href="gradients/adam_update.html">adam_update</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gradients/lamb_update.html">lamb_update</a></li>
 </ul>
 </div>
 </div>

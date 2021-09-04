@@ -195,6 +195,8 @@
 <span class="kn">import</span> <span class="nn">ivy</span> <span class="k">as</span> <span class="nn">_ivy</span>
 <span class="kn">from</span> <span class="nn">ivy.framework_handler</span> <span class="kn">import</span> <span class="n">current_framework</span> <span class="k">as</span> <span class="n">_cur_framework</span>
 
+<span class="n">MIN_DENOMINATOR</span> <span class="o">=</span> <span class="mf">1e-12</span>
+
 
 <span class="c1"># Variables #</span>
 <span class="c1"># ----------#</span>
@@ -307,32 +309,16 @@
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">execute_with_gradients</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">xs</span><span class="p">,</span> <span class="n">retain_grads</span><span class="p">)</span></div>
 
 
-<span class="c1"># Optimizer Deltas #</span>
-<span class="c1"># -----------------#</span>
+<span class="c1"># Optimizer Effective Gradients #</span>
+<span class="c1"># ------------------------------#</span>
 
-<div class="viewcode-block" id="gradient_descent_delta"><a class="viewcode-back" href="../../../core/gradients/gradient_descent_delta.html#ivy.core.gradients.gradient_descent_delta">[docs]</a><span class="k">def</span> <span class="nf">gradient_descent_delta</span><span class="p">(</span><span class="n">dcdws</span><span class="p">,</span> <span class="n">lr</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Compute gradient descent delta, given the derivatives of some cost c with respect to ws, [dc/dw for w in ws].</span>
-
-<span class="sd">    :param dcdws: Derivates of the cost c with respect to the weights ws, [dc/dw for w in ws].</span>
-<span class="sd">    :type dcdws: Ivy container</span>
-<span class="sd">    :param lr: Learning rate(s), the rate(s) at which the weights should be updated relative to the gradient.</span>
-<span class="sd">    :type lr: float or container of layer-wise rates.</span>
-<span class="sd">    :return: The gradient descent delta.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">layerwise_lr</span> <span class="o">=</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">lr</span><span class="p">,</span> <span class="n">_ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">dcdws</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">dcdw</span><span class="p">,</span> <span class="n">kc</span><span class="p">:</span> <span class="p">(</span><span class="n">dcdw</span> <span class="o">*</span> <span class="p">(</span><span class="n">lr</span><span class="p">[</span><span class="n">kc</span><span class="p">]</span> <span class="k">if</span> <span class="n">layerwise_lr</span> <span class="k">else</span> <span class="n">lr</span><span class="p">)))</span></div>
-
-
-<div class="viewcode-block" id="adam_delta"><a class="viewcode-back" href="../../../core/gradients/adam_delta.html#ivy.core.gradients.adam_delta">[docs]</a><span class="k">def</span> <span class="nf">adam_delta</span><span class="p">(</span><span class="n">dcdws</span><span class="p">,</span> <span class="n">lr</span><span class="p">,</span> <span class="n">mw</span><span class="p">,</span> <span class="n">vw</span><span class="p">,</span> <span class="n">step</span><span class="p">,</span> <span class="n">beta1</span><span class="o">=</span><span class="mf">0.9</span><span class="p">,</span> <span class="n">beta2</span><span class="o">=</span><span class="mf">0.999</span><span class="p">,</span> <span class="n">epsilon</span><span class="o">=</span><span class="mf">1e-7</span><span class="p">):</span>
+<div class="viewcode-block" id="adam_effective_gradient"><a class="viewcode-back" href="../../../core/gradients/adam_effective_gradient.html#ivy.core.gradients.adam_effective_gradient">[docs]</a><span class="k">def</span> <span class="nf">adam_effective_gradient</span><span class="p">(</span><span class="n">dcdws</span><span class="p">,</span> <span class="n">mw</span><span class="p">,</span> <span class="n">vw</span><span class="p">,</span> <span class="n">step</span><span class="p">,</span> <span class="n">beta1</span><span class="o">=</span><span class="mf">0.9</span><span class="p">,</span> <span class="n">beta2</span><span class="o">=</span><span class="mf">0.999</span><span class="p">,</span> <span class="n">epsilon</span><span class="o">=</span><span class="mf">1e-7</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Compute adam step delta, given the derivatives of some cost c with respect to ws, using ADAM update.</span>
 <span class="sd">    `[reference] &lt;https://en.wikipedia.org/wiki/Stochastic_gradient_descent#Adam&gt;`_</span>
 
 <span class="sd">    :param dcdws: Derivates of the cost c with respect to the weights ws, [dc/dw for w in ws].</span>
 <span class="sd">    :type dcdws: container of arrays</span>
-<span class="sd">    :param lr: Learning rate(s), the rate(s) at which the weights should be updated relative to the gradient.</span>
-<span class="sd">    :type lr: float or container of layer-wise rates.</span>
 <span class="sd">    :param mw: running average of the gradients</span>
 <span class="sd">    :type mw: container of arrays</span>
 <span class="sd">    :param vw: running average of second moments of the gradients</span>
@@ -347,15 +333,14 @@
 <span class="sd">    :type epsilon: float</span>
 <span class="sd">    :return: The adam step delta.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">layerwise_lr</span> <span class="o">=</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">lr</span><span class="p">,</span> <span class="n">_ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">)</span>
     <span class="n">step</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">_ivy</span><span class="o">.</span><span class="n">to_scalar</span><span class="p">(</span><span class="n">step</span><span class="p">))</span>
     <span class="n">mw</span> <span class="o">=</span> <span class="n">dcdws</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">dcdw</span><span class="p">,</span> <span class="n">kc</span><span class="p">:</span> <span class="n">beta1</span> <span class="o">*</span> <span class="n">mw</span><span class="p">[</span><span class="n">kc</span><span class="p">]</span> <span class="o">+</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">beta1</span><span class="p">)</span> <span class="o">*</span> <span class="n">dcdw</span><span class="p">)</span>
     <span class="n">dcdws_sqrd</span> <span class="o">=</span> <span class="n">dcdws</span> <span class="o">**</span> <span class="mi">2</span>
     <span class="n">vw</span> <span class="o">=</span> <span class="n">dcdws_sqrd</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">dcdw_sqrd</span><span class="p">,</span> <span class="n">kc</span><span class="p">:</span> <span class="n">beta2</span> <span class="o">*</span> <span class="n">vw</span><span class="p">[</span><span class="n">kc</span><span class="p">]</span> <span class="o">+</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">beta2</span><span class="p">)</span> <span class="o">*</span> <span class="n">dcdw_sqrd</span><span class="p">)</span>
     <span class="n">beta1_pow</span> <span class="o">=</span> <span class="n">beta1</span> <span class="o">**</span> <span class="n">step</span>
     <span class="n">beta2_pow</span> <span class="o">=</span> <span class="n">beta2</span> <span class="o">**</span> <span class="n">step</span>
-    <span class="n">alpha</span> <span class="o">=</span> <span class="n">lr</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">beta2_pow</span><span class="p">)</span><span class="o">**</span><span class="mf">0.5</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">beta1_pow</span> <span class="o">+</span> <span class="n">epsilon</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">mw</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">m</span><span class="p">,</span> <span class="n">kc</span><span class="p">:</span> <span class="p">((</span><span class="n">alpha</span><span class="p">[</span><span class="n">kc</span><span class="p">]</span> <span class="k">if</span> <span class="n">layerwise_lr</span> <span class="k">else</span> <span class="n">alpha</span><span class="p">)</span> <span class="o">*</span> <span class="n">m</span> <span class="o">/</span> <span class="p">(</span><span class="n">vw</span><span class="p">[</span><span class="n">kc</span><span class="p">]</span> <span class="o">**</span> <span class="mf">0.5</span> <span class="o">+</span> <span class="n">epsilon</span><span class="p">)))</span></div>
+    <span class="n">alpha</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">beta2_pow</span><span class="p">)</span><span class="o">**</span><span class="mf">0.5</span> <span class="o">/</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">beta1_pow</span> <span class="o">+</span> <span class="n">epsilon</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">mw</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">m</span><span class="p">,</span> <span class="n">kc</span><span class="p">:</span> <span class="p">(</span><span class="n">alpha</span> <span class="o">*</span> <span class="n">m</span> <span class="o">/</span> <span class="p">(</span><span class="n">vw</span><span class="p">[</span><span class="n">kc</span><span class="p">]</span> <span class="o">**</span> <span class="mf">0.5</span> <span class="o">+</span> <span class="n">epsilon</span><span class="p">)))</span></div>
 
 
 <span class="c1"># Optimizer Updates #</span>
@@ -380,7 +365,8 @@
 <span class="sd">    :type stop_gradients: bool, optional</span>
 <span class="sd">    :return: The new function weights ws_new, following the gradient descent updates.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">deltas</span> <span class="o">=</span> <span class="n">gradient_descent_delta</span><span class="p">(</span><span class="n">dcdws</span><span class="p">,</span> <span class="n">lr</span><span class="p">)</span>
+    <span class="n">layerwise_lr</span> <span class="o">=</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">lr</span><span class="p">,</span> <span class="n">_ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">)</span>
+    <span class="n">deltas</span> <span class="o">=</span> <span class="n">dcdws</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">dcdw</span><span class="p">,</span> <span class="n">kc</span><span class="p">:</span> <span class="p">(</span><span class="n">dcdw</span> <span class="o">*</span> <span class="p">(</span><span class="n">lr</span><span class="p">[</span><span class="n">kc</span><span class="p">]</span> <span class="k">if</span> <span class="n">layerwise_lr</span> <span class="k">else</span> <span class="n">lr</span><span class="p">)))</span>
     <span class="k">if</span> <span class="n">inplace</span><span class="p">:</span>
         <span class="n">ws</span> <span class="o">=</span> <span class="n">ws</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">w</span><span class="p">,</span> <span class="n">kc</span><span class="p">:</span> <span class="n">_ivy</span><span class="o">.</span><span class="n">inplace_decrement</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">deltas</span><span class="p">[</span><span class="n">kc</span><span class="p">]))</span>
     <span class="k">else</span><span class="p">:</span>
@@ -410,11 +396,12 @@
 <span class="sd">    :type stop_gradients: bool, optional</span>
 <span class="sd">    :return: The new function weights ws_new, following the LARS updates.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">lr</span> <span class="o">=</span> <span class="n">lr</span> <span class="o">*</span> <span class="n">ws</span><span class="o">.</span><span class="n">norm</span><span class="p">()</span> <span class="o">/</span> <span class="n">dcdws</span><span class="o">.</span><span class="n">norm</span><span class="p">()</span>
+    <span class="n">lr</span> <span class="o">=</span> <span class="n">lr</span> <span class="o">*</span> <span class="n">ws</span><span class="o">.</span><span class="n">norm</span><span class="p">()</span> <span class="o">/</span> <span class="p">(</span><span class="n">dcdws</span><span class="o">.</span><span class="n">norm</span><span class="p">()</span> <span class="o">+</span> <span class="n">MIN_DENOMINATOR</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">gradient_descent_update</span><span class="p">(</span><span class="n">ws</span><span class="p">,</span> <span class="n">dcdws</span><span class="p">,</span> <span class="n">lr</span><span class="p">,</span> <span class="n">inplace</span><span class="p">,</span> <span class="n">stop_gradients</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="adam_update"><a class="viewcode-back" href="../../../core/gradients/adam_update.html#ivy.core.gradients.adam_update">[docs]</a><span class="k">def</span> <span class="nf">adam_update</span><span class="p">(</span><span class="n">ws</span><span class="p">,</span> <span class="n">dcdws</span><span class="p">,</span> <span class="n">lr</span><span class="p">,</span> <span class="n">mw</span><span class="p">,</span> <span class="n">vw</span><span class="p">,</span> <span class="n">step</span><span class="p">,</span> <span class="n">beta1</span><span class="o">=</span><span class="mf">0.9</span><span class="p">,</span> <span class="n">beta2</span><span class="o">=</span><span class="mf">0.999</span><span class="p">,</span> <span class="n">epsilon</span><span class="o">=</span><span class="mf">1e-7</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">stop_gradients</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="adam_update"><a class="viewcode-back" href="../../../core/gradients/adam_update.html#ivy.core.gradients.adam_update">[docs]</a><span class="k">def</span> <span class="nf">adam_update</span><span class="p">(</span><span class="n">ws</span><span class="p">,</span> <span class="n">dcdws</span><span class="p">,</span> <span class="n">lr</span><span class="p">,</span> <span class="n">mw</span><span class="p">,</span> <span class="n">vw</span><span class="p">,</span> <span class="n">step</span><span class="p">,</span> <span class="n">beta1</span><span class="o">=</span><span class="mf">0.9</span><span class="p">,</span> <span class="n">beta2</span><span class="o">=</span><span class="mf">0.999</span><span class="p">,</span> <span class="n">epsilon</span><span class="o">=</span><span class="mf">1e-7</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">stop_gradients</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                <span class="n">effective_grads</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Update weights ws of some function, given the derivatives of some cost c with respect to ws, using ADAM update.</span>
 <span class="sd">    `[reference] &lt;https://en.wikipedia.org/wiki/Stochastic_gradient_descent#Adam&gt;`_</span>
@@ -444,9 +431,13 @@
 <span class="sd">    :type inplace: bool, optional</span>
 <span class="sd">    :param stop_gradients: Whether to stop the gradients of the variables after each gradient step. Default is True.</span>
 <span class="sd">    :type stop_gradients: bool, optional</span>
+<span class="sd">    :param effective_grads: The effective gradients for updating the weights. Computed internally by default.</span>
+<span class="sd">    :type effective_grads: Ivy container, optional</span>
 <span class="sd">    :return: The new function weights ws_new, and also new mw and vw, following the adam updates.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">deltas</span> <span class="o">=</span> <span class="n">adam_delta</span><span class="p">(</span><span class="n">dcdws</span><span class="p">,</span> <span class="n">lr</span><span class="p">,</span> <span class="n">mw</span><span class="p">,</span> <span class="n">vw</span><span class="p">,</span> <span class="n">step</span><span class="p">,</span> <span class="n">beta1</span><span class="p">,</span> <span class="n">beta2</span><span class="p">,</span> <span class="n">epsilon</span><span class="p">)</span>
+    <span class="n">layerwise_lr</span> <span class="o">=</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">lr</span><span class="p">,</span> <span class="n">_ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">)</span>
+    <span class="n">effective_grads</span> <span class="o">=</span> <span class="n">_ivy</span><span class="o">.</span><span class="n">default</span><span class="p">(</span><span class="n">effective_grads</span><span class="p">,</span> <span class="n">adam_effective_gradient</span><span class="p">(</span><span class="n">dcdws</span><span class="p">,</span> <span class="n">mw</span><span class="p">,</span> <span class="n">vw</span><span class="p">,</span> <span class="n">step</span><span class="p">,</span> <span class="n">beta1</span><span class="p">,</span> <span class="n">beta2</span><span class="p">,</span> <span class="n">epsilon</span><span class="p">))</span>
+    <span class="n">deltas</span> <span class="o">=</span> <span class="n">effective_grads</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">eff_grad</span><span class="p">,</span> <span class="n">kc</span><span class="p">:</span> <span class="p">(</span><span class="n">eff_grad</span> <span class="o">*</span> <span class="p">(</span><span class="n">lr</span><span class="p">[</span><span class="n">kc</span><span class="p">]</span> <span class="k">if</span> <span class="n">layerwise_lr</span> <span class="k">else</span> <span class="n">lr</span><span class="p">)))</span>
     <span class="k">if</span> <span class="n">inplace</span><span class="p">:</span>
         <span class="n">ws</span> <span class="o">=</span> <span class="n">ws</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">w</span><span class="p">,</span> <span class="n">kc</span><span class="p">:</span> <span class="n">_ivy</span><span class="o">.</span><span class="n">inplace_decrement</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="n">deltas</span><span class="p">[</span><span class="n">kc</span><span class="p">]))</span>
     <span class="k">else</span><span class="p">:</span>
@@ -454,6 +445,49 @@
     <span class="k">if</span> <span class="n">stop_gradients</span><span class="p">:</span>
         <span class="n">dcdws</span><span class="o">.</span><span class="n">stop_gradients</span><span class="p">(</span><span class="n">preserve_type</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">ws</span><span class="p">,</span> <span class="n">mw</span><span class="p">,</span> <span class="n">vw</span></div>
+
+
+<div class="viewcode-block" id="lamb_update"><a class="viewcode-back" href="../../../core/gradients/lamb_update.html#ivy.core.gradients.lamb_update">[docs]</a><span class="k">def</span> <span class="nf">lamb_update</span><span class="p">(</span><span class="n">ws</span><span class="p">,</span> <span class="n">dcdws</span><span class="p">,</span> <span class="n">lr</span><span class="p">,</span> <span class="n">mw</span><span class="p">,</span> <span class="n">vw</span><span class="p">,</span> <span class="n">step</span><span class="p">,</span> <span class="n">beta1</span><span class="o">=</span><span class="mf">0.9</span><span class="p">,</span> <span class="n">beta2</span><span class="o">=</span><span class="mf">0.999</span><span class="p">,</span> <span class="n">epsilon</span><span class="o">=</span><span class="mf">1e-7</span><span class="p">,</span> <span class="n">max_trust_ratio</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                <span class="n">stop_gradients</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Update weights ws of some function, given the derivatives of some cost c with respect to ws, [dc/dw for w in ws],</span>
+<span class="sd">    by applying LAMB method.</span>
+
+<span class="sd">    :param ws: Weights of the function to be updated.</span>
+<span class="sd">    :type ws: container of variables</span>
+<span class="sd">    :param dcdws: Derivates of the cost c with respect to the weights ws, [dc/dw for w in ws].</span>
+<span class="sd">    :type dcdws: container of arrays</span>
+<span class="sd">    :param lr: Learning rate(s), the rate(s) at which the weights should be updated relative to the gradient.</span>
+<span class="sd">    :type lr: float or container of layer-wise rates.</span>
+<span class="sd">    :param mw: running average of the gradients</span>
+<span class="sd">    :type mw: container of arrays</span>
+<span class="sd">    :param vw: running average of second moments of the gradients</span>
+<span class="sd">    :type vw: container of arrays</span>
+<span class="sd">    :param step: training step</span>
+<span class="sd">    :type step: int</span>
+<span class="sd">    :param beta1: gradient forgetting factor</span>
+<span class="sd">    :type beta1: float</span>
+<span class="sd">    :param beta2: second moment of gradient forgetting factor</span>
+<span class="sd">    :type beta2: float</span>
+<span class="sd">    :param epsilon: divisor during adam update, preventing division by zero</span>
+<span class="sd">    :type epsilon: float</span>
+<span class="sd">    :param max_trust_ratio: The maximum value for the trust ratio. Default is 10.</span>
+<span class="sd">    :type max_trust_ratio: float, optional</span>
+<span class="sd">    :param inplace: Whether to perform the operation inplace, for backends which support inplace variable updates,</span>
+<span class="sd">                    and handle gradients behind the scenes such as PyTorch. If the update step should form part of a</span>
+<span class="sd">                    computation graph (i.e. higher order optimization), then this should be set to False.</span>
+<span class="sd">                    Default is True.</span>
+<span class="sd">    :type inplace: bool, optional</span>
+<span class="sd">    :param stop_gradients: Whether to stop the gradients of the variables after each gradient step. Default is True.</span>
+<span class="sd">    :type stop_gradients: bool, optional</span>
+<span class="sd">    :return: The new function weights ws_new, following the LARS updates.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">r1</span> <span class="o">=</span> <span class="n">ws</span><span class="o">.</span><span class="n">norm</span><span class="p">()</span>
+    <span class="n">eff_grads</span> <span class="o">=</span> <span class="n">adam_effective_gradient</span><span class="p">(</span><span class="n">dcdws</span><span class="p">,</span> <span class="n">mw</span><span class="p">,</span> <span class="n">vw</span><span class="p">,</span> <span class="n">step</span><span class="p">,</span> <span class="n">beta1</span><span class="p">,</span> <span class="n">beta2</span><span class="p">,</span> <span class="n">epsilon</span><span class="p">)</span>
+    <span class="n">r2</span> <span class="o">=</span> <span class="n">eff_grads</span><span class="o">.</span><span class="n">norm</span><span class="p">()</span>
+    <span class="n">r</span> <span class="o">=</span> <span class="p">(</span><span class="n">r1</span><span class="o">/</span><span class="p">(</span><span class="n">r2</span> <span class="o">+</span> <span class="n">MIN_DENOMINATOR</span><span class="p">))</span><span class="o">.</span><span class="n">minimum</span><span class="p">(</span><span class="n">max_trust_ratio</span><span class="p">)</span>
+    <span class="n">lr</span> <span class="o">=</span> <span class="n">lr</span> <span class="o">*</span> <span class="n">r</span>
+    <span class="k">return</span> <span class="n">adam_update</span><span class="p">(</span><span class="n">ws</span><span class="p">,</span> <span class="n">dcdws</span><span class="p">,</span> <span class="n">lr</span><span class="p">,</span> <span class="n">mw</span><span class="p">,</span> <span class="n">vw</span><span class="p">,</span> <span class="n">step</span><span class="p">,</span> <span class="n">beta1</span><span class="p">,</span> <span class="n">beta2</span><span class="p">,</span> <span class="n">epsilon</span><span class="p">,</span> <span class="n">inplace</span><span class="p">,</span> <span class="n">stop_gradients</span><span class="p">,</span> <span class="n">eff_grads</span><span class="p">)</span></div>
 </pre></div>
 
            </div>
