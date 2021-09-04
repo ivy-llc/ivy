@@ -131,6 +131,56 @@ class SGD(Optimizer):
         return ivy.Container({})
 
 
+class LARS(Optimizer):
+
+    def __init__(self, lr=lambda: 1e-4, decay_lambda=0, compile_step=False, inplace=True, stop_gradients=True):
+        """
+        Construct a Layerwise Adaptive Rate Scaling (LARS) optimizer.
+
+        :param lr: Learning rate, default is 1e-4.
+        :type lr: float, optional
+        :param decay_lambda: The factor used for weight decay. Default is zero.
+        :type decay_lambda: float
+        :param compile_step: Whether to compile the optimizer step, default is False.
+        :type compile_step: bool, option
+        :param inplace: Whether to update the variables in-place, or to create new variable handles.
+                        This is only relevant for frameworks with stateful variables such as PyTorch. Default is True.
+        :type inplace: bool, optional
+        :param stop_gradients: Whether to stop the gradients of the variables after each gradient step. Default is True.
+        :type stop_gradients: bool, optional
+        """
+        self._decay_lambda = decay_lambda
+        Optimizer.__init__(self, lr, compile_step, inplace, stop_gradients)
+
+    # Custom Step
+
+    def _step(self, v, grads):
+        """
+        Update nested variables container v by gradient descent step, using nested gradients container.
+
+        :param v: Nested variables to update.
+        :type v: Ivy container of variables
+        :param grads: Nested gradients to update.
+        :type grads: sequence of arrays
+        :return: The new updated variables container, following LARS step.
+        """
+        return ivy.lars_update(v, grads, self._lr if isinstance(self._lr, float) else self._lr(),
+                               self._decay_lambda, self._inplace, self._stop_gradients)
+
+    def set_state(self, state):
+        """
+        Set state of the optimizer.
+
+        :param state: Nested state to update.
+        :type state: Ivy container of state tensors
+        """
+        pass
+
+    @property
+    def state(self):
+        return ivy.Container({})
+
+
 class Adam(Optimizer):
 
     def __init__(self, lr=1e-4, beta1=0.9, beta2=0.999, epsilon=1e-07, compile_step=False, inplace=True,
