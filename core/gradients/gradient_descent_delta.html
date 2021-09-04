@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>lars_update &mdash; Ivy 1.0 documentation</title>
+  <title>gradient_descent_delta &mdash; Ivy 1.0 documentation</title>
   
 
   
@@ -36,8 +36,8 @@
   <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="adam_update" href="adam_update.html" />
-    <link rel="prev" title="gradient_descent_update" href="gradient_descent_update.html" /> 
+    <link rel="next" title="adam_delta" href="adam_delta.html" />
+    <link rel="prev" title="execute_with_gradients" href="execute_with_gradients.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -99,10 +99,10 @@
 <li class="toctree-l2"><a class="reference internal" href="inplace_increment.html">inplace_increment</a></li>
 <li class="toctree-l2"><a class="reference internal" href="stop_gradient.html">stop_gradient</a></li>
 <li class="toctree-l2"><a class="reference internal" href="execute_with_gradients.html">execute_with_gradients</a></li>
-<li class="toctree-l2"><a class="reference internal" href="gradient_descent_delta.html">gradient_descent_delta</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">gradient_descent_delta</a></li>
 <li class="toctree-l2"><a class="reference internal" href="adam_delta.html">adam_delta</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gradient_descent_update.html">gradient_descent_update</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">lars_update</a></li>
+<li class="toctree-l2"><a class="reference internal" href="lars_update.html">lars_update</a></li>
 <li class="toctree-l2"><a class="reference internal" href="adam_update.html">adam_update</a></li>
 </ul>
 </li>
@@ -187,13 +187,13 @@
         
           <li><a href="../gradients.html">Gradients</a> &raquo;</li>
         
-      <li>lars_update</li>
+      <li>gradient_descent_delta</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="../../_sources/core/gradients/lars_update.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../_sources/core/gradients/gradient_descent_delta.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -206,28 +206,21 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="lars-update">
-<h1>lars_update<a class="headerlink" href="#lars-update" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="gradient-descent-delta">
+<h1>gradient_descent_delta<a class="headerlink" href="#gradient-descent-delta" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
-<dt id="ivy.core.gradients.lars_update">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">lars_update</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ws</span></em>, <em class="sig-param"><span class="n">dcdws</span></em>, <em class="sig-param"><span class="n">lr</span></em>, <em class="sig-param"><span class="n">inplace</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">stop_gradients</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/gradients.html#lars_update"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.gradients.lars_update" title="Permalink to this definition">¶</a></dt>
-<dd><p>Update weights ws of some function, given the derivatives of some cost c with respect to ws, [dc/dw for w in ws],
-by applying Layerwise Adaptive Rate Scaling (LARS) method.</p>
+<dt id="ivy.core.gradients.gradient_descent_delta">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">gradient_descent_delta</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dcdws</span></em>, <em class="sig-param"><span class="n">lr</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/gradients.html#gradient_descent_delta"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.gradients.gradient_descent_delta" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute gradient descent delta, given the derivatives of some cost c with respect to ws, [dc/dw for w in ws].</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>ws</strong> (<em>Ivy container</em>) – Weights of the function to be updated.</p></li>
 <li><p><strong>dcdws</strong> (<em>Ivy container</em>) – Derivates of the cost c with respect to the weights ws, [dc/dw for w in ws].</p></li>
-<li><p><strong>lr</strong> (<em>float</em>) – Learning rate, the rate at which the weights should be updated relative to the gradient.</p></li>
-<li><p><strong>inplace</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to perform the operation inplace, for backends which support inplace variable updates,
-and handle gradients behind the scenes such as PyTorch. If the update step should form part of a
-computation graph (i.e. higher order optimization), then this should be set to False.
-Default is True.</p></li>
-<li><p><strong>stop_gradients</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to stop the gradients of the variables after each gradient step. Default is True.</p></li>
+<li><p><strong>lr</strong> (<em>float</em><em> or </em><em>container of layer-wise rates.</em>) – Learning rate(s), the rate(s) at which the weights should be updated relative to the gradient.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>The new function weights ws_new, following the LARS updates.</p>
+<dd class="field-even"><p>The gradient descent delta.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -247,10 +240,10 @@ Default is True.</p></li>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="adam_update.html" class="btn btn-neutral float-right" title="adam_update" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="adam_delta.html" class="btn btn-neutral float-right" title="adam_delta" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="gradient_descent_update.html" class="btn btn-neutral float-left" title="gradient_descent_update" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="execute_with_gradients.html" class="btn btn-neutral float-left" title="execute_with_gradients" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

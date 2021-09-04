@@ -17,9 +17,11 @@ Gradients
    gradients/inplace_update.rst
    gradients/inplace_decrement.rst
    gradients/inplace_increment.rst
+   gradients/stop_gradient.rst
    gradients/execute_with_gradients.rst
+   gradients/gradient_descent_delta.rst
+   gradients/adam_delta.rst
    gradients/gradient_descent_update.rst
    gradients/lars_update.rst
    gradients/adam_update.rst
-   gradients/stop_gradient.rst
 
