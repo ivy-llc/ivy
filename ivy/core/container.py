@@ -711,7 +711,7 @@ class Container(dict):
                         key_chains, to_apply, prune_unapplied)
 
     # noinspection PyShadowingBuiltins
-    def norm(self, ord='fro', axis=None, keepdims=False, key_chains=None, to_apply=True, prune_unapplied=False):
+    def norm(self, ord=None, axis=None, keepdims=False, key_chains=None, to_apply=True, prune_unapplied=False):
         """
         Compute matrix or vector norm for each array in the container.
         This function is able to return ord-1 and ord-2 vector-norms and matrix-norms.

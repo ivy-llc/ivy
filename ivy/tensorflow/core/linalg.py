@@ -5,6 +5,9 @@ Collection of TensorFlow linear algebra functions, wrapped to fit Ivy syntax and
 # global
 import tensorflow as _tf
 
+# local
+import ivy as _ivy
+
 
 # noinspection PyPep8Naming
 def svd(x):
@@ -17,7 +20,7 @@ def svd(x):
 
 
 # noinspection PyShadowingBuiltins
-norm = lambda x, ord='fro', axis=None, keepdims=False: _tf.linalg.norm(x, ord, axis, keepdims)
+norm = lambda x, ord=None, axis=None, keepdims=False: _tf.linalg.norm(x, _ivy.default(ord, 'euclidean'), axis, keepdims)
 inv = _tf.linalg.inv
 pinv = _tf.linalg.pinv
 

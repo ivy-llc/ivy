@@ -33,7 +33,7 @@ def svd(x, f=None):
 
 
 # noinspection PyShadowingBuiltins
-def norm(x, ord='fro', axis=None, keepdims=False, f=None):
+def norm(x, ord=None, axis=None, keepdims=False, f=None):
     """
     Matrix or vector norm.
     This function is able to return ord-1 and ord-2 vector-norms and matrix-norms.
