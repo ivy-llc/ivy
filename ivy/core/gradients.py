@@ -117,11 +117,9 @@ def gradient_descent_update(ws, dcdws, lr, inplace=True, stop_gradients=True):
     """
     layerwise_lr = isinstance(lr, _ivy.Container)
     if inplace:
-        ws = ws.map(lambda x, kc:
-                    _ivy.inplace_decrement(x, dcdws.at_key_chain(kc) * (lr.at_key_chain(kc) if layerwise_lr else lr)))
+        ws = ws.map(lambda x, kc: _ivy.inplace_decrement(x, dcdws[kc] * (lr[kc] if layerwise_lr else lr)))
     else:
-        ws = ws.map(lambda w, kc:
-                    (w - dcdws.at_key_chain(kc) * (lr.at_key_chain(kc) if layerwise_lr else lr)))
+        ws = ws.map(lambda w, kc: (w - dcdws[kc] * (lr[kc] if layerwise_lr else lr)))
     if stop_gradients:
         dcdws.stop_gradients(preserve_type=True)
     return ws
@@ -161,21 +159,21 @@ def adam_update(ws, dcdws, lr, mw, vw, step, beta1=0.9, beta2=0.999, epsilon=1e-
     """
     layerwise_lr = isinstance(lr, _ivy.Container)
     step = float(_ivy.to_scalar(step))
-    mw = dcdws.map(lambda dcdw, kc: beta1 * mw.at_key_chain(kc) + (1 - beta1) * dcdw)
+    mw = dcdws.map(lambda dcdw, kc: beta1 * mw[kc] + (1 - beta1) * dcdw)
     dcdws_sqrd = dcdws.map(lambda dcdw, _: dcdw ** 2)
-    vw = dcdws_sqrd.map(lambda dcdw_sqrd, kc: beta2 * vw.at_key_chain(kc) + (1 - beta2) * dcdw_sqrd)
+    vw = dcdws_sqrd.map(lambda dcdw_sqrd, kc: beta2 * vw[kc] + (1 - beta2) * dcdw_sqrd)
     beta1_pow = beta1 ** step
     beta2_pow = beta2 ** step
     alpha = lr * (1 - beta2_pow)**0.5 / (1 - beta1_pow + epsilon)
 
     if inplace:
         ws = ws.map(lambda x, kc:
-                    _ivy.inplace_decrement(x, (alpha.at_key_chain(kc) if layerwise_lr else alpha) * mw.at_key_chain(kc)
-                                           / (vw.at_key_chain(kc) ** 0.5 + epsilon)))
+                    _ivy.inplace_decrement(x, (alpha[kc] if layerwise_lr else alpha) * mw[kc]
+                                                         / (vw[kc] ** 0.5 + epsilon)))
     else:
         ws = ws.map(lambda w, kc:
-                    (w - (alpha.at_key_chain(kc) if layerwise_lr else alpha) * mw.at_key_chain(kc) /
-                     (vw.at_key_chain(kc) ** 0.5 + epsilon)))
+                    (w - (alpha[kc] if layerwise_lr else alpha) * mw[kc] /
+                     (vw[kc] ** 0.5 + epsilon)))
     if stop_gradients:
         dcdws.stop_gradients(preserve_type=True)
     return ws, mw, vw
