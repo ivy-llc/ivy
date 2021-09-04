@@ -118,6 +118,7 @@
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Optimizers</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="optimizers/Optimizer.html">Optimizer</a></li>
 <li class="toctree-l2"><a class="reference internal" href="optimizers/SGD.html">SGD</a></li>
+<li class="toctree-l2"><a class="reference internal" href="optimizers/LARS.html">LARS</a></li>
 <li class="toctree-l2"><a class="reference internal" href="optimizers/Adam.html">Adam</a></li>
 </ul>
 </li>
@@ -242,6 +243,46 @@ This is only relevant for frameworks with stateful variables such as PyTorch. De
 </dd></dl>
 
 <dl class="py class">
+<dt id="ivy.neural_net_stateful.optimizers.LARS">
+<em class="property">class </em><code class="sig-prename descclassname">ivy.neural_net_stateful.optimizers.</code><code class="sig-name descname">LARS</code><span class="sig-paren">(</span><em class="sig-param">lr=&lt;function LARS.&lt;lambda&gt;&gt;</em>, <em class="sig-param">decay_lambda=0</em>, <em class="sig-param">compile_step=False</em>, <em class="sig-param">inplace=True</em>, <em class="sig-param">stop_gradients=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/neural_net_stateful/optimizers.html#LARS"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.neural_net_stateful.optimizers.LARS" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="optimizers/Optimizer.html#ivy.neural_net_stateful.optimizers.Optimizer" title="ivy.neural_net_stateful.optimizers.Optimizer"><code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.neural_net_stateful.optimizers.Optimizer</span></code></a></p>
+<dl class="py method">
+<dt id="ivy.neural_net_stateful.optimizers.LARS.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param">lr=&lt;function LARS.&lt;lambda&gt;&gt;</em>, <em class="sig-param">decay_lambda=0</em>, <em class="sig-param">compile_step=False</em>, <em class="sig-param">inplace=True</em>, <em class="sig-param">stop_gradients=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/neural_net_stateful/optimizers.html#LARS.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.neural_net_stateful.optimizers.LARS.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Construct a Layerwise Adaptive Rate Scaling (LARS) optimizer.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>lr</strong> (<em>float</em><em>, </em><em>optional</em>) – Learning rate, default is 1e-4.</p></li>
+<li><p><strong>decay_lambda</strong> (<em>float</em>) – The factor used for weight decay. Default is zero.</p></li>
+<li><p><strong>compile_step</strong> (<em>bool</em><em>, </em><em>option</em>) – Whether to compile the optimizer step, default is False.</p></li>
+<li><p><strong>inplace</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to update the variables in-place, or to create new variable handles.
+This is only relevant for frameworks with stateful variables such as PyTorch. Default is True.</p></li>
+<li><p><strong>stop_gradients</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to stop the gradients of the variables after each gradient step. Default is True.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="ivy.neural_net_stateful.optimizers.LARS.set_state">
+<code class="sig-name descname">set_state</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">state</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/neural_net_stateful/optimizers.html#LARS.set_state"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.neural_net_stateful.optimizers.LARS.set_state" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set state of the optimizer.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>state</strong> (<em>Ivy container of state tensors</em>) – Nested state to update.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="ivy.neural_net_stateful.optimizers.LARS.state">
+<em class="property">property </em><code class="sig-name descname">state</code><a class="headerlink" href="#ivy.neural_net_stateful.optimizers.LARS.state" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
 <dt id="ivy.neural_net_stateful.optimizers.Optimizer">
 <em class="property">class </em><code class="sig-prename descclassname">ivy.neural_net_stateful.optimizers.</code><code class="sig-name descname">Optimizer</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">lr</span></em>, <em class="sig-param"><span class="n">compile_step</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">inplace</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">stop_gradients</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/neural_net_stateful/optimizers.html#Optimizer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.neural_net_stateful.optimizers.Optimizer" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">abc.ABC</span></code></p>
@@ -336,6 +377,7 @@ This is only relevant for frameworks with stateful variables such as PyTorch. De
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="optimizers/Optimizer.html">Optimizer</a></li>
 <li class="toctree-l1"><a class="reference internal" href="optimizers/SGD.html">SGD</a></li>
+<li class="toctree-l1"><a class="reference internal" href="optimizers/LARS.html">LARS</a></li>
 <li class="toctree-l1"><a class="reference internal" href="optimizers/Adam.html">Adam</a></li>
 </ul>
 </div>
