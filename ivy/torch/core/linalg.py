@@ -15,7 +15,7 @@ def svd(x) -> List[torch.Tensor]:
 
 
 # noinspection PyShadowingBuiltins
-def norm(x, ord: Union[int, str] = 'fro', axis: Optional[int] = None, keepdims: bool = False):
+def norm(x, ord: Optional[Union[int, str]] = None, axis: Optional[int] = None, keepdims: bool = False):
     return torch.norm(x, p=ord, dim=axis, keepdim=keepdims)
 
 

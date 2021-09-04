@@ -125,6 +125,30 @@ def gradient_descent_update(ws, dcdws, lr, inplace=True, stop_gradients=True):
     return ws
 
 
+def lars_update(ws, dcdws, lr, inplace=True, stop_gradients=True):
+    """
+    Update weights ws of some function, given the derivatives of some cost c with respect to ws, [dc/dw for w in ws],
+    by applying Layerwise Adaptive Rate Scaling (LARS) method.
+
+    :param ws: Weights of the function to be updated.
+    :type ws: Ivy container
+    :param dcdws: Derivates of the cost c with respect to the weights ws, [dc/dw for w in ws].
+    :type dcdws: Ivy container
+    :param lr: Learning rate, the rate at which the weights should be updated relative to the gradient.
+    :type lr: float
+    :param inplace: Whether to perform the operation inplace, for backends which support inplace variable updates,
+                    and handle gradients behind the scenes such as PyTorch. If the update step should form part of a
+                    computation graph (i.e. higher order optimization), then this should be set to False.
+                    Default is True.
+    :type inplace: bool, optional
+    :param stop_gradients: Whether to stop the gradients of the variables after each gradient step. Default is True.
+    :type stop_gradients: bool, optional
+    :return: The new function weights ws_new, following the LARS updates.
+    """
+    lr = lr * ws.norm() / dcdws.norm()
+    return gradient_descent_update(ws, dcdws, lr, inplace, stop_gradients)
+
+
 def adam_update(ws, dcdws, lr, mw, vw, step, beta1=0.9, beta2=0.999, epsilon=1e-7, inplace=True, stop_gradients=True):
     """
     Update weights ws of some function, given the derivatives of some cost c with respect to ws, using ADAM update.
@@ -155,7 +179,7 @@ def adam_update(ws, dcdws, lr, mw, vw, step, beta1=0.9, beta2=0.999, epsilon=1e-
     :type inplace: bool, optional
     :param stop_gradients: Whether to stop the gradients of the variables after each gradient step. Default is True.
     :type stop_gradients: bool, optional
-    :return: The new function weights ws_new, and also new mw and vw, following the gradient descent updates.
+    :return: The new function weights ws_new, and also new mw and vw, following the adam updates.
     """
     layerwise_lr = isinstance(lr, _ivy.Container)
     step = float(_ivy.to_scalar(step))
