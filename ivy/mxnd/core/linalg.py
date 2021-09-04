@@ -6,6 +6,7 @@ Collection of MXNet linear algebra functions, wrapped to fit Ivy syntax and sign
 import mxnet as _mx
 
 # local
+import ivy as _ivy
 from ivy.mxnd.core.general import matmul as _matmul
 
 
@@ -16,8 +17,11 @@ def svd(x):
 
 
 # noinspection PyShadowingBuiltins
-norm = lambda x, ord='fro', axis=None, keepdims=False:\
-    _mx.nd.norm(x, ord=(2 if ord == 'fro' else ord), axis=(None if ord == 'fro' else axis), keepdims=keepdims)
+def norm(x, ord=None, axis=None, keepdims=False):
+    ord = _ivy.default(ord, 2)
+    return _mx.nd.norm(x, ord=(2 if ord == 'fro' else ord), axis=(None if ord == 'fro' else axis), keepdims=keepdims)
+
+
 inv = _mx.nd.linalg_inverse
 
 
