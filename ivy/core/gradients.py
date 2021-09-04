@@ -187,7 +187,7 @@ def gradient_descent_update(ws, dcdws, lr, inplace=True, stop_gradients=True):
     return ws
 
 
-def lars_update(ws, dcdws, lr, inplace=True, stop_gradients=True):
+def lars_update(ws, dcdws, lr, decay_lambda=0, inplace=True, stop_gradients=True):
     """
     Update weights ws of some function, given the derivatives of some cost c with respect to ws, [dc/dw for w in ws],
     by applying Layerwise Adaptive Rate Scaling (LARS) method.
@@ -198,6 +198,8 @@ def lars_update(ws, dcdws, lr, inplace=True, stop_gradients=True):
     :type dcdws: Ivy container
     :param lr: Learning rate, the rate at which the weights should be updated relative to the gradient.
     :type lr: float
+    :param decay_lambda: The factor used for weight decay. Default is zero.
+    :type decay_lambda: float
     :param inplace: Whether to perform the operation inplace, for backends which support inplace variable updates,
                     and handle gradients behind the scenes such as PyTorch. If the update step should form part of a
                     computation graph (i.e. higher order optimization), then this should be set to False.
@@ -207,7 +209,10 @@ def lars_update(ws, dcdws, lr, inplace=True, stop_gradients=True):
     :type stop_gradients: bool, optional
     :return: The new function weights ws_new, following the LARS updates.
     """
-    lr = lr * ws.norm() / (dcdws.norm() + MIN_DENOMINATOR)
+    ws_norm = ws.norm()
+    lr = lr * ws_norm / (dcdws.norm() + MIN_DENOMINATOR)
+    if decay_lambda > 0:
+        lr /= (ws_norm * decay_lambda)
     return gradient_descent_update(ws, dcdws, lr, inplace, stop_gradients)
 
 
@@ -258,8 +263,8 @@ def adam_update(ws, dcdws, lr, mw, vw, step, beta1=0.9, beta2=0.999, epsilon=1e-
     return ws, mw, vw
 
 
-def lamb_update(ws, dcdws, lr, mw, vw, step, beta1=0.9, beta2=0.999, epsilon=1e-7, max_trust_ratio=10, inplace=True,
-                stop_gradients=True):
+def lamb_update(ws, dcdws, lr, mw, vw, step, beta1=0.9, beta2=0.999, epsilon=1e-7, max_trust_ratio=10, decay_lambda=0,
+                inplace=True, stop_gradients=True):
     """
     Update weights ws of some function, given the derivatives of some cost c with respect to ws, [dc/dw for w in ws],
     by applying LAMB method.
@@ -284,6 +289,8 @@ def lamb_update(ws, dcdws, lr, mw, vw, step, beta1=0.9, beta2=0.999, epsilon=1e-
     :type epsilon: float
     :param max_trust_ratio: The maximum value for the trust ratio. Default is 10.
     :type max_trust_ratio: float, optional
+    :param decay_lambda: The factor used for weight decay. Default is zero.
+    :type decay_lambda: float
     :param inplace: Whether to perform the operation inplace, for backends which support inplace variable updates,
                     and handle gradients behind the scenes such as PyTorch. If the update step should form part of a
                     computation graph (i.e. higher order optimization), then this should be set to False.
@@ -295,7 +302,10 @@ def lamb_update(ws, dcdws, lr, mw, vw, step, beta1=0.9, beta2=0.999, epsilon=1e-
     """
     r1 = ws.norm()
     eff_grads = adam_effective_gradient(dcdws, mw, vw, step, beta1, beta2, epsilon)
-    r2 = eff_grads.norm()
+    if decay_lambda > 0:
+        r2 = (eff_grads + decay_lambda*ws).norm()
+    else:
+        r2 = eff_grads.norm()
     r = (r1/(r2 + MIN_DENOMINATOR)).minimum(max_trust_ratio)
     lr = lr * r
     return adam_update(ws, dcdws, lr, mw, vw, step, beta1, beta2, epsilon, inplace, stop_gradients, eff_grads)
