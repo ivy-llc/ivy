@@ -318,6 +318,87 @@ def test_container_reduce_max(dev_str, call):
     assert np.allclose(ivy.to_numpy(container_reduced_max.b.d), np.array([9.]))
 
 
+def test_container_minimum(dev_str, call):
+    container = Container({'a': ivy.array([1., 2., 3.]),
+                           'b': {'c': ivy.array([2., 4., 6.]), 'd': ivy.array([3., 6., 9.])}})
+    other = Container({'a': ivy.array([2., 3., 2.]),
+                       'b': {'c': ivy.array([1., 5., 4.]), 'd': ivy.array([4., 7., 8.])}})
+
+    # against number
+    container_minimum = container.minimum(5.)
+    assert np.allclose(ivy.to_numpy(container_minimum['a']), np.array([1., 2., 3.]))
+    assert np.allclose(ivy.to_numpy(container_minimum.a), np.array([1., 2., 3.]))
+    assert np.allclose(ivy.to_numpy(container_minimum['b']['c']), np.array([2., 4., 5.]))
+    assert np.allclose(ivy.to_numpy(container_minimum.b.c), np.array([2., 4., 5.]))
+    assert np.allclose(ivy.to_numpy(container_minimum['b']['d']), np.array([3., 5., 5.]))
+    assert np.allclose(ivy.to_numpy(container_minimum.b.d), np.array([3., 5., 5.]))
+
+    # against container
+    container_minimum = container.minimum(other)
+    assert np.allclose(ivy.to_numpy(container_minimum['a']), np.array([1., 2., 2.]))
+    assert np.allclose(ivy.to_numpy(container_minimum.a), np.array([1., 2., 2.]))
+    assert np.allclose(ivy.to_numpy(container_minimum['b']['c']), np.array([1., 4., 4.]))
+    assert np.allclose(ivy.to_numpy(container_minimum.b.c), np.array([1., 4., 4.]))
+    assert np.allclose(ivy.to_numpy(container_minimum['b']['d']), np.array([3., 6., 8.]))
+    assert np.allclose(ivy.to_numpy(container_minimum.b.d), np.array([3., 6., 8.]))
+
+
+def test_container_maximum(dev_str, call):
+    container = Container({'a': ivy.array([1., 2., 3.]),
+                           'b': {'c': ivy.array([2., 4., 6.]), 'd': ivy.array([3., 6., 9.])}})
+    other = Container({'a': ivy.array([2., 3., 2.]),
+                       'b': {'c': ivy.array([1., 5., 4.]), 'd': ivy.array([4., 7., 8.])}})
+
+    # against number
+    container_maximum = container.maximum(4.)
+    assert np.allclose(ivy.to_numpy(container_maximum['a']), np.array([4., 4., 4.]))
+    assert np.allclose(ivy.to_numpy(container_maximum.a), np.array([4., 4., 4.]))
+    assert np.allclose(ivy.to_numpy(container_maximum['b']['c']), np.array([4., 4., 6.]))
+    assert np.allclose(ivy.to_numpy(container_maximum.b.c), np.array([4., 4., 6.]))
+    assert np.allclose(ivy.to_numpy(container_maximum['b']['d']), np.array([4., 6., 9.]))
+    assert np.allclose(ivy.to_numpy(container_maximum.b.d), np.array([4., 6., 9.]))
+
+    # against container
+    container_maximum = container.maximum(other)
+    assert np.allclose(ivy.to_numpy(container_maximum['a']), np.array([2., 3., 3.]))
+    assert np.allclose(ivy.to_numpy(container_maximum.a), np.array([2., 3., 3.]))
+    assert np.allclose(ivy.to_numpy(container_maximum['b']['c']), np.array([2., 5., 6.]))
+    assert np.allclose(ivy.to_numpy(container_maximum.b.c), np.array([2., 5., 6.]))
+    assert np.allclose(ivy.to_numpy(container_maximum['b']['d']), np.array([4., 7., 9.]))
+    assert np.allclose(ivy.to_numpy(container_maximum.b.d), np.array([4., 7., 9.]))
+
+
+def test_container_clip(dev_str, call):
+    container = Container({'a': ivy.array([1., 2., 3.]),
+                           'b': {'c': ivy.array([2., 4., 6.]), 'd': ivy.array([3., 6., 9.])}})
+    container_min = Container({'a': ivy.array([2., 0., 0.]),
+                               'b': {'c': ivy.array([0., 5., 0.]), 'd': ivy.array([4., 7., 0.])}})
+    container_max = Container({'a': ivy.array([3., 1., 2.]),
+                               'b': {'c': ivy.array([1., 7., 5.]), 'd': ivy.array([5., 8., 8.])}})
+
+    # against number
+    container_clipped = container.clip(2., 6.)
+    assert np.allclose(ivy.to_numpy(container_clipped['a']), np.array([2., 2., 3.]))
+    assert np.allclose(ivy.to_numpy(container_clipped.a), np.array([2., 2., 3.]))
+    assert np.allclose(ivy.to_numpy(container_clipped['b']['c']), np.array([2., 4., 6.]))
+    assert np.allclose(ivy.to_numpy(container_clipped.b.c), np.array([2., 4., 6.]))
+    assert np.allclose(ivy.to_numpy(container_clipped['b']['d']), np.array([3., 6., 6.]))
+    assert np.allclose(ivy.to_numpy(container_clipped.b.d), np.array([3., 6., 6.]))
+
+    if call is helpers.mx_call:
+        # MXNet clip does not support arrays for the min and max arguments
+        return
+
+    # against container
+    container_clipped = container.clip(container_min, container_max)
+    assert np.allclose(ivy.to_numpy(container_clipped['a']), np.array([2., 1., 2.]))
+    assert np.allclose(ivy.to_numpy(container_clipped.a), np.array([2., 1., 2.]))
+    assert np.allclose(ivy.to_numpy(container_clipped['b']['c']), np.array([1., 5., 5.]))
+    assert np.allclose(ivy.to_numpy(container_clipped.b.c), np.array([1., 5., 5.]))
+    assert np.allclose(ivy.to_numpy(container_clipped['b']['d']), np.array([4., 7., 8.]))
+    assert np.allclose(ivy.to_numpy(container_clipped.b.d), np.array([4., 7., 8.]))
+
+
 def test_container_einsum(dev_str, call):
     dict_in = {'a': ivy.array([[1., 2.], [3., 4.], [5., 6.]]),
                'b': {'c': ivy.array([[2., 4.], [6., 8.], [10., 12.]]),
