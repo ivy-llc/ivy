@@ -48,7 +48,6 @@ class Module(abc.ABC):
         return new_fn
 
     def _find_variables(self, obj=None):
-        obj = self if obj is None else obj
         vs = Container()
         # ToDo: add support for finding local variables, when JAX supports uniquely flagging variables
         if isinstance(obj, Module) and obj is not self:
@@ -86,7 +85,6 @@ class Module(abc.ABC):
         return ret_cont
 
     def _wrap_call_methods(self, keychain_mappings, key='', obj=None):
-        obj = self if obj is None else obj
         if isinstance(obj, Module) and obj is not self:
             orig_key_chain = key[1:] if key[0] == '_' else key
 
@@ -130,9 +128,9 @@ class Module(abc.ABC):
         return vs, keychain_mappings
 
     def _find_and_create_variables(self):
-        vs = Container(dict(**self._find_variables(), **self._create_variables(self._dev_str)))
+        vs = Container(dict(**self._find_variables(self), **self._create_variables(self._dev_str)))
         vs, keychain_mappings = self._remove_duplicate_variables(vs)
-        self._wrap_call_methods(keychain_mappings)
+        self._wrap_call_methods(keychain_mappings, obj=self)
         return vs
 
     # Overridable #

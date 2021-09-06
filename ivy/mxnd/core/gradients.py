@@ -43,7 +43,7 @@ def execute_with_gradients(func, xs, retain_grads=False):
         rest = tuple()
     x_grads_flat = _mx.autograd.grad(y, [v for k, v in xs.to_iterator()], retain_graph=retain_grads,
                                      create_graph=retain_grads)
-    return y, xs.from_flat_list(x_grads_flat), *rest
+    return (y, xs.from_flat_list(x_grads_flat), *rest)
 
 
 def stop_gradient(x, preserve_type=True):
