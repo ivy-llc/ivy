@@ -45,7 +45,7 @@ def execute_with_gradients(func, xs, retain_grads=False):
         y = func_ret
         rest = tuple()
     grads = Container(tape.gradient(y, xs))
-    return y, grads, *rest
+    return (y, grads, *rest)
 
 
 def stop_gradient(x, preserve_type=True):

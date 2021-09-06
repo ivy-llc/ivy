@@ -44,7 +44,7 @@ def execute_with_gradients(func, xs, retain_grads=False):
         rest = tuple()
         grad_fn = func
     grads = Container(_jax.grad(grad_fn)(xs))
-    return y, grads, *rest
+    return (y, grads, *rest)
 
 
 stop_gradient = lambda x, preserve_type=True: _jlax.stop_gradient(x)
