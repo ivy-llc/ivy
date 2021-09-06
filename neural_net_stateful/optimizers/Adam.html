@@ -36,7 +36,7 @@
   <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="Sequential" href="../sequential.html" />
+    <link rel="next" title="LAMB" href="LAMB.html" />
     <link rel="prev" title="LARS" href="LARS.html" /> 
 </head>
 
@@ -120,6 +120,7 @@
 <li class="toctree-l2"><a class="reference internal" href="SGD.html">SGD</a></li>
 <li class="toctree-l2"><a class="reference internal" href="LARS.html">LARS</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Adam</a></li>
+<li class="toctree-l2"><a class="reference internal" href="LAMB.html">LAMB</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../sequential.html">Sequential</a></li>
@@ -215,7 +216,7 @@
 <li><p><strong>beta1</strong> (<em>float</em><em>, </em><em>optional</em>) – gradient forgetting factor, default is 0.9</p></li>
 <li><p><strong>beta2</strong> (<em>float</em><em>, </em><em>optional</em>) – second moment of gradient forgetting factor, default is 0.999</p></li>
 <li><p><strong>epsilon</strong> (<em>float</em><em>, </em><em>optional</em>) – divisor during adam update, preventing division by zero, default is 1e-07</p></li>
-<li><p><strong>compile_step</strong> (<em>bool</em><em>, </em><em>option</em>) – Whether to compile the optimizer step, default is False.</p></li>
+<li><p><strong>compile_step</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to compile the optimizer step, default is False.</p></li>
 <li><p><strong>inplace</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to update the variables in-place, or to create new variable handles.
 This is only relevant for frameworks with stateful variables such as PyTorch. Default is True.</p></li>
 <li><p><strong>stop_gradients</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to stop the gradients of the variables after each gradient step. Default is True.</p></li>
@@ -258,7 +259,7 @@ This is only relevant for frameworks with stateful variables such as PyTorch. De
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../sequential.html" class="btn btn-neutral float-right" title="Sequential" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="LAMB.html" class="btn btn-neutral float-right" title="LAMB" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="LARS.html" class="btn btn-neutral float-left" title="LARS" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
