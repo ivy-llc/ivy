@@ -21,7 +21,7 @@ class Optimizer(abc.ABC):
         :param lr: Learning rate.
         :type lr: function or float.
         :param compile_step: Whether to compile the optimizer step, default is False.
-        :type compile_step: bool, option
+        :type compile_step: bool, optional
         :param inplace: Whether to update the variables in-place, or to create new variable handles.
                         This is only relevant for frameworks with stateful variables such as PyTorch. Default is True.
         :type inplace: bool, optional
@@ -93,7 +93,7 @@ class SGD(Optimizer):
         :param lr: Learning rate, default is 1e-4.
         :type lr: float, optional
         :param compile_step: Whether to compile the optimizer step, default is False.
-        :type compile_step: bool, option
+        :type compile_step: bool, optional
         :param inplace: Whether to update the variables in-place, or to create new variable handles.
                         This is only relevant for frameworks with stateful variables such as PyTorch. Default is True.
         :type inplace: bool, optional
@@ -140,9 +140,9 @@ class LARS(Optimizer):
         :param lr: Learning rate, default is 1e-4.
         :type lr: float, optional
         :param decay_lambda: The factor used for weight decay. Default is zero.
-        :type decay_lambda: float
+        :type decay_lambda: float, optional
         :param compile_step: Whether to compile the optimizer step, default is False.
-        :type compile_step: bool, option
+        :type compile_step: bool, optional
         :param inplace: Whether to update the variables in-place, or to create new variable handles.
                         This is only relevant for frameworks with stateful variables such as PyTorch. Default is True.
         :type inplace: bool, optional
@@ -197,7 +197,7 @@ class Adam(Optimizer):
         :param epsilon: divisor during adam update, preventing division by zero, default is 1e-07
         :type epsilon: float, optional
         :param compile_step: Whether to compile the optimizer step, default is False.
-        :type compile_step: bool, option
+        :type compile_step: bool, optional
         :param inplace: Whether to update the variables in-place, or to create new variable handles.
                         This is only relevant for frameworks with stateful variables such as PyTorch. Default is True.
         :type inplace: bool, optional
@@ -212,8 +212,8 @@ class Adam(Optimizer):
         self._epsilon = epsilon
         self._mw = None
         self._vw = None
-        self._first_pass = True
         self._step = ivy.array([0], dev_str=dev_str)
+        self._first_pass = True
 
     # Custom Step
 
@@ -234,6 +234,86 @@ class Adam(Optimizer):
         new_v, self._mw, self._vw = ivy.adam_update(
             v, grads, self._lr if isinstance(self._lr, float) else self._lr(), self._mw, self._vw, self._step,
             self._beta1, self._beta2, self._epsilon, self._inplace, self._stop_gradients)
+        self._step += 1
+        return new_v
+
+    def set_state(self, state):
+        """
+        Set state of the optimizer.
+
+        :param state: Nested state to update.
+        :type state: Ivy container of state tensors
+        """
+        self._mw = state.mw
+        self._vw = state.vw
+
+    @property
+    def state(self):
+        return ivy.Container({'mw': self._mw, 'vw': self._vw})
+
+
+class LAMB(Optimizer):
+
+    def __init__(self, lr=1e-4, beta1=0.9, beta2=0.999, epsilon=1e-07, max_trust_ratio=10, decay_lambda=0,
+                 compile_step=False, inplace=True, stop_gradients=True, dev_str=None):
+        """
+        Construct an LAMB optimizer.
+
+        :param lr: Learning rate, default is 1e-4.
+        :type lr: float, optional
+        :param beta1: gradient forgetting factor, default is 0.9
+        :type beta1: float, optional
+        :param beta2: second moment of gradient forgetting factor, default is 0.999
+        :type beta2: float, optional
+        :param epsilon: divisor during adam update, preventing division by zero, default is 1e-07
+        :type epsilon: float, optional
+        :param max_trust_ratio: The max value of the trust ratio; the ratio between the norm of the layer weights and
+                                norm of gradients update. Default is 10.
+        :type max_trust_ratio: float, optional
+        :param decay_lambda: The factor used for weight decay. Default is zero.
+        :type decay_lambda: float, optional
+        :param compile_step: Whether to compile the optimizer step, default is False.
+        :type compile_step: bool, optional
+        :param inplace: Whether to update the variables in-place, or to create new variable handles.
+                        This is only relevant for frameworks with stateful variables such as PyTorch. Default is True.
+        :type inplace: bool, optional
+        :param stop_gradients: Whether to stop the gradients of the variables after each gradient step. Default is True.
+        :type stop_gradients: bool, optional
+        :param dev_str: device on which to create the layer's variables 'cuda:0', 'cuda:1', 'cpu' etc.
+        :type dev_str: str, optional
+        """
+        Optimizer.__init__(self, lr, compile_step, inplace, stop_gradients)
+        self._beta1 = beta1
+        self._beta2 = beta2
+        self._epsilon = epsilon
+        self._mw = None
+        self._vw = None
+        self._first_pass = True
+        self._step = ivy.array([0], dev_str=dev_str)
+        self._max_trust_ratio = max_trust_ratio
+        self._decay_lambda = decay_lambda
+        self._first_pass = True
+
+    # Custom Step
+
+    def _step(self, v, grads):
+        """
+        Update nested variables container v by LAMB update step, using nested grads container.
+
+        :param v: Nested variables to update.
+        :type v: Ivy container of variables
+        :param grads: Nested gradients to update.
+        :type grads: sequence of arrays
+        :return: The updated variables, following LAMB update step.
+        """
+        if self._first_pass:
+            self._mw = grads
+            self._vw = grads ** 2
+            self._first_pass = False
+        new_v, self._mw, self._vw = ivy.lamb_update(
+            v, grads, self._lr if isinstance(self._lr, float) else self._lr(), self._mw, self._vw, self._step,
+            self._beta1, self._beta2, self._epsilon, self._max_trust_ratio, self._decay_lambda, self._inplace,
+            self._stop_gradients)
         self._step += 1
         return new_v
 
