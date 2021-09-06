@@ -42,7 +42,7 @@ def execute_with_gradients(func, xs, retain_grads=False):
     else:
         y = func_ret
         rest = tuple()
-    return y, None, *rest
+    return (y, None, *rest)
 
 
 def stop_gradient(x, preserve_type=True):
