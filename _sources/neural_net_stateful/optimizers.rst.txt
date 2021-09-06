@@ -16,4 +16,5 @@ Optimizers
    optimizers/SGD.rst
    optimizers/LARS.rst
    optimizers/Adam.rst
+   optimizers/LAMB.rst
 
