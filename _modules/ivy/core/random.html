@@ -218,6 +218,25 @@
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">random_uniform</span><span class="p">(</span><span class="n">low</span><span class="p">,</span> <span class="n">high</span><span class="p">,</span> <span class="n">shape</span><span class="p">,</span> <span class="n">dev_str</span><span class="p">)</span></div>
 
 
+<div class="viewcode-block" id="random_normal"><a class="viewcode-back" href="../../../core/random/random_normal.html#ivy.core.random.random_normal">[docs]</a><span class="k">def</span> <span class="nf">random_normal</span><span class="p">(</span><span class="n">mean</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">std</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dev_str</span><span class="o">=</span><span class="s1">&#39;cpu&#39;</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Draws samples from a normal distribution.</span>
+
+<span class="sd">    :param mean: The mean of the normal distribution to sample from. Default is 0.</span>
+<span class="sd">    :type mean: float</span>
+<span class="sd">    :param std: The standard deviation of the normal distribution to sample from. Default is 1.</span>
+<span class="sd">    :type std: float</span>
+<span class="sd">    :param shape: Output shape. If the given shape is, e.g., (m, n, k), then m * n * k samples are drawn.</span>
+<span class="sd">                    If size is None (default), a single value is returned.</span>
+<span class="sd">    :param dev_str: device on which to create the array &#39;cuda:0&#39;, &#39;cuda:1&#39;, &#39;cpu&#39; etc.</span>
+<span class="sd">    :type dev_str: str</span>
+<span class="sd">    :param f: Machine learning framework. Inferred from inputs if None.</span>
+<span class="sd">    :type f: ml_framework, optional</span>
+<span class="sd">    :return: Drawn samples from the parameterized uniform distribution.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">random_normal</span><span class="p">(</span><span class="n">mean</span><span class="p">,</span> <span class="n">std</span><span class="p">,</span> <span class="n">shape</span><span class="p">,</span> <span class="n">dev_str</span><span class="p">)</span></div>
+
+
 <div class="viewcode-block" id="multinomial"><a class="viewcode-back" href="../../../core/random/multinomial.html#ivy.core.random.multinomial">[docs]</a><span class="k">def</span> <span class="nf">multinomial</span><span class="p">(</span><span class="n">population_size</span><span class="p">,</span> <span class="n">num_samples</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">,</span> <span class="n">probs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">replace</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">dev_str</span><span class="o">=</span><span class="s1">&#39;cpu&#39;</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Draws samples from a multinomial distribution. Specifcally, returns a tensor where each row contains num_samples</span>
