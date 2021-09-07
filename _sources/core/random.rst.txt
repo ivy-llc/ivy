@@ -13,6 +13,7 @@ Random
    :caption: Random
 
    random/random_uniform.rst
+   random/random_normal.rst
    random/multinomial.rst
    random/randint.rst
    random/seed.rst
