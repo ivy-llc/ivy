@@ -120,10 +120,10 @@ def execute_with_gradients(func, xs, retain_grads=False, f=None):
     return _cur_framework(None, f=f).execute_with_gradients(func, xs, retain_grads)
 
 
-# Optimizer Effective Gradients #
-# ------------------------------#
+# Optimizer Steps #
+# ----------------#
 
-def adam_effective_gradient(dcdws, mw, vw, step, beta1=0.9, beta2=0.999, epsilon=1e-7):
+def adam_step(dcdws, mw, vw, step, beta1=0.9, beta2=0.999, epsilon=1e-7):
     """
     Compute adam step delta, given the derivatives of some cost c with respect to ws, using ADAM update.
     `[reference] <https://en.wikipedia.org/wiki/Stochastic_gradient_descent#Adam>`_
@@ -151,11 +151,42 @@ def adam_effective_gradient(dcdws, mw, vw, step, beta1=0.9, beta2=0.999, epsilon
     beta1_pow = beta1 ** step
     beta2_pow = beta2 ** step
     alpha = (1 - beta2_pow)**0.5 / (1 - beta1_pow + epsilon)
-    return mw.map(lambda m, kc: (alpha * m / (vw[kc] ** 0.5 + epsilon)))
+    return mw.map(lambda m, kc: (alpha * m / (vw[kc] ** 0.5 + epsilon))), mw, vw
 
 
 # Optimizer Updates #
 # ------------------#
+
+def optimizer_update(ws, effective_grads, lr, inplace=True, stop_gradients=True):
+    """
+    Update weights ws of some function, given the true or effective derivatives of some cost c with respect to ws,
+    [dc/dw for w in ws].
+
+    :param ws: Weights of the function to be updated.
+    :type ws: Ivy container
+    :param effective_grads: Effective gradients of the cost c with respect to the weights ws, [dc/dw for w in ws].
+    :type effective_grads: Ivy container
+    :param lr: Learning rate(s), the rate(s) at which the weights should be updated relative to the gradient.
+    :type lr: float or container of layer-wise rates.
+    :param inplace: Whether to perform the operation inplace, for backends which support inplace variable updates,
+                    and handle gradients behind the scenes such as PyTorch. If the update step should form part of a
+                    computation graph (i.e. higher order optimization), then this should be set to False.
+                    Default is True.
+    :type inplace: bool, optional
+    :param stop_gradients: Whether to stop the gradients of the variables after each gradient step. Default is True.
+    :type stop_gradients: bool, optional
+    :return: The new function weights ws_new, following the optimizer updates.
+    """
+    layerwise_lr = isinstance(lr, _ivy.Container)
+    deltas = effective_grads.map(lambda eff_grad, kc: (eff_grad * (lr[kc] if layerwise_lr else lr)))
+    if inplace:
+        ws = ws.map(lambda w, kc: _ivy.inplace_decrement(w, deltas[kc]))
+    else:
+        ws = ws.map(lambda w, kc: w - deltas[kc])
+    if stop_gradients:
+        return ws.stop_gradients(preserve_type=True)
+    return ws
+
 
 def gradient_descent_update(ws, dcdws, lr, inplace=True, stop_gradients=True):
     """
@@ -176,15 +207,7 @@ def gradient_descent_update(ws, dcdws, lr, inplace=True, stop_gradients=True):
     :type stop_gradients: bool, optional
     :return: The new function weights ws_new, following the gradient descent updates.
     """
-    layerwise_lr = isinstance(lr, _ivy.Container)
-    deltas = dcdws.map(lambda dcdw, kc: (dcdw * (lr[kc] if layerwise_lr else lr)))
-    if inplace:
-        ws = ws.map(lambda w, kc: _ivy.inplace_decrement(w, deltas[kc]))
-    else:
-        ws = ws.map(lambda w, kc: w - deltas[kc])
-    if stop_gradients:
-        dcdws.stop_gradients(preserve_type=True)
-    return ws
+    return optimizer_update(ws, dcdws, lr, inplace, stop_gradients)
 
 
 def lars_update(ws, dcdws, lr, decay_lambda=0, inplace=True, stop_gradients=True):
@@ -216,8 +239,8 @@ def lars_update(ws, dcdws, lr, decay_lambda=0, inplace=True, stop_gradients=True
     return gradient_descent_update(ws, dcdws, lr, inplace, stop_gradients)
 
 
-def adam_update(ws, dcdws, lr, mw, vw, step, beta1=0.9, beta2=0.999, epsilon=1e-7, inplace=True, stop_gradients=True,
-                effective_grads=None):
+def adam_update(ws, dcdws, lr, mw_tm1, vw_tm1, step, beta1=0.9, beta2=0.999, epsilon=1e-7, inplace=True,
+                stop_gradients=True):
     """
     Update weights ws of some function, given the derivatives of some cost c with respect to ws, using ADAM update.
     `[reference] <https://en.wikipedia.org/wiki/Stochastic_gradient_descent#Adam>`_
@@ -228,10 +251,10 @@ def adam_update(ws, dcdws, lr, mw, vw, step, beta1=0.9, beta2=0.999, epsilon=1e-
     :type dcdws: container of arrays
     :param lr: Learning rate(s), the rate(s) at which the weights should be updated relative to the gradient.
     :type lr: float or container of layer-wise rates.
-    :param mw: running average of the gradients
-    :type mw: container of arrays
-    :param vw: running average of second moments of the gradients
-    :type vw: container of arrays
+    :param mw_tm1: running average of the gradients, from the previous time-step.
+    :type mw_tm1: container of arrays
+    :param vw_tm1: running average of second moments of the gradients, from the previous time-step.
+    :type vw_tm1: container of arrays
     :param step: training step
     :type step: int
     :param beta1: gradient forgetting factor
@@ -247,24 +270,14 @@ def adam_update(ws, dcdws, lr, mw, vw, step, beta1=0.9, beta2=0.999, epsilon=1e-
     :type inplace: bool, optional
     :param stop_gradients: Whether to stop the gradients of the variables after each gradient step. Default is True.
     :type stop_gradients: bool, optional
-    :param effective_grads: The effective gradients for updating the weights. Computed internally by default.
-    :type effective_grads: Ivy container, optional
     :return: The new function weights ws_new, and also new mw and vw, following the adam updates.
     """
-    layerwise_lr = isinstance(lr, _ivy.Container)
-    effective_grads = _ivy.default(effective_grads, adam_effective_gradient(dcdws, mw, vw, step, beta1, beta2, epsilon))
-    deltas = effective_grads.map(lambda eff_grad, kc: (eff_grad * (lr[kc] if layerwise_lr else lr)))
-    if inplace:
-        ws = ws.map(lambda w, kc: _ivy.inplace_decrement(w, deltas[kc]))
-    else:
-        ws = ws.map(lambda w, kc: w - deltas[kc])
-    if stop_gradients:
-        dcdws.stop_gradients(preserve_type=True)
-    return ws, mw, vw
+    effective_grads, mw, vw = adam_step(dcdws, mw_tm1, vw_tm1, step, beta1, beta2, epsilon)
+    return optimizer_update(ws, effective_grads, lr, inplace, stop_gradients), mw, vw
 
 
-def lamb_update(ws, dcdws, lr, mw, vw, step, beta1=0.9, beta2=0.999, epsilon=1e-7, max_trust_ratio=10, decay_lambda=0,
-                inplace=True, stop_gradients=True):
+def lamb_update(ws, dcdws, lr, mw_tm1, vw_tm1, step, beta1=0.9, beta2=0.999, epsilon=1e-7, max_trust_ratio=10,
+                decay_lambda=0, inplace=True, stop_gradients=True):
     """
     Update weights ws of some function, given the derivatives of some cost c with respect to ws, [dc/dw for w in ws],
     by applying LAMB method.
@@ -275,10 +288,10 @@ def lamb_update(ws, dcdws, lr, mw, vw, step, beta1=0.9, beta2=0.999, epsilon=1e-
     :type dcdws: container of arrays
     :param lr: Learning rate(s), the rate(s) at which the weights should be updated relative to the gradient.
     :type lr: float or container of layer-wise rates.
-    :param mw: running average of the gradients
-    :type mw: container of arrays
-    :param vw: running average of second moments of the gradients
-    :type vw: container of arrays
+    :param mw_tm1: running average of the gradients, from the previous time-step.
+    :type mw_tm1: container of arrays
+    :param vw_tm1: running average of second moments of the gradients, from the previous time-step.
+    :type vw_tm1: container of arrays
     :param step: training step
     :type step: int
     :param beta1: gradient forgetting factor
@@ -301,11 +314,11 @@ def lamb_update(ws, dcdws, lr, mw, vw, step, beta1=0.9, beta2=0.999, epsilon=1e-
     :return: The new function weights ws_new, following the LARS updates.
     """
     r1 = ws.norm()
-    eff_grads = adam_effective_gradient(dcdws, mw, vw, step, beta1, beta2, epsilon)
+    eff_grads, mw, vw = adam_step(dcdws, mw_tm1, vw_tm1, step, beta1, beta2, epsilon)
     if decay_lambda > 0:
         r2 = (eff_grads + decay_lambda*ws).norm()
     else:
         r2 = eff_grads.norm()
     r = (r1/(r2 + MIN_DENOMINATOR)).minimum(max_trust_ratio)
     lr = lr * r
-    return adam_update(ws, dcdws, lr, mw, vw, step, beta1, beta2, epsilon, inplace, stop_gradients, eff_grads)
+    return optimizer_update(ws, eff_grads, lr, inplace, stop_gradients), mw, vw
