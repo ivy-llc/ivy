@@ -47,6 +47,42 @@ def test_random_uniform(low, high, shape, dtype_str, tensor_fn, dev_str, call):
     helpers.assert_compilable(ivy.random_uniform)
 
 
+# random_normal
+@pytest.mark.parametrize(
+    "mean", [None, -1., 0.2])
+@pytest.mark.parametrize(
+    "std", [None, 0.5, 2.])
+@pytest.mark.parametrize(
+    "shape", [None, (), (1, 2, 3)])
+@pytest.mark.parametrize(
+    "dtype_str", ['float32'])
+@pytest.mark.parametrize(
+    "tensor_fn", [ivy.array, helpers.var_fn, lambda x: x])
+def test_random_normal(mean, std, shape, dtype_str, tensor_fn, dev_str, call):
+    # smoke test
+    ivy.seed(0)
+    if tensor_fn == helpers.var_fn and call is helpers.mx_call:
+        # mxnet does not support 0-dimensional variables
+        pytest.skip()
+    kwargs = dict([(k, tensor_fn(v)) for k, v in zip(['mean', 'std'], [mean, std]) if v is not None])
+    if shape is not None:
+        kwargs['shape'] = shape
+    ret = ivy.random_normal(**kwargs, dev_str=dev_str)
+    # type test
+    assert ivy.is_array(ret)
+    # cardinality test
+    if shape is None:
+        assert ret.shape == ()
+    else:
+        assert ret.shape == shape
+    # value test
+    ret_np = call(ivy.random_normal, **kwargs, dev_str=dev_str)
+    assert np.min((ret_np > (ivy.default(mean, 0.) - 3*ivy.default(std, 1.))).astype(np.int32)) == 1
+    assert np.min((ret_np < (ivy.default(mean, 0.) + 3*ivy.default(std, 1.))).astype(np.int32)) == 1
+    # compilation test
+    helpers.assert_compilable(ivy.random_normal)
+
+
 # multinomial
 @pytest.mark.parametrize(
     "probs", [[[1., 2.]], [[1., 0.5], [0.2, 0.3]], None])

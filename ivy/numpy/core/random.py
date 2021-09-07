@@ -6,6 +6,7 @@ Collection of Numpy random functions, wrapped to fit Ivy syntax and signature.
 import numpy as _np
 
 random_uniform = lambda low=0., high=1., shape=None, dev_str='cpu': _np.asarray(_np.random.uniform(low, high, shape))
+random_normal = lambda mean=0., std=1., shape=None, dev_str='cpu': _np.asarray(_np.random.normal(mean, std, shape))
 
 
 def multinomial(population_size, num_samples, batch_size, probs=None, replace=True, dev_str='cpu'):

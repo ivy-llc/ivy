@@ -14,6 +14,14 @@ def random_uniform(low=0., high=1., shape=None, dev_str='cpu'):
         return _tf.random.uniform(shape if shape else (), low, high)
 
 
+def random_normal(mean=0., std=1., shape=None, dev_str='cpu'):
+    if dev_str:
+        with _tf.device('/' + dev_str.upper()):
+            return _tf.random.normal(shape if shape else (), mean, std)
+    else:
+        return _tf.random.normal(shape if shape else (), mean, std)
+
+
 def multinomial(population_size, num_samples, batch_size, probs=None, replace=True, dev_str='cpu'):
     if not replace:
         raise Exception('TensorFlow does not support multinomial without replacement')

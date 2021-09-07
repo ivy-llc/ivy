@@ -16,6 +16,16 @@ def random_uniform(low: float = 0.0, high: float = 1.0, shape: Optional[List[int
     return torch.rand(true_shape, device=dev_str.replace('gpu', 'cuda')) * rand_range + low
 
 
+def random_normal(mean: float = 0.0, std: float = 1.0, shape: Optional[List[int]] = None, dev_str: str = 'cpu'):
+    if shape is None:
+        true_shape: List[int] = []
+    else:
+        true_shape: List[int] = shape
+    mean = mean.item() if isinstance(mean, torch.Tensor) else mean
+    std = std.item() if isinstance(std, torch.Tensor) else std
+    return torch.normal(mean, std, true_shape, device=dev_str.replace('gpu', 'cuda'))
+
+
 def multinomial(population_size: int, num_samples: int, batch_size: int, probs: Optional[torch.Tensor] = None,
                 replace: bool = True, dev_str: str = 'cpu'):
     if probs is None:
