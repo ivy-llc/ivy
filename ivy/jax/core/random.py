@@ -18,6 +18,12 @@ def random_uniform(low=0.0, high=1.0, shape=None, dev_str='cpu'):
     return to_dev(_jax.random.uniform(rng_input, shape if shape else (), minval=low, maxval=high), dev_str)
 
 
+def random_normal(mean=0.0, std=1.0, shape=None, dev_str='cpu'):
+    global RNG
+    RNG, rng_input = _jax.random.split(RNG)
+    return to_dev(_jax.random.normal(rng_input, shape if shape else ()), dev_str) * std + mean
+
+
 def multinomial(population_size, num_samples, batch_size, probs=None, replace=True, dev_str='cpu'):
     global RNG
     RNG, rng_input = _jax.random.split(RNG)
