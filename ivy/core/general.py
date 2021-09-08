@@ -231,6 +231,7 @@ def clip_norm(x, max_norm: float, p_val: float = 2.0):
     :return: An array with the elements of x, but where values < x_min are replaced with x_min,
              and those > x_max with x_max.
     """
+    # ToDo: modify this method to make use of norm method
     norm = ivy.reduce_sum(x ** p_val)[0] ** (1/p_val)
     ratio = max_norm/(norm+MIN_DENOMINATOR)
     if ratio < 1:
