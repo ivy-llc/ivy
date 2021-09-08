@@ -295,7 +295,7 @@ def reptile_step(batch, cost_fn, variables, inner_grad_steps, inner_learning_rat
 def maml_step(batch, inner_cost_fn, outer_cost_fn, variables, inner_grad_steps, inner_learning_rate,
               inner_optimization_step=gradient_descent_update, inner_batch_fn=None, outer_batch_fn=None,
               average_across_steps=False, batched=True, inner_v=None, keep_inner_v=True, outer_v=None,
-              keep_outer_v=True, return_inner_v=False, num_tasks=None, stop_gradients=False):
+              keep_outer_v=True, return_inner_v=False, num_tasks=None, stop_gradients=True):
     """
     Perform step of vanilla second order MAML.
 
