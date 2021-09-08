@@ -377,6 +377,39 @@ def test_clip(x_min_n_max, dtype_str, tensor_fn, dev_str, call):
     helpers.assert_compilable(ivy.clip)
 
 
+# clip_norm
+@pytest.mark.parametrize(
+    "x_max_norm_n_p_val_clipped",
+    [(-0.5, 0.4, 2., -0.4), ([1.7], 1.5, 3., [1.5]),
+     ([[0.8, 2.2], [1.5, 0.2]], 4., 1., [[0.6808511, 1.8723406], [1.2765958, 0.17021278]]),
+     ([[0.8, 2.2], [1.5, 0.2]], 2.5, 2., [[0.71749604, 1.9731141], [1.345305, 0.17937401]])])
+@pytest.mark.parametrize(
+    "dtype_str", ['float32'])
+@pytest.mark.parametrize(
+    "tensor_fn", [ivy.array, helpers.var_fn])
+def test_clip_norm(x_max_norm_n_p_val_clipped, dtype_str, tensor_fn, dev_str, call):
+    # smoke test
+    if call is helpers.mx_call:
+        # mxnet does not support 0-dimensional variables
+        pytest.skip()
+    x = tensor_fn(x_max_norm_n_p_val_clipped[0], dtype_str, dev_str)
+    max_norm = x_max_norm_n_p_val_clipped[1]
+    p_val = x_max_norm_n_p_val_clipped[2]
+    clipped = x_max_norm_n_p_val_clipped[3]
+    ret = ivy.clip_norm(x, max_norm, p_val)
+    # type test
+    assert ivy.is_array(ret)
+    # cardinality test
+    assert ret.shape == x.shape
+    # value test
+    assert np.allclose(call(ivy.clip_norm, x, max_norm, p_val), np.array(clipped))
+    # compilation test
+    if call is helpers.torch_call:
+        # pytorch jit cannot compile global variables, in this case MIN_DENOMINATOR
+        return
+    helpers.assert_compilable(ivy.clip_norm)
+
+
 # round
 @pytest.mark.parametrize(
     "x_n_x_rounded", [(-0.51, -1), ([1.7], [2.]), ([[0.8, 2.2], [1.51, 0.2]], [[1., 2.], [2., 0.]])])
