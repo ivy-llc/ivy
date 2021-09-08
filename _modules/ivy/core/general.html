@@ -420,6 +420,7 @@
 <span class="sd">    :return: An array with the elements of x, but where values &lt; x_min are replaced with x_min,</span>
 <span class="sd">             and those &gt; x_max with x_max.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># ToDo: modify this method to make use of norm method</span>
     <span class="n">norm</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">reduce_sum</span><span class="p">(</span><span class="n">x</span> <span class="o">**</span> <span class="n">p_val</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">**</span> <span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="n">p_val</span><span class="p">)</span>
     <span class="n">ratio</span> <span class="o">=</span> <span class="n">max_norm</span><span class="o">/</span><span class="p">(</span><span class="n">norm</span><span class="o">+</span><span class="n">MIN_DENOMINATOR</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">ratio</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
