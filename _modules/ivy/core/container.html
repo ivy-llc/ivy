@@ -1603,16 +1603,6 @@
             <span class="n">new_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_value</span>
         <span class="k">return</span> <span class="n">Container</span><span class="p">(</span><span class="n">new_dict</span><span class="p">,</span> <span class="n">ivyh</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_local_ivy</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Container.to_random"><a class="viewcode-back" href="../../../core/container/Container.html#ivy.core.container.Container.to_random">[docs]</a>    <span class="k">def</span> <span class="nf">to_random</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Return new container, with all entries having same shape and type, but random values</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">def</span> <span class="nf">_as_random</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">_</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
-            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="s1">&#39;shape&#39;</span><span class="p">):</span>
-                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ivy</span><span class="o">.</span><span class="n">random_uniform</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="n">value</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
-            <span class="k">return</span> <span class="n">value</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">_as_random</span><span class="p">)</span></div>
-
 <div class="viewcode-block" id="Container.has_key"><a class="viewcode-back" href="../../../core/container/Container.html#ivy.core.container.Container.has_key">[docs]</a>    <span class="k">def</span> <span class="nf">has_key</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query_key</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Determine whether container object has specified key somewhere in the nested structure</span>
