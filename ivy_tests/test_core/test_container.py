@@ -1486,16 +1486,6 @@ def test_container_map(dev_str, call):
     assert 'b/d' not in container_mapped
 
 
-def test_container_to_random(dev_str, call):
-    dict_in = {'a': ivy.array([1.]),
-               'b': {'c': ivy.array([2.]), 'd': ivy.array([3.])}}
-    container = Container(dict_in)
-    random_container = container.to_random()
-    for (key, value), orig_value in zip(random_container.to_iterator(),
-                                        [ivy.array([2]), ivy.array([3]), ivy.array([4])]):
-        assert call(ivy.shape, value) == call(ivy.shape, orig_value)
-
-
 def test_container_dtype(dev_str, call):
     dict_in = {'a': ivy.array([1]),
                'b': {'c': ivy.array([2.]), 'd': ivy.array([3])}}

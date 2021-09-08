@@ -1414,16 +1414,6 @@ class Container(dict):
             new_dict[key] = new_value
         return Container(new_dict, ivyh=self._local_ivy)
 
-    def to_random(self):
-        """
-        Return new container, with all entries having same shape and type, but random values
-        """
-        def _as_random(value, _=''):
-            if hasattr(value, 'shape'):
-                return self._ivy.random_uniform(0., 1., value.shape)
-            return value
-        return self.map(_as_random)
-
     def has_key(self, query_key):
         """
         Determine whether container object has specified key somewhere in the nested structure
