@@ -34,11 +34,11 @@ class Ones(Constant):
 
 class Uniform:
 
-    def __init__(self, numerator, denominator_mode, power, gain):
-        if denominator_mode not in ['fan_in', 'fan_out', 'fan_sum', 'fan_avg']:
-            raise Exception('Invalid denominator mode, must be one of [ fan_in | fan_out | fan_sum | fan_avg ]')
+    def __init__(self, numerator, fan_mode, power, gain):
+        if fan_mode not in ['fan_in', 'fan_out', 'fan_sum', 'fan_avg']:
+            raise Exception('Invalid fan mode, must be one of [ fan_in | fan_out | fan_sum | fan_avg ]')
         self._numerator = numerator
-        self._denominator_mode = denominator_mode
+        self._fan_mode = fan_mode
         self._power = power
         self._gain = gain
 
@@ -46,27 +46,27 @@ class Uniform:
         """
         Create internal variables for the layer
         """
-        if self._denominator_mode == 'fan_in':
+        if self._fan_mode == 'fan_in':
             if fan_in is None:
                 raise Exception('input_channels must be specified for fan_in denominator mode.')
-            denom = fan_in
-        elif self._denominator_mode == 'fan_out':
+            fan = fan_in
+        elif self._fan_mode == 'fan_out':
             if fan_in is None:
                 raise Exception('output_channels must be specified for fan_out denominator mode.')
-            denom = fan_out
-        elif self._denominator_mode == 'fan_sum':
+            fan = fan_out
+        elif self._fan_mode == 'fan_sum':
             if fan_in is None or fan_out is None:
                 raise Exception('input_channels and output_channels must both be specified for'
                                 'fan_sum denominator mode.')
-            denom = fan_in + fan_out
-        elif self._denominator_mode == 'fan_avg':
+            fan = fan_in + fan_out
+        elif self._fan_mode == 'fan_avg':
             if fan_in is None or fan_out is None:
                 raise Exception('input_channels and output_channels must both be specified for'
                                 'fan_avg denominator mode.')
-            denom = (fan_in + fan_out) / 2
+            fan = (fan_in + fan_out) / 2
         else:
             raise Exception('Invalid denominator mode, must be one of [ fan_in | fan_out | fan_sum | fan_avg ]')
-        wlim = ((self._numerator / denom) ** self._power) * self._gain
+        wlim = ((self._numerator / fan) ** self._power) * self._gain
         return ivy.variable(ivy.random_uniform(-wlim, wlim, var_shape, dev_str=dev_str))
 
 
@@ -86,3 +86,42 @@ class Siren(Uniform):
 
     def __init__(self, w0=30):
         super().__init__(6, 'fan_in', 0.5, 1/w0)
+
+
+# Gaussian #
+# ---------#
+
+class KaimingNormal:
+
+    def __init__(self, mean, fan_mode):
+        if fan_mode not in ['fan_in', 'fan_out', 'fan_sum', 'fan_avg']:
+            raise Exception('Invalid fan mode, must be one of [ fan_in | fan_out | fan_sum | fan_avg ]')
+        self._mean = mean
+        self._fan_mode = fan_mode
+
+    def create_variables(self, var_shape, dev_str, negative_slope=0., fan_out=None, fan_in=None):
+        """
+        Create internal variables for the layer
+        """
+        if self._fan_mode == 'fan_in':
+            if fan_in is None:
+                raise Exception('input_channels must be specified for fan_in denominator mode.')
+            fan = fan_in
+        elif self._fan_mode == 'fan_out':
+            if fan_in is None:
+                raise Exception('output_channels must be specified for fan_out denominator mode.')
+            fan = fan_out
+        elif self._fan_mode == 'fan_sum':
+            if fan_in is None or fan_out is None:
+                raise Exception('input_channels and output_channels must both be specified for'
+                                'fan_sum denominator mode.')
+            fan = fan_in + fan_out
+        elif self._fan_mode == 'fan_avg':
+            if fan_in is None or fan_out is None:
+                raise Exception('input_channels and output_channels must both be specified for'
+                                'fan_avg denominator mode.')
+            fan = (fan_in + fan_out) / 2
+        else:
+            raise Exception('Invalid denominator mode, must be one of [ fan_in | fan_out | fan_sum | fan_avg ]')
+        std = (2/((1+negative_slope**2)*fan)) ** 0.5
+        return ivy.variable(ivy.random_normal(self._mean, std, var_shape, dev_str=dev_str))
