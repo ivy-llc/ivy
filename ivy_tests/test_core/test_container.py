@@ -399,6 +399,15 @@ def test_container_clip(dev_str, call):
     assert np.allclose(ivy.to_numpy(container_clipped.b.d), np.array([4., 7., 8.]))
 
 
+def test_container_clip_norm(dev_str, call):
+    container = Container({'a': ivy.array([[0.8, 2.2], [1.5, 0.2]])})
+    container_clipped = container.clip_norm(2.5, 2.)
+    assert np.allclose(ivy.to_numpy(container_clipped['a']),
+                       np.array([[0.71749604, 1.9731141], [1.345305, 0.17937401]]))
+    assert np.allclose(ivy.to_numpy(container_clipped.a),
+                       np.array([[0.71749604, 1.9731141], [1.345305, 0.17937401]]))
+
+
 def test_container_einsum(dev_str, call):
     dict_in = {'a': ivy.array([[1., 2.], [3., 4.], [5., 6.]]),
                'b': {'c': ivy.array([[2., 4.], [6., 8.], [10., 12.]]),

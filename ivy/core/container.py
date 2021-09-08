@@ -542,7 +542,7 @@ class Container(dict):
         :type to_apply: bool, optional
         :param prune_unapplied: Whether to prune key_chains for which the function was not applied. Default is False.
         :type prune_unapplied: bool, optional
-        :return: Container object at with all sub-array dimensions expanded along the axis.
+        :return: Container object with all sub-array dimensions expanded along the axis.
         """
         return self.map(lambda x, kc: self._ivy.reduce_sum(x, axis, keepdims) if self._ivy.is_array(x) else x,
                         key_chains, to_apply, prune_unapplied)
@@ -566,7 +566,7 @@ class Container(dict):
         :type to_apply: bool, optional
         :param prune_unapplied: Whether to prune key_chains for which the function was not applied. Default is False.
         :type prune_unapplied: bool, optional
-        :return: Container object at with all sub-array dimensions expanded along the axis.
+        :return: Container object with all sub-array dimensions expanded along the axis.
         """
         return self.map(lambda x, kc: self._ivy.reduce_prod(x, axis, keepdims) if self._ivy.is_array(x) else x,
                         key_chains, to_apply, prune_unapplied)
@@ -590,7 +590,7 @@ class Container(dict):
         :type to_apply: bool, optional
         :param prune_unapplied: Whether to prune key_chains for which the function was not applied. Default is False.
         :type prune_unapplied: bool, optional
-        :return: Container object at with all sub-array dimensions expanded along the axis.
+        :return: Container object with all sub-array dimensions expanded along the axis.
         """
         return self.map(lambda x, kc: self._ivy.reduce_mean(x, axis, keepdims) if self._ivy.is_array(x) else x,
                         key_chains, to_apply, prune_unapplied)
@@ -662,7 +662,7 @@ class Container(dict):
         :type to_apply: bool, optional
         :param prune_unapplied: Whether to prune key_chains for which the function was not applied. Default is False.
         :type prune_unapplied: bool, optional
-        :return: Container object at with all sub-array dimensions expanded along the axis.
+        :return: Container object with all sub-array dimensions expanded along the axis.
         """
         return self.map(lambda x, kc: self._ivy.reduce_min(x, axis, keepdims) if self._ivy.is_array(x) else x,
                         key_chains, to_apply, prune_unapplied)
@@ -686,7 +686,7 @@ class Container(dict):
         :type to_apply: bool, optional
         :param prune_unapplied: Whether to prune key_chains for which the function was not applied. Default is False.
         :type prune_unapplied: bool, optional
-        :return: Container object at with all sub-array dimensions expanded along the axis.
+        :return: Container object with all sub-array dimensions expanded along the axis.
         """
         return self.map(lambda x, kc: self._ivy.reduce_max(x, axis, keepdims) if self._ivy.is_array(x) else x,
                         key_chains, to_apply, prune_unapplied)
@@ -704,7 +704,7 @@ class Container(dict):
         :type to_apply: bool, optional
         :param prune_unapplied: Whether to prune key_chains for which the function was not applied. Default is False.
         :type prune_unapplied: bool, optional
-        :return: Container object at with all sub-arrays having the minimum values computed.
+        :return: Container object with all sub-arrays having the minimum values computed.
         """
         is_container = isinstance(other, Container)
         return self.map(lambda x, kc:
@@ -724,7 +724,7 @@ class Container(dict):
         :type to_apply: bool, optional
         :param prune_unapplied: Whether to prune key_chains for which the function was not applied. Default is False.
         :type prune_unapplied: bool, optional
-        :return: Container object at with all sub-arrays having the maximum values computed.
+        :return: Container object with all sub-arrays having the maximum values computed.
         """
         is_container = isinstance(other, Container)
         return self.map(lambda x, kc:
@@ -746,13 +746,52 @@ class Container(dict):
         :type to_apply: bool, optional
         :param prune_unapplied: Whether to prune key_chains for which the function was not applied. Default is False.
         :type prune_unapplied: bool, optional
-        :return: Container object at with all sub-arrays having the clipped values computed.
+        :return: Container object with all sub-arrays having the clipped values returned.
         """
         min_is_container = isinstance(clip_min, Container)
         max_is_container = isinstance(clip_max, Container)
         return self.map(lambda x, kc:
                         self._ivy.clip(x, clip_min[kc] if min_is_container else clip_min,
                                        clip_max[kc] if max_is_container else clip_max) if self._ivy.is_array(x) else x,
+                        key_chains, to_apply, prune_unapplied)
+
+    def clip_norm(self, max_norm, p_val, global_norm=False, key_chains=None, to_apply=True, prune_unapplied=False):
+        """
+        Computes the elementwise clipped values between this container and clip_min and clip_max containers or numbers.
+
+        :param max_norm: The max norm container or number to clip against.
+        :type max_norm: Ivy container or number
+        :param p_val: The p-value for computing the p-norm container or number.
+        :type p_val: Ivy container or number
+        :param global_norm: Whether to compute the norm across all the concattenated sub-arrays. Default is False.
+        :type global_norm: bool, optional
+        :param key_chains: The key-chains to apply or not apply the method to. Default is None.
+        :type key_chains: list or dict of strs, optional
+        :param to_apply: If True, the method will be applied to key_chains, otherwise key_chains will be skipped.
+                         Default is True.
+        :type to_apply: bool, optional
+        :param prune_unapplied: Whether to prune key_chains for which the function was not applied. Default is False.
+        :type prune_unapplied: bool, optional
+        :return: Container object with all sub-arrays having the clipped norms returned.
+        """
+        # ToDo: modify this method to make use of ivy.Container.norm method
+        max_norm_is_container = isinstance(max_norm, Container)
+        p_val_is_container = isinstance(p_val, Container)
+        if global_norm:
+            if max_norm_is_container or p_val_is_container:
+                raise Exception(
+                    'global_norm can only be computed for scalar max_norm and p_val arguments,'
+                    'but found {} and {} of type {} and {} respectively'.format(
+                        max_norm, p_val, type(max_norm), type(p_val)))
+            norm = sum([v for k, v in
+                        self.map(lambda x, kc: self._ivy.reduce_sum(x ** p_val)).to_iterator()]) ** (1/p_val)
+            ratio = max_norm/norm
+            if ratio < 1:
+                return self * ratio
+            return self.copy()
+        return self.map(lambda x, kc:
+                        self._ivy.clip_norm(x, max_norm[kc] if max_norm_is_container else max_norm,
+                                            p_val[kc] if p_val_is_container else p_val) if self._ivy.is_array(x) else x,
                         key_chains, to_apply, prune_unapplied)
 
     def einsum(self, equation, key_chains=None, to_apply=True, prune_unapplied=False):
@@ -769,7 +808,7 @@ class Container(dict):
         :type to_apply: bool, optional
         :param prune_unapplied: Whether to prune key_chains for which the function was not applied. Default is False.
         :type prune_unapplied: bool, optional
-        :return: Container object at with all sub-array dimensions expanded along the axis.
+        :return: Container object with all sub-array dimensions expanded along the axis.
         """
         return self.map(lambda x, kc: self._ivy.einsum(equation, x) if self._ivy.is_array(x) else x,
                         key_chains, to_apply, prune_unapplied)
@@ -797,7 +836,7 @@ class Container(dict):
         :type to_apply: bool, optional
         :param prune_unapplied: Whether to prune key_chains for which the function was not applied. Default is False.
         :type prune_unapplied: bool, optional
-        :return: Container object at with all sub-array dimensions expanded along the axis.
+        :return: Container object with all sub-array dimensions expanded along the axis.
         """
         return self.map(lambda x, kc: self._ivy.norm(x, ord, axis, keepdims) if self._ivy.is_array(x) else x,
                         key_chains, to_apply, prune_unapplied)
@@ -816,7 +855,7 @@ class Container(dict):
         :type to_apply: bool, optional
         :param prune_unapplied: Whether to prune key_chains for which the function was not applied. Default is False.
         :type prune_unapplied: bool, optional
-        :return: Container object at with all sub-array dimensions expanded along the axis.
+        :return: Container object with all sub-array dimensions expanded along the axis.
         """
         return self.map(lambda x, kc: self._ivy.flip(x, axis) if self._ivy.is_array(x) else x,
                         key_chains, to_apply, prune_unapplied)
