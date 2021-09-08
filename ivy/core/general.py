@@ -14,6 +14,7 @@ import ivy
 from ivy.framework_handler import current_framework as _cur_framework
 
 FN_CACHE = dict()
+MIN_DENOMINATOR = 1e-12
 
 
 # noinspection PyShadowingNames
@@ -215,6 +216,26 @@ def clip(x, x_min, x_max, f=None):
                 and those > x_max with x_max.
     """
     return _cur_framework(x, f=f).clip(x, x_min, x_max)
+
+
+def clip_norm(x, max_norm: float, p_val: float = 2.0):
+    """
+    Clips (limits) the p-norm of an array.
+
+    :param x: Input array containing elements to clip.
+    :type x: array
+    :param max_norm: The maximum value of the array norm.
+    :type max_norm: float
+    :param p_val: The p-value for computing the p-norm. Default is 2.
+    :type p_val: float, optional
+    :return: An array with the elements of x, but where values < x_min are replaced with x_min,
+             and those > x_max with x_max.
+    """
+    norm = ivy.reduce_sum(x ** p_val)[0] ** (1/p_val)
+    ratio = max_norm/(norm+MIN_DENOMINATOR)
+    if ratio < 1:
+        return ivy.array(x * ratio)
+    return x
 
 
 # noinspection PyShadowingBuiltins
