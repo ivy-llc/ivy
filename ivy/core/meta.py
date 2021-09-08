@@ -179,7 +179,7 @@ def _train_tasks(batch, inner_batch_fn, outer_batch_fn, inner_cost_fn, outer_cos
 def fomaml_step(batch, inner_cost_fn, outer_cost_fn, variables, inner_grad_steps, inner_learning_rate,
                 inner_optimization_step=gradient_descent_update, inner_batch_fn=None, outer_batch_fn=None,
                 average_across_steps=False, batched=True, inner_v=None, keep_inner_v=True, outer_v=None,
-                keep_outer_v=True, return_inner_v=False, num_tasks=None):
+                keep_outer_v=True, return_inner_v=False, num_tasks=None, stop_gradients=True):
     """
     Perform step of first order MAML.
 
@@ -226,18 +226,28 @@ def fomaml_step(batch, inner_cost_fn, outer_cost_fn, variables, inner_grad_steps
     :type return_inner_v: str, optional
     :param num_tasks: Number of unique tasks to inner-loop optimize for the meta step. Determined from batch by default.
     :type num_tasks: int, optional
+    :param stop_gradients: Whether to stop the gradients of the cost. Default is True.
+    :type stop_gradients: bool, optional
     :return: The cost and the gradients with respect to the outer loop variables.
     """
     if num_tasks is None:
         num_tasks = batch.shape[0]
-    return _train_tasks(
+    rets = _train_tasks(
         batch, inner_batch_fn, outer_batch_fn, inner_cost_fn, outer_cost_fn, variables, inner_grad_steps,
         inner_learning_rate, inner_optimization_step, 1, average_across_steps, batched, inner_v, keep_inner_v, outer_v,
         keep_outer_v, return_inner_v, num_tasks)
+    cost = rets[0]
+    if stop_gradients:
+        cost = ivy.stop_gradient(cost, preserve_type=False)
+    grads = rets[1]
+    if return_inner_v:
+        return cost, grads, rets[2]
+    return cost, grads
 
 
 def reptile_step(batch, cost_fn, variables, inner_grad_steps, inner_learning_rate,
-                 inner_optimization_step=gradient_descent_update, batched=True, return_inner_v=False, num_tasks=None):
+                 inner_optimization_step=gradient_descent_update, batched=True, return_inner_v=False, num_tasks=None,
+                 stop_gradients=True):
     """
     Perform step of Reptile.
 
@@ -261,6 +271,8 @@ def reptile_step(batch, cost_fn, variables, inner_grad_steps, inner_learning_rat
     :type return_inner_v: str, optional
     :param num_tasks: Number of unique tasks to inner-loop optimize for the meta step. Determined from batch by default.
     :type num_tasks: int, optional
+    :param stop_gradients: Whether to stop the gradients of the cost. Default is True.
+    :type stop_gradients: bool, optional
     :return: The cost and the gradients with respect to the outer loop variables.
     """
     if num_tasks is None:
@@ -270,6 +282,8 @@ def reptile_step(batch, cost_fn, variables, inner_grad_steps, inner_learning_rat
         batch, None, None, cost_fn, None, variables, inner_grad_steps, inner_learning_rate, inner_optimization_step,
         1, True, batched, None, True, None, True, return_inner_v, num_tasks)
     cost = rets[0]
+    if stop_gradients:
+        cost = ivy.stop_gradient(cost, preserve_type=False)
     grads = rets[1] / inner_learning_rate
     if return_inner_v:
         return cost, grads, rets[2]
@@ -281,7 +295,7 @@ def reptile_step(batch, cost_fn, variables, inner_grad_steps, inner_learning_rat
 def maml_step(batch, inner_cost_fn, outer_cost_fn, variables, inner_grad_steps, inner_learning_rate,
               inner_optimization_step=gradient_descent_update, inner_batch_fn=None, outer_batch_fn=None,
               average_across_steps=False, batched=True, inner_v=None, keep_inner_v=True, outer_v=None,
-              keep_outer_v=True, return_inner_v=False, num_tasks=None):
+              keep_outer_v=True, return_inner_v=False, num_tasks=None, stop_gradients=False):
     """
     Perform step of vanilla second order MAML.
 
@@ -327,6 +341,8 @@ def maml_step(batch, inner_cost_fn, outer_cost_fn, variables, inner_grad_steps, 
     :type return_inner_v: str, optional
     :param num_tasks: Number of unique tasks to inner-loop optimize for the meta step. Determined from batch by default.
     :type num_tasks: int, optional
+    :param stop_gradients: Whether to stop the gradients of the cost. Default is True.
+    :type stop_gradients: bool, optional
     :return: The cost and the gradients with respect to the outer loop variables.
     """
     if num_tasks is None:
@@ -339,5 +355,7 @@ def maml_step(batch, inner_cost_fn, outer_cost_fn, variables, inner_grad_steps, 
         return_inner_v, num_tasks),
         variables.at_key_chains(outer_v, ignore_none=True)
         if keep_outer_v else variables.prune_key_chains(outer_v, ignore_none=True))
+    if stop_gradients:
+        cost = ivy.stop_gradient(cost, preserve_type=False)
     # noinspection PyRedundantParentheses
     return (cost, grads.reduce_sum(0), *rets)
