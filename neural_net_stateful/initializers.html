@@ -242,6 +242,24 @@
 </dd></dl>
 
 <dl class="py class">
+<dt id="ivy.neural_net_stateful.initializers.KaimingNormal">
+<em class="property">class </em><code class="sig-prename descclassname">ivy.neural_net_stateful.initializers.</code><code class="sig-name descname">KaimingNormal</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">mean</span></em>, <em class="sig-param"><span class="n">fan_mode</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/neural_net_stateful/initializers.html#KaimingNormal"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.neural_net_stateful.initializers.KaimingNormal" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt id="ivy.neural_net_stateful.initializers.KaimingNormal.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">mean</span></em>, <em class="sig-param"><span class="n">fan_mode</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/neural_net_stateful/initializers.html#KaimingNormal.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.neural_net_stateful.initializers.KaimingNormal.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="ivy.neural_net_stateful.initializers.KaimingNormal.create_variables">
+<code class="sig-name descname">create_variables</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">var_shape</span></em>, <em class="sig-param"><span class="n">dev_str</span></em>, <em class="sig-param"><span class="n">negative_slope</span><span class="o">=</span><span class="default_value">0.0</span></em>, <em class="sig-param"><span class="n">fan_out</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">fan_in</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/neural_net_stateful/initializers.html#KaimingNormal.create_variables"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.neural_net_stateful.initializers.KaimingNormal.create_variables" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create internal variables for the layer</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
 <dt id="ivy.neural_net_stateful.initializers.Ones">
 <em class="property">class </em><code class="sig-prename descclassname">ivy.neural_net_stateful.initializers.</code><code class="sig-name descname">Ones</code><a class="reference internal" href="../_modules/ivy/neural_net_stateful/initializers.html#Ones"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.neural_net_stateful.initializers.Ones" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#ivy.neural_net_stateful.initializers.Constant" title="ivy.neural_net_stateful.initializers.Constant"><code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.neural_net_stateful.initializers.Constant</span></code></a></p>
@@ -267,11 +285,11 @@
 
 <dl class="py class">
 <dt id="ivy.neural_net_stateful.initializers.Uniform">
-<em class="property">class </em><code class="sig-prename descclassname">ivy.neural_net_stateful.initializers.</code><code class="sig-name descname">Uniform</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">numerator</span></em>, <em class="sig-param"><span class="n">denominator_mode</span></em>, <em class="sig-param"><span class="n">power</span></em>, <em class="sig-param"><span class="n">gain</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/neural_net_stateful/initializers.html#Uniform"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.neural_net_stateful.initializers.Uniform" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">ivy.neural_net_stateful.initializers.</code><code class="sig-name descname">Uniform</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">numerator</span></em>, <em class="sig-param"><span class="n">fan_mode</span></em>, <em class="sig-param"><span class="n">power</span></em>, <em class="sig-param"><span class="n">gain</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/neural_net_stateful/initializers.html#Uniform"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.neural_net_stateful.initializers.Uniform" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <dl class="py method">
 <dt id="ivy.neural_net_stateful.initializers.Uniform.__init__">
-<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">numerator</span></em>, <em class="sig-param"><span class="n">denominator_mode</span></em>, <em class="sig-param"><span class="n">power</span></em>, <em class="sig-param"><span class="n">gain</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/neural_net_stateful/initializers.html#Uniform.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.neural_net_stateful.initializers.Uniform.__init__" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">numerator</span></em>, <em class="sig-param"><span class="n">fan_mode</span></em>, <em class="sig-param"><span class="n">power</span></em>, <em class="sig-param"><span class="n">gain</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/neural_net_stateful/initializers.html#Uniform.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.neural_net_stateful.initializers.Uniform.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
 </dd></dl>
 
