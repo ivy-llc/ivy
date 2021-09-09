@@ -1093,16 +1093,25 @@ def exists(x):
     return x is not None
 
 
-def default(x, default_val):
+def default(x, default_val, catch_exceptions=False):
     """
-    Returns x provided it exists (is not None), else returns default.
+    Returns x provided it exists (is not None), else returns default value.
 
-    :param x: Input which may or may not exist.
-    :type x: any
+    :param x: Input which may or may not exist (be None).
+    :type x: value if catch_exceptions=False else callable
     :param default_val: The default value.
     :type default_val: any
+    :param catch_exceptions: Whether to catch exceptions from callable x. Default is False.
+    :type catch_exceptions: bool, optional
     :return: x if x exists (is not None), else default.
     """
+    if catch_exceptions:
+        assert callable(x)
+        # noinspection PyBroadException
+        try:
+            x = x()
+        except Exception:
+            return default_val
     return x if exists(x) else default_val
 
 
