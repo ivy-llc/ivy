@@ -10,7 +10,7 @@ from ivy.neural_net_stateful.initializers import Zeros, Ones
 
 class LayerNorm(Module):
 
-    def __init__(self, normalized_shape, epsilon=None, elementwise_affine=True,  dev_str='cpu', v=None):
+    def __init__(self, normalized_shape, epsilon=None, elementwise_affine=True, new_std=None, dev_str='cpu', v=None):
         """
         Class for applying Layer Normalization over a mini-batch of inputs
 
@@ -20,6 +20,8 @@ class LayerNorm(Module):
         :type epsilon: float, optional
         :param elementwise_affine: Whether to include learnable affine parameters, default is True.
         :type elementwise_affine: bool, optional
+        :param new_std: The standard deviation of the new normalized values. Default is 1.
+        :type new_std: float, optional
         :param dev_str: device on which to create the layer's variables 'cuda:0', 'cuda:1', 'cpu' etc.
         :type dev_str: str, optional
         :param v: the variables for each submodule in the sequence, constructed internally by default.
@@ -28,6 +30,7 @@ class LayerNorm(Module):
         self._normalized_idxs = [-(i+1) for i in range(len(normalized_shape))]
         self._epsilon = epsilon
         self._elementwise_affine = elementwise_affine
+        self._new_std = new_std
         self._gamma_shape = normalized_shape
         self._beta_shape = normalized_shape
         self._gamma_init = Ones()
@@ -53,4 +56,5 @@ class LayerNorm(Module):
         """
         return ivy.layer_norm(inputs, self._normalized_idxs, epsilon=self._epsilon,
                               gamma=self.v.gamma if self._elementwise_affine else None,
-                              beta=self.v.beta if self._elementwise_affine else None)
+                              beta=self.v.beta if self._elementwise_affine else None,
+                              new_std=self._new_std)
