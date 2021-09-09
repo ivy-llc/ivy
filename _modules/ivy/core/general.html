@@ -1703,18 +1703,56 @@
     <span class="n">ivy</span><span class="o">.</span><span class="n">_MIN_DENOMINATOR</span> <span class="o">=</span> <span class="n">val</span></div>
 
 
-<div class="viewcode-block" id="stable_divide"><a class="viewcode-back" href="../../../core/general/stable_divide.html#ivy.core.general.stable_divide">[docs]</a><span class="k">def</span> <span class="nf">stable_divide</span><span class="p">(</span><span class="n">numerator</span><span class="p">,</span> <span class="n">denominator</span><span class="p">):</span>
+<div class="viewcode-block" id="stable_divide"><a class="viewcode-back" href="../../../core/general/stable_divide.html#ivy.core.general.stable_divide">[docs]</a><span class="k">def</span> <span class="nf">stable_divide</span><span class="p">(</span><span class="n">numerator</span><span class="p">,</span> <span class="n">denominator</span><span class="p">,</span> <span class="n">min_denominator</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Divide the numerator by the denominator, by MIN_DENOMINATOR added to the denominator for numerical stability.</span>
+<span class="sd">    Divide the numerator by the denominator, with min denominator added to the denominator for numerical stability.</span>
 
 <span class="sd">    :param numerator: The numerator of the division.</span>
 <span class="sd">    :type numerator: any valid numerator, including containers</span>
 <span class="sd">    :param denominator: The denominator of the division.</span>
 <span class="sd">    :type denominator: any valid denominator, including containers</span>
+<span class="sd">    :param min_denominator: The minimum denominator to use, use global ivy._MIN_DENOMINATOR by default.</span>
+<span class="sd">    :type min_denominator: float, optional</span>
 <span class="sd">    :return: The new item following the numerically stable division.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># noinspection PyProtectedMember</span>
-    <span class="k">return</span> <span class="n">numerator</span> <span class="o">/</span> <span class="p">(</span><span class="n">denominator</span> <span class="o">+</span> <span class="n">ivy</span><span class="o">.</span><span class="n">_MIN_DENOMINATOR</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">numerator</span> <span class="o">/</span> <span class="p">(</span><span class="n">denominator</span> <span class="o">+</span> <span class="n">default</span><span class="p">(</span><span class="n">min_denominator</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">_MIN_DENOMINATOR</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="get_min_base"><a class="viewcode-back" href="../../../core/general/get_min_base.html#ivy.core.general.get_min_base">[docs]</a><span class="k">def</span> <span class="nf">get_min_base</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get the global minimum base used by ivy for numerically stable power raising.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># noinspection PyProtectedMember</span>
+    <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">_MIN_BASE</span></div>
+
+
+<div class="viewcode-block" id="set_min_base"><a class="viewcode-back" href="../../../core/general/set_min_base.html#ivy.core.general.set_min_base">[docs]</a><span class="k">def</span> <span class="nf">set_min_base</span><span class="p">(</span><span class="n">val</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Set the global minimum base used by ivy for numerically stable power raising.</span>
+
+<span class="sd">    :param val: The new value to set the minimum base to.</span>
+<span class="sd">    :type val: float</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">ivy</span><span class="o">.</span><span class="n">_MIN_BASE</span> <span class="o">=</span> <span class="n">val</span></div>
+
+
+<div class="viewcode-block" id="stable_pow"><a class="viewcode-back" href="../../../core/general/stable_pow.html#ivy.core.general.stable_pow">[docs]</a><span class="k">def</span> <span class="nf">stable_pow</span><span class="p">(</span><span class="n">base</span><span class="p">,</span> <span class="n">exponent</span><span class="p">,</span> <span class="n">min_base</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Raise the base by the power, with MIN_BASE added to the base when exponent &gt; 1 for numerical stability.</span>
+
+<span class="sd">    :param base: The numerator of the division.</span>
+<span class="sd">    :type base: any valid numerator, including containers</span>
+<span class="sd">    :param exponent: The denominator of the division.</span>
+<span class="sd">    :type exponent: any valid denominator, including containers</span>
+<span class="sd">    :param min_base: The minimum base to use, use global ivy._MIN_BASE by default.</span>
+<span class="sd">    :type min_base: float, optional</span>
+<span class="sd">    :return: The new item following the numerically stable division.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">exponent</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">base</span> <span class="o">**</span> <span class="n">exponent</span>
+    <span class="c1"># noinspection PyProtectedMember</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">base</span> <span class="o">+</span> <span class="n">default</span><span class="p">(</span><span class="n">min_base</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">_MIN_BASE</span><span class="p">))</span> <span class="o">**</span> <span class="n">exponent</span></div>
 </pre></div>
 
            </div>

@@ -177,6 +177,9 @@
 <li class="toctree-l2"><a class="reference internal" href="general/get_min_denominator.html">get_min_denominator</a></li>
 <li class="toctree-l2"><a class="reference internal" href="general/set_min_denominator.html">set_min_denominator</a></li>
 <li class="toctree-l2"><a class="reference internal" href="general/stable_divide.html">stable_divide</a></li>
+<li class="toctree-l2"><a class="reference internal" href="general/get_min_base.html">get_min_base</a></li>
+<li class="toctree-l2"><a class="reference internal" href="general/set_min_base.html">set_min_base</a></li>
+<li class="toctree-l2"><a class="reference internal" href="general/stable_pow.html">stable_pow</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="gradients.html">Gradients</a></li>
@@ -1024,6 +1027,12 @@ The shape of the array is preserved, but the elements are reordered.</p>
 </dd></dl>
 
 <dl class="py function">
+<dt id="ivy.core.general.get_min_base">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">get_min_base</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#get_min_base"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.get_min_base" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the global minimum base used by ivy for numerically stable power raising.</p>
+</dd></dl>
+
+<dl class="py function">
 <dt id="ivy.core.general.get_min_denominator">
 <code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">get_min_denominator</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#get_min_denominator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.get_min_denominator" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the global minimum denominator used by ivy for numerically stable division.</p>
@@ -1453,6 +1462,17 @@ In this case, the value is inferred from the length of the array and remaining d
 </dd></dl>
 
 <dl class="py function">
+<dt id="ivy.core.general.set_min_base">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">set_min_base</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">val</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#set_min_base"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.set_min_base" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the global minimum base used by ivy for numerically stable power raising.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>val</strong> (<em>float</em>) – The new value to set the minimum base to.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt id="ivy.core.general.set_min_denominator">
 <code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">set_min_denominator</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">val</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#set_min_denominator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.set_min_denominator" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set the global minimum denominator used by ivy for numerically stable division.</p>
@@ -1567,13 +1587,32 @@ If an axis is selected with shape entry greater than one, an error is raised.</p
 
 <dl class="py function">
 <dt id="ivy.core.general.stable_divide">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">stable_divide</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">numerator</span></em>, <em class="sig-param"><span class="n">denominator</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#stable_divide"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.stable_divide" title="Permalink to this definition">¶</a></dt>
-<dd><p>Divide the numerator by the denominator, by MIN_DENOMINATOR added to the denominator for numerical stability.</p>
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">stable_divide</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">numerator</span></em>, <em class="sig-param"><span class="n">denominator</span></em>, <em class="sig-param"><span class="n">min_denominator</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#stable_divide"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.stable_divide" title="Permalink to this definition">¶</a></dt>
+<dd><p>Divide the numerator by the denominator, with min denominator added to the denominator for numerical stability.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>numerator</strong> (<em>any valid numerator</em><em>, </em><em>including containers</em>) – The numerator of the division.</p></li>
 <li><p><strong>denominator</strong> (<em>any valid denominator</em><em>, </em><em>including containers</em>) – The denominator of the division.</p></li>
+<li><p><strong>min_denominator</strong> (<em>float</em><em>, </em><em>optional</em>) – The minimum denominator to use, use global ivy._MIN_DENOMINATOR by default.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The new item following the numerically stable division.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.core.general.stable_pow">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">stable_pow</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">base</span></em>, <em class="sig-param"><span class="n">exponent</span></em>, <em class="sig-param"><span class="n">min_base</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#stable_pow"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.stable_pow" title="Permalink to this definition">¶</a></dt>
+<dd><p>Raise the base by the power, with MIN_BASE added to the base when exponent &gt; 1 for numerical stability.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>base</strong> (<em>any valid numerator</em><em>, </em><em>including containers</em>) – The numerator of the division.</p></li>
+<li><p><strong>exponent</strong> (<em>any valid denominator</em><em>, </em><em>including containers</em>) – The denominator of the division.</p></li>
+<li><p><strong>min_base</strong> (<em>float</em><em>, </em><em>optional</em>) – The minimum base to use, use global ivy._MIN_BASE by default.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -1944,6 +1983,9 @@ If not given, then the type of the original array is used.</p></li>
 <li class="toctree-l1"><a class="reference internal" href="general/get_min_denominator.html">get_min_denominator</a></li>
 <li class="toctree-l1"><a class="reference internal" href="general/set_min_denominator.html">set_min_denominator</a></li>
 <li class="toctree-l1"><a class="reference internal" href="general/stable_divide.html">stable_divide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="general/get_min_base.html">get_min_base</a></li>
+<li class="toctree-l1"><a class="reference internal" href="general/set_min_base.html">set_min_base</a></li>
+<li class="toctree-l1"><a class="reference internal" href="general/stable_pow.html">stable_pow</a></li>
 </ul>
 </div>
 </div>
