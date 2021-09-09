@@ -6,6 +6,8 @@ from .neural_net_stateful import *
 from . import verbosity
 from .framework_handler import current_framework, get_framework, set_framework, unset_framework, framework_stack
 
+_MIN_DENOMINATOR = 1e-12
+
 
 class Array:
 
