@@ -14,7 +14,6 @@ import ivy
 from ivy.framework_handler import current_framework as _cur_framework
 
 FN_CACHE = dict()
-MIN_DENOMINATOR = 1e-12
 
 
 # noinspection PyShadowingNames
@@ -231,7 +230,7 @@ def clip_vector_norm(x, max_norm: float, p: float = 2.0):
     :return: An array with the vector norm downscaled to the max norm if needed.
     """
     norm = ivy.vector_norm(x, p, keepdims=True)
-    ratio = max_norm/(norm+MIN_DENOMINATOR)
+    ratio = ivy.stable_divide(max_norm, norm)
     if ratio < 1:
         return x * ratio
     return x
@@ -250,7 +249,7 @@ def clip_matrix_norm(x, max_norm: float, p: float = 2.0):
     :return: An array with the matrix norm downscaled to the max norm if needed.
     """
     norms = ivy.matrix_norm(x, p, keepdims=True)
-    ratios = ivy.maximum(max_norm/(norms+MIN_DENOMINATOR), 1.)
+    ratios = ivy.maximum(ivy.stable_divide(max_norm, norms), 1.)
     return x * ratios
 
 
@@ -1495,3 +1494,35 @@ def einops_repeat(x, pattern, **axes_lengths):
     :return: New array with einops.repeat having been applied.
     """
     return einops.repeat(x, pattern, **axes_lengths)
+
+
+def get_min_denominator():
+    """
+    Get the global minimum denominator used by ivy for numerically stable division.
+    """
+    # noinspection PyProtectedMember
+    return ivy._MIN_DENOMINATOR
+
+
+def set_min_denominator(val):
+    """
+    Set the global minimum denominator used by ivy for numerically stable division.
+
+    :param val: The new value to set the minimum denominator to.
+    :type val: float
+    """
+    ivy._MIN_DENOMINATOR = val
+
+
+def stable_divide(numerator, denominator):
+    """
+    Divide the numerator by the denominator, by MIN_DENOMINATOR added to the denominator for numerical stability.
+
+    :param numerator: The numerator of the division.
+    :type numerator: any valid numerator, including containers
+    :param denominator: The denominator of the division.
+    :type denominator: any valid denominator, including containers
+    :return: The new item following the numerically stable division.
+    """
+    # noinspection PyProtectedMember
+    return numerator / (denominator + ivy._MIN_DENOMINATOR)
