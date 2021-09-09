@@ -7,7 +7,7 @@ import ivy
 
 
 # noinspection PyUnresolvedReferences
-def layer_norm(x, normalized_idxs, epsilon=1e-5, gamma=None, beta=None):
+def layer_norm(x, normalized_idxs, epsilon=None, gamma=None, beta=None):
     """
     Applies Layer Normalization over a mini-batch of inputs
 
@@ -15,7 +15,7 @@ def layer_norm(x, normalized_idxs, epsilon=1e-5, gamma=None, beta=None):
     :type x: array
     :param normalized_idxs: Indices to apply the normalization to.
     :type normalized_idxs: int or sequence of ints
-    :param epsilon: small constant to add to the denominator, default is 1e-5
+    :param epsilon: small constant to add to the denominator, use global ivy._MIN_BASE by default.
     :type epsilon: float, optional
     :param gamma: Learnable gamma variables for post-multiplication, default is None.
     :type gamma: array, optional
@@ -25,7 +25,7 @@ def layer_norm(x, normalized_idxs, epsilon=1e-5, gamma=None, beta=None):
     """
     mean = ivy.reduce_mean(x, normalized_idxs, keepdims=True)
     var = ivy.reduce_var(x, normalized_idxs, keepdims=True)
-    x = (x - mean) / ((var + epsilon)**0.5)
+    x = (x - mean) / ivy.stable_pow(var, 0.5, epsilon)
     if gamma is not None:
         x = x * gamma
     if beta is not None:
