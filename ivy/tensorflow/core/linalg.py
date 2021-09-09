@@ -19,8 +19,22 @@ def svd(x):
     return U, D, VT
 
 
-# noinspection PyShadowingBuiltins
-norm = lambda x, ord=None, axis=None, keepdims=False: _tf.linalg.norm(x, _ivy.default(ord, 'euclidean'), axis, keepdims)
+def matrix_norm(x, p=2, axes=None, keepdims=False):
+    axes = (-2, -1) if axes is None else axes
+    if isinstance(axes, int):
+        raise Exception('if specified, axes must be a length-2 sequence of ints,'
+                        'but found {} of type {}'.format(axes, type(axes)))
+    if p == -float('inf'):
+        ret = _tf.reduce_min(_tf.reduce_sum(_tf.abs(x), axis=axes[1], keepdims=True), axis=axes)
+    elif p == -1:
+        ret = _tf.reduce_min(_tf.reduce_sum(_tf.abs(x), axis=axes[0], keepdims=True), axis=axes)
+    else:
+        ret = _tf.linalg.norm(x, p, axes, keepdims)
+    if ret.shape == ():
+        return _tf.expand_dims(ret, 0)
+    return ret
+
+
 inv = _tf.linalg.inv
 pinv = _tf.linalg.pinv
 

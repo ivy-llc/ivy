@@ -232,8 +232,8 @@ def lars_update(ws, dcdws, lr, decay_lambda=0, inplace=True, stop_gradients=True
     :type stop_gradients: bool, optional
     :return: The new function weights ws_new, following the LARS updates.
     """
-    ws_norm = ws.norm()
-    lr = lr * ws_norm / (dcdws.norm() + MIN_DENOMINATOR)
+    ws_norm = ws.vector_norm()
+    lr = lr * ws_norm / (dcdws.vector_norm() + MIN_DENOMINATOR)
     if decay_lambda > 0:
         lr /= (ws_norm * decay_lambda)
     return gradient_descent_update(ws, dcdws, lr, inplace, stop_gradients)
@@ -313,12 +313,12 @@ def lamb_update(ws, dcdws, lr, mw_tm1, vw_tm1, step, beta1=0.9, beta2=0.999, eps
     :type stop_gradients: bool, optional
     :return: The new function weights ws_new, following the LARS updates.
     """
-    r1 = ws.norm()
+    r1 = ws.vector_norm()
     eff_grads, mw, vw = adam_step(dcdws, mw_tm1, vw_tm1, step, beta1, beta2, epsilon)
     if decay_lambda > 0:
         r2 = (eff_grads + decay_lambda*ws).norm()
     else:
-        r2 = eff_grads.norm()
+        r2 = eff_grads.vector_norm()
     r = (r1/(r2 + MIN_DENOMINATOR)).minimum(max_trust_ratio)
     lr = lr * r
     return optimizer_update(ws, eff_grads, lr, inplace, stop_gradients), mw, vw

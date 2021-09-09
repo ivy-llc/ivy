@@ -755,14 +755,15 @@ class Container(dict):
                                        clip_max[kc] if max_is_container else clip_max) if self._ivy.is_array(x) else x,
                         key_chains, to_apply, prune_unapplied)
 
-    def clip_norm(self, max_norm, p_val, global_norm=False, key_chains=None, to_apply=True, prune_unapplied=False):
+    def clip_vector_norm(self, max_norm, p, global_norm=False, key_chains=None, to_apply=True,
+                         prune_unapplied=False):
         """
         Computes the elementwise clipped values between this container and clip_min and clip_max containers or numbers.
 
         :param max_norm: The max norm container or number to clip against.
         :type max_norm: Ivy container or number
-        :param p_val: The p-value for computing the p-norm container or number.
-        :type p_val: Ivy container or number
+        :param p: The p-value for computing the p-norm container or number.
+        :type p: Ivy container or number
         :param global_norm: Whether to compute the norm across all the concattenated sub-arrays. Default is False.
         :type global_norm: bool, optional
         :param key_chains: The key-chains to apply or not apply the method to. Default is None.
@@ -774,24 +775,23 @@ class Container(dict):
         :type prune_unapplied: bool, optional
         :return: Container object with all sub-arrays having the clipped norms returned.
         """
-        # ToDo: modify this method to make use of ivy.Container.norm method
         max_norm_is_container = isinstance(max_norm, Container)
-        p_val_is_container = isinstance(p_val, Container)
+        p_is_container = isinstance(p, Container)
         if global_norm:
-            if max_norm_is_container or p_val_is_container:
+            if max_norm_is_container or p_is_container:
                 raise Exception(
                     'global_norm can only be computed for scalar max_norm and p_val arguments,'
                     'but found {} and {} of type {} and {} respectively'.format(
-                        max_norm, p_val, type(max_norm), type(p_val)))
-            norm = sum([v for k, v in
-                        self.map(lambda x, kc: self._ivy.reduce_sum(x ** p_val)).to_iterator()]) ** (1/p_val)
-            ratio = max_norm/norm
+                        max_norm, p, type(max_norm), type(p)))
+            vector_norm = self.vector_norm(p, global_norm=True)
+            ratio = max_norm/vector_norm
             if ratio < 1:
                 return self * ratio
             return self.copy()
         return self.map(lambda x, kc:
-                        self._ivy.clip_norm(x, max_norm[kc] if max_norm_is_container else max_norm,
-                                            p_val[kc] if p_val_is_container else p_val) if self._ivy.is_array(x) else x,
+                        self._ivy.clip_vector_norm(
+                            x, max_norm[kc] if max_norm_is_container else max_norm,
+                            p[kc] if p_is_container else p) if self._ivy.is_array(x) else x,
                         key_chains, to_apply, prune_unapplied)
 
     def einsum(self, equation, key_chains=None, to_apply=True, prune_unapplied=False):
@@ -813,18 +813,51 @@ class Container(dict):
         return self.map(lambda x, kc: self._ivy.einsum(equation, x) if self._ivy.is_array(x) else x,
                         key_chains, to_apply, prune_unapplied)
 
-    # noinspection PyShadowingBuiltins
-    def norm(self, ord=None, axis=None, keepdims=False, key_chains=None, to_apply=True, prune_unapplied=False):
+    def vector_norm(self, p=2, axis=None, keepdims=False, global_norm=False, key_chains=None, to_apply=True,
+                    prune_unapplied=False):
         """
-        Compute matrix or vector norm for each array in the container.
-        This function is able to return ord-1 and ord-2 vector-norms and matrix-norms.
+        Compute vector p-norm for each array in the container.
 
-        :param ord: Order of the norm. Default is Frobenius norm.
-        :type ord: int or str, optional
-        :param axis: If axis is an integer, it specifies the axis of x along which to compute the vector norms. If axis is a
-                     2-tuple, it specifies the axes that hold 2-D matrices, and the matrix norms of these matrices are
-                     computed. Default is None, in which case the axes are inferred from the input shape.
-        :type axis: int or 2-sequence of ints, optional
+        :param p: Order of the norm. Default is 2.
+        :type p: int or str or container, optional
+        :param axis: If axis is an integer, it specifies the axis of x along which to compute the vector norms.
+                     Default is None, in which case the flattened array is considered.
+        :type axis: int or sequence of ints, optional
+        :param keepdims: If this is set to True, the axes which are normed over are left in the result as dimensions with
+                         size one. With this option the result will broadcast correctly against the original x.
+                         Default is False.
+        :type keepdims: bool, optional
+        :param global_norm: Whether to compute the norm across all the concattenated sub-arrays. Default is False.
+        :type global_norm: bool, optional
+        :param key_chains: The key-chains to apply or not apply the method to. Default is None.
+        :type key_chains: list or dict of strs, optional
+        :param to_apply: If True, the method will be applied to key_chains, otherwise key_chains will be skipped.
+                         Default is True.
+        :type to_apply: bool, optional
+        :param prune_unapplied: Whether to prune key_chains for which the function was not applied. Default is False.
+        :type prune_unapplied: bool, optional
+        :return: Container object with the vector norms for each sub-array returned.
+        """
+        p_is_container = isinstance(p, Container)
+        if global_norm:
+            if p_is_container:
+                raise Exception(
+                    'global_norm can only be computed for scalar p argument,'
+                    'but found {} of type {}'.format(p, type(p)))
+            return sum([v for k, v in
+                        self.map(lambda x, kc: self._ivy.reduce_sum(x ** p)).to_iterator()]) ** (1/p)
+        return self.map(lambda x, kc: self._ivy.vector_norm(x, p[kc] if p_is_container else p, axis, keepdims)
+                        if self._ivy.is_array(x) else x, key_chains, to_apply, prune_unapplied)
+
+    def matrix_norm(self, p=2, axis=None, keepdims=False, key_chains=None, to_apply=True, prune_unapplied=False):
+        """
+        Compute matrix p-norm for each array in the container.
+
+        :param p: Order of the norm. Default is 2.
+        :type p: int or str, optional
+        :param axis: If axis is an integer, it specifies the axis of x along which to compute the matrix norms.
+                     Default is None, in which case the flattened array is considered.
+        :type axis: int or sequence of ints, optional
         :param keepdims: If this is set to True, the axes which are normed over are left in the result as dimensions with
                          size one. With this option the result will broadcast correctly against the original x.
                          Default is False.
@@ -836,9 +869,9 @@ class Container(dict):
         :type to_apply: bool, optional
         :param prune_unapplied: Whether to prune key_chains for which the function was not applied. Default is False.
         :type prune_unapplied: bool, optional
-        :return: Container object with all sub-array dimensions expanded along the axis.
+        :return: Container object with the matrix norms for each sub-array returned.
         """
-        return self.map(lambda x, kc: self._ivy.norm(x, ord, axis, keepdims) if self._ivy.is_array(x) else x,
+        return self.map(lambda x, kc: self._ivy.matrix_norm(x, p, axis, keepdims) if self._ivy.is_array(x) else x,
                         key_chains, to_apply, prune_unapplied)
 
     def flip(self, axis=None, key_chains=None, to_apply=True, prune_unapplied=False):

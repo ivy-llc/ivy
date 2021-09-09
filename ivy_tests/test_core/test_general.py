@@ -377,7 +377,7 @@ def test_clip(x_min_n_max, dtype_str, tensor_fn, dev_str, call):
     helpers.assert_compilable(ivy.clip)
 
 
-# clip_norm
+# clip_vector_norm
 @pytest.mark.parametrize(
     "x_max_norm_n_p_val_clipped",
     [(-0.5, 0.4, 2., -0.4), ([1.7], 1.5, 3., [1.5]),
@@ -387,7 +387,7 @@ def test_clip(x_min_n_max, dtype_str, tensor_fn, dev_str, call):
     "dtype_str", ['float32'])
 @pytest.mark.parametrize(
     "tensor_fn", [ivy.array, helpers.var_fn])
-def test_clip_norm(x_max_norm_n_p_val_clipped, dtype_str, tensor_fn, dev_str, call):
+def test_clip_vector_norm(x_max_norm_n_p_val_clipped, dtype_str, tensor_fn, dev_str, call):
     # smoke test
     if call is helpers.mx_call:
         # mxnet does not support 0-dimensional variables
@@ -396,18 +396,18 @@ def test_clip_norm(x_max_norm_n_p_val_clipped, dtype_str, tensor_fn, dev_str, ca
     max_norm = x_max_norm_n_p_val_clipped[1]
     p_val = x_max_norm_n_p_val_clipped[2]
     clipped = x_max_norm_n_p_val_clipped[3]
-    ret = ivy.clip_norm(x, max_norm, p_val)
+    ret = ivy.clip_vector_norm(x, max_norm, p_val)
     # type test
     assert ivy.is_array(ret)
     # cardinality test
-    assert ret.shape == x.shape
+    assert ret.shape == (x.shape if len(x.shape) else (1,))
     # value test
-    assert np.allclose(call(ivy.clip_norm, x, max_norm, p_val), np.array(clipped))
+    assert np.allclose(call(ivy.clip_vector_norm, x, max_norm, p_val), np.array(clipped))
     # compilation test
     if call is helpers.torch_call:
         # pytorch jit cannot compile global variables, in this case MIN_DENOMINATOR
         return
-    helpers.assert_compilable(ivy.clip_norm)
+    helpers.assert_compilable(ivy.clip_vector_norm)
 
 
 # round
