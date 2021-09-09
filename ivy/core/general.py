@@ -1514,15 +1514,53 @@ def set_min_denominator(val):
     ivy._MIN_DENOMINATOR = val
 
 
-def stable_divide(numerator, denominator):
+def stable_divide(numerator, denominator, min_denominator=None):
     """
-    Divide the numerator by the denominator, by MIN_DENOMINATOR added to the denominator for numerical stability.
+    Divide the numerator by the denominator, with min denominator added to the denominator for numerical stability.
 
     :param numerator: The numerator of the division.
     :type numerator: any valid numerator, including containers
     :param denominator: The denominator of the division.
     :type denominator: any valid denominator, including containers
+    :param min_denominator: The minimum denominator to use, use global ivy._MIN_DENOMINATOR by default.
+    :type min_denominator: float, optional
     :return: The new item following the numerically stable division.
     """
     # noinspection PyProtectedMember
-    return numerator / (denominator + ivy._MIN_DENOMINATOR)
+    return numerator / (denominator + default(min_denominator, ivy._MIN_DENOMINATOR))
+
+
+def get_min_base():
+    """
+    Get the global minimum base used by ivy for numerically stable power raising.
+    """
+    # noinspection PyProtectedMember
+    return ivy._MIN_BASE
+
+
+def set_min_base(val):
+    """
+    Set the global minimum base used by ivy for numerically stable power raising.
+
+    :param val: The new value to set the minimum base to.
+    :type val: float
+    """
+    ivy._MIN_BASE = val
+
+
+def stable_pow(base, exponent, min_base=None):
+    """
+    Raise the base by the power, with MIN_BASE added to the base when exponent > 1 for numerical stability.
+
+    :param base: The numerator of the division.
+    :type base: any valid numerator, including containers
+    :param exponent: The denominator of the division.
+    :type exponent: any valid denominator, including containers
+    :param min_base: The minimum base to use, use global ivy._MIN_BASE by default.
+    :type min_base: float, optional
+    :return: The new item following the numerically stable division.
+    """
+    if exponent < 1:
+        return base ** exponent
+    # noinspection PyProtectedMember
+    return (base + default(min_base, ivy._MIN_BASE)) ** exponent

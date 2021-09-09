@@ -10,13 +10,13 @@ from ivy.neural_net_stateful.initializers import Zeros, Ones
 
 class LayerNorm(Module):
 
-    def __init__(self, normalized_shape, epsilon=1e-5, elementwise_affine=True,  dev_str='cpu', v=None):
+    def __init__(self, normalized_shape, epsilon=None, elementwise_affine=True,  dev_str='cpu', v=None):
         """
         Class for applying Layer Normalization over a mini-batch of inputs
 
         :param normalized_shape: Trailing shape to applying the normalization to.
         :type normalized_shape: int or sequence of ints
-        :param epsilon: small constant to add to the denominator, default is 1e-5
+        :param epsilon: small constant to add to the denominator, use global ivy._MIN_BASE by default.
         :type epsilon: float, optional
         :param elementwise_affine: Whether to include learnable affine parameters, default is True.
         :type elementwise_affine: bool, optional
