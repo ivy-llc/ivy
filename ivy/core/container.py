@@ -1762,19 +1762,20 @@ class Container(dict):
                 return x
         return self.map(to_list)
 
-    def reshape_like(self, target_dict, return_cont=None):
+    def reshape_like(self, target_dict, leading_shape=None, return_cont=None):
         """
         Set shapes of container entries to shapes specified by new container with the same key structure
 
         :return: new container with values of updated shapes
         """
+        leading_shape = self._ivy.default(leading_shape, list())
         if return_cont is None:
             return_cont = self.copy()
         for (_, v_shape), (k, v) in zip(target_dict.items(), return_cont.items()):
             if isinstance(v_shape, dict):
-                return_cont[k] = self.reshape_like(v_shape, return_cont[k])
+                return_cont[k] = self.reshape_like(v_shape, leading_shape, return_cont[k])
             else:
-                return_cont[k] = self._ivy.reshape(v, v_shape)
+                return_cont[k] = self._ivy.reshape(v, leading_shape + list(v_shape))
         return Container(return_cont, ivyh=self._local_ivy)
 
     def if_exists(self, key):

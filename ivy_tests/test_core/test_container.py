@@ -1544,6 +1544,8 @@ def test_container_reshape_like(dev_str, call):
                            'b': {'c': ivy.array([[3.], [4.]]), 'd': ivy.array([[5.], [6.], [7.]])}})
     new_shapes = Container({'a': (1,),
                            'b': {'c': (1, 2, 1), 'd': (3, 1, 1)}})
+
+    # without leading shape
     container_reshaped = container.reshape_like(new_shapes)
     assert list(container_reshaped['a'].shape) == [1]
     assert list(container_reshaped.a.shape) == [1]
@@ -1551,6 +1553,18 @@ def test_container_reshape_like(dev_str, call):
     assert list(container_reshaped.b.c.shape) == [1, 2, 1]
     assert list(container_reshaped['b']['d'].shape) == [3, 1, 1]
     assert list(container_reshaped.b.d.shape) == [3, 1, 1]
+
+    # with leading shape
+    container = Container({'a': ivy.array([[[1.]], [[1.]], [[1.]]]),
+                           'b': {'c': ivy.array([[[3.], [4.]], [[3.], [4.]], [[3.], [4.]]]),
+                                 'd': ivy.array([[[5.], [6.], [7.]], [[5.], [6.], [7.]], [[5.], [6.], [7.]]])}})
+    container_reshaped = container.reshape_like(new_shapes, leading_shape=[3])
+    assert list(container_reshaped['a'].shape) == [3, 1]
+    assert list(container_reshaped.a.shape) == [3, 1]
+    assert list(container_reshaped['b']['c'].shape) == [3, 1, 2, 1]
+    assert list(container_reshaped.b.c.shape) == [3, 1, 2, 1]
+    assert list(container_reshaped['b']['d'].shape) == [3, 3, 1, 1]
+    assert list(container_reshaped.b.d.shape) == [3, 3, 1, 1]
 
 
 def test_container_slice(dev_str, call):
