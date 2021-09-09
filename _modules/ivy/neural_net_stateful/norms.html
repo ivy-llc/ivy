@@ -199,7 +199,7 @@
 
 <div class="viewcode-block" id="LayerNorm"><a class="viewcode-back" href="../../../neural_net_stateful/norms/LayerNorm.html#ivy.neural_net_stateful.norms.LayerNorm">[docs]</a><span class="k">class</span> <span class="nc">LayerNorm</span><span class="p">(</span><span class="n">Module</span><span class="p">):</span>
 
-<div class="viewcode-block" id="LayerNorm.__init__"><a class="viewcode-back" href="../../../neural_net_stateful/norms/LayerNorm.html#ivy.neural_net_stateful.norms.LayerNorm.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">normalized_shape</span><span class="p">,</span> <span class="n">epsilon</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">elementwise_affine</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>  <span class="n">dev_str</span><span class="o">=</span><span class="s1">&#39;cpu&#39;</span><span class="p">,</span> <span class="n">v</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="LayerNorm.__init__"><a class="viewcode-back" href="../../../neural_net_stateful/norms/LayerNorm.html#ivy.neural_net_stateful.norms.LayerNorm.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">normalized_shape</span><span class="p">,</span> <span class="n">epsilon</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">elementwise_affine</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">new_std</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dev_str</span><span class="o">=</span><span class="s1">&#39;cpu&#39;</span><span class="p">,</span> <span class="n">v</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Class for applying Layer Normalization over a mini-batch of inputs</span>
 
@@ -209,6 +209,8 @@
 <span class="sd">        :type epsilon: float, optional</span>
 <span class="sd">        :param elementwise_affine: Whether to include learnable affine parameters, default is True.</span>
 <span class="sd">        :type elementwise_affine: bool, optional</span>
+<span class="sd">        :param new_std: The standard deviation of the new normalized values. Default is 1.</span>
+<span class="sd">        :type new_std: float, optional</span>
 <span class="sd">        :param dev_str: device on which to create the layer&#39;s variables &#39;cuda:0&#39;, &#39;cuda:1&#39;, &#39;cpu&#39; etc.</span>
 <span class="sd">        :type dev_str: str, optional</span>
 <span class="sd">        :param v: the variables for each submodule in the sequence, constructed internally by default.</span>
@@ -217,6 +219,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_normalized_idxs</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">normalized_shape</span><span class="p">))]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_epsilon</span> <span class="o">=</span> <span class="n">epsilon</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_elementwise_affine</span> <span class="o">=</span> <span class="n">elementwise_affine</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_new_std</span> <span class="o">=</span> <span class="n">new_std</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_gamma_shape</span> <span class="o">=</span> <span class="n">normalized_shape</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_beta_shape</span> <span class="o">=</span> <span class="n">normalized_shape</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_gamma_init</span> <span class="o">=</span> <span class="n">Ones</span><span class="p">()</span>
@@ -242,7 +245,8 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">layer_norm</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_normalized_idxs</span><span class="p">,</span> <span class="n">epsilon</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_epsilon</span><span class="p">,</span>
                               <span class="n">gamma</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">gamma</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_elementwise_affine</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
-                              <span class="n">beta</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">beta</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_elementwise_affine</span> <span class="k">else</span> <span class="kc">None</span><span class="p">)</span></div>
+                              <span class="n">beta</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">beta</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_elementwise_affine</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
+                              <span class="n">new_std</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_new_std</span><span class="p">)</span></div>
 </pre></div>
 
            </div>
