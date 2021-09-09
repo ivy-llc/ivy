@@ -218,25 +218,40 @@ def clip(x, x_min, x_max, f=None):
     return _cur_framework(x, f=f).clip(x, x_min, x_max)
 
 
-def clip_norm(x, max_norm: float, p_val: float = 2.0):
+def clip_vector_norm(x, max_norm: float, p: float = 2.0):
     """
-    Clips (limits) the p-norm of an array.
+    Clips (limits) the vector p-norm of an array.
 
     :param x: Input array containing elements to clip.
     :type x: array
     :param max_norm: The maximum value of the array norm.
     :type max_norm: float
-    :param p_val: The p-value for computing the p-norm. Default is 2.
-    :type p_val: float, optional
-    :return: An array with the elements of x, but where values < x_min are replaced with x_min,
-             and those > x_max with x_max.
+    :param p: The p-value for computing the p-norm. Default is 2.
+    :type p: float, optional
+    :return: An array with the vector norm downscaled to the max norm if needed.
     """
-    # ToDo: modify this method to make use of norm method
-    norm = ivy.reduce_sum(x ** p_val)[0] ** (1/p_val)
+    norm = ivy.vector_norm(x, p, keepdims=True)
     ratio = max_norm/(norm+MIN_DENOMINATOR)
     if ratio < 1:
-        return ivy.array(x * ratio)
+        return x * ratio
     return x
+
+
+def clip_matrix_norm(x, max_norm: float, p: float = 2.0):
+    """
+    Clips (limits) the matrix norm of an array.
+
+    :param x: Input array containing elements to clip.
+    :type x: array
+    :param max_norm: The maximum value of the array norm.
+    :type max_norm: float
+    :param p: The p-value for computing the p-norm. Default is 2.
+    :type p: float, optional
+    :return: An array with the matrix norm downscaled to the max norm if needed.
+    """
+    norms = ivy.matrix_norm(x, p, keepdims=True)
+    ratios = ivy.maximum(max_norm/(norms+MIN_DENOMINATOR), 1.)
+    return x * ratios
 
 
 # noinspection PyShadowingBuiltins

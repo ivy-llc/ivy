@@ -399,9 +399,9 @@ def test_container_clip(dev_str, call):
     assert np.allclose(ivy.to_numpy(container_clipped.b.d), np.array([4., 7., 8.]))
 
 
-def test_container_clip_norm(dev_str, call):
+def test_container_clip_vector_norm(dev_str, call):
     container = Container({'a': ivy.array([[0.8, 2.2], [1.5, 0.2]])})
-    container_clipped = container.clip_norm(2.5, 2.)
+    container_clipped = container.clip_vector_norm(2.5, 2.)
     assert np.allclose(ivy.to_numpy(container_clipped['a']),
                        np.array([[0.71749604, 1.9731141], [1.345305, 0.17937401]]))
     assert np.allclose(ivy.to_numpy(container_clipped.a),
@@ -422,18 +422,35 @@ def test_container_einsum(dev_str, call):
     assert np.allclose(ivy.to_numpy(container_einsummed.b.d), np.array([-6., -14., -22.]))
 
 
-def test_container_norm(dev_str, call):
+def test_container_vector_norm(dev_str, call):
     dict_in = {'a': ivy.array([[1., 2.], [3., 4.], [5., 6.]]),
                'b': {'c': ivy.array([[2., 4.], [6., 8.], [10., 12.]]),
                      'd': ivy.array([[3., 6.], [9., 12.], [15., 18.]])}}
     container = Container(dict_in)
-    container_normed = container.norm(axis=(-1, -2))
+    container_normed = container.vector_norm(axis=(-1, -2))
     assert np.allclose(ivy.to_numpy(container_normed['a']), 9.5394)
     assert np.allclose(ivy.to_numpy(container_normed.a), 9.5394)
     assert np.allclose(ivy.to_numpy(container_normed['b']['c']), 19.0788)
     assert np.allclose(ivy.to_numpy(container_normed.b.c), 19.0788)
     assert np.allclose(ivy.to_numpy(container_normed['b']['d']), 28.6182)
     assert np.allclose(ivy.to_numpy(container_normed.b.d), 28.6182)
+
+
+def test_container_matrix_norm(dev_str, call):
+    if call is helpers.mx_call:
+        # MXNet does not support matrix norm
+        pytest.skip()
+    dict_in = {'a': ivy.array([[1., 2.], [3., 4.], [5., 6.]]),
+               'b': {'c': ivy.array([[2., 4.], [6., 8.], [10., 12.]]),
+                     'd': ivy.array([[3., 6.], [9., 12.], [15., 18.]])}}
+    container = Container(dict_in)
+    container_normed = container.matrix_norm(axis=(-1, -2))
+    assert np.allclose(ivy.to_numpy(container_normed['a']), 9.52551809)
+    assert np.allclose(ivy.to_numpy(container_normed.a), 9.52551809)
+    assert np.allclose(ivy.to_numpy(container_normed['b']['c']), 19.05103618)
+    assert np.allclose(ivy.to_numpy(container_normed.b.c), 19.05103618)
+    assert np.allclose(ivy.to_numpy(container_normed['b']['d']), 28.57655427)
+    assert np.allclose(ivy.to_numpy(container_normed.b.d), 28.57655427)
 
 
 def test_container_flip(dev_str, call):

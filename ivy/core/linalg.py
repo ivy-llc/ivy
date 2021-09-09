@@ -3,6 +3,7 @@ Collection of linear algebra Ivy functions.
 """
 
 # local
+import ivy
 from ivy.framework_handler import current_framework as _cur_framework
 
 
@@ -32,29 +33,53 @@ def svd(x, f=None):
     return _cur_framework(x, f=f).svd(x)
 
 
-# noinspection PyShadowingBuiltins
-def norm(x, ord=None, axis=None, keepdims=False, f=None):
+def vector_norm(x, p=2, axis=None, keepdims=False):
     """
-    Matrix or vector norm.
-    This function is able to return ord-1 and ord-2 vector-norms and matrix-norms.
+    Compute the vector p-norm.
 
-    :param x: Input array. If axis is None, x must be 1-D or 2-D.
+    :param x: Input array.
     :type x: array
-    :param ord: Order of the norm. Default is Frobenius norm.
-    :type ord: int or str, optional
-    :param axis: If axis is an integer, it specifies the axis of x along which to compute the vector norms. If axis is a
-                 2-tuple, it specifies the axes that hold 2-D matrices, and the matrix norms of these matrices are
-                 computed. Default is None, in which case the axes are inferred from the input shape.
-    :type axis: int or 2-sequence of ints, optional
+    :param p: Order of the norm. Default is 2.
+    :type p: int or str, optional
+    :param axis: If axis is an integer, it specifies the axis of x along which to compute the vector norms.
+                 Default is None, in which case the flattened array is considered.
+    :type axis: int or sequence of ints, optional
+    :param keepdims: If this is set to True, the axes which are normed over are left in the result as dimensions with
+                     size one. With this option the result will broadcast correctly against the original x.
+                     Default is False.
+    :type keepdims: bool, optional
+    :return: Vector norm of the array at specified axes.
+    """
+    if p == -float('inf'):
+        return ivy.reduce_min(ivy.abs(x), axis, keepdims)
+    elif p == float('inf'):
+        return ivy.reduce_max(ivy.abs(x), axis, keepdims)
+    elif p == 0:
+        return ivy.reduce_sum(ivy.cast(x != 0, 'float32'), axis, keepdims)
+    x_raised = x ** p
+    return ivy.reduce_sum(x_raised, axis, keepdims) ** (1/p)
+
+
+def matrix_norm(x, p=2, axes=None, keepdims=False, f=None):
+    """
+    Compute the matrix p-norm.
+
+    :param x: Input array.
+    :type x: array
+    :param p: Order of the norm. Default is 2.
+    :type p: int or str, optional
+    :param axes: The axes of x along which to compute the matrix norms.
+                 Default is None, in which case the last two dimensions are used.
+    :type axes: sequence of ints, optional
     :param keepdims: If this is set to True, the axes which are normed over are left in the result as dimensions with
                      size one. With this option the result will broadcast correctly against the original x.
                      Default is False.
     :type keepdims: bool, optional
     :param f: Machine learning framework. Inferred from inputs if None.
     :type f: ml_framework, optional
-    :return: Norm of the matrix or vector(s).
+    :return: Matrix norm of the array at specified axes.
     """
-    return _cur_framework(x, f=f).norm(x, ord, axis, keepdims)
+    return _cur_framework(x, f=f).matrix_norm(x, p, axes, keepdims)
 
 
 def inv(x, f=None):
