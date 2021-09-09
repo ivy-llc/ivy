@@ -1838,6 +1838,9 @@ def test_default(x_n_dv, dtype_str, tensor_fn, dev_str, call):
     y_true = ivy.to_numpy(x if x is not None else dv)
     assert np.allclose(call(ivy.default, x, dv), y_true)
     # compilation test
+    if call is helpers.torch_call:
+        # try-except blocks are not jit compilable in pytorch
+        return
     helpers.assert_compilable(ivy.default)
 
 
