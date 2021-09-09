@@ -14,9 +14,15 @@ def svd(x) -> List[torch.Tensor]:
     return U, D, VT
 
 
-# noinspection PyShadowingBuiltins
-def norm(x, ord: Optional[Union[int, str]] = None, axis: Optional[int] = None, keepdims: bool = False):
-    return torch.norm(x, p=ord, dim=axis, keepdim=keepdims)
+def matrix_norm(x, p=2, axes=None, keepdims=False):
+    axes = [-2, -1] if axes is None else axes
+    if isinstance(axes, int):
+        raise Exception('if specified, axes must be a length-2 sequence of ints,'
+                        'but found {} of type {}'.format(axes, type(axes)))
+    ret = torch.linalg.matrix_norm(x, ord=p, dim=axes, keepdim=keepdims)
+    if ret.shape == ():
+        return torch.unsqueeze(ret, 0)
+    return ret
 
 
 def inv(x):

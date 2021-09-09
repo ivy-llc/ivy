@@ -6,7 +6,21 @@ Collection of Numpy linear algebra functions, wrapped to fit Ivy syntax and sign
 import numpy as _np
 
 svd = _np.linalg.svd
-norm = _np.linalg.norm
+
+
+def matrix_norm(x, p=2, axes=None, keepdims=False):
+    axes = (-2, -1) if axes is None else axes
+    if isinstance(axes, int):
+        raise Exception('if specified, axes must be a length-2 sequence of ints,'
+                        'but found {} of type {}'.format(axes, type(axes)))
+    elif isinstance(axes, list):
+        axes = tuple(axes)
+    ret = _np.array(_np.linalg.norm(x, p, axes, keepdims))
+    if ret.shape == ():
+        return _np.expand_dims(ret, 0)
+    return ret
+
+
 inv = _np.linalg.inv
 pinv = _np.linalg.pinv
 

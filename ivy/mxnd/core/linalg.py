@@ -16,10 +16,12 @@ def svd(x):
     return U.as_nd_ndarray(), D.as_nd_ndarray(), VT.as_nd_ndarray()
 
 
-# noinspection PyShadowingBuiltins
-def norm(x, ord=None, axis=None, keepdims=False):
-    ord = _ivy.default(ord, 2)
-    return _mx.nd.norm(x, ord=(2 if ord == 'fro' else ord), axis=(None if ord == 'fro' else axis), keepdims=keepdims)
+def matrix_norm(x, p=2, axes=None, keepdims=False):
+    axes = (-2, -1) if axes is None else axes
+    if isinstance(axes, int):
+        raise Exception('if specified, axes must be a length-2 sequence of ints,'
+                        'but found {} of type {}'.format(axes, type(axes)))
+    return _mx.nd.norm(x, p, axes, keepdims=keepdims)
 
 
 inv = _mx.nd.linalg_inverse
