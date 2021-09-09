@@ -13,5 +13,6 @@ Linalg
    :caption: Linalg
 
    linalg/svd.rst
+   linalg/matrix_norm.rst
    linalg/vector_to_skew_symmetric_matrix.rst
 

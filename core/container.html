@@ -388,14 +388,14 @@ Default is True.</p></li>
 </dd></dl>
 
 <dl class="py method">
-<dt id="ivy.core.container.Container.clip_norm">
-<code class="sig-name descname">clip_norm</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">max_norm</span></em>, <em class="sig-param"><span class="n">p_val</span></em>, <em class="sig-param"><span class="n">global_norm</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">key_chains</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">to_apply</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">prune_unapplied</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/container.html#Container.clip_norm"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.clip_norm" title="Permalink to this definition">¶</a></dt>
+<dt id="ivy.core.container.Container.clip_vector_norm">
+<code class="sig-name descname">clip_vector_norm</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">max_norm</span></em>, <em class="sig-param"><span class="n">p</span></em>, <em class="sig-param"><span class="n">global_norm</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">key_chains</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">to_apply</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">prune_unapplied</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/container.html#Container.clip_vector_norm"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.clip_vector_norm" title="Permalink to this definition">¶</a></dt>
 <dd><p>Computes the elementwise clipped values between this container and clip_min and clip_max containers or numbers.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>max_norm</strong> (<em>Ivy container</em><em> or </em><em>number</em>) – The max norm container or number to clip against.</p></li>
-<li><p><strong>p_val</strong> (<em>Ivy container</em><em> or </em><em>number</em>) – The p-value for computing the p-norm container or number.</p></li>
+<li><p><strong>p</strong> (<em>Ivy container</em><em> or </em><em>number</em>) – The p-value for computing the p-norm container or number.</p></li>
 <li><p><strong>global_norm</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to compute the norm across all the concattenated sub-arrays. Default is False.</p></li>
 <li><p><strong>key_chains</strong> (<em>list</em><em> or </em><em>dict of strs</em><em>, </em><em>optional</em>) – The key-chains to apply or not apply the method to. Default is None.</p></li>
 <li><p><strong>to_apply</strong> (<em>bool</em><em>, </em><em>optional</em>) – If True, the method will be applied to key_chains, otherwise key_chains will be skipped.
@@ -832,6 +832,31 @@ Default is True.</p></li>
 </dd></dl>
 
 <dl class="py method">
+<dt id="ivy.core.container.Container.matrix_norm">
+<code class="sig-name descname">matrix_norm</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">p</span><span class="o">=</span><span class="default_value">2</span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">keepdims</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">key_chains</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">to_apply</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">prune_unapplied</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/container.html#Container.matrix_norm"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.matrix_norm" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute matrix p-norm for each array in the container.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>p</strong> (<em>int</em><em> or </em><em>str</em><em>, </em><em>optional</em>) – Order of the norm. Default is 2.</p></li>
+<li><p><strong>axis</strong> (<em>int</em><em> or </em><em>sequence of ints</em><em>, </em><em>optional</em>) – If axis is an integer, it specifies the axis of x along which to compute the matrix norms.
+Default is None, in which case the flattened array is considered.</p></li>
+<li><p><strong>keepdims</strong> (<em>bool</em><em>, </em><em>optional</em>) – If this is set to True, the axes which are normed over are left in the result as dimensions with
+size one. With this option the result will broadcast correctly against the original x.
+Default is False.</p></li>
+<li><p><strong>key_chains</strong> (<em>list</em><em> or </em><em>dict of strs</em><em>, </em><em>optional</em>) – The key-chains to apply or not apply the method to. Default is None.</p></li>
+<li><p><strong>to_apply</strong> (<em>bool</em><em>, </em><em>optional</em>) – If True, the method will be applied to key_chains, otherwise key_chains will be skipped.
+Default is True.</p></li>
+<li><p><strong>prune_unapplied</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to prune key_chains for which the function was not applied. Default is False.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Container object with the matrix norms for each sub-array returned.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt id="ivy.core.container.Container.maximum">
 <code class="sig-name descname">maximum</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">other</span></em>, <em class="sig-param"><span class="n">key_chains</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">to_apply</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">prune_unapplied</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/container.html#Container.maximum"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.maximum" title="Permalink to this definition">¶</a></dt>
 <dd><p>Computes the elementwise maximum between this container and another container or number.</p>
@@ -867,33 +892,6 @@ Default is True.</p></li>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>Container object with all sub-arrays having the minimum values computed.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt id="ivy.core.container.Container.norm">
-<code class="sig-name descname">norm</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ord</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">keepdims</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">key_chains</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">to_apply</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">prune_unapplied</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/container.html#Container.norm"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.norm" title="Permalink to this definition">¶</a></dt>
-<dd><p>Compute matrix or vector norm for each array in the container.
-This function is able to return ord-1 and ord-2 vector-norms and matrix-norms.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>ord</strong> (<em>int</em><em> or </em><em>str</em><em>, </em><em>optional</em>) – Order of the norm. Default is Frobenius norm.</p></li>
-<li><p><strong>axis</strong> (<em>int</em><em> or </em><em>2-sequence of ints</em><em>, </em><em>optional</em>) – If axis is an integer, it specifies the axis of x along which to compute the vector norms. If axis is a
-2-tuple, it specifies the axes that hold 2-D matrices, and the matrix norms of these matrices are
-computed. Default is None, in which case the axes are inferred from the input shape.</p></li>
-<li><p><strong>keepdims</strong> (<em>bool</em><em>, </em><em>optional</em>) – If this is set to True, the axes which are normed over are left in the result as dimensions with
-size one. With this option the result will broadcast correctly against the original x.
-Default is False.</p></li>
-<li><p><strong>key_chains</strong> (<em>list</em><em> or </em><em>dict of strs</em><em>, </em><em>optional</em>) – The key-chains to apply or not apply the method to. Default is None.</p></li>
-<li><p><strong>to_apply</strong> (<em>bool</em><em>, </em><em>optional</em>) – If True, the method will be applied to key_chains, otherwise key_chains will be skipped.
-Default is True.</p></li>
-<li><p><strong>prune_unapplied</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to prune key_chains for which the function was not applied. Default is False.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Container object with all sub-array dimensions expanded along the axis.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1515,6 +1513,32 @@ Default is True.</p></li>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>List of containers, unstacked along the specified dimension.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="ivy.core.container.Container.vector_norm">
+<code class="sig-name descname">vector_norm</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">p</span><span class="o">=</span><span class="default_value">2</span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">keepdims</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">global_norm</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">key_chains</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">to_apply</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">prune_unapplied</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/container.html#Container.vector_norm"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.vector_norm" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute vector p-norm for each array in the container.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>p</strong> (<em>int</em><em> or </em><em>str</em><em> or </em><em>container</em><em>, </em><em>optional</em>) – Order of the norm. Default is 2.</p></li>
+<li><p><strong>axis</strong> (<em>int</em><em> or </em><em>sequence of ints</em><em>, </em><em>optional</em>) – If axis is an integer, it specifies the axis of x along which to compute the vector norms.
+Default is None, in which case the flattened array is considered.</p></li>
+<li><p><strong>keepdims</strong> (<em>bool</em><em>, </em><em>optional</em>) – If this is set to True, the axes which are normed over are left in the result as dimensions with
+size one. With this option the result will broadcast correctly against the original x.
+Default is False.</p></li>
+<li><p><strong>global_norm</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to compute the norm across all the concattenated sub-arrays. Default is False.</p></li>
+<li><p><strong>key_chains</strong> (<em>list</em><em> or </em><em>dict of strs</em><em>, </em><em>optional</em>) – The key-chains to apply or not apply the method to. Default is None.</p></li>
+<li><p><strong>to_apply</strong> (<em>bool</em><em>, </em><em>optional</em>) – If True, the method will be applied to key_chains, otherwise key_chains will be skipped.
+Default is True.</p></li>
+<li><p><strong>prune_unapplied</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to prune key_chains for which the function was not applied. Default is False.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Container object with the vector norms for each sub-array returned.</p>
 </dd>
 </dl>
 </dd></dl>
