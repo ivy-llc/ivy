@@ -235,13 +235,15 @@ This is only relevant for frameworks with stateful variables such as PyTorch. De
 
 <dl class="py method">
 <dt id="ivy.neural_net_stateful.optimizers.Optimizer.step">
-<code class="sig-name descname">step</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">v</span></em>, <em class="sig-param"><span class="n">grads</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/neural_net_stateful/optimizers.html#Optimizer.step"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.neural_net_stateful.optimizers.Optimizer.step" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">step</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">v</span></em>, <em class="sig-param"><span class="n">grads</span></em>, <em class="sig-param"><span class="n">ignore_missing</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/neural_net_stateful/optimizers.html#Optimizer.step"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.neural_net_stateful.optimizers.Optimizer.step" title="Permalink to this definition">¶</a></dt>
 <dd><p>Update nested variables container v from possibly compiled overriden private self._step_fn</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>v</strong> (<em>Ivy container of variables</em>) – Nested variables to update.</p></li>
 <li><p><strong>grads</strong> (<em>sequence of arrays</em>) – Nested gradients to update.</p></li>
+<li><p><strong>ignore_missing</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to ignore keys missing from the gradients which exist in the variables.
+Default is False.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
