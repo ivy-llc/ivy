@@ -36,6 +36,13 @@ def _is_jsonable(x):
         return False
 
 
+def _repr(x):
+    try:
+        return x.__repr__()
+    except TypeError:
+        return str(x)
+
+
 # noinspection PyMissingConstructor
 class Container(dict):
 
@@ -1851,7 +1858,7 @@ class Container(dict):
             json_dumped_str = _json.dumps(
                 Container(new_dict).map(
                     lambda x, kc: x if _is_jsonable(x)
-                    else x.__repr__().replace('\n', '').replace(' ', '').replace(',', ', ')).to_dict(),
+                    else _repr(x).replace('\n', '').replace(' ', '').replace(',', ', ')).to_dict(),
                 indent=4)
             # make keys green
             json_dumped_str_split = json_dumped_str.split('":')
