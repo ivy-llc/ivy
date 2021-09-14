@@ -68,7 +68,7 @@ class Optimizer(abc.ABC):
 
     # Given #
 
-    def step(self, v, grads):
+    def step(self, v, grads, ignore_missing=False):
         """
         Update nested variables container v from possibly compiled overriden private self._step_fn
 
@@ -76,8 +76,13 @@ class Optimizer(abc.ABC):
         :type v: Ivy container of variables
         :param grads: Nested gradients to update.
         :type grads: sequence of arrays
+        :param ignore_missing: Whether to ignore keys missing from the gradients which exist in the variables.
+                               Default is False.
+        :type ignore_missing: bool, optional
         :return: The updated variables, following update step.
         """
+        if ignore_missing:
+            return v.set_at_keys(self._step_fn(v.at_keys(grads), grads))
         return self._step_fn(v, grads)
 
 
