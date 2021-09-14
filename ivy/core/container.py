@@ -1780,8 +1780,9 @@ class Container(dict):
             this_key_chain = key if key_chain == '' else (key_chain + '/' + key)
             if isinstance(value, Container):
                 ret = value.map(func, key_chains, to_apply, prune_unapplied, this_key_chain)
-                if ret:
-                    return_dict[key] = ret
+                if prune_unapplied and not ret:
+                    continue
+                return_dict[key] = ret
             else:
                 if key_chains is not None:
                     if (this_key_chain in key_chains and not to_apply) or (
