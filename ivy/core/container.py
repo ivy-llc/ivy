@@ -222,9 +222,8 @@ class Container(dict):
         all_Keys = set([item for sublist in [list(cont.keys()) for cont in containers] for item in sublist])
         for key in all_Keys:
             keys_present = [key in cont for cont in containers]
-            res = _ivy.Container.combine(*[cont[key] for cont, kp in zip(containers, keys_present) if kp], ivyh=ivyh)
-            if not isinstance(res, dict) or res:
-                return_dict[key] = res
+            return_dict[key] =\
+                _ivy.Container.combine(*[cont[key] for cont, kp in zip(containers, keys_present) if kp], ivyh=ivyh)
         return _ivy.Container(return_dict)
 
     @staticmethod
