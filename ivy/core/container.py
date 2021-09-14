@@ -307,6 +307,49 @@ class Container(dict):
         return _ivy.Container(return_dict)
 
     @staticmethod
+    def multi_map(func, containers, key_chains=None, to_apply=True, prune_unapplied=False, key_chain=''):
+        """
+        Apply function to all array values from a collection of identically structured containers.
+
+        :param func: Function to apply to each container entry.
+        :type func: python function
+        :param containers: containers to map.
+        :type containers: sequence of Container objects
+        :param key_chains: The key-chains to apply or not apply the method to. Default is None.
+        :type key_chains: list or dict of strs, optional
+        :param to_apply: If True, the method will be applied to key_chains, otherwise key_chains will be skipped.
+                         Default is True.
+        :type to_apply: bool, optional
+        :param prune_unapplied: Whether to prune key_chains for which the function was not applied,
+                                otherwise the leftmost container value is used. Default is False.
+        :type prune_unapplied: bool, optional
+        :param key_chain: Chain of keys for this dict entry
+        :type key_chain: str
+        :return: Contaienr
+        """
+        container0 = containers[0]
+        return_dict = dict()
+        for key in sorted(container0.keys()):
+            values = [cont[key] for cont in containers]
+            value0 = values[0]
+            this_key_chain = key if key_chain == '' else (key_chain + '/' + key)
+            if isinstance(value0, Container):
+                ret = _ivy.Container.multi_map(func, values, key_chains, to_apply, prune_unapplied, this_key_chain)
+                if ret:
+                    return_dict[key] = ret
+            else:
+                if key_chains is not None:
+                    if (this_key_chain in key_chains and not to_apply) or (
+                            this_key_chain not in key_chains and to_apply):
+                        if prune_unapplied:
+                            continue
+                        return_dict[key] = value0
+                        continue
+                return_dict[key] = func(values, this_key_chain)
+        # noinspection PyProtectedMember
+        return Container(return_dict, ivyh=container0._local_ivy)
+
+    @staticmethod
     def from_disk_as_hdf5(h5_obj_or_filepath, slice_obj=slice(None), ivyh=None):
         """
         Load container object from disk, as an h5py file, at the specified hdf5 filepath.
