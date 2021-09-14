@@ -202,7 +202,7 @@ class Container(dict):
     @staticmethod
     def combine(*containers, ivyh=None):
         """
-        Combine keys and values in a sequence of containers, with priority given to the left-most container in the case
+        Combine keys and values in a sequence of containers, with priority given to the right-most container in the case
         of duplicates.
 
         :param containers: containers to compare
@@ -212,10 +212,10 @@ class Container(dict):
         :return: Combined containers
         """
 
-        # if inputs are not dicts, then simply return the left-most value
-        container0 = containers[0]
-        if not isinstance(container0, dict):
-            return container0
+        # if inputs are not dicts, then simply return the right-most value
+        container_rightmost = containers[-1]
+        if not isinstance(container_rightmost, dict):
+            return container_rightmost
 
         # otherwise, check that the keys are aligned between each container, and apply this method recursively
         return_dict = dict()
