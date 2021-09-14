@@ -1512,6 +1512,24 @@ def test_container_map(dev_str, call):
     assert 'b/d' not in container_mapped
 
 
+def test_container_multi_map(dev_str, call):
+
+    # without key_chains specification
+    container0 = Container({'a': ivy.array([1]),
+                            'b': {'c': ivy.array([2]), 'd': ivy.array([3])}})
+    container1 = Container({'a': ivy.array([3]),
+                            'b': {'c': ivy.array([4]), 'd': ivy.array([5])}})
+
+    # with key_chains to apply
+    container_mapped = ivy.Container.multi_map(lambda x, _: x[0] + x[1], [container0, container1])
+    assert (container_mapped['a'] == ivy.array([[4]]))[0]
+    assert (container_mapped.a == ivy.array([[4]]))[0]
+    assert (container_mapped['b']['c'] == ivy.array([[6]]))[0]
+    assert (container_mapped.b.c == ivy.array([[6]]))[0]
+    assert (container_mapped['b']['d'] == ivy.array([[8]]))[0]
+    assert (container_mapped.b.d == ivy.array([[8]]))[0]
+
+
 def test_container_dtype(dev_str, call):
     dict_in = {'a': ivy.array([1]),
                'b': {'c': ivy.array([2.]), 'd': ivy.array([3])}}
