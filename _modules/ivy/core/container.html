@@ -391,7 +391,7 @@
 <div class="viewcode-block" id="Container.combine"><a class="viewcode-back" href="../../../core/container/Container.html#ivy.core.container.Container.combine">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">combine</span><span class="p">(</span><span class="o">*</span><span class="n">containers</span><span class="p">,</span> <span class="n">ivyh</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Combine keys and values in a sequence of containers, with priority given to the left-most container in the case</span>
+<span class="sd">        Combine keys and values in a sequence of containers, with priority given to the right-most container in the case</span>
 <span class="sd">        of duplicates.</span>
 
 <span class="sd">        :param containers: containers to compare</span>
@@ -401,10 +401,10 @@
 <span class="sd">        :return: Combined containers</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="c1"># if inputs are not dicts, then simply return the left-most value</span>
-        <span class="n">container0</span> <span class="o">=</span> <span class="n">containers</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">container0</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
-            <span class="k">return</span> <span class="n">container0</span>
+        <span class="c1"># if inputs are not dicts, then simply return the right-most value</span>
+        <span class="n">container_rightmost</span> <span class="o">=</span> <span class="n">containers</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">container_rightmost</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">container_rightmost</span>
 
         <span class="c1"># otherwise, check that the keys are aligned between each container, and apply this method recursively</span>
         <span class="n">return_dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
