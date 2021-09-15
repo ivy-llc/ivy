@@ -1837,6 +1837,15 @@ class Container(dict):
         except KeyError:
             return
 
+    def try_key(self, key):
+        """
+        Tries the following key or key chain, returning self if not present.
+        """
+        try:
+            return self[key]
+        except KeyError:
+            return self
+
     # Built-ins #
     # ----------#
 
