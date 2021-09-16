@@ -1203,6 +1203,27 @@ def test_container_set_at_key_chain(dev_str, call):
     assert (container['f'] == ivy.array([5]))[0]
 
 
+# noinspection PyUnresolvedReferences
+def test_container_overwrite_at_key_chain(dev_str, call):
+    dict_in = {'a': ivy.array([1]),
+               'b': {'c': ivy.array([2]), 'd': ivy.array([3])}}
+    container_orig = Container(dict_in)
+
+    # explicit function call
+    container = container_orig.copy()
+    # noinspection PyBroadException
+    try:
+        container.overwrite_at_key_chain('b/e', ivy.array([4]))
+        exception_raised = False
+    except Exception:
+        exception_raised = True
+    assert exception_raised
+    container.overwrite_at_key_chain('b/d', ivy.array([4]))
+    assert (container['a'] == ivy.array([1]))[0]
+    assert (container['b']['c'] == ivy.array([2]))[0]
+    assert (container['b']['d'] == ivy.array([4]))[0]
+
+
 def test_container_set_at_key_chains(dev_str, call):
     container = Container({'a': ivy.array([1]),
                            'b': {'c': ivy.array([2]), 'd': ivy.array([3])}})
