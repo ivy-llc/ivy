@@ -1174,12 +1174,12 @@ def test_container_set_at_key_chain(dev_str, call):
 
     # explicit function call
     container = container_orig.copy()
-    container.set_at_key_chain('b/e', ivy.array([4]))
+    container = container.set_at_key_chain('b/e', ivy.array([4]))
     assert (container['a'] == ivy.array([1]))[0]
     assert (container['b']['c'] == ivy.array([2]))[0]
     assert (container['b']['d'] == ivy.array([3]))[0]
     assert (container['b']['e'] == ivy.array([4]))[0]
-    container.set_at_key_chain('f', ivy.array([5]))
+    container = container.set_at_key_chain('f', ivy.array([5]))
     assert (container['a'] == ivy.array([1]))[0]
     assert (container['b']['c'] == ivy.array([2]))[0]
     assert (container['b']['d'] == ivy.array([3]))[0]
@@ -1208,12 +1208,12 @@ def test_container_set_at_key_chains(dev_str, call):
                            'b': {'c': ivy.array([2]), 'd': ivy.array([3])}})
     target_container = Container({'a': ivy.array([4]),
                                   'b': {'d': ivy.array([5])}})
-    new_container = container.set_at_key_chains(target_container)
+    new_container = container.set_at_key_chains(target_container, inplace=False)
     assert (new_container['a'] == ivy.array([4]))[0]
     assert (new_container['b']['c'] == ivy.array([2]))[0]
     assert (new_container['b']['d'] == ivy.array([5]))[0]
     target_container = Container({'b': {'c': ivy.array([7])}})
-    new_container = container.set_at_key_chains(target_container)
+    new_container = container.set_at_key_chains(target_container, inplace=False)
     assert (new_container['a'] == ivy.array([1]))[0]
     assert (new_container['b']['c'] == ivy.array([7]))[0]
     assert (new_container['b']['d'] == ivy.array([3]))[0]
