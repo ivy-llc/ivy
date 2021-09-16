@@ -1655,6 +1655,27 @@ class Container(dict):
         sub_cont[keys[-1]] = val
         return cont
 
+    def overwrite_at_key_chain(self, key_chain, val, inplace=True):
+        """
+        Overwrite value of container object at a specified key-chain
+
+        :return: new container with updated value at key chain, provided it existed before.
+        """
+        keys = re.split('[/.]', key_chain)
+        if inplace:
+            cont = self
+        else:
+            cont = self.copy()
+        sub_cont = cont
+        for key in keys[:-1]:
+            if key not in sub_cont:
+                raise Exception('key must already exist in container in order to call overwrite_at_key_chain')
+            sub_cont = sub_cont[key]
+        if keys[-1] not in sub_cont:
+            raise Exception('key must already exist in container in order to call overwrite_at_key_chain')
+        sub_cont[keys[-1]] = val
+        return cont
+
     def set_at_key_chains(self, target_dict, return_dict=None, inplace=True):
         """
         Set values of container object at specified key-chains
