@@ -1636,32 +1636,39 @@ class Container(dict):
                 return_dict[key] = val
         return Container(return_dict, ivyh=self._local_ivy)
 
-    def set_at_key_chain(self, key_chain, val):
+    def set_at_key_chain(self, key_chain, val, inplace=True):
         """
         Set value of container object at a specified key-chain
 
         :return: new container with updated value at key chain
         """
         keys = re.split('[/.]', key_chain)
-        cont = self
+        if inplace:
+            cont = self
+        else:
+            cont = self.copy()
+        sub_cont = cont
         for key in keys[:-1]:
-            if key not in cont:
-                cont[key] = Container(ivyh=self._local_ivy)
-            cont = cont[key]
-        cont[keys[-1]] = val
-        return self
+            if key not in sub_cont:
+                sub_cont[key] = Container(ivyh=self._local_ivy)
+            sub_cont = sub_cont[key]
+        sub_cont[keys[-1]] = val
+        return cont
 
-    def set_at_key_chains(self, target_dict, return_dict=None):
+    def set_at_key_chains(self, target_dict, return_dict=None, inplace=True):
         """
         Set values of container object at specified key-chains
 
         :return: new container with updated value at key chain
         """
         if return_dict is None:
-            return_dict = self.copy()
+            if inplace:
+                return_dict = self
+            else:
+                return_dict = self.copy()
         for k, v in target_dict.items():
             if isinstance(v, dict):
-                return_dict[k] = self.set_at_key_chains(v, return_dict[k])
+                return_dict[k] = self.set_at_key_chains(v, return_dict[k], inplace)
             else:
                 return_dict[k] = v
         return Container(return_dict, ivyh=self._local_ivy)
