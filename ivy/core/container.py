@@ -3,6 +3,7 @@ Base Container Object
 """
 
 # global
+import re
 import termcolor
 import numpy as _np
 import json as _json
@@ -1558,7 +1559,7 @@ class Container(dict):
 
         :return: Boolean
         """
-        keys = key_chain.split('/')
+        keys = re.split('[/.]', key_chain)
         ret = self
         for key in keys:
             try:
@@ -1595,7 +1596,7 @@ class Container(dict):
 
         :return: sub-container or value at specified key chain
         """
-        keys = key_chain.split('/')
+        keys = re.split('[/.]', key_chain)
         ret = self
         for key in keys:
             ret = ret[key]
@@ -1641,7 +1642,7 @@ class Container(dict):
 
         :return: new container with updated value at key chain
         """
-        keys = key_chain.split('/')
+        keys = re.split('[/.]', key_chain)
         cont = self
         for key in keys[:-1]:
             if key not in cont:
@@ -1693,7 +1694,7 @@ class Container(dict):
 
         :return: Container with keys in key chain pruned.
         """
-        keys_in_chain = key_chain.split('/')
+        keys_in_chain = re.split('[/.]', key_chain)
         out_dict = dict()
         for key, value in sorted(self.items()):
             if isinstance(value, Container):
