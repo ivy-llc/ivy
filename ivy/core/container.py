@@ -526,7 +526,7 @@ class Container(dict):
     def _at_key_chains_input_as_seq(self, key_chains):
         return_cont = Container(dict(), ivyh=self._local_ivy)
         for kc in key_chains:
-            return_cont.set_at_key_chain(kc, self.at_key_chain(kc))
+            return_cont.set_at_key_chain(kc, self.at_key_chain(kc), inplace=True)
         return return_cont
 
     def _at_key_chains_input_as_dict(self, key_chains, current_chain=''):
@@ -1636,7 +1636,7 @@ class Container(dict):
                 return_dict[key] = val
         return Container(return_dict, ivyh=self._local_ivy)
 
-    def set_at_key_chain(self, key_chain, val, inplace=True):
+    def set_at_key_chain(self, key_chain, val, inplace=False):
         """
         Set value of container object at a specified key-chain
 
@@ -1655,7 +1655,7 @@ class Container(dict):
         sub_cont[keys[-1]] = val
         return cont
 
-    def overwrite_at_key_chain(self, key_chain, val, inplace=True):
+    def overwrite_at_key_chain(self, key_chain, val, inplace=False):
         """
         Overwrite value of container object at a specified key-chain
 
@@ -1676,7 +1676,7 @@ class Container(dict):
         sub_cont[keys[-1]] = val
         return cont
 
-    def set_at_key_chains(self, target_dict, return_dict=None, inplace=True):
+    def set_at_key_chains(self, target_dict, return_dict=None, inplace=False):
         """
         Set values of container object at specified key-chains
 
@@ -1694,7 +1694,7 @@ class Container(dict):
                 return_dict[k] = v
         return Container(return_dict, ivyh=self._local_ivy)
 
-    def overwrite_at_key_chains(self, target_dict, return_dict=None, inplace=True):
+    def overwrite_at_key_chains(self, target_dict, return_dict=None, inplace=False):
         """
         Overwrite values of container object at specified key-chains
 
@@ -2047,7 +2047,7 @@ class Container(dict):
         :return: New container after updating.
         """
         if isinstance(query, str) and '/' in query:
-            return self.set_at_key_chain(query, val)
+            return self.set_at_key_chain(query, val, inplace=True)
         else:
             return dict.__setitem__(self, query, val)
 
