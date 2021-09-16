@@ -1336,13 +1336,24 @@ def test_container_prune_key_chains(dev_str, call):
 def test_container_restructure_keys(dev_str, call):
     container = Container({'a': ivy.array([1]),
                            'b': {'c': ivy.array([2]), 'd': ivy.array([3])}})
+
+    # without base restructure
     container_restructured = container.restructure_keys([('a', 'a/new'), ('b/c', 'B/C'), ('b/d', 'Bee/Dee')])
-    assert container_restructured['a/new'] == ivy.array([1])
+    assert container_restructured['a']['new'] == ivy.array([1])
     assert container_restructured.a.new == ivy.array([1])
     assert container_restructured['B']['C'] == ivy.array([2])
     assert container_restructured.B.C == ivy.array([2])
     assert container_restructured['Bee']['Dee'] == ivy.array([3])
     assert container_restructured.Bee.Dee == ivy.array([3])
+
+    # with base restructure
+    container_restructured = container.restructure_keys([('', 'new_base')])
+    assert container_restructured['new_base']['a'] == ivy.array([1])
+    assert container_restructured.new_base.a == ivy.array([1])
+    assert container_restructured['new_base']['b']['c'] == ivy.array([2])
+    assert container_restructured.new_base.b.c == ivy.array([2])
+    assert container_restructured['new_base']['b']['d'] == ivy.array([3])
+    assert container_restructured.new_base.b.d == ivy.array([3])
 
 
 def test_container_prune_empty(dev_str, call):
