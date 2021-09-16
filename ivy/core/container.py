@@ -1669,10 +1669,10 @@ class Container(dict):
         sub_cont = cont
         for key in keys[:-1]:
             if key not in sub_cont:
-                raise Exception('key must already exist in container in order to call overwrite_at_key_chain')
+                raise Exception('key chain must already exist in container in order to call overwrite_at_key_chain')
             sub_cont = sub_cont[key]
         if keys[-1] not in sub_cont:
-            raise Exception('key must already exist in container in order to call overwrite_at_key_chain')
+            raise Exception('key chain must already exist in container in order to call overwrite_at_key_chain')
         sub_cont[keys[-1]] = val
         return cont
 
@@ -1680,7 +1680,7 @@ class Container(dict):
         """
         Set values of container object at specified key-chains
 
-        :return: new container with updated value at key chain
+        :return: new container with updated values at the key chains
         """
         if return_dict is None:
             if inplace:
@@ -1690,6 +1690,26 @@ class Container(dict):
         for k, v in target_dict.items():
             if isinstance(v, dict):
                 return_dict[k] = self.set_at_key_chains(v, return_dict[k], inplace)
+            else:
+                return_dict[k] = v
+        return Container(return_dict, ivyh=self._local_ivy)
+
+    def overwrite_at_key_chains(self, target_dict, return_dict=None, inplace=True):
+        """
+        Overwrite values of container object at specified key-chains
+
+        :return: new container with updated values at the key chains, provided they existed before.
+        """
+        if return_dict is None:
+            if inplace:
+                return_dict = self
+            else:
+                return_dict = self.copy()
+        for k, v in target_dict.items():
+            if k not in return_dict:
+                raise Exception('key chain must already exist in container in order to call overwrite_at_key_chains')
+            if isinstance(v, dict):
+                return_dict[k] = self.overwrite_at_key_chains(v, return_dict[k], inplace)
             else:
                 return_dict[k] = v
         return Container(return_dict, ivyh=self._local_ivy)

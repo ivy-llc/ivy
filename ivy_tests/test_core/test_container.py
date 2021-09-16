@@ -1240,6 +1240,29 @@ def test_container_set_at_key_chains(dev_str, call):
     assert (new_container['b']['d'] == ivy.array([3]))[0]
 
 
+def test_container_overwrite_at_key_chains(dev_str, call):
+    container = Container({'a': ivy.array([1]),
+                           'b': {'c': ivy.array([2]), 'd': ivy.array([3])}})
+    target_container = Container({'a': ivy.array([4]),
+                                  'b': {'d': ivy.array([5])}})
+    new_container = container.overwrite_at_key_chains(target_container, inplace=False)
+    assert (new_container['a'] == ivy.array([4]))[0]
+    assert (new_container['b']['c'] == ivy.array([2]))[0]
+    assert (new_container['b']['d'] == ivy.array([5]))[0]
+    target_container = Container({'b': {'c': ivy.array([7])}})
+    new_container = container.overwrite_at_key_chains(target_container, inplace=False)
+    assert (new_container['a'] == ivy.array([1]))[0]
+    assert (new_container['b']['c'] == ivy.array([7]))[0]
+    assert (new_container['b']['d'] == ivy.array([3]))[0]
+    # noinspection PyBroadException
+    try:
+        container.overwrite_at_key_chains(Container({'b': {'e': ivy.array([5])}}))
+        exception_raised = False
+    except Exception:
+        exception_raised = True
+    assert exception_raised
+
+
 def test_container_prune_keys(dev_str, call):
     dict_in = {'a': ivy.array([1]),
                'b': {'c': ivy.array([2]), 'd': ivy.array([3])}}
