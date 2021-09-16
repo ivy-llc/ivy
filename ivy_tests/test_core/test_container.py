@@ -1218,7 +1218,7 @@ def test_container_overwrite_at_key_chain(dev_str, call):
     except Exception:
         exception_raised = True
     assert exception_raised
-    container.overwrite_at_key_chain('b/d', ivy.array([4]))
+    container = container.overwrite_at_key_chain('b/d', ivy.array([4]))
     assert (container['a'] == ivy.array([1]))[0]
     assert (container['b']['c'] == ivy.array([2]))[0]
     assert (container['b']['d'] == ivy.array([4]))[0]
