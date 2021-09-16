@@ -1731,6 +1731,22 @@ class Container(dict):
             raise Exception('Invalid type for input key_chains, must either be a list, tuple, dict, or ivy.Container,'
                             'but found type {}'.format(type(key_chains)))
 
+    def restructure_keys(self, key_chain_mapping):
+        """
+        Restructure the keys of the container.
+
+        :param key_chain_mapping: Sequence of lists/tuples of key chain mapping to apply, with original and new key
+                                  chains being the left and right terms respectively.
+        :type key_chain_mapping: sequence of len-2 sequences
+        :return: New contaienr with the key chains updated.
+        """
+        ret_cont = self.copy()
+        for orig_kc, new_kc in key_chain_mapping:
+            orig_kc_val = ret_cont[orig_kc]
+            ret_cont = ret_cont.prune_key_chain(orig_kc)
+            ret_cont[new_kc] = orig_kc_val
+        return ret_cont
+
     def prune_empty(self):
         """
         Recursively prunes empty keys from the container dict structure.

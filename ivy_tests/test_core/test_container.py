@@ -1333,6 +1333,18 @@ def test_container_prune_key_chains(dev_str, call):
     assert _test_bc_exception(container_pruned)
 
 
+def test_container_restructure_keys(dev_str, call):
+    container = Container({'a': ivy.array([1]),
+                           'b': {'c': ivy.array([2]), 'd': ivy.array([3])}})
+    container_restructured = container.restructure_keys([('a', 'a/new'), ('b/c', 'B/C'), ('b/d', 'Bee/Dee')])
+    assert container_restructured['a/new'] == ivy.array([1])
+    assert container_restructured.a.new == ivy.array([1])
+    assert container_restructured['B']['C'] == ivy.array([2])
+    assert container_restructured.B.C == ivy.array([2])
+    assert container_restructured['Bee']['Dee'] == ivy.array([3])
+    assert container_restructured.Bee.Dee == ivy.array([3])
+
+
 def test_container_prune_empty(dev_str, call):
     dict_in = {'a': ivy.array([1]),
                'b': {'c': {}, 'd': ivy.array([3])}}
