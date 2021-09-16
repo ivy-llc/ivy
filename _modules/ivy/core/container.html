@@ -1858,10 +1858,10 @@
         <span class="n">sub_cont</span> <span class="o">=</span> <span class="n">cont</span>
         <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
             <span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">sub_cont</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;key must already exist in container in order to call overwrite_at_key_chain&#39;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;key chain must already exist in container in order to call overwrite_at_key_chain&#39;</span><span class="p">)</span>
             <span class="n">sub_cont</span> <span class="o">=</span> <span class="n">sub_cont</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
         <span class="k">if</span> <span class="n">keys</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">sub_cont</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;key must already exist in container in order to call overwrite_at_key_chain&#39;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;key chain must already exist in container in order to call overwrite_at_key_chain&#39;</span><span class="p">)</span>
         <span class="n">sub_cont</span><span class="p">[</span><span class="n">keys</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span> <span class="o">=</span> <span class="n">val</span>
         <span class="k">return</span> <span class="n">cont</span></div>
 
@@ -1869,7 +1869,7 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Set values of container object at specified key-chains</span>
 
-<span class="sd">        :return: new container with updated value at key chain</span>
+<span class="sd">        :return: new container with updated values at the key chains</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">return_dict</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">inplace</span><span class="p">:</span>
@@ -1879,6 +1879,26 @@
         <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">target_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
                 <span class="n">return_dict</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">set_at_key_chains</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">return_dict</span><span class="p">[</span><span class="n">k</span><span class="p">],</span> <span class="n">inplace</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">return_dict</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
+        <span class="k">return</span> <span class="n">Container</span><span class="p">(</span><span class="n">return_dict</span><span class="p">,</span> <span class="n">ivyh</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_local_ivy</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Container.overwrite_at_key_chains"><a class="viewcode-back" href="../../../core/container/Container.html#ivy.core.container.Container.overwrite_at_key_chains">[docs]</a>    <span class="k">def</span> <span class="nf">overwrite_at_key_chains</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">target_dict</span><span class="p">,</span> <span class="n">return_dict</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Overwrite values of container object at specified key-chains</span>
+
+<span class="sd">        :return: new container with updated values at the key chains, provided they existed before.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">return_dict</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">inplace</span><span class="p">:</span>
+                <span class="n">return_dict</span> <span class="o">=</span> <span class="bp">self</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">return_dict</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">target_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">k</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">return_dict</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;key chain must already exist in container in order to call overwrite_at_key_chains&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+                <span class="n">return_dict</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">overwrite_at_key_chains</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">return_dict</span><span class="p">[</span><span class="n">k</span><span class="p">],</span> <span class="n">inplace</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">return_dict</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
         <span class="k">return</span> <span class="n">Container</span><span class="p">(</span><span class="n">return_dict</span><span class="p">,</span> <span class="n">ivyh</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_local_ivy</span><span class="p">)</span></div>

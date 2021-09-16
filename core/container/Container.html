@@ -932,6 +932,17 @@ otherwise the leftmost container value is used. Default is False.</p></li>
 </dd></dl>
 
 <dl class="py method">
+<dt id="ivy.core.container.Container.overwrite_at_key_chains">
+<code class="sig-name descname">overwrite_at_key_chains</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">target_dict</span></em>, <em class="sig-param"><span class="n">return_dict</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">inplace</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/container.html#Container.overwrite_at_key_chains"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.overwrite_at_key_chains" title="Permalink to this definition">¶</a></dt>
+<dd><p>Overwrite values of container object at specified key-chains</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>new container with updated values at the key chains, provided they existed before.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt id="ivy.core.container.Container.prune_empty">
 <code class="sig-name descname">prune_empty</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/container.html#Container.prune_empty"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.prune_empty" title="Permalink to this definition">¶</a></dt>
 <dd><p>Recursively prunes empty keys from the container dict structure.
@@ -1257,7 +1268,7 @@ chains being the left and right terms respectively.</p>
 <dd><p>Set values of container object at specified key-chains</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>new container with updated value at key chain</p>
+<dd class="field-odd"><p>new container with updated values at the key chains</p>
 </dd>
 </dl>
 </dd></dl>
