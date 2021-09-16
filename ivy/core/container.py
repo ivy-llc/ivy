@@ -79,7 +79,7 @@ class Container(dict):
                             'please specify one or the other, not both.')
         dict_in = dict_in if isinstance(dict_in, dict) else dict(dict_in)
         for key, value in sorted(dict_in.items()):
-            if isinstance(value, dict):
+            if isinstance(value, dict) and not (isinstance(value, Container) and type(value) is not Container):
                 self[key] = Container(value, ivyh=ivyh)
             else:
                 self[key] = value
@@ -216,6 +216,10 @@ class Container(dict):
         # if inputs are not dicts, then simply return the right-most value
         container_rightmost = containers[-1]
         if not isinstance(container_rightmost, dict):
+            return container_rightmost
+
+        # return if len==1
+        if len(containers) == 1:
             return container_rightmost
 
         # otherwise, check that the keys are aligned between each container, and apply this method recursively
