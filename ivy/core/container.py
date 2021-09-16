@@ -1742,8 +1742,12 @@ class Container(dict):
         """
         ret_cont = self.copy()
         for orig_kc, new_kc in key_chain_mapping:
-            orig_kc_val = ret_cont[orig_kc]
-            ret_cont = ret_cont.prune_key_chain(orig_kc)
+            if orig_kc == '':
+                orig_kc_val = ret_cont
+                ret_cont = Container()
+            else:
+                orig_kc_val = ret_cont[orig_kc]
+                ret_cont = ret_cont.prune_key_chain(orig_kc)
             ret_cont[new_kc] = orig_kc_val
         return ret_cont
 
