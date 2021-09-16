@@ -102,12 +102,12 @@ def _train_tasks_batched(batch, inner_batch_fn, outer_batch_fn, inner_cost_fn, o
                                            num_tasks)
     grads = grads.reduce_mean(0) if isinstance(grads, ivy.Container) else grads
     if order == 1:
-        if return_inner_v == 'all':
+        if return_inner_v in ['all', True]:
             return cost, grads, updated_ivs
         elif return_inner_v == 'first':
             return cost, grads, updated_ivs[0:1]
         return cost, grads
-    if return_inner_v == 'all':
+    if return_inner_v in ['all', True]:
         return cost, updated_ivs
     elif return_inner_v == 'first':
         return cost, updated_ivs[0:1]
@@ -144,7 +144,7 @@ def _train_tasks_with_for_loop(batch, inner_sub_batch_fn, outer_sub_batch_fn, in
                                               inner_grad_steps, inner_learning_rate, inner_optimization_step, order,
                                               average_across_steps, iv, keep_innver_v, ov, keep_outer_v, False,
                                               num_tasks)
-        if (return_inner_v == 'first' and i == 0) or return_inner_v == 'all':
+        if (return_inner_v == 'first' and i == 0) or return_inner_v in ['all', True]:
             updated_ivs_to_return.append(updated_iv)
         total_cost = total_cost + cost
         all_grads.append(grads)
