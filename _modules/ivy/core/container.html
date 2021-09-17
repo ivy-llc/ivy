@@ -769,6 +769,42 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_ivy</span> <span class="o">=</span> <span class="n">ivyh</span>
         <span class="k">return</span> <span class="bp">self</span></div>
 
+<div class="viewcode-block" id="Container.all_true"><a class="viewcode-back" href="../../../core/container/Container.html#ivy.core.container.Container.all_true">[docs]</a>    <span class="k">def</span> <span class="nf">all_true</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">assert_is_bool</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">key_chains</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">to_apply</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">prune_unapplied</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Determine whether all the entries in the container boolean evaluate to True.</span>
+
+<span class="sd">        :param assert_is_bool: Whether or not to assert each entry is of type Boolean.</span>
+<span class="sd">        :type assert_is_bool: bool, optional</span>
+<span class="sd">        :param key_chains: The key-chains to apply or not apply the method to. Default is None.</span>
+<span class="sd">        :type key_chains: list or dict of strs, optional</span>
+<span class="sd">        :param to_apply: If True, the method will be applied to key_chains, otherwise key_chains will be skipped.</span>
+<span class="sd">                         Default is True.</span>
+<span class="sd">        :type to_apply: bool, optional</span>
+<span class="sd">        :param prune_unapplied: Whether to prune key_chains for which the function was not applied. Default is False.</span>
+<span class="sd">        :type prune_unapplied: bool, optional</span>
+<span class="sd">        :return: Boolean, whether all entries are boolean True.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span><span class="n">_np</span><span class="o">.</span><span class="n">prod</span><span class="p">([</span><span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">as_bools</span><span class="p">(</span>
+            <span class="n">assert_is_bool</span><span class="p">,</span> <span class="n">key_chains</span><span class="p">,</span> <span class="n">to_apply</span><span class="p">,</span> <span class="n">prune_unapplied</span><span class="p">)</span><span class="o">.</span><span class="n">to_iterator</span><span class="p">()]))</span></div>
+
+<div class="viewcode-block" id="Container.all_false"><a class="viewcode-back" href="../../../core/container/Container.html#ivy.core.container.Container.all_false">[docs]</a>    <span class="k">def</span> <span class="nf">all_false</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">assert_is_bool</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">key_chains</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">to_apply</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">prune_unapplied</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Determine whether all the entries in the container boolean evaluate to False.</span>
+
+<span class="sd">        :param assert_is_bool: Whether or not to assert each entry is of type Boolean.</span>
+<span class="sd">        :type assert_is_bool: bool, optional</span>
+<span class="sd">        :param key_chains: The key-chains to apply or not apply the method to. Default is None.</span>
+<span class="sd">        :type key_chains: list or dict of strs, optional</span>
+<span class="sd">        :param to_apply: If True, the method will be applied to key_chains, otherwise key_chains will be skipped.</span>
+<span class="sd">                         Default is True.</span>
+<span class="sd">        :type to_apply: bool, optional</span>
+<span class="sd">        :param prune_unapplied: Whether to prune key_chains for which the function was not applied. Default is False.</span>
+<span class="sd">        :type prune_unapplied: bool, optional</span>
+<span class="sd">        :return: Boolean, whether all entries are boolean False.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="ow">not</span> <span class="nb">bool</span><span class="p">(</span><span class="n">_np</span><span class="o">.</span><span class="n">sum</span><span class="p">([</span><span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">as_bools</span><span class="p">(</span>
+            <span class="n">assert_is_bool</span><span class="p">,</span> <span class="n">key_chains</span><span class="p">,</span> <span class="n">to_apply</span><span class="p">,</span> <span class="n">prune_unapplied</span><span class="p">)</span><span class="o">.</span><span class="n">to_iterator</span><span class="p">()]))</span></div>
+
 <div class="viewcode-block" id="Container.reduce_sum"><a class="viewcode-back" href="../../../core/container/Container.html#ivy.core.container.Container.reduce_sum">[docs]</a>    <span class="k">def</span> <span class="nf">reduce_sum</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">key_chains</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">to_apply</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">prune_unapplied</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Computes sum of array elements along a given axis for all sub-arrays of container object.</span>
