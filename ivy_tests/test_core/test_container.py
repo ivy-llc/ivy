@@ -2201,6 +2201,18 @@ def test_container_shape(dev_str, call):
     assert container.shape == [1, 3, 2]
 
 
+def test_container_shapes(dev_str, call):
+    dict_in = {'a': ivy.array([[[1.], [2.], [3.]]]),
+               'b': {'c': ivy.array([[[2.], [4.]]]), 'd': ivy.array([[9.]])}}
+    container_shapes = Container(dict_in).shapes
+    assert list(container_shapes['a']) == [1, 3, 1]
+    assert list(container_shapes.a) == [1, 3, 1]
+    assert list(container_shapes['b']['c']) == [1, 2, 1]
+    assert list(container_shapes.b.c) == [1, 2, 1]
+    assert list(container_shapes['b']['d']) == [1, 1]
+    assert list(container_shapes.b.d) == [1, 1]
+
+
 def test_container_dev_str(dev_str, call):
     dict_in = {'a': ivy.array([[[1.], [2.], [3.]]], dev_str='cpu:0'),
                'b': {'c': ivy.array([[[2.], [4.], [6.]]], dev_str='cpu:0'),
