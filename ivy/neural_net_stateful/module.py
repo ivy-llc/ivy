@@ -207,10 +207,13 @@ class Module(abc.ABC):
         os.makedirs('/'.join(weights_path.split('/')[:-1]), exist_ok=True)
         self.v.to_disk_as_hdf5(weights_path)
 
-    def build(self, *args, v=None, **kwargs):
+    def build(self, *args, v=None, store_vars=True, **kwargs):
         """
         Build the internal layers and variables for this module.
         """
         self._build(*args, **kwargs)
         self._built = True
         self.v = self._find_and_create_variables(ivy.default(v, self.v))
+        if not store_vars:
+            # ToDo: verify variables in self.v created during ivy.Module.__init__ are released once this method exits
+            self.v = ivy.Container()
