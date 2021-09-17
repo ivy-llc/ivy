@@ -2017,7 +2017,7 @@ class Container(dict):
         :return: Container object at desired query.
         """
         if isinstance(query, str):
-            if '/' in query:
+            if '/' in query or '.' in query:
                 return self.at_key_chain(query)
             return dict.__getitem__(self, query)
         elif _ivy.exists(self._queues):
@@ -2050,13 +2050,13 @@ class Container(dict):
         :type val: ivy.Container, array, or other
         :return: New container after updating.
         """
-        if isinstance(query, str) and '/' in query:
+        if isinstance(query, str) and ('/' in query or '.' in query):
             return self.set_at_key_chain(query, val, inplace=True)
         else:
             return dict.__setitem__(self, query, val)
 
     def __contains__(self, key):
-        if isinstance(key, str) and '/' in key:
+        if isinstance(key, str) and ('/' in key or '.' in key):
             return self.has_key_chain(key)
         else:
             return dict.__contains__(self, key)
