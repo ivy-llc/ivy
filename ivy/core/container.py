@@ -1037,6 +1037,29 @@ class Container(dict):
         return self.map(lambda x, kc: self._ivy.zeros_like(x) if self._ivy.is_array(x) else x, key_chains, to_apply,
                         prune_unapplied)
 
+    def as_bools(self, assert_is_bool=False, key_chains=None, to_apply=True, prune_unapplied=False):
+        """
+        Return boolean evaluation for all nested items in the container.
+
+        :param assert_is_bool: Whether or not to assert the entry is of type Boolean.
+        :type assert_is_bool: bool, optional
+        :param key_chains: The key-chains to apply or not apply the method to. Default is None.
+        :type key_chains: list or dict of strs, optional
+        :param to_apply: If True, the method will be applied to key_chains, otherwise key_chains will be skipped.
+                         Default is True.
+        :type to_apply: bool, optional
+        :param prune_unapplied: Whether to prune key_chains for which the function was not applied. Default is False.
+        :type prune_unapplied: bool, optional
+        :return: Container object with all entries boolean evaluated.
+        """
+
+        def _ret_bool(x):
+            if assert_is_bool:
+                assert isinstance(x, bool)
+            return bool(x)
+
+        return self.map(lambda x, kc: _ret_bool(x), key_chains, to_apply, prune_unapplied)
+
     def as_random_uniform(self, low=0.0, high=1.0, key_chains=None, to_apply=True, prune_unapplied=False):
         """
         Return arrays of random uniform values for all nested arrays in the container.

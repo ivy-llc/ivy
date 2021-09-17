@@ -495,6 +495,20 @@ def test_container_as_zeros(dev_str, call):
     assert (container_zeros.b.d == ivy.array([0]))[0]
 
 
+def test_container_as_bools(dev_str, call):
+    dict_in = {'a': ivy.array([1]),
+               'b': {'c': [], 'd': True}}
+    container = Container(dict_in)
+
+    container_bools = container.as_bools()
+    assert container_bools['a'] is True
+    assert container_bools.a is True
+    assert container_bools['b']['c'] is False
+    assert container_bools.b.c is False
+    assert container_bools['b']['d'] is True
+    assert container_bools.b.d is True
+
+
 def test_container_as_random_uniform(dev_str, call):
     dict_in = {'a': ivy.array([1.]),
                'b': {'c': ivy.array([2.]), 'd': ivy.array([3.])}}
