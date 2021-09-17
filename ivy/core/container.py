@@ -580,6 +580,42 @@ class Container(dict):
         self._ivy = ivyh
         return self
 
+    def all_true(self, assert_is_bool=False, key_chains=None, to_apply=True, prune_unapplied=False):
+        """
+        Determine whether all the entries in the container boolean evaluate to True.
+
+        :param assert_is_bool: Whether or not to assert each entry is of type Boolean.
+        :type assert_is_bool: bool, optional
+        :param key_chains: The key-chains to apply or not apply the method to. Default is None.
+        :type key_chains: list or dict of strs, optional
+        :param to_apply: If True, the method will be applied to key_chains, otherwise key_chains will be skipped.
+                         Default is True.
+        :type to_apply: bool, optional
+        :param prune_unapplied: Whether to prune key_chains for which the function was not applied. Default is False.
+        :type prune_unapplied: bool, optional
+        :return: Boolean, whether all entries are boolean True.
+        """
+        return bool(_np.prod([v for k, v in self.as_bools(
+            assert_is_bool, key_chains, to_apply, prune_unapplied).to_iterator()]))
+
+    def all_false(self, assert_is_bool=False, key_chains=None, to_apply=True, prune_unapplied=False):
+        """
+        Determine whether all the entries in the container boolean evaluate to False.
+
+        :param assert_is_bool: Whether or not to assert each entry is of type Boolean.
+        :type assert_is_bool: bool, optional
+        :param key_chains: The key-chains to apply or not apply the method to. Default is None.
+        :type key_chains: list or dict of strs, optional
+        :param to_apply: If True, the method will be applied to key_chains, otherwise key_chains will be skipped.
+                         Default is True.
+        :type to_apply: bool, optional
+        :param prune_unapplied: Whether to prune key_chains for which the function was not applied. Default is False.
+        :type prune_unapplied: bool, optional
+        :return: Boolean, whether all entries are boolean False.
+        """
+        return not bool(_np.sum([v for k, v in self.as_bools(
+            assert_is_bool, key_chains, to_apply, prune_unapplied).to_iterator()]))
+
     def reduce_sum(self, axis=None, keepdims=False, key_chains=None, to_apply=True, prune_unapplied=False):
         """
         Computes sum of array elements along a given axis for all sub-arrays of container object.
