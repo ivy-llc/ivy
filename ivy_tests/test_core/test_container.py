@@ -509,6 +509,30 @@ def test_container_as_bools(dev_str, call):
     assert container_bools.b.d is True
 
 
+def test_container_all_true(dev_str, call):
+    assert not Container({'a': ivy.array([1]), 'b': {'c': [], 'd': True}}).all_true()
+    assert Container({'a': ivy.array([1]), 'b': {'c': [1], 'd': True}}).all_true()
+    # noinspection PyBroadException
+    try:
+        assert Container({'a': ivy.array([1]), 'b': {'c': [1], 'd': True}}).all_true(assert_is_bool=True)
+        error_raised = False
+    except AssertionError:
+        error_raised = True
+    assert error_raised
+
+
+def test_container_all_false(dev_str, call):
+    assert Container({'a': False, 'b': {'c': [], 'd': 0}}).all_false()
+    assert not Container({'a': False, 'b': {'c': [1], 'd': 0}}).all_false()
+    # noinspection PyBroadException
+    try:
+        assert Container({'a': ivy.array([1]), 'b': {'c': [1], 'd': True}}).all_false(assert_is_bool=True)
+        error_raised = False
+    except AssertionError:
+        error_raised = True
+    assert error_raised
+
+
 def test_container_as_random_uniform(dev_str, call):
     dict_in = {'a': ivy.array([1.]),
                'b': {'c': ivy.array([2.]), 'd': ivy.array([3.])}}
