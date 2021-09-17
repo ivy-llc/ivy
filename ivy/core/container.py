@@ -519,6 +519,9 @@ class Container(dict):
         return [None if _np.isnan(i) else int(i)
                 for i in _np.where(mask, sub_shapes_array[0], _np.ones(min_num_dims)*float('nan')).tolist()]
 
+    def _get_shapes(self):
+        return self.map(lambda x, kc: x.shape if hasattr(x, 'shape') else None)
+
     def _get_dev_str(self):
         sub_dev_strs =\
             [v for k, v in self.map(lambda x, kc: self._ivy.dev_str(x)
@@ -2175,6 +2178,13 @@ class Container(dict):
         The shape of the arrays in the container, with None placed in indices which are not consistent across arrays
         """
         return self._get_shape()
+
+    @property
+    def shapes(self):
+        """
+        The shapes of each array in the container, with None placed in leaf entries without a shape attribute.
+        """
+        return self._get_shapes()
 
     @property
     def dev_str(self):
