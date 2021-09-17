@@ -105,7 +105,7 @@ class Dropout(Module):
 
 class MultiHeadAttention(Module):
     def __init__(self, query_dim, num_heads=8, head_dim=64, dropout_rate=0., context_dim=None, scale=None, dev_str=None,
-                 v=None):
+                 v=None, build_mode='on_init'):
         """
         Multi Head Attention layer.
 
@@ -125,20 +125,28 @@ class MultiHeadAttention(Module):
         :type dev_str: str, optional
         :param v: the variables for the attention layer, as a container, constructed internally by default.
         :type v: ivy container of variables, optional
+        :param build_mode: How the Module is built, either on initialization (now), explicitly by the user by calling
+                           build(), or the first time the __call__ method is run. Default is on initialization.
+        :type build_mode: str, optional
         """
         v_exists = ivy.exists(v)
         v = ivy.default(v, ivy.Container({'to_q': None, 'to_kv': None, 'to_out': None}))
-        inner_dim = head_dim * num_heads
-        context_dim = ivy.default(context_dim, query_dim)
+        self._query_dim = query_dim
+        self._inner_dim = head_dim * num_heads
+        self._dropout_rate = dropout_rate
+        self._context_dim = ivy.default(context_dim, query_dim)
         self._scale = ivy.default(scale, head_dim ** -0.5)
         self._num_heads = num_heads
-        self._to_q = ivy.Linear(query_dim, inner_dim, with_bias=False, dev_str=dev_str, v=v.to_q)
-        self._to_kv = ivy.Linear(context_dim, inner_dim * 2, with_bias=False, dev_str=dev_str, v=v.to_kv)
+        ivy.Module.__init__(self, dev_str, v if v_exists else None, build_mode)
+
+    # noinspection PyAttributeOutsideInit
+    def _build(self):
+        self._to_q = ivy.Linear(self._query_dim, self._inner_dim, with_bias=False, dev_str=self._dev_str)
+        self._to_kv = ivy.Linear(self._context_dim, self._inner_dim * 2, with_bias=False, dev_str=self._dev_str)
         self._to_out = ivy.Sequential(
-            ivy.Linear(inner_dim, query_dim, dev_str=dev_str, v=v.to_out),
-            ivy.Dropout(dropout_rate), dev_str=dev_str
+            ivy.Linear(self._inner_dim, self._query_dim, dev_str=self._dev_str),
+            ivy.Dropout(self._dropout_rate), dev_str=self._dev_str
         )
-        ivy.Module.__init__(self, dev_str, v if v_exists else None)
 
     def _forward(self, inputs, context=None, mask=None):
         """

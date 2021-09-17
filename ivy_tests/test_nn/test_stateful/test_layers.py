@@ -93,10 +93,12 @@ def test_dropout_layer(x_shape, dtype_str, tensor_fn, dev_str, call):
 @pytest.mark.parametrize(
     "with_v", [True, False])
 @pytest.mark.parametrize(
+    "build_mode", ['on_init', 'explicit', 'on_call'])
+@pytest.mark.parametrize(
     "dtype_str", ['float32'])
 @pytest.mark.parametrize(
     "tensor_fn", [ivy.array, helpers.var_fn])
-def test_multi_head_attention_layer(x_n_s_n_m_n_c_n_gt, with_v, dtype_str, tensor_fn, dev_str, call):
+def test_multi_head_attention_layer(x_n_s_n_m_n_c_n_gt, with_v, build_mode, dtype_str, tensor_fn, dev_str, call):
     x, scale, mask, context, ground_truth = x_n_s_n_m_n_c_n_gt
     # smoke test
     x = tensor_fn(x, dtype_str, dev_str)
@@ -121,7 +123,9 @@ def test_multi_head_attention_layer(x_n_s_n_m_n_c_n_gt, with_v, dtype_str, tenso
     else:
         v = None
     multi_head_attention_layer = ivy.MultiHeadAttention(
-        query_dim, context_dim=context_dim, scale=scale, dev_str=dev_str, v=v)
+        query_dim, context_dim=context_dim, scale=scale, dev_str=dev_str, v=v, build_mode=build_mode)
+    if build_mode == 'explicit':
+        multi_head_attention_layer.build()
     ret = multi_head_attention_layer(x, context, mask)
     # type test
     assert ivy.is_array(ret)
