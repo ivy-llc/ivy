@@ -1910,7 +1910,7 @@ class Container(dict):
         except KeyError:
             return
 
-    def try_key(self, key):
+    def try_kc(self, key):
         """
         Tries the following key or key chain, returning self if not present.
         """
