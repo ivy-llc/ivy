@@ -140,7 +140,7 @@ class MultiHeadAttention(Module):
         ivy.Module.__init__(self, dev_str, v if v_exists else None, build_mode)
 
     # noinspection PyAttributeOutsideInit
-    def _build(self):
+    def _build(self, *agrs, **kwargs):
         self._to_q = ivy.Linear(self._query_dim, self._inner_dim, with_bias=False, dev_str=self._dev_str)
         self._to_kv = ivy.Linear(self._context_dim, self._inner_dim * 2, with_bias=False, dev_str=self._dev_str)
         self._to_out = ivy.Sequential(

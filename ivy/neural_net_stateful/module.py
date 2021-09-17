@@ -179,7 +179,7 @@ class Module(abc.ABC):
         the forward pass of the layer, treating layer instance as callable function.
         """
         if not self._built:
-            self.build()
+            self.build(*args, **kwargs)
         if v is not None:
             v_orig = self.v
             if not with_grads:
