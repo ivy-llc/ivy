@@ -2100,6 +2100,18 @@ def test_container_less_than_or_equal_to(dev_str, call):
     assert container.b.d == ivy.array([True])
 
 
+def test_container_equal_to(dev_str, call):
+    container_a = Container({'a': ivy.array([1]), 'b': {'c': ivy.array([5]), 'd': ivy.array([5])}})
+    container_b = Container({'a': ivy.array([2]), 'b': {'c': ivy.array([2]), 'd': ivy.array([5])}})
+    container = container_a == container_b
+    assert container['a'] == ivy.array([False])
+    assert container.a == ivy.array([False])
+    assert container['b']['c'] == ivy.array([False])
+    assert container.b.c == ivy.array([False])
+    assert container['b']['d'] == ivy.array([True])
+    assert container.b.d == ivy.array([True])
+
+
 def test_container_not_equal_to(dev_str, call):
     container_a = Container({'a': ivy.array([1]), 'b': {'c': ivy.array([5]), 'd': ivy.array([5])}})
     container_b = Container({'a': ivy.array([2]), 'b': {'c': ivy.array([2]), 'd': ivy.array([5])}})
