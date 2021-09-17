@@ -205,7 +205,7 @@
 
 <div class="viewcode-block" id="Module"><a class="viewcode-back" href="../../../neural_net_stateful/module/Module.html#ivy.neural_net_stateful.module.Module">[docs]</a><span class="k">class</span> <span class="nc">Module</span><span class="p">(</span><span class="n">abc</span><span class="o">.</span><span class="n">ABC</span><span class="p">):</span>
 
-<div class="viewcode-block" id="Module.__init__"><a class="viewcode-back" href="../../../neural_net_stateful/module/Module.html#ivy.neural_net_stateful.module.Module.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dev_str</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">v</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="Module.__init__"><a class="viewcode-back" href="../../../neural_net_stateful/module/Module.html#ivy.neural_net_stateful.module.Module.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dev_str</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">v</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">build_mode</span><span class="o">=</span><span class="s1">&#39;on_init&#39;</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Initialze Ivy layer, which is a stateful object consisting of trainable variables.</span>
 
@@ -213,14 +213,24 @@
 <span class="sd">        :type dev_str: str, optional</span>
 <span class="sd">        :param v: Ivy container of trainable variables. Created internally by default.</span>
 <span class="sd">        :type v: ivy container, optional</span>
+<span class="sd">        :param build_mode: How the Module is built, either on initialization (now), explicitly by the user by calling</span>
+<span class="sd">                           build(), or the first time the __call__ method is run. Default is on initialization.</span>
+<span class="sd">        :type build_mode: str, optional</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">valid_build_modes</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;on_init&#39;</span><span class="p">,</span> <span class="s1">&#39;explicit&#39;</span><span class="p">,</span> <span class="s1">&#39;on_call&#39;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">build_mode</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">valid_build_modes</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;build_mode must be one of </span><span class="si">{}</span><span class="s1"> of type str, but found </span><span class="si">{}</span><span class="s1"> of type</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="n">valid_build_modes</span><span class="p">,</span> <span class="n">build_mode</span><span class="p">,</span> <span class="nb">type</span><span class="p">(</span><span class="n">build_mode</span><span class="p">)))</span>
         <span class="k">if</span> <span class="n">dev_str</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">dev_str</span> <span class="o">=</span> <span class="s1">&#39;gpu:0&#39;</span> <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">gpu_is_available</span><span class="p">()</span> <span class="k">else</span> <span class="s1">&#39;cpu&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_dev_str</span> <span class="o">=</span> <span class="n">dev_str</span>
-        <span class="k">if</span> <span class="n">v</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">v</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_find_and_create_variables</span><span class="p">()</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">v</span> <span class="o">=</span> <span class="n">Container</span><span class="p">(</span><span class="n">v</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_deffered_build</span> <span class="o">=</span> <span class="n">build_mode</span> <span class="o">==</span> <span class="s1">&#39;on_call&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_explicit_build</span> <span class="o">=</span> <span class="n">build_mode</span> <span class="o">==</span> <span class="s1">&#39;explicit&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_built</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">v</span> <span class="o">=</span> <span class="n">v</span>
+        <span class="k">if</span> <span class="n">build_mode</span> <span class="o">!=</span> <span class="s1">&#39;on_init&#39;</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">build</span><span class="p">()</span></div>
 
     <span class="c1"># Private #</span>
     <span class="c1"># --------#</span>
@@ -316,7 +326,9 @@
             <span class="n">vs</span> <span class="o">=</span> <span class="n">vs</span><span class="o">.</span><span class="n">prune_key_chain</span><span class="p">(</span><span class="n">dup_kc</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">vs</span><span class="p">,</span> <span class="n">keychain_mappings</span>
 
-    <span class="k">def</span> <span class="nf">_find_and_create_variables</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_find_and_create_variables</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">v</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">Container</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
         <span class="n">vs</span> <span class="o">=</span> <span class="n">Container</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_find_variables</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_create_variables</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dev_str</span><span class="p">)))</span>
         <span class="n">vs</span><span class="p">,</span> <span class="n">keychain_mappings</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_remove_duplicate_variables</span><span class="p">(</span><span class="n">vs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_wrap_call_methods</span><span class="p">(</span><span class="n">keychain_mappings</span><span class="p">,</span> <span class="n">obj</span><span class="o">=</span><span class="bp">self</span><span class="p">)</span>
@@ -326,19 +338,25 @@
 
     <span class="k">def</span> <span class="nf">_create_variables</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dev_str</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        create internal trainable variables, and return as arbitrary nested dict.</span>
+<span class="sd">        create internal trainable variables, and return as arbitrary nested dict. Overridable.</span>
 
 <span class="sd">        :param dev_str: The device string, specifying the device on which to create the variables.</span>
 <span class="sd">        :type dev_str: string</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">{}</span>
 
+    <span class="k">def</span> <span class="nf">_build</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Build the internal layers and variables for this module. Overridable.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span>
+
     <span class="c1"># Abstract #</span>
 
     <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span> <span class="nf">_forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        the forward pass of the layer, called after handling the optional input variables.</span>
+<span class="sd">        Forward pass of the layer, called after handling the optional input variables.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span>
 
@@ -349,6 +367,8 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        the forward pass of the layer, treating layer instance as callable function.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_built</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">build</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">v</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">v_orig</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">v</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">with_grads</span><span class="p">:</span>
@@ -374,7 +394,15 @@
 <span class="sd">        :type weights_path: string</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">weights_path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]),</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">to_disk_as_hdf5</span><span class="p">(</span><span class="n">weights_path</span><span class="p">)</span></div></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">to_disk_as_hdf5</span><span class="p">(</span><span class="n">weights_path</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Module.build"><a class="viewcode-back" href="../../../neural_net_stateful/module/Module.html#ivy.neural_net_stateful.module.Module.build">[docs]</a>    <span class="k">def</span> <span class="nf">build</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">v</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Build the internal layers and variables for this module.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_build</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_built</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">v</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_find_and_create_variables</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">default</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="p">))</span></div></div>
 </pre></div>
 
            </div>
