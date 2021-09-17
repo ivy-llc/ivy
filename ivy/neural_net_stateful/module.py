@@ -16,7 +16,7 @@ from ivy.core.container import Container
 
 class Module(abc.ABC):
 
-    def __init__(self, dev_str=None, v=None):
+    def __init__(self, dev_str=None, v=None, build_mode='on_init'):
         """
         Initialze Ivy layer, which is a stateful object consisting of trainable variables.
 
@@ -24,14 +24,24 @@ class Module(abc.ABC):
         :type dev_str: str, optional
         :param v: Ivy container of trainable variables. Created internally by default.
         :type v: ivy container, optional
+        :param build_mode: How the Module is built, either on initialization (now), explicitly by the user by calling
+                           build(), or the first time the __call__ method is run. Default is on initialization.
+        :type build_mode: str, optional
         """
+        valid_build_modes = ['on_init', 'explicit', 'on_call']
+        if build_mode not in valid_build_modes:
+            raise Exception('build_mode must be one of {} of type str, but found {} of type{}'.format(
+                valid_build_modes, build_mode, type(build_mode)))
         if dev_str is None:
             dev_str = 'gpu:0' if ivy.gpu_is_available() else 'cpu'
         self._dev_str = dev_str
-        if v is None:
-            self.v = self._find_and_create_variables()
-        else:
-            self.v = Container(v)
+        self._deffered_build = build_mode == 'on_call'
+        self._explicit_build = build_mode == 'explicit'
+        self._built = False
+        self.v = v
+        if build_mode != 'on_init':
+            return
+        self.build()
 
     # Private #
     # --------#
@@ -127,7 +137,9 @@ class Module(abc.ABC):
             vs = vs.prune_key_chain(dup_kc)
         return vs, keychain_mappings
 
-    def _find_and_create_variables(self):
+    def _find_and_create_variables(self, v):
+        if v is not None:
+            return Container(v)
         vs = Container(dict(**self._find_variables(self), **self._create_variables(self._dev_str)))
         vs, keychain_mappings = self._remove_duplicate_variables(vs)
         self._wrap_call_methods(keychain_mappings, obj=self)
@@ -137,19 +149,25 @@ class Module(abc.ABC):
 
     def _create_variables(self, dev_str):
         """
-        create internal trainable variables, and return as arbitrary nested dict.
+        create internal trainable variables, and return as arbitrary nested dict. Overridable.
 
         :param dev_str: The device string, specifying the device on which to create the variables.
         :type dev_str: string
         """
         return {}
 
+    def _build(self, *args, **kwargs):
+        """
+        Build the internal layers and variables for this module. Overridable.
+        """
+        return
+
     # Abstract #
 
     @abc.abstractmethod
     def _forward(self, *args, **kwargs):
         """
-        the forward pass of the layer, called after handling the optional input variables.
+        Forward pass of the layer, called after handling the optional input variables.
         """
         raise NotImplementedError
 
@@ -160,6 +178,8 @@ class Module(abc.ABC):
         """
         the forward pass of the layer, treating layer instance as callable function.
         """
+        if not self._built:
+            self.build()
         if v is not None:
             v_orig = self.v
             if not with_grads:
@@ -186,3 +206,11 @@ class Module(abc.ABC):
         """
         os.makedirs('/'.join(weights_path.split('/')[:-1]), exist_ok=True)
         self.v.to_disk_as_hdf5(weights_path)
+
+    def build(self, *args, v=None, **kwargs):
+        """
+        Build the internal layers and variables for this module.
+        """
+        self._build(*args, **kwargs)
+        self._built = True
+        self.v = self._find_and_create_variables(ivy.default(v, self.v))

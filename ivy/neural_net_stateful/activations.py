@@ -13,13 +13,7 @@ class GEGLU(Module):
         """
         Applies the GEGLU activation function.
         """
-        Module.__init__(self, None, None)
-
-    def _create_variables(self, dev_str):
-        """
-        Create internal variables for the layer
-        """
-        return {}
+        Module.__init__(self)
 
     def _forward(self, inputs):
         """
