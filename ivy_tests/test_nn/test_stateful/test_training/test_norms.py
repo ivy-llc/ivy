@@ -60,8 +60,7 @@ def test_layer_norm_layer_training(x_n_ns, with_v, dtype_str, tensor_fn, dev_str
     else:
         assert loss.shape == ()
     # value test
-    assert ivy.reduce_max(ivy.abs(grads.beta)) > 0
-    assert ivy.reduce_max(ivy.abs(grads.gamma)) > 0
+    assert (abs(grads).reduce_max() > 0).all_true()
     # compilation test
     if call is helpers.torch_call:
         # pytest scripting does not **kwargs
