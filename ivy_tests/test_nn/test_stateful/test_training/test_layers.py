@@ -66,8 +66,7 @@ def test_linear_layer_training(bs_ic_oc, with_v, dtype_str, tensor_fn, dev_str, 
     else:
         assert loss.shape == ()
     # value test
-    assert ivy.reduce_max(ivy.abs(grads.b)) > 0
-    assert ivy.reduce_max(ivy.abs(grads.w)) > 0
+    assert (abs(grads).reduce_max() > 0).all_true()
     # compilation test
     if call is helpers.torch_call:
         # pytest scripting does not **kwargs
@@ -150,8 +149,7 @@ def test_conv1d_layer_training(x_n_fs_n_pad_n_oc, with_v, dtype_str, tensor_fn, 
     else:
         assert loss.shape == ()
     # value test
-    assert ivy.reduce_max(ivy.abs(grads.b)) > 0
-    assert ivy.reduce_max(ivy.abs(grads.w)) > 0
+    assert (abs(grads).reduce_max() > 0).all_true()
     # compilation test
     if call is helpers.torch_call:
         # pytest scripting does not **kwargs
@@ -234,8 +232,7 @@ def test_conv1d_transpose_layer_training(x_n_fs_n_pad_n_outshp_n_oc, with_v, dty
     else:
         assert loss.shape == ()
     # value test
-    assert ivy.reduce_max(ivy.abs(grads.b)) > 0
-    assert ivy.reduce_max(ivy.abs(grads.w)) > 0
+    assert (abs(grads).reduce_max() > 0).all_true()
     # compilation test
     if call is helpers.torch_call:
         # pytest scripting does not **kwargs
@@ -325,8 +322,7 @@ def test_conv2d_layer_training(x_n_fs_n_pad_n_oc, with_v, dtype_str, tensor_fn, 
     else:
         assert loss.shape == ()
     # value test
-    assert ivy.reduce_max(ivy.abs(grads.b)) > 0
-    assert ivy.reduce_max(ivy.abs(grads.w)) > 0
+    assert (abs(grads).reduce_max() > 0).all_true()
     # compilation test
     if call is helpers.torch_call:
         # pytest scripting does not **kwargs
@@ -415,8 +411,7 @@ def test_conv2d_transpose_layer_training(x_n_fs_n_pad_n_outshp_n_oc, with_v, dty
     else:
         assert loss.shape == ()
     # value test
-    assert ivy.reduce_max(ivy.abs(grads.b)) > 0
-    assert ivy.reduce_max(ivy.abs(grads.w)) > 0
+    assert (abs(grads).reduce_max() > 0).all_true()
     # compilation test
     if call is helpers.torch_call:
         # pytest scripting does not **kwargs
@@ -498,8 +493,7 @@ def test_depthwise_conv2d_layer_training(x_n_fs_n_pad, with_v, dtype_str, tensor
     else:
         assert loss.shape == ()
     # value test
-    assert ivy.reduce_max(ivy.abs(grads.b)) > 0
-    assert ivy.reduce_max(ivy.abs(grads.w)) > 0
+    assert (abs(grads).reduce_max() > 0).all_true()
     # compilation test
     if call is helpers.torch_call:
         # pytest scripting does not **kwargs
@@ -584,8 +578,7 @@ def test_conv3d_layer_training(x_n_fs_n_pad_n_oc, with_v, dtype_str, tensor_fn, 
     else:
         assert loss.shape == ()
     # value test
-    assert ivy.reduce_max(ivy.abs(grads.b)) > 0
-    assert ivy.reduce_max(ivy.abs(grads.w)) > 0
+    assert (abs(grads).reduce_max() > 0).all_true()
     # compilation test
     if call is helpers.torch_call:
         # pytest scripting does not **kwargs
@@ -677,8 +670,7 @@ def test_conv3d_transpose_layer_training(x_n_fs_n_pad_n_outshp_n_oc, with_v, dty
     else:
         assert loss.shape == ()
     # value test
-    assert ivy.reduce_max(ivy.abs(grads.b)) > 0
-    assert ivy.reduce_max(ivy.abs(grads.w)) > 0
+    assert (abs(grads).reduce_max() > 0).all_true()
     # compilation test
     if call is helpers.torch_call:
         # pytest scripting does not **kwargs
@@ -740,8 +732,7 @@ def test_lstm_layer_training(b_t_ic_hc_otf_sctv, with_v, dtype_str, tensor_fn, d
     else:
         assert loss.shape == ()
     # value test
-    for key, val in grads.to_iterator():
-        assert ivy.reduce_max(ivy.abs(val)) > 0
+    assert (abs(grads).reduce_max() > 0).all_true()
     # compilation test
     if call is helpers.torch_call:
         # pytest scripting does not **kwargs
@@ -824,8 +815,7 @@ def test_sequential_layer_training(bs_c, with_v, seq_v, dtype_str, tensor_fn, de
     else:
         assert loss.shape == ()
     # value test
-    assert ivy.reduce_max(ivy.abs(grads.submodules.v0.b)) > 0
-    assert ivy.reduce_max(ivy.abs(grads.submodules.v0.w)) > 0
+    assert (abs(grads).reduce_max() > 0).all_true()
     # compilation test
     if call is helpers.torch_call:
         # pytest scripting does not **kwargs
