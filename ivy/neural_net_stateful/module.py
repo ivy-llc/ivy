@@ -16,7 +16,7 @@ from ivy.core.container import Container
 
 class Module(abc.ABC):
 
-    def __init__(self, dev_str=None, v=None, build_mode='on_init'):
+    def __init__(self, dev_str=None, v=None, build_mode='on_init', store_vars=True):
         """
         Initialze Ivy layer, which is a stateful object consisting of trainable variables.
 
@@ -27,6 +27,9 @@ class Module(abc.ABC):
         :param build_mode: How the Module is built, either on initialization (now), explicitly by the user by calling
                            build(), or the first time the __call__ method is run. Default is on initialization.
         :type build_mode: str, optional
+        :param store_vars: Whether or not to store the variables created. Default is True.
+        :type store_vars: bool, optional
+        :type build_mode: str, optional
         """
         valid_build_modes = ['on_init', 'explicit', 'on_call']
         if build_mode not in valid_build_modes:
@@ -36,6 +39,7 @@ class Module(abc.ABC):
             dev_str = 'gpu:0' if ivy.gpu_is_available() else 'cpu'
         self._dev_str = dev_str
         self._build_mode = build_mode
+        self._store_vars = store_vars
         self._built = False
         self._v_in = v
         self.v = v
@@ -203,14 +207,14 @@ class Module(abc.ABC):
         os.makedirs('/'.join(weights_path.split('/')[:-1]), exist_ok=True)
         self.v.to_disk_as_hdf5(weights_path)
 
-    def build(self, *args, store_vars=True, from_call=False, **kwargs):
+    def build(self, *args, from_call=False, **kwargs):
         """
         Build the internal layers and variables for this module.
         """
 
         # return False if not from_call but build_mode is on_call
         if not from_call and self._build_mode == 'on_call':
-            return False
+            return self.v
 
         # build local Module, and any child modules flagged with "explicit" build mode
         built = ivy.default(self._build(*args, **kwargs), True)
@@ -249,10 +253,11 @@ class Module(abc.ABC):
 
         # flag built and remove local variables if specified
         self._built = built
-        if not store_vars:
+        v_ret = self.v
+        if not self._store_vars:
             # ToDo: verify variables in self.v are released once this method exits
             self.v = ivy.Container()
-        return built
+        return v_ret
 
     # Properties #
     # -----------#
