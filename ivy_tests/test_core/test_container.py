@@ -2113,6 +2113,28 @@ def test_container_abs(dev_str, call):
     assert container.b.d == ivy.array([3])
 
 
+def test_container_scalar_less_than(dev_str, call):
+    container = Container({'a': ivy.array([1]), 'b': {'c': ivy.array([2]), 'd': ivy.array([3])}})
+    container = container < 2
+    assert container['a'] == ivy.array([True])
+    assert container.a == ivy.array([True])
+    assert container['b']['c'] == ivy.array([False])
+    assert container.b.c == ivy.array([False])
+    assert container['b']['d'] == ivy.array([False])
+    assert container.b.d == ivy.array([False])
+
+
+def test_container_reverse_scalar_less_than(dev_str, call):
+    container = Container({'a': ivy.array([1]), 'b': {'c': ivy.array([2]), 'd': ivy.array([3])}})
+    container = 2 < container
+    assert container['a'] == ivy.array([False])
+    assert container.a == ivy.array([False])
+    assert container['b']['c'] == ivy.array([False])
+    assert container.b.c == ivy.array([False])
+    assert container['b']['d'] == ivy.array([True])
+    assert container.b.d == ivy.array([True])
+
+
 def test_container_less_than(dev_str, call):
     container_a = Container({'a': ivy.array([1]), 'b': {'c': ivy.array([5]), 'd': ivy.array([5])}})
     container_b = Container({'a': ivy.array([2]), 'b': {'c': ivy.array([2]), 'd': ivy.array([5])}})
@@ -2123,6 +2145,28 @@ def test_container_less_than(dev_str, call):
     assert container.b.c == ivy.array([False])
     assert container['b']['d'] == ivy.array([False])
     assert container.b.d == ivy.array([False])
+
+
+def test_container_scalar_less_than_or_equal_to(dev_str, call):
+    container = Container({'a': ivy.array([1]), 'b': {'c': ivy.array([2]), 'd': ivy.array([3])}})
+    container = container <= 2
+    assert container['a'] == ivy.array([True])
+    assert container.a == ivy.array([True])
+    assert container['b']['c'] == ivy.array([True])
+    assert container.b.c == ivy.array([True])
+    assert container['b']['d'] == ivy.array([False])
+    assert container.b.d == ivy.array([False])
+
+
+def test_container_reverse_scalar_less_than_or_equal_to(dev_str, call):
+    container = Container({'a': ivy.array([1]), 'b': {'c': ivy.array([2]), 'd': ivy.array([3])}})
+    container = 2 <= container
+    assert container['a'] == ivy.array([False])
+    assert container.a == ivy.array([False])
+    assert container['b']['c'] == ivy.array([True])
+    assert container.b.c == ivy.array([True])
+    assert container['b']['d'] == ivy.array([True])
+    assert container.b.d == ivy.array([True])
 
 
 def test_container_less_than_or_equal_to(dev_str, call):
@@ -2137,12 +2181,56 @@ def test_container_less_than_or_equal_to(dev_str, call):
     assert container.b.d == ivy.array([True])
 
 
+def test_container_scalar_equal_to(dev_str, call):
+    container = Container({'a': ivy.array([1]), 'b': {'c': ivy.array([2]), 'd': ivy.array([3])}})
+    container = container == 2
+    assert container['a'] == ivy.array([False])
+    assert container.a == ivy.array([False])
+    assert container['b']['c'] == ivy.array([True])
+    assert container.b.c == ivy.array([True])
+    assert container['b']['d'] == ivy.array([False])
+    assert container.b.d == ivy.array([False])
+
+
+def test_container_reverse_scalar_equal_to(dev_str, call):
+    container = Container({'a': ivy.array([1]), 'b': {'c': ivy.array([2]), 'd': ivy.array([3])}})
+    container = 2 == container
+    assert container['a'] == ivy.array([False])
+    assert container.a == ivy.array([False])
+    assert container['b']['c'] == ivy.array([True])
+    assert container.b.c == ivy.array([True])
+    assert container['b']['d'] == ivy.array([False])
+    assert container.b.d == ivy.array([False])
+
+
 def test_container_equal_to(dev_str, call):
     container_a = Container({'a': ivy.array([1]), 'b': {'c': ivy.array([5]), 'd': ivy.array([5])}})
     container_b = Container({'a': ivy.array([2]), 'b': {'c': ivy.array([2]), 'd': ivy.array([5])}})
     container = container_a == container_b
     assert container['a'] == ivy.array([False])
     assert container.a == ivy.array([False])
+    assert container['b']['c'] == ivy.array([False])
+    assert container.b.c == ivy.array([False])
+    assert container['b']['d'] == ivy.array([True])
+    assert container.b.d == ivy.array([True])
+
+
+def test_container_scalar_not_equal_to(dev_str, call):
+    container = Container({'a': ivy.array([1]), 'b': {'c': ivy.array([2]), 'd': ivy.array([3])}})
+    container = container != 2
+    assert container['a'] == ivy.array([True])
+    assert container.a == ivy.array([True])
+    assert container['b']['c'] == ivy.array([False])
+    assert container.b.c == ivy.array([False])
+    assert container['b']['d'] == ivy.array([True])
+    assert container.b.d == ivy.array([True])
+
+
+def test_container_reverse_scalar_not_equal_to(dev_str, call):
+    container = Container({'a': ivy.array([1]), 'b': {'c': ivy.array([2]), 'd': ivy.array([3])}})
+    container = 2 != container
+    assert container['a'] == ivy.array([True])
+    assert container.a == ivy.array([True])
     assert container['b']['c'] == ivy.array([False])
     assert container.b.c == ivy.array([False])
     assert container['b']['d'] == ivy.array([True])
@@ -2161,12 +2249,56 @@ def test_container_not_equal_to(dev_str, call):
     assert container.b.d == ivy.array([False])
 
 
+def test_container_scalar_greater_than(dev_str, call):
+    container = Container({'a': ivy.array([1]), 'b': {'c': ivy.array([2]), 'd': ivy.array([3])}})
+    container = container > 2
+    assert container['a'] == ivy.array([False])
+    assert container.a == ivy.array([False])
+    assert container['b']['c'] == ivy.array([False])
+    assert container.b.c == ivy.array([False])
+    assert container['b']['d'] == ivy.array([True])
+    assert container.b.d == ivy.array([True])
+
+
+def test_container_reverse_scalar_greater_than(dev_str, call):
+    container = Container({'a': ivy.array([1]), 'b': {'c': ivy.array([2]), 'd': ivy.array([3])}})
+    container = 2 > container
+    assert container['a'] == ivy.array([True])
+    assert container.a == ivy.array([True])
+    assert container['b']['c'] == ivy.array([False])
+    assert container.b.c == ivy.array([False])
+    assert container['b']['d'] == ivy.array([False])
+    assert container.b.d == ivy.array([False])
+
+
 def test_container_greater_than(dev_str, call):
     container_a = Container({'a': ivy.array([1]), 'b': {'c': ivy.array([5]), 'd': ivy.array([5])}})
     container_b = Container({'a': ivy.array([2]), 'b': {'c': ivy.array([2]), 'd': ivy.array([5])}})
     container = container_a > container_b
     assert container['a'] == ivy.array([False])
     assert container.a == ivy.array([False])
+    assert container['b']['c'] == ivy.array([True])
+    assert container.b.c == ivy.array([True])
+    assert container['b']['d'] == ivy.array([False])
+    assert container.b.d == ivy.array([False])
+
+
+def test_container_scalar_greater_than_or_equal_to(dev_str, call):
+    container = Container({'a': ivy.array([1]), 'b': {'c': ivy.array([2]), 'd': ivy.array([3])}})
+    container = container >= 2
+    assert container['a'] == ivy.array([False])
+    assert container.a == ivy.array([False])
+    assert container['b']['c'] == ivy.array([True])
+    assert container.b.c == ivy.array([True])
+    assert container['b']['d'] == ivy.array([True])
+    assert container.b.d == ivy.array([True])
+
+
+def test_container_reverse_scalar_greater_than_or_equal_to(dev_str, call):
+    container = Container({'a': ivy.array([1]), 'b': {'c': ivy.array([2]), 'd': ivy.array([3])}})
+    container = 2 >= container
+    assert container['a'] == ivy.array([True])
+    assert container.a == ivy.array([True])
     assert container['b']['c'] == ivy.array([True])
     assert container.b.c == ivy.array([True])
     assert container['b']['d'] == ivy.array([False])
@@ -2185,12 +2317,57 @@ def test_container_greater_than_or_equal_to(dev_str, call):
     assert container.b.d == ivy.array([True])
 
 
+def test_container_scalar_and(dev_str, call):
+    container = Container({'a': ivy.array([True]), 'b': {'c': ivy.array([True]), 'd': ivy.array([False])}})
+    container = container & True
+    # ToDo: work out why "container and True" does not work. Perhaps bool(container) is called first implicitly?
+    assert container['a'] == ivy.array([True])
+    assert container.a == ivy.array([True])
+    assert container['b']['c'] == ivy.array([True])
+    assert container.b.c == ivy.array([True])
+    assert container['b']['d'] == ivy.array([False])
+    assert container.b.d == ivy.array([False])
+
+
+def test_container_reverse_scalar_and(dev_str, call):
+    container = Container({'a': ivy.array([True]), 'b': {'c': ivy.array([True]), 'd': ivy.array([False])}})
+    container = True and container
+    assert container['a'] == ivy.array([True])
+    assert container.a == ivy.array([True])
+    assert container['b']['c'] == ivy.array([True])
+    assert container.b.c == ivy.array([True])
+    assert container['b']['d'] == ivy.array([False])
+    assert container.b.d == ivy.array([False])
+
+
 def test_container_and(dev_str, call):
     container_a = Container({'a': ivy.array([True]), 'b': {'c': ivy.array([True]), 'd': ivy.array([False])}})
     container_b = Container({'a': ivy.array([False]), 'b': {'c': ivy.array([True]), 'd': ivy.array([False])}})
     container = container_a and container_b
     assert container['a'] == ivy.array([False])
     assert container.a == ivy.array([False])
+    assert container['b']['c'] == ivy.array([True])
+    assert container.b.c == ivy.array([True])
+    assert container['b']['d'] == ivy.array([False])
+    assert container.b.d == ivy.array([False])
+
+
+def test_container_scalar_or(dev_str, call):
+    container = Container({'a': ivy.array([True]), 'b': {'c': ivy.array([True]), 'd': ivy.array([False])}})
+    container = container or False
+    assert container['a'] == ivy.array([True])
+    assert container.a == ivy.array([True])
+    assert container['b']['c'] == ivy.array([True])
+    assert container.b.c == ivy.array([True])
+    assert container['b']['d'] == ivy.array([False])
+    assert container.b.d == ivy.array([False])
+
+
+def test_container_reverse_scalar_or(dev_str, call):
+    container = Container({'a': ivy.array([True]), 'b': {'c': ivy.array([True]), 'd': ivy.array([False])}})
+    container = container or False
+    assert container['a'] == ivy.array([True])
+    assert container.a == ivy.array([True])
     assert container['b']['c'] == ivy.array([True])
     assert container.b.c == ivy.array([True])
     assert container['b']['d'] == ivy.array([False])
@@ -2219,13 +2396,41 @@ def test_container_not(dev_str, call):
     assert container.b.d == ivy.array([True])
 
 
+def test_container_scalar_xor(dev_str, call):
+    if call is helpers.mx_call:
+        # MXnet arrays do not overload the ^ operator, can add if explicit ivy.logical_xor is implemented at some point
+        pytest.skip()
+    container = Container({'a': ivy.array([True]), 'b': {'c': ivy.array([True]), 'd': ivy.array([False])}})
+    container = container != True
+    assert container['a'] == ivy.array([False])
+    assert container.a == ivy.array([False])
+    assert container['b']['c'] == ivy.array([False])
+    assert container.b.c == ivy.array([False])
+    assert container['b']['d'] == ivy.array([True])
+    assert container.b.d == ivy.array([True])
+
+
+def test_container_reverse_scalar_xor(dev_str, call):
+    if call is helpers.mx_call:
+        # MXnet arrays do not overload the ^ operator, can add if explicit ivy.logical_xor is implemented at some point
+        pytest.skip()
+    container = Container({'a': ivy.array([True]), 'b': {'c': ivy.array([True]), 'd': ivy.array([False])}})
+    container = False != container
+    assert container['a'] == ivy.array([True])
+    assert container.a == ivy.array([True])
+    assert container['b']['c'] == ivy.array([True])
+    assert container.b.c == ivy.array([True])
+    assert container['b']['d'] == ivy.array([False])
+    assert container.b.d == ivy.array([False])
+
+
 def test_container_xor(dev_str, call):
     if call is helpers.mx_call:
         # MXnet arrays do not overload the ^ operator, can add if explicit ivy.logical_xor is implemented at some point
         pytest.skip()
     container_a = Container({'a': ivy.array([True]), 'b': {'c': ivy.array([True]), 'd': ivy.array([False])}})
     container_b = Container({'a': ivy.array([False]), 'b': {'c': ivy.array([True]), 'd': ivy.array([False])}})
-    container = container_a ^ container_b
+    container = container_a != container_b
     assert container['a'] == ivy.array([True])
     assert container.a == ivy.array([True])
     assert container['b']['c'] == ivy.array([False])
