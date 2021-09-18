@@ -82,7 +82,7 @@ class Optimizer(abc.ABC):
         :return: The updated variables, following update step.
         """
         if ignore_missing:
-            return v.set_at_keys(self._step_fn(v.at_keys(grads), grads))
+            return v.set_at_keys(self._step_fn(v.at_key_chains(grads), grads))
         return self._step_fn(v, grads)
 
 
