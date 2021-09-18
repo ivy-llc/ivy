@@ -1268,16 +1268,16 @@ class Container(dict):
         return self.map(lambda x, kc: self._ivy.swapaxes(x, axis0, axis1) if self._ivy.is_array(x) else x,
                         key_chains, to_apply, prune_unapplied)
 
-    def reshape(self, pre_shape, shape_slice=None, post_shape=None, key_chains=None, to_apply=True,
+    def reshape(self, pre_shape=None, shape_slice=None, post_shape=None, key_chains=None, to_apply=True,
                 prune_unapplied=False):
         """
         Reshapes each array x in the container, to a new shape given by pre_shape + x.shape[shape_slice] + post_shape.
         If shape_slice or post_shape are not specified, then the term is ignored.
 
         :param pre_shape: The first elements in the new array shape.
-        :type pre_shape: sequence of ints
+        :type pre_shape: int or sequence of ints, optional
         :param shape_slice: The slice of the original shape to use in the new shape. Default is None.
-        :type shape_slice: sequence of ints, optional
+        :type shape_slice: int or sequence of ints, optional
         :param post_shape: The final elements in the new array shape. Default is None.
         :type post_shape: sequence of ints, optional
         :param key_chains: The key-chains to apply or not apply the method to. Default is None.
@@ -1289,11 +1289,14 @@ class Container(dict):
         :type prune_unapplied: bool, optional
         :return: ivy.Container with each array reshaped as specified.
         """
-        pre_shape = list(pre_shape)
-        post_shape = [] if post_shape is None else list(post_shape)
+        pre_shape = [] if pre_shape is None else\
+            ([pre_shape] if isinstance(pre_shape, int) else list(pre_shape))
+        post_shape = [] if post_shape is None else\
+            ([post_shape] if isinstance(post_shape, int) else list(post_shape))
         if shape_slice is None:
             return self.map(lambda x, kc: self._ivy.reshape(x, pre_shape + post_shape) if self._ivy.is_array(x) else x,
                             key_chains, to_apply, prune_unapplied)
+        shape_slice = slice(shape_slice, shape_slice+1) if isinstance(shape_slice, int) else shape_slice
         return self.map(lambda x, kc:
                         self._ivy.reshape(x, pre_shape + list(x.shape[shape_slice]) + post_shape)
                         if self._ivy.is_array(x) else x, key_chains, to_apply, prune_unapplied)
