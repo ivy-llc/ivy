@@ -77,7 +77,7 @@ class Module(abc.ABC):
         elif not hasattr(obj, '__dict__'):
             return vs
         for k, v in obj.__dict__.items():
-            if v is not None:
+            if v is not None and k[0:2] != '__':
                 ret = self._find_variables(v)
                 if ret:
                     vs[k[1:] if k[0] == '_' else k] = ret
@@ -113,6 +113,8 @@ class Module(abc.ABC):
         if not hasattr(obj, '__dict__'):
             return
         for k, val in obj.__dict__.items():
+            if k[0:2] == '__':
+                continue
             k = (key + '/' + k) if key != '' else k
             if val is not None:
                 self._wrap_call_methods(keychain_mappings, k, val)
@@ -139,6 +141,7 @@ class Module(abc.ABC):
 
     # Overridable #
 
+    # noinspection PyMethodMayBeStatic,PyUnusedLocal
     def _create_variables(self, dev_str):
         """
         create internal trainable variables, and return as arbitrary nested dict. Overridable.
@@ -211,21 +214,25 @@ class Module(abc.ABC):
         v_from_constructor = self.v
         if not ivy.exists(v_from_constructor):
             vs = Container(dict(**self._find_variables(self), **self._create_variables(self._dev_str)))
-            vs, keychain_mappings = self._remove_duplicate_variables(vs)
             self.v = vs
         else:
-            self.v = Container(self.v)
+            self.v = self.v if isinstance(self.v, Container) else Container(self.v)
+
+        # remove duplicates
+        self.v, _ = self._remove_duplicate_variables(self.v)
 
         # build any child 'on_call' layers
         if from_call:
             self._forward(*args, **kwargs)
 
-        # re-build variables and wrap methods based on additional child on-call layers, if v not passed in constructor
+        # re-build variables based on additional child on-call layers, if v not passed in constructor
         if not ivy.exists(v_from_constructor):
             vs = Container(dict(**self._find_variables(self), **self._create_variables(self._dev_str)))
-            vs, keychain_mappings = self._remove_duplicate_variables(vs)
-            self._wrap_call_methods(keychain_mappings, obj=self)
             self.v = vs
+
+        # remove further duplicates and wrap call methods with self.v
+        self.v, keychain_mappings = self._remove_duplicate_variables(self.v)
+        self._wrap_call_methods(keychain_mappings, obj=self)
 
         # flag built and remove local variables if specified
         self._built = True
