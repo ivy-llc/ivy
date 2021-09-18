@@ -69,12 +69,13 @@ class WeConFC(ivy.Module):
         self._layer_specific_fc = WeConLayerFC()
         self._fc = FC()
         self._dev_str = dev_str
-        super(WeConFC, self).__init__(v=v, build_mode='on_call')
+        super(WeConFC, self).__init__(v=v)
 
     # noinspection PyUnusedLocal
     def _build(self, *args, **kwargs):
-        # both child layers are built on_call
-        pass
+        self._layer_specific_fc.build()
+        self._fc.build()
+        return self._layer_specific_fc.built and self._fc.built
 
     def _forward(self, implicit_weights):
         batch_shape = [i for i in implicit_weights.shape if i]
