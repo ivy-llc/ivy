@@ -35,9 +35,9 @@ class Module(abc.ABC):
         if dev_str is None:
             dev_str = 'gpu:0' if ivy.gpu_is_available() else 'cpu'
         self._dev_str = dev_str
-        self._deffered_build = build_mode == 'on_call'
-        self._explicit_build = build_mode == 'explicit'
+        self._build_mode = build_mode
         self._built = False
+        self._v_in = v
         self.v = v
         if build_mode != 'on_init':
             return
@@ -151,11 +151,12 @@ class Module(abc.ABC):
         """
         return {}
 
-    def _build(self, *args, **kwargs):
+    def _build(self, *args, **kwargs) -> bool:
         """
         Build the internal layers and variables for this module. Overridable.
+        Return False if the build only partially completed (i.e. some child Modules have "on_call" build mode).
         """
-        return
+        return True
 
     # Abstract #
 
@@ -207,11 +208,15 @@ class Module(abc.ABC):
         Build the internal layers and variables for this module.
         """
 
+        # return False if not from_call but build_mode is on_call
+        if not from_call and self._build_mode == 'on_call':
+            return False
+
         # build local Module, and any child modules flagged with "explicit" build mode
-        self._build(*args, **kwargs)
+        built = ivy.default(self._build(*args, **kwargs), True)
 
         # build variables based on locally built layers, if v not passed in constructor
-        v_from_constructor = self.v
+        v_from_constructor = self._v_in
         if not ivy.exists(v_from_constructor):
             vs = Container(dict(**self._find_variables(self), **self._create_variables(self._dev_str)))
             self.v = vs
@@ -219,23 +224,43 @@ class Module(abc.ABC):
             self.v = self.v if isinstance(self.v, Container) else Container(self.v)
 
         # remove duplicates
-        self.v, _ = self._remove_duplicate_variables(self.v)
+        self.v, keychain_mappings = self._remove_duplicate_variables(self.v)
 
         # build any child 'on_call' layers
-        if from_call:
+        if not built and from_call:
+
+            # build during forward pass
             self._forward(*args, **kwargs)
 
-        # re-build variables based on additional child on-call layers, if v not passed in constructor
-        if not ivy.exists(v_from_constructor):
-            vs = Container(dict(**self._find_variables(self), **self._create_variables(self._dev_str)))
-            self.v = vs
+            # re-build variables based on additional child on-call layers, if v not passed in constructor
+            if not ivy.exists(v_from_constructor):
+                vs = Container(dict(**self._find_variables(self), **self._create_variables(self._dev_str)))
+                self.v = vs
 
-        # remove further duplicates and wrap call methods with self.v
-        self.v, keychain_mappings = self._remove_duplicate_variables(self.v)
-        self._wrap_call_methods(keychain_mappings, obj=self)
+            # remove further duplicates with self.v
+            self.v, keychain_mappings = self._remove_duplicate_variables(self.v)
+
+            # set built flag
+            built = True
+
+        # wrap call methods if the module is fully built
+        if built:
+            self._wrap_call_methods(keychain_mappings, obj=self)
 
         # flag built and remove local variables if specified
-        self._built = True
+        self._built = built
         if not store_vars:
             # ToDo: verify variables in self.v are released once this method exits
             self.v = ivy.Container()
+        return built
+
+    # Properties #
+    # -----------#
+
+    @property
+    def build_mode(self):
+        return self._build_mode
+
+    @property
+    def built(self):
+        return self._built
