@@ -61,7 +61,7 @@ def pytest_generate_tests(metafunc):
             dev_strs = raw_value.split(',')
 
     if 'f' in metafunc.fixturenames:
-        raw_value = metafunc.config.getoption('--backend')
+        raw_value = metafunc.config.getoption('--framework')
         if raw_value == 'all':
             f_strs = TEST_FRAMEWORKS.keys()
         else:
@@ -80,4 +80,4 @@ def pytest_generate_tests(metafunc):
 
 def pytest_addoption(parser):
     parser.addoption('--dev_str', action="store", default="cpu:0")
-    parser.addoption('--backend', action="store", default="all")
+    parser.addoption('--framework', action="store", default="all")
