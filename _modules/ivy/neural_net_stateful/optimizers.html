@@ -271,7 +271,7 @@
 <span class="sd">        :return: The updated variables, following update step.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">ignore_missing</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">v</span><span class="o">.</span><span class="n">set_at_keys</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_step_fn</span><span class="p">(</span><span class="n">v</span><span class="o">.</span><span class="n">at_keys</span><span class="p">(</span><span class="n">grads</span><span class="p">),</span> <span class="n">grads</span><span class="p">))</span>
+            <span class="k">return</span> <span class="n">v</span><span class="o">.</span><span class="n">set_at_keys</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_step_fn</span><span class="p">(</span><span class="n">v</span><span class="o">.</span><span class="n">at_key_chains</span><span class="p">(</span><span class="n">grads</span><span class="p">),</span> <span class="n">grads</span><span class="p">))</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_step_fn</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">grads</span><span class="p">)</span></div></div>
 
 
