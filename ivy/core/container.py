@@ -16,11 +16,9 @@ from operator import eq as _eq
 from operator import ne as _ne
 from operator import gt as _gt
 from operator import ge as _ge
-from operator import or_ as _or
 from operator import mul as _mul
 from operator import pow as _pow
-from operator import and_ as _and
-from operator import xor as _xor
+from operator import not_ as _not
 from functools import reduce as _reduce
 from operator import truediv as _truediv
 from operator import floordiv as _floordiv
@@ -916,8 +914,8 @@ class Container(dict):
         :param axis: If axis is an integer, it specifies the axis of x along which to compute the vector norms.
                      Default is None, in which case the flattened array is considered.
         :type axis: int or sequence of ints, optional
-        :param keepdims: If this is set to True, the axes which are normed over are left in the result as dimensions with
-                         size one. With this option the result will broadcast correctly against the original x.
+        :param keepdims: If this is set to True, the axes which are normed over are left in the result as dimensions
+                         with size one. With this option the result will broadcast correctly against the original x.
                          Default is False.
         :type keepdims: bool, optional
         :param global_norm: Whether to compute the norm across all the concattenated sub-arrays. Default is False.
@@ -951,8 +949,8 @@ class Container(dict):
         :param axis: If axis is an integer, it specifies the axis of x along which to compute the matrix norms.
                      Default is None, in which case the flattened array is considered.
         :type axis: int or sequence of ints, optional
-        :param keepdims: If this is set to True, the axes which are normed over are left in the result as dimensions with
-                         size one. With this option the result will broadcast correctly against the original x.
+        :param keepdims: If this is set to True, the axes which are normed over are left in the result as dimensions
+                         with size one. With this option the result will broadcast correctly against the original x.
                          Default is False.
         :type keepdims: bool, optional
         :param key_chains: The key-chains to apply or not apply the method to. Default is None.
@@ -1092,6 +1090,7 @@ class Container(dict):
         def _ret_bool(x):
             if assert_is_bool:
                 assert isinstance(x, bool)
+                return x
             return bool(x)
 
         return self.map(lambda x, kc: _ret_bool(x), key_chains, to_apply, prune_unapplied)
@@ -2184,34 +2183,61 @@ class Container(dict):
         return self.map(lambda x, kc: self._ivy.abs(x))
 
     def __lt__(self, other):
-        return self.reduce([self, other], lambda x: _reduce(_lt, x))
+        if isinstance(other, Container):
+            return self.reduce([self, other], lambda x: _reduce(_lt, x))
+        return self.map(lambda x, kc: x < other)
 
     def __le__(self, other):
-        return self.reduce([self, other], lambda x: _reduce(_le, x))
+        if isinstance(other, Container):
+            return self.reduce([self, other], lambda x: _reduce(_le, x))
+        return self.map(lambda x, kc: x <= other)
 
     def __eq__(self, other):
-        return self.reduce([self, other], lambda x: _reduce(_eq, x))
+        if isinstance(other, Container):
+            return self.reduce([self, other], lambda x: _reduce(_eq, x))
+        return self.map(lambda x, kc: x == other)
 
     def __ne__(self, other):
-        return self.reduce([self, other], lambda x: _reduce(_ne, x))
+        if isinstance(other, Container):
+            return self.reduce([self, other], lambda x: _reduce(_ne, x))
+        return self.map(lambda x, kc: x != other)
 
     def __gt__(self, other):
-        return self.reduce([self, other], lambda x: _reduce(_gt, x))
+        if isinstance(other, Container):
+            return self.reduce([self, other], lambda x: _reduce(_gt, x))
+        return self.map(lambda x, kc: x > other)
 
     def __ge__(self, other):
-        return self.reduce([self, other], lambda x: _reduce(_ge, x))
+        if isinstance(other, Container):
+            return self.reduce([self, other], lambda x: _reduce(_ge, x))
+        return self.map(lambda x, kc: x >= other)
 
     def __and__(self, other):
-        return self.reduce([self, other], lambda x: _reduce(_and, x))
+        if isinstance(other, Container):
+            return self.reduce([self, other], lambda x: x[0] and x[1])
+        return self.map(lambda x, kc: x and other)
+
+    def __rand__(self, other):
+        return self.map(lambda x, kc: other and x)
 
     def __or__(self, other):
-        return self.reduce([self, other], lambda x: _reduce(_or, x))
+        if isinstance(other, Container):
+            return self.reduce([self, other], lambda x: x[0] or x[1])
+        return self.map(lambda x, kc: x or other)
+
+    def __ror__(self, other):
+        return self.map(lambda x, kc: other or x)
 
     def __invert__(self):
-        return self.map(lambda x, kc: self._ivy.logical_not(x))
+        return self.map(lambda x, kc: _not(x))
 
     def __xor__(self, other):
-        return self.reduce([self, other], lambda x: _reduce(_xor, x))
+        if isinstance(other, Container):
+            return self.reduce([self, other], lambda x: x[0] != x[1])
+        return self.map(lambda x, kc: x != other)
+
+    def __rxor__(self, other):
+        return self.map(lambda x, kc: other != x)
 
     # Getters and Setters #
     # --------------------#
