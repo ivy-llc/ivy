@@ -1892,7 +1892,6 @@ def test_container_pow(dev_str, call):
 
 def test_container_scalar_pow(dev_str, call):
     container_a = Container({'a': ivy.array([1]), 'b': {'c': ivy.array([2]), 'd': ivy.array([3])}})
-    container_b = Container({'a': ivy.array([2]), 'b': {'c': ivy.array([4]), 'd': ivy.array([6])}})
     container = container_a ** 2
     assert container['a'] == ivy.array([1])
     assert container.a == ivy.array([1])

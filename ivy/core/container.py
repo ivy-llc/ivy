@@ -2133,57 +2133,51 @@ class Container(dict):
         return self.map(lambda x, kc: -x)
 
     def __pow__(self, power):
-        if isinstance(power, (float, int)):
-            return self.map(lambda x, kc: x ** power)
-        return self.reduce([self, power], lambda x: _reduce(_pow, x))
+        if isinstance(power, Container):
+            return self.reduce([self, power], lambda x: _reduce(_pow, x))
+        return self.map(lambda x, kc: x ** power)
 
     def __rpow__(self, power):
-        if not isinstance(power, (float, int)):
-            raise Exception('power must be float, int or ivy.Container, but found type: {}'.format(type(power)))
         return self.map(lambda x, kc: power ** x)
 
     def __add__(self, other):
-        if isinstance(other, (float, int)):
-            return self.map(lambda x, kc: x + other)
-        return self.reduce([self, other], sum)
+        if isinstance(other, Container):
+            return self.reduce([self, other], sum)
+        return self.map(lambda x, kc: x + other)
 
     def __radd__(self, other):
         return self + other
 
     def __sub__(self, other):
-        if isinstance(other, (float, int)):
-            return self.map(lambda x, kc: x - other)
-        return self.reduce([self, -other], sum)
+        if isinstance(other, Container):
+            return self.reduce([self, -other], sum)
+        return self.map(lambda x, kc: x - other)
 
     def __rsub__(self, other):
         return -self + other
 
     def __mul__(self, other):
-        if isinstance(other, (float, int)):
-            return self.map(lambda x, kc: x * other)
-        return self.reduce([self, other], lambda x: _reduce(_mul, x))
+        if isinstance(other, Container):
+            return self.reduce([self, other], lambda x: _reduce(_mul, x))
+        return self.map(lambda x, kc: x * other)
 
     def __rmul__(self, other):
         return self * other
 
     def __truediv__(self, other):
-        if isinstance(other, (float, int)):
-            return self.map(lambda x, kc: x / other)
-        return self.reduce([self, other], lambda x: _reduce(_truediv, x))
+        if isinstance(other, Container):
+            return self.reduce([self, other], lambda x: _reduce(_truediv, x))
+        return self.map(lambda x, kc: x / other)
 
     def __rtruediv__(self, other):
-        if not isinstance(other, (float, int)):
-            raise Exception('power must be float, int or ivy.Container, but found type: {}'.format(type(other)))
         return self.map(lambda x, kc: other / x)
 
     def __floordiv__(self, other):
-        if isinstance(other, (float, int)):
-            return self.map(lambda x, kc: x // other)
-        return self.reduce([self, other], lambda x: _reduce(_floordiv, x))
+        if isinstance(other, Container):
+            return self.reduce([self, other], lambda x: _reduce(_floordiv, x))
+        return self.map(lambda x, kc: x // other)
 
     def __rfloordiv__(self, other):
-        if not isinstance(other, (float, int)):
-            raise Exception('power must be float, int or ivy.Container, but found type: {}'.format(type(other)))
         return self.map(lambda x, kc: other // x)
 
     def __abs__(self):
