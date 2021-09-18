@@ -137,14 +137,6 @@ class Module(abc.ABC):
             vs = vs.prune_key_chain(dup_kc)
         return vs, keychain_mappings
 
-    def _find_and_create_variables(self, v):
-        if v is not None:
-            return Container(v)
-        vs = Container(dict(**self._find_variables(self), **self._create_variables(self._dev_str)))
-        vs, keychain_mappings = self._remove_duplicate_variables(vs)
-        self._wrap_call_methods(keychain_mappings, obj=self)
-        return vs
-
     # Overridable #
 
     def _create_variables(self, dev_str):
@@ -179,7 +171,7 @@ class Module(abc.ABC):
         the forward pass of the layer, treating layer instance as callable function.
         """
         if not self._built:
-            self.build(*args, **kwargs)
+            self.build(*args, **kwargs, from_call=True)
         if v is not None:
             v_orig = self.v
             if not with_grads:
@@ -207,13 +199,36 @@ class Module(abc.ABC):
         os.makedirs('/'.join(weights_path.split('/')[:-1]), exist_ok=True)
         self.v.to_disk_as_hdf5(weights_path)
 
-    def build(self, *args, v=None, store_vars=True, **kwargs):
+    def build(self, *args, store_vars=True, from_call=False, **kwargs):
         """
         Build the internal layers and variables for this module.
         """
+
+        # build local Module, and any child modules flagged with "explicit" build mode
         self._build(*args, **kwargs)
+
+        # build variables based on locally built layers, if v not passed in constructor
+        v_from_constructor = self.v
+        if not ivy.exists(v_from_constructor):
+            vs = Container(dict(**self._find_variables(self), **self._create_variables(self._dev_str)))
+            vs, keychain_mappings = self._remove_duplicate_variables(vs)
+            self.v = vs
+        else:
+            self.v = Container(self.v)
+
+        # build any child 'on_call' layers
+        if from_call:
+            self._forward(*args, **kwargs)
+
+        # re-build variables and wrap methods based on additional child on-call layers, if v not passed in constructor
+        if not ivy.exists(v_from_constructor):
+            vs = Container(dict(**self._find_variables(self), **self._create_variables(self._dev_str)))
+            vs, keychain_mappings = self._remove_duplicate_variables(vs)
+            self._wrap_call_methods(keychain_mappings, obj=self)
+            self.v = vs
+
+        # flag built and remove local variables if specified
         self._built = True
-        self.v = self._find_and_create_variables(ivy.default(v, self.v))
         if not store_vars:
-            # ToDo: verify variables in self.v created during ivy.Module.__init__ are released once this method exits
+            # ToDo: verify variables in self.v are released once this method exits
             self.v = ivy.Container()
