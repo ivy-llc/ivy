@@ -24,7 +24,7 @@ def _compute_cost_and_update_grads(cost_fn, order, batch, variables, outer_v, ke
 
 def _train_task(inner_batch, outer_batch, inner_cost_fn, outer_cost_fn, variables, inner_grad_steps,
                 inner_learning_rate, inner_optimization_step, order, average_across_steps, inner_v, keep_innver_v,
-                outer_v, keep_outer_v, batched, num_tasks):
+                outer_v, keep_outer_v, batched, num_tasks, stop_gradients):
 
     # init
     total_cost = 0
@@ -59,9 +59,10 @@ def _train_task(inner_batch, outer_batch, inner_cost_fn, outer_cost_fn, variable
             variables = variables.set_at_key_chains(
                 inner_optimization_step(variables.at_key_chains(inner_v) if keep_innver_v else
                                         variables.prune_key_chains(inner_v), inner_update_grads,
-                                        inner_learning_rate, inplace=False))
+                                        inner_learning_rate, inplace=False, stop_gradients=stop_gradients))
         else:
-            variables = inner_optimization_step(variables, inner_update_grads, inner_learning_rate, inplace=False)
+            variables = inner_optimization_step(variables, inner_update_grads, inner_learning_rate, inplace=False,
+                                                stop_gradients=stop_gradients)
 
     # once training is finished, compute the final cost, and update all_grads if fist order method
     final_cost = _compute_cost_and_update_grads(
@@ -69,7 +70,8 @@ def _train_task(inner_batch, outer_batch, inner_cost_fn, outer_cost_fn, variable
         keep_outer_v, True, all_grads, unique_outer, batched, num_tasks)
 
     # update variables
-    variables = variables.stop_gradients()
+    if stop_gradients:
+        variables = variables.stop_gradients()
     if not batched:
         variables = variables.expand_dims(0)
 
@@ -88,7 +90,7 @@ def _train_task(inner_batch, outer_batch, inner_cost_fn, outer_cost_fn, variable
 
 def _train_tasks_batched(batch, inner_batch_fn, outer_batch_fn, inner_cost_fn, outer_cost_fn, variables,
                          inner_grad_steps, inner_learning_rate, inner_optimization_step, order, average_across_steps,
-                         inner_v, keep_innver_v, outer_v, keep_outer_v, return_inner_v, num_tasks):
+                         inner_v, keep_innver_v, outer_v, keep_outer_v, return_inner_v, num_tasks, stop_gradients):
     inner_batch = batch
     outer_batch = batch
     if inner_batch_fn is not None:
@@ -99,7 +101,7 @@ def _train_tasks_batched(batch, inner_batch_fn, outer_batch_fn, inner_cost_fn, o
     cost, updated_ivs, grads = _train_task(inner_batch, outer_batch, inner_cost_fn, outer_cost_fn, variables,
                                            inner_grad_steps, inner_learning_rate, inner_optimization_step, order,
                                            average_across_steps, inner_v, keep_innver_v, outer_v, keep_outer_v, True,
-                                           num_tasks)
+                                           num_tasks, stop_gradients)
     grads = grads.reduce_mean(0) if isinstance(grads, ivy.Container) else grads
     if order == 1:
         if return_inner_v in ['all', True]:
@@ -117,7 +119,7 @@ def _train_tasks_batched(batch, inner_batch_fn, outer_batch_fn, inner_cost_fn, o
 def _train_tasks_with_for_loop(batch, inner_sub_batch_fn, outer_sub_batch_fn, inner_cost_fn, outer_cost_fn, variables,
                                inner_grad_steps, inner_learning_rate, inner_optimization_step, order,
                                average_across_steps, inner_v, keep_innver_v, outer_v, keep_outer_v, return_inner_v,
-                               num_tasks):
+                               num_tasks, stop_gradients):
     total_cost = 0
     updated_ivs_to_return = list()
     all_grads = list()
@@ -143,7 +145,7 @@ def _train_tasks_with_for_loop(batch, inner_sub_batch_fn, outer_sub_batch_fn, in
         cost, updated_iv, grads = _train_task(inner_sub_batch, outer_sub_batch, inner_cost_fn, outer_cost_fn, variables,
                                               inner_grad_steps, inner_learning_rate, inner_optimization_step, order,
                                               average_across_steps, iv, keep_innver_v, ov, keep_outer_v, False,
-                                              num_tasks)
+                                              num_tasks, stop_gradients)
         if (return_inner_v == 'first' and i == 0) or return_inner_v in ['all', True]:
             updated_ivs_to_return.append(updated_iv)
         total_cost = total_cost + cost
@@ -159,16 +161,16 @@ def _train_tasks_with_for_loop(batch, inner_sub_batch_fn, outer_sub_batch_fn, in
 
 def _train_tasks(batch, inner_batch_fn, outer_batch_fn, inner_cost_fn, outer_cost_fn, variables, inner_grad_steps,
                  inner_learning_rate, inner_optimization_step, order, average_across_steps, batched, inner_v,
-                 keep_innver_v, outer_v, keep_outer_v, return_inner_v, num_tasks):
+                 keep_innver_v, outer_v, keep_outer_v, return_inner_v, num_tasks, stop_gradients):
     if batched:
         return _train_tasks_batched(
             batch, inner_batch_fn, outer_batch_fn, inner_cost_fn, outer_cost_fn, variables, inner_grad_steps,
             inner_learning_rate, inner_optimization_step, order, average_across_steps, inner_v, keep_innver_v, outer_v,
-            keep_outer_v, return_inner_v, num_tasks)
+            keep_outer_v, return_inner_v, num_tasks, stop_gradients)
     return _train_tasks_with_for_loop(
         batch, inner_batch_fn, outer_batch_fn, inner_cost_fn, outer_cost_fn, variables, inner_grad_steps,
         inner_learning_rate, inner_optimization_step, order, average_across_steps, inner_v, keep_innver_v, outer_v,
-        keep_outer_v, return_inner_v, num_tasks)
+        keep_outer_v, return_inner_v, num_tasks, stop_gradients)
 
 
 # Public #
@@ -235,7 +237,7 @@ def fomaml_step(batch, inner_cost_fn, outer_cost_fn, variables, inner_grad_steps
     rets = _train_tasks(
         batch, inner_batch_fn, outer_batch_fn, inner_cost_fn, outer_cost_fn, variables, inner_grad_steps,
         inner_learning_rate, inner_optimization_step, 1, average_across_steps, batched, inner_v, keep_inner_v, outer_v,
-        keep_outer_v, return_inner_v, num_tasks)
+        keep_outer_v, return_inner_v, num_tasks, stop_gradients)
     cost = rets[0]
     if stop_gradients:
         cost = ivy.stop_gradient(cost, preserve_type=False)
@@ -280,7 +282,7 @@ def reptile_step(batch, cost_fn, variables, inner_grad_steps, inner_learning_rat
     # noinspection PyTypeChecker
     rets = _train_tasks(
         batch, None, None, cost_fn, None, variables, inner_grad_steps, inner_learning_rate, inner_optimization_step,
-        1, True, batched, None, True, None, True, return_inner_v, num_tasks)
+        1, True, batched, None, True, None, True, return_inner_v, num_tasks, stop_gradients)
     cost = rets[0]
     if stop_gradients:
         cost = ivy.stop_gradient(cost, preserve_type=False)
@@ -352,7 +354,7 @@ def maml_step(batch, inner_cost_fn, outer_cost_fn, variables, inner_grad_steps, 
         batch, inner_batch_fn, outer_batch_fn, inner_cost_fn, outer_cost_fn,
         variables.set_at_key_chains(v) if unique_outer else v, inner_grad_steps, inner_learning_rate,
         inner_optimization_step, 2, average_across_steps, batched, inner_v, keep_inner_v, outer_v, keep_outer_v,
-        return_inner_v, num_tasks),
+        return_inner_v, num_tasks, stop_gradients),
         variables.at_key_chains(outer_v, ignore_none=True)
         if keep_outer_v else variables.prune_key_chains(outer_v, ignore_none=True))
     if stop_gradients:
