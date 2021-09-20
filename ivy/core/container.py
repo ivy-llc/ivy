@@ -1911,9 +1911,26 @@ class Container(dict):
             else:
                 out_cont[key] = value
         return out_cont
+
+    def prune_keys_from_key_chains(self, absolute=None, containing=None):
+        """
+        Recursively prune absolute keys or keys containing certain substrings from all key chains.
+
+        :param absolute: The absolute key to detect in the key chains.
+        :type absolute: str, optional
+        :param containing: A substring to check each key for, when deciding which keys to prune.
+        :type containing: str, optional
+        :return: Container with specified keys or substring-containing-keys from all key chains removed from the chain.
+        """
+        if not absolute and not containing:
+            raise Exception('At least one of absolute or containing arguments must be specified.')
+        out_cont = Container(ivyh=self._local_ivy)
+        for key, value in sorted(self.items()):
+            if (absolute and key in absolute) or (containing and max([con in key for con in containing])):
                 if isinstance(value, Container):
-                    return Container.combine(out_cont, value)
-                return value
+                    out_cont = Container.combine(out_cont, value)
+                else:
+                    out_cont = value
             elif isinstance(value, Container):
                 out_cont[key] = value.prune_key_from_key_chains(absolute, containing)
             else:

@@ -1490,6 +1490,38 @@ def test_container_prune_key_from_key_chains(dev_str, call):
     assert ('Beh' not in container_pruned)
 
 
+def test_container_prune_keys_from_key_chains(dev_str, call):
+    container = Container({'Ayy': ivy.array([1]),
+                           'Bee': {'Cee': ivy.array([2]), 'Dee': ivy.array([3])},
+                           'Eee': {'Fff': ivy.array([4])}})
+
+    # absolute
+    container_pruned = container.prune_keys_from_key_chains(['Bee', 'Eee'])
+    assert (container_pruned['Ayy'] == ivy.array([[1]]))[0, 0]
+    assert (container_pruned.Ayy == ivy.array([[1]]))[0, 0]
+    assert (container_pruned['Cee'] == ivy.array([[2]]))[0, 0]
+    assert (container_pruned.Cee == ivy.array([[2]]))[0, 0]
+    assert (container_pruned['Dee'] == ivy.array([[3]]))[0, 0]
+    assert (container_pruned.Dee == ivy.array([[3]]))[0, 0]
+    assert (container_pruned['Fff'] == ivy.array([[4]]))[0, 0]
+    assert (container_pruned.Fff == ivy.array([[4]]))[0, 0]
+    assert ('Bee' not in container_pruned)
+    assert ('Eee' not in container_pruned)
+
+    # containing
+    container_pruned = container.prune_keys_from_key_chains(containing=['B', 'E'])
+    assert (container_pruned['Ayy'] == ivy.array([[1]]))[0, 0]
+    assert (container_pruned.Ayy == ivy.array([[1]]))[0, 0]
+    assert (container_pruned['Cee'] == ivy.array([[2]]))[0, 0]
+    assert (container_pruned.Cee == ivy.array([[2]]))[0, 0]
+    assert (container_pruned['Dee'] == ivy.array([[3]]))[0, 0]
+    assert (container_pruned.Dee == ivy.array([[3]]))[0, 0]
+    assert (container_pruned['Fff'] == ivy.array([[4]]))[0, 0]
+    assert (container_pruned.Fff == ivy.array([[4]]))[0, 0]
+    assert ('Bee' not in container_pruned)
+    assert ('Eee' not in container_pruned)
+
+
 def test_container_contains(dev_str, call):
     dict_in = {'a': ivy.array([0.]),
                'b': {'c': ivy.array([1.]), 'd': ivy.array([2.])}}
