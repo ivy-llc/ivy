@@ -2080,17 +2080,46 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Recursively prune absolute key or key containing a certain substring from all key chains.</span>
 
-<span class="sd">        :return: Container with specified key or substring-containing-key from all key chains.</span>
+<span class="sd">        :param absolute: The absolute key to detect in the key chains.</span>
+<span class="sd">        :type absolute: str, optional</span>
+<span class="sd">        :param containing: A substring to check each key for, when deciding which keys to prune.</span>
+<span class="sd">        :type containing: str, optional</span>
+<span class="sd">        :return: Container with specified key or substring-containing-key from all key chains removed from the chain.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="nb">bool</span><span class="p">(</span><span class="n">absolute</span><span class="p">)</span> <span class="o">==</span> <span class="nb">bool</span><span class="p">(</span><span class="n">containing</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;Exactly one of absolute or containing arguments must be specified,&#39;</span>
-                            <span class="s1">&#39;but found </span><span class="si">{}</span><span class="s1"> and </span><span class="si">{}</span><span class="s1"> respectively&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">absolute</span><span class="p">,</span> <span class="n">containing</span><span class="p">))</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">absolute</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">containing</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;At least one of absolute or containing arguments must be specified.&#39;</span><span class="p">)</span>
         <span class="n">out_cont</span> <span class="o">=</span> <span class="n">Container</span><span class="p">(</span><span class="n">ivyh</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_local_ivy</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
             <span class="k">if</span> <span class="p">(</span><span class="n">absolute</span> <span class="ow">and</span> <span class="n">key</span> <span class="o">==</span> <span class="n">absolute</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">containing</span> <span class="ow">and</span> <span class="n">containing</span> <span class="ow">in</span> <span class="n">key</span><span class="p">):</span>
                 <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">Container</span><span class="p">):</span>
-                    <span class="k">return</span> <span class="n">Container</span><span class="o">.</span><span class="n">combine</span><span class="p">(</span><span class="n">out_cont</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
-                <span class="k">return</span> <span class="n">value</span>
+                    <span class="n">out_cont</span> <span class="o">=</span> <span class="n">Container</span><span class="o">.</span><span class="n">combine</span><span class="p">(</span><span class="n">out_cont</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">out_cont</span> <span class="o">=</span> <span class="n">value</span>
+            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">Container</span><span class="p">):</span>
+                <span class="n">out_cont</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">prune_key_from_key_chains</span><span class="p">(</span><span class="n">absolute</span><span class="p">,</span> <span class="n">containing</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">out_cont</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="k">return</span> <span class="n">out_cont</span></div>
+
+<div class="viewcode-block" id="Container.prune_keys_from_key_chains"><a class="viewcode-back" href="../../../core/container/Container.html#ivy.core.container.Container.prune_keys_from_key_chains">[docs]</a>    <span class="k">def</span> <span class="nf">prune_keys_from_key_chains</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">absolute</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">containing</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Recursively prune absolute keys or keys containing certain substrings from all key chains.</span>
+
+<span class="sd">        :param absolute: The absolute key to detect in the key chains.</span>
+<span class="sd">        :type absolute: sequence of strs, optional</span>
+<span class="sd">        :param containing: A substring to check each key for, when deciding which keys to prune.</span>
+<span class="sd">        :type containing: sequence of strs, optional</span>
+<span class="sd">        :return: Container with specified keys or substring-containing-keys from all key chains removed from the chain.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">absolute</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">containing</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;At least one of absolute or containing arguments must be specified.&#39;</span><span class="p">)</span>
+        <span class="n">out_cont</span> <span class="o">=</span> <span class="n">Container</span><span class="p">(</span><span class="n">ivyh</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_local_ivy</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">absolute</span> <span class="ow">and</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">absolute</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">containing</span> <span class="ow">and</span> <span class="nb">max</span><span class="p">([</span><span class="n">con</span> <span class="ow">in</span> <span class="n">key</span> <span class="k">for</span> <span class="n">con</span> <span class="ow">in</span> <span class="n">containing</span><span class="p">])):</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">Container</span><span class="p">):</span>
+                    <span class="n">out_cont</span> <span class="o">=</span> <span class="n">Container</span><span class="o">.</span><span class="n">combine</span><span class="p">(</span><span class="n">out_cont</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">out_cont</span> <span class="o">=</span> <span class="n">value</span>
             <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">Container</span><span class="p">):</span>
                 <span class="n">out_cont</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">prune_key_from_key_chains</span><span class="p">(</span><span class="n">absolute</span><span class="p">,</span> <span class="n">containing</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
