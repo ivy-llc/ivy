@@ -158,7 +158,8 @@ class Module(abc.ABC):
     def _build(self, *args, **kwargs) -> bool:
         """
         Build the internal layers and variables for this module. Overridable.
-        Return False if the build only partially completed (i.e. some child Modules have "on_call" build mode).
+        Return False or empty Container if the build only partially completed (i.e. some child Modules have
+        "on_call" build mode). Alternatviely, return True or a container of the built variables if the module is built.
         """
         return True
 
@@ -252,12 +253,12 @@ class Module(abc.ABC):
             self._wrap_call_methods(keychain_mappings, obj=self)
 
         # flag built and remove local variables if specified
-        self._built = built
+        self._built = bool(built)
         v_ret = self.v
         if not self._store_vars:
             # ToDo: verify variables in self.v are released once this method exits
             self.v = ivy.Container()
-        return v_ret
+        return v_ret if bool(v_ret) or isinstance(built, bool) else built
 
     # Properties #
     # -----------#
