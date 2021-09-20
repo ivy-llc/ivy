@@ -24,7 +24,6 @@
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../_static/js/theme.js"></script>
 
@@ -285,27 +284,6 @@
             
   <div class="section" id="split-func-call-across-gpus">
 <h1>split_func_call_across_gpus<a class="headerlink" href="#split-func-call-across-gpus" title="Permalink to this headline">¶</a></h1>
-<dl class="py function">
-<dt id="ivy.core.general.split_func_call_across_gpus">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">split_func_call_across_gpus</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">func</span></em>, <em class="sig-param"><span class="n">inputs</span></em>, <em class="sig-param"><span class="n">dev_strs</span></em>, <em class="sig-param"><span class="n">input_axes</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">output_axes</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">concat_output</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/general.html#split_func_call_across_gpus"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.split_func_call_across_gpus" title="Permalink to this definition">¶</a></dt>
-<dd><p>Call a function by splitting its inputs along a given axis, and calling each chunk on a different device.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>func</strong> (<em>callable</em>) – The function to be called.</p></li>
-<li><p><strong>inputs</strong> (<em>sequence of arrays</em>) – A list of inputs to pass into the function.</p></li>
-<li><p><strong>dev_strs</strong> (<em>int sequence of ints</em><em> or </em><em>sequence of strs</em>) – The gpu device strings, in the format “gpu:idx”.</p></li>
-<li><p><strong>input_axes</strong> (<em>int</em><em> or </em><em>sequence of ints</em><em>, </em><em>optional</em>) – The axes along which to split each of the inputs, before passing to the function. Default is 0.</p></li>
-<li><p><strong>output_axes</strong> (<em>int</em><em> or </em><em>sequence of ints</em><em>, </em><em>optional</em>) – The axes along which to concat each of the returned outputs. Default is same as fist input axis.</p></li>
-<li><p><strong>concat_output</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to concatenate each return values into a single array. Default is False.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>The return from the function, following input splitting and re-concattenation across devices.</p>
-</dd>
-</dl>
-</dd></dl>
-
 <div class="line-block">
 <div class="line"><br /></div>
 <div class="line"><strong>Supported Frameworks:</strong></div>
