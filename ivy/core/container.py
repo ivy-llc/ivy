@@ -1887,6 +1887,27 @@ class Container(dict):
             return Container(out_dict, ivyh=self._local_ivy)
         return
 
+    def prune_key_from_key_chains(self, absolute=None, containing=None):
+        """
+        Recursively prune absolute key or key containing a certain substring from all key chains.
+
+        :return: Container with specified key or substring-containing-key from all key chains.
+        """
+        if bool(absolute) == bool(containing):
+            raise Exception('Exactly one of absolute or containing arguments must be specified,'
+                            'but found {} and {} respectively'.format(absolute, containing))
+        out_cont = Container(ivyh=self._local_ivy)
+        for key, value in sorted(self.items()):
+            if (absolute and key == absolute) or (containing and containing in key):
+                if isinstance(value, Container):
+                    return Container.combine(out_cont, value)
+                return value
+            elif isinstance(value, Container):
+                out_cont[key] = value.prune_key_from_key_chains(absolute, containing)
+            else:
+                out_cont[key] = value
+        return out_cont
+
     def copy(self):
         """
         Create a copy of this container.

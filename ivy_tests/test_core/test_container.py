@@ -1447,7 +1447,7 @@ def test_container_prune_empty(dev_str, call):
     assert (container_pruned.a == ivy.array([[1]]))[0, 0]
     assert (container_pruned['b']['d'] == ivy.array([[3]]))[0, 0]
     assert (container_pruned.b.d == ivy.array([[3]]))[0, 0]
-    assert ('c' not in container_pruned['b'].keys())
+    assert ('c' not in container_pruned['b'])
 
     def _test_exception(container_in):
         try:
@@ -1457,6 +1457,31 @@ def test_container_prune_empty(dev_str, call):
             return True
 
     assert _test_exception(container_pruned)
+
+
+def test_container_prune_key_from_key_chains(dev_str, call):
+    container = Container({'ayy': ivy.array([1]),
+                           'bee': {'cee': ivy.array([2]), 'dee': ivy.array([3])}})
+
+    # absolute
+    container_pruned = container.prune_key_from_key_chains('bee')
+    assert (container_pruned['ayy'] == ivy.array([[1]]))[0, 0]
+    assert (container_pruned.ayy == ivy.array([[1]]))[0, 0]
+    assert (container_pruned['cee'] == ivy.array([[2]]))[0, 0]
+    assert (container_pruned.cee == ivy.array([[2]]))[0, 0]
+    assert (container_pruned['dee'] == ivy.array([[3]]))[0, 0]
+    assert (container_pruned.dee == ivy.array([[3]]))[0, 0]
+    assert ('bee' not in container_pruned)
+
+    # containing
+    container_pruned = container.prune_key_from_key_chains(containing='b')
+    assert (container_pruned['ayy'] == ivy.array([[1]]))[0, 0]
+    assert (container_pruned.ayy == ivy.array([[1]]))[0, 0]
+    assert (container_pruned['cee'] == ivy.array([[2]]))[0, 0]
+    assert (container_pruned.cee == ivy.array([[2]]))[0, 0]
+    assert (container_pruned['dee'] == ivy.array([[3]]))[0, 0]
+    assert (container_pruned.dee == ivy.array([[3]]))[0, 0]
+    assert ('bee' not in container_pruned)
 
 
 def test_container_contains(dev_str, call):
