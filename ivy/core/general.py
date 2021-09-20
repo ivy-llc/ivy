@@ -47,7 +47,10 @@ def is_array(x, f=None):
     :type f: ml_framework, optional
     :return: Boolean, whether or not x is an array.
     """
-    return _cur_framework(x, f=f).is_array(x)
+    try:
+        return _cur_framework(x, f=f).is_array(x)
+    except ValueError:
+        return False
 
 
 def array_equal(x0, x1, f=None):
