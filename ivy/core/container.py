@@ -1917,9 +1917,9 @@ class Container(dict):
         Recursively prune absolute keys or keys containing certain substrings from all key chains.
 
         :param absolute: The absolute key to detect in the key chains.
-        :type absolute: str, optional
+        :type absolute: sequence of strs, optional
         :param containing: A substring to check each key for, when deciding which keys to prune.
-        :type containing: str, optional
+        :type containing: sequence of strs, optional
         :return: Container with specified keys or substring-containing-keys from all key chains removed from the chain.
         """
         if not absolute and not containing:
