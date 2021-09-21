@@ -1755,18 +1755,22 @@
                 <span class="n">return_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
         <span class="k">return</span> <span class="n">return_dict</span></div>
 
-<div class="viewcode-block" id="Container.to_iterator"><a class="viewcode-back" href="../../../core/container/Container.html#ivy.core.container.Container.to_iterator">[docs]</a>    <span class="k">def</span> <span class="nf">to_iterator</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Container.to_iterator"><a class="viewcode-back" href="../../../core/container/Container.html#ivy.core.container.Container.to_iterator">[docs]</a>    <span class="k">def</span> <span class="nf">to_iterator</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key_chain</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">leaf_keys_only</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return iterator for traversing through the nested elements of container object.</span>
 
 <span class="sd">        :return: Iterator for the container elements.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
+            <span class="k">if</span> <span class="n">leaf_keys_only</span><span class="p">:</span>
+                <span class="n">kc</span> <span class="o">=</span> <span class="n">key</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">kc</span> <span class="o">=</span> <span class="n">key_chain</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span> <span class="o">+</span> <span class="n">key</span> <span class="k">if</span> <span class="n">key_chain</span> <span class="o">!=</span> <span class="s1">&#39;&#39;</span> <span class="k">else</span> <span class="n">key</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">Container</span><span class="p">):</span>
                 <span class="c1"># noinspection PyCompatibility</span>
-                <span class="k">yield from</span> <span class="n">value</span><span class="o">.</span><span class="n">to_iterator</span><span class="p">()</span>
+                <span class="k">yield from</span> <span class="n">value</span><span class="o">.</span><span class="n">to_iterator</span><span class="p">(</span><span class="n">kc</span><span class="p">,</span> <span class="n">leaf_keys_only</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="k">yield</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span></div>
+                <span class="k">yield</span> <span class="n">kc</span><span class="p">,</span> <span class="n">value</span></div>
 
 <div class="viewcode-block" id="Container.to_flat_list"><a class="viewcode-back" href="../../../core/container/Container.html#ivy.core.container.Container.to_flat_list">[docs]</a>    <span class="k">def</span> <span class="nf">to_flat_list</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
