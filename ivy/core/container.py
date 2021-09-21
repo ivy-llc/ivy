@@ -1566,18 +1566,22 @@ class Container(dict):
                 return_dict[key] = value
         return return_dict
 
-    def to_iterator(self):
+    def to_iterator(self, key_chain='', leaf_keys_only=False):
         """
         Return iterator for traversing through the nested elements of container object.
 
         :return: Iterator for the container elements.
         """
         for key, value in sorted(self.items()):
+            if leaf_keys_only:
+                kc = key
+            else:
+                kc = key_chain + '/' + key if key_chain != '' else key
             if isinstance(value, Container):
                 # noinspection PyCompatibility
-                yield from value.to_iterator()
+                yield from value.to_iterator(kc, leaf_keys_only)
             else:
-                yield key, value
+                yield kc, value
 
     def to_flat_list(self):
         """

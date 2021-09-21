@@ -1605,9 +1605,23 @@ def test_container_to_iterator(dev_str, call):
     dict_in = {'a': ivy.array([1]),
                'b': {'c': ivy.array([2]), 'd': ivy.array([3])}}
     container = Container(dict_in)
+
+    # with key chains
     container_iterator = container.to_iterator()
-    for (key, value), expected_value in zip(container_iterator,
-                                            [ivy.array([1]), ivy.array([2]), ivy.array([3])]):
+    for (key_chain, value), expected in zip(
+            container_iterator, [('a', ivy.array([1])), ('b/c', ivy.array([2])), ('b/d', ivy.array([3]))]):
+        expected_key_chain = expected[0]
+        expected_value = expected[1]
+        assert key_chain == expected_key_chain
+        assert value == expected_value
+
+    # with leaf keys
+    container_iterator = container.to_iterator(leaf_keys_only=True)
+    for (key_chain, value), expected in zip(
+            container_iterator, [('a', ivy.array([1])), ('c', ivy.array([2])), ('d', ivy.array([3]))]):
+        expected_key_chain = expected[0]
+        expected_value = expected[1]
+        assert key_chain == expected_key_chain
         assert value == expected_value
 
 
