@@ -1640,22 +1640,29 @@ class Container(dict):
                 return False
         return True
 
-    def at_keys(self, query_keys, ignore_none=True):
+    def at_keys(self, queries, ignore_none=True, containing=False):
         """
         Query container object at specified keys, either as list or nested dict.
 
+        :param queries: The keys to query.
+        :type queries: sequence of strs or single str
+        :param ignore_none: Whether to ignore None input. Default is True.
+        :type ignore_none: bool, optional
+        :param containing: Whether to include keys which only contain the query substrings. Default is False.
+        :type containing: bool, optional
         :return: sub-container containing only key-chains containing the specified keys.
         """
-        if query_keys is None and ignore_none:
+        if queries is None and ignore_none:
             return self
         key_chains_to_keep = list()
-        if isinstance(query_keys, str):
-            query_keys = [query_keys]
+        if isinstance(queries, str):
+            queries = [queries]
 
         def map_fn(x, kc):
             nonlocal key_chains_to_keep
-            for query_key in query_keys:
-                if query_key in kc:
+            kc_split = re.split('[/.]', kc)
+            for query_key in queries:
+                if query_key in kc_split or (containing and min([query_key in k for k in kc_split])):
                     key_chains_to_keep.append(kc)
             return x
 
