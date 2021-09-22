@@ -690,7 +690,7 @@ dimension 3.</p>
 
 <dl class="py function">
 <dt id="ivy.core.general.default">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">default</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">default_val</span></em>, <em class="sig-param"><span class="n">catch_exceptions</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#default"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.default" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">default</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">default_val</span></em>, <em class="sig-param"><span class="n">catch_exceptions</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">rev</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#default"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.default" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns x provided it exists (is not None), else returns default value.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -698,6 +698,7 @@ dimension 3.</p>
 <li><p><strong>x</strong> (<em>value if catch_exceptions=False else callable</em>) – Input which may or may not exist (be None).</p></li>
 <li><p><strong>default_val</strong> (<em>any</em>) – The default value.</p></li>
 <li><p><strong>catch_exceptions</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to catch exceptions from callable x. Default is False.</p></li>
+<li><p><strong>rev</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to reverse the input x and default_val. Default is False.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
