@@ -1096,7 +1096,7 @@ def exists(x):
     return x is not None
 
 
-def default(x, default_val, catch_exceptions=False):
+def default(x, default_val, catch_exceptions=False, rev=False):
     """
     Returns x provided it exists (is not None), else returns default value.
 
@@ -1106,6 +1106,8 @@ def default(x, default_val, catch_exceptions=False):
     :type default_val: any
     :param catch_exceptions: Whether to catch exceptions from callable x. Default is False.
     :type catch_exceptions: bool, optional
+    :param rev: Whether to reverse the input x and default_val. Default is False.
+    :type rev: bool, optional
     :return: x if x exists (is not None), else default.
     """
     if catch_exceptions:
@@ -1115,6 +1117,10 @@ def default(x, default_val, catch_exceptions=False):
             x = x()
         except Exception:
             return default_val
+    if rev:
+        tmp = x
+        x = default_val
+        default_val = tmp
     return x if exists(x) else default_val
 
 
