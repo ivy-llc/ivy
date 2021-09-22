@@ -1829,22 +1829,29 @@
                 <span class="k">return</span> <span class="kc">False</span>
         <span class="k">return</span> <span class="kc">True</span></div>
 
-<div class="viewcode-block" id="Container.at_keys"><a class="viewcode-back" href="../../../core/container/Container.html#ivy.core.container.Container.at_keys">[docs]</a>    <span class="k">def</span> <span class="nf">at_keys</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query_keys</span><span class="p">,</span> <span class="n">ignore_none</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="Container.at_keys"><a class="viewcode-back" href="../../../core/container/Container.html#ivy.core.container.Container.at_keys">[docs]</a>    <span class="k">def</span> <span class="nf">at_keys</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">queries</span><span class="p">,</span> <span class="n">ignore_none</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">containing</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Query container object at specified keys, either as list or nested dict.</span>
 
+<span class="sd">        :param queries: The keys to query.</span>
+<span class="sd">        :type queries: sequence of strs or single str</span>
+<span class="sd">        :param ignore_none: Whether to ignore None input. Default is True.</span>
+<span class="sd">        :type ignore_none: bool, optional</span>
+<span class="sd">        :param containing: Whether to include keys which only contain the query substrings. Default is False.</span>
+<span class="sd">        :type containing: bool, optional</span>
 <span class="sd">        :return: sub-container containing only key-chains containing the specified keys.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">query_keys</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">ignore_none</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">queries</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">ignore_none</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span>
         <span class="n">key_chains_to_keep</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">query_keys</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-            <span class="n">query_keys</span> <span class="o">=</span> <span class="p">[</span><span class="n">query_keys</span><span class="p">]</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">queries</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="n">queries</span> <span class="o">=</span> <span class="p">[</span><span class="n">queries</span><span class="p">]</span>
 
         <span class="k">def</span> <span class="nf">map_fn</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">kc</span><span class="p">):</span>
             <span class="k">nonlocal</span> <span class="n">key_chains_to_keep</span>
-            <span class="k">for</span> <span class="n">query_key</span> <span class="ow">in</span> <span class="n">query_keys</span><span class="p">:</span>
-                <span class="k">if</span> <span class="n">query_key</span> <span class="ow">in</span> <span class="n">kc</span><span class="p">:</span>
+            <span class="n">kc_split</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;[/.]&#39;</span><span class="p">,</span> <span class="n">kc</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">query_key</span> <span class="ow">in</span> <span class="n">queries</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">query_key</span> <span class="ow">in</span> <span class="n">kc_split</span> <span class="ow">or</span> <span class="p">(</span><span class="n">containing</span> <span class="ow">and</span> <span class="nb">min</span><span class="p">([</span><span class="n">query_key</span> <span class="ow">in</span> <span class="n">k</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">kc_split</span><span class="p">])):</span>
                     <span class="n">key_chains_to_keep</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">kc</span><span class="p">)</span>
             <span class="k">return</span> <span class="n">x</span>
 

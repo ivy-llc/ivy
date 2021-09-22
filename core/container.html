@@ -417,11 +417,18 @@ Default is True.</p></li>
 
 <dl class="py method">
 <dt id="ivy.core.container.Container.at_keys">
-<code class="sig-name descname">at_keys</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">query_keys</span></em>, <em class="sig-param"><span class="n">ignore_none</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/container.html#Container.at_keys"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.at_keys" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">at_keys</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">queries</span></em>, <em class="sig-param"><span class="n">ignore_none</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">containing</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/container.html#Container.at_keys"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.at_keys" title="Permalink to this definition">¶</a></dt>
 <dd><p>Query container object at specified keys, either as list or nested dict.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>sub-container containing only key-chains containing the specified keys.</p>
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>queries</strong> (<em>sequence of strs</em><em> or </em><em>single str</em>) – The keys to query.</p></li>
+<li><p><strong>ignore_none</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to ignore None input. Default is True.</p></li>
+<li><p><strong>containing</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to include keys which only contain the query substrings. Default is False.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>sub-container containing only key-chains containing the specified keys.</p>
 </dd>
 </dl>
 </dd></dl>
