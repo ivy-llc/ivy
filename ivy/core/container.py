@@ -2121,29 +2121,15 @@ class Container(dict):
         except KeyError:
             return self
 
-    def remove_print_limit(self):
-
-        def _remove_print_limit(cont, _):
-            cont._print_limit = None
-            return cont
-
-        return self.map_conts(_remove_print_limit)
-
     def with_print_limit(self, print_limit):
+        return Container(self, print_limit=print_limit, rebuild_child_containers=True)
 
-        def _with_print_limit(cont, _):
-            cont._print_limit = print_limit
-            return cont
-
-        return self.map_conts(_with_print_limit)
+    # noinspection PyTypeChecker
+    def remove_print_limit(self):
+        return self.with_print_limit(None)
 
     def with_print_indent(self, print_indent):
-
-        def _with_print_indent(cont, _):
-            cont._print_indent = print_indent
-            return cont
-
-        return self.map_conts(_with_print_indent)
+        return Container(self, print_indent=print_indent, rebuild_child_containers=True)
 
     # Built-ins #
     # ----------#
