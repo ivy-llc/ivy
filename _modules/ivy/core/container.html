@@ -244,8 +244,28 @@
 
 <span class="sd">        :param dict_in: the dictionary the container should wrap around. Default is None.</span>
 <span class="sd">        :type dict_in: dict, optional</span>
+<span class="sd">        :param queues: Sequence of multiprocessing queues, each of which returns containers.</span>
+<span class="sd">                       This enables the current container to be passed around asynchronously while waiting for data.</span>
+<span class="sd">                       Default is None.</span>
+<span class="sd">        :type queues: sequence of multiprocessing queues, optional</span>
+<span class="sd">        :param queue_load_sizes: Size of leading dimension of the containers returned by each queue. Default is None.</span>
+<span class="sd">        :type queue_load_sizes: sequence of ints, optional</span>
+<span class="sd">        :param container_combine_method: The method to use for combining containers arriving from different queues.</span>
+<span class="sd">                                         Default is ivy.Container.list_join</span>
+<span class="sd">        :type container_combine_method: str, optional</span>
+<span class="sd">        :param queue_timeout: The timeout when waiting for containers to arrive from the queues. Default is 5 seconds.</span>
+<span class="sd">        :type queue_timeout: float, optional</span>
+<span class="sd">        :param print_limit: The total array size limit when printing the container. Default is 10.</span>
+<span class="sd">        :type print_limit: int, optional</span>
+<span class="sd">        :param print_indent: The number of whitespaces to use for indenting when printing the container. Default is 4.</span>
+<span class="sd">        :type print_indent: int, optional</span>
 <span class="sd">        :param ivyh: Handle to ivy module to use for the calculations. Default is None, which results in the global ivy.</span>
 <span class="sd">        :type ivyh: handle to ivy module, optional</span>
+<span class="sd">        :param keyword_color_dict: A dict mapping keywords to their termcolor color codes for printing the container.</span>
+<span class="sd">        :type keyword_color_dict: dict, optional</span>
+<span class="sd">        :param rebuild_child_containers: Whether to rebuild container found in dict_in with these constructor params.</span>
+<span class="sd">                                         Default is False, in which case the original container are kept as are.</span>
+<span class="sd">        :type rebuild_child_containers: bool, optional</span>
 <span class="sd">        :param kwargs: keyword arguments for dict creation. Default is None.</span>
 <span class="sd">        :type kwargs: keyword arguments.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -253,11 +273,10 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_print_limit</span> <span class="o">=</span> <span class="n">print_limit</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_print_indent</span> <span class="o">=</span> <span class="n">print_indent</span>
         <span class="k">if</span> <span class="n">_ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_queues</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_queue_load_sizes</span> <span class="o">=</span> <span class="n">queue_load_sizes</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_container_combine_method</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;list_join&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">list_join</span><span class="p">,</span>
                                               <span class="s1">&#39;concat&#39;</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">conts</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">conts</span><span class="p">,</span> <span class="mi">0</span><span class="p">)}[</span><span class="n">container_combine_method</span><span class="p">]</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_loaded_containers_from_queues</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_queue_load_sizes_cum</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_queue_load_sizes</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_queue_load_sizes_cum</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="n">queue_load_sizes</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_queue_timeout</span> <span class="o">=</span> <span class="n">queue_timeout</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_local_ivy</span> <span class="o">=</span> <span class="n">ivyh</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_keyword_color_dict</span> <span class="o">=</span> <span class="n">_ivy</span><span class="o">.</span><span class="n">default</span><span class="p">(</span><span class="n">keyword_color_dict</span><span class="p">,</span> <span class="p">{})</span>

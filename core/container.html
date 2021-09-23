@@ -208,7 +208,19 @@
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>dict_in</strong> (<em>dict</em><em>, </em><em>optional</em>) – the dictionary the container should wrap around. Default is None.</p></li>
+<li><p><strong>queues</strong> (<em>sequence of multiprocessing queues</em><em>, </em><em>optional</em>) – Sequence of multiprocessing queues, each of which returns containers.
+This enables the current container to be passed around asynchronously while waiting for data.
+Default is None.</p></li>
+<li><p><strong>queue_load_sizes</strong> (<em>sequence of ints</em><em>, </em><em>optional</em>) – Size of leading dimension of the containers returned by each queue. Default is None.</p></li>
+<li><p><strong>container_combine_method</strong> (<em>str</em><em>, </em><em>optional</em>) – The method to use for combining containers arriving from different queues.
+Default is ivy.Container.list_join</p></li>
+<li><p><strong>queue_timeout</strong> (<em>float</em><em>, </em><em>optional</em>) – The timeout when waiting for containers to arrive from the queues. Default is 5 seconds.</p></li>
+<li><p><strong>print_limit</strong> (<em>int</em><em>, </em><em>optional</em>) – The total array size limit when printing the container. Default is 10.</p></li>
+<li><p><strong>print_indent</strong> (<em>int</em><em>, </em><em>optional</em>) – The number of whitespaces to use for indenting when printing the container. Default is 4.</p></li>
 <li><p><strong>ivyh</strong> (<em>handle to ivy module</em><em>, </em><em>optional</em>) – Handle to ivy module to use for the calculations. Default is None, which results in the global ivy.</p></li>
+<li><p><strong>keyword_color_dict</strong> (<em>dict</em><em>, </em><em>optional</em>) – A dict mapping keywords to their termcolor color codes for printing the container.</p></li>
+<li><p><strong>rebuild_child_containers</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to rebuild container found in dict_in with these constructor params.
+Default is False, in which case the original container are kept as are.</p></li>
 <li><p><strong>kwargs</strong> (<em>keyword arguments.</em>) – keyword arguments for dict creation. Default is None.</p></li>
 </ul>
 </dd>
