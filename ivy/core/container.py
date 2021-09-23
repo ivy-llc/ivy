@@ -48,8 +48,8 @@ def _repr(x):
 class Container(dict):
 
     def __init__(self, dict_in=None, queues=None, queue_load_sizes=None, container_combine_method='list_join',
-                 queue_timeout=5.0, print_limit=10, print_indent=4, ivyh=None, keyword_color_dict=None,
-                 rebuild_child_containers=False, **kwargs):
+                 queue_timeout=5.0, print_limit=10, print_indent=4, print_line_spacing=0, ivyh=None,
+                 keyword_color_dict=None, rebuild_child_containers=False, **kwargs):
         """
         Initialize container object from input dict representation.
 
@@ -70,6 +70,9 @@ class Container(dict):
         :type print_limit: int, optional
         :param print_indent: The number of whitespaces to use for indenting when printing the container. Default is 4.
         :type print_indent: int, optional
+        :param print_line_spacing: The number of extra newlines to use between keys when printing the container.
+                                   Default is 0.
+        :type print_line_spacing: int, optional
         :param ivyh: Handle to ivy module to use for the calculations. Default is None, which results in the global ivy.
         :type ivyh: handle to ivy module, optional
         :param keyword_color_dict: A dict mapping keywords to their termcolor color codes for printing the container.
@@ -83,9 +86,13 @@ class Container(dict):
         self._queues = queues
         self._print_limit = print_limit
         self._print_indent = print_indent
+        self._print_line_spacing = print_line_spacing
+        self._container_combine_method = container_combine_method
         if _ivy.exists(self._queues):
-            self._container_combine_method = {'list_join': self.list_join,
-                                              'concat': lambda conts: self.concat(conts, 0)}[container_combine_method]
+            if isinstance(self._container_combine_method, str):
+                self._container_combine_method =\
+                    {'list_join': self.list_join,
+                     'concat': lambda conts: self.concat(conts, 0)}[self._container_combine_method]
             self._loaded_containers_from_queues = dict()
             self._queue_load_sizes_cum = _np.cumsum(queue_load_sizes)
             self._queue_timeout = queue_timeout
@@ -106,6 +113,7 @@ class Container(dict):
                                       container_combine_method=container_combine_method,
                                       print_limit=print_limit,
                                       print_indent=print_indent,
+                                      print_line_spacing=print_line_spacing,
                                       ivyh=ivyh,
                                       keyword_color_dict=keyword_color_dict,
                                       rebuild_child_containers=rebuild_child_containers)
@@ -2142,14 +2150,38 @@ class Container(dict):
             return self
 
     def with_print_limit(self, print_limit):
-        return Container(self, print_limit=print_limit, rebuild_child_containers=True)
+        return Container(self,
+                         container_combine_method=self._container_combine_method,
+                         print_limit=print_limit,
+                         print_indent=self._print_indent,
+                         print_line_spacing=self._print_line_spacing,
+                         ivyh=self._local_ivy,
+                         keyword_color_dict=self._keyword_color_dict,
+                         rebuild_child_containers=True)
 
     # noinspection PyTypeChecker
     def remove_print_limit(self):
         return self.with_print_limit(None)
 
     def with_print_indent(self, print_indent):
-        return Container(self, print_indent=print_indent, rebuild_child_containers=True)
+        return Container(self,
+                         container_combine_method=self._container_combine_method,
+                         print_limit=self._print_limit,
+                         print_indent=print_indent,
+                         print_line_spacing=self._print_line_spacing,
+                         ivyh=self._local_ivy,
+                         keyword_color_dict=self._keyword_color_dict,
+                         rebuild_child_containers=True)
+
+    def with_print_line_spacing(self, print_line_spacing):
+        return Container(self,
+                         container_combine_method=self._container_combine_method,
+                         print_limit=self._print_limit,
+                         print_indent=self._print_indent,
+                         print_line_spacing=print_line_spacing,
+                         ivyh=self._local_ivy,
+                         keyword_color_dict=self._keyword_color_dict,
+                         rebuild_child_containers=True)
 
     # Built-ins #
     # ----------#
@@ -2224,6 +2256,14 @@ class Container(dict):
                     lambda x, kc: x if _is_jsonable(x)
                     else _repr(x).replace(' ', '').replace(',', ', ')).to_dict(),
                 indent=self._print_indent))
+
+            def _add_newline(str_in):
+                str_in_split = str_in.split('\n')
+                str_split_size = len(str_in_split)
+                return '\n'.join([('\n'*self._print_line_spacing + ss) if i == (str_split_size-1) else ss
+                                  for i, ss in enumerate(str_in_split)])
+
+            json_dumped_str = '":'.join([_add_newline(s) for s in json_dumped_str.split('":')])
             # make keys green
             json_dumped_str_split = json_dumped_str.split('":')
             split_size = len(json_dumped_str_split)
