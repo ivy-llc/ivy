@@ -80,8 +80,12 @@ class Container(dict):
                             'please specify one or the other, not both.')
         dict_in = dict_in if isinstance(dict_in, dict) else dict(dict_in)
         for key, value in sorted(dict_in.items()):
-            if isinstance(value, dict) and not (isinstance(value, Container) and type(value) is not Container):
-                self[key] = Container(value, ivyh=ivyh)
+            if isinstance(value, dict) and not isinstance(value, Container):
+                self[key] = Container(value,
+                                      container_combine_method=container_combine_method,
+                                      print_limit=print_limit,
+                                      ivyh=ivyh,
+                                      keyword_color_dict=keyword_color_dict)
             else:
                 self[key] = value
 
@@ -2043,7 +2047,7 @@ class Container(dict):
         for key, value in sorted(self.items()):
             this_key_chain = key if key_chain == '' else (key_chain + '/' + key)
             if isinstance(value, Container):
-                ret = value.map_conts(func, key_chains, to_apply, prune_unapplied, this_key_chain)
+                ret = value.map_conts(func, key_chains, to_apply, prune_unapplied, key_chain=this_key_chain)
                 if prune_unapplied and not ret:
                     continue
                 return_dict[key] = ret
@@ -2115,12 +2119,20 @@ class Container(dict):
             return self
 
     def remove_print_limit(self):
-        self._print_limit = None
-        return self
+
+        def _remove_print_limit(cont, _):
+            cont._print_limit = None
+            return cont
+
+        return self.map_conts(_remove_print_limit)
 
     def with_print_limit(self, print_limit):
-        self._print_limit = print_limit
-        return self
+
+        def _with_print_limit(cont, _):
+            cont._print_limit = print_limit
+            return cont
+
+        return self.map_conts(_with_print_limit)
 
     # Built-ins #
     # ----------#
@@ -2142,7 +2154,7 @@ class Container(dict):
             new_dict[k] = rep
         if as_repr:
             json_dumped_str = _json.dumps(
-                Container(new_dict).map(
+                Container(new_dict, print_limit=self._print_limit).map(
                     lambda x, kc: x if _is_jsonable(x)
                     else _repr(x).replace('\n', '').replace(' ', '').replace(',', ', ')).to_dict(),
                 indent=4)
