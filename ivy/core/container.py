@@ -2138,6 +2138,36 @@ class Container(dict):
     # ----------#
 
     def __repr__(self, as_repr=True):
+
+        indent = 4
+        indent_str = ' '*indent
+
+        def _align_array(array_str_in):
+            array_str_in_split = array_str_in.split('([')
+            leading_str = array_str_in_split[0].replace('"', '')
+            remaining_str = array_str_in_split[1]
+            num_extra_dims = 0
+            for i, char in enumerate(remaining_str):
+                if char != '[':
+                    num_extra_dims = i
+                    break
+            extra_indent = (len(leading_str) + 1 + num_extra_dims) * ' '
+            uniform_indented_wo_line_overflow = array_str_in.replace('\\n[', '\n' + indent_str + extra_indent + '[')
+            uniform_indented = uniform_indented_wo_line_overflow.replace('\\n', '\n' + indent_str + extra_indent + ' ')
+            indented = uniform_indented
+            # 10 dimensions is a sensible upper bound for the number in a single array
+            for i in range(2, 10):
+                indented = indented.replace(' '*(i-1) + '['*i, '['*i)
+                indented = '\n'.join([s for s in indented.split('\n') if not s.isspace()])
+            return indented
+
+        def _align_arrays(str_in):
+            chunks = str_in.split('\n' + indent_str)
+            aligned_array_chunks = dict([(i, _align_array(c)) for i, c in enumerate(chunks) if '\\n' in c])
+            chunks = [aligned_array_chunks[i] if i in aligned_array_chunks else c_orig
+                      for i, c_orig in enumerate(chunks)]
+            return ('\n' + indent_str).join(chunks)
+
         new_dict = dict()
         for k, v in self.items():
             if isinstance(v, Container):
@@ -2153,11 +2183,11 @@ class Container(dict):
                     rep = v
             new_dict[k] = rep
         if as_repr:
-            json_dumped_str = _json.dumps(
+            json_dumped_str = _align_arrays(_json.dumps(
                 Container(new_dict, print_limit=self._print_limit).map(
                     lambda x, kc: x if _is_jsonable(x)
-                    else _repr(x).replace('\n', '').replace(' ', '').replace(',', ', ')).to_dict(),
-                indent=4)
+                    else _repr(x).replace(' ', '').replace(',', ', ')).to_dict(),
+                indent=indent))
             # make keys green
             json_dumped_str_split = json_dumped_str.split('":')
             split_size = len(json_dumped_str_split)
