@@ -55,8 +55,28 @@ class Container(dict):
 
         :param dict_in: the dictionary the container should wrap around. Default is None.
         :type dict_in: dict, optional
+        :param queues: Sequence of multiprocessing queues, each of which returns containers.
+                       This enables the current container to be passed around asynchronously while waiting for data.
+                       Default is None.
+        :type queues: sequence of multiprocessing queues, optional
+        :param queue_load_sizes: Size of leading dimension of the containers returned by each queue. Default is None.
+        :type queue_load_sizes: sequence of ints, optional
+        :param container_combine_method: The method to use for combining containers arriving from different queues.
+                                         Default is ivy.Container.list_join
+        :type container_combine_method: str, optional
+        :param queue_timeout: The timeout when waiting for containers to arrive from the queues. Default is 5 seconds.
+        :type queue_timeout: float, optional
+        :param print_limit: The total array size limit when printing the container. Default is 10.
+        :type print_limit: int, optional
+        :param print_indent: The number of whitespaces to use for indenting when printing the container. Default is 4.
+        :type print_indent: int, optional
         :param ivyh: Handle to ivy module to use for the calculations. Default is None, which results in the global ivy.
         :type ivyh: handle to ivy module, optional
+        :param keyword_color_dict: A dict mapping keywords to their termcolor color codes for printing the container.
+        :type keyword_color_dict: dict, optional
+        :param rebuild_child_containers: Whether to rebuild container found in dict_in with these constructor params.
+                                         Default is False, in which case the original container are kept as are.
+        :type rebuild_child_containers: bool, optional
         :param kwargs: keyword arguments for dict creation. Default is None.
         :type kwargs: keyword arguments.
         """
@@ -64,11 +84,10 @@ class Container(dict):
         self._print_limit = print_limit
         self._print_indent = print_indent
         if _ivy.exists(self._queues):
-            self._queue_load_sizes = queue_load_sizes
             self._container_combine_method = {'list_join': self.list_join,
                                               'concat': lambda conts: self.concat(conts, 0)}[container_combine_method]
             self._loaded_containers_from_queues = dict()
-            self._queue_load_sizes_cum = _np.cumsum(self._queue_load_sizes)
+            self._queue_load_sizes_cum = _np.cumsum(queue_load_sizes)
             self._queue_timeout = queue_timeout
         self._local_ivy = ivyh
         self._keyword_color_dict = _ivy.default(keyword_color_dict, {})
