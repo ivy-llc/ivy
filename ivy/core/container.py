@@ -26,6 +26,8 @@ from operator import floordiv as _floordiv
 # local
 import ivy as _ivy
 
+INF = float('inf')
+
 
 def _is_jsonable(x):
     try:
@@ -1639,6 +1641,31 @@ class Container(dict):
             except KeyError:
                 return False
         return True
+
+    def has_nans(self, include_infs=True, leafwise=False):
+        """
+        Determine whether arrays in the container contain any nans, as well as infs or -infs if specified.
+
+        :param include_infs: Whether to include infs and -infs in the check. Default is True.
+        :type include_infs: bool, optional
+        :param leafwise: Whether to apply the check leaf-wise, and return a container of booleans. Default is False,
+                         in which case the check is applied across the entire container, returning a single boolean.
+        :type leafwise: bool, optional
+        :return: Whether the container has any nans, applied either leafwise or across the entire container.
+        """
+
+        def _mean_is_nan(x):
+            x_scalar = _ivy.to_scalar(x) if _ivy.is_array(x) else x
+            if not x_scalar == x_scalar:
+                return True
+            if include_infs and x_scalar == INF or x_scalar == -INF:
+                return True
+            return False
+
+        leafwise_res = self.reduce_mean().map(lambda x, kc: _mean_is_nan(x))
+        if leafwise:
+            return leafwise_res
+        return max([v for k, v in leafwise_res.to_iterator()])
 
     def at_keys(self, queries, ignore_none=True, containing=False):
         """

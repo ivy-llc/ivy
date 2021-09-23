@@ -1130,6 +1130,75 @@ def test_container_has_key_chain(dev_str, call):
     assert not container.has_key_chain('c')
 
 
+def test_container_has_nans(dev_str, call):
+    container = Container({'a': ivy.array([1., 2.]),
+                           'b': {'c': ivy.array([2., 3.]), 'd': ivy.array([3., 4.])}})
+    container_nan = Container({'a': ivy.array([1., 2.]),
+                               'b': {'c': ivy.array([float('nan'), 3.]), 'd': ivy.array([3., 4.])}})
+    container_inf = Container({'a': ivy.array([1., 2.]),
+                               'b': {'c': ivy.array([2., 3.]), 'd': ivy.array([3., float('inf')])}})
+    container_nan_n_inf = Container({'a': ivy.array([1., 2.]),
+                                     'b': {'c': ivy.array([float('nan'), 3.]), 'd': ivy.array([3., float('inf')])}})
+
+    # global
+
+    # with inf check
+    assert not container.has_nans()
+    assert container_nan.has_nans()
+    assert container_inf.has_nans()
+    assert container_nan_n_inf.has_nans()
+
+    # without inf check
+    assert not container.has_nans(include_infs=False)
+    assert container_nan.has_nans(include_infs=False)
+    assert not container_inf.has_nans(include_infs=False)
+    assert container_nan_n_inf.has_nans(include_infs=False)
+
+    # leafwise
+
+    # with inf check
+    container_hn = container.has_nans(leafwise=True)
+    assert container_hn.a is False
+    assert container_hn.b.c is False
+    assert container_hn.b.d is False
+
+    container_nan_hn = container_nan.has_nans(leafwise=True)
+    assert container_nan_hn.a is False
+    assert container_nan_hn.b.c is True
+    assert container_nan_hn.b.d is False
+
+    container_inf_hn = container_inf.has_nans(leafwise=True)
+    assert container_inf_hn.a is False
+    assert container_inf_hn.b.c is False
+    assert container_inf_hn.b.d is True
+
+    container_nan_n_inf_hn = container_nan_n_inf.has_nans(leafwise=True)
+    assert container_nan_n_inf_hn.a is False
+    assert container_nan_n_inf_hn.b.c is True
+    assert container_nan_n_inf_hn.b.d is True
+
+    # without inf check
+    container_hn = container.has_nans(leafwise=True, include_infs=False)
+    assert container_hn.a is False
+    assert container_hn.b.c is False
+    assert container_hn.b.d is False
+
+    container_nan_hn = container_nan.has_nans(leafwise=True, include_infs=False)
+    assert container_nan_hn.a is False
+    assert container_nan_hn.b.c is True
+    assert container_nan_hn.b.d is False
+
+    container_inf_hn = container_inf.has_nans(leafwise=True, include_infs=False)
+    assert container_inf_hn.a is False
+    assert container_inf_hn.b.c is False
+    assert container_inf_hn.b.d is False
+
+    container_nan_n_inf_hn = container_nan_n_inf.has_nans(leafwise=True, include_infs=False)
+    assert container_nan_n_inf_hn.a is False
+    assert container_nan_n_inf_hn.b.c is True
+    assert container_nan_n_inf_hn.b.d is False
+
+
 def test_container_at_keys(dev_str, call):
     dict_in = {'a': ivy.array([1]),
                'b': {'c': ivy.array([2]), 'd': ivy.array([3])}}
