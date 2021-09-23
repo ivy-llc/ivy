@@ -107,7 +107,8 @@ class Container(dict):
                                       print_limit=print_limit,
                                       print_indent=print_indent,
                                       ivyh=ivyh,
-                                      keyword_color_dict=keyword_color_dict)
+                                      keyword_color_dict=keyword_color_dict,
+                                      rebuild_child_containers=rebuild_child_containers)
             else:
                 self[key] = value
 
