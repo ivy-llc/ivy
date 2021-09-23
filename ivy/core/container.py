@@ -48,7 +48,8 @@ def _repr(x):
 class Container(dict):
 
     def __init__(self, dict_in=None, queues=None, queue_load_sizes=None, container_combine_method='list_join',
-                 queue_timeout=5.0, print_limit=10, print_indent=4, ivyh=None, keyword_color_dict=None, **kwargs):
+                 queue_timeout=5.0, print_limit=10, print_indent=4, ivyh=None, keyword_color_dict=None,
+                 rebuild_child_containers=False, **kwargs):
         """
         Initialize container object from input dict representation.
 
@@ -81,7 +82,7 @@ class Container(dict):
                             'please specify one or the other, not both.')
         dict_in = dict_in if isinstance(dict_in, dict) else dict(dict_in)
         for key, value in sorted(dict_in.items()):
-            if isinstance(value, dict) and not isinstance(value, Container):
+            if isinstance(value, dict) and (not isinstance(value, Container) or rebuild_child_containers):
                 self[key] = Container(value,
                                       container_combine_method=container_combine_method,
                                       print_limit=print_limit,
