@@ -1763,6 +1763,30 @@ def test_container_map(dev_str, call):
     assert 'b/d' not in container_mapped
 
 
+def test_container_map_conts(dev_str, call):
+
+    # without key_chains specification
+    container = Container({'a': ivy.array([1]),
+                           'b': {'c': ivy.array([2]), 'd': ivy.array([3])}})
+
+    def _add_e_attr(cont_in):
+        cont_in.e = ivy.array([4])
+        return cont_in
+
+    # with self
+    container_mapped = container.map_conts(lambda c, _: _add_e_attr(c))
+    assert 'e' in container_mapped
+    assert np.array_equal(ivy.to_numpy(container_mapped.e), np.array([4]))
+    assert 'e' in container_mapped.b
+    assert np.array_equal(ivy.to_numpy(container_mapped.b.e), np.array([4]))
+
+    # without self
+    container_mapped = container.map_conts(lambda c, _: _add_e_attr(c), include_self=False)
+    assert 'e' not in container_mapped
+    assert 'e' in container_mapped.b
+    assert np.array_equal(ivy.to_numpy(container_mapped.b.e), np.array([4]))
+
+
 def test_container_multi_map(dev_str, call):
 
     # without key_chains specification

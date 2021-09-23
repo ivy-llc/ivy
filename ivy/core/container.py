@@ -1999,6 +1999,7 @@ class Container(dict):
         :type prune_unapplied: bool, optional
         :param key_chain: Chain of keys for this dict entry
         :type key_chain: str
+        :return: New container following the function mapped to each sub-array.
         """
         return_dict = dict()
         for key, value in sorted(self.items()):
@@ -2018,6 +2019,47 @@ class Container(dict):
                         continue
                 return_dict[key] = func(value, this_key_chain)
         return Container(return_dict, ivyh=self._local_ivy)
+
+    def map_conts(self, func, key_chains=None, to_apply=True, prune_unapplied=False, include_self=True, key_chain=''):
+        """
+        Apply function to all sub-contains in the container.
+
+        :param func: Function to apply to each sub-container
+        :type func: python function
+        :param key_chains: The key-chains to apply or not apply the method to. Default is None.
+        :type key_chains: list or dict of strs, optional
+        :param to_apply: If True, the method will be applied to key_chains, otherwise key_chains will be skipped.
+                         Default is True.
+        :type to_apply: bool, optional
+        :param prune_unapplied: Whether to prune key_chains for which the function was not applied. Default is False.
+        :type prune_unapplied: bool, optional
+        :param include_self: Whether to also apply the (possiby in-place) function to this container. Default is True.
+        :type include_self: bool, optional
+        :param key_chain: Chain of keys for this dict entry
+        :type key_chain: str
+        :return: New container following the function mapped to each sub-container.
+        """
+        return_dict = dict()
+        for key, value in sorted(self.items()):
+            this_key_chain = key if key_chain == '' else (key_chain + '/' + key)
+            if isinstance(value, Container):
+                ret = value.map_conts(func, key_chains, to_apply, prune_unapplied, this_key_chain)
+                if prune_unapplied and not ret:
+                    continue
+                return_dict[key] = ret
+            else:
+                if key_chains is not None:
+                    if (this_key_chain in key_chains and not to_apply) or (
+                            this_key_chain not in key_chains and to_apply):
+                        if prune_unapplied:
+                            continue
+                        return_dict[key] = value
+                        continue
+                return_dict[key] = value
+        ret = Container(return_dict, ivyh=self._local_ivy)
+        if key_chain != '' or include_self:
+            return func(ret, key_chain)
+        return ret
 
     def dtype(self):
         """
