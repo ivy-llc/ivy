@@ -2144,7 +2144,20 @@ class Container(dict):
 
         def _align_array(array_str_in):
             array_str_in_split = array_str_in.split('([')
-            leading_str = array_str_in_split[0].replace('"', '')
+            leading_str_to_keep = array_str_in_split[0].replace('\\n', '')
+            indented_key_size = len(leading_str_to_keep.replace('"', '').split(': ')[0])
+            indented_key_str = ' '*(indented_key_size+2)
+            padded = False
+
+            def _pre_pad_alpha_line(str_in):
+                nonlocal padded
+                padded = True
+                return '\\n' + indent_str + indented_key_str + str_in
+
+            leading_str_to_keep = ', '.join([_pre_pad_alpha_line(s) if s[0].isalpha() and i != 0 else s
+                                             for i, s in enumerate(leading_str_to_keep.split(', '))])
+            local_indent_str = '' if padded else indent_str
+            leading_str = leading_str_to_keep.split('\\n')[-1].replace('"', '')
             remaining_str = array_str_in_split[1]
             num_extra_dims = 0
             for i, char in enumerate(remaining_str):
@@ -2152,9 +2165,10 @@ class Container(dict):
                     num_extra_dims = i
                     break
             extra_indent = (len(leading_str) + 1 + num_extra_dims) * ' '
-            uniform_indented_wo_line_overflow = array_str_in.replace('\\n[', '\n' + indent_str + extra_indent + '[')
-            uniform_indented = uniform_indented_wo_line_overflow.replace('\\n', '\n' + indent_str + extra_indent + ' ')
-            indented = uniform_indented
+            array_str_in = '(['.join([leading_str_to_keep, remaining_str])
+            uniform_indent_wo_overflow = array_str_in.replace('\\n[', '\n' + local_indent_str + extra_indent + '[')
+            uniform_indent = uniform_indent_wo_overflow.replace('\\n', '\n')
+            indented = uniform_indent
             # 10 dimensions is a sensible upper bound for the number in a single array
             for i in range(2, 10):
                 indented = indented.replace(' '*(i-1) + '['*i, '['*i)
