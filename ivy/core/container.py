@@ -48,7 +48,7 @@ def _repr(x):
 class Container(dict):
 
     def __init__(self, dict_in=None, queues=None, queue_load_sizes=None, container_combine_method='list_join',
-                 queue_timeout=5.0, ivyh=None, keyword_color_dict=None, **kwargs):
+                 queue_timeout=5.0, print_limit=10, ivyh=None, keyword_color_dict=None, **kwargs):
         """
         Initialize container object from input dict representation.
 
@@ -60,6 +60,7 @@ class Container(dict):
         :type kwargs: keyword arguments.
         """
         self._queues = queues
+        self._print_limit = print_limit
         if _ivy.exists(self._queues):
             self._queue_load_sizes = queue_load_sizes
             self._container_combine_method = {'list_join': self.list_join,
@@ -2071,6 +2072,14 @@ class Container(dict):
         except KeyError:
             return self
 
+    def remove_print_limit(self):
+        self._print_limit = None
+        return self
+
+    def with_print_limit(self, print_limit):
+        self._print_limit = print_limit
+        return self
+
     # Built-ins #
     # ----------#
 
@@ -2081,7 +2090,8 @@ class Container(dict):
                 # noinspection PyArgumentList
                 rep = v.__repr__(as_repr=False)
             else:
-                if self._ivy.is_array(v) and len(list(v.shape)) > 0 and _reduce(_mul, v.shape) > 10:
+                if self._ivy.is_array(v) and len(list(v.shape)) > 0 and _ivy.exists(self._print_limit) and \
+                        _reduce(_mul, v.shape) > self._print_limit:
                     rep = (type(v), "shape=", list(v.shape))
                 elif isinstance(v, (list, tuple)) and v and self._ivy.is_array(v[0]):
                     rep = ("list[{}]".format(len(v)), type(v[0]), "shape=", list(v[0].shape))
