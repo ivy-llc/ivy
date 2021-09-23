@@ -2184,7 +2184,8 @@ class Container(dict):
             array_str_in = '(['.join([leading_str_to_keep, remaining_str])
             uniform_indent_wo_overflow = array_str_in.replace('\\n[', '\n' + local_indent_str + extra_indent + '[')
             uniform_indent = '\n'.join([local_indent_str + extra_indent + ' ' + s
-                                        if (s[0].isnumeric() or max([ss in s[0:6] for ss in ['nan, ', 'inf, ']])) else
+                                        if (s[0].isnumeric() or s[0] == '-' or
+                                            max([ss in s[0:6] for ss in ['nan, ', 'inf, ']])) else
                                         (indent_str + indented_key_str + s
                                          if (not s[0].isspace() and s[0] != '"')
                                          else s)
