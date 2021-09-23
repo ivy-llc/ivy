@@ -2183,7 +2183,12 @@ class Container(dict):
             extra_indent = (len(leading_str) + 1 + num_extra_dims) * ' '
             array_str_in = '(['.join([leading_str_to_keep, remaining_str])
             uniform_indent_wo_overflow = array_str_in.replace('\\n[', '\n' + local_indent_str + extra_indent + '[')
-            uniform_indent = uniform_indent_wo_overflow.replace('\\n', '\n')
+            uniform_indent = '\n'.join([local_indent_str + extra_indent + ' ' + s
+                                        if s[0].isnumeric() else
+                                        (indent_str + indented_key_str + s
+                                         if (not s[0].isspace() and s[0] != '"')
+                                         else s)
+                                        for s in uniform_indent_wo_overflow.split('\\n')])
             indented = uniform_indent
             # 10 dimensions is a sensible upper bound for the number in a single array
             for i in range(2, 10):
