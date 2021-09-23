@@ -48,7 +48,7 @@ def _repr(x):
 class Container(dict):
 
     def __init__(self, dict_in=None, queues=None, queue_load_sizes=None, container_combine_method='list_join',
-                 queue_timeout=5.0, print_limit=10, ivyh=None, keyword_color_dict=None, **kwargs):
+                 queue_timeout=5.0, print_limit=10, print_indent=4, ivyh=None, keyword_color_dict=None, **kwargs):
         """
         Initialize container object from input dict representation.
 
@@ -61,6 +61,7 @@ class Container(dict):
         """
         self._queues = queues
         self._print_limit = print_limit
+        self._print_indent = print_indent
         if _ivy.exists(self._queues):
             self._queue_load_sizes = queue_load_sizes
             self._container_combine_method = {'list_join': self.list_join,
@@ -84,6 +85,7 @@ class Container(dict):
                 self[key] = Container(value,
                                       container_combine_method=container_combine_method,
                                       print_limit=print_limit,
+                                      print_indent=print_indent,
                                       ivyh=ivyh,
                                       keyword_color_dict=keyword_color_dict)
             else:
@@ -2134,13 +2136,20 @@ class Container(dict):
 
         return self.map_conts(_with_print_limit)
 
+    def with_print_indent(self, print_indent):
+
+        def _with_print_indent(cont, _):
+            cont._print_indent = print_indent
+            return cont
+
+        return self.map_conts(_with_print_indent)
+
     # Built-ins #
     # ----------#
 
     def __repr__(self, as_repr=True):
 
-        indent = 4
-        indent_str = ' '*indent
+        indent_str = ' '*self._print_indent
 
         def _align_array(array_str_in):
             array_str_in_split = array_str_in.split('([')
@@ -2201,7 +2210,7 @@ class Container(dict):
                 Container(new_dict, print_limit=self._print_limit).map(
                     lambda x, kc: x if _is_jsonable(x)
                     else _repr(x).replace(' ', '').replace(',', ', ')).to_dict(),
-                indent=indent))
+                indent=self._print_indent))
             # make keys green
             json_dumped_str_split = json_dumped_str.split('":')
             split_size = len(json_dumped_str_split)
