@@ -2172,7 +2172,7 @@ class Container(dict):
             # 10 dimensions is a sensible upper bound for the number in a single array
             for i in range(2, 10):
                 indented = indented.replace(' '*(i-1) + '['*i, '['*i)
-                indented = '\n'.join([s for s in indented.split('\n') if not s.isspace()])
+                indented = '\n'.join([s for s in indented.split('\n') if bool(s) and not s.isspace()])
             return indented
 
         def _align_arrays(str_in):
