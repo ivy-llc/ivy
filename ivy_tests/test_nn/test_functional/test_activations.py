@@ -30,7 +30,8 @@ def test_relu(x, dtype_str, tensor_fn, dev_str, call):
     # value test
     assert np.allclose(call(ivy.relu, x), ivy.numpy.relu(ivy.to_numpy(x)))
     # compilation test
-    helpers.assert_compilable(ivy.relu)
+    if ivy.wrapped_mode():
+        helpers.assert_compilable(ivy.relu)
 
 
 # leaky_relu
@@ -51,7 +52,8 @@ def test_leaky_relu(x, dtype_str, tensor_fn, dev_str, call):
     # value test
     assert np.allclose(call(ivy.leaky_relu, x), ivy.numpy.leaky_relu(ivy.to_numpy(x)))
     # compilation test
-    helpers.assert_compilable(ivy.leaky_relu)
+    if ivy.wrapped_mode():
+        helpers.assert_compilable(ivy.leaky_relu)
 
 
 # gelu
@@ -74,7 +76,8 @@ def test_gelu(x, approx, dtype_str, tensor_fn, dev_str, call):
     # value test
     assert np.allclose(call(ivy.gelu, x, approx), ivy.numpy.gelu(ivy.to_numpy(x), approx))
     # compilation test
-    helpers.assert_compilable(ivy.gelu)
+    if ivy.wrapped_mode():
+        helpers.assert_compilable(ivy.gelu)
 
 
 # tanh
@@ -95,7 +98,8 @@ def test_tanh(x, dtype_str, tensor_fn, dev_str, call):
     # value test
     assert np.allclose(call(ivy.tanh, x), ivy.numpy.tanh(ivy.to_numpy(x)))
     # compilation test
-    helpers.assert_compilable(ivy.tanh)
+    if ivy.wrapped_mode():
+        helpers.assert_compilable(ivy.tanh)
 
 
 # sigmoid
@@ -116,7 +120,8 @@ def test_sigmoid(x, dtype_str, tensor_fn, dev_str, call):
     # value test
     assert np.allclose(call(ivy.sigmoid, x), ivy.numpy.sigmoid(ivy.to_numpy(x)))
     # compilation test
-    helpers.assert_compilable(ivy.sigmoid)
+    if ivy.wrapped_mode():
+        helpers.assert_compilable(ivy.sigmoid)
 
 
 # softmax
@@ -137,7 +142,8 @@ def test_softmax(x, dtype_str, tensor_fn, dev_str, call):
     # value test
     assert np.allclose(call(ivy.softmax, x), ivy.numpy.softmax(ivy.to_numpy(x)))
     # compilation test
-    helpers.assert_compilable(ivy.softmax)
+    if ivy.wrapped_mode():
+        helpers.assert_compilable(ivy.softmax)
 
 
 # softplus
@@ -158,4 +164,5 @@ def test_softplus(x, dtype_str, tensor_fn, dev_str, call):
     # value test
     assert np.allclose(call(ivy.softplus, x), ivy.numpy.softplus(ivy.to_numpy(x)))
     # compilation test
-    helpers.assert_compilable(ivy.softplus)
+    if ivy.wrapped_mode():
+        helpers.assert_compilable(ivy.softplus)

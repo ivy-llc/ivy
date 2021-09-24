@@ -31,7 +31,7 @@ def test_stack_images(shp_n_num_n_ar_n_newshp, dev_str, call):
     # cardinality test
     assert ret.shape == new_shape
     # compilation test
-    helpers.assert_compilable(ivy.stack_images)
+    if ivy.wrapped_mode():(ivy.stack_images)
 
 
 # bilinear_resample
@@ -60,7 +60,7 @@ def test_bilinear_resample(x_n_warp, dtype_str, tensor_fn, dev_str, call):
     if call in [helpers.torch_call]:
         # torch scripting does not support builtins
         return
-    helpers.assert_compilable(ivy.bilinear_resample)
+    if ivy.wrapped_mode():(ivy.bilinear_resample)
 
 
 # gradient_image
@@ -93,7 +93,8 @@ def test_gradient_image(x_n_dy_n_dx, dtype_str, tensor_fn, dev_str, call):
     if call in [helpers.torch_call]:
         # torch device cannot be assigned value of string while scripting
         return
-    helpers.assert_compilable(ivy.gradient_image)
+    if ivy.wrapped_mode():
+        helpers.assert_compilable(ivy.gradient_image)
 
 
 # float_img_to_uint8_img
@@ -122,7 +123,8 @@ def test_float_img_to_uint8_img(fi_tui, tensor_fn, dev_str, call):
     if call in [helpers.torch_call]:
         # torch device cannot be assigned value of string while scripting
         return
-    helpers.assert_compilable(ivy.float_img_to_uint8_img)
+    if ivy.wrapped_mode():
+        helpers.assert_compilable(ivy.float_img_to_uint8_img)
 
 
 # uint8_img_to_float_img
@@ -149,7 +151,8 @@ def test_uint8_img_to_float_img(ui_tfi, dev_str, call):
     if call in [helpers.torch_call]:
         # torch device cannot be assigned value of string while scripting
         return
-    helpers.assert_compilable(ivy.uint8_img_to_float_img)
+    if ivy.wrapped_mode():
+        helpers.assert_compilable(ivy.uint8_img_to_float_img)
 
 
 # random_crop
@@ -180,4 +183,5 @@ def test_random_crop(xshp_n_cs, dev_str, call):
     if call in [helpers.torch_call]:
         # reduce(mul) used for flat batch size computation is not torch jit compilable
         return
-    helpers.assert_compilable(ivy.random_crop)
+    if ivy.wrapped_mode():
+        helpers.assert_compilable(ivy.random_crop)
