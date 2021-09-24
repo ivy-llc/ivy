@@ -8,7 +8,7 @@ from .nn import *
 # noinspection PyUnresolvedReferences
 use = ivy.framework_handler.ContextManager(sys.modules[__name__])
 
-Array = torch.Tensor
+NativeArray = torch.Tensor
 Variable = torch.Tensor
 Device = torch.device
 Dtype = torch.dtype

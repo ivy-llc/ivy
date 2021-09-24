@@ -4,6 +4,7 @@ import jax
 # noinspection PyPackageRequirements
 import jaxlib
 import jax.numpy as jnp
+from jaxlib.xla_extension import Buffer
 
 from .core import *
 from . import nn
@@ -13,7 +14,7 @@ from .nn import *
 use = ivy.framework_handler.ContextManager(sys.modules[__name__])
 
 # noinspection PyUnresolvedReferences,PyProtectedMember
-Array = jax.interpreters.xla._DeviceArray
+NativeArray = (jax.interpreters.xla._DeviceArray, jaxlib.xla_extension.DeviceArray, Buffer)
 # noinspection PyUnresolvedReferences,PyProtectedMember
 Variable = jax.interpreters.xla._DeviceArray
 # noinspection PyUnresolvedReferences

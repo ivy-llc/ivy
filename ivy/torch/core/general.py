@@ -276,11 +276,11 @@ def split(x, num_or_size_splits: Optional[Union[int, List[int]]] = None, axis: i
             num_chunks_int = _math.floor(num_chunks)
             remainder = num_chunks - num_chunks_int
             if remainder == 0:
-                num_or_size_splits = round(torch.tensor(dim_size) / torch.tensor(num_or_size_splits))
+                num_or_size_splits = torch.round(torch.tensor(dim_size) / torch.tensor(num_or_size_splits))
             else:
                 num_or_size_splits = tuple([num_or_size_splits] * num_chunks_int + [int(remainder*num_or_size_splits)])
         else:
-            num_or_size_splits = round(torch.tensor(dim_size) / torch.tensor(num_or_size_splits))
+            num_or_size_splits = torch.round(torch.tensor(dim_size) / torch.tensor(num_or_size_splits))
     elif isinstance(num_or_size_splits, list):
         num_or_size_splits = tuple(num_or_size_splits)
     return list(torch.split(x, num_or_size_splits, axis))
