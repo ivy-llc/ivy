@@ -188,11 +188,21 @@
             
   <h1>Source code for ivy.framework_handler</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">ivy</span>
+<span class="kn">import</span> <span class="nn">inspect</span>
 <span class="kn">import</span> <span class="nn">importlib</span>
 <span class="kn">from</span> <span class="nn">ivy</span> <span class="kn">import</span> <span class="n">verbosity</span>
+<span class="kn">from</span> <span class="nn">types</span> <span class="kn">import</span> <span class="n">ModuleType</span>
 
 
 <span class="n">framework_stack</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">wrap_methods_modules</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="c1"># ToDo: add more non-wrapped methods to the list below, adding __name__ attribute to lambdas where needed</span>
+<span class="n">NON_WRAPPED_METHODS</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;current_framework&#39;</span><span class="p">,</span> <span class="s1">&#39;current_framework_str&#39;</span><span class="p">,</span> <span class="s1">&#39;set_framework&#39;</span><span class="p">,</span> <span class="s1">&#39;get_framework&#39;</span><span class="p">,</span>
+                       <span class="s1">&#39;unset_framework&#39;</span><span class="p">,</span> <span class="s1">&#39;set_debug_mode&#39;</span><span class="p">,</span> <span class="s1">&#39;set_breakpoint_debug_mode&#39;</span><span class="p">,</span> <span class="s1">&#39;set_exception_debug_mode&#39;</span><span class="p">,</span>
+                       <span class="s1">&#39;unset_debug_mode&#39;</span><span class="p">,</span> <span class="s1">&#39;debug_mode&#39;</span><span class="p">,</span> <span class="s1">&#39;as_native&#39;</span><span class="p">,</span> <span class="s1">&#39;args_as_native&#39;</span><span class="p">]</span>
+<span class="n">NON_ARRAY_METHODS</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;to_numpy&#39;</span><span class="p">,</span> <span class="s1">&#39;to_list&#39;</span><span class="p">,</span> <span class="s1">&#39;to_scalar&#39;</span><span class="p">,</span> <span class="s1">&#39;unstack&#39;</span><span class="p">,</span> <span class="s1">&#39;split&#39;</span><span class="p">]</span>
+<span class="n">debug_mode_val</span> <span class="o">=</span> <span class="kc">False</span>
+<span class="n">wrapped_mode_val</span> <span class="o">=</span> <span class="kc">False</span>
 <span class="n">ivy_original_dict</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
 
 
@@ -270,6 +280,41 @@
     <span class="k">return</span> <span class="n">f</span></div>
 
 
+<span class="k">def</span> <span class="nf">_method_wrapper</span><span class="p">(</span><span class="n">fn</span><span class="p">):</span>
+
+    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="s1">&#39;__name__&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">fn</span><span class="o">.</span><span class="vm">__name__</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;_&#39;</span> <span class="ow">or</span> <span class="n">fn</span><span class="o">.</span><span class="vm">__name__</span> <span class="ow">in</span> <span class="n">NON_WRAPPED_METHODS</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">fn</span>
+
+    <span class="k">def</span> <span class="nf">_method_wrapped</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="c1"># ToDo: try to modify ivy.Array built-ins so extracting the data is not needed here,</span>
+        <span class="c1">#  and maybe even the wrapping in general</span>
+        <span class="n">native_args</span><span class="p">,</span> <span class="n">native_kwargs</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">args_as_native</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">native_ret</span> <span class="o">=</span> <span class="n">fn</span><span class="p">(</span><span class="o">*</span><span class="n">native_args</span><span class="p">,</span> <span class="o">**</span><span class="n">native_kwargs</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">fn</span><span class="o">.</span><span class="vm">__name__</span> <span class="ow">in</span> <span class="n">NON_ARRAY_METHODS</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">native_ret</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">native_ret</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)):</span>
+            <span class="n">ret</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">([</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">(</span><span class="n">r</span><span class="p">)</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">)</span> <span class="k">else</span> <span class="n">r</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">native_ret</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">ret</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">(</span><span class="n">native_ret</span><span class="p">)</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">native_ret</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">)</span> <span class="k">else</span> <span class="n">native_ret</span>
+        <span class="k">return</span> <span class="n">ret</span>
+
+    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="s1">&#39;__name__&#39;</span><span class="p">):</span>
+        <span class="n">_method_wrapped</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">=</span> <span class="n">fn</span><span class="o">.</span><span class="vm">__name__</span>
+    <span class="k">return</span> <span class="n">_method_wrapped</span>
+
+
+<span class="k">def</span> <span class="nf">_wrap_methods</span><span class="p">(</span><span class="n">val</span><span class="p">):</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">ModuleType</span><span class="p">)</span> <span class="ow">and</span> <span class="n">val</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">wrap_methods_modules</span> <span class="ow">and</span> <span class="s1">&#39;__file__&#39;</span> <span class="ow">in</span> <span class="n">val</span><span class="o">.</span><span class="vm">__dict__</span> <span class="ow">and</span> \
+            <span class="s1">&#39;ivy&#39;</span> <span class="ow">in</span> <span class="n">val</span><span class="o">.</span><span class="vm">__file__</span> <span class="ow">and</span> <span class="s1">&#39;framework_handler&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">val</span><span class="o">.</span><span class="vm">__file__</span><span class="p">:</span>
+        <span class="n">wrap_methods_modules</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">val</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">val</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">_wrap_methods</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">val</span>
+    <span class="k">elif</span> <span class="n">callable</span><span class="p">(</span><span class="n">val</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">inspect</span><span class="o">.</span><span class="n">isclass</span><span class="p">(</span><span class="n">val</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">_method_wrapper</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">val</span>
+
+
 <div class="viewcode-block" id="set_framework"><a class="viewcode-back" href="../../framework_handler/set_framework.html#ivy.framework_handler.set_framework">[docs]</a><span class="k">def</span> <span class="nf">set_framework</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
     <span class="k">global</span> <span class="n">ivy_original_dict</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">framework_stack</span><span class="p">:</span>
@@ -278,8 +323,16 @@
         <span class="n">f</span> <span class="o">=</span> <span class="n">importlib</span><span class="o">.</span><span class="n">import_module</span><span class="p">(</span><span class="n">_framework_dict</span><span class="p">[</span><span class="n">f</span><span class="p">])</span>
     <span class="n">framework_stack</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">ivy_original_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-        <span class="k">if</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">f</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">:</span>
-            <span class="n">ivy</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">k</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">f</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">:</span>
+            <span class="n">f</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
+        <span class="n">ivy</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
+
+    <span class="c1"># noinspection PyUnresolvedReferences</span>
+    <span class="k">if</span> <span class="n">wrapped_mode_val</span> <span class="ow">and</span> <span class="p">(</span><span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">ivy</span><span class="p">,</span> <span class="s1">&#39;wrapped&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">ivy</span><span class="o">.</span><span class="n">wrapped</span><span class="p">):</span>
+        <span class="n">_wrap_methods</span><span class="p">(</span><span class="n">ivy</span><span class="p">)</span>
+        <span class="n">ivy</span><span class="o">.</span><span class="n">wrapped</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">wrapped</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="n">wrap_methods_modules</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
     <span class="k">if</span> <span class="n">verbosity</span><span class="o">.</span><span class="n">level</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
         <span class="n">verbosity</span><span class="o">.</span><span class="n">cprint</span><span class="p">(</span>
             <span class="s1">&#39;framework stack: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">framework_stack</span><span class="p">))</span></div>
@@ -309,11 +362,36 @@
     <span class="k">if</span> <span class="n">framework_stack</span><span class="p">:</span>
         <span class="n">framework_stack</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
         <span class="n">f_dict</span> <span class="o">=</span> <span class="n">framework_stack</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="vm">__dict__</span> <span class="k">if</span> <span class="n">framework_stack</span> <span class="k">else</span> <span class="n">ivy_original_dict</span>
+        <span class="n">wrapped</span> <span class="o">=</span> <span class="n">f_dict</span><span class="p">[</span><span class="s1">&#39;wrapped&#39;</span><span class="p">]</span> <span class="k">if</span> <span class="s1">&#39;wrapped&#39;</span> <span class="ow">in</span> <span class="n">f_dict</span> <span class="k">else</span> <span class="kc">False</span>
         <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">f_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="n">ivy</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
+        <span class="n">ivy</span><span class="o">.</span><span class="n">wrapped</span> <span class="o">=</span> <span class="n">wrapped</span>
     <span class="k">if</span> <span class="n">verbosity</span><span class="o">.</span><span class="n">level</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
         <span class="n">verbosity</span><span class="o">.</span><span class="n">cprint</span><span class="p">(</span>
             <span class="s1">&#39;framework stack: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">framework_stack</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="set_debug_mode"><a class="viewcode-back" href="../../framework_handler/set_debug_mode.html#ivy.framework_handler.set_debug_mode">[docs]</a><span class="k">def</span> <span class="nf">set_debug_mode</span><span class="p">(</span><span class="n">debug_mode_in</span><span class="o">=</span><span class="s1">&#39;exception&#39;</span><span class="p">):</span>
+    <span class="k">assert</span> <span class="n">debug_mode_in</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;breakpoint&#39;</span><span class="p">,</span> <span class="s1">&#39;exception&#39;</span><span class="p">]</span>
+    <span class="k">global</span> <span class="n">debug_mode_val</span>
+    <span class="n">debug_mode_val</span> <span class="o">=</span> <span class="n">debug_mode_in</span></div>
+
+
+<div class="viewcode-block" id="set_breakpoint_debug_mode"><a class="viewcode-back" href="../../framework_handler/set_breakpoint_debug_mode.html#ivy.framework_handler.set_breakpoint_debug_mode">[docs]</a><span class="k">def</span> <span class="nf">set_breakpoint_debug_mode</span><span class="p">():</span>
+    <span class="n">set_debug_mode</span><span class="p">(</span><span class="s1">&#39;breakpoint&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="set_exception_debug_mode"><a class="viewcode-back" href="../../framework_handler/set_exception_debug_mode.html#ivy.framework_handler.set_exception_debug_mode">[docs]</a><span class="k">def</span> <span class="nf">set_exception_debug_mode</span><span class="p">():</span>
+    <span class="n">set_debug_mode</span><span class="p">(</span><span class="s1">&#39;exception&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="unset_debug_mode"><a class="viewcode-back" href="../../framework_handler/unset_debug_mode.html#ivy.framework_handler.unset_debug_mode">[docs]</a><span class="k">def</span> <span class="nf">unset_debug_mode</span><span class="p">():</span>
+    <span class="k">global</span> <span class="n">debug_mode_val</span>
+    <span class="n">debug_mode_val</span> <span class="o">=</span> <span class="kc">False</span></div>
+
+
+<div class="viewcode-block" id="debug_mode"><a class="viewcode-back" href="../../framework_handler/debug_mode.html#ivy.framework_handler.debug_mode">[docs]</a><span class="k">def</span> <span class="nf">debug_mode</span><span class="p">():</span>
+    <span class="k">return</span> <span class="n">debug_mode_val</span></div>
 </pre></div>
 
            </div>
