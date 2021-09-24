@@ -16,6 +16,11 @@ Framework handler
    framework_handler/set_framework.rst
    framework_handler/get_framework.rst
    framework_handler/unset_framework.rst
+   framework_handler/set_debug_mode.rst
+   framework_handler/set_breakpoint_debug_mode.rst
+   framework_handler/set_exception_debug_mode.rst
+   framework_handler/unset_debug_mode.rst
+   framework_handler/debug_mode.rst
    framework_handler/ContextManager:
     def __init__.rst
 

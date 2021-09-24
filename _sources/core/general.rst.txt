@@ -14,6 +14,8 @@ General
 
    general/array.rst
    general/is_array.rst
+   general/as_native.rst
+   general/args_as_native.rst
    general/array_equal.rst
    general/equal.rst
    general/to_numpy.rst
