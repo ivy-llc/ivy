@@ -51,8 +51,11 @@ def is_array(x):
 
 array_equal = _jnp.array_equal
 to_numpy = _onp.asarray
+to_numpy.__name__ = 'to_numpy'
 to_scalar = lambda x: x.item()
+to_scalar.__name__ = 'to_scalar'
 to_list = lambda x: x.tolist()
+to_list.__name__ = 'to_list'
 shape = lambda x, as_tensor=False: _jnp.asarray(_jnp.shape(x)) if as_tensor else x.shape
 get_num_dims = lambda x, as_tensor=False: _jnp.asarray(len(_jnp.shape(x))) if as_tensor else len(x.shape)
 minimum = _jnp.minimum
@@ -412,3 +415,4 @@ dtype_to_str = lambda dtype_in: DTYPE_DICT[dtype_in]
 dtype_str = lambda x: dtype_to_str(dtype(x))
 compile_fn = lambda fn, dynamic=True, example_inputs=None: _jax.jit(fn)
 current_framework_str = lambda: 'jax'
+current_framework_str.__name__ = 'current_framework_str'

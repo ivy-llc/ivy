@@ -53,6 +53,41 @@ def is_array(x, f=None):
         return False
 
 
+def as_native(x):
+    """
+    Returns the input item in it's native backend framework form if it is an ivy.Array or ivy.Variable instance.
+    otherwise the input is returned unchanged.
+
+    :param x: The input to check.
+    :type x: any
+    :return: the input in it's native framework form in the case of ivy.Array or ivy.Variable instances.
+    """
+    return x.data if isinstance(x, ivy.Array) else x
+
+
+def args_as_native(*args, **kwargs):
+    """
+    Returns args and keyword args in their native backend framework form for all ivy.Array or ivy.Variable instances,
+    otherwise the arguments are returned unchanged.
+
+    :param args: The positional arguments to check
+    :type args: sequence of arguments
+    :param kwargs: The key-word arguments to check
+    :type kwargs: dict of arguments
+    :return: the same arguments, with any ivy.Array or ivy.Variable instances converted to their native form.
+    """
+    # ToDo: maybe make this more general, currently only depth-1 lists of arrays are covered, which covers most cases.
+    native_args =\
+        [a.data if isinstance(a, ivy.Array)
+         else ([aa.data for aa in a] if (isinstance(a, (list, tuple)) and a and isinstance(a[0], ivy.Array))
+               else a) for a in args]
+    native_kwargs =\
+        dict([(k, v.data if isinstance(v, ivy.Array)
+        else ([vv.data for vv in v] if (isinstance(v, (list, tuple)) and v and isinstance(v[0], ivy.Array))
+              else v)) for k, v in kwargs.items()])
+    return native_args, native_kwargs
+
+
 def array_equal(x0, x1, f=None):
     """
     Determines whether two input arrays are equal across all elements.

@@ -61,8 +61,11 @@ def is_array(x):
 
 array_equal = _tf.experimental.numpy.array_equal
 to_numpy = lambda x: _np.asarray(_tf.convert_to_tensor(x))
+to_numpy.__name__ = 'to_numpy'
 to_scalar = lambda x: to_numpy(x).item()
+to_scalar.__name__ = 'to_scalar'
 to_list = lambda x: x.numpy().tolist()
+to_list.__name__ = 'to_list'
 shape = lambda x, as_tensor=False: _tf.shape(x) if as_tensor else tuple(x.shape)
 get_num_dims = lambda x, as_tensor=False: _tf.shape(_tf.shape(x))[0] if as_tensor else int(_tf.shape(_tf.shape(x)))
 minimum = _tf.minimum
@@ -453,3 +456,4 @@ dtype_str = lambda x: DTYPE_DICT[x.dtype]
 dtype_to_str = lambda dtype_in: DTYPE_DICT[dtype_in]
 compile_fn = lambda fn, dynamic=True, example_inputs=None: _tf.function(fn)
 current_framework_str = lambda: 'tensorflow'
+current_framework_str.__name__ = 'current_framework_str'

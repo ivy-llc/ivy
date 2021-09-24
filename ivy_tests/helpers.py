@@ -59,12 +59,11 @@ _iterable_types = [list, tuple, dict]
 _excluded = []
 
 
-def _convert_vars(vars_in, from_type, to_type_callable=None, to_type_attribute_method_str=None,
-                  keep_other=True, to_type=None):
+def _convert_vars(vars_in, from_type, to_type_callable=None, keep_other=True, to_type=None):
     new_vars = list()
     for var in vars_in:
         if type(var) in _iterable_types:
-            return_val = _convert_vars(var, from_type, to_type_callable, to_type_attribute_method_str)
+            return_val = _convert_vars(var, from_type, to_type_callable)
             new_vars.append(return_val)
         elif isinstance(var, from_type):
             if isinstance(var, _np.ndarray):
@@ -74,8 +73,6 @@ def _convert_vars(vars_in, from_type, to_type_callable=None, to_type_attribute_m
                     var = var.copy()
             if to_type_callable:
                 new_vars.append(to_type_callable(var))
-            elif to_type_attribute_method_str:
-                new_vars.append(getattr(var, to_type_attribute_method_str)())
             else:
                 raise Exception('Invalid. A conversion callable is required.')
         elif to_type is not None and isinstance(var, to_type):
@@ -87,7 +84,8 @@ def _convert_vars(vars_in, from_type, to_type_callable=None, to_type_attribute_m
 
 
 def np_call(func, *args, **kwargs):
-    return func(*args, **kwargs)
+    ret = func(*args, **kwargs)
+    return ivy.to_numpy(ret)
 
 
 def jnp_call(func, *args, **kwargs):
@@ -96,9 +94,9 @@ def jnp_call(func, *args, **kwargs):
     new_kwargs = dict(zip(kwargs.keys(), new_kw_vals))
     output = func(*new_args, **new_kwargs)
     if isinstance(output, tuple):
-        return tuple(_convert_vars(output, _jnp.ndarray, _np.asarray))
+        return tuple(_convert_vars(output, (_jnp.ndarray, ivy.Array), ivy.to_numpy))
     else:
-        return _convert_vars([output], _jnp.ndarray, _np.asarray)[0]
+        return _convert_vars([output], (_jnp.ndarray, ivy.Array), ivy.to_numpy)[0]
 
 
 def tf_call(func, *args, **kwargs):
@@ -107,9 +105,9 @@ def tf_call(func, *args, **kwargs):
     new_kwargs = dict(zip(kwargs.keys(), new_kw_vals))
     output = func(*new_args, **new_kwargs)
     if isinstance(output, tuple):
-        return tuple(_convert_vars(output, tensor_type, _np.asarray))
+        return tuple(_convert_vars(output, (tensor_type, ivy.Array), ivy.to_numpy))
     else:
-        return _convert_vars([output], tensor_type, _np.asarray)[0]
+        return _convert_vars([output], (tensor_type, ivy.Array), ivy.to_numpy)[0]
 
 
 def tf_graph_call(func, *args, **kwargs):
@@ -122,10 +120,11 @@ def tf_graph_call(func, *args, **kwargs):
         return func(*local_args, **local_kwargs)
 
     output = tf_func(*new_args, **new_kwargs)
+
     if isinstance(output, tuple):
-        return tuple(_convert_vars(output, tensor_type, _np.asarray))
+        return tuple(_convert_vars(output, (tensor_type, ivy.Array), ivy.to_numpy))
     else:
-        return _convert_vars([output], tensor_type, _np.asarray)[0]
+        return _convert_vars([output], (tensor_type, ivy.Array), ivy.to_numpy)[0]
 
 
 def torch_call(func, *args, **kwargs):
@@ -134,20 +133,20 @@ def torch_call(func, *args, **kwargs):
     new_kwargs = dict(zip(kwargs.keys(), new_kw_vals))
     output = func(*new_args, **new_kwargs)
     if isinstance(output, tuple):
-        return tuple(_convert_vars(output, _torch.Tensor, lambda x: x.cpu().detach().numpy()))
+        return tuple(_convert_vars(output, (_torch.Tensor, ivy.Array), ivy.to_numpy))
     else:
-        return _convert_vars([output], _torch.Tensor, lambda x: x.cpu().detach().numpy())[0]
+        return _convert_vars([output], (_torch.Tensor, ivy.Array), ivy.to_numpy)[0]
 
 
 def mx_call(func, *args, **kwargs):
     new_args = _convert_vars(args, _np.ndarray, _mx_nd.array)
-    new_kw_items = _convert_vars(kwargs.values(), _np.ndarray, _mx_nd.array)
+    new_kw_items = _convert_vars(kwargs.values(), ivy.Array, _mx_nd.array)
     new_kwargs = dict(zip(kwargs.keys(), new_kw_items))
     output = func(*new_args, **new_kwargs)
     if isinstance(output, tuple):
-        return tuple(_convert_vars(output, _mx_nd.ndarray.NDArray, to_type_attribute_method_str='asnumpy'))
+        return tuple(_convert_vars(output, (_mx_nd.ndarray.NDArray, ivy.Array), ivy.to_numpy))
     else:
-        return _convert_vars([output], _mx_nd.ndarray.NDArray, to_type_attribute_method_str='asnumpy')[0]
+        return _convert_vars([output], (_mx_nd.ndarray.NDArray, ivy.Array), ivy.to_numpy)[0]
 
 
 _calls = [np_call, jnp_call, tf_call, tf_graph_call, torch_call, mx_call]

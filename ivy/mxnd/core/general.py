@@ -73,8 +73,11 @@ def is_array(x):
 
 array_equal = lambda x0, x1: _mx.nd.min(_mx.nd.broadcast_equal(x0, x1)) == 1
 to_numpy = lambda x: x if isinstance(x, _np.ndarray) else x.asnumpy()
+to_numpy.__name__ = 'to_numpy'
 to_scalar = lambda x: x.asscalar().item()
+to_scalar.__name__ = 'to_scalar'
 to_list = lambda x: x.asnumpy().tolist()
+to_list.__name__ = 'to_list'
 shape = lambda x, as_tensor=False: _mx.nd.shape_array(x) if as_tensor else x.shape
 get_num_dims = lambda x, as_tensor=False:\
     _mx.nd.shape_array(_mx.nd.shape_array(x)).reshape([]) if as_tensor else len(x.shape)
@@ -563,3 +566,4 @@ def compile_fn(func, dynamic=True, example_inputs=None):
 
 
 current_framework_str = lambda: 'mxnd'
+current_framework_str.__name__ = 'current_framework_str'

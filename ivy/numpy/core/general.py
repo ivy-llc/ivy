@@ -59,8 +59,11 @@ def is_array(x):
 
 array_equal = _np.array_equal
 to_numpy = lambda x: x
+to_numpy.__name__ = 'to_numpy'
 to_scalar = lambda x: x.item()
+to_scalar.__name__ = 'to_scalar'
 to_list = lambda x: x.tolist()
+to_list.__name__ = 'to_list'
 shape = lambda x, as_tensor=False: _np.asarray(_np.shape(x)) if as_tensor else x.shape
 get_num_dims = lambda x, as_tensor=False: _np.asarray(len(_np.shape(x))) if as_tensor else len(x.shape)
 minimum = _np.minimum
@@ -394,3 +397,4 @@ def compile_fn(func, dynamic=True, example_inputs=None):
 
 
 current_framework_str = lambda: 'numpy'
+current_framework_str.__name__ = 'current_framework_str'
