@@ -30,7 +30,8 @@ def test_sin(x, dtype_str, tensor_fn, dev_str, call):
     # value test
     assert np.allclose(call(ivy.sin, x), ivy.numpy.sin(ivy.to_numpy(x)))
     # compilation test
-    helpers.assert_compilable(ivy.sin)
+    if ivy.wrapped_mode():
+        helpers.assert_compilable(ivy.sin)
 
 
 # cos
@@ -51,7 +52,8 @@ def test_cos(x, dtype_str, tensor_fn, dev_str, call):
     # value test
     assert np.allclose(call(ivy.cos, x), ivy.numpy.cos(ivy.to_numpy(x)))
     # compilation test
-    helpers.assert_compilable(ivy.cos)
+    if ivy.wrapped_mode():
+        helpers.assert_compilable(ivy.cos)
 
 
 # tan
@@ -72,7 +74,8 @@ def test_tan(x, dtype_str, tensor_fn, dev_str, call):
     # value test
     assert np.allclose(call(ivy.tan, x), ivy.numpy.tan(ivy.to_numpy(x)))
     # compilation test
-    helpers.assert_compilable(ivy.tan)
+    if ivy.wrapped_mode():
+        helpers.assert_compilable(ivy.tan)
 
 
 # asin
@@ -93,7 +96,8 @@ def test_asin(x, dtype_str, tensor_fn, dev_str, call):
     # value test
     assert np.allclose(call(ivy.asin, x), ivy.numpy.asin(ivy.to_numpy(x)))
     # compilation test
-    helpers.assert_compilable(ivy.asin)
+    if ivy.wrapped_mode():
+        helpers.assert_compilable(ivy.asin)
 
 
 # acos
@@ -114,7 +118,8 @@ def test_acos(x, dtype_str, tensor_fn, dev_str, call):
     # value test
     assert np.allclose(call(ivy.acos, x), ivy.numpy.acos(ivy.to_numpy(x)))
     # compilation test
-    helpers.assert_compilable(ivy.acos)
+    if ivy.wrapped_mode():
+        helpers.assert_compilable(ivy.acos)
 
 
 # atan
@@ -135,7 +140,8 @@ def test_atan(x, dtype_str, tensor_fn, dev_str, call):
     # value test
     assert np.allclose(call(ivy.atan, x), ivy.numpy.atan(ivy.to_numpy(x)))
     # compilation test
-    helpers.assert_compilable(ivy.atan)
+    if ivy.wrapped_mode():
+        helpers.assert_compilable(ivy.atan)
 
 
 # atan2
@@ -158,7 +164,8 @@ def test_atan2(x1_n_x2, dtype_str, tensor_fn, dev_str, call):
     # value test
     assert np.allclose(call(ivy.atan2, x1, x2), ivy.numpy.atan2(ivy.to_numpy(x1), ivy.to_numpy(x2)))
     # compilation test
-    helpers.assert_compilable(ivy.atan2)
+    if ivy.wrapped_mode():
+        helpers.assert_compilable(ivy.atan2)
 
 
 # sinh
@@ -179,7 +186,8 @@ def test_sinh(x, dtype_str, tensor_fn, dev_str, call):
     # value test
     assert np.allclose(call(ivy.sinh, x), ivy.numpy.sinh(ivy.to_numpy(x)))
     # compilation test
-    helpers.assert_compilable(ivy.sinh)
+    if ivy.wrapped_mode():
+        helpers.assert_compilable(ivy.sinh)
 
 
 # cosh
@@ -200,7 +208,8 @@ def test_cosh(x, dtype_str, tensor_fn, dev_str, call):
     # value test
     assert np.allclose(call(ivy.cosh, x), ivy.numpy.cosh(ivy.to_numpy(x)))
     # compilation test
-    helpers.assert_compilable(ivy.cosh)
+    if ivy.wrapped_mode():
+        helpers.assert_compilable(ivy.cosh)
 
 
 # tanh
@@ -221,7 +230,8 @@ def test_tanh(x, dtype_str, tensor_fn, dev_str, call):
     # value test
     assert np.allclose(call(ivy.tanh, x), ivy.numpy.tanh(ivy.to_numpy(x)))
     # compilation test
-    helpers.assert_compilable(ivy.tanh)
+    if ivy.wrapped_mode():
+        helpers.assert_compilable(ivy.tanh)
 
 
 # asinh
@@ -242,7 +252,8 @@ def test_asinh(x, dtype_str, tensor_fn, dev_str, call):
     # value test
     assert np.allclose(call(ivy.asinh, x), ivy.numpy.asinh(ivy.to_numpy(x)))
     # compilation test
-    helpers.assert_compilable(ivy.asinh)
+    if ivy.wrapped_mode():
+        helpers.assert_compilable(ivy.asinh)
 
 
 # acosh
@@ -263,7 +274,8 @@ def test_acosh(x, dtype_str, tensor_fn, dev_str, call):
     # value test
     assert np.allclose(call(ivy.acosh, x), ivy.numpy.acosh(ivy.to_numpy(x)))
     # compilation test
-    helpers.assert_compilable(ivy.acosh)
+    if ivy.wrapped_mode():
+        helpers.assert_compilable(ivy.acosh)
 
 
 # atanh
@@ -284,7 +296,8 @@ def test_atanh(x, dtype_str, tensor_fn, dev_str, call):
     # value test
     assert np.allclose(call(ivy.atanh, x), ivy.numpy.atanh(ivy.to_numpy(x)))
     # compilation test
-    helpers.assert_compilable(ivy.atanh)
+    if ivy.wrapped_mode():
+        helpers.assert_compilable(ivy.atanh)
 
 
 # log
@@ -305,7 +318,8 @@ def test_log(x, dtype_str, tensor_fn, dev_str, call):
     # value test
     assert np.allclose(call(ivy.log, x), ivy.numpy.log(ivy.to_numpy(x)))
     # compilation test
-    helpers.assert_compilable(ivy.log)
+    if ivy.wrapped_mode():
+        helpers.assert_compilable(ivy.log)
 
 
 # exp
@@ -326,7 +340,8 @@ def test_exp(x, dtype_str, tensor_fn, dev_str, call):
     # value test
     assert np.allclose(call(ivy.exp, x), ivy.numpy.exp(ivy.to_numpy(x)))
     # compilation test
-    helpers.assert_compilable(ivy.exp)
+    if ivy.wrapped_mode():
+        helpers.assert_compilable(ivy.exp)
 
 
 # erf
@@ -347,4 +362,5 @@ def test_erf(x, dtype_str, tensor_fn, dev_str, call):
     # value test
     assert np.allclose(call(ivy.erf, x), ivy.numpy.erf(ivy.to_numpy(x)))
     # compilation test
-    helpers.assert_compilable(ivy.erf)
+    if ivy.wrapped_mode():
+        helpers.assert_compilable(ivy.erf)

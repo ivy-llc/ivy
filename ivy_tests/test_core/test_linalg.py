@@ -41,7 +41,8 @@ def test_svd(x, dtype_str, tensor_fn, dev_str, call):
     assert np.allclose(pred_s, true_s)
     assert np.allclose(pred_vh, true_vh)
     # compilation test
-    helpers.assert_compilable(ivy.svd)
+    if ivy.wrapped_mode():
+        helpers.assert_compilable(ivy.svd)
 
 
 # vector_norm
@@ -81,7 +82,8 @@ def test_vector_norm(x_n_p_n_ax_n_kd_n_tn, dtype_str, tensor_fn, dev_str, call):
     if call is helpers.torch_call:
         # pytorch jit does not support calling joint ivy methods.
         return
-    helpers.assert_compilable(ivy.vector_norm)
+    if ivy.wrapped_mode():
+        helpers.assert_compilable(ivy.vector_norm)
 
 
 # matrix_norm
@@ -138,7 +140,8 @@ def test_matrix_norm(x_n_p_n_ax_n_kd, dtype_str, tensor_fn, dev_str, call):
         # ToDo: add correct message here
         # pytorch jit does not support Union typing.
         return
-    helpers.assert_compilable(ivy.matrix_norm)
+    if ivy.wrapped_mode():
+        helpers.assert_compilable(ivy.matrix_norm)
 
 
 # inv
@@ -162,7 +165,8 @@ def test_inv(x, dtype_str, tensor_fn, dev_str, call):
     # value test
     assert np.allclose(call(ivy.inv, x), ivy.numpy.inv(ivy.to_numpy(x)))
     # compilation test
-    helpers.assert_compilable(ivy.inv)
+    if ivy.wrapped_mode():
+        helpers.assert_compilable(ivy.inv)
 
 
 # pinv
@@ -186,7 +190,8 @@ def test_pinv(x, dtype_str, tensor_fn, dev_str, call):
     # value test
     assert np.allclose(call(ivy.pinv, x), ivy.numpy.pinv(ivy.to_numpy(x)))
     # compilation test
-    helpers.assert_compilable(ivy.pinv)
+    if ivy.wrapped_mode():
+        helpers.assert_compilable(ivy.pinv)
 
 
 # vector_to_skew_symmetric_matrix
@@ -208,4 +213,5 @@ def test_vector_to_skew_symmetric_matrix(x, dtype_str, tensor_fn, dev_str, call)
     assert np.allclose(call(ivy.vector_to_skew_symmetric_matrix, x),
                        ivy.numpy.vector_to_skew_symmetric_matrix(ivy.to_numpy(x)))
     # compilation test
-    helpers.assert_compilable(ivy.vector_to_skew_symmetric_matrix)
+    if ivy.wrapped_mode():
+        helpers.assert_compilable(ivy.vector_to_skew_symmetric_matrix)
