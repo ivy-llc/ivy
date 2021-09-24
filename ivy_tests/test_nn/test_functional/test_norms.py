@@ -44,4 +44,5 @@ def test_layer_norm(x_n_ni_n_g_n_b_n_res, dtype_str, tensor_fn, dev_str, call):
     if call in [helpers.torch_call]:
         # this is not a backend implemented function
         return
-    helpers.assert_compilable(ivy.layer_norm)
+    if ivy.wrapped_mode():
+        helpers.assert_compilable(ivy.layer_norm)

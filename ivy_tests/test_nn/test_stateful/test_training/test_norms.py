@@ -65,4 +65,5 @@ def test_layer_norm_layer_training(x_n_ns, with_v, dtype_str, tensor_fn, dev_str
     if call is helpers.torch_call:
         # pytest scripting does not **kwargs
         return
-    helpers.assert_compilable(loss_fn)
+    if ivy.wrapped_mode():
+        helpers.assert_compilable(loss_fn)

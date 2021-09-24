@@ -136,7 +136,8 @@ def test_weight_conditioned_network_training(batch_shape, dtype_str, tensor_fn, 
     if call is helpers.torch_call:
         # pytest scripting does not **kwargs
         return
-    helpers.assert_compilable(loss_fn)
+    if ivy.wrapped_mode():
+        helpers.assert_compilable(loss_fn)
 
 
 # HyperNetwork #
@@ -261,4 +262,5 @@ def test_hyper_hypo_network_training(batch_shape, dtype_str, tensor_fn, dev_str,
     if call is helpers.torch_call:
         # pytest scripting does not **kwargs
         return
-    helpers.assert_compilable(loss_fn)
+    if ivy.wrapped_mode():
+        helpers.assert_compilable(loss_fn)

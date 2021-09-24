@@ -71,7 +71,8 @@ def test_module_training(bs_ic_oc, dev_str, call):
     if call is helpers.torch_call:
         # pytest scripting does not support **kwargs
         return
-    helpers.assert_compilable(loss_fn)
+    if ivy.wrapped_mode():
+        helpers.assert_compilable(loss_fn)
 
 
 class TrainableModuleWithList(ivy.Module):
@@ -136,7 +137,8 @@ def test_module_w_list_training(bs_ic_oc, dev_str, call):
     if call is helpers.torch_call:
         # pytest scripting does not support **kwargs
         return
-    helpers.assert_compilable(loss_fn)
+    if ivy.wrapped_mode():
+        helpers.assert_compilable(loss_fn)
 
 
 class ModuleWithNoneAttribute(ivy.Module):
@@ -230,7 +232,8 @@ def test_module_training_with_duplicate(bs_c, same_layer, dev_str, call):
     if call is helpers.torch_call:
         # pytest scripting does not support **kwargs
         return
-    helpers.assert_compilable(loss_fn)
+    if ivy.wrapped_mode():
+        helpers.assert_compilable(loss_fn)
 
 
 class TrainableModuleWithDict(ivy.Module):
@@ -295,4 +298,5 @@ def test_module_w_dict_training(bs_ic_oc, dev_str, call):
     if call is helpers.torch_call:
         # pytest scripting does not support **kwargs
         return
-    helpers.assert_compilable(loss_fn)
+    if ivy.wrapped_mode():
+        helpers.assert_compilable(loss_fn)

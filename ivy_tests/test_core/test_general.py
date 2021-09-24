@@ -73,7 +73,8 @@ def test_array(object_in, dtype_str, from_numpy, dev_str, call):
     if call in [helpers.torch_call]:
         # pytorch scripting does not support string devices
         return
-    helpers.assert_compilable(ivy.array)
+    if ivy.wrapped_mode():
+        helpers.assert_compilable(ivy.array)
 
 
 # array_equal
@@ -99,7 +100,8 @@ def test_array_equal(x0_n_x1_n_res, dtype_str, dev_str, call):
     # value test
     assert res == true_res
     # compilation test
-    helpers.assert_compilable(ivy.array_equal)
+    if ivy.wrapped_mode():
+        helpers.assert_compilable(ivy.array_equal)
 
 
 # equal
@@ -131,7 +133,8 @@ def test_equal(x0_n_x1_n_x2_em_n_res, to_array, dev_str, call):
     if call in [helpers.torch_call]:
         # pytorch scripting does not support variable number of input arguments
         return
-    helpers.assert_compilable(ivy.equal)
+    if ivy.wrapped_mode():
+        helpers.assert_compilable(ivy.equal)
 
 
 # to_numpy
@@ -160,7 +163,8 @@ def test_to_numpy(object_in, dtype_str, tensor_fn, dev_str, call):
     if call in [helpers.torch_call]:
         # pytorch scripting does not support numpy conversion
         return
-    helpers.assert_compilable(ivy.to_numpy)
+    if ivy.wrapped_mode():
+        helpers.assert_compilable(ivy.to_numpy)
 
 
 # to_scalar
@@ -188,7 +192,8 @@ def test_to_scalar(object_in, dtype_str, tensor_fn, dev_str, call):
     if call in [helpers.torch_call]:
         # pytorch scripting does not support scalar conversion
         return
-    helpers.assert_compilable(ivy.to_scalar)
+    if ivy.wrapped_mode():
+        helpers.assert_compilable(ivy.to_scalar)
 
 
 # to_list
@@ -218,7 +223,8 @@ def test_to_list(object_in, dtype_str, tensor_fn, dev_str, call):
     if call in [helpers.torch_call]:
         # pytorch scripting does not support list conversion
         return
-    helpers.assert_compilable(ivy.to_list)
+    if ivy.wrapped_mode():
+        helpers.assert_compilable(ivy.to_list)
 
 
 # shape
@@ -250,7 +256,8 @@ def test_shape(object_in, dtype_str, as_tensor, tensor_fn, dev_str, call):
     if call in [helpers.torch_call]:
         # pytorch scripting does not support Union
         return
-    helpers.assert_compilable(ivy.shape)
+    if ivy.wrapped_mode():
+        helpers.assert_compilable(ivy.shape)
 
 
 # get_num_dims
@@ -282,7 +289,8 @@ def test_get_num_dims(object_in, dtype_str, as_tensor, tensor_fn, dev_str, call)
     if call in [helpers.torch_call]:
         # pytorch scripting does not support Union
         return
-    helpers.assert_compilable(ivy.shape)
+    if ivy.wrapped_mode():
+        helpers.assert_compilable(ivy.shape)
 
 
 # minimum
@@ -311,7 +319,8 @@ def test_minimum(xy, dtype_str, tensor_fn, dev_str, call):
     # value test
     assert np.array_equal(call(ivy.minimum, x, y), np.asarray(ivy.numpy.minimum(ivy.to_numpy(x), ivy.to_numpy(y))))
     # compilation test
-    helpers.assert_compilable(ivy.minimum)
+    if ivy.wrapped_mode():
+        helpers.assert_compilable(ivy.minimum)
 
 
 # maximum
@@ -340,7 +349,8 @@ def test_maximum(xy, dtype_str, tensor_fn, dev_str, call):
     # value test
     assert np.array_equal(call(ivy.maximum, x, y), np.asarray(ivy.numpy.maximum(ivy.to_numpy(x), ivy.to_numpy(y))))
     # compilation test
-    helpers.assert_compilable(ivy.maximum)
+    if ivy.wrapped_mode():
+        helpers.assert_compilable(ivy.maximum)
 
 
 # clip
@@ -374,7 +384,8 @@ def test_clip(x_min_n_max, dtype_str, tensor_fn, dev_str, call):
     assert np.array_equal(call(ivy.clip, x, min_val, max_val),
                           np.asarray(ivy.numpy.clip(ivy.to_numpy(x), ivy.to_numpy(min_val), ivy.to_numpy(max_val))))
     # compilation test
-    helpers.assert_compilable(ivy.clip)
+    if ivy.wrapped_mode():
+        helpers.assert_compilable(ivy.clip)
 
 
 # clip_vector_norm
@@ -407,7 +418,8 @@ def test_clip_vector_norm(x_max_norm_n_p_val_clipped, dtype_str, tensor_fn, dev_
     if call is helpers.torch_call:
         # pytorch jit cannot compile global variables, in this case MIN_DENOMINATOR
         return
-    helpers.assert_compilable(ivy.clip_vector_norm)
+    if ivy.wrapped_mode():
+        helpers.assert_compilable(ivy.clip_vector_norm)
 
 
 # round
@@ -432,7 +444,8 @@ def test_round(x_n_x_rounded, dtype_str, tensor_fn, dev_str, call):
     # value test
     assert np.array_equal(call(ivy.round, x), np.array(x_n_x_rounded[1]))
     # compilation test
-    helpers.assert_compilable(ivy.round)
+    if ivy.wrapped_mode():
+        helpers.assert_compilable(ivy.round)
 
 
 # floormod
@@ -460,7 +473,8 @@ def test_floormod(x_n_divisor_n_x_floormod, dtype_str, tensor_fn, dev_str, call)
     # value test
     assert np.allclose(call(ivy.floormod, x, divisor), np.array(x_n_divisor_n_x_floormod[2]))
     # compilation test
-    helpers.assert_compilable(ivy.floormod)
+    if ivy.wrapped_mode():
+        helpers.assert_compilable(ivy.floormod)
 
 
 # floor
@@ -485,7 +499,8 @@ def test_floor(x_n_x_floored, dtype_str, tensor_fn, dev_str, call):
     # value test
     assert np.allclose(call(ivy.floor, x), np.array(x_n_x_floored[1]))
     # compilation test
-    helpers.assert_compilable(ivy.floor)
+    if ivy.wrapped_mode():
+        helpers.assert_compilable(ivy.floor)
 
 
 # ceil
@@ -510,7 +525,8 @@ def test_ceil(x_n_x_ceiled, dtype_str, tensor_fn, dev_str, call):
     # value test
     assert np.allclose(call(ivy.ceil, x), np.array(x_n_x_ceiled[1]))
     # compilation test
-    helpers.assert_compilable(ivy.ceil)
+    if ivy.wrapped_mode():
+        helpers.assert_compilable(ivy.ceil)
 
 
 # abs
@@ -535,7 +551,8 @@ def test_abs(x_n_x_absed, dtype_str, tensor_fn, dev_str, call):
     # value test
     assert np.allclose(call(ivy.abs, x), np.array(x_n_x_absed[1]))
     # compilation test
-    helpers.assert_compilable(ivy.abs)
+    if ivy.wrapped_mode():
+        helpers.assert_compilable(ivy.abs)
 
 
 # argmax
@@ -558,7 +575,8 @@ def test_argmax(x_n_axis_x_argmax, dtype_str, tensor_fn, dev_str, call):
     # value test
     assert np.allclose(call(ivy.argmax, x, axis), np.array(x_n_axis_x_argmax[2]))
     # compilation test
-    helpers.assert_compilable(ivy.argmax)
+    if ivy.wrapped_mode():
+        helpers.assert_compilable(ivy.argmax)
 
 
 # argmin
@@ -581,7 +599,8 @@ def test_argmin(x_n_axis_x_argmin, dtype_str, tensor_fn, dev_str, call):
     # value test
     assert np.allclose(call(ivy.argmin, x, axis), np.array(x_n_axis_x_argmin[2]))
     # compilation test
-    helpers.assert_compilable(ivy.argmin)
+    if ivy.wrapped_mode():
+        helpers.assert_compilable(ivy.argmin)
 
 
 # argsort
@@ -603,7 +622,8 @@ def test_argsort(x_n_axis_x_argsort, dtype_str, tensor_fn, dev_str, call):
     # value test
     assert np.allclose(call(ivy.argsort, x, axis), np.array(x_n_axis_x_argsort[2]))
     # compilation test
-    helpers.assert_compilable(ivy.argsort)
+    if ivy.wrapped_mode():
+        helpers.assert_compilable(ivy.argsort)
 
 
 # cast
@@ -627,7 +647,8 @@ def test_cast(object_in, starting_dtype_str, target_dtype_str, dev_str, call):
     if call in [helpers.torch_call]:
         # pytorch scripting does not support .type() method
         return
-    helpers.assert_compilable(ivy.cast)
+    if ivy.wrapped_mode():
+        helpers.assert_compilable(ivy.cast)
 
 
 # arange
@@ -670,7 +691,8 @@ def test_arange(stop_n_start_n_step, dtype_str, tensor_fn, dev_str, call):
     if call in [helpers.torch_call]:
         # pytorch scripting does not support Number type, or Union for Union[float, int] etc.
         return
-    helpers.assert_compilable(ivy.arange)
+    if ivy.wrapped_mode():
+        helpers.assert_compilable(ivy.arange)
 
 
 # linspace
@@ -704,7 +726,8 @@ def test_linspace(start_n_stop_n_num_n_axis, dtype_str, tensor_fn, dev_str, call
     if call in [helpers.torch_call]:
         # pytorch scripting does not support numpy conversion
         return
-    helpers.assert_compilable(ivy.linspace)
+    if ivy.wrapped_mode():
+        helpers.assert_compilable(ivy.linspace)
 
 
 # logspace
@@ -738,7 +761,8 @@ def test_logspace(start_n_stop_n_num_n_base_n_axis, dtype_str, tensor_fn, dev_st
     if call in [helpers.torch_call]:
         # pytorch scripting does not support numpy conversion
         return
-    helpers.assert_compilable(ivy.logspace)
+    if ivy.wrapped_mode():
+        helpers.assert_compilable(ivy.logspace)
 
 
 # concatenate
@@ -771,7 +795,8 @@ def test_concatenate(x1_n_x2_n_axis, dtype_str, tensor_fn, dev_str, call):
     assert np.allclose(call(ivy.concatenate, [x1, x2], axis),
                        np.asarray(ivy.numpy.concatenate([ivy.to_numpy(x1), ivy.to_numpy(x2)], axis)))
     # compilation test
-    helpers.assert_compilable(ivy.concatenate)
+    if ivy.wrapped_mode():
+        helpers.assert_compilable(ivy.concatenate)
 
 
 # flip
@@ -797,7 +822,8 @@ def test_flip(x_n_axis_n_bs, dtype_str, tensor_fn, dev_str, call):
     # value test
     assert np.allclose(call(ivy.flip, x, axis, bs), np.asarray(ivy.numpy.flip(ivy.to_numpy(x), axis, bs)))
     # compilation test
-    helpers.assert_compilable(ivy.flip)
+    if ivy.wrapped_mode():
+        helpers.assert_compilable(ivy.flip)
 
 
 # stack
@@ -830,7 +856,8 @@ def test_stack(xs_n_axis, dtype_str, tensor_fn, dev_str, call):
     assert np.allclose(call(ivy.stack, (x1, x2), axis),
                        np.asarray(ivy.numpy.stack((ivy.to_numpy(x1), ivy.to_numpy(x2)), axis)))
     # compilation test
-    helpers.assert_compilable(ivy.stack)
+    if ivy.wrapped_mode():
+        helpers.assert_compilable(ivy.stack)
 
 
 # unstack
@@ -861,7 +888,8 @@ def test_unstack(x_n_axis, dtype_str, tensor_fn, dev_str, call):
     # value test
     assert np.allclose(call(ivy.unstack, x, axis), np.asarray(ivy.numpy.unstack(ivy.to_numpy(x), axis)))
     # compilation test
-    helpers.assert_compilable(ivy.unstack)
+    if ivy.wrapped_mode():
+        helpers.assert_compilable(ivy.unstack)
 
 
 # split
@@ -908,7 +936,8 @@ def test_split(x_n_noss_n_axis_n_wr, dtype_str, tensor_fn, dev_str, call):
     if call is helpers.torch_call:
         # pytorch scripting does not support Union or Numbers for type hinting
         return
-    helpers.assert_compilable(ivy.split)
+    if ivy.wrapped_mode():
+        helpers.assert_compilable(ivy.split)
 
 
 # repeat
@@ -959,7 +988,8 @@ def test_repeat(x_n_reps_n_axis, dtype_str, tensor_fn, dev_str, call):
     if call in [helpers.torch_call]:
         # pytorch scripting does not union of types
         return
-    helpers.assert_compilable(ivy.repeat)
+    if ivy.wrapped_mode():
+        helpers.assert_compilable(ivy.repeat)
 
 
 # tile
@@ -994,7 +1024,8 @@ def test_tile(x_n_reps, dtype_str, tensor_fn, dev_str, call):
     if call in [helpers.torch_call]:
         # pytorch scripting does not support numpy conversion
         return
-    helpers.assert_compilable(ivy.tile)
+    if ivy.wrapped_mode():
+        helpers.assert_compilable(ivy.tile)
 
 
 # zero_pad
@@ -1026,7 +1057,8 @@ def test_zero_pad(x_n_pw, dtype_str, tensor_fn, dev_str, call):
     if call is helpers.torch_call:
         # pytorch scripting does not support Union or Numbers for type hinting
         return
-    helpers.assert_compilable(ivy.zero_pad)
+    if ivy.wrapped_mode():
+        helpers.assert_compilable(ivy.zero_pad)
 
 
 # fourier_encode
@@ -1070,7 +1102,8 @@ def test_fourier_encode(x_n_mf_n_nb_n_b_n_gt, dtype_str, tensor_fn, dev_str, cal
     if call is helpers.torch_call:
         # pytorch scripting does not support Union or Numbers for type hinting
         return
-    helpers.assert_compilable(ivy.fourier_encode)
+    if ivy.wrapped_mode():
+        helpers.assert_compilable(ivy.fourier_encode)
 
 
 # constant_pad
@@ -1103,7 +1136,8 @@ def test_constant_pad(x_n_pw_n_val, dtype_str, tensor_fn, dev_str, call):
     if call is helpers.torch_call:
         # pytorch scripting does not support Union or Numbers for type hinting
         return
-    helpers.assert_compilable(ivy.constant_pad)
+    if ivy.wrapped_mode():
+        helpers.assert_compilable(ivy.constant_pad)
 
 
 # swapaxes
@@ -1131,7 +1165,8 @@ def test_swapaxes(x_n_ax0_n_ax1, dtype_str, tensor_fn, dev_str, call):
     assert np.allclose(call(ivy.swapaxes, x, ax0, ax1),
                        np.asarray(ivy.numpy.swapaxes(ivy.to_numpy(x), ax0, ax1)))
     # compilation test
-    helpers.assert_compilable(ivy.swapaxes)
+    if ivy.wrapped_mode():
+        helpers.assert_compilable(ivy.swapaxes)
 
 
 # transpose
@@ -1157,7 +1192,8 @@ def test_transpose(x_n_axes, dtype_str, tensor_fn, dev_str, call):
     # value test
     assert np.allclose(call(ivy.transpose, x, axes), np.asarray(ivy.numpy.transpose(ivy.to_numpy(x), axes)))
     # compilation test
-    helpers.assert_compilable(ivy.transpose)
+    if ivy.wrapped_mode():
+        helpers.assert_compilable(ivy.transpose)
 
 
 # expand_dims
@@ -1184,7 +1220,8 @@ def test_expand_dims(x_n_axis, dtype_str, tensor_fn, dev_str, call):
     # value test
     assert np.allclose(call(ivy.expand_dims, x, axis), np.asarray(ivy.numpy.expand_dims(ivy.to_numpy(x), axis)))
     # compilation test
-    helpers.assert_compilable(ivy.expand_dims)
+    if ivy.wrapped_mode():
+        helpers.assert_compilable(ivy.expand_dims)
 
 
 # where
@@ -1216,7 +1253,8 @@ def test_where(cond_n_x1_n_x2, dtype_str, tensor_fn, dev_str, call):
     if call in [helpers.torch_call]:
         # pytorch scripting does not support .type() method
         return
-    helpers.assert_compilable(ivy.where)
+    if ivy.wrapped_mode():
+        helpers.assert_compilable(ivy.where)
 
 
 # indices_where
@@ -1241,7 +1279,8 @@ def test_indices_where(x, dtype_str, tensor_fn, dev_str, call):
     # value test
     assert np.allclose(call(ivy.indices_where, x), np.asarray(ivy.numpy.indices_where(ivy.to_numpy(x))))
     # compilation test
-    helpers.assert_compilable(ivy.indices_where)
+    if ivy.wrapped_mode():
+        helpers.assert_compilable(ivy.indices_where)
 
 
 # isnan
@@ -1268,7 +1307,8 @@ def test_isnan(x_n_res, dtype_str, tensor_fn, dev_str, call):
     # value test
     assert np.allclose(call(ivy.isnan, x), res)
     # compilation test
-    helpers.assert_compilable(ivy.isnan)
+    if ivy.wrapped_mode():
+        helpers.assert_compilable(ivy.isnan)
 
 
 # reshape
@@ -1293,7 +1333,8 @@ def test_reshape(x_n_shp, dtype_str, tensor_fn, dev_str, call):
     # value test
     assert np.allclose(call(ivy.reshape, x, new_shape), np.asarray(ivy.numpy.reshape(ivy.to_numpy(x), new_shape)))
     # compilation test
-    helpers.assert_compilable(ivy.reshape)
+    if ivy.wrapped_mode():
+        helpers.assert_compilable(ivy.reshape)
 
 
 # broadcast_to
@@ -1319,7 +1360,8 @@ def test_broadcast_to(x_n_shp, dtype_str, tensor_fn, dev_str, call):
     assert np.allclose(call(ivy.broadcast_to, x, new_shape),
                        np.asarray(ivy.numpy.broadcast_to(ivy.to_numpy(x), new_shape)))
     # compilation test
-    helpers.assert_compilable(ivy.broadcast_to)
+    if ivy.wrapped_mode():
+        helpers.assert_compilable(ivy.broadcast_to)
 
 
 # squeeze
@@ -1351,7 +1393,8 @@ def test_squeeze(x_n_axis, dtype_str, tensor_fn, dev_str, call):
     # value test
     assert np.allclose(call(ivy.squeeze, x, axis), np.asarray(ivy.numpy.squeeze(ivy.to_numpy(x), axis)))
     # compilation test
-    helpers.assert_compilable(ivy.squeeze)
+    if ivy.wrapped_mode():
+        helpers.assert_compilable(ivy.squeeze)
 
 
 # zeros
@@ -1374,7 +1417,8 @@ def test_zeros(shape, dtype_str, tensor_fn, dev_str, call):
     if call in [helpers.torch_call]:
         # pytorch scripting cannot assign a torch.device value with a string
         return
-    helpers.assert_compilable(ivy.zeros)
+    if ivy.wrapped_mode():
+        helpers.assert_compilable(ivy.zeros)
 
 
 # zeros_like
@@ -1402,7 +1446,8 @@ def test_zeros_like(x, dtype_str, tensor_fn, dev_str, call):
     if call in [helpers.torch_call]:
         # pytorch scripting cannot assign a torch.device value with a string
         return
-    helpers.assert_compilable(ivy.zeros_like)
+    if ivy.wrapped_mode():
+        helpers.assert_compilable(ivy.zeros_like)
 
 
 # ones
@@ -1425,7 +1470,8 @@ def test_ones(shape, dtype_str, tensor_fn, dev_str, call):
     if call in [helpers.torch_call]:
         # pytorch scripting cannot assign a torch.device value with a string
         return
-    helpers.assert_compilable(ivy.ones)
+    if ivy.wrapped_mode():
+        helpers.assert_compilable(ivy.ones)
 
 
 # ones_like
@@ -1453,7 +1499,8 @@ def test_ones_like(x, dtype_str, tensor_fn, dev_str, call):
     if call in [helpers.torch_call]:
         # pytorch scripting cannot assign a torch.device value with a string
         return
-    helpers.assert_compilable(ivy.ones_like)
+    if ivy.wrapped_mode():
+        helpers.assert_compilable(ivy.ones_like)
 
 
 # one_hot
@@ -1482,7 +1529,8 @@ def test_one_hot(ind_n_depth, dtype_str, tensor_fn, dev_str, call):
     if call in [helpers.torch_call]:
         # pytorch scripting cannot assign a torch.device value with a string
         return
-    helpers.assert_compilable(ivy.one_hot)
+    if ivy.wrapped_mode():
+        helpers.assert_compilable(ivy.one_hot)
 
 
 # cross
@@ -1508,7 +1556,8 @@ def test_cross(x1_n_x2, dtype_str, tensor_fn, dev_str, call):
     # value test
     assert np.allclose(call(ivy.cross, x1, x2), np.asarray(ivy.numpy.cross(ivy.to_numpy(x1), ivy.to_numpy(x2))))
     # compilation test
-    helpers.assert_compilable(ivy.cross)
+    if ivy.wrapped_mode():
+        helpers.assert_compilable(ivy.cross)
 
 
 # matmul
@@ -1534,7 +1583,8 @@ def test_matmul(x1_n_x2, dtype_str, tensor_fn, dev_str, call):
     # value test
     assert np.allclose(call(ivy.matmul, x1, x2), np.asarray(ivy.numpy.matmul(ivy.to_numpy(x1), ivy.to_numpy(x2))))
     # compilation test
-    helpers.assert_compilable(ivy.matmul)
+    if ivy.wrapped_mode():
+        helpers.assert_compilable(ivy.matmul)
 
 
 # cumsum
@@ -1556,7 +1606,8 @@ def test_cumsum(x_n_axis, dtype_str, tensor_fn, dev_str, call):
     # value test
     assert np.allclose(call(ivy.cumsum, x, axis), np.asarray(ivy.numpy.cumsum(ivy.to_numpy(x), axis)))
     # compilation test
-    helpers.assert_compilable(ivy.cumsum)
+    if ivy.wrapped_mode():
+        helpers.assert_compilable(ivy.cumsum)
 
 
 # cumprod
@@ -1581,7 +1632,8 @@ def test_cumprod(x_n_axis, exclusive, dtype_str, tensor_fn, dev_str, call):
     assert np.allclose(call(ivy.cumprod, x, axis, exclusive),
                        np.asarray(ivy.numpy.cumprod(ivy.to_numpy(x), axis, exclusive)))
     # compilation test
-    helpers.assert_compilable(ivy.cumprod)
+    if ivy.wrapped_mode():
+        helpers.assert_compilable(ivy.cumprod)
 
 
 # identity
@@ -1606,7 +1658,8 @@ def test_identity(dim_n_bs, dtype_str, tensor_fn, dev_str, call):
     if call in [helpers.torch_call]:
         # pytorch scripting cannot assign a torch.device value with a string
         return
-    helpers.assert_compilable(ivy.identity)
+    if ivy.wrapped_mode():
+        helpers.assert_compilable(ivy.identity)
 
 
 # meshgrid
@@ -1639,7 +1692,8 @@ def test_meshgrid(xs, indexing, dtype_str, tensor_fn, dev_str, call):
     if call is helpers.torch_call:
         # torch scripting can't take variable number of arguments or use keyword-only arguments with defaults
         return
-    helpers.assert_compilable(ivy.meshgrid)
+    if ivy.wrapped_mode():
+        helpers.assert_compilable(ivy.meshgrid)
 
 
 # scatter_flat
@@ -1676,7 +1730,8 @@ def test_scatter_flat(inds_n_upd_n_size, red, dtype_str, tensor_fn, dev_str, cal
     if call in [helpers.torch_call]:
         # global torch_scatter var not supported when scripting
         return
-    helpers.assert_compilable(ivy.scatter_flat)
+    if ivy.wrapped_mode():
+        helpers.assert_compilable(ivy.scatter_flat)
 
 
 # scatter_nd
@@ -1715,7 +1770,8 @@ def test_scatter_nd(inds_n_upd_n_shape, red, dtype_str, tensor_fn, dev_str, call
     if call in [helpers.torch_call]:
         # global torch_scatter var not supported when scripting
         return
-    helpers.assert_compilable(ivy.scatter_nd)
+    if ivy.wrapped_mode():
+        helpers.assert_compilable(ivy.scatter_nd)
 
 
 # gather
@@ -1743,7 +1799,8 @@ def test_gather(prms_n_inds_n_axis, dtype_str, tensor_fn, dev_str, call):
     if call in [helpers.torch_call]:
         # pytorch scripting cannot assign a torch.device value with a string
         return
-    helpers.assert_compilable(ivy.gather)
+    if ivy.wrapped_mode():
+        helpers.assert_compilable(ivy.gather)
 
 
 # gather_nd
@@ -1772,7 +1829,8 @@ def test_gather_nd(prms_n_inds, dtype_str, tensor_fn, dev_str, call):
     if call in [helpers.torch_call]:
         # pytorch scripting cannot assign a torch.device value with a string
         return
-    helpers.assert_compilable(ivy.gather_nd)
+    if ivy.wrapped_mode():
+        helpers.assert_compilable(ivy.gather_nd)
 
 
 # linear_resample
@@ -1806,7 +1864,8 @@ def test_linear_resample(x_n_samples_n_axis_n_y_true, dtype_str, tensor_fn, dev_
     y = call(ivy.linear_resample, x, samples, axis)
     assert np.allclose(y, y_true)
     # compilation test
-    helpers.assert_compilable(ivy.linear_resample)
+    if ivy.wrapped_mode():
+        helpers.assert_compilable(ivy.linear_resample)
 
 
 # exists
@@ -1826,7 +1885,8 @@ def test_exists(x, dtype_str, tensor_fn, dev_str, call):
     y_true = x is not None
     assert ret == y_true
     # compilation test
-    helpers.assert_compilable(ivy.exists)
+    if ivy.wrapped_mode():
+        helpers.assert_compilable(ivy.exists)
 
 
 # default
@@ -1851,7 +1911,8 @@ def test_default(x_n_dv, dtype_str, tensor_fn, dev_str, call):
     if call is helpers.torch_call:
         # try-except blocks are not jit compilable in pytorch
         return
-    helpers.assert_compilable(ivy.default)
+    if ivy.wrapped_mode():
+        helpers.assert_compilable(ivy.default)
 
 
 # dev
@@ -1871,7 +1932,8 @@ def test_dev(x, dtype_str, tensor_fn, dev_str, call):
     # type test
     assert isinstance(ret, ivy.Device)
     # compilation test
-    helpers.assert_compilable(ivy.dev)
+    if ivy.wrapped_mode():
+        helpers.assert_compilable(ivy.dev)
 
 
 # to_dev
@@ -1901,7 +1963,8 @@ def test_to_dev(x, dtype_str, tensor_fn, dev_str, call):
     if call is helpers.torch_call:
         # pytorch scripting does not handle converting string to device
         return
-    helpers.assert_compilable(ivy.to_dev)
+    if ivy.wrapped_mode():
+        helpers.assert_compilable(ivy.to_dev)
 
 
 # dev_to_str
@@ -1924,7 +1987,8 @@ def test_dev_to_str(x, dtype_str, tensor_fn, dev_str, call):
     # value test
     assert ret == dev_str
     # compilation test
-    helpers.assert_compilable(ivy.dev_to_str)
+    if ivy.wrapped_mode():
+        helpers.assert_compilable(ivy.dev_to_str)
 
 
 # str_to_dev
@@ -1953,7 +2017,8 @@ def test_str_to_dev(x, dtype_str, tensor_fn, dev_str, call):
     if call is helpers.torch_call:
         # pytorch scripting does not handle converting string to device
         return
-    helpers.assert_compilable(ivy.str_to_dev)
+    if ivy.wrapped_mode():
+        helpers.assert_compilable(ivy.str_to_dev)
 
 
 # dev_str
@@ -1975,7 +2040,8 @@ def test_dev_str(x, dtype_str, tensor_fn, dev_str, call):
     # value test
     assert ret == dev_str
     # compilation test
-    helpers.assert_compilable(ivy.dev_str)
+    if ivy.wrapped_mode():
+        helpers.assert_compilable(ivy.dev_str)
 
 
 # memory_on_dev
@@ -1994,7 +2060,8 @@ def test_memory_on_dev(dev_str_to_check, dev_str, call):
     if call is helpers.torch_call:
         # global variables aren't supported for pytorch scripting
         pytest.skip()
-    helpers.assert_compilable(ivy.memory_on_dev)
+    if ivy.wrapped_mode():
+        helpers.assert_compilable(ivy.memory_on_dev)
 
 
 # dtype
@@ -2017,7 +2084,8 @@ def test_dtype(x, dtype_str, tensor_fn, dev_str, call):
     # type test
     assert isinstance(ret, ivy.Dtype)
     # compilation test
-    helpers.assert_compilable(ivy.dtype)
+    if ivy.wrapped_mode():
+        helpers.assert_compilable(ivy.dtype)
 
 
 # dtype_to_str
@@ -2046,7 +2114,8 @@ def test_dtype_to_str(x, dtype_str, tensor_fn, dev_str, call):
     # value test
     assert ret == dtype_str
     # compilation test
-    helpers.assert_compilable(ivy.dtype_to_str)
+    if ivy.wrapped_mode():
+        helpers.assert_compilable(ivy.dtype_to_str)
 
 
 # dtype_str
@@ -2074,7 +2143,8 @@ def test_dtype_str(x, dtype_str, tensor_fn, dev_str, call):
     # value test
     assert ret == dtype_str
     # compilation test
-    helpers.assert_compilable(ivy.dtype_str)
+    if ivy.wrapped_mode():
+        helpers.assert_compilable(ivy.dtype_str)
 
 
 # compile_fn
@@ -2093,6 +2163,9 @@ def _fn_2(x):
 @pytest.mark.parametrize(
     "tensor_fn", [ivy.array, helpers.var_fn])
 def test_compile_fn(x, dtype_str, tensor_fn, dev_str, call):
+    if ivy.wrapped_mode():
+        # Wrapped mode does not yet support function compilation
+        pytest.skip()
     # smoke test
     if (isinstance(x, Number) or len(x) == 0) and tensor_fn == helpers.var_fn and call is helpers.mx_call:
         # mxnet does not support 0-dimensional variables
@@ -2487,7 +2560,8 @@ def test_einops_rearrange(x_n_pattern_n_newx, dtype_str, tensor_fn, dev_str, cal
     if call is helpers.torch_call:
         # torch jit cannot compile **args
         pytest.skip()
-    helpers.assert_compilable(ivy.einops_rearrange)
+    if ivy.wrapped_mode():
+        helpers.assert_compilable(ivy.einops_rearrange)
 
 
 # einops_reduce
@@ -2513,7 +2587,8 @@ def test_einops_reduce(x_n_pattern_n_red_n_newx, dtype_str, tensor_fn, dev_str, 
     if call is helpers.torch_call:
         # torch jit cannot compile **args
         pytest.skip()
-    helpers.assert_compilable(ivy.einops_reduce)
+    if ivy.wrapped_mode():
+        helpers.assert_compilable(ivy.einops_reduce)
 
 
 # einops_repeat
@@ -2540,4 +2615,5 @@ def test_einops_repeat(x_n_pattern_n_al_n_newx, dtype_str, tensor_fn, dev_str, c
     if call is helpers.torch_call:
         # torch jit cannot compile **args
         pytest.skip()
-    helpers.assert_compilable(ivy.einops_repeat)
+    if ivy.wrapped_mode():
+        helpers.assert_compilable(ivy.einops_repeat)
