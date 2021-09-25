@@ -40,16 +40,20 @@ class Array:
     # ----------#
 
     def __array__(self, *args, **kwargs):
-        return self._data.__array__(ivy.args_to_native(*args, **kwargs))
+        args, kwargs = ivy.args_to_native(*args, **kwargs)
+        return self._data.__array__(*args, **kwargs)
 
     def __array_prepare__(self, *args, **kwargs):
-        return self._data.__array_prepare__(ivy.args_to_native(*args, **kwargs))
+        args, kwargs = ivy.args_to_native(*args, **kwargs)
+        return self._data.__array_prepare__(*args, **kwargs)
 
     def __array_ufunc__(self, *args, **kwargs):
-        return self._data.__array_ufunc__(ivy.args_to_native(*args, **kwargs))
+        args, kwargs = ivy.args_to_native(*args, **kwargs)
+        return self._data.__array_ufunc__(*args, **kwargs)
 
     def __array_wrap__(self, *args, **kwargs):
-        return self._data.__array_wrap__(ivy.args_to_native(*args, **kwargs))
+        args, kwargs = ivy.args_to_native(*args, **kwargs)
+        return self._data.__array_wrap__(*args, **kwargs)
 
     def __repr__(self):
         return self._pre_repr + ivy.to_numpy(self._data).__repr__()[:-1].replace('\n', '\n    ') + \
