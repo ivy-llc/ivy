@@ -10,7 +10,7 @@ from .nn import *
 use = ivy.framework_handler.ContextManager(sys.modules[__name__])
 
 NativeArray = Tensor
-Variable = Tensor
+NativeVariable = Tensor
 Device = str
 Dtype = DType
 

@@ -10,7 +10,7 @@ from .nn import *
 use = ivy.framework_handler.ContextManager(sys.modules[__name__])
 
 NativeArray = np.ndarray
-Variable = np.ndarray
+NativeVariable = np.ndarray
 Device = str
 Dtype = np.dtype
 

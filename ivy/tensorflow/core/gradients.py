@@ -46,9 +46,12 @@ def execute_with_gradients(func, xs, retain_grads=False):
     else:
         y = func_ret
         rest = tuple()
+    if ivy.wrapped_mode():
+        y = ivy.to_native(y)
     grads = Container(tape.gradient(y, xs))
     if ivy.wrapped_mode():
         grads = grads.to_ivy()
+        y = ivy.to_ivy(y)
     return (y, grads, *rest)
 
 
