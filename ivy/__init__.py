@@ -1,4 +1,5 @@
 import ivy
+import copy
 from .core import *
 from . import neural_net_functional
 from .neural_net_functional import *
@@ -12,6 +13,7 @@ from .framework_handler import current_framework, get_framework, set_framework, 
 _MIN_DENOMINATOR = 1e-12
 _MIN_BASE = 1e-5
 NativeArray = None
+NativeVariable = None
 
 
 class Array:
@@ -38,24 +40,16 @@ class Array:
     # ----------#
 
     def __array__(self, *args, **kwargs):
-        raw_args = [a.data if isinstance(a, ivy.Array) else a for a in args]
-        raw_kwargs = dict([(k, v.data if isinstance(v, ivy.Array) else v) for k, v in kwargs.items()])
-        return self._data.__array__(*raw_args, **raw_kwargs)
+        return self._data.__array__(ivy.args_to_native(*args, **kwargs))
 
     def __array_prepare__(self, *args, **kwargs):
-        raw_args = [a.data if isinstance(a, ivy.Array) else a for a in args]
-        raw_kwargs = dict([(k, v.data if isinstance(v, ivy.Array) else v) for k, v in kwargs.items()])
-        return self._data.__array_prepare__(*raw_args, **raw_kwargs)
+        return self._data.__array_prepare__(ivy.args_to_native(*args, **kwargs))
 
     def __array_ufunc__(self, *args, **kwargs):
-        raw_args = [a.data if isinstance(a, ivy.Array) else a for a in args]
-        raw_kwargs = dict([(k, v.data if isinstance(v, ivy.Array) else v) for k, v in kwargs.items()])
-        return self._data.__array_ufunc__(*raw_args, **raw_kwargs)
+        return self._data.__array_ufunc__(ivy.args_to_native(*args, **kwargs))
 
     def __array_wrap__(self, *args, **kwargs):
-        raw_args = [a.data if isinstance(a, ivy.Array) else a for a in args]
-        raw_kwargs = dict([(k, v.data if isinstance(v, ivy.Array) else v) for k, v in kwargs.items()])
-        return self._data.__array_wrap__(*raw_args, **raw_kwargs)
+        return self._data.__array_wrap__(ivy.args_to_native(*args, **kwargs))
 
     def __repr__(self):
         return self._pre_repr + ivy.to_numpy(self._data).__repr__()[:-1].replace('\n', '\n    ') + \
@@ -65,7 +59,11 @@ class Array:
         return self._data.__dir__()
 
     def __getattr__(self, item):
-        return ivy.to_ivy(self._data.__getattr__(item))
+        try:
+            attr = self._data.__getattr__(item)
+        except AttributeError:
+            attr = self._data.__getattribute__(item)
+        return ivy.to_ivy(attr)
 
     def __getitem__(self, query):
         return ivy.to_ivy(self._data.__getitem__(query))
@@ -267,6 +265,17 @@ class Array:
         if res is NotImplemented:
             return res
         return ivy.to_ivy(res)
+
+    def __deepcopy__(self, memodict={}):
+        try:
+            return ivy.to_ivy(self._data.__deepcopy__(memodict))
+        except AttributeError:
+            # ToDo: try and find more elegant solution to jax inability to deepcopy device arrays
+            if ivy.current_framework_str() == 'jax':
+                np_array = copy.deepcopy(self._data)
+                jax_array = ivy.array(np_array)
+                return ivy.to_ivy(jax_array)
+            return ivy.to_ivy(copy.deepcopy(self._data))
 
 
 class Variable(Array):
