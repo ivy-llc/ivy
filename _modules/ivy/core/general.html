@@ -205,11 +205,122 @@
 <span class="n">FN_CACHE</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
 
 
+<span class="c1"># Helpers #</span>
+<span class="c1"># --------#</span>
+
+<span class="k">def</span> <span class="nf">_to_native</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">x</span><span class="o">.</span><span class="n">data</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">)</span> <span class="k">else</span> <span class="n">x</span>
+
+
+<span class="k">def</span> <span class="nf">_to_ivy</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Variable</span><span class="p">)):</span>
+        <span class="k">return</span> <span class="n">x</span>
+    <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_variable</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">exclusive</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="k">else</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_array</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">else</span> <span class="n">x</span>
+
+
+<span class="c1"># Wrapped #</span>
+<span class="c1"># --------#</span>
+
+<div class="viewcode-block" id="nested_map"><a class="viewcode-back" href="../../../core/general/nested_map.html#ivy.core.general.nested_map">[docs]</a><span class="k">def</span> <span class="nf">nested_map</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">fn</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Applies a function on x in a nested manner, whereby all dicts, lists and tuples are traversed to their lowest</span>
+<span class="sd">    leaves before applying the method and returning x. If x is not nested, the method is applied to x directly.</span>
+
+<span class="sd">    :param x: The item to apply the mapped function to.</span>
+<span class="sd">    :type x: any</span>
+<span class="sd">    :param fn: The function to map onto x.</span>
+<span class="sd">    :type fn: callable</span>
+<span class="sd">    :return: x following the applicable of fn to it&#39;s nested leaves, or x itself if x is not nested.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">class_instance</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">class_instance</span><span class="p">(</span><span class="nb">tuple</span><span class="p">([</span><span class="n">nested_map</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">fn</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">x</span><span class="p">]))</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">class_instance</span><span class="p">([</span><span class="n">nested_map</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">fn</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">x</span><span class="p">])</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+        <span class="n">class_instance</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">class_instance</span><span class="p">(</span><span class="nb">dict</span><span class="p">([(</span><span class="n">k</span><span class="p">,</span> <span class="n">nested_map</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">fn</span><span class="p">))</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">x</span><span class="o">.</span><span class="n">items</span><span class="p">()]))</span>
+    <span class="k">return</span> <span class="n">fn</span><span class="p">(</span><span class="n">x</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="to_ivy"><a class="viewcode-back" href="../../../core/general/to_ivy.html#ivy.core.general.to_ivy">[docs]</a><span class="k">def</span> <span class="nf">to_ivy</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">nested</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns the input array converted to an ivy.Array instances if it is an array type, otherwise the input is</span>
+<span class="sd">    returned unchanged. If nested is set, the check is applied to all nested leafs of tuples,</span>
+<span class="sd">    lists and dicts contained within x.</span>
+
+<span class="sd">    :param x: The input to maybe convert.</span>
+<span class="sd">    :type x: any</span>
+<span class="sd">    :param nested: Whether to apply the conversion on arguments in a nested manner. If so, all dicts, lists and</span>
+<span class="sd">                   tuples will be traversed to their lowest leaves in search of ivy.Array and ivy.Variable instances.</span>
+<span class="sd">                   Default is False.</span>
+<span class="sd">    :type nested: bool, optional</span>
+<span class="sd">    :return: the input in it&#39;s native framework form in the case of ivy.Array or ivy.Variable instances.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">nested</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">nested_map</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">_to_ivy</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">_to_ivy</span><span class="p">(</span><span class="n">x</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="args_to_ivy"><a class="viewcode-back" href="../../../core/general/args_to_ivy.html#ivy.core.general.args_to_ivy">[docs]</a><span class="k">def</span> <span class="nf">args_to_ivy</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns args and keyword args in their ivy.Array or ivy.Variable form for all nested instances,</span>
+<span class="sd">    otherwise the arguments are returned unchanged.</span>
+
+<span class="sd">    :param args: The positional arguments to check</span>
+<span class="sd">    :type args: sequence of arguments</span>
+<span class="sd">    :param kwargs: The key-word arguments to check</span>
+<span class="sd">    :type kwargs: dict of arguments</span>
+<span class="sd">    :return: the same arguments, with any nested arrays converted to ivy.Array or ivy.Variable instances.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">native_args</span> <span class="o">=</span> <span class="n">nested_map</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">_to_ivy</span><span class="p">)</span>
+    <span class="n">native_kwargs</span> <span class="o">=</span> <span class="n">nested_map</span><span class="p">(</span><span class="n">kwargs</span><span class="p">,</span> <span class="n">_to_ivy</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">native_args</span><span class="p">,</span> <span class="n">native_kwargs</span></div>
+
+
+<div class="viewcode-block" id="to_native"><a class="viewcode-back" href="../../../core/general/to_native.html#ivy.core.general.to_native">[docs]</a><span class="k">def</span> <span class="nf">to_native</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">nested</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns the input item in it&#39;s native backend framework form if it is an ivy.Array or ivy.Variable instance.</span>
+<span class="sd">    otherwise the input is returned unchanged. If nested is set, the check is applied to all nested leafs of tuples,</span>
+<span class="sd">    lists and dicts contained within x.</span>
+
+<span class="sd">    :param x: The input to maybe convert.</span>
+<span class="sd">    :type x: any</span>
+<span class="sd">    :param nested: Whether to apply the conversion on arguments in a nested manner. If so, all dicts, lists and</span>
+<span class="sd">                   tuples will be traversed to their lowest leaves in search of ivy.Array and ivy.Variable instances.</span>
+<span class="sd">                   Default is False.</span>
+<span class="sd">    :type nested: bool, optional</span>
+<span class="sd">    :return: the input in it&#39;s native framework form in the case of ivy.Array or ivy.Variable instances.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">nested</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">nested_map</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">_to_native</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">_to_native</span><span class="p">(</span><span class="n">x</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="args_to_native"><a class="viewcode-back" href="../../../core/general/args_to_native.html#ivy.core.general.args_to_native">[docs]</a><span class="k">def</span> <span class="nf">args_to_native</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns args and keyword args in their native backend framework form for all nested ivy.Array or ivy.Variable</span>
+<span class="sd">    instances, otherwise the arguments are returned unchanged.</span>
+
+<span class="sd">    :param args: The positional arguments to check</span>
+<span class="sd">    :type args: sequence of arguments</span>
+<span class="sd">    :param kwargs: The key-word arguments to check</span>
+<span class="sd">    :type kwargs: dict of arguments</span>
+<span class="sd">    :return: the same arguments, with any nested ivy.Array or ivy.Variable instances converted to their native form.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">native_args</span> <span class="o">=</span> <span class="n">nested_map</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">_to_native</span><span class="p">)</span>
+    <span class="n">native_kwargs</span> <span class="o">=</span> <span class="n">nested_map</span><span class="p">(</span><span class="n">kwargs</span><span class="p">,</span> <span class="n">_to_native</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">native_args</span><span class="p">,</span> <span class="n">native_kwargs</span></div>
+
+
+<span class="c1"># API #</span>
+<span class="c1"># ----#</span>
+
 <span class="c1"># noinspection PyShadowingNames</span>
 <div class="viewcode-block" id="array"><a class="viewcode-back" href="../../../core/general/array.html#ivy.core.general.array">[docs]</a><span class="k">def</span> <span class="nf">array</span><span class="p">(</span><span class="n">object_in</span><span class="p">,</span> <span class="n">dtype_str</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dev_str</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Creates an array.</span>
-<span class="sd">    </span>
+
 <span class="sd">    :param object_in: An array_like object, which exposes the array interface,</span>
 <span class="sd">            an object whose __array__ method returns an array, or any (nested) sequence.</span>
 <span class="sd">    :type object_in: array</span>
@@ -226,18 +337,6 @@
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">object_in</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">object_in</span><span class="p">,</span> <span class="n">dtype_str</span><span class="p">,</span> <span class="n">dev_str</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="to_ivy"><a class="viewcode-back" href="../../../core/general/to_ivy.html#ivy.core.general.to_ivy">[docs]</a><span class="k">def</span> <span class="nf">to_ivy</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Returns the input array converted to an ivy.Array instances if it is an array type, otherwise the input is</span>
-<span class="sd">    returned unchanged.</span>
-
-<span class="sd">    :param x: The input to maybe convert.</span>
-<span class="sd">    :type x: any</span>
-<span class="sd">    :return: the input in it&#39;s native framework form in the case of ivy.Array or ivy.Variable instances.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_variable</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">exclusive</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="k">else</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_array</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">else</span> <span class="n">x</span></div>
-
-
 <div class="viewcode-block" id="is_array"><a class="viewcode-back" href="../../../core/general/is_array.html#ivy.core.general.is_array">[docs]</a><span class="k">def</span> <span class="nf">is_array</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Determines whether the input x is an Ivy Array.</span>
@@ -252,41 +351,6 @@
         <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">is_array</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
     <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
         <span class="k">return</span> <span class="kc">False</span></div>
-
-
-<div class="viewcode-block" id="to_native"><a class="viewcode-back" href="../../../core/general/to_native.html#ivy.core.general.to_native">[docs]</a><span class="k">def</span> <span class="nf">to_native</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Returns the input item in it&#39;s native backend framework form if it is an ivy.Array or ivy.Variable instance.</span>
-<span class="sd">    otherwise the input is returned unchanged.</span>
-
-<span class="sd">    :param x: The input to maybe convert.</span>
-<span class="sd">    :type x: any</span>
-<span class="sd">    :return: the input in it&#39;s native framework form in the case of ivy.Array or ivy.Variable instances.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">x</span><span class="o">.</span><span class="n">data</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">)</span> <span class="k">else</span> <span class="n">x</span></div>
-
-
-<div class="viewcode-block" id="args_to_native"><a class="viewcode-back" href="../../../core/general/args_to_native.html#ivy.core.general.args_to_native">[docs]</a><span class="k">def</span> <span class="nf">args_to_native</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Returns args and keyword args in their native backend framework form for all ivy.Array or ivy.Variable instances,</span>
-<span class="sd">    otherwise the arguments are returned unchanged.</span>
-
-<span class="sd">    :param args: The positional arguments to check</span>
-<span class="sd">    :type args: sequence of arguments</span>
-<span class="sd">    :param kwargs: The key-word arguments to check</span>
-<span class="sd">    :type kwargs: dict of arguments</span>
-<span class="sd">    :return: the same arguments, with any ivy.Array or ivy.Variable instances converted to their native form.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># ToDo: maybe make this more general, currently only depth-1 lists of arrays are covered, which covers most cases.</span>
-    <span class="n">native_args</span> <span class="o">=</span>\
-        <span class="p">[</span><span class="n">a</span><span class="o">.</span><span class="n">data</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">)</span>
-         <span class="k">else</span> <span class="p">([</span><span class="n">aa</span><span class="o">.</span><span class="n">data</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">aa</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">)</span> <span class="k">else</span> <span class="n">aa</span> <span class="k">for</span> <span class="n">aa</span> <span class="ow">in</span> <span class="n">a</span><span class="p">]</span> <span class="k">if</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">))</span> <span class="ow">and</span> <span class="n">a</span><span class="p">)</span>
-               <span class="k">else</span> <span class="n">a</span><span class="p">)</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">args</span><span class="p">]</span>
-    <span class="n">native_kwargs</span> <span class="o">=</span>\
-        <span class="nb">dict</span><span class="p">([(</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="o">.</span><span class="n">data</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">)</span>
-        <span class="k">else</span> <span class="p">([</span><span class="n">vv</span><span class="o">.</span><span class="n">data</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">vv</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">)</span> <span class="k">else</span> <span class="n">vv</span> <span class="k">for</span> <span class="n">vv</span> <span class="ow">in</span> <span class="n">v</span><span class="p">]</span> <span class="k">if</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">))</span> <span class="ow">and</span> <span class="n">v</span><span class="p">)</span>
-              <span class="k">else</span> <span class="n">v</span><span class="p">))</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">items</span><span class="p">()])</span>
-    <span class="k">return</span> <span class="n">native_args</span><span class="p">,</span> <span class="n">native_kwargs</span></div>
 
 
 <div class="viewcode-block" id="array_equal"><a class="viewcode-back" href="../../../core/general/array_equal.html#ivy.core.general.array_equal">[docs]</a><span class="k">def</span> <span class="nf">array_equal</span><span class="p">(</span><span class="n">x0</span><span class="p">,</span> <span class="n">x1</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>

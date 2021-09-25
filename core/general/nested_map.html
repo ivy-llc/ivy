@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>zeros_like &mdash; Ivy 1.0 documentation</title>
+  <title>nested_map &mdash; Ivy 1.0 documentation</title>
   
 
   
@@ -36,8 +36,8 @@
   <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="ones" href="ones.html" />
-    <link rel="prev" title="zeros" href="zeros.html" /> 
+    <link rel="next" title="to_ivy" href="to_ivy.html" />
+    <link rel="prev" title="General" href="../general.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -91,7 +91,7 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../container.html">Container</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../general.html">General</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="nested_map.html">nested_map</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">nested_map</a></li>
 <li class="toctree-l2"><a class="reference internal" href="to_ivy.html">to_ivy</a></li>
 <li class="toctree-l2"><a class="reference internal" href="args_to_ivy.html">args_to_ivy</a></li>
 <li class="toctree-l2"><a class="reference internal" href="to_native.html">to_native</a></li>
@@ -142,7 +142,7 @@
 <li class="toctree-l2"><a class="reference internal" href="broadcast_to.html">broadcast_to</a></li>
 <li class="toctree-l2"><a class="reference internal" href="squeeze.html">squeeze</a></li>
 <li class="toctree-l2"><a class="reference internal" href="zeros.html">zeros</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">zeros_like</a></li>
+<li class="toctree-l2"><a class="reference internal" href="zeros_like.html">zeros_like</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ones.html">ones</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ones_like.html">ones_like</a></li>
 <li class="toctree-l2"><a class="reference internal" href="one_hot.html">one_hot</a></li>
@@ -269,13 +269,13 @@
         
           <li><a href="../general.html">General</a> &raquo;</li>
         
-      <li>zeros_like</li>
+      <li>nested_map</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="../../_sources/core/general/zeros_like.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../_sources/core/general/nested_map.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -288,24 +288,22 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="zeros-like">
-<h1>zeros_like<a class="headerlink" href="#zeros-like" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="nested-map">
+<h1>nested_map<a class="headerlink" href="#nested-map" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
-<dt id="ivy.core.general.zeros_like">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">zeros_like</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">dtype_str</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">dev_str</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">f</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/general.html#zeros_like"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.zeros_like" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns an array of zeros with the same shape and type as x, unless dtype_str provided which overrides.</p>
+<dt id="ivy.core.general.nested_map">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">nested_map</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">fn</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/general.html#nested_map"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.nested_map" title="Permalink to this definition">¶</a></dt>
+<dd><p>Applies a function on x in a nested manner, whereby all dicts, lists and tuples are traversed to their lowest
+leaves before applying the method and returning x. If x is not nested, the method is applied to x directly.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<em>array</em>) – The shape and data-type of x define these same attributes of the returned array.</p></li>
-<li><p><strong>dtype_str</strong> (<em>data-type string</em><em>, </em><em>optional</em>) – The desired data-type for the array in string format, i.e. ‘float32’ or ‘int64’.
-If not given, then the type of the original array is used.</p></li>
-<li><p><strong>dev_str</strong> (<em>str</em><em>, </em><em>optional</em>) – device on which to create the array ‘cuda:0’, ‘cuda:1’, ‘cpu’ etc. Same as x if None.</p></li>
-<li><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning framework. Inferred from inputs if None.</p></li>
+<li><p><strong>x</strong> (<em>any</em>) – The item to apply the mapped function to.</p></li>
+<li><p><strong>fn</strong> (<em>callable</em>) – The function to map onto x.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Tensor of zeros with the same shape and type as a, unless dtype_str provided which overrides.</p>
+<dd class="field-even"><p>x following the applicable of fn to it’s nested leaves, or x itself if x is not nested.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -325,10 +323,10 @@ If not given, then the type of the original array is used.</p></li>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="ones.html" class="btn btn-neutral float-right" title="ones" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="to_ivy.html" class="btn btn-neutral float-right" title="to_ivy" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="zeros.html" class="btn btn-neutral float-left" title="zeros" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="../general.html" class="btn btn-neutral float-left" title="General" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
