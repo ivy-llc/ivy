@@ -180,7 +180,7 @@ def optimizer_update(ws, effective_grads, lr, inplace=True, stop_gradients=True)
     :return: The new function weights ws_new, following the optimizer updates.
     """
     layerwise_lr = isinstance(lr, _ivy.Container)
-    deltas = effective_grads.map(lambda eff_grad, kc: (eff_grad * (lr[kc] if layerwise_lr else lr)))
+    deltas = effective_grads.map(lambda eff_grad, kc: ((lr[kc] if layerwise_lr else lr) * eff_grad))
     if inplace:
         ws = ws.map(lambda w, kc: _ivy.inplace_decrement(w, deltas[kc]))
     else:
