@@ -21,8 +21,14 @@ class Array:
     def __init__(self, data):
         assert ivy.is_array(data)
         self._data = data
+        self._shape = data.shape
+        self._dtype = ivy.dtype(self._data)
+        self._device = ivy.dev_str(data)
         self._pre_repr = 'ivy.'
-        self._post_repr = ', backend={})'
+        if 'gpu' in self._device:
+            self._post_repr = ', dev={})'.format(self._device)
+        else:
+            self._post_repr = ')'
 
     @property
     def data(self):
@@ -30,11 +36,15 @@ class Array:
 
     @property
     def shape(self):
-        return self._data.shape
+        return self._shape
 
     @property
     def dtype(self):
-        return ivy.dtype(self._data)
+        return self._dtype
+
+    @property
+    def device(self):
+        return self._device
 
     # Built-ins #
     # ----------#
