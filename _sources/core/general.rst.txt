@@ -13,6 +13,7 @@ General
    :caption: General
 
    general/array.rst
+   general/ivy_array.rst
    general/is_array.rst
    general/as_native.rst
    general/args_as_native.rst
