@@ -277,6 +277,9 @@ class Array:
                 return ivy.to_ivy(jax_array)
             return ivy.to_ivy(copy.deepcopy(self._data))
 
+    def __iter__(self):
+        return iter([ivy.to_ivy(i) for i in self._data.__iter__()])
+
 
 class Variable(Array):
 
