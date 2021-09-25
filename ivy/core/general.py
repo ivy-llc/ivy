@@ -91,11 +91,11 @@ def args_to_native(*args, **kwargs):
     # ToDo: maybe make this more general, currently only depth-1 lists of arrays are covered, which covers most cases.
     native_args =\
         [a.data if isinstance(a, ivy.Array)
-         else ([aa.data for aa in a] if (isinstance(a, (list, tuple)) and a and isinstance(a[0], ivy.Array))
+         else ([aa.data if isinstance(aa, ivy.Array) else aa for aa in a] if (isinstance(a, (list, tuple)) and a)
                else a) for a in args]
     native_kwargs =\
         dict([(k, v.data if isinstance(v, ivy.Array)
-        else ([vv.data for vv in v] if (isinstance(v, (list, tuple)) and v and isinstance(v[0], ivy.Array))
+        else ([vv.data if isinstance(vv, ivy.Array) else vv for vv in v] if (isinstance(v, (list, tuple)) and v)
               else v)) for k, v in kwargs.items()])
     return native_args, native_kwargs
 
