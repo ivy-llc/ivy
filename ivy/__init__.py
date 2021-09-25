@@ -1,3 +1,16 @@
+# class placeholders
+NativeArray = None
+NativeVariable = None
+Framework = None
+Device = None
+Dtype = None
+Container = None
+
+# global constants
+_MIN_DENOMINATOR = 1e-12
+_MIN_BASE = 1e-5
+
+# imports
 import ivy
 import copy
 from .core import *
@@ -9,11 +22,6 @@ from . import verbosity
 from .framework_handler import current_framework, get_framework, set_framework, unset_framework, framework_stack,\
     set_debug_mode, set_breakpoint_debug_mode, set_exception_debug_mode, unset_debug_mode, debug_mode, debug_mode_val,\
     set_wrapped_mode, unset_wrapped_mode, wrapped_mode, wrapped_mode_val
-
-_MIN_DENOMINATOR = 1e-12
-_MIN_BASE = 1e-5
-NativeArray = None
-NativeVariable = None
 
 
 class Array:
