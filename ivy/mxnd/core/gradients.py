@@ -3,6 +3,7 @@ Collection of MXNet gradient functions, wrapped to fit Ivy syntax and signature.
 """
 
 # global
+import ivy
 import mxnet as _mx
 
 
@@ -11,7 +12,7 @@ def variable(x):
     return x
 
 
-def is_variable(x):
+def is_variable(x, exclusive=False):
     return isinstance(x, _mx.ndarray.ndarray.NDArray) and x.grad is not None
 
 
@@ -32,6 +33,8 @@ def inplace_increment(x, val):
 
 # noinspection PyUnresolvedReferences
 def execute_with_gradients(func, xs, retain_grads=False):
+    if ivy.wrapped_mode():
+        xs = xs.to_native()
     xs.map(lambda x, kc: x.attach_grad())
     with _mx.autograd.record():
         func_ret = func(xs)
@@ -43,7 +46,10 @@ def execute_with_gradients(func, xs, retain_grads=False):
         rest = tuple()
     x_grads_flat = _mx.autograd.grad(y, [v for k, v in xs.to_iterator()], retain_graph=retain_grads,
                                      create_graph=retain_grads)
-    return (y, xs.from_flat_list(x_grads_flat), *rest)
+    grads = xs.from_flat_list(x_grads_flat)
+    if ivy.wrapped_mode():
+        grads = grads.to_ivy()
+    return (y, grads, *rest)
 
 
 def stop_gradient(x, preserve_type=True):

@@ -23,17 +23,21 @@ def variable(x, f=None):
     return _cur_framework(x, f=f).variable(x)
 
 
-def is_variable(x, f=None):
+def is_variable(x, exclusive=False, f=None):
     """
     Determines whether the input is a variable or not.
 
     :param x: An ivy array.
     :type x: array
+    :param exclusive: Whether to check if the data type is exclusively a variable, rather than an array.
+                      For frameworks like JAX that do not have exclusive variable types, the function will always return
+                      False if this flag is set, otherwise the check is the same for general arrays. Default is False.
+    :type exclusive: bool, optional
     :param f: Machine learning framework. Inferred from inputs if None.
     :type f: ml_framework, optional
     :return: Boolean, true if x is a trainable variable, false otherwise.
     """
-    return _cur_framework(x, f=f).is_variable(x)
+    return _cur_framework(x, f=f).is_variable(x, exclusive)
 
 
 def inplace_update(x, val, f=None):
