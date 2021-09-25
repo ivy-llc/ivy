@@ -39,11 +39,11 @@ def pinv(x):
         return inv(x)
     else:
         xT = _mx.nd.swapaxes(x, -1, -2)
-        xT_x = _matmul(xT, x)
+        xT_x = _ivy.to_native(_matmul(xT, x))
         if _mx.nd.linalg.det(xT_x) > DET_THRESHOLD:
             return _matmul(inv(xT_x), xT)
         else:
-            x_xT = _matmul(x, xT)
+            x_xT = _ivy.to_native(_matmul(x, xT))
             if _mx.nd.linalg.det(x_xT) > DET_THRESHOLD:
                 return _matmul(xT, inv(x_xT))
             else:
