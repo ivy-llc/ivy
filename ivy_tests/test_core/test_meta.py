@@ -58,7 +58,7 @@ def test_fomaml_step_unique_vars(dev_str, call, inner_grad_steps, with_outer_cos
         cost = 0
         batch_size = batch_in.shape[0]
         for sub_batch_in, sub_v in zip(batch_in.unstack(0, keepdims=True), v.unstack(0, keepdims=True)):
-            cost = cost - (sub_batch_in['x'] * sub_v['latent'] * sub_v['weight'])[0]
+            cost = cost - (sub_v['latent'] * sub_batch_in['x'] * sub_v['weight'])[0]
         return cost / batch_size
 
     # outer cost function
@@ -66,7 +66,7 @@ def test_fomaml_step_unique_vars(dev_str, call, inner_grad_steps, with_outer_cos
         cost = 0
         batch_size = batch_in.shape[0]
         for sub_batch_in, sub_v in zip(batch_in.unstack(0, keepdims=True), v.unstack(0, keepdims=True)):
-            cost = cost + (sub_batch_in['x'] * sub_v['latent'] * sub_v['weight'])[0]
+            cost = cost + (sub_v['latent'] * sub_batch_in['x'] * sub_v['weight'])[0]
         return cost / batch_size
 
     # numpy
