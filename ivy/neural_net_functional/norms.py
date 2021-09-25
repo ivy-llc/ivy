@@ -27,7 +27,7 @@ def layer_norm(x, normalized_idxs, epsilon=None, gamma=None, beta=None, new_std=
     """
     mean = ivy.reduce_mean(x, normalized_idxs, keepdims=True)
     var = ivy.reduce_var(x, normalized_idxs, keepdims=True)
-    x = ((x - mean) / ivy.stable_pow(var, 0.5, epsilon))
+    x = ((-mean + x) / ivy.stable_pow(var, 0.5, epsilon))
     if new_std is not None:
         x = x * new_std
     if gamma is not None:
