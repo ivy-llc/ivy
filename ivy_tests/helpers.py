@@ -86,10 +86,7 @@ def _convert_vars(vars_in, from_type, to_type_callable=None, keep_other=True, to
 def np_call(func, *args, **kwargs):
     ret = func(*args, **kwargs)
     if isinstance(ret, (list, tuple)):
-        return [r.data if isinstance(r, ivy.Array) else
-                ([[rrr.data if isinstance(rrr, ivy.Array) else rrr for rrr in rr]
-                  if (isinstance(rr, (list, tuple)) and rr) else (rr.data if isinstance(rr, ivy.Array) else rr)
-                  for rr in r] if (isinstance(r, (list, tuple)) and r) else r) for r in ret]
+        return ivy.to_native(ret, nested=True)
     return ivy.to_numpy(ret)
 
 

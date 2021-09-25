@@ -16,11 +16,122 @@ from ivy.framework_handler import current_framework as _cur_framework
 FN_CACHE = dict()
 
 
+# Helpers #
+# --------#
+
+def _to_native(x):
+    return x.data if isinstance(x, ivy.Array) else x
+
+
+def _to_ivy(x):
+    if isinstance(x, (ivy.Array, ivy.Variable)):
+        return x
+    return ivy.Variable(x) if ivy.is_variable(x, exclusive=True) else ivy.Array(x) if ivy.is_array(x) else x
+
+
+# Wrapped #
+# --------#
+
+def nested_map(x, fn):
+    """
+    Applies a function on x in a nested manner, whereby all dicts, lists and tuples are traversed to their lowest
+    leaves before applying the method and returning x. If x is not nested, the method is applied to x directly.
+
+    :param x: The item to apply the mapped function to.
+    :type x: any
+    :param fn: The function to map onto x.
+    :type fn: callable
+    :return: x following the applicable of fn to it's nested leaves, or x itself if x is not nested.
+    """
+    class_instance = type(x)
+    if isinstance(x, tuple):
+        return class_instance(tuple([nested_map(i, fn) for i in x]))
+    elif isinstance(x, list):
+        return class_instance([nested_map(i, fn) for i in x])
+    elif isinstance(x, dict):
+        class_instance = type(x)
+        return class_instance(dict([(k, nested_map(v, fn)) for k, v in x.items()]))
+    return fn(x)
+
+
+def to_ivy(x, nested=False):
+    """
+    Returns the input array converted to an ivy.Array instances if it is an array type, otherwise the input is
+    returned unchanged. If nested is set, the check is applied to all nested leafs of tuples,
+    lists and dicts contained within x.
+
+    :param x: The input to maybe convert.
+    :type x: any
+    :param nested: Whether to apply the conversion on arguments in a nested manner. If so, all dicts, lists and
+                   tuples will be traversed to their lowest leaves in search of ivy.Array and ivy.Variable instances.
+                   Default is False.
+    :type nested: bool, optional
+    :return: the input in it's native framework form in the case of ivy.Array or ivy.Variable instances.
+    """
+    if nested:
+        return nested_map(x, _to_ivy)
+    return _to_ivy(x)
+
+
+def args_to_ivy(*args, **kwargs):
+    """
+    Returns args and keyword args in their ivy.Array or ivy.Variable form for all nested instances,
+    otherwise the arguments are returned unchanged.
+
+    :param args: The positional arguments to check
+    :type args: sequence of arguments
+    :param kwargs: The key-word arguments to check
+    :type kwargs: dict of arguments
+    :return: the same arguments, with any nested arrays converted to ivy.Array or ivy.Variable instances.
+    """
+    native_args = nested_map(args, _to_ivy)
+    native_kwargs = nested_map(kwargs, _to_ivy)
+    return native_args, native_kwargs
+
+
+def to_native(x, nested=False):
+    """
+    Returns the input item in it's native backend framework form if it is an ivy.Array or ivy.Variable instance.
+    otherwise the input is returned unchanged. If nested is set, the check is applied to all nested leafs of tuples,
+    lists and dicts contained within x.
+
+    :param x: The input to maybe convert.
+    :type x: any
+    :param nested: Whether to apply the conversion on arguments in a nested manner. If so, all dicts, lists and
+                   tuples will be traversed to their lowest leaves in search of ivy.Array and ivy.Variable instances.
+                   Default is False.
+    :type nested: bool, optional
+    :return: the input in it's native framework form in the case of ivy.Array or ivy.Variable instances.
+    """
+    if nested:
+        return nested_map(x, _to_native)
+    return _to_native(x)
+
+
+def args_to_native(*args, **kwargs):
+    """
+    Returns args and keyword args in their native backend framework form for all nested ivy.Array or ivy.Variable
+    instances, otherwise the arguments are returned unchanged.
+
+    :param args: The positional arguments to check
+    :type args: sequence of arguments
+    :param kwargs: The key-word arguments to check
+    :type kwargs: dict of arguments
+    :return: the same arguments, with any nested ivy.Array or ivy.Variable instances converted to their native form.
+    """
+    native_args = nested_map(args, _to_native)
+    native_kwargs = nested_map(kwargs, _to_native)
+    return native_args, native_kwargs
+
+
+# API #
+# ----#
+
 # noinspection PyShadowingNames
 def array(object_in, dtype_str=None, dev_str=None, f=None):
     """
     Creates an array.
-    
+
     :param object_in: An array_like object, which exposes the array interface,
             an object whose __array__ method returns an array, or any (nested) sequence.
     :type object_in: array
@@ -37,18 +148,6 @@ def array(object_in, dtype_str=None, dev_str=None, f=None):
     return _cur_framework(object_in, f=f).array(object_in, dtype_str, dev_str)
 
 
-def to_ivy(x):
-    """
-    Returns the input array converted to an ivy.Array instances if it is an array type, otherwise the input is
-    returned unchanged.
-
-    :param x: The input to maybe convert.
-    :type x: any
-    :return: the input in it's native framework form in the case of ivy.Array or ivy.Variable instances.
-    """
-    return ivy.Variable(x) if ivy.is_variable(x, exclusive=True) else ivy.Array(x) if ivy.is_array(x) else x
-
-
 def is_array(x, f=None):
     """
     Determines whether the input x is an Ivy Array.
@@ -63,41 +162,6 @@ def is_array(x, f=None):
         return _cur_framework(x, f=f).is_array(x)
     except ValueError:
         return False
-
-
-def to_native(x):
-    """
-    Returns the input item in it's native backend framework form if it is an ivy.Array or ivy.Variable instance.
-    otherwise the input is returned unchanged.
-
-    :param x: The input to maybe convert.
-    :type x: any
-    :return: the input in it's native framework form in the case of ivy.Array or ivy.Variable instances.
-    """
-    return x.data if isinstance(x, ivy.Array) else x
-
-
-def args_to_native(*args, **kwargs):
-    """
-    Returns args and keyword args in their native backend framework form for all ivy.Array or ivy.Variable instances,
-    otherwise the arguments are returned unchanged.
-
-    :param args: The positional arguments to check
-    :type args: sequence of arguments
-    :param kwargs: The key-word arguments to check
-    :type kwargs: dict of arguments
-    :return: the same arguments, with any ivy.Array or ivy.Variable instances converted to their native form.
-    """
-    # ToDo: maybe make this more general, currently only depth-1 lists of arrays are covered, which covers most cases.
-    native_args =\
-        [a.data if isinstance(a, ivy.Array)
-         else ([aa.data if isinstance(aa, ivy.Array) else aa for aa in a] if (isinstance(a, (list, tuple)) and a)
-               else a) for a in args]
-    native_kwargs =\
-        dict([(k, v.data if isinstance(v, ivy.Array)
-        else ([vv.data if isinstance(vv, ivy.Array) else vv for vv in v] if (isinstance(v, (list, tuple)) and v)
-              else v)) for k, v in kwargs.items()])
-    return native_args, native_kwargs
 
 
 def array_equal(x0, x1, f=None):
