@@ -62,7 +62,7 @@ def gradient_image(x, batch_shape: Optional[List[int]] = None, image_dims: Optio
         batch_shape = x_shape[:-3]
     if image_dims is None:
         image_dims = x_shape[-3:-1]
-    dev_str = _ivy.dev_str(x)
+    dev = x.device
     # to list
     batch_shape = list(batch_shape)
     image_dims = list(image_dims)
@@ -72,7 +72,9 @@ def gradient_image(x, batch_shape: Optional[List[int]] = None, image_dims: Optio
     # BS x H x W-1 x D
     dx = x[..., :, 1:, :] - x[..., :, :-1, :]
     # BS x H x W x D
-    dy = _ivy.concatenate((dy, _ivy.zeros(batch_shape + [1, image_dims[1], num_dims], dev_str=dev_str)), -3)
-    dx = _ivy.concatenate((dx, _ivy.zeros(batch_shape + [image_dims[0], 1, num_dims], dev_str=dev_str)), -2)
+    # noinspection PyTypeChecker
+    dy = _ivy.concatenate((dy, torch.zeros(batch_shape + [1, image_dims[1], num_dims], device=dev)), -3)
+    # noinspection PyTypeChecker
+    dx = _ivy.concatenate((dx, torch.zeros(batch_shape + [image_dims[0], 1, num_dims], device=dev)), -2)
     # BS x H x W x D,    BS x H x W x D
     return dy, dx
