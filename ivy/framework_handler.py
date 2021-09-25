@@ -18,7 +18,7 @@ NON_WRAPPED_METHODS = ['current_framework', 'current_framework_str', 'set_framew
 NON_ARRAY_METHODS = ['to_numpy', 'to_list', 'to_scalar', 'unstack', 'split', 'shape', 'get_num_dims', 'is_array',
                      'is_variable']
 debug_mode_val = False
-wrapped_mode_val = True
+wrapped_mode_val = False
 ivy_original_dict = ivy.__dict__.copy()
 
 
