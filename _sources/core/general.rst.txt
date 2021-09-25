@@ -13,10 +13,10 @@ General
    :caption: General
 
    general/array.rst
-   general/ivy_array.rst
+   general/to_ivy.rst
    general/is_array.rst
-   general/as_native.rst
-   general/args_as_native.rst
+   general/to_native.rst
+   general/args_to_native.rst
    general/array_equal.rst
    general/equal.rst
    general/to_numpy.rst
