@@ -14,7 +14,7 @@ def variable(x):
     return x.clone().requires_grad_()
 
 
-def is_variable(x, exclusive=False):
+def is_variable(x, exclusive: bool = False):
     return isinstance(x, _torch.Tensor) and x.requires_grad
 
 
