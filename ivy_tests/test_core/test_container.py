@@ -2683,7 +2683,7 @@ def test_container_from_queues(dev_str, call):
                 keep_going = in_queue.get(timeout=0.1)
             except queue.Empty:
                 continue
-            out_queue.put({'a': [ivy.as_native(ivy.array([1., 2., 3.]))*worker_id]*load_size})
+            out_queue.put({'a': [ivy.to_native(ivy.array([1., 2., 3.]))*worker_id]*load_size})
 
     workers = list()
     in_queues = list()

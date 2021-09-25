@@ -12,7 +12,7 @@ def variable(x):
     return x
 
 
-def is_variable(x):
+def is_variable(x, exclusive=False):
     # NumPy does not support autograd, checking if x is a variable does have any meaning for NumPy. Return False.
     return False
 

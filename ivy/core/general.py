@@ -37,18 +37,16 @@ def array(object_in, dtype_str=None, dev_str=None, f=None):
     return _cur_framework(object_in, f=f).array(object_in, dtype_str, dev_str)
 
 
-def ivy_array(x, f=None):
+def to_ivy(x):
     """
     Returns the input array converted to an ivy.Array instances if it is an array type, otherwise the input is
     returned unchanged.
 
     :param x: The input to maybe convert.
     :type x: any
-    :param f: Machine learning framework. Inferred from inputs if None.
-    :type f: ml_framework, optional
     :return: the input in it's native framework form in the case of ivy.Array or ivy.Variable instances.
     """
-    return ivy.Array(x) if is_array(x, f) else x
+    return ivy.Variable(x) if ivy.is_variable(x, exclusive=True) else ivy.Array(x) if ivy.is_array(x) else x
 
 
 def is_array(x, f=None):
@@ -67,7 +65,7 @@ def is_array(x, f=None):
         return False
 
 
-def as_native(x):
+def to_native(x):
     """
     Returns the input item in it's native backend framework form if it is an ivy.Array or ivy.Variable instance.
     otherwise the input is returned unchanged.
@@ -79,7 +77,7 @@ def as_native(x):
     return x.data if isinstance(x, ivy.Array) else x
 
 
-def args_as_native(*args, **kwargs):
+def args_to_native(*args, **kwargs):
     """
     Returns args and keyword args in their native backend framework form for all ivy.Array or ivy.Variable instances,
     otherwise the arguments are returned unchanged.

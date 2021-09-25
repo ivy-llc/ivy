@@ -8,9 +8,7 @@ from numbers import Number
 
 
 def reduce_sum(x, axis=None, keepdims=False):
-    axis_specified = True
     if axis is None:
-        axis_specified = False
         num_dims = len(x.shape)
         axis = tuple(range(num_dims))
     elif isinstance(axis, Number):
@@ -21,9 +19,7 @@ def reduce_sum(x, axis=None, keepdims=False):
 
 
 def reduce_prod(x, axis=None, keepdims=False):
-    axis_specified = True
     if axis is None:
-        axis_specified = False
         num_dims = len(x.shape)
         axis = tuple(range(num_dims))
     elif isinstance(axis, Number):
@@ -34,9 +30,7 @@ def reduce_prod(x, axis=None, keepdims=False):
 
 
 def reduce_mean(x, axis=None, keepdims=False):
-    axis_specified = True
     if axis is None:
-        axis_specified = False
         num_dims = len(x.shape)
         axis = tuple(range(num_dims))
     elif isinstance(axis, Number):
@@ -53,9 +47,7 @@ def reduce_var(x, axis=None, keepdims=False):
 
 
 def reduce_min(x, axis=None, keepdims=False):
-    axis_specified = True
     if axis is None:
-        axis_specified = False
         num_dims = len(x.shape)
         axis = tuple(range(num_dims))
     elif isinstance(axis, Number):
@@ -66,9 +58,7 @@ def reduce_min(x, axis=None, keepdims=False):
 
 
 def reduce_max(x, axis=None, keepdims=False):
-    axis_specified = True
     if axis is None:
-        axis_specified = False
         num_dims = len(x.shape)
         axis = tuple(range(num_dims))
     elif isinstance(axis, Number):
