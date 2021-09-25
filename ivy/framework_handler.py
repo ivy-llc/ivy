@@ -10,11 +10,11 @@ wrap_methods_modules = []
 # ToDo: add more non-wrapped methods to the list below, adding __name__ attribute to lambdas where needed
 NON_WRAPPED_METHODS = ['current_framework', 'current_framework_str', 'set_framework', 'get_framework',
                        'unset_framework', 'set_debug_mode', 'set_breakpoint_debug_mode', 'set_exception_debug_mode',
-                       'unset_debug_mode', 'debug_mode', 'to_ivy', 'to_native', 'args_to_native', 'default', 'exists',
-                       'set_min_base', 'get_min_base', 'set_min_denominator', 'get_min_denominator',
-                       'split_func_call_across_gpus', 'cache_fn', 'split_func_call', 'compile_fn', 'dev_to_str',
-                       'str_to_dev', 'memory_on_dev', 'gpu_is_available', 'num_gpus', 'tpu_is_available',
-                       'dtype_to_str']
+                       'unset_debug_mode', 'debug_mode', 'nested_map', 'to_ivy', 'args_to_ivy', 'to_native',
+                       'args_to_native', 'default', 'exists', 'set_min_base', 'get_min_base', 'set_min_denominator',
+                       'get_min_denominator', 'split_func_call_across_gpus', 'cache_fn', 'split_func_call',
+                       'compile_fn', 'dev_to_str', 'str_to_dev', 'memory_on_dev', 'gpu_is_available', 'num_gpus',
+                       'tpu_is_available', 'dtype_to_str']
 NON_ARRAY_METHODS = ['to_numpy', 'to_list', 'to_scalar', 'unstack', 'split', 'shape', 'get_num_dims', 'is_array',
                      'is_variable']
 debug_mode_val = False
@@ -172,11 +172,7 @@ def _wrap_method(fn):
         native_ret = fn(*native_args, **native_kwargs)
         if fn.__name__ in NON_ARRAY_METHODS:
             return native_ret
-        if isinstance(native_ret, (list, tuple)):
-            ret = tuple([ivy.Array(r) if isinstance(r, ivy.NativeArray) else r for r in native_ret])
-        else:
-            ret = ivy.Array(native_ret) if isinstance(native_ret, ivy.NativeArray) else native_ret
-        return ret
+        return ivy.to_ivy(native_ret, nested=True)
 
     if hasattr(fn, '__name__'):
         _method_wrapped.__name__ = fn.__name__
