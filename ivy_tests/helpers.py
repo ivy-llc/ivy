@@ -140,7 +140,7 @@ def torch_call(func, *args, **kwargs):
 
 def mx_call(func, *args, **kwargs):
     new_args = _convert_vars(args, _np.ndarray, _mx_nd.array)
-    new_kw_items = _convert_vars(kwargs.values(), ivy.Array, _mx_nd.array)
+    new_kw_items = _convert_vars(kwargs.values(), _np.ndarray, _mx_nd.array)
     new_kwargs = dict(zip(kwargs.keys(), new_kw_items))
     output = func(*new_args, **new_kwargs)
     if isinstance(output, tuple):
