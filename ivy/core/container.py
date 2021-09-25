@@ -1158,7 +1158,7 @@ class Container(dict):
             low, high, x.shape, self._ivy.dev_str(x)) if self._ivy.is_array(x) else x,
                         key_chains, to_apply, prune_unapplied)
 
-    def to_native(self, nested=True, key_chains=None, to_apply=True, prune_unapplied=False):
+    def to_native(self, nested=False, key_chains=None, to_apply=True, prune_unapplied=False):
         """
         Return native framework arrays for all nested arrays in the container.
 
@@ -1177,10 +1177,14 @@ class Container(dict):
         """
         return self.map(lambda x, kc: self._ivy.to_native(x, nested=nested), key_chains, to_apply, prune_unapplied)
 
-    def to_ivy(self, key_chains=None, to_apply=True, prune_unapplied=False):
+    def to_ivy(self, nested=False, key_chains=None, to_apply=True, prune_unapplied=False):
         """
         Return ivy arrays for all nested native framework arrays in the container.
 
+        :param nested: Whether to apply the conversion on arguments in a nested manner. If so, all dicts, lists and
+                       tuples will be traversed to their lowest leaves in search of ivy.Array and ivy.Variable
+                       instances. Default is False.
+        :type nested: bool, optional
         :param key_chains: The key-chains to apply or not apply the method to. Default is None.
         :type key_chains: list or dict of strs, optional
         :param to_apply: If True, the method will be applied to key_chains, otherwise key_chains will be skipped.
@@ -1190,7 +1194,7 @@ class Container(dict):
         :type prune_unapplied: bool, optional
         :return: Container object with all native sub-arrays converted to their ivy.Array instances.
         """
-        return self.map(lambda x, kc: self._ivy.to_ivy(x), key_chains, to_apply, prune_unapplied)
+        return self.map(lambda x, kc: self._ivy.to_ivy(x, nested=nested), key_chains, to_apply, prune_unapplied)
 
     def expand_dims(self, axis, key_chains=None, to_apply=True, prune_unapplied=False):
         """
