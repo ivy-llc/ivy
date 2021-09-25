@@ -73,7 +73,7 @@ def test_sgd_optimizer(bs_ic_oc_target, with_v, dtype_str, tensor_fn, dev_str, c
     if call is helpers.torch_call:
         # pytest scripting does not **kwargs
         return
-    if ivy.wrapped_mode():
+    if not ivy.wrapped_mode():
         helpers.assert_compilable(loss_fn)
 
 
@@ -138,7 +138,7 @@ def test_lars_optimizer(bs_ic_oc_target, with_v, dtype_str, tensor_fn, dev_str, 
     if call is helpers.torch_call:
         # pytest scripting does not **kwargs
         return
-    if ivy.wrapped_mode():
+    if not ivy.wrapped_mode():
         helpers.assert_compilable(loss_fn)
 
 
@@ -205,7 +205,7 @@ def test_adam_optimizer(bs_ic_oc_target, with_v, dtype_str, tensor_fn, dev_str, 
     if call is helpers.torch_call:
         # pytest scripting does not **kwargs
         return
-    if ivy.wrapped_mode():
+    if not ivy.wrapped_mode():
         helpers.assert_compilable(loss_fn)
 
 
@@ -272,5 +272,5 @@ def test_lamb_optimizer(bs_ic_oc_target, with_v, dtype_str, tensor_fn, dev_str, 
     if call is helpers.torch_call:
         # pytest scripting does not **kwargs
         return
-    if ivy.wrapped_mode():
+    if not ivy.wrapped_mode():
         helpers.assert_compilable(loss_fn)

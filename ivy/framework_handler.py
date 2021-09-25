@@ -10,7 +10,11 @@ wrap_methods_modules = []
 # ToDo: add more non-wrapped methods to the list below, adding __name__ attribute to lambdas where needed
 NON_WRAPPED_METHODS = ['current_framework', 'current_framework_str', 'set_framework', 'get_framework',
                        'unset_framework', 'set_debug_mode', 'set_breakpoint_debug_mode', 'set_exception_debug_mode',
-                       'unset_debug_mode', 'debug_mode', 'as_native', 'args_as_native']
+                       'unset_debug_mode', 'debug_mode', 'as_native', 'args_as_native', 'default', 'exists',
+                       'set_min_base', 'get_min_base', 'set_min_denominator', 'get_min_denominator',
+                       'split_func_call_across_gpus', 'cache_fn', 'split_func_call', 'compile_fn', 'dev_to_str',
+                       'str_to_dev', 'memory_on_dev', 'gpu_is_available', 'num_gpus', 'tpu_is_available',
+                       'dtype_to_str']
 NON_ARRAY_METHODS = ['to_numpy', 'to_list', 'to_scalar', 'unstack', 'split']
 debug_mode_val = False
 wrapped_mode_val = True

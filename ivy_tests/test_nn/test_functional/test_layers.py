@@ -55,7 +55,7 @@ def test_linear(x_n_w_n_b_n_res, dtype_str, tensor_fn, dev_str, call):
     if call in [helpers.torch_call]:
         # optional Tensors in framework agnostic implementations not supported by torch.jit
         return
-    if ivy.wrapped_mode():
+    if not ivy.wrapped_mode():
         helpers.assert_compilable(ivy.linear)
 
 
@@ -85,7 +85,7 @@ def test_dropout(x, dtype_str, tensor_fn, dev_str, call):
     if call in [helpers.torch_call]:
         # str_to_dev not supported by torch.jit due to Device and Str not seen as the same
         return
-    if ivy.wrapped_mode():
+    if not ivy.wrapped_mode():
         helpers.assert_compilable(ivy.dropout)
 
 
@@ -117,7 +117,7 @@ def test_scaled_dot_product_attention(q_n_k_n_v_n_s_n_m_n_gt, dtype_str, tensor_
     if call in [helpers.torch_call]:
         # torch.jit compiled functions can't take variable number of arguments, which torch.einsum takes
         return
-    if ivy.wrapped_mode():
+    if not ivy.wrapped_mode():
         helpers.assert_compilable(ivy.scaled_dot_product_attention)
 
 
@@ -146,7 +146,7 @@ def test_multi_head_attention(x_n_s_n_m_n_c_n_gt, dtype_str, tensor_fn, dev_str,
     if call in [helpers.torch_call]:
         # torch.jit compiled functions can't take variable number of arguments, which torch.einsum takes
         return
-    if ivy.wrapped_mode():
+    if not ivy.wrapped_mode():
         helpers.assert_compilable(ivy.multi_head_attention)
 
 
@@ -195,7 +195,7 @@ def test_conv1d(x_n_filters_n_pad_n_res, dtype_str, tensor_fn, dev_str, call):
     assert np.allclose(call(ivy.conv1d, x, filters, 1, padding),
                        ivy.to_numpy(true_res))
     # compilation test
-    if ivy.wrapped_mode():
+    if not ivy.wrapped_mode():
         helpers.assert_compilable(ivy.conv1d)
 
 
@@ -243,7 +243,7 @@ def test_conv1d_transpose(x_n_filters_n_pad_n_outshp_n_res, dtype_str, tensor_fn
     # value test
     assert np.allclose(call(ivy.conv1d_transpose, x, filters, 1, padding, output_shape), ivy.to_numpy(true_res))
     # compilation test
-    if ivy.wrapped_mode():
+    if not ivy.wrapped_mode():
         helpers.assert_compilable(ivy.conv1d_transpose)
 
 
@@ -312,7 +312,7 @@ def test_conv2d(x_n_filters_n_pad_n_res, dtype_str, tensor_fn, dev_str, call):
     # value test
     assert np.allclose(call(ivy.conv2d, x, filters, 1, padding), ivy.to_numpy(true_res))
     # compilation test
-    if ivy.wrapped_mode():
+    if not ivy.wrapped_mode():
         helpers.assert_compilable(ivy.conv2d)
 
 
@@ -380,7 +380,7 @@ def test_conv2d_transpose(x_n_filters_n_pad_n_outshp_n_res, dtype_str, tensor_fn
     # value test
     assert np.allclose(call(ivy.conv2d_transpose, x, filters, 1, padding, output_shape), ivy.to_numpy(true_res))
     # compilation test
-    if ivy.wrapped_mode():
+    if not ivy.wrapped_mode():
         helpers.assert_compilable(ivy.conv2d_transpose)
 
 
@@ -440,7 +440,7 @@ def test_depthwise_conv2d(x_n_filters_n_pad_n_res, dtype_str, tensor_fn, dev_str
     # value test
     assert np.allclose(call(ivy.depthwise_conv2d, x, filters, 1, padding), ivy.to_numpy(true_res))
     # compilation test
-    if ivy.wrapped_mode():
+    if not ivy.wrapped_mode():
         helpers.assert_compilable(ivy.depthwise_conv2d)
 
 
@@ -500,7 +500,7 @@ def test_conv3d(x_n_filters_n_pad_n_res, dtype_str, tensor_fn, dev_str, call):
     # value test
     assert np.allclose(call(ivy.conv3d, x, filters, 1, padding), ivy.to_numpy(true_res))
     # compilation test
-    if ivy.wrapped_mode():
+    if not ivy.wrapped_mode():
         helpers.assert_compilable(ivy.conv3d)
 
 
@@ -576,7 +576,7 @@ def test_conv3d_transpose(x_n_filters_n_pad_n_outshp_n_res, dtype_str, tensor_fn
     # value test
     assert np.allclose(call(ivy.conv3d_transpose, x, filters, 1, padding, output_shape), ivy.to_numpy(true_res))
     # compilation test
-    if ivy.wrapped_mode():
+    if not ivy.wrapped_mode():
         helpers.assert_compilable(ivy.conv3d_transpose)
 
 
@@ -617,5 +617,5 @@ def test_lstm(b_t_ic_hc_otf_sctv, dtype_str, tensor_fn, dev_str, call):
     if call in [helpers.torch_call]:
         # this is not a backend implemented function
         return
-    if ivy.wrapped_mode():
+    if not ivy.wrapped_mode():
         helpers.assert_compilable(ivy.lstm_update)

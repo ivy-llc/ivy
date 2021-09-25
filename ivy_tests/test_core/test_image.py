@@ -93,7 +93,7 @@ def test_gradient_image(x_n_dy_n_dx, dtype_str, tensor_fn, dev_str, call):
     if call in [helpers.torch_call]:
         # torch device cannot be assigned value of string while scripting
         return
-    if ivy.wrapped_mode():
+    if not ivy.wrapped_mode():
         helpers.assert_compilable(ivy.gradient_image)
 
 
@@ -123,7 +123,7 @@ def test_float_img_to_uint8_img(fi_tui, tensor_fn, dev_str, call):
     if call in [helpers.torch_call]:
         # torch device cannot be assigned value of string while scripting
         return
-    if ivy.wrapped_mode():
+    if not ivy.wrapped_mode():
         helpers.assert_compilable(ivy.float_img_to_uint8_img)
 
 
@@ -151,7 +151,7 @@ def test_uint8_img_to_float_img(ui_tfi, dev_str, call):
     if call in [helpers.torch_call]:
         # torch device cannot be assigned value of string while scripting
         return
-    if ivy.wrapped_mode():
+    if not ivy.wrapped_mode():
         helpers.assert_compilable(ivy.uint8_img_to_float_img)
 
 
@@ -183,5 +183,5 @@ def test_random_crop(xshp_n_cs, dev_str, call):
     if call in [helpers.torch_call]:
         # reduce(mul) used for flat batch size computation is not torch jit compilable
         return
-    if ivy.wrapped_mode():
+    if not ivy.wrapped_mode():
         helpers.assert_compilable(ivy.random_crop)

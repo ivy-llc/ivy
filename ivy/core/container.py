@@ -435,6 +435,8 @@ class Container(dict):
         :type ivyh: handle to ivy module, optional
         :return: Container loaded from disk
         """
+        if _ivy.wrapped_mode():
+            return Container(_pickle.load(open(pickle_filepath, 'rb')), ivyh=ivyh).as_ivy_arrays()
         return Container(_pickle.load(open(pickle_filepath, 'rb')), ivyh=ivyh)
 
     @staticmethod
@@ -1156,6 +1158,36 @@ class Container(dict):
             low, high, x.shape, self._ivy.dev_str(x)) if self._ivy.is_array(x) else x,
                         key_chains, to_apply, prune_unapplied)
 
+    def as_native(self, key_chains=None, to_apply=True, prune_unapplied=False):
+        """
+        Return native framework arrays for all nested arrays in the container.
+
+        :param key_chains: The key-chains to apply or not apply the method to. Default is None.
+        :type key_chains: list or dict of strs, optional
+        :param to_apply: If True, the method will be applied to key_chains, otherwise key_chains will be skipped.
+                         Default is True.
+        :type to_apply: bool, optional
+        :param prune_unapplied: Whether to prune key_chains for which the function was not applied. Default is False.
+        :type prune_unapplied: bool, optional
+        :return: Container object with all sub-arrays converted to their native format.
+        """
+        return self.map(lambda x, kc: self._ivy.as_native(x), key_chains, to_apply, prune_unapplied)
+
+    def as_ivy_arrays(self, key_chains=None, to_apply=True, prune_unapplied=False):
+        """
+        Return ivy arrays for all nested native framework arrays in the container.
+
+        :param key_chains: The key-chains to apply or not apply the method to. Default is None.
+        :type key_chains: list or dict of strs, optional
+        :param to_apply: If True, the method will be applied to key_chains, otherwise key_chains will be skipped.
+                         Default is True.
+        :type to_apply: bool, optional
+        :param prune_unapplied: Whether to prune key_chains for which the function was not applied. Default is False.
+        :type prune_unapplied: bool, optional
+        :return: Container object with all native sub-arrays converted to their ivy.Array instances.
+        """
+        return self.map(lambda x, kc: self._ivy.ivy_array(x), key_chains, to_apply, prune_unapplied)
+
     def expand_dims(self, axis, key_chains=None, to_apply=True, prune_unapplied=False):
         """
         Expand dims of all sub-arrays of container object.
@@ -1549,7 +1581,10 @@ class Container(dict):
         :param pickle_filepath: Filepath for where to save the container to disk.
         :type pickle_filepath: str
         """
-        _pickle.dump(self.to_dict(), open(pickle_filepath, 'wb'))
+        if _ivy.wrapped_mode():
+            _pickle.dump(self.as_native().to_dict(), open(pickle_filepath, 'wb'))
+        else:
+            _pickle.dump(self.to_dict(), open(pickle_filepath, 'wb'))
 
     def to_jsonable(self, return_dict=None):
         """
@@ -2315,6 +2350,8 @@ class Container(dict):
         for i in queue_idxs:
             if i not in self._loaded_containers_from_queues:
                 cont = Container(self._queues[i].get(timeout=self._queue_timeout), ivyh=self._local_ivy)
+                if _ivy.wrapped_mode():
+                    cont = cont.as_ivy_arrays()
                 self._loaded_containers_from_queues[i] = cont
             else:
                 cont = self._loaded_containers_from_queues[i]
@@ -2328,6 +2365,7 @@ class Container(dict):
             shifted_query = slice(query.start-offset, query.stop-offset, query.step)
         elif isinstance(query, (list, tuple)):
             shifted_query = tuple([slice(slc.start-offset, slc.stop-offset, slc.step) for slc in query])
+        # noinspection PyUnboundLocalVariable
         return combined_cont[shifted_query]
 
     def __getitem__(self, query):

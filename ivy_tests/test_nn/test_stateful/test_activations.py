@@ -38,5 +38,5 @@ def test_geglu(bs_oc_target, dtype_str, tensor_fn, dev_str, call):
     if call is helpers.torch_call:
         # pytest scripting does not **kwargs
         return
-    if ivy.wrapped_mode():
+    if not ivy.wrapped_mode():
         helpers.assert_compilable(geglu_layer)
