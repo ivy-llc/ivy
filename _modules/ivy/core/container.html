@@ -624,6 +624,8 @@
 <span class="sd">        :type ivyh: handle to ivy module, optional</span>
 <span class="sd">        :return: Container loaded from disk</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">_ivy</span><span class="o">.</span><span class="n">wrapped_mode</span><span class="p">():</span>
+            <span class="k">return</span> <span class="n">Container</span><span class="p">(</span><span class="n">_pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="n">pickle_filepath</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)),</span> <span class="n">ivyh</span><span class="o">=</span><span class="n">ivyh</span><span class="p">)</span><span class="o">.</span><span class="n">as_ivy_arrays</span><span class="p">()</span>
         <span class="k">return</span> <span class="n">Container</span><span class="p">(</span><span class="n">_pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="n">pickle_filepath</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)),</span> <span class="n">ivyh</span><span class="o">=</span><span class="n">ivyh</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Container.from_disk_as_json"><a class="viewcode-back" href="../../../core/container/Container.html#ivy.core.container.Container.from_disk_as_json">[docs]</a>    <span class="nd">@staticmethod</span>
@@ -1345,6 +1347,36 @@
             <span class="n">low</span><span class="p">,</span> <span class="n">high</span><span class="p">,</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ivy</span><span class="o">.</span><span class="n">dev_str</span><span class="p">(</span><span class="n">x</span><span class="p">))</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ivy</span><span class="o">.</span><span class="n">is_array</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">else</span> <span class="n">x</span><span class="p">,</span>
                         <span class="n">key_chains</span><span class="p">,</span> <span class="n">to_apply</span><span class="p">,</span> <span class="n">prune_unapplied</span><span class="p">)</span></div>
 
+<div class="viewcode-block" id="Container.as_native"><a class="viewcode-back" href="../../../core/container/Container.html#ivy.core.container.Container.as_native">[docs]</a>    <span class="k">def</span> <span class="nf">as_native</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key_chains</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">to_apply</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">prune_unapplied</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return native framework arrays for all nested arrays in the container.</span>
+
+<span class="sd">        :param key_chains: The key-chains to apply or not apply the method to. Default is None.</span>
+<span class="sd">        :type key_chains: list or dict of strs, optional</span>
+<span class="sd">        :param to_apply: If True, the method will be applied to key_chains, otherwise key_chains will be skipped.</span>
+<span class="sd">                         Default is True.</span>
+<span class="sd">        :type to_apply: bool, optional</span>
+<span class="sd">        :param prune_unapplied: Whether to prune key_chains for which the function was not applied. Default is False.</span>
+<span class="sd">        :type prune_unapplied: bool, optional</span>
+<span class="sd">        :return: Container object with all sub-arrays converted to their native format.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">kc</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ivy</span><span class="o">.</span><span class="n">as_native</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">key_chains</span><span class="p">,</span> <span class="n">to_apply</span><span class="p">,</span> <span class="n">prune_unapplied</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Container.as_ivy_arrays"><a class="viewcode-back" href="../../../core/container/Container.html#ivy.core.container.Container.as_ivy_arrays">[docs]</a>    <span class="k">def</span> <span class="nf">as_ivy_arrays</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key_chains</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">to_apply</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">prune_unapplied</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return ivy arrays for all nested native framework arrays in the container.</span>
+
+<span class="sd">        :param key_chains: The key-chains to apply or not apply the method to. Default is None.</span>
+<span class="sd">        :type key_chains: list or dict of strs, optional</span>
+<span class="sd">        :param to_apply: If True, the method will be applied to key_chains, otherwise key_chains will be skipped.</span>
+<span class="sd">                         Default is True.</span>
+<span class="sd">        :type to_apply: bool, optional</span>
+<span class="sd">        :param prune_unapplied: Whether to prune key_chains for which the function was not applied. Default is False.</span>
+<span class="sd">        :type prune_unapplied: bool, optional</span>
+<span class="sd">        :return: Container object with all native sub-arrays converted to their ivy.Array instances.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">kc</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ivy</span><span class="o">.</span><span class="n">ivy_array</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="n">key_chains</span><span class="p">,</span> <span class="n">to_apply</span><span class="p">,</span> <span class="n">prune_unapplied</span><span class="p">)</span></div>
+
 <div class="viewcode-block" id="Container.expand_dims"><a class="viewcode-back" href="../../../core/container/Container.html#ivy.core.container.Container.expand_dims">[docs]</a>    <span class="k">def</span> <span class="nf">expand_dims</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">key_chains</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">to_apply</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">prune_unapplied</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Expand dims of all sub-arrays of container object.</span>
@@ -1738,7 +1770,10 @@
 <span class="sd">        :param pickle_filepath: Filepath for where to save the container to disk.</span>
 <span class="sd">        :type pickle_filepath: str</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">_pickle</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">to_dict</span><span class="p">(),</span> <span class="nb">open</span><span class="p">(</span><span class="n">pickle_filepath</span><span class="p">,</span> <span class="s1">&#39;wb&#39;</span><span class="p">))</span></div>
+        <span class="k">if</span> <span class="n">_ivy</span><span class="o">.</span><span class="n">wrapped_mode</span><span class="p">():</span>
+            <span class="n">_pickle</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">as_native</span><span class="p">()</span><span class="o">.</span><span class="n">to_dict</span><span class="p">(),</span> <span class="nb">open</span><span class="p">(</span><span class="n">pickle_filepath</span><span class="p">,</span> <span class="s1">&#39;wb&#39;</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">_pickle</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">to_dict</span><span class="p">(),</span> <span class="nb">open</span><span class="p">(</span><span class="n">pickle_filepath</span><span class="p">,</span> <span class="s1">&#39;wb&#39;</span><span class="p">))</span></div>
 
 <div class="viewcode-block" id="Container.to_jsonable"><a class="viewcode-back" href="../../../core/container/Container.html#ivy.core.container.Container.to_jsonable">[docs]</a>    <span class="k">def</span> <span class="nf">to_jsonable</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">return_dict</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -2504,6 +2539,8 @@
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">queue_idxs</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">i</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_loaded_containers_from_queues</span><span class="p">:</span>
                 <span class="n">cont</span> <span class="o">=</span> <span class="n">Container</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_queues</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">timeout</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_queue_timeout</span><span class="p">),</span> <span class="n">ivyh</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_local_ivy</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">_ivy</span><span class="o">.</span><span class="n">wrapped_mode</span><span class="p">():</span>
+                    <span class="n">cont</span> <span class="o">=</span> <span class="n">cont</span><span class="o">.</span><span class="n">as_ivy_arrays</span><span class="p">()</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_loaded_containers_from_queues</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">cont</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">cont</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_loaded_containers_from_queues</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
@@ -2517,6 +2554,7 @@
             <span class="n">shifted_query</span> <span class="o">=</span> <span class="nb">slice</span><span class="p">(</span><span class="n">query</span><span class="o">.</span><span class="n">start</span><span class="o">-</span><span class="n">offset</span><span class="p">,</span> <span class="n">query</span><span class="o">.</span><span class="n">stop</span><span class="o">-</span><span class="n">offset</span><span class="p">,</span> <span class="n">query</span><span class="o">.</span><span class="n">step</span><span class="p">)</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)):</span>
             <span class="n">shifted_query</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">([</span><span class="nb">slice</span><span class="p">(</span><span class="n">slc</span><span class="o">.</span><span class="n">start</span><span class="o">-</span><span class="n">offset</span><span class="p">,</span> <span class="n">slc</span><span class="o">.</span><span class="n">stop</span><span class="o">-</span><span class="n">offset</span><span class="p">,</span> <span class="n">slc</span><span class="o">.</span><span class="n">step</span><span class="p">)</span> <span class="k">for</span> <span class="n">slc</span> <span class="ow">in</span> <span class="n">query</span><span class="p">])</span>
+        <span class="c1"># noinspection PyUnboundLocalVariable</span>
         <span class="k">return</span> <span class="n">combined_cont</span><span class="p">[</span><span class="n">shifted_query</span><span class="p">]</span>
 
     <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query</span><span class="p">):</span>
