@@ -25,7 +25,15 @@ def to_ivy_module(native_module):
             p.data = v
 
         def _forward(self, *args, **kwargs):
+            wrapped_mode = ivy.wrapped_mode()
+            if wrapped_mode:
+                args, kwargs = ivy.args_to_native(*args, **kwargs)
             [self._inplace_update(p, v) for p, v in zip(self._native_params.values(), self.v.values())]
-            return self._native_module(*args, **kwargs)
+            ret = self._native_module(*args, **kwargs)
+            if wrapped_mode:
+                if isinstance(ret, tuple):
+                    return ivy.args_to_native(*ret)
+                return ivy.to_native(ret)
+            return ret
 
     return IvyModule()
