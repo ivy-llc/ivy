@@ -23,7 +23,7 @@ def cross_entropy(true, pred, axis=-1, epsilon=1e-7):
     pred = ivy.clip(pred, epsilon, 1 - epsilon)
     log_pred = ivy.log(pred)
     # noinspection PyUnresolvedReferences
-    return -ivy.reduce_sum(true * log_pred, axis)
+    return -ivy.reduce_sum(log_pred * true, axis)
 
 
 # noinspection PyUnresolvedReferences
@@ -40,7 +40,8 @@ def binary_cross_entropy(true, pred, epsilon=1e-7):
     :return: The binary cross entropy loss array.
     """
     pred = ivy.clip(pred, epsilon, 1-epsilon)
-    return -(true * ivy.log(pred) + (1 - true) * ivy.log(1 - pred))
+    # noinspection PyTypeChecker
+    return -(ivy.log(pred) * true + ivy.log(1 - pred) * (1 - true))
 
 
 def sparse_cross_entropy(true, pred, axis=-1, epsilon=1e-7):
