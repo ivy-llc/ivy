@@ -9,7 +9,7 @@ from .nn import *
 use = ivy.framework_handler.ContextManager(sys.modules[__name__])
 
 NativeArray = torch.Tensor
-Variable = torch.Tensor
+NativeVariable = torch.Tensor
 Device = torch.device
 Dtype = torch.dtype
 
