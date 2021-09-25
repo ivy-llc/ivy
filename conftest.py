@@ -27,8 +27,8 @@ TEST_CALL_METHODS: Dict[str, callable] = {'numpy': helpers.np_call,
 
 
 @pytest.fixture(autouse=True)
-def run_around_tests(f, wrapped_mode):
-    if wrapped_mode and f is ivy.tensorflow:
+def run_around_tests(f, wrapped_mode, call):
+    if wrapped_mode and call is helpers.tf_graph_call:
         # ToDo: add support for wrapped_mode and tensorflow compilation
         pytest.skip()
     with f.use:
