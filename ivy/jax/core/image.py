@@ -4,6 +4,7 @@ Collection of Jax image functions, wrapped to fit Ivy syntax and signature.
 
 # global
 import math
+import jax as _jax
 import jax.numpy as _jnp
 from operator import mul as _mul
 from functools import reduce as _reduce
@@ -98,7 +99,7 @@ def gradient_image(x):
     x_shape = _ivy.shape(x)
     batch_shape = x_shape[:-3]
     image_dims = x_shape[-3:-1]
-    dev_str = _ivy.dev_str(x)
+    dev = x.device_buffer.device()
     # to list
     batch_shape = list(batch_shape)
     image_dims = list(image_dims)
@@ -108,7 +109,8 @@ def gradient_image(x):
     # BS x H x W-1 x D
     dx = x[..., :, 1:, :] - x[..., :, :-1, :]
     # BS x H x W x D
-    dy = _ivy.concatenate((dy, _ivy.zeros(batch_shape + [1, image_dims[1], num_dims], dev_str=dev_str)), -3)
-    dx = _ivy.concatenate((dx, _ivy.zeros(batch_shape + [image_dims[0], 1, num_dims], dev_str=dev_str)), -2)
+    # _jax.device_put(x, str_to_dev(dev_str))
+    dy = _ivy.concatenate((dy, _jax.device_put(_jnp.zeros(batch_shape + [1, image_dims[1], num_dims]), dev)), -3)
+    dx = _ivy.concatenate((dx, _jax.device_put(_jnp.zeros(batch_shape + [image_dims[0], 1, num_dims]), dev)), -2)
     # BS x H x W x D,    BS x H x W x D
     return dy, dx
