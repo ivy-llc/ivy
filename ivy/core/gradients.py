@@ -184,7 +184,7 @@ def optimizer_update(ws, effective_grads, lr, inplace=True, stop_gradients=True)
     if inplace:
         ws = ws.map(lambda w, kc: _ivy.inplace_decrement(w, deltas[kc]))
     else:
-        ws = ws.map(lambda w, kc: w - deltas[kc])
+        ws = ws.map(lambda w, kc: -deltas[kc] + w)
     if stop_gradients:
         return ws.stop_gradients(preserve_type=True)
     return ws
