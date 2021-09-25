@@ -35,7 +35,7 @@ def test_logical_and(x1_n_x2, dtype_str, tensor_fn, dev_str, call):
     if call in [helpers.torch_call]:
         # pytorch scripting does not support .type() method
         return
-    if ivy.wrapped_mode():
+    if not ivy.wrapped_mode():
         helpers.assert_compilable(ivy.logical_and)
 
 
@@ -62,7 +62,7 @@ def test_logical_or(x1_n_x2, dtype_str, tensor_fn, dev_str, call):
     if call in [helpers.torch_call]:
         # pytorch scripting does not support .type() method
         return
-    if ivy.wrapped_mode():
+    if not ivy.wrapped_mode():
         helpers.assert_compilable(ivy.logical_or)
 
 
@@ -87,5 +87,5 @@ def test_logical_not(x, dtype_str, tensor_fn, dev_str, call):
     if call in [helpers.torch_call]:
         # pytorch scripting does not support .type() method
         return
-    if ivy.wrapped_mode():
+    if not ivy.wrapped_mode():
         helpers.assert_compilable(ivy.logical_not)

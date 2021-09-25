@@ -37,6 +37,20 @@ def array(object_in, dtype_str=None, dev_str=None, f=None):
     return _cur_framework(object_in, f=f).array(object_in, dtype_str, dev_str)
 
 
+def ivy_array(x, f=None):
+    """
+    Returns the input array converted to an ivy.Array instances if it is an array type, otherwise the input is
+    returned unchanged.
+
+    :param x: The input to maybe convert.
+    :type x: any
+    :param f: Machine learning framework. Inferred from inputs if None.
+    :type f: ml_framework, optional
+    :return: the input in it's native framework form in the case of ivy.Array or ivy.Variable instances.
+    """
+    return ivy.Array(x) if is_array(x, f) else x
+
+
 def is_array(x, f=None):
     """
     Determines whether the input x is an Ivy Array.
@@ -58,7 +72,7 @@ def as_native(x):
     Returns the input item in it's native backend framework form if it is an ivy.Array or ivy.Variable instance.
     otherwise the input is returned unchanged.
 
-    :param x: The input to check.
+    :param x: The input to maybe convert.
     :type x: any
     :return: the input in it's native framework form in the case of ivy.Array or ivy.Variable instances.
     """
@@ -270,7 +284,7 @@ def clip_vector_norm(x, max_norm: float, p: float = 2.0):
     norm = ivy.vector_norm(x, p, keepdims=True)
     ratio = ivy.stable_divide(max_norm, norm)
     if ratio < 1:
-        return x * ratio
+        return ratio * x
     return x
 
 
@@ -288,7 +302,7 @@ def clip_matrix_norm(x, max_norm: float, p: float = 2.0):
     """
     norms = ivy.matrix_norm(x, p, keepdims=True)
     ratios = ivy.maximum(ivy.stable_divide(max_norm, norms), 1.)
-    return x * ratios
+    return ratios * x
 
 
 # noinspection PyShadowingBuiltins

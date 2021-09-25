@@ -45,7 +45,7 @@ def test_reduce_sum(x, axis, kd, dtype_str, tensor_fn, dev_str, call):
     # value test
     assert np.allclose(call(ivy.reduce_sum, x), ivy.numpy.reduce_sum(ivy.to_numpy(x)))
     # compilation test
-    if ivy.wrapped_mode():
+    if not ivy.wrapped_mode():
         helpers.assert_compilable(ivy.reduce_sum)
 
 
@@ -82,7 +82,7 @@ def test_reduce_prod(x, axis, kd, dtype_str, tensor_fn, dev_str, call):
     # value test
     assert np.allclose(call(ivy.reduce_prod, x), ivy.numpy.reduce_prod(ivy.to_numpy(x)))
     # compilation test
-    if ivy.wrapped_mode():
+    if not ivy.wrapped_mode():
         helpers.assert_compilable(ivy.reduce_prod)
 
 
@@ -119,7 +119,7 @@ def test_reduce_mean(x, axis, kd, dtype_str, tensor_fn, dev_str, call):
     # value test
     assert np.allclose(call(ivy.reduce_mean, x), ivy.numpy.reduce_mean(ivy.to_numpy(x)))
     # compilation test
-    if ivy.wrapped_mode():
+    if not ivy.wrapped_mode():
         helpers.assert_compilable(ivy.reduce_mean)
 
 
@@ -156,7 +156,7 @@ def test_reduce_var(x, axis, kd, dtype_str, tensor_fn, dev_str, call):
     # value test
     assert np.allclose(call(ivy.reduce_var, x), ivy.numpy.reduce_var(ivy.to_numpy(x)))
     # compilation test
-    if ivy.wrapped_mode():
+    if not ivy.wrapped_mode():
         helpers.assert_compilable(ivy.reduce_var)
 
 
@@ -196,7 +196,7 @@ def test_reduce_std(x, axis, kd, dtype_str, tensor_fn, dev_str, call):
     if call is helpers.torch_call:
         # PyTorch cannot yet compile ivy.core only functions, without a direct backend implementation
         return
-    if ivy.wrapped_mode():
+    if not ivy.wrapped_mode():
         helpers.assert_compilable(ivy.reduce_std)
 
 
@@ -233,7 +233,7 @@ def test_reduce_min(x, axis, kd, dtype_str, tensor_fn, dev_str, call):
     # value test
     assert np.allclose(call(ivy.reduce_min, x), ivy.numpy.reduce_min(ivy.to_numpy(x)))
     # compilation test
-    if ivy.wrapped_mode():
+    if not ivy.wrapped_mode():
         helpers.assert_compilable(ivy.reduce_min)
 
 
@@ -270,7 +270,7 @@ def test_reduce_max(x, axis, kd, dtype_str, tensor_fn, dev_str, call):
     # value test
     assert np.allclose(call(ivy.reduce_max, x), ivy.numpy.reduce_max(ivy.to_numpy(x)))
     # compilation test
-    if ivy.wrapped_mode():
+    if not ivy.wrapped_mode():
         helpers.assert_compilable(ivy.reduce_max)
 
 
@@ -299,5 +299,5 @@ def test_einsum(eq_n_op_n_shp, dtype_str, tensor_fn, dev_str, call):
     if call is helpers.torch_call:
         # torch.jit functions can't take variable number of arguments
         return
-    if ivy.wrapped_mode():
+    if not ivy.wrapped_mode():
         helpers.assert_compilable(ivy.einsum)
