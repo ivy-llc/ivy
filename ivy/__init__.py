@@ -65,13 +65,13 @@ class Array:
         return self._data.__dir__()
 
     def __getattr__(self, item):
-        return self._data.__getattr__(item)
+        return Array(self._data.__getattr__(item))
 
     def __getitem__(self, query):
-        return self._data.__getitem__(query)
+        return Array(self._data.__getitem__(query))
 
     def __setitem__(self, query, val):
-        return self._data.__setitem__(query, val)
+        self._data.__setitem__(query, val)
 
     def __contains__(self, key):
         return self._data.__contains__(key)
