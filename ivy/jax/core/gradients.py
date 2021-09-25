@@ -9,12 +9,18 @@ import jaxlib as _jaxlib
 from jaxlib.xla_extension import Buffer
 
 # local
+import ivy
 from ivy.core.container import Container
 
 # ToDo: modify these functions to track whether variable() has been called
 variable = lambda x: x
 # noinspection PyUnresolvedReferences,PyProtectedMember
-is_variable = lambda x: isinstance(x, (_jax.interpreters.xla._DeviceArray, _jaxlib.xla_extension.DeviceArray, Buffer))
+
+
+def is_variable(x, exclusive=False):
+    if exclusive:
+        return False
+    return isinstance(x, (_jax.interpreters.xla._DeviceArray, _jaxlib.xla_extension.DeviceArray, Buffer))
 
 
 def inplace_update(x, val):
@@ -33,6 +39,8 @@ def inplace_increment(x, val):
 
 
 def execute_with_gradients(func, xs, retain_grads=False):
+    if ivy.wrapped_mode():
+        xs = xs.to_native()
     xs = xs.to_dict()
     func_ret = func(xs)
     if isinstance(func_ret, tuple):
@@ -44,6 +52,8 @@ def execute_with_gradients(func, xs, retain_grads=False):
         rest = tuple()
         grad_fn = func
     grads = Container(_jax.grad(grad_fn)(xs))
+    if ivy.wrapped_mode():
+        grads = grads.to_ivy()
     return (y, grads, *rest)
 
 

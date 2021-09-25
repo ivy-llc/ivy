@@ -15,7 +15,7 @@ def variable(x):
         return _tf.Variable(x, trainable=True)
 
 
-def is_variable(x):
+def is_variable(x, exclusive=False):
     return isinstance(x, _tf.Variable)
 
 
@@ -35,6 +35,8 @@ def inplace_increment(x, val):
 
 
 def execute_with_gradients(func, xs, retain_grads=False):
+    if ivy.wrapped_mode():
+        xs = xs.to_native()
     with _tf.GradientTape(persistent=retain_grads, watch_accessed_variables=False) as tape:
         tape.watch(xs)
         func_ret = func(xs)
@@ -45,6 +47,8 @@ def execute_with_gradients(func, xs, retain_grads=False):
         y = func_ret
         rest = tuple()
     grads = Container(tape.gradient(y, xs))
+    if ivy.wrapped_mode():
+        grads = grads.to_ivy()
     return (y, grads, *rest)
 
 

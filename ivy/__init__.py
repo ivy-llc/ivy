@@ -65,10 +65,10 @@ class Array:
         return self._data.__dir__()
 
     def __getattr__(self, item):
-        return Array(self._data.__getattr__(item))
+        return ivy.to_ivy(self._data.__getattr__(item))
 
     def __getitem__(self, query):
-        return Array(self._data.__getitem__(query))
+        return ivy.to_ivy(self._data.__getitem__(query))
 
     def __setitem__(self, query, val):
         self._data.__setitem__(query, val)
@@ -83,190 +83,190 @@ class Array:
         res = self._data.__neg__()
         if res is NotImplemented:
             return res
-        return Array(res) if ivy.is_array(res) else res
+        return ivy.to_ivy(res)
 
     def __pow__(self, power):
-        power = ivy.as_native(power)
+        power = ivy.to_native(power)
         res = self._data.__pow__(power)
         if res is NotImplemented:
             return res
-        return Array(res) if ivy.is_array(res) else res
+        return ivy.to_ivy(res)
 
     def __rpow__(self, power):
-        power = ivy.as_native(power)
+        power = ivy.to_native(power)
         res = self._data.__rpow__(power)
         if res is NotImplemented:
             return res
-        return Array(res) if ivy.is_array(res) else res
+        return ivy.to_ivy(res)
 
     def __add__(self, other):
-        other = ivy.as_native(other)
+        other = ivy.to_native(other)
         res = self._data.__add__(other)
         if res is NotImplemented:
             return res
-        return Array(res) if ivy.is_array(res) else res
+        return ivy.to_ivy(res)
 
     def __radd__(self, other):
-        other = ivy.as_native(other)
+        other = ivy.to_native(other)
         res = self._data.__radd__(other)
         if res is NotImplemented:
             return res
-        return Array(res) if ivy.is_array(res) else res
+        return ivy.to_ivy(res)
 
     def __sub__(self, other):
-        other = ivy.as_native(other)
+        other = ivy.to_native(other)
         res = self._data.__sub__(other)
         if res is NotImplemented:
             return res
-        return Array(res) if ivy.is_array(res) else res
+        return ivy.to_ivy(res)
 
     def __rsub__(self, other):
-        other = ivy.as_native(other)
+        other = ivy.to_native(other)
         res = self._data.__rsub__(other)
         if res is NotImplemented:
             return res
-        return Array(res) if ivy.is_array(res) else res
+        return ivy.to_ivy(res)
 
     def __mul__(self, other):
-        other = ivy.as_native(other)
+        other = ivy.to_native(other)
         res = self._data.__mul__(other)
         if res is NotImplemented:
             return res
-        return Array(res) if ivy.is_array(res) else res
+        return ivy.to_ivy(res)
 
     def __rmul__(self, other):
-        other = ivy.as_native(other)
+        other = ivy.to_native(other)
         res = self._data.__rmul__(other)
         if res is NotImplemented:
             return res
-        return Array(res) if ivy.is_array(res) else res
+        return ivy.to_ivy(res)
 
     def __truediv__(self, other):
-        other = ivy.as_native(other)
+        other = ivy.to_native(other)
         res = self._data.__truediv__(other)
         if res is NotImplemented:
             return res
-        return Array(res) if ivy.is_array(res) else res
+        return ivy.to_ivy(res)
 
     def __rtruediv__(self, other):
-        other = ivy.as_native(other)
+        other = ivy.to_native(other)
         res = self._data.__rtruediv__(other)
         if res is NotImplemented:
             return res
-        return Array(res) if ivy.is_array(res) else res
+        return ivy.to_ivy(res)
 
     def __floordiv__(self, other):
-        other = ivy.as_native(other)
+        other = ivy.to_native(other)
         res = self._data.__floordiv__(other)
         if res is NotImplemented:
             return res
-        return Array(res) if ivy.is_array(res) else res
+        return ivy.to_ivy(res)
 
     def __rfloordiv__(self, other):
-        other = ivy.as_native(other)
+        other = ivy.to_native(other)
         res = self._data.__rfloordiv__(other)
         if res is NotImplemented:
             return res
-        return Array(res) if ivy.is_array(res) else res
+        return ivy.to_ivy(res)
 
     def __abs__(self):
         res = self._data.__abs__()
         if res is NotImplemented:
             return res
-        return Array(res) if ivy.is_array(res) else res
+        return ivy.to_ivy(res)
 
     def __bool__(self):
         return self._data.__bool__()
 
     def __lt__(self, other):
-        other = ivy.as_native(other)
+        other = ivy.to_native(other)
         res = self._data.__lt__(other)
         if res is NotImplemented:
             return res
-        return Array(res) if ivy.is_array(res) else res
+        return ivy.to_ivy(res)
 
     def __le__(self, other):
-        other = ivy.as_native(other)
+        other = ivy.to_native(other)
         res = self._data.__le__(other)
         if res is NotImplemented:
             return res
-        return Array(res) if ivy.is_array(res) else res
+        return ivy.to_ivy(res)
 
     def __eq__(self, other):
-        other = ivy.as_native(other)
+        other = ivy.to_native(other)
         res = self._data.__eq__(other)
         if res is NotImplemented:
             return res
-        return Array(res) if ivy.is_array(res) else res
+        return ivy.to_ivy(res)
 
     def __ne__(self, other):
-        other = ivy.as_native(other)
+        other = ivy.to_native(other)
         res = self._data.__ne__(other)
         if res is NotImplemented:
             return res
-        return Array(res) if ivy.is_array(res) else res
+        return ivy.to_ivy(res)
 
     def __gt__(self, other):
-        other = ivy.as_native(other)
+        other = ivy.to_native(other)
         res = self._data.__gt__(other)
         if res is NotImplemented:
             return res
-        return Array(res) if ivy.is_array(res) else res
+        return ivy.to_ivy(res)
 
     def __ge__(self, other):
-        other = ivy.as_native(other)
+        other = ivy.to_native(other)
         res = self._data.__ge__(other)
         if res is NotImplemented:
             return res
-        return Array(res) if ivy.is_array(res) else res
+        return ivy.to_ivy(res)
 
     def __and__(self, other):
-        other = ivy.as_native(other)
+        other = ivy.to_native(other)
         res = self._data.__and__(other)
         if res is NotImplemented:
             return res
-        return Array(res) if ivy.is_array(res) else res
+        return ivy.to_ivy(res)
 
     def __rand__(self, other):
-        other = ivy.as_native(other)
+        other = ivy.to_native(other)
         res = self._data.__rand__(other)
         if res is NotImplemented:
             return res
-        return Array(res) if ivy.is_array(res) else res
+        return ivy.to_ivy(res)
 
     def __or__(self, other):
-        other = ivy.as_native(other)
+        other = ivy.to_native(other)
         res = self._data.__or__(other)
         if res is NotImplemented:
             return res
-        return Array(res) if ivy.is_array(res) else res
+        return ivy.to_ivy(res)
 
     def __ror__(self, other):
-        other = ivy.as_native(other)
+        other = ivy.to_native(other)
         res = self._data.__ror__(other)
         if res is NotImplemented:
             return res
-        return Array(res) if ivy.is_array(res) else res
+        return ivy.to_ivy(res)
 
     def __invert__(self):
         res = self._data.__invert__()
         if res is NotImplemented:
             return res
-        return Array(res) if ivy.is_array(res) else res
+        return ivy.to_ivy(res)
 
     def __xor__(self, other):
-        other = ivy.as_native(other)
+        other = ivy.to_native(other)
         res = self._data.__xor__(other)
         if res is NotImplemented:
             return res
-        return Array(res) if ivy.is_array(res) else res
+        return ivy.to_ivy(res)
 
     def __rxor__(self, other):
-        other = ivy.as_native(other)
+        other = ivy.to_native(other)
         res = self._data.__rxor__(other)
         if res is NotImplemented:
             return res
-        return Array(res) if ivy.is_array(res) else res
+        return ivy.to_ivy(res)
 
 
 class Variable(Array):

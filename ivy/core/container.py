@@ -436,7 +436,7 @@ class Container(dict):
         :return: Container loaded from disk
         """
         if _ivy.wrapped_mode():
-            return Container(_pickle.load(open(pickle_filepath, 'rb')), ivyh=ivyh).as_ivy_arrays()
+            return Container(_pickle.load(open(pickle_filepath, 'rb')), ivyh=ivyh).to_ivy()
         return Container(_pickle.load(open(pickle_filepath, 'rb')), ivyh=ivyh)
 
     @staticmethod
@@ -1158,7 +1158,7 @@ class Container(dict):
             low, high, x.shape, self._ivy.dev_str(x)) if self._ivy.is_array(x) else x,
                         key_chains, to_apply, prune_unapplied)
 
-    def as_native(self, key_chains=None, to_apply=True, prune_unapplied=False):
+    def to_native(self, key_chains=None, to_apply=True, prune_unapplied=False):
         """
         Return native framework arrays for all nested arrays in the container.
 
@@ -1171,9 +1171,9 @@ class Container(dict):
         :type prune_unapplied: bool, optional
         :return: Container object with all sub-arrays converted to their native format.
         """
-        return self.map(lambda x, kc: self._ivy.as_native(x), key_chains, to_apply, prune_unapplied)
+        return self.map(lambda x, kc: self._ivy.to_native(x), key_chains, to_apply, prune_unapplied)
 
-    def as_ivy_arrays(self, key_chains=None, to_apply=True, prune_unapplied=False):
+    def to_ivy(self, key_chains=None, to_apply=True, prune_unapplied=False):
         """
         Return ivy arrays for all nested native framework arrays in the container.
 
@@ -1186,7 +1186,7 @@ class Container(dict):
         :type prune_unapplied: bool, optional
         :return: Container object with all native sub-arrays converted to their ivy.Array instances.
         """
-        return self.map(lambda x, kc: self._ivy.ivy_array(x), key_chains, to_apply, prune_unapplied)
+        return self.map(lambda x, kc: self._ivy.to_ivy(x), key_chains, to_apply, prune_unapplied)
 
     def expand_dims(self, axis, key_chains=None, to_apply=True, prune_unapplied=False):
         """
@@ -1582,7 +1582,7 @@ class Container(dict):
         :type pickle_filepath: str
         """
         if _ivy.wrapped_mode():
-            _pickle.dump(self.as_native().to_dict(), open(pickle_filepath, 'wb'))
+            _pickle.dump(self.to_native().to_dict(), open(pickle_filepath, 'wb'))
         else:
             _pickle.dump(self.to_dict(), open(pickle_filepath, 'wb'))
 
@@ -2351,7 +2351,7 @@ class Container(dict):
             if i not in self._loaded_containers_from_queues:
                 cont = Container(self._queues[i].get(timeout=self._queue_timeout), ivyh=self._local_ivy)
                 if _ivy.wrapped_mode():
-                    cont = cont.as_ivy_arrays()
+                    cont = cont.to_ivy()
                 self._loaded_containers_from_queues[i] = cont
             else:
                 cont = self._loaded_containers_from_queues[i]

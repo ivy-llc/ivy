@@ -2549,7 +2549,7 @@ def test_einops_rearrange(x_n_pattern_n_newx, dtype_str, tensor_fn, dev_str, cal
     x, pattern, new_x = x_n_pattern_n_newx
     x = tensor_fn(x, dtype_str, dev_str)
     ret = ivy.einops_rearrange(x, pattern)
-    true_ret = einops.rearrange(ivy.as_native(x), pattern)
+    true_ret = einops.rearrange(ivy.to_native(x), pattern)
     # type test
     assert ivy.is_array(ret)
     # cardinality test
@@ -2576,7 +2576,7 @@ def test_einops_reduce(x_n_pattern_n_red_n_newx, dtype_str, tensor_fn, dev_str, 
     x, pattern, reduction, new_x = x_n_pattern_n_red_n_newx
     x = tensor_fn(x, dtype_str, dev_str)
     ret = ivy.einops_reduce(x, pattern, reduction)
-    true_ret = einops.reduce(ivy.as_native(x), pattern, reduction)
+    true_ret = einops.reduce(ivy.to_native(x), pattern, reduction)
     # type test
     assert ivy.is_array(ret)
     # cardinality test
@@ -2604,7 +2604,7 @@ def test_einops_repeat(x_n_pattern_n_al_n_newx, dtype_str, tensor_fn, dev_str, c
     x, pattern, axes_lengths, new_x = x_n_pattern_n_al_n_newx
     x = tensor_fn(x, dtype_str, dev_str)
     ret = ivy.einops_repeat(x, pattern, **axes_lengths)
-    true_ret = einops.repeat(ivy.as_native(x), pattern, **axes_lengths)
+    true_ret = einops.repeat(ivy.to_native(x), pattern, **axes_lengths)
     # type test
     assert ivy.is_array(ret)
     # cardinality test

@@ -3,6 +3,7 @@ Collection of PyTorch gradient functions, wrapped to fit Ivy syntax and signatur
 """
 
 # global
+import ivy
 import torch as _torch
 import warnings as _warnings
 
@@ -13,7 +14,7 @@ def variable(x):
     return x.clone().requires_grad_()
 
 
-def is_variable(x):
+def is_variable(x, exclusive=False):
     return isinstance(x, _torch.Tensor) and x.requires_grad
 
 
@@ -33,6 +34,8 @@ def inplace_increment(x, val):
 
 
 def execute_with_gradients(func, xs, retain_grads=False):
+    if ivy.wrapped_mode():
+        xs = xs.to_native()
     func_ret = func(xs)
     if isinstance(func_ret, tuple):
         y = func_ret[0]
@@ -42,7 +45,10 @@ def execute_with_gradients(func, xs, retain_grads=False):
         rest = tuple()
     x_grads_flat = list(_torch.autograd.grad([y], [v for k, v in xs.to_iterator()], retain_graph=retain_grads,
                                              create_graph=retain_grads))
-    return (y, xs.from_flat_list(x_grads_flat), *rest)
+    grads = xs.from_flat_list(x_grads_flat)
+    if ivy.wrapped_mode():
+        grads = grads.to_ivy()
+    return (y, grads, *rest)
 
 
 def stop_gradient(x, preserve_type=True):
