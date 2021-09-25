@@ -226,18 +226,16 @@
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">object_in</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">object_in</span><span class="p">,</span> <span class="n">dtype_str</span><span class="p">,</span> <span class="n">dev_str</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="ivy_array"><a class="viewcode-back" href="../../../core/general/ivy_array.html#ivy.core.general.ivy_array">[docs]</a><span class="k">def</span> <span class="nf">ivy_array</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="to_ivy"><a class="viewcode-back" href="../../../core/general/to_ivy.html#ivy.core.general.to_ivy">[docs]</a><span class="k">def</span> <span class="nf">to_ivy</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns the input array converted to an ivy.Array instances if it is an array type, otherwise the input is</span>
 <span class="sd">    returned unchanged.</span>
 
 <span class="sd">    :param x: The input to maybe convert.</span>
 <span class="sd">    :type x: any</span>
-<span class="sd">    :param f: Machine learning framework. Inferred from inputs if None.</span>
-<span class="sd">    :type f: ml_framework, optional</span>
 <span class="sd">    :return: the input in it&#39;s native framework form in the case of ivy.Array or ivy.Variable instances.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">if</span> <span class="n">is_array</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span> <span class="k">else</span> <span class="n">x</span></div>
+    <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_variable</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">exclusive</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="k">else</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_array</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">else</span> <span class="n">x</span></div>
 
 
 <div class="viewcode-block" id="is_array"><a class="viewcode-back" href="../../../core/general/is_array.html#ivy.core.general.is_array">[docs]</a><span class="k">def</span> <span class="nf">is_array</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -256,7 +254,7 @@
         <span class="k">return</span> <span class="kc">False</span></div>
 
 
-<div class="viewcode-block" id="as_native"><a class="viewcode-back" href="../../../core/general/as_native.html#ivy.core.general.as_native">[docs]</a><span class="k">def</span> <span class="nf">as_native</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+<div class="viewcode-block" id="to_native"><a class="viewcode-back" href="../../../core/general/to_native.html#ivy.core.general.to_native">[docs]</a><span class="k">def</span> <span class="nf">to_native</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns the input item in it&#39;s native backend framework form if it is an ivy.Array or ivy.Variable instance.</span>
 <span class="sd">    otherwise the input is returned unchanged.</span>
@@ -268,7 +266,7 @@
     <span class="k">return</span> <span class="n">x</span><span class="o">.</span><span class="n">data</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">)</span> <span class="k">else</span> <span class="n">x</span></div>
 
 
-<div class="viewcode-block" id="args_as_native"><a class="viewcode-back" href="../../../core/general/args_as_native.html#ivy.core.general.args_as_native">[docs]</a><span class="k">def</span> <span class="nf">args_as_native</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="args_to_native"><a class="viewcode-back" href="../../../core/general/args_to_native.html#ivy.core.general.args_to_native">[docs]</a><span class="k">def</span> <span class="nf">args_to_native</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns args and keyword args in their native backend framework form for all ivy.Array or ivy.Variable instances,</span>
 <span class="sd">    otherwise the arguments are returned unchanged.</span>

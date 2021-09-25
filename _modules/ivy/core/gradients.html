@@ -212,17 +212,21 @@
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">variable</span><span class="p">(</span><span class="n">x</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="is_variable"><a class="viewcode-back" href="../../../core/gradients/is_variable.html#ivy.core.gradients.is_variable">[docs]</a><span class="k">def</span> <span class="nf">is_variable</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="is_variable"><a class="viewcode-back" href="../../../core/gradients/is_variable.html#ivy.core.gradients.is_variable">[docs]</a><span class="k">def</span> <span class="nf">is_variable</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">exclusive</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Determines whether the input is a variable or not.</span>
 
 <span class="sd">    :param x: An ivy array.</span>
 <span class="sd">    :type x: array</span>
+<span class="sd">    :param exclusive: Whether to check if the data type is exclusively a variable, rather than an array.</span>
+<span class="sd">                      For frameworks like JAX that do not have exclusive variable types, the function will always return</span>
+<span class="sd">                      False if this flag is set, otherwise the check is the same for general arrays. Default is False.</span>
+<span class="sd">    :type exclusive: bool, optional</span>
 <span class="sd">    :param f: Machine learning framework. Inferred from inputs if None.</span>
 <span class="sd">    :type f: ml_framework, optional</span>
 <span class="sd">    :return: Boolean, true if x is a trainable variable, false otherwise.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">is_variable</span><span class="p">(</span><span class="n">x</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">is_variable</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">exclusive</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="inplace_update"><a class="viewcode-back" href="../../../core/gradients/inplace_update.html#ivy.core.gradients.inplace_update">[docs]</a><span class="k">def</span> <span class="nf">inplace_update</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">val</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
