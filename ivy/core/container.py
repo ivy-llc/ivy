@@ -2308,7 +2308,7 @@ class Container(dict):
 
             json_dumped_str = '":'.join([_add_newline(s) for s in json_dumped_str.split('":')])
             # improve tf formatting
-            if _ivy.current_framework_str() == 'tensorflow':
+            if _ivy.framework_stack and _ivy.current_framework_str() == 'tensorflow':
                 json_dumped_str_split = json_dumped_str.split("\'Variable:")
                 json_dumped_str = json_dumped_str_split[0] + ', ' + ', '.join(["\'".join(ss.split("\'")[1:])
                                                                                for ss in json_dumped_str_split[1:]])
