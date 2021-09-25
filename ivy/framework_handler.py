@@ -15,7 +15,7 @@ NON_WRAPPED_METHODS = ['current_framework', 'current_framework_str', 'set_framew
                        'split_func_call_across_gpus', 'cache_fn', 'split_func_call', 'compile_fn', 'dev_to_str',
                        'str_to_dev', 'memory_on_dev', 'gpu_is_available', 'num_gpus', 'tpu_is_available',
                        'dtype_to_str']
-NON_ARRAY_METHODS = ['to_numpy', 'to_list', 'to_scalar', 'unstack', 'split']
+NON_ARRAY_METHODS = ['to_numpy', 'to_list', 'to_scalar', 'unstack', 'split', 'shape', 'get_num_dims']
 debug_mode_val = False
 wrapped_mode_val = True
 ivy_original_dict = ivy.__dict__.copy()
