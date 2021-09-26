@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>cumsum &mdash; Ivy 1.0 documentation</title>
+  <title>has_nans &mdash; Ivy 1.0 documentation</title>
   
 
   
@@ -36,8 +36,8 @@
   <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="cumprod" href="cumprod.html" />
-    <link rel="prev" title="matmul" href="matmul.html" /> 
+    <link rel="next" title="reshape" href="reshape.html" />
+    <link rel="prev" title="value_is_nan" href="value_is_nan.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -139,7 +139,7 @@
 <li class="toctree-l2"><a class="reference internal" href="indices_where.html">indices_where</a></li>
 <li class="toctree-l2"><a class="reference internal" href="isnan.html">isnan</a></li>
 <li class="toctree-l2"><a class="reference internal" href="value_is_nan.html">value_is_nan</a></li>
-<li class="toctree-l2"><a class="reference internal" href="has_nans.html">has_nans</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">has_nans</a></li>
 <li class="toctree-l2"><a class="reference internal" href="reshape.html">reshape</a></li>
 <li class="toctree-l2"><a class="reference internal" href="broadcast_to.html">broadcast_to</a></li>
 <li class="toctree-l2"><a class="reference internal" href="squeeze.html">squeeze</a></li>
@@ -150,7 +150,7 @@
 <li class="toctree-l2"><a class="reference internal" href="one_hot.html">one_hot</a></li>
 <li class="toctree-l2"><a class="reference internal" href="cross.html">cross</a></li>
 <li class="toctree-l2"><a class="reference internal" href="matmul.html">matmul</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">cumsum</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cumsum.html">cumsum</a></li>
 <li class="toctree-l2"><a class="reference internal" href="cumprod.html">cumprod</a></li>
 <li class="toctree-l2"><a class="reference internal" href="identity.html">identity</a></li>
 <li class="toctree-l2"><a class="reference internal" href="meshgrid.html">meshgrid</a></li>
@@ -271,13 +271,13 @@
         
           <li><a href="../general.html">General</a> &raquo;</li>
         
-      <li>cumsum</li>
+      <li>has_nans</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="../../_sources/core/general/cumsum.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../_sources/core/general/has_nans.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -290,22 +290,21 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="cumsum">
-<h1>cumsum<a class="headerlink" href="#cumsum" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="has-nans">
+<h1>has_nans<a class="headerlink" href="#has-nans" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
-<dt id="ivy.core.general.cumsum">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">cumsum</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">axis</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">0</span></em>, <em class="sig-param"><span class="n">f</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>ivy.Framework<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; Union<span class="p">[</span>ivy.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span><a class="reference internal" href="../../_modules/ivy/core/general.html#cumsum"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.cumsum" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns the cumulative sum of the elements along a given axis.</p>
+<dt id="ivy.core.general.has_nans">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">has_nans</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">include_infs</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">True</span></em><span class="sig-paren">)</span> &#x2192; bool<a class="reference internal" href="../../_modules/ivy/core/general.html#has_nans"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.has_nans" title="Permalink to this definition">¶</a></dt>
+<dd><p>Determine whether the array contains any nans, as well as infs or -infs if specified.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>x</strong> (<em>array</em>) – Input array.</p></li>
-<li><p><strong>axis</strong> (<em>int</em>) – Axis along which the cumulative sum is computed. By default 0.</p></li>
-<li><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning framework. Inferred from inputs if None.</p></li>
+<li><p><strong>include_infs</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to include infs and -infs in the check. Default is True.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Input array with cumulatively summed elements along axis.</p>
+<dd class="field-even"><p>Boolean as to whether the array contains nans.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -325,10 +324,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="cumprod.html" class="btn btn-neutral float-right" title="cumprod" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="reshape.html" class="btn btn-neutral float-right" title="reshape" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="matmul.html" class="btn btn-neutral float-left" title="matmul" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="value_is_nan.html" class="btn btn-neutral float-left" title="value_is_nan" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

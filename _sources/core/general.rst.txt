@@ -59,6 +59,8 @@ General
    general/where.rst
    general/indices_where.rst
    general/isnan.rst
+   general/value_is_nan.rst
+   general/has_nans.rst
    general/reshape.rst
    general/broadcast_to.rst
    general/squeeze.rst
