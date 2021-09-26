@@ -26,8 +26,6 @@ from operator import floordiv as _floordiv
 # local
 import ivy as _ivy
 
-INF = float('inf')
-
 
 def _is_jsonable(x):
     try:
@@ -1732,16 +1730,7 @@ class Container(dict):
         :type leafwise: bool, optional
         :return: Whether the container has any nans, applied either leafwise or across the entire container.
         """
-
-        def _mean_is_nan(x):
-            x_scalar = _ivy.to_scalar(x) if _ivy.is_array(x) else x
-            if not x_scalar == x_scalar:
-                return True
-            if include_infs and x_scalar == INF or x_scalar == -INF:
-                return True
-            return False
-
-        leafwise_res = self.reduce_mean().map(lambda x, kc: _mean_is_nan(x))
+        leafwise_res = self.map(lambda x, kc: _ivy.has_nans(x, include_infs))
         if leafwise:
             return leafwise_res
         return max([v for k, v in leafwise_res.to_iterator()])
