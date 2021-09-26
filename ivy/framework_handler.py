@@ -8,7 +8,6 @@ from types import ModuleType
 
 framework_stack = []
 wrap_methods_modules = []
-# ToDo: add more non-wrapped methods to the list below, adding __name__ attribute to lambdas where needed
 NON_WRAPPED_METHODS = ['current_framework', 'current_framework_str', 'set_framework', 'get_framework',
                        'unset_framework', 'set_debug_mode', 'set_breakpoint_debug_mode', 'set_exception_debug_mode',
                        'unset_debug_mode', 'debug_mode', 'nested_map', 'to_ivy', 'args_to_ivy', 'to_native',
@@ -175,8 +174,6 @@ def _wrap_method(fn):
         return fn
 
     def _method_wrapped(*args, **kwargs):
-        # ToDo: try to modify ivy.Array built-ins so extracting the data is not needed here,
-        #  and maybe even the wrapping in general
         native_args, native_kwargs = ivy.args_to_native(*args, **kwargs)
         native_ret = fn(*native_args, **native_kwargs)
         if fn.__name__ in NON_ARRAY_RET_METHODS:
@@ -264,10 +261,65 @@ def wrapped_mode():
 # Debug Mode #
 # -----------#
 
+# Methods #
+
+def _wrap_method_for_debugging(fn):
+
+    if hasattr(fn, '__name__') and (fn.__name__[0] == '_' or fn.__name__ in NON_WRAPPED_METHODS):
+        return fn
+
+    if hasattr(fn, 'wrapped_for_debugging') and fn.wrapped_for_debugging:
+        return fn
+
+    def _method_wrapped(*args, **kwargs):
+
+        found_nans = False
+
+        def _has_nans(x):
+            nonlocal found_nans
+            found_nans = ivy.has_nans(x) if ivy.is_array(x) else False
+
+        ivy.nested_map(args, _has_nans)
+        if found_nans:
+            raise Exception('found nans in args {}'.format(args))
+        ivy.nested_map(kwargs, _has_nans)
+        if found_nans:
+            raise Exception('found nans in kwargs {}'.format(kwargs))
+        ret = fn(*args, **kwargs)
+        ivy.nested_map(ret, _has_nans)
+        if found_nans:
+            raise Exception('found nans in return {}'.format(ret))
+        return ret
+
+    if hasattr(fn, '__name__'):
+        _method_wrapped.__name__ = fn.__name__
+    _method_wrapped.wrapped_for_debugging = True
+    _method_wrapped.inner_fn = fn
+    return _method_wrapped
+
+
+def _unwrap_method_from_debugging(method_wrapped):
+
+    if not hasattr(method_wrapped, 'wrapped_for_debugging') or not method_wrapped.wrapped_for_debugging:
+        return method_wrapped
+    return method_wrapped.inner_fn
+
+
+def _wrap_methods_for_debugging():
+    return _wrap_or_unwrap_methods(_wrap_method_for_debugging)
+
+
+def _unwrap_methods_from_debugging():
+    return _wrap_or_unwrap_methods(_unwrap_method_from_debugging)
+
+
+# Mode #
+
 def set_debug_mode(debug_mode_in='exception'):
     assert debug_mode_in in ['breakpoint', 'exception']
     global debug_mode_val
     debug_mode_val = debug_mode_in
+    _wrap_methods_for_debugging()
 
 
 def set_breakpoint_debug_mode():
@@ -281,6 +333,7 @@ def set_exception_debug_mode():
 def unset_debug_mode():
     global debug_mode_val
     debug_mode_val = False
+    _unwrap_methods_from_debugging()
 
 
 def debug_mode():
