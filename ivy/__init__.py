@@ -54,6 +54,7 @@ from ivy.core.array import ArrayWithGeneral, ArrayWithGradients, ArrayWithImage,
     ArrayWithMath, ArrayWithMeta, ArrayWithRandom, ArrayWithReductions
 
 
+# noinspection PyRedeclaration
 class Array(ArrayWithGeneral, ArrayWithGradients, ArrayWithImage, ArrayWithLinalg, ArrayWithLogic, ArrayWithMath,
             ArrayWithMeta, ArrayWithRandom, ArrayWithReductions):
 
@@ -322,6 +323,7 @@ class Array(ArrayWithGeneral, ArrayWithGradients, ArrayWithImage, ArrayWithLinal
             return res
         return to_ivy(res)
 
+    # noinspection PyDefaultArgument
     def __deepcopy__(self, memodict={}):
         try:
             return to_ivy(self._data.__deepcopy__(memodict))
@@ -337,11 +339,12 @@ class Array(ArrayWithGeneral, ArrayWithGradients, ArrayWithImage, ArrayWithLinal
         return iter([to_ivy(i) for i in self._data])
 
 
+# noinspection PyRedeclaration
 class Variable(Array):
 
     def __init__(self, data):
         assert is_variable(data)
-        Array.__init__(self, data)
+        super().__init__(data)
 
 
 backend = 'none'
