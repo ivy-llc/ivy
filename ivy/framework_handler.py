@@ -206,7 +206,8 @@ def _wrap_or_unwrap_methods(wrap_or_unwrap_fn, val=None, depth=0):
         if depth == 0:
             wrap_methods_modules.clear()
         return val
-    elif callable(val) and not inspect.isclass(val) and hasattr(val, '__module__') and 'ivy' in val.__module__:
+    elif callable(val) and not inspect.isclass(val) and hasattr(val, '__module__') and val.__module__ and \
+            'ivy' in val.__module__:
         if depth == 0:
             wrap_methods_modules.clear()
         return wrap_or_unwrap_fn(val)

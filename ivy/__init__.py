@@ -1,10 +1,28 @@
 # class placeholders
-NativeArray = None
-NativeVariable = None
-Framework = None
-Device = None
-Dtype = None
-Container = None
+
+class NativeArray:
+    pass
+
+
+class NativeVariable:
+    pass
+
+
+class Framework:
+    pass
+
+
+class Device:
+    pass
+
+
+class Dtype:
+    pass
+
+
+class Container:
+    pass
+
 
 # global constants
 _MIN_DENOMINATOR = 1e-12
