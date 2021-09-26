@@ -199,9 +199,11 @@ def _unwrap_method(method_wrapped):
     return method_wrapped.inner_fn
 
 
-def _wrap_or_unwrap_methods(wrap_or_unwrap_fn, val=None, depth=0):
+def _wrap_or_unwrap_methods(wrap_or_unwrap_fn, val=None, fs=None, depth=0):
     if val is None:
         val = ivy
+    if fs is None:
+        fs = ivy.current_framework_str()
     if isinstance(val, ModuleType):
         if (val in wrap_methods_modules or '__file__' not in val.__dict__ or
                 'ivy' not in val.__file__ or 'framework_handler' in val.__file__):
@@ -211,13 +213,21 @@ def _wrap_or_unwrap_methods(wrap_or_unwrap_fn, val=None, depth=0):
             if v is None:
                 val.__dict__[k] = v
             else:
-                val.__dict__[k] = _wrap_or_unwrap_methods(wrap_or_unwrap_fn, v, depth+1)
+                val.__dict__[k] = _wrap_or_unwrap_methods(wrap_or_unwrap_fn, v, fs, depth+1)
         if depth == 0:
             wrap_methods_modules.clear()
         return val
     elif callable(val) and not inspect.isclass(val):
         if depth == 0:
             wrap_methods_modules.clear()
+        if hasattr(val, 'inner_fn'):
+            if not hasattr(val.inner_fn, '__module__') or not val.inner_fn.__module__ or \
+                    (fs not in val.inner_fn.__module__ and 'ivy' not in val.inner_fn.__module__):
+                return val
+        else:
+            if not hasattr(val, '__module__') or not val.__module__ or\
+                    (fs not in val.__module__ and 'ivy' not in val.__module__):
+                return val
         return wrap_or_unwrap_fn(val)
     if depth == 0:
         wrap_methods_modules.clear()
@@ -350,10 +360,11 @@ def _wrap_or_unwrap_array(wrap_or_unwrap_fn, val=None, fs=None, depth=0):
             wrap_methods_modules.clear()
         if hasattr(val, 'inner_fn'):
             if not hasattr(val.inner_fn, '__module__') or not val.inner_fn.__module__ or \
-                    fs not in val.inner_fn.__module__:
+                    (fs not in val.inner_fn.__module__ and 'ivy' not in val.inner_fn.__module__):
                 return
         else:
-            if not hasattr(val, '__module__') or not val.__module__ or fs not in val.__module__:
+            if not hasattr(val, '__module__') or not val.__module__ or\
+                    (fs not in val.__module__ and 'ivy' not in val.__module__):
                 return
         wrap_or_unwrap_fn(val)
         return
