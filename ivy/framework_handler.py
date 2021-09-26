@@ -265,7 +265,9 @@ def wrapped_mode():
 
 def _wrap_method_for_debugging(fn):
 
-    if hasattr(fn, '__name__') and (fn.__name__[0] == '_' or fn.__name__ in NON_WRAPPED_METHODS):
+    if hasattr(fn, '__name__') and (fn.__name__[0] == '_' or fn.__name__ in
+                                    set(NON_WRAPPED_METHODS + ['has_nans', 'is_array', 'value_is_nan', 'reduce_sum',
+                                                               'to_scalar'])):
         return fn
 
     if hasattr(fn, 'wrapped_for_debugging') and fn.wrapped_for_debugging:
@@ -278,6 +280,7 @@ def _wrap_method_for_debugging(fn):
         def _has_nans(x):
             nonlocal found_nans
             found_nans = ivy.has_nans(x) if ivy.is_array(x) else False
+            return x
 
         ivy.nested_map(args, _has_nans)
         if found_nans:
