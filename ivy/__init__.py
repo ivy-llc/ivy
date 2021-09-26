@@ -28,9 +28,12 @@ class Container:
 _MIN_DENOMINATOR = 1e-12
 _MIN_BASE = 1e-5
 
-# imports
-import ivy
+# global
 import copy
+import logging
+
+# local
+import ivy
 from .core import *
 from . import neural_net_functional
 from .neural_net_functional import *
@@ -46,6 +49,9 @@ class Array:
 
     def __init__(self, data):
         assert ivy.is_array(data)
+        if not ivy.wrapped_mode():
+            logging.info('setting ivy.wrapped_mode=True; using ivy.Array classes in non-wrapped mode is not supported.')
+            ivy.set_wrapped_mode()
         self._data = data
         self._shape = data.shape
         self._dtype = ivy.dtype(self._data)
