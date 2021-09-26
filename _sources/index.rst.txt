@@ -264,6 +264,7 @@ Documentation Tree
    :maxdepth: -1
    :caption: Core
 
+   core/array.rst
    core/container.rst
    core/general.rst
    core/gradients.rst
