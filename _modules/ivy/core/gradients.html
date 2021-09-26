@@ -424,7 +424,7 @@
 <span class="sd">    :return: The new function weights ws_new, following the LARS updates.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">ws_norm</span> <span class="o">=</span> <span class="n">ws</span><span class="o">.</span><span class="n">vector_norm</span><span class="p">()</span>
-    <span class="n">lr</span> <span class="o">=</span> <span class="n">_ivy</span><span class="o">.</span><span class="n">stable_divide</span><span class="p">(</span><span class="n">lr</span> <span class="o">*</span> <span class="n">ws_norm</span><span class="p">,</span> <span class="n">dcdws</span><span class="o">.</span><span class="n">vector_norm</span><span class="p">())</span>
+    <span class="n">lr</span> <span class="o">=</span> <span class="n">_ivy</span><span class="o">.</span><span class="n">stable_divide</span><span class="p">(</span><span class="n">ws_norm</span> <span class="o">*</span> <span class="n">lr</span><span class="p">,</span> <span class="n">dcdws</span><span class="o">.</span><span class="n">vector_norm</span><span class="p">())</span>
     <span class="k">if</span> <span class="n">decay_lambda</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
         <span class="n">lr</span> <span class="o">/=</span> <span class="p">(</span><span class="n">ws_norm</span> <span class="o">*</span> <span class="n">decay_lambda</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">gradient_descent_update</span><span class="p">(</span><span class="n">ws</span><span class="p">,</span> <span class="n">dcdws</span><span class="p">,</span> <span class="n">lr</span><span class="p">,</span> <span class="n">inplace</span><span class="p">,</span> <span class="n">stop_gradients</span><span class="p">)</span></div>
@@ -511,7 +511,7 @@
     <span class="k">else</span><span class="p">:</span>
         <span class="n">r2</span> <span class="o">=</span> <span class="n">eff_grads</span><span class="o">.</span><span class="n">vector_norm</span><span class="p">()</span>
     <span class="n">r</span> <span class="o">=</span> <span class="n">_ivy</span><span class="o">.</span><span class="n">stable_divide</span><span class="p">(</span><span class="n">r1</span><span class="p">,</span> <span class="n">r2</span><span class="p">)</span><span class="o">.</span><span class="n">minimum</span><span class="p">(</span><span class="n">max_trust_ratio</span><span class="p">)</span>
-    <span class="n">lr</span> <span class="o">=</span> <span class="n">lr</span> <span class="o">*</span> <span class="n">r</span>
+    <span class="n">lr</span> <span class="o">=</span> <span class="n">r</span> <span class="o">*</span> <span class="n">lr</span>
     <span class="k">return</span> <span class="n">optimizer_update</span><span class="p">(</span><span class="n">ws</span><span class="p">,</span> <span class="n">eff_grads</span><span class="p">,</span> <span class="n">lr</span><span class="p">,</span> <span class="n">inplace</span><span class="p">,</span> <span class="n">stop_gradients</span><span class="p">),</span> <span class="n">mw</span><span class="p">,</span> <span class="n">vw</span></div>
 </pre></div>
 
