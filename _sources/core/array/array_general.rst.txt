@@ -1,0 +1,16 @@
+Array general
+=============
+
+.. automodule:: ivy.core.array.array_general
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :show-inheritance:
+
+
+.. toctree::
+   :maxdepth: -1
+   :caption: Array general
+
+   array_general/ArrayWithGeneral.rst
+

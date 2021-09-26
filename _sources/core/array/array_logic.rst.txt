@@ -1,0 +1,16 @@
+Array logic
+===========
+
+.. automodule:: ivy.core.array.array_logic
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :show-inheritance:
+
+
+.. toctree::
+   :maxdepth: -1
+   :caption: Array logic
+
+   array_logic/ArrayWithLogic.rst
+

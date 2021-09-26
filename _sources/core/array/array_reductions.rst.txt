@@ -1,0 +1,16 @@
+Array reductions
+================
+
+.. automodule:: ivy.core.array.array_reductions
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :show-inheritance:
+
+
+.. toctree::
+   :maxdepth: -1
+   :caption: Array reductions
+
+   array_reductions/ArrayWithReductions.rst
+

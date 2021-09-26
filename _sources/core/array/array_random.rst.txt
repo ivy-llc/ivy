@@ -1,0 +1,16 @@
+Array random
+============
+
+.. automodule:: ivy.core.array.array_random
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :show-inheritance:
+
+
+.. toctree::
+   :maxdepth: -1
+   :caption: Array random
+
+   array_random/ArrayWithRandom.rst
+
