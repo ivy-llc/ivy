@@ -460,9 +460,19 @@
         <span class="k">return</span>
 
     <span class="k">if</span> <span class="n">wrapped_mode_val</span><span class="p">:</span>
-        <span class="n">shared_fn</span> <span class="o">=</span> <span class="n">ivy_original_fn_dict</span><span class="p">[</span><span class="n">fn</span><span class="o">.</span><span class="n">inner_fn</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">fn</span> <span class="ow">in</span> <span class="n">ivy_original_fn_dict</span><span class="p">:</span>
+            <span class="n">shared_fn</span> <span class="o">=</span> <span class="n">ivy_original_fn_dict</span><span class="p">[</span><span class="n">fn</span><span class="p">]</span>
+        <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="s1">&#39;inner_fn&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">fn</span><span class="o">.</span><span class="n">inner_fn</span> <span class="ow">in</span> <span class="n">ivy_original_fn_dict</span><span class="p">:</span>
+            <span class="n">shared_fn</span> <span class="o">=</span> <span class="n">ivy_original_fn_dict</span><span class="p">[</span><span class="n">fn</span><span class="o">.</span><span class="n">inner_fn</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># raise Exception(&#39;invalid key&#39;)</span>
+            <span class="k">return</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">shared_fn</span> <span class="o">=</span> <span class="n">ivy_original_fn_dict</span><span class="p">[</span><span class="n">fn</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">fn</span> <span class="ow">in</span> <span class="n">ivy_original_fn_dict</span><span class="p">:</span>
+            <span class="n">shared_fn</span> <span class="o">=</span> <span class="n">ivy_original_fn_dict</span><span class="p">[</span><span class="n">fn</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># raise Exception(&#39;invalid key&#39;)</span>
+            <span class="k">return</span>
 
     <span class="n">arg_spec</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">getfullargspec</span><span class="p">(</span><span class="n">shared_fn</span><span class="p">)</span>
     <span class="n">anno</span> <span class="o">=</span> <span class="n">arg_spec</span><span class="o">.</span><span class="n">annotations</span>
