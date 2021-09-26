@@ -57,6 +57,7 @@ to_scalar.__name__ = 'to_scalar'
 to_list = lambda x: x.tolist()
 to_list.__name__ = 'to_list'
 shape = lambda x, as_tensor=False: _jnp.asarray(_jnp.shape(x)) if as_tensor else x.shape
+shape.__name__ = 'shape'
 get_num_dims = lambda x, as_tensor=False: _jnp.asarray(len(_jnp.shape(x))) if as_tensor else len(x.shape)
 minimum = _jnp.minimum
 maximum = _jnp.maximum
@@ -411,6 +412,7 @@ def num_gpus():
 
 tpu_is_available = lambda: _dev_is_available('tpu')
 dtype = lambda x: x.dtype
+dtype.__name__ = 'dtype'
 dtype_to_str = lambda dtype_in: DTYPE_DICT[dtype_in]
 dtype_str = lambda x: dtype_to_str(dtype(x))
 compile_fn = lambda fn, dynamic=True, example_inputs=None: _jax.jit(fn)
