@@ -16,6 +16,7 @@ import ivy
 from ivy.framework_handler import current_framework as _cur_framework
 
 FN_CACHE = dict()
+INF = float('inf')
 
 
 # Helpers #
@@ -909,6 +910,39 @@ def isnan(x: Union[ivy.Array, ivy.NativeArray], f: ivy.Framework = None)\
     :return: Boolean values for where the values of the array are nan.
     """
     return _cur_framework(x, f=f).isnan(x)
+
+
+def value_is_nan(x: Union[ivy.Array, ivy.NativeArray, Number], include_infs: bool = True)\
+        -> bool:
+    """
+    Determine whether the single valued array or scalar is of nan type
+
+    :param x: The input to check Input array.
+    :type x: array
+    :param include_infs: Whether to include infs and -infs in the check. Default is True.
+    :type include_infs: bool, optional
+    :return Boolean as to whether the input value is a nan or not.
+    """
+    x_scalar = ivy.to_scalar(x) if ivy.is_array(x) else x
+    if not x_scalar == x_scalar:
+        return True
+    if include_infs and x_scalar == INF or x_scalar == -INF:
+        return True
+    return False
+
+
+def has_nans(x: Union[ivy.Array, ivy.NativeArray], include_infs: bool = True)\
+        -> bool:
+    """
+    Determine whether the array contains any nans, as well as infs or -infs if specified.
+
+    :param x: Input array.
+    :type x: array
+    :param include_infs: Whether to include infs and -infs in the check. Default is True.
+    :type include_infs: bool, optional
+    :return: Boolean as to whether the array contains nans.
+    """
+    return value_is_nan(ivy.reduce_sum(x), include_infs)
 
 
 def reshape(x: Union[ivy.Array, ivy.NativeArray], newshape: Union[int, List[int]], f: ivy.Framework = None)\
