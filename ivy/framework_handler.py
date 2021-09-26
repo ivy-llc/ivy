@@ -21,7 +21,7 @@ NON_ARRAY_RET_METHODS = ['to_numpy', 'to_list', 'to_scalar', 'unstack', 'split',
                          'is_variable']
 NON_ARRAY_METHODS = ['shape', 'dtype']
 debug_mode_val = False
-wrapped_mode_val = True
+wrapped_mode_val = False
 ivy_original_dict = ivy.__dict__.copy()
 ivy_original_fn_dict = dict()
 
