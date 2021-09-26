@@ -234,25 +234,34 @@ def _unwrap_methods():
 
 # ivy.Array #
 
+def _is_array(v):
+    # noinspection PyUnresolvedReferences,PyProtectedMember
+    if inspect.isclass(v) or not isinstance(v, typing._GenericAlias):
+        return False
+    typing_type = v.__repr__().split('.')[1].split('[')[0]
+    if typing_type == 'Union':
+        for a in v.__args__:
+            if inspect.isclass(a) and a.__name__ in ['Array', 'NativeArray']:
+                return True
+    return False
+
+
 def _get_array_arg_info(anno):
     for i, (k, v) in enumerate(anno.items()):
         if k == 'return':
             continue
         # noinspection PyUnresolvedReferences,PyProtectedMember
-        if inspect.isclass(v):
-            if v.__name__ == 'NativeArray':
-                return True, i-1, k, 'single'
-            else:
-                continue
+        if _is_array(v):
+            return True, i-1, k, 'single'
         elif isinstance(v, typing._GenericAlias):
             typing_type = v.__repr__().split('.')[1].split('[')[0]
             if typing_type == 'Union':
                 for a in v.__args__:
-                    if inspect.isclass(a) and a.__name__ == 'NativeArray':
+                    if _is_array(a):
                         return True, i-1, k, 'single'
             elif typing_type == 'List':
                 for a in v.__args__:
-                    if inspect.isclass(a) and a.__name__ == 'NativeArray':
+                    if _is_array(a):
                         return True, i-1, k, 'list'
     return False, None, None, None
 
