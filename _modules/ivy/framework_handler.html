@@ -423,25 +423,34 @@
 
 <span class="c1"># ivy.Array #</span>
 
+<span class="k">def</span> <span class="nf">_is_array</span><span class="p">(</span><span class="n">v</span><span class="p">):</span>
+    <span class="c1"># noinspection PyUnresolvedReferences,PyProtectedMember</span>
+    <span class="k">if</span> <span class="n">inspect</span><span class="o">.</span><span class="n">isclass</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">typing</span><span class="o">.</span><span class="n">_GenericAlias</span><span class="p">):</span>
+        <span class="k">return</span> <span class="kc">False</span>
+    <span class="n">typing_type</span> <span class="o">=</span> <span class="n">v</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;[&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">typing_type</span> <span class="o">==</span> <span class="s1">&#39;Union&#39;</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">v</span><span class="o">.</span><span class="n">__args__</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">inspect</span><span class="o">.</span><span class="n">isclass</span><span class="p">(</span><span class="n">a</span><span class="p">)</span> <span class="ow">and</span> <span class="n">a</span><span class="o">.</span><span class="vm">__name__</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;Array&#39;</span><span class="p">,</span> <span class="s1">&#39;NativeArray&#39;</span><span class="p">]:</span>
+                <span class="k">return</span> <span class="kc">True</span>
+    <span class="k">return</span> <span class="kc">False</span>
+
+
 <span class="k">def</span> <span class="nf">_get_array_arg_info</span><span class="p">(</span><span class="n">anno</span><span class="p">):</span>
     <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">anno</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
         <span class="k">if</span> <span class="n">k</span> <span class="o">==</span> <span class="s1">&#39;return&#39;</span><span class="p">:</span>
             <span class="k">continue</span>
         <span class="c1"># noinspection PyUnresolvedReferences,PyProtectedMember</span>
-        <span class="k">if</span> <span class="n">inspect</span><span class="o">.</span><span class="n">isclass</span><span class="p">(</span><span class="n">v</span><span class="p">):</span>
-            <span class="k">if</span> <span class="n">v</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;NativeArray&#39;</span><span class="p">:</span>
-                <span class="k">return</span> <span class="kc">True</span><span class="p">,</span> <span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="s1">&#39;single&#39;</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="k">continue</span>
+        <span class="k">if</span> <span class="n">_is_array</span><span class="p">(</span><span class="n">v</span><span class="p">):</span>
+            <span class="k">return</span> <span class="kc">True</span><span class="p">,</span> <span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="s1">&#39;single&#39;</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">typing</span><span class="o">.</span><span class="n">_GenericAlias</span><span class="p">):</span>
             <span class="n">typing_type</span> <span class="o">=</span> <span class="n">v</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;[&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
             <span class="k">if</span> <span class="n">typing_type</span> <span class="o">==</span> <span class="s1">&#39;Union&#39;</span><span class="p">:</span>
                 <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">v</span><span class="o">.</span><span class="n">__args__</span><span class="p">:</span>
-                    <span class="k">if</span> <span class="n">inspect</span><span class="o">.</span><span class="n">isclass</span><span class="p">(</span><span class="n">a</span><span class="p">)</span> <span class="ow">and</span> <span class="n">a</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;NativeArray&#39;</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">_is_array</span><span class="p">(</span><span class="n">a</span><span class="p">):</span>
                         <span class="k">return</span> <span class="kc">True</span><span class="p">,</span> <span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="s1">&#39;single&#39;</span>
             <span class="k">elif</span> <span class="n">typing_type</span> <span class="o">==</span> <span class="s1">&#39;List&#39;</span><span class="p">:</span>
                 <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">v</span><span class="o">.</span><span class="n">__args__</span><span class="p">:</span>
-                    <span class="k">if</span> <span class="n">inspect</span><span class="o">.</span><span class="n">isclass</span><span class="p">(</span><span class="n">a</span><span class="p">)</span> <span class="ow">and</span> <span class="n">a</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;NativeArray&#39;</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">_is_array</span><span class="p">(</span><span class="n">a</span><span class="p">):</span>
                         <span class="k">return</span> <span class="kc">True</span><span class="p">,</span> <span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="s1">&#39;list&#39;</span>
     <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span>
 
