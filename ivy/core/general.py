@@ -36,8 +36,8 @@ def _to_ivy(x: Any)\
 # Wrapped #
 # --------#
 
-def nested_map(x: Union[ivy.NativeArray, List, Tuple, Dict], fn: Callable)\
-        -> Union[ivy.NativeArray, List, Tuple, Dict]:
+def nested_map(x: Union[Union[ivy.Array, ivy.NativeArray], List, Tuple, Dict], fn: Callable)\
+        -> Union[Union[ivy.Array, ivy.NativeArray], List, Tuple, Dict]:
     """
     Applies a function on x in a nested manner, whereby all dicts, lists and tuples are traversed to their lowest
     leaves before applying the method and returning x. If x is not nested, the method is applied to x directly.
@@ -59,8 +59,8 @@ def nested_map(x: Union[ivy.NativeArray, List, Tuple, Dict], fn: Callable)\
     return fn(x)
 
 
-def to_ivy(x: Union[ivy.NativeArray, List, Tuple, Dict], nested: bool = False)\
-        -> Union[ivy.NativeArray, List, Tuple, Dict]:
+def to_ivy(x: Union[Union[ivy.Array, ivy.NativeArray], List, Tuple, Dict], nested: bool = False)\
+        -> Union[Union[ivy.Array, ivy.NativeArray], List, Tuple, Dict]:
     """
     Returns the input array converted to an ivy.Array instances if it is an array type, otherwise the input is
     returned unchanged. If nested is set, the check is applied to all nested leafs of tuples,
@@ -96,8 +96,8 @@ def args_to_ivy(*args: List[Any], **kwargs: Dict[str, Any])\
     return native_args, native_kwargs
 
 
-def to_native(x: Union[ivy.NativeArray, List, Tuple, Dict], nested: bool = False)\
-        -> Union[ivy.NativeArray, List, Tuple, Dict]:
+def to_native(x: Union[Union[ivy.Array, ivy.NativeArray], List, Tuple, Dict], nested: bool = False)\
+        -> Union[Union[ivy.Array, ivy.NativeArray], List, Tuple, Dict]:
     """
     Returns the input item in it's native backend framework form if it is an ivy.Array or ivy.Variable instance.
     otherwise the input is returned unchanged. If nested is set, the check is applied to all nested leafs of tuples,
@@ -137,9 +137,8 @@ def args_to_native(*args: List[Any], **kwargs: Dict[str, Any])\
 # ----#
 
 # noinspection PyShadowingNames
-def array(object_in: Union[List, np.ndarray, ivy.NativeArray], dtype_str: str = None, dev_str: str = None,
-          f: ivy.Framework = None)\
-        -> ivy.NativeArray:
+def array(object_in: Union[List, np.ndarray, Union[ivy.Array, ivy.NativeArray]], dtype_str: str = None,
+          dev_str: str = None, f: ivy.Framework = None) -> Union[ivy.Array, ivy.NativeArray]:
     """
     Creates an array.
 
@@ -176,7 +175,7 @@ def is_array(x: Any, f: ivy.Framework = None)\
         return False
 
 
-def array_equal(x0: ivy.NativeArray, x1: ivy.NativeArray, f: ivy.Framework = None)\
+def array_equal(x0: Union[ivy.Array, ivy.NativeArray], x1: Union[ivy.Array, ivy.NativeArray], f: ivy.Framework = None)\
         -> bool:
     """
     Determines whether two input arrays are equal across all elements.
@@ -193,7 +192,7 @@ def array_equal(x0: ivy.NativeArray, x1: ivy.NativeArray, f: ivy.Framework = Non
 
 
 def equal(*xs: List[Any], equality_matrix: bool = False)\
-        -> Union[bool, ivy.NativeArray]:
+        -> Union[bool, Union[ivy.Array, ivy.NativeArray]]:
     """
     Determines whether the inputs are all equal.
 
@@ -213,6 +212,7 @@ def equal(*xs: List[Any], equality_matrix: bool = False)\
                 j = j_ + i
                 res = equality_fn(xa, xb)
                 if ivy.is_array(res):
+                    # noinspection PyTypeChecker
                     res = ivy.to_scalar(res)
                 # noinspection PyTypeChecker
                 mat[i][j] = res
@@ -226,7 +226,7 @@ def equal(*xs: List[Any], equality_matrix: bool = False)\
     return True
 
 
-def to_numpy(x: ivy.NativeArray, f: ivy.Framework = None)\
+def to_numpy(x: Union[ivy.Array, ivy.NativeArray], f: ivy.Framework = None)\
         -> np.ndarray:
     """
     Converts array into a numpy array.
@@ -240,7 +240,7 @@ def to_numpy(x: ivy.NativeArray, f: ivy.Framework = None)\
     return _cur_framework(x, f=f).to_numpy(x)
 
 
-def to_scalar(x: ivy.NativeArray, f: ivy.Framework = None)\
+def to_scalar(x: Union[ivy.Array, ivy.NativeArray], f: ivy.Framework = None)\
         -> Number:
     """
     Converts an array with a single element into a scalar.
@@ -254,7 +254,7 @@ def to_scalar(x: ivy.NativeArray, f: ivy.Framework = None)\
     return _cur_framework(x, f=f).to_scalar(x)
 
 
-def to_list(x: ivy.NativeArray, f: ivy.Framework = None)\
+def to_list(x: Union[ivy.Array, ivy.NativeArray], f: ivy.Framework = None)\
         -> List:
     """
     Creates a (possibly nested) list from input array.
@@ -268,7 +268,7 @@ def to_list(x: ivy.NativeArray, f: ivy.Framework = None)\
     return _cur_framework(x, f=f).to_list(x)
 
 
-def shape(x: ivy.NativeArray, as_array: bool = False, f: ivy.Framework = None)\
+def shape(x: Union[ivy.Array, ivy.NativeArray], as_array: bool = False, f: ivy.Framework = None)\
         -> Union[List[int], Tuple[int]]:
     """
     Returns the shape of the array x.
@@ -284,7 +284,7 @@ def shape(x: ivy.NativeArray, as_array: bool = False, f: ivy.Framework = None)\
     return _cur_framework(x, f=f).shape(x, as_array)
 
 
-def get_num_dims(x: ivy.NativeArray, as_array: bool = False, f: ivy.Framework = None) -> int:
+def get_num_dims(x: Union[ivy.Array, ivy.NativeArray], as_array: bool = False, f: ivy.Framework = None) -> int:
     """
     Returns the number of dimensions of the array x.
 
@@ -299,8 +299,8 @@ def get_num_dims(x: ivy.NativeArray, as_array: bool = False, f: ivy.Framework = 
     return _cur_framework(x, f=f).get_num_dims(x, as_array)
 
 
-def minimum(x: ivy.NativeArray, y: ivy.NativeArray, f: ivy.Framework = None)\
-        -> ivy.NativeArray:
+def minimum(x: Union[ivy.Array, ivy.NativeArray], y: Union[ivy.Array, ivy.NativeArray], f: ivy.Framework = None)\
+        -> Union[ivy.Array, ivy.NativeArray]:
     """
     Returns the min of x and y (i.e. x < y ? x : y) element-wise.
 
@@ -315,8 +315,8 @@ def minimum(x: ivy.NativeArray, y: ivy.NativeArray, f: ivy.Framework = None)\
     return _cur_framework(x, f=f).minimum(x, y)
 
 
-def maximum(x: ivy.NativeArray, y: ivy.NativeArray, f: ivy.Framework = None)\
-        -> ivy.NativeArray:
+def maximum(x: Union[ivy.Array, ivy.NativeArray, Number], y: Union[ivy.Array, ivy.NativeArray, Number],
+            f: ivy.Framework = None) -> Union[ivy.Array, ivy.NativeArray]:
     """
     Returns the max of x and y (i.e. x > y ? x : y) element-wise.
 
@@ -331,8 +331,9 @@ def maximum(x: ivy.NativeArray, y: ivy.NativeArray, f: ivy.Framework = None)\
     return _cur_framework(x, f=f).maximum(x, y)
 
 
-def clip(x: ivy.NativeArray, x_min: Union[Number, ivy.NativeArray], x_max: Union[Number, ivy.NativeArray],
-         f: ivy.Framework = None) -> ivy.NativeArray:
+def clip(x: Union[ivy.Array, ivy.NativeArray], x_min: Union[Number, Union[ivy.Array, ivy.NativeArray]],
+         x_max: Union[Number, Union[ivy.Array, ivy.NativeArray]], f: ivy.Framework = None)\
+        -> Union[ivy.Array, ivy.NativeArray]:
     """
     Clips (limits) the values in an array.
 
@@ -354,8 +355,8 @@ def clip(x: ivy.NativeArray, x_min: Union[Number, ivy.NativeArray], x_max: Union
     return _cur_framework(x, f=f).clip(x, x_min, x_max)
 
 
-def clip_vector_norm(x: ivy.NativeArray, max_norm: float, p: float = 2.0)\
-        -> ivy.NativeArray:
+def clip_vector_norm(x: Union[ivy.Array, ivy.NativeArray], max_norm: float, p: float = 2.0)\
+        -> Union[ivy.Array, ivy.NativeArray]:
     """
     Clips (limits) the vector p-norm of an array.
 
@@ -374,8 +375,8 @@ def clip_vector_norm(x: ivy.NativeArray, max_norm: float, p: float = 2.0)\
     return x
 
 
-def clip_matrix_norm(x: ivy.NativeArray, max_norm: float, p: float = 2.0)\
-        -> ivy.NativeArray:
+def clip_matrix_norm(x: Union[ivy.Array, ivy.NativeArray], max_norm: float, p: float = 2.0)\
+        -> Union[ivy.Array, ivy.NativeArray]:
     """
     Clips (limits) the matrix norm of an array.
 
@@ -393,8 +394,8 @@ def clip_matrix_norm(x: ivy.NativeArray, max_norm: float, p: float = 2.0)\
 
 
 # noinspection PyShadowingBuiltins
-def round(x: ivy.NativeArray, f: ivy.Framework = None)\
-        -> ivy.NativeArray:
+def round(x: Union[ivy.Array, ivy.NativeArray], f: ivy.Framework = None)\
+        -> Union[ivy.Array, ivy.NativeArray]:
     """
     Rounds the values of an array to the nearest integer, element-wise.
 
@@ -407,8 +408,8 @@ def round(x: ivy.NativeArray, f: ivy.Framework = None)\
     return _cur_framework(x, f=f).round(x)
 
 
-def floormod(x: ivy.NativeArray, y: ivy.NativeArray, f: ivy.Framework = None)\
-        -> ivy.NativeArray:
+def floormod(x: Union[ivy.Array, ivy.NativeArray], y: Union[ivy.Array, ivy.NativeArray], f: ivy.Framework = None)\
+        -> Union[ivy.Array, ivy.NativeArray]:
     """
     Returns element-wise remainder of division.
 
@@ -423,8 +424,8 @@ def floormod(x: ivy.NativeArray, y: ivy.NativeArray, f: ivy.Framework = None)\
     return _cur_framework(x, f=f).floormod(x, y)
 
 
-def floor(x: ivy.NativeArray, f: ivy.Framework = None)\
-        -> ivy.NativeArray:
+def floor(x: Union[ivy.Array, ivy.NativeArray], f: ivy.Framework = None)\
+        -> Union[ivy.Array, ivy.NativeArray]:
     """
     Returns element-wise largest integer not greater than x.
 
@@ -437,8 +438,8 @@ def floor(x: ivy.NativeArray, f: ivy.Framework = None)\
     return _cur_framework(x, f=f).floor(x)
 
 
-def ceil(x: ivy.NativeArray, f: ivy.Framework = None)\
-        -> ivy.NativeArray:
+def ceil(x: Union[ivy.Array, ivy.NativeArray], f: ivy.Framework = None)\
+        -> Union[ivy.Array, ivy.NativeArray]:
     """
     Returns element-wise smallest integer not less than x.
 
@@ -452,8 +453,8 @@ def ceil(x: ivy.NativeArray, f: ivy.Framework = None)\
 
 
 # noinspection PyShadowingBuiltins
-def abs(x: ivy.NativeArray, f: ivy.Framework = None)\
-        -> ivy.NativeArray:
+def abs(x: Union[ivy.Array, ivy.NativeArray], f: ivy.Framework = None)\
+        -> Union[ivy.Array, ivy.NativeArray]:
     """
     Returns the absolute value of each element in x.
 
@@ -466,8 +467,8 @@ def abs(x: ivy.NativeArray, f: ivy.Framework = None)\
     return _cur_framework(x, f=f).abs(x)
 
 
-def argmax(x: ivy.NativeArray, axis: int = 0, f: ivy.Framework = None)\
-        -> ivy.NativeArray:
+def argmax(x: Union[ivy.Array, ivy.NativeArray], axis: int = 0, f: ivy.Framework = None)\
+        -> Union[ivy.Array, ivy.NativeArray]:
     """
     Returns the index with the largest value across axes of an array.
 
@@ -482,8 +483,8 @@ def argmax(x: ivy.NativeArray, axis: int = 0, f: ivy.Framework = None)\
     return _cur_framework(x, f=f).argmax(x, axis)
 
 
-def argmin(x: ivy.NativeArray, axis: int = 0, f: ivy.Framework = None)\
-        -> ivy.NativeArray:
+def argmin(x: Union[ivy.Array, ivy.NativeArray], axis: int = 0, f: ivy.Framework = None)\
+        -> Union[ivy.Array, ivy.NativeArray]:
     """
     Returns the index with the smallest value across axes of an array.
 
@@ -498,8 +499,8 @@ def argmin(x: ivy.NativeArray, axis: int = 0, f: ivy.Framework = None)\
     return _cur_framework(x, f=f).argmin(x, axis)
 
 
-def argsort(x: ivy.NativeArray, axis: int = -1, f: ivy.Framework = None)\
-        -> ivy.NativeArray:
+def argsort(x: Union[ivy.Array, ivy.NativeArray], axis: int = -1, f: ivy.Framework = None)\
+        -> Union[ivy.Array, ivy.NativeArray]:
     """
     Returns the indices of a tensor that give its sorted order along an axis.
 
@@ -515,8 +516,8 @@ def argsort(x: ivy.NativeArray, axis: int = -1, f: ivy.Framework = None)\
 
 
 # noinspection PyShadowingNames
-def cast(x: ivy.NativeArray, dtype_str: str, f: ivy.Framework = None)\
-        -> ivy.NativeArray:
+def cast(x: Union[ivy.Array, ivy.NativeArray], dtype_str: str, f: ivy.Framework = None)\
+        -> Union[ivy.Array, ivy.NativeArray]:
     """
     Casts an array to a specified type.
 
@@ -535,7 +536,7 @@ def cast(x: ivy.NativeArray, dtype_str: str, f: ivy.Framework = None)\
 
 # noinspection PyShadowingNames
 def arange(stop: Number, start: Number = 0, step: Number = 1, dtype_str: str = None, dev_str: str = None,
-           f: ivy.Framework = None) -> ivy.NativeArray:
+           f: ivy.Framework = None) -> Union[ivy.Array, ivy.NativeArray]:
     """
     Returns evenly spaced values within a given interval, with the spacing being specified.
 
@@ -571,8 +572,8 @@ def arange(stop: Number, start: Number = 0, step: Number = 1, dtype_str: str = N
 
 
 # noinspection PyShadowingNames
-def linspace(start: ivy.NativeArray, stop: ivy.NativeArray, num: int, axis: int = None, dev_str: str = None,
-             f: ivy.Framework = None) -> ivy.NativeArray:
+def linspace(start: Union[ivy.Array, ivy.NativeArray], stop: Union[ivy.Array, ivy.NativeArray], num: int,
+             axis: int = None, dev_str: str = None, f: ivy.Framework = None) -> Union[ivy.Array, ivy.NativeArray]:
     """
     Generates a certain number of evenly-spaced values in an interval along a given axis.
 
@@ -596,8 +597,9 @@ def linspace(start: ivy.NativeArray, stop: ivy.NativeArray, num: int, axis: int 
 
 
 # noinspection PyShadowingNames
-def logspace(start: ivy.NativeArray, stop: ivy.NativeArray, num: int, base: float = 10., axis: int = None,
-             dev_str: str = None, f: ivy.Framework = None) -> ivy.NativeArray:
+def logspace(start: Union[ivy.Array, ivy.NativeArray, Number], stop: Union[ivy.Array, ivy.NativeArray, Number],
+             num: int, base: float = 10., axis: int = None, dev_str: str = None, f: ivy.Framework = None)\
+        -> Union[ivy.Array, ivy.NativeArray]:
     """
     Generates a certain number of evenly-spaced values in log space, in an interval along a given axis.
 
@@ -622,8 +624,8 @@ def logspace(start: ivy.NativeArray, stop: ivy.NativeArray, num: int, base: floa
     return _cur_framework(start, f=f).logspace(start, stop, num, base, axis, dev_str)
 
 
-def concatenate(xs: List[ivy.NativeArray], axis: int = -1, f: ivy.Framework = None)\
-        -> ivy.NativeArray:
+def concatenate(xs: List[Union[ivy.Array, ivy.NativeArray]], axis: int = -1, f: ivy.Framework = None)\
+        -> Union[ivy.Array, ivy.NativeArray]:
     """
     Casts an array to a specified type.
 
@@ -639,8 +641,8 @@ def concatenate(xs: List[ivy.NativeArray], axis: int = -1, f: ivy.Framework = No
     return _cur_framework(xs[0], f=f).concatenate(xs, axis)
 
 
-def flip(x: ivy.NativeArray, axis: int = None, batch_shape: List[int] = None, f: ivy.Framework = None)\
-        -> ivy.NativeArray:
+def flip(x: Union[ivy.Array, ivy.NativeArray], axis: int = None, batch_shape: List[int] = None,
+         f: ivy.Framework = None) -> Union[ivy.Array, ivy.NativeArray]:
     """
     Reverses the ord of elements in an array along the given axis.
     The shape of the array is preserved, but the elements are reordered.
@@ -658,8 +660,8 @@ def flip(x: ivy.NativeArray, axis: int = None, batch_shape: List[int] = None, f:
     return _cur_framework(x, f=f).flip(x, axis, batch_shape)
 
 
-def stack(xs: List[ivy.NativeArray], axis: int = 0, f: ivy.Framework = None)\
-        -> ivy.NativeArray:
+def stack(xs: List[Union[ivy.Array, ivy.NativeArray]], axis: int = 0, f: ivy.Framework = None)\
+        -> Union[ivy.Array, ivy.NativeArray]:
     """
     Joins a sequence of arrays along a new axis.
     The axis parameter specifies the index of the new axis in the dimensions of the result.
@@ -676,8 +678,8 @@ def stack(xs: List[ivy.NativeArray], axis: int = 0, f: ivy.Framework = None)\
     return _cur_framework(xs[0], f=f).stack(xs, axis)
 
 
-def unstack(x: ivy.NativeArray, axis: int, keepdims: bool = False, f: ivy.Framework = None)\
-        -> ivy.NativeArray:
+def unstack(x: Union[ivy.Array, ivy.NativeArray], axis: int, keepdims: bool = False, f: ivy.Framework = None)\
+        -> Union[ivy.Array, ivy.NativeArray]:
     """
     Unpacks the given dimension of a rank-R array into rank-(R-1) arrays.
 
@@ -694,8 +696,8 @@ def unstack(x: ivy.NativeArray, axis: int, keepdims: bool = False, f: ivy.Framew
     return _cur_framework(x, f=f).unstack(x, axis, keepdims)
 
 
-def split(x: ivy.NativeArray, num_or_size_splits: Union[int, List[int]] = None, axis: int = 0,
-          with_remainder: bool = False, f: ivy.Framework = None) -> ivy.NativeArray:
+def split(x: Union[ivy.Array, ivy.NativeArray], num_or_size_splits: Union[int, List[int]] = None, axis: int = 0,
+          with_remainder: bool = False, f: ivy.Framework = None) -> Union[ivy.Array, ivy.NativeArray]:
     """
     Splits an array into multiple sub-arrays.
 
@@ -716,8 +718,8 @@ def split(x: ivy.NativeArray, num_or_size_splits: Union[int, List[int]] = None, 
     return _cur_framework(x, f=f).split(x, num_or_size_splits, axis, with_remainder)
 
 
-def repeat(x: ivy.NativeArray, repeats: Union[int, List[int]], axis: int = None, f: ivy.Framework = None)\
-        -> ivy.NativeArray:
+def repeat(x: Union[ivy.Array, ivy.NativeArray], repeats: Union[int, List[int]], axis: int = None,
+           f: ivy.Framework = None) -> Union[ivy.Array, ivy.NativeArray]:
     """
     Repeat values along a given dimension
 
@@ -735,8 +737,8 @@ def repeat(x: ivy.NativeArray, repeats: Union[int, List[int]], axis: int = None,
     return _cur_framework(x, f=f).repeat(x, repeats, axis)
 
 
-def tile(x: ivy.NativeArray, reps: List[int], f: ivy.Framework = None)\
-        -> ivy.NativeArray:
+def tile(x: Union[ivy.Array, ivy.NativeArray], reps: List[int], f: ivy.Framework = None)\
+        -> Union[ivy.Array, ivy.NativeArray]:
     """
     Constructs an array by repeating x the number of times given by reps.
 
@@ -751,8 +753,8 @@ def tile(x: ivy.NativeArray, reps: List[int], f: ivy.Framework = None)\
     return _cur_framework(x, f=f).tile(x, reps)
 
 
-def constant_pad(x: ivy.NativeArray, pad_width: List[Tuple[int]], value: Number = 0, f: ivy.Framework = None)\
-        -> ivy.NativeArray:
+def constant_pad(x: Union[ivy.Array, ivy.NativeArray], pad_width: List[Tuple[int]], value: Number = 0,
+                 f: ivy.Framework = None) -> Union[ivy.Array, ivy.NativeArray]:
     """
     Pads an array with a constant value.
 
@@ -770,8 +772,8 @@ def constant_pad(x: ivy.NativeArray, pad_width: List[Tuple[int]], value: Number 
     return _cur_framework(x, f=f).constant_pad(x, pad_width, value)
 
 
-def zero_pad(x: ivy.NativeArray, pad_width: List[Tuple[int]], f: ivy.Framework = None)\
-        -> ivy.NativeArray:
+def zero_pad(x: Union[ivy.Array, ivy.NativeArray], pad_width: List[Tuple[int]], f: ivy.Framework = None)\
+        -> Union[ivy.Array, ivy.NativeArray]:
     """
     Pads an array with zeros.
 
@@ -787,8 +789,8 @@ def zero_pad(x: ivy.NativeArray, pad_width: List[Tuple[int]], f: ivy.Framework =
     return _cur_framework(x, f=f).zero_pad(x, pad_width)
 
 
-def fourier_encode(x: ivy.NativeArray, max_freq: float, num_bands: int = 4, base: float = 2.)\
-        -> ivy.NativeArray:
+def fourier_encode(x: Union[ivy.Array, ivy.NativeArray], max_freq: float, num_bands: int = 4, base: float = 2.)\
+        -> Union[ivy.Array, ivy.NativeArray]:
     """
     Pads an array with fourier encodings.
 
@@ -811,8 +813,8 @@ def fourier_encode(x: ivy.NativeArray, max_freq: float, num_bands: int = 4, base
     return ivy.concatenate([orig_x, ivy.sin(x), ivy.cos(x)], -1)
 
 
-def swapaxes(x: ivy.NativeArray, axis0: int, axis1: int, f: ivy.Framework = None)\
-        -> ivy.NativeArray:
+def swapaxes(x: Union[ivy.Array, ivy.NativeArray], axis0: int, axis1: int, f: ivy.Framework = None)\
+        -> Union[ivy.Array, ivy.NativeArray]:
     """
     Interchange two axes of an array.
 
@@ -829,8 +831,8 @@ def swapaxes(x: ivy.NativeArray, axis0: int, axis1: int, f: ivy.Framework = None
     return _cur_framework(x, f=f).swapaxes(x, axis0, axis1)
 
 
-def transpose(x: ivy.NativeArray, axes: List[int] = None, f: ivy.Framework = None)\
-        -> ivy.NativeArray:
+def transpose(x: Union[ivy.Array, ivy.NativeArray], axes: List[int] = None, f: ivy.Framework = None)\
+        -> Union[ivy.Array, ivy.NativeArray]:
     """
     Permutes the dimensions of an array.
 
@@ -845,8 +847,8 @@ def transpose(x: ivy.NativeArray, axes: List[int] = None, f: ivy.Framework = Non
     return _cur_framework(x, f=f).transpose(x, axes)
 
 
-def expand_dims(x: ivy.NativeArray, axis: int, f: ivy.Framework = None)\
-        -> ivy.NativeArray:
+def expand_dims(x: Union[ivy.Array, ivy.NativeArray], axis: int, f: ivy.Framework = None)\
+        -> Union[ivy.Array, ivy.NativeArray]:
     """
     Expands the shape of an array.
     Inserts a new axis that will appear at the axis position in the expanded array shape.
@@ -862,8 +864,9 @@ def expand_dims(x: ivy.NativeArray, axis: int, f: ivy.Framework = None)\
     return _cur_framework(x, f=f).expand_dims(x, axis)
 
 
-def where(condition: ivy.NativeArray, x1: ivy.NativeArray, x2: ivy.NativeArray, f: ivy.Framework = None)\
-        -> ivy.NativeArray:
+def where(condition: Union[ivy.Array, ivy.NativeArray], x1: Union[ivy.Array, ivy.NativeArray],
+          x2: Union[ivy.Array, ivy.NativeArray], f: ivy.Framework = None)\
+        -> Union[ivy.Array, ivy.NativeArray]:
     """
     Returns elements chosen from x or y depending on condition.
 
@@ -880,8 +883,8 @@ def where(condition: ivy.NativeArray, x1: ivy.NativeArray, x2: ivy.NativeArray, 
     return _cur_framework(x1, f=f).where(condition, x1, x2)
 
 
-def indices_where(x: ivy.NativeArray, f: ivy.Framework = None)\
-        -> ivy.NativeArray:
+def indices_where(x: Union[ivy.Array, ivy.NativeArray], f: ivy.Framework = None)\
+        -> Union[ivy.Array, ivy.NativeArray]:
     """
     Returns indices or true elements in an input boolean array.
 
@@ -894,8 +897,8 @@ def indices_where(x: ivy.NativeArray, f: ivy.Framework = None)\
     return _cur_framework(x, f=f).indices_where(x)
 
 
-def isnan(x: ivy.NativeArray, f: ivy.Framework = None)\
-        -> ivy.NativeArray:
+def isnan(x: Union[ivy.Array, ivy.NativeArray], f: ivy.Framework = None)\
+        -> Union[ivy.Array, ivy.NativeArray]:
     """
     Returns boolean map at locations where the input is not a number (nan).
 
@@ -908,8 +911,8 @@ def isnan(x: ivy.NativeArray, f: ivy.Framework = None)\
     return _cur_framework(x, f=f).isnan(x)
 
 
-def reshape(x: ivy.NativeArray, newshape: Union[int, List[int]], f: ivy.Framework = None)\
-        -> ivy.NativeArray:
+def reshape(x: Union[ivy.Array, ivy.NativeArray], newshape: Union[int, List[int]], f: ivy.Framework = None)\
+        -> Union[ivy.Array, ivy.NativeArray]:
     """
     Gives a new shape to an array without changing its data.
 
@@ -925,8 +928,8 @@ def reshape(x: ivy.NativeArray, newshape: Union[int, List[int]], f: ivy.Framewor
     return _cur_framework(x, f=f).reshape(x, newshape)
 
 
-def broadcast_to(x: ivy.NativeArray, newshape: List[int], f: ivy.Framework = None)\
-        -> ivy.NativeArray:
+def broadcast_to(x: Union[ivy.Array, ivy.NativeArray], newshape: List[int], f: ivy.Framework = None)\
+        -> Union[ivy.Array, ivy.NativeArray]:
     """
     Broadcast the input tensor to newshape, adding dimensions of size 1 where the dimensions do not align.
 
@@ -941,8 +944,8 @@ def broadcast_to(x: ivy.NativeArray, newshape: List[int], f: ivy.Framework = Non
     return _cur_framework(x, f=f).broadcast_to(x, newshape)
 
 
-def squeeze(x: ivy.NativeArray, axis: int = None, f: ivy.Framework = None)\
-        -> ivy.NativeArray:
+def squeeze(x: Union[ivy.Array, ivy.NativeArray], axis: int = None, f: ivy.Framework = None)\
+        -> Union[ivy.Array, ivy.NativeArray]:
     """
     Removes a single-dimensional entry from the shape of an array.
 
@@ -960,7 +963,7 @@ def squeeze(x: ivy.NativeArray, axis: int = None, f: ivy.Framework = None)\
 
 # noinspection PyShadowingNames
 def zeros(shape: List[int], dtype_str: str = 'float32', dev_str: str = None, f: ivy.Framework = None)\
-        -> ivy.NativeArray:
+        -> Union[ivy.Array, ivy.NativeArray]:
     """
     Return a new array of given shape and type, filled with zeros.
 
@@ -979,8 +982,8 @@ def zeros(shape: List[int], dtype_str: str = 'float32', dev_str: str = None, f: 
 
 
 # noinspection PyShadowingNames
-def zeros_like(x: ivy.NativeArray, dtype_str: str = None, dev_str: str = None, f: ivy.Framework = None)\
-        -> ivy.NativeArray:
+def zeros_like(x: Union[ivy.Array, ivy.NativeArray], dtype_str: str = None, dev_str: str = None,
+               f: ivy.Framework = None) -> Union[ivy.Array, ivy.NativeArray]:
     """
     Returns an array of zeros with the same shape and type as x, unless dtype_str provided which overrides.
 
@@ -1000,7 +1003,7 @@ def zeros_like(x: ivy.NativeArray, dtype_str: str = None, dev_str: str = None, f
 
 # noinspection PyShadowingNames
 def ones(shape: List[int], dtype_str: str = 'float32', dev_str: str = None, f: ivy.Framework = None)\
-        -> ivy.NativeArray:
+        -> Union[ivy.Array, ivy.NativeArray]:
     """
     Returns a new array of given shape and type, filled with ones.
 
@@ -1019,8 +1022,8 @@ def ones(shape: List[int], dtype_str: str = 'float32', dev_str: str = None, f: i
 
 
 # noinspection PyShadowingNames
-def ones_like(x: ivy.NativeArray, dtype_str: str = None, dev_str: str = None, f: ivy.Framework = None)\
-        -> ivy.NativeArray:
+def ones_like(x: Union[ivy.Array, ivy.NativeArray], dtype_str: str = None, dev_str: str = None,
+              f: ivy.Framework = None) -> Union[ivy.Array, ivy.NativeArray]:
     """
     Returns an array of ones with the same shape and type as x, unless dtype_str provided which overrides.
 
@@ -1039,8 +1042,8 @@ def ones_like(x: ivy.NativeArray, dtype_str: str = None, dev_str: str = None, f:
 
 
 # noinspection PyShadowingNames
-def one_hot(indices: ivy.NativeArray, depth: int, dev_str: str = None, f: ivy.Framework = None)\
-        -> ivy.NativeArray:
+def one_hot(indices: Union[ivy.Array, ivy.NativeArray], depth: int, dev_str: str = None, f: ivy.Framework = None)\
+        -> Union[ivy.Array, ivy.NativeArray]:
     """
     Returns a one-hot array
     :param indices: Indices for where the ones should be scattered *[batch_shape, dim]*
@@ -1056,8 +1059,8 @@ def one_hot(indices: ivy.NativeArray, depth: int, dev_str: str = None, f: ivy.Fr
     return _cur_framework(indices, f=f).one_hot(indices, depth, dev_str)
 
 
-def cross(x1: ivy.NativeArray, x2: ivy.NativeArray, f: ivy.Framework = None)\
-        -> ivy.NativeArray:
+def cross(x1: Union[ivy.Array, ivy.NativeArray], x2: Union[ivy.Array, ivy.NativeArray], f: ivy.Framework = None)\
+        -> Union[ivy.Array, ivy.NativeArray]:
     """
     Returns the cross product of two (arrays of) vectors in R^3.
     The cross product of x1 and x2 in R^3 is a vector perpendicular to both x1 and x2.
@@ -1075,8 +1078,8 @@ def cross(x1: ivy.NativeArray, x2: ivy.NativeArray, f: ivy.Framework = None)\
     return _cur_framework(x1, f=f).cross(x1, x2)
 
 
-def matmul(x1: ivy.NativeArray, x2: ivy.NativeArray, f: ivy.Framework = None)\
-        -> ivy.NativeArray:
+def matmul(x1: Union[ivy.Array, ivy.NativeArray], x2: Union[ivy.Array, ivy.NativeArray], f: ivy.Framework = None)\
+        -> Union[ivy.Array, ivy.NativeArray]:
     """
     Computes the matrix product of two arrays x1 and x2.
 
@@ -1091,8 +1094,8 @@ def matmul(x1: ivy.NativeArray, x2: ivy.NativeArray, f: ivy.Framework = None)\
     return _cur_framework(x1, f=f).matmul(x1, x2)
 
 
-def cumsum(x: ivy.NativeArray, axis: int = 0, f: ivy.Framework = None)\
-        -> ivy.NativeArray:
+def cumsum(x: Union[ivy.Array, ivy.NativeArray], axis: int = 0, f: ivy.Framework = None)\
+        -> Union[ivy.Array, ivy.NativeArray]:
     """
     Returns the cumulative sum of the elements along a given axis.
 
@@ -1107,8 +1110,8 @@ def cumsum(x: ivy.NativeArray, axis: int = 0, f: ivy.Framework = None)\
     return _cur_framework(x, f=f).cumsum(x, axis)
 
 
-def cumprod(x: ivy.NativeArray, axis: int = 0, exclusive: bool = False, f: ivy.Framework = None)\
-        -> ivy.NativeArray:
+def cumprod(x: Union[ivy.Array, ivy.NativeArray], axis: int = 0, exclusive: bool = False, f: ivy.Framework = None)\
+        -> Union[ivy.Array, ivy.NativeArray]:
     """
     Returns the cumulative product of the elements along a given axis.
 
@@ -1127,7 +1130,7 @@ def cumprod(x: ivy.NativeArray, axis: int = 0, exclusive: bool = False, f: ivy.F
 
 # noinspection PyShadowingNames
 def identity(n: int, dtype_str: str = 'float32', batch_shape: List[int] = None, dev_str: str = None,
-             f: ivy.Framework = None) -> ivy.NativeArray:
+             f: ivy.Framework = None) -> Union[ivy.Array, ivy.NativeArray]:
     """
     Returns the identity array.
     The identity array is a square array with ones on the main diagonal.
@@ -1148,8 +1151,8 @@ def identity(n: int, dtype_str: str = 'float32', batch_shape: List[int] = None, 
     return _cur_framework(f=f).identity(n, dtype_str, batch_shape, dev_str)
 
 
-def meshgrid(*xs: List[ivy.NativeArray], indexing: str = 'ij', f: ivy.Framework = None)\
-        -> List[ivy.NativeArray]:
+def meshgrid(*xs: List[Union[ivy.Array, ivy.NativeArray]], indexing: str = 'ij', f: ivy.Framework = None)\
+        -> List[Union[ivy.Array, ivy.NativeArray]]:
     """
     Broadcasts parameters for evaluation on an N-D grid.
 
@@ -1165,8 +1168,9 @@ def meshgrid(*xs: List[ivy.NativeArray], indexing: str = 'ij', f: ivy.Framework 
 
 
 # noinspection PyShadowingNames
-def scatter_flat(indices: ivy.NativeArray, updates: ivy.NativeArray, size: int, reduction: str = 'sum',
-                 dev_str: str = None, f: ivy.Framework = None) -> ivy.NativeArray:
+def scatter_flat(indices: Union[ivy.Array, ivy.NativeArray], updates: Union[ivy.Array, ivy.NativeArray], size: int,
+                 reduction: str = 'sum', dev_str: str = None, f: ivy.Framework = None)\
+        -> Union[ivy.Array, ivy.NativeArray]:
     """
     Scatter flat updates into a new flat array according to flat indices.
 
@@ -1188,8 +1192,9 @@ def scatter_flat(indices: ivy.NativeArray, updates: ivy.NativeArray, size: int, 
 
 
 # noinspection PyShadowingNames
-def scatter_nd(indices: ivy.NativeArray, updates: ivy.NativeArray, shape: List[int], reduction: str = 'sum',
-               dev_str: str = None, f: ivy.Framework = None) -> ivy.NativeArray:
+def scatter_nd(indices: Union[ivy.Array, ivy.NativeArray], updates: Union[ivy.Array, ivy.NativeArray], shape: List[int],
+               reduction: str = 'sum', dev_str: str = None, f: ivy.Framework = None)\
+        -> Union[ivy.Array, ivy.NativeArray]:
     """
     Scatter updates into a new array according to indices.
 
@@ -1211,8 +1216,8 @@ def scatter_nd(indices: ivy.NativeArray, updates: ivy.NativeArray, shape: List[i
 
 
 # noinspection PyShadowingNames
-def gather(params: ivy.NativeArray, indices: ivy.NativeArray, axis: int = -1, dev_str: str = None,
-           f: ivy.Framework = None) -> ivy.NativeArray:
+def gather(params: Union[ivy.Array, ivy.NativeArray], indices: Union[ivy.Array, ivy.NativeArray], axis: int = -1,
+           dev_str: str = None, f: ivy.Framework = None) -> Union[ivy.Array, ivy.NativeArray]:
     """
     Gather slices from params at axis according to indices.
 
@@ -1232,8 +1237,8 @@ def gather(params: ivy.NativeArray, indices: ivy.NativeArray, axis: int = -1, de
 
 
 # noinspection PyShadowingNames
-def gather_nd(params: ivy.NativeArray, indices: ivy.NativeArray, dev_str: str = None, f: ivy.Framework = None)\
-        -> ivy.NativeArray:
+def gather_nd(params: Union[ivy.Array, ivy.NativeArray], indices: Union[ivy.Array, ivy.NativeArray],
+              dev_str: str = None, f: ivy.Framework = None) -> Union[ivy.Array, ivy.NativeArray]:
     """
     Gather slices from params into a array with shape specified by indices.
 
@@ -1250,8 +1255,8 @@ def gather_nd(params: ivy.NativeArray, indices: ivy.NativeArray, dev_str: str = 
     return _cur_framework(params, f=f).gather_nd(params, indices, dev_str)
 
 
-def linear_resample(x: ivy.NativeArray, num_samples: int, axis: int = -1, f: ivy.Framework = None)\
-        -> ivy.NativeArray:
+def linear_resample(x: Union[ivy.Array, ivy.NativeArray], num_samples: int, axis: int = -1, f: ivy.Framework = None)\
+        -> Union[ivy.Array, ivy.NativeArray]:
     """
     Performs linear re-sampling on input image.
 
@@ -1309,7 +1314,7 @@ def default(x: Any, default_val: Any, catch_exceptions: bool = False, rev: bool 
     return x if exists(x) else default_val
 
 
-def dev(x: ivy.NativeArray, f: ivy.Framework = None)\
+def dev(x: Union[ivy.Array, ivy.NativeArray], f: ivy.Framework = None)\
         -> ivy.Device:
     """
     Get the native device handle for input array x.
@@ -1324,8 +1329,8 @@ def dev(x: ivy.NativeArray, f: ivy.Framework = None)\
 
 
 # noinspection PyShadowingNames
-def to_dev(x: ivy.NativeArray, dev_str: str = None, f: ivy.Framework = None)\
-        -> ivy.NativeArray:
+def to_dev(x: Union[ivy.Array, ivy.NativeArray], dev_str: str = None, f: ivy.Framework = None)\
+        -> Union[ivy.Array, ivy.NativeArray]:
     """
     Move the input array x to the desired device, specified by device string.
 
@@ -1369,7 +1374,7 @@ def str_to_dev(dev_str: str, f: ivy.Framework = None)\
     return _cur_framework(None, f=f).str_to_dev(dev_str)
 
 
-def dev_str(x: ivy.NativeArray, f: ivy.Framework = None)\
+def dev_str(x: Union[ivy.Array, ivy.NativeArray], f: ivy.Framework = None)\
         -> str:
     """
     Get the device string for input array x.
@@ -1442,7 +1447,7 @@ def tpu_is_available(f: ivy.Framework = None)\
     return _cur_framework(f=f).tpu_is_available()
 
 
-def dtype(x: ivy.NativeArray, f: ivy.Framework = None)\
+def dtype(x: Union[ivy.Array, ivy.NativeArray], f: ivy.Framework = None)\
         -> ivy.Dtype:
     """
     Get the data type for input array x.
@@ -1470,7 +1475,7 @@ def dtype_to_str(dtype_in: ivy.Dtype, f: ivy.Framework = None)\
     return _cur_framework(None, f=f).dtype_to_str(dtype_in)
 
 
-def dtype_str(x: ivy.NativeArray, f: ivy.Framework = None)\
+def dtype_str(x: Union[ivy.Array, ivy.NativeArray], f: ivy.Framework = None)\
         -> str:
     """
     Get the data type string for input array x.
@@ -1504,9 +1509,9 @@ def compile_fn(func: Callable, dynamic: bool = True, example_inputs: Union[Any, 
     return _cur_framework(example_inputs, f=f).compile_fn(func, dynamic, example_inputs)
 
 
-def split_func_call(func: Callable, inputs: List[Union[ivy.NativeArray, ivy.Container]], chunk_size: int,
-                    input_axes: Union[int, List[int]] = 0, output_axes: Union[int, List[int]] = None,
-                    mean: bool = False) -> List[Union[ivy.NativeArray, ivy.Container]]:
+def split_func_call(func: Callable, inputs: List[Union[Union[ivy.Array, ivy.NativeArray], ivy.Container]],
+                    chunk_size: int, input_axes: Union[int, List[int]] = 0, output_axes: Union[int, List[int]] = None,
+                    mean: bool = False) -> List[Union[Union[ivy.Array, ivy.NativeArray], ivy.Container]]:
     """
     Call a function by splitting its inputs along a given axis, and calling the function in chunks, rather than feeding
     the entire input array at once. This can be useful to reduce memory usage of the device the arrays are on.
@@ -1554,10 +1559,10 @@ def split_func_call(func: Callable, inputs: List[Union[ivy.NativeArray, ivy.Cont
     return concatted
 
 
-def split_func_call_across_gpus(func: Callable, inputs: List[Union[ivy.NativeArray, ivy.Container]],
+def split_func_call_across_gpus(func: Callable, inputs: List[Union[Union[ivy.Array, ivy.NativeArray], ivy.Container]],
                                 dev_strs: Union[int, List[int], List[str]], input_axes: Union[int, List[int]] = None,
                                 output_axes: Union[int, List[int]] = None, concat_output: bool = False)\
-        -> List[Union[ivy.NativeArray, ivy.Container]]:
+        -> List[Union[Union[ivy.Array, ivy.NativeArray], ivy.Container]]:
     """
     Call a function by splitting its inputs along a given axis, and calling each chunk on a different device.
 
@@ -1672,8 +1677,8 @@ def current_framework_str(f: ivy.Framework = None)\
     return fw.current_framework_str()
 
 
-def einops_rearrange(x: ivy.NativeArray, pattern: str, **axes_lengths: Dict[str, int])\
-        -> ivy.NativeArray:
+def einops_rearrange(x: Union[ivy.Array, ivy.NativeArray], pattern: str, **axes_lengths: Dict[str, int])\
+        -> Union[ivy.Array, ivy.NativeArray]:
     """
     Perform einops rearrange operation on input array x.
 
@@ -1688,8 +1693,8 @@ def einops_rearrange(x: ivy.NativeArray, pattern: str, **axes_lengths: Dict[str,
     return einops.rearrange(x, pattern, **axes_lengths)
 
 
-def einops_reduce(x: ivy.NativeArray, pattern: str, reduction: Union[str, Callable], **axes_lengths: Dict[str, int])\
-        -> ivy.NativeArray:
+def einops_reduce(x: Union[ivy.Array, ivy.NativeArray], pattern: str, reduction: Union[str, Callable],
+                  **axes_lengths: Dict[str, int]) -> Union[ivy.Array, ivy.NativeArray]:
     """
     Perform einops reduce operation on input array x.
 
@@ -1706,8 +1711,8 @@ def einops_reduce(x: ivy.NativeArray, pattern: str, reduction: Union[str, Callab
     return einops.reduce(x, pattern, reduction, **axes_lengths)
 
 
-def einops_repeat(x: ivy.NativeArray, pattern: str, **axes_lengths: Dict[str, int])\
-        -> ivy.NativeArray:
+def einops_repeat(x: Union[ivy.Array, ivy.NativeArray], pattern: str, **axes_lengths: Dict[str, int])\
+        -> Union[ivy.Array, ivy.NativeArray]:
     """
     Perform einops repeat operation on input array x.
 
