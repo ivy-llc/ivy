@@ -14,7 +14,7 @@ NON_WRAPPED_METHODS = ['current_framework', 'current_framework_str', 'set_framew
                        'args_to_native', 'default', 'exists', 'set_min_base', 'get_min_base', 'set_min_denominator',
                        'get_min_denominator', 'split_func_call_across_gpus', 'cache_fn', 'split_func_call',
                        'compile_fn', 'dev_to_str', 'str_to_dev', 'memory_on_dev', 'gpu_is_available', 'num_gpus',
-                       'tpu_is_available', 'dtype_to_str']
+                       'tpu_is_available', 'dtype_to_str', 'cprint']
 NON_ARRAY_METHODS = ['to_numpy', 'to_list', 'to_scalar', 'unstack', 'split', 'shape', 'get_num_dims', 'is_array',
                      'is_variable']
 debug_mode_val = False
@@ -157,6 +157,8 @@ def unset_framework():
 # Wrapped Mode #
 # -------------#
 
+# Methods #
+
 def _wrap_method(fn):
 
     if hasattr(fn, '__name__') and (fn.__name__[0] == '_' or fn.__name__ in NON_WRAPPED_METHODS):
@@ -191,8 +193,10 @@ def _unwrap_method(method_wrapped):
 def _wrap_or_unwrap_methods(wrap_or_unwrap_fn, val=None, depth=0):
     if val is None:
         val = ivy
-    if isinstance(val, ModuleType) and val not in wrap_methods_modules and '__file__' in val.__dict__ and \
-            'ivy' in val.__file__ and 'framework_handler' not in val.__file__:
+    if isinstance(val, ModuleType):
+        if (val in wrap_methods_modules or '__file__' not in val.__dict__ or
+                'ivy' not in val.__file__ or 'framework_handler' in val.__file__):
+            return val
         wrap_methods_modules.append(val)
         for k, v in val.__dict__.items():
             if v is None:
@@ -202,7 +206,7 @@ def _wrap_or_unwrap_methods(wrap_or_unwrap_fn, val=None, depth=0):
         if depth == 0:
             wrap_methods_modules.clear()
         return val
-    elif callable(val) and not inspect.isclass(val):
+    elif callable(val) and not inspect.isclass(val) and hasattr(val, '__module__') and 'ivy' in val.__module__:
         if depth == 0:
             wrap_methods_modules.clear()
         return wrap_or_unwrap_fn(val)
