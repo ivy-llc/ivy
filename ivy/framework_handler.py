@@ -1,5 +1,7 @@
 import ivy
+import pdb
 import inspect
+import logging
 import importlib
 import collections
 from ivy import verbosity
@@ -284,14 +286,26 @@ def _wrap_method_for_debugging(fn):
 
         ivy.nested_map(args, _has_nans)
         if found_nans:
-            raise Exception('found nans in args {}'.format(args))
+            if debug_mode_val == 'exception':
+                raise Exception('found nans in args {}'.format(args))
+            else:
+                logging.error('found nans in args {}'.format(args))
+                pdb.set_trace()
         ivy.nested_map(kwargs, _has_nans)
         if found_nans:
-            raise Exception('found nans in kwargs {}'.format(kwargs))
+            if debug_mode_val == 'exception':
+                raise Exception('found nans in kwargs {}'.format(kwargs))
+            else:
+                logging.error('found nans in kwargs {}'.format(kwargs))
+                pdb.set_trace()
         ret = fn(*args, **kwargs)
         ivy.nested_map(ret, _has_nans)
         if found_nans:
-            raise Exception('found nans in return {}'.format(ret))
+            if debug_mode_val == 'exception':
+                raise Exception('found nans in return {}'.format(ret))
+            else:
+                logging.error('found nans in return {}'.format(ret))
+                pdb.set_trace()
         return ret
 
     if hasattr(fn, '__name__'):
