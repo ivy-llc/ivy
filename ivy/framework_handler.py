@@ -292,35 +292,19 @@ def _wrap_method_for_debugging(fn):
 
     def _method_wrapped(*args, **kwargs):
 
-        found_nans = False
-
-        def _has_nans(x):
-            nonlocal found_nans
-            found_nans = ivy.has_nans(x) if ivy.is_array(x) else False
+        def _check_nans(x):
+            if ivy.is_array(x) and ivy.has_nans(x):
+                if debug_mode_val == 'exception':
+                    raise Exception('found nans in {}'.format(x))
+                else:
+                    logging.error('found nans in {}'.format(x))
+                    pdb.set_trace()
             return x
 
-        ivy.nested_map(args, _has_nans)
-        if found_nans:
-            if debug_mode_val == 'exception':
-                raise Exception('found nans in args {}'.format(args))
-            else:
-                logging.error('found nans in args {}'.format(args))
-                pdb.set_trace()
-        ivy.nested_map(kwargs, _has_nans)
-        if found_nans:
-            if debug_mode_val == 'exception':
-                raise Exception('found nans in kwargs {}'.format(kwargs))
-            else:
-                logging.error('found nans in kwargs {}'.format(kwargs))
-                pdb.set_trace()
+        ivy.nested_map(args, _check_nans)
+        ivy.nested_map(kwargs, _check_nans)
         ret = fn(*args, **kwargs)
-        ivy.nested_map(ret, _has_nans)
-        if found_nans:
-            if debug_mode_val == 'exception':
-                raise Exception('found nans in return {}'.format(ret))
-            else:
-                logging.error('found nans in return {}'.format(ret))
-                pdb.set_trace()
+        ivy.nested_map(ret, _check_nans)
         return ret
 
     if hasattr(fn, '__name__'):
