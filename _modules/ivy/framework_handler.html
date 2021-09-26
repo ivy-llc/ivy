@@ -209,6 +209,13 @@
 <span class="n">NON_ARRAY_RET_METHODS</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;to_numpy&#39;</span><span class="p">,</span> <span class="s1">&#39;to_list&#39;</span><span class="p">,</span> <span class="s1">&#39;to_scalar&#39;</span><span class="p">,</span> <span class="s1">&#39;unstack&#39;</span><span class="p">,</span> <span class="s1">&#39;split&#39;</span><span class="p">,</span> <span class="s1">&#39;shape&#39;</span><span class="p">,</span> <span class="s1">&#39;get_num_dims&#39;</span><span class="p">,</span> <span class="s1">&#39;is_array&#39;</span><span class="p">,</span>
                          <span class="s1">&#39;is_variable&#39;</span><span class="p">]</span>
 <span class="n">NON_ARRAY_METHODS</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;shape&#39;</span><span class="p">,</span> <span class="s1">&#39;dtype&#39;</span><span class="p">]</span>
+
+<span class="n">FW_FN_KEYWORDS</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;numpy&#39;</span><span class="p">:</span> <span class="p">[],</span>
+                  <span class="s1">&#39;jax&#39;</span><span class="p">:</span> <span class="p">[],</span>
+                  <span class="s1">&#39;tensorflow&#39;</span><span class="p">:</span> <span class="p">[],</span>
+                  <span class="s1">&#39;torch&#39;</span><span class="p">:</span> <span class="p">[],</span>
+                  <span class="s1">&#39;mxnd&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;ndarray&#39;</span><span class="p">]}</span>
+
 <span class="n">debug_mode_val</span> <span class="o">=</span> <span class="kc">False</span>
 <span class="n">wrapped_mode_val</span> <span class="o">=</span> <span class="kc">False</span>
 <span class="n">ivy_original_dict</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
@@ -385,6 +392,18 @@
     <span class="k">return</span> <span class="n">method_wrapped</span><span class="o">.</span><span class="n">inner_fn</span>
 
 
+<span class="k">def</span> <span class="nf">_invalid_fn</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="n">fs</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">fs</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">fs</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">current_framework_str</span><span class="p">()</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="s1">&#39;__module__&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">fn</span><span class="o">.</span><span class="vm">__module__</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">True</span>
+    <span class="n">fw_fn_keywords</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;ivy&#39;</span><span class="p">,</span> <span class="n">fs</span><span class="p">]</span> <span class="o">+</span> <span class="n">FW_FN_KEYWORDS</span><span class="p">[</span><span class="n">fs</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">kw</span> <span class="ow">in</span> <span class="n">fw_fn_keywords</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">kw</span> <span class="ow">in</span> <span class="n">fn</span><span class="o">.</span><span class="vm">__module__</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+    <span class="k">return</span> <span class="kc">True</span>
+
+
 <span class="k">def</span> <span class="nf">_wrap_or_unwrap_methods</span><span class="p">(</span><span class="n">wrap_or_unwrap_fn</span><span class="p">,</span> <span class="n">val</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">fs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">depth</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
     <span class="k">if</span> <span class="n">val</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">val</span> <span class="o">=</span> <span class="n">ivy</span>
@@ -406,14 +425,10 @@
     <span class="k">elif</span> <span class="n">callable</span><span class="p">(</span><span class="n">val</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">inspect</span><span class="o">.</span><span class="n">isclass</span><span class="p">(</span><span class="n">val</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">depth</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="n">wrap_methods_modules</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
-        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="s1">&#39;inner_fn&#39;</span><span class="p">):</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">val</span><span class="o">.</span><span class="n">inner_fn</span><span class="p">,</span> <span class="s1">&#39;__module__&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">val</span><span class="o">.</span><span class="n">inner_fn</span><span class="o">.</span><span class="vm">__module__</span> <span class="ow">or</span> \
-                    <span class="p">(</span><span class="n">fs</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">val</span><span class="o">.</span><span class="n">inner_fn</span><span class="o">.</span><span class="vm">__module__</span> <span class="ow">and</span> <span class="s1">&#39;ivy&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">val</span><span class="o">.</span><span class="n">inner_fn</span><span class="o">.</span><span class="vm">__module__</span><span class="p">):</span>
-                <span class="k">return</span> <span class="n">val</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="s1">&#39;__module__&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">val</span><span class="o">.</span><span class="vm">__module__</span> <span class="ow">or</span>\
-                    <span class="p">(</span><span class="n">fs</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">val</span><span class="o">.</span><span class="vm">__module__</span> <span class="ow">and</span> <span class="s1">&#39;ivy&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">val</span><span class="o">.</span><span class="vm">__module__</span><span class="p">):</span>
-                <span class="k">return</span> <span class="n">val</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="s1">&#39;inner_fn&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">_invalid_fn</span><span class="p">(</span><span class="n">val</span><span class="o">.</span><span class="n">inner_fn</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">val</span>
+        <span class="k">elif</span> <span class="n">_invalid_fn</span><span class="p">(</span><span class="n">val</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">val</span>
         <span class="k">return</span> <span class="n">wrap_or_unwrap_fn</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">depth</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
         <span class="n">wrap_methods_modules</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
