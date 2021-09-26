@@ -20,6 +20,13 @@ NON_WRAPPED_METHODS = ['current_framework', 'current_framework_str', 'set_framew
 NON_ARRAY_RET_METHODS = ['to_numpy', 'to_list', 'to_scalar', 'unstack', 'split', 'shape', 'get_num_dims', 'is_array',
                          'is_variable']
 NON_ARRAY_METHODS = ['shape', 'dtype']
+
+FW_FN_KEYWORDS = {'numpy': [],
+                  'jax': [],
+                  'tensorflow': [],
+                  'torch': [],
+                  'mxnd': ['ndarray']}
+
 debug_mode_val = False
 wrapped_mode_val = False
 ivy_original_dict = ivy.__dict__.copy()
@@ -196,6 +203,18 @@ def _unwrap_method(method_wrapped):
     return method_wrapped.inner_fn
 
 
+def _invalid_fn(fn, fs=None):
+    if fs is None:
+        fs = ivy.current_framework_str()
+    if not hasattr(fn, '__module__') or not fn.__module__:
+        return True
+    fw_fn_keywords = ['ivy', fs] + FW_FN_KEYWORDS[fs]
+    for kw in fw_fn_keywords:
+        if kw in fn.__module__:
+            return False
+    return True
+
+
 def _wrap_or_unwrap_methods(wrap_or_unwrap_fn, val=None, fs=None, depth=0):
     if val is None:
         val = ivy
@@ -217,14 +236,10 @@ def _wrap_or_unwrap_methods(wrap_or_unwrap_fn, val=None, fs=None, depth=0):
     elif callable(val) and not inspect.isclass(val):
         if depth == 0:
             wrap_methods_modules.clear()
-        if hasattr(val, 'inner_fn'):
-            if not hasattr(val.inner_fn, '__module__') or not val.inner_fn.__module__ or \
-                    (fs not in val.inner_fn.__module__ and 'ivy' not in val.inner_fn.__module__):
-                return val
-        else:
-            if not hasattr(val, '__module__') or not val.__module__ or\
-                    (fs not in val.__module__ and 'ivy' not in val.__module__):
-                return val
+        if hasattr(val, 'inner_fn') and _invalid_fn(val.inner_fn):
+            return val
+        elif _invalid_fn(val):
+            return val
         return wrap_or_unwrap_fn(val)
     if depth == 0:
         wrap_methods_modules.clear()
