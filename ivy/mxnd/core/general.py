@@ -79,6 +79,7 @@ to_scalar.__name__ = 'to_scalar'
 to_list = lambda x: x.asnumpy().tolist()
 to_list.__name__ = 'to_list'
 shape = lambda x, as_tensor=False: _mx.nd.shape_array(x) if as_tensor else x.shape
+shape.__name__ = 'shape'
 get_num_dims = lambda x, as_tensor=False:\
     _mx.nd.shape_array(_mx.nd.shape_array(x)).reshape([]) if as_tensor else len(x.shape)
 minimum = lambda x, y: _mx.nd.array(_mx.nd.minimum(_scalar_or_flat_array_to_scalar(x), _scalar_or_flat_array_to_scalar(y)))
@@ -553,6 +554,7 @@ gpu_is_available = lambda: _mx.context.num_gpus() > 0
 num_gpus = lambda: _mx.context.num_gpus()
 tpu_is_available = lambda: False
 dtype = lambda x: x.dtype
+dtype.__name__ = 'dtype'
 dtype_str = lambda x: DTYPE_DICT[x.dtype]
 dtype_to_str = lambda dtype_in: DTYPE_DICT[dtype_in]
 

@@ -17,8 +17,9 @@ NON_WRAPPED_METHODS = ['current_framework', 'current_framework_str', 'set_framew
                        'get_min_denominator', 'split_func_call_across_gpus', 'cache_fn', 'split_func_call',
                        'compile_fn', 'dev_to_str', 'str_to_dev', 'memory_on_dev', 'gpu_is_available', 'num_gpus',
                        'tpu_is_available', 'dtype_to_str', 'cprint']
-NON_ARRAY_METHODS = ['to_numpy', 'to_list', 'to_scalar', 'unstack', 'split', 'shape', 'get_num_dims', 'is_array',
-                     'is_variable']
+NON_ARRAY_RET_METHODS = ['to_numpy', 'to_list', 'to_scalar', 'unstack', 'split', 'shape', 'get_num_dims', 'is_array',
+                         'is_variable']
+NON_ARRAY_METHODS = ['shape', 'dtype']
 debug_mode_val = False
 wrapped_mode_val = True
 ivy_original_dict = ivy.__dict__.copy()
@@ -180,7 +181,7 @@ def _wrap_method(fn):
         #  and maybe even the wrapping in general
         native_args, native_kwargs = ivy.args_to_native(*args, **kwargs)
         native_ret = fn(*native_args, **native_kwargs)
-        if fn.__name__ in NON_ARRAY_METHODS:
+        if fn.__name__ in NON_ARRAY_RET_METHODS:
             return native_ret
         return ivy.to_ivy(native_ret, nested=True)
 
@@ -258,7 +259,8 @@ def _get_array_arg_info(anno):
 
 def _wrap_array_method(fn):
 
-    if hasattr(fn, '__name__') and (fn.__name__[0] == '_' or fn.__name__ in NON_WRAPPED_METHODS):
+    if hasattr(fn, '__name__') and (fn.__name__[0] == '_' or fn.__name__ in
+                                    set(NON_WRAPPED_METHODS + NON_ARRAY_METHODS)):
         return
 
     if wrapped_mode_val:
@@ -338,10 +340,11 @@ def _wrap_or_unwrap_array(wrap_or_unwrap_fn, val=None, fs=None, depth=0):
         if depth == 0:
             wrap_methods_modules.clear()
         if hasattr(val, 'inner_fn'):
-            if fs not in val.inner_fn.__module__:
+            if not hasattr(val.inner_fn, '__module__') or not val.inner_fn.__module__ or \
+                    fs not in val.inner_fn.__module__:
                 return
         else:
-            if fs not in val.__module__:
+            if not hasattr(val, '__module__') or not val.__module__ or fs not in val.__module__:
                 return
         wrap_or_unwrap_fn(val)
         return
