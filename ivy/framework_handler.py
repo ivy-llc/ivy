@@ -1,6 +1,8 @@
 import ivy
+import typing
 import inspect
 import importlib
+import collections
 from ivy import verbosity
 from types import ModuleType
 
@@ -18,8 +20,9 @@ NON_WRAPPED_METHODS = ['current_framework', 'current_framework_str', 'set_framew
 NON_ARRAY_METHODS = ['to_numpy', 'to_list', 'to_scalar', 'unstack', 'split', 'shape', 'get_num_dims', 'is_array',
                      'is_variable']
 debug_mode_val = False
-wrapped_mode_val = False
+wrapped_mode_val = True
 ivy_original_dict = ivy.__dict__.copy()
+ivy_original_fn_dict = dict()
 
 
 class ContextManager:
@@ -101,21 +104,26 @@ def current_framework(*args, f=None, **kwargs):
 
 def set_framework(f):
     global ivy_original_dict
+    global ivy_original_fn_dict
     if not framework_stack:
         ivy_original_dict = ivy.__dict__.copy()
     if isinstance(f, str):
         f = importlib.import_module(_framework_dict[f])
     framework_stack.append(f)
+    ivy_original_fn_dict.clear()
     for k, v in ivy_original_dict.items():
         if k not in f.__dict__:
             f.__dict__[k] = v
-        ivy.__dict__[k] = f.__dict__[k]
-
+        specific_v = f.__dict__[k]
+        ivy.__dict__[k] = specific_v
+        if isinstance(specific_v, collections.Hashable):
+            ivy_original_fn_dict[specific_v] = v
     # noinspection PyUnresolvedReferences
     if wrapped_mode_val and (not hasattr(ivy, 'wrapped') or not ivy.wrapped):
         _wrap_methods()
         ivy.wrapped = True
         f.wrapped = True
+    _wrap_array()
     if verbosity.level > 0:
         verbosity.cprint(
             'framework stack: {}'.format(framework_stack))
@@ -190,9 +198,11 @@ def _unwrap_method(method_wrapped):
     return method_wrapped.inner_fn
 
 
-def _wrap_or_unwrap_methods(wrap_or_unwrap_fn, val=None, depth=0):
+def _wrap_or_unwrap_methods(wrap_or_unwrap_fn, val=None, fs=None, depth=0):
     if val is None:
         val = ivy
+    if fs is None:
+        fs = ivy.current_framework_str()
     if isinstance(val, ModuleType):
         if (val in wrap_methods_modules or '__file__' not in val.__dict__ or
                 'ivy' not in val.__file__ or 'framework_handler' in val.__file__):
@@ -202,7 +212,7 @@ def _wrap_or_unwrap_methods(wrap_or_unwrap_fn, val=None, depth=0):
             if v is None:
                 val.__dict__[k] = v
             else:
-                val.__dict__[k] = _wrap_or_unwrap_methods(wrap_or_unwrap_fn, v, depth+1)
+                val.__dict__[k] = _wrap_or_unwrap_methods(wrap_or_unwrap_fn, v, fs, depth+1)
         if depth == 0:
             wrap_methods_modules.clear()
         return val
@@ -210,6 +220,12 @@ def _wrap_or_unwrap_methods(wrap_or_unwrap_fn, val=None, depth=0):
             'ivy' in val.__module__:
         if depth == 0:
             wrap_methods_modules.clear()
+        if hasattr(val, 'inner_fn'):
+            if fs not in val.inner_fn.__module__:
+                return val
+        else:
+            if fs not in val.__module__:
+                return val
         return wrap_or_unwrap_fn(val)
     if depth == 0:
         wrap_methods_modules.clear()
@@ -223,6 +239,126 @@ def _wrap_methods():
 def _unwrap_methods():
     return _wrap_or_unwrap_methods(_unwrap_method)
 
+
+# ivy.Array #
+
+def _get_array_arg_info(anno):
+    for i, (k, v) in enumerate(anno.items()):
+        if k == 'return':
+            continue
+        # noinspection PyUnresolvedReferences,PyProtectedMember
+        if inspect.isclass(v):
+            if v.__name__ == 'NativeArray':
+                return True, i-1, k, 'single'
+            else:
+                continue
+        elif isinstance(v, typing._GenericAlias):
+            typing_type = v.__repr__().split('.')[1].split('[')[0]
+            if typing_type == 'Union':
+                for a in v.__args__:
+                    if inspect.isclass(a) and a.__name__ == 'NativeArray':
+                        return True, i-1, k, 'single'
+            elif typing_type == 'List':
+                for a in v.__args__:
+                    if inspect.isclass(a) and a.__name__ == 'NativeArray':
+                        return True, i-1, k, 'list'
+    return False, None, None, None
+
+
+def _wrap_array_method(fn):
+
+    if hasattr(fn, '__name__') and (fn.__name__[0] == '_' or fn.__name__ in NON_WRAPPED_METHODS):
+        return
+
+    if wrapped_mode_val:
+        shared_fn = ivy_original_fn_dict[fn.inner_fn]
+    else:
+        shared_fn = ivy_original_fn_dict[fn]
+
+    arg_spec = inspect.getfullargspec(shared_fn)
+    anno = arg_spec.annotations
+    found, pos, name, mode = _get_array_arg_info(anno)
+    if found:
+        if mode == 'single':
+
+            def fn_for_array(self, *args, **kwargs):
+                if len(args) > pos:
+                    args = args[0:pos] + tuple([self._data]) + args[pos:]
+                    return fn(*args, **kwargs)
+                return fn(*args, **{name: self._data}, **kwargs)
+
+        elif mode == 'list':
+
+            def fn_for_array(self, *args, **kwargs):
+                if len(args) > pos:
+                    args = args[0:pos] + tuple([self._data] + args[pos]) + args[(pos+1):]
+                    return fn(*args, **kwargs)
+                list_arg = [self._data] + kwargs[name]
+                del kwargs[name]
+                return fn(*args, **{name: list_arg}, **kwargs)
+
+        else:
+            # ToDo: verify other array input types are not missing
+            raise Exception('invalid mode, must be one of [ single | list ], but found {}.'.format(mode))
+
+        if hasattr(ivy.Array, shared_fn.__name__):
+            delattr(ivy.Array, shared_fn.__name__)
+        setattr(ivy.Array, shared_fn.__name__, fn_for_array)
+
+
+def _unwrap_array_method(method_wrapped):
+
+    if not hasattr(method_wrapped, 'wrapped') or not method_wrapped.wrapped:
+        return method_wrapped
+    return method_wrapped.inner_fn
+
+
+def _wrap_or_unwrap_array(wrap_or_unwrap_fn, val=None, fs=None, depth=0):
+    if val is None:
+        val = ivy
+    if fs is None:
+        fs = ivy.current_framework_str()
+    if isinstance(val, ModuleType):
+        if (val in wrap_methods_modules or '__file__' not in val.__dict__ or
+                'ivy' not in val.__file__ or 'framework_handler' in val.__file__):
+            if depth == 0:
+                wrap_methods_modules.clear()
+            return
+        wrap_methods_modules.append(val)
+        for k, v in val.__dict__.items():
+            if v is None:
+                continue
+            else:
+                _wrap_or_unwrap_array(wrap_or_unwrap_fn, v, fs, depth+1)
+        if depth == 0:
+            wrap_methods_modules.clear()
+        return
+    elif callable(val) and not inspect.isclass(val) and hasattr(val, '__module__') and val.__module__ and \
+         'ivy' in val.__module__:
+        if depth == 0:
+            wrap_methods_modules.clear()
+        if hasattr(val, 'inner_fn'):
+            if fs not in val.inner_fn.__module__:
+                return
+        else:
+            if fs not in val.__module__:
+                return
+        wrap_or_unwrap_fn(val)
+        return
+    if depth == 0:
+        wrap_methods_modules.clear()
+    return
+
+
+def _wrap_array():
+    return _wrap_or_unwrap_array(_wrap_array_method)
+
+
+def _unwrap_array():
+    return _wrap_or_unwrap_array(_unwrap_array_method)
+
+
+# Mode #
 
 def set_wrapped_mode(val=True):
     global wrapped_mode_val
