@@ -198,11 +198,9 @@ def _unwrap_method(method_wrapped):
     return method_wrapped.inner_fn
 
 
-def _wrap_or_unwrap_methods(wrap_or_unwrap_fn, val=None, fs=None, depth=0):
+def _wrap_or_unwrap_methods(wrap_or_unwrap_fn, val=None, depth=0):
     if val is None:
         val = ivy
-    if fs is None:
-        fs = ivy.current_framework_str()
     if isinstance(val, ModuleType):
         if (val in wrap_methods_modules or '__file__' not in val.__dict__ or
                 'ivy' not in val.__file__ or 'framework_handler' in val.__file__):
@@ -212,7 +210,7 @@ def _wrap_or_unwrap_methods(wrap_or_unwrap_fn, val=None, fs=None, depth=0):
             if v is None:
                 val.__dict__[k] = v
             else:
-                val.__dict__[k] = _wrap_or_unwrap_methods(wrap_or_unwrap_fn, v, fs, depth+1)
+                val.__dict__[k] = _wrap_or_unwrap_methods(wrap_or_unwrap_fn, v, depth+1)
         if depth == 0:
             wrap_methods_modules.clear()
         return val
@@ -220,12 +218,6 @@ def _wrap_or_unwrap_methods(wrap_or_unwrap_fn, val=None, fs=None, depth=0):
             'ivy' in val.__module__:
         if depth == 0:
             wrap_methods_modules.clear()
-        if hasattr(val, 'inner_fn'):
-            if fs not in val.inner_fn.__module__:
-                return val
-        else:
-            if fs not in val.__module__:
-                return val
         return wrap_or_unwrap_fn(val)
     if depth == 0:
         wrap_methods_modules.clear()
