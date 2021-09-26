@@ -454,7 +454,9 @@
 
 <span class="k">def</span> <span class="nf">_wrap_method_for_debugging</span><span class="p">(</span><span class="n">fn</span><span class="p">):</span>
 
-    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="s1">&#39;__name__&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">fn</span><span class="o">.</span><span class="vm">__name__</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;_&#39;</span> <span class="ow">or</span> <span class="n">fn</span><span class="o">.</span><span class="vm">__name__</span> <span class="ow">in</span> <span class="n">NON_WRAPPED_METHODS</span><span class="p">):</span>
+    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="s1">&#39;__name__&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">fn</span><span class="o">.</span><span class="vm">__name__</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;_&#39;</span> <span class="ow">or</span> <span class="n">fn</span><span class="o">.</span><span class="vm">__name__</span> <span class="ow">in</span>
+                                    <span class="nb">set</span><span class="p">(</span><span class="n">NON_WRAPPED_METHODS</span> <span class="o">+</span> <span class="p">[</span><span class="s1">&#39;has_nans&#39;</span><span class="p">,</span> <span class="s1">&#39;is_array&#39;</span><span class="p">,</span> <span class="s1">&#39;value_is_nan&#39;</span><span class="p">,</span> <span class="s1">&#39;reduce_sum&#39;</span><span class="p">,</span>
+                                                               <span class="s1">&#39;to_scalar&#39;</span><span class="p">])):</span>
         <span class="k">return</span> <span class="n">fn</span>
 
     <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="s1">&#39;wrapped_for_debugging&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">fn</span><span class="o">.</span><span class="n">wrapped_for_debugging</span><span class="p">:</span>
@@ -467,6 +469,7 @@
         <span class="k">def</span> <span class="nf">_has_nans</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
             <span class="k">nonlocal</span> <span class="n">found_nans</span>
             <span class="n">found_nans</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">has_nans</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_array</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">else</span> <span class="kc">False</span>
+            <span class="k">return</span> <span class="n">x</span>
 
         <span class="n">ivy</span><span class="o">.</span><span class="n">nested_map</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">_has_nans</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">found_nans</span><span class="p">:</span>
