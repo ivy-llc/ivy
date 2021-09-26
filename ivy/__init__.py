@@ -8,6 +8,14 @@ class NativeVariable:
     pass
 
 
+class Array:
+    pass
+
+
+class Variable:
+    pass
+
+
 class Framework:
     pass
 
