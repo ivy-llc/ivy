@@ -271,9 +271,19 @@ def _wrap_array_method(fn):
         return
 
     if wrapped_mode_val:
-        shared_fn = ivy_original_fn_dict[fn.inner_fn]
+        if fn in ivy_original_fn_dict:
+            shared_fn = ivy_original_fn_dict[fn]
+        elif hasattr(fn, 'inner_fn') and fn.inner_fn in ivy_original_fn_dict:
+            shared_fn = ivy_original_fn_dict[fn.inner_fn]
+        else:
+            # raise Exception('invalid key')
+            return
     else:
-        shared_fn = ivy_original_fn_dict[fn]
+        if fn in ivy_original_fn_dict:
+            shared_fn = ivy_original_fn_dict[fn]
+        else:
+            # raise Exception('invalid key')
+            return
 
     arg_spec = inspect.getfullargspec(shared_fn)
     anno = arg_spec.annotations
