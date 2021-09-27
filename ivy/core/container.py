@@ -395,6 +395,39 @@ class Container(dict):
         return Container(return_dict, ivyh=container0._local_ivy)
 
     @staticmethod
+    def identical_structure(containers, key_chains=None, to_apply=True, key_chain=''):
+        """
+        Returns a single boolean as to whether the input containers have identical key-chains and data types.
+
+        :param containers: containers to map.
+        :type containers: sequence of Container objects
+        :param key_chains: The key-chains to apply or not apply the method to. Default is None.
+        :type key_chains: list or dict of strs, optional
+        :param to_apply: If True, the method will be applied to key_chains, otherwise key_chains will be skipped.
+                         Default is True.
+        :type to_apply: bool, optional
+        :param key_chain: Chain of keys for this dict entry
+        :type key_chain: str
+        :return: Boolean
+        """
+        keys = set([i for sl in [list(cont.keys()) for cont in containers] for i in sl])
+        for key in sorted(keys):
+            if not min([key in cont for cont in containers]):
+                return False
+            values = [cont[key] for cont in containers]
+            value_0 = values[0]
+            type_0 = type(value_0)
+            types = [type(val) for val in values]
+            if not min([type_n is type_0 for type_n in types]):
+                return False
+            this_key_chain = key if key_chain == '' else (key_chain + '/' + key)
+            if isinstance(value_0, Container):
+                ret = _ivy.Container.identical_structure(values, key_chains, to_apply, this_key_chain)
+                if not ret:
+                    return False
+        return True
+
+    @staticmethod
     def from_disk_as_hdf5(h5_obj_or_filepath, slice_obj=slice(None), ivyh=None):
         """
         Load container object from disk, as an h5py file, at the specified hdf5 filepath.

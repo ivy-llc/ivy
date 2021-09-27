@@ -1805,6 +1805,31 @@ def test_container_multi_map(dev_str, call):
     assert np.allclose(ivy.to_numpy(container_mapped.b.d), np.array([[8]]))
 
 
+def test_container_identical_structure(dev_str, call):
+
+    # without key_chains specification
+    container0 = Container({'a': ivy.array([1]),
+                            'b': {'c': ivy.array([2]), 'd': ivy.array([3])}})
+    container1 = Container({'a': ivy.array([3]),
+                            'b': {'c': ivy.array([4]), 'd': ivy.array([5])}})
+    container2 = Container({'a': ivy.array([3]),
+                            'b': {'c': ivy.array([4]), 'd': ivy.array([5]), 'e': ivy.array([6])}})
+    container3 = Container({'a': ivy.array([3]),
+                            'b': {'c': ivy.array([4]), 'd': ivy.array([5])},
+                            'e': ivy.array([6])})
+
+    # with identical
+    assert ivy.Container.identical_structure([container0, container1])
+    assert ivy.Container.identical_structure([container1, container0])
+    assert ivy.Container.identical_structure([container1, container0, container1])
+
+    # without identical
+    assert not ivy.Container.identical_structure([container2, container3])
+    assert not ivy.Container.identical_structure([container0, container3])
+    assert not ivy.Container.identical_structure([container1, container2])
+    assert not ivy.Container.identical_structure([container1, container0, container2])
+
+
 def test_container_dtype(dev_str, call):
     dict_in = {'a': ivy.array([1]),
                'b': {'c': ivy.array([2.]), 'd': ivy.array([3])}}
