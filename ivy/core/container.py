@@ -395,12 +395,14 @@ class Container(dict):
         return Container(return_dict, ivyh=container0._local_ivy)
 
     @staticmethod
-    def identical_structure(containers, key_chains=None, to_apply=True, key_chain=''):
+    def identical_structure(containers, check_types=True, key_chains=None, to_apply=True, key_chain=''):
         """
         Returns a single boolean as to whether the input containers have identical key-chains and data types.
 
         :param containers: containers to map.
         :type containers: sequence of Container objects
+        :param check_types: Whether to also check whether the datatypes of the leaf nodes are the same. Default is True.
+        :type check_types: bool, optional
         :param key_chains: The key-chains to apply or not apply the method to. Default is None.
         :type key_chains: list or dict of strs, optional
         :param to_apply: If True, the method will be applied to key_chains, otherwise key_chains will be skipped.
@@ -419,7 +421,8 @@ class Container(dict):
             type_0 = type(value_0)
             types = [type(val) for val in values]
             if not min([type_n is type_0 for type_n in types]):
-                return False
+                if isinstance(value_0, Container) or check_types:
+                    return False
             this_key_chain = key if key_chain == '' else (key_chain + '/' + key)
             if isinstance(value_0, Container):
                 ret = _ivy.Container.identical_structure(values, key_chains, to_apply, this_key_chain)
