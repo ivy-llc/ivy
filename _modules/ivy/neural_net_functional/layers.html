@@ -270,30 +270,30 @@
 
 <span class="sd">    :param q: The queries *[batch_shape,num_queries,feat_dim]*.</span>
 <span class="sd">    :type q: array</span>
-<span class="sd">    :param k: The keys *[batch_shape,num_values,feat_dim]*.</span>
+<span class="sd">    :param k: The keys *[batch_shape,num_keys,feat_dim]*.</span>
 <span class="sd">    :type k: array</span>
-<span class="sd">    :param v: The values *[batch_shape,num_values,feat_dim]*.</span>
+<span class="sd">    :param v: The values *[batch_shape,num_keys,feat_dim]*.</span>
 <span class="sd">    :type v: array</span>
 <span class="sd">    :param scale: The value by which to scale the query-key pairs before softmax.</span>
 <span class="sd">    :type scale: float</span>
-<span class="sd">    :param mask: The mask to apply to the query-key values. Default is None. *[batch_shape,num_queries,num_values]*</span>
+<span class="sd">    :param mask: The mask to apply to the query-key values. Default is None. *[batch_shape,num_queries,num_keys]*</span>
 <span class="sd">    :type mask: array, optional</span>
-<span class="sd">    :return The output following application of scaled dot-product attention.</span>
+<span class="sd">    :return The output following application of scaled dot-product attention. *[batch_shape,num_queries,feat_dim]*</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="c1"># BS x Q x V</span>
-    <span class="n">sim</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s1">&#39;... q f, ... v f -&gt; ... q v&#39;</span><span class="p">,</span> <span class="n">q</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span> <span class="o">*</span> <span class="n">scale</span>
+    <span class="c1"># BS x Q x K</span>
+    <span class="n">sim</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s1">&#39;... q f, ... k f -&gt; ... q k&#39;</span><span class="p">,</span> <span class="n">q</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span> <span class="o">*</span> <span class="n">scale</span>
 
     <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">mask</span><span class="p">):</span>
 
-        <span class="c1"># BS x Q x V</span>
+        <span class="c1"># BS x Q x K</span>
         <span class="n">sim</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">logical_not</span><span class="p">(</span><span class="n">mask</span><span class="p">),</span> <span class="o">-</span><span class="n">ivy</span><span class="o">.</span><span class="n">ones_like</span><span class="p">(</span><span class="n">sim</span><span class="p">)</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">finfo</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">dtype_str</span><span class="p">(</span><span class="n">sim</span><span class="p">)))</span><span class="o">.</span><span class="n">max</span><span class="p">,</span> <span class="n">sim</span><span class="p">)</span>
 
-    <span class="c1"># BS x Q x V</span>
+    <span class="c1"># BS x Q x K</span>
     <span class="n">attn</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">softmax</span><span class="p">(</span><span class="n">sim</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
 
     <span class="c1"># BS x Q x F</span>
-    <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s1">&#39;... q v, ... v f -&gt; ... q f&#39;</span><span class="p">,</span> <span class="n">attn</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s1">&#39;... q k, ... k f -&gt; ... q f&#39;</span><span class="p">,</span> <span class="n">attn</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="multi_head_attention"><a class="viewcode-back" href="../../../neural_net_functional/layers/multi_head_attention.html#ivy.neural_net_functional.layers.multi_head_attention">[docs]</a><span class="k">def</span> <span class="nf">multi_head_attention</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">to_q_fn</span><span class="p">,</span> <span class="n">to_kv_fn</span><span class="p">,</span> <span class="n">to_out_fn</span><span class="p">,</span> <span class="n">scale</span><span class="p">,</span> <span class="n">num_heads</span><span class="p">,</span> <span class="n">context</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">to_q_v</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
