@@ -583,6 +583,8 @@ class Container(dict):
         sub_shapes =\
             [v for k, v in self.map(lambda x, kc: list(x.shape) if self._ivy.is_array(x)
                 else ([len(x)] if isinstance(x, (list, tuple)) else None)).to_iterator() if v]
+        if not sub_shapes:
+            return sub_shapes
         min_num_dims = min([len(sub_shape) for sub_shape in sub_shapes])
         sub_shapes_array = _np.asarray([sub_shape[0:min_num_dims] for sub_shape in sub_shapes])
         sub_shapes_array = _np.where(sub_shapes_array == 0, -1, sub_shapes_array)
