@@ -112,9 +112,10 @@ def multi_head_attention(x, to_q_fn, to_kv_fn, to_out_fn, scale, num_heads, cont
     """
     Applies multi-head attention to inputs x.
 
-    :param x: The array to determine the queries from *[batch_shape,num_queries,x_feats]*.
+    :param x: The array to determine the queries from *[batch_shape,num_queries,x_feat_dim]*.
     :type x: array
-    :param to_q_fn: The function to compute queries from input x.
+    :param to_q_fn: The function to compute queries from input x, returning queries
+                    *[batch_shape,num_queries,numheads×feat_dim]*.
     :type to_q_fn: callable
     :param to_kv_fn: The function to compute keys and values from the context.
     :type to_kv_fn: callable
@@ -125,9 +126,9 @@ def multi_head_attention(x, to_q_fn, to_kv_fn, to_out_fn, scale, num_heads, cont
     :param num_heads: The number of attention heads to use.
     :type num_heads: int
     :param context: The array to determine the keys and values from. Default is None.
-                    *[batch_shape,num_values,cont_feats]*.
+                    *[batch_shape,num_keys,cont_feat_dim]*.
     :type context: array, optional
-    :param mask: The mask to apply to the query-key values. Default is None. *[batch_shape,num_queries,num_values]*
+    :param mask: The mask to apply to the query-key values. Default is None. *[batch_shape,num_queries,num_keys]*
     :type mask: array, optional
     :param to_q_v: The variables for function to_q_fn. Default is None.
     :type to_q_v: variables array, optional
@@ -135,24 +136,27 @@ def multi_head_attention(x, to_q_fn, to_kv_fn, to_out_fn, scale, num_heads, cont
     :type to_kv_v: variables array, optional
     :param to_out_v: The variables for function to_out_fn. Default is None.
     :type to_out_v: variables array, optional
-    :return The output following application of multi-head attention. *[batch_shape,num_queries,out_feats]*
+    :return The output following application of multi-head attention. *[batch_shape,num_queries,out_feat_dim]*
     """
 
     # BS x Q x (HxF)
     q = to_q_fn(x, v=to_q_v)
 
-    # BS x IS
+    # BS x K x CF
     context = ivy.default(context, x)
 
-    # BS x V x (HxF),  BS x V x (HxF)
-    k, v = ivy.split(to_kv_fn(context, v=to_kv_v), 2, -1)
+    # BS x K x (HxFx2)
+    kv = to_kv_fn(context, v=to_kv_v)
 
-    # BS x H x Q x F,  BS x H x V x F,  BS x H x V x F
+    # BS x K x (HxF),  BS x K x (HxF)
+    k, v = ivy.split(kv, 2, -1)
+
+    # BS x H x Q x F,  BS x H x K x F,  BS x H x K x F
     q, k, v = map(lambda t: ivy.einops_rearrange(t, '... n (h f) -> ... h n f', h=num_heads), (q, k, v))
 
-    # BS x H x Q x V
+    # BS x H x Q x K
     if ivy.exists(mask):
-        mask = ivy.einops_repeat(mask, '... q v -> ... h q v', h=num_heads)
+        mask = ivy.einops_repeat(mask, '... q k -> ... h q k', h=num_heads)
 
     # BS x H x Q x F
     sdpa = scaled_dot_product_attention(q, k, v, scale, mask)
