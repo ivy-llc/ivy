@@ -431,22 +431,23 @@ of the weight matrices. This is useful if a batch of different network parameter
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<em>array</em>) – The array to determine the queries from <em>[batch_shape,num_queries,x_feats]</em>.</p></li>
-<li><p><strong>to_q_fn</strong> (<em>callable</em>) – The function to compute queries from input x.</p></li>
+<li><p><strong>x</strong> (<em>array</em>) – The array to determine the queries from <em>[batch_shape,num_queries,x_feat_dim]</em>.</p></li>
+<li><p><strong>to_q_fn</strong> (<em>callable</em>) – The function to compute queries from input x, returning queries
+<em>[batch_shape,num_queries,numheads×feat_dim]</em>.</p></li>
 <li><p><strong>to_kv_fn</strong> (<em>callable</em>) – The function to compute keys and values from the context.</p></li>
 <li><p><strong>to_out_fn</strong> (<em>callable</em>) – The function to compute the output from the scaled dot-product attention.</p></li>
 <li><p><strong>scale</strong> (<em>float</em>) – The value by which to scale the query-key similarity measure before softmax.</p></li>
 <li><p><strong>num_heads</strong> (<em>int</em>) – The number of attention heads to use.</p></li>
 <li><p><strong>context</strong> (<em>array</em><em>, </em><em>optional</em>) – The array to determine the keys and values from. Default is None.
-<em>[batch_shape,num_values,cont_feats]</em>.</p></li>
-<li><p><strong>mask</strong> (<em>array</em><em>, </em><em>optional</em>) – The mask to apply to the query-key values. Default is None. <em>[batch_shape,num_queries,num_values]</em></p></li>
+<em>[batch_shape,num_keys,cont_feat_dim]</em>.</p></li>
+<li><p><strong>mask</strong> (<em>array</em><em>, </em><em>optional</em>) – The mask to apply to the query-key values. Default is None. <em>[batch_shape,num_queries,num_keys]</em></p></li>
 <li><p><strong>to_q_v</strong> (<em>variables array</em><em>, </em><em>optional</em>) – The variables for function to_q_fn. Default is None.</p></li>
 <li><p><strong>to_kv_v</strong> (<em>variables array</em><em>, </em><em>optional</em>) – The variables for function to_kv_fn. Default is None.</p></li>
 <li><p><strong>to_out_v</strong> (<em>variables array</em><em>, </em><em>optional</em>) – The variables for function to_out_fn. Default is None.</p></li>
 </ul>
 </dd>
 </dl>
-<p>:return The output following application of multi-head attention. <em>[batch_shape,num_queries,out_feats]</em></p>
+<p>:return The output following application of multi-head attention. <em>[batch_shape,num_queries,out_feat_dim]</em></p>
 </dd></dl>
 
 <dl class="py function">
