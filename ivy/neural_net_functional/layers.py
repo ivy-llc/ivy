@@ -81,30 +81,30 @@ def scaled_dot_product_attention(q, k, v, scale, mask=None):
 
     :param q: The queries *[batch_shape,num_queries,feat_dim]*.
     :type q: array
-    :param k: The keys *[batch_shape,num_values,feat_dim]*.
+    :param k: The keys *[batch_shape,num_keys,feat_dim]*.
     :type k: array
-    :param v: The values *[batch_shape,num_values,feat_dim]*.
+    :param v: The values *[batch_shape,num_keys,feat_dim]*.
     :type v: array
     :param scale: The value by which to scale the query-key pairs before softmax.
     :type scale: float
-    :param mask: The mask to apply to the query-key values. Default is None. *[batch_shape,num_queries,num_values]*
+    :param mask: The mask to apply to the query-key values. Default is None. *[batch_shape,num_queries,num_keys]*
     :type mask: array, optional
-    :return The output following application of scaled dot-product attention.
+    :return The output following application of scaled dot-product attention. *[batch_shape,num_queries,feat_dim]*
     """
 
-    # BS x Q x V
-    sim = ivy.einsum('... q f, ... v f -> ... q v', q, k) * scale
+    # BS x Q x K
+    sim = ivy.einsum('... q f, ... k f -> ... q k', q, k) * scale
 
     if ivy.exists(mask):
 
-        # BS x Q x V
+        # BS x Q x K
         sim = ivy.where(ivy.logical_not(mask), -ivy.ones_like(sim)*np.finfo(np.dtype(ivy.dtype_str(sim))).max, sim)
 
-    # BS x Q x V
+    # BS x Q x K
     attn = ivy.softmax(sim, -1)
 
     # BS x Q x F
-    return ivy.einsum('... q v, ... v f -> ... q f', attn, v)
+    return ivy.einsum('... q k, ... k f -> ... q f', attn, v)
 
 
 def multi_head_attention(x, to_q_fn, to_kv_fn, to_out_fn, scale, num_heads, context=None, mask=None, to_q_v=None,
