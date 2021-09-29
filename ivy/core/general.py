@@ -573,8 +573,9 @@ def arange(stop: Number, start: Number = 0, step: Number = 1, dtype_str: str = N
 
 
 # noinspection PyShadowingNames
-def linspace(start: Union[ivy.Array, ivy.NativeArray], stop: Union[ivy.Array, ivy.NativeArray], num: int,
-             axis: int = None, dev_str: str = None, f: ivy.Framework = None) -> Union[ivy.Array, ivy.NativeArray]:
+def linspace(start: Union[ivy.Array, ivy.NativeArray, Number], stop: Union[ivy.Array, ivy.NativeArray, Number],
+             num: int, axis: int = None, dev_str: str = None, f: ivy.Framework = None)\
+        -> Union[ivy.Array, ivy.NativeArray]:
     """
     Generates a certain number of evenly-spaced values in an interval along a given axis.
 
@@ -790,7 +791,7 @@ def zero_pad(x: Union[ivy.Array, ivy.NativeArray], pad_width: List[Tuple[int]], 
     return _cur_framework(x, f=f).zero_pad(x, pad_width)
 
 
-def fourier_encode(x: Union[ivy.Array, ivy.NativeArray], max_freq: float, num_bands: int = 4)\
+def fourier_encode(x: Union[ivy.Array, ivy.NativeArray], max_freq: float, num_bands: int = 4, linear: bool = False)\
         -> Union[ivy.Array, ivy.NativeArray]:
     """
     Pads an array with fourier encodings.
@@ -801,12 +802,17 @@ def fourier_encode(x: Union[ivy.Array, ivy.NativeArray], max_freq: float, num_ba
     :type max_freq: float
     :param num_bands: The number of frequency bands for the encoding. Default is 4.
     :type num_bands: int, optional
+    :param linear: Whether to space the frequency bands linearly as opposed to geometrically. Default is False.
+    :type linear: bool, optional
     :return: New array with the final dimension expanded, and the encodings stored in this channel.
     """
     x = ivy.expand_dims(x, -1)
     orig_x = x
-    scales = ivy.cast(ivy.logspace(0., math.log(max_freq / 2) / math.log(10), num_bands,
-                                   base=10, dev_str=dev_str(x)), ivy.dtype_str(x))
+    if linear:
+        scales = ivy.linspace(0., max_freq / 2, num_bands, dev_str=dev_str(x))
+    else:
+        scales = ivy.logspace(0., math.log(max_freq / 2) / math.log(10), num_bands, base=10, dev_str=dev_str(x))
+    scales = ivy.cast(scales, ivy.dtype_str(x))
     scales = scales[(*((None,) * (len(x.shape) - 1)), Ellipsis)]
     x = x * scales * math.pi
     return ivy.concatenate([orig_x, ivy.sin(x), ivy.cos(x)], -1)
