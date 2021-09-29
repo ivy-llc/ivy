@@ -1575,6 +1575,7 @@ def split_func_call(func: Callable, inputs: List[Union[Union[ivy.Array, ivy.Nati
     inputs_split = [ivy.split(inp, chunk_sizes, input_axes[i], True) if ivy.is_array(inp)
                     else inp.split(chunk_sizes, input_axes[i], True) for i, inp in enumerate(inputs)]
     rets = [func(*i) for i in zip(*inputs_split)]
+    rets = [ret if isinstance(ret, tuple) else (ret,) for ret in rets]
     num_outputs = len(rets[0])
     if output_axes is None:
         output_axes = [input_axes[0]] * num_outputs
