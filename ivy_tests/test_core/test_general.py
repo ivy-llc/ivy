@@ -1063,9 +1063,9 @@ def test_zero_pad(x_n_pw, dtype_str, tensor_fn, dev_str, call):
 
 # fourier_encode
 @pytest.mark.parametrize(
-    "x_n_mf_n_nb_n_b_n_gt", [([2.], 4., 4, 2., [[2.,  1.7484555e-07,  0.99805772, -0.52196848,
-                                                 3.4969111e-07, 1., -0.062295943, -0.85296476, 1.]]),
-                             ([[0.5, 1.5, 2.5, 3.5]], 8., 6, 3.,
+    "x_n_mf_n_nb_n_gt", [([2.], 4., 4, [[2.,  1.7484555e-07,  0.99805772, -0.52196848,
+                                         3.4969111e-07, 1., -0.062295943, -0.85296476, 1.]]),
+                         ([[0.5, 1.5, 2.5, 3.5]], 8., 6,
                               [[[5.0000000e-01, 1.0000000e+00, 8.7667871e-01, 3.9555991e-01,
                                  -4.5034310e-01, -9.9878132e-01, 1.7484555e-07, -4.3711388e-08,
                                  -4.8107630e-01, -9.1844016e-01, -8.9285558e-01, 4.9355008e-02, 1.0000000e+00],
@@ -1082,14 +1082,14 @@ def test_zero_pad(x_n_pw, dtype_str, tensor_fn, dev_str, call):
     "dtype_str", ['float32'])
 @pytest.mark.parametrize(
     "tensor_fn", [ivy.array, helpers.var_fn])
-def test_fourier_encode(x_n_mf_n_nb_n_b_n_gt, dtype_str, tensor_fn, dev_str, call):
+def test_fourier_encode(x_n_mf_n_nb_n_gt, dtype_str, tensor_fn, dev_str, call):
     # smoke test
-    x, max_freq, num_bands, base, ground_truth = x_n_mf_n_nb_n_b_n_gt
+    x, max_freq, num_bands, ground_truth = x_n_mf_n_nb_n_gt
     if isinstance(x, Number) and tensor_fn == helpers.var_fn and call is helpers.mx_call:
         # mxnet does not support 0-dimensional variables
         pytest.skip()
     x = tensor_fn(x, dtype_str, dev_str)
-    ret = ivy.fourier_encode(x, max_freq, num_bands, base)
+    ret = ivy.fourier_encode(x, max_freq, num_bands)
     # type test
     assert ivy.is_array(ret)
     # cardinality test
@@ -1097,7 +1097,7 @@ def test_fourier_encode(x_n_mf_n_nb_n_b_n_gt, dtype_str, tensor_fn, dev_str, cal
     expected_shape = x_shape + [1 + 2*num_bands]
     assert list(ret.shape) == expected_shape
     # value test
-    assert np.allclose(call(ivy.fourier_encode, x, max_freq, num_bands, base), np.array(ground_truth), atol=1e-5)
+    assert np.allclose(call(ivy.fourier_encode, x, max_freq, num_bands), np.array(ground_truth), atol=1e-5)
     # compilation test
     if call is helpers.torch_call:
         # pytorch scripting does not support Union or Numbers for type hinting
