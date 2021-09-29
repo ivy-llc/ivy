@@ -1323,7 +1323,7 @@ def exists(x: Any)\
     return x is not None
 
 
-def default(x: Any, default_val: Any, catch_exceptions: bool = False, rev: bool = False)\
+def default(x: Any, default_val: Any, catch_exceptions: bool = False, rev: bool = False, with_callable: bool = False)\
         -> Any:
     """
     Returns x provided it exists (is not None), else returns default value.
@@ -1336,14 +1336,21 @@ def default(x: Any, default_val: Any, catch_exceptions: bool = False, rev: bool 
     :type catch_exceptions: bool, optional
     :param rev: Whether to reverse the input x and default_val. Default is False.
     :type rev: bool, optional
+    :param with_callable: Whether either of the arguments might be callable functions. Default is False.
+    :type with_callable: bool, optional
     :return: x if x exists (is not None), else default.
     """
+    with_callable = catch_exceptions or with_callable
     if rev:
         tmp = x
         x = default_val
         default_val = tmp
-    x_callable = callable(x)
-    default_callable = callable(default_val)
+    if with_callable:
+        x_callable = callable(x)
+        default_callable = callable(default_val)
+    else:
+        x_callable = False
+        default_callable = False
     if catch_exceptions:
         # noinspection PyBroadException
         try:
