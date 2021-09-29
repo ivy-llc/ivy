@@ -790,7 +790,7 @@ def zero_pad(x: Union[ivy.Array, ivy.NativeArray], pad_width: List[Tuple[int]], 
     return _cur_framework(x, f=f).zero_pad(x, pad_width)
 
 
-def fourier_encode(x: Union[ivy.Array, ivy.NativeArray], max_freq: float, num_bands: int = 4, base: float = 2.)\
+def fourier_encode(x: Union[ivy.Array, ivy.NativeArray], max_freq: float, num_bands: int = 4)\
         -> Union[ivy.Array, ivy.NativeArray]:
     """
     Pads an array with fourier encodings.
@@ -801,14 +801,12 @@ def fourier_encode(x: Union[ivy.Array, ivy.NativeArray], max_freq: float, num_ba
     :type max_freq: float
     :param num_bands: The number of frequency bands for the encoding. Default is 4.
     :type num_bands: int, optional
-    :param base: The base of the encoding.
-    :type base: float, optional
     :return: New array with the final dimension expanded, and the encodings stored in this channel.
     """
     x = ivy.expand_dims(x, -1)
     orig_x = x
-    scales = ivy.cast(ivy.logspace(0., math.log(max_freq / 2) / math.log(base), num_bands,
-                                   base=base, dev_str=dev_str(x)), ivy.dtype_str(x))
+    scales = ivy.cast(ivy.logspace(0., math.log(max_freq / 2) / math.log(10), num_bands,
+                                   base=10, dev_str=dev_str(x)), ivy.dtype_str(x))
     scales = scales[(*((None,) * (len(x.shape) - 1)), Ellipsis)]
     x = x * scales * math.pi
     return ivy.concatenate([orig_x, ivy.sin(x), ivy.cos(x)], -1)
