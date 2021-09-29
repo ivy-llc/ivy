@@ -1527,18 +1527,20 @@
 <span class="sd">    :type rev: bool, optional</span>
 <span class="sd">    :return: x if x exists (is not None), else default.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">catch_exceptions</span><span class="p">:</span>
-        <span class="k">assert</span> <span class="n">callable</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-        <span class="c1"># noinspection PyBroadException</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">x</span> <span class="o">=</span> <span class="n">x</span><span class="p">()</span>
-        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">default_val</span>
     <span class="k">if</span> <span class="n">rev</span><span class="p">:</span>
         <span class="n">tmp</span> <span class="o">=</span> <span class="n">x</span>
         <span class="n">x</span> <span class="o">=</span> <span class="n">default_val</span>
         <span class="n">default_val</span> <span class="o">=</span> <span class="n">tmp</span>
-    <span class="k">return</span> <span class="n">x</span> <span class="k">if</span> <span class="n">exists</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">else</span> <span class="n">default_val</span></div>
+    <span class="n">x_callable</span> <span class="o">=</span> <span class="n">callable</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="n">default_callable</span> <span class="o">=</span> <span class="n">callable</span><span class="p">(</span><span class="n">default_val</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">catch_exceptions</span><span class="p">:</span>
+        <span class="c1"># noinspection PyBroadException</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="n">x</span><span class="p">()</span> <span class="k">if</span> <span class="n">x_callable</span> <span class="k">else</span> <span class="n">x</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">default_val</span><span class="p">()</span> <span class="k">if</span> <span class="n">default_callable</span> <span class="k">else</span> <span class="n">default_val</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">x</span><span class="p">()</span> <span class="k">if</span> <span class="n">x_callable</span> <span class="k">else</span> <span class="n">x</span>
+    <span class="k">return</span> <span class="n">x</span> <span class="k">if</span> <span class="n">exists</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">else</span> <span class="n">default_val</span><span class="p">()</span> <span class="k">if</span> <span class="n">default_callable</span> <span class="k">else</span> <span class="n">default_val</span></div>
 
 
 <div class="viewcode-block" id="dev"><a class="viewcode-back" href="../../../core/general/dev.html#ivy.core.general.dev">[docs]</a><span class="k">def</span> <span class="nf">dev</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span> <span class="n">f</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Framework</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span>\
