@@ -48,7 +48,9 @@ NATIVE_MODULES = {'torch': TorchModule,
 # to_ivy_module
 @pytest.mark.parametrize(
     "bs_ic_oc", [([1, 2], 4, 5)])
-def test_to_ivy_module(bs_ic_oc, dev_str, call):
+@pytest.mark.parametrize(
+    "from_class_and_args", [True, False])
+def test_to_ivy_module(bs_ic_oc, from_class_and_args, dev_str, call):
     # smoke test
     if call not in [helpers.torch_call, helpers.jnp_call]:
         # Currently only implemented for PyTorch
@@ -56,10 +58,16 @@ def test_to_ivy_module(bs_ic_oc, dev_str, call):
     batch_shape, input_channels, output_channels = bs_ic_oc
     x = ivy.cast(ivy.linspace(ivy.zeros(batch_shape), ivy.ones(batch_shape), input_channels), 'float32')
     natvie_module_class = NATIVE_MODULES[ivy.current_framework_str()]
-    if call is helpers.jnp_call:
+    if from_class_and_args:
         ivy_module = ivy.to_ivy_module(native_module_class=natvie_module_class, args=[input_channels, output_channels])
     else:
-        native_module = natvie_module_class(input_channels, output_channels)
+        if call is helpers.jnp_call:
+            def forward_fn(*a, **kw):
+                model = natvie_module_class(input_channels, output_channels)
+                return model(*a, **kw)
+            native_module = hk.transform(forward_fn)
+        else:
+            native_module = natvie_module_class(input_channels, output_channels)
         ivy_module = ivy.to_ivy_module(native_module)
 
     def loss_fn(v_=None):
