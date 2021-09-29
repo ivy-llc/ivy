@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>to_ivy_module &mdash; Ivy 1.0 documentation</title>
+  <title>Converters &mdash; Ivy 1.0 documentation</title>
   
 
   
@@ -35,9 +35,7 @@
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
-    <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="Initializers" href="../initializers.html" />
-    <link rel="prev" title="Converters" href="../converters.html" /> 
+    <link rel="search" title="Search" href="../../search.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -108,18 +106,15 @@
 <li class="toctree-l1"><a class="reference internal" href="../../neural_net_functional/norms.html">Norms</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Neural net stateful</span></p>
-<ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="../activations.html">Activations</a></li>
-<li class="toctree-l1 current"><a class="reference internal" href="../converters.html">Converters</a><ul class="current">
-<li class="toctree-l2 current"><a class="current reference internal" href="#">to_ivy_module</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="../initializers.html">Initializers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../layers.html">Layers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../module.html">Module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../norms.html">Norms</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../optimizers.html">Optimizers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../sequential.html">Sequential</a></li>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../neural_net_stateful/activations.html">Activations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../neural_net_stateful/converters.html">Converters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../neural_net_stateful/initializers.html">Initializers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../neural_net_stateful/layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../neural_net_stateful/module.html">Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../neural_net_stateful/norms.html">Norms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../neural_net_stateful/optimizers.html">Optimizers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../neural_net_stateful/sequential.html">Sequential</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Docs</span></p>
 <ul>
@@ -174,15 +169,13 @@
     
       <li><a href="../../index.html">Docs</a> &raquo;</li>
         
-          <li><a href="../converters.html">Converters</a> &raquo;</li>
-        
-      <li>to_ivy_module</li>
+      <li>Converters</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="../../_sources/neural_net_stateful/converters/to_ivy_module.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../_sources/jax/nn/converters.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -195,34 +188,14 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="to-ivy-module">
-<h1>to_ivy_module<a class="headerlink" href="#to-ivy-module" title="Permalink to this headline">¶</a></h1>
-<dl class="py function">
-<dt id="ivy.neural_net_stateful.converters.to_ivy_module">
-<code class="sig-prename descclassname">ivy.neural_net_stateful.converters.</code><code class="sig-name descname">to_ivy_module</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">native_module</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">native_module_class</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">args</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">kwargs</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">f</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/neural_net_stateful/converters.html#to_ivy_module"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.neural_net_stateful.converters.to_ivy_module" title="Permalink to this definition">¶</a></dt>
-<dd><p>Convert an instance of a trainable module from a native framework into a trainable ivy.Module instance.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>native_module</strong> (<em>native module instance</em><em>, </em><em>optional</em>) – The module in the native framework to convert, required if native_module_class is not given.
-Default is None.</p></li>
-<li><p><strong>native_module_class</strong> (<em>class</em><em>, </em><em>optional</em>) – The class of the native module, required if native_module is not given. Default is None.</p></li>
-<li><p><strong>args</strong> (<em>list of any</em>) – Positional arguments to pass to the native module class. Default is None.</p></li>
-<li><p><strong>kwargs</strong> (<em>dict of any</em>) – Key-word arguments to pass to the native module class. Default is None.</p></li>
-<li><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning library. Inferred from Inputs if None.</p></li>
+  <div class="section" id="converters">
+<h1>Converters<a class="headerlink" href="#converters" title="Permalink to this headline">¶</a></h1>
+<div class="toctree-wrapper compound">
+<p class="caption"><span class="caption-text">Converters</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="converters/to_ivy_module.html">to_ivy_module</a></li>
 </ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>The new trainable ivy.Module instance.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<div class="line-block">
-<div class="line"><br /></div>
-<div class="line"><strong>Supported Frameworks:</strong></div>
 </div>
-<p><a class="reference internal" href="../../_images/empty.png"><img alt="empty" src="../../_images/empty.png" style="width: 4%;" /></a> <a class="reference external" href="https://jax.readthedocs.io"><img alt="jax_logo" src="../../_images/jax_logo.png" style="width: 14%;" /></a> <a class="reference internal" href="../../_images/empty.png"><img alt="empty" src="../../_images/empty.png" style="width: 4%;" /></a> <a class="reference external" href="https://www.tensorflow.org"><img alt="tf_logo" src="../../_images/tensorflow_logo.png" style="width: 14%;" /></a> <a class="reference internal" href="../../_images/empty.png"><img alt="empty" src="../../_images/empty.png" style="width: 4%;" /></a> <a class="reference external" href="https://pytorch.org"><img alt="pytorch_logo" src="../../_images/pytorch_logo.png" style="width: 14%;" /></a> <a class="reference internal" href="../../_images/empty.png"><img alt="empty" src="../../_images/empty.png" style="width: 4%;" /></a> <a class="reference external" href="https://mxnet.apache.org"><img alt="mxnet_logo" src="../../_images/mxnet_logo.png" style="width: 14%;" /></a> <a class="reference internal" href="../../_images/empty.png"><img alt="empty" src="../../_images/empty.png" style="width: 4%;" /></a> <a class="reference external" href="https://numpy.org"><img alt="numpy_logo" src="../../_images/numpy_logo.png" style="width: 14%;" /></a> <a class="reference internal" href="../../_images/empty.png"><img alt="empty" src="../../_images/empty.png" style="width: 4%;" /></a></p>
 </div>
 
 
@@ -230,15 +203,6 @@ Default is None.</p></li>
            
           </div>
           <footer>
-  
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="../initializers.html" class="btn btn-neutral float-right" title="Initializers" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
-        <a href="../converters.html" class="btn btn-neutral float-left" title="Converters" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-      
-    </div>
   
 
   <hr/>
