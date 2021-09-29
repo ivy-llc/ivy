@@ -1338,18 +1338,20 @@ def default(x: Any, default_val: Any, catch_exceptions: bool = False, rev: bool 
     :type rev: bool, optional
     :return: x if x exists (is not None), else default.
     """
-    if catch_exceptions:
-        assert callable(x)
-        # noinspection PyBroadException
-        try:
-            x = x()
-        except Exception:
-            return default_val
     if rev:
         tmp = x
         x = default_val
         default_val = tmp
-    return x if exists(x) else default_val
+    x_callable = callable(x)
+    default_callable = callable(default_val)
+    if catch_exceptions:
+        # noinspection PyBroadException
+        try:
+            x = x() if x_callable else x
+        except Exception:
+            return default_val() if default_callable else default_val
+    x = x() if x_callable else x
+    return x if exists(x) else default_val() if default_callable else default_val
 
 
 def dev(x: Union[ivy.Array, ivy.NativeArray], f: ivy.Framework = None)\
