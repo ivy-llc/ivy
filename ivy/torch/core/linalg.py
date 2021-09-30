@@ -42,7 +42,7 @@ def vector_to_skew_symmetric_matrix(vector):
     a2s = vector_expanded[..., 1:2, :]
     a3s = vector_expanded[..., 2:3, :]
     # BS x 1 x 1
-    zs = torch.zeros(batch_shape + [1, 1])
+    zs = torch.zeros(batch_shape + [1, 1], device=vector.device)
     # BS x 1 x 3
     row1 = torch.cat((zs, -a3s, a2s), -1)
     row2 = torch.cat((a3s, zs, -a1s), -1)

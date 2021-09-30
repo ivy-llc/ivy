@@ -85,8 +85,8 @@ def test_gradient_image(x_n_dy_n_dx, dtype_str, tensor_fn, dev_str, call):
     assert dx.shape == x.shape
     # value test
     dy_np, dx_np = call(ivy.gradient_image, x)
-    dy_true = ivy.numpy.array(dy_true, dtype_str, dev_str)
-    dx_true = ivy.numpy.array(dx_true, dtype_str, dev_str)
+    dy_true = ivy.numpy.array(dy_true, dtype_str)
+    dx_true = ivy.numpy.array(dx_true, dtype_str)
     assert np.allclose(dy_np, dy_true)
     assert np.allclose(dx_np, dx_true)
     # compilation test
