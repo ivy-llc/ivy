@@ -39,7 +39,12 @@ def inplace_increment(x, val):
 
 
 def execute_with_gradients(func, xs, retain_grads=False):
+    wrapped_mode = False
     if ivy.wrapped_mode():
+        wrapped_mode = True
+        # ToDo: find more elegant solution than setting the global wrap mode to false.
+        #  There must be some wrongly wrapped jax functions.
+        ivy.set_wrapped_mode(False)
         xs = xs.to_native()
     func_ret = func(xs)
     if isinstance(func_ret, tuple):
@@ -50,8 +55,13 @@ def execute_with_gradients(func, xs, retain_grads=False):
         y = func_ret
         rest = tuple()
         grad_fn = lambda x_in: ivy.reshape(func(x_in), [])
-    grads = Container(_jax.grad(grad_fn)(xs))
-    if ivy.wrapped_mode():
+    grad_func = _jax.grad(grad_fn)
+    grads = grad_func(xs)
+    grads = Container(grads)
+    if wrapped_mode:
+        # ToDo: find more elegant solution than setting the global wrap mode to false.
+        #  There must be some wrongly wrapped jax functions.
+        ivy.set_wrapped_mode(True)
         grads = grads.to_ivy()
     return (y, grads, *rest)
 
