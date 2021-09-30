@@ -30,6 +30,12 @@ def _flat_array_to_1_dim_array(x):
     return x.reshape((1,)) if x.shape == () else x
 
 
+def _to_array(x):
+    if isinstance(x, _jax.interpreters.ad.JVPTracer):
+        return _to_array(x.primal)
+    return x
+
+
 # API #
 # ----#
 
@@ -45,7 +51,10 @@ def array(object_in, dtype_str=None, dev_str=None):
 
 
 # noinspection PyUnresolvedReferences,PyProtectedMember
-def is_array(x):
+def is_array(x, exclusive=False):
+    if exclusive:
+        return isinstance(x, (_jax.interpreters.xla._DeviceArray,
+                              _jaxlib.xla_extension.DeviceArray, Buffer))
     return isinstance(x, (_jax.interpreters.xla._DeviceArray,
                           _jaxlib.xla_extension.DeviceArray, Buffer,
                           _jax.interpreters.ad.JVPTracer))
@@ -54,9 +63,9 @@ def is_array(x):
 array_equal = _jnp.array_equal
 to_numpy = _onp.asarray
 to_numpy.__name__ = 'to_numpy'
-to_scalar = lambda x: x.item()
+to_scalar = lambda x: _to_array(x).item()
 to_scalar.__name__ = 'to_scalar'
-to_list = lambda x: x.tolist()
+to_list = lambda x: _to_array(x).tolist()
 to_list.__name__ = 'to_list'
 shape = lambda x, as_tensor=False: _jnp.asarray(_jnp.shape(x)) if as_tensor else x.shape
 shape.__name__ = 'shape'
@@ -367,9 +376,7 @@ def linear_resample(x, num_samples, axis=-1):
 
 
 def dev(x):
-    if isinstance(x, _jax.interpreters.ad.JVPTracer):
-        return x.primal.device_buffer.device()
-    return x.device_buffer.device()
+    return _to_array(x).device_buffer.device()
 
 
 def to_dev(x, dev_str=None):
