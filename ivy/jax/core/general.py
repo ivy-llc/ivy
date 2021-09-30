@@ -366,7 +366,10 @@ def linear_resample(x, num_samples, axis=-1):
     return _jnp.reshape(ret, x_pre_shape + [num_samples] + x_post_shape)
 
 
-dev = lambda x: x.device_buffer.device()
+def dev(x):
+    if isinstance(x, _jax.interpreters.ad.JVPTracer):
+        return x.primal.device_buffer.device()
+    return x.device_buffer.device()
 
 
 def to_dev(x, dev_str=None):
