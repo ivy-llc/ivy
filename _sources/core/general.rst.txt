@@ -108,4 +108,5 @@ General
    general/get_min_base.rst
    general/set_min_base.rst
    general/stable_pow.rst
+   general/multiprocessing.rst
 

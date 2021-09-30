@@ -2040,6 +2040,17 @@
         <span class="k">return</span> <span class="n">base</span> <span class="o">**</span> <span class="n">exponent</span>
     <span class="c1"># noinspection PyProtectedMember</span>
     <span class="k">return</span> <span class="p">(</span><span class="n">base</span> <span class="o">+</span> <span class="n">default</span><span class="p">(</span><span class="n">min_base</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">_MIN_BASE</span><span class="p">))</span> <span class="o">**</span> <span class="n">exponent</span></div>
+
+
+<div class="viewcode-block" id="multiprocessing"><a class="viewcode-back" href="../../../core/general/multiprocessing.html#ivy.core.general.multiprocessing">[docs]</a><span class="k">def</span> <span class="nf">multiprocessing</span><span class="p">(</span><span class="n">f</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return framewrk-specific multi-processing module</span>
+
+<span class="sd">    :param f: Machine learning framework. Inferred from inputs if None.</span>
+<span class="sd">    :type f: ml_framework, optional</span>
+<span class="sd">    :return: Multiprocessing module</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">multiprocessing</span><span class="p">()</span></div>
 </pre></div>
 
            </div>
