@@ -319,7 +319,10 @@
         <span class="n">specific_v</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
         <span class="n">ivy</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">specific_v</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">specific_v</span><span class="p">,</span> <span class="n">collections</span><span class="o">.</span><span class="n">Hashable</span><span class="p">):</span>
-            <span class="n">ivy_original_fn_dict</span><span class="p">[</span><span class="n">specific_v</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">ivy_original_fn_dict</span><span class="p">[</span><span class="n">specific_v</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
+            <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+                <span class="k">pass</span>
     <span class="c1"># noinspection PyUnresolvedReferences</span>
     <span class="k">if</span> <span class="n">wrapped_mode_val</span> <span class="ow">and</span> <span class="p">(</span><span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">ivy</span><span class="p">,</span> <span class="s1">&#39;wrapped&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">ivy</span><span class="o">.</span><span class="n">wrapped</span><span class="p">):</span>
         <span class="n">_wrap_methods</span><span class="p">()</span>
