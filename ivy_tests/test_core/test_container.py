@@ -2804,6 +2804,32 @@ def test_container_pickling_with_ivy_attribute(dev_str, call):
     pickle.dumps(Container())
 
 
+def test_jax_pytree_compatibility(dev_str, call):
+
+    if call is not helpers.jnp_call:
+        pytest.skip()
+
+    # import
+    from jax._src.lib import pytree
+
+    # dict in
+    dict_in = {'a': ivy.array([1], dev_str=dev_str),
+               'b': {'c': ivy.array([2], dev_str=dev_str), 'd': ivy.array([3], dev_str=dev_str)}}
+
+    # container
+    container = Container(dict_in)
+
+    # container flattened
+    cont_values = pytree.flatten(container)[0]
+
+    # dict flattened
+    true_values = pytree.flatten(dict_in)[0]
+
+    # assertion
+    for i, true_val in enumerate(true_values):
+        assert np.array_equal(ivy.to_numpy(cont_values[i]), ivy.to_numpy(true_val))
+
+
 def test_container_from_queues(dev_str, call):
 
     if 'gpu' in dev_str:
