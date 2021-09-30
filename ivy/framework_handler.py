@@ -130,7 +130,10 @@ def set_framework(f):
         specific_v = f.__dict__[k]
         ivy.__dict__[k] = specific_v
         if isinstance(specific_v, collections.Hashable):
-            ivy_original_fn_dict[specific_v] = v
+            try:
+                ivy_original_fn_dict[specific_v] = v
+            except TypeError:
+                pass
     # noinspection PyUnresolvedReferences
     if wrapped_mode_val and (not hasattr(ivy, 'wrapped') or not ivy.wrapped):
         _wrap_methods()
