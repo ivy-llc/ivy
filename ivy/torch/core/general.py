@@ -678,3 +678,8 @@ def compile_fn(fn, dynamic=True, example_inputs=None):
 
 def current_framework_str():
     return 'torch'
+
+
+def multiprocessing():
+    import torch.multiprocessing
+    return torch.multiprocessing

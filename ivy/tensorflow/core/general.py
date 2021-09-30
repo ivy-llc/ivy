@@ -7,6 +7,7 @@ import math as _math
 from numbers import Number
 from operator import mul as _mul
 from functools import reduce as _reduce
+import multiprocessing as _multiprocessing
 from tensorflow.python.types.core import Tensor
 
 _round = round
@@ -461,3 +462,4 @@ dtype_to_str = lambda dtype_in: DTYPE_DICT[dtype_in]
 compile_fn = lambda fn, dynamic=True, example_inputs=None: _tf.function(fn)
 current_framework_str = lambda: 'tensorflow'
 current_framework_str.__name__ = 'current_framework_str'
+multiprocessing = lambda: _multiprocessing
