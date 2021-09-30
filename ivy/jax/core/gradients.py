@@ -41,16 +41,15 @@ def inplace_increment(x, val):
 def execute_with_gradients(func, xs, retain_grads=False):
     if ivy.wrapped_mode():
         xs = xs.to_native()
-    xs = xs.to_dict()
     func_ret = func(xs)
     if isinstance(func_ret, tuple):
         y = func_ret[0]
         rest = func_ret[1:]
-        grad_fn = lambda x_in: func(x_in)[0]
+        grad_fn = lambda x_in: ivy.reshape(func(x_in)[0], [])
     else:
         y = func_ret
         rest = tuple()
-        grad_fn = func
+        grad_fn = lambda x_in: ivy.reshape(func(x_in), [])
     grads = Container(_jax.grad(grad_fn)(xs))
     if ivy.wrapped_mode():
         grads = grads.to_ivy()
