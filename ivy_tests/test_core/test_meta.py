@@ -35,7 +35,7 @@ import ivy_tests.helpers as helpers
 def test_fomaml_step_unique_vars(dev_str, call, inner_grad_steps, with_outer_cost_fn, average_across_steps, batched,
                                  stop_gradients, num_tasks, return_inner_v):
 
-    if call in [helpers.np_call, helpers.jnp_call]:
+    if call is helpers.np_call:
         # Numpy does not support gradients, and jax does not support gradients on custom nested classes
         pytest.skip()
 
@@ -103,7 +103,7 @@ def test_fomaml_step_unique_vars(dev_str, call, inner_grad_steps, with_outer_cos
         stop_gradients=stop_gradients)
     calc_cost = rets[0]
     if stop_gradients:
-        assert not ivy.is_variable(calc_cost)
+        assert not ivy.is_variable(calc_cost, exclusive=True)
     assert np.allclose(ivy.to_scalar(calc_cost), true_cost)
     outer_grads = rets[1]
     assert not ivy.is_variable(outer_grads)
@@ -135,7 +135,7 @@ def test_fomaml_step_unique_vars(dev_str, call, inner_grad_steps, with_outer_cos
 def test_fomaml_step_shared_vars(dev_str, call, inner_grad_steps, with_outer_cost_fn, average_across_steps, batched,
                                  stop_gradients, num_tasks, return_inner_v):
 
-    if call in [helpers.np_call, helpers.jnp_call, helpers.mx_call]:
+    if call in [helpers.np_call, helpers.mx_call]:
         # Numpy does not support gradients, jax does not support gradients on custom nested classes,
         # and mxnet does not support only_inputs argument to mx.autograd.grad
         pytest.skip()
@@ -220,7 +220,7 @@ def test_fomaml_step_shared_vars(dev_str, call, inner_grad_steps, with_outer_cos
         return_inner_v=return_inner_v, stop_gradients=stop_gradients)
     calc_cost = rets[0]
     if stop_gradients:
-        assert not ivy.is_variable(calc_cost)
+        assert not ivy.is_variable(calc_cost, exclusive=True)
     assert np.allclose(ivy.to_scalar(calc_cost), true_cost)
     outer_grads = rets[1]
     assert not ivy.is_variable(outer_grads)
@@ -252,7 +252,7 @@ def test_fomaml_step_shared_vars(dev_str, call, inner_grad_steps, with_outer_cos
 def test_fomaml_step_overlapping_vars(dev_str, call, inner_grad_steps, with_outer_cost_fn, average_across_steps,
                                       batched, stop_gradients, num_tasks, return_inner_v):
 
-    if call in [helpers.np_call, helpers.jnp_call, helpers.mx_call]:
+    if call in [helpers.np_call, helpers.mx_call]:
         # Numpy does not support gradients, jax does not support gradients on custom nested classes,
         # and mxnet does not support only_inputs argument to mx.autograd.grad
         pytest.skip()
@@ -323,7 +323,7 @@ def test_fomaml_step_overlapping_vars(dev_str, call, inner_grad_steps, with_oute
         inner_v='latent', return_inner_v=return_inner_v, stop_gradients=stop_gradients)
     calc_cost = rets[0]
     if stop_gradients:
-        assert not ivy.is_variable(calc_cost)
+        assert not ivy.is_variable(calc_cost, exclusive=True)
     assert np.allclose(ivy.to_scalar(calc_cost), true_cost)
     outer_grads = rets[1]
     assert not ivy.is_variable(outer_grads)
@@ -351,7 +351,7 @@ def test_fomaml_step_overlapping_vars(dev_str, call, inner_grad_steps, with_oute
     "return_inner_v", ['first', 'all', False])
 def test_reptile_step(dev_str, call, inner_grad_steps, batched, stop_gradients, num_tasks, return_inner_v):
 
-    if call in [helpers.np_call, helpers.jnp_call, helpers.mx_call]:
+    if call in [helpers.np_call, helpers.mx_call]:
         # Numpy does not support gradients, jax does not support gradients on custom nested classes,
         # and mxnet does not support only_inputs argument to mx.autograd.grad
         pytest.skip()
@@ -414,7 +414,7 @@ def test_reptile_step(dev_str, call, inner_grad_steps, batched, stop_gradients, 
                             batched=batched, return_inner_v=return_inner_v, stop_gradients=stop_gradients)
     calc_cost = rets[0]
     if stop_gradients:
-        assert not ivy.is_variable(calc_cost)
+        assert not ivy.is_variable(calc_cost, exclusive=True)
     assert np.allclose(ivy.to_scalar(calc_cost), true_cost)
     outer_grads = rets[1]
     assert not ivy.is_variable(outer_grads)
@@ -449,7 +449,7 @@ def test_reptile_step(dev_str, call, inner_grad_steps, batched, stop_gradients, 
 def test_maml_step_unique_vars(dev_str, call, inner_grad_steps, with_outer_cost_fn, average_across_steps, batched,
                                stop_gradients, num_tasks, return_inner_v):
 
-    if call in [helpers.np_call, helpers.jnp_call, helpers.mx_call]:
+    if call in [helpers.np_call, helpers.mx_call]:
         # Numpy does not support gradients, jax does not support gradients on custom nested classes,
         # and mxnet does not support only_inputs argument to mx.autograd.grad
         pytest.skip()
@@ -521,7 +521,7 @@ def test_maml_step_unique_vars(dev_str, call, inner_grad_steps, with_outer_cost_
         inner_v='latent', outer_v='weight', return_inner_v=return_inner_v, stop_gradients=stop_gradients)
     calc_cost = rets[0]
     if stop_gradients:
-        assert not ivy.is_variable(calc_cost)
+        assert not ivy.is_variable(calc_cost, exclusive=True)
     assert np.allclose(ivy.to_scalar(calc_cost), true_cost)
     outer_grads = rets[1]
     assert not ivy.is_variable(outer_grads)
@@ -553,7 +553,7 @@ def test_maml_step_unique_vars(dev_str, call, inner_grad_steps, with_outer_cost_
 def test_maml_step_shared_vars(dev_str, call, inner_grad_steps, with_outer_cost_fn, average_across_steps, batched,
                                stop_gradients, num_tasks, return_inner_v):
 
-    if call in [helpers.np_call, helpers.jnp_call, helpers.mx_call]:
+    if call in [helpers.np_call, helpers.mx_call]:
         # Numpy does not support gradients, jax does not support gradients on custom nested classes,
         # and mxnet does not support only_inputs argument to mx.autograd.grad
         pytest.skip()
@@ -659,7 +659,7 @@ def test_maml_step_shared_vars(dev_str, call, inner_grad_steps, with_outer_cost_
         return_inner_v=return_inner_v, stop_gradients=stop_gradients)
     calc_cost = rets[0]
     if stop_gradients:
-        assert not ivy.is_variable(calc_cost)
+        assert not ivy.is_variable(calc_cost, exclusive=True)
     assert np.allclose(ivy.to_scalar(calc_cost), true_cost)
     outer_grads = rets[1]
     assert not ivy.is_variable(outer_grads)
@@ -691,7 +691,7 @@ def test_maml_step_shared_vars(dev_str, call, inner_grad_steps, with_outer_cost_
 def test_maml_step_overlapping_vars(dev_str, call, inner_grad_steps, with_outer_cost_fn, average_across_steps, batched,
                                     stop_gradients, num_tasks, return_inner_v):
 
-    if call in [helpers.np_call, helpers.jnp_call, helpers.mx_call]:
+    if call in [helpers.np_call, helpers.mx_call]:
         # Numpy does not support gradients, jax does not support gradients on custom nested classes,
         # and mxnet does not support only_inputs argument to mx.autograd.grad
         pytest.skip()
@@ -766,7 +766,7 @@ def test_maml_step_overlapping_vars(dev_str, call, inner_grad_steps, with_outer_
         inner_v='latent', return_inner_v=return_inner_v, stop_gradients=stop_gradients)
     calc_cost = rets[0]
     if stop_gradients:
-        assert not ivy.is_variable(calc_cost)
+        assert not ivy.is_variable(calc_cost, exclusive=True)
     assert np.allclose(ivy.to_scalar(calc_cost), true_cost)
     outer_grads = rets[1]
     assert not ivy.is_variable(outer_grads)
