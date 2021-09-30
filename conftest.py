@@ -21,9 +21,12 @@ TEST_CALL_METHODS: Dict[str, callable] = {'numpy': helpers.np_call,
 
 
 @pytest.fixture(autouse=True)
-def run_around_tests(f, wrapped_mode, call):
+def run_around_tests(dev_str, f, wrapped_mode, call):
     if wrapped_mode and call is helpers.tf_graph_call:
         # ToDo: add support for wrapped_mode and tensorflow compilation
+        pytest.skip()
+    if 'gpu' in dev_str and call is helpers.np_call:
+        # Numpy does not support GPU
         pytest.skip()
     with f.use:
         f.set_wrapped_mode(wrapped_mode)

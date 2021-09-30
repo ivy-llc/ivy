@@ -1524,7 +1524,7 @@ def test_one_hot(ind_n_depth, dtype_str, tensor_fn, dev_str, call):
     assert ret.shape == ind.shape + (depth,)
     # value test
     assert np.allclose(call(ivy.one_hot, ind, depth, dev_str),
-                       np.asarray(ivy.numpy.one_hot(ivy.to_numpy(ind), depth, dev_str)))
+                       np.asarray(ivy.numpy.one_hot(ivy.to_numpy(ind), depth)))
     # compilation test
     if call in [helpers.torch_call]:
         # pytorch scripting cannot assign a torch.device value with a string
@@ -1725,7 +1725,7 @@ def test_scatter_flat(inds_n_upd_n_size, red, dtype_str, tensor_fn, dev_str, cal
         return
     # value test
     assert np.allclose(call(ivy.scatter_flat, inds, upd, size, red, dev_str),
-                       np.asarray(ivy.numpy.scatter_flat(ivy.to_numpy(inds), ivy.to_numpy(upd), size, red, dev_str)))
+                       np.asarray(ivy.numpy.scatter_flat(ivy.to_numpy(inds), ivy.to_numpy(upd), size, red)))
     # compilation test
     if call in [helpers.torch_call]:
         # global torch_scatter var not supported when scripting
@@ -1765,7 +1765,7 @@ def test_scatter_nd(inds_n_upd_n_shape, red, dtype_str, tensor_fn, dev_str, call
         return
     # value test
     assert np.allclose(call(ivy.scatter_nd, inds, upd, shape, red, dev_str),
-                       np.asarray(ivy.numpy.scatter_nd(ivy.to_numpy(inds), ivy.to_numpy(upd), shape, red, dev_str)))
+                       np.asarray(ivy.numpy.scatter_nd(ivy.to_numpy(inds), ivy.to_numpy(upd), shape, red)))
     # compilation test
     if call in [helpers.torch_call]:
         # global torch_scatter var not supported when scripting
@@ -1794,7 +1794,7 @@ def test_gather(prms_n_inds_n_axis, dtype_str, tensor_fn, dev_str, call):
     assert ret.shape == inds.shape
     # value test
     assert np.allclose(call(ivy.gather, prms, inds, axis, dev_str),
-                       np.asarray(ivy.numpy.gather(ivy.to_numpy(prms), ivy.to_numpy(inds), axis, dev_str)))
+                       np.asarray(ivy.numpy.gather(ivy.to_numpy(prms), ivy.to_numpy(inds), axis)))
     # compilation test
     if call in [helpers.torch_call]:
         # pytorch scripting cannot assign a torch.device value with a string
@@ -1824,7 +1824,7 @@ def test_gather_nd(prms_n_inds, dtype_str, tensor_fn, dev_str, call):
     assert ret.shape == inds.shape[:-1] + prms.shape[inds.shape[-1]:]
     # value test
     assert np.allclose(call(ivy.gather_nd, prms, inds, dev_str),
-                       np.asarray(ivy.numpy.gather_nd(ivy.to_numpy(prms), ivy.to_numpy(inds), dev_str)))
+                       np.asarray(ivy.numpy.gather_nd(ivy.to_numpy(prms), ivy.to_numpy(inds))))
     # compilation test
     if call in [helpers.torch_call]:
         # pytorch scripting cannot assign a torch.device value with a string
