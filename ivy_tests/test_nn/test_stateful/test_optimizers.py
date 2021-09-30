@@ -33,12 +33,13 @@ def test_sgd_optimizer(bs_ic_oc_target, with_v, dtype_str, tensor_fn, dev_str, c
     if with_v:
         np.random.seed(0)
         wlim = (6 / (output_channels + input_channels)) ** 0.5
-        w = ivy.variable(ivy.array(np.random.uniform(-wlim, wlim, (output_channels, input_channels)), 'float32'))
-        b = ivy.variable(ivy.zeros([output_channels]))
+        w = ivy.variable(ivy.array(np.random.uniform(-wlim, wlim, (output_channels, input_channels)),
+                                   'float32', dev_str=dev_str))
+        b = ivy.variable(ivy.zeros([output_channels], dev_str=dev_str))
         v = Container({'w': w, 'b': b})
     else:
         v = None
-    linear_layer = ivy.Linear(input_channels, output_channels, v=v)
+    linear_layer = ivy.Linear(input_channels, output_channels,dev_str=dev_str, v=v)
 
     def loss_fn(v_):
         out = linear_layer(x, v=v_)
@@ -98,12 +99,13 @@ def test_lars_optimizer(bs_ic_oc_target, with_v, dtype_str, tensor_fn, dev_str, 
     if with_v:
         np.random.seed(0)
         wlim = (6 / (output_channels + input_channels)) ** 0.5
-        w = ivy.variable(ivy.array(np.random.uniform(-wlim, wlim, (output_channels, input_channels)), 'float32'))
-        b = ivy.variable(ivy.zeros([output_channels]))
+        w = ivy.variable(ivy.array(np.random.uniform(-wlim, wlim, (output_channels, input_channels)),
+                                   'float32', dev_str=dev_str))
+        b = ivy.variable(ivy.zeros([output_channels], dev_str=dev_str))
         v = Container({'w': w, 'b': b})
     else:
         v = None
-    linear_layer = ivy.Linear(input_channels, output_channels, v=v)
+    linear_layer = ivy.Linear(input_channels, output_channels, dev_str=dev_str, v=v)
 
     def loss_fn(v_):
         out = linear_layer(x, v=v_)
@@ -163,19 +165,20 @@ def test_adam_optimizer(bs_ic_oc_target, with_v, dtype_str, tensor_fn, dev_str, 
     if with_v:
         np.random.seed(0)
         wlim = (6 / (output_channels + input_channels)) ** 0.5
-        w = ivy.variable(ivy.array(np.random.uniform(-wlim, wlim, (output_channels, input_channels)), 'float32'))
-        b = ivy.variable(ivy.zeros([output_channels]))
+        w = ivy.variable(ivy.array(np.random.uniform(-wlim, wlim, (output_channels, input_channels)),
+                                   'float32', dev_str=dev_str))
+        b = ivy.variable(ivy.zeros([output_channels], dev_str=dev_str))
         v = Container({'w': w, 'b': b})
     else:
         v = None
-    linear_layer = ivy.Linear(input_channels, output_channels, v=v)
+    linear_layer = ivy.Linear(input_channels, output_channels, dev_str=dev_str, v=v)
 
     def loss_fn(v_):
         out = linear_layer(x, v=v_)
         return ivy.reduce_mean(out)[0]
 
     # optimizer
-    optimizer = ivy.Adam()
+    optimizer = ivy.Adam(dev_str=dev_str)
 
     # train
     loss, grads = ivy.execute_with_gradients(loss_fn, linear_layer.v)
@@ -230,19 +233,20 @@ def test_lamb_optimizer(bs_ic_oc_target, with_v, dtype_str, tensor_fn, dev_str, 
     if with_v:
         np.random.seed(0)
         wlim = (6 / (output_channels + input_channels)) ** 0.5
-        w = ivy.variable(ivy.array(np.random.uniform(-wlim, wlim, (output_channels, input_channels)), 'float32'))
-        b = ivy.variable(ivy.zeros([output_channels]))
+        w = ivy.variable(ivy.array(np.random.uniform(-wlim, wlim, (output_channels, input_channels)),
+                                   'float32', dev_str=dev_str))
+        b = ivy.variable(ivy.zeros([output_channels], dev_str=dev_str))
         v = Container({'w': w, 'b': b})
     else:
         v = None
-    linear_layer = ivy.Linear(input_channels, output_channels, v=v)
+    linear_layer = ivy.Linear(input_channels, output_channels, dev_str=dev_str, v=v)
 
     def loss_fn(v_):
         out = linear_layer(x, v=v_)
         return ivy.reduce_mean(out)[0]
 
     # optimizer
-    optimizer = ivy.LAMB()
+    optimizer = ivy.LAMB(dev_str=dev_str)
 
     # train
     loss, grads = ivy.execute_with_gradients(loss_fn, linear_layer.v)

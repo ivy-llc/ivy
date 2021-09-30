@@ -16,12 +16,11 @@ import ivy_tests.helpers as helpers
 
 class FC(ivy.Module):
 
-    def __init__(self, output_size=1, num_layers=2, layer_dim=64, dev_str='cpu', v=None):
+    def __init__(self, output_size=1, num_layers=2, layer_dim=64, dev_str=None, v=None):
         self._output_size = output_size
         self._num_layers = num_layers
         self._layer_dim = layer_dim
-        self._dev_str = dev_str
-        super(FC, self).__init__(v=v,  build_mode='on_call')
+        super(FC, self).__init__(dev_str=dev_str, v=v,  build_mode='on_call')
 
     # noinspection PyUnusedLocal
     def _build(self, x, *args, **kwargs):
@@ -39,10 +38,10 @@ class FC(ivy.Module):
 
 class WeConLayerFC(ivy.Module):
 
-    def __init__(self, num_layers=2, layer_dim=64, v=None):
+    def __init__(self, num_layers=2, layer_dim=64, dev_str=None, v=None):
         self._num_layers = num_layers
         self._layer_dim = layer_dim
-        super(WeConLayerFC, self).__init__(v=v,  build_mode='on_call')
+        super(WeConLayerFC, self).__init__(dev_str=dev_str, v=v,  build_mode='on_call')
 
     # noinspection PyUnusedLocal
     def _build(self, implicit_weights, *args, **kwargs):
@@ -65,11 +64,10 @@ class WeConLayerFC(ivy.Module):
 
 class WeConFC(ivy.Module):
 
-    def __init__(self, dev_str='cpu', v=None):
-        self._layer_specific_fc = WeConLayerFC()
-        self._fc = FC()
-        self._dev_str = dev_str
-        super(WeConFC, self).__init__(v=v)
+    def __init__(self, dev_str=None, v=None):
+        self._layer_specific_fc = WeConLayerFC(dev_str=dev_str)
+        self._fc = FC(dev_str=dev_str)
+        super(WeConFC, self).__init__(dev_str=dev_str, v=v)
 
     # noinspection PyUnusedLocal
     def _build(self, *args, **kwargs):
@@ -100,11 +98,11 @@ def test_weight_conditioned_network_training(batch_shape, dtype_str, tensor_fn, 
     if call is helpers.np_call:
         # NumPy does not support gradients
         pytest.skip()
-    x = ivy.Container({'layer0': {'w': ivy.random_uniform(shape=batch_shape+[64, 3]),
-                                  'b': ivy.random_uniform(shape=batch_shape+[64])},
-                       'layer1': {'w': ivy.random_uniform(shape=batch_shape+[1, 64]),
-                                  'b': ivy.random_uniform(shape=batch_shape+[1])}})
-    we_con_net = WeConFC()
+    x = ivy.Container({'layer0': {'w': ivy.random_uniform(shape=batch_shape+[64, 3], dev_str=dev_str),
+                                  'b': ivy.random_uniform(shape=batch_shape+[64], dev_str=dev_str)},
+                       'layer1': {'w': ivy.random_uniform(shape=batch_shape+[1, 64], dev_str=dev_str),
+                                  'b': ivy.random_uniform(shape=batch_shape+[1], dev_str=dev_str)}})
+    we_con_net = WeConFC(dev_str=dev_str)
 
     def loss_fn(v_=None):
         out = we_con_net(x, v=v_)
@@ -145,11 +143,11 @@ def test_weight_conditioned_network_training(batch_shape, dtype_str, tensor_fn, 
 
 class HyperNet(ivy.Module):
 
-    def __init__(self, num_layers=3, layer_dim=64, latent_size=256, v=None):
+    def __init__(self, num_layers=3, layer_dim=64, latent_size=256, dev_str=None, v=None):
         self._num_layers = num_layers
         self._layer_dim = layer_dim
         self._latent_size = latent_size
-        super(HyperNet, self).__init__(v=v,  build_mode='on_call')
+        super(HyperNet, self).__init__(dev_str=dev_str, v=v,  build_mode='on_call')
 
     def _create_variables(self, dev_str):
         return {'latent': ivy.variable(ivy.random_uniform(shape=(self._latent_size,)))}
@@ -176,13 +174,12 @@ class HyperNet(ivy.Module):
 
 class HypoNet(ivy.Module):
 
-    def __init__(self, input_size=1, output_size=1, num_layers=2, layer_dim=64, dev_str='cpu', v=None):
+    def __init__(self, input_size=1, output_size=1, num_layers=2, layer_dim=64, dev_str=None, v=None):
         self._input_size = input_size
         self._output_size = output_size
         self._num_layers = num_layers
         self._layer_dim = layer_dim
-        self._dev_str = dev_str
-        super(HypoNet, self).__init__(v=v, store_vars=False)
+        super(HypoNet, self).__init__(dev_str=dev_str, v=v, store_vars=False)
 
     # noinspection PyUnusedLocal
     def _build(self, *args, **kwargs):
@@ -199,11 +196,10 @@ class HypoNet(ivy.Module):
 
 class HyperHypoNet(ivy.Module):
 
-    def __init__(self, dev_str='cpu', v=None):
-        self._hypernet = HyperNet()
-        self._hyponet = HypoNet()
-        self._dev_str = dev_str
-        super(HyperHypoNet, self).__init__(v=v)
+    def __init__(self, dev_str=None, v=None):
+        self._hypernet = HyperNet(dev_str=dev_str)
+        self._hyponet = HypoNet(dev_str=dev_str)
+        super(HyperHypoNet, self).__init__(dev_str=dev_str, v=v)
 
     # noinspection PyUnusedLocal
     def _build(self, *args, **kwargs):
@@ -229,8 +225,8 @@ def test_hyper_hypo_network_training(batch_shape, dtype_str, tensor_fn, dev_str,
     if call is helpers.np_call:
         # NumPy does not support gradients
         pytest.skip()
-    x = ivy.random_uniform(shape=batch_shape + [1])
-    hyper_hypo_net = HyperHypoNet()
+    x = ivy.random_uniform(shape=batch_shape + [1], dev_str=dev_str)
+    hyper_hypo_net = HyperHypoNet(dev_str=dev_str)
 
     def loss_fn(v_=None):
         out = hyper_hypo_net(x, v=v_)
