@@ -11,6 +11,7 @@ import jaxlib as _jaxlib
 from operator import mul as _mul
 from functools import reduce as _reduce
 from jaxlib.xla_extension import Buffer
+import multiprocessing as _multiprocessing
 
 DTYPE_DICT = {_jnp.dtype('bool'): 'bool',
               _jnp.dtype('int8'): 'int8',
@@ -430,3 +431,4 @@ dtype_str = lambda x: dtype_to_str(dtype(x))
 compile_fn = lambda fn, dynamic=True, example_inputs=None: _jax.jit(fn)
 current_framework_str = lambda: 'jax'
 current_framework_str.__name__ = 'current_framework_str'
+multiprocessing = lambda: _multiprocessing
