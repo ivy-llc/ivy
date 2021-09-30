@@ -53,8 +53,10 @@ def array(object_in, dtype_str=None, dev_str=None):
         return _tf.cast(tensor, dtype)
 
 
-def is_array(x):
+def is_array(x, exclusive=False):
     if isinstance(x, Tensor):
+        if exclusive and isinstance(x, _tf.Variable):
+            return False
         return True
     return False
 

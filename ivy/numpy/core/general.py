@@ -51,7 +51,7 @@ def array(object_in, dtype_str=None, dev_str=None):
     return _to_dev(_np.array(object_in, dtype=dtype), dev_str)
 
 
-def is_array(x):
+def is_array(x, exclusive=False):
     if isinstance(x, _np.ndarray):
         return True
     return False
