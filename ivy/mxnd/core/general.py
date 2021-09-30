@@ -11,6 +11,7 @@ import math as _math
 from numbers import Number
 from operator import mul as _mul
 from functools import reduce as _reduce
+import multiprocessing as _multiprocessing
 
 
 DTYPE_DICT = {_np.bool_: 'bool',
@@ -571,3 +572,4 @@ def compile_fn(func, dynamic=True, example_inputs=None):
 
 current_framework_str = lambda: 'mxnd'
 current_framework_str.__name__ = 'current_framework_str'
+multiprocessing = lambda: _multiprocessing

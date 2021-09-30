@@ -1851,3 +1851,14 @@ def stable_pow(base: Any, exponent: Any, min_base: float = None)\
         return base ** exponent
     # noinspection PyProtectedMember
     return (base + default(min_base, ivy._MIN_BASE)) ** exponent
+
+
+def multiprocessing(f=None):
+    """
+    Return framewrk-specific multi-processing module
+
+    :param f: Machine learning framework. Inferred from inputs if None.
+    :type f: ml_framework, optional
+    :return: Multiprocessing module
+    """
+    return _cur_framework(f=f).multiprocessing()
