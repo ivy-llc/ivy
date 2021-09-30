@@ -33,12 +33,13 @@ def test_linear_layer(bs_ic_oc_target, with_v, dtype_str, tensor_fn, dev_str, ca
     if with_v:
         np.random.seed(0)
         wlim = (6 / (output_channels + input_channels)) ** 0.5
-        w = ivy.variable(ivy.array(np.random.uniform(-wlim, wlim, (output_channels, input_channels)), 'float32'))
-        b = ivy.variable(ivy.zeros([output_channels]))
+        w = ivy.variable(ivy.array(np.random.uniform(-wlim, wlim, (output_channels, input_channels)),
+                                   'float32', dev_str=dev_str))
+        b = ivy.variable(ivy.zeros([output_channels], dev_str=dev_str))
         v = Container({'w': w, 'b': b})
     else:
         v = None
-    linear_layer = ivy.Linear(input_channels, output_channels, v=v)
+    linear_layer = ivy.Linear(input_channels, output_channels, dev_str=dev_str, v=v)
     ret = linear_layer(x)
     # type test
     assert ivy.is_array(ret)
@@ -112,12 +113,15 @@ def test_multi_head_attention_layer(x_n_s_n_m_n_c_n_gt, with_v, build_mode, dtyp
         inner_dim = 64 * 8
         np.random.seed(0)
         wlim = (6 / (inner_dim + query_dim)) ** 0.5
-        w_to_q = ivy.variable(ivy.array(np.random.uniform(-wlim, wlim, (inner_dim, query_dim)), 'float32'))
+        w_to_q = ivy.variable(ivy.array(np.random.uniform(-wlim, wlim, (inner_dim, query_dim)),
+                                        'float32', dev_str=dev_str))
         wlim = (6 / (inner_dim * 2 + context_dim)) ** 0.5
-        w_to_kv = ivy.variable(ivy.array(np.random.uniform(-wlim, wlim, (inner_dim * 2, context_dim)), 'float32'))
+        w_to_kv = ivy.variable(ivy.array(np.random.uniform(-wlim, wlim, (inner_dim * 2, context_dim)),
+                                         'float32', dev_str=dev_str))
         wlim = (6 / (query_dim + inner_dim)) ** 0.5
-        w_to_out = ivy.variable(ivy.array(np.random.uniform(-wlim, wlim, (query_dim, inner_dim)), 'float32'))
-        b_to_out = ivy.variable(ivy.zeros([query_dim]))
+        w_to_out = ivy.variable(ivy.array(np.random.uniform(-wlim, wlim, (query_dim, inner_dim)),
+                                          'float32', dev_str=dev_str))
+        b_to_out = ivy.variable(ivy.zeros([query_dim], dev_str=dev_str))
         v = Container({'to_q': {'w': w_to_q},
                        'to_kv': {'w': w_to_kv},
                        'to_out': {'submodules': {'v0': {'w': w_to_out,
@@ -192,12 +196,12 @@ def test_conv1d_layer(x_n_fs_n_pad_n_res, with_v, dtype_str, tensor_fn, dev_str,
         np.random.seed(0)
         wlim = (6 / (output_channels + input_channels)) ** 0.5
         w = ivy.variable(ivy.array(np.random.uniform(
-            -wlim, wlim, (filter_size, output_channels, input_channels)), 'float32'))
-        b = ivy.variable(ivy.zeros([1, 1, output_channels]))
+            -wlim, wlim, (filter_size, output_channels, input_channels)), 'float32', dev_str=dev_str))
+        b = ivy.variable(ivy.zeros([1, 1, output_channels], dev_str=dev_str))
         v = Container({'w': w, 'b': b})
     else:
         v = None
-    conv1d_layer = ivy.Conv1D(input_channels, output_channels, filter_size, 1, padding, v=v)
+    conv1d_layer = ivy.Conv1D(input_channels, output_channels, filter_size, 1, padding, dev_str=dev_str, v=v)
     ret = conv1d_layer(x)
     # type test
     assert ivy.is_array(ret)
@@ -261,13 +265,13 @@ def test_conv1d_transpose_layer(x_n_fs_n_pad_n_outshp_n_res, with_v, dtype_str, 
         np.random.seed(0)
         wlim = (6 / (output_channels + input_channels)) ** 0.5
         w = ivy.variable(ivy.array(np.random.uniform(
-            -wlim, wlim, (filter_size, output_channels, input_channels)), 'float32'))
-        b = ivy.variable(ivy.zeros([1, 1, output_channels]))
+            -wlim, wlim, (filter_size, output_channels, input_channels)), 'float32', dev_str=dev_str))
+        b = ivy.variable(ivy.zeros([1, 1, output_channels], dev_str=dev_str))
         v = Container({'w': w, 'b': b})
     else:
         v = None
     conv1d_trans_layer = ivy.Conv1DTranspose(input_channels, output_channels, filter_size, 1, padding,
-                                             output_shape=out_shape, v=v)
+                                             output_shape=out_shape, dev_str=dev_str, v=v)
     ret = conv1d_trans_layer(x)
     # type test
     assert ivy.is_array(ret)
@@ -349,12 +353,12 @@ def test_conv2d_layer(x_n_fs_n_pad_n_res, with_v, dtype_str, tensor_fn, dev_str,
         np.random.seed(0)
         wlim = (6 / (output_channels + input_channels)) ** 0.5
         w = ivy.variable(ivy.array(np.random.uniform(
-            -wlim, wlim, tuple(filter_shape + [output_channels, input_channels])), 'float32'))
-        b = ivy.variable(ivy.zeros([1, 1, 1, output_channels]))
+            -wlim, wlim, tuple(filter_shape + [output_channels, input_channels])), 'float32', dev_str=dev_str))
+        b = ivy.variable(ivy.zeros([1, 1, 1, output_channels], dev_str=dev_str))
         v = Container({'w': w, 'b': b})
     else:
         v = None
-    conv2d_layer = ivy.Conv2D(input_channels, output_channels, filter_shape, 1, padding, v=v)
+    conv2d_layer = ivy.Conv2D(input_channels, output_channels, filter_shape, 1, padding, dev_str=dev_str, v=v)
     ret = conv2d_layer(x)
     # type test
     assert ivy.is_array(ret)
@@ -432,13 +436,13 @@ def test_conv2d_transpose_layer(x_n_fs_n_pad_n_outshp_n_res, with_v, dtype_str, 
         np.random.seed(0)
         wlim = (6 / (output_channels + input_channels)) ** 0.5
         w = ivy.variable(ivy.array(np.random.uniform(
-            -wlim, wlim, tuple(filter_shape + [output_channels, input_channels])), 'float32'))
-        b = ivy.variable(ivy.zeros([1, 1, 1, output_channels]))
+            -wlim, wlim, tuple(filter_shape + [output_channels, input_channels])), 'float32', dev_str=dev_str))
+        b = ivy.variable(ivy.zeros([1, 1, 1, output_channels], dev_str=dev_str))
         v = Container({'w': w, 'b': b})
     else:
         v = None
     conv2d_transpose_layer = ivy.Conv2DTranspose(input_channels, output_channels, filter_shape, 1, padding,
-                                                 output_shape=out_shape, v=v)
+                                                 output_shape=out_shape, dev_str=dev_str, v=v)
     ret = conv2d_transpose_layer(x)
     # type test
     assert ivy.is_array(ret)
@@ -508,12 +512,12 @@ def test_depthwise_conv2d_layer(x_n_fs_n_pad_n_res, with_v, dtype_str, tensor_fn
         np.random.seed(0)
         wlim = (6 / (num_channels*2)) ** 0.5
         w = ivy.variable(ivy.array(np.random.uniform(
-            -wlim, wlim, tuple(filter_shape + [num_channels])), 'float32'))
-        b = ivy.variable(ivy.zeros([1, 1, num_channels]))
+            -wlim, wlim, tuple(filter_shape + [num_channels])), 'float32', dev_str=dev_str))
+        b = ivy.variable(ivy.zeros([1, 1, num_channels], dev_str=dev_str))
         v = Container({'w': w, 'b': b})
     else:
         v = None
-    depthwise_conv2d_layer = ivy.DepthwiseConv2D(num_channels, filter_shape, 1, padding, v=v)
+    depthwise_conv2d_layer = ivy.DepthwiseConv2D(num_channels, filter_shape, 1, padding, dev_str=dev_str, v=v)
     ret = depthwise_conv2d_layer(x)
     # type test
     assert ivy.is_array(ret)
@@ -585,12 +589,12 @@ def test_conv3d_layer(x_n_fs_n_pad_n_res, with_v, dtype_str, tensor_fn, dev_str,
         np.random.seed(0)
         wlim = (6 / (output_channels + input_channels)) ** 0.5
         w = ivy.variable(ivy.array(np.random.uniform(
-            -wlim, wlim, tuple(filter_shape + [output_channels, input_channels])), 'float32'))
-        b = ivy.variable(ivy.zeros([1, 1, 1, 1, output_channels]))
+            -wlim, wlim, tuple(filter_shape + [output_channels, input_channels])), 'float32', dev_str=dev_str))
+        b = ivy.variable(ivy.zeros([1, 1, 1, 1, output_channels], dev_str=dev_str))
         v = Container({'w': w, 'b': b})
     else:
         v = None
-    conv3d_layer = ivy.Conv3D(input_channels, output_channels, filter_shape, 1, padding, v=v)
+    conv3d_layer = ivy.Conv3D(input_channels, output_channels, filter_shape, 1, padding, dev_str=dev_str, v=v)
     ret = conv3d_layer(x)
     # type test
     assert ivy.is_array(ret)
@@ -676,13 +680,13 @@ def test_conv3d_transpose_layer(x_n_fs_n_pad_n_outshp_n_res, with_v, dtype_str, 
         np.random.seed(0)
         wlim = (6 / (output_channels + input_channels)) ** 0.5
         w = ivy.variable(ivy.array(np.random.uniform(
-            -wlim, wlim, tuple(filter_shape + [output_channels, input_channels])), 'float32'))
-        b = ivy.variable(ivy.zeros([1, 1, 1, 1, output_channels]))
+            -wlim, wlim, tuple(filter_shape + [output_channels, input_channels])), 'float32', dev_str=dev_str))
+        b = ivy.variable(ivy.zeros([1, 1, 1, 1, output_channels], dev_str=dev_str))
         v = Container({'w': w, 'b': b})
     else:
         v = None
     conv3d_transpose_layer = ivy.Conv3DTranspose(
-        input_channels, output_channels, filter_shape, 1, padding, output_shape=out_shape, v=v)
+        input_channels, output_channels, filter_shape, 1, padding, output_shape=out_shape, dev_str=dev_str, v=v)
     ret = conv3d_transpose_layer(x)
     # type test
     assert ivy.is_array(ret)
@@ -727,13 +731,13 @@ def test_lstm_layer(b_t_ic_hc_otf_sctv, with_v, with_initial_state, dtype_str, t
     else:
         initial_state = None
     if with_v:
-        kernel = ivy.variable(ivy.ones([input_channels, 4*hidden_channels])*0.5)
-        recurrent_kernel = ivy.variable(ivy.ones([hidden_channels, 4*hidden_channels])*0.5)
+        kernel = ivy.variable(ivy.ones([input_channels, 4*hidden_channels], dev_str=dev_str)*0.5)
+        recurrent_kernel = ivy.variable(ivy.ones([hidden_channels, 4*hidden_channels], dev_str=dev_str)*0.5)
         v = Container({'input': {'layer_0': {'w': kernel}},
                        'recurrent': {'layer_0': {'w': recurrent_kernel}}})
     else:
         v = None
-    lstm_layer = ivy.LSTM(input_channels, hidden_channels, v=v)
+    lstm_layer = ivy.LSTM(input_channels, hidden_channels, dev_str=dev_str, v=v)
     output, (state_h, state_c) = lstm_layer(x, initial_state=initial_state)
     # type test
     assert ivy.is_array(output)
@@ -786,23 +790,25 @@ def test_sequential_layer(bs_c_target, with_v, seq_v, dtype_str, tensor_fn, dev_
             {'submodules':
                       {'v0':
                            {'w': ivy.variable(ivy.array(np.random.uniform(
-                               -wlim, wlim, (channels, channels)), 'float32')),
-                               'b': ivy.variable(ivy.zeros([channels]))},
+                               -wlim, wlim, (channels, channels)), 'float32', dev_str=dev_str)),
+                               'b': ivy.variable(ivy.zeros([channels], dev_str=dev_str))},
                        'v2':
                            {'w': ivy.variable(ivy.array(np.random.uniform(
-                               -wlim, wlim, (channels, channels)), 'float32')),
-                               'b': ivy.variable(ivy.zeros([channels]))}}})
+                               -wlim, wlim, (channels, channels)), 'float32', dev_str=dev_str)),
+                               'b': ivy.variable(ivy.zeros([channels], dev_str=dev_str))}}})
     else:
         v = None
     if seq_v:
-        seq = ivy.Sequential(ivy.Linear(channels, channels),
+        seq = ivy.Sequential(ivy.Linear(channels, channels, dev_str=dev_str),
                              ivy.Dropout(0.),
-                             ivy.Linear(channels, channels),
-                             v=v if with_v else None)
+                             ivy.Linear(channels, channels, dev_str=dev_str),
+                             dev_str=dev_str, v=v if with_v else None)
     else:
-        seq = ivy.Sequential(ivy.Linear(channels, channels, v=v['submodules']['v0'] if with_v else None),
+        seq = ivy.Sequential(ivy.Linear(channels, channels, dev_str=dev_str,
+                                        v=v['submodules']['v0'] if with_v else None),
                              ivy.Dropout(0.),
-                             ivy.Linear(channels, channels, v=v['submodules']['v2'] if with_v else None))
+                             ivy.Linear(channels, channels, dev_str=dev_str,
+                                        v=v['submodules']['v2'] if with_v else None), dev_str=dev_str)
     ret = seq(x)
     # type test
     assert ivy.is_array(ret)

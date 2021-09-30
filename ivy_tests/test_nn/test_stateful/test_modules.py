@@ -12,10 +12,10 @@ import ivy_tests.helpers as helpers
 
 class TrainableModule(ivy.Module):
 
-    def __init__(self, in_size, out_size, dev_str='cpu', hidden_size=64):
-        self._linear0 = ivy.Linear(in_size, hidden_size)
-        self._linear1 = ivy.Linear(hidden_size, hidden_size)
-        self._linear2 = ivy.Linear(hidden_size, out_size)
+    def __init__(self, in_size, out_size, dev_str=None, hidden_size=64):
+        self._linear0 = ivy.Linear(in_size, hidden_size, dev_str=dev_str)
+        self._linear1 = ivy.Linear(hidden_size, hidden_size, dev_str=dev_str)
+        self._linear2 = ivy.Linear(hidden_size, out_size, dev_str=dev_str)
         ivy.Module.__init__(self, dev_str)
 
     def _forward(self, x):
@@ -35,7 +35,7 @@ def test_module_training(bs_ic_oc, dev_str, call):
         pytest.skip()
     batch_shape, input_channels, output_channels = bs_ic_oc
     x = ivy.cast(ivy.linspace(ivy.zeros(batch_shape), ivy.ones(batch_shape), input_channels), 'float32')
-    module = TrainableModule(input_channels, output_channels)
+    module = TrainableModule(input_channels, output_channels, dev_str=dev_str)
 
     def loss_fn(v_):
         out = module(x, v=v_)
@@ -77,10 +77,10 @@ def test_module_training(bs_ic_oc, dev_str, call):
 
 class TrainableModuleWithList(ivy.Module):
 
-    def __init__(self, in_size, out_size, dev_str='cpu', hidden_size=64):
-        linear0 = ivy.Linear(in_size, hidden_size)
-        linear1 = ivy.Linear(hidden_size, hidden_size)
-        linear2 = ivy.Linear(hidden_size, out_size)
+    def __init__(self, in_size, out_size, dev_str=None, hidden_size=64):
+        linear0 = ivy.Linear(in_size, hidden_size, dev_str=dev_str)
+        linear1 = ivy.Linear(hidden_size, hidden_size, dev_str=dev_str)
+        linear2 = ivy.Linear(hidden_size, out_size, dev_str=dev_str)
         self._layers = [linear0, linear1, linear2]
         ivy.Module.__init__(self, dev_str)
 
@@ -101,7 +101,7 @@ def test_module_w_list_training(bs_ic_oc, dev_str, call):
         pytest.skip()
     batch_shape, input_channels, output_channels = bs_ic_oc
     x = ivy.cast(ivy.linspace(ivy.zeros(batch_shape), ivy.ones(batch_shape), input_channels), 'float32')
-    module = TrainableModuleWithList(input_channels, output_channels)
+    module = TrainableModuleWithList(input_channels, output_channels, dev_str=dev_str)
 
     def loss_fn(v_):
         out = module(x, v=v_)
@@ -143,7 +143,7 @@ def test_module_w_list_training(bs_ic_oc, dev_str, call):
 
 class ModuleWithNoneAttribute(ivy.Module):
 
-    def __init__(self, dev_str='cpu', hidden_size=64):
+    def __init__(self, dev_str=None, hidden_size=64):
         self.some_attribute = None
         ivy.Module.__init__(self, dev_str)
 
@@ -161,14 +161,14 @@ def test_module_w_none_attribute(bs_ic_oc, dev_str, call):
         pytest.skip()
     batch_shape, input_channels, output_channels = bs_ic_oc
     x = ivy.cast(ivy.linspace(ivy.zeros(batch_shape), ivy.ones(batch_shape), input_channels), 'float32')
-    module = ModuleWithNoneAttribute()
+    module = ModuleWithNoneAttribute(dev_str=dev_str)
 
 
 class TrainableModuleWithDuplicate(ivy.Module):
 
-    def __init__(self, channels, same_layer):
+    def __init__(self, channels, same_layer, dev_str=None):
         if same_layer:
-            linear = ivy.Linear(channels, channels)
+            linear = ivy.Linear(channels, channels, dev_str=dev_str)
             self._linear0 = linear
             self._linear1 = linear
         else:
@@ -177,8 +177,8 @@ class TrainableModuleWithDuplicate(ivy.Module):
             b1 = ivy.variable(ivy.ones((channels,)))
             v0 = ivy.Container({'w': w, 'b': b0})
             v1 = ivy.Container({'w': w, 'b': b1})
-            self._linear0 = ivy.Linear(channels, channels, v=v0)
-            self._linear1 = ivy.Linear(channels, channels, v=v1)
+            self._linear0 = ivy.Linear(channels, channels, dev_str=dev_str, v=v0)
+            self._linear1 = ivy.Linear(channels, channels,dev_str=dev_str, v=v1)
         ivy.Module.__init__(self)
 
     def _forward(self, x):
@@ -198,7 +198,7 @@ def test_module_training_with_duplicate(bs_c, same_layer, dev_str, call):
         pytest.skip()
     batch_shape, channels = bs_c
     x = ivy.cast(ivy.linspace(ivy.zeros(batch_shape), ivy.ones(batch_shape), channels), 'float32')
-    module = TrainableModuleWithDuplicate(channels, same_layer)
+    module = TrainableModuleWithDuplicate(channels, same_layer, dev_str=dev_str)
 
     def loss_fn(v_):
         out = module(x, v=v_)
@@ -238,10 +238,10 @@ def test_module_training_with_duplicate(bs_c, same_layer, dev_str, call):
 
 class TrainableModuleWithDict(ivy.Module):
 
-    def __init__(self, in_size, out_size, dev_str='cpu', hidden_size=64):
-        linear0 = ivy.Linear(in_size, hidden_size)
-        linear1 = ivy.Linear(hidden_size, hidden_size)
-        linear2 = ivy.Linear(hidden_size, out_size)
+    def __init__(self, in_size, out_size, dev_str=None, hidden_size=64):
+        linear0 = ivy.Linear(in_size, hidden_size, dev_str=dev_str)
+        linear1 = ivy.Linear(hidden_size, hidden_size, dev_str=dev_str)
+        linear2 = ivy.Linear(hidden_size, out_size, dev_str=dev_str)
         self._layers = {'linear0': linear0, 'linear1': linear1, 'linear2': linear2}
         ivy.Module.__init__(self, dev_str)
 
@@ -262,7 +262,7 @@ def test_module_w_dict_training(bs_ic_oc, dev_str, call):
         pytest.skip()
     batch_shape, input_channels, output_channels = bs_ic_oc
     x = ivy.cast(ivy.linspace(ivy.zeros(batch_shape), ivy.ones(batch_shape), input_channels), 'float32')
-    module = TrainableModuleWithDict(input_channels, output_channels)
+    module = TrainableModuleWithDict(input_channels, output_channels, dev_str=dev_str)
 
     def loss_fn(v_):
         out = module(x, v=v_)

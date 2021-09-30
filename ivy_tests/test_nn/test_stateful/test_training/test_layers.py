@@ -31,16 +31,18 @@ def test_linear_layer_training(bs_ic_oc, with_v, dtype_str, tensor_fn, dev_str, 
         # NumPy does not support gradients
         pytest.skip()
     batch_shape, input_channels, output_channels = bs_ic_oc
-    x = ivy.cast(ivy.linspace(ivy.zeros(batch_shape), ivy.ones(batch_shape), input_channels), 'float32')
+    x = ivy.cast(ivy.linspace(ivy.zeros(batch_shape, dev_str=dev_str),
+                              ivy.ones(batch_shape, dev_str=dev_str), input_channels), 'float32')
     if with_v:
         np.random.seed(0)
         wlim = (6 / (output_channels + input_channels)) ** 0.5
-        w = ivy.variable(ivy.array(np.random.uniform(-wlim, wlim, (output_channels, input_channels)), 'float32'))
-        b = ivy.variable(ivy.zeros([output_channels]))
+        w = ivy.variable(ivy.array(np.random.uniform(-wlim, wlim, (output_channels, input_channels)),
+                                   'float32', dev_str=dev_str))
+        b = ivy.variable(ivy.zeros([output_channels], dev_str=dev_str))
         v = Container({'w': w, 'b': b})
     else:
         v = None
-    linear_layer = ivy.Linear(input_channels, output_channels, v=v)
+    linear_layer = ivy.Linear(input_channels, output_channels, dev_str=dev_str, v=v)
 
     def loss_fn(v_):
         out = linear_layer(x, v=v_)
@@ -119,12 +121,12 @@ def test_conv1d_layer_training(x_n_fs_n_pad_n_oc, with_v, dtype_str, tensor_fn, 
         np.random.seed(0)
         wlim = (6 / (output_channels + input_channels)) ** 0.5
         w = ivy.variable(ivy.array(np.random.uniform(
-            -wlim, wlim, (filter_size, output_channels, input_channels)), 'float32'))
-        b = ivy.variable(ivy.zeros([1, 1, output_channels]))
+            -wlim, wlim, (filter_size, output_channels, input_channels)), 'float32', dev_str=dev_str))
+        b = ivy.variable(ivy.zeros([1, 1, output_channels], dev_str=dev_str))
         v = Container({'w': w, 'b': b})
     else:
         v = None
-    conv1d_layer = ivy.Conv1D(input_channels, output_channels, filter_size, 1, padding, v=v)
+    conv1d_layer = ivy.Conv1D(input_channels, output_channels, filter_size, 1, padding, dev_str=dev_str, v=v)
 
     def loss_fn(v_):
         out = conv1d_layer(x, v=v_)
@@ -202,13 +204,13 @@ def test_conv1d_transpose_layer_training(x_n_fs_n_pad_n_outshp_n_oc, with_v, dty
         np.random.seed(0)
         wlim = (6 / (output_channels + input_channels)) ** 0.5
         w = ivy.variable(ivy.array(np.random.uniform(
-            -wlim, wlim, (filter_size, output_channels, input_channels)), 'float32'))
-        b = ivy.variable(ivy.zeros([1, 1, output_channels]))
+            -wlim, wlim, (filter_size, output_channels, input_channels)), 'float32', dev_str=dev_str))
+        b = ivy.variable(ivy.zeros([1, 1, output_channels], dev_str=dev_str))
         v = Container({'w': w, 'b': b})
     else:
         v = None
     conv1d_trans_layer = ivy.Conv1DTranspose(input_channels, output_channels, filter_size, 1, padding,
-                                             output_shape=out_shape, v=v)
+                                             output_shape=out_shape, dev_str=dev_str, v=v)
 
     def loss_fn(v_):
         out = conv1d_trans_layer(x, v=v_)
@@ -294,12 +296,12 @@ def test_conv2d_layer_training(x_n_fs_n_pad_n_oc, with_v, dtype_str, tensor_fn, 
         np.random.seed(0)
         wlim = (6 / (output_channels + input_channels)) ** 0.5
         w = ivy.variable(ivy.array(np.random.uniform(
-            -wlim, wlim, tuple(filter_shape + [output_channels, input_channels])), 'float32'))
-        b = ivy.variable(ivy.zeros([1, 1, 1, output_channels]))
+            -wlim, wlim, tuple(filter_shape + [output_channels, input_channels])), 'float32', dev_str=dev_str))
+        b = ivy.variable(ivy.zeros([1, 1, 1, output_channels], dev_str=dev_str))
         v = Container({'w': w, 'b': b})
     else:
         v = None
-    conv2d_layer = ivy.Conv2D(input_channels, output_channels, filter_shape, 1, padding, v=v)
+    conv2d_layer = ivy.Conv2D(input_channels, output_channels, filter_shape, 1, padding, dev_str=dev_str, v=v)
 
     def loss_fn(v_):
         out = conv2d_layer(x, v=v_)
@@ -383,13 +385,13 @@ def test_conv2d_transpose_layer_training(x_n_fs_n_pad_n_outshp_n_oc, with_v, dty
         np.random.seed(0)
         wlim = (6 / (output_channels + input_channels)) ** 0.5
         w = ivy.variable(ivy.array(np.random.uniform(
-            -wlim, wlim, tuple(filter_shape + [output_channels, input_channels])), 'float32'))
-        b = ivy.variable(ivy.zeros([1, 1, 1, output_channels]))
+            -wlim, wlim, tuple(filter_shape + [output_channels, input_channels])), 'float32', dev_str=dev_str))
+        b = ivy.variable(ivy.zeros([1, 1, 1, output_channels], dev_str=dev_str))
         v = Container({'w': w, 'b': b})
     else:
         v = None
     conv2d_transpose_layer = ivy.Conv2DTranspose(
-        input_channels, output_channels, filter_shape, 1, padding, output_shape=out_shape, v=v)
+        input_channels, output_channels, filter_shape, 1, padding, output_shape=out_shape, dev_str=dev_str, v=v)
 
     def loss_fn(v_):
         out = conv2d_transpose_layer(x, v=v_)
@@ -467,12 +469,12 @@ def test_depthwise_conv2d_layer_training(x_n_fs_n_pad, with_v, dtype_str, tensor
         np.random.seed(0)
         wlim = (6 / (num_channels*2)) ** 0.5
         w = ivy.variable(ivy.array(np.random.uniform(
-            -wlim, wlim, tuple(filter_shape + [num_channels])), 'float32'))
-        b = ivy.variable(ivy.zeros([1, 1, num_channels]))
+            -wlim, wlim, tuple(filter_shape + [num_channels])), 'float32', dev_str=dev_str))
+        b = ivy.variable(ivy.zeros([1, 1, num_channels], dev_str=dev_str))
         v = Container({'w': w, 'b': b})
     else:
         v = None
-    depthwise_conv2d_layer = ivy.DepthwiseConv2D(num_channels, filter_shape, 1, padding, v=v)
+    depthwise_conv2d_layer = ivy.DepthwiseConv2D(num_channels, filter_shape, 1, padding, dev_str=dev_str, v=v)
 
     def loss_fn(v_):
         out = depthwise_conv2d_layer(x, v=v_)
@@ -553,12 +555,12 @@ def test_conv3d_layer_training(x_n_fs_n_pad_n_oc, with_v, dtype_str, tensor_fn, 
         np.random.seed(0)
         wlim = (6 / (output_channels + input_channels)) ** 0.5
         w = ivy.variable(ivy.array(np.random.uniform(
-            -wlim, wlim, tuple(filter_shape + [output_channels, input_channels])), 'float32'))
-        b = ivy.variable(ivy.zeros([1, 1, 1, 1, output_channels]))
+            -wlim, wlim, tuple(filter_shape + [output_channels, input_channels])), 'float32', dev_str=dev_str))
+        b = ivy.variable(ivy.zeros([1, 1, 1, 1, output_channels], dev_str=dev_str))
         v = Container({'w': w, 'b': b})
     else:
         v = None
-    conv3d_layer = ivy.Conv3D(input_channels, output_channels, filter_shape, 1, padding, v=v)
+    conv3d_layer = ivy.Conv3D(input_channels, output_channels, filter_shape, 1, padding, dev_str=dev_str, v=v)
 
     def loss_fn(v_):
         out = conv3d_layer(x, v=v_)
@@ -645,13 +647,13 @@ def test_conv3d_transpose_layer_training(x_n_fs_n_pad_n_outshp_n_oc, with_v, dty
         np.random.seed(0)
         wlim = (6 / (output_channels + input_channels)) ** 0.5
         w = ivy.variable(ivy.array(np.random.uniform(
-            -wlim, wlim, tuple(filter_shape + [output_channels, input_channels])), 'float32'))
-        b = ivy.variable(ivy.zeros([1, 1, 1, 1, output_channels]))
+            -wlim, wlim, tuple(filter_shape + [output_channels, input_channels])), 'float32', dev_str=dev_str))
+        b = ivy.variable(ivy.zeros([1, 1, 1, 1, output_channels], dev_str=dev_str))
         v = Container({'w': w, 'b': b})
     else:
         v = None
     conv3d_transpose_layer = ivy.Conv3DTranspose(
-        input_channels, output_channels, filter_shape, 1, padding, output_shape=out_shape, v=v)
+        input_channels, output_channels, filter_shape, 1, padding, output_shape=out_shape, dev_str=dev_str, v=v)
 
     def loss_fn(v_):
         out = conv3d_transpose_layer(x, v=v_)
@@ -706,15 +708,16 @@ def test_lstm_layer_training(b_t_ic_hc_otf_sctv, with_v, dtype_str, tensor_fn, d
         pytest.skip()
     # smoke test
     b, t, input_channels, hidden_channels, output_true_flat, state_c_true_val = b_t_ic_hc_otf_sctv
-    x = ivy.cast(ivy.linspace(ivy.zeros([b, t]), ivy.ones([b, t]), input_channels), 'float32')
+    x = ivy.cast(ivy.linspace(ivy.zeros([b, t], dev_str=dev_str), ivy.ones([b, t], dev_str=dev_str), input_channels),
+                 'float32')
     if with_v:
-        kernel = ivy.variable(ivy.ones([input_channels, 4*hidden_channels])*0.5)
-        recurrent_kernel = ivy.variable(ivy.ones([hidden_channels, 4*hidden_channels])*0.5)
+        kernel = ivy.variable(ivy.ones([input_channels, 4*hidden_channels], dev_str=dev_str)*0.5)
+        recurrent_kernel = ivy.variable(ivy.ones([hidden_channels, 4*hidden_channels], dev_str=dev_str)*0.5)
         v = Container({'input': {'layer_0': {'w': kernel}},
                        'recurrent': {'layer_0': {'w': recurrent_kernel}}})
     else:
         v = None
-    lstm_layer = ivy.LSTM(input_channels, hidden_channels, v=v)
+    lstm_layer = ivy.LSTM(input_channels, hidden_channels, dev_str=dev_str, v=v)
 
     def loss_fn(v_):
         out, (state_h, state_c) = lstm_layer(x, v=v_)
@@ -778,27 +781,30 @@ def test_sequential_layer_training(bs_c, with_v, seq_v, dtype_str, tensor_fn, de
             {'submodules':
                       {'v0':
                            {'w': ivy.variable(ivy.array(np.random.uniform(
-                               -wlim, wlim, (channels, channels)), 'float32')),
-                               'b': ivy.variable(ivy.zeros([channels]))},
+                               -wlim, wlim, (channels, channels)), 'float32', dev_str=dev_str)),
+                               'b': ivy.variable(ivy.zeros([channels], dev_str=dev_str))},
                        'v1':
                            {'w': ivy.variable(ivy.array(np.random.uniform(
-                               -wlim, wlim, (channels, channels)), 'float32')),
-                               'b': ivy.variable(ivy.zeros([channels]))},
+                               -wlim, wlim, (channels, channels)), 'float32', dev_str=dev_str)),
+                               'b': ivy.variable(ivy.zeros([channels], dev_str=dev_str))},
                        'v2':
                            {'w': ivy.variable(ivy.array(np.random.uniform(
-                               -wlim, wlim, (channels, channels)), 'float32')),
-                               'b': ivy.variable(ivy.zeros([channels]))}}})
+                               -wlim, wlim, (channels, channels)), 'float32', dev_str=dev_str)),
+                               'b': ivy.variable(ivy.zeros([channels], dev_str=dev_str))}}})
     else:
         v = None
     if seq_v:
-        seq = ivy.Sequential(ivy.Linear(channels, channels),
-                             ivy.Linear(channels, channels),
-                             ivy.Linear(channels, channels),
-                             v=v if with_v else None)
+        seq = ivy.Sequential(ivy.Linear(channels, channels, dev_str=dev_str),
+                             ivy.Linear(channels, channels, dev_str=dev_str),
+                             ivy.Linear(channels, channels, dev_str=dev_str),
+                             v=v if with_v else None, dev_str=dev_str)
     else:
-        seq = ivy.Sequential(ivy.Linear(channels, channels, v=v['submodules']['v0'] if with_v else None),
-                             ivy.Linear(channels, channels, v=v['submodules']['v1'] if with_v else None),
-                             ivy.Linear(channels, channels, v=v['submodules']['v2'] if with_v else None))
+        seq = ivy.Sequential(ivy.Linear(channels, channels, dev_str=dev_str,
+                                        v=v['submodules']['v0'] if with_v else None),
+                             ivy.Linear(channels, channels, dev_str=dev_str,
+                                        v=v['submodules']['v1'] if with_v else None),
+                             ivy.Linear(channels, channels, dev_str=dev_str,
+                                        v=v['submodules']['v2'] if with_v else None), dev_str=dev_str)
 
     def loss_fn(v_):
         out = seq(x, v=v_)
