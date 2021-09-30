@@ -2810,7 +2810,7 @@ def test_jax_pytree_compatibility(dev_str, call):
         pytest.skip()
 
     # import
-    from jax._src.lib import pytree
+    from jax.tree_util import tree_flatten
 
     # dict in
     dict_in = {'a': ivy.array([1], dev_str=dev_str),
@@ -2820,10 +2820,10 @@ def test_jax_pytree_compatibility(dev_str, call):
     container = Container(dict_in)
 
     # container flattened
-    cont_values = pytree.flatten(container)[0]
+    cont_values = tree_flatten(container)[0]
 
     # dict flattened
-    true_values = pytree.flatten(dict_in)[0]
+    true_values = tree_flatten(dict_in)[0]
 
     # assertion
     for i, true_val in enumerate(true_values):
