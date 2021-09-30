@@ -65,8 +65,10 @@ def array(object_in, dtype_str=None, dev_str=None):
     return _mx.nd.array(object_in, cont, dtype=dtype_str)
 
 
-def is_array(x):
+def is_array(x, exclusive=False):
     if isinstance(x, _mx.ndarray.ndarray.NDArray):
+        if exclusive and x.grad is not None:
+            return False
         return True
     return False
 

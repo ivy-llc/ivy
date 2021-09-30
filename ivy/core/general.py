@@ -159,19 +159,21 @@ def array(object_in: Union[List, np.ndarray, Union[ivy.Array, ivy.NativeArray]],
     return _cur_framework(object_in, f=f).array(object_in, dtype_str, dev_str)
 
 
-def is_array(x: Any, f: ivy.Framework = None)\
+def is_array(x: Any, exclusive: bool = False, f: ivy.Framework = None)\
         -> bool:
     """
     Determines whether the input x is an Ivy Array.
 
     :param x: The input to check
     :type x: any
+    :param exclusive: Whether to check if the data type is exclusively an array, rather than a variable or traced array.
+    :type exclusive: bool, optional
     :param f: Machine learning framework. Inferred from inputs if None.
     :type f: ml_framework, optional
     :return: Boolean, whether or not x is an array.
     """
     try:
-        return _cur_framework(x, f=f).is_array(x)
+        return _cur_framework(x, f=f).is_array(x, exclusive)
     except ValueError:
         return False
 
@@ -1357,7 +1359,8 @@ def default(x: Any, default_val: Any, catch_exceptions: bool = False, rev: bool 
             x = x() if x_callable else x
         except Exception:
             return default_val() if default_callable else default_val
-    x = x() if x_callable else x
+    else:
+        x = x() if x_callable else x
     return x if exists(x) else default_val() if default_callable else default_val
 
 
