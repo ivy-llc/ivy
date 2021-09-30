@@ -615,7 +615,7 @@ def to_dev(x, dev_str: Optional[str] = None):
 
 def dev_to_str(dev_in: torch.device):
     dev_type, dev_idx = (dev_in.type, dev_in.index)
-    return dev_type + (':' + (str(dev_idx) if dev_idx is not None else '0'))
+    return dev_type.replace('cuda', 'gpu') + (':' + (str(dev_idx) if dev_idx is not None else '0'))
 
 
 def str_to_dev(dev_str: Optional[str] = None) -> Optional[torch.device]:

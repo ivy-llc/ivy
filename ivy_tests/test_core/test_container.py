@@ -967,13 +967,13 @@ def test_container_to_dev(dev_str, call):
                      'd': ivy.array([[10., 9., 8., 7.]], dev_str=dev_str)}}
     container = Container(dict_in)
 
-    container_to_cpu = container.to_dev('cpu:0')
-    assert ivy.dev_str(container_to_cpu['a']) == 'cpu:0'
-    assert ivy.dev_str(container_to_cpu.a) == 'cpu:0'
-    assert ivy.dev_str(container_to_cpu['b']['c']) == 'cpu:0'
-    assert ivy.dev_str(container_to_cpu.b.c) == 'cpu:0'
-    assert ivy.dev_str(container_to_cpu['b']['d']) == 'cpu:0'
-    assert ivy.dev_str(container_to_cpu.b.d) == 'cpu:0'
+    container_to_cpu = container.to_dev(dev_str)
+    assert ivy.dev_str(container_to_cpu['a']) == dev_str
+    assert ivy.dev_str(container_to_cpu.a) == dev_str
+    assert ivy.dev_str(container_to_cpu['b']['c']) == dev_str
+    assert ivy.dev_str(container_to_cpu.b.c) == dev_str
+    assert ivy.dev_str(container_to_cpu['b']['d']) == dev_str
+    assert ivy.dev_str(container_to_cpu.b.d) == dev_str
 
 
 def test_container_stop_gradients(dev_str, call):
@@ -2773,7 +2773,7 @@ def test_container_dev_str(dev_str, call):
                'b': {'c': ivy.array([[[2.], [4.], [6.]]], dev_str=dev_str),
                      'd': ivy.array([[[3.], [6.], [9.]]], dev_str=dev_str)}}
     container = Container(dict_in)
-    assert container.dev_str == 'cpu:0'
+    assert container.dev_str == dev_str
 
 
 def test_container_if_exists(dev_str, call):
@@ -2805,6 +2805,11 @@ def test_container_pickling_with_ivy_attribute(dev_str, call):
 
 
 def test_container_from_queues(dev_str, call):
+
+    if 'gpu' in dev_str:
+        # Cannot re-initialize CUDA in forked subprocess. 'spawn' start method must be used.
+        pytest.skip()
+
     def worker_fn(in_queue, out_queue, load_size, worker_id):
         keep_going = True
         while keep_going:
