@@ -150,7 +150,7 @@ class HyperNet(ivy.Module):
         super(HyperNet, self).__init__(dev_str=dev_str, v=v,  build_mode='on_call')
 
     def _create_variables(self, dev_str):
-        return {'latent': ivy.variable(ivy.random_uniform(shape=(self._latent_size,)))}
+        return {'latent': ivy.variable(ivy.random_uniform(shape=(self._latent_size,), dev_str=dev_str))}
 
     # noinspection PyUnusedLocal
     def _build(self, hypo_shapes, *args, **kwargs):
