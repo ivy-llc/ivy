@@ -46,7 +46,9 @@ def array(object_in, dtype_str=None, dev_str=None):
 
 # noinspection PyUnresolvedReferences,PyProtectedMember
 def is_array(x):
-    return isinstance(x, (_jax.interpreters.xla._DeviceArray, _jaxlib.xla_extension.DeviceArray, Buffer))
+    return isinstance(x, (_jax.interpreters.xla._DeviceArray,
+                          _jaxlib.xla_extension.DeviceArray, Buffer,
+                          _jax.interpreters.ad.JVPTracer))
 
 
 array_equal = _jnp.array_equal
