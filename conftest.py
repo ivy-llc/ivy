@@ -1,23 +1,17 @@
 import pytest
-import ivy.jax
-import ivy.mxnd
-import ivy.torch
-import ivy.numpy
-import ivy.tensorflow
 from typing import Dict
-from types import ModuleType
 from ivy_tests import helpers
 
 
 FW_STRS = ['numpy', 'jax', 'tensorflow', 'tensorflow_graph', 'torch', 'mxnd']
 
 
-TEST_FRAMEWORKS: Dict[str, ModuleType] = {'numpy': ivy.numpy,
-                                          'jax': ivy.jax,
-                                          'tensorflow': ivy.tensorflow,
-                                          'tensorflow_graph': ivy.tensorflow,
-                                          'torch': ivy.torch,
-                                          'mxnd': ivy.mxnd}
+TEST_FRAMEWORKS: Dict[str, callable] = {'numpy': lambda: helpers.get_ivy_numpy(),
+                                        'jax': lambda: helpers.get_ivy_jax(),
+                                        'tensorflow': lambda: helpers.get_ivy_tensorflow(),
+                                        'tensorflow_graph': lambda: helpers.get_ivy_tensorflow(),
+                                        'torch': lambda: helpers.get_ivy_torch(),
+                                        'mxnd': lambda: helpers.get_ivy_mxnd()}
 TEST_CALL_METHODS: Dict[str, callable] = {'numpy': helpers.np_call,
                                           'jax': helpers.jnp_call,
                                           'tensorflow': helpers.tf_call,
@@ -66,7 +60,7 @@ def pytest_generate_tests(metafunc):
     for f_str in f_strs:
         for dev_str in dev_strs:
             for wrapped_mode in wrapped_modes:
-                configs.append((dev_str, TEST_FRAMEWORKS[f_str], wrapped_mode, TEST_CALL_METHODS[f_str]))
+                configs.append((dev_str, TEST_FRAMEWORKS[f_str](), wrapped_mode, TEST_CALL_METHODS[f_str]))
     metafunc.parametrize('dev_str,f,wrapped_mode,call', configs)
 
 
