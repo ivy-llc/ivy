@@ -116,7 +116,12 @@ def set_framework(f):
     if not framework_stack:
         ivy_original_dict = ivy.__dict__.copy()
     if isinstance(f, str):
+        temp_stack = list()
+        while framework_stack:
+            temp_stack.append(unset_framework())
         f = importlib.import_module(_framework_dict[f])
+        for fw in reversed(temp_stack):
+            framework_stack.append(fw)
     framework_stack.append(f)
     ivy_original_fn_dict.clear()
     for k, v in ivy_original_dict.items():
@@ -157,8 +162,9 @@ def get_framework(f=None):
 
 
 def unset_framework():
+    fw = None
     if framework_stack:
-        framework_stack.pop(-1)
+        fw = framework_stack.pop(-1)
         f_dict = framework_stack[-1].__dict__ if framework_stack else ivy_original_dict
         wrapped = f_dict['wrapped'] if 'wrapped' in f_dict else False
         for k, v in f_dict.items():
@@ -167,6 +173,7 @@ def unset_framework():
     if verbosity.level > 0:
         verbosity.cprint(
             'framework stack: {}'.format(framework_stack))
+    return fw
 
 
 # Wrapped Mode #
