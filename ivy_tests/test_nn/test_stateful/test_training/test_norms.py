@@ -34,7 +34,7 @@ def test_layer_norm_layer_training(x_n_ns, with_v, dtype_str, tensor_fn, dev_str
                        'beta': ivy.variable(ivy.zeros_like(x))})
     else:
         v = None
-    norm_layer = ivy.LayerNorm(normalized_shape, v=v)
+    norm_layer = ivy.LayerNorm(normalized_shape, dev_str=dev_str, v=v)
 
     def loss_fn(v_):
         out = norm_layer(x, v=v_)

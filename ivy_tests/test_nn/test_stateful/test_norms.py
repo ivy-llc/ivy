@@ -36,7 +36,7 @@ def test_layer_norm_layer(x_n_ns_n_target, with_v, dtype_str, tensor_fn, dev_str
                        'beta': ivy.variable(ivy.zeros_like(x))})
     else:
         v = None
-    norm_layer = ivy.LayerNorm(normalized_shape, v=v)
+    norm_layer = ivy.LayerNorm(normalized_shape, dev_str=dev_str, v=v)
     ret = norm_layer(x)
     # type test
     assert ivy.is_array(ret)
