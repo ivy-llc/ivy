@@ -24,7 +24,7 @@
         <list />
       </option>
       <option name="publishAllPorts" value="false" />
-      <option name="runCliOptions" value="--entrypoint= --rm" />
+      <option name="runCliOptions" value="--entrypoint= --rm --gpus all" />
       <option name="version" value="2" />
       <option name="volumeBindings">
         <list>
