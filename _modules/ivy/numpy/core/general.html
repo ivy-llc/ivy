@@ -197,6 +197,7 @@
 <span class="kn">import</span> <span class="nn">math</span> <span class="k">as</span> <span class="nn">_math</span>
 <span class="kn">from</span> <span class="nn">operator</span> <span class="kn">import</span> <span class="n">mul</span> <span class="k">as</span> <span class="n">_mul</span>
 <span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">reduce</span> <span class="k">as</span> <span class="n">_reduce</span>
+<span class="kn">import</span> <span class="nn">multiprocessing</span> <span class="k">as</span> <span class="nn">_multiprocessing</span>
 
 <span class="n">DTYPE_DICT</span> <span class="o">=</span> <span class="p">{</span><span class="n">_np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="s1">&#39;bool&#39;</span><span class="p">):</span> <span class="s1">&#39;bool&#39;</span><span class="p">,</span>
               <span class="n">_np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="s1">&#39;int8&#39;</span><span class="p">):</span> <span class="s1">&#39;int8&#39;</span><span class="p">,</span>
@@ -589,6 +590,7 @@
 
 <span class="n">current_framework_str</span> <span class="o">=</span> <span class="k">lambda</span><span class="p">:</span> <span class="s1">&#39;numpy&#39;</span>
 <span class="n">current_framework_str</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">=</span> <span class="s1">&#39;current_framework_str&#39;</span>
+<span class="n">multiprocessing</span> <span class="o">=</span> <span class="k">lambda</span><span class="p">:</span> <span class="n">_multiprocessing</span>
 </pre></div>
 
            </div>
