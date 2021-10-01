@@ -2297,7 +2297,13 @@ def test_split_func_call_across_gpus(x0, x1, chunk_size, axis, tensor_fn, dev_st
         return t0 * t1, t0 - t1, t1 - t0
 
     # predictions
-    a, b, c = ivy.split_func_call_across_gpus(func, [in0, in1], ["cpu:0", "cpu:0"], axis, concat_output=True)
+    dev_str0 = dev_str
+    if 'gpu' in dev_str:
+        idx = ivy.num_gpus() - 1
+        dev_str1 = dev_str[:-1] + str(idx)
+    else:
+        dev_str1 = dev_str
+    a, b, c = ivy.split_func_call_across_gpus(func, [in0, in1], [dev_str0, dev_str1], axis, concat_output=True)
 
     # true
     a_true, b_true, c_true = func(in0, in1)
