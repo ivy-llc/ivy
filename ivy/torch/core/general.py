@@ -676,7 +676,7 @@ def dtype_to_str(dtype_in):
             torch.float64: 'float64'}[dtype_in]
 
 
-def compile_fn(fn, dynamic=True, example_inputs=None):
+def compile_fn(fn, dynamic=True, example_inputs=None, static_argnums=None, static_argnames=None):
     if dynamic:
         return torch.jit.script(fn)
     return torch.jit.trace(fn, example_inputs)

@@ -1542,7 +1542,8 @@ def dtype_str(x: Union[ivy.Array, ivy.NativeArray], f: ivy.Framework = None)\
 
 
 def compile_fn(func: Callable, dynamic: bool = True, example_inputs: Union[Any, Tuple[Any]] = None,
-               static_argnums: Union[int, Iterable[int], None] = None, static_argnames=None, f: ivy.Framework = None) -> Callable:
+               static_argnums: Union[int, Iterable[int]] = None, static_argnames: Union[int, Iterable[int]] = None,
+               f: ivy.Framework = None) -> Callable:
     """
     Provide a function which should be compiled, for faster inference.
     The handle to the newly compiled function is returned.
@@ -1554,11 +1555,16 @@ def compile_fn(func: Callable, dynamic: bool = True, example_inputs: Union[Any, 
     :param example_inputs: Example of inputs to the function to be compiled.
                             Required for torch in non-dynamic mode, unused by other frameworks.
     :type example_inputs: single input or tuple of inputs.
+    :param static_argnums: The argument numbers which should be treated as static for compiling. Default is None.
+    :type static_argnums: int or sequence of ints, optional
+    :param static_argnames: The argument names which should be treated as static for compiling. Default is None.
+    :type static_argnames: str or sequence of strs, optional
     :param f: Machine learning framework. Inferred from inputs if None.
     :type f: ml_framework, optional
     :return: The handle to the newly compiled function.
     """
-    return _cur_framework(example_inputs, f=f).compile_fn(func, dynamic, example_inputs)
+    return _cur_framework(example_inputs, f=f).compile_fn(
+        func, dynamic, example_inputs, static_argnums, static_argnames)
 
 
 def split_func_call(func: Callable, inputs: Iterable[Union[Union[ivy.Array, ivy.NativeArray], ivy.Container]],
