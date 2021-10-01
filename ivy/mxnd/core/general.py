@@ -15,6 +15,9 @@ from functools import reduce as _reduce
 from mxnet import profiler as _profiler
 import multiprocessing as _multiprocessing
 
+# local
+from ivy.core.general import Profiler as BaseProfiler
+
 
 DTYPE_DICT = {_np.bool_: 'bool',
               _np.int8: 'int8',
@@ -577,19 +580,25 @@ current_framework_str.__name__ = 'current_framework_str'
 multiprocessing = lambda: _multiprocessing
 
 
-class Profiler:
+class Profiler(BaseProfiler):
 
     def __init__(self, save_dir):
-        self._save_dir = save_dir
+        super(Profiler, self).__init__(save_dir)
         self._prof = _profiler
         self._prof.set_config(profile_all=True,
                               aggregate_stats=True,
                               continuous_dump=True,
                               filename=os.path.join(save_dir, 'trace.json'))
 
-    def __enter__(self):
+    def start(self):
         self._prof.set_state('run')
 
-    def __exit__(self, exc_type, exc_val, exc_tb):
+    def stop(self):
         self._prof.set_state('stop')
         self._prof.dump()
+
+    def __enter__(self):
+        self.start()
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        self.stop()

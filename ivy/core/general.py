@@ -3,6 +3,7 @@ Collection of general Ivy functions.
 """
 
 # global
+import abc
 import math
 import einops
 import nvidia_smi
@@ -1864,4 +1865,23 @@ def multiprocessing(f=None):
     return _cur_framework(f=f).multiprocessing()
 
 
-Profiler = None
+class Profiler(abc.ABC):
+
+    def __init__(self, save_dir):
+        self._save_dir = save_dir
+
+    @abc.abstractmethod
+    def start(self):
+        raise NotImplementedError
+
+    @abc.abstractmethod
+    def stop(self):
+        raise NotImplementedError
+
+    @abc.abstractmethod
+    def __enter__(self):
+        raise NotImplementedError
+
+    @abc.abstractmethod
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        raise NotImplementedError

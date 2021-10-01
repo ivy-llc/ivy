@@ -3,20 +3,19 @@ Collection of TensorFlow general functions, wrapped to fit Ivy syntax and signat
 """
 
 # global
-import os
+_round = round
+import numpy as _np
 import math as _math
+import tensorflow as _tf
 from numbers import Number
 from operator import mul as _mul
+import tensorflow_probability as _tfp
 from functools import reduce as _reduce
 import multiprocessing as _multiprocessing
 from tensorflow.python.types.core import Tensor
 
-_round = round
-
-# global
-import numpy as _np
-import tensorflow as _tf
-import tensorflow_probability as _tfp
+# local
+from ivy.core.general import Profiler as BaseProfiler
 
 DTYPE_DICT = {_tf.bool: 'bool',
               _tf.int8: 'int8',
@@ -466,15 +465,21 @@ current_framework_str.__name__ = 'current_framework_str'
 multiprocessing = lambda: _multiprocessing
 
 
-class Profiler:
+class Profiler(BaseProfiler):
 
     def __init__(self, save_dir):
-        self._save_dir = save_dir
+        super(Profiler, self).__init__(save_dir)
         self._options = _tf.profiler.experimental.ProfilerOptions(
             host_tracer_level=3, python_tracer_level=1, device_tracer_level=1)
 
-    def __enter__(self):
+    def start(self):
         _tf.profiler.experimental.start(self._save_dir, options=self._options)
 
-    def __exit__(self, exc_type, exc_val, exc_tb):
+    def stop(self):
         _tf.profiler.experimental.stop()
+
+    def __enter__(self):
+        self.start()
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        self.stop()

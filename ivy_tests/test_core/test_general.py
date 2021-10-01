@@ -2622,9 +2622,21 @@ def test_einops_repeat(x_n_pattern_n_al_n_newx, dtype_str, tensor_fn, dev_str, c
 
 # profiler
 def test_profiler(dev_str, call):
+
+    # with statement
     with ivy.Profiler('log'):
         a = ivy.ones([10])
         b = ivy.zeros([10])
         a + b
+    if call is helpers.mx_call:
+        time.sleep(1)  # required by MXNet for some reason
+
+    # start and stop methods
+    profiler = ivy.Profiler('log')
+    profiler.start()
+    a = ivy.ones([10])
+    b = ivy.zeros([10])
+    a + b
+    profiler.stop()
     if call is helpers.mx_call:
         time.sleep(1)  # required by MXNet for some reason
