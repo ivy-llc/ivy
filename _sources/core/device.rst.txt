@@ -24,9 +24,9 @@ Device
    device/split_func_call.rst
    device/split_func_call_across_devices.rst
    device/distribute_array.rst
+   device/distribute_args.rst
    device/unify_array.rst
-   device/distribute.rst
-   device/unify.rst
+   device/unify_args.rst
    device/Distributed.rst
    device/Profiler.rst
 
