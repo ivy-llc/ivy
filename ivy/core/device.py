@@ -312,27 +312,7 @@ def distribute_array(x, dev_strs, axis=0, check_for_array=True):
         [ivy.to_dev(x_sub, d) for x_sub, d in zip(ivy.split(x, len(dev_strs), axis, with_remainder=True), dev_strs)])
 
 
-# noinspection PyShadowingNames
-def unify_array(x, dev_str, axis=0, check_for_array=True):
-    """
-    Unify a list of sub-arrays, on arbitrary devices, to a single concattenated array on the specified device.
-
-    :param x: The list of sub-arrays to unify onto the specified device.
-    :type x: sequence of arrays
-    :param dev_str: The device to unify the sub-arrays to.
-    :type dev_str: str
-    :param axis: The axis along which to concattenate the array. Default is 0.
-    :type axis: int, optional
-    :param check_for_array: Whether to check if the input is a list of arrays, and only unify if so. Default is True.
-    :type check_for_array: bool, optional
-    :return: array unified to the target device
-    """
-    if check_for_array and not isinstance(x, Distributed):
-        return x
-    return ivy.concatenate([ivy.to_dev(x_sub, dev_str) for x_sub in x], axis)
-
-
-def distribute(dev_strs, *args, axis=0, **kwargs):
+def distribute_args(dev_strs, *args, axis=0, **kwargs):
     """
     Distribute the input arguments across the specified devices.
 
@@ -353,8 +333,31 @@ def distribute(dev_strs, *args, axis=0, **kwargs):
     return args_dist, kwargs_dist
 
 
+# Device Unification #
+# -------------------#
+
 # noinspection PyShadowingNames
-def unify(dev_str, *args, axis=0, **kwargs):
+def unify_array(x, dev_str, axis=0, check_for_array=True):
+    """
+    Unify a list of sub-arrays, on arbitrary devices, to a single concattenated array on the specified device.
+
+    :param x: The list of sub-arrays to unify onto the specified device.
+    :type x: sequence of arrays
+    :param dev_str: The device to unify the sub-arrays to.
+    :type dev_str: str
+    :param axis: The axis along which to concattenate the array. Default is 0.
+    :type axis: int, optional
+    :param check_for_array: Whether to check if the input is a list of arrays, and only unify if so. Default is True.
+    :type check_for_array: bool, optional
+    :return: array unified to the target device
+    """
+    if check_for_array and not isinstance(x, Distributed):
+        return x
+    return ivy.concatenate([ivy.to_dev(x_sub, dev_str) for x_sub in x], axis)
+
+
+# noinspection PyShadowingNames
+def unify_args(dev_str, *args, axis=0, **kwargs):
     """
     Unify the input arguments, which consist of sub-arrays distributed across arbitrary devices, to a unified arrays
     on a single target device.
@@ -373,6 +376,9 @@ def unify(dev_str, *args, axis=0, **kwargs):
     kwargs_uni = ivy.nested_map(kwargs, lambda x: unify_array(x, dev_str, axis))
     return args_uni, kwargs_uni
 
+
+# Profiler #
+# ---------#
 
 class Profiler(abc.ABC):
 

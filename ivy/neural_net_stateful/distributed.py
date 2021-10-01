@@ -5,16 +5,16 @@ Class for creating modules which are distributed over multiple devices
 # global
 import os
 import ivy
-from typing import List
+import inspect
 
 
 # Module #
 # -------#
 
+# noinspection PyArgumentList
 class DistributedModule:
 
-    def __init__(self, module_class: ivy.Module, dev_strs: List[str], v: ivy.Container = None,
-                 build_mode: str = 'on_init', store_vars: bool = True):
+    def __init__(self, module_class, dev_strs, v=None, **module_kwargs):
         """
         Initialze Distributed Ivy Module, which is a stateful object consisting of trainable variables,
         distributed across arbitrarily many devices.
@@ -30,13 +30,17 @@ class DistributedModule:
         :type build_mode: str, optional
         :param store_vars: Whether or not to store the variables created. Default is True.
         :type store_vars: bool, optional
+        :param module_kwargs: Dict of keywords arguments to pass the module constructor. Default is None.
+        :type module_kwargs: dict of any, optional
         :type build_mode: str, optional
         """
-        self._build_mode = build_mode
         self._distributed_modules = list()
         self._dev_strs = dev_strs
+        if 'v' in inspect.getfullargspec(module_class.__init__).args:
+            module_kwargs['v'] = ivy.default(lambda: v.to_dev(dev_str), None, True)
         for dev_str in dev_strs:
-            self._distributed_modules.append(module_class(dev_str, v.to_dev(dev_str), build_mode, store_vars))
+            self._distributed_modules.append(module_class(
+                dev_str=dev_str, **module_kwargs))
 
     # Public #
     # -------#
@@ -45,7 +49,7 @@ class DistributedModule:
         """
         the forward pass of the layer, treating layer instance as callable function.
         """
-        args_dist, kwargs_dist = ivy.distribute(self._dev_strs, *args, **kwargs)
+        args_dist, kwargs_dist = ivy.distribute_args(self._dev_strs, *args, **kwargs)
         rets = list()
         for module, args_d, kwargs_d in zip(self._distributed_modules, args_dist, kwargs_dist):
             rets.append(module(*args_d, **kwargs_d))
@@ -88,7 +92,8 @@ class DistributedModule:
 # noinspection PyCallingNonCallable
 class DistributedOptimizer:
 
-    def __init__(self, optimizer_class: ivy.Optimizer, dev_strs, lr, compile_step=False, inplace=True, stop_gradients=True):
+    def __init__(self, optimizer_class, dev_strs, lr, compile_step=False, inplace=True, stop_gradients=True,
+                 **optimizer_kwargs):
         """
         Construct an general Optimizer. This is an abstract class, and must be derived.
 
@@ -105,12 +110,15 @@ class DistributedOptimizer:
         :type inplace: bool, optional
         :param stop_gradients: Whether to stop the gradients of the variables after each gradient step. Default is True.
         :type stop_gradients: bool, optional
+        :param optimizer_kwargs: Dict of keywords arguments to pass the optimizer constructor. Default is None.
+        :type optimizer_kwargs: dict of any, optional
         """
         self._distributed_optimizers = list()
         self._dev_strs = dev_strs
         for dev_str in dev_strs:
             self._distributed_optimizers.append(optimizer_class(
-                lr=lr, compile_step=compile_step, inplace=inplace, stop_gradients=stop_gradients, dev_str=dev_str))
+                lr=lr, compile_step=compile_step, inplace=inplace, stop_gradients=stop_gradients, dev_str=dev_str,
+                **optimizer_kwargs))
 
     def set_state(self, state):
         """
