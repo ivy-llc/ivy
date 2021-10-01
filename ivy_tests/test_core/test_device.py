@@ -383,7 +383,7 @@ def test_unify_array(xs, axis, tensor_fn, dev_str, call):
     x1 = tensor_fn(xs[1], 'float32', dev_str1)
 
     # output
-    x_unified = ivy.unify_array([x0, x1], dev_str0, axis)
+    x_unified = ivy.unify_array(ivy.DistributedArray([x0, x1]), dev_str0, axis)
 
     # shape test
     assert x_unified.shape[axis] == x0.shape[axis] + x1.shape[axis]
