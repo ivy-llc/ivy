@@ -599,6 +599,7 @@
 
 <div class="viewcode-block" id="Profiler.__init__"><a class="viewcode-back" href="../../../../numpy/core/general.html#ivy.numpy.core.general.Profiler.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">save_dir</span><span class="p">):</span>
         <span class="c1"># ToDO: add proper numpy profiler</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">save_dir</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_save_dir</span> <span class="o">=</span> <span class="n">save_dir</span></div>
 
     <span class="k">def</span> <span class="fm">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
