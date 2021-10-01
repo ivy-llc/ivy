@@ -3,21 +3,17 @@ Collection of PyTorch general functions, wrapped to fit Ivy syntax and signature
 """
 
 # global
-import os
 import torch
-import importlib
 import numpy as np
 torch_scatter = None
 import math as _math
 from operator import mul
 from torch.types import Number
 from functools import reduce as _reduce
-from torch.profiler import ProfilerActivity
-from torch.profiler import profile as _profile
 from typing import List, Dict, Optional, Union
 
 # local
-from ivy.core.general import Profiler as BaseProfiler
+from ivy.torch.core.device import str_to_dev, _callable_dev_str
 
 # API #
 # ----#
@@ -613,41 +609,6 @@ def linear_resample(x, num_samples: int, axis: int = -1):
     return ret
 
 
-def dev(x):
-    return x.device
-
-
-def to_dev(x, dev_str: Optional[str] = None):
-    return x.to(str_to_dev(dev_str))
-
-
-def dev_to_str(dev_in: torch.device):
-    dev_type, dev_idx = (dev_in.type, dev_in.index)
-    return dev_type.replace('cuda', 'gpu') + (':' + (str(dev_idx) if dev_idx is not None else '0'))
-
-
-def str_to_dev(dev_str: Optional[str] = None) -> Optional[torch.device]:
-    if dev_str is None:
-        return dev_str
-    return torch.device(dev_str.replace('gpu', 'cuda'))
-
-
-def dev_str(x):
-    return dev_to_str(dev(x))
-
-
-_callable_dev_str = dev_str
-gpu_is_available = torch.cuda.is_available
-num_gpus = torch.cuda.device_count
-
-
-# noinspection PyUnresolvedReferences
-def tpu_is_available():
-    if importlib.util.find_spec("torch_xla") is not None:
-        return True
-    return False
-
-
 def dtype(x):
     return x.dtype
 
@@ -689,23 +650,3 @@ def current_framework_str():
 def multiprocessing():
     import torch.multiprocessing
     return torch.multiprocessing
-
-
-class Profiler(BaseProfiler):
-
-    def __init__(self, save_dir):
-        super(Profiler, self).__init__(save_dir)
-        self._prof = _profile(activities=[ProfilerActivity.CPU, ProfilerActivity.CUDA], with_stack=True)
-
-    def start(self):
-        self._prof.__enter__()
-
-    def stop(self):
-        self._prof.__exit__(None, None, None)
-        self._prof.export_chrome_trace(os.path.join(self._save_dir, 'trace.json'))
-
-    def __enter__(self):
-        self.start()
-
-    def __exit__(self, exc_type, exc_val, exc_tb):
-        self.stop()

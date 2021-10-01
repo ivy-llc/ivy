@@ -1,3 +1,5 @@
+from . import array_device
+from .array_device import *
 from . import array_general
 from .array_general import *
 from . import array_gradients

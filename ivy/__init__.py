@@ -50,13 +50,13 @@ from . import verbosity
 from .framework_handler import current_framework, get_framework, set_framework, unset_framework, framework_stack,\
     set_debug_mode, set_breakpoint_debug_mode, set_exception_debug_mode, unset_debug_mode, debug_mode, debug_mode_val,\
     set_wrapped_mode, unset_wrapped_mode, wrapped_mode, wrapped_mode_val
-from ivy.core.array import ArrayWithGeneral, ArrayWithGradients, ArrayWithImage, ArrayWithLinalg, ArrayWithLogic,\
-    ArrayWithMath, ArrayWithMeta, ArrayWithRandom, ArrayWithReductions
+from ivy.core.array import ArrayWithDevice, ArrayWithGeneral, ArrayWithGradients, ArrayWithImage, ArrayWithLinalg,\
+    ArrayWithLogic, ArrayWithMath, ArrayWithMeta, ArrayWithRandom, ArrayWithReductions
 
 
 # noinspection PyRedeclaration
-class Array(ArrayWithGeneral, ArrayWithGradients, ArrayWithImage, ArrayWithLinalg, ArrayWithLogic, ArrayWithMath,
-            ArrayWithMeta, ArrayWithRandom, ArrayWithReductions):
+class Array(ArrayWithDevice, ArrayWithGeneral, ArrayWithGradients, ArrayWithImage, ArrayWithLinalg, ArrayWithLogic,
+            ArrayWithMath, ArrayWithMeta, ArrayWithRandom, ArrayWithReductions):
 
     def __init__(self, data):
         assert is_array(data)

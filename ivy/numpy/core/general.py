@@ -3,8 +3,6 @@ Collection of Numpy general functions, wrapped to fit Ivy syntax and signature.
 """
 
 # global
-import os
-import time
 import logging
 import numpy as _np
 import math as _math
@@ -13,7 +11,8 @@ from functools import reduce as _reduce
 import multiprocessing as _multiprocessing
 
 # local
-from ivy.core.general import Profiler as BaseProfiler
+from ivy.numpy.core.device import _dev_str_callable
+
 
 DTYPE_DICT = {_np.dtype('bool'): 'bool',
               _np.dtype('int8'): 'int8',
@@ -382,15 +381,6 @@ def linear_resample(x, num_samples, axis=-1):
     return _np.reshape(ret, x_pre_shape + [num_samples] + x_post_shape)
 
 
-dev = lambda x: 'cpu:0'
-to_dev = lambda x, dev_str=None: x
-dev_str = lambda x: 'cpu:0'
-_dev_str_callable = dev_str
-dev_to_str = lambda dev_in: 'cpu:0'
-str_to_dev = lambda dev_str: 'cpu:0'
-gpu_is_available = lambda: False
-num_gpus = lambda: 0
-tpu_is_available = lambda: False
 dtype = lambda x: x.dtype
 dtype.__name__ = 'dtype'
 dtype_str = lambda x: DTYPE_DICT[x.dtype]
@@ -407,26 +397,3 @@ def compile_fn(func, dynamic=True, example_inputs=None, static_argnums=None, sta
 current_framework_str = lambda: 'numpy'
 current_framework_str.__name__ = 'current_framework_str'
 multiprocessing = lambda: _multiprocessing
-
-
-class Profiler(BaseProfiler):
-
-    def __init__(self, save_dir):
-        # ToDO: add proper numpy profiler
-        super(Profiler, self).__init__(save_dir)
-        os.makedirs(save_dir, exist_ok=True)
-        self._start_time = None
-
-    def start(self):
-        self._start_time = time.perf_counter()
-
-    def stop(self):
-        time_taken = time.perf_counter() - self._start_time
-        with open(os.path.join(self._save_dir, 'profile.log'), 'w+') as f:
-            f.write('took {} seconds to complete'.format(time_taken))
-
-    def __enter__(self):
-        self.start()
-
-    def __exit__(self, exc_type, exc_val, exc_tb):
-        self.stop()
