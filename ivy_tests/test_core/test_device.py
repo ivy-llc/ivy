@@ -466,18 +466,18 @@ def test_unify_args(args, kwargs, axis, tensor_fn, dev_str, call):
         dev_str1 = dev_str
 
     # inputs
-    args = [ivy.DistributedArray([tensor_fn(args[0][0], 'float32', dev_str0),
-                                  tensor_fn(args[0][1], 'float32', dev_str1)])] + args[1:]
-    kwargs = {'a': ivy.DistributedArray([tensor_fn(kwargs['a'][0], 'float32', dev_str0),
-                                         tensor_fn(kwargs['a'][1], 'float32', dev_str1)]),
-              'b': kwargs['b']}
+    args = ivy.DistributedArgs([ivy.DistributedArray([tensor_fn(args[0][0], 'float32', dev_str0),
+                                                      tensor_fn(args[0][1], 'float32', dev_str1)])] + args[1:])
+    kwargs = ivy.DistributedArgs({'a': ivy.DistributedArray([tensor_fn(kwargs['a'][0], 'float32', dev_str0),
+                                                             tensor_fn(kwargs['a'][1], 'float32', dev_str1)]),
+                                  'b': kwargs['b']})
 
     # outputs
-    args_uni, kwargs_uni = ivy.unify_args(dev_str0, *args, **kwargs, axis=axis)
+    args_uni, kwargs_uni = ivy.unify_args(dev_str0, args, kwargs, axis=axis)
 
     # shape test
-    assert args_uni[0].shape[axis] == args[0][0].shape[axis] + args[0][1].shape[axis]
-    assert kwargs_uni['a'].shape[axis] == kwargs['a'][0].shape[axis] + kwargs['a'][1].shape[axis]
+    assert args_uni[0].shape[axis] == args._args[0][0].shape[axis] + args._args[0][1].shape[axis]
+    assert kwargs_uni['a'].shape[axis] == kwargs._args['a'][0].shape[axis] + kwargs._args['a'][1].shape[axis]
 
     # value test
     assert ivy.dev_str(args_uni[0]) == dev_str0
