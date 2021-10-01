@@ -4,6 +4,7 @@ Collection of tests for templated general functions
 
 # global
 import math
+import time
 import einops
 import pytest
 import threading
@@ -2617,3 +2618,13 @@ def test_einops_repeat(x_n_pattern_n_al_n_newx, dtype_str, tensor_fn, dev_str, c
         pytest.skip()
     if not ivy.wrapped_mode():
         helpers.assert_compilable(ivy.einops_repeat)
+
+
+# profiler
+def test_profiler(dev_str, call):
+    with ivy.Profiler('log'):
+        a = ivy.ones([10])
+        b = ivy.zeros([10])
+        a + b
+    if call is helpers.mx_call:
+        time.sleep(1)  # required by MXNet for some reason
