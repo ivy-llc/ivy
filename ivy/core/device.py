@@ -8,7 +8,7 @@ import math
 import nvidia_smi
 import numpy as np
 from psutil import virtual_memory
-from typing import Callable, Union, Iterable
+from typing import Callable, Union, Iterable, Type
 
 # local
 import ivy
@@ -369,8 +369,8 @@ def unify_array(x, dev_str, axis=0, check_for_array=True):
     return ivy.concatenate([ivy.to_dev(x_sub, dev_str) for x_sub in x], axis)
 
 
-# noinspection PyShadowingNames
-def unify_args(dev_str, *args, axis=0, **kwargs):
+# noinspection PyShadowingNames,PyProtectedMember
+def unify_args(dev_str, args: Type[DistributedArgs], kwargs: Type[DistributedArgs], axis=0):
     """
     Unify the input arguments, which consist of sub-arrays distributed across arbitrary devices, to a unified arrays
     on a single target device.
@@ -378,15 +378,15 @@ def unify_args(dev_str, *args, axis=0, **kwargs):
     :param dev_str: The device to unify the arguments to.
     :type dev_str: str
     :param args: The positional arguments to unify.
-    :type args: list of any
+    :type args: DistributedArgs
     :param axis: The axis along which to concattenate the sub-arrays. Default is 0.
     :type axis: int, optional
     :param kwargs: The keyword arguments to unify.
-    :type kwargs: dict of any
+    :type kwargs: DistributedArgs
     :return: arguments unified to the target device
     """
-    args_uni = ivy.nested_map(args, lambda x: unify_array(x, dev_str, axis))
-    kwargs_uni = ivy.nested_map(kwargs, lambda x: unify_array(x, dev_str, axis))
+    args_uni = ivy.nested_map(args._args, lambda x: unify_array(x, dev_str, axis))
+    kwargs_uni = ivy.nested_map(kwargs._args, lambda x: unify_array(x, dev_str, axis))
     return args_uni, kwargs_uni
 
 
