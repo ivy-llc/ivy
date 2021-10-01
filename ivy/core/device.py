@@ -15,6 +15,9 @@ import ivy
 from ivy.framework_handler import current_framework as _cur_framework
 
 
+# Devices Queries #
+# ----------------#
+
 def dev(x: Union[ivy.Array, ivy.NativeArray], f: ivy.Framework = None)\
         -> ivy.Device:
     """
@@ -27,23 +30,6 @@ def dev(x: Union[ivy.Array, ivy.NativeArray], f: ivy.Framework = None)\
     :return: Device handle for the array, in native framework format.
     """
     return _cur_framework(x, f=f).dev(x)
-
-
-# noinspection PyShadowingNames
-def to_dev(x: Union[ivy.Array, ivy.NativeArray], dev_str: str = None, f: ivy.Framework = None)\
-        -> Union[ivy.Array, ivy.NativeArray]:
-    """
-    Move the input array x to the desired device, specified by device string.
-
-    :param x: Array to move onto the device.
-    :type x: array
-    :param dev_str: device to move the array to 'cuda:0', 'cuda:1', 'cpu' etc. Keep same device if None.
-    :type dev_str: str, optional
-    :param f: Machine learning framework. Inferred from inputs if None.
-    :type f: ml_framework, optional
-    :return: The array x, but now placed on the target device.
-    """
-    return _cur_framework(x, f=f).to_dev(x, dev_str)
 
 
 def dev_to_str(dev_in: ivy.Device, f: ivy.Framework = None)\
@@ -148,6 +134,29 @@ def tpu_is_available(f: ivy.Framework = None)\
     return _cur_framework(f=f).tpu_is_available()
 
 
+# Device Allocation #
+# ------------------#
+
+# noinspection PyShadowingNames
+def to_dev(x: Union[ivy.Array, ivy.NativeArray], dev_str: str = None, f: ivy.Framework = None)\
+        -> Union[ivy.Array, ivy.NativeArray]:
+    """
+    Move the input array x to the desired device, specified by device string.
+
+    :param x: Array to move onto the device.
+    :type x: array
+    :param dev_str: device to move the array to 'cuda:0', 'cuda:1', 'cpu' etc. Keep same device if None.
+    :type dev_str: str, optional
+    :param f: Machine learning framework. Inferred from inputs if None.
+    :type f: ml_framework, optional
+    :return: The array x, but now placed on the target device.
+    """
+    return _cur_framework(x, f=f).to_dev(x, dev_str)
+
+
+# Device Distribution #
+# --------------------#
+
 def split_func_call(func: Callable, inputs: Iterable[Union[Union[ivy.Array, ivy.NativeArray], ivy.Container]],
                     chunk_size: int, input_axes: Union[int, Iterable[int]] = 0,
                     output_axes: Union[int, Iterable[int]] = None, mean: bool = False)\
@@ -200,11 +209,11 @@ def split_func_call(func: Callable, inputs: Iterable[Union[Union[ivy.Array, ivy.
     return concatted
 
 
-def split_func_call_across_gpus(func: Callable,
-                                inputs: Iterable[Union[Union[ivy.Array, ivy.NativeArray], ivy.Container]],
-                                dev_strs: Union[int, Iterable[int], Iterable[str]],
-                                input_axes: Union[int, Iterable[int]] = None,
-                                output_axes: Union[int, Iterable[int]] = None, concat_output: bool = False)\
+def split_func_call_across_devices(func: Callable,
+                                   inputs: Iterable[Union[Union[ivy.Array, ivy.NativeArray], ivy.Container]],
+                                   dev_strs: Union[int, Iterable[int], Iterable[str]],
+                                   input_axes: Union[int, Iterable[int]] = None,
+                                   output_axes: Union[int, Iterable[int]] = None, concat_output: bool = False)\
         -> Iterable[Union[Union[ivy.Array, ivy.NativeArray], ivy.Container]]:
     """
     Call a function by splitting its inputs along a given axis, and calling each chunk on a different device.
@@ -277,6 +286,24 @@ def split_func_call_across_gpus(func: Callable,
         else:
             returns.append([r[i] for r in rets])
     return returns
+
+
+def distribute_array(x, dev_strs, axis=0, check_for_array=True):
+    """
+    Distribute an array across the specified devices, returning a list of sub-arrays, each on a different device.
+
+    :param x: The array to distribute across devices.
+    :type x: array
+    :param dev_strs: The devices to distribute the array across.
+    :type dev_strs: sequence of strs
+    :param axis: The axis along which to split the array. Default is 0.
+    :type axis: int, optional
+    :param check_for_array: Whether to check if the input is an array, and only split if so. Default is True.
+    :type check_for_array: bool, optional
+    """
+    if check_for_array and not ivy.is_array(x):
+        return x
+    return [ivy.to_dev(x_sub, d) for x_sub, d in zip(ivy.split(x, len(dev_strs), axis, with_remainder=True), dev_strs)]
 
 
 class Profiler(abc.ABC):

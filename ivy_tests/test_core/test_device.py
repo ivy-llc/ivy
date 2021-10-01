@@ -3,6 +3,7 @@ Collection of tests for templated device functions
 """
 
 # global
+import math
 import pytest
 import numpy as np
 from numbers import Number
@@ -275,7 +276,7 @@ def test_split_func_call_across_gpus(x0, x1, chunk_size, axis, tensor_fn, dev_st
         dev_str1 = dev_str[:-1] + str(idx)
     else:
         dev_str1 = dev_str
-    a, b, c = ivy.split_func_call_across_gpus(func, [in0, in1], [dev_str0, dev_str1], axis, concat_output=True)
+    a, b, c = ivy.split_func_call_across_devices(func, [in0, in1], [dev_str0, dev_str1], axis, concat_output=True)
 
     # true
     a_true, b_true, c_true = func(in0, in1)
@@ -314,7 +315,7 @@ def test_split_func_call_across_gpus_with_cont_input(x0, x1, chunk_size, axis, t
         return t0 * t1, t0 - t1, t1 - t0
 
     # predictions
-    a, b, c = ivy.split_func_call_across_gpus(func, [in0, in1], ["cpu:0", "cpu:0"], axis, concat_output=True)
+    a, b, c = ivy.split_func_call_across_devices(func, [in0, in1], ["cpu:0", "cpu:0"], axis, concat_output=True)
 
     # true
     a_true, b_true, c_true = func(in0, in1)
@@ -323,3 +324,35 @@ def test_split_func_call_across_gpus_with_cont_input(x0, x1, chunk_size, axis, t
     assert np.allclose(ivy.to_numpy(a.cont_key), ivy.to_numpy(a_true.cont_key))
     assert np.allclose(ivy.to_numpy(b.cont_key), ivy.to_numpy(b_true.cont_key))
     assert np.allclose(ivy.to_numpy(c.cont_key), ivy.to_numpy(c_true.cont_key))
+
+
+@pytest.mark.parametrize(
+    "x", [[0, 1, 2, 3, 4]])
+@pytest.mark.parametrize(
+    "axis", [0])
+@pytest.mark.parametrize(
+    "tensor_fn", [ivy.array, helpers.var_fn])
+def test_distribute_array(x, axis, tensor_fn, dev_str, call):
+
+    if call is helpers.mx_call:
+        # MXNet does not support splitting based on section sizes, only integer number of sections input is supported.
+        pytest.skip()
+
+    # inputs
+    x = tensor_fn(x, 'float32', dev_str)
+
+    # predictions
+    dev_str0 = dev_str
+    if 'gpu' in dev_str:
+        idx = ivy.num_gpus() - 1
+        dev_str1 = dev_str[:-1] + str(idx)
+    else:
+        dev_str1 = dev_str
+    dev_strs = [dev_str0, dev_str1]
+    x_split = ivy.distribute_array(x, dev_strs, axis)
+
+    # shape test
+    assert len(x_split) == math.floor(x.shape[axis] / len(dev_strs))
+
+    # value test
+    assert min([ivy.dev_str(x_sub) == dev_strs[i] for i, x_sub in enumerate(x_split)])
