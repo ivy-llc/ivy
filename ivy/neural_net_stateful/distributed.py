@@ -8,12 +8,12 @@ import ivy
 from typing import List
 
 
-# Base #
-# -----#
+# Module #
+# -------#
 
 class DistributedModule:
 
-    def __init__(self, module_class: ivy.Module, dev_strs: List[str] = None, v: ivy.Container = None,
+    def __init__(self, module_class: ivy.Module, dev_strs: List[str], v: ivy.Container = None,
                  build_mode: str = 'on_init', store_vars: bool = True):
         """
         Initialze Distributed Ivy Module, which is a stateful object consisting of trainable variables,
@@ -21,8 +21,8 @@ class DistributedModule:
 
         :param module_class: The customized ivy.Module class you wish to distribute across devices.
         :type module_class: Customized ivy.Module class
-        :param dev_strs: device on which to create the layer's variables 'cuda:0', 'cuda:1', 'cpu' etc.
-        :type dev_strs: str, optional
+        :param dev_strs: devices on which to distribute the module.
+        :type dev_strs: str
         :param v: Ivy container of trainable variables. Created internally by default.
         :type v: ivy container, optional
         :param build_mode: How the Module is built, either on initialization (now), explicitly by the user by calling
@@ -80,3 +80,59 @@ class DistributedModule:
     @property
     def built(self):
         return min([module.built for module in self._distributed_modules])
+
+
+# Optimizer #
+# ----------#
+
+# noinspection PyCallingNonCallable
+class DistributedOptimizer:
+
+    def __init__(self, optimizer_class: ivy.Optimizer, dev_strs, lr, compile_step=False, inplace=True, stop_gradients=True):
+        """
+        Construct an general Optimizer. This is an abstract class, and must be derived.
+
+        :param optimizer_class: The customized ivy.Optimizer class you wish to distribute across devices.
+        :type optimizer_class: Customized ivy.Optimizer class
+        :param dev_strs: devices on which to distribute the module.
+        :type dev_strs: str
+        :param lr: Learning rate.
+        :type lr: function or float.
+        :param compile_step: Whether to compile the optimizer step, default is False.
+        :type compile_step: bool, optional
+        :param inplace: Whether to update the variables in-place, or to create new variable handles.
+                        This is only relevant for frameworks with stateful variables such as PyTorch. Default is True.
+        :type inplace: bool, optional
+        :param stop_gradients: Whether to stop the gradients of the variables after each gradient step. Default is True.
+        :type stop_gradients: bool, optional
+        """
+        self._distributed_optimizers = list()
+        self._dev_strs = dev_strs
+        for dev_str in dev_strs:
+            self._distributed_optimizers.append(optimizer_class(
+                lr=lr, compile_step=compile_step, inplace=inplace, stop_gradients=stop_gradients, dev_str=dev_str))
+
+    def set_state(self, state):
+        """
+        Set state of the optimizer.
+
+        :param state: Nested state to update.
+        :type state: Ivy container of state tensors
+        """
+        [optim.set_state(s_sub) for optim, s_sub in zip(self._distributed_optimizers, state)]
+
+    def step(self, v, grads, ignore_missing=False):
+        """
+        Update nested variables container v from possibly compiled overriden private self._step_fn
+
+        :param v: Nested variables to update.
+        :type v: Ivy container of variables
+        :param grads: Nested gradients to update.
+        :type grads: sequence of arrays
+        :param ignore_missing: Whether to ignore keys missing from the gradients which exist in the variables.
+                               Default is False.
+        :type ignore_missing: bool, optional
+        :return: The updated variables, following update step.
+        """
+        [optim.step(v_sub, g_sub, ignore_missing)
+         for optim, v_sub, g_sub in zip(self._distributed_optimizers, v, grads)]

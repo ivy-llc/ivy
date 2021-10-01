@@ -2,6 +2,8 @@ from . import activations
 from .activations import *
 from . import converters
 from .converters import *
+from . import distributed
+from .distributed import *
 from . import initializers
 from .initializers import *
 from . import layers
