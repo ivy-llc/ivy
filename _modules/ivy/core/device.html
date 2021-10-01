@@ -206,6 +206,9 @@
 <span class="kn">from</span> <span class="nn">ivy.framework_handler</span> <span class="kn">import</span> <span class="n">current_framework</span> <span class="k">as</span> <span class="n">_cur_framework</span>
 
 
+<span class="c1"># Devices Queries #</span>
+<span class="c1"># ----------------#</span>
+
 <div class="viewcode-block" id="dev"><a class="viewcode-back" href="../../../core/device/dev.html#ivy.core.device.dev">[docs]</a><span class="k">def</span> <span class="nf">dev</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span> <span class="n">f</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Framework</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span>\
         <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Device</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -218,23 +221,6 @@
 <span class="sd">    :return: Device handle for the array, in native framework format.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">dev</span><span class="p">(</span><span class="n">x</span><span class="p">)</span></div>
-
-
-<span class="c1"># noinspection PyShadowingNames</span>
-<div class="viewcode-block" id="to_dev"><a class="viewcode-back" href="../../../core/device/to_dev.html#ivy.core.device.to_dev">[docs]</a><span class="k">def</span> <span class="nf">to_dev</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span> <span class="n">dev_str</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">f</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Framework</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span>\
-        <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Move the input array x to the desired device, specified by device string.</span>
-
-<span class="sd">    :param x: Array to move onto the device.</span>
-<span class="sd">    :type x: array</span>
-<span class="sd">    :param dev_str: device to move the array to &#39;cuda:0&#39;, &#39;cuda:1&#39;, &#39;cpu&#39; etc. Keep same device if None.</span>
-<span class="sd">    :type dev_str: str, optional</span>
-<span class="sd">    :param f: Machine learning framework. Inferred from inputs if None.</span>
-<span class="sd">    :type f: ml_framework, optional</span>
-<span class="sd">    :return: The array x, but now placed on the target device.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">to_dev</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">dev_str</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="dev_to_str"><a class="viewcode-back" href="../../../core/device/dev_to_str.html#ivy.core.device.dev_to_str">[docs]</a><span class="k">def</span> <span class="nf">dev_to_str</span><span class="p">(</span><span class="n">dev_in</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Device</span><span class="p">,</span> <span class="n">f</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Framework</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span>\
@@ -339,6 +325,29 @@
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">tpu_is_available</span><span class="p">()</span></div>
 
 
+<span class="c1"># Device Allocation #</span>
+<span class="c1"># ------------------#</span>
+
+<span class="c1"># noinspection PyShadowingNames</span>
+<div class="viewcode-block" id="to_dev"><a class="viewcode-back" href="../../../core/device/to_dev.html#ivy.core.device.to_dev">[docs]</a><span class="k">def</span> <span class="nf">to_dev</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span> <span class="n">dev_str</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">f</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Framework</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span>\
+        <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Move the input array x to the desired device, specified by device string.</span>
+
+<span class="sd">    :param x: Array to move onto the device.</span>
+<span class="sd">    :type x: array</span>
+<span class="sd">    :param dev_str: device to move the array to &#39;cuda:0&#39;, &#39;cuda:1&#39;, &#39;cpu&#39; etc. Keep same device if None.</span>
+<span class="sd">    :type dev_str: str, optional</span>
+<span class="sd">    :param f: Machine learning framework. Inferred from inputs if None.</span>
+<span class="sd">    :type f: ml_framework, optional</span>
+<span class="sd">    :return: The array x, but now placed on the target device.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">to_dev</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">dev_str</span><span class="p">)</span></div>
+
+
+<span class="c1"># Device Distribution #</span>
+<span class="c1"># --------------------#</span>
+
 <div class="viewcode-block" id="split_func_call"><a class="viewcode-back" href="../../../core/device/split_func_call.html#ivy.core.device.split_func_call">[docs]</a><span class="k">def</span> <span class="nf">split_func_call</span><span class="p">(</span><span class="n">func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">inputs</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">]],</span>
                     <span class="n">chunk_size</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">input_axes</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
                     <span class="n">output_axes</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">mean</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>\
@@ -391,11 +400,11 @@
     <span class="k">return</span> <span class="n">concatted</span></div>
 
 
-<div class="viewcode-block" id="split_func_call_across_gpus"><a class="viewcode-back" href="../../../core/device/split_func_call_across_gpus.html#ivy.core.device.split_func_call_across_gpus">[docs]</a><span class="k">def</span> <span class="nf">split_func_call_across_gpus</span><span class="p">(</span><span class="n">func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">,</span>
-                                <span class="n">inputs</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">]],</span>
-                                <span class="n">dev_strs</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">]],</span>
-                                <span class="n">input_axes</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-                                <span class="n">output_axes</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">concat_output</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>\
+<div class="viewcode-block" id="split_func_call_across_devices"><a class="viewcode-back" href="../../../core/device/split_func_call_across_devices.html#ivy.core.device.split_func_call_across_devices">[docs]</a><span class="k">def</span> <span class="nf">split_func_call_across_devices</span><span class="p">(</span><span class="n">func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">,</span>
+                                   <span class="n">inputs</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">]],</span>
+                                   <span class="n">dev_strs</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">]],</span>
+                                   <span class="n">input_axes</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                                   <span class="n">output_axes</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">concat_output</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>\
         <span class="o">-&gt;</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">]]:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Call a function by splitting its inputs along a given axis, and calling each chunk on a different device.</span>
@@ -468,6 +477,24 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="n">returns</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">r</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">rets</span><span class="p">])</span>
     <span class="k">return</span> <span class="n">returns</span></div>
+
+
+<div class="viewcode-block" id="distribute_array"><a class="viewcode-back" href="../../../core/device/distribute_array.html#ivy.core.device.distribute_array">[docs]</a><span class="k">def</span> <span class="nf">distribute_array</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">dev_strs</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">check_for_array</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Distribute an array across the specified devices, returning a list of sub-arrays, each on a different device.</span>
+
+<span class="sd">    :param x: The array to distribute across devices.</span>
+<span class="sd">    :type x: array</span>
+<span class="sd">    :param dev_strs: The devices to distribute the array across.</span>
+<span class="sd">    :type dev_strs: sequence of strs</span>
+<span class="sd">    :param axis: The axis along which to split the array. Default is 0.</span>
+<span class="sd">    :type axis: int, optional</span>
+<span class="sd">    :param check_for_array: Whether to check if the input is an array, and only split if so. Default is True.</span>
+<span class="sd">    :type check_for_array: bool, optional</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">check_for_array</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_array</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">x</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">to_dev</span><span class="p">(</span><span class="n">x_sub</span><span class="p">,</span> <span class="n">d</span><span class="p">)</span> <span class="k">for</span> <span class="n">x_sub</span><span class="p">,</span> <span class="n">d</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">dev_strs</span><span class="p">),</span> <span class="n">axis</span><span class="p">,</span> <span class="n">with_remainder</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span> <span class="n">dev_strs</span><span class="p">)]</span></div>
 
 
 <div class="viewcode-block" id="Profiler"><a class="viewcode-back" href="../../../core/device/Profiler.html#ivy.core.device.Profiler">[docs]</a><span class="k">class</span> <span class="nc">Profiler</span><span class="p">(</span><span class="n">abc</span><span class="o">.</span><span class="n">ABC</span><span class="p">):</span>
