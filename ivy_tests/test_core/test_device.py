@@ -452,10 +452,10 @@ def test_unify(args, kwargs, axis, tensor_fn, dev_str, call):
         dev_str1 = dev_str
 
     # inputs
-    args = [ivy.DistributedArray([tensor_fn(args[0][0], 'float32', dev_str0),
-                                  tensor_fn(args[0][1], 'float32', dev_str1)])] + args[1:]
-    kwargs = {'a': ivy.DistributedArray([tensor_fn(kwargs['a'][0], 'float32', dev_str0),
-                                         tensor_fn(kwargs['a'][1], 'float32', dev_str1)]),
+    args = [ivy.Distributed([tensor_fn(args[0][0], 'float32', dev_str0),
+                             tensor_fn(args[0][1], 'float32', dev_str1)])] + args[1:]
+    kwargs = {'a': ivy.Distributed([tensor_fn(kwargs['a'][0], 'float32', dev_str0),
+                                    tensor_fn(kwargs['a'][1], 'float32', dev_str1)]),
               'b': kwargs['b']}
 
     # outputs
