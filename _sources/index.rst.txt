@@ -266,6 +266,7 @@ Documentation Tree
 
    core/array.rst
    core/container.rst
+   core/device.rst
    core/general.rst
    core/gradients.rst
    core/image.rst
@@ -309,6 +310,7 @@ Documentation Tree
 
    neural_net_stateful/activations.rst
    neural_net_stateful/converters.rst
+   neural_net_stateful/distributed_module.rst
    neural_net_stateful/initializers.rst
    neural_net_stateful/layers.rst
    neural_net_stateful/module.rst

@@ -37,7 +37,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="nested_map" href="general/nested_map.html" />
-    <link rel="prev" title="Container" href="container/Container.html" /> 
+    <link rel="prev" title="Profiler" href="device/Profiler.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -90,6 +90,7 @@
 <p class="caption"><span class="caption-text">Core</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="container.html">Container</a></li>
+<li class="toctree-l1"><a class="reference internal" href="device.html">Device</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">General</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="general/nested_map.html">nested_map</a></li>
 <li class="toctree-l2"><a class="reference internal" href="general/to_ivy.html">to_ivy</a></li>
@@ -161,21 +162,10 @@
 <li class="toctree-l2"><a class="reference internal" href="general/linear_resample.html">linear_resample</a></li>
 <li class="toctree-l2"><a class="reference internal" href="general/exists.html">exists</a></li>
 <li class="toctree-l2"><a class="reference internal" href="general/default.html">default</a></li>
-<li class="toctree-l2"><a class="reference internal" href="general/dev.html">dev</a></li>
-<li class="toctree-l2"><a class="reference internal" href="general/to_dev.html">to_dev</a></li>
-<li class="toctree-l2"><a class="reference internal" href="general/dev_to_str.html">dev_to_str</a></li>
-<li class="toctree-l2"><a class="reference internal" href="general/str_to_dev.html">str_to_dev</a></li>
-<li class="toctree-l2"><a class="reference internal" href="general/dev_str.html">dev_str</a></li>
-<li class="toctree-l2"><a class="reference internal" href="general/memory_on_dev.html">memory_on_dev</a></li>
-<li class="toctree-l2"><a class="reference internal" href="general/gpu_is_available.html">gpu_is_available</a></li>
-<li class="toctree-l2"><a class="reference internal" href="general/num_gpus.html">num_gpus</a></li>
-<li class="toctree-l2"><a class="reference internal" href="general/tpu_is_available.html">tpu_is_available</a></li>
 <li class="toctree-l2"><a class="reference internal" href="general/dtype.html">dtype</a></li>
 <li class="toctree-l2"><a class="reference internal" href="general/dtype_to_str.html">dtype_to_str</a></li>
 <li class="toctree-l2"><a class="reference internal" href="general/dtype_str.html">dtype_str</a></li>
 <li class="toctree-l2"><a class="reference internal" href="general/compile_fn.html">compile_fn</a></li>
-<li class="toctree-l2"><a class="reference internal" href="general/split_func_call.html">split_func_call</a></li>
-<li class="toctree-l2"><a class="reference internal" href="general/split_func_call_across_gpus.html">split_func_call_across_gpus</a></li>
 <li class="toctree-l2"><a class="reference internal" href="general/cache_fn.html">cache_fn</a></li>
 <li class="toctree-l2"><a class="reference internal" href="general/current_framework_str.html">current_framework_str</a></li>
 <li class="toctree-l2"><a class="reference internal" href="general/einops_rearrange.html">einops_rearrange</a></li>
@@ -188,7 +178,6 @@
 <li class="toctree-l2"><a class="reference internal" href="general/set_min_base.html">set_min_base</a></li>
 <li class="toctree-l2"><a class="reference internal" href="general/stable_pow.html">stable_pow</a></li>
 <li class="toctree-l2"><a class="reference internal" href="general/multiprocessing.html">multiprocessing</a></li>
-<li class="toctree-l2"><a class="reference internal" href="general/Profiler.html">Profiler</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="gradients.html">Gradients</a></li>
@@ -211,6 +200,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../neural_net_stateful/activations.html">Activations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../neural_net_stateful/converters.html">Converters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../neural_net_stateful/distributed_module.html">Distributed module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../neural_net_stateful/initializers.html">Initializers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../neural_net_stateful/layers.html">Layers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../neural_net_stateful/module.html">Module</a></li>
@@ -293,28 +283,6 @@
   <div class="section" id="module-ivy.core.general">
 <span id="general"></span><h1>General<a class="headerlink" href="#module-ivy.core.general" title="Permalink to this headline">¶</a></h1>
 <p>Collection of general Ivy functions.</p>
-<dl class="py class">
-<dt id="ivy.core.general.Profiler">
-<em class="property">class </em><code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">Profiler</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">save_dir</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#Profiler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.Profiler" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">abc.ABC</span></code></p>
-<dl class="py method">
-<dt id="ivy.core.general.Profiler.__init__">
-<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">save_dir</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#Profiler.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.Profiler.__init__" title="Permalink to this definition">¶</a></dt>
-<dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt id="ivy.core.general.Profiler.start">
-<em class="property">abstract </em><code class="sig-name descname">start</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#Profiler.start"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.Profiler.start" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt id="ivy.core.general.Profiler.stop">
-<em class="property">abstract </em><code class="sig-name descname">stop</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#Profiler.stop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.Profiler.stop" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
 <dl class="py function">
 <dt id="ivy.core.general.abs">
 <code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">abs</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">f</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>ivy.Framework<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; Union<span class="p">[</span>ivy.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span><a class="reference internal" href="../_modules/ivy/core/general.html#abs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.abs" title="Permalink to this definition">¶</a></dt>
@@ -778,57 +746,6 @@ dimension 3.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="ivy.core.general.dev">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">dev</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">f</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>ivy.Framework<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; ivy.Device<a class="reference internal" href="../_modules/ivy/core/general.html#dev"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.dev" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the native device handle for input array x.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<em>array</em>) – Tensor for which to get the device handle.</p></li>
-<li><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning framework. Inferred from inputs if None.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Device handle for the array, in native framework format.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt id="ivy.core.general.dev_str">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">dev_str</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">f</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>ivy.Framework<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; str<a class="reference internal" href="../_modules/ivy/core/general.html#dev_str"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.dev_str" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the device string for input array x.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<em>array</em>) – Tensor for which to get the device string.</p></li>
-<li><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning framework. Inferred from inputs if None.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Device string for the array, e.g. ‘cuda:0’, ‘cuda:1’, ‘cpu’ etc..</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt id="ivy.core.general.dev_to_str">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">dev_to_str</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dev_in</span><span class="p">:</span> <span class="n">ivy.Device</span></em>, <em class="sig-param"><span class="n">f</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>ivy.Framework<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; str<a class="reference internal" href="../_modules/ivy/core/general.html#dev_to_str"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.dev_to_str" title="Permalink to this definition">¶</a></dt>
-<dd><p>Convert native data type to string representation.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>dev_in</strong> (<em>device handle</em>) – The device handle to convert to string.</p></li>
-<li><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning framework. Inferred from inputs if None.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Device string e.g. ‘cuda:0’.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
 <dt id="ivy.core.general.dtype">
 <code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">dtype</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">f</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>ivy.Framework<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; ivy.Dtype<a class="reference internal" href="../_modules/ivy/core/general.html#dtype"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.dtype" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the data type for input array x.</p>
@@ -1129,20 +1046,6 @@ The shape of the array is preserved, but the elements are reordered.</p>
 </dd></dl>
 
 <dl class="py function">
-<dt id="ivy.core.general.gpu_is_available">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">gpu_is_available</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">f</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>ivy.Framework<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; bool<a class="reference internal" href="../_modules/ivy/core/general.html#gpu_is_available"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.gpu_is_available" title="Permalink to this definition">¶</a></dt>
-<dd><p>Determine whether a GPU is available to use, with the backend framework.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning framework. Inferred from inputs if None.</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Boolean, as to whether a gpu is available.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
 <dt id="ivy.core.general.has_nans">
 <code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">has_nans</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">include_infs</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">True</span></em><span class="sig-paren">)</span> &#x2192; bool<a class="reference internal" href="../_modules/ivy/core/general.html#has_nans"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.has_nans" title="Permalink to this definition">¶</a></dt>
 <dd><p>Determine whether the array contains any nans, as well as infs or -infs if specified.</p>
@@ -1334,20 +1237,6 @@ Default is ‘float32’.</p></li>
 </dd></dl>
 
 <dl class="py function">
-<dt id="ivy.core.general.memory_on_dev">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">memory_on_dev</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dev_str</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span> &#x2192; float<a class="reference internal" href="../_modules/ivy/core/general.html#memory_on_dev"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.memory_on_dev" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the total amount of memory for a given device string. In case of CPU, the total RAM is returned.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>dev_str</strong> (<em>str</em>) – The device string to conver to native device handle.</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>The total memory on the device in GB.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
 <dt id="ivy.core.general.meshgrid">
 <code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">meshgrid</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">xs</span><span class="p">:</span> <span class="n">Iterable<span class="p">[</span>Union<span class="p">[</span>ivy.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">indexing</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">'ij'</span></em>, <em class="sig-param"><span class="n">f</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>ivy.Framework<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; Iterable<span class="p">[</span>Union<span class="p">[</span>ivy.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span><span class="p">]</span><a class="reference internal" href="../_modules/ivy/core/general.html#meshgrid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.meshgrid" title="Permalink to this definition">¶</a></dt>
 <dd><p>Broadcasts parameters for evaluation on an N-D grid.</p>
@@ -1411,20 +1300,6 @@ leaves before applying the method and returning x. If x is not nested, the metho
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>x following the applicable of fn to it’s nested leaves, or x itself if x is not nested.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt id="ivy.core.general.num_gpus">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">num_gpus</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">f</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>ivy.Framework<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; int<a class="reference internal" href="../_modules/ivy/core/general.html#num_gpus"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.num_gpus" title="Permalink to this definition">¶</a></dt>
-<dd><p>Determine the number of available GPUs, with the backend framework.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning framework. Inferred from inputs if None.</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Number of available GPUs.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1646,49 +1521,6 @@ Default is to divide into as many 1-dimensional arrays as the axis dimension.</p
 </dd></dl>
 
 <dl class="py function">
-<dt id="ivy.core.general.split_func_call">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">split_func_call</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">func</span><span class="p">:</span> <span class="n">Callable</span></em>, <em class="sig-param"><span class="n">inputs</span><span class="p">:</span> <span class="n">Iterable<span class="p">[</span>Union<span class="p">[</span>ivy.Array<span class="p">, </span>ivy.NativeArray<span class="p">, </span>ivy.Container<span class="p">]</span><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">chunk_size</span><span class="p">:</span> <span class="n">int</span></em>, <em class="sig-param"><span class="n">input_axes</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>int<span class="p">, </span>Iterable<span class="p">[</span>int<span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">0</span></em>, <em class="sig-param"><span class="n">output_axes</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Union<span class="p">[</span>int<span class="p">, </span>Iterable<span class="p">[</span>int<span class="p">]</span><span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">mean</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em><span class="sig-paren">)</span> &#x2192; Iterable<span class="p">[</span>Union<span class="p">[</span>ivy.Array<span class="p">, </span>ivy.NativeArray<span class="p">, </span>ivy.Container<span class="p">]</span><span class="p">]</span><a class="reference internal" href="../_modules/ivy/core/general.html#split_func_call"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.split_func_call" title="Permalink to this definition">¶</a></dt>
-<dd><p>Call a function by splitting its inputs along a given axis, and calling the function in chunks, rather than feeding
-the entire input array at once. This can be useful to reduce memory usage of the device the arrays are on.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>func</strong> (<em>callable</em>) – The function to be called.</p></li>
-<li><p><strong>inputs</strong> (<em>sequence of arrays</em>) – A list of inputs to pass into the function.</p></li>
-<li><p><strong>chunk_size</strong> (<em>int</em>) – The size of each of the chunks to be fed into the function.</p></li>
-<li><p><strong>input_axes</strong> (<em>int</em><em> or </em><em>sequence of ints</em><em>, </em><em>optional</em>) – The axes along which to split each of the inputs, before passing to the function. Default is 0.</p></li>
-<li><p><strong>output_axes</strong> (<em>int</em><em> or </em><em>sequence of ints</em><em>, </em><em>optional</em>) – The axes along which to concat each of the returned outputs. Default is same as fist input axis.</p></li>
-<li><p><strong>mean</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to compute a weighted mean based on the return from each chunk. Default is False.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>The return from the function, following input splitting and re-concattenation.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt id="ivy.core.general.split_func_call_across_gpus">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">split_func_call_across_gpus</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">func</span><span class="p">:</span> <span class="n">Callable</span></em>, <em class="sig-param"><span class="n">inputs</span><span class="p">:</span> <span class="n">Iterable<span class="p">[</span>Union<span class="p">[</span>ivy.Array<span class="p">, </span>ivy.NativeArray<span class="p">, </span>ivy.Container<span class="p">]</span><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">dev_strs</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>int<span class="p">, </span>Iterable<span class="p">[</span>int<span class="p">]</span><span class="p">, </span>Iterable<span class="p">[</span>str<span class="p">]</span><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">input_axes</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Union<span class="p">[</span>int<span class="p">, </span>Iterable<span class="p">[</span>int<span class="p">]</span><span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">output_axes</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Union<span class="p">[</span>int<span class="p">, </span>Iterable<span class="p">[</span>int<span class="p">]</span><span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">concat_output</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em><span class="sig-paren">)</span> &#x2192; Iterable<span class="p">[</span>Union<span class="p">[</span>ivy.Array<span class="p">, </span>ivy.NativeArray<span class="p">, </span>ivy.Container<span class="p">]</span><span class="p">]</span><a class="reference internal" href="../_modules/ivy/core/general.html#split_func_call_across_gpus"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.split_func_call_across_gpus" title="Permalink to this definition">¶</a></dt>
-<dd><p>Call a function by splitting its inputs along a given axis, and calling each chunk on a different device.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>func</strong> (<em>callable</em>) – The function to be called.</p></li>
-<li><p><strong>inputs</strong> (<em>sequence of arrays</em><em> or </em><em>containers</em>) – A list of inputs to pass into the function.</p></li>
-<li><p><strong>dev_strs</strong> (<em>int</em><em>, </em><em>sequence of ints</em><em> or </em><em>sequence of strs</em>) – The gpu device strings, in the format “gpu:idx”.</p></li>
-<li><p><strong>input_axes</strong> (<em>int</em><em> or </em><em>sequence of ints</em><em>, </em><em>optional</em>) – The axes along which to split each of the inputs, before passing to the function. Default is 0.</p></li>
-<li><p><strong>output_axes</strong> (<em>int</em><em> or </em><em>sequence of ints</em><em>, </em><em>optional</em>) – The axes along which to concat each of the returned outputs. Default is same as fist input axis.</p></li>
-<li><p><strong>concat_output</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to concatenate each return values into a single array. Default is False.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>The return from the function, following input splitting and re-concattenation across devices.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
 <dt id="ivy.core.general.squeeze">
 <code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">squeeze</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">axis</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>int<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">f</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>ivy.Framework<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; Union<span class="p">[</span>ivy.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span><a class="reference internal" href="../_modules/ivy/core/general.html#squeeze"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.squeeze" title="Permalink to this definition">¶</a></dt>
 <dd><p>Removes a single-dimensional entry from the shape of an array.</p>
@@ -1764,23 +1596,6 @@ For example, if axis: int = 0, it will be the first dimension and if axis: int =
 </dd></dl>
 
 <dl class="py function">
-<dt id="ivy.core.general.str_to_dev">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">str_to_dev</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dev_str</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">f</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>ivy.Framework<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; ivy.Device<a class="reference internal" href="../_modules/ivy/core/general.html#str_to_dev"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.str_to_dev" title="Permalink to this definition">¶</a></dt>
-<dd><p>Convert device string representation to native device type.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>dev_str</strong> (<em>str</em>) – The device string to conver to native device handle.</p></li>
-<li><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning framework. Inferred from inputs if None.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Native device handle.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
 <dt id="ivy.core.general.swapaxes">
 <code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">swapaxes</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">axis0</span><span class="p">:</span> <span class="n">int</span></em>, <em class="sig-param"><span class="n">axis1</span><span class="p">:</span> <span class="n">int</span></em>, <em class="sig-param"><span class="n">f</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>ivy.Framework<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; Union<span class="p">[</span>ivy.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span><a class="reference internal" href="../_modules/ivy/core/general.html#swapaxes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.swapaxes" title="Permalink to this definition">¶</a></dt>
 <dd><p>Interchange two axes of an array.</p>
@@ -1813,24 +1628,6 @@ For example, if axis: int = 0, it will be the first dimension and if axis: int =
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>The tiled output array.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt id="ivy.core.general.to_dev">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">to_dev</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">dev_str</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>str<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">f</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>ivy.Framework<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; Union<span class="p">[</span>ivy.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span><a class="reference internal" href="../_modules/ivy/core/general.html#to_dev"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.to_dev" title="Permalink to this definition">¶</a></dt>
-<dd><p>Move the input array x to the desired device, specified by device string.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<em>array</em>) – Array to move onto the device.</p></li>
-<li><p><strong>dev_str</strong> (<em>str</em><em>, </em><em>optional</em>) – device to move the array to ‘cuda:0’, ‘cuda:1’, ‘cpu’ etc. Keep same device if None.</p></li>
-<li><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning framework. Inferred from inputs if None.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>The array x, but now placed on the target device.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1924,20 +1721,6 @@ Default is False.</p></li>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>A scalar.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt id="ivy.core.general.tpu_is_available">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">tpu_is_available</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">f</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>ivy.Framework<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; bool<a class="reference internal" href="../_modules/ivy/core/general.html#tpu_is_available"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.tpu_is_available" title="Permalink to this definition">¶</a></dt>
-<dd><p>Determine whether a TPU is available to use, with the backend framework.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning framework. Inferred from inputs if None.</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Boolean, as to whether a tpu is available.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -2146,21 +1929,10 @@ If not given, then the type of the original array is used.</p></li>
 <li class="toctree-l1"><a class="reference internal" href="general/linear_resample.html">linear_resample</a></li>
 <li class="toctree-l1"><a class="reference internal" href="general/exists.html">exists</a></li>
 <li class="toctree-l1"><a class="reference internal" href="general/default.html">default</a></li>
-<li class="toctree-l1"><a class="reference internal" href="general/dev.html">dev</a></li>
-<li class="toctree-l1"><a class="reference internal" href="general/to_dev.html">to_dev</a></li>
-<li class="toctree-l1"><a class="reference internal" href="general/dev_to_str.html">dev_to_str</a></li>
-<li class="toctree-l1"><a class="reference internal" href="general/str_to_dev.html">str_to_dev</a></li>
-<li class="toctree-l1"><a class="reference internal" href="general/dev_str.html">dev_str</a></li>
-<li class="toctree-l1"><a class="reference internal" href="general/memory_on_dev.html">memory_on_dev</a></li>
-<li class="toctree-l1"><a class="reference internal" href="general/gpu_is_available.html">gpu_is_available</a></li>
-<li class="toctree-l1"><a class="reference internal" href="general/num_gpus.html">num_gpus</a></li>
-<li class="toctree-l1"><a class="reference internal" href="general/tpu_is_available.html">tpu_is_available</a></li>
 <li class="toctree-l1"><a class="reference internal" href="general/dtype.html">dtype</a></li>
 <li class="toctree-l1"><a class="reference internal" href="general/dtype_to_str.html">dtype_to_str</a></li>
 <li class="toctree-l1"><a class="reference internal" href="general/dtype_str.html">dtype_str</a></li>
 <li class="toctree-l1"><a class="reference internal" href="general/compile_fn.html">compile_fn</a></li>
-<li class="toctree-l1"><a class="reference internal" href="general/split_func_call.html">split_func_call</a></li>
-<li class="toctree-l1"><a class="reference internal" href="general/split_func_call_across_gpus.html">split_func_call_across_gpus</a></li>
 <li class="toctree-l1"><a class="reference internal" href="general/cache_fn.html">cache_fn</a></li>
 <li class="toctree-l1"><a class="reference internal" href="general/current_framework_str.html">current_framework_str</a></li>
 <li class="toctree-l1"><a class="reference internal" href="general/einops_rearrange.html">einops_rearrange</a></li>
@@ -2173,7 +1945,6 @@ If not given, then the type of the original array is used.</p></li>
 <li class="toctree-l1"><a class="reference internal" href="general/set_min_base.html">set_min_base</a></li>
 <li class="toctree-l1"><a class="reference internal" href="general/stable_pow.html">stable_pow</a></li>
 <li class="toctree-l1"><a class="reference internal" href="general/multiprocessing.html">multiprocessing</a></li>
-<li class="toctree-l1"><a class="reference internal" href="general/Profiler.html">Profiler</a></li>
 </ul>
 </div>
 </div>
@@ -2189,7 +1960,7 @@ If not given, then the type of the original array is used.</p></li>
         <a href="general/nested_map.html" class="btn btn-neutral float-right" title="nested_map" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="container/Container.html" class="btn btn-neutral float-left" title="Container" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="device/Profiler.html" class="btn btn-neutral float-left" title="Profiler" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

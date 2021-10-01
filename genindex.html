@@ -88,6 +88,7 @@
 <p class="caption"><span class="caption-text">Core</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="core/container.html">Container</a></li>
+<li class="toctree-l1"><a class="reference internal" href="core/device.html">Device</a></li>
 <li class="toctree-l1"><a class="reference internal" href="core/general.html">General</a></li>
 <li class="toctree-l1"><a class="reference internal" href="core/gradients.html">Gradients</a></li>
 <li class="toctree-l1"><a class="reference internal" href="core/image.html">Image</a></li>
@@ -109,6 +110,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="neural_net_stateful/activations.html">Activations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="neural_net_stateful/converters.html">Converters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="neural_net_stateful/distributed_module.html">Distributed module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="neural_net_stateful/initializers.html">Initializers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="neural_net_stateful/layers.html">Layers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="neural_net_stateful/module.html">Module</a></li>
@@ -221,11 +223,13 @@
       <li><a href="core/container.html#ivy.core.container.Container.__init__">__init__() (ivy.core.container.Container method)</a>, <a href="core/container/Container.html#ivy.core.container.Container.__init__">[1]</a>
 
       <ul>
-        <li><a href="core/general.html#ivy.core.general.Profiler.__init__">(ivy.core.general.Profiler method)</a>, <a href="core/general/Profiler.html#ivy.core.general.Profiler.__init__">[1]</a>
+        <li><a href="core/device.html#ivy.core.device.Profiler.__init__">(ivy.core.device.Profiler method)</a>, <a href="core/device/Profiler.html#ivy.core.device.Profiler.__init__">[1]</a>
 </li>
         <li><a href="framework_handler.html#ivy.framework_handler.ContextManager.__init__">(ivy.framework_handler.ContextManager method)</a>
 </li>
         <li><a href="neural_net_stateful/activations.html#ivy.neural_net_stateful.activations.GEGLU.__init__">(ivy.neural_net_stateful.activations.GEGLU method)</a>, <a href="neural_net_stateful/activations/GEGLU.html#ivy.neural_net_stateful.activations.GEGLU.__init__">[1]</a>
+</li>
+        <li><a href="neural_net_stateful/distributed_module.html#ivy.neural_net_stateful.distributed_module.DistributedModule.__init__">(ivy.neural_net_stateful.distributed_module.DistributedModule method)</a>
 </li>
         <li><a href="neural_net_stateful/initializers.html#ivy.neural_net_stateful.initializers.Constant.__init__">(ivy.neural_net_stateful.initializers.Constant method)</a>
 </li>
@@ -281,7 +285,7 @@
 </li>
         <li><a href="neural_net_stateful/sequential.html#ivy.neural_net_stateful.sequential.Sequential.__init__">(ivy.neural_net_stateful.sequential.Sequential method)</a>, <a href="neural_net_stateful/sequential/Sequential.html#ivy.neural_net_stateful.sequential.Sequential.__init__">[1]</a>
 </li>
-        <li><a href="numpy/core/general.html#ivy.numpy.core.general.Profiler.__init__">(ivy.numpy.core.general.Profiler method)</a>, <a href="numpy/core/general/Profiler.html#ivy.numpy.core.general.Profiler.__init__">[1]</a>
+        <li><a href="numpy/core/device.html#ivy.numpy.core.device.Profiler.__init__">(ivy.numpy.core.device.Profiler method)</a>, <a href="numpy/core/device/Profiler.html#ivy.numpy.core.device.Profiler.__init__">[1]</a>
 </li>
       </ul></li>
   </ul></td>
@@ -350,6 +354,8 @@
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="core/array/array_device.html#ivy.core.array.array_device.ArrayWithDevice">ArrayWithDevice (class in ivy.core.array.array_device)</a>, <a href="core/array/array_device/ArrayWithDevice.html#ivy.core.array.array_device.ArrayWithDevice">[1]</a>
+</li>
       <li><a href="core/array/array_general.html#ivy.core.array.array_general.ArrayWithGeneral">ArrayWithGeneral (class in ivy.core.array.array_general)</a>, <a href="core/array/array_general/ArrayWithGeneral.html#ivy.core.array.array_general.ArrayWithGeneral">[1]</a>
 </li>
       <li><a href="core/array/array_gradients.html#ivy.core.array.array_gradients.ArrayWithGradients">ArrayWithGradients (class in ivy.core.array.array_gradients)</a>, <a href="core/array/array_gradients/ArrayWithGradients.html#ivy.core.array.array_gradients.ArrayWithGradients">[1]</a>
@@ -410,16 +416,28 @@
       </ul></li>
       <li><a href="neural_net_functional/losses.html#ivy.neural_net_functional.losses.binary_cross_entropy">binary_cross_entropy() (in module ivy.neural_net_functional.losses)</a>, <a href="neural_net_functional/losses/binary_cross_entropy.html#ivy.neural_net_functional.losses.binary_cross_entropy">[1]</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="core/general.html#ivy.core.general.broadcast_to">broadcast_to() (in module ivy.core.general)</a>, <a href="core/general/broadcast_to.html#ivy.core.general.broadcast_to">[1]</a>
 </li>
-      <li><a href="neural_net_stateful/module.html#ivy.neural_net_stateful.module.Module.build">build() (ivy.neural_net_stateful.module.Module method)</a>, <a href="neural_net_stateful/module/Module.html#ivy.neural_net_stateful.module.Module.build">[1]</a>
+      <li><a href="neural_net_stateful/distributed_module.html#ivy.neural_net_stateful.distributed_module.DistributedModule.build">build() (ivy.neural_net_stateful.distributed_module.DistributedModule method)</a>
+
+      <ul>
+        <li><a href="neural_net_stateful/module.html#ivy.neural_net_stateful.module.Module.build">(ivy.neural_net_stateful.module.Module method)</a>, <a href="neural_net_stateful/module/Module.html#ivy.neural_net_stateful.module.Module.build">[1]</a>
 </li>
-      <li><a href="neural_net_stateful/module.html#ivy.neural_net_stateful.module.Module.build_mode">build_mode() (ivy.neural_net_stateful.module.Module property)</a>, <a href="neural_net_stateful/module/Module.html#ivy.neural_net_stateful.module.Module.build_mode">[1]</a>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="neural_net_stateful/distributed_module.html#ivy.neural_net_stateful.distributed_module.DistributedModule.build_mode">build_mode() (ivy.neural_net_stateful.distributed_module.DistributedModule property)</a>
+
+      <ul>
+        <li><a href="neural_net_stateful/module.html#ivy.neural_net_stateful.module.Module.build_mode">(ivy.neural_net_stateful.module.Module property)</a>, <a href="neural_net_stateful/module/Module.html#ivy.neural_net_stateful.module.Module.build_mode">[1]</a>
 </li>
-      <li><a href="neural_net_stateful/module.html#ivy.neural_net_stateful.module.Module.built">built() (ivy.neural_net_stateful.module.Module property)</a>, <a href="neural_net_stateful/module/Module.html#ivy.neural_net_stateful.module.Module.built">[1]</a>
+      </ul></li>
+      <li><a href="neural_net_stateful/distributed_module.html#ivy.neural_net_stateful.distributed_module.DistributedModule.built">built() (ivy.neural_net_stateful.distributed_module.DistributedModule property)</a>
+
+      <ul>
+        <li><a href="neural_net_stateful/module.html#ivy.neural_net_stateful.module.Module.built">(ivy.neural_net_stateful.module.Module property)</a>, <a href="neural_net_stateful/module/Module.html#ivy.neural_net_stateful.module.Module.built">[1]</a>
 </li>
+      </ul></li>
   </ul></td>
 </tr></table>
 
@@ -588,29 +606,31 @@
       </ul></li>
       <li><a href="neural_net_stateful/layers.html#ivy.neural_net_stateful.layers.DepthwiseConv2D">DepthwiseConv2D (class in ivy.neural_net_stateful.layers)</a>, <a href="neural_net_stateful/layers/DepthwiseConv2D.html#ivy.neural_net_stateful.layers.DepthwiseConv2D">[1]</a>
 </li>
-      <li><a href="core/general.html#ivy.core.general.dev">dev() (in module ivy.core.general)</a>, <a href="core/general/dev.html#ivy.core.general.dev">[1]</a>
+      <li><a href="core/device.html#ivy.core.device.dev">dev() (in module ivy.core.device)</a>, <a href="core/device/dev.html#ivy.core.device.dev">[1]</a>
 
       <ul>
-        <li><a href="numpy/core/general.html#ivy.numpy.core.general.dev">(in module ivy.numpy.core.general)</a>
+        <li><a href="numpy/core/device.html#ivy.numpy.core.device.dev">(in module ivy.numpy.core.device)</a>
 </li>
       </ul></li>
-      <li><a href="core/general.html#ivy.core.general.dev_str">dev_str() (in module ivy.core.general)</a>, <a href="core/general/dev_str.html#ivy.core.general.dev_str">[1]</a>
+      <li><a href="core/device.html#ivy.core.device.dev_str">dev_str() (in module ivy.core.device)</a>, <a href="core/device/dev_str.html#ivy.core.device.dev_str">[1]</a>
 
       <ul>
-        <li><a href="numpy/core/general.html#ivy.numpy.core.general.dev_str">(in module ivy.numpy.core.general)</a>
+        <li><a href="numpy/core/device.html#ivy.numpy.core.device.dev_str">(in module ivy.numpy.core.device)</a>
 </li>
         <li><a href="core/container.html#ivy.core.container.Container.dev_str">(ivy.core.container.Container property)</a>, <a href="core/container/Container.html#ivy.core.container.Container.dev_str">[1]</a>
 </li>
       </ul></li>
-      <li><a href="core/general.html#ivy.core.general.dev_to_str">dev_to_str() (in module ivy.core.general)</a>, <a href="core/general/dev_to_str.html#ivy.core.general.dev_to_str">[1]</a>
+      <li><a href="core/device.html#ivy.core.device.dev_to_str">dev_to_str() (in module ivy.core.device)</a>, <a href="core/device/dev_to_str.html#ivy.core.device.dev_to_str">[1]</a>
 
       <ul>
-        <li><a href="numpy/core/general.html#ivy.numpy.core.general.dev_to_str">(in module ivy.numpy.core.general)</a>
+        <li><a href="numpy/core/device.html#ivy.numpy.core.device.dev_to_str">(in module ivy.numpy.core.device)</a>
 </li>
       </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="core/container.html#ivy.core.container.Container.diff">diff() (ivy.core.container.Container static method)</a>, <a href="core/container/Container.html#ivy.core.container.Container.diff">[1]</a>
+</li>
+      <li><a href="neural_net_stateful/distributed_module.html#ivy.neural_net_stateful.distributed_module.DistributedModule">DistributedModule (class in ivy.neural_net_stateful.distributed_module)</a>
 </li>
       <li><a href="neural_net_stateful/layers.html#ivy.neural_net_stateful.layers.Dropout">Dropout (class in ivy.neural_net_stateful.layers)</a>, <a href="neural_net_stateful/layers/Dropout.html#ivy.neural_net_stateful.layers.Dropout">[1]</a>
 </li>
@@ -786,10 +806,10 @@
       </ul></li>
       <li><a href="neural_net_stateful/initializers.html#ivy.neural_net_stateful.initializers.GlorotUniform">GlorotUniform (class in ivy.neural_net_stateful.initializers)</a>, <a href="neural_net_stateful/initializers/GlorotUniform.html#ivy.neural_net_stateful.initializers.GlorotUniform">[1]</a>
 </li>
-      <li><a href="core/general.html#ivy.core.general.gpu_is_available">gpu_is_available() (in module ivy.core.general)</a>, <a href="core/general/gpu_is_available.html#ivy.core.general.gpu_is_available">[1]</a>
+      <li><a href="core/device.html#ivy.core.device.gpu_is_available">gpu_is_available() (in module ivy.core.device)</a>, <a href="core/device/gpu_is_available.html#ivy.core.device.gpu_is_available">[1]</a>
 
       <ul>
-        <li><a href="numpy/core/general.html#ivy.numpy.core.general.gpu_is_available">(in module ivy.numpy.core.general)</a>
+        <li><a href="numpy/core/device.html#ivy.numpy.core.device.gpu_is_available">(in module ivy.numpy.core.device)</a>
 </li>
       </ul></li>
       <li><a href="core/gradients.html#ivy.core.gradients.gradient_descent_update">gradient_descent_update() (in module ivy.core.gradients)</a>, <a href="core/gradients/gradient_descent_update.html#ivy.core.gradients.gradient_descent_update">[1]</a>
@@ -879,6 +899,13 @@
       <li><a href="core/container.html#ivy.core.container.Container.ivy">ivy() (ivy.core.container.Container property)</a>, <a href="core/container/Container.html#ivy.core.container.Container.ivy">[1]</a>
 </li>
       <li>
+    ivy.core.array.array_device
+
+      <ul>
+        <li><a href="core/array/array_device.html#module-ivy.core.array.array_device">module</a>
+</li>
+      </ul></li>
+      <li>
     ivy.core.array.array_general
 
       <ul>
@@ -946,6 +973,13 @@
 
       <ul>
         <li><a href="core/container.html#module-ivy.core.container">module</a>
+</li>
+      </ul></li>
+      <li>
+    ivy.core.device
+
+      <ul>
+        <li><a href="core/device.html#module-ivy.core.device">module</a>
 </li>
       </ul></li>
       <li>
@@ -1063,6 +1097,13 @@
 </li>
       </ul></li>
       <li>
+    ivy.neural_net_stateful.distributed_module
+
+      <ul>
+        <li><a href="neural_net_stateful/distributed_module.html#module-ivy.neural_net_stateful.distributed_module">module</a>
+</li>
+      </ul></li>
+      <li>
     ivy.neural_net_stateful.initializers
 
       <ul>
@@ -1102,6 +1143,13 @@
 
       <ul>
         <li><a href="neural_net_stateful/sequential.html#module-ivy.neural_net_stateful.sequential">module</a>
+</li>
+      </ul></li>
+      <li>
+    ivy.numpy.core.device
+
+      <ul>
+        <li><a href="numpy/core/device.html#module-ivy.numpy.core.device">module</a>
 </li>
       </ul></li>
       <li>
@@ -1285,7 +1333,7 @@
         <li><a href="core/container.html#ivy.core.container.Container.maximum">(ivy.core.container.Container method)</a>, <a href="core/container/Container.html#ivy.core.container.Container.maximum">[1]</a>
 </li>
       </ul></li>
-      <li><a href="core/general.html#ivy.core.general.memory_on_dev">memory_on_dev() (in module ivy.core.general)</a>, <a href="core/general/memory_on_dev.html#ivy.core.general.memory_on_dev">[1]</a>
+      <li><a href="core/device.html#ivy.core.device.memory_on_dev">memory_on_dev() (in module ivy.core.device)</a>, <a href="core/device/memory_on_dev.html#ivy.core.device.memory_on_dev">[1]</a>
 </li>
       <li><a href="core/general.html#ivy.core.general.meshgrid">meshgrid() (in module ivy.core.general)</a>, <a href="core/general/meshgrid.html#ivy.core.general.meshgrid">[1]</a>
 
@@ -1303,6 +1351,8 @@
     module
 
       <ul>
+        <li><a href="core/array/array_device.html#module-ivy.core.array.array_device">ivy.core.array.array_device</a>
+</li>
         <li><a href="core/array/array_general.html#module-ivy.core.array.array_general">ivy.core.array.array_general</a>
 </li>
         <li><a href="core/array/array_gradients.html#module-ivy.core.array.array_gradients">ivy.core.array.array_gradients</a>
@@ -1322,6 +1372,8 @@
         <li><a href="core/array/array_reductions.html#module-ivy.core.array.array_reductions">ivy.core.array.array_reductions</a>
 </li>
         <li><a href="core/container.html#module-ivy.core.container">ivy.core.container</a>
+</li>
+        <li><a href="core/device.html#module-ivy.core.device">ivy.core.device</a>
 </li>
         <li><a href="core/general.html#module-ivy.core.general">ivy.core.general</a>
 </li>
@@ -1355,6 +1407,8 @@
 </li>
         <li><a href="neural_net_stateful/converters.html#module-ivy.neural_net_stateful.converters">ivy.neural_net_stateful.converters</a>
 </li>
+        <li><a href="neural_net_stateful/distributed_module.html#module-ivy.neural_net_stateful.distributed_module">ivy.neural_net_stateful.distributed_module</a>
+</li>
         <li><a href="neural_net_stateful/initializers.html#module-ivy.neural_net_stateful.initializers">ivy.neural_net_stateful.initializers</a>
 </li>
         <li><a href="neural_net_stateful/layers.html#module-ivy.neural_net_stateful.layers">ivy.neural_net_stateful.layers</a>
@@ -1366,6 +1420,8 @@
         <li><a href="neural_net_stateful/optimizers.html#module-ivy.neural_net_stateful.optimizers">ivy.neural_net_stateful.optimizers</a>
 </li>
         <li><a href="neural_net_stateful/sequential.html#module-ivy.neural_net_stateful.sequential">ivy.neural_net_stateful.sequential</a>
+</li>
+        <li><a href="numpy/core/device.html#module-ivy.numpy.core.device">ivy.numpy.core.device</a>
 </li>
         <li><a href="numpy/core/general.html#module-ivy.numpy.core.general">ivy.numpy.core.general</a>
 </li>
@@ -1422,10 +1478,10 @@
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="core/general.html#ivy.core.general.num_gpus">num_gpus() (in module ivy.core.general)</a>, <a href="core/general/num_gpus.html#ivy.core.general.num_gpus">[1]</a>
+      <li><a href="core/device.html#ivy.core.device.num_gpus">num_gpus() (in module ivy.core.device)</a>, <a href="core/device/num_gpus.html#ivy.core.device.num_gpus">[1]</a>
 
       <ul>
-        <li><a href="numpy/core/general.html#ivy.numpy.core.general.num_gpus">(in module ivy.numpy.core.general)</a>
+        <li><a href="numpy/core/device.html#ivy.numpy.core.device.num_gpus">(in module ivy.numpy.core.device)</a>
 </li>
       </ul></li>
   </ul></td>
@@ -1472,10 +1528,10 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="core/linalg.html#ivy.core.linalg.pinv">pinv() (in module ivy.core.linalg)</a>, <a href="core/linalg/pinv.html#ivy.core.linalg.pinv">[1]</a>
 </li>
-      <li><a href="core/general.html#ivy.core.general.Profiler">Profiler (class in ivy.core.general)</a>, <a href="core/general/Profiler.html#ivy.core.general.Profiler">[1]</a>
+      <li><a href="core/device.html#ivy.core.device.Profiler">Profiler (class in ivy.core.device)</a>, <a href="core/device/Profiler.html#ivy.core.device.Profiler">[1]</a>
 
       <ul>
-        <li><a href="numpy/core/general.html#ivy.numpy.core.general.Profiler">(class in ivy.numpy.core.general)</a>, <a href="numpy/core/general/Profiler.html#ivy.numpy.core.general.Profiler">[1]</a>
+        <li><a href="numpy/core/device.html#ivy.numpy.core.device.Profiler">(class in ivy.numpy.core.device)</a>, <a href="numpy/core/device/Profiler.html#ivy.numpy.core.device.Profiler">[1]</a>
 </li>
       </ul></li>
       <li><a href="core/container.html#ivy.core.container.Container.prune_empty">prune_empty() (ivy.core.container.Container method)</a>, <a href="core/container/Container.html#ivy.core.container.Container.prune_empty">[1]</a>
@@ -1614,8 +1670,12 @@
 <h2 id="S">S</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="neural_net_stateful/module.html#ivy.neural_net_stateful.module.Module.save_weights">save_weights() (ivy.neural_net_stateful.module.Module method)</a>, <a href="neural_net_stateful/module/Module.html#ivy.neural_net_stateful.module.Module.save_weights">[1]</a>
+      <li><a href="neural_net_stateful/distributed_module.html#ivy.neural_net_stateful.distributed_module.DistributedModule.save_weights">save_weights() (ivy.neural_net_stateful.distributed_module.DistributedModule method)</a>
+
+      <ul>
+        <li><a href="neural_net_stateful/module.html#ivy.neural_net_stateful.module.Module.save_weights">(ivy.neural_net_stateful.module.Module method)</a>, <a href="neural_net_stateful/module/Module.html#ivy.neural_net_stateful.module.Module.save_weights">[1]</a>
 </li>
+      </ul></li>
       <li><a href="neural_net_functional/layers.html#ivy.neural_net_functional.layers.scaled_dot_product_attention">scaled_dot_product_attention() (in module ivy.neural_net_functional.layers)</a>, <a href="neural_net_functional/layers/scaled_dot_product_attention.html#ivy.neural_net_functional.layers.scaled_dot_product_attention">[1]</a>
 </li>
       <li><a href="core/general.html#ivy.core.general.scatter_flat">scatter_flat() (in module ivy.core.general)</a>, <a href="core/general/scatter_flat.html#ivy.core.general.scatter_flat">[1]</a>
@@ -1734,9 +1794,9 @@
         <li><a href="core/container.html#ivy.core.container.Container.split">(ivy.core.container.Container method)</a>, <a href="core/container/Container.html#ivy.core.container.Container.split">[1]</a>
 </li>
       </ul></li>
-      <li><a href="core/general.html#ivy.core.general.split_func_call">split_func_call() (in module ivy.core.general)</a>, <a href="core/general/split_func_call.html#ivy.core.general.split_func_call">[1]</a>
+      <li><a href="core/device.html#ivy.core.device.split_func_call">split_func_call() (in module ivy.core.device)</a>, <a href="core/device/split_func_call.html#ivy.core.device.split_func_call">[1]</a>
 </li>
-      <li><a href="core/general.html#ivy.core.general.split_func_call_across_gpus">split_func_call_across_gpus() (in module ivy.core.general)</a>, <a href="core/general/split_func_call_across_gpus.html#ivy.core.general.split_func_call_across_gpus">[1]</a>
+      <li><a href="core/device.html#ivy.core.device.split_func_call_across_gpus">split_func_call_across_gpus() (in module ivy.core.device)</a>, <a href="core/device/split_func_call_across_gpus.html#ivy.core.device.split_func_call_across_gpus">[1]</a>
 </li>
       <li><a href="core/general.html#ivy.core.general.squeeze">squeeze() (in module ivy.core.general)</a>, <a href="core/general/squeeze.html#ivy.core.general.squeeze">[1]</a>
 
@@ -1760,10 +1820,10 @@
         <li><a href="numpy/core/image.html#ivy.numpy.core.image.stack_images">(in module ivy.numpy.core.image)</a>, <a href="numpy/core/image/stack_images.html#ivy.numpy.core.image.stack_images">[1]</a>
 </li>
       </ul></li>
-      <li><a href="core/general.html#ivy.core.general.Profiler.start">start() (ivy.core.general.Profiler method)</a>, <a href="core/general/Profiler.html#ivy.core.general.Profiler.start">[1]</a>
+      <li><a href="core/device.html#ivy.core.device.Profiler.start">start() (ivy.core.device.Profiler method)</a>, <a href="core/device/Profiler.html#ivy.core.device.Profiler.start">[1]</a>
 
       <ul>
-        <li><a href="numpy/core/general.html#ivy.numpy.core.general.Profiler.start">(ivy.numpy.core.general.Profiler method)</a>, <a href="numpy/core/general/Profiler.html#ivy.numpy.core.general.Profiler.start">[1]</a>
+        <li><a href="numpy/core/device.html#ivy.numpy.core.device.Profiler.start">(ivy.numpy.core.device.Profiler method)</a>, <a href="numpy/core/device/Profiler.html#ivy.numpy.core.device.Profiler.start">[1]</a>
 </li>
       </ul></li>
       <li><a href="neural_net_stateful/optimizers.html#ivy.neural_net_stateful.optimizers.Adam.state">state() (ivy.neural_net_stateful.optimizers.Adam property)</a>, <a href="neural_net_stateful/optimizers/Adam.html#ivy.neural_net_stateful.optimizers.Adam.state">[1]</a>
@@ -1778,10 +1838,10 @@
       </ul></li>
       <li><a href="neural_net_stateful/optimizers.html#ivy.neural_net_stateful.optimizers.Optimizer.step">step() (ivy.neural_net_stateful.optimizers.Optimizer method)</a>, <a href="neural_net_stateful/optimizers/Optimizer.html#ivy.neural_net_stateful.optimizers.Optimizer.step">[1]</a>
 </li>
-      <li><a href="core/general.html#ivy.core.general.Profiler.stop">stop() (ivy.core.general.Profiler method)</a>, <a href="core/general/Profiler.html#ivy.core.general.Profiler.stop">[1]</a>
+      <li><a href="core/device.html#ivy.core.device.Profiler.stop">stop() (ivy.core.device.Profiler method)</a>, <a href="core/device/Profiler.html#ivy.core.device.Profiler.stop">[1]</a>
 
       <ul>
-        <li><a href="numpy/core/general.html#ivy.numpy.core.general.Profiler.stop">(ivy.numpy.core.general.Profiler method)</a>, <a href="numpy/core/general/Profiler.html#ivy.numpy.core.general.Profiler.stop">[1]</a>
+        <li><a href="numpy/core/device.html#ivy.numpy.core.device.Profiler.stop">(ivy.numpy.core.device.Profiler method)</a>, <a href="numpy/core/device/Profiler.html#ivy.numpy.core.device.Profiler.stop">[1]</a>
 </li>
       </ul></li>
       <li><a href="core/gradients.html#ivy.core.gradients.stop_gradient">stop_gradient() (in module ivy.core.gradients)</a>, <a href="core/gradients/stop_gradient.html#ivy.core.gradients.stop_gradient">[1]</a>
@@ -1792,10 +1852,10 @@
       </ul></li>
       <li><a href="core/container.html#ivy.core.container.Container.stop_gradients">stop_gradients() (ivy.core.container.Container method)</a>, <a href="core/container/Container.html#ivy.core.container.Container.stop_gradients">[1]</a>
 </li>
-      <li><a href="core/general.html#ivy.core.general.str_to_dev">str_to_dev() (in module ivy.core.general)</a>, <a href="core/general/str_to_dev.html#ivy.core.general.str_to_dev">[1]</a>
+      <li><a href="core/device.html#ivy.core.device.str_to_dev">str_to_dev() (in module ivy.core.device)</a>, <a href="core/device/str_to_dev.html#ivy.core.device.str_to_dev">[1]</a>
 
       <ul>
-        <li><a href="numpy/core/general.html#ivy.numpy.core.general.str_to_dev">(in module ivy.numpy.core.general)</a>
+        <li><a href="numpy/core/device.html#ivy.numpy.core.device.str_to_dev">(in module ivy.numpy.core.device)</a>
 </li>
       </ul></li>
       <li><a href="core/linalg.html#ivy.core.linalg.svd">svd() (in module ivy.core.linalg)</a>, <a href="core/linalg/svd.html#ivy.core.linalg.svd">[1]</a>
@@ -1822,10 +1882,10 @@
       </ul></li>
       <li><a href="core/general.html#ivy.core.general.tile">tile() (in module ivy.core.general)</a>, <a href="core/general/tile.html#ivy.core.general.tile">[1]</a>
 </li>
-      <li><a href="core/general.html#ivy.core.general.to_dev">to_dev() (in module ivy.core.general)</a>, <a href="core/general/to_dev.html#ivy.core.general.to_dev">[1]</a>
+      <li><a href="core/device.html#ivy.core.device.to_dev">to_dev() (in module ivy.core.device)</a>, <a href="core/device/to_dev.html#ivy.core.device.to_dev">[1]</a>
 
       <ul>
-        <li><a href="numpy/core/general.html#ivy.numpy.core.general.to_dev">(in module ivy.numpy.core.general)</a>
+        <li><a href="numpy/core/device.html#ivy.numpy.core.device.to_dev">(in module ivy.numpy.core.device)</a>
 </li>
         <li><a href="core/container.html#ivy.core.container.Container.to_dev">(ivy.core.container.Container method)</a>, <a href="core/container/Container.html#ivy.core.container.Container.to_dev">[1]</a>
 </li>
@@ -1882,10 +1942,10 @@
         <li><a href="numpy/core/general.html#ivy.numpy.core.general.to_scalar">(in module ivy.numpy.core.general)</a>
 </li>
       </ul></li>
-      <li><a href="core/general.html#ivy.core.general.tpu_is_available">tpu_is_available() (in module ivy.core.general)</a>, <a href="core/general/tpu_is_available.html#ivy.core.general.tpu_is_available">[1]</a>
+      <li><a href="core/device.html#ivy.core.device.tpu_is_available">tpu_is_available() (in module ivy.core.device)</a>, <a href="core/device/tpu_is_available.html#ivy.core.device.tpu_is_available">[1]</a>
 
       <ul>
-        <li><a href="numpy/core/general.html#ivy.numpy.core.general.tpu_is_available">(in module ivy.numpy.core.general)</a>
+        <li><a href="numpy/core/device.html#ivy.numpy.core.device.tpu_is_available">(in module ivy.numpy.core.device)</a>
 </li>
       </ul></li>
       <li><a href="core/general.html#ivy.core.general.transpose">transpose() (in module ivy.core.general)</a>, <a href="core/general/transpose.html#ivy.core.general.transpose">[1]</a>

@@ -82,21 +82,10 @@ General
    general/linear_resample.rst
    general/exists.rst
    general/default.rst
-   general/dev.rst
-   general/to_dev.rst
-   general/dev_to_str.rst
-   general/str_to_dev.rst
-   general/dev_str.rst
-   general/memory_on_dev.rst
-   general/gpu_is_available.rst
-   general/num_gpus.rst
-   general/tpu_is_available.rst
    general/dtype.rst
    general/dtype_to_str.rst
    general/dtype_str.rst
    general/compile_fn.rst
-   general/split_func_call.rst
-   general/split_func_call_across_gpus.rst
    general/cache_fn.rst
    general/current_framework_str.rst
    general/einops_rearrange.rst
@@ -109,5 +98,4 @@ General
    general/set_min_base.rst
    general/stable_pow.rst
    general/multiprocessing.rst
-   general/Profiler.rst
 

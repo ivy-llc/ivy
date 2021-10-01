@@ -40,5 +40,4 @@ General
    general/gather_nd.rst
    general/linear_resample.rst
    general/compile_fn.rst
-   general/Profiler.rst
 
