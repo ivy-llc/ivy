@@ -3,6 +3,7 @@ Collection of TensorFlow general functions, wrapped to fit Ivy syntax and signat
 """
 
 # global
+import os
 import math as _math
 from numbers import Number
 from operator import mul as _mul
@@ -463,3 +464,17 @@ compile_fn = lambda fn, dynamic=True, example_inputs=None: _tf.function(fn)
 current_framework_str = lambda: 'tensorflow'
 current_framework_str.__name__ = 'current_framework_str'
 multiprocessing = lambda: _multiprocessing
+
+
+class Profiler:
+
+    def __init__(self, save_dir):
+        self._save_dir = save_dir
+        self._options = _tf.profiler.experimental.ProfilerOptions(
+            host_tracer_level=3, python_tracer_level=1, device_tracer_level=1)
+
+    def __enter__(self):
+        _tf.profiler.experimental.start(self._save_dir, options=self._options)
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        _tf.profiler.experimental.stop()

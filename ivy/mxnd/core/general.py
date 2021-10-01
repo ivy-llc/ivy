@@ -3,6 +3,7 @@ Collection of MXNet general functions, wrapped to fit Ivy syntax and signature.
 """
 
 # global
+import os
 _round = round
 import logging
 import mxnet as _mx
@@ -11,6 +12,7 @@ import math as _math
 from numbers import Number
 from operator import mul as _mul
 from functools import reduce as _reduce
+from mxnet import profiler as _profiler
 import multiprocessing as _multiprocessing
 
 
@@ -573,3 +575,21 @@ def compile_fn(func, dynamic=True, example_inputs=None):
 current_framework_str = lambda: 'mxnd'
 current_framework_str.__name__ = 'current_framework_str'
 multiprocessing = lambda: _multiprocessing
+
+
+class Profiler:
+
+    def __init__(self, save_dir):
+        self._save_dir = save_dir
+        self._prof = _profiler
+        self._prof.set_config(profile_all=True,
+                              aggregate_stats=True,
+                              continuous_dump=True,
+                              filename=os.path.join(save_dir, 'trace.json'))
+
+    def __enter__(self):
+        self._prof.set_state('run')
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        self._prof.set_state('stop')
+        self._prof.dump()
