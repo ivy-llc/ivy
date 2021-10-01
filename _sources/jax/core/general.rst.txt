@@ -44,4 +44,7 @@ General
    general/dev_to_str.rst
    general/str_to_dev.rst
    general/num_gpus.rst
+   general/Profiler:
+
+    def __init__.rst
 
