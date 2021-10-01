@@ -1,0 +1,21 @@
+Distributed
+===========
+
+.. automodule:: ivy.neural_net_stateful.distributed
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :show-inheritance:
+
+
+.. toctree::
+   :maxdepth: -1
+   :caption: Distributed
+
+   distributed/DistributedModule:
+
+    def __init__.rst
+   distributed/DistributedOptimizer:
+
+    def __init__.rst
+
