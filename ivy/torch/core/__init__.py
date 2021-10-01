@@ -1,5 +1,7 @@
 from . import general
 from .general import *
+from . import device
+from .device import *
 from . import gradients
 from .gradients import *
 from . import image

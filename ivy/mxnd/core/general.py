@@ -3,7 +3,6 @@ Collection of MXNet general functions, wrapped to fit Ivy syntax and signature.
 """
 
 # global
-import os
 _round = round
 import logging
 import mxnet as _mx
@@ -12,11 +11,10 @@ import math as _math
 from numbers import Number
 from operator import mul as _mul
 from functools import reduce as _reduce
-from mxnet import profiler as _profiler
 import multiprocessing as _multiprocessing
 
 # local
-from ivy.core.general import Profiler as BaseProfiler
+from ivy.mxnd.core.device import _callable_dev_str
 
 
 DTYPE_DICT = {_np.bool_: 'bool',
@@ -533,34 +531,6 @@ def linear_resample(x, num_samples, axis=-1):
     return _mx.nd.reshape(ret, x_pre_shape + [num_samples] + x_post_shape)
 
 
-dev = lambda x: x.context
-
-
-def to_dev(x, dev_str=None):
-    if dev_str is not None:
-        return x.as_in_context(str_to_dev(dev_str))
-    return x
-
-
-dev_to_str = lambda dev_in:\
-    dev_in.device_type + (':' + (str(dev_in.device_id) if dev_in.device_id is not None else '0'))
-
-
-def str_to_dev(dev_str):
-    dev_split = dev_str.split(':')
-    dev_str = dev_split[0]
-    if len(dev_split) > 1:
-        idx = int(dev_split[1])
-    else:
-        idx = 0
-    return _mx.context.Context(dev_str, idx)
-
-
-dev_str = lambda x: dev_to_str(dev(x))
-_callable_dev_str = dev_str
-gpu_is_available = lambda: _mx.context.num_gpus() > 0
-num_gpus = lambda: _mx.context.num_gpus()
-tpu_is_available = lambda: False
 dtype = lambda x: x.dtype
 dtype.__name__ = 'dtype'
 dtype_str = lambda x: DTYPE_DICT[x.dtype]
@@ -578,27 +548,3 @@ def compile_fn(func, dynamic=True, example_inputs=None, static_argnums=None, sta
 current_framework_str = lambda: 'mxnd'
 current_framework_str.__name__ = 'current_framework_str'
 multiprocessing = lambda: _multiprocessing
-
-
-class Profiler(BaseProfiler):
-
-    def __init__(self, save_dir):
-        super(Profiler, self).__init__(save_dir)
-        self._prof = _profiler
-        self._prof.set_config(profile_all=True,
-                              aggregate_stats=True,
-                              continuous_dump=True,
-                              filename=os.path.join(save_dir, 'trace.json'))
-
-    def start(self):
-        self._prof.set_state('run')
-
-    def stop(self):
-        self._prof.set_state('stop')
-        self._prof.dump()
-
-    def __enter__(self):
-        self.start()
-
-    def __exit__(self, exc_type, exc_val, exc_tb):
-        self.stop()

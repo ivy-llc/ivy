@@ -1,0 +1,81 @@
+"""
+Collection of Jax device functions, wrapped to fit Ivy syntax and signature.
+"""
+
+# global
+import os
+import jax as _jax
+
+# local
+from ivy.jax.core.general import _to_array
+from ivy.core.device import Profiler as BaseProfiler
+
+
+def dev(x):
+    return _to_array(x).device_buffer.device()
+
+
+def to_dev(x, dev_str=None):
+    if dev_str is not None:
+        x = _jax.device_put(x, str_to_dev(dev_str))
+    return x
+
+
+def dev_to_str(dev_in):
+    p, dev_id = (dev_in.platform, dev_in.id)
+    return p + ':' + str(dev_id)
+
+
+def str_to_dev(dev_str):
+    dev_split = dev_str.split(':')
+    dev_str = dev_split[0]
+    if len(dev_split) > 1:
+        idx = int(dev_split[1])
+    else:
+        idx = 0
+    return _jax.devices(dev_str)[idx]
+
+
+dev_str = lambda x: dev_to_str(dev(x))
+_callable_dev_str = dev_str
+
+
+def _dev_is_available(base_dev_str):
+    try:
+        _jax.devices(base_dev_str)
+        return True
+    except RuntimeError:
+        return False
+
+
+gpu_is_available = lambda: _dev_is_available('gpu')
+
+
+def num_gpus():
+    try:
+        return len(_jax.devices('gpu'))
+    except RuntimeError:
+        return 0
+
+
+tpu_is_available = lambda: _dev_is_available('tpu')
+
+
+# noinspection PyMethodMayBeStatic
+class Profiler(BaseProfiler):
+
+    def __init__(self, save_dir):
+        super(Profiler, self).__init__(save_dir)
+        self._save_dir = os.path.join(self._save_dir, 'profile')
+
+    def start(self):
+        _jax.profiler.start_trace(self._save_dir)
+
+    def stop(self):
+        _jax.profiler.stop_trace()
+
+    def __enter__(self):
+        self.start()
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        self.stop()
