@@ -3,6 +3,7 @@ Collection of Jax general functions, wrapped to fit Ivy syntax and signature.
 """
 
 # global
+import os
 import jax as _jax
 import math as _math
 import numpy as _onp
@@ -441,6 +442,7 @@ class Profiler(BaseProfiler):
 
     def __init__(self, save_dir):
         super(Profiler, self).__init__(save_dir)
+        self._save_dir = os.path.join(self._save_dir, 'profile')
 
     def start(self):
         _jax.profiler.start_trace(self._save_dir)
