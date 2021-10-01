@@ -410,6 +410,7 @@ class Profiler:
 
     def __init__(self, save_dir):
         # ToDO: add proper numpy profiler
+        os.makedirs(save_dir, exist_ok=True)
         self._save_dir = save_dir
 
     def __enter__(self):
