@@ -1288,7 +1288,7 @@ Default is ‘float32’.</p></li>
 
 <dl class="py function">
 <dt id="ivy.core.general.nested_map">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">nested_map</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.Array<span class="p">, </span>ivy.NativeArray<span class="p">, </span>Iterable<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">fn</span><span class="p">:</span> <span class="n">Callable</span></em><span class="sig-paren">)</span> &#x2192; Union<span class="p">[</span>ivy.Array<span class="p">, </span>ivy.NativeArray<span class="p">, </span>Iterable<span class="p">]</span><a class="reference internal" href="../_modules/ivy/core/general.html#nested_map"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.nested_map" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">nested_map</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.Array<span class="p">, </span>ivy.NativeArray<span class="p">, </span>Iterable<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">fn</span><span class="p">:</span> <span class="n">Callable</span></em>, <em class="sig-param"><span class="n">include_derived</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em><span class="sig-paren">)</span> &#x2192; Union<span class="p">[</span>ivy.Array<span class="p">, </span>ivy.NativeArray<span class="p">, </span>Iterable<span class="p">]</span><a class="reference internal" href="../_modules/ivy/core/general.html#nested_map"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.nested_map" title="Permalink to this definition">¶</a></dt>
 <dd><p>Applies a function on x in a nested manner, whereby all dicts, lists and tuples are traversed to their lowest
 leaves before applying the method and returning x. If x is not nested, the method is applied to x directly.</p>
 <dl class="field-list simple">
@@ -1296,6 +1296,7 @@ leaves before applying the method and returning x. If x is not nested, the metho
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>x</strong> (<em>any</em>) – The item to apply the mapped function to.</p></li>
 <li><p><strong>fn</strong> (<em>callable</em>) – The function to map onto x.</p></li>
+<li><p><strong>include_derived</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to also recursive for classes derived from tuple, list and dict. Default is False.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>

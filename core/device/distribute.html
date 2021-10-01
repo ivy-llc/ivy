@@ -36,7 +36,7 @@
   <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="Profiler" href="Profiler.html" />
+    <link rel="next" title="unify" href="unify.html" />
     <link rel="prev" title="unify_array" href="unify_array.html" /> 
 </head>
 
@@ -105,6 +105,8 @@
 <li class="toctree-l2"><a class="reference internal" href="distribute_array.html">distribute_array</a></li>
 <li class="toctree-l2"><a class="reference internal" href="unify_array.html">unify_array</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">distribute</a></li>
+<li class="toctree-l2"><a class="reference internal" href="unify.html">unify</a></li>
+<li class="toctree-l2"><a class="reference internal" href="DistributedArray.html">DistributedArray</a></li>
 <li class="toctree-l2"><a class="reference internal" href="Profiler.html">Profiler</a></li>
 </ul>
 </li>
@@ -217,6 +219,19 @@
 <dt id="ivy.core.device.distribute">
 <code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">distribute</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dev_strs</span></em>, <em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/device.html#distribute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.device.distribute" title="Permalink to this definition">¶</a></dt>
 <dd><p>Distribute the input arguments across the specified devices.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dev_strs</strong> (<em>sequence of strs</em>) – The devices to distribute the arguments across.</p></li>
+<li><p><strong>args</strong> (<em>list of any</em>) – The positional arguments to distribute.</p></li>
+<li><p><strong>axis</strong> (<em>int</em><em>, </em><em>optional</em>) – The axis along which to split the arrays in the arguments. Default is 0.</p></li>
+<li><p><strong>kwargs</strong> (<em>dict of any</em>) – The keyword arguments to distribute.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>arguments distributed to the target devices</p>
+</dd>
+</dl>
 </dd></dl>
 
 <div class="line-block">
@@ -234,7 +249,7 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="Profiler.html" class="btn btn-neutral float-right" title="Profiler" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="unify.html" class="btn btn-neutral float-right" title="unify" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="unify_array.html" class="btn btn-neutral float-left" title="unify_array" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
