@@ -105,6 +105,30 @@ def test_array_equal(x0_n_x1_n_res, dtype_str, dev_str, call):
         helpers.assert_compilable(ivy.array_equal)
 
 
+# arrays_equal
+@pytest.mark.parametrize(
+    "xs_n_res", [([[[0.], [1.]], [[0.], [1.]], [[1.], [2.]]], False)])
+@pytest.mark.parametrize(
+    "dtype_str", ['float32'])
+def test_arrays_equal(xs_n_res, dtype_str, dev_str, call):
+    xs, true_res = xs_n_res
+    # smoke test
+    x0 = ivy.array(xs[0], dtype_str, dev_str)
+    x1 = ivy.array(xs[1], dtype_str, dev_str)
+    x2 = ivy.array(xs[2], dtype_str, dev_str)
+    res = ivy.arrays_equal([x0, x1, x2])
+    # type test
+    assert ivy.is_array(x0)
+    assert ivy.is_array(x1)
+    assert ivy.is_array(x2)
+    assert isinstance(res, bool) or ivy.is_array(res)
+    # value test
+    assert res == true_res
+    # compilation test
+    if not ivy.wrapped_mode():
+        helpers.assert_compilable(ivy.array_equal)
+
+
 # equal
 @pytest.mark.parametrize(
     "x0_n_x1_n_x2_em_n_res", [([0.], [0.], [0.], False, True),

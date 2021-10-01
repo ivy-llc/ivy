@@ -199,6 +199,22 @@ def array_equal(x0: Union[ivy.Array, ivy.NativeArray], x1: Union[ivy.Array, ivy.
     return _cur_framework(x0, f=f).array_equal(x0, x1)
 
 
+def arrays_equal(xs: List[Union[ivy.Array, ivy.NativeArray]])\
+        -> bool:
+    """
+    Determines whether two input arrays are equal across all elements.
+
+    :param xs: Sequence of arrays to compare for equality
+    :type xs: sequence of arrays
+    :return: Boolean, whether or not all of the input arrays are equal across all elements.
+    """
+    x0 = xs[0]
+    for x in xs[1:]:
+        if not array_equal(x0, x):
+            return False
+    return True
+
+
 def equal(*xs: Iterable[Any], equality_matrix: bool = False)\
         -> Union[bool, Union[ivy.Array, ivy.NativeArray]]:
     """
