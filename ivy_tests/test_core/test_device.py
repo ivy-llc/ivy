@@ -418,7 +418,7 @@ def test_distribute(args, kwargs, axis, tensor_fn, dev_str, call):
     else:
         dev_str1 = dev_str
     dev_strs = [dev_str0, dev_str1]
-    dist_args, dist_kwargs = ivy.distribute(dev_strs, *args, **kwargs, axis=axis)
+    dist_args, dist_kwargs = ivy.distribute_args(dev_strs, *args, **kwargs, axis=axis)
 
     # shape test
     assert len(dist_args[0]) == math.floor(args[0].shape[axis] / len(dev_strs))
@@ -459,7 +459,7 @@ def test_unify(args, kwargs, axis, tensor_fn, dev_str, call):
               'b': kwargs['b']}
 
     # outputs
-    args_uni, kwargs_uni = ivy.unify(dev_str0, *args, **kwargs, axis=axis)
+    args_uni, kwargs_uni = ivy.unify_args(dev_str0, *args, **kwargs, axis=axis)
 
     # shape test
     assert args_uni[0].shape[axis] == args[0][0].shape[axis] + args[0][1].shape[axis]
