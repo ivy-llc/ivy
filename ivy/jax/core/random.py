@@ -7,7 +7,7 @@ import jax as _jax
 import jax.numpy as _jnp
 
 # local
-from ivy.jax.core.general import to_dev
+from ivy.jax.core.device import to_dev
 
 RNG = _jax.random.PRNGKey(0)
 
