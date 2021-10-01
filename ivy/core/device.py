@@ -157,7 +157,7 @@ def to_dev(x: Union[ivy.Array, ivy.NativeArray], dev_str: str = None, f: ivy.Fra
 # Device Distribution #
 # --------------------#
 
-class DistributedArray(list):
+class Distributed(list):
     pass
 
 
@@ -308,7 +308,7 @@ def distribute_array(x, dev_strs, axis=0, check_for_array=True):
     """
     if check_for_array and not ivy.is_array(x):
         return x
-    return DistributedArray(
+    return Distributed(
         [ivy.to_dev(x_sub, d) for x_sub, d in zip(ivy.split(x, len(dev_strs), axis, with_remainder=True), dev_strs)])
 
 
@@ -327,7 +327,7 @@ def unify_array(x, dev_str, axis=0, check_for_array=True):
     :type check_for_array: bool, optional
     :return: array unified to the target device
     """
-    if check_for_array and not isinstance(x, DistributedArray):
+    if check_for_array and not isinstance(x, Distributed):
         return x
     return ivy.concatenate([ivy.to_dev(x_sub, dev_str) for x_sub in x], axis)
 
