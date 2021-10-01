@@ -400,7 +400,7 @@ def test_unify_array(xs, axis, tensor_fn, dev_str, call):
     "axis", [0])
 @pytest.mark.parametrize(
     "tensor_fn", [ivy.array, helpers.var_fn])
-def test_distribute(args, kwargs, axis, tensor_fn, dev_str, call):
+def test_distribute_args(args, kwargs, axis, tensor_fn, dev_str, call):
 
     if call is helpers.mx_call:
         # MXNet does not support splitting based on section sizes, only integer number of sections input is supported.
@@ -420,13 +420,27 @@ def test_distribute(args, kwargs, axis, tensor_fn, dev_str, call):
     dev_strs = [dev_str0, dev_str1]
     dist_args, dist_kwargs = ivy.distribute_args(dev_strs, *args, **kwargs, axis=axis)
 
-    # shape test
-    assert len(dist_args[0]) == math.floor(args[0].shape[axis] / len(dev_strs))
-    assert len(dist_kwargs['a']) == math.floor(kwargs['a'].shape[axis] / len(dev_strs))
+    # device specific args
+    assert dist_args[0]
+    assert dist_args[1]
+    three_present = True
+    try:
+        dist_args[3]
+    except IndexError:
+        three_present = False
+    assert not three_present
+    assert dist_kwargs[0]
+    assert dist_kwargs[1]
+    three_present = True
+    try:
+        dist_kwargs[3]
+    except IndexError:
+        three_present = False
+    assert not three_present
 
     # value test
-    assert min([ivy.dev_str(x_sub) == dev_strs[i] for i, x_sub in enumerate(dist_args[0])])
-    assert min([ivy.dev_str(x_sub) == dev_strs[i] for i, x_sub in enumerate(dist_kwargs['a'])])
+    assert min([ivy.dev_str(dist_args_i[0]) == dev_strs[i] for i, dist_args_i in enumerate(dist_args)])
+    assert min([ivy.dev_str(dist_kwargs_i['a']) == dev_strs[i] for i, dist_kwargs_i in enumerate(dist_kwargs)])
 
 
 @pytest.mark.parametrize(
@@ -437,7 +451,7 @@ def test_distribute(args, kwargs, axis, tensor_fn, dev_str, call):
     "axis", [0])
 @pytest.mark.parametrize(
     "tensor_fn", [ivy.array, helpers.var_fn])
-def test_unify(args, kwargs, axis, tensor_fn, dev_str, call):
+def test_unify_args(args, kwargs, axis, tensor_fn, dev_str, call):
 
     if call is helpers.mx_call:
         # MXNet does not support splitting based on section sizes, only integer number of sections input is supported.
@@ -452,10 +466,10 @@ def test_unify(args, kwargs, axis, tensor_fn, dev_str, call):
         dev_str1 = dev_str
 
     # inputs
-    args = [ivy.Distributed([tensor_fn(args[0][0], 'float32', dev_str0),
-                             tensor_fn(args[0][1], 'float32', dev_str1)])] + args[1:]
-    kwargs = {'a': ivy.Distributed([tensor_fn(kwargs['a'][0], 'float32', dev_str0),
-                                    tensor_fn(kwargs['a'][1], 'float32', dev_str1)]),
+    args = [ivy.DistributedArray([tensor_fn(args[0][0], 'float32', dev_str0),
+                                  tensor_fn(args[0][1], 'float32', dev_str1)])] + args[1:]
+    kwargs = {'a': ivy.DistributedArray([tensor_fn(kwargs['a'][0], 'float32', dev_str0),
+                                         tensor_fn(kwargs['a'][1], 'float32', dev_str1)]),
               'b': kwargs['b']}
 
     # outputs

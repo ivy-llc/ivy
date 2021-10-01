@@ -154,12 +154,8 @@ def to_dev(x: Union[ivy.Array, ivy.NativeArray], dev_str: str = None, f: ivy.Fra
     return _cur_framework(x, f=f).to_dev(x, dev_str)
 
 
-# Device Distribution #
-# --------------------#
-
-class Distributed(list):
-    pass
-
+# Split Calls #
+# ------------#
 
 def split_func_call(func: Callable, inputs: Iterable[Union[Union[ivy.Array, ivy.NativeArray], ivy.Container]],
                     chunk_size: int, input_axes: Union[int, Iterable[int]] = 0,
@@ -292,6 +288,23 @@ def split_func_call_across_devices(func: Callable,
     return returns
 
 
+# Device Distribution #
+# --------------------#
+
+class DistributedArray(list):
+    pass
+
+
+class DistributedArgs:
+
+    def __init__(self, args):
+        self._counter = 0
+        self._args = args
+
+    def __getitem__(self, item):
+        return ivy.nested_map(self._args, lambda x: x[item] if isinstance(x, DistributedArray) else x)
+
+
 def distribute_array(x, dev_strs, axis=0, check_for_array=True):
     """
     Distribute an array across the specified devices, returning a list of sub-arrays, each on a different device.
@@ -308,7 +321,7 @@ def distribute_array(x, dev_strs, axis=0, check_for_array=True):
     """
     if check_for_array and not ivy.is_array(x):
         return x
-    return Distributed(
+    return DistributedArray(
         [ivy.to_dev(x_sub, d) for x_sub, d in zip(ivy.split(x, len(dev_strs), axis, with_remainder=True), dev_strs)])
 
 
@@ -330,7 +343,7 @@ def distribute_args(dev_strs, *args, axis=0, **kwargs):
         return args, kwargs
     args_dist = ivy.nested_map(args, lambda x: distribute_array(x, dev_strs, axis))
     kwargs_dist = ivy.nested_map(kwargs, lambda x: distribute_array(x, dev_strs, axis))
-    return args_dist, kwargs_dist
+    return DistributedArgs(args_dist), DistributedArgs(kwargs_dist)
 
 
 # Device Unification #
@@ -351,7 +364,7 @@ def unify_array(x, dev_str, axis=0, check_for_array=True):
     :type check_for_array: bool, optional
     :return: array unified to the target device
     """
-    if check_for_array and not isinstance(x, Distributed):
+    if check_for_array and not isinstance(x, DistributedArray):
         return x
     return ivy.concatenate([ivy.to_dev(x_sub, dev_str) for x_sub in x], axis)
 
