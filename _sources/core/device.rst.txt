@@ -27,6 +27,9 @@ Device
    device/distribute_args.rst
    device/unify_array.rst
    device/unify_args.rst
-   device/Distributed.rst
+   device/DistributedArray.rst
+   device/DistributedArgs:
+
+    def __init__.rst
    device/Profiler.rst
 
