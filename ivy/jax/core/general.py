@@ -38,6 +38,8 @@ def _flat_array_to_1_dim_array(x):
 def _to_array(x):
     if isinstance(x, _jax.interpreters.ad.JVPTracer):
         return _to_array(x.primal)
+    elif isinstance(x, _jax.interpreters.partial_eval.DynamicJaxprTracer):
+        return _to_array(x.aval)
     return x
 
 
@@ -62,11 +64,13 @@ def is_array(x, exclusive=False):
                               _jaxlib.xla_extension.DeviceArray, Buffer))
     return isinstance(x, (_jax.interpreters.xla._DeviceArray,
                           _jaxlib.xla_extension.DeviceArray, Buffer,
-                          _jax.interpreters.ad.JVPTracer))
+                          _jax.interpreters.ad.JVPTracer,
+                          _jax.core.ShapedArray,
+                          _jax.interpreters.partial_eval.DynamicJaxprTracer))
 
 
 array_equal = _jnp.array_equal
-to_numpy = _onp.asarray
+to_numpy = lambda x: _onp.asarray(_to_array(x))
 to_numpy.__name__ = 'to_numpy'
 to_scalar = lambda x: _to_array(x).item()
 to_scalar.__name__ = 'to_scalar'
