@@ -13,7 +13,6 @@ Device
    :caption: Device
 
    device/dev.rst
-   device/to_dev.rst
    device/dev_to_str.rst
    device/str_to_dev.rst
    device/dev_str.rst
@@ -21,7 +20,9 @@ Device
    device/gpu_is_available.rst
    device/num_gpus.rst
    device/tpu_is_available.rst
+   device/to_dev.rst
    device/split_func_call.rst
-   device/split_func_call_across_gpus.rst
+   device/split_func_call_across_devices.rst
+   device/distribute_array.rst
    device/Profiler.rst
 

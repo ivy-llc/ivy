@@ -92,7 +92,6 @@
 <li class="toctree-l1"><a class="reference internal" href="container.html">Container</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Device</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="device/dev.html">dev</a></li>
-<li class="toctree-l2"><a class="reference internal" href="device/to_dev.html">to_dev</a></li>
 <li class="toctree-l2"><a class="reference internal" href="device/dev_to_str.html">dev_to_str</a></li>
 <li class="toctree-l2"><a class="reference internal" href="device/str_to_dev.html">str_to_dev</a></li>
 <li class="toctree-l2"><a class="reference internal" href="device/dev_str.html">dev_str</a></li>
@@ -100,8 +99,10 @@
 <li class="toctree-l2"><a class="reference internal" href="device/gpu_is_available.html">gpu_is_available</a></li>
 <li class="toctree-l2"><a class="reference internal" href="device/num_gpus.html">num_gpus</a></li>
 <li class="toctree-l2"><a class="reference internal" href="device/tpu_is_available.html">tpu_is_available</a></li>
+<li class="toctree-l2"><a class="reference internal" href="device/to_dev.html">to_dev</a></li>
 <li class="toctree-l2"><a class="reference internal" href="device/split_func_call.html">split_func_call</a></li>
-<li class="toctree-l2"><a class="reference internal" href="device/split_func_call_across_gpus.html">split_func_call_across_gpus</a></li>
+<li class="toctree-l2"><a class="reference internal" href="device/split_func_call_across_devices.html">split_func_call_across_devices</a></li>
+<li class="toctree-l2"><a class="reference internal" href="device/distribute_array.html">distribute_array</a></li>
 <li class="toctree-l2"><a class="reference internal" href="device/Profiler.html">Profiler</a></li>
 </ul>
 </li>
@@ -283,6 +284,22 @@
 </dd></dl>
 
 <dl class="py function">
+<dt id="ivy.core.device.distribute_array">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">distribute_array</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">dev_strs</span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">check_for_array</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/device.html#distribute_array"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.device.distribute_array" title="Permalink to this definition">¶</a></dt>
+<dd><p>Distribute an array across the specified devices, returning a list of sub-arrays, each on a different device.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>array</em>) – The array to distribute across devices.</p></li>
+<li><p><strong>dev_strs</strong> (<em>sequence of strs</em>) – The devices to distribute the array across.</p></li>
+<li><p><strong>axis</strong> (<em>int</em><em>, </em><em>optional</em>) – The axis along which to split the array. Default is 0.</p></li>
+<li><p><strong>check_for_array</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to check if the input is an array, and only split if so. Default is True.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt id="ivy.core.device.gpu_is_available">
 <code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">gpu_is_available</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">f</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>ivy.Framework<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; bool<a class="reference internal" href="../_modules/ivy/core/device.html#gpu_is_available"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.device.gpu_is_available" title="Permalink to this definition">¶</a></dt>
 <dd><p>Determine whether a GPU is available to use, with the backend framework.</p>
@@ -347,8 +364,8 @@ the entire input array at once. This can be useful to reduce memory usage of the
 </dd></dl>
 
 <dl class="py function">
-<dt id="ivy.core.device.split_func_call_across_gpus">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">split_func_call_across_gpus</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">func</span><span class="p">:</span> <span class="n">Callable</span></em>, <em class="sig-param"><span class="n">inputs</span><span class="p">:</span> <span class="n">Iterable<span class="p">[</span>Union<span class="p">[</span>ivy.Array<span class="p">, </span>ivy.NativeArray<span class="p">, </span>ivy.Container<span class="p">]</span><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">dev_strs</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>int<span class="p">, </span>Iterable<span class="p">[</span>int<span class="p">]</span><span class="p">, </span>Iterable<span class="p">[</span>str<span class="p">]</span><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">input_axes</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Union<span class="p">[</span>int<span class="p">, </span>Iterable<span class="p">[</span>int<span class="p">]</span><span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">output_axes</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Union<span class="p">[</span>int<span class="p">, </span>Iterable<span class="p">[</span>int<span class="p">]</span><span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">concat_output</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em><span class="sig-paren">)</span> &#x2192; Iterable<span class="p">[</span>Union<span class="p">[</span>ivy.Array<span class="p">, </span>ivy.NativeArray<span class="p">, </span>ivy.Container<span class="p">]</span><span class="p">]</span><a class="reference internal" href="../_modules/ivy/core/device.html#split_func_call_across_gpus"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.device.split_func_call_across_gpus" title="Permalink to this definition">¶</a></dt>
+<dt id="ivy.core.device.split_func_call_across_devices">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">split_func_call_across_devices</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">func</span><span class="p">:</span> <span class="n">Callable</span></em>, <em class="sig-param"><span class="n">inputs</span><span class="p">:</span> <span class="n">Iterable<span class="p">[</span>Union<span class="p">[</span>ivy.Array<span class="p">, </span>ivy.NativeArray<span class="p">, </span>ivy.Container<span class="p">]</span><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">dev_strs</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>int<span class="p">, </span>Iterable<span class="p">[</span>int<span class="p">]</span><span class="p">, </span>Iterable<span class="p">[</span>str<span class="p">]</span><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">input_axes</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Union<span class="p">[</span>int<span class="p">, </span>Iterable<span class="p">[</span>int<span class="p">]</span><span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">output_axes</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Union<span class="p">[</span>int<span class="p">, </span>Iterable<span class="p">[</span>int<span class="p">]</span><span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">concat_output</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em><span class="sig-paren">)</span> &#x2192; Iterable<span class="p">[</span>Union<span class="p">[</span>ivy.Array<span class="p">, </span>ivy.NativeArray<span class="p">, </span>ivy.Container<span class="p">]</span><span class="p">]</span><a class="reference internal" href="../_modules/ivy/core/device.html#split_func_call_across_devices"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.device.split_func_call_across_devices" title="Permalink to this definition">¶</a></dt>
 <dd><p>Call a function by splitting its inputs along a given axis, and calling each chunk on a different device.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -420,7 +437,6 @@ the entire input array at once. This can be useful to reduce memory usage of the
 <p class="caption"><span class="caption-text">Device</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="device/dev.html">dev</a></li>
-<li class="toctree-l1"><a class="reference internal" href="device/to_dev.html">to_dev</a></li>
 <li class="toctree-l1"><a class="reference internal" href="device/dev_to_str.html">dev_to_str</a></li>
 <li class="toctree-l1"><a class="reference internal" href="device/str_to_dev.html">str_to_dev</a></li>
 <li class="toctree-l1"><a class="reference internal" href="device/dev_str.html">dev_str</a></li>
@@ -428,8 +444,10 @@ the entire input array at once. This can be useful to reduce memory usage of the
 <li class="toctree-l1"><a class="reference internal" href="device/gpu_is_available.html">gpu_is_available</a></li>
 <li class="toctree-l1"><a class="reference internal" href="device/num_gpus.html">num_gpus</a></li>
 <li class="toctree-l1"><a class="reference internal" href="device/tpu_is_available.html">tpu_is_available</a></li>
+<li class="toctree-l1"><a class="reference internal" href="device/to_dev.html">to_dev</a></li>
 <li class="toctree-l1"><a class="reference internal" href="device/split_func_call.html">split_func_call</a></li>
-<li class="toctree-l1"><a class="reference internal" href="device/split_func_call_across_gpus.html">split_func_call_across_gpus</a></li>
+<li class="toctree-l1"><a class="reference internal" href="device/split_func_call_across_devices.html">split_func_call_across_devices</a></li>
+<li class="toctree-l1"><a class="reference internal" href="device/distribute_array.html">distribute_array</a></li>
 <li class="toctree-l1"><a class="reference internal" href="device/Profiler.html">Profiler</a></li>
 </ul>
 </div>
