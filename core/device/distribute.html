@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>tpu_is_available &mdash; Ivy 1.0 documentation</title>
+  <title>distribute &mdash; Ivy 1.0 documentation</title>
   
 
   
@@ -36,8 +36,8 @@
   <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="to_dev" href="to_dev.html" />
-    <link rel="prev" title="num_gpus" href="num_gpus.html" /> 
+    <link rel="next" title="Profiler" href="Profiler.html" />
+    <link rel="prev" title="distribute_array" href="distribute_array.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -98,12 +98,12 @@
 <li class="toctree-l2"><a class="reference internal" href="memory_on_dev.html">memory_on_dev</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gpu_is_available.html">gpu_is_available</a></li>
 <li class="toctree-l2"><a class="reference internal" href="num_gpus.html">num_gpus</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">tpu_is_available</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tpu_is_available.html">tpu_is_available</a></li>
 <li class="toctree-l2"><a class="reference internal" href="to_dev.html">to_dev</a></li>
 <li class="toctree-l2"><a class="reference internal" href="split_func_call.html">split_func_call</a></li>
 <li class="toctree-l2"><a class="reference internal" href="split_func_call_across_devices.html">split_func_call_across_devices</a></li>
 <li class="toctree-l2"><a class="reference internal" href="distribute_array.html">distribute_array</a></li>
-<li class="toctree-l2"><a class="reference internal" href="distribute.html">distribute</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">distribute</a></li>
 <li class="toctree-l2"><a class="reference internal" href="Profiler.html">Profiler</a></li>
 </ul>
 </li>
@@ -191,13 +191,13 @@
         
           <li><a href="../device.html">Device</a> &raquo;</li>
         
-      <li>tpu_is_available</li>
+      <li>distribute</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="../../_sources/core/device/tpu_is_available.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../_sources/core/device/distribute.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -210,20 +210,12 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="tpu-is-available">
-<h1>tpu_is_available<a class="headerlink" href="#tpu-is-available" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="distribute">
+<h1>distribute<a class="headerlink" href="#distribute" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
-<dt id="ivy.core.device.tpu_is_available">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">tpu_is_available</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">f</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>ivy.Framework<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; bool<a class="reference internal" href="../../_modules/ivy/core/device.html#tpu_is_available"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.device.tpu_is_available" title="Permalink to this definition">¶</a></dt>
-<dd><p>Determine whether a TPU is available to use, with the backend framework.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning framework. Inferred from inputs if None.</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Boolean, as to whether a tpu is available.</p>
-</dd>
-</dl>
+<dt id="ivy.core.device.distribute">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">distribute</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dev_strs</span></em>, <em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/device.html#distribute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.device.distribute" title="Permalink to this definition">¶</a></dt>
+<dd><p>Distribute the input arguments across the specified devices.</p>
 </dd></dl>
 
 <div class="line-block">
@@ -241,10 +233,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="to_dev.html" class="btn btn-neutral float-right" title="to_dev" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="Profiler.html" class="btn btn-neutral float-right" title="Profiler" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="num_gpus.html" class="btn btn-neutral float-left" title="num_gpus" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="distribute_array.html" class="btn btn-neutral float-left" title="distribute_array" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

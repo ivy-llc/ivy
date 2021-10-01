@@ -103,6 +103,7 @@
 <li class="toctree-l2"><a class="reference internal" href="device/split_func_call.html">split_func_call</a></li>
 <li class="toctree-l2"><a class="reference internal" href="device/split_func_call_across_devices.html">split_func_call_across_devices</a></li>
 <li class="toctree-l2"><a class="reference internal" href="device/distribute_array.html">distribute_array</a></li>
+<li class="toctree-l2"><a class="reference internal" href="device/distribute.html">distribute</a></li>
 <li class="toctree-l2"><a class="reference internal" href="device/Profiler.html">Profiler</a></li>
 </ul>
 </li>
@@ -284,6 +285,12 @@
 </dd></dl>
 
 <dl class="py function">
+<dt id="ivy.core.device.distribute">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">distribute</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dev_strs</span></em>, <em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/device.html#distribute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.device.distribute" title="Permalink to this definition">¶</a></dt>
+<dd><p>Distribute the input arguments across the specified devices.</p>
+</dd></dl>
+
+<dl class="py function">
 <dt id="ivy.core.device.distribute_array">
 <code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">distribute_array</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">dev_strs</span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">check_for_array</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/device.html#distribute_array"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.device.distribute_array" title="Permalink to this definition">¶</a></dt>
 <dd><p>Distribute an array across the specified devices, returning a list of sub-arrays, each on a different device.</p>
@@ -448,6 +455,7 @@ the entire input array at once. This can be useful to reduce memory usage of the
 <li class="toctree-l1"><a class="reference internal" href="device/split_func_call.html">split_func_call</a></li>
 <li class="toctree-l1"><a class="reference internal" href="device/split_func_call_across_devices.html">split_func_call_across_devices</a></li>
 <li class="toctree-l1"><a class="reference internal" href="device/distribute_array.html">distribute_array</a></li>
+<li class="toctree-l1"><a class="reference internal" href="device/distribute.html">distribute</a></li>
 <li class="toctree-l1"><a class="reference internal" href="device/Profiler.html">Profiler</a></li>
 </ul>
 </div>
