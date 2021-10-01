@@ -13,6 +13,9 @@ from functools import reduce as _reduce
 from jaxlib.xla_extension import Buffer
 import multiprocessing as _multiprocessing
 
+# local
+from ivy.core.general import Profiler as BaseProfiler
+
 DTYPE_DICT = {_jnp.dtype('bool'): 'bool',
               _jnp.dtype('int8'): 'int8',
               _jnp.dtype('uint8'): 'uint8',
@@ -434,13 +437,19 @@ current_framework_str.__name__ = 'current_framework_str'
 multiprocessing = lambda: _multiprocessing
 
 
-class Profiler:
+class Profiler(BaseProfiler):
 
     def __init__(self, save_dir):
-        self._save_dir = save_dir
+        super(Profiler, self).__init__(save_dir)
 
-    def __enter__(self):
+    def start(self):
         _jax.profiler.start_trace(self._save_dir)
 
-    def __exit__(self, exc_type, exc_val, exc_tb):
+    def stop(self):
         _jax.profiler.stop_trace()
+
+    def __enter__(self):
+        self.start()
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        self.stop()

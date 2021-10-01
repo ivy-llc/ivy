@@ -16,6 +16,9 @@ from torch.profiler import ProfilerActivity
 from torch.profiler import profile as _profile
 from typing import List, Dict, Optional, Union
 
+# local
+from ivy.core.general import Profiler as BaseProfiler
+
 # API #
 # ----#
 
@@ -688,15 +691,21 @@ def multiprocessing():
     return torch.multiprocessing
 
 
-class Profiler:
+class Profiler(BaseProfiler):
 
     def __init__(self, save_dir):
-        self._save_dir = save_dir
+        super(Profiler, self).__init__(save_dir)
         self._prof = _profile(activities=[ProfilerActivity.CPU, ProfilerActivity.CUDA], with_stack=True)
 
-    def __enter__(self):
+    def start(self):
         self._prof.__enter__()
 
-    def __exit__(self, exc_type, exc_val, exc_tb):
-        self._prof.__exit__(exc_type, exc_val, exc_tb)
+    def stop(self):
+        self._prof.__exit__(None, None, None)
         self._prof.export_chrome_trace(os.path.join(self._save_dir, 'trace.json'))
+
+    def __enter__(self):
+        self.start()
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        self.stop()
