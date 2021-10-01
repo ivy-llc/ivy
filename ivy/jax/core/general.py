@@ -432,3 +432,15 @@ compile_fn = lambda fn, dynamic=True, example_inputs=None: _jax.jit(fn)
 current_framework_str = lambda: 'jax'
 current_framework_str.__name__ = 'current_framework_str'
 multiprocessing = lambda: _multiprocessing
+
+
+class Profiler:
+
+    def __init__(self, save_dir):
+        self._save_dir = save_dir
+
+    def __enter__(self):
+        _jax.profiler.start_trace(self._save_dir)
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        _jax.profiler.stop_trace()
