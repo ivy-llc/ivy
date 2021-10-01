@@ -12,6 +12,9 @@ from operator import mul as _mul
 from functools import reduce as _reduce
 import multiprocessing as _multiprocessing
 
+# local
+from ivy.core.general import Profiler as BaseProfiler
+
 DTYPE_DICT = {_np.dtype('bool'): 'bool',
               _np.dtype('int8'): 'int8',
               _np.dtype('uint8'): 'uint8',
@@ -406,17 +409,24 @@ current_framework_str.__name__ = 'current_framework_str'
 multiprocessing = lambda: _multiprocessing
 
 
-class Profiler:
+class Profiler(BaseProfiler):
 
     def __init__(self, save_dir):
         # ToDO: add proper numpy profiler
+        super(Profiler, self).__init__(save_dir)
         os.makedirs(save_dir, exist_ok=True)
-        self._save_dir = save_dir
+        self._start_time = None
 
-    def __enter__(self):
+    def start(self):
         self._start_time = time.perf_counter()
 
-    def __exit__(self, exc_type, exc_val, exc_tb):
+    def stop(self):
         time_taken = time.perf_counter() - self._start_time
         with open(os.path.join(self._save_dir, 'profile.log'), 'w+') as f:
             f.write('took {} seconds to complete'.format(time_taken))
+
+    def __enter__(self):
+        self.start()
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        self.stop()
