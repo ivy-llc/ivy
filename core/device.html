@@ -103,9 +103,9 @@
 <li class="toctree-l2"><a class="reference internal" href="device/split_func_call.html">split_func_call</a></li>
 <li class="toctree-l2"><a class="reference internal" href="device/split_func_call_across_devices.html">split_func_call_across_devices</a></li>
 <li class="toctree-l2"><a class="reference internal" href="device/distribute_array.html">distribute_array</a></li>
+<li class="toctree-l2"><a class="reference internal" href="device/distribute_args.html">distribute_args</a></li>
 <li class="toctree-l2"><a class="reference internal" href="device/unify_array.html">unify_array</a></li>
-<li class="toctree-l2"><a class="reference internal" href="device/distribute.html">distribute</a></li>
-<li class="toctree-l2"><a class="reference internal" href="device/unify.html">unify</a></li>
+<li class="toctree-l2"><a class="reference internal" href="device/unify_args.html">unify_args</a></li>
 <li class="toctree-l2"><a class="reference internal" href="device/Distributed.html">Distributed</a></li>
 <li class="toctree-l2"><a class="reference internal" href="device/Profiler.html">Profiler</a></li>
 </ul>
@@ -294,8 +294,8 @@
 </dd></dl>
 
 <dl class="py function">
-<dt id="ivy.core.device.distribute">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">distribute</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dev_strs</span></em>, <em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/device.html#distribute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.device.distribute" title="Permalink to this definition">¶</a></dt>
+<dt id="ivy.core.device.distribute_args">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">distribute_args</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dev_strs</span></em>, <em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/device.html#distribute_args"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.device.distribute_args" title="Permalink to this definition">¶</a></dt>
 <dd><p>Distribute the input arguments across the specified devices.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -466,8 +466,8 @@ the entire input array at once. This can be useful to reduce memory usage of the
 </dd></dl>
 
 <dl class="py function">
-<dt id="ivy.core.device.unify">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">unify</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dev_str</span></em>, <em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/device.html#unify"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.device.unify" title="Permalink to this definition">¶</a></dt>
+<dt id="ivy.core.device.unify_args">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">unify_args</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dev_str</span></em>, <em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/device.html#unify_args"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.device.unify_args" title="Permalink to this definition">¶</a></dt>
 <dd><p>Unify the input arguments, which consist of sub-arrays distributed across arbitrary devices, to a unified arrays
 on a single target device.</p>
 <dl class="field-list simple">
@@ -519,9 +519,9 @@ on a single target device.</p>
 <li class="toctree-l1"><a class="reference internal" href="device/split_func_call.html">split_func_call</a></li>
 <li class="toctree-l1"><a class="reference internal" href="device/split_func_call_across_devices.html">split_func_call_across_devices</a></li>
 <li class="toctree-l1"><a class="reference internal" href="device/distribute_array.html">distribute_array</a></li>
+<li class="toctree-l1"><a class="reference internal" href="device/distribute_args.html">distribute_args</a></li>
 <li class="toctree-l1"><a class="reference internal" href="device/unify_array.html">unify_array</a></li>
-<li class="toctree-l1"><a class="reference internal" href="device/distribute.html">distribute</a></li>
-<li class="toctree-l1"><a class="reference internal" href="device/unify.html">unify</a></li>
+<li class="toctree-l1"><a class="reference internal" href="device/unify_args.html">unify_args</a></li>
 <li class="toctree-l1"><a class="reference internal" href="device/Distributed.html">Distributed</a></li>
 <li class="toctree-l1"><a class="reference internal" href="device/Profiler.html">Profiler</a></li>
 </ul>

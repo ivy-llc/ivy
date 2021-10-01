@@ -194,8 +194,115 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="distributed">
-<h1>Distributed<a class="headerlink" href="#distributed" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="module-ivy.neural_net_stateful.distributed">
+<span id="distributed"></span><h1>Distributed<a class="headerlink" href="#module-ivy.neural_net_stateful.distributed" title="Permalink to this headline">¶</a></h1>
+<p>Class for creating modules which are distributed over multiple devices</p>
+<dl class="py class">
+<dt id="ivy.neural_net_stateful.distributed.DistributedModule">
+<em class="property">class </em><code class="sig-prename descclassname">ivy.neural_net_stateful.distributed.</code><code class="sig-name descname">DistributedModule</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">module_class</span></em>, <em class="sig-param"><span class="n">dev_strs</span></em>, <em class="sig-param"><span class="n">v</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">module_kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/neural_net_stateful/distributed.html#DistributedModule"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.neural_net_stateful.distributed.DistributedModule" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt id="ivy.neural_net_stateful.distributed.DistributedModule.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">module_class</span></em>, <em class="sig-param"><span class="n">dev_strs</span></em>, <em class="sig-param"><span class="n">v</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">module_kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/neural_net_stateful/distributed.html#DistributedModule.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.neural_net_stateful.distributed.DistributedModule.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialze Distributed Ivy Module, which is a stateful object consisting of trainable variables,
+distributed across arbitrarily many devices.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>module_class</strong> (<em>Customized ivy.Module class</em>) – The customized ivy.Module class you wish to distribute across devices.</p></li>
+<li><p><strong>dev_strs</strong> (<em>str</em>) – devices on which to distribute the module.</p></li>
+<li><p><strong>v</strong> (<em>ivy container</em><em>, </em><em>optional</em>) – Ivy container of trainable variables. Created internally by default.</p></li>
+<li><p><strong>build_mode</strong> (<em>str</em><em>, </em><em>optional</em>) – How the Module is built, either on initialization (now), explicitly by the user by calling
+build(), or the first time the __call__ method is run. Default is on initialization.</p></li>
+<li><p><strong>store_vars</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether or not to store the variables created. Default is True.</p></li>
+<li><p><strong>module_kwargs</strong> (<em>dict of any</em><em>, </em><em>optional</em>) – Dict of keywords arguments to pass the module constructor. Default is None.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="ivy.neural_net_stateful.distributed.DistributedModule.build">
+<code class="sig-name descname">build</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="n">from_call</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/neural_net_stateful/distributed.html#DistributedModule.build"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.neural_net_stateful.distributed.DistributedModule.build" title="Permalink to this definition">¶</a></dt>
+<dd><p>Build the internal layers and variables for each of the distributed modules.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="ivy.neural_net_stateful.distributed.DistributedModule.build_mode">
+<em class="property">property </em><code class="sig-name descname">build_mode</code><a class="headerlink" href="#ivy.neural_net_stateful.distributed.DistributedModule.build_mode" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="ivy.neural_net_stateful.distributed.DistributedModule.built">
+<em class="property">property </em><code class="sig-name descname">built</code><a class="headerlink" href="#ivy.neural_net_stateful.distributed.DistributedModule.built" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="ivy.neural_net_stateful.distributed.DistributedModule.save_weights">
+<code class="sig-name descname">save_weights</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">weights_path</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/neural_net_stateful/distributed.html#DistributedModule.save_weights"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.neural_net_stateful.distributed.DistributedModule.save_weights" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save the weights on the Module.
+:param weights_path: The hdf5 file for saving the weights.
+:type weights_path: string</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="ivy.neural_net_stateful.distributed.DistributedOptimizer">
+<em class="property">class </em><code class="sig-prename descclassname">ivy.neural_net_stateful.distributed.</code><code class="sig-name descname">DistributedOptimizer</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">optimizer_class</span></em>, <em class="sig-param"><span class="n">dev_strs</span></em>, <em class="sig-param"><span class="n">lr</span></em>, <em class="sig-param"><span class="n">compile_step</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">inplace</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">stop_gradients</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">optimizer_kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/neural_net_stateful/distributed.html#DistributedOptimizer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.neural_net_stateful.distributed.DistributedOptimizer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt id="ivy.neural_net_stateful.distributed.DistributedOptimizer.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">optimizer_class</span></em>, <em class="sig-param"><span class="n">dev_strs</span></em>, <em class="sig-param"><span class="n">lr</span></em>, <em class="sig-param"><span class="n">compile_step</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">inplace</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">stop_gradients</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">optimizer_kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/neural_net_stateful/distributed.html#DistributedOptimizer.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.neural_net_stateful.distributed.DistributedOptimizer.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Construct an general Optimizer. This is an abstract class, and must be derived.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>optimizer_class</strong> (<em>Customized ivy.Optimizer class</em>) – The customized ivy.Optimizer class you wish to distribute across devices.</p></li>
+<li><p><strong>dev_strs</strong> (<em>str</em>) – devices on which to distribute the module.</p></li>
+<li><p><strong>lr</strong> (<em>function</em><em> or </em><em>float.</em>) – Learning rate.</p></li>
+<li><p><strong>compile_step</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to compile the optimizer step, default is False.</p></li>
+<li><p><strong>inplace</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to update the variables in-place, or to create new variable handles.
+This is only relevant for frameworks with stateful variables such as PyTorch. Default is True.</p></li>
+<li><p><strong>stop_gradients</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to stop the gradients of the variables after each gradient step. Default is True.</p></li>
+<li><p><strong>optimizer_kwargs</strong> (<em>dict of any</em><em>, </em><em>optional</em>) – Dict of keywords arguments to pass the optimizer constructor. Default is None.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="ivy.neural_net_stateful.distributed.DistributedOptimizer.set_state">
+<code class="sig-name descname">set_state</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">state</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/neural_net_stateful/distributed.html#DistributedOptimizer.set_state"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.neural_net_stateful.distributed.DistributedOptimizer.set_state" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set state of the optimizer.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>state</strong> (<em>Ivy container of state tensors</em>) – Nested state to update.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="ivy.neural_net_stateful.distributed.DistributedOptimizer.step">
+<code class="sig-name descname">step</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">v</span></em>, <em class="sig-param"><span class="n">grads</span></em>, <em class="sig-param"><span class="n">ignore_missing</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/neural_net_stateful/distributed.html#DistributedOptimizer.step"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.neural_net_stateful.distributed.DistributedOptimizer.step" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update nested variables container v from possibly compiled overriden private self._step_fn</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>v</strong> (<em>Ivy container of variables</em>) – Nested variables to update.</p></li>
+<li><p><strong>grads</strong> (<em>sequence of arrays</em>) – Nested gradients to update.</p></li>
+<li><p><strong>ignore_missing</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to ignore keys missing from the gradients which exist in the variables.
+Default is False.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The updated variables, following update step.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
 <div class="toctree-wrapper compound">
 </div>
 </div>
