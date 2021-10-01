@@ -1,0 +1,27 @@
+Device
+======
+
+.. automodule:: ivy.core.device
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :show-inheritance:
+
+
+.. toctree::
+   :maxdepth: -1
+   :caption: Device
+
+   device/dev.rst
+   device/to_dev.rst
+   device/dev_to_str.rst
+   device/str_to_dev.rst
+   device/dev_str.rst
+   device/memory_on_dev.rst
+   device/gpu_is_available.rst
+   device/num_gpus.rst
+   device/tpu_is_available.rst
+   device/split_func_call.rst
+   device/split_func_call_across_gpus.rst
+   device/Profiler.rst
+

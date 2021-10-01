@@ -88,6 +88,7 @@
 <p class="caption"><span class="caption-text">Core</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../core/container.html">Container</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../core/device.html">Device</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../core/general.html">General</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../core/gradients.html">Gradients</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../core/image.html">Image</a></li>
@@ -109,6 +110,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../../neural_net_stateful/activations.html">Activations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../neural_net_stateful/converters.html">Converters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../neural_net_stateful/distributed_module.html">Distributed module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../neural_net_stateful/initializers.html">Initializers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../neural_net_stateful/layers.html">Layers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../../neural_net_stateful/module.html">Module</a></li>
@@ -192,8 +194,6 @@
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="c1"># global</span>
-<span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">import</span> <span class="nn">time</span>
 <span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">_np</span>
 <span class="kn">import</span> <span class="nn">math</span> <span class="k">as</span> <span class="nn">_math</span>
@@ -202,7 +202,8 @@
 <span class="kn">import</span> <span class="nn">multiprocessing</span> <span class="k">as</span> <span class="nn">_multiprocessing</span>
 
 <span class="c1"># local</span>
-<span class="kn">from</span> <span class="nn">ivy.core.general</span> <span class="kn">import</span> <span class="n">Profiler</span> <span class="k">as</span> <span class="n">BaseProfiler</span>
+<span class="kn">from</span> <span class="nn">ivy.numpy.core.device</span> <span class="kn">import</span> <span class="n">_dev_str_callable</span>
+
 
 <span class="n">DTYPE_DICT</span> <span class="o">=</span> <span class="p">{</span><span class="n">_np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="s1">&#39;bool&#39;</span><span class="p">):</span> <span class="s1">&#39;bool&#39;</span><span class="p">,</span>
               <span class="n">_np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="s1">&#39;int8&#39;</span><span class="p">):</span> <span class="s1">&#39;int8&#39;</span><span class="p">,</span>
@@ -571,15 +572,6 @@
     <span class="k">return</span> <span class="n">_np</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">ret</span><span class="p">,</span> <span class="n">x_pre_shape</span> <span class="o">+</span> <span class="p">[</span><span class="n">num_samples</span><span class="p">]</span> <span class="o">+</span> <span class="n">x_post_shape</span><span class="p">)</span></div>
 
 
-<span class="n">dev</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="s1">&#39;cpu:0&#39;</span>
-<span class="n">to_dev</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">dev_str</span><span class="o">=</span><span class="kc">None</span><span class="p">:</span> <span class="n">x</span>
-<span class="n">dev_str</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="s1">&#39;cpu:0&#39;</span>
-<span class="n">_dev_str_callable</span> <span class="o">=</span> <span class="n">dev_str</span>
-<span class="n">dev_to_str</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">dev_in</span><span class="p">:</span> <span class="s1">&#39;cpu:0&#39;</span>
-<span class="n">str_to_dev</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">dev_str</span><span class="p">:</span> <span class="s1">&#39;cpu:0&#39;</span>
-<span class="n">gpu_is_available</span> <span class="o">=</span> <span class="k">lambda</span><span class="p">:</span> <span class="kc">False</span>
-<span class="n">num_gpus</span> <span class="o">=</span> <span class="k">lambda</span><span class="p">:</span> <span class="mi">0</span>
-<span class="n">tpu_is_available</span> <span class="o">=</span> <span class="k">lambda</span><span class="p">:</span> <span class="kc">False</span>
 <span class="n">dtype</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">dtype</span>
 <span class="n">dtype</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">=</span> <span class="s1">&#39;dtype&#39;</span>
 <span class="n">dtype_str</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">DTYPE_DICT</span><span class="p">[</span><span class="n">x</span><span class="o">.</span><span class="n">dtype</span><span class="p">]</span>
@@ -596,29 +588,6 @@
 <span class="n">current_framework_str</span> <span class="o">=</span> <span class="k">lambda</span><span class="p">:</span> <span class="s1">&#39;numpy&#39;</span>
 <span class="n">current_framework_str</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">=</span> <span class="s1">&#39;current_framework_str&#39;</span>
 <span class="n">multiprocessing</span> <span class="o">=</span> <span class="k">lambda</span><span class="p">:</span> <span class="n">_multiprocessing</span>
-
-
-<div class="viewcode-block" id="Profiler"><a class="viewcode-back" href="../../../../numpy/core/general/Profiler.html#ivy.numpy.core.general.Profiler">[docs]</a><span class="k">class</span> <span class="nc">Profiler</span><span class="p">(</span><span class="n">BaseProfiler</span><span class="p">):</span>
-
-<div class="viewcode-block" id="Profiler.__init__"><a class="viewcode-back" href="../../../../numpy/core/general/Profiler.html#ivy.numpy.core.general.Profiler.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">save_dir</span><span class="p">):</span>
-        <span class="c1"># ToDO: add proper numpy profiler</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">Profiler</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">save_dir</span><span class="p">)</span>
-        <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">save_dir</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_start_time</span> <span class="o">=</span> <span class="kc">None</span></div>
-
-<div class="viewcode-block" id="Profiler.start"><a class="viewcode-back" href="../../../../numpy/core/general/Profiler.html#ivy.numpy.core.general.Profiler.start">[docs]</a>    <span class="k">def</span> <span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_start_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">perf_counter</span><span class="p">()</span></div>
-
-<div class="viewcode-block" id="Profiler.stop"><a class="viewcode-back" href="../../../../numpy/core/general/Profiler.html#ivy.numpy.core.general.Profiler.stop">[docs]</a>    <span class="k">def</span> <span class="nf">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">time_taken</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">perf_counter</span><span class="p">()</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_start_time</span>
-        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_save_dir</span><span class="p">,</span> <span class="s1">&#39;profile.log&#39;</span><span class="p">),</span> <span class="s1">&#39;w+&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;took </span><span class="si">{}</span><span class="s1"> seconds to complete&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">time_taken</span><span class="p">))</span></div>
-
-    <span class="k">def</span> <span class="fm">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
-
-    <span class="k">def</span> <span class="fm">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exc_type</span><span class="p">,</span> <span class="n">exc_val</span><span class="p">,</span> <span class="n">exc_tb</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span></div>
 </pre></div>
 
            </div>

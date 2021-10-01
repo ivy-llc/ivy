@@ -88,6 +88,7 @@
 <p class="caption"><span class="caption-text">Core</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../core/container.html">Container</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../core/device.html">Device</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../core/general.html">General</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../core/gradients.html">Gradients</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../core/image.html">Image</a></li>
@@ -109,6 +110,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../neural_net_stateful/activations.html">Activations</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../neural_net_stateful/converters.html">Converters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../neural_net_stateful/distributed_module.html">Distributed module</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../neural_net_stateful/initializers.html">Initializers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../neural_net_stateful/layers.html">Layers</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../neural_net_stateful/module.html">Module</a></li>
@@ -192,17 +194,15 @@
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="c1"># global</span>
-<span class="kn">import</span> <span class="nn">abc</span>
 <span class="kn">import</span> <span class="nn">math</span>
 <span class="kn">import</span> <span class="nn">einops</span>
-<span class="kn">import</span> <span class="nn">nvidia_smi</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">numbers</span> <span class="kn">import</span> <span class="n">Number</span>
-<span class="kn">from</span> <span class="nn">psutil</span> <span class="kn">import</span> <span class="n">virtual_memory</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Iterable</span>
 
 <span class="c1"># local</span>
 <span class="kn">import</span> <span class="nn">ivy</span>
+<span class="kn">from</span> <span class="nn">ivy.core.device</span> <span class="kn">import</span> <span class="n">dev_str</span>
 <span class="kn">from</span> <span class="nn">ivy.framework_handler</span> <span class="kn">import</span> <span class="n">current_framework</span> <span class="k">as</span> <span class="n">_cur_framework</span>
 
 <span class="n">FN_CACHE</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
@@ -224,8 +224,8 @@
     <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Variable</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_variable</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">exclusive</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="k">else</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_array</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">else</span> <span class="n">x</span>
 
 
-<span class="c1"># Wrapped #</span>
-<span class="c1"># --------#</span>
+<span class="c1"># Nested #</span>
+<span class="c1"># -------#</span>
 
 <div class="viewcode-block" id="nested_map"><a class="viewcode-back" href="../../../core/general/nested_map.html#ivy.core.general.nested_map">[docs]</a><span class="k">def</span> <span class="nf">nested_map</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span> <span class="n">Iterable</span><span class="p">],</span> <span class="n">fn</span><span class="p">:</span> <span class="n">Callable</span><span class="p">)</span>\
         <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span> <span class="n">Iterable</span><span class="p">]:</span>
@@ -249,6 +249,9 @@
         <span class="k">return</span> <span class="n">class_instance</span><span class="p">(</span><span class="nb">dict</span><span class="p">([(</span><span class="n">k</span><span class="p">,</span> <span class="n">nested_map</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">fn</span><span class="p">))</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">x</span><span class="o">.</span><span class="n">items</span><span class="p">()]))</span>
     <span class="k">return</span> <span class="n">fn</span><span class="p">(</span><span class="n">x</span><span class="p">)</span></div>
 
+
+<span class="c1"># Wrapped #</span>
+<span class="c1"># --------#</span>
 
 <div class="viewcode-block" id="to_ivy"><a class="viewcode-back" href="../../../core/general/to_ivy.html#ivy.core.general.to_ivy">[docs]</a><span class="k">def</span> <span class="nf">to_ivy</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span> <span class="n">Iterable</span><span class="p">],</span> <span class="n">nested</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>\
         <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span> <span class="n">Iterable</span><span class="p">]:</span>
@@ -1554,139 +1557,6 @@
     <span class="k">return</span> <span class="n">x</span> <span class="k">if</span> <span class="n">exists</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">else</span> <span class="n">default_val</span><span class="p">()</span> <span class="k">if</span> <span class="n">default_callable</span> <span class="k">else</span> <span class="n">default_val</span></div>
 
 
-<div class="viewcode-block" id="dev"><a class="viewcode-back" href="../../../core/general/dev.html#ivy.core.general.dev">[docs]</a><span class="k">def</span> <span class="nf">dev</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span> <span class="n">f</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Framework</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span>\
-        <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Device</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Get the native device handle for input array x.</span>
-
-<span class="sd">    :param x: Tensor for which to get the device handle.</span>
-<span class="sd">    :type x: array</span>
-<span class="sd">    :param f: Machine learning framework. Inferred from inputs if None.</span>
-<span class="sd">    :type f: ml_framework, optional</span>
-<span class="sd">    :return: Device handle for the array, in native framework format.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">dev</span><span class="p">(</span><span class="n">x</span><span class="p">)</span></div>
-
-
-<span class="c1"># noinspection PyShadowingNames</span>
-<div class="viewcode-block" id="to_dev"><a class="viewcode-back" href="../../../core/general/to_dev.html#ivy.core.general.to_dev">[docs]</a><span class="k">def</span> <span class="nf">to_dev</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span> <span class="n">dev_str</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">f</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Framework</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span>\
-        <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Move the input array x to the desired device, specified by device string.</span>
-
-<span class="sd">    :param x: Array to move onto the device.</span>
-<span class="sd">    :type x: array</span>
-<span class="sd">    :param dev_str: device to move the array to &#39;cuda:0&#39;, &#39;cuda:1&#39;, &#39;cpu&#39; etc. Keep same device if None.</span>
-<span class="sd">    :type dev_str: str, optional</span>
-<span class="sd">    :param f: Machine learning framework. Inferred from inputs if None.</span>
-<span class="sd">    :type f: ml_framework, optional</span>
-<span class="sd">    :return: The array x, but now placed on the target device.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">to_dev</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">dev_str</span><span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="dev_to_str"><a class="viewcode-back" href="../../../core/general/dev_to_str.html#ivy.core.general.dev_to_str">[docs]</a><span class="k">def</span> <span class="nf">dev_to_str</span><span class="p">(</span><span class="n">dev_in</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Device</span><span class="p">,</span> <span class="n">f</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Framework</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span>\
-        <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Convert native data type to string representation.</span>
-
-<span class="sd">    :param dev_in: The device handle to convert to string.</span>
-<span class="sd">    :type dev_in: device handle</span>
-<span class="sd">    :param f: Machine learning framework. Inferred from inputs if None.</span>
-<span class="sd">    :type f: ml_framework, optional</span>
-<span class="sd">    :return: Device string e.g. &#39;cuda:0&#39;.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">dev_to_str</span><span class="p">(</span><span class="n">dev_in</span><span class="p">)</span></div>
-
-
-<span class="c1"># noinspection PyShadowingNames</span>
-<div class="viewcode-block" id="str_to_dev"><a class="viewcode-back" href="../../../core/general/str_to_dev.html#ivy.core.general.str_to_dev">[docs]</a><span class="k">def</span> <span class="nf">str_to_dev</span><span class="p">(</span><span class="n">dev_str</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">f</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Framework</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span>\
-        <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Device</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Convert device string representation to native device type.</span>
-
-<span class="sd">    :param dev_str: The device string to conver to native device handle.</span>
-<span class="sd">    :type dev_str: str</span>
-<span class="sd">    :param f: Machine learning framework. Inferred from inputs if None.</span>
-<span class="sd">    :type f: ml_framework, optional</span>
-<span class="sd">    :return: Native device handle.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">str_to_dev</span><span class="p">(</span><span class="n">dev_str</span><span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="dev_str"><a class="viewcode-back" href="../../../core/general/dev_str.html#ivy.core.general.dev_str">[docs]</a><span class="k">def</span> <span class="nf">dev_str</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span> <span class="n">f</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Framework</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span>\
-        <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Get the device string for input array x.</span>
-
-<span class="sd">    :param x: Tensor for which to get the device string.</span>
-<span class="sd">    :type x: array</span>
-<span class="sd">    :param f: Machine learning framework. Inferred from inputs if None.</span>
-<span class="sd">    :type f: ml_framework, optional</span>
-<span class="sd">    :return: Device string for the array, e.g. &#39;cuda:0&#39;, &#39;cuda:1&#39;, &#39;cpu&#39; etc..</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">dev_str</span><span class="p">(</span><span class="n">x</span><span class="p">)</span></div>
-
-
-<span class="c1"># noinspection PyShadowingNames</span>
-<div class="viewcode-block" id="memory_on_dev"><a class="viewcode-back" href="../../../core/general/memory_on_dev.html#ivy.core.general.memory_on_dev">[docs]</a><span class="k">def</span> <span class="nf">memory_on_dev</span><span class="p">(</span><span class="n">dev_str</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span>\
-        <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Get the total amount of memory for a given device string. In case of CPU, the total RAM is returned.</span>
-
-<span class="sd">    :param dev_str: The device string to conver to native device handle.</span>
-<span class="sd">    :type dev_str: str</span>
-<span class="sd">    :return: The total memory on the device in GB.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="s1">&#39;gpu&#39;</span> <span class="ow">in</span> <span class="n">dev_str</span> <span class="ow">or</span> <span class="s1">&#39;cuda&#39;</span> <span class="ow">in</span> <span class="n">dev_str</span><span class="p">:</span>
-        <span class="n">gpu_idx</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">dev_str</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;:&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
-        <span class="n">nvidia_smi</span><span class="o">.</span><span class="n">nvmlInit</span><span class="p">()</span>
-        <span class="n">handle</span> <span class="o">=</span> <span class="n">nvidia_smi</span><span class="o">.</span><span class="n">nvmlDeviceGetHandleByIndex</span><span class="p">(</span><span class="n">gpu_idx</span><span class="p">)</span>
-        <span class="n">info</span> <span class="o">=</span> <span class="n">nvidia_smi</span><span class="o">.</span><span class="n">nvmlDeviceGetMemoryInfo</span><span class="p">(</span><span class="n">handle</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">info</span><span class="o">.</span><span class="n">total</span><span class="o">/</span><span class="mf">1e9</span>
-    <span class="k">elif</span> <span class="s1">&#39;cpu&#39;</span> <span class="ow">in</span> <span class="n">dev_str</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">virtual_memory</span><span class="p">()</span><span class="o">.</span><span class="n">total</span><span class="o">/</span><span class="mf">1e9</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;Invalid device string input, must be on the form &quot;gpu:idx&quot; or &quot;cpu:idx&quot;,&#39;</span>
-                        <span class="s1">&#39;but found </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">dev_str</span><span class="p">))</span></div>
-
-
-<div class="viewcode-block" id="gpu_is_available"><a class="viewcode-back" href="../../../core/general/gpu_is_available.html#ivy.core.general.gpu_is_available">[docs]</a><span class="k">def</span> <span class="nf">gpu_is_available</span><span class="p">(</span><span class="n">f</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Framework</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span>\
-        <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Determine whether a GPU is available to use, with the backend framework.</span>
-
-<span class="sd">    :param f: Machine learning framework. Inferred from inputs if None.</span>
-<span class="sd">    :type f: ml_framework, optional</span>
-<span class="sd">    :return: Boolean, as to whether a gpu is available.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">gpu_is_available</span><span class="p">()</span></div>
-
-
-<div class="viewcode-block" id="num_gpus"><a class="viewcode-back" href="../../../core/general/num_gpus.html#ivy.core.general.num_gpus">[docs]</a><span class="k">def</span> <span class="nf">num_gpus</span><span class="p">(</span><span class="n">f</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Framework</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span>\
-        <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Determine the number of available GPUs, with the backend framework.</span>
-
-<span class="sd">    :param f: Machine learning framework. Inferred from inputs if None.</span>
-<span class="sd">    :type f: ml_framework, optional</span>
-<span class="sd">    :return: Number of available GPUs.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">num_gpus</span><span class="p">()</span></div>
-
-
-<div class="viewcode-block" id="tpu_is_available"><a class="viewcode-back" href="../../../core/general/tpu_is_available.html#ivy.core.general.tpu_is_available">[docs]</a><span class="k">def</span> <span class="nf">tpu_is_available</span><span class="p">(</span><span class="n">f</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Framework</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span>\
-        <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Determine whether a TPU is available to use, with the backend framework.</span>
-
-<span class="sd">    :param f: Machine learning framework. Inferred from inputs if None.</span>
-<span class="sd">    :type f: ml_framework, optional</span>
-<span class="sd">    :return: Boolean, as to whether a tpu is available.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">tpu_is_available</span><span class="p">()</span></div>
-
-
 <div class="viewcode-block" id="dtype"><a class="viewcode-back" href="../../../core/general/dtype.html#ivy.core.general.dtype">[docs]</a><span class="k">def</span> <span class="nf">dtype</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span> <span class="n">f</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Framework</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span>\
         <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -1753,137 +1623,6 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">example_inputs</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">compile_fn</span><span class="p">(</span>
         <span class="n">func</span><span class="p">,</span> <span class="n">dynamic</span><span class="p">,</span> <span class="n">example_inputs</span><span class="p">,</span> <span class="n">static_argnums</span><span class="p">,</span> <span class="n">static_argnames</span><span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="split_func_call"><a class="viewcode-back" href="../../../core/general/split_func_call.html#ivy.core.general.split_func_call">[docs]</a><span class="k">def</span> <span class="nf">split_func_call</span><span class="p">(</span><span class="n">func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">inputs</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">]],</span>
-                    <span class="n">chunk_size</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">input_axes</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
-                    <span class="n">output_axes</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">mean</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>\
-        <span class="o">-&gt;</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">]]:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Call a function by splitting its inputs along a given axis, and calling the function in chunks, rather than feeding</span>
-<span class="sd">    the entire input array at once. This can be useful to reduce memory usage of the device the arrays are on.</span>
-
-<span class="sd">    :param func: The function to be called.</span>
-<span class="sd">    :type func: callable</span>
-<span class="sd">    :param inputs: A list of inputs to pass into the function.</span>
-<span class="sd">    :type inputs: sequence of arrays</span>
-<span class="sd">    :param chunk_size: The size of each of the chunks to be fed into the function.</span>
-<span class="sd">    :type chunk_size: int</span>
-<span class="sd">    :param input_axes: The axes along which to split each of the inputs, before passing to the function. Default is 0.</span>
-<span class="sd">    :type input_axes: int or sequence of ints, optional</span>
-<span class="sd">    :param output_axes: The axes along which to concat each of the returned outputs. Default is same as fist input axis.</span>
-<span class="sd">    :type output_axes: int or sequence of ints, optional</span>
-<span class="sd">    :param mean: Whether to compute a weighted mean based on the return from each chunk. Default is False.</span>
-<span class="sd">    :type mean: bool, optional</span>
-<span class="sd">    :return: The return from the function, following input splitting and re-concattenation.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">input_axes</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
-        <span class="n">input_axes</span> <span class="o">=</span> <span class="p">[</span><span class="n">input_axes</span><span class="p">]</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span>
-    <span class="n">dim_size</span> <span class="o">=</span> <span class="n">inputs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="n">input_axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
-    <span class="n">num_chunks</span> <span class="o">=</span> <span class="n">dim_size</span> <span class="o">/</span> <span class="n">chunk_size</span>
-    <span class="n">num_chunks_floored</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">dim_size</span> <span class="o">/</span> <span class="n">chunk_size</span><span class="p">)</span>
-    <span class="n">chunk_sizes</span> <span class="o">=</span> <span class="p">[</span><span class="n">chunk_size</span><span class="p">]</span><span class="o">*</span><span class="n">num_chunks_floored</span>
-    <span class="k">if</span> <span class="n">num_chunks</span> <span class="o">!=</span> <span class="n">num_chunks_floored</span><span class="p">:</span>
-        <span class="n">chunk_sizes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">dim_size</span> <span class="o">-</span> <span class="n">chunk_size</span> <span class="o">*</span> <span class="n">num_chunks_floored</span><span class="p">)</span>
-    <span class="n">inputs_split</span> <span class="o">=</span> <span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">inp</span><span class="p">,</span> <span class="n">chunk_sizes</span><span class="p">,</span> <span class="n">input_axes</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="kc">True</span><span class="p">)</span> <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_array</span><span class="p">(</span><span class="n">inp</span><span class="p">)</span>
-                    <span class="k">else</span> <span class="n">inp</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">chunk_sizes</span><span class="p">,</span> <span class="n">input_axes</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="kc">True</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">inp</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">inputs</span><span class="p">)]</span>
-    <span class="n">rets</span> <span class="o">=</span> <span class="p">[</span><span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">inputs_split</span><span class="p">)]</span>
-    <span class="n">rets</span> <span class="o">=</span> <span class="p">[</span><span class="n">ret</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ret</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)</span> <span class="k">else</span> <span class="p">(</span><span class="n">ret</span><span class="p">,)</span> <span class="k">for</span> <span class="n">ret</span> <span class="ow">in</span> <span class="n">rets</span><span class="p">]</span>
-    <span class="n">num_outputs</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">rets</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-    <span class="k">if</span> <span class="n">output_axes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">output_axes</span> <span class="o">=</span> <span class="p">[</span><span class="n">input_axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">*</span> <span class="n">num_outputs</span>
-    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">output_axes</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
-        <span class="n">output_axes</span> <span class="o">=</span> <span class="p">[</span><span class="n">output_axes</span><span class="p">]</span> <span class="o">*</span> <span class="n">num_outputs</span>
-    <span class="k">if</span> <span class="n">mean</span><span class="p">:</span>
-        <span class="n">rets</span> <span class="o">=</span> <span class="p">[[(</span><span class="n">r</span><span class="o">.</span><span class="n">expand_dims</span><span class="p">(</span><span class="n">output_axis</span><span class="p">)</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">)</span> <span class="k">else</span> <span class="n">ivy</span><span class="o">.</span><span class="n">expand_dims</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">output_axis</span><span class="p">))</span> <span class="o">*</span> <span class="n">cs</span>
-                 <span class="k">for</span> <span class="n">output_axis</span><span class="p">,</span> <span class="n">r</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">output_axes</span><span class="p">,</span> <span class="n">ret</span><span class="p">)]</span> <span class="k">for</span> <span class="n">ret</span><span class="p">,</span> <span class="n">cs</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">rets</span><span class="p">,</span> <span class="n">chunk_sizes</span><span class="p">)]</span>
-    <span class="n">concatted</span> <span class="o">=</span> <span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="n">r</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">rets</span><span class="p">],</span> <span class="n">output_axes</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_array</span><span class="p">(</span><span class="n">rets</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">i</span><span class="p">])</span>
-                 <span class="k">else</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">r</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">rets</span><span class="p">],</span> <span class="n">output_axes</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
-                 <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_outputs</span><span class="p">)]</span>
-    <span class="k">if</span> <span class="n">mean</span><span class="p">:</span>
-        <span class="k">return</span> <span class="p">[(</span><span class="n">item</span><span class="o">.</span><span class="n">reduce_sum</span><span class="p">(</span><span class="n">output_axis</span><span class="p">)</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">)</span>
-                 <span class="k">else</span> <span class="n">ivy</span><span class="o">.</span><span class="n">reduce_sum</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">output_axis</span><span class="p">))</span><span class="o">/</span><span class="nb">sum</span><span class="p">(</span><span class="n">chunk_sizes</span><span class="p">)</span>
-                <span class="k">for</span> <span class="n">item</span><span class="p">,</span> <span class="n">output_axis</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">concatted</span><span class="p">,</span> <span class="n">output_axes</span><span class="p">)]</span>
-    <span class="k">return</span> <span class="n">concatted</span></div>
-
-
-<div class="viewcode-block" id="split_func_call_across_gpus"><a class="viewcode-back" href="../../../core/general/split_func_call_across_gpus.html#ivy.core.general.split_func_call_across_gpus">[docs]</a><span class="k">def</span> <span class="nf">split_func_call_across_gpus</span><span class="p">(</span><span class="n">func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">,</span>
-                                <span class="n">inputs</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">]],</span>
-                                <span class="n">dev_strs</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">]],</span>
-                                <span class="n">input_axes</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-                                <span class="n">output_axes</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">concat_output</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>\
-        <span class="o">-&gt;</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">]]:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Call a function by splitting its inputs along a given axis, and calling each chunk on a different device.</span>
-
-<span class="sd">    :param func: The function to be called.</span>
-<span class="sd">    :type func: callable</span>
-<span class="sd">    :param inputs: A list of inputs to pass into the function.</span>
-<span class="sd">    :type inputs: sequence of arrays or containers</span>
-<span class="sd">    :param dev_strs: The gpu device strings, in the format &quot;gpu:idx&quot;.</span>
-<span class="sd">    :type dev_strs: int, sequence of ints or sequence of strs</span>
-<span class="sd">    :param input_axes: The axes along which to split each of the inputs, before passing to the function. Default is 0.</span>
-<span class="sd">    :type input_axes: int or sequence of ints, optional</span>
-<span class="sd">    :param output_axes: The axes along which to concat each of the returned outputs. Default is same as fist input axis.</span>
-<span class="sd">    :type output_axes: int or sequence of ints, optional</span>
-<span class="sd">    :param concat_output: Whether to concatenate each return values into a single array. Default is False.</span>
-<span class="sd">    :type concat_output: bool, optional</span>
-<span class="sd">    :return: The return from the function, following input splitting and re-concattenation across devices.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">input_axes</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
-        <span class="n">input_axes</span> <span class="o">=</span> <span class="p">[</span><span class="n">input_axes</span><span class="p">]</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span>
-    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">dev_strs</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
-        <span class="n">dev_strs</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;gpu:</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">dev_strs</span><span class="p">)]</span>
-    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">dev_strs</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nb">int</span><span class="p">):</span>
-        <span class="n">dev_strs</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;gpu:</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">dev_strs</span><span class="p">]</span>
-    <span class="n">input_0</span> <span class="o">=</span> <span class="n">inputs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-    <span class="n">start_dev</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">dev_str</span><span class="p">(</span><span class="n">input_0</span><span class="p">)</span> <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_array</span><span class="p">(</span><span class="n">input_0</span><span class="p">)</span> <span class="k">else</span> <span class="n">input_0</span><span class="o">.</span><span class="n">dev_str</span>
-    <span class="n">dim_size</span> <span class="o">=</span> <span class="n">input_0</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="n">input_axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
-    <span class="n">num_chunks</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">dev_strs</span><span class="p">)</span>
-    <span class="n">chunk_size</span> <span class="o">=</span> <span class="n">dim_size</span> <span class="o">/</span> <span class="n">num_chunks</span>
-    <span class="n">chunk_size_rounded</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">chunk_size</span><span class="p">))</span>
-    <span class="n">chunk_size_diff</span> <span class="o">=</span> <span class="n">chunk_size</span> <span class="o">-</span> <span class="n">chunk_size_rounded</span>
-    <span class="n">total_diff</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">chunk_size_diff</span><span class="o">*</span><span class="n">num_chunks</span><span class="p">))</span>
-    <span class="n">chunk_sizes</span> <span class="o">=</span> <span class="p">[</span><span class="n">chunk_size_rounded</span><span class="p">]</span><span class="o">*</span><span class="n">num_chunks</span>
-    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">total_diff</span><span class="p">)):</span>
-        <span class="n">chunk_sizes</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+=</span> <span class="n">np</span><span class="o">.</span><span class="n">sign</span><span class="p">(</span><span class="n">total_diff</span><span class="p">)</span>
-    <span class="n">inputs_split</span> <span class="o">=</span> <span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">inp</span><span class="p">,</span> <span class="n">chunk_sizes</span><span class="p">,</span> <span class="n">input_axes</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="kc">True</span><span class="p">)</span> <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_array</span><span class="p">(</span><span class="n">inp</span><span class="p">)</span>
-                    <span class="k">else</span> <span class="n">inp</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">chunk_sizes</span><span class="p">,</span> <span class="n">input_axes</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="kc">True</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">inp</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">inputs</span><span class="p">)]</span>
-    <span class="n">inputs_split_to_devs</span> <span class="o">=</span> <span class="p">[[</span><span class="n">ivy</span><span class="o">.</span><span class="n">to_dev</span><span class="p">(</span><span class="n">inp</span><span class="p">,</span> <span class="n">d_str</span><span class="p">)</span> <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_array</span><span class="p">(</span><span class="n">inp</span><span class="p">)</span> <span class="k">else</span> <span class="n">inp</span><span class="o">.</span><span class="n">to_dev</span><span class="p">(</span><span class="n">d_str</span><span class="p">)</span>
-                             <span class="k">for</span> <span class="n">inp</span><span class="p">,</span> <span class="n">d_str</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">inps</span><span class="p">,</span> <span class="n">dev_strs</span><span class="p">)]</span> <span class="k">for</span> <span class="n">inps</span> <span class="ow">in</span> <span class="n">inputs_split</span><span class="p">]</span>
-    <span class="n">rets</span> <span class="o">=</span> <span class="p">[</span><span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">inps</span><span class="p">,</span> <span class="n">dev_str</span><span class="o">=</span><span class="n">dev_strs</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">inps</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">inputs_split_to_devs</span><span class="p">))]</span>
-    <span class="c1"># ToDo: make the line below more readable, there is a lot going on</span>
-    <span class="n">rets</span> <span class="o">=</span> <span class="p">[[</span><span class="n">ivy</span><span class="o">.</span><span class="n">to_dev</span><span class="p">(</span><span class="n">ret</span><span class="p">,</span> <span class="n">start_dev</span><span class="p">)</span> <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_array</span><span class="p">(</span><span class="n">ret</span><span class="p">)</span> <span class="k">else</span>
-             <span class="p">(</span><span class="n">ret</span><span class="o">.</span><span class="n">to_dev</span><span class="p">(</span><span class="n">start_dev</span><span class="p">)</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ret</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">)</span> <span class="k">else</span>
-              <span class="p">([</span><span class="n">ivy</span><span class="o">.</span><span class="n">to_dev</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">start_dev</span><span class="p">)</span> <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_array</span><span class="p">(</span><span class="n">r</span><span class="p">)</span> <span class="k">else</span> <span class="n">r</span><span class="o">.</span><span class="n">to_dev</span><span class="p">(</span><span class="n">start_dev</span><span class="p">)</span>
-                <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">ret</span><span class="p">]</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ret</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">))</span> <span class="k">else</span> <span class="n">ret</span><span class="p">))</span> <span class="k">for</span> <span class="n">ret</span> <span class="ow">in</span> <span class="n">rts</span><span class="p">]</span> <span class="k">for</span> <span class="n">rts</span> <span class="ow">in</span> <span class="n">rets</span><span class="p">]</span>
-    <span class="n">num_outputs</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">rets</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">concat_output</span><span class="p">:</span>
-        <span class="k">return</span> <span class="p">[[</span><span class="n">r</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">rets</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_outputs</span><span class="p">)]</span>
-    <span class="k">if</span> <span class="n">output_axes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">output_axes</span> <span class="o">=</span> <span class="p">[</span><span class="n">input_axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">*</span> <span class="n">num_outputs</span>
-    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">output_axes</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
-        <span class="n">output_axes</span> <span class="o">=</span> <span class="p">[</span><span class="n">output_axes</span><span class="p">]</span> <span class="o">*</span> <span class="n">num_outputs</span>
-    <span class="n">returns</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
-    <span class="n">ret0</span> <span class="o">=</span> <span class="n">rets</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-    <span class="c1"># ToDo: possibly make this cleaner using list comprehension or recursion</span>
-    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">num_outputs</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_array</span><span class="p">(</span><span class="n">ret0</span><span class="p">[</span><span class="n">i</span><span class="p">]):</span>
-            <span class="n">returns</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="n">r</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">rets</span><span class="p">],</span> <span class="n">output_axes</span><span class="p">[</span><span class="n">i</span><span class="p">]))</span>
-        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ret0</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">):</span>
-            <span class="n">returns</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">r</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">rets</span><span class="p">],</span> <span class="n">output_axes</span><span class="p">[</span><span class="n">i</span><span class="p">]))</span>
-        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ret0</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="p">(</span><span class="nb">tuple</span><span class="p">,</span> <span class="nb">list</span><span class="p">)):</span>
-            <span class="n">ret0i_len</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">ret0</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
-            <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_array</span><span class="p">(</span><span class="n">ret0</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">]):</span>
-                <span class="n">returns</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">ivy</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="n">r</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">rets</span><span class="p">],</span> <span class="n">output_axes</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">ret0i_len</span><span class="p">)])</span>
-            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ret0</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">):</span>
-                <span class="n">returns</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">r</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">rets</span><span class="p">],</span> <span class="n">output_axes</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
-                                <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">ret0i_len</span><span class="p">)])</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">returns</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">r</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">rets</span><span class="p">])</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">returns</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">r</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">rets</span><span class="p">])</span>
-    <span class="k">return</span> <span class="n">returns</span></div>
 
 
 <div class="viewcode-block" id="cache_fn"><a class="viewcode-back" href="../../../core/general/cache_fn.html#ivy.core.general.cache_fn">[docs]</a><span class="k">def</span> <span class="nf">cache_fn</span><span class="p">(</span><span class="n">func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">)</span>\
@@ -2061,28 +1800,6 @@
 <span class="sd">    :return: Multiprocessing module</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">multiprocessing</span><span class="p">()</span></div>
-
-
-<div class="viewcode-block" id="Profiler"><a class="viewcode-back" href="../../../core/general/Profiler.html#ivy.core.general.Profiler">[docs]</a><span class="k">class</span> <span class="nc">Profiler</span><span class="p">(</span><span class="n">abc</span><span class="o">.</span><span class="n">ABC</span><span class="p">):</span>
-
-<div class="viewcode-block" id="Profiler.__init__"><a class="viewcode-back" href="../../../core/general/Profiler.html#ivy.core.general.Profiler.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">save_dir</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_save_dir</span> <span class="o">=</span> <span class="n">save_dir</span></div>
-
-<div class="viewcode-block" id="Profiler.start"><a class="viewcode-back" href="../../../core/general/Profiler.html#ivy.core.general.Profiler.start">[docs]</a>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
-    <span class="k">def</span> <span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
-
-<div class="viewcode-block" id="Profiler.stop"><a class="viewcode-back" href="../../../core/general/Profiler.html#ivy.core.general.Profiler.stop">[docs]</a>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
-    <span class="k">def</span> <span class="nf">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
-
-    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
-    <span class="k">def</span> <span class="fm">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
-
-    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
-    <span class="k">def</span> <span class="fm">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exc_type</span><span class="p">,</span> <span class="n">exc_val</span><span class="p">,</span> <span class="n">exc_tb</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
 </pre></div>
 
            </div>

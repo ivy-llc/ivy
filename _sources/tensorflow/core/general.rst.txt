@@ -41,9 +41,4 @@ General
    general/gather.rst
    general/gather_nd.rst
    general/linear_resample.rst
-   general/to_dev.rst
-   general/dev_to_str.rst
-   general/str_to_dev.rst
-   general/tpu_is_available.rst
-   general/Profiler.rst
 

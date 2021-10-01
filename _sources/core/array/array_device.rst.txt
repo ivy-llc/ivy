@@ -1,0 +1,16 @@
+Array device
+============
+
+.. automodule:: ivy.core.array.array_device
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :show-inheritance:
+
+
+.. toctree::
+   :maxdepth: -1
+   :caption: Array device
+
+   array_device/ArrayWithDevice.rst
+
