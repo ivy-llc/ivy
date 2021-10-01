@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>stable_divide &mdash; Ivy 1.0 documentation</title>
+  <title>arrays_equal &mdash; Ivy 1.0 documentation</title>
   
 
   
@@ -36,8 +36,8 @@
   <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="get_min_base" href="get_min_base.html" />
-    <link rel="prev" title="set_min_denominator" href="set_min_denominator.html" /> 
+    <link rel="next" title="equal" href="equal.html" />
+    <link rel="prev" title="array_equal" href="array_equal.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -100,7 +100,7 @@
 <li class="toctree-l2"><a class="reference internal" href="array.html">array</a></li>
 <li class="toctree-l2"><a class="reference internal" href="is_array.html">is_array</a></li>
 <li class="toctree-l2"><a class="reference internal" href="array_equal.html">array_equal</a></li>
-<li class="toctree-l2"><a class="reference internal" href="arrays_equal.html">arrays_equal</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">arrays_equal</a></li>
 <li class="toctree-l2"><a class="reference internal" href="equal.html">equal</a></li>
 <li class="toctree-l2"><a class="reference internal" href="to_numpy.html">to_numpy</a></li>
 <li class="toctree-l2"><a class="reference internal" href="to_scalar.html">to_scalar</a></li>
@@ -174,7 +174,7 @@
 <li class="toctree-l2"><a class="reference internal" href="einops_repeat.html">einops_repeat</a></li>
 <li class="toctree-l2"><a class="reference internal" href="get_min_denominator.html">get_min_denominator</a></li>
 <li class="toctree-l2"><a class="reference internal" href="set_min_denominator.html">set_min_denominator</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">stable_divide</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stable_divide.html">stable_divide</a></li>
 <li class="toctree-l2"><a class="reference internal" href="get_min_base.html">get_min_base</a></li>
 <li class="toctree-l2"><a class="reference internal" href="set_min_base.html">set_min_base</a></li>
 <li class="toctree-l2"><a class="reference internal" href="stable_pow.html">stable_pow</a></li>
@@ -264,13 +264,13 @@
         
           <li><a href="../general.html">General</a> &raquo;</li>
         
-      <li>stable_divide</li>
+      <li>arrays_equal</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="../../_sources/core/general/stable_divide.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../_sources/core/general/arrays_equal.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -283,22 +283,18 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="stable-divide">
-<h1>stable_divide<a class="headerlink" href="#stable-divide" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="arrays-equal">
+<h1>arrays_equal<a class="headerlink" href="#arrays-equal" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
-<dt id="ivy.core.general.stable_divide">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">stable_divide</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">numerator</span><span class="p">:</span> <span class="n">Any</span></em>, <em class="sig-param"><span class="n">denominator</span><span class="p">:</span> <span class="n">Any</span></em>, <em class="sig-param"><span class="n">min_denominator</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>float<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; Any<a class="reference internal" href="../../_modules/ivy/core/general.html#stable_divide"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.stable_divide" title="Permalink to this definition">¶</a></dt>
-<dd><p>Divide the numerator by the denominator, with min denominator added to the denominator for numerical stability.</p>
+<dt id="ivy.core.general.arrays_equal">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">arrays_equal</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">xs</span><span class="p">:</span> <span class="n">List<span class="p">[</span>Union<span class="p">[</span>ivy.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span><span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; bool<a class="reference internal" href="../../_modules/ivy/core/general.html#arrays_equal"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.arrays_equal" title="Permalink to this definition">¶</a></dt>
+<dd><p>Determines whether two input arrays are equal across all elements.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>numerator</strong> (<em>any valid numerator</em><em>, </em><em>including containers</em>) – The numerator of the division.</p></li>
-<li><p><strong>denominator</strong> (<em>any valid denominator</em><em>, </em><em>including containers</em>) – The denominator of the division.</p></li>
-<li><p><strong>min_denominator</strong> (<em>float</em><em>, </em><em>optional</em>) – The minimum denominator to use, use global ivy._MIN_DENOMINATOR by default.</p></li>
-</ul>
+<dd class="field-odd"><p><strong>xs</strong> (<em>sequence of arrays</em>) – Sequence of arrays to compare for equality</p>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>The new item following the numerically stable division.</p>
+<dd class="field-even"><p>Boolean, whether or not all of the input arrays are equal across all elements.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -318,10 +314,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="get_min_base.html" class="btn btn-neutral float-right" title="get_min_base" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="equal.html" class="btn btn-neutral float-right" title="equal" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="set_min_denominator.html" class="btn btn-neutral float-left" title="set_min_denominator" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="array_equal.html" class="btn btn-neutral float-left" title="array_equal" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
