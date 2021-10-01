@@ -10,8 +10,7 @@ import nvidia_smi
 import numpy as np
 from numbers import Number
 from psutil import virtual_memory
-from collections.abc import Iterable
-from typing import Callable, Any, Union, List, Tuple, Dict
+from typing import Callable, Any, Union, List, Tuple, Dict, Iterable
 
 # local
 import ivy
