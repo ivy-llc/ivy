@@ -306,6 +306,17 @@ def distribute_array(x, dev_strs, axis=0, check_for_array=True):
     return [ivy.to_dev(x_sub, d) for x_sub, d in zip(ivy.split(x, len(dev_strs), axis, with_remainder=True), dev_strs)]
 
 
+def distribute(dev_strs, *args, axis=0, **kwargs):
+    """
+    Distribute the input arguments across the specified devices.
+    """
+    if isinstance(dev_strs, str) or len(dev_strs) == 1:
+        return args, kwargs
+    args_dist = ivy.nested_map(args, lambda x: distribute_array(x, dev_strs, axis))
+    kwargs_dist = ivy.nested_map(kwargs, lambda x: distribute_array(x, dev_strs, axis))
+    return args_dist, kwargs_dist
+
+
 class Profiler(abc.ABC):
 
     def __init__(self, save_dir):
