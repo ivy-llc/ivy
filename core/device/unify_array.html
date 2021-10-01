@@ -105,6 +105,8 @@
 <li class="toctree-l2"><a class="reference internal" href="distribute_array.html">distribute_array</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">unify_array</a></li>
 <li class="toctree-l2"><a class="reference internal" href="distribute.html">distribute</a></li>
+<li class="toctree-l2"><a class="reference internal" href="unify.html">unify</a></li>
+<li class="toctree-l2"><a class="reference internal" href="DistributedArray.html">DistributedArray</a></li>
 <li class="toctree-l2"><a class="reference internal" href="Profiler.html">Profiler</a></li>
 </ul>
 </li>
@@ -221,10 +223,13 @@
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>x</strong> (<em>sequence of arrays</em>) – The list of sub-arrays to unify onto the specified device.</p></li>
-<li><p><strong>dev_str</strong> (<em>sty</em>) – The device to unify the sub-arrays to.</p></li>
+<li><p><strong>dev_str</strong> (<em>str</em>) – The device to unify the sub-arrays to.</p></li>
 <li><p><strong>axis</strong> (<em>int</em><em>, </em><em>optional</em>) – The axis along which to concattenate the array. Default is 0.</p></li>
 <li><p><strong>check_for_array</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to check if the input is a list of arrays, and only unify if so. Default is True.</p></li>
 </ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>array unified to the target device</p>
 </dd>
 </dl>
 </dd></dl>

@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>memory_on_dev &mdash; Ivy 1.0 documentation</title>
+  <title>unify &mdash; Ivy 1.0 documentation</title>
   
 
   
@@ -36,8 +36,8 @@
   <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="gpu_is_available" href="gpu_is_available.html" />
-    <link rel="prev" title="dev_str" href="dev_str.html" /> 
+    <link rel="next" title="DistributedArray" href="DistributedArray.html" />
+    <link rel="prev" title="distribute" href="distribute.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -95,7 +95,7 @@
 <li class="toctree-l2"><a class="reference internal" href="dev_to_str.html">dev_to_str</a></li>
 <li class="toctree-l2"><a class="reference internal" href="str_to_dev.html">str_to_dev</a></li>
 <li class="toctree-l2"><a class="reference internal" href="dev_str.html">dev_str</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">memory_on_dev</a></li>
+<li class="toctree-l2"><a class="reference internal" href="memory_on_dev.html">memory_on_dev</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gpu_is_available.html">gpu_is_available</a></li>
 <li class="toctree-l2"><a class="reference internal" href="num_gpus.html">num_gpus</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tpu_is_available.html">tpu_is_available</a></li>
@@ -105,7 +105,7 @@
 <li class="toctree-l2"><a class="reference internal" href="distribute_array.html">distribute_array</a></li>
 <li class="toctree-l2"><a class="reference internal" href="unify_array.html">unify_array</a></li>
 <li class="toctree-l2"><a class="reference internal" href="distribute.html">distribute</a></li>
-<li class="toctree-l2"><a class="reference internal" href="unify.html">unify</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">unify</a></li>
 <li class="toctree-l2"><a class="reference internal" href="DistributedArray.html">DistributedArray</a></li>
 <li class="toctree-l2"><a class="reference internal" href="Profiler.html">Profiler</a></li>
 </ul>
@@ -194,13 +194,13 @@
         
           <li><a href="../device.html">Device</a> &raquo;</li>
         
-      <li>memory_on_dev</li>
+      <li>unify</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="../../_sources/core/device/memory_on_dev.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../_sources/core/device/unify.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -213,18 +213,24 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="memory-on-dev">
-<h1>memory_on_dev<a class="headerlink" href="#memory-on-dev" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="unify">
+<h1>unify<a class="headerlink" href="#unify" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
-<dt id="ivy.core.device.memory_on_dev">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">memory_on_dev</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dev_str</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span> &#x2192; float<a class="reference internal" href="../../_modules/ivy/core/device.html#memory_on_dev"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.device.memory_on_dev" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the total amount of memory for a given device string. In case of CPU, the total RAM is returned.</p>
+<dt id="ivy.core.device.unify">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">unify</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dev_str</span></em>, <em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/device.html#unify"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.device.unify" title="Permalink to this definition">¶</a></dt>
+<dd><p>Unify the input arguments, which consist of sub-arrays distributed across arbitrary devices, to a unified arrays
+on a single target device.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>dev_str</strong> (<em>str</em>) – The device string to conver to native device handle.</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dev_str</strong> (<em>str</em>) – The device to unify the arguments to.</p></li>
+<li><p><strong>args</strong> (<em>list of any</em>) – The positional arguments to unify.</p></li>
+<li><p><strong>axis</strong> (<em>int</em><em>, </em><em>optional</em>) – The axis along which to concattenate the sub-arrays. Default is 0.</p></li>
+<li><p><strong>kwargs</strong> (<em>dict of any</em>) – The keyword arguments to unify.</p></li>
+</ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>The total memory on the device in GB.</p>
+<dd class="field-even"><p>arguments unified to the target device</p>
 </dd>
 </dl>
 </dd></dl>
@@ -244,10 +250,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="gpu_is_available.html" class="btn btn-neutral float-right" title="gpu_is_available" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="DistributedArray.html" class="btn btn-neutral float-right" title="DistributedArray" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="dev_str.html" class="btn btn-neutral float-left" title="dev_str" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="distribute.html" class="btn btn-neutral float-left" title="distribute" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
