@@ -157,6 +157,10 @@ def to_dev(x: Union[ivy.Array, ivy.NativeArray], dev_str: str = None, f: ivy.Fra
 # Device Distribution #
 # --------------------#
 
+class DistributedArray(list):
+    pass
+
+
 def split_func_call(func: Callable, inputs: Iterable[Union[Union[ivy.Array, ivy.NativeArray], ivy.Container]],
                     chunk_size: int, input_axes: Union[int, Iterable[int]] = 0,
                     output_axes: Union[int, Iterable[int]] = None, mean: bool = False)\
@@ -300,10 +304,12 @@ def distribute_array(x, dev_strs, axis=0, check_for_array=True):
     :type axis: int, optional
     :param check_for_array: Whether to check if the input is an array, and only split if so. Default is True.
     :type check_for_array: bool, optional
+    :return: array distributed across the target devices
     """
     if check_for_array and not ivy.is_array(x):
         return x
-    return [ivy.to_dev(x_sub, d) for x_sub, d in zip(ivy.split(x, len(dev_strs), axis, with_remainder=True), dev_strs)]
+    return DistributedArray(
+        [ivy.to_dev(x_sub, d) for x_sub, d in zip(ivy.split(x, len(dev_strs), axis, with_remainder=True), dev_strs)])
 
 
 # noinspection PyShadowingNames
@@ -314,13 +320,14 @@ def unify_array(x, dev_str, axis=0, check_for_array=True):
     :param x: The list of sub-arrays to unify onto the specified device.
     :type x: sequence of arrays
     :param dev_str: The device to unify the sub-arrays to.
-    :type dev_str: sty
+    :type dev_str: str
     :param axis: The axis along which to concattenate the array. Default is 0.
     :type axis: int, optional
     :param check_for_array: Whether to check if the input is a list of arrays, and only unify if so. Default is True.
     :type check_for_array: bool, optional
+    :return: array unified to the target device
     """
-    if check_for_array and not (isinstance(x, list) and ivy.is_array(x[0])):
+    if check_for_array and not isinstance(x, DistributedArray):
         return x
     return ivy.concatenate([ivy.to_dev(x_sub, dev_str) for x_sub in x], axis)
 
@@ -328,12 +335,43 @@ def unify_array(x, dev_str, axis=0, check_for_array=True):
 def distribute(dev_strs, *args, axis=0, **kwargs):
     """
     Distribute the input arguments across the specified devices.
+
+    :param dev_strs: The devices to distribute the arguments across.
+    :type dev_strs: sequence of strs
+    :param args: The positional arguments to distribute.
+    :type args: list of any
+    :param axis: The axis along which to split the arrays in the arguments. Default is 0.
+    :type axis: int, optional
+    :param kwargs: The keyword arguments to distribute.
+    :type kwargs: dict of any
+    :return: arguments distributed to the target devices
     """
     if isinstance(dev_strs, str) or len(dev_strs) == 1:
         return args, kwargs
     args_dist = ivy.nested_map(args, lambda x: distribute_array(x, dev_strs, axis))
     kwargs_dist = ivy.nested_map(kwargs, lambda x: distribute_array(x, dev_strs, axis))
     return args_dist, kwargs_dist
+
+
+# noinspection PyShadowingNames
+def unify(dev_str, *args, axis=0, **kwargs):
+    """
+    Unify the input arguments, which consist of sub-arrays distributed across arbitrary devices, to a unified arrays
+    on a single target device.
+
+    :param dev_str: The device to unify the arguments to.
+    :type dev_str: str
+    :param args: The positional arguments to unify.
+    :type args: list of any
+    :param axis: The axis along which to concattenate the sub-arrays. Default is 0.
+    :type axis: int, optional
+    :param kwargs: The keyword arguments to unify.
+    :type kwargs: dict of any
+    :return: arguments unified to the target device
+    """
+    args_uni = ivy.nested_map(args, lambda x: unify_array(x, dev_str, axis))
+    kwargs_uni = ivy.nested_map(kwargs, lambda x: unify_array(x, dev_str, axis))
+    return args_uni, kwargs_uni
 
 
 class Profiler(abc.ABC):
