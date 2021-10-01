@@ -715,7 +715,7 @@ def split(x: Union[ivy.Array, ivy.NativeArray], num_or_size_splits: Union[int, I
     :type num_or_size_splits: int, optional
     :param axis: The axis along which to split, default is 0.
     :type axis: int, optional
-    :param with_remainder: If the tensor does not split evenly, then store the last remainder entry. Defaul is False.
+    :param with_remainder: If the tensor does not split evenly, then store the last remainder entry. Default is False.
     :type with_remainder: bool, optional
     :param f: Machine learning framework. Inferred from inputs if None.
     :type f: ml_framework, optional
