@@ -345,12 +345,8 @@
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">to_dev</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">dev_str</span><span class="p">)</span></div>
 
 
-<span class="c1"># Device Distribution #</span>
-<span class="c1"># --------------------#</span>
-
-<div class="viewcode-block" id="Distributed"><a class="viewcode-back" href="../../../core/device/Distributed.html#ivy.core.device.Distributed">[docs]</a><span class="k">class</span> <span class="nc">Distributed</span><span class="p">(</span><span class="nb">list</span><span class="p">):</span>
-    <span class="k">pass</span></div>
-
+<span class="c1"># Split Calls #</span>
+<span class="c1"># ------------#</span>
 
 <div class="viewcode-block" id="split_func_call"><a class="viewcode-back" href="../../../core/device/split_func_call.html#ivy.core.device.split_func_call">[docs]</a><span class="k">def</span> <span class="nf">split_func_call</span><span class="p">(</span><span class="n">func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">inputs</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">]],</span>
                     <span class="n">chunk_size</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">input_axes</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
@@ -483,6 +479,23 @@
     <span class="k">return</span> <span class="n">returns</span></div>
 
 
+<span class="c1"># Device Distribution #</span>
+<span class="c1"># --------------------#</span>
+
+<div class="viewcode-block" id="DistributedArray"><a class="viewcode-back" href="../../../core/device/DistributedArray.html#ivy.core.device.DistributedArray">[docs]</a><span class="k">class</span> <span class="nc">DistributedArray</span><span class="p">(</span><span class="nb">list</span><span class="p">):</span>
+    <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="DistributedArgs"><a class="viewcode-back" href="../../../core/device.html#ivy.core.device.DistributedArgs">[docs]</a><span class="k">class</span> <span class="nc">DistributedArgs</span><span class="p">:</span>
+
+<div class="viewcode-block" id="DistributedArgs.__init__"><a class="viewcode-back" href="../../../core/device.html#ivy.core.device.DistributedArgs.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_counter</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_args</span> <span class="o">=</span> <span class="n">args</span></div>
+
+    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">nested_map</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="n">item</span><span class="p">]</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">DistributedArray</span><span class="p">)</span> <span class="k">else</span> <span class="n">x</span><span class="p">)</span></div>
+
+
 <div class="viewcode-block" id="distribute_array"><a class="viewcode-back" href="../../../core/device/distribute_array.html#ivy.core.device.distribute_array">[docs]</a><span class="k">def</span> <span class="nf">distribute_array</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">dev_strs</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">check_for_array</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Distribute an array across the specified devices, returning a list of sub-arrays, each on a different device.</span>
@@ -499,7 +512,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">check_for_array</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_array</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">x</span>
-    <span class="k">return</span> <span class="n">Distributed</span><span class="p">(</span>
+    <span class="k">return</span> <span class="n">DistributedArray</span><span class="p">(</span>
         <span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">to_dev</span><span class="p">(</span><span class="n">x_sub</span><span class="p">,</span> <span class="n">d</span><span class="p">)</span> <span class="k">for</span> <span class="n">x_sub</span><span class="p">,</span> <span class="n">d</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">dev_strs</span><span class="p">),</span> <span class="n">axis</span><span class="p">,</span> <span class="n">with_remainder</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span> <span class="n">dev_strs</span><span class="p">)])</span></div>
 
 
@@ -521,7 +534,7 @@
         <span class="k">return</span> <span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span>
     <span class="n">args_dist</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">nested_map</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">distribute_array</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">dev_strs</span><span class="p">,</span> <span class="n">axis</span><span class="p">))</span>
     <span class="n">kwargs_dist</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">nested_map</span><span class="p">(</span><span class="n">kwargs</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">distribute_array</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">dev_strs</span><span class="p">,</span> <span class="n">axis</span><span class="p">))</span>
-    <span class="k">return</span> <span class="n">args_dist</span><span class="p">,</span> <span class="n">kwargs_dist</span></div>
+    <span class="k">return</span> <span class="n">DistributedArgs</span><span class="p">(</span><span class="n">args_dist</span><span class="p">),</span> <span class="n">DistributedArgs</span><span class="p">(</span><span class="n">kwargs_dist</span><span class="p">)</span></div>
 
 
 <span class="c1"># Device Unification #</span>
@@ -542,7 +555,7 @@
 <span class="sd">    :type check_for_array: bool, optional</span>
 <span class="sd">    :return: array unified to the target device</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">check_for_array</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">Distributed</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">check_for_array</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">DistributedArray</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">x</span>
     <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="n">ivy</span><span class="o">.</span><span class="n">to_dev</span><span class="p">(</span><span class="n">x_sub</span><span class="p">,</span> <span class="n">dev_str</span><span class="p">)</span> <span class="k">for</span> <span class="n">x_sub</span> <span class="ow">in</span> <span class="n">x</span><span class="p">],</span> <span class="n">axis</span><span class="p">)</span></div>
 
