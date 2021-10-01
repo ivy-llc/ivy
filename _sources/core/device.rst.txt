@@ -27,6 +27,6 @@ Device
    device/unify_array.rst
    device/distribute.rst
    device/unify.rst
-   device/DistributedArray.rst
+   device/Distributed.rst
    device/Profiler.rst
 
