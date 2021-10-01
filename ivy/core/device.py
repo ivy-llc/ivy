@@ -306,6 +306,25 @@ def distribute_array(x, dev_strs, axis=0, check_for_array=True):
     return [ivy.to_dev(x_sub, d) for x_sub, d in zip(ivy.split(x, len(dev_strs), axis, with_remainder=True), dev_strs)]
 
 
+# noinspection PyShadowingNames
+def unify_array(x, dev_str, axis=0, check_for_array=True):
+    """
+    Unify a list of sub-arrays, on arbitrary devices, to a single concattenated array on the specified device.
+
+    :param x: The list of sub-arrays to unify onto the specified device.
+    :type x: sequence of arrays
+    :param dev_str: The device to unify the sub-arrays to.
+    :type dev_str: sty
+    :param axis: The axis along which to concattenate the array. Default is 0.
+    :type axis: int, optional
+    :param check_for_array: Whether to check if the input is a list of arrays, and only unify if so. Default is True.
+    :type check_for_array: bool, optional
+    """
+    if check_for_array and not (isinstance(x, list) and ivy.is_array(x[0])):
+        return x
+    return ivy.concatenate([ivy.to_dev(x_sub, dev_str) for x_sub in x], axis)
+
+
 def distribute(dev_strs, *args, axis=0, **kwargs):
     """
     Distribute the input arguments across the specified devices.
