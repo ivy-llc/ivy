@@ -3,6 +3,7 @@ Collection of PyTorch general functions, wrapped to fit Ivy syntax and signature
 """
 
 # global
+import os
 import torch
 import importlib
 import numpy as np
@@ -11,6 +12,8 @@ import math as _math
 from operator import mul
 from torch.types import Number
 from functools import reduce as _reduce
+from torch.profiler import ProfilerActivity
+from torch.profiler import profile as _profile
 from typing import List, Dict, Optional, Union
 
 # API #
@@ -683,3 +686,17 @@ def current_framework_str():
 def multiprocessing():
     import torch.multiprocessing
     return torch.multiprocessing
+
+
+class Profiler:
+
+    def __init__(self, save_dir):
+        self._save_dir = save_dir
+        self._prof = _profile(activities=[ProfilerActivity.CPU, ProfilerActivity.CUDA], with_stack=True)
+
+    def __enter__(self):
+        self._prof.__enter__()
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        self._prof.__exit__(exc_type, exc_val, exc_tb)
+        self._prof.export_chrome_trace(os.path.join(self._save_dir, 'trace.json'))

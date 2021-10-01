@@ -3,6 +3,8 @@ Collection of Numpy general functions, wrapped to fit Ivy syntax and signature.
 """
 
 # global
+import os
+import time
 import logging
 import numpy as _np
 import math as _math
@@ -402,3 +404,18 @@ def compile_fn(func, dynamic=True, example_inputs=None):
 current_framework_str = lambda: 'numpy'
 current_framework_str.__name__ = 'current_framework_str'
 multiprocessing = lambda: _multiprocessing
+
+
+class Profiler:
+
+    def __init__(self, save_dir):
+        # ToDO: add proper numpy profiler
+        self._save_dir = save_dir
+
+    def __enter__(self):
+        self._start_time = time.perf_counter()
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        time_taken = time.perf_counter() - self._start_time
+        with open(os.path.join(self._save_dir, 'profile.log'), 'w+') as f:
+            f.write('took {} seconds to complete'.format(time_taken))

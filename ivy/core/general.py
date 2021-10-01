@@ -1862,3 +1862,6 @@ def multiprocessing(f=None):
     :return: Multiprocessing module
     """
     return _cur_framework(f=f).multiprocessing()
+
+
+Profiler = None
