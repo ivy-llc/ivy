@@ -7,9 +7,22 @@ import os
 import jax as _jax
 
 # local
-from ivy.jax.core.general import _to_array
 from ivy.core.device import Profiler as BaseProfiler
 
+
+# Helpers #
+# --------#
+
+def _to_array(x):
+    if isinstance(x, _jax.interpreters.ad.JVPTracer):
+        return _to_array(x.primal)
+    elif isinstance(x, _jax.interpreters.partial_eval.DynamicJaxprTracer):
+        return _to_array(x.aval)
+    return x
+
+
+# API #
+# ----#
 
 def dev(x):
     return _to_array(x).device_buffer.device()
@@ -37,7 +50,6 @@ def str_to_dev(dev_str):
 
 
 dev_str = lambda x: dev_to_str(dev(x))
-_callable_dev_str = dev_str
 
 
 def _dev_is_available(base_dev_str):

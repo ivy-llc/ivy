@@ -359,6 +359,40 @@ def test_distribute_array(x, axis, tensor_fn, dev_str, call):
 
 
 @pytest.mark.parametrize(
+    "xs", [([0, 1, 2], [3, 4])])
+@pytest.mark.parametrize(
+    "axis", [0])
+@pytest.mark.parametrize(
+    "tensor_fn", [ivy.array, helpers.var_fn])
+def test_unify_array(xs, axis, tensor_fn, dev_str, call):
+
+    if call is helpers.mx_call:
+        # MXNet does not support splitting based on section sizes, only integer number of sections input is supported.
+        pytest.skip()
+
+    # devices
+    dev_str0 = dev_str
+    if 'gpu' in dev_str:
+        idx = ivy.num_gpus() - 1
+        dev_str1 = dev_str[:-1] + str(idx)
+    else:
+        dev_str1 = dev_str
+
+    # inputs
+    x0 = tensor_fn(xs[0], 'float32', dev_str0)
+    x1 = tensor_fn(xs[1], 'float32', dev_str1)
+
+    # output
+    x_unified = ivy.unify_array([x0, x1], dev_str0, axis)
+
+    # shape test
+    assert x_unified.shape[axis] == x0.shape[axis] + x1.shape[axis]
+
+    # value test
+    assert ivy.dev_str(x_unified) == dev_str0
+
+
+@pytest.mark.parametrize(
     "args", [[[0, 1, 2, 3, 4], 'some_str', ([1, 2])]])
 @pytest.mark.parametrize(
     "kwargs", [{'a': [0, 1, 2, 3, 4], 'b': 'another_str'}])
