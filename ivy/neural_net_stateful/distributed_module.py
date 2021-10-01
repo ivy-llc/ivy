@@ -36,7 +36,7 @@ class DistributedModule:
         self._distributed_modules = list()
         self._dev_strs = dev_strs
         for dev_str in dev_strs:
-            self._distributed_modules.append(module_class(dev_str, v, build_mode, store_vars))
+            self._distributed_modules.append(module_class(dev_str, v.to_dev(dev_str), build_mode, store_vars))
 
     # Public #
     # -------#
@@ -45,8 +45,7 @@ class DistributedModule:
         """
         the forward pass of the layer, treating layer instance as callable function.
         """
-        args_dist = ivy.distribute(args, self._dev_strs)
-        kwargs_dist = ivy.distribute(kwargs, self._dev_strs)
+        args_dist, kwargs_dist = ivy.distribute(self._dev_strs, *args, **kwargs)
         rets = list()
         for module, args_d, kwargs_d in zip(self._distributed_modules, args_dist, kwargs_dist):
             rets.append(module(*args_d, **kwargs_d))
@@ -59,8 +58,9 @@ class DistributedModule:
         :type weights_path: string
         """
         all_vs = [module.v for module in self._distributed_modules]
-        # ToDo: assert all variables are equal before saving
-        v = None
+        assert ivy.Container.identical_structure(all_vs)
+        assert ivy.Container.multi_map(lambda xs, _: ivy.arrays_equal(xs), all_vs).all_true()
+        v = all_vs[0]
         os.makedirs('/'.join(weights_path.split('/')[:-1]), exist_ok=True)
         v.to_disk_as_hdf5(weights_path)
 
