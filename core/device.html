@@ -103,6 +103,7 @@
 <li class="toctree-l2"><a class="reference internal" href="device/split_func_call.html">split_func_call</a></li>
 <li class="toctree-l2"><a class="reference internal" href="device/split_func_call_across_devices.html">split_func_call_across_devices</a></li>
 <li class="toctree-l2"><a class="reference internal" href="device/distribute_array.html">distribute_array</a></li>
+<li class="toctree-l2"><a class="reference internal" href="device/unify_array.html">unify_array</a></li>
 <li class="toctree-l2"><a class="reference internal" href="device/distribute.html">distribute</a></li>
 <li class="toctree-l2"><a class="reference internal" href="device/Profiler.html">Profiler</a></li>
 </ul>
@@ -440,6 +441,22 @@ the entire input array at once. This can be useful to reduce memory usage of the
 </dl>
 </dd></dl>
 
+<dl class="py function">
+<dt id="ivy.core.device.unify_array">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">unify_array</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">dev_str</span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">check_for_array</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/device.html#unify_array"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.device.unify_array" title="Permalink to this definition">¶</a></dt>
+<dd><p>Unify a list of sub-arrays, on arbitrary devices, to a single concattenated array on the specified device.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>sequence of arrays</em>) – The list of sub-arrays to unify onto the specified device.</p></li>
+<li><p><strong>dev_str</strong> (<em>sty</em>) – The device to unify the sub-arrays to.</p></li>
+<li><p><strong>axis</strong> (<em>int</em><em>, </em><em>optional</em>) – The axis along which to concattenate the array. Default is 0.</p></li>
+<li><p><strong>check_for_array</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to check if the input is a list of arrays, and only unify if so. Default is True.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
 <div class="toctree-wrapper compound">
 <p class="caption"><span class="caption-text">Device</span></p>
 <ul>
@@ -455,6 +472,7 @@ the entire input array at once. This can be useful to reduce memory usage of the
 <li class="toctree-l1"><a class="reference internal" href="device/split_func_call.html">split_func_call</a></li>
 <li class="toctree-l1"><a class="reference internal" href="device/split_func_call_across_devices.html">split_func_call_across_devices</a></li>
 <li class="toctree-l1"><a class="reference internal" href="device/distribute_array.html">distribute_array</a></li>
+<li class="toctree-l1"><a class="reference internal" href="device/unify_array.html">unify_array</a></li>
 <li class="toctree-l1"><a class="reference internal" href="device/distribute.html">distribute</a></li>
 <li class="toctree-l1"><a class="reference internal" href="device/Profiler.html">Profiler</a></li>
 </ul>

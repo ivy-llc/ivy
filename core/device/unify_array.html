@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>distribute &mdash; Ivy 1.0 documentation</title>
+  <title>unify_array &mdash; Ivy 1.0 documentation</title>
   
 
   
@@ -36,8 +36,8 @@
   <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="Profiler" href="Profiler.html" />
-    <link rel="prev" title="unify_array" href="unify_array.html" /> 
+    <link rel="next" title="distribute" href="distribute.html" />
+    <link rel="prev" title="distribute_array" href="distribute_array.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -103,8 +103,8 @@
 <li class="toctree-l2"><a class="reference internal" href="split_func_call.html">split_func_call</a></li>
 <li class="toctree-l2"><a class="reference internal" href="split_func_call_across_devices.html">split_func_call_across_devices</a></li>
 <li class="toctree-l2"><a class="reference internal" href="distribute_array.html">distribute_array</a></li>
-<li class="toctree-l2"><a class="reference internal" href="unify_array.html">unify_array</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">distribute</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">unify_array</a></li>
+<li class="toctree-l2"><a class="reference internal" href="distribute.html">distribute</a></li>
 <li class="toctree-l2"><a class="reference internal" href="Profiler.html">Profiler</a></li>
 </ul>
 </li>
@@ -192,13 +192,13 @@
         
           <li><a href="../device.html">Device</a> &raquo;</li>
         
-      <li>distribute</li>
+      <li>unify_array</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="../../_sources/core/device/distribute.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../_sources/core/device/unify_array.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -211,12 +211,22 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="distribute">
-<h1>distribute<a class="headerlink" href="#distribute" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="unify-array">
+<h1>unify_array<a class="headerlink" href="#unify-array" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
-<dt id="ivy.core.device.distribute">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">distribute</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dev_strs</span></em>, <em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/device.html#distribute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.device.distribute" title="Permalink to this definition">¶</a></dt>
-<dd><p>Distribute the input arguments across the specified devices.</p>
+<dt id="ivy.core.device.unify_array">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">unify_array</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">dev_str</span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">check_for_array</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/device.html#unify_array"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.device.unify_array" title="Permalink to this definition">¶</a></dt>
+<dd><p>Unify a list of sub-arrays, on arbitrary devices, to a single concattenated array on the specified device.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>sequence of arrays</em>) – The list of sub-arrays to unify onto the specified device.</p></li>
+<li><p><strong>dev_str</strong> (<em>sty</em>) – The device to unify the sub-arrays to.</p></li>
+<li><p><strong>axis</strong> (<em>int</em><em>, </em><em>optional</em>) – The axis along which to concattenate the array. Default is 0.</p></li>
+<li><p><strong>check_for_array</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to check if the input is a list of arrays, and only unify if so. Default is True.</p></li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
 <div class="line-block">
@@ -234,10 +244,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="Profiler.html" class="btn btn-neutral float-right" title="Profiler" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="distribute.html" class="btn btn-neutral float-right" title="distribute" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="unify_array.html" class="btn btn-neutral float-left" title="unify_array" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="distribute_array.html" class="btn btn-neutral float-left" title="distribute_array" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
