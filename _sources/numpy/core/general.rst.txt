@@ -40,7 +40,5 @@ General
    general/gather_nd.rst
    general/linear_resample.rst
    general/compile_fn.rst
-   general/Profiler:
-
-    def __init__.rst
+   general/Profiler.rst
 

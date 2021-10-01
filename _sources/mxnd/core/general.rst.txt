@@ -54,7 +54,5 @@ General
    general/to_dev.rst
    general/str_to_dev.rst
    general/compile_fn.rst
-   general/Profiler:
-
-    def __init__.rst
+   general/Profiler.rst
 

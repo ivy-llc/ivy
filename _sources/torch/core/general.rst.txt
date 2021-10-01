@@ -82,7 +82,5 @@ General
    general/compile_fn.rst
    general/current_framework_str.rst
    general/multiprocessing.rst
-   general/Profiler:
-
-    def __init__.rst
+   general/Profiler.rst
 

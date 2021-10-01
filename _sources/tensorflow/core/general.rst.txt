@@ -45,7 +45,5 @@ General
    general/dev_to_str.rst
    general/str_to_dev.rst
    general/tpu_is_available.rst
-   general/Profiler:
-
-    def __init__.rst
+   general/Profiler.rst
 
