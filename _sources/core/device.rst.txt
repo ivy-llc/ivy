@@ -21,13 +21,11 @@ Device
    device/num_gpus.rst
    device/tpu_is_available.rst
    device/to_dev.rst
-   device/split_func_call.rst
-   device/split_func_call_across_devices.rst
-   device/distribute_array.rst
-   device/distribute_args.rst
-   device/unify_array.rst
-   device/unify_args.rst
-   device/DistributedArray.rst
+   device/dev_dist_array.rst
+   device/dev_dist_args.rst
+   device/dev_unify_array.rst
+   device/dev_unify_args.rst
+   device/Distributed.rst
    device/DistributedArgs:
 
     def __init__.rst

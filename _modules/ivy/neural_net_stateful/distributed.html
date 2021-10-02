@@ -225,13 +225,16 @@
 <span class="sd">        :type module_kwargs: dict of any, optional</span>
 <span class="sd">        :type build_mode: str, optional</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_distributed_modules</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_dev_strs</span> <span class="o">=</span> <span class="n">dev_strs</span>
-        <span class="k">if</span> <span class="s1">&#39;v&#39;</span> <span class="ow">in</span> <span class="n">inspect</span><span class="o">.</span><span class="n">getfullargspec</span><span class="p">(</span><span class="n">module_class</span><span class="o">.</span><span class="fm">__init__</span><span class="p">)</span><span class="o">.</span><span class="n">args</span><span class="p">:</span>
-            <span class="n">module_kwargs</span><span class="p">[</span><span class="s1">&#39;v&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">default</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="n">v</span><span class="o">.</span><span class="n">to_dev</span><span class="p">(</span><span class="n">dev_str</span><span class="p">),</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">dev_str</span> <span class="ow">in</span> <span class="n">dev_strs</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_distributed_modules</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">module_class</span><span class="p">(</span>
-                <span class="n">dev_str</span><span class="o">=</span><span class="n">dev_str</span><span class="p">,</span> <span class="o">**</span><span class="n">module_kwargs</span><span class="p">))</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_distributed_modules</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+        <span class="n">with_v</span> <span class="o">=</span> <span class="kc">True</span> <span class="k">if</span> <span class="s1">&#39;v&#39;</span> <span class="ow">in</span> <span class="n">inspect</span><span class="o">.</span><span class="n">getfullargspec</span><span class="p">(</span><span class="n">module_class</span><span class="o">.</span><span class="fm">__init__</span><span class="p">)</span><span class="o">.</span><span class="n">args</span> <span class="ow">and</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">else</span> <span class="kc">False</span>
+        <span class="n">distributed_v</span> <span class="o">=</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Distributed</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">dev_str</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">dev_strs</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">with_v</span><span class="p">:</span>
+                <span class="n">module</span> <span class="o">=</span> <span class="n">module_class</span><span class="p">(</span><span class="n">dev_str</span><span class="o">=</span><span class="n">dev_str</span><span class="p">,</span> <span class="n">v</span><span class="o">=</span><span class="n">v</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">if</span> <span class="n">distributed_v</span> <span class="k">else</span> <span class="n">v</span><span class="o">.</span><span class="n">to_dev</span><span class="p">(</span><span class="n">dev_str</span><span class="p">),</span> <span class="o">**</span><span class="n">module_kwargs</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">module</span> <span class="o">=</span> <span class="n">module_class</span><span class="p">(</span><span class="n">dev_str</span><span class="o">=</span><span class="n">dev_str</span><span class="p">,</span> <span class="o">**</span><span class="n">module_kwargs</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_distributed_modules</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">module</span><span class="p">)</span></div>
 
     <span class="c1"># Public #</span>
     <span class="c1"># -------#</span>
@@ -240,11 +243,11 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        the forward pass of the layer, treating layer instance as callable function.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">args_dist</span><span class="p">,</span> <span class="n">kwargs_dist</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">distribute_args</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dev_strs</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">args_dist</span><span class="p">,</span> <span class="n">kwargs_dist</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">dev_dist_args</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dev_strs</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="n">rets</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
         <span class="k">for</span> <span class="n">module</span><span class="p">,</span> <span class="n">args_d</span><span class="p">,</span> <span class="n">kwargs_d</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_distributed_modules</span><span class="p">,</span> <span class="n">args_dist</span><span class="p">,</span> <span class="n">kwargs_dist</span><span class="p">):</span>
             <span class="n">rets</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">module</span><span class="p">(</span><span class="o">*</span><span class="n">args_d</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs_d</span><span class="p">))</span>
-        <span class="k">return</span> <span class="n">rets</span>
+        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Distributed</span><span class="p">(</span><span class="n">rets</span><span class="p">)</span>
 
 <div class="viewcode-block" id="DistributedModule.save_weights"><a class="viewcode-back" href="../../../neural_net_stateful/distributed.html#ivy.neural_net_stateful.distributed.DistributedModule.save_weights">[docs]</a>    <span class="k">def</span> <span class="nf">save_weights</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">weights_path</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -274,67 +277,11 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">built</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="nb">min</span><span class="p">([</span><span class="n">module</span><span class="o">.</span><span class="n">built</span> <span class="k">for</span> <span class="n">module</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_distributed_modules</span><span class="p">])</span></div>
+        <span class="k">return</span> <span class="nb">min</span><span class="p">([</span><span class="n">module</span><span class="o">.</span><span class="n">built</span> <span class="k">for</span> <span class="n">module</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_distributed_modules</span><span class="p">])</span>
 
-
-<span class="c1"># Optimizer #</span>
-<span class="c1"># ----------#</span>
-
-<span class="c1"># noinspection PyCallingNonCallable</span>
-<div class="viewcode-block" id="DistributedOptimizer"><a class="viewcode-back" href="../../../neural_net_stateful/distributed.html#ivy.neural_net_stateful.distributed.DistributedOptimizer">[docs]</a><span class="k">class</span> <span class="nc">DistributedOptimizer</span><span class="p">:</span>
-
-<div class="viewcode-block" id="DistributedOptimizer.__init__"><a class="viewcode-back" href="../../../neural_net_stateful/distributed.html#ivy.neural_net_stateful.distributed.DistributedOptimizer.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">optimizer_class</span><span class="p">,</span> <span class="n">dev_strs</span><span class="p">,</span> <span class="n">lr</span><span class="p">,</span> <span class="n">compile_step</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">stop_gradients</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-                 <span class="o">**</span><span class="n">optimizer_kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Construct an general Optimizer. This is an abstract class, and must be derived.</span>
-
-<span class="sd">        :param optimizer_class: The customized ivy.Optimizer class you wish to distribute across devices.</span>
-<span class="sd">        :type optimizer_class: Customized ivy.Optimizer class</span>
-<span class="sd">        :param dev_strs: devices on which to distribute the module.</span>
-<span class="sd">        :type dev_strs: str</span>
-<span class="sd">        :param lr: Learning rate.</span>
-<span class="sd">        :type lr: function or float.</span>
-<span class="sd">        :param compile_step: Whether to compile the optimizer step, default is False.</span>
-<span class="sd">        :type compile_step: bool, optional</span>
-<span class="sd">        :param inplace: Whether to update the variables in-place, or to create new variable handles.</span>
-<span class="sd">                        This is only relevant for frameworks with stateful variables such as PyTorch. Default is True.</span>
-<span class="sd">        :type inplace: bool, optional</span>
-<span class="sd">        :param stop_gradients: Whether to stop the gradients of the variables after each gradient step. Default is True.</span>
-<span class="sd">        :type stop_gradients: bool, optional</span>
-<span class="sd">        :param optimizer_kwargs: Dict of keywords arguments to pass the optimizer constructor. Default is None.</span>
-<span class="sd">        :type optimizer_kwargs: dict of any, optional</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_distributed_optimizers</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_dev_strs</span> <span class="o">=</span> <span class="n">dev_strs</span>
-        <span class="k">for</span> <span class="n">dev_str</span> <span class="ow">in</span> <span class="n">dev_strs</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_distributed_optimizers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">optimizer_class</span><span class="p">(</span>
-                <span class="n">lr</span><span class="o">=</span><span class="n">lr</span><span class="p">,</span> <span class="n">compile_step</span><span class="o">=</span><span class="n">compile_step</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="n">inplace</span><span class="p">,</span> <span class="n">stop_gradients</span><span class="o">=</span><span class="n">stop_gradients</span><span class="p">,</span> <span class="n">dev_str</span><span class="o">=</span><span class="n">dev_str</span><span class="p">,</span>
-                <span class="o">**</span><span class="n">optimizer_kwargs</span><span class="p">))</span></div>
-
-<div class="viewcode-block" id="DistributedOptimizer.set_state"><a class="viewcode-back" href="../../../neural_net_stateful/distributed.html#ivy.neural_net_stateful.distributed.DistributedOptimizer.set_state">[docs]</a>    <span class="k">def</span> <span class="nf">set_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Set state of the optimizer.</span>
-
-<span class="sd">        :param state: Nested state to update.</span>
-<span class="sd">        :type state: Ivy container of state tensors</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="p">[</span><span class="n">optim</span><span class="o">.</span><span class="n">set_state</span><span class="p">(</span><span class="n">s_sub</span><span class="p">)</span> <span class="k">for</span> <span class="n">optim</span><span class="p">,</span> <span class="n">s_sub</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_distributed_optimizers</span><span class="p">,</span> <span class="n">state</span><span class="p">)]</span></div>
-
-<div class="viewcode-block" id="DistributedOptimizer.step"><a class="viewcode-back" href="../../../neural_net_stateful/distributed.html#ivy.neural_net_stateful.distributed.DistributedOptimizer.step">[docs]</a>    <span class="k">def</span> <span class="nf">step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">grads</span><span class="p">,</span> <span class="n">ignore_missing</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Update nested variables container v from possibly compiled overriden private self._step_fn</span>
-
-<span class="sd">        :param v: Nested variables to update.</span>
-<span class="sd">        :type v: Ivy container of variables</span>
-<span class="sd">        :param grads: Nested gradients to update.</span>
-<span class="sd">        :type grads: sequence of arrays</span>
-<span class="sd">        :param ignore_missing: Whether to ignore keys missing from the gradients which exist in the variables.</span>
-<span class="sd">                               Default is False.</span>
-<span class="sd">        :type ignore_missing: bool, optional</span>
-<span class="sd">        :return: The updated variables, following update step.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="p">[</span><span class="n">optim</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="n">v_sub</span><span class="p">,</span> <span class="n">g_sub</span><span class="p">,</span> <span class="n">ignore_missing</span><span class="p">)</span>
-         <span class="k">for</span> <span class="n">optim</span><span class="p">,</span> <span class="n">v_sub</span><span class="p">,</span> <span class="n">g_sub</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_distributed_optimizers</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">grads</span><span class="p">)]</span></div></div>
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">v</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Distributed</span><span class="p">([</span><span class="n">module</span><span class="o">.</span><span class="n">v</span> <span class="k">for</span> <span class="n">module</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_distributed_modules</span><span class="p">])</span></div>
 </pre></div>
 
            </div>
