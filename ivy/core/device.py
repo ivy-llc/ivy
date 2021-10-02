@@ -266,14 +266,14 @@ def distribute(x, dev_strs, axis=0):
     return x
 
 
-def distribute_iter(dev_strs, xs, axis=0):
+def distribute_iter(xs, dev_strs, axis=0):
     """
     Distribute elements of the iterbale xs across the specified devices.
 
-    :param dev_strs: The devices to distribute the iterable elements across.
-    :type dev_strs: sequence of strs
     :param xs: The iterable of items to distribute.
     :type xs: iterable of any
+    :param dev_strs: The devices to distribute the iterable elements across.
+    :type dev_strs: sequence of strs
     :param axis: The axis along which to split the arrays in the iterable xs. Default is 0.
     :type axis: int, optional
     :return: iterable with each element distributed to the target devices
@@ -283,20 +283,20 @@ def distribute_iter(dev_strs, xs, axis=0):
     return DistributedIter([distribute(x, dev_strs, axis) for x in xs], len(dev_strs))
 
 
-def distribute_nest(dev_strs, *args, axis=0, max_depth=1, **kwargs):
+def distribute_nest(args, kwargs, dev_strs, axis=0, max_depth=1):
     """
     Distribute the nested input arguments across the specified devices.
 
-    :param dev_strs: The devices to distribute the nested arguments across.
-    :type dev_strs: sequence of strs
     :param args: The positional nested arguments to distribute.
     :type args: list of any
+    :param kwargs: The keyword nested arguments to distribute.
+    :type kwargs: dict of any
+    :param dev_strs: The devices to distribute the nested arguments across.
+    :type dev_strs: sequence of strs
     :param axis: The axis along which to split the arrays in the arguments. Default is 0.
     :type axis: int, optional
     :param max_depth: The maximum nested depth to reach. Default is 1. Increase this if the nest is deeper.
     :type max_depth: int, optional
-    :param kwargs: The keyword nested arguments to distribute.
-    :type kwargs: dict of any
     :return: nested arguments distributed to the target devices
     """
     if isinstance(dev_strs, str) or len(dev_strs) == 1:
@@ -364,14 +364,14 @@ def clone(x, dev_strs):
     return x
 
 
-def clone_iter(dev_strs, xs):
+def clone_iter(xs, dev_strs):
     """
     Clone elements of the iterbale xs to each of the specified devices.
 
-    :param dev_strs: The devices to clone each of the iterable elements to.
-    :type dev_strs: sequence of strs
     :param xs: The iterable of items to clone.
     :type xs: iterable of any
+    :param dev_strs: The devices to clone each of the iterable elements to.
+    :type dev_strs: sequence of strs
     :return: iterable with each element cloned to each of the target devices
     """
     if isinstance(dev_strs, str) or len(dev_strs) == 1:
@@ -379,18 +379,18 @@ def clone_iter(dev_strs, xs):
     return ClonedIter([clone(x, dev_strs) for x in xs], len(dev_strs))
 
 
-def clone_nest(dev_strs, *args, max_depth=1, **kwargs):
+def clone_nest(args, kwargs, dev_strs, max_depth=1):
     """
     Clone the input arguments across the specified devices.
 
-    :param dev_strs: The devices to clone the arguments to.
-    :type dev_strs: sequence of strs
     :param args: The positional arguments to clone.
     :type args: list of any
-    :param max_depth: The maximum nested depth to reach. Default is 1. Increase this if the nest is deeper.
-    :type max_depth: int, optional
     :param kwargs: The keyword arguments to clone.
     :type kwargs: dict of any
+    :param dev_strs: The devices to clone the arguments to.
+    :type dev_strs: sequence of strs
+    :param max_depth: The maximum nested depth to reach. Default is 1. Increase this if the nest is deeper.
+    :type max_depth: int, optional
     :return: arguments cloned to each of the target devices
     """
     if isinstance(dev_strs, str) or len(dev_strs) == 1:
@@ -465,14 +465,14 @@ def unify(xs, dev_str, mode, axis=0):
 
 
 # noinspection PyShadowingNames
-def unify_iter(dev_str, xs, mode, axis=0):
+def unify_iter(xs, dev_str, mode, axis=0):
     """
     Unify elements of the iterbale xs to a single target device.
 
-    :param dev_str: The device to unify the elements of the iterable to.
-    :type dev_str: str
     :param xs: The iterable of items to clone.
     :type xs: iterable of any
+    :param dev_str: The device to unify the elements of the iterable to.
+    :type dev_str: str
     :param mode: The mode by which to unify, must be one of [ concat | mean | sum ]
     :type mode: str
     :param axis: The axis along which to concattenate the sub-arrays. Default is 0.
@@ -485,17 +485,17 @@ def unify_iter(dev_str, xs, mode, axis=0):
 
 
 # noinspection PyShadowingNames,PyProtectedMember
-def unify_nest(dev_str, args: Type[MultiDevice], kwargs: Type[MultiDevice], mode, axis=0, max_depth=1):
+def unify_nest(args: Type[MultiDevice], kwargs: Type[MultiDevice], dev_str, mode, axis=0, max_depth=1):
     """
     Unify the input nested arguments, which consist of sub-arrays spread across arbitrary devices, to unified arrays
     on the single target device.
 
-    :param dev_str: The device to unify the nested arguments to.
-    :type dev_str: str
     :param args: The nested positional arguments to unify.
     :type args: MultiDevice
     :param kwargs: The nested keyword arguments to unify.
     :type kwargs: MultiDevice
+    :param dev_str: The device to unify the nested arguments to.
+    :type dev_str: str
     :param mode: The mode by which to unify, must be one of [ concat | mean | sum ]
     :type mode: str
     :param axis: The axis along which to concattenate the sub-arrays. Default is 0.

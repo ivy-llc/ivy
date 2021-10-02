@@ -289,7 +289,7 @@ def test_distribute_args(args, kwargs, axis, tensor_fn, dev_str, call):
     else:
         dev_str1 = dev_str
     dev_strs = [dev_str0, dev_str1]
-    dist_args, dist_kwargs = ivy.distribute_nest(dev_strs, *args, **kwargs, axis=axis)
+    dist_args, dist_kwargs = ivy.distribute_nest(args, kwargs, dev_strs, axis=axis)
 
     # device specific args
     assert dist_args[0]
@@ -340,7 +340,7 @@ def test_clone_args(args, kwargs, axis, tensor_fn, dev_str, call):
     else:
         dev_str1 = dev_str
     dev_strs = [dev_str0, dev_str1]
-    cloned_args, cloned_kwargs = ivy.clone_nest(dev_strs, *args, **kwargs)
+    cloned_args, cloned_kwargs = ivy.clone_nest(args, kwargs, dev_strs)
 
     # device specific args
     assert cloned_args[0]
@@ -397,7 +397,7 @@ def test_unify_args(args, kwargs, axis, tensor_fn, dev_str, call):
                                   'b': kwargs['b']}, arg_len)
 
     # outputs
-    args_uni, kwargs_uni = ivy.unify_nest(dev_str0, args, kwargs, 'concat', axis=axis)
+    args_uni, kwargs_uni = ivy.unify_nest(args, kwargs, dev_str0, 'concat', axis=axis)
 
     # shape test
     assert args_uni[0].shape[axis] == args._iterable[0][0].shape[axis] + args._iterable[0][1].shape[axis]
