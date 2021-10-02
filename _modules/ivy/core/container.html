@@ -361,6 +361,39 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">containers</span></div>
 
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_concat_unify</span><span class="p">(</span><span class="n">containers</span><span class="p">,</span> <span class="n">dev_str</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">ivyh</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">Container</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">cont</span><span class="o">.</span><span class="n">to_dev</span><span class="p">(</span><span class="n">dev_str</span><span class="p">)</span> <span class="k">for</span> <span class="n">cont</span> <span class="ow">in</span> <span class="n">containers</span><span class="p">],</span> <span class="n">axis</span><span class="p">,</span> <span class="n">ivyh</span><span class="p">)</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_sum_unify</span><span class="p">(</span><span class="n">containers</span><span class="p">,</span> <span class="n">dev_str</span><span class="p">,</span> <span class="n">_</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">_1</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">sum</span><span class="p">([</span><span class="n">cont</span><span class="o">.</span><span class="n">to_dev</span><span class="p">(</span><span class="n">dev_str</span><span class="p">)</span> <span class="k">for</span> <span class="n">cont</span> <span class="ow">in</span> <span class="n">containers</span><span class="p">])</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_mean_unify</span><span class="p">(</span><span class="n">containers</span><span class="p">,</span> <span class="n">dev_str</span><span class="p">,</span> <span class="n">_</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">_1</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">Container</span><span class="o">.</span><span class="n">_sum_unify</span><span class="p">(</span><span class="n">containers</span><span class="p">,</span> <span class="n">dev_str</span><span class="p">)</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">containers</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Container.unify"><a class="viewcode-back" href="../../../core/container/Container.html#ivy.core.container.Container.unify">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">unify</span><span class="p">(</span><span class="n">containers</span><span class="p">,</span> <span class="n">dev_str</span><span class="p">,</span> <span class="n">mode</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">ivyh</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Unify a list of containers, on arbitrary devices, to a single container on the specified device.</span>
+
+<span class="sd">        :param containers: containers to unify</span>
+<span class="sd">        :type containers: sequence of Container objects</span>
+<span class="sd">        :param dev_str: The device to unify the containers to.</span>
+<span class="sd">        :type dev_str: str</span>
+<span class="sd">        :param mode: The mode by which to unify, must be one of [ concat | mean | sum ]</span>
+<span class="sd">        :type mode: str</span>
+<span class="sd">        :param axis: The axis along which to concattenate the container, if concat mode is set. Default is 0.</span>
+<span class="sd">        :type axis: int, optional</span>
+<span class="sd">        :param ivyh: Handle to ivy module to use for the calculations. Default is None, which results in the global ivy.</span>
+<span class="sd">        :type ivyh: handle to ivy module, optional</span>
+<span class="sd">        :return: Unified container</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;concat&#39;</span><span class="p">:</span> <span class="n">Container</span><span class="o">.</span><span class="n">_concat_unify</span><span class="p">,</span>
+                <span class="s1">&#39;sum&#39;</span><span class="p">:</span> <span class="n">Container</span><span class="o">.</span><span class="n">_sum_unify</span><span class="p">,</span>
+                <span class="s1">&#39;mean&#39;</span><span class="p">:</span> <span class="n">Container</span><span class="o">.</span><span class="n">_mean_unify</span><span class="p">}[</span><span class="n">mode</span><span class="p">](</span><span class="n">containers</span><span class="p">,</span> <span class="n">dev_str</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">ivyh</span><span class="p">)</span></div>
+
 <div class="viewcode-block" id="Container.concat"><a class="viewcode-back" href="../../../core/container/Container.html#ivy.core.container.Container.concat">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">concat</span><span class="p">(</span><span class="n">containers</span><span class="p">,</span> <span class="n">dim</span><span class="p">,</span> <span class="n">ivyh</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>

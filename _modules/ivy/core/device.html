@@ -613,11 +613,11 @@
 <span class="c1"># noinspection PyShadowingNames</span>
 <div class="viewcode-block" id="unify_array"><a class="viewcode-back" href="../../../core/device/unify_array.html#ivy.core.device.unify_array">[docs]</a><span class="k">def</span> <span class="nf">unify_array</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="n">dev_str</span><span class="p">,</span> <span class="n">mode</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Unify a list of sub-arrays, on arbitrary devices, to a single concattenated array on the specified device.</span>
+<span class="sd">    Unify a list of sub-arrays, on arbitrary devices, to a single array on the specified device.</span>
 
-<span class="sd">    :param xs: The list of sub-arrays to unify onto the specified device.</span>
+<span class="sd">    :param xs: The list of arrays to unify onto the specified device.</span>
 <span class="sd">    :type xs: sequence of arrays</span>
-<span class="sd">    :param dev_str: The device to unify the sub-arrays to.</span>
+<span class="sd">    :param dev_str: The device to unify the arrays to.</span>
 <span class="sd">    :type dev_str: str</span>
 <span class="sd">    :param mode: The mode by which to unify, must be one of [ concat | mean | sum ]</span>
 <span class="sd">    :type mode: str</span>
@@ -641,7 +641,7 @@
 <span class="sd">    :type dev_str: str</span>
 <span class="sd">    :param mode: The mode by which to unify, must be one of [ concat | mean | sum ]</span>
 <span class="sd">    :type mode: str</span>
-<span class="sd">    :param axis: The axis along which to concattenate the array. Default is 0.</span>
+<span class="sd">    :param axis: The axis along which to concattenate the array, if concat mode is set. Default is 0.</span>
 <span class="sd">    :type axis: int, optional</span>
 <span class="sd">    :return: array unified to the target device</span>
 <span class="sd">    &quot;&quot;&quot;</span>

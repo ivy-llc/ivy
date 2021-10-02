@@ -1834,6 +1834,26 @@ Default is True.</p></li>
 </dd></dl>
 
 <dl class="py method">
+<dt id="ivy.core.container.Container.unify">
+<em class="property">static </em><code class="sig-name descname">unify</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">containers</span></em>, <em class="sig-param"><span class="n">dev_str</span></em>, <em class="sig-param"><span class="n">mode</span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">ivyh</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/container.html#Container.unify"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.unify" title="Permalink to this definition">¶</a></dt>
+<dd><p>Unify a list of containers, on arbitrary devices, to a single container on the specified device.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>containers</strong> (<em>sequence of Container objects</em>) – containers to unify</p></li>
+<li><p><strong>dev_str</strong> (<em>str</em>) – The device to unify the containers to.</p></li>
+<li><p><strong>mode</strong> (<em>str</em>) – The mode by which to unify, must be one of [ concat | mean | sum ]</p></li>
+<li><p><strong>axis</strong> (<em>int</em><em>, </em><em>optional</em>) – The axis along which to concattenate the container, if concat mode is set. Default is 0.</p></li>
+<li><p><strong>ivyh</strong> (<em>handle to ivy module</em><em>, </em><em>optional</em>) – Handle to ivy module to use for the calculations. Default is None, which results in the global ivy.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Unified container</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt id="ivy.core.container.Container.unstack">
 <code class="sig-name descname">unstack</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">axis</span></em>, <em class="sig-param"><span class="n">keepdims</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">dim_size</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/container.html#Container.unstack"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.unstack" title="Permalink to this definition">¶</a></dt>
 <dd><p>Unstack containers along specified dimension.</p>
