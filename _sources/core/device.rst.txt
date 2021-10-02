@@ -42,6 +42,9 @@ Device
    device/Cloned.rst
    device/ClonedIter.rst
    device/ClonedNest.rst
+   device/DevMapperMultiThread:
+
+    def __init__.rst
    device/DevMapperMultiProc:
 
     def __init__.rst
