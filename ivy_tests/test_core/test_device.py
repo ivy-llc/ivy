@@ -289,7 +289,7 @@ def test_distribute_args(args, kwargs, axis, tensor_fn, dev_str, call):
     else:
         dev_str1 = dev_str
     dev_strs = [dev_str0, dev_str1]
-    dist_args, dist_kwargs = ivy.distribute_args(dev_strs, *args, **kwargs, axis=axis)
+    dist_args, dist_kwargs = ivy.distribute_nest(dev_strs, *args, **kwargs, axis=axis)
 
     # device specific args
     assert dist_args[0]
@@ -340,7 +340,7 @@ def test_clone_args(args, kwargs, axis, tensor_fn, dev_str, call):
     else:
         dev_str1 = dev_str
     dev_strs = [dev_str0, dev_str1]
-    cloned_args, cloned_kwargs = ivy.clone_args(dev_strs, *args, **kwargs)
+    cloned_args, cloned_kwargs = ivy.clone_nest(dev_strs, *args, **kwargs)
 
     # device specific args
     assert cloned_args[0]
@@ -390,9 +390,9 @@ def test_unify_args(args, kwargs, axis, tensor_fn, dev_str, call):
     arg_len = len(dev_strs)
 
     # inputs
-    args = ivy.DistributedArgs([ivy.Distributed([tensor_fn(args[0][0], 'float32', dev_str0),
+    args = ivy.DistributedNest([ivy.Distributed([tensor_fn(args[0][0], 'float32', dev_str0),
                                                  tensor_fn(args[0][1], 'float32', dev_str1)])] + args[1:], arg_len)
-    kwargs = ivy.DistributedArgs({'a': ivy.Distributed([tensor_fn(kwargs['a'][0], 'float32', dev_str0),
+    kwargs = ivy.DistributedNest({'a': ivy.Distributed([tensor_fn(kwargs['a'][0], 'float32', dev_str0),
                                                         tensor_fn(kwargs['a'][1], 'float32', dev_str1)]),
                                   'b': kwargs['b']}, arg_len)
 
@@ -400,8 +400,8 @@ def test_unify_args(args, kwargs, axis, tensor_fn, dev_str, call):
     args_uni, kwargs_uni = ivy.unify_args(dev_str0, args, kwargs, axis=axis)
 
     # shape test
-    assert args_uni[0].shape[axis] == args._args[0][0].shape[axis] + args._args[0][1].shape[axis]
-    assert kwargs_uni['a'].shape[axis] == kwargs._args['a'][0].shape[axis] + kwargs._args['a'][1].shape[axis]
+    assert args_uni[0].shape[axis] == args._nest[0][0].shape[axis] + args._nest[0][1].shape[axis]
+    assert kwargs_uni['a'].shape[axis] == kwargs._nest['a'][0].shape[axis] + kwargs._nest['a'][1].shape[axis]
 
     # value test
     assert ivy.dev_str(args_uni[0]) == dev_str0

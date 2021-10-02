@@ -156,19 +156,23 @@ def to_dev(x: Union[ivy.Array, ivy.NativeArray], dev_str: str = None, f: ivy.Fra
 # -------------#
 
 class MultiDevice(list):
-    pass
+
+    def __repr__(self):
+        return 'MultiDevice(' + super().__repr__() + ')'
 
 
-class MultiDeviceArgs(MultiDevice):
+class MultiDeviceNest(MultiDevice):
 
-    def __init__(self, args, length):
+    def __init__(self, nest, length, max_depth=1):
         self._counter = 0
-        self._args = args
+        self._nest = nest
         self._length = length
+        self._max_depth = max_depth
         super().__init__()
 
     def __getitem__(self, item):
-        return ivy.nested_map(self._args, lambda x: x[item] if isinstance(x, MultiDevice) else x)
+        return ivy.nested_map(self._nest, lambda x: x[item] if isinstance(x, MultiDevice) else x,
+                              max_depth=self._max_depth)
 
     def __iter__(self):
         self._counter = 0
@@ -184,11 +188,8 @@ class MultiDeviceArgs(MultiDevice):
     def __len__(self):
         return self._length
 
-
-class MultiDeviceKWArgs(MultiDeviceArgs):
-
-    def __init__(self, args, length):
-        super().__init__(args, length)
+    def __repr__(self):
+        return 'MultiDeviceNest(' + super().__repr__() + ')'
 
 
 # Device Distribution #
@@ -200,22 +201,13 @@ class Distributed(MultiDevice):
         return 'Distributed(' + super().__repr__() + ')'
 
 
-class DistributedArgs(MultiDeviceArgs):
+class DistributedNest(MultiDeviceNest):
 
-    def __init__(self, args, length):
-        super().__init__(args, length)
-
-    def __repr__(self):
-        return 'DistributedArgs(' + self._args.__repr__() + ')'
-
-
-class DistributedKWArgs(MultiDeviceKWArgs):
-
-    def __init__(self, args, length):
-        super().__init__(args, length)
+    def __init__(self, nest, length):
+        super().__init__(nest, length)
 
     def __repr__(self):
-        return 'DistributedKWArgs(' + self._args.__repr__() + ')'
+        return 'DistributedNest(' + self._nest.__repr__() + ')'
 
 
 def distribute_array(x, dev_strs, axis=0, check_for_array=True):
@@ -238,26 +230,28 @@ def distribute_array(x, dev_strs, axis=0, check_for_array=True):
         [ivy.to_dev(x_sub, d) for x_sub, d in zip(ivy.split(x, len(dev_strs), axis, with_remainder=True), dev_strs)])
 
 
-def distribute_args(dev_strs, *args, axis=0, **kwargs):
+def distribute_nest(dev_strs, *args, axis=0, max_depth=1, **kwargs):
     """
-    Distribute the input arguments across the specified devices.
+    Distribute the nested input arguments across the specified devices.
 
-    :param dev_strs: The devices to distribute the arguments across.
+    :param dev_strs: The devices to distribute the nested arguments across.
     :type dev_strs: sequence of strs
-    :param args: The positional arguments to distribute.
+    :param args: The positional nested arguments to distribute.
     :type args: list of any
     :param axis: The axis along which to split the arrays in the arguments. Default is 0.
     :type axis: int, optional
-    :param kwargs: The keyword arguments to distribute.
+    :param max_depth: The maximum nested depth to reach. Default is 1. Increase this if the nest is deeper.
+    :type max_depth: int, optional
+    :param kwargs: The keyword nested arguments to distribute.
     :type kwargs: dict of any
-    :return: arguments distributed to the target devices
+    :return: nested arguments distributed to the target devices
     """
     if isinstance(dev_strs, str) or len(dev_strs) == 1:
         return args, kwargs
-    args_dist = ivy.nested_map(args, lambda x: distribute_array(x, dev_strs, axis))
-    kwargs_dist = ivy.nested_map(kwargs, lambda x: distribute_array(x, dev_strs, axis))
+    args_dist = ivy.nested_map(args, lambda x: distribute_array(x, dev_strs, axis), max_depth=max_depth)
+    kwargs_dist = ivy.nested_map(kwargs, lambda x: distribute_array(x, dev_strs, axis), max_depth=max_depth)
     args_lengths = len(dev_strs)
-    return DistributedArgs(args_dist, args_lengths), DistributedKWArgs(kwargs_dist, args_lengths)
+    return DistributedNest(args_dist, args_lengths), DistributedNest(kwargs_dist, args_lengths)
 
 
 # Device Cloning #
@@ -269,22 +263,13 @@ class Cloned(MultiDevice):
         return 'Cloned(' + super().__repr__() + ')'
 
 
-class ClonedArgs(MultiDeviceArgs):
+class ClonedNest(MultiDeviceNest):
 
-    def __init__(self, args, length):
-        super().__init__(args, length)
-
-    def __repr__(self):
-        return 'ClonedArgs(' + self._args.__repr__() + ')'
-
-
-class ClonedKWArgs(MultiDeviceKWArgs):
-
-    def __init__(self, args, length):
-        super().__init__(args, length)
+    def __init__(self, nest, length):
+        super().__init__(nest, length)
 
     def __repr__(self):
-        return 'Cloned(' + self._args.__repr__() + ')'
+        return 'ClonedNest(' + self._nest.__repr__() + ')'
 
 
 def clone_array(x, dev_strs, check_for_array=True):
@@ -304,7 +289,7 @@ def clone_array(x, dev_strs, check_for_array=True):
     return Cloned([ivy.to_dev(x, d) for d in dev_strs])
 
 
-def clone_args(dev_strs, *args, **kwargs):
+def clone_nest(dev_strs, *args, max_depth=1, **kwargs):
     """
     Clone the input arguments across the specified devices.
 
@@ -312,16 +297,18 @@ def clone_args(dev_strs, *args, **kwargs):
     :type dev_strs: sequence of strs
     :param args: The positional arguments to clone.
     :type args: list of any
+    :param max_depth: The maximum nested depth to reach. Default is 1. Increase this if the nest is deeper.
+    :type max_depth: int, optional
     :param kwargs: The keyword arguments to clone.
     :type kwargs: dict of any
     :return: arguments cloned to each of the target devices
     """
     if isinstance(dev_strs, str) or len(dev_strs) == 1:
         return args, kwargs
-    args_cloned = ivy.nested_map(args, lambda x: clone_array(x, dev_strs))
-    kwargs_cloned = ivy.nested_map(kwargs, lambda x: clone_array(x, dev_strs))
+    args_cloned = ivy.nested_map(args, lambda x: clone_array(x, dev_strs), max_depth=max_depth)
+    kwargs_cloned = ivy.nested_map(kwargs, lambda x: clone_array(x, dev_strs), max_depth=max_depth)
     args_lengths = len(dev_strs)
-    return ClonedArgs(args_cloned, args_lengths), ClonedKWArgs(kwargs_cloned, args_lengths)
+    return ClonedNest(args_cloned, args_lengths), ClonedNest(kwargs_cloned, args_lengths)
 
 
 # Device Unification #
@@ -348,7 +335,7 @@ def unify_array(x, dev_str, axis=0, check_for_array=True):
 
 
 # noinspection PyShadowingNames,PyProtectedMember
-def unify_args(dev_str, args: Type[MultiDevice], kwargs: Type[MultiDevice], axis=0):
+def unify_args(dev_str, args: Type[MultiDevice], kwargs: Type[MultiDevice], axis=0, max_depth=1):
     """
     Unify the input arguments, which consist of sub-arrays distributed across arbitrary devices, to a unified arrays
     on a single target device.
@@ -359,12 +346,14 @@ def unify_args(dev_str, args: Type[MultiDevice], kwargs: Type[MultiDevice], axis
     :type args: MultiDevice
     :param axis: The axis along which to concattenate the sub-arrays. Default is 0.
     :type axis: int, optional
+    :param max_depth: The maximum nested depth to reach. Default is 1. Increase this if the nest is deeper.
+    :type max_depth: int, optional
     :param kwargs: The keyword arguments to unify.
     :type kwargs: MultiDevice
     :return: arguments unified to the target device
     """
-    args_uni = ivy.nested_map(args._args, lambda x: unify_array(x, dev_str, axis))
-    kwargs_uni = ivy.nested_map(kwargs._args, lambda x: unify_array(x, dev_str, axis))
+    args_uni = ivy.nested_map(args._nest, lambda x: unify_array(x, dev_str, axis), max_depth=max_depth)
+    kwargs_uni = ivy.nested_map(kwargs._nest, lambda x: unify_array(x, dev_str, axis), max_depth=max_depth)
     return args_uni, kwargs_uni
 
 
