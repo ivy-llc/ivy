@@ -210,7 +210,7 @@ class DistributedNest(MultiDeviceNest):
         return 'DistributedNest(' + self._nest.__repr__() + ')'
 
 
-def distribute_array(x, dev_strs, axis=0, check_for_array=True):
+def distribute_array(x, dev_strs, axis=0):
     """
     Distribute an array across the specified devices, returning a list of sub-arrays, each on a different device.
 
@@ -220,14 +220,29 @@ def distribute_array(x, dev_strs, axis=0, check_for_array=True):
     :type dev_strs: sequence of strs
     :param axis: The axis along which to split the array. Default is 0.
     :type axis: int, optional
-    :param check_for_array: Whether to check if the input is an array, and only split if so. Default is True.
-    :type check_for_array: bool, optional
     :return: array distributed across the target devices
     """
-    if check_for_array and not ivy.is_array(x):
-        return x
     return Distributed(
         [ivy.to_dev(x_sub, d) for x_sub, d in zip(ivy.split(x, len(dev_strs), axis, with_remainder=True), dev_strs)])
+
+
+def distribute(x, dev_strs, axis=0):
+    """
+    Distribute the input item across the specified devices, returning a list of sub-items, each on a different device.
+
+    :param x: The input array or container to distribute across devices.
+    :type x: array or container
+    :param dev_strs: The devices to distribute the input across.
+    :type dev_strs: sequence of strs
+    :param axis: The axis along which to split the input. Default is 0.
+    :type axis: int, optional
+    :return: array or container distributed across the target devices
+    """
+    if ivy.is_array(x):
+        return distribute_array(x, dev_strs, axis)
+    elif isinstance(x, ivy.Container):
+        return x.distribute(dev_strs, axis)
+    return x
 
 
 def distribute_nest(dev_strs, *args, axis=0, max_depth=1, **kwargs):
@@ -248,8 +263,8 @@ def distribute_nest(dev_strs, *args, axis=0, max_depth=1, **kwargs):
     """
     if isinstance(dev_strs, str) or len(dev_strs) == 1:
         return args, kwargs
-    args_dist = ivy.nested_map(args, lambda x: distribute_array(x, dev_strs, axis), max_depth=max_depth)
-    kwargs_dist = ivy.nested_map(kwargs, lambda x: distribute_array(x, dev_strs, axis), max_depth=max_depth)
+    args_dist = ivy.nested_map(args, lambda x: distribute(x, dev_strs, axis), max_depth=max_depth)
+    kwargs_dist = ivy.nested_map(kwargs, lambda x: distribute(x, dev_strs, axis), max_depth=max_depth)
     args_lengths = len(dev_strs)
     return DistributedNest(args_dist, args_lengths), DistributedNest(kwargs_dist, args_lengths)
 
@@ -272,7 +287,7 @@ class ClonedNest(MultiDeviceNest):
         return 'ClonedNest(' + self._nest.__repr__() + ')'
 
 
-def clone_array(x, dev_strs, check_for_array=True):
+def clone_array(x, dev_strs):
     """
     Clone an array across the specified devices, returning a list of cloned arrays, each on a different device.
 
@@ -280,13 +295,26 @@ def clone_array(x, dev_strs, check_for_array=True):
     :type x: array
     :param dev_strs: The devices to clone the array to.
     :type dev_strs: sequence of strs
-    :param check_for_array: Whether to check if the input is an array, and only clone if so. Default is True.
-    :type check_for_array: bool, optional
     :return: array cloned to each of the target devices
     """
-    if check_for_array and not ivy.is_array(x):
-        return x
     return Cloned([ivy.to_dev(x, d) for d in dev_strs])
+
+
+def clone(x, dev_strs):
+    """
+    Clone the input item to each of the specified devices, returning a list of cloned items, each on a different device.
+
+    :param x: The input array or container to clone to each device.
+    :type x: array or container
+    :param dev_strs: The devices to clone the input to.
+    :type dev_strs: sequence of strs
+    :return: array or container distributed across the target devices
+    """
+    if ivy.is_array(x):
+        return clone_array(x, dev_strs)
+    elif isinstance(x, ivy.Container):
+        return x.clone(dev_strs)
+    return x
 
 
 def clone_nest(dev_strs, *args, max_depth=1, **kwargs):
@@ -305,8 +333,8 @@ def clone_nest(dev_strs, *args, max_depth=1, **kwargs):
     """
     if isinstance(dev_strs, str) or len(dev_strs) == 1:
         return args, kwargs
-    args_cloned = ivy.nested_map(args, lambda x: clone_array(x, dev_strs), max_depth=max_depth)
-    kwargs_cloned = ivy.nested_map(kwargs, lambda x: clone_array(x, dev_strs), max_depth=max_depth)
+    args_cloned = ivy.nested_map(args, lambda x: clone(x, dev_strs), max_depth=max_depth)
+    kwargs_cloned = ivy.nested_map(kwargs, lambda x: clone(x, dev_strs), max_depth=max_depth)
     args_lengths = len(dev_strs)
     return ClonedNest(args_cloned, args_lengths), ClonedNest(kwargs_cloned, args_lengths)
 
@@ -315,45 +343,62 @@ def clone_nest(dev_strs, *args, max_depth=1, **kwargs):
 # -------------------#
 
 # noinspection PyShadowingNames
-def unify_array(x, dev_str, axis=0, check_for_array=True):
+def unify_array(xs, dev_str, axis=0):
     """
     Unify a list of sub-arrays, on arbitrary devices, to a single concattenated array on the specified device.
 
-    :param x: The list of sub-arrays to unify onto the specified device.
-    :type x: sequence of arrays
+    :param xs: The list of sub-arrays to unify onto the specified device.
+    :type xs: sequence of arrays
     :param dev_str: The device to unify the sub-arrays to.
     :type dev_str: str
     :param axis: The axis along which to concattenate the array. Default is 0.
     :type axis: int, optional
-    :param check_for_array: Whether to check if the input is a list of arrays, and only unify if so. Default is True.
-    :type check_for_array: bool, optional
     :return: array unified to the target device
     """
-    if check_for_array and not isinstance(x, MultiDevice):
-        return x
-    return ivy.concatenate([ivy.to_dev(x_sub, dev_str) for x_sub in x], axis)
+    return ivy.concatenate([ivy.to_dev(x_sub, dev_str) for x_sub in xs], axis)
+
+
+# noinspection PyShadowingNames
+def unify(xs, dev_str, axis=0):
+    """
+    Unify a list of sub-arrays, on arbitrary devices, to a single concattenated array on the specified device.
+
+    :param xs: The list of sub-arrays to unify onto the specified device.
+    :type xs: sequence of arrays
+    :param dev_str: The device to unify the sub-arrays to.
+    :type dev_str: str
+    :param axis: The axis along which to concattenate the array. Default is 0.
+    :type axis: int, optional
+    :return: array unified to the target device
+    """
+    xs0 = xs[0]
+    if ivy.is_array(xs0):
+        return ivy.concatenate([ivy.to_dev(x_sub, dev_str) for x_sub in xs], axis)
+    elif isinstance(xs0, ivy.Container):
+        return ivy.Container.concat([x_sub.to_dev(dev_str) for x_sub in xs], axis)
+    return xs
 
 
 # noinspection PyShadowingNames,PyProtectedMember
-def unify_args(dev_str, args: Type[MultiDevice], kwargs: Type[MultiDevice], axis=0, max_depth=1):
+def unify_nest(dev_str, args: Type[MultiDevice], kwargs: Type[MultiDevice], axis=0, max_depth=1):
     """
-    Unify the input arguments, which consist of sub-arrays distributed across arbitrary devices, to a unified arrays
+    Unify the input nested arguments, which consist of sub-arrays spread across arbitrary devices, to unified arrays
     on a single target device.
 
-    :param dev_str: The device to unify the arguments to.
+    :param dev_str: The device to unify the nested arguments to.
     :type dev_str: str
-    :param args: The positional arguments to unify.
+    :param args: The nested positional arguments to unify.
     :type args: MultiDevice
     :param axis: The axis along which to concattenate the sub-arrays. Default is 0.
     :type axis: int, optional
     :param max_depth: The maximum nested depth to reach. Default is 1. Increase this if the nest is deeper.
     :type max_depth: int, optional
-    :param kwargs: The keyword arguments to unify.
+    :param kwargs: The nested keyword arguments to unify.
     :type kwargs: MultiDevice
-    :return: arguments unified to the target device
+    :return: nested arguments unified to the target device
     """
-    args_uni = ivy.nested_map(args._nest, lambda x: unify_array(x, dev_str, axis), max_depth=max_depth)
-    kwargs_uni = ivy.nested_map(kwargs._nest, lambda x: unify_array(x, dev_str, axis), max_depth=max_depth)
+    args_uni = ivy.nested_map(args._nest, lambda x: unify(x, dev_str, axis), max_depth=max_depth)
+    kwargs_uni = ivy.nested_map(kwargs._nest, lambda x: unify(x, dev_str, axis), max_depth=max_depth)
     return args_uni, kwargs_uni
 
 
