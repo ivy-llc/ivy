@@ -57,7 +57,8 @@ def map(fn: Callable, *xs: Iterable, mean: bool = False)\
     return rets
 
 
-def nested_map(x: Union[Union[ivy.Array, ivy.NativeArray], Iterable], fn: Callable, include_derived: bool = False)\
+def nested_map(x: Union[Union[ivy.Array, ivy.NativeArray], Iterable], fn: Callable, include_derived: bool = False,
+               max_depth: int = 1, depth: int = 0)\
         -> Union[Union[ivy.Array, ivy.NativeArray], Iterable]:
     """
     Applies a function on x in a nested manner, whereby all dicts, lists and tuples are traversed to their lowest
@@ -69,17 +70,23 @@ def nested_map(x: Union[Union[ivy.Array, ivy.NativeArray], Iterable], fn: Callab
     :type fn: callable
     :param include_derived: Whether to also recursive for classes derived from tuple, list and dict. Default is False.
     :type include_derived: bool, optional
+    :param max_depth: The maximum nested depth to reach. Default is 1. Increase this if the nest is deeper.
+    :type max_depth: int, optional
+    :param depth: Placeholder for tracking the recursive depth, do not yet this parameter.
+    :type depth: int, used internally
     :return: x following the applicable of fn to it's nested leaves, or x itself if x is not nested.
     """
+    if depth == max_depth:
+        return fn(x)
     class_instance = type(x)
     check_fn = (lambda x_, t: isinstance(x, t)) if include_derived else (lambda x_, t: type(x) is t)
     if check_fn(x, tuple):
-        return class_instance(tuple([nested_map(i, fn) for i in x]))
+        return class_instance(tuple([nested_map(i, fn, include_derived, max_depth, depth+1) for i in x]))
     elif check_fn(x, list):
-        return class_instance([nested_map(i, fn) for i in x])
+        return class_instance([nested_map(i, fn, include_derived, max_depth, depth+1) for i in x])
     elif check_fn(x, dict):
         class_instance = type(x)
-        return class_instance(dict([(k, nested_map(v, fn)) for k, v in x.items()]))
+        return class_instance(dict([(k, nested_map(v, fn, include_derived, max_depth, depth+1)) for k, v in x.items()]))
     return fn(x)
 
 
