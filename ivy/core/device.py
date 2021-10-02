@@ -266,6 +266,23 @@ def distribute(x, dev_strs, axis=0):
     return x
 
 
+def distribute_iter(dev_strs, xs, axis=0):
+    """
+    Distribute elements of the iterbale xs across the specified devices.
+
+    :param dev_strs: The devices to distribute the iterable elements across.
+    :type dev_strs: sequence of strs
+    :param xs: The iterable of items to distribute.
+    :type xs: iterable of any
+    :param axis: The axis along which to split the arrays in the iterable xs. Default is 0.
+    :type axis: int, optional
+    :return: iterable with each element distributed to the target devices
+    """
+    if isinstance(dev_strs, str) or len(dev_strs) == 1:
+        return xs
+    return DistributedIter([distribute(x, dev_strs, axis) for x in xs], len(dev_strs))
+
+
 def distribute_nest(dev_strs, *args, axis=0, max_depth=1, **kwargs):
     """
     Distribute the nested input arguments across the specified devices.
@@ -347,6 +364,21 @@ def clone(x, dev_strs):
     return x
 
 
+def clone_iter(dev_strs, xs):
+    """
+    Clone elements of the iterbale xs to each of the specified devices.
+
+    :param dev_strs: The devices to clone each of the iterable elements to.
+    :type dev_strs: sequence of strs
+    :param xs: The iterable of items to clone.
+    :type xs: iterable of any
+    :return: iterable with each element cloned to each of the target devices
+    """
+    if isinstance(dev_strs, str) or len(dev_strs) == 1:
+        return xs
+    return ClonedIter([clone(x, dev_strs) for x in xs], len(dev_strs))
+
+
 def clone_nest(dev_strs, *args, max_depth=1, **kwargs):
     """
     Clone the input arguments across the specified devices.
@@ -401,6 +433,8 @@ def unify(xs, dev_str, axis=0):
     :type axis: int, optional
     :return: array unified to the target device
     """
+    if not isinstance(xs, (list, tuple)):
+        return xs
     xs0 = xs[0]
     if ivy.is_array(xs0):
         return ivy.concatenate([ivy.to_dev(x_sub, dev_str) for x_sub in xs], axis)
@@ -409,11 +443,29 @@ def unify(xs, dev_str, axis=0):
     return xs
 
 
+# noinspection PyShadowingNames
+def unify_iter(dev_str, xs, axis=0):
+    """
+    Unify elements of the iterbale xs to a single target device.
+
+    :param dev_str: The device to unify the elements of the iterable to.
+    :type dev_str: str
+    :param xs: The iterable of items to clone.
+    :type xs: iterable of any
+    :param axis: The axis along which to concattenate the sub-arrays. Default is 0.
+    :type axis: int, optional
+    :return: iterable with each element cloned to each of the target devices
+    """
+    # noinspection PyProtectedMember
+    xs = xs._iterable if isinstance(xs, MultiDeviceIter) else xs
+    return [unify(x, dev_str, axis) for x in xs]
+
+
 # noinspection PyShadowingNames,PyProtectedMember
 def unify_nest(dev_str, args: Type[MultiDevice], kwargs: Type[MultiDevice], axis=0, max_depth=1):
     """
     Unify the input nested arguments, which consist of sub-arrays spread across arbitrary devices, to unified arrays
-    on a single target device.
+    on the single target device.
 
     :param dev_str: The device to unify the nested arguments to.
     :type dev_str: str
@@ -427,8 +479,10 @@ def unify_nest(dev_str, args: Type[MultiDevice], kwargs: Type[MultiDevice], axis
     :type kwargs: MultiDevice
     :return: nested arguments unified to the target device
     """
-    args_uni = ivy.nested_map(args._nest, lambda x: unify(x, dev_str, axis), max_depth=max_depth)
-    kwargs_uni = ivy.nested_map(kwargs._nest, lambda x: unify(x, dev_str, axis), max_depth=max_depth)
+    args = args._iterable if isinstance(args, MultiDeviceIter) else args
+    kwargs = kwargs._iterable if isinstance(kwargs, MultiDeviceIter) else kwargs
+    args_uni = ivy.nested_map(args, lambda x: unify(x, dev_str, axis), max_depth=max_depth)
+    kwargs_uni = ivy.nested_map(kwargs, lambda x: unify(x, dev_str, axis), max_depth=max_depth)
     return args_uni, kwargs_uni
 
 
