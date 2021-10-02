@@ -405,23 +405,22 @@ def clone_nest(dev_strs, *args, max_depth=1, **kwargs):
 # -------------------#
 
 # noinspection PyShadowingNames
-def unify_array(xs, dev_str, axis=0):
-    """
-    Unify a list of sub-arrays, on arbitrary devices, to a single concattenated array on the specified device.
-
-    :param xs: The list of sub-arrays to unify onto the specified device.
-    :type xs: sequence of arrays
-    :param dev_str: The device to unify the sub-arrays to.
-    :type dev_str: str
-    :param axis: The axis along which to concattenate the array. Default is 0.
-    :type axis: int, optional
-    :return: array unified to the target device
-    """
+def _concat_unify_array(xs, dev_str, axis):
     return ivy.concatenate([ivy.to_dev(x_sub, dev_str) for x_sub in xs], axis)
 
 
 # noinspection PyShadowingNames
-def unify(xs, dev_str, axis=0):
+def _sum_unify_array(xs, dev_str, _=None):
+    return sum([ivy.to_dev(x_sub, dev_str) for x_sub in xs])
+
+
+# noinspection PyShadowingNames
+def _mean_unify_array(xs, dev_str, _=None):
+    return _sum_unify_array(xs, dev_str) / len(xs)
+
+
+# noinspection PyShadowingNames
+def unify_array(xs, dev_str, mode, axis=0):
     """
     Unify a list of sub-arrays, on arbitrary devices, to a single concattenated array on the specified device.
 
@@ -429,6 +428,28 @@ def unify(xs, dev_str, axis=0):
     :type xs: sequence of arrays
     :param dev_str: The device to unify the sub-arrays to.
     :type dev_str: str
+    :param mode: The mode by which to unify, must be one of [ concat | mean | sum ]
+    :type mode: str
+    :param axis: The axis along which to concattenate the array, if concat mode is set. Default is 0.
+    :type axis: int, optional
+    :return: array unified to the target device
+    """
+    return {'concat': _concat_unify_array,
+            'sum': _sum_unify_array,
+            'mean': _mean_unify_array}[mode](xs, dev_str, axis)
+
+
+# noinspection PyShadowingNames
+def unify(xs, dev_str, mode, axis=0):
+    """
+    Unify a list of sub-arrays, on arbitrary devices, to a single concattenated array on the specified device.
+
+    :param xs: The list of sub-arrays to unify onto the specified device.
+    :type xs: sequence of arrays
+    :param dev_str: The device to unify the sub-arrays to.
+    :type dev_str: str
+    :param mode: The mode by which to unify, must be one of [ concat | mean | sum ]
+    :type mode: str
     :param axis: The axis along which to concattenate the array. Default is 0.
     :type axis: int, optional
     :return: array unified to the target device
@@ -437,14 +458,14 @@ def unify(xs, dev_str, axis=0):
         return xs
     xs0 = xs[0]
     if ivy.is_array(xs0):
-        return ivy.concatenate([ivy.to_dev(x_sub, dev_str) for x_sub in xs], axis)
+        return unify_array(xs, dev_str, mode, axis)
     elif isinstance(xs0, ivy.Container):
-        return ivy.Container.concat([x_sub.to_dev(dev_str) for x_sub in xs], axis)
+        return ivy.Container.unify(xs, dev_str, mode, axis)
     return xs
 
 
 # noinspection PyShadowingNames
-def unify_iter(dev_str, xs, axis=0):
+def unify_iter(dev_str, xs, mode, axis=0):
     """
     Unify elements of the iterbale xs to a single target device.
 
@@ -452,17 +473,19 @@ def unify_iter(dev_str, xs, axis=0):
     :type dev_str: str
     :param xs: The iterable of items to clone.
     :type xs: iterable of any
+    :param mode: The mode by which to unify, must be one of [ concat | mean | sum ]
+    :type mode: str
     :param axis: The axis along which to concattenate the sub-arrays. Default is 0.
     :type axis: int, optional
     :return: iterable with each element cloned to each of the target devices
     """
     # noinspection PyProtectedMember
     xs = xs._iterable if isinstance(xs, MultiDeviceIter) else xs
-    return [unify(x, dev_str, axis) for x in xs]
+    return [unify(x, dev_str, mode, axis) for x in xs]
 
 
 # noinspection PyShadowingNames,PyProtectedMember
-def unify_nest(dev_str, args: Type[MultiDevice], kwargs: Type[MultiDevice], axis=0, max_depth=1):
+def unify_nest(dev_str, args: Type[MultiDevice], kwargs: Type[MultiDevice], mode, axis=0, max_depth=1):
     """
     Unify the input nested arguments, which consist of sub-arrays spread across arbitrary devices, to unified arrays
     on the single target device.
@@ -471,18 +494,20 @@ def unify_nest(dev_str, args: Type[MultiDevice], kwargs: Type[MultiDevice], axis
     :type dev_str: str
     :param args: The nested positional arguments to unify.
     :type args: MultiDevice
+    :param kwargs: The nested keyword arguments to unify.
+    :type kwargs: MultiDevice
+    :param mode: The mode by which to unify, must be one of [ concat | mean | sum ]
+    :type mode: str
     :param axis: The axis along which to concattenate the sub-arrays. Default is 0.
     :type axis: int, optional
     :param max_depth: The maximum nested depth to reach. Default is 1. Increase this if the nest is deeper.
     :type max_depth: int, optional
-    :param kwargs: The nested keyword arguments to unify.
-    :type kwargs: MultiDevice
     :return: nested arguments unified to the target device
     """
     args = args._iterable if isinstance(args, MultiDeviceIter) else args
     kwargs = kwargs._iterable if isinstance(kwargs, MultiDeviceIter) else kwargs
-    args_uni = ivy.nested_map(args, lambda x: unify(x, dev_str, axis), max_depth=max_depth)
-    kwargs_uni = ivy.nested_map(kwargs, lambda x: unify(x, dev_str, axis), max_depth=max_depth)
+    args_uni = ivy.nested_map(args, lambda x: unify(x, dev_str, mode, axis), max_depth=max_depth)
+    kwargs_uni = ivy.nested_map(kwargs, lambda x: unify(x, dev_str, mode, axis), max_depth=max_depth)
     return args_uni, kwargs_uni
 
 
