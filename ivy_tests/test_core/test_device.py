@@ -254,7 +254,7 @@ def test_unify_array(xs, axis, tensor_fn, dev_str, call):
     x1 = tensor_fn(xs[1], 'float32', dev_str1)
 
     # output
-    x_unified = ivy.unify_array(ivy.Distributed([x0, x1]), dev_str0, axis)
+    x_unified = ivy.unify_array(ivy.Distributed([x0, x1]), dev_str0, 'concat', axis)
 
     # shape test
     assert x_unified.shape[axis] == x0.shape[axis] + x1.shape[axis]
@@ -397,7 +397,7 @@ def test_unify_args(args, kwargs, axis, tensor_fn, dev_str, call):
                                   'b': kwargs['b']}, arg_len)
 
     # outputs
-    args_uni, kwargs_uni = ivy.unify_nest(dev_str0, args, kwargs, axis=axis)
+    args_uni, kwargs_uni = ivy.unify_nest(dev_str0, args, kwargs, 'concat', axis=axis)
 
     # shape test
     assert args_uni[0].shape[axis] == args._iterable[0][0].shape[axis] + args._iterable[0][1].shape[axis]
