@@ -37,7 +37,7 @@
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
     <link rel="next" title="Distributed" href="Distributed.html" />
-    <link rel="prev" title="MultiDevice" href="MultiDevice.html" /> 
+    <link rel="prev" title="MultiDeviceIter" href="MultiDeviceIter.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -110,10 +110,13 @@
 <li class="toctree-l2"><a class="reference internal" href="unify.html">unify</a></li>
 <li class="toctree-l2"><a class="reference internal" href="unify_nest.html">unify_nest</a></li>
 <li class="toctree-l2"><a class="reference internal" href="MultiDevice.html">MultiDevice</a></li>
+<li class="toctree-l2"><a class="reference internal" href="MultiDeviceIter.html">MultiDeviceIter</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">MultiDeviceNest</a></li>
 <li class="toctree-l2"><a class="reference internal" href="Distributed.html">Distributed</a></li>
+<li class="toctree-l2"><a class="reference internal" href="DistributedIter.html">DistributedIter</a></li>
 <li class="toctree-l2"><a class="reference internal" href="DistributedNest.html">DistributedNest</a></li>
 <li class="toctree-l2"><a class="reference internal" href="Cloned.html">Cloned</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ClonedIter.html">ClonedIter</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ClonedNest.html">ClonedNest</a></li>
 <li class="toctree-l2"><a class="reference internal" href="Profiler.html">Profiler</a></li>
 </ul>
@@ -225,11 +228,11 @@
 <h1>MultiDeviceNest<a class="headerlink" href="#multidevicenest" title="Permalink to this headline">¶</a></h1>
 <dl class="py class">
 <dt id="ivy.core.device.MultiDeviceNest">
-<em class="property">class </em><code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">MultiDeviceNest</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">nest</span></em>, <em class="sig-param"><span class="n">length</span></em>, <em class="sig-param"><span class="n">max_depth</span><span class="o">=</span><span class="default_value">1</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/device.html#MultiDeviceNest"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.device.MultiDeviceNest" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="MultiDevice.html#ivy.core.device.MultiDevice" title="ivy.core.device.MultiDevice"><code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.core.device.MultiDevice</span></code></a></p>
+<em class="property">class </em><code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">MultiDeviceNest</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">iterable</span></em>, <em class="sig-param"><span class="n">length</span></em>, <em class="sig-param"><span class="n">max_depth</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/device.html#MultiDeviceNest"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.device.MultiDeviceNest" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="MultiDeviceIter.html#ivy.core.device.MultiDeviceIter" title="ivy.core.device.MultiDeviceIter"><code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.core.device.MultiDeviceIter</span></code></a></p>
 <dl class="py method">
 <dt id="ivy.core.device.MultiDeviceNest.__init__">
-<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">nest</span></em>, <em class="sig-param"><span class="n">length</span></em>, <em class="sig-param"><span class="n">max_depth</span><span class="o">=</span><span class="default_value">1</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/device.html#MultiDeviceNest.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.device.MultiDeviceNest.__init__" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">iterable</span></em>, <em class="sig-param"><span class="n">length</span></em>, <em class="sig-param"><span class="n">max_depth</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/device.html#MultiDeviceNest.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.device.MultiDeviceNest.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
 </dd></dl>
 
@@ -253,7 +256,7 @@
         <a href="Distributed.html" class="btn btn-neutral float-right" title="Distributed" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="MultiDevice.html" class="btn btn-neutral float-left" title="MultiDevice" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="MultiDeviceIter.html" class="btn btn-neutral float-left" title="MultiDeviceIter" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

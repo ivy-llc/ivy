@@ -31,10 +31,13 @@ Device
    device/unify.rst
    device/unify_nest.rst
    device/MultiDevice.rst
+   device/MultiDeviceIter.rst
    device/MultiDeviceNest.rst
    device/Distributed.rst
+   device/DistributedIter.rst
    device/DistributedNest.rst
    device/Cloned.rst
+   device/ClonedIter.rst
    device/ClonedNest.rst
    device/Profiler.rst
 
