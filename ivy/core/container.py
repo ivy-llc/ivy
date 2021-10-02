@@ -1548,8 +1548,8 @@ class Container(dict):
         :type prune_unapplied: bool, optional
         :return: The container, but with each sub-array now placed on the target device.
         """
-        return self.map(lambda x, kc: self._ivy.to_dev(x, dev_str) if self._ivy.is_array(x) else x,
-                        key_chains, to_apply, prune_unapplied)
+        return self.map(lambda x, kc: self._ivy.stop_gradient(self._ivy.to_dev(x, dev_str))
+            if self._ivy.is_array(x) else x, key_chains, to_apply, prune_unapplied)
 
     def stop_gradients(self, preserve_type=True, key_chains=None, to_apply=True, prune_unapplied=False):
         """

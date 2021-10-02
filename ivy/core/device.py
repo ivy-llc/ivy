@@ -345,7 +345,7 @@ def clone_array(x, dev_strs):
     :type dev_strs: sequence of strs
     :return: array cloned to each of the target devices
     """
-    return Cloned([ivy.to_dev(x, d) for d in dev_strs])
+    return Cloned([ivy.stop_gradient(ivy.to_dev(x, d)) for d in dev_strs])
 
 
 def clone(x, dev_strs):
