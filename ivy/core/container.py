@@ -1250,6 +1250,16 @@ class Container(dict):
         return self.map(lambda x, kc: self._ivy.expand_dims(x, axis) if self._ivy.is_array(x) else x,
                         key_chains, to_apply, prune_unapplied)
 
+    def clone(self, dev_strs):
+        """
+        Clone the current container across multiple devices.
+
+        :param dev_strs: The devices on which to clone the container.
+        :type dev_strs: sequence of str
+        :return: a set of cloned containers across the specified devices.
+        """
+        return self._ivy.Cloned([self.to_dev(dev_str) for dev_str in dev_strs])
+
     def unstack(self, axis, keepdims=False, dim_size=None):
         """
         Unstack containers along specified dimension.
