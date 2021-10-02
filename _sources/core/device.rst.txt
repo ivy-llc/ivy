@@ -21,13 +21,20 @@ Device
    device/num_gpus.rst
    device/tpu_is_available.rst
    device/to_dev.rst
-   device/dev_dist_array.rst
-   device/dev_dist_args.rst
-   device/dev_unify_array.rst
-   device/dev_unify_args.rst
+   device/distribute_array.rst
+   device/distribute_args.rst
+   device/clone_array.rst
+   device/clone_args.rst
+   device/unify_array.rst
+   device/unify_args.rst
+   device/MultiDevice.rst
+   device/MultiDeviceArgs.rst
+   device/MultiDeviceKWArgs.rst
    device/Distributed.rst
-   device/DistributedArgs:
-
-    def __init__.rst
+   device/DistributedArgs.rst
+   device/DistributedKWArgs.rst
+   device/Cloned.rst
+   device/ClonedArgs.rst
+   device/ClonedKWArgs.rst
    device/Profiler.rst
 

@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>unify_array &mdash; Ivy 1.0 documentation</title>
+  <title>DistributedArgs &mdash; Ivy 1.0 documentation</title>
   
 
   
@@ -36,8 +36,8 @@
   <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="unify_args" href="unify_args.html" />
-    <link rel="prev" title="clone_args" href="clone_args.html" /> 
+    <link rel="next" title="DistributedKWArgs" href="DistributedKWArgs.html" />
+    <link rel="prev" title="Distributed" href="Distributed.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -104,13 +104,13 @@
 <li class="toctree-l2"><a class="reference internal" href="distribute_args.html">distribute_args</a></li>
 <li class="toctree-l2"><a class="reference internal" href="clone_array.html">clone_array</a></li>
 <li class="toctree-l2"><a class="reference internal" href="clone_args.html">clone_args</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">unify_array</a></li>
+<li class="toctree-l2"><a class="reference internal" href="unify_array.html">unify_array</a></li>
 <li class="toctree-l2"><a class="reference internal" href="unify_args.html">unify_args</a></li>
 <li class="toctree-l2"><a class="reference internal" href="MultiDevice.html">MultiDevice</a></li>
 <li class="toctree-l2"><a class="reference internal" href="MultiDeviceArgs.html">MultiDeviceArgs</a></li>
 <li class="toctree-l2"><a class="reference internal" href="MultiDeviceKWArgs.html">MultiDeviceKWArgs</a></li>
 <li class="toctree-l2"><a class="reference internal" href="Distributed.html">Distributed</a></li>
-<li class="toctree-l2"><a class="reference internal" href="DistributedArgs.html">DistributedArgs</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">DistributedArgs</a></li>
 <li class="toctree-l2"><a class="reference internal" href="DistributedKWArgs.html">DistributedKWArgs</a></li>
 <li class="toctree-l2"><a class="reference internal" href="Cloned.html">Cloned</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ClonedArgs.html">ClonedArgs</a></li>
@@ -202,13 +202,13 @@
         
           <li><a href="../device.html">Device</a> &raquo;</li>
         
-      <li>unify_array</li>
+      <li>DistributedArgs</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="../../_sources/core/device/unify_array.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../_sources/core/device/DistributedArgs.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -221,25 +221,18 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="unify-array">
-<h1>unify_array<a class="headerlink" href="#unify-array" title="Permalink to this headline">¶</a></h1>
-<dl class="py function">
-<dt id="ivy.core.device.unify_array">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">unify_array</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">dev_str</span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">check_for_array</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/device.html#unify_array"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.device.unify_array" title="Permalink to this definition">¶</a></dt>
-<dd><p>Unify a list of sub-arrays, on arbitrary devices, to a single concattenated array on the specified device.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<em>sequence of arrays</em>) – The list of sub-arrays to unify onto the specified device.</p></li>
-<li><p><strong>dev_str</strong> (<em>str</em>) – The device to unify the sub-arrays to.</p></li>
-<li><p><strong>axis</strong> (<em>int</em><em>, </em><em>optional</em>) – The axis along which to concattenate the array. Default is 0.</p></li>
-<li><p><strong>check_for_array</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to check if the input is a list of arrays, and only unify if so. Default is True.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>array unified to the target device</p>
-</dd>
-</dl>
+  <div class="section" id="distributedargs">
+<h1>DistributedArgs<a class="headerlink" href="#distributedargs" title="Permalink to this headline">¶</a></h1>
+<dl class="py class">
+<dt id="ivy.core.device.DistributedArgs">
+<em class="property">class </em><code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">DistributedArgs</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">args</span></em>, <em class="sig-param"><span class="n">length</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/device.html#DistributedArgs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.device.DistributedArgs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="MultiDeviceArgs.html#ivy.core.device.MultiDeviceArgs" title="ivy.core.device.MultiDeviceArgs"><code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.core.device.MultiDeviceArgs</span></code></a></p>
+<dl class="py method">
+<dt id="ivy.core.device.DistributedArgs.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">args</span></em>, <em class="sig-param"><span class="n">length</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/device.html#DistributedArgs.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.device.DistributedArgs.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
+</dd></dl>
+
 </dd></dl>
 
 <div class="line-block">
@@ -257,10 +250,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="unify_args.html" class="btn btn-neutral float-right" title="unify_args" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="DistributedKWArgs.html" class="btn btn-neutral float-right" title="DistributedKWArgs" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="clone_args.html" class="btn btn-neutral float-left" title="clone_args" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="Distributed.html" class="btn btn-neutral float-left" title="Distributed" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
