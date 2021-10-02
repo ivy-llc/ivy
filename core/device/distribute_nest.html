@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>distribute_array &mdash; Ivy 1.0 documentation</title>
+  <title>distribute_nest &mdash; Ivy 1.0 documentation</title>
   
 
   
@@ -36,8 +36,8 @@
   <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="distribute_nest" href="distribute_nest.html" />
-    <link rel="prev" title="to_dev" href="to_dev.html" /> 
+    <link rel="next" title="clone_array" href="clone_array.html" />
+    <link rel="prev" title="distribute_array" href="distribute_array.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -100,8 +100,8 @@
 <li class="toctree-l2"><a class="reference internal" href="num_gpus.html">num_gpus</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tpu_is_available.html">tpu_is_available</a></li>
 <li class="toctree-l2"><a class="reference internal" href="to_dev.html">to_dev</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">distribute_array</a></li>
-<li class="toctree-l2"><a class="reference internal" href="distribute_nest.html">distribute_nest</a></li>
+<li class="toctree-l2"><a class="reference internal" href="distribute_array.html">distribute_array</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">distribute_nest</a></li>
 <li class="toctree-l2"><a class="reference internal" href="clone_array.html">clone_array</a></li>
 <li class="toctree-l2"><a class="reference internal" href="clone_nest.html">clone_nest</a></li>
 <li class="toctree-l2"><a class="reference internal" href="unify_array.html">unify_array</a></li>
@@ -199,13 +199,13 @@
         
           <li><a href="../device.html">Device</a> &raquo;</li>
         
-      <li>distribute_array</li>
+      <li>distribute_nest</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="../../_sources/core/device/distribute_array.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../_sources/core/device/distribute_nest.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -218,23 +218,24 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="distribute-array">
-<h1>distribute_array<a class="headerlink" href="#distribute-array" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="distribute-nest">
+<h1>distribute_nest<a class="headerlink" href="#distribute-nest" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
-<dt id="ivy.core.device.distribute_array">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">distribute_array</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">dev_strs</span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">check_for_array</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/device.html#distribute_array"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.device.distribute_array" title="Permalink to this definition">¶</a></dt>
-<dd><p>Distribute an array across the specified devices, returning a list of sub-arrays, each on a different device.</p>
+<dt id="ivy.core.device.distribute_nest">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">distribute_nest</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dev_strs</span></em>, <em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">max_depth</span><span class="o">=</span><span class="default_value">1</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/device.html#distribute_nest"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.device.distribute_nest" title="Permalink to this definition">¶</a></dt>
+<dd><p>Distribute the nested input arguments across the specified devices.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<em>array</em>) – The array to distribute across devices.</p></li>
-<li><p><strong>dev_strs</strong> (<em>sequence of strs</em>) – The devices to distribute the array across.</p></li>
-<li><p><strong>axis</strong> (<em>int</em><em>, </em><em>optional</em>) – The axis along which to split the array. Default is 0.</p></li>
-<li><p><strong>check_for_array</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to check if the input is an array, and only split if so. Default is True.</p></li>
+<li><p><strong>dev_strs</strong> (<em>sequence of strs</em>) – The devices to distribute the nested arguments across.</p></li>
+<li><p><strong>args</strong> (<em>list of any</em>) – The positional nested arguments to distribute.</p></li>
+<li><p><strong>axis</strong> (<em>int</em><em>, </em><em>optional</em>) – The axis along which to split the arrays in the arguments. Default is 0.</p></li>
+<li><p><strong>max_depth</strong> (<em>int</em><em>, </em><em>optional</em>) – The maximum nested depth to reach. Default is 1. Increase this if the nest is deeper.</p></li>
+<li><p><strong>kwargs</strong> (<em>dict of any</em>) – The keyword nested arguments to distribute.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>array distributed across the target devices</p>
+<dd class="field-even"><p>nested arguments distributed to the target devices</p>
 </dd>
 </dl>
 </dd></dl>
@@ -254,10 +255,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="distribute_nest.html" class="btn btn-neutral float-right" title="distribute_nest" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="clone_array.html" class="btn btn-neutral float-right" title="clone_array" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="to_dev.html" class="btn btn-neutral float-left" title="to_dev" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="distribute_array.html" class="btn btn-neutral float-left" title="distribute_array" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

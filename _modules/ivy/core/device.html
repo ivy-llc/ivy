@@ -347,19 +347,23 @@
 <span class="c1"># -------------#</span>
 
 <div class="viewcode-block" id="MultiDevice"><a class="viewcode-back" href="../../../core/device/MultiDevice.html#ivy.core.device.MultiDevice">[docs]</a><span class="k">class</span> <span class="nc">MultiDevice</span><span class="p">(</span><span class="nb">list</span><span class="p">):</span>
-    <span class="k">pass</span></div>
+
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s1">&#39;MultiDevice(&#39;</span> <span class="o">+</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">()</span> <span class="o">+</span> <span class="s1">&#39;)&#39;</span></div>
 
 
-<div class="viewcode-block" id="MultiDeviceArgs"><a class="viewcode-back" href="../../../core/device/MultiDeviceArgs.html#ivy.core.device.MultiDeviceArgs">[docs]</a><span class="k">class</span> <span class="nc">MultiDeviceArgs</span><span class="p">(</span><span class="n">MultiDevice</span><span class="p">):</span>
+<div class="viewcode-block" id="MultiDeviceNest"><a class="viewcode-back" href="../../../core/device/MultiDeviceNest.html#ivy.core.device.MultiDeviceNest">[docs]</a><span class="k">class</span> <span class="nc">MultiDeviceNest</span><span class="p">(</span><span class="n">MultiDevice</span><span class="p">):</span>
 
-<div class="viewcode-block" id="MultiDeviceArgs.__init__"><a class="viewcode-back" href="../../../core/device/MultiDeviceArgs.html#ivy.core.device.MultiDeviceArgs.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">length</span><span class="p">):</span>
+<div class="viewcode-block" id="MultiDeviceNest.__init__"><a class="viewcode-back" href="../../../core/device/MultiDeviceNest.html#ivy.core.device.MultiDeviceNest.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nest</span><span class="p">,</span> <span class="n">length</span><span class="p">,</span> <span class="n">max_depth</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_counter</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_args</span> <span class="o">=</span> <span class="n">args</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_nest</span> <span class="o">=</span> <span class="n">nest</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_length</span> <span class="o">=</span> <span class="n">length</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_max_depth</span> <span class="o">=</span> <span class="n">max_depth</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span></div>
 
     <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">nested_map</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="n">item</span><span class="p">]</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">MultiDevice</span><span class="p">)</span> <span class="k">else</span> <span class="n">x</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">nested_map</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_nest</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="n">item</span><span class="p">]</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">MultiDevice</span><span class="p">)</span> <span class="k">else</span> <span class="n">x</span><span class="p">,</span>
+                              <span class="n">max_depth</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_max_depth</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_counter</span> <span class="o">=</span> <span class="mi">0</span>
@@ -373,13 +377,10 @@
         <span class="k">return</span> <span class="n">ret</span>
 
     <span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_length</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_length</span>
 
-
-<div class="viewcode-block" id="MultiDeviceKWArgs"><a class="viewcode-back" href="../../../core/device/MultiDeviceKWArgs.html#ivy.core.device.MultiDeviceKWArgs">[docs]</a><span class="k">class</span> <span class="nc">MultiDeviceKWArgs</span><span class="p">(</span><span class="n">MultiDeviceArgs</span><span class="p">):</span>
-
-<div class="viewcode-block" id="MultiDeviceKWArgs.__init__"><a class="viewcode-back" href="../../../core/device/MultiDeviceKWArgs.html#ivy.core.device.MultiDeviceKWArgs.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">length</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">length</span><span class="p">)</span></div></div>
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s1">&#39;MultiDeviceNest(&#39;</span> <span class="o">+</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">()</span> <span class="o">+</span> <span class="s1">&#39;)&#39;</span></div>
 
 
 <span class="c1"># Device Distribution #</span>
@@ -391,22 +392,13 @@
         <span class="k">return</span> <span class="s1">&#39;Distributed(&#39;</span> <span class="o">+</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">()</span> <span class="o">+</span> <span class="s1">&#39;)&#39;</span></div>
 
 
-<div class="viewcode-block" id="DistributedArgs"><a class="viewcode-back" href="../../../core/device/DistributedArgs.html#ivy.core.device.DistributedArgs">[docs]</a><span class="k">class</span> <span class="nc">DistributedArgs</span><span class="p">(</span><span class="n">MultiDeviceArgs</span><span class="p">):</span>
+<div class="viewcode-block" id="DistributedNest"><a class="viewcode-back" href="../../../core/device/DistributedNest.html#ivy.core.device.DistributedNest">[docs]</a><span class="k">class</span> <span class="nc">DistributedNest</span><span class="p">(</span><span class="n">MultiDeviceNest</span><span class="p">):</span>
 
-<div class="viewcode-block" id="DistributedArgs.__init__"><a class="viewcode-back" href="../../../core/device/DistributedArgs.html#ivy.core.device.DistributedArgs.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">length</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">length</span><span class="p">)</span></div>
-
-    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="s1">&#39;DistributedArgs(&#39;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">()</span> <span class="o">+</span> <span class="s1">&#39;)&#39;</span></div>
-
-
-<div class="viewcode-block" id="DistributedKWArgs"><a class="viewcode-back" href="../../../core/device/DistributedKWArgs.html#ivy.core.device.DistributedKWArgs">[docs]</a><span class="k">class</span> <span class="nc">DistributedKWArgs</span><span class="p">(</span><span class="n">MultiDeviceKWArgs</span><span class="p">):</span>
-
-<div class="viewcode-block" id="DistributedKWArgs.__init__"><a class="viewcode-back" href="../../../core/device/DistributedKWArgs.html#ivy.core.device.DistributedKWArgs.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">length</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">length</span><span class="p">)</span></div>
+<div class="viewcode-block" id="DistributedNest.__init__"><a class="viewcode-back" href="../../../core/device/DistributedNest.html#ivy.core.device.DistributedNest.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nest</span><span class="p">,</span> <span class="n">length</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">nest</span><span class="p">,</span> <span class="n">length</span><span class="p">)</span></div>
 
     <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="s1">&#39;DistributedKWArgs(&#39;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">()</span> <span class="o">+</span> <span class="s1">&#39;)&#39;</span></div>
+        <span class="k">return</span> <span class="s1">&#39;DistributedNest(&#39;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nest</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">()</span> <span class="o">+</span> <span class="s1">&#39;)&#39;</span></div>
 
 
 <div class="viewcode-block" id="distribute_array"><a class="viewcode-back" href="../../../core/device/distribute_array.html#ivy.core.device.distribute_array">[docs]</a><span class="k">def</span> <span class="nf">distribute_array</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">dev_strs</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">check_for_array</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
@@ -429,26 +421,28 @@
         <span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">to_dev</span><span class="p">(</span><span class="n">x_sub</span><span class="p">,</span> <span class="n">d</span><span class="p">)</span> <span class="k">for</span> <span class="n">x_sub</span><span class="p">,</span> <span class="n">d</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">dev_strs</span><span class="p">),</span> <span class="n">axis</span><span class="p">,</span> <span class="n">with_remainder</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span> <span class="n">dev_strs</span><span class="p">)])</span></div>
 
 
-<div class="viewcode-block" id="distribute_args"><a class="viewcode-back" href="../../../core/device/distribute_args.html#ivy.core.device.distribute_args">[docs]</a><span class="k">def</span> <span class="nf">distribute_args</span><span class="p">(</span><span class="n">dev_strs</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="distribute_nest"><a class="viewcode-back" href="../../../core/device/distribute_nest.html#ivy.core.device.distribute_nest">[docs]</a><span class="k">def</span> <span class="nf">distribute_nest</span><span class="p">(</span><span class="n">dev_strs</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">max_depth</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Distribute the input arguments across the specified devices.</span>
+<span class="sd">    Distribute the nested input arguments across the specified devices.</span>
 
-<span class="sd">    :param dev_strs: The devices to distribute the arguments across.</span>
+<span class="sd">    :param dev_strs: The devices to distribute the nested arguments across.</span>
 <span class="sd">    :type dev_strs: sequence of strs</span>
-<span class="sd">    :param args: The positional arguments to distribute.</span>
+<span class="sd">    :param args: The positional nested arguments to distribute.</span>
 <span class="sd">    :type args: list of any</span>
 <span class="sd">    :param axis: The axis along which to split the arrays in the arguments. Default is 0.</span>
 <span class="sd">    :type axis: int, optional</span>
-<span class="sd">    :param kwargs: The keyword arguments to distribute.</span>
+<span class="sd">    :param max_depth: The maximum nested depth to reach. Default is 1. Increase this if the nest is deeper.</span>
+<span class="sd">    :type max_depth: int, optional</span>
+<span class="sd">    :param kwargs: The keyword nested arguments to distribute.</span>
 <span class="sd">    :type kwargs: dict of any</span>
-<span class="sd">    :return: arguments distributed to the target devices</span>
+<span class="sd">    :return: nested arguments distributed to the target devices</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">dev_strs</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">dev_strs</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span>
-    <span class="n">args_dist</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">nested_map</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">distribute_array</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">dev_strs</span><span class="p">,</span> <span class="n">axis</span><span class="p">))</span>
-    <span class="n">kwargs_dist</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">nested_map</span><span class="p">(</span><span class="n">kwargs</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">distribute_array</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">dev_strs</span><span class="p">,</span> <span class="n">axis</span><span class="p">))</span>
+    <span class="n">args_dist</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">nested_map</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">distribute_array</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">dev_strs</span><span class="p">,</span> <span class="n">axis</span><span class="p">),</span> <span class="n">max_depth</span><span class="o">=</span><span class="n">max_depth</span><span class="p">)</span>
+    <span class="n">kwargs_dist</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">nested_map</span><span class="p">(</span><span class="n">kwargs</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">distribute_array</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">dev_strs</span><span class="p">,</span> <span class="n">axis</span><span class="p">),</span> <span class="n">max_depth</span><span class="o">=</span><span class="n">max_depth</span><span class="p">)</span>
     <span class="n">args_lengths</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">dev_strs</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">DistributedArgs</span><span class="p">(</span><span class="n">args_dist</span><span class="p">,</span> <span class="n">args_lengths</span><span class="p">),</span> <span class="n">DistributedKWArgs</span><span class="p">(</span><span class="n">kwargs_dist</span><span class="p">,</span> <span class="n">args_lengths</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">DistributedNest</span><span class="p">(</span><span class="n">args_dist</span><span class="p">,</span> <span class="n">args_lengths</span><span class="p">),</span> <span class="n">DistributedNest</span><span class="p">(</span><span class="n">kwargs_dist</span><span class="p">,</span> <span class="n">args_lengths</span><span class="p">)</span></div>
 
 
 <span class="c1"># Device Cloning #</span>
@@ -460,22 +454,13 @@
         <span class="k">return</span> <span class="s1">&#39;Cloned(&#39;</span> <span class="o">+</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">()</span> <span class="o">+</span> <span class="s1">&#39;)&#39;</span></div>
 
 
-<div class="viewcode-block" id="ClonedArgs"><a class="viewcode-back" href="../../../core/device/ClonedArgs.html#ivy.core.device.ClonedArgs">[docs]</a><span class="k">class</span> <span class="nc">ClonedArgs</span><span class="p">(</span><span class="n">MultiDeviceArgs</span><span class="p">):</span>
+<div class="viewcode-block" id="ClonedNest"><a class="viewcode-back" href="../../../core/device/ClonedNest.html#ivy.core.device.ClonedNest">[docs]</a><span class="k">class</span> <span class="nc">ClonedNest</span><span class="p">(</span><span class="n">MultiDeviceNest</span><span class="p">):</span>
 
-<div class="viewcode-block" id="ClonedArgs.__init__"><a class="viewcode-back" href="../../../core/device/ClonedArgs.html#ivy.core.device.ClonedArgs.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">length</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">length</span><span class="p">)</span></div>
-
-    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="s1">&#39;ClonedArgs(&#39;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">()</span> <span class="o">+</span> <span class="s1">&#39;)&#39;</span></div>
-
-
-<div class="viewcode-block" id="ClonedKWArgs"><a class="viewcode-back" href="../../../core/device/ClonedKWArgs.html#ivy.core.device.ClonedKWArgs">[docs]</a><span class="k">class</span> <span class="nc">ClonedKWArgs</span><span class="p">(</span><span class="n">MultiDeviceKWArgs</span><span class="p">):</span>
-
-<div class="viewcode-block" id="ClonedKWArgs.__init__"><a class="viewcode-back" href="../../../core/device/ClonedKWArgs.html#ivy.core.device.ClonedKWArgs.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">length</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">length</span><span class="p">)</span></div>
+<div class="viewcode-block" id="ClonedNest.__init__"><a class="viewcode-back" href="../../../core/device/ClonedNest.html#ivy.core.device.ClonedNest.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nest</span><span class="p">,</span> <span class="n">length</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">nest</span><span class="p">,</span> <span class="n">length</span><span class="p">)</span></div>
 
     <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="s1">&#39;Cloned(&#39;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">()</span> <span class="o">+</span> <span class="s1">&#39;)&#39;</span></div>
+        <span class="k">return</span> <span class="s1">&#39;ClonedNest(&#39;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nest</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">()</span> <span class="o">+</span> <span class="s1">&#39;)&#39;</span></div>
 
 
 <div class="viewcode-block" id="clone_array"><a class="viewcode-back" href="../../../core/device/clone_array.html#ivy.core.device.clone_array">[docs]</a><span class="k">def</span> <span class="nf">clone_array</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">dev_strs</span><span class="p">,</span> <span class="n">check_for_array</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
@@ -495,7 +480,7 @@
     <span class="k">return</span> <span class="n">Cloned</span><span class="p">([</span><span class="n">ivy</span><span class="o">.</span><span class="n">to_dev</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">d</span><span class="p">)</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">dev_strs</span><span class="p">])</span></div>
 
 
-<div class="viewcode-block" id="clone_args"><a class="viewcode-back" href="../../../core/device/clone_args.html#ivy.core.device.clone_args">[docs]</a><span class="k">def</span> <span class="nf">clone_args</span><span class="p">(</span><span class="n">dev_strs</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="clone_nest"><a class="viewcode-back" href="../../../core/device/clone_nest.html#ivy.core.device.clone_nest">[docs]</a><span class="k">def</span> <span class="nf">clone_nest</span><span class="p">(</span><span class="n">dev_strs</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">max_depth</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Clone the input arguments across the specified devices.</span>
 
@@ -503,16 +488,18 @@
 <span class="sd">    :type dev_strs: sequence of strs</span>
 <span class="sd">    :param args: The positional arguments to clone.</span>
 <span class="sd">    :type args: list of any</span>
+<span class="sd">    :param max_depth: The maximum nested depth to reach. Default is 1. Increase this if the nest is deeper.</span>
+<span class="sd">    :type max_depth: int, optional</span>
 <span class="sd">    :param kwargs: The keyword arguments to clone.</span>
 <span class="sd">    :type kwargs: dict of any</span>
 <span class="sd">    :return: arguments cloned to each of the target devices</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">dev_strs</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">dev_strs</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span>
-    <span class="n">args_cloned</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">nested_map</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">clone_array</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">dev_strs</span><span class="p">))</span>
-    <span class="n">kwargs_cloned</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">nested_map</span><span class="p">(</span><span class="n">kwargs</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">clone_array</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">dev_strs</span><span class="p">))</span>
+    <span class="n">args_cloned</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">nested_map</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">clone_array</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">dev_strs</span><span class="p">),</span> <span class="n">max_depth</span><span class="o">=</span><span class="n">max_depth</span><span class="p">)</span>
+    <span class="n">kwargs_cloned</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">nested_map</span><span class="p">(</span><span class="n">kwargs</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">clone_array</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">dev_strs</span><span class="p">),</span> <span class="n">max_depth</span><span class="o">=</span><span class="n">max_depth</span><span class="p">)</span>
     <span class="n">args_lengths</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">dev_strs</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">ClonedArgs</span><span class="p">(</span><span class="n">args_cloned</span><span class="p">,</span> <span class="n">args_lengths</span><span class="p">),</span> <span class="n">ClonedKWArgs</span><span class="p">(</span><span class="n">kwargs_cloned</span><span class="p">,</span> <span class="n">args_lengths</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">ClonedNest</span><span class="p">(</span><span class="n">args_cloned</span><span class="p">,</span> <span class="n">args_lengths</span><span class="p">),</span> <span class="n">ClonedNest</span><span class="p">(</span><span class="n">kwargs_cloned</span><span class="p">,</span> <span class="n">args_lengths</span><span class="p">)</span></div>
 
 
 <span class="c1"># Device Unification #</span>
@@ -539,7 +526,7 @@
 
 
 <span class="c1"># noinspection PyShadowingNames,PyProtectedMember</span>
-<div class="viewcode-block" id="unify_args"><a class="viewcode-back" href="../../../core/device/unify_args.html#ivy.core.device.unify_args">[docs]</a><span class="k">def</span> <span class="nf">unify_args</span><span class="p">(</span><span class="n">dev_str</span><span class="p">,</span> <span class="n">args</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">MultiDevice</span><span class="p">],</span> <span class="n">kwargs</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">MultiDevice</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+<div class="viewcode-block" id="unify_args"><a class="viewcode-back" href="../../../core/device/unify_args.html#ivy.core.device.unify_args">[docs]</a><span class="k">def</span> <span class="nf">unify_args</span><span class="p">(</span><span class="n">dev_str</span><span class="p">,</span> <span class="n">args</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">MultiDevice</span><span class="p">],</span> <span class="n">kwargs</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">MultiDevice</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">max_depth</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Unify the input arguments, which consist of sub-arrays distributed across arbitrary devices, to a unified arrays</span>
 <span class="sd">    on a single target device.</span>
@@ -550,12 +537,14 @@
 <span class="sd">    :type args: MultiDevice</span>
 <span class="sd">    :param axis: The axis along which to concattenate the sub-arrays. Default is 0.</span>
 <span class="sd">    :type axis: int, optional</span>
+<span class="sd">    :param max_depth: The maximum nested depth to reach. Default is 1. Increase this if the nest is deeper.</span>
+<span class="sd">    :type max_depth: int, optional</span>
 <span class="sd">    :param kwargs: The keyword arguments to unify.</span>
 <span class="sd">    :type kwargs: MultiDevice</span>
 <span class="sd">    :return: arguments unified to the target device</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">args_uni</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">nested_map</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">_args</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">unify_array</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">dev_str</span><span class="p">,</span> <span class="n">axis</span><span class="p">))</span>
-    <span class="n">kwargs_uni</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">nested_map</span><span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">_args</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">unify_array</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">dev_str</span><span class="p">,</span> <span class="n">axis</span><span class="p">))</span>
+    <span class="n">args_uni</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">nested_map</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">_nest</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">unify_array</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">dev_str</span><span class="p">,</span> <span class="n">axis</span><span class="p">),</span> <span class="n">max_depth</span><span class="o">=</span><span class="n">max_depth</span><span class="p">)</span>
+    <span class="n">kwargs_uni</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">nested_map</span><span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">_nest</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">unify_array</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">dev_str</span><span class="p">,</span> <span class="n">axis</span><span class="p">),</span> <span class="n">max_depth</span><span class="o">=</span><span class="n">max_depth</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">args_uni</span><span class="p">,</span> <span class="n">kwargs_uni</span></div>
 
 
