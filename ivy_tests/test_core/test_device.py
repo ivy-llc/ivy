@@ -198,6 +198,38 @@ def test_distribute_array(x, axis, tensor_fn, dev_str, call):
 
 
 @pytest.mark.parametrize(
+    "x", [[0, 1, 2, 3, 4]])
+@pytest.mark.parametrize(
+    "axis", [0])
+@pytest.mark.parametrize(
+    "tensor_fn", [ivy.array, helpers.var_fn])
+def test_clone_array(x, axis, tensor_fn, dev_str, call):
+
+    if call is helpers.mx_call:
+        # MXNet does not support splitting based on section sizes, only integer number of sections input is supported.
+        pytest.skip()
+
+    # inputs
+    x = tensor_fn(x, 'float32', dev_str)
+
+    # predictions
+    dev_str0 = dev_str
+    if 'gpu' in dev_str:
+        idx = ivy.num_gpus() - 1
+        dev_str1 = dev_str[:-1] + str(idx)
+    else:
+        dev_str1 = dev_str
+    dev_strs = [dev_str0, dev_str1]
+    x_split = ivy.clone_array(x, dev_strs)
+
+    # shape test
+    assert len(x_split) == math.floor(x.shape[axis] / len(dev_strs))
+
+    # value test
+    assert min([ivy.dev_str(x_sub) == dev_strs[i] for i, x_sub in enumerate(x_split)])
+
+
+@pytest.mark.parametrize(
     "xs", [([0, 1, 2], [3, 4])])
 @pytest.mark.parametrize(
     "axis", [0])
