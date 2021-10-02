@@ -1260,6 +1260,20 @@ class Container(dict):
         """
         return self._ivy.Cloned([self.to_dev(dev_str) for dev_str in dev_strs])
 
+    def distribute(self, dev_strs, axis=0):
+        """
+        Distribute the current container across multiple devices.
+
+        :param dev_strs: The devices along which to distribute the container.
+        :type dev_strs: sequence of str
+        :param axis: The axis along which to split the arrays at the container leaves. Default is 0.
+        :type axis: int, optional
+        :return: a set of distributed sub-containers across the specified devices.
+        """
+        return self._ivy.Distributed(
+            [cont.to_dev(dev_str) for cont, dev_str in
+             zip(self.split(len(dev_strs), axis, with_remainder=True), dev_strs)])
+
     def unstack(self, axis, keepdims=False, dim_size=None):
         """
         Unstack containers along specified dimension.
@@ -1293,7 +1307,7 @@ class Container(dict):
         :param axis: The axis along which to split, default is 0.
         :type axis: int, optional
         :param with_remainder: If the tensor does not split evenly, then store the last remainder entry.
-                               Defaul is False.
+                               Default is False.
         :type with_remainder: bool, optional
         :param key_chains: The key-chains to apply or not apply the method to. Default is None.
         :type key_chains: list or dict of strs, optional
