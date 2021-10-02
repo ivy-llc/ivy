@@ -3,6 +3,7 @@ Collection of PyTorch general functions, wrapped to fit Ivy syntax and signature
 """
 
 # global
+import ivy
 import torch
 import numpy as np
 torch_scatter = None
@@ -176,14 +177,14 @@ def linspace(start, stop, num, axis=None, dev_str=None):
             return start.unsqueeze(axis).to(str_to_dev(dev_str))
         start = start.reshape((-1,))
         linspace_method = _differentiable_linspace if start.requires_grad else torch.linspace
-        dev_str = _callable_dev_str(start)
+        dev_str = ivy.default(dev_str, _callable_dev_str(start))
     if stop_is_array:
         stop_shape = list(stop.shape)
         if num == 1:
             return torch.ones(stop_shape[:axis] + [1] + stop_shape[axis:], device=str_to_dev(dev_str)) * start
         stop = stop.reshape((-1,))
         linspace_method = _differentiable_linspace if stop.requires_grad else torch.linspace
-        dev_str = _callable_dev_str(stop)
+        dev_str = ivy.default(dev_str, _callable_dev_str(stop))
     if start_is_array and stop_is_array:
         if num < start.shape[0]:
             start = start.unsqueeze(-1)
