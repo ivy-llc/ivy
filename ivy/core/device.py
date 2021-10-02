@@ -152,24 +152,23 @@ def to_dev(x: Union[ivy.Array, ivy.NativeArray], dev_str: str = None, f: ivy.Fra
     return _cur_framework(x, f=f).to_dev(x, dev_str)
 
 
-# Device Distribution #
-# --------------------#
+# Multi-Device #
+# -------------#
 
-class Distributed(list):
-
-    def __repr__(self):
-        return 'Distributed(' + super().__repr__() + ')'
+class MultiDevice(list):
+    pass
 
 
-class DistributedArgs:
+class MultiDeviceArgs(MultiDevice):
 
     def __init__(self, args, length):
         self._counter = 0
         self._args = args
         self._length = length
+        super().__init__()
 
     def __getitem__(self, item):
-        return ivy.nested_map(self._args, lambda x: x[item] if isinstance(x, Distributed) else x)
+        return ivy.nested_map(self._args, lambda x: x[item] if isinstance(x, MultiDevice) else x)
 
     def __iter__(self):
         self._counter = 0
@@ -177,7 +176,7 @@ class DistributedArgs:
 
     def __next__(self):
         if self._counter == self._length:
-            return StopIteration
+            raise StopIteration
         ret = self.__getitem__(self._counter)
         self._counter += 1
         return ret
@@ -185,11 +184,41 @@ class DistributedArgs:
     def __len__(self):
         return self._length
 
+
+class MultiDeviceKWArgs(MultiDeviceArgs):
+
+    def __init__(self, args, length):
+        super().__init__(args, length)
+
+
+# Device Distribution #
+# --------------------#
+
+class Distributed(MultiDevice):
+
+    def __repr__(self):
+        return 'Distributed(' + super().__repr__() + ')'
+
+
+class DistributedArgs(MultiDeviceArgs):
+
+    def __init__(self, args, length):
+        super().__init__(args, length)
+
     def __repr__(self):
         return 'DistributedArgs(' + self._args.__repr__() + ')'
 
 
-def dev_dist_array(x, dev_strs, axis=0, check_for_array=True):
+class DistributedKWArgs(MultiDeviceKWArgs):
+
+    def __init__(self, args, length):
+        super().__init__(args, length)
+
+    def __repr__(self):
+        return 'DistributedKWArgs(' + self._args.__repr__() + ')'
+
+
+def distribute_array(x, dev_strs, axis=0, check_for_array=True):
     """
     Distribute an array across the specified devices, returning a list of sub-arrays, each on a different device.
 
@@ -209,7 +238,7 @@ def dev_dist_array(x, dev_strs, axis=0, check_for_array=True):
         [ivy.to_dev(x_sub, d) for x_sub, d in zip(ivy.split(x, len(dev_strs), axis, with_remainder=True), dev_strs)])
 
 
-def dev_dist_args(dev_strs, *args, axis=0, **kwargs):
+def distribute_args(dev_strs, *args, axis=0, **kwargs):
     """
     Distribute the input arguments across the specified devices.
 
@@ -225,17 +254,81 @@ def dev_dist_args(dev_strs, *args, axis=0, **kwargs):
     """
     if isinstance(dev_strs, str) or len(dev_strs) == 1:
         return args, kwargs
-    args_dist = ivy.nested_map(args, lambda x: dev_dist_array(x, dev_strs, axis))
-    kwargs_dist = ivy.nested_map(kwargs, lambda x: dev_dist_array(x, dev_strs, axis))
+    args_dist = ivy.nested_map(args, lambda x: distribute_array(x, dev_strs, axis))
+    kwargs_dist = ivy.nested_map(kwargs, lambda x: distribute_array(x, dev_strs, axis))
     args_lengths = len(dev_strs)
-    return DistributedArgs(args_dist, args_lengths), DistributedArgs(kwargs_dist, args_lengths)
+    return DistributedArgs(args_dist, args_lengths), DistributedKWArgs(kwargs_dist, args_lengths)
+
+
+# Device Cloning #
+# ---------------#
+
+class Cloned(MultiDevice):
+
+    def __repr__(self):
+        return 'Cloned(' + super().__repr__() + ')'
+
+
+class ClonedArgs(MultiDeviceArgs):
+
+    def __init__(self, args, length):
+        super().__init__(args, length)
+
+    def __repr__(self):
+        return 'ClonedArgs(' + self._args.__repr__() + ')'
+
+
+class ClonedKWArgs(MultiDeviceKWArgs):
+
+    def __init__(self, args, length):
+        super().__init__(args, length)
+
+    def __repr__(self):
+        return 'Cloned(' + self._args.__repr__() + ')'
+
+
+def clone_array(x, dev_strs, check_for_array=True):
+    """
+    Clone an array across the specified devices, returning a list of cloned arrays, each on a different device.
+
+    :param x: The array to clone across devices.
+    :type x: array
+    :param dev_strs: The devices to clone the array to.
+    :type dev_strs: sequence of strs
+    :param check_for_array: Whether to check if the input is an array, and only clone if so. Default is True.
+    :type check_for_array: bool, optional
+    :return: array cloned to each of the target devices
+    """
+    if check_for_array and not ivy.is_array(x):
+        return x
+    return Cloned([ivy.to_dev(x, d) for d in dev_strs])
+
+
+def clone_args(dev_strs, *args, **kwargs):
+    """
+    Clone the input arguments across the specified devices.
+
+    :param dev_strs: The devices to clone the arguments to.
+    :type dev_strs: sequence of strs
+    :param args: The positional arguments to clone.
+    :type args: list of any
+    :param kwargs: The keyword arguments to clone.
+    :type kwargs: dict of any
+    :return: arguments cloned to each of the target devices
+    """
+    if isinstance(dev_strs, str) or len(dev_strs) == 1:
+        return args, kwargs
+    args_cloned = ivy.nested_map(args, lambda x: clone_array(x, dev_strs))
+    kwargs_cloned = ivy.nested_map(kwargs, lambda x: clone_array(x, dev_strs))
+    args_lengths = len(dev_strs)
+    return ClonedArgs(args_cloned, args_lengths), ClonedKWArgs(kwargs_cloned, args_lengths)
 
 
 # Device Unification #
 # -------------------#
 
 # noinspection PyShadowingNames
-def dev_unify_array(x, dev_str, axis=0, check_for_array=True):
+def unify_array(x, dev_str, axis=0, check_for_array=True):
     """
     Unify a list of sub-arrays, on arbitrary devices, to a single concattenated array on the specified device.
 
@@ -249,13 +342,13 @@ def dev_unify_array(x, dev_str, axis=0, check_for_array=True):
     :type check_for_array: bool, optional
     :return: array unified to the target device
     """
-    if check_for_array and not isinstance(x, Distributed):
+    if check_for_array and not isinstance(x, MultiDevice):
         return x
     return ivy.concatenate([ivy.to_dev(x_sub, dev_str) for x_sub in x], axis)
 
 
 # noinspection PyShadowingNames,PyProtectedMember
-def dev_unify_args(dev_str, args: Type[DistributedArgs], kwargs: Type[DistributedArgs], axis=0):
+def unify_args(dev_str, args: Type[MultiDevice], kwargs: Type[MultiDevice], axis=0):
     """
     Unify the input arguments, which consist of sub-arrays distributed across arbitrary devices, to a unified arrays
     on a single target device.
@@ -263,15 +356,15 @@ def dev_unify_args(dev_str, args: Type[DistributedArgs], kwargs: Type[Distribute
     :param dev_str: The device to unify the arguments to.
     :type dev_str: str
     :param args: The positional arguments to unify.
-    :type args: DistributedArgs
+    :type args: MultiDevice
     :param axis: The axis along which to concattenate the sub-arrays. Default is 0.
     :type axis: int, optional
     :param kwargs: The keyword arguments to unify.
-    :type kwargs: DistributedArgs
+    :type kwargs: MultiDevice
     :return: arguments unified to the target device
     """
-    args_uni = ivy.nested_map(args._args, lambda x: dev_unify_array(x, dev_str, axis))
-    kwargs_uni = ivy.nested_map(kwargs._args, lambda x: dev_unify_array(x, dev_str, axis))
+    args_uni = ivy.nested_map(args._args, lambda x: unify_array(x, dev_str, axis))
+    kwargs_uni = ivy.nested_map(kwargs._args, lambda x: unify_array(x, dev_str, axis))
     return args_uni, kwargs_uni
 
 

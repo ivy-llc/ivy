@@ -188,7 +188,7 @@ def test_distribute_array(x, axis, tensor_fn, dev_str, call):
     else:
         dev_str1 = dev_str
     dev_strs = [dev_str0, dev_str1]
-    x_split = ivy.dev_dist_array(x, dev_strs, axis)
+    x_split = ivy.distribute_array(x, dev_strs, axis)
 
     # shape test
     assert len(x_split) == math.floor(x.shape[axis] / len(dev_strs))
@@ -222,7 +222,7 @@ def test_unify_array(xs, axis, tensor_fn, dev_str, call):
     x1 = tensor_fn(xs[1], 'float32', dev_str1)
 
     # output
-    x_unified = ivy.dev_unify_array(ivy.Distributed([x0, x1]), dev_str0, axis)
+    x_unified = ivy.unify_array(ivy.Distributed([x0, x1]), dev_str0, axis)
 
     # shape test
     assert x_unified.shape[axis] == x0.shape[axis] + x1.shape[axis]
@@ -257,7 +257,7 @@ def test_distribute_args(args, kwargs, axis, tensor_fn, dev_str, call):
     else:
         dev_str1 = dev_str
     dev_strs = [dev_str0, dev_str1]
-    dist_args, dist_kwargs = ivy.dev_dist_args(dev_strs, *args, **kwargs, axis=axis)
+    dist_args, dist_kwargs = ivy.distribute_args(dev_strs, *args, **kwargs, axis=axis)
 
     # device specific args
     assert dist_args[0]
@@ -303,16 +303,18 @@ def test_unify_args(args, kwargs, axis, tensor_fn, dev_str, call):
         dev_str1 = dev_str[:-1] + str(idx)
     else:
         dev_str1 = dev_str
+    dev_strs = [dev_str0, dev_str1]
+    arg_len = len(dev_strs)
 
     # inputs
     args = ivy.DistributedArgs([ivy.Distributed([tensor_fn(args[0][0], 'float32', dev_str0),
-                                                 tensor_fn(args[0][1], 'float32', dev_str1)])] + args[1:])
+                                                 tensor_fn(args[0][1], 'float32', dev_str1)])] + args[1:], arg_len)
     kwargs = ivy.DistributedArgs({'a': ivy.Distributed([tensor_fn(kwargs['a'][0], 'float32', dev_str0),
                                                         tensor_fn(kwargs['a'][1], 'float32', dev_str1)]),
-                                  'b': kwargs['b']})
+                                  'b': kwargs['b']}, arg_len)
 
     # outputs
-    args_uni, kwargs_uni = ivy.dev_unify_args(dev_str0, args, kwargs, axis=axis)
+    args_uni, kwargs_uni = ivy.unify_args(dev_str0, args, kwargs, axis=axis)
 
     # shape test
     assert args_uni[0].shape[axis] == args._args[0][0].shape[axis] + args._args[0][1].shape[axis]
