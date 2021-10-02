@@ -63,6 +63,8 @@ def execute_with_gradients(func, xs, retain_grads=False):
         #  There must be some wrongly wrapped jax functions.
         ivy.set_wrapped_mode(True)
         grads = grads.to_ivy()
+    if not retain_grads:
+        y = ivy.stop_gradient(y)
     return (y, grads, *rest)
 
 
