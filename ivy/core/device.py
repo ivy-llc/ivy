@@ -422,11 +422,11 @@ def _mean_unify_array(xs, dev_str, _=None):
 # noinspection PyShadowingNames
 def unify_array(xs, dev_str, mode, axis=0):
     """
-    Unify a list of sub-arrays, on arbitrary devices, to a single concattenated array on the specified device.
+    Unify a list of sub-arrays, on arbitrary devices, to a single array on the specified device.
 
-    :param xs: The list of sub-arrays to unify onto the specified device.
+    :param xs: The list of arrays to unify onto the specified device.
     :type xs: sequence of arrays
-    :param dev_str: The device to unify the sub-arrays to.
+    :param dev_str: The device to unify the arrays to.
     :type dev_str: str
     :param mode: The mode by which to unify, must be one of [ concat | mean | sum ]
     :type mode: str
@@ -450,7 +450,7 @@ def unify(xs, dev_str, mode, axis=0):
     :type dev_str: str
     :param mode: The mode by which to unify, must be one of [ concat | mean | sum ]
     :type mode: str
-    :param axis: The axis along which to concattenate the array. Default is 0.
+    :param axis: The axis along which to concattenate the array, if concat mode is set. Default is 0.
     :type axis: int, optional
     :return: array unified to the target device
     """

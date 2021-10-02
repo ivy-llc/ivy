@@ -171,6 +171,39 @@ class Container(dict):
             return containers
 
     @staticmethod
+    def _concat_unify(containers, dev_str, axis=0, ivyh=None):
+        return Container.concat([cont.to_dev(dev_str) for cont in containers], axis, ivyh)
+
+    @staticmethod
+    def _sum_unify(containers, dev_str, _=None, _1=None):
+        return sum([cont.to_dev(dev_str) for cont in containers])
+
+    @staticmethod
+    def _mean_unify(containers, dev_str, _=None, _1=None):
+        return Container._sum_unify(containers, dev_str) / len(containers)
+
+    @staticmethod
+    def unify(containers, dev_str, mode, axis=0, ivyh=None):
+        """
+        Unify a list of containers, on arbitrary devices, to a single container on the specified device.
+
+        :param containers: containers to unify
+        :type containers: sequence of Container objects
+        :param dev_str: The device to unify the containers to.
+        :type dev_str: str
+        :param mode: The mode by which to unify, must be one of [ concat | mean | sum ]
+        :type mode: str
+        :param axis: The axis along which to concattenate the container, if concat mode is set. Default is 0.
+        :type axis: int, optional
+        :param ivyh: Handle to ivy module to use for the calculations. Default is None, which results in the global ivy.
+        :type ivyh: handle to ivy module, optional
+        :return: Unified container
+        """
+        return {'concat': Container._concat_unify,
+                'sum': Container._sum_unify,
+                'mean': Container._mean_unify}[mode](containers, dev_str, axis, ivyh)
+
+    @staticmethod
     def concat(containers, dim, ivyh=None):
         """
         Concatenate containers together along the specified dimension.
