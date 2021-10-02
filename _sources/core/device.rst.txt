@@ -22,19 +22,16 @@ Device
    device/tpu_is_available.rst
    device/to_dev.rst
    device/distribute_array.rst
-   device/distribute_args.rst
+   device/distribute_nest.rst
    device/clone_array.rst
-   device/clone_args.rst
+   device/clone_nest.rst
    device/unify_array.rst
    device/unify_args.rst
    device/MultiDevice.rst
-   device/MultiDeviceArgs.rst
-   device/MultiDeviceKWArgs.rst
+   device/MultiDeviceNest.rst
    device/Distributed.rst
-   device/DistributedArgs.rst
-   device/DistributedKWArgs.rst
+   device/DistributedNest.rst
    device/Cloned.rst
-   device/ClonedArgs.rst
-   device/ClonedKWArgs.rst
+   device/ClonedNest.rst
    device/Profiler.rst
 
