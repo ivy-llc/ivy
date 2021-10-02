@@ -584,6 +584,23 @@ differences. Default is True.</p></li>
 </dd></dl>
 
 <dl class="py method">
+<dt id="ivy.core.container.Container.distribute">
+<code class="sig-name descname">distribute</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dev_strs</span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">0</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/container.html#Container.distribute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.distribute" title="Permalink to this definition">¶</a></dt>
+<dd><p>Distribute the current container across multiple devices.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dev_strs</strong> (<em>sequence of str</em>) – The devices along which to distribute the container.</p></li>
+<li><p><strong>axis</strong> (<em>int</em><em>, </em><em>optional</em>) – The axis along which to split the arrays at the container leaves. Default is 0.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>a set of distributed sub-containers across the specified devices.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt id="ivy.core.container.Container.dtype">
 <code class="sig-name descname">dtype</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/container.html#Container.dtype"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.dtype" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return container, with all entries replaced with their data types.</p>
@@ -1564,7 +1581,7 @@ The size of each split element if a sequence of integers.
 Default is to divide into as many 1-dimensional arrays as the axis dimension.</p></li>
 <li><p><strong>axis</strong> (<em>int</em><em>, </em><em>optional</em>) – The axis along which to split, default is 0.</p></li>
 <li><p><strong>with_remainder</strong> (<em>bool</em><em>, </em><em>optional</em>) – If the tensor does not split evenly, then store the last remainder entry.
-Defaul is False.</p></li>
+Default is False.</p></li>
 <li><p><strong>key_chains</strong> (<em>list</em><em> or </em><em>dict of strs</em><em>, </em><em>optional</em>) – The key-chains to apply or not apply the method to. Default is None.</p></li>
 <li><p><strong>to_apply</strong> (<em>bool</em><em>, </em><em>optional</em>) – If True, the method will be applied to key_chains, otherwise key_chains will be skipped.
 Default is True.</p></li>

@@ -1451,6 +1451,20 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ivy</span><span class="o">.</span><span class="n">Cloned</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">to_dev</span><span class="p">(</span><span class="n">dev_str</span><span class="p">)</span> <span class="k">for</span> <span class="n">dev_str</span> <span class="ow">in</span> <span class="n">dev_strs</span><span class="p">])</span></div>
 
+<div class="viewcode-block" id="Container.distribute"><a class="viewcode-back" href="../../../core/container/Container.html#ivy.core.container.Container.distribute">[docs]</a>    <span class="k">def</span> <span class="nf">distribute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dev_strs</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Distribute the current container across multiple devices.</span>
+
+<span class="sd">        :param dev_strs: The devices along which to distribute the container.</span>
+<span class="sd">        :type dev_strs: sequence of str</span>
+<span class="sd">        :param axis: The axis along which to split the arrays at the container leaves. Default is 0.</span>
+<span class="sd">        :type axis: int, optional</span>
+<span class="sd">        :return: a set of distributed sub-containers across the specified devices.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ivy</span><span class="o">.</span><span class="n">Distributed</span><span class="p">(</span>
+            <span class="p">[</span><span class="n">cont</span><span class="o">.</span><span class="n">to_dev</span><span class="p">(</span><span class="n">dev_str</span><span class="p">)</span> <span class="k">for</span> <span class="n">cont</span><span class="p">,</span> <span class="n">dev_str</span> <span class="ow">in</span>
+             <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">dev_strs</span><span class="p">),</span> <span class="n">axis</span><span class="p">,</span> <span class="n">with_remainder</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span> <span class="n">dev_strs</span><span class="p">)])</span></div>
+
 <div class="viewcode-block" id="Container.unstack"><a class="viewcode-back" href="../../../core/container/Container.html#ivy.core.container.Container.unstack">[docs]</a>    <span class="k">def</span> <span class="nf">unstack</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">dim_size</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Unstack containers along specified dimension.</span>
@@ -1484,7 +1498,7 @@
 <span class="sd">        :param axis: The axis along which to split, default is 0.</span>
 <span class="sd">        :type axis: int, optional</span>
 <span class="sd">        :param with_remainder: If the tensor does not split evenly, then store the last remainder entry.</span>
-<span class="sd">                               Defaul is False.</span>
+<span class="sd">                               Default is False.</span>
 <span class="sd">        :type with_remainder: bool, optional</span>
 <span class="sd">        :param key_chains: The key-chains to apply or not apply the method to. Default is None.</span>
 <span class="sd">        :type key_chains: list or dict of strs, optional</span>
