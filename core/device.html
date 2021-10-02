@@ -100,13 +100,11 @@
 <li class="toctree-l2"><a class="reference internal" href="device/num_gpus.html">num_gpus</a></li>
 <li class="toctree-l2"><a class="reference internal" href="device/tpu_is_available.html">tpu_is_available</a></li>
 <li class="toctree-l2"><a class="reference internal" href="device/to_dev.html">to_dev</a></li>
-<li class="toctree-l2"><a class="reference internal" href="device/split_func_call.html">split_func_call</a></li>
-<li class="toctree-l2"><a class="reference internal" href="device/split_func_call_across_devices.html">split_func_call_across_devices</a></li>
-<li class="toctree-l2"><a class="reference internal" href="device/distribute_array.html">distribute_array</a></li>
-<li class="toctree-l2"><a class="reference internal" href="device/distribute_args.html">distribute_args</a></li>
-<li class="toctree-l2"><a class="reference internal" href="device/unify_array.html">unify_array</a></li>
-<li class="toctree-l2"><a class="reference internal" href="device/unify_args.html">unify_args</a></li>
-<li class="toctree-l2"><a class="reference internal" href="device/DistributedArray.html">DistributedArray</a></li>
+<li class="toctree-l2"><a class="reference internal" href="device/dev_dist_array.html">dev_dist_array</a></li>
+<li class="toctree-l2"><a class="reference internal" href="device/dev_dist_args.html">dev_dist_args</a></li>
+<li class="toctree-l2"><a class="reference internal" href="device/dev_unify_array.html">dev_unify_array</a></li>
+<li class="toctree-l2"><a class="reference internal" href="device/dev_unify_args.html">dev_unify_args</a></li>
+<li class="toctree-l2"><a class="reference internal" href="device/Distributed.html">Distributed</a></li>
 <li class="toctree-l2"><a class="reference internal" href="device/Profiler.html">Profiler</a></li>
 </ul>
 </li>
@@ -215,21 +213,21 @@
 <span id="device"></span><h1>Device<a class="headerlink" href="#module-ivy.core.device" title="Permalink to this headline">¶</a></h1>
 <p>Collection of device Ivy functions.</p>
 <dl class="py class">
-<dt id="ivy.core.device.DistributedArgs">
-<em class="property">class </em><code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">DistributedArgs</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">args</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/device.html#DistributedArgs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.device.DistributedArgs" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<dl class="py method">
-<dt id="ivy.core.device.DistributedArgs.__init__">
-<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">args</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/device.html#DistributedArgs.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.device.DistributedArgs.__init__" title="Permalink to this definition">¶</a></dt>
-<dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
-</dd></dl>
-
+<dt id="ivy.core.device.Distributed">
+<em class="property">class </em><code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">Distributed</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">iterable</span><span class="o">=</span><span class="default_value">()</span></em>, <em class="sig-param"><span class="o">/</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/device.html#Distributed"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.device.Distributed" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></p>
 </dd></dl>
 
 <dl class="py class">
-<dt id="ivy.core.device.DistributedArray">
-<em class="property">class </em><code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">DistributedArray</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">iterable</span><span class="o">=</span><span class="default_value">()</span></em>, <em class="sig-param"><span class="o">/</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/device.html#DistributedArray"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.device.DistributedArray" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></p>
+<dt id="ivy.core.device.DistributedArgs">
+<em class="property">class </em><code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">DistributedArgs</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">args</span></em>, <em class="sig-param"><span class="n">length</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/device.html#DistributedArgs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.device.DistributedArgs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt id="ivy.core.device.DistributedArgs.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">args</span></em>, <em class="sig-param"><span class="n">length</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/device.html#DistributedArgs.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.device.DistributedArgs.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
+</dd></dl>
+
 </dd></dl>
 
 <dl class="py class">
@@ -272,6 +270,44 @@
 </dd></dl>
 
 <dl class="py function">
+<dt id="ivy.core.device.dev_dist_args">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">dev_dist_args</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dev_strs</span></em>, <em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/device.html#dev_dist_args"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.device.dev_dist_args" title="Permalink to this definition">¶</a></dt>
+<dd><p>Distribute the input arguments across the specified devices.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dev_strs</strong> (<em>sequence of strs</em>) – The devices to distribute the arguments across.</p></li>
+<li><p><strong>args</strong> (<em>list of any</em>) – The positional arguments to distribute.</p></li>
+<li><p><strong>axis</strong> (<em>int</em><em>, </em><em>optional</em>) – The axis along which to split the arrays in the arguments. Default is 0.</p></li>
+<li><p><strong>kwargs</strong> (<em>dict of any</em>) – The keyword arguments to distribute.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>arguments distributed to the target devices</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.core.device.dev_dist_array">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">dev_dist_array</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">dev_strs</span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">check_for_array</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/device.html#dev_dist_array"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.device.dev_dist_array" title="Permalink to this definition">¶</a></dt>
+<dd><p>Distribute an array across the specified devices, returning a list of sub-arrays, each on a different device.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>array</em>) – The array to distribute across devices.</p></li>
+<li><p><strong>dev_strs</strong> (<em>sequence of strs</em>) – The devices to distribute the array across.</p></li>
+<li><p><strong>axis</strong> (<em>int</em><em>, </em><em>optional</em>) – The axis along which to split the array. Default is 0.</p></li>
+<li><p><strong>check_for_array</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to check if the input is an array, and only split if so. Default is True.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>array distributed across the target devices</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt id="ivy.core.device.dev_str">
 <code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">dev_str</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">f</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>ivy.Framework<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; str<a class="reference internal" href="../_modules/ivy/core/device.html#dev_str"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.device.dev_str" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the device string for input array x.</p>
@@ -306,39 +342,40 @@
 </dd></dl>
 
 <dl class="py function">
-<dt id="ivy.core.device.distribute_args">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">distribute_args</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dev_strs</span></em>, <em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/device.html#distribute_args"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.device.distribute_args" title="Permalink to this definition">¶</a></dt>
-<dd><p>Distribute the input arguments across the specified devices.</p>
+<dt id="ivy.core.device.dev_unify_args">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">dev_unify_args</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dev_str</span></em>, <em class="sig-param"><span class="n">args</span><span class="p">:</span> <span class="n">Type<span class="p">[</span><a class="reference internal" href="#ivy.core.device.DistributedArgs" title="ivy.core.device.DistributedArgs">ivy.core.device.DistributedArgs</a><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">kwargs</span><span class="p">:</span> <span class="n">Type<span class="p">[</span><a class="reference internal" href="#ivy.core.device.DistributedArgs" title="ivy.core.device.DistributedArgs">ivy.core.device.DistributedArgs</a><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">0</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/device.html#dev_unify_args"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.device.dev_unify_args" title="Permalink to this definition">¶</a></dt>
+<dd><p>Unify the input arguments, which consist of sub-arrays distributed across arbitrary devices, to a unified arrays
+on a single target device.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>dev_strs</strong> (<em>sequence of strs</em>) – The devices to distribute the arguments across.</p></li>
-<li><p><strong>args</strong> (<em>list of any</em>) – The positional arguments to distribute.</p></li>
-<li><p><strong>axis</strong> (<em>int</em><em>, </em><em>optional</em>) – The axis along which to split the arrays in the arguments. Default is 0.</p></li>
-<li><p><strong>kwargs</strong> (<em>dict of any</em>) – The keyword arguments to distribute.</p></li>
+<li><p><strong>dev_str</strong> (<em>str</em>) – The device to unify the arguments to.</p></li>
+<li><p><strong>args</strong> (<a class="reference internal" href="#ivy.core.device.DistributedArgs" title="ivy.core.device.DistributedArgs"><em>DistributedArgs</em></a>) – The positional arguments to unify.</p></li>
+<li><p><strong>axis</strong> (<em>int</em><em>, </em><em>optional</em>) – The axis along which to concattenate the sub-arrays. Default is 0.</p></li>
+<li><p><strong>kwargs</strong> (<a class="reference internal" href="#ivy.core.device.DistributedArgs" title="ivy.core.device.DistributedArgs"><em>DistributedArgs</em></a>) – The keyword arguments to unify.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>arguments distributed to the target devices</p>
+<dd class="field-even"><p>arguments unified to the target device</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py function">
-<dt id="ivy.core.device.distribute_array">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">distribute_array</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">dev_strs</span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">check_for_array</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/device.html#distribute_array"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.device.distribute_array" title="Permalink to this definition">¶</a></dt>
-<dd><p>Distribute an array across the specified devices, returning a list of sub-arrays, each on a different device.</p>
+<dt id="ivy.core.device.dev_unify_array">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">dev_unify_array</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">dev_str</span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">check_for_array</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/device.html#dev_unify_array"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.device.dev_unify_array" title="Permalink to this definition">¶</a></dt>
+<dd><p>Unify a list of sub-arrays, on arbitrary devices, to a single concattenated array on the specified device.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<em>array</em>) – The array to distribute across devices.</p></li>
-<li><p><strong>dev_strs</strong> (<em>sequence of strs</em>) – The devices to distribute the array across.</p></li>
-<li><p><strong>axis</strong> (<em>int</em><em>, </em><em>optional</em>) – The axis along which to split the array. Default is 0.</p></li>
-<li><p><strong>check_for_array</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to check if the input is an array, and only split if so. Default is True.</p></li>
+<li><p><strong>x</strong> (<em>sequence of arrays</em>) – The list of sub-arrays to unify onto the specified device.</p></li>
+<li><p><strong>dev_str</strong> (<em>str</em>) – The device to unify the sub-arrays to.</p></li>
+<li><p><strong>axis</strong> (<em>int</em><em>, </em><em>optional</em>) – The axis along which to concattenate the array. Default is 0.</p></li>
+<li><p><strong>check_for_array</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to check if the input is a list of arrays, and only unify if so. Default is True.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>array distributed across the target devices</p>
+<dd class="field-even"><p>array unified to the target device</p>
 </dd>
 </dl>
 </dd></dl>
@@ -381,49 +418,6 @@
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>Number of available GPUs.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt id="ivy.core.device.split_func_call">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">split_func_call</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">func</span><span class="p">:</span> <span class="n">Callable</span></em>, <em class="sig-param"><span class="n">inputs</span><span class="p">:</span> <span class="n">Iterable<span class="p">[</span>Union<span class="p">[</span>ivy.Array<span class="p">, </span>ivy.NativeArray<span class="p">, </span>ivy.Container<span class="p">]</span><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">chunk_size</span><span class="p">:</span> <span class="n">int</span></em>, <em class="sig-param"><span class="n">input_axes</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>int<span class="p">, </span>Iterable<span class="p">[</span>int<span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">0</span></em>, <em class="sig-param"><span class="n">output_axes</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Union<span class="p">[</span>int<span class="p">, </span>Iterable<span class="p">[</span>int<span class="p">]</span><span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">mean</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em><span class="sig-paren">)</span> &#x2192; Iterable<span class="p">[</span>Union<span class="p">[</span>ivy.Array<span class="p">, </span>ivy.NativeArray<span class="p">, </span>ivy.Container<span class="p">]</span><span class="p">]</span><a class="reference internal" href="../_modules/ivy/core/device.html#split_func_call"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.device.split_func_call" title="Permalink to this definition">¶</a></dt>
-<dd><p>Call a function by splitting its inputs along a given axis, and calling the function in chunks, rather than feeding
-the entire input array at once. This can be useful to reduce memory usage of the device the arrays are on.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>func</strong> (<em>callable</em>) – The function to be called.</p></li>
-<li><p><strong>inputs</strong> (<em>sequence of arrays</em>) – A list of inputs to pass into the function.</p></li>
-<li><p><strong>chunk_size</strong> (<em>int</em>) – The size of each of the chunks to be fed into the function.</p></li>
-<li><p><strong>input_axes</strong> (<em>int</em><em> or </em><em>sequence of ints</em><em>, </em><em>optional</em>) – The axes along which to split each of the inputs, before passing to the function. Default is 0.</p></li>
-<li><p><strong>output_axes</strong> (<em>int</em><em> or </em><em>sequence of ints</em><em>, </em><em>optional</em>) – The axes along which to concat each of the returned outputs. Default is same as fist input axis.</p></li>
-<li><p><strong>mean</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to compute a weighted mean based on the return from each chunk. Default is False.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>The return from the function, following input splitting and re-concattenation.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt id="ivy.core.device.split_func_call_across_devices">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">split_func_call_across_devices</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">func</span><span class="p">:</span> <span class="n">Callable</span></em>, <em class="sig-param"><span class="n">inputs</span><span class="p">:</span> <span class="n">Iterable<span class="p">[</span>Union<span class="p">[</span>ivy.Array<span class="p">, </span>ivy.NativeArray<span class="p">, </span>ivy.Container<span class="p">]</span><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">dev_strs</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>int<span class="p">, </span>Iterable<span class="p">[</span>int<span class="p">]</span><span class="p">, </span>Iterable<span class="p">[</span>str<span class="p">]</span><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">input_axes</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Union<span class="p">[</span>int<span class="p">, </span>Iterable<span class="p">[</span>int<span class="p">]</span><span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">output_axes</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Union<span class="p">[</span>int<span class="p">, </span>Iterable<span class="p">[</span>int<span class="p">]</span><span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">concat_output</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em><span class="sig-paren">)</span> &#x2192; Iterable<span class="p">[</span>Union<span class="p">[</span>ivy.Array<span class="p">, </span>ivy.NativeArray<span class="p">, </span>ivy.Container<span class="p">]</span><span class="p">]</span><a class="reference internal" href="../_modules/ivy/core/device.html#split_func_call_across_devices"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.device.split_func_call_across_devices" title="Permalink to this definition">¶</a></dt>
-<dd><p>Call a function by splitting its inputs along a given axis, and calling each chunk on a different device.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>func</strong> (<em>callable</em>) – The function to be called.</p></li>
-<li><p><strong>inputs</strong> (<em>sequence of arrays</em><em> or </em><em>containers</em>) – A list of inputs to pass into the function.</p></li>
-<li><p><strong>dev_strs</strong> (<em>int</em><em>, </em><em>sequence of ints</em><em> or </em><em>sequence of strs</em>) – The gpu device strings, in the format “gpu:idx”.</p></li>
-<li><p><strong>input_axes</strong> (<em>int</em><em> or </em><em>sequence of ints</em><em>, </em><em>optional</em>) – The axes along which to split each of the inputs, before passing to the function. Default is 0.</p></li>
-<li><p><strong>output_axes</strong> (<em>int</em><em> or </em><em>sequence of ints</em><em>, </em><em>optional</em>) – The axes along which to concat each of the returned outputs. Default is same as fist input axis.</p></li>
-<li><p><strong>concat_output</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to concatenate each return values into a single array. Default is False.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>The return from the function, following input splitting and re-concattenation across devices.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -477,45 +471,6 @@ the entire input array at once. This can be useful to reduce memory usage of the
 </dl>
 </dd></dl>
 
-<dl class="py function">
-<dt id="ivy.core.device.unify_args">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">unify_args</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dev_str</span></em>, <em class="sig-param"><span class="n">args</span><span class="p">:</span> <span class="n">Type<span class="p">[</span><a class="reference internal" href="#ivy.core.device.DistributedArgs" title="ivy.core.device.DistributedArgs">ivy.core.device.DistributedArgs</a><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">kwargs</span><span class="p">:</span> <span class="n">Type<span class="p">[</span><a class="reference internal" href="#ivy.core.device.DistributedArgs" title="ivy.core.device.DistributedArgs">ivy.core.device.DistributedArgs</a><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">0</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/device.html#unify_args"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.device.unify_args" title="Permalink to this definition">¶</a></dt>
-<dd><p>Unify the input arguments, which consist of sub-arrays distributed across arbitrary devices, to a unified arrays
-on a single target device.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>dev_str</strong> (<em>str</em>) – The device to unify the arguments to.</p></li>
-<li><p><strong>args</strong> (<a class="reference internal" href="#ivy.core.device.DistributedArgs" title="ivy.core.device.DistributedArgs"><em>DistributedArgs</em></a>) – The positional arguments to unify.</p></li>
-<li><p><strong>axis</strong> (<em>int</em><em>, </em><em>optional</em>) – The axis along which to concattenate the sub-arrays. Default is 0.</p></li>
-<li><p><strong>kwargs</strong> (<a class="reference internal" href="#ivy.core.device.DistributedArgs" title="ivy.core.device.DistributedArgs"><em>DistributedArgs</em></a>) – The keyword arguments to unify.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>arguments unified to the target device</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt id="ivy.core.device.unify_array">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">unify_array</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">dev_str</span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">check_for_array</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/device.html#unify_array"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.device.unify_array" title="Permalink to this definition">¶</a></dt>
-<dd><p>Unify a list of sub-arrays, on arbitrary devices, to a single concattenated array on the specified device.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<em>sequence of arrays</em>) – The list of sub-arrays to unify onto the specified device.</p></li>
-<li><p><strong>dev_str</strong> (<em>str</em>) – The device to unify the sub-arrays to.</p></li>
-<li><p><strong>axis</strong> (<em>int</em><em>, </em><em>optional</em>) – The axis along which to concattenate the array. Default is 0.</p></li>
-<li><p><strong>check_for_array</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to check if the input is a list of arrays, and only unify if so. Default is True.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>array unified to the target device</p>
-</dd>
-</dl>
-</dd></dl>
-
 <div class="toctree-wrapper compound">
 <p class="caption"><span class="caption-text">Device</span></p>
 <ul>
@@ -528,13 +483,11 @@ on a single target device.</p>
 <li class="toctree-l1"><a class="reference internal" href="device/num_gpus.html">num_gpus</a></li>
 <li class="toctree-l1"><a class="reference internal" href="device/tpu_is_available.html">tpu_is_available</a></li>
 <li class="toctree-l1"><a class="reference internal" href="device/to_dev.html">to_dev</a></li>
-<li class="toctree-l1"><a class="reference internal" href="device/split_func_call.html">split_func_call</a></li>
-<li class="toctree-l1"><a class="reference internal" href="device/split_func_call_across_devices.html">split_func_call_across_devices</a></li>
-<li class="toctree-l1"><a class="reference internal" href="device/distribute_array.html">distribute_array</a></li>
-<li class="toctree-l1"><a class="reference internal" href="device/distribute_args.html">distribute_args</a></li>
-<li class="toctree-l1"><a class="reference internal" href="device/unify_array.html">unify_array</a></li>
-<li class="toctree-l1"><a class="reference internal" href="device/unify_args.html">unify_args</a></li>
-<li class="toctree-l1"><a class="reference internal" href="device/DistributedArray.html">DistributedArray</a></li>
+<li class="toctree-l1"><a class="reference internal" href="device/dev_dist_array.html">dev_dist_array</a></li>
+<li class="toctree-l1"><a class="reference internal" href="device/dev_dist_args.html">dev_dist_args</a></li>
+<li class="toctree-l1"><a class="reference internal" href="device/dev_unify_array.html">dev_unify_array</a></li>
+<li class="toctree-l1"><a class="reference internal" href="device/dev_unify_args.html">dev_unify_args</a></li>
+<li class="toctree-l1"><a class="reference internal" href="device/Distributed.html">Distributed</a></li>
 <li class="toctree-l1"><a class="reference internal" href="device/Profiler.html">Profiler</a></li>
 </ul>
 </div>

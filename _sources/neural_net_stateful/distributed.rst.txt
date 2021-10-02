@@ -15,7 +15,4 @@ Distributed
    distributed/DistributedModule:
 
     def __init__.rst
-   distributed/DistributedOptimizer:
-
-    def __init__.rst
 
