@@ -27,7 +27,7 @@ class TrainableModule(ivy.Module):
 
 # module training
 @pytest.mark.parametrize(
-    "bs_ic_oc", [([1, 2], 4, 5)])
+    "bs_ic_oc", [([2, 1], 4, 5)])
 def test_distributed_training(bs_ic_oc, dev_str, call):
     # smoke test
     if call is helpers.np_call:
@@ -48,13 +48,13 @@ def test_distributed_training(bs_ic_oc, dev_str, call):
     dev_strs = [dev_str0, dev_str1]
 
     # module
-    module_dist = ivy.DistributedModule(TrainableModule, dev_strs, in_size=input_channels, out_size=output_channels)
+    module = TrainableModule(input_channels, output_channels)
 
     # optimizer
-    optim_dist = ivy.DistributedOptimizer(ivy.Adam, dev_strs, 1e-4)
+    optim = ivy.Adam(1e-4, dev_str=dev_str0)
 
     def loss_fn(v_):
-        out = module_dist(x, v=v_)
+        out = module(x, v=v_)
         return ivy.reduce_mean(out)[0]
 
     # train
@@ -62,8 +62,8 @@ def test_distributed_training(bs_ic_oc, dev_str, call):
     loss = None
     grads = None
     for i in range(10):
-        loss, grads = ivy.execute_with_gradients(loss_fn, module_dist.v)
-        module_dist.v = optim_dist.step(module_dist.v, grads)
+        loss, grads = ivy.map(lambda v: ivy.execute_with_gradients(loss_fn, v), ivy.clone(module.v, dev_strs=dev_strs))
+        module.v = optim.step(module.v, grads)
         assert loss < loss_tm1
         loss_tm1 = loss
 

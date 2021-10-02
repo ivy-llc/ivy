@@ -4,11 +4,9 @@ Collection of device Ivy functions.
 
 # global
 import abc
-import math
 import nvidia_smi
-import numpy as np
+from typing import Union, Type
 from psutil import virtual_memory
-from typing import Callable, Union, Iterable, Type
 
 # local
 import ivy
@@ -154,158 +152,44 @@ def to_dev(x: Union[ivy.Array, ivy.NativeArray], dev_str: str = None, f: ivy.Fra
     return _cur_framework(x, f=f).to_dev(x, dev_str)
 
 
-# Split Calls #
-# ------------#
-
-def split_func_call(func: Callable, inputs: Iterable[Union[Union[ivy.Array, ivy.NativeArray], ivy.Container]],
-                    chunk_size: int, input_axes: Union[int, Iterable[int]] = 0,
-                    output_axes: Union[int, Iterable[int]] = None, mean: bool = False)\
-        -> Iterable[Union[Union[ivy.Array, ivy.NativeArray], ivy.Container]]:
-    """
-    Call a function by splitting its inputs along a given axis, and calling the function in chunks, rather than feeding
-    the entire input array at once. This can be useful to reduce memory usage of the device the arrays are on.
-
-    :param func: The function to be called.
-    :type func: callable
-    :param inputs: A list of inputs to pass into the function.
-    :type inputs: sequence of arrays
-    :param chunk_size: The size of each of the chunks to be fed into the function.
-    :type chunk_size: int
-    :param input_axes: The axes along which to split each of the inputs, before passing to the function. Default is 0.
-    :type input_axes: int or sequence of ints, optional
-    :param output_axes: The axes along which to concat each of the returned outputs. Default is same as fist input axis.
-    :type output_axes: int or sequence of ints, optional
-    :param mean: Whether to compute a weighted mean based on the return from each chunk. Default is False.
-    :type mean: bool, optional
-    :return: The return from the function, following input splitting and re-concattenation.
-    """
-    if isinstance(input_axes, int):
-        input_axes = [input_axes]*len(inputs)
-    dim_size = inputs[0].shape[input_axes[0]]
-    num_chunks = dim_size / chunk_size
-    num_chunks_floored = math.floor(dim_size / chunk_size)
-    chunk_sizes = [chunk_size]*num_chunks_floored
-    if num_chunks != num_chunks_floored:
-        chunk_sizes.append(dim_size - chunk_size * num_chunks_floored)
-    inputs_split = [ivy.split(inp, chunk_sizes, input_axes[i], True) if ivy.is_array(inp)
-                    else inp.split(chunk_sizes, input_axes[i], True) for i, inp in enumerate(inputs)]
-    rets = [func(*i) for i in zip(*inputs_split)]
-    rets = [ret if isinstance(ret, tuple) else (ret,) for ret in rets]
-    num_outputs = len(rets[0])
-    if output_axes is None:
-        output_axes = [input_axes[0]] * num_outputs
-    elif isinstance(output_axes, int):
-        output_axes = [output_axes] * num_outputs
-    if mean:
-        rets = [[(r.expand_dims(output_axis) if isinstance(r, ivy.Container) else ivy.expand_dims(r, output_axis)) * cs
-                 for output_axis, r in zip(output_axes, ret)] for ret, cs in zip(rets, chunk_sizes)]
-    concatted = [ivy.concatenate([r[i] for r in rets], output_axes[i]) if ivy.is_array(rets[0][i])
-                 else ivy.Container.concat([r[i] for r in rets], output_axes[i])
-                 for i in range(num_outputs)]
-    if mean:
-        return [(item.reduce_sum(output_axis) if isinstance(item, ivy.Container)
-                 else ivy.reduce_sum(item, output_axis))/sum(chunk_sizes)
-                for item, output_axis in zip(concatted, output_axes)]
-    return concatted
-
-
-def split_func_call_across_devices(func: Callable,
-                                   inputs: Iterable[Union[Union[ivy.Array, ivy.NativeArray], ivy.Container]],
-                                   dev_strs: Union[int, Iterable[int], Iterable[str]],
-                                   input_axes: Union[int, Iterable[int]] = None,
-                                   output_axes: Union[int, Iterable[int]] = None, concat_output: bool = False)\
-        -> Iterable[Union[Union[ivy.Array, ivy.NativeArray], ivy.Container]]:
-    """
-    Call a function by splitting its inputs along a given axis, and calling each chunk on a different device.
-
-    :param func: The function to be called.
-    :type func: callable
-    :param inputs: A list of inputs to pass into the function.
-    :type inputs: sequence of arrays or containers
-    :param dev_strs: The gpu device strings, in the format "gpu:idx".
-    :type dev_strs: int, sequence of ints or sequence of strs
-    :param input_axes: The axes along which to split each of the inputs, before passing to the function. Default is 0.
-    :type input_axes: int or sequence of ints, optional
-    :param output_axes: The axes along which to concat each of the returned outputs. Default is same as fist input axis.
-    :type output_axes: int or sequence of ints, optional
-    :param concat_output: Whether to concatenate each return values into a single array. Default is False.
-    :type concat_output: bool, optional
-    :return: The return from the function, following input splitting and re-concattenation across devices.
-    """
-    if isinstance(input_axes, int):
-        input_axes = [input_axes]*len(inputs)
-    if isinstance(dev_strs, int):
-        dev_strs = ["gpu:{}".format(dev_strs)]
-    elif isinstance(dev_strs[0], int):
-        dev_strs = ["gpu:{}".format(i) for i in dev_strs]
-    input_0 = inputs[0]
-    start_dev = ivy.dev_str(input_0) if ivy.is_array(input_0) else input_0.dev_str
-    dim_size = input_0.shape[input_axes[0]]
-    num_chunks = len(dev_strs)
-    chunk_size = dim_size / num_chunks
-    chunk_size_rounded = int(np.round(chunk_size))
-    chunk_size_diff = chunk_size - chunk_size_rounded
-    total_diff = int(np.round(chunk_size_diff*num_chunks))
-    chunk_sizes = [chunk_size_rounded]*num_chunks
-    for i in range(np.abs(total_diff)):
-        chunk_sizes[i] += np.sign(total_diff)
-    inputs_split = [ivy.split(inp, chunk_sizes, input_axes[i], True) if ivy.is_array(inp)
-                    else inp.split(chunk_sizes, input_axes[i], True) for i, inp in enumerate(inputs)]
-    inputs_split_to_devs = [[ivy.to_dev(inp, d_str) if ivy.is_array(inp) else inp.to_dev(d_str)
-                             for inp, d_str in zip(inps, dev_strs)] for inps in inputs_split]
-    rets = [func(*inps, dev_str=dev_strs[i]) for i, inps in enumerate(zip(*inputs_split_to_devs))]
-    # ToDo: make the line below more readable, there is a lot going on
-    rets = [[ivy.to_dev(ret, start_dev) if ivy.is_array(ret) else
-             (ret.to_dev(start_dev) if isinstance(ret, ivy.Container) else
-              ([ivy.to_dev(r, start_dev) if ivy.is_array(r) else r.to_dev(start_dev)
-                for r in ret] if isinstance(ret, (list, tuple)) else ret)) for ret in rts] for rts in rets]
-    num_outputs = len(rets[0])
-    if not concat_output:
-        return [[r[i] for r in rets] for i in range(num_outputs)]
-    if output_axes is None:
-        output_axes = [input_axes[0]] * num_outputs
-    elif isinstance(output_axes, int):
-        output_axes = [output_axes] * num_outputs
-    returns = list()
-    ret0 = rets[0]
-    # ToDo: possibly make this cleaner using list comprehension or recursion
-    for i in range(num_outputs):
-        if ivy.is_array(ret0[i]):
-            returns.append(ivy.concatenate([r[i] for r in rets], output_axes[i]))
-        elif isinstance(ret0[i], ivy.Container):
-            returns.append(ivy.Container.concat([r[i] for r in rets], output_axes[i]))
-        elif isinstance(ret0[i], (tuple, list)):
-            ret0i_len = len(ret0[i])
-            if ivy.is_array(ret0[i][0]):
-                returns.append([ivy.concatenate([r[i][j] for r in rets], output_axes[i]) for j in range(ret0i_len)])
-            elif isinstance(ret0[i][0], ivy.Container):
-                returns.append([ivy.Container.concat([r[i][j] for r in rets], output_axes[i])
-                                for j in range(ret0i_len)])
-            else:
-                returns.append([r[i] for r in rets])
-        else:
-            returns.append([r[i] for r in rets])
-    return returns
-
-
 # Device Distribution #
 # --------------------#
 
-class DistributedArray(list):
-    pass
+class Distributed(list):
+
+    def __repr__(self):
+        return 'Distributed(' + super().__repr__() + ')'
 
 
 class DistributedArgs:
 
-    def __init__(self, args):
+    def __init__(self, args, length):
         self._counter = 0
         self._args = args
+        self._length = length
 
     def __getitem__(self, item):
-        return ivy.nested_map(self._args, lambda x: x[item] if isinstance(x, DistributedArray) else x)
+        return ivy.nested_map(self._args, lambda x: x[item] if isinstance(x, Distributed) else x)
+
+    def __iter__(self):
+        self._counter = 0
+        return self
+
+    def __next__(self):
+        if self._counter == self._length:
+            return StopIteration
+        ret = self.__getitem__(self._counter)
+        self._counter += 1
+        return ret
+
+    def __len__(self):
+        return self._length
+
+    def __repr__(self):
+        return 'DistributedArgs(' + self._args.__repr__() + ')'
 
 
-def distribute_array(x, dev_strs, axis=0, check_for_array=True):
+def dev_dist_array(x, dev_strs, axis=0, check_for_array=True):
     """
     Distribute an array across the specified devices, returning a list of sub-arrays, each on a different device.
 
@@ -321,11 +205,11 @@ def distribute_array(x, dev_strs, axis=0, check_for_array=True):
     """
     if check_for_array and not ivy.is_array(x):
         return x
-    return DistributedArray(
+    return Distributed(
         [ivy.to_dev(x_sub, d) for x_sub, d in zip(ivy.split(x, len(dev_strs), axis, with_remainder=True), dev_strs)])
 
 
-def distribute_args(dev_strs, *args, axis=0, **kwargs):
+def dev_dist_args(dev_strs, *args, axis=0, **kwargs):
     """
     Distribute the input arguments across the specified devices.
 
@@ -341,16 +225,17 @@ def distribute_args(dev_strs, *args, axis=0, **kwargs):
     """
     if isinstance(dev_strs, str) or len(dev_strs) == 1:
         return args, kwargs
-    args_dist = ivy.nested_map(args, lambda x: distribute_array(x, dev_strs, axis))
-    kwargs_dist = ivy.nested_map(kwargs, lambda x: distribute_array(x, dev_strs, axis))
-    return DistributedArgs(args_dist), DistributedArgs(kwargs_dist)
+    args_dist = ivy.nested_map(args, lambda x: dev_dist_array(x, dev_strs, axis))
+    kwargs_dist = ivy.nested_map(kwargs, lambda x: dev_dist_array(x, dev_strs, axis))
+    args_lengths = len(dev_strs)
+    return DistributedArgs(args_dist, args_lengths), DistributedArgs(kwargs_dist, args_lengths)
 
 
 # Device Unification #
 # -------------------#
 
 # noinspection PyShadowingNames
-def unify_array(x, dev_str, axis=0, check_for_array=True):
+def dev_unify_array(x, dev_str, axis=0, check_for_array=True):
     """
     Unify a list of sub-arrays, on arbitrary devices, to a single concattenated array on the specified device.
 
@@ -364,13 +249,13 @@ def unify_array(x, dev_str, axis=0, check_for_array=True):
     :type check_for_array: bool, optional
     :return: array unified to the target device
     """
-    if check_for_array and not isinstance(x, DistributedArray):
+    if check_for_array and not isinstance(x, Distributed):
         return x
     return ivy.concatenate([ivy.to_dev(x_sub, dev_str) for x_sub in x], axis)
 
 
 # noinspection PyShadowingNames,PyProtectedMember
-def unify_args(dev_str, args: Type[DistributedArgs], kwargs: Type[DistributedArgs], axis=0):
+def dev_unify_args(dev_str, args: Type[DistributedArgs], kwargs: Type[DistributedArgs], axis=0):
     """
     Unify the input arguments, which consist of sub-arrays distributed across arbitrary devices, to a unified arrays
     on a single target device.
@@ -385,8 +270,8 @@ def unify_args(dev_str, args: Type[DistributedArgs], kwargs: Type[DistributedArg
     :type kwargs: DistributedArgs
     :return: arguments unified to the target device
     """
-    args_uni = ivy.nested_map(args._args, lambda x: unify_array(x, dev_str, axis))
-    kwargs_uni = ivy.nested_map(kwargs._args, lambda x: unify_array(x, dev_str, axis))
+    args_uni = ivy.nested_map(args._args, lambda x: dev_unify_array(x, dev_str, axis))
+    kwargs_uni = ivy.nested_map(kwargs._args, lambda x: dev_unify_array(x, dev_str, axis))
     return args_uni, kwargs_uni
 
 
