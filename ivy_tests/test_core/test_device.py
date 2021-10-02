@@ -315,6 +315,57 @@ def test_distribute_args(args, kwargs, axis, tensor_fn, dev_str, call):
 
 
 @pytest.mark.parametrize(
+    "args", [[[0, 1, 2, 3, 4], 'some_str', ([1, 2])]])
+@pytest.mark.parametrize(
+    "kwargs", [{'a': [0, 1, 2, 3, 4], 'b': 'another_str'}])
+@pytest.mark.parametrize(
+    "axis", [0])
+@pytest.mark.parametrize(
+    "tensor_fn", [ivy.array, helpers.var_fn])
+def test_clone_args(args, kwargs, axis, tensor_fn, dev_str, call):
+
+    if call is helpers.mx_call:
+        # MXNet does not support splitting based on section sizes, only integer number of sections input is supported.
+        pytest.skip()
+
+    # inputs
+    args = [tensor_fn(args[0], 'float32', dev_str)] + args[1:]
+    kwargs = {'a': tensor_fn(kwargs['a'], 'float32', dev_str), 'b': kwargs['b']}
+
+    # predictions
+    dev_str0 = dev_str
+    if 'gpu' in dev_str:
+        idx = ivy.num_gpus() - 1
+        dev_str1 = dev_str[:-1] + str(idx)
+    else:
+        dev_str1 = dev_str
+    dev_strs = [dev_str0, dev_str1]
+    cloned_args, cloned_kwargs = ivy.clone_args(dev_strs, *args, **kwargs)
+
+    # device specific args
+    assert cloned_args[0]
+    assert cloned_args[1]
+    three_present = True
+    try:
+        cloned_args[3]
+    except IndexError:
+        three_present = False
+    assert not three_present
+    assert cloned_kwargs[0]
+    assert cloned_kwargs[1]
+    three_present = True
+    try:
+        cloned_kwargs[3]
+    except IndexError:
+        three_present = False
+    assert not three_present
+
+    # value test
+    assert min([ivy.dev_str(dist_args_i[0]) == dev_strs[i] for i, dist_args_i in enumerate(cloned_args)])
+    assert min([ivy.dev_str(dist_kwargs_i['a']) == dev_strs[i] for i, dist_kwargs_i in enumerate(cloned_kwargs)])
+
+
+@pytest.mark.parametrize(
     "args", [[[[0, 1, 2], [3, 4]], 'some_str', ([1, 2])]])
 @pytest.mark.parametrize(
     "kwargs", [{'a': [[0, 1, 2], [3, 4]], 'b': 'another_str'}])
