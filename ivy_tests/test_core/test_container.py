@@ -53,6 +53,27 @@ def test_container_list_stack(dev_str, call):
     assert np.allclose(ivy.to_numpy(container_list_stacked.b.d[1]), np.array([6]))
 
 
+def test_container_unify(dev_str, call):
+
+    # devices
+    dev_str0 = dev_str
+    if 'gpu' in dev_str:
+        idx = ivy.num_gpus() - 1
+        dev_str1 = dev_str[:-1] + str(idx)
+    else:
+        dev_str1 = dev_str
+
+    # test
+    container_0 = Container({'a': ivy.array([1], dev_str=dev_str0),
+                             'b': {'c': ivy.array([2], dev_str=dev_str0), 'd': ivy.array([3], dev_str=dev_str0)}})
+    container_1 = Container({'a': ivy.array([4], dev_str=dev_str1),
+                             'b': {'c': ivy.array([5], dev_str=dev_str1), 'd': ivy.array([6], dev_str=dev_str1)}})
+    container_unified = ivy.Container.unify([container_0, container_1], dev_str0, 'concat', 0)
+    assert np.allclose(ivy.to_numpy(container_unified.a), np.array([1, 4]))
+    assert np.allclose(ivy.to_numpy(container_unified.b.c), np.array([2, 5]))
+    assert np.allclose(ivy.to_numpy(container_unified.b.d), np.array([3, 6]))
+
+
 def test_container_concat(dev_str, call):
     container_0 = Container({'a': ivy.array([1], dev_str=dev_str),
                              'b': {'c': ivy.array([2], dev_str=dev_str), 'd': ivy.array([3], dev_str=dev_str)}})
