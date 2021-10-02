@@ -518,9 +518,10 @@ def unify_nest(args: Type[MultiDevice], kwargs: Type[MultiDevice], dev_str, mode
 # Device Manager #
 # ---------------#
 
-class DeviceManager:
+class DevMapperMultiProc:
 
-    def __init__(self, dev_strs, timeout=5.0):
+    def __init__(self, fn, dev_strs, timeout=5.0):
+        self._fn = fn
         self._dev_strs = dev_strs
         self._num_workers = len(dev_strs)
         self._timeout = timeout
@@ -538,33 +539,47 @@ class DeviceManager:
             self._output_queues.append(output_queue)
             self._workers.append(worker)
 
-    @staticmethod
-    def _worker_fn(input_queue, output_queue):
+    def _worker_fn(self, input_queue, output_queue):
         while True:
             try:
-                inp = input_queue.get(timeout=1.0)
+                inp = input_queue.get(self._timeout)
             except queue.Empty:
                 continue
             if inp is None:
                 return
-            fn, args, kwargs = inp
-            output_queue.put(fn(*args, **kwargs))
+            args, kwargs = inp
+            output_queue.put(self._fn(*args, **kwargs))
 
-    def map(self, fn, *args, **kwargs):
+    def map(self, *args, **kwargs):
         """
         Map the function fn to each of the MultiDevice args and kwargs, running each function in parallel with CUDA-safe
         multiprocessing.
 
-        :param fn: The function to map across the MutliDevice args and kwargs.
-        :type fn: callable
         :param args: The MutliDevice positional arguments to map the function to.
         :type args: sequence of any
         :param kwargs: The MutliDevice keyword arguments to map the function to.
         :type kwargs: dict of any
         :return: The results of the function, returned as a MultiDevice instance.
         """
-        [q.put(fn, args[i], kwargs[i]) for i, q in enumerate(self._input_queues)]
+        [q.put(([a[i] for a in args], dict([(k, v[i]) for k, v in kwargs.items()])))
+         for i, q in enumerate(self._input_queues)]
         return ivy.MultiDeviceIter([q.get(self._timeout) for q in self._output_queues], self._num_workers)
+
+    def __del__(self):
+        try:
+            for i, w in enumerate(self._workers):
+                self._input_queues[i].put(None)
+                w.join(timeout=0.25)
+            for q in self._input_queues:
+                q.cancel_join_thread()
+                q.close()
+            for q in self._output_queues:
+                q.cancel_join_thread()
+                q.close()
+        finally:
+            for w in self._workers:
+                if w.is_alive():
+                    w.terminate()
 
 
 # Profiler #
