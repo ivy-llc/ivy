@@ -25,6 +25,7 @@ class TrainableModule(ivy.Module):
         return ivy.tanh(self._linear2(x))[0]
 
 
+'''
 # module training
 @pytest.mark.parametrize(
     "bs_ic_oc", [([2, 1], 4, 5)])
@@ -62,7 +63,9 @@ def test_distributed_training(bs_ic_oc, dev_str, call):
     loss = None
     grads = None
     for i in range(10):
-        loss, grads = ivy.map(lambda v: ivy.execute_with_gradients(loss_fn, v), ivy.clone(module.v, dev_strs=dev_strs))
+        loss_n_grads = ivy.MultiDevice(ivy.map(lambda v: ivy.execute_with_gradients(loss_fn, v),
+                                               module.v.clone(dev_strs)))
+        loss, grads = ivy.unify_array()
         module.v = optim.step(module.v, grads)
         assert loss < loss_tm1
         loss_tm1 = loss
@@ -89,3 +92,4 @@ def test_distributed_training(bs_ic_oc, dev_str, call):
         return
     if not ivy.wrapped_mode():
         helpers.assert_compilable(loss_fn)
+'''
