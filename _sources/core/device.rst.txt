@@ -42,5 +42,8 @@ Device
    device/Cloned.rst
    device/ClonedIter.rst
    device/ClonedNest.rst
+   device/DeviceManager:
+
+    def __init__.rst
    device/Profiler.rst
 
