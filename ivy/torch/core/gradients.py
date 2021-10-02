@@ -33,6 +33,7 @@ def inplace_increment(x, val):
     return x
 
 
+# noinspection PyShadowingNames
 def execute_with_gradients(func, xs, retain_grads=False):
     if ivy.wrapped_mode():
         xs = xs.to_native()
@@ -51,6 +52,8 @@ def execute_with_gradients(func, xs, retain_grads=False):
     if ivy.wrapped_mode():
         grads = grads.to_ivy()
         y = ivy.to_ivy(y)
+    if not retain_grads:
+        y = ivy.stop_gradient(y)
     return (y, grads, *rest)
 
 
@@ -58,7 +61,10 @@ def stop_gradient(x, preserve_type=True):
     if is_variable(x) and preserve_type:
         with _warnings.catch_warnings():
             _warnings.simplefilter("ignore")
-            if x.grad:
+            if x.grad_fn:
+                x = x.detach()
+                x.requires_grad = True
+            elif x.grad:
                 x.grad.data.zero_()
         return x
     return x.detach()
