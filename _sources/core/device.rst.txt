@@ -23,12 +23,15 @@ Device
    device/to_dev.rst
    device/distribute_array.rst
    device/distribute.rst
+   device/distribute_iter.rst
    device/distribute_nest.rst
    device/clone_array.rst
    device/clone.rst
+   device/clone_iter.rst
    device/clone_nest.rst
    device/unify_array.rst
    device/unify.rst
+   device/unify_iter.rst
    device/unify_nest.rst
    device/MultiDevice.rst
    device/MultiDeviceIter.rst

@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>to_dev &mdash; Ivy 1.0 documentation</title>
+  <title>unify_iter &mdash; Ivy 1.0 documentation</title>
   
 
   
@@ -36,8 +36,8 @@
   <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="distribute_array" href="distribute_array.html" />
-    <link rel="prev" title="tpu_is_available" href="tpu_is_available.html" /> 
+    <link rel="next" title="unify_nest" href="unify_nest.html" />
+    <link rel="prev" title="unify" href="unify.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -99,7 +99,7 @@
 <li class="toctree-l2"><a class="reference internal" href="gpu_is_available.html">gpu_is_available</a></li>
 <li class="toctree-l2"><a class="reference internal" href="num_gpus.html">num_gpus</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tpu_is_available.html">tpu_is_available</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">to_dev</a></li>
+<li class="toctree-l2"><a class="reference internal" href="to_dev.html">to_dev</a></li>
 <li class="toctree-l2"><a class="reference internal" href="distribute_array.html">distribute_array</a></li>
 <li class="toctree-l2"><a class="reference internal" href="distribute.html">distribute</a></li>
 <li class="toctree-l2"><a class="reference internal" href="distribute_iter.html">distribute_iter</a></li>
@@ -110,7 +110,7 @@
 <li class="toctree-l2"><a class="reference internal" href="clone_nest.html">clone_nest</a></li>
 <li class="toctree-l2"><a class="reference internal" href="unify_array.html">unify_array</a></li>
 <li class="toctree-l2"><a class="reference internal" href="unify.html">unify</a></li>
-<li class="toctree-l2"><a class="reference internal" href="unify_iter.html">unify_iter</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">unify_iter</a></li>
 <li class="toctree-l2"><a class="reference internal" href="unify_nest.html">unify_nest</a></li>
 <li class="toctree-l2"><a class="reference internal" href="MultiDevice.html">MultiDevice</a></li>
 <li class="toctree-l2"><a class="reference internal" href="MultiDeviceIter.html">MultiDeviceIter</a></li>
@@ -208,13 +208,13 @@
         
           <li><a href="../device.html">Device</a> &raquo;</li>
         
-      <li>to_dev</li>
+      <li>unify_iter</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="../../_sources/core/device/to_dev.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../_sources/core/device/unify_iter.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -227,22 +227,22 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="to-dev">
-<h1>to_dev<a class="headerlink" href="#to-dev" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="unify-iter">
+<h1>unify_iter<a class="headerlink" href="#unify-iter" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
-<dt id="ivy.core.device.to_dev">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">to_dev</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">dev_str</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>str<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">f</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>ivy.Framework<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; Union<span class="p">[</span>ivy.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span><a class="reference internal" href="../../_modules/ivy/core/device.html#to_dev"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.device.to_dev" title="Permalink to this definition">¶</a></dt>
-<dd><p>Move the input array x to the desired device, specified by device string.</p>
+<dt id="ivy.core.device.unify_iter">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">unify_iter</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dev_str</span></em>, <em class="sig-param"><span class="n">xs</span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">0</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/device.html#unify_iter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.device.unify_iter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Unify elements of the iterbale xs to a single target device.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<em>array</em>) – Array to move onto the device.</p></li>
-<li><p><strong>dev_str</strong> (<em>str</em><em>, </em><em>optional</em>) – device to move the array to ‘cuda:0’, ‘cuda:1’, ‘cpu’ etc. Keep same device if None.</p></li>
-<li><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning framework. Inferred from inputs if None.</p></li>
+<li><p><strong>dev_str</strong> (<em>str</em>) – The device to unify the elements of the iterable to.</p></li>
+<li><p><strong>xs</strong> (<em>iterable of any</em>) – The iterable of items to clone.</p></li>
+<li><p><strong>axis</strong> (<em>int</em><em>, </em><em>optional</em>) – The axis along which to concattenate the sub-arrays. Default is 0.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>The array x, but now placed on the target device.</p>
+<dd class="field-even"><p>iterable with each element cloned to each of the target devices</p>
 </dd>
 </dl>
 </dd></dl>
@@ -262,10 +262,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="distribute_array.html" class="btn btn-neutral float-right" title="distribute_array" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="unify_nest.html" class="btn btn-neutral float-right" title="unify_nest" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="tpu_is_available.html" class="btn btn-neutral float-left" title="tpu_is_available" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="unify.html" class="btn btn-neutral float-left" title="unify" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
