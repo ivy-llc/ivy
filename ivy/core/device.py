@@ -5,7 +5,9 @@ Collection of device Ivy functions.
 # global
 import abc
 import queue
+import threading
 import nvidia_smi
+from queue import Queue
 from typing import Union, Type
 from psutil import virtual_memory
 
@@ -515,8 +517,67 @@ def unify_nest(args: Type[MultiDevice], kwargs: Type[MultiDevice], dev_str, mode
     return args_uni, kwargs_uni
 
 
-# Device Manager #
+# Device Mappers #
 # ---------------#
+
+class DevMapperMultiThread:
+
+    def __init__(self, fn, dev_strs, timeout=5.0):
+        self._fn = fn
+        self._lock = threading.Lock()
+        self._dev_strs = dev_strs
+        self._num_workers = len(dev_strs)
+        self._timeout = timeout
+        self._workers = list()
+        self._input_queues = list()
+        self._output_queues = list()
+        for i in range(self._num_workers):
+            input_queue = Queue()
+            output_queue = Queue()
+            worker = threading.Thread(target=self._worker_fn, args=(input_queue, output_queue), daemon=True)
+            worker.start()
+            self._input_queues.append(input_queue)
+            self._output_queues.append(output_queue)
+            self._workers.append(worker)
+
+    def _worker_fn(self, input_queue, output_queue):
+        while True:
+            try:
+                inp = input_queue.get(timeout=self._timeout)
+            except queue.Empty:
+                continue
+            if inp is None:
+                return
+            args, kwargs = inp
+            self._lock.acquire()
+            ret = self._fn(*args, **kwargs)
+            self._lock.release()
+            output_queue.put(ret)
+
+    def map(self, *args, **kwargs):
+        """
+        Map the function fn to each of the MultiDevice args and kwargs, running each function in parallel with CUDA-safe
+        multiprocessing.
+
+        :param args: The MutliDevice positional arguments to map the function to.
+        :type args: sequence of any
+        :param kwargs: The MutliDevice keyword arguments to map the function to.
+        :type kwargs: dict of any
+        :return: The results of the function, returned as a MultiDevice instance.
+        """
+        [q.put(([a[i] for a in args], dict([(k, v[i]) for k, v in kwargs.items()])))
+         for i, q in enumerate(self._input_queues)]
+        return ivy.MultiDeviceIter([q.get(timeout=self._timeout) for q in self._output_queues], self._num_workers)
+
+    def __del__(self):
+        for i, w in enumerate(self._workers):
+            self._input_queues[i].put(None)
+            w.join(timeout=0.25)
+        for q in self._input_queues:
+            q.join()
+        for q in self._output_queues:
+            q.join()
+
 
 class DevMapperMultiProc:
 
