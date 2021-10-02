@@ -352,18 +352,16 @@
         <span class="k">return</span> <span class="s1">&#39;MultiDevice(&#39;</span> <span class="o">+</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">()</span> <span class="o">+</span> <span class="s1">&#39;)&#39;</span></div>
 
 
-<div class="viewcode-block" id="MultiDeviceNest"><a class="viewcode-back" href="../../../core/device/MultiDeviceNest.html#ivy.core.device.MultiDeviceNest">[docs]</a><span class="k">class</span> <span class="nc">MultiDeviceNest</span><span class="p">(</span><span class="n">MultiDevice</span><span class="p">):</span>
+<div class="viewcode-block" id="MultiDeviceIter"><a class="viewcode-back" href="../../../core/device/MultiDeviceIter.html#ivy.core.device.MultiDeviceIter">[docs]</a><span class="k">class</span> <span class="nc">MultiDeviceIter</span><span class="p">(</span><span class="n">MultiDevice</span><span class="p">):</span>
 
-<div class="viewcode-block" id="MultiDeviceNest.__init__"><a class="viewcode-back" href="../../../core/device/MultiDeviceNest.html#ivy.core.device.MultiDeviceNest.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nest</span><span class="p">,</span> <span class="n">length</span><span class="p">,</span> <span class="n">max_depth</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+<div class="viewcode-block" id="MultiDeviceIter.__init__"><a class="viewcode-back" href="../../../core/device/MultiDeviceIter.html#ivy.core.device.MultiDeviceIter.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">iterable</span><span class="p">,</span> <span class="n">length</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_counter</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_nest</span> <span class="o">=</span> <span class="n">nest</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_iterable</span> <span class="o">=</span> <span class="n">iterable</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_length</span> <span class="o">=</span> <span class="n">length</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_max_depth</span> <span class="o">=</span> <span class="n">max_depth</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span></div>
 
     <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">nested_map</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_nest</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="n">item</span><span class="p">]</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">MultiDevice</span><span class="p">)</span> <span class="k">else</span> <span class="n">x</span><span class="p">,</span>
-                              <span class="n">max_depth</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_max_depth</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">x</span><span class="p">[</span><span class="n">item</span><span class="p">]</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">MultiDevice</span><span class="p">)</span> <span class="k">else</span> <span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_iterable</span><span class="p">]</span>
 
     <span class="k">def</span> <span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_counter</span> <span class="o">=</span> <span class="mi">0</span>
@@ -380,6 +378,20 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_length</span>
 
     <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s1">&#39;MultiDeviceIter(&#39;</span> <span class="o">+</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">()</span> <span class="o">+</span> <span class="s1">&#39;)&#39;</span></div>
+
+
+<div class="viewcode-block" id="MultiDeviceNest"><a class="viewcode-back" href="../../../core/device/MultiDeviceNest.html#ivy.core.device.MultiDeviceNest">[docs]</a><span class="k">class</span> <span class="nc">MultiDeviceNest</span><span class="p">(</span><span class="n">MultiDeviceIter</span><span class="p">):</span>
+
+<div class="viewcode-block" id="MultiDeviceNest.__init__"><a class="viewcode-back" href="../../../core/device/MultiDeviceNest.html#ivy.core.device.MultiDeviceNest.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">iterable</span><span class="p">,</span> <span class="n">length</span><span class="p">,</span> <span class="n">max_depth</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_max_depth</span> <span class="o">=</span> <span class="n">max_depth</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">iterable</span><span class="p">,</span> <span class="n">length</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">nested_map</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_iterable</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="n">item</span><span class="p">]</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">MultiDevice</span><span class="p">)</span> <span class="k">else</span> <span class="n">x</span><span class="p">,</span>
+                              <span class="n">max_depth</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_max_depth</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="s1">&#39;MultiDeviceNest(&#39;</span> <span class="o">+</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">()</span> <span class="o">+</span> <span class="s1">&#39;)&#39;</span></div>
 
 
@@ -392,13 +404,22 @@
         <span class="k">return</span> <span class="s1">&#39;Distributed(&#39;</span> <span class="o">+</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">()</span> <span class="o">+</span> <span class="s1">&#39;)&#39;</span></div>
 
 
-<div class="viewcode-block" id="DistributedNest"><a class="viewcode-back" href="../../../core/device/DistributedNest.html#ivy.core.device.DistributedNest">[docs]</a><span class="k">class</span> <span class="nc">DistributedNest</span><span class="p">(</span><span class="n">MultiDeviceNest</span><span class="p">):</span>
+<div class="viewcode-block" id="DistributedIter"><a class="viewcode-back" href="../../../core/device/DistributedIter.html#ivy.core.device.DistributedIter">[docs]</a><span class="k">class</span> <span class="nc">DistributedIter</span><span class="p">(</span><span class="n">MultiDeviceIter</span><span class="p">):</span>
 
-<div class="viewcode-block" id="DistributedNest.__init__"><a class="viewcode-back" href="../../../core/device/DistributedNest.html#ivy.core.device.DistributedNest.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nest</span><span class="p">,</span> <span class="n">length</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">nest</span><span class="p">,</span> <span class="n">length</span><span class="p">)</span></div>
+<div class="viewcode-block" id="DistributedIter.__init__"><a class="viewcode-back" href="../../../core/device/DistributedIter.html#ivy.core.device.DistributedIter.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">iterable</span><span class="p">,</span> <span class="n">length</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">iterable</span><span class="p">,</span> <span class="n">length</span><span class="p">)</span></div>
 
     <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="s1">&#39;DistributedNest(&#39;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nest</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">()</span> <span class="o">+</span> <span class="s1">&#39;)&#39;</span></div>
+        <span class="k">return</span> <span class="s1">&#39;DistributedIter(&#39;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_iterable</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">()</span> <span class="o">+</span> <span class="s1">&#39;)&#39;</span></div>
+
+
+<div class="viewcode-block" id="DistributedNest"><a class="viewcode-back" href="../../../core/device/DistributedNest.html#ivy.core.device.DistributedNest">[docs]</a><span class="k">class</span> <span class="nc">DistributedNest</span><span class="p">(</span><span class="n">MultiDeviceNest</span><span class="p">):</span>
+
+<div class="viewcode-block" id="DistributedNest.__init__"><a class="viewcode-back" href="../../../core/device/DistributedNest.html#ivy.core.device.DistributedNest.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">iterable</span><span class="p">,</span> <span class="n">length</span><span class="p">,</span> <span class="n">max_depth</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">iterable</span><span class="p">,</span> <span class="n">length</span><span class="p">,</span> <span class="n">max_depth</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s1">&#39;DistributedNest(&#39;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_iterable</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">()</span> <span class="o">+</span> <span class="s1">&#39;)&#39;</span></div>
 
 
 <div class="viewcode-block" id="distribute_array"><a class="viewcode-back" href="../../../core/device/distribute_array.html#ivy.core.device.distribute_array">[docs]</a><span class="k">def</span> <span class="nf">distribute_array</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">dev_strs</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
@@ -469,13 +490,22 @@
         <span class="k">return</span> <span class="s1">&#39;Cloned(&#39;</span> <span class="o">+</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">()</span> <span class="o">+</span> <span class="s1">&#39;)&#39;</span></div>
 
 
-<div class="viewcode-block" id="ClonedNest"><a class="viewcode-back" href="../../../core/device/ClonedNest.html#ivy.core.device.ClonedNest">[docs]</a><span class="k">class</span> <span class="nc">ClonedNest</span><span class="p">(</span><span class="n">MultiDeviceNest</span><span class="p">):</span>
+<div class="viewcode-block" id="ClonedIter"><a class="viewcode-back" href="../../../core/device/ClonedIter.html#ivy.core.device.ClonedIter">[docs]</a><span class="k">class</span> <span class="nc">ClonedIter</span><span class="p">(</span><span class="n">MultiDeviceIter</span><span class="p">):</span>
 
-<div class="viewcode-block" id="ClonedNest.__init__"><a class="viewcode-back" href="../../../core/device/ClonedNest.html#ivy.core.device.ClonedNest.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nest</span><span class="p">,</span> <span class="n">length</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">nest</span><span class="p">,</span> <span class="n">length</span><span class="p">)</span></div>
+<div class="viewcode-block" id="ClonedIter.__init__"><a class="viewcode-back" href="../../../core/device/ClonedIter.html#ivy.core.device.ClonedIter.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">iterable</span><span class="p">,</span> <span class="n">length</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">iterable</span><span class="p">,</span> <span class="n">length</span><span class="p">)</span></div>
 
     <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="s1">&#39;ClonedNest(&#39;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nest</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">()</span> <span class="o">+</span> <span class="s1">&#39;)&#39;</span></div>
+        <span class="k">return</span> <span class="s1">&#39;ClonedIter(&#39;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_iterable</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">()</span> <span class="o">+</span> <span class="s1">&#39;)&#39;</span></div>
+
+
+<div class="viewcode-block" id="ClonedNest"><a class="viewcode-back" href="../../../core/device/ClonedNest.html#ivy.core.device.ClonedNest">[docs]</a><span class="k">class</span> <span class="nc">ClonedNest</span><span class="p">(</span><span class="n">MultiDeviceNest</span><span class="p">):</span>
+
+<div class="viewcode-block" id="ClonedNest.__init__"><a class="viewcode-back" href="../../../core/device/ClonedNest.html#ivy.core.device.ClonedNest.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">iterable</span><span class="p">,</span> <span class="n">length</span><span class="p">,</span> <span class="n">max_depth</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">iterable</span><span class="p">,</span> <span class="n">length</span><span class="p">,</span> <span class="n">max_depth</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s1">&#39;ClonedNest(&#39;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_iterable</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">()</span> <span class="o">+</span> <span class="s1">&#39;)&#39;</span></div>
 
 
 <div class="viewcode-block" id="clone_array"><a class="viewcode-back" href="../../../core/device/clone_array.html#ivy.core.device.clone_array">[docs]</a><span class="k">def</span> <span class="nf">clone_array</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">dev_strs</span><span class="p">):</span>
