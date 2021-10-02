@@ -481,7 +481,10 @@ def unify_iter(xs, dev_str, mode, axis=0):
     """
     # noinspection PyProtectedMember
     xs = xs._iterable if isinstance(xs, MultiDeviceIter) else xs
-    return [unify(x, dev_str, mode, axis) for x in xs]
+    if isinstance(xs[0], (list, tuple)):
+        xs_t = list(map(list, zip(*xs)))
+        return [unify(x, dev_str, mode, axis) for x in xs_t]
+    return unify(xs, dev_str, mode, axis)
 
 
 # noinspection PyShadowingNames,PyProtectedMember

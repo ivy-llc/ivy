@@ -25,7 +25,6 @@ class TrainableModule(ivy.Module):
         return ivy.tanh(self._linear2(x))[0]
 
 
-'''
 # module training
 @pytest.mark.parametrize(
     "bs_ic_oc", [([2, 1], 4, 5)])
@@ -34,10 +33,6 @@ def test_distributed_training(bs_ic_oc, dev_str, call):
     if call is helpers.np_call:
         # NumPy does not support gradients
         pytest.skip()
-
-    # input
-    batch_shape, input_channels, output_channels = bs_ic_oc
-    x = ivy.cast(ivy.linspace(ivy.zeros(batch_shape), ivy.ones(batch_shape), input_channels), 'float32')
 
     # devices
     dev_str0 = dev_str
@@ -48,14 +43,23 @@ def test_distributed_training(bs_ic_oc, dev_str, call):
         dev_str1 = dev_str
     dev_strs = [dev_str0, dev_str1]
 
+    # input
+    batch_shape, input_channels, output_channels = bs_ic_oc
+    dev_batch_shape = [int(batch_shape[0]/2)] + batch_shape[1:]
+    x0 = ivy.cast(ivy.linspace(ivy.zeros(dev_batch_shape), ivy.ones(dev_batch_shape),
+                               input_channels, dev_str=dev_str0), 'float32')
+    x1 = ivy.cast(ivy.linspace(ivy.zeros(dev_batch_shape), ivy.ones(dev_batch_shape),
+                               input_channels, dev_str=dev_str1), 'float32')
+    x = ivy.Distributed([x0, x1])
+
     # module
     module = TrainableModule(input_channels, output_channels)
 
     # optimizer
-    optim = ivy.Adam(1e-4, dev_str=dev_str0)
+    optim = ivy.SGD(1e-4)
 
-    def loss_fn(v_):
-        out = module(x, v=v_)
+    def loss_fn(x_, v_):
+        out = module(x_, v=v_)
         return ivy.reduce_mean(out)[0]
 
     # train
@@ -63,9 +67,10 @@ def test_distributed_training(bs_ic_oc, dev_str, call):
     loss = None
     grads = None
     for i in range(10):
-        loss_n_grads = ivy.MultiDevice(ivy.map(lambda v: ivy.execute_with_gradients(loss_fn, v),
-                                               module.v.clone(dev_strs)))
-        loss, grads = ivy.unify_array()
+        loss_n_grads = ivy.MultiDevice(
+            ivy.map(lambda xn, vc: ivy.execute_with_gradients(
+                lambda v: loss_fn(xn, v), vc), x, module.v.clone(dev_strs)))
+        loss, grads = ivy.unify_iter(loss_n_grads, dev_str0, 'mean')
         module.v = optim.step(module.v, grads)
         assert loss < loss_tm1
         loss_tm1 = loss
@@ -92,4 +97,3 @@ def test_distributed_training(bs_ic_oc, dev_str, call):
         return
     if not ivy.wrapped_mode():
         helpers.assert_compilable(loss_fn)
-'''
