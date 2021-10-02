@@ -161,18 +161,16 @@ class MultiDevice(list):
         return 'MultiDevice(' + super().__repr__() + ')'
 
 
-class MultiDeviceNest(MultiDevice):
+class MultiDeviceIter(MultiDevice):
 
-    def __init__(self, nest, length, max_depth=1):
+    def __init__(self, iterable, length):
         self._counter = 0
-        self._nest = nest
+        self._iterable = iterable
         self._length = length
-        self._max_depth = max_depth
         super().__init__()
 
     def __getitem__(self, item):
-        return ivy.nested_map(self._nest, lambda x: x[item] if isinstance(x, MultiDevice) else x,
-                              max_depth=self._max_depth)
+        return [x[item] if isinstance(x, MultiDevice) else x for x in self._iterable]
 
     def __iter__(self):
         self._counter = 0
@@ -189,6 +187,20 @@ class MultiDeviceNest(MultiDevice):
         return self._length
 
     def __repr__(self):
+        return 'MultiDeviceIter(' + super().__repr__() + ')'
+
+
+class MultiDeviceNest(MultiDeviceIter):
+
+    def __init__(self, iterable, length, max_depth):
+        self._max_depth = max_depth
+        super().__init__(iterable, length)
+
+    def __getitem__(self, item):
+        return ivy.nested_map(self._iterable, lambda x: x[item] if isinstance(x, MultiDevice) else x,
+                              max_depth=self._max_depth)
+
+    def __repr__(self):
         return 'MultiDeviceNest(' + super().__repr__() + ')'
 
 
@@ -201,13 +213,22 @@ class Distributed(MultiDevice):
         return 'Distributed(' + super().__repr__() + ')'
 
 
-class DistributedNest(MultiDeviceNest):
+class DistributedIter(MultiDeviceIter):
 
-    def __init__(self, nest, length):
-        super().__init__(nest, length)
+    def __init__(self, iterable, length):
+        super().__init__(iterable, length)
 
     def __repr__(self):
-        return 'DistributedNest(' + self._nest.__repr__() + ')'
+        return 'DistributedIter(' + self._iterable.__repr__() + ')'
+
+
+class DistributedNest(MultiDeviceNest):
+
+    def __init__(self, iterable, length, max_depth=1):
+        super().__init__(iterable, length, max_depth)
+
+    def __repr__(self):
+        return 'DistributedNest(' + self._iterable.__repr__() + ')'
 
 
 def distribute_array(x, dev_strs, axis=0):
@@ -278,13 +299,22 @@ class Cloned(MultiDevice):
         return 'Cloned(' + super().__repr__() + ')'
 
 
-class ClonedNest(MultiDeviceNest):
+class ClonedIter(MultiDeviceIter):
 
-    def __init__(self, nest, length):
-        super().__init__(nest, length)
+    def __init__(self, iterable, length):
+        super().__init__(iterable, length)
 
     def __repr__(self):
-        return 'ClonedNest(' + self._nest.__repr__() + ')'
+        return 'ClonedIter(' + self._iterable.__repr__() + ')'
+
+
+class ClonedNest(MultiDeviceNest):
+
+    def __init__(self, iterable, length, max_depth=1):
+        super().__init__(iterable, length, max_depth)
+
+    def __repr__(self):
+        return 'ClonedNest(' + self._iterable.__repr__() + ')'
 
 
 def clone_array(x, dev_strs):
