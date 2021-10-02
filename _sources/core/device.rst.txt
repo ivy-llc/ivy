@@ -42,7 +42,7 @@ Device
    device/Cloned.rst
    device/ClonedIter.rst
    device/ClonedNest.rst
-   device/DeviceManager:
+   device/DevMapperMultiProc:
 
     def __init__.rst
    device/Profiler.rst
