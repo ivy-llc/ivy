@@ -4,6 +4,7 @@ Collection of device Ivy functions.
 
 # global
 import abc
+import queue
 import nvidia_smi
 from typing import Union, Type
 from psutil import virtual_memory
@@ -512,6 +513,58 @@ def unify_nest(args: Type[MultiDevice], kwargs: Type[MultiDevice], dev_str, mode
     args_uni = ivy.nested_map(args, lambda x: unify(x, dev_str, mode, axis), max_depth=max_depth)
     kwargs_uni = ivy.nested_map(kwargs, lambda x: unify(x, dev_str, mode, axis), max_depth=max_depth)
     return args_uni, kwargs_uni
+
+
+# Device Manager #
+# ---------------#
+
+class DeviceManager:
+
+    def __init__(self, dev_strs, timeout=5.0):
+        self._dev_strs = dev_strs
+        self._num_workers = len(dev_strs)
+        self._timeout = timeout
+        multiprocessing = ivy.multiprocessing()
+        self._workers = list()
+        self._input_queues = list()
+        self._output_queues = list()
+        for i in range(self._num_workers):
+            input_queue = multiprocessing.Queue()
+            output_queue = multiprocessing.Queue()
+            worker = multiprocessing.Process(
+                target=self._worker_fn, args=(input_queue, output_queue))
+            worker.start()
+            self._input_queues.append(input_queue)
+            self._output_queues.append(output_queue)
+            self._workers.append(worker)
+
+    @staticmethod
+    def _worker_fn(input_queue, output_queue):
+        while True:
+            try:
+                inp = input_queue.get(timeout=1.0)
+            except queue.Empty:
+                continue
+            if inp is None:
+                return
+            fn, args, kwargs = inp
+            output_queue.put(fn(*args, **kwargs))
+
+    def map(self, fn, *args, **kwargs):
+        """
+        Map the function fn to each of the MultiDevice args and kwargs, running each function in parallel with CUDA-safe
+        multiprocessing.
+
+        :param fn: The function to map across the MutliDevice args and kwargs.
+        :type fn: callable
+        :param args: The MutliDevice positional arguments to map the function to.
+        :type args: sequence of any
+        :param kwargs: The MutliDevice keyword arguments to map the function to.
+        :type kwargs: dict of any
+        :return: The results of the function, returned as a MultiDevice instance.
+        """
+        [q.put(fn, args[i], kwargs[i]) for i, q in enumerate(self._input_queues)]
+        return ivy.MultiDeviceIter([q.get(self._timeout) for q in self._output_queues], self._num_workers)
 
 
 # Profiler #
