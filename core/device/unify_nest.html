@@ -37,7 +37,7 @@
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
     <link rel="next" title="MultiDevice" href="MultiDevice.html" />
-    <link rel="prev" title="unify" href="unify.html" /> 
+    <link rel="prev" title="unify_iter" href="unify_iter.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -102,12 +102,15 @@
 <li class="toctree-l2"><a class="reference internal" href="to_dev.html">to_dev</a></li>
 <li class="toctree-l2"><a class="reference internal" href="distribute_array.html">distribute_array</a></li>
 <li class="toctree-l2"><a class="reference internal" href="distribute.html">distribute</a></li>
+<li class="toctree-l2"><a class="reference internal" href="distribute_iter.html">distribute_iter</a></li>
 <li class="toctree-l2"><a class="reference internal" href="distribute_nest.html">distribute_nest</a></li>
 <li class="toctree-l2"><a class="reference internal" href="clone_array.html">clone_array</a></li>
 <li class="toctree-l2"><a class="reference internal" href="clone.html">clone</a></li>
+<li class="toctree-l2"><a class="reference internal" href="clone_iter.html">clone_iter</a></li>
 <li class="toctree-l2"><a class="reference internal" href="clone_nest.html">clone_nest</a></li>
 <li class="toctree-l2"><a class="reference internal" href="unify_array.html">unify_array</a></li>
 <li class="toctree-l2"><a class="reference internal" href="unify.html">unify</a></li>
+<li class="toctree-l2"><a class="reference internal" href="unify_iter.html">unify_iter</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">unify_nest</a></li>
 <li class="toctree-l2"><a class="reference internal" href="MultiDevice.html">MultiDevice</a></li>
 <li class="toctree-l2"><a class="reference internal" href="MultiDeviceIter.html">MultiDeviceIter</a></li>
@@ -230,7 +233,7 @@
 <dt id="ivy.core.device.unify_nest">
 <code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">unify_nest</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dev_str</span></em>, <em class="sig-param"><span class="n">args</span><span class="p">:</span> <span class="n">Type<span class="p">[</span><a class="reference internal" href="MultiDevice.html#ivy.core.device.MultiDevice" title="ivy.core.device.MultiDevice">ivy.core.device.MultiDevice</a><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">kwargs</span><span class="p">:</span> <span class="n">Type<span class="p">[</span><a class="reference internal" href="MultiDevice.html#ivy.core.device.MultiDevice" title="ivy.core.device.MultiDevice">ivy.core.device.MultiDevice</a><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">max_depth</span><span class="o">=</span><span class="default_value">1</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/device.html#unify_nest"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.device.unify_nest" title="Permalink to this definition">¶</a></dt>
 <dd><p>Unify the input nested arguments, which consist of sub-arrays spread across arbitrary devices, to unified arrays
-on a single target device.</p>
+on the single target device.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -265,7 +268,7 @@ on a single target device.</p>
         <a href="MultiDevice.html" class="btn btn-neutral float-right" title="MultiDevice" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="unify.html" class="btn btn-neutral float-left" title="unify" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="unify_iter.html" class="btn btn-neutral float-left" title="unify_iter" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
