@@ -397,7 +397,7 @@ def test_unify_args(args, kwargs, axis, tensor_fn, dev_str, call):
                                   'b': kwargs['b']}, arg_len)
 
     # outputs
-    args_uni, kwargs_uni = ivy.unify_args(dev_str0, args, kwargs, axis=axis)
+    args_uni, kwargs_uni = ivy.unify_nest(dev_str0, args, kwargs, axis=axis)
 
     # shape test
     assert args_uni[0].shape[axis] == args._nest[0][0].shape[axis] + args._nest[0][1].shape[axis]
