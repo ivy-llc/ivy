@@ -536,7 +536,7 @@
 <span class="sd">    :type dev_strs: sequence of strs</span>
 <span class="sd">    :return: array cloned to each of the target devices</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">Cloned</span><span class="p">([</span><span class="n">ivy</span><span class="o">.</span><span class="n">to_dev</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">d</span><span class="p">)</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">dev_strs</span><span class="p">])</span></div>
+    <span class="k">return</span> <span class="n">Cloned</span><span class="p">([</span><span class="n">ivy</span><span class="o">.</span><span class="n">stop_gradient</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">to_dev</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">d</span><span class="p">))</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">dev_strs</span><span class="p">])</span></div>
 
 
 <div class="viewcode-block" id="clone"><a class="viewcode-back" href="../../../core/device/clone.html#ivy.core.device.clone">[docs]</a><span class="k">def</span> <span class="nf">clone</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">dev_strs</span><span class="p">):</span>
