@@ -231,13 +231,13 @@
 <h1>distribute_iter<a class="headerlink" href="#distribute-iter" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
 <dt id="ivy.core.device.distribute_iter">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">distribute_iter</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dev_strs</span></em>, <em class="sig-param"><span class="n">xs</span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">0</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/device.html#distribute_iter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.device.distribute_iter" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">distribute_iter</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">xs</span></em>, <em class="sig-param"><span class="n">dev_strs</span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">0</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/device.html#distribute_iter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.device.distribute_iter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Distribute elements of the iterbale xs across the specified devices.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>dev_strs</strong> (<em>sequence of strs</em>) – The devices to distribute the iterable elements across.</p></li>
 <li><p><strong>xs</strong> (<em>iterable of any</em>) – The iterable of items to distribute.</p></li>
+<li><p><strong>dev_strs</strong> (<em>sequence of strs</em>) – The devices to distribute the iterable elements across.</p></li>
 <li><p><strong>axis</strong> (<em>int</em><em>, </em><em>optional</em>) – The axis along which to split the arrays in the iterable xs. Default is 0.</p></li>
 </ul>
 </dd>
