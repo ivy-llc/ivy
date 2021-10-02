@@ -52,7 +52,7 @@ class DistributedModule:
         """
         the forward pass of the layer, treating layer instance as callable function.
         """
-        args_dist, kwargs_dist = ivy.dev_dist_args(self._dev_strs, *args, **kwargs)
+        args_dist, kwargs_dist = ivy.distribute_args(self._dev_strs, *args, **kwargs)
         rets = list()
         for module, args_d, kwargs_d in zip(self._distributed_modules, args_dist, kwargs_dist):
             rets.append(module(*args_d, **kwargs_d))
