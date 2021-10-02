@@ -7,6 +7,7 @@ import math
 import einops
 import numpy as np
 from numbers import Number
+from builtins import map as _map
 from typing import Callable, Any, Union, List, Tuple, Dict, Iterable
 
 # local
@@ -33,8 +34,28 @@ def _to_ivy(x: Any)\
     return ivy.Variable(x) if ivy.is_variable(x, exclusive=True) else ivy.Array(x) if ivy.is_array(x) else x
 
 
-# Nested #
-# -------#
+# Map #
+# ----#
+
+# noinspection PyShadowingBuiltins
+def map(fn: Callable, *xs: Iterable, mean: bool = False)\
+        -> List:
+    """
+    Applies a function on each item of an iterable x.
+
+    :param fn: The function to map onto x.
+    :type fn: callable
+    :param xs: The iterable or iterables to apply the method to.
+    :type xs: iterable
+    :param mean: Whether to compute the mean across the return values, and return this mean. Default is False.
+    :type mean: bool, optional
+    :return: x following the applicable of fn to each of it's iterated items.
+    """
+    rets = [r for r in _map(fn, *xs)]
+    if mean:
+        return sum(rets) / len(rets)
+    return rets
+
 
 def nested_map(x: Union[Union[ivy.Array, ivy.NativeArray], Iterable], fn: Callable, include_derived: bool = False)\
         -> Union[Union[ivy.Array, ivy.NativeArray], Iterable]:
