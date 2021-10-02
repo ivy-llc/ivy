@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Cloned &mdash; Ivy 1.0 documentation</title>
+  <title>clone &mdash; Ivy 1.0 documentation</title>
   
 
   
@@ -36,8 +36,8 @@
   <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="ClonedNest" href="ClonedNest.html" />
-    <link rel="prev" title="DistributedNest" href="DistributedNest.html" /> 
+    <link rel="next" title="clone_nest" href="clone_nest.html" />
+    <link rel="prev" title="clone_array" href="clone_array.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -104,7 +104,7 @@
 <li class="toctree-l2"><a class="reference internal" href="distribute.html">distribute</a></li>
 <li class="toctree-l2"><a class="reference internal" href="distribute_nest.html">distribute_nest</a></li>
 <li class="toctree-l2"><a class="reference internal" href="clone_array.html">clone_array</a></li>
-<li class="toctree-l2"><a class="reference internal" href="clone.html">clone</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">clone</a></li>
 <li class="toctree-l2"><a class="reference internal" href="clone_nest.html">clone_nest</a></li>
 <li class="toctree-l2"><a class="reference internal" href="unify_array.html">unify_array</a></li>
 <li class="toctree-l2"><a class="reference internal" href="unify.html">unify</a></li>
@@ -113,7 +113,7 @@
 <li class="toctree-l2"><a class="reference internal" href="MultiDeviceNest.html">MultiDeviceNest</a></li>
 <li class="toctree-l2"><a class="reference internal" href="Distributed.html">Distributed</a></li>
 <li class="toctree-l2"><a class="reference internal" href="DistributedNest.html">DistributedNest</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">Cloned</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Cloned.html">Cloned</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ClonedNest.html">ClonedNest</a></li>
 <li class="toctree-l2"><a class="reference internal" href="Profiler.html">Profiler</a></li>
 </ul>
@@ -202,13 +202,13 @@
         
           <li><a href="../device.html">Device</a> &raquo;</li>
         
-      <li>Cloned</li>
+      <li>clone</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="../../_sources/core/device/Cloned.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../_sources/core/device/clone.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -221,12 +221,23 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="cloned">
-<h1>Cloned<a class="headerlink" href="#cloned" title="Permalink to this headline">¶</a></h1>
-<dl class="py class">
-<dt id="ivy.core.device.Cloned">
-<em class="property">class </em><code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">Cloned</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">iterable</span><span class="o">=</span><span class="default_value">()</span></em>, <em class="sig-param"><span class="o">/</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/device.html#Cloned"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.device.Cloned" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="MultiDevice.html#ivy.core.device.MultiDevice" title="ivy.core.device.MultiDevice"><code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.core.device.MultiDevice</span></code></a></p>
+  <div class="section" id="clone">
+<h1>clone<a class="headerlink" href="#clone" title="Permalink to this headline">¶</a></h1>
+<dl class="py function">
+<dt id="ivy.core.device.clone">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">clone</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">dev_strs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/device.html#clone"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.device.clone" title="Permalink to this definition">¶</a></dt>
+<dd><p>Clone the input item to each of the specified devices, returning a list of cloned items, each on a different device.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>array</em><em> or </em><em>container</em>) – The input array or container to clone to each device.</p></li>
+<li><p><strong>dev_strs</strong> (<em>sequence of strs</em>) – The devices to clone the input to.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>array or container distributed across the target devices</p>
+</dd>
+</dl>
 </dd></dl>
 
 <div class="line-block">
@@ -244,10 +255,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="ClonedNest.html" class="btn btn-neutral float-right" title="ClonedNest" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="clone_nest.html" class="btn btn-neutral float-right" title="clone_nest" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="DistributedNest.html" class="btn btn-neutral float-left" title="DistributedNest" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="clone_array.html" class="btn btn-neutral float-left" title="clone_array" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Cloned &mdash; Ivy 1.0 documentation</title>
+  <title>unify_nest &mdash; Ivy 1.0 documentation</title>
   
 
   
@@ -36,8 +36,8 @@
   <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="ClonedNest" href="ClonedNest.html" />
-    <link rel="prev" title="DistributedNest" href="DistributedNest.html" /> 
+    <link rel="next" title="MultiDevice" href="MultiDevice.html" />
+    <link rel="prev" title="unify" href="unify.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -108,12 +108,12 @@
 <li class="toctree-l2"><a class="reference internal" href="clone_nest.html">clone_nest</a></li>
 <li class="toctree-l2"><a class="reference internal" href="unify_array.html">unify_array</a></li>
 <li class="toctree-l2"><a class="reference internal" href="unify.html">unify</a></li>
-<li class="toctree-l2"><a class="reference internal" href="unify_nest.html">unify_nest</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">unify_nest</a></li>
 <li class="toctree-l2"><a class="reference internal" href="MultiDevice.html">MultiDevice</a></li>
 <li class="toctree-l2"><a class="reference internal" href="MultiDeviceNest.html">MultiDeviceNest</a></li>
 <li class="toctree-l2"><a class="reference internal" href="Distributed.html">Distributed</a></li>
 <li class="toctree-l2"><a class="reference internal" href="DistributedNest.html">DistributedNest</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">Cloned</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Cloned.html">Cloned</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ClonedNest.html">ClonedNest</a></li>
 <li class="toctree-l2"><a class="reference internal" href="Profiler.html">Profiler</a></li>
 </ul>
@@ -202,13 +202,13 @@
         
           <li><a href="../device.html">Device</a> &raquo;</li>
         
-      <li>Cloned</li>
+      <li>unify_nest</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="../../_sources/core/device/Cloned.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../_sources/core/device/unify_nest.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -221,12 +221,27 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="cloned">
-<h1>Cloned<a class="headerlink" href="#cloned" title="Permalink to this headline">¶</a></h1>
-<dl class="py class">
-<dt id="ivy.core.device.Cloned">
-<em class="property">class </em><code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">Cloned</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">iterable</span><span class="o">=</span><span class="default_value">()</span></em>, <em class="sig-param"><span class="o">/</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/device.html#Cloned"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.device.Cloned" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="MultiDevice.html#ivy.core.device.MultiDevice" title="ivy.core.device.MultiDevice"><code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.core.device.MultiDevice</span></code></a></p>
+  <div class="section" id="unify-nest">
+<h1>unify_nest<a class="headerlink" href="#unify-nest" title="Permalink to this headline">¶</a></h1>
+<dl class="py function">
+<dt id="ivy.core.device.unify_nest">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">unify_nest</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dev_str</span></em>, <em class="sig-param"><span class="n">args</span><span class="p">:</span> <span class="n">Type<span class="p">[</span><a class="reference internal" href="MultiDevice.html#ivy.core.device.MultiDevice" title="ivy.core.device.MultiDevice">ivy.core.device.MultiDevice</a><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">kwargs</span><span class="p">:</span> <span class="n">Type<span class="p">[</span><a class="reference internal" href="MultiDevice.html#ivy.core.device.MultiDevice" title="ivy.core.device.MultiDevice">ivy.core.device.MultiDevice</a><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">max_depth</span><span class="o">=</span><span class="default_value">1</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/device.html#unify_nest"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.device.unify_nest" title="Permalink to this definition">¶</a></dt>
+<dd><p>Unify the input nested arguments, which consist of sub-arrays spread across arbitrary devices, to unified arrays
+on a single target device.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dev_str</strong> (<em>str</em>) – The device to unify the nested arguments to.</p></li>
+<li><p><strong>args</strong> (<a class="reference internal" href="MultiDevice.html#ivy.core.device.MultiDevice" title="ivy.core.device.MultiDevice"><em>MultiDevice</em></a>) – The nested positional arguments to unify.</p></li>
+<li><p><strong>axis</strong> (<em>int</em><em>, </em><em>optional</em>) – The axis along which to concattenate the sub-arrays. Default is 0.</p></li>
+<li><p><strong>max_depth</strong> (<em>int</em><em>, </em><em>optional</em>) – The maximum nested depth to reach. Default is 1. Increase this if the nest is deeper.</p></li>
+<li><p><strong>kwargs</strong> (<a class="reference internal" href="MultiDevice.html#ivy.core.device.MultiDevice" title="ivy.core.device.MultiDevice"><em>MultiDevice</em></a>) – The nested keyword arguments to unify.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>nested arguments unified to the target device</p>
+</dd>
+</dl>
 </dd></dl>
 
 <div class="line-block">
@@ -244,10 +259,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="ClonedNest.html" class="btn btn-neutral float-right" title="ClonedNest" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="MultiDevice.html" class="btn btn-neutral float-right" title="MultiDevice" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="DistributedNest.html" class="btn btn-neutral float-left" title="DistributedNest" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="unify.html" class="btn btn-neutral float-left" title="unify" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
