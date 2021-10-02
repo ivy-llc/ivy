@@ -605,6 +605,28 @@ def test_container_expand_dims(dev_str, call):
     assert 'b/d' not in container_expanded_dims
 
 
+def test_container_clone(dev_str, call):
+    dict_in = {'a': ivy.array([[1], [2], [3]], dev_str=dev_str),
+               'b': {'c': ivy.array([[2], [3], [4]], dev_str=dev_str),
+                     'd': ivy.array([[3], [4], [5]], dev_str=dev_str)}}
+    container = Container(dict_in)
+
+    # devices
+    dev_str0 = dev_str
+    if 'gpu' in dev_str:
+        idx = ivy.num_gpus() - 1
+        dev_str1 = dev_str[:-1] + str(idx)
+    else:
+        dev_str1 = dev_str
+    dev_strs = [dev_str0, dev_str1]
+
+    # without key_chains specification
+    container_cloned = container.clone(dev_strs)
+    assert isinstance(container_cloned, ivy.Cloned)
+    assert min([cont.dev_str == d for cont, d in zip(container_cloned, dev_strs)])
+    assert ivy.Container.multi_map(lambda xs, _: ivy.arrays_equal(xs), [c for c in container_cloned]).all_true()
+
+
 def test_container_unstack(dev_str, call):
     dict_in = {'a': ivy.array([[1], [2], [3]], dev_str=dev_str),
                'b': {'c': ivy.array([[2], [3], [4]], dev_str=dev_str),
