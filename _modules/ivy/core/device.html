@@ -401,7 +401,7 @@
         <span class="k">return</span> <span class="s1">&#39;DistributedNest(&#39;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nest</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">()</span> <span class="o">+</span> <span class="s1">&#39;)&#39;</span></div>
 
 
-<div class="viewcode-block" id="distribute_array"><a class="viewcode-back" href="../../../core/device/distribute_array.html#ivy.core.device.distribute_array">[docs]</a><span class="k">def</span> <span class="nf">distribute_array</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">dev_strs</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">check_for_array</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="distribute_array"><a class="viewcode-back" href="../../../core/device/distribute_array.html#ivy.core.device.distribute_array">[docs]</a><span class="k">def</span> <span class="nf">distribute_array</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">dev_strs</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Distribute an array across the specified devices, returning a list of sub-arrays, each on a different device.</span>
 
@@ -411,14 +411,29 @@
 <span class="sd">    :type dev_strs: sequence of strs</span>
 <span class="sd">    :param axis: The axis along which to split the array. Default is 0.</span>
 <span class="sd">    :type axis: int, optional</span>
-<span class="sd">    :param check_for_array: Whether to check if the input is an array, and only split if so. Default is True.</span>
-<span class="sd">    :type check_for_array: bool, optional</span>
 <span class="sd">    :return: array distributed across the target devices</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">check_for_array</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_array</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">x</span>
     <span class="k">return</span> <span class="n">Distributed</span><span class="p">(</span>
         <span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">to_dev</span><span class="p">(</span><span class="n">x_sub</span><span class="p">,</span> <span class="n">d</span><span class="p">)</span> <span class="k">for</span> <span class="n">x_sub</span><span class="p">,</span> <span class="n">d</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">dev_strs</span><span class="p">),</span> <span class="n">axis</span><span class="p">,</span> <span class="n">with_remainder</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span> <span class="n">dev_strs</span><span class="p">)])</span></div>
+
+
+<div class="viewcode-block" id="distribute"><a class="viewcode-back" href="../../../core/device/distribute.html#ivy.core.device.distribute">[docs]</a><span class="k">def</span> <span class="nf">distribute</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">dev_strs</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Distribute the input item across the specified devices, returning a list of sub-items, each on a different device.</span>
+
+<span class="sd">    :param x: The input array or container to distribute across devices.</span>
+<span class="sd">    :type x: array or container</span>
+<span class="sd">    :param dev_strs: The devices to distribute the input across.</span>
+<span class="sd">    :type dev_strs: sequence of strs</span>
+<span class="sd">    :param axis: The axis along which to split the input. Default is 0.</span>
+<span class="sd">    :type axis: int, optional</span>
+<span class="sd">    :return: array or container distributed across the target devices</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_array</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">distribute_array</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">dev_strs</span><span class="p">,</span> <span class="n">axis</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">x</span><span class="o">.</span><span class="n">distribute</span><span class="p">(</span><span class="n">dev_strs</span><span class="p">,</span> <span class="n">axis</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">x</span></div>
 
 
 <div class="viewcode-block" id="distribute_nest"><a class="viewcode-back" href="../../../core/device/distribute_nest.html#ivy.core.device.distribute_nest">[docs]</a><span class="k">def</span> <span class="nf">distribute_nest</span><span class="p">(</span><span class="n">dev_strs</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">max_depth</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
@@ -439,8 +454,8 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">dev_strs</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">dev_strs</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span>
-    <span class="n">args_dist</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">nested_map</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">distribute_array</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">dev_strs</span><span class="p">,</span> <span class="n">axis</span><span class="p">),</span> <span class="n">max_depth</span><span class="o">=</span><span class="n">max_depth</span><span class="p">)</span>
-    <span class="n">kwargs_dist</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">nested_map</span><span class="p">(</span><span class="n">kwargs</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">distribute_array</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">dev_strs</span><span class="p">,</span> <span class="n">axis</span><span class="p">),</span> <span class="n">max_depth</span><span class="o">=</span><span class="n">max_depth</span><span class="p">)</span>
+    <span class="n">args_dist</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">nested_map</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">distribute</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">dev_strs</span><span class="p">,</span> <span class="n">axis</span><span class="p">),</span> <span class="n">max_depth</span><span class="o">=</span><span class="n">max_depth</span><span class="p">)</span>
+    <span class="n">kwargs_dist</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">nested_map</span><span class="p">(</span><span class="n">kwargs</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">distribute</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">dev_strs</span><span class="p">,</span> <span class="n">axis</span><span class="p">),</span> <span class="n">max_depth</span><span class="o">=</span><span class="n">max_depth</span><span class="p">)</span>
     <span class="n">args_lengths</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">dev_strs</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">DistributedNest</span><span class="p">(</span><span class="n">args_dist</span><span class="p">,</span> <span class="n">args_lengths</span><span class="p">),</span> <span class="n">DistributedNest</span><span class="p">(</span><span class="n">kwargs_dist</span><span class="p">,</span> <span class="n">args_lengths</span><span class="p">)</span></div>
 
@@ -463,7 +478,7 @@
         <span class="k">return</span> <span class="s1">&#39;ClonedNest(&#39;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nest</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">()</span> <span class="o">+</span> <span class="s1">&#39;)&#39;</span></div>
 
 
-<div class="viewcode-block" id="clone_array"><a class="viewcode-back" href="../../../core/device/clone_array.html#ivy.core.device.clone_array">[docs]</a><span class="k">def</span> <span class="nf">clone_array</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">dev_strs</span><span class="p">,</span> <span class="n">check_for_array</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="clone_array"><a class="viewcode-back" href="../../../core/device/clone_array.html#ivy.core.device.clone_array">[docs]</a><span class="k">def</span> <span class="nf">clone_array</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">dev_strs</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Clone an array across the specified devices, returning a list of cloned arrays, each on a different device.</span>
 
@@ -471,13 +486,26 @@
 <span class="sd">    :type x: array</span>
 <span class="sd">    :param dev_strs: The devices to clone the array to.</span>
 <span class="sd">    :type dev_strs: sequence of strs</span>
-<span class="sd">    :param check_for_array: Whether to check if the input is an array, and only clone if so. Default is True.</span>
-<span class="sd">    :type check_for_array: bool, optional</span>
 <span class="sd">    :return: array cloned to each of the target devices</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">check_for_array</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_array</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">x</span>
     <span class="k">return</span> <span class="n">Cloned</span><span class="p">([</span><span class="n">ivy</span><span class="o">.</span><span class="n">to_dev</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">d</span><span class="p">)</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">dev_strs</span><span class="p">])</span></div>
+
+
+<div class="viewcode-block" id="clone"><a class="viewcode-back" href="../../../core/device/clone.html#ivy.core.device.clone">[docs]</a><span class="k">def</span> <span class="nf">clone</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">dev_strs</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Clone the input item to each of the specified devices, returning a list of cloned items, each on a different device.</span>
+
+<span class="sd">    :param x: The input array or container to clone to each device.</span>
+<span class="sd">    :type x: array or container</span>
+<span class="sd">    :param dev_strs: The devices to clone the input to.</span>
+<span class="sd">    :type dev_strs: sequence of strs</span>
+<span class="sd">    :return: array or container distributed across the target devices</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_array</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">clone_array</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">dev_strs</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">x</span><span class="o">.</span><span class="n">clone</span><span class="p">(</span><span class="n">dev_strs</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">x</span></div>
 
 
 <div class="viewcode-block" id="clone_nest"><a class="viewcode-back" href="../../../core/device/clone_nest.html#ivy.core.device.clone_nest">[docs]</a><span class="k">def</span> <span class="nf">clone_nest</span><span class="p">(</span><span class="n">dev_strs</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">max_depth</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
@@ -496,8 +524,8 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">dev_strs</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">dev_strs</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span>
-    <span class="n">args_cloned</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">nested_map</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">clone_array</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">dev_strs</span><span class="p">),</span> <span class="n">max_depth</span><span class="o">=</span><span class="n">max_depth</span><span class="p">)</span>
-    <span class="n">kwargs_cloned</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">nested_map</span><span class="p">(</span><span class="n">kwargs</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">clone_array</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">dev_strs</span><span class="p">),</span> <span class="n">max_depth</span><span class="o">=</span><span class="n">max_depth</span><span class="p">)</span>
+    <span class="n">args_cloned</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">nested_map</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">clone</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">dev_strs</span><span class="p">),</span> <span class="n">max_depth</span><span class="o">=</span><span class="n">max_depth</span><span class="p">)</span>
+    <span class="n">kwargs_cloned</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">nested_map</span><span class="p">(</span><span class="n">kwargs</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">clone</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">dev_strs</span><span class="p">),</span> <span class="n">max_depth</span><span class="o">=</span><span class="n">max_depth</span><span class="p">)</span>
     <span class="n">args_lengths</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">dev_strs</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">ClonedNest</span><span class="p">(</span><span class="n">args_cloned</span><span class="p">,</span> <span class="n">args_lengths</span><span class="p">),</span> <span class="n">ClonedNest</span><span class="p">(</span><span class="n">kwargs_cloned</span><span class="p">,</span> <span class="n">args_lengths</span><span class="p">)</span></div>
 
@@ -506,45 +534,62 @@
 <span class="c1"># -------------------#</span>
 
 <span class="c1"># noinspection PyShadowingNames</span>
-<div class="viewcode-block" id="unify_array"><a class="viewcode-back" href="../../../core/device/unify_array.html#ivy.core.device.unify_array">[docs]</a><span class="k">def</span> <span class="nf">unify_array</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">dev_str</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">check_for_array</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="unify_array"><a class="viewcode-back" href="../../../core/device/unify_array.html#ivy.core.device.unify_array">[docs]</a><span class="k">def</span> <span class="nf">unify_array</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="n">dev_str</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Unify a list of sub-arrays, on arbitrary devices, to a single concattenated array on the specified device.</span>
 
-<span class="sd">    :param x: The list of sub-arrays to unify onto the specified device.</span>
-<span class="sd">    :type x: sequence of arrays</span>
+<span class="sd">    :param xs: The list of sub-arrays to unify onto the specified device.</span>
+<span class="sd">    :type xs: sequence of arrays</span>
 <span class="sd">    :param dev_str: The device to unify the sub-arrays to.</span>
 <span class="sd">    :type dev_str: str</span>
 <span class="sd">    :param axis: The axis along which to concattenate the array. Default is 0.</span>
 <span class="sd">    :type axis: int, optional</span>
-<span class="sd">    :param check_for_array: Whether to check if the input is a list of arrays, and only unify if so. Default is True.</span>
-<span class="sd">    :type check_for_array: bool, optional</span>
 <span class="sd">    :return: array unified to the target device</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">check_for_array</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">MultiDevice</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">x</span>
-    <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="n">ivy</span><span class="o">.</span><span class="n">to_dev</span><span class="p">(</span><span class="n">x_sub</span><span class="p">,</span> <span class="n">dev_str</span><span class="p">)</span> <span class="k">for</span> <span class="n">x_sub</span> <span class="ow">in</span> <span class="n">x</span><span class="p">],</span> <span class="n">axis</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="n">ivy</span><span class="o">.</span><span class="n">to_dev</span><span class="p">(</span><span class="n">x_sub</span><span class="p">,</span> <span class="n">dev_str</span><span class="p">)</span> <span class="k">for</span> <span class="n">x_sub</span> <span class="ow">in</span> <span class="n">xs</span><span class="p">],</span> <span class="n">axis</span><span class="p">)</span></div>
+
+
+<span class="c1"># noinspection PyShadowingNames</span>
+<div class="viewcode-block" id="unify"><a class="viewcode-back" href="../../../core/device/unify.html#ivy.core.device.unify">[docs]</a><span class="k">def</span> <span class="nf">unify</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="n">dev_str</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Unify a list of sub-arrays, on arbitrary devices, to a single concattenated array on the specified device.</span>
+
+<span class="sd">    :param xs: The list of sub-arrays to unify onto the specified device.</span>
+<span class="sd">    :type xs: sequence of arrays</span>
+<span class="sd">    :param dev_str: The device to unify the sub-arrays to.</span>
+<span class="sd">    :type dev_str: str</span>
+<span class="sd">    :param axis: The axis along which to concattenate the array. Default is 0.</span>
+<span class="sd">    :type axis: int, optional</span>
+<span class="sd">    :return: array unified to the target device</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">xs0</span> <span class="o">=</span> <span class="n">xs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_array</span><span class="p">(</span><span class="n">xs0</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="n">ivy</span><span class="o">.</span><span class="n">to_dev</span><span class="p">(</span><span class="n">x_sub</span><span class="p">,</span> <span class="n">dev_str</span><span class="p">)</span> <span class="k">for</span> <span class="n">x_sub</span> <span class="ow">in</span> <span class="n">xs</span><span class="p">],</span> <span class="n">axis</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">xs0</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">x_sub</span><span class="o">.</span><span class="n">to_dev</span><span class="p">(</span><span class="n">dev_str</span><span class="p">)</span> <span class="k">for</span> <span class="n">x_sub</span> <span class="ow">in</span> <span class="n">xs</span><span class="p">],</span> <span class="n">axis</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">xs</span></div>
 
 
 <span class="c1"># noinspection PyShadowingNames,PyProtectedMember</span>
-<div class="viewcode-block" id="unify_args"><a class="viewcode-back" href="../../../core/device/unify_args.html#ivy.core.device.unify_args">[docs]</a><span class="k">def</span> <span class="nf">unify_args</span><span class="p">(</span><span class="n">dev_str</span><span class="p">,</span> <span class="n">args</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">MultiDevice</span><span class="p">],</span> <span class="n">kwargs</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">MultiDevice</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">max_depth</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+<div class="viewcode-block" id="unify_nest"><a class="viewcode-back" href="../../../core/device/unify_nest.html#ivy.core.device.unify_nest">[docs]</a><span class="k">def</span> <span class="nf">unify_nest</span><span class="p">(</span><span class="n">dev_str</span><span class="p">,</span> <span class="n">args</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">MultiDevice</span><span class="p">],</span> <span class="n">kwargs</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">MultiDevice</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">max_depth</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Unify the input arguments, which consist of sub-arrays distributed across arbitrary devices, to a unified arrays</span>
+<span class="sd">    Unify the input nested arguments, which consist of sub-arrays spread across arbitrary devices, to unified arrays</span>
 <span class="sd">    on a single target device.</span>
 
-<span class="sd">    :param dev_str: The device to unify the arguments to.</span>
+<span class="sd">    :param dev_str: The device to unify the nested arguments to.</span>
 <span class="sd">    :type dev_str: str</span>
-<span class="sd">    :param args: The positional arguments to unify.</span>
+<span class="sd">    :param args: The nested positional arguments to unify.</span>
 <span class="sd">    :type args: MultiDevice</span>
 <span class="sd">    :param axis: The axis along which to concattenate the sub-arrays. Default is 0.</span>
 <span class="sd">    :type axis: int, optional</span>
 <span class="sd">    :param max_depth: The maximum nested depth to reach. Default is 1. Increase this if the nest is deeper.</span>
 <span class="sd">    :type max_depth: int, optional</span>
-<span class="sd">    :param kwargs: The keyword arguments to unify.</span>
+<span class="sd">    :param kwargs: The nested keyword arguments to unify.</span>
 <span class="sd">    :type kwargs: MultiDevice</span>
-<span class="sd">    :return: arguments unified to the target device</span>
+<span class="sd">    :return: nested arguments unified to the target device</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">args_uni</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">nested_map</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">_nest</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">unify_array</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">dev_str</span><span class="p">,</span> <span class="n">axis</span><span class="p">),</span> <span class="n">max_depth</span><span class="o">=</span><span class="n">max_depth</span><span class="p">)</span>
-    <span class="n">kwargs_uni</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">nested_map</span><span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">_nest</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">unify_array</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">dev_str</span><span class="p">,</span> <span class="n">axis</span><span class="p">),</span> <span class="n">max_depth</span><span class="o">=</span><span class="n">max_depth</span><span class="p">)</span>
+    <span class="n">args_uni</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">nested_map</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">_nest</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">unify</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">dev_str</span><span class="p">,</span> <span class="n">axis</span><span class="p">),</span> <span class="n">max_depth</span><span class="o">=</span><span class="n">max_depth</span><span class="p">)</span>
+    <span class="n">kwargs_uni</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">nested_map</span><span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">_nest</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">unify</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">dev_str</span><span class="p">,</span> <span class="n">axis</span><span class="p">),</span> <span class="n">max_depth</span><span class="o">=</span><span class="n">max_depth</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">args_uni</span><span class="p">,</span> <span class="n">kwargs_uni</span></div>
 
 

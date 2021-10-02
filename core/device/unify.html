@@ -36,8 +36,8 @@
   <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="Distributed" href="Distributed.html" />
-    <link rel="prev" title="distribute" href="distribute.html" /> 
+    <link rel="next" title="unify_nest" href="unify_nest.html" />
+    <link rel="prev" title="unify_array" href="unify_array.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -100,13 +100,21 @@
 <li class="toctree-l2"><a class="reference internal" href="num_gpus.html">num_gpus</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tpu_is_available.html">tpu_is_available</a></li>
 <li class="toctree-l2"><a class="reference internal" href="to_dev.html">to_dev</a></li>
-<li class="toctree-l2"><a class="reference internal" href="split_func_call.html">split_func_call</a></li>
-<li class="toctree-l2"><a class="reference internal" href="split_func_call_across_devices.html">split_func_call_across_devices</a></li>
 <li class="toctree-l2"><a class="reference internal" href="distribute_array.html">distribute_array</a></li>
-<li class="toctree-l2"><a class="reference internal" href="unify_array.html">unify_array</a></li>
 <li class="toctree-l2"><a class="reference internal" href="distribute.html">distribute</a></li>
+<li class="toctree-l2"><a class="reference internal" href="distribute_nest.html">distribute_nest</a></li>
+<li class="toctree-l2"><a class="reference internal" href="clone_array.html">clone_array</a></li>
+<li class="toctree-l2"><a class="reference internal" href="clone.html">clone</a></li>
+<li class="toctree-l2"><a class="reference internal" href="clone_nest.html">clone_nest</a></li>
+<li class="toctree-l2"><a class="reference internal" href="unify_array.html">unify_array</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">unify</a></li>
+<li class="toctree-l2"><a class="reference internal" href="unify_nest.html">unify_nest</a></li>
+<li class="toctree-l2"><a class="reference internal" href="MultiDevice.html">MultiDevice</a></li>
+<li class="toctree-l2"><a class="reference internal" href="MultiDeviceNest.html">MultiDeviceNest</a></li>
 <li class="toctree-l2"><a class="reference internal" href="Distributed.html">Distributed</a></li>
+<li class="toctree-l2"><a class="reference internal" href="DistributedNest.html">DistributedNest</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Cloned.html">Cloned</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ClonedNest.html">ClonedNest</a></li>
 <li class="toctree-l2"><a class="reference internal" href="Profiler.html">Profiler</a></li>
 </ul>
 </li>
@@ -217,20 +225,18 @@
 <h1>unify<a class="headerlink" href="#unify" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
 <dt id="ivy.core.device.unify">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">unify</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dev_str</span></em>, <em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/device.html#unify"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.device.unify" title="Permalink to this definition">¶</a></dt>
-<dd><p>Unify the input arguments, which consist of sub-arrays distributed across arbitrary devices, to a unified arrays
-on a single target device.</p>
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">unify</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">xs</span></em>, <em class="sig-param"><span class="n">dev_str</span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">0</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/device.html#unify"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.device.unify" title="Permalink to this definition">¶</a></dt>
+<dd><p>Unify a list of sub-arrays, on arbitrary devices, to a single concattenated array on the specified device.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>dev_str</strong> (<em>str</em>) – The device to unify the arguments to.</p></li>
-<li><p><strong>args</strong> (<em>list of any</em>) – The positional arguments to unify.</p></li>
-<li><p><strong>axis</strong> (<em>int</em><em>, </em><em>optional</em>) – The axis along which to concattenate the sub-arrays. Default is 0.</p></li>
-<li><p><strong>kwargs</strong> (<em>dict of any</em>) – The keyword arguments to unify.</p></li>
+<li><p><strong>xs</strong> (<em>sequence of arrays</em>) – The list of sub-arrays to unify onto the specified device.</p></li>
+<li><p><strong>dev_str</strong> (<em>str</em>) – The device to unify the sub-arrays to.</p></li>
+<li><p><strong>axis</strong> (<em>int</em><em>, </em><em>optional</em>) – The axis along which to concattenate the array. Default is 0.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>arguments unified to the target device</p>
+<dd class="field-even"><p>array unified to the target device</p>
 </dd>
 </dl>
 </dd></dl>
@@ -250,10 +256,10 @@ on a single target device.</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="Distributed.html" class="btn btn-neutral float-right" title="Distributed" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="unify_nest.html" class="btn btn-neutral float-right" title="unify_nest" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="distribute.html" class="btn btn-neutral float-left" title="distribute" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="unify_array.html" class="btn btn-neutral float-left" title="unify_array" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

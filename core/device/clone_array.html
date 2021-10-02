@@ -36,7 +36,7 @@
   <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="clone_nest" href="clone_nest.html" />
+    <link rel="next" title="clone" href="clone.html" />
     <link rel="prev" title="distribute_nest" href="distribute_nest.html" /> 
 </head>
 
@@ -101,11 +101,14 @@
 <li class="toctree-l2"><a class="reference internal" href="tpu_is_available.html">tpu_is_available</a></li>
 <li class="toctree-l2"><a class="reference internal" href="to_dev.html">to_dev</a></li>
 <li class="toctree-l2"><a class="reference internal" href="distribute_array.html">distribute_array</a></li>
+<li class="toctree-l2"><a class="reference internal" href="distribute.html">distribute</a></li>
 <li class="toctree-l2"><a class="reference internal" href="distribute_nest.html">distribute_nest</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">clone_array</a></li>
+<li class="toctree-l2"><a class="reference internal" href="clone.html">clone</a></li>
 <li class="toctree-l2"><a class="reference internal" href="clone_nest.html">clone_nest</a></li>
 <li class="toctree-l2"><a class="reference internal" href="unify_array.html">unify_array</a></li>
-<li class="toctree-l2"><a class="reference internal" href="unify_args.html">unify_args</a></li>
+<li class="toctree-l2"><a class="reference internal" href="unify.html">unify</a></li>
+<li class="toctree-l2"><a class="reference internal" href="unify_nest.html">unify_nest</a></li>
 <li class="toctree-l2"><a class="reference internal" href="MultiDevice.html">MultiDevice</a></li>
 <li class="toctree-l2"><a class="reference internal" href="MultiDeviceNest.html">MultiDeviceNest</a></li>
 <li class="toctree-l2"><a class="reference internal" href="Distributed.html">Distributed</a></li>
@@ -222,14 +225,13 @@
 <h1>clone_array<a class="headerlink" href="#clone-array" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
 <dt id="ivy.core.device.clone_array">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">clone_array</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">dev_strs</span></em>, <em class="sig-param"><span class="n">check_for_array</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/device.html#clone_array"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.device.clone_array" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">clone_array</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">dev_strs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/device.html#clone_array"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.device.clone_array" title="Permalink to this definition">¶</a></dt>
 <dd><p>Clone an array across the specified devices, returning a list of cloned arrays, each on a different device.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>x</strong> (<em>array</em>) – The array to clone across devices.</p></li>
 <li><p><strong>dev_strs</strong> (<em>sequence of strs</em>) – The devices to clone the array to.</p></li>
-<li><p><strong>check_for_array</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to check if the input is an array, and only clone if so. Default is True.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -253,7 +255,7 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="clone_nest.html" class="btn btn-neutral float-right" title="clone_nest" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="clone.html" class="btn btn-neutral float-right" title="clone" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="distribute_nest.html" class="btn btn-neutral float-left" title="distribute_nest" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>

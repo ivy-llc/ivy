@@ -101,11 +101,14 @@
 <li class="toctree-l2"><a class="reference internal" href="device/tpu_is_available.html">tpu_is_available</a></li>
 <li class="toctree-l2"><a class="reference internal" href="device/to_dev.html">to_dev</a></li>
 <li class="toctree-l2"><a class="reference internal" href="device/distribute_array.html">distribute_array</a></li>
+<li class="toctree-l2"><a class="reference internal" href="device/distribute.html">distribute</a></li>
 <li class="toctree-l2"><a class="reference internal" href="device/distribute_nest.html">distribute_nest</a></li>
 <li class="toctree-l2"><a class="reference internal" href="device/clone_array.html">clone_array</a></li>
+<li class="toctree-l2"><a class="reference internal" href="device/clone.html">clone</a></li>
 <li class="toctree-l2"><a class="reference internal" href="device/clone_nest.html">clone_nest</a></li>
 <li class="toctree-l2"><a class="reference internal" href="device/unify_array.html">unify_array</a></li>
-<li class="toctree-l2"><a class="reference internal" href="device/unify_args.html">unify_args</a></li>
+<li class="toctree-l2"><a class="reference internal" href="device/unify.html">unify</a></li>
+<li class="toctree-l2"><a class="reference internal" href="device/unify_nest.html">unify_nest</a></li>
 <li class="toctree-l2"><a class="reference internal" href="device/MultiDevice.html">MultiDevice</a></li>
 <li class="toctree-l2"><a class="reference internal" href="device/MultiDeviceNest.html">MultiDeviceNest</a></li>
 <li class="toctree-l2"><a class="reference internal" href="device/Distributed.html">Distributed</a></li>
@@ -296,15 +299,31 @@
 </dd></dl>
 
 <dl class="py function">
+<dt id="ivy.core.device.clone">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">clone</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">dev_strs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/device.html#clone"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.device.clone" title="Permalink to this definition">¶</a></dt>
+<dd><p>Clone the input item to each of the specified devices, returning a list of cloned items, each on a different device.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>array</em><em> or </em><em>container</em>) – The input array or container to clone to each device.</p></li>
+<li><p><strong>dev_strs</strong> (<em>sequence of strs</em>) – The devices to clone the input to.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>array or container distributed across the target devices</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt id="ivy.core.device.clone_array">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">clone_array</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">dev_strs</span></em>, <em class="sig-param"><span class="n">check_for_array</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/device.html#clone_array"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.device.clone_array" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">clone_array</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">dev_strs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/device.html#clone_array"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.device.clone_array" title="Permalink to this definition">¶</a></dt>
 <dd><p>Clone an array across the specified devices, returning a list of cloned arrays, each on a different device.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>x</strong> (<em>array</em>) – The array to clone across devices.</p></li>
 <li><p><strong>dev_strs</strong> (<em>sequence of strs</em>) – The devices to clone the array to.</p></li>
-<li><p><strong>check_for_array</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to check if the input is an array, and only clone if so. Default is True.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -384,8 +403,26 @@
 </dd></dl>
 
 <dl class="py function">
+<dt id="ivy.core.device.distribute">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">distribute</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">dev_strs</span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">0</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/device.html#distribute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.device.distribute" title="Permalink to this definition">¶</a></dt>
+<dd><p>Distribute the input item across the specified devices, returning a list of sub-items, each on a different device.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>array</em><em> or </em><em>container</em>) – The input array or container to distribute across devices.</p></li>
+<li><p><strong>dev_strs</strong> (<em>sequence of strs</em>) – The devices to distribute the input across.</p></li>
+<li><p><strong>axis</strong> (<em>int</em><em>, </em><em>optional</em>) – The axis along which to split the input. Default is 0.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>array or container distributed across the target devices</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt id="ivy.core.device.distribute_array">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">distribute_array</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">dev_strs</span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">check_for_array</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/device.html#distribute_array"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.device.distribute_array" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">distribute_array</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">dev_strs</span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">0</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/device.html#distribute_array"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.device.distribute_array" title="Permalink to this definition">¶</a></dt>
 <dd><p>Distribute an array across the specified devices, returning a list of sub-arrays, each on a different device.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -393,7 +430,6 @@
 <li><p><strong>x</strong> (<em>array</em>) – The array to distribute across devices.</p></li>
 <li><p><strong>dev_strs</strong> (<em>sequence of strs</em>) – The devices to distribute the array across.</p></li>
 <li><p><strong>axis</strong> (<em>int</em><em>, </em><em>optional</em>) – The axis along which to split the array. Default is 0.</p></li>
-<li><p><strong>check_for_array</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to check if the input is an array, and only split if so. Default is True.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -514,41 +550,58 @@
 </dd></dl>
 
 <dl class="py function">
-<dt id="ivy.core.device.unify_args">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">unify_args</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dev_str</span></em>, <em class="sig-param"><span class="n">args</span><span class="p">:</span> <span class="n">Type<span class="p">[</span><a class="reference internal" href="device/MultiDevice.html#ivy.core.device.MultiDevice" title="ivy.core.device.MultiDevice">ivy.core.device.MultiDevice</a><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">kwargs</span><span class="p">:</span> <span class="n">Type<span class="p">[</span><a class="reference internal" href="device/MultiDevice.html#ivy.core.device.MultiDevice" title="ivy.core.device.MultiDevice">ivy.core.device.MultiDevice</a><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">max_depth</span><span class="o">=</span><span class="default_value">1</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/device.html#unify_args"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.device.unify_args" title="Permalink to this definition">¶</a></dt>
-<dd><p>Unify the input arguments, which consist of sub-arrays distributed across arbitrary devices, to a unified arrays
-on a single target device.</p>
+<dt id="ivy.core.device.unify">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">unify</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">xs</span></em>, <em class="sig-param"><span class="n">dev_str</span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">0</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/device.html#unify"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.device.unify" title="Permalink to this definition">¶</a></dt>
+<dd><p>Unify a list of sub-arrays, on arbitrary devices, to a single concattenated array on the specified device.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>dev_str</strong> (<em>str</em>) – The device to unify the arguments to.</p></li>
-<li><p><strong>args</strong> (<a class="reference internal" href="device/MultiDevice.html#ivy.core.device.MultiDevice" title="ivy.core.device.MultiDevice"><em>MultiDevice</em></a>) – The positional arguments to unify.</p></li>
-<li><p><strong>axis</strong> (<em>int</em><em>, </em><em>optional</em>) – The axis along which to concattenate the sub-arrays. Default is 0.</p></li>
-<li><p><strong>max_depth</strong> (<em>int</em><em>, </em><em>optional</em>) – The maximum nested depth to reach. Default is 1. Increase this if the nest is deeper.</p></li>
-<li><p><strong>kwargs</strong> (<a class="reference internal" href="device/MultiDevice.html#ivy.core.device.MultiDevice" title="ivy.core.device.MultiDevice"><em>MultiDevice</em></a>) – The keyword arguments to unify.</p></li>
+<li><p><strong>xs</strong> (<em>sequence of arrays</em>) – The list of sub-arrays to unify onto the specified device.</p></li>
+<li><p><strong>dev_str</strong> (<em>str</em>) – The device to unify the sub-arrays to.</p></li>
+<li><p><strong>axis</strong> (<em>int</em><em>, </em><em>optional</em>) – The axis along which to concattenate the array. Default is 0.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>arguments unified to the target device</p>
+<dd class="field-even"><p>array unified to the target device</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py function">
 <dt id="ivy.core.device.unify_array">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">unify_array</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">dev_str</span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">check_for_array</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/device.html#unify_array"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.device.unify_array" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">unify_array</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">xs</span></em>, <em class="sig-param"><span class="n">dev_str</span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">0</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/device.html#unify_array"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.device.unify_array" title="Permalink to this definition">¶</a></dt>
 <dd><p>Unify a list of sub-arrays, on arbitrary devices, to a single concattenated array on the specified device.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<em>sequence of arrays</em>) – The list of sub-arrays to unify onto the specified device.</p></li>
+<li><p><strong>xs</strong> (<em>sequence of arrays</em>) – The list of sub-arrays to unify onto the specified device.</p></li>
 <li><p><strong>dev_str</strong> (<em>str</em>) – The device to unify the sub-arrays to.</p></li>
 <li><p><strong>axis</strong> (<em>int</em><em>, </em><em>optional</em>) – The axis along which to concattenate the array. Default is 0.</p></li>
-<li><p><strong>check_for_array</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to check if the input is a list of arrays, and only unify if so. Default is True.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>array unified to the target device</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.core.device.unify_nest">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">unify_nest</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dev_str</span></em>, <em class="sig-param"><span class="n">args</span><span class="p">:</span> <span class="n">Type<span class="p">[</span><a class="reference internal" href="device/MultiDevice.html#ivy.core.device.MultiDevice" title="ivy.core.device.MultiDevice">ivy.core.device.MultiDevice</a><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">kwargs</span><span class="p">:</span> <span class="n">Type<span class="p">[</span><a class="reference internal" href="device/MultiDevice.html#ivy.core.device.MultiDevice" title="ivy.core.device.MultiDevice">ivy.core.device.MultiDevice</a><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">max_depth</span><span class="o">=</span><span class="default_value">1</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/device.html#unify_nest"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.device.unify_nest" title="Permalink to this definition">¶</a></dt>
+<dd><p>Unify the input nested arguments, which consist of sub-arrays spread across arbitrary devices, to unified arrays
+on a single target device.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dev_str</strong> (<em>str</em>) – The device to unify the nested arguments to.</p></li>
+<li><p><strong>args</strong> (<a class="reference internal" href="device/MultiDevice.html#ivy.core.device.MultiDevice" title="ivy.core.device.MultiDevice"><em>MultiDevice</em></a>) – The nested positional arguments to unify.</p></li>
+<li><p><strong>axis</strong> (<em>int</em><em>, </em><em>optional</em>) – The axis along which to concattenate the sub-arrays. Default is 0.</p></li>
+<li><p><strong>max_depth</strong> (<em>int</em><em>, </em><em>optional</em>) – The maximum nested depth to reach. Default is 1. Increase this if the nest is deeper.</p></li>
+<li><p><strong>kwargs</strong> (<a class="reference internal" href="device/MultiDevice.html#ivy.core.device.MultiDevice" title="ivy.core.device.MultiDevice"><em>MultiDevice</em></a>) – The nested keyword arguments to unify.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>nested arguments unified to the target device</p>
 </dd>
 </dl>
 </dd></dl>
@@ -566,11 +619,14 @@ on a single target device.</p>
 <li class="toctree-l1"><a class="reference internal" href="device/tpu_is_available.html">tpu_is_available</a></li>
 <li class="toctree-l1"><a class="reference internal" href="device/to_dev.html">to_dev</a></li>
 <li class="toctree-l1"><a class="reference internal" href="device/distribute_array.html">distribute_array</a></li>
+<li class="toctree-l1"><a class="reference internal" href="device/distribute.html">distribute</a></li>
 <li class="toctree-l1"><a class="reference internal" href="device/distribute_nest.html">distribute_nest</a></li>
 <li class="toctree-l1"><a class="reference internal" href="device/clone_array.html">clone_array</a></li>
+<li class="toctree-l1"><a class="reference internal" href="device/clone.html">clone</a></li>
 <li class="toctree-l1"><a class="reference internal" href="device/clone_nest.html">clone_nest</a></li>
 <li class="toctree-l1"><a class="reference internal" href="device/unify_array.html">unify_array</a></li>
-<li class="toctree-l1"><a class="reference internal" href="device/unify_args.html">unify_args</a></li>
+<li class="toctree-l1"><a class="reference internal" href="device/unify.html">unify</a></li>
+<li class="toctree-l1"><a class="reference internal" href="device/unify_nest.html">unify_nest</a></li>
 <li class="toctree-l1"><a class="reference internal" href="device/MultiDevice.html">MultiDevice</a></li>
 <li class="toctree-l1"><a class="reference internal" href="device/MultiDeviceNest.html">MultiDeviceNest</a></li>
 <li class="toctree-l1"><a class="reference internal" href="device/Distributed.html">Distributed</a></li>

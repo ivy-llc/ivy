@@ -22,11 +22,14 @@ Device
    device/tpu_is_available.rst
    device/to_dev.rst
    device/distribute_array.rst
+   device/distribute.rst
    device/distribute_nest.rst
    device/clone_array.rst
+   device/clone.rst
    device/clone_nest.rst
    device/unify_array.rst
-   device/unify_args.rst
+   device/unify.rst
+   device/unify_nest.rst
    device/MultiDevice.rst
    device/MultiDeviceNest.rst
    device/Distributed.rst
