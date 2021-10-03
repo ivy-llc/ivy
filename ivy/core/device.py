@@ -587,6 +587,7 @@ class DevMapperMultiProc:
         self._num_workers = len(dev_strs)
         self._timeout = timeout
         multiprocessing = ivy.multiprocessing()
+        multiprocessing.set_start_method('fork')
         self._workers = list()
         self._input_queues = list()
         self._output_queues = list()
