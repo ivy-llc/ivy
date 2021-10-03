@@ -1307,6 +1307,21 @@ class Container(dict):
             [cont.to_dev(dev_str) for cont, dev_str in
              zip(self.split(len(dev_strs), axis, with_remainder=True), dev_strs)])
 
+    def to_multi_dev(self, dev_strs, axis=0):
+        """
+        Return a single MultiDevContainer, which shares the same structure as the current container, but replaces arrays
+        at the leaves with DistributedArray instances.
+
+        :param dev_strs: The devices along which to distribute each array in the container.
+        :type dev_strs: sequence of str
+        :param axis: The axis along which to split the arrays at the container leaves. Default is 0.
+        :type axis: int, optional
+        :return: a MultiDevContainer instance, with all leafs arrays replaced by DistributedArray instances.
+        """
+        return MultiDevContainer(
+            self.map(lambda x, kc: _ivy.distribute_array(x, dev_strs, axis) if _ivy.is_array(x) else x, dev_strs),
+            dev_strs)
+
     def unstack(self, axis, keepdims=False, dim_size=None):
         """
         Unstack containers along specified dimension.
@@ -2673,3 +2688,17 @@ class Container(dict):
     @property
     def ivy(self):
         return self._ivy
+
+
+class MultiDevContainer(Container):
+
+    def __init__(self, dict_in, dev_strs, queues=None, queue_load_sizes=None, container_combine_method='list_join',
+                 queue_timeout=5.0, print_limit=10, print_indent=4, print_line_spacing=0, ivyh=None,
+                 keyword_color_dict=None, rebuild_child_containers=False, **kwargs):
+        super().__init__(dict_in, queues, queue_load_sizes, container_combine_method, queue_timeout, print_limit,
+                         print_indent, print_line_spacing, ivyh, keyword_color_dict, rebuild_child_containers, **kwargs)
+        self._dev_strs = dev_strs
+        self._num_devs = len(dev_strs)
+
+    def to_multi_dev_iter(self):
+        return _ivy.MultiDeviceIter(self.unstack(0), self._num_devs)
