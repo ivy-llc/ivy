@@ -36,7 +36,7 @@
   <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="Device" href="../device.html" />
+    <link rel="next" title="MultiDevContainer" href="MultiDevContainer.html" />
     <link rel="prev" title="Container" href="../container.html" /> 
 </head>
 
@@ -91,6 +91,7 @@
 <ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="../container.html">Container</a><ul class="current">
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Container</a></li>
+<li class="toctree-l2"><a class="reference internal" href="MultiDevContainer.html">MultiDevContainer</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../device.html">Device</a></li>
@@ -1786,6 +1787,24 @@ Default is True.</p></li>
 </dd></dl>
 
 <dl class="py method">
+<dt id="ivy.core.container.Container.to_multi_dev">
+<code class="sig-name descname">to_multi_dev</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dev_strs</span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">0</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/container.html#Container.to_multi_dev"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.to_multi_dev" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a single MultiDevContainer, which shares the same structure as the current container, but replaces arrays
+at the leaves with DistributedArray instances.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dev_strs</strong> (<em>sequence of str</em>) – The devices along which to distribute each array in the container.</p></li>
+<li><p><strong>axis</strong> (<em>int</em><em>, </em><em>optional</em>) – The axis along which to split the arrays at the container leaves. Default is 0.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>a MultiDevContainer instance, with all leafs arrays replaced by DistributedArray instances.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt id="ivy.core.container.Container.to_native">
 <code class="sig-name descname">to_native</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">nested</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">key_chains</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">to_apply</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">prune_unapplied</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/container.html#Container.to_native"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.to_native" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return native framework arrays for all nested arrays in the container.</p>
@@ -1934,7 +1953,7 @@ Default is True.</p></li>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../device.html" class="btn btn-neutral float-right" title="Device" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="MultiDevContainer.html" class="btn btn-neutral float-right" title="MultiDevContainer" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="../container.html" class="btn btn-neutral float-left" title="Container" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
