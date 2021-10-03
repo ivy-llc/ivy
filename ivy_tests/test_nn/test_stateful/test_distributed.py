@@ -177,6 +177,7 @@ def test_distributed_multithread_training(bs_ic_oc, dev_str, call):
         helpers.assert_compilable(loss_fn)
 
 
+'''
 # distributed multiprocess training
 @pytest.mark.parametrize(
     "bs_ic_oc", [([2, 1], 4, 5)])
@@ -256,3 +257,4 @@ def test_distributed_multiprocess_training(bs_ic_oc, dev_str, call):
         return
     if not ivy.wrapped_mode():
         helpers.assert_compilable(loss_fn)
+'''
