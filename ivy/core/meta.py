@@ -354,7 +354,7 @@ def maml_step(batch, inner_cost_fn, outer_cost_fn, variables, inner_grad_steps, 
         batch, inner_batch_fn, outer_batch_fn, inner_cost_fn, outer_cost_fn,
         variables.set_at_key_chains(v) if unique_outer else v, inner_grad_steps, inner_learning_rate,
         inner_optimization_step, 2, average_across_steps, batched, inner_v, keep_inner_v, outer_v, keep_outer_v,
-        return_inner_v, num_tasks, stop_gradients),
+        return_inner_v, num_tasks, False),
         variables.at_key_chains(outer_v, ignore_none=True)
         if keep_outer_v else variables.prune_key_chains(outer_v, ignore_none=True))
     if stop_gradients:
