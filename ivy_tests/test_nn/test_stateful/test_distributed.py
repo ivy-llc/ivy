@@ -3,6 +3,7 @@ Collection of tests for Ivy distributed training
 """
 
 # global
+import copy
 import pytest
 
 # local
@@ -12,11 +13,16 @@ import ivy_tests.helpers as helpers
 
 class TrainableModule(ivy.Module):
 
-    def __init__(self, in_size, out_size, dev_str=None, hidden_size=64):
-        self._linear0 = ivy.Linear(in_size, hidden_size, dev_str=dev_str)
-        self._linear1 = ivy.Linear(hidden_size, hidden_size, dev_str=dev_str)
-        self._linear2 = ivy.Linear(hidden_size, out_size, dev_str=dev_str)
-        ivy.Module.__init__(self, dev_str)
+    def __init__(self, in_size, out_size, dev_str=None, build_mode='explicit', hidden_size=64, store_vars=True):
+        self._in_size = in_size
+        self._out_size = out_size
+        self._hidden_size = hidden_size
+        ivy.Module.__init__(self, dev_str, build_mode=build_mode, store_vars=store_vars)
+
+    def _build(self):
+        self._linear0 = ivy.Linear(self._in_size, self._hidden_size, dev_str=self._dev_str)
+        self._linear1 = ivy.Linear(self._hidden_size, self._hidden_size, dev_str=self._dev_str)
+        self._linear2 = ivy.Linear(self._hidden_size, self._out_size, dev_str=self._dev_str)
 
     def _forward(self, x):
         x = ivy.expand_dims(x, 0)
@@ -177,7 +183,15 @@ def test_distributed_multithread_training(bs_ic_oc, dev_str, call):
         helpers.assert_compilable(loss_fn)
 
 
-'''
+def loss_fn(module, x_, v_):
+    out = module(x_, v=v_)
+    return ivy.reduce_mean(out)[0]
+
+
+def map_fn(module, xn, vc):
+    return ivy.execute_with_gradients(lambda v: loss_fn(module, xn, v), vc)
+
+
 # distributed multiprocess training
 @pytest.mark.parametrize(
     "bs_ic_oc", [([2, 1], 4, 5)])
@@ -209,20 +223,18 @@ def test_distributed_multiprocess_training(bs_ic_oc, dev_str, call):
                                input_channels, dev_str=dev_str1), 'float32')
     x = ivy.Distributed([x0, x1])
 
-    # module
-    module = TrainableModule(input_channels, output_channels, dev_str=dev_str0)
+    # module for processes
+    module = TrainableModule(input_channels, output_channels, dev_str=dev_str0, store_vars=False)
 
     # optimizer
     optim = ivy.SGD(1e-4)
 
-    # loss
-    def loss_fn(x_, v_):
-        out = module(x_, v=v_)
-        return ivy.reduce_mean(out)[0]
-
     # device manager
-    dev_mapper = ivy.DevMapperMultiProc(lambda xn, vc: ivy.execute_with_gradients(
-        lambda v: loss_fn(xn, v), vc), dev_strs)
+    dev_mapper = ivy.DevMapperMultiProc(map_fn, dev_strs, [copy.deepcopy(module) for _ in range(len(dev_strs))])
+
+    # local module
+    module = TrainableModule(input_channels, output_channels, dev_str=dev_str0, store_vars=True)
+    module.build()
 
     # train
     loss_tm1 = 1e12
@@ -257,4 +269,3 @@ def test_distributed_multiprocess_training(bs_ic_oc, dev_str, call):
         return
     if not ivy.wrapped_mode():
         helpers.assert_compilable(loss_fn)
-'''
