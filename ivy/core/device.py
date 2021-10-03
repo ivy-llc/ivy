@@ -5,9 +5,7 @@ Collection of device Ivy functions.
 # global
 import abc
 import queue
-import threading
 import nvidia_smi
-from queue import Queue
 from typing import Union, Type
 from psutil import virtual_memory
 
