@@ -43,7 +43,6 @@ Device
    device/ClonedIter.rst
    device/ClonedNest.rst
    device/DevMapper.rst
-   device/DevMapperMultiThread.rst
    device/DevMapperMultiProc.rst
    device/Profiler.rst
 
