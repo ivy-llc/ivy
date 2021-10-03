@@ -537,7 +537,8 @@ class DevMapper(abc.ABC):
             output_queue = queue_class()
             these_preceding_args = [a[i] for a in preceding_args]
             worker = self._worker_class(
-                target=self._worker_fn, args=(input_queue, output_queue, module[i], these_preceding_args))
+                target=self._worker_fn, args=(input_queue, output_queue, module[i] if module else None,
+                                              these_preceding_args))
             worker.start()
             self._input_queues.append(input_queue)
             self._output_queues.append(output_queue)
@@ -583,40 +584,6 @@ class DevMapper(abc.ABC):
     @abc.abstractmethod
     def __del__(self):
         raise NotImplementedError
-
-
-class DevMapperMultiThread(DevMapper):
-
-    def __init__(self, fn, dev_strs, module, *preceding_args, timeout=10.0):
-        self._lock = threading.Lock()
-        worker_class = lambda target, args: threading.Thread(target=target, args=args, daemon=True)
-        super().__init__(fn, Queue, worker_class, dev_strs, module, *preceding_args, timeout=timeout)
-
-    def _worker_fn(self, input_queue, output_queue, module, *preceding_args):
-        ivy.set_framework('torch')
-        if ivy.exists(module):
-            module.build()
-        while True:
-            try:
-                inp = input_queue.get(timeout=self._timeout)
-            except queue.Empty:
-                continue
-            if inp is None:
-                return
-            loaded_args, loaded_kwargs = inp
-            self._lock.acquire()
-            ret = self._fn(module, *preceding_args, *loaded_args, **loaded_kwargs)
-            self._lock.release()
-            output_queue.put(ret)
-
-    def __del__(self):
-        for i, w in enumerate(self._workers):
-            self._input_queues[i].put(None)
-            w.join(timeout=0.25)
-        for q in self._input_queues:
-            q.join()
-        for q in self._output_queues:
-            q.join()
 
 
 class DevMapperMultiProc(DevMapper):
