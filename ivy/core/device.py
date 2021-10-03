@@ -520,11 +520,10 @@ def unify_nest(args: Type[MultiDevice], kwargs: Type[MultiDevice], dev_str, mode
 # Device Mappers #
 # ---------------#
 
-class DevMapperMultiThread:
+class DevMapper(abc.ABC):
 
-    def __init__(self, fn, dev_strs, *args, timeout=5.0):
+    def __init__(self, fn, queue_class, worker_class, dev_strs, *preceding_args, timeout=5.0):
         self._fn = fn
-        self._lock = threading.Lock()
         self._dev_strs = dev_strs
         self._num_workers = len(dev_strs)
         self._timeout = timeout
@@ -532,16 +531,16 @@ class DevMapperMultiThread:
         self._input_queues = list()
         self._output_queues = list()
         for i in range(self._num_workers):
-            input_queue = Queue()
-            output_queue = Queue()
-            worker = threading.Thread(
-                target=self._worker_fn, args=(input_queue, output_queue, *[a[i] for a in args]), daemon=True)
+            input_queue = queue_class()
+            output_queue = queue_class()
+            worker = worker_class(
+                target=self._worker_fn, args=(input_queue, output_queue, *[a[i] for a in preceding_args]))
             worker.start()
             self._input_queues.append(input_queue)
             self._output_queues.append(output_queue)
             self._workers.append(worker)
 
-    def _worker_fn(self, input_queue, output_queue, *args):
+    def _worker_fn(self, input_queue, output_queue, *preceding_args):
         while True:
             try:
                 inp = input_queue.get(timeout=self._timeout)
@@ -550,9 +549,7 @@ class DevMapperMultiThread:
             if inp is None:
                 return
             loaded_args, loaded_kwargs = inp
-            self._lock.acquire()
-            ret = self._fn(*args, *loaded_args, **loaded_kwargs)
-            self._lock.release()
+            ret = self._fn(*preceding_args, *loaded_args, **loaded_kwargs)
             output_queue.put(ret)
 
     def map(self, *args, **kwargs):
@@ -570,6 +567,32 @@ class DevMapperMultiThread:
          for i, q in enumerate(self._input_queues)]
         return ivy.MultiDeviceIter([q.get(timeout=self._timeout) for q in self._output_queues], self._num_workers)
 
+    @abc.abstractmethod
+    def __del__(self):
+        raise NotImplementedError
+
+
+class DevMapperMultiThread(DevMapper):
+
+    def __init__(self, fn, dev_strs, *preceding_args, timeout=5.0):
+        self._lock = threading.Lock()
+        worker_class = lambda target, args: threading.Thread(target=target, args=args, daemon=True)
+        super().__init__(fn, Queue, worker_class, dev_strs, *preceding_args, timeout=timeout)
+
+    def _worker_fn(self, input_queue, output_queue, *args):
+        while True:
+            try:
+                inp = input_queue.get(timeout=self._timeout)
+            except queue.Empty:
+                continue
+            if inp is None:
+                return
+            loaded_args, loaded_kwargs = inp
+            self._lock.acquire()
+            ret = self._fn(*args, *loaded_args, **loaded_kwargs)
+            self._lock.release()
+            output_queue.put(ret)
+
     def __del__(self):
         for i, w in enumerate(self._workers):
             self._input_queues[i].put(None)
@@ -580,15 +603,17 @@ class DevMapperMultiThread:
             q.join()
 
 
-class DevMapperMultiProc:
+class DevMapperMultiProc(DevMapper):
 
-    def __init__(self, fn, dev_strs, timeout=5.0):
+    def __init__(self, fn, dev_strs, *preceding_args, timeout=5.0):
+        multiprocessing = ivy.multiprocessing()
+        multiprocessing.set_start_method('spawn')
+        super().__init__(fn, multiprocessing.Queue, multiprocessing.Process, dev_strs, *preceding_args, timeout=timeout)
         self._fn = fn
         self._dev_strs = dev_strs
         self._num_workers = len(dev_strs)
         self._timeout = timeout
-        multiprocessing = ivy.multiprocessing()
-        multiprocessing.set_start_method('fork')
+
         self._workers = list()
         self._input_queues = list()
         self._output_queues = list()
@@ -601,32 +626,6 @@ class DevMapperMultiProc:
             self._input_queues.append(input_queue)
             self._output_queues.append(output_queue)
             self._workers.append(worker)
-
-    def _worker_fn(self, input_queue, output_queue):
-        while True:
-            try:
-                inp = input_queue.get(self._timeout)
-            except queue.Empty:
-                continue
-            if inp is None:
-                return
-            args, kwargs = inp
-            output_queue.put(self._fn(*args, **kwargs))
-
-    def map(self, *args, **kwargs):
-        """
-        Map the function fn to each of the MultiDevice args and kwargs, running each function in parallel with CUDA-safe
-        multiprocessing.
-
-        :param args: The MutliDevice positional arguments to map the function to.
-        :type args: sequence of any
-        :param kwargs: The MutliDevice keyword arguments to map the function to.
-        :type kwargs: dict of any
-        :return: The results of the function, returned as a MultiDevice instance.
-        """
-        [q.put(([a[i] for a in args], dict([(k, v[i]) for k, v in kwargs.items()])))
-         for i, q in enumerate(self._input_queues)]
-        return ivy.MultiDeviceIter([q.get(self._timeout) for q in self._output_queues], self._num_workers)
 
     def __del__(self):
         try:
