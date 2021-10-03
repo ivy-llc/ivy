@@ -777,6 +777,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_num_workers</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">dev_strs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_timeout</span> <span class="o">=</span> <span class="n">timeout</span>
         <span class="n">multiprocessing</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">multiprocessing</span><span class="p">()</span>
+        <span class="n">multiprocessing</span><span class="o">.</span><span class="n">set_start_method</span><span class="p">(</span><span class="s1">&#39;fork&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_workers</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_input_queues</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_output_queues</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
