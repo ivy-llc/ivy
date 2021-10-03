@@ -522,7 +522,7 @@ def unify_nest(args: Type[MultiDevice], kwargs: Type[MultiDevice], dev_str, mode
 
 class DevMapper(abc.ABC):
 
-    def __init__(self, fn, queue_class, worker_class, dev_strs, *preceding_args, timeout=5.0):
+    def __init__(self, fn, queue_class, worker_class, dev_strs, module, *preceding_args, timeout=10.0):
         self._fn = fn
         self._dev_strs = dev_strs
         self._num_workers = len(dev_strs)
@@ -530,17 +530,30 @@ class DevMapper(abc.ABC):
         self._workers = list()
         self._input_queues = list()
         self._output_queues = list()
+        self._preceding_args = list()
+        self._worker_class = worker_class
         for i in range(self._num_workers):
             input_queue = queue_class()
             output_queue = queue_class()
-            worker = worker_class(
-                target=self._worker_fn, args=(input_queue, output_queue, *[a[i] for a in preceding_args]))
+            these_preceding_args = [a[i] for a in preceding_args]
+            worker = self._worker_class(
+                target=self._worker_fn, args=(input_queue, output_queue, module[i], these_preceding_args))
             worker.start()
             self._input_queues.append(input_queue)
             self._output_queues.append(output_queue)
+            self._preceding_args.append(these_preceding_args)
             self._workers.append(worker)
 
-    def _worker_fn(self, input_queue, output_queue, *preceding_args):
+    def __getstate__(self):
+        # prevent already running processes from being pickled as sent to new processes
+        state = self.__dict__.copy()
+        state['_workers'] = None
+        return state
+
+    def _worker_fn(self, input_queue, output_queue, module, preceding_args):
+        ivy.set_framework('torch')
+        if ivy.exists(module):
+            module.build()
         while True:
             try:
                 inp = input_queue.get(timeout=self._timeout)
@@ -549,7 +562,7 @@ class DevMapper(abc.ABC):
             if inp is None:
                 return
             loaded_args, loaded_kwargs = inp
-            ret = self._fn(*preceding_args, *loaded_args, **loaded_kwargs)
+            ret = self._fn(module, *preceding_args, *loaded_args, **loaded_kwargs)
             output_queue.put(ret)
 
     def map(self, *args, **kwargs):
@@ -574,12 +587,15 @@ class DevMapper(abc.ABC):
 
 class DevMapperMultiThread(DevMapper):
 
-    def __init__(self, fn, dev_strs, *preceding_args, timeout=5.0):
+    def __init__(self, fn, dev_strs, module, *preceding_args, timeout=10.0):
         self._lock = threading.Lock()
         worker_class = lambda target, args: threading.Thread(target=target, args=args, daemon=True)
-        super().__init__(fn, Queue, worker_class, dev_strs, *preceding_args, timeout=timeout)
+        super().__init__(fn, Queue, worker_class, dev_strs, module, *preceding_args, timeout=timeout)
 
-    def _worker_fn(self, input_queue, output_queue, *args):
+    def _worker_fn(self, input_queue, output_queue, module, *preceding_args):
+        ivy.set_framework('torch')
+        if ivy.exists(module):
+            module.build()
         while True:
             try:
                 inp = input_queue.get(timeout=self._timeout)
@@ -589,7 +605,7 @@ class DevMapperMultiThread(DevMapper):
                 return
             loaded_args, loaded_kwargs = inp
             self._lock.acquire()
-            ret = self._fn(*args, *loaded_args, **loaded_kwargs)
+            ret = self._fn(module, *preceding_args, *loaded_args, **loaded_kwargs)
             self._lock.release()
             output_queue.put(ret)
 
@@ -605,27 +621,11 @@ class DevMapperMultiThread(DevMapper):
 
 class DevMapperMultiProc(DevMapper):
 
-    def __init__(self, fn, dev_strs, *preceding_args, timeout=5.0):
+    def __init__(self, fn, dev_strs, module, *preceding_args, timeout=10.0):
         multiprocessing = ivy.multiprocessing()
-        multiprocessing.set_start_method('spawn')
-        super().__init__(fn, multiprocessing.Queue, multiprocessing.Process, dev_strs, *preceding_args, timeout=timeout)
-        self._fn = fn
-        self._dev_strs = dev_strs
-        self._num_workers = len(dev_strs)
-        self._timeout = timeout
-
-        self._workers = list()
-        self._input_queues = list()
-        self._output_queues = list()
-        for i in range(self._num_workers):
-            input_queue = multiprocessing.Queue()
-            output_queue = multiprocessing.Queue()
-            worker = multiprocessing.Process(
-                target=self._worker_fn, args=(input_queue, output_queue))
-            worker.start()
-            self._input_queues.append(input_queue)
-            self._output_queues.append(output_queue)
-            self._workers.append(worker)
+        multiprocessing.set_start_method('forkserver')
+        super().__init__(fn, multiprocessing.Queue, multiprocessing.Process, dev_strs, module, *preceding_args,
+                         timeout=timeout)
 
     def __del__(self):
         try:
