@@ -522,7 +522,7 @@ def unify_nest(args: Type[MultiDevice], kwargs: Type[MultiDevice], dev_str, mode
 
 class DevMapperMultiThread:
 
-    def __init__(self, fn, dev_strs, timeout=5.0):
+    def __init__(self, fn, dev_strs, *args, timeout=5.0):
         self._fn = fn
         self._lock = threading.Lock()
         self._dev_strs = dev_strs
@@ -534,13 +534,14 @@ class DevMapperMultiThread:
         for i in range(self._num_workers):
             input_queue = Queue()
             output_queue = Queue()
-            worker = threading.Thread(target=self._worker_fn, args=(input_queue, output_queue), daemon=True)
+            worker = threading.Thread(
+                target=self._worker_fn, args=(input_queue, output_queue, *[a[i] for a in args]), daemon=True)
             worker.start()
             self._input_queues.append(input_queue)
             self._output_queues.append(output_queue)
             self._workers.append(worker)
 
-    def _worker_fn(self, input_queue, output_queue):
+    def _worker_fn(self, input_queue, output_queue, *args):
         while True:
             try:
                 inp = input_queue.get(timeout=self._timeout)
@@ -548,9 +549,9 @@ class DevMapperMultiThread:
                 continue
             if inp is None:
                 return
-            args, kwargs = inp
+            loaded_args, loaded_kwargs = inp
             self._lock.acquire()
-            ret = self._fn(*args, **kwargs)
+            ret = self._fn(*args, *loaded_args, **loaded_kwargs)
             self._lock.release()
             output_queue.put(ret)
 
