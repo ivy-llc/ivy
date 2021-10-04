@@ -14,6 +14,8 @@ from typing import Union, Type, Callable, Iterable
 import ivy
 from ivy.framework_handler import current_framework as _cur_framework
 
+DEFAULT_DEVICE = 'gpu:0' if ivy.gpu_is_available() else 'cpu'
+
 
 # Device Queries #
 # ---------------#
@@ -132,6 +134,26 @@ def tpu_is_available(f: ivy.Framework = None)\
     :return: Boolean, as to whether a tpu is available.
     """
     return _cur_framework(f=f).tpu_is_available()
+
+
+# Default Device #
+# ---------------#
+
+def default_device():
+    """
+    Return the default device.
+    """
+    global DEFAULT_DEVICE
+    return DEFAULT_DEVICE
+
+
+def set_default_device(device):
+    assert device[0:3] in ['gpu', 'tpu', 'cpu']
+    if device != 'cpu':
+        assert device[3] == ':'
+        assert device[4:].isnumeric()
+    global DEFAULT_DEVICE
+    DEFAULT_DEVICE = device
 
 
 # Device Allocation #
