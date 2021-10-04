@@ -629,7 +629,8 @@ class DevMapper(abc.ABC):
             input_queue = queue_class()
             output_queue = queue_class()
             worker = self._worker_class(
-                target=self._worker_fn, args=(input_queue, output_queue, module, [a[i] for a in preceding_args]))
+                target=self._worker_fn, args=(input_queue, output_queue, module, dev_strs[i],
+                                              [a[i] for a in preceding_args]))
             worker.start()
             self._input_queues.append(input_queue)
             self._output_queues.append(output_queue)
@@ -642,7 +643,8 @@ class DevMapper(abc.ABC):
         state['_ret_fn'] = None
         return state
 
-    def _worker_fn(self, input_queue, output_queue, module, preceding_args):
+    # noinspection PyShadowingNames
+    def _worker_fn(self, input_queue, output_queue, module, dev_str, preceding_args):
         ivy.set_framework('torch')
         if ivy.exists(module):
             module.build()
@@ -654,7 +656,7 @@ class DevMapper(abc.ABC):
             if inp is None:
                 return
             loaded_args, loaded_kwargs = inp
-            ret = self._fn(module, *preceding_args, *loaded_args, **loaded_kwargs)
+            ret = self._fn(module, dev_str, *preceding_args, *loaded_args, **loaded_kwargs)
             output_queue.put(ret)
 
     def map(self, *args, **kwargs):
