@@ -417,4 +417,4 @@ dtype_to_str = lambda dtype_in: DTYPE_DICT[dtype_in]
 compile_fn = lambda fn, dynamic=True, example_inputs=None, static_argnums=None, static_argnames=None: _tf.function(fn)
 current_framework_str = lambda: 'tensorflow'
 current_framework_str.__name__ = 'current_framework_str'
-multiprocessing = lambda: _multiprocessing
+multiprocessing = lambda context=None: _multiprocessing if context is None else _multiprocessing.get_context(context)

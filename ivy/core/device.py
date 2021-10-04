@@ -587,8 +587,7 @@ class DevMapper(abc.ABC):
 class DevMapperMultiProc(DevMapper):
 
     def __init__(self, fn, dev_strs, module, *preceding_args, timeout=10.0):
-        multiprocessing = ivy.multiprocessing()
-        multiprocessing.set_start_method('forkserver')
+        multiprocessing = ivy.multiprocessing('forkserver')
         super().__init__(fn, multiprocessing.Queue, multiprocessing.Process, dev_strs, module, *preceding_args,
                          timeout=timeout)
 
