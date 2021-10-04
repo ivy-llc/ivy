@@ -112,7 +112,7 @@ def loss_fn(module, x_, v_):
     return ivy.reduce_mean(out)[0]
 
 
-def map_fn(module, xn, vc):
+def map_fn(module, dev_str, xn, vc):
     return ivy.execute_with_gradients(lambda v: loss_fn(module, xn, v), vc)
 
 
