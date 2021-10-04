@@ -647,7 +647,7 @@ class DevMapper(abc.ABC):
     def _worker_fn(self, input_queue, output_queue, module, dev_str, preceding_args):
         ivy.set_framework('torch')
         if ivy.exists(module):
-            module.build(dev_str)
+            module.build(dev_str=dev_str)
         while True:
             try:
                 inp = input_queue.get(timeout=self._timeout)
