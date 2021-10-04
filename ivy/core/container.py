@@ -1319,7 +1319,7 @@ class Container(dict):
         :return: a MultiDevContainer instance, with all leafs arrays replaced by DistributedArray instances.
         """
         return MultiDevContainer(
-            self.map(lambda x, kc: _ivy.distribute_array(x, dev_strs, axis), dev_strs), dev_strs)
+            self.map(lambda x, kc: self._ivy.distribute_array(x, dev_strs, axis)), dev_strs)
 
     def unstack(self, axis, keepdims=False, dim_size=None):
         """
