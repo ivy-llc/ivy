@@ -547,4 +547,4 @@ def compile_fn(func, dynamic=True, example_inputs=None, static_argnums=None, sta
 
 current_framework_str = lambda: 'mxnd'
 current_framework_str.__name__ = 'current_framework_str'
-multiprocessing = lambda: _multiprocessing
+multiprocessing = lambda context=None: _multiprocessing if context is None else _multiprocessing.get_context(context)
