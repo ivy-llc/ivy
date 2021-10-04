@@ -348,8 +348,23 @@
 
 <div class="viewcode-block" id="MultiDevice"><a class="viewcode-back" href="../../../core/device/MultiDevice.html#ivy.core.device.MultiDevice">[docs]</a><span class="k">class</span> <span class="nc">MultiDevice</span><span class="p">(</span><span class="nb">list</span><span class="p">):</span>
 
+<div class="viewcode-block" id="MultiDevice.__init__"><a class="viewcode-back" href="../../../core/device/MultiDevice.html#ivy.core.device.MultiDevice.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lst</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_axis</span> <span class="o">=</span> <span class="n">axis</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">lst</span><span class="p">)</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">shape</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">shapes</span> <span class="o">=</span> <span class="p">[</span><span class="nb">list</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="s1">&#39;shape&#39;</span><span class="p">)</span> <span class="k">else</span> <span class="kc">None</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">]</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">shapes</span> <span class="ow">or</span> <span class="kc">None</span> <span class="ow">in</span> <span class="n">shapes</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="n">shape0</span> <span class="o">=</span> <span class="n">shapes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">shp</span> <span class="ow">in</span> <span class="n">shapes</span><span class="p">[</span><span class="mi">1</span><span class="p">:]:</span>
+            <span class="k">assert</span> <span class="n">shp</span> <span class="o">==</span> <span class="n">shape0</span>
+        <span class="n">shape0</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_axis</span><span class="p">]</span> <span class="o">=</span> <span class="n">shape0</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_axis</span><span class="p">]</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">shape0</span><span class="p">)</span>
+
     <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="s1">&#39;MultiDevice(&#39;</span> <span class="o">+</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">()</span> <span class="o">+</span> <span class="s1">&#39;)&#39;</span></div>
+        <span class="k">return</span> <span class="s1">&#39;MultiDevice(&#39;</span> <span class="o">+</span> <span class="nb">list</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;)&#39;</span></div>
 
 
 <div class="viewcode-block" id="MultiDeviceIter"><a class="viewcode-back" href="../../../core/device/MultiDeviceIter.html#ivy.core.device.MultiDeviceIter">[docs]</a><span class="k">class</span> <span class="nc">MultiDeviceIter</span><span class="p">(</span><span class="n">MultiDevice</span><span class="p">):</span>
@@ -378,7 +393,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_length</span>
 
     <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="s1">&#39;MultiDeviceIter(&#39;</span> <span class="o">+</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">()</span> <span class="o">+</span> <span class="s1">&#39;)&#39;</span></div>
+        <span class="k">return</span> <span class="s1">&#39;MultiDeviceIter(&#39;</span> <span class="o">+</span> <span class="nb">list</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;)&#39;</span></div>
 
 
 <div class="viewcode-block" id="MultiDeviceNest"><a class="viewcode-back" href="../../../core/device/MultiDeviceNest.html#ivy.core.device.MultiDeviceNest">[docs]</a><span class="k">class</span> <span class="nc">MultiDeviceNest</span><span class="p">(</span><span class="n">MultiDeviceIter</span><span class="p">):</span>
@@ -392,7 +407,7 @@
                               <span class="n">max_depth</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_max_depth</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="s1">&#39;MultiDeviceNest(&#39;</span> <span class="o">+</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">()</span> <span class="o">+</span> <span class="s1">&#39;)&#39;</span></div>
+        <span class="k">return</span> <span class="s1">&#39;MultiDeviceNest(&#39;</span> <span class="o">+</span> <span class="nb">list</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;)&#39;</span></div>
 
 
 <span class="c1"># Device Distribution #</span>
@@ -401,7 +416,7 @@
 <div class="viewcode-block" id="Distributed"><a class="viewcode-back" href="../../../core/device/Distributed.html#ivy.core.device.Distributed">[docs]</a><span class="k">class</span> <span class="nc">Distributed</span><span class="p">(</span><span class="n">MultiDevice</span><span class="p">):</span>
 
     <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="s1">&#39;Distributed(&#39;</span> <span class="o">+</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">()</span> <span class="o">+</span> <span class="s1">&#39;)&#39;</span></div>
+        <span class="k">return</span> <span class="s1">&#39;Distributed(&#39;</span> <span class="o">+</span> <span class="nb">list</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;)&#39;</span></div>
 
 
 <div class="viewcode-block" id="DistributedIter"><a class="viewcode-back" href="../../../core/device/DistributedIter.html#ivy.core.device.DistributedIter">[docs]</a><span class="k">class</span> <span class="nc">DistributedIter</span><span class="p">(</span><span class="n">MultiDeviceIter</span><span class="p">):</span>
@@ -504,7 +519,7 @@
 <div class="viewcode-block" id="Cloned"><a class="viewcode-back" href="../../../core/device/Cloned.html#ivy.core.device.Cloned">[docs]</a><span class="k">class</span> <span class="nc">Cloned</span><span class="p">(</span><span class="n">MultiDevice</span><span class="p">):</span>
 
     <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="s1">&#39;Cloned(&#39;</span> <span class="o">+</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">()</span> <span class="o">+</span> <span class="s1">&#39;)&#39;</span></div>
+        <span class="k">return</span> <span class="s1">&#39;Cloned(&#39;</span> <span class="o">+</span> <span class="nb">list</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;)&#39;</span></div>
 
 
 <div class="viewcode-block" id="ClonedIter"><a class="viewcode-back" href="../../../core/device/ClonedIter.html#ivy.core.device.ClonedIter">[docs]</a><span class="k">class</span> <span class="nc">ClonedIter</span><span class="p">(</span><span class="n">MultiDeviceIter</span><span class="p">):</span>
