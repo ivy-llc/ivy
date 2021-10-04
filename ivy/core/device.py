@@ -158,8 +158,23 @@ def to_dev(x: Union[ivy.Array, ivy.NativeArray], dev_str: str = None, f: ivy.Fra
 
 class MultiDevice(list):
 
+    def __init__(self, lst, axis=0):
+        self._axis = axis
+        super().__init__(lst)
+
+    @property
+    def shape(self):
+        shapes = [list(x.shape) if hasattr(x, 'shape') else None for x in self]
+        if not shapes or None in shapes:
+            return None
+        shape0 = shapes[0]
+        for shp in shapes[1:]:
+            assert shp == shape0
+        shape0[self._axis] = shape0[self._axis]*len(self)
+        return tuple(shape0)
+
     def __repr__(self):
-        return 'MultiDevice(' + super().__repr__() + ')'
+        return 'MultiDevice(' + list.__repr__(self) + ')'
 
 
 class MultiDeviceIter(MultiDevice):
@@ -188,7 +203,7 @@ class MultiDeviceIter(MultiDevice):
         return self._length
 
     def __repr__(self):
-        return 'MultiDeviceIter(' + super().__repr__() + ')'
+        return 'MultiDeviceIter(' + list.__repr__(self) + ')'
 
 
 class MultiDeviceNest(MultiDeviceIter):
@@ -202,7 +217,7 @@ class MultiDeviceNest(MultiDeviceIter):
                               max_depth=self._max_depth)
 
     def __repr__(self):
-        return 'MultiDeviceNest(' + super().__repr__() + ')'
+        return 'MultiDeviceNest(' + list.__repr__(self) + ')'
 
 
 # Device Distribution #
@@ -211,7 +226,7 @@ class MultiDeviceNest(MultiDeviceIter):
 class Distributed(MultiDevice):
 
     def __repr__(self):
-        return 'Distributed(' + super().__repr__() + ')'
+        return 'Distributed(' + list.__repr__(self) + ')'
 
 
 class DistributedIter(MultiDeviceIter):
@@ -314,7 +329,7 @@ def distribute_nest(args, kwargs, dev_strs, axis=0, max_depth=1):
 class Cloned(MultiDevice):
 
     def __repr__(self):
-        return 'Cloned(' + super().__repr__() + ')'
+        return 'Cloned(' + list.__repr__(self) + ')'
 
 
 class ClonedIter(MultiDeviceIter):
