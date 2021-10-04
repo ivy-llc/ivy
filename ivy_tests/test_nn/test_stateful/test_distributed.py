@@ -154,7 +154,7 @@ def test_distributed_multiprocess_training(bs_ic_oc, dev_str, call):
     optim = ivy.SGD(1e-4)
 
     # device manager
-    dev_mapper = ivy.DevMapperMultiProc(map_fn, dev_strs, [copy.deepcopy(module) for _ in range(len(dev_strs))])
+    dev_mapper = ivy.DevMapperMultiProc(map_fn, dev_strs, module)
 
     # local module
     module = TrainableModule(input_channels, output_channels, dev_str=dev_str0, store_vars=True)

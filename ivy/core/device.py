@@ -183,7 +183,7 @@ class MultiDeviceIter(MultiDevice):
         self._counter = 0
         self._iterable = iterable
         self._length = length
-        super().__init__()
+        super().__init__(iterable)
 
     def __getitem__(self, item):
         return [x[item] if isinstance(x, MultiDevice) else x for x in self._iterable]
@@ -543,19 +543,15 @@ class DevMapper(abc.ABC):
         self._workers = list()
         self._input_queues = list()
         self._output_queues = list()
-        self._preceding_args = list()
         self._worker_class = worker_class
         for i in range(self._num_workers):
             input_queue = queue_class()
             output_queue = queue_class()
-            these_preceding_args = [a[i] for a in preceding_args]
             worker = self._worker_class(
-                target=self._worker_fn, args=(input_queue, output_queue, module[i] if module else None,
-                                              these_preceding_args))
+                target=self._worker_fn, args=(input_queue, output_queue, module, [a[i] for a in preceding_args]))
             worker.start()
             self._input_queues.append(input_queue)
             self._output_queues.append(output_queue)
-            self._preceding_args.append(these_preceding_args)
             self._workers.append(worker)
 
     def __getstate__(self):
