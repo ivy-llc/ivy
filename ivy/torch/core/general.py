@@ -648,6 +648,8 @@ def current_framework_str():
     return 'torch'
 
 
-def multiprocessing():
+def multiprocessing(context=None):
     import torch.multiprocessing
-    return torch.multiprocessing
+    if context is None:
+        return torch.multiprocessing
+    return torch.multiprocessing.get_context(context)
