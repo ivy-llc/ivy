@@ -535,8 +535,9 @@ def unify_nest(args: Type[MultiDevice], kwargs: Type[MultiDevice], dev_str, mode
 
 class DevMapper(abc.ABC):
 
-    def __init__(self, fn, queue_class, worker_class, dev_strs, module, *preceding_args, timeout=10.0):
+    def __init__(self, fn, ret_fn, queue_class, worker_class, dev_strs, module, *preceding_args, timeout=10.0):
         self._fn = fn
+        self._ret_fn = ret_fn
         self._dev_strs = dev_strs
         self._num_workers = len(dev_strs)
         self._timeout = timeout
@@ -558,6 +559,7 @@ class DevMapper(abc.ABC):
         # prevent already running processes from being pickled as sent to new processes
         state = self.__dict__.copy()
         state['_workers'] = None
+        state['_ret_fn'] = None
         return state
 
     def _worker_fn(self, input_queue, output_queue, module, preceding_args):
@@ -588,7 +590,8 @@ class DevMapper(abc.ABC):
         """
         [q.put(([a[i] for a in args], dict([(k, v[i]) for k, v in kwargs.items()])))
          for i, q in enumerate(self._input_queues)]
-        return ivy.MultiDeviceIter([q.get(timeout=self._timeout) for q in self._output_queues], self._num_workers)
+        return self._ret_fn(
+            ivy.MultiDeviceIter([q.get(timeout=self._timeout) for q in self._output_queues], self._num_workers))
 
     @abc.abstractmethod
     def __del__(self):
@@ -597,9 +600,9 @@ class DevMapper(abc.ABC):
 
 class DevMapperMultiProc(DevMapper):
 
-    def __init__(self, fn, dev_strs, module, *preceding_args, timeout=10.0):
+    def __init__(self, fn, ret_fn, dev_strs, module, *preceding_args, timeout=10.0):
         multiprocessing = ivy.multiprocessing('forkserver')
-        super().__init__(fn, multiprocessing.Queue, multiprocessing.Process, dev_strs, module, *preceding_args,
+        super().__init__(fn, ret_fn, multiprocessing.Queue, multiprocessing.Process, dev_strs, module, *preceding_args,
                          timeout=timeout)
 
     def __del__(self):

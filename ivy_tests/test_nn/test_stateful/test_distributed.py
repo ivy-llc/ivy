@@ -153,8 +153,11 @@ def test_distributed_multiprocess_training(bs_ic_oc, dev_str, call):
     # optimizer
     optim = ivy.SGD(1e-4)
 
+    # return fn
+    ret_fn = lambda ret: ivy.unify_iter(ret, dev_str0, 'mean')
+
     # device manager
-    dev_mapper = ivy.DevMapperMultiProc(map_fn, dev_strs, module)
+    dev_mapper = ivy.DevMapperMultiProc(map_fn, ret_fn, dev_strs, module)
 
     # local module
     module = TrainableModule(input_channels, output_channels, dev_str=dev_str0, store_vars=True)
@@ -165,8 +168,7 @@ def test_distributed_multiprocess_training(bs_ic_oc, dev_str, call):
     loss = None
     grads = None
     for i in range(10):
-        loss_n_grads = dev_mapper.map(x, module.v.clone(dev_strs))
-        loss, grads = ivy.unify_iter(loss_n_grads, dev_str0, 'mean')
+        loss, grads = dev_mapper.map(x, module.v.clone(dev_strs))
         module.v = optim.step(module.v, grads)
         assert loss < loss_tm1
         loss_tm1 = loss
