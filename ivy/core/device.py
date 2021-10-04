@@ -14,7 +14,7 @@ from typing import Union, Type, Callable, Iterable
 import ivy
 from ivy.framework_handler import current_framework as _cur_framework
 
-DEFAULT_DEVICE = 'gpu:0' if ivy.gpu_is_available() else 'cpu'
+DEFAULT_DEVICE = None
 
 
 # Device Queries #
@@ -144,6 +144,8 @@ def default_device():
     Return the default device.
     """
     global DEFAULT_DEVICE
+    if not ivy.exists(DEFAULT_DEVICE):
+        DEFAULT_DEVICE = 'gpu:0' if ivy.gpu_is_available() else 'cpu'
     return DEFAULT_DEVICE
 
 
