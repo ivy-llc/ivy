@@ -24,7 +24,6 @@
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../_static/js/theme.js"></script>
 
@@ -285,24 +284,6 @@
             
   <div class="section" id="args-to-ivy">
 <h1>args_to_ivy<a class="headerlink" href="#args-to-ivy" title="Permalink to this headline">¶</a></h1>
-<dl class="py function">
-<dt id="ivy.core.general.args_to_ivy">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">args_to_ivy</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Iterable<span class="p">[</span>Any<span class="p">]</span></span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Dict<span class="p">[</span>str<span class="p">, </span>Any<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; Tuple<span class="p">[</span>Iterable<span class="p">[</span>Any<span class="p">]</span><span class="p">, </span>Dict<span class="p">[</span>str<span class="p">, </span>Any<span class="p">]</span><span class="p">]</span><a class="reference internal" href="../../_modules/ivy/core/general.html#args_to_ivy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.args_to_ivy" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns args and keyword args in their ivy.Array or ivy.Variable form for all nested instances,
-otherwise the arguments are returned unchanged.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>args</strong> (<em>sequence of arguments</em>) – The positional arguments to check</p></li>
-<li><p><strong>kwargs</strong> (<em>dict of arguments</em>) – The key-word arguments to check</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>the same arguments, with any nested arrays converted to ivy.Array or ivy.Variable instances.</p>
-</dd>
-</dl>
-</dd></dl>
-
 <div class="line-block">
 <div class="line"><br /></div>
 <div class="line"><strong>Supported Frameworks:</strong></div>
