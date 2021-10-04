@@ -24,7 +24,6 @@
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../_static/js/theme.js"></script>
 
@@ -36,7 +35,7 @@
   <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="to_dev" href="to_dev.html" />
+    <link rel="next" title="default_device" href="default_device.html" />
     <link rel="prev" title="num_gpus" href="num_gpus.html" /> 
 </head>
 
@@ -99,6 +98,8 @@
 <li class="toctree-l2"><a class="reference internal" href="gpu_is_available.html">gpu_is_available</a></li>
 <li class="toctree-l2"><a class="reference internal" href="num_gpus.html">num_gpus</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">tpu_is_available</a></li>
+<li class="toctree-l2"><a class="reference internal" href="default_device.html">default_device</a></li>
+<li class="toctree-l2"><a class="reference internal" href="set_default_device.html">set_default_device</a></li>
 <li class="toctree-l2"><a class="reference internal" href="to_dev.html">to_dev</a></li>
 <li class="toctree-l2"><a class="reference internal" href="split_func_call.html">split_func_call</a></li>
 <li class="toctree-l2"><a class="reference internal" href="distribute_array.html">distribute_array</a></li>
@@ -231,20 +232,6 @@
             
   <div class="section" id="tpu-is-available">
 <h1>tpu_is_available<a class="headerlink" href="#tpu-is-available" title="Permalink to this headline">¶</a></h1>
-<dl class="py function">
-<dt id="ivy.core.device.tpu_is_available">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">tpu_is_available</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">f</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>ivy.Framework<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; bool<a class="reference internal" href="../../_modules/ivy/core/device.html#tpu_is_available"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.device.tpu_is_available" title="Permalink to this definition">¶</a></dt>
-<dd><p>Determine whether a TPU is available to use, with the backend framework.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning framework. Inferred from inputs if None.</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Boolean, as to whether a tpu is available.</p>
-</dd>
-</dl>
-</dd></dl>
-
 <div class="line-block">
 <div class="line"><br /></div>
 <div class="line"><strong>Supported Frameworks:</strong></div>
@@ -260,7 +247,7 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="to_dev.html" class="btn btn-neutral float-right" title="to_dev" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="default_device.html" class="btn btn-neutral float-right" title="default_device" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="num_gpus.html" class="btn btn-neutral float-left" title="num_gpus" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
