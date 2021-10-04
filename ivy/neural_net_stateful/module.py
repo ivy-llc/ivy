@@ -208,10 +208,11 @@ class Module(abc.ABC):
         os.makedirs('/'.join(weights_path.split('/')[:-1]), exist_ok=True)
         self.v.to_disk_as_hdf5(weights_path)
 
-    def build(self, *args, from_call=False, **kwargs):
+    def build(self, *args, from_call=False, dev_str=None, **kwargs):
         """
         Build the internal layers and variables for this module.
         """
+        self._dev_str = ivy.default(dev_str, self._dev_str)
 
         # return False if not from_call but build_mode is on_call
         if not from_call and self._build_mode == 'on_call':
