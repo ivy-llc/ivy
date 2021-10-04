@@ -837,7 +837,7 @@
     <span class="k">def</span> <span class="nf">_worker_fn</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_queue</span><span class="p">,</span> <span class="n">output_queue</span><span class="p">,</span> <span class="n">module</span><span class="p">,</span> <span class="n">dev_str</span><span class="p">,</span> <span class="n">preceding_args</span><span class="p">):</span>
         <span class="n">ivy</span><span class="o">.</span><span class="n">set_framework</span><span class="p">(</span><span class="s1">&#39;torch&#39;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">module</span><span class="p">):</span>
-            <span class="n">module</span><span class="o">.</span><span class="n">build</span><span class="p">()</span>
+            <span class="n">module</span><span class="o">.</span><span class="n">build</span><span class="p">(</span><span class="n">dev_str</span><span class="p">)</span>
         <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="n">inp</span> <span class="o">=</span> <span class="n">input_queue</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">timeout</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_timeout</span><span class="p">)</span>
