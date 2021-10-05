@@ -3,6 +3,7 @@ Collection of tests for templated general functions
 """
 
 # global
+import os
 import math
 import time
 import einops
@@ -2344,8 +2345,14 @@ def test_einops_repeat(x_n_pattern_n_al_n_newx, dtype_str, tensor_fn, dev_str, c
 # profiler
 def test_profiler(dev_str, call):
 
+    # ToDo: find way to prevent this test from hanging when run alongside other tests in parallel
+
+    # log dir
+    this_dir = os.path.dirname(os.path.realpath(__file__))
+    log_dir = os.path.join(this_dir, 'log')
+
     # with statement
-    with ivy.Profiler('log'):
+    with ivy.Profiler(log_dir):
         a = ivy.ones([10])
         b = ivy.zeros([10])
         a + b
@@ -2353,7 +2360,7 @@ def test_profiler(dev_str, call):
         time.sleep(1)  # required by MXNet for some reason
 
     # start and stop methods
-    profiler = ivy.Profiler('log')
+    profiler = ivy.Profiler(log_dir)
     profiler.start()
     a = ivy.ones([10])
     b = ivy.zeros([10])
