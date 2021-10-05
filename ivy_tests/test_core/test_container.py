@@ -68,7 +68,7 @@ def test_container_unify(dev_str, call):
                              'b': {'c': ivy.array([2], dev_str=dev_str0), 'd': ivy.array([3], dev_str=dev_str0)}})
     container_1 = Container({'a': ivy.array([4], dev_str=dev_str1),
                              'b': {'c': ivy.array([5], dev_str=dev_str1), 'd': ivy.array([6], dev_str=dev_str1)}})
-    container_unified = ivy.Container.unify([container_0, container_1], dev_str0, 'concat', 0)
+    container_unified = ivy.Container.unify(ivy.MultiDevItem([container_0, container_1]), dev_str0, 'concat', 0)
     assert np.allclose(ivy.to_numpy(container_unified.a), np.array([1, 4]))
     assert np.allclose(ivy.to_numpy(container_unified.b.c), np.array([2, 5]))
     assert np.allclose(ivy.to_numpy(container_unified.b.d), np.array([3, 6]))
@@ -644,8 +644,9 @@ def test_container_clone(dev_str, call):
     # without key_chains specification
     container_cloned = container.clone(dev_strs)
     assert isinstance(container_cloned, ivy.ClonedItem)
-    assert min([cont.dev_str == d for cont, d in zip(container_cloned, dev_strs)])
-    assert ivy.Container.multi_map(lambda xs, _: ivy.arrays_equal(xs), [c for c in container_cloned]).all_true()
+    assert min([cont.dev_str == d for cont, d in zip(container_cloned.at_devs(), dev_strs)])
+    assert ivy.Container.multi_map(
+        lambda xs, _: ivy.arrays_equal(xs), [c for c in container_cloned.at_devs()]).all_true()
 
 
 def test_container_distribute(dev_str, call):
@@ -670,8 +671,8 @@ def test_container_distribute(dev_str, call):
     # without key_chains specification
     container_dist = container.distribute(dev_strs)
     assert isinstance(container_dist, ivy.DistributedItem)
-    assert min([cont.dev_str == d for cont, d in zip(container_dist, dev_strs)])
-    sub_conts = [c for c in container_dist]
+    assert min([cont.dev_str == d for cont, d in zip(container_dist.at_devs(), dev_strs)])
+    sub_conts = [c for c in container_dist.at_devs()]
     sub_cont0 = sub_conts[0]
     assert np.array_equal(sub_cont0.a, np.array([[1], [2]]))
     assert np.array_equal(sub_cont0.b.c, np.array([[2], [3]]))

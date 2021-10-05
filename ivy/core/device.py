@@ -268,7 +268,7 @@ class MultiDevItem(MultiDev):
 
     @property
     def shape(self):
-        shapes = [list(x.shape) if hasattr(x, 'shape') else None for x in self]
+        shapes = [list(x.shape) if hasattr(x, 'shape') else None for x in self._iterable]
         if not shapes or None in shapes:
             return None
         shape0 = shapes[0]
