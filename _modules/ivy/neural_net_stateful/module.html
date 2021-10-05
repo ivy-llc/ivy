@@ -425,6 +425,11 @@
         <span class="c1"># build any child &#39;on_call&#39; layers</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">built</span> <span class="ow">and</span> <span class="n">from_call</span><span class="p">:</span>
 
+            <span class="c1"># update child modules to share the same device</span>
+            <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+                    <span class="n">v</span><span class="o">.</span><span class="n">_dev_str</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dev_str</span>
+
             <span class="c1"># build during forward pass</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_forward</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
