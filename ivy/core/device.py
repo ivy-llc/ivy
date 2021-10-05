@@ -595,7 +595,9 @@ def unify(xs, dev_str, mode, axis=0):
     :type axis: int, optional
     :return: array unified to the target device
     """
-    if not isinstance(xs, MultiDevItem):
+    if isinstance(xs, ivy.MultiDevContainer):
+        xs = MultiDevItem(xs.at_devs())
+    elif not isinstance(xs, MultiDevItem):
         return xs
     xs0 = xs.at_dev(0)
     if ivy.is_array(xs0):
