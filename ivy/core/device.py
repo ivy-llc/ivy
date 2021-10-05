@@ -616,7 +616,7 @@ def unify_nest(args: Type[MultiDevice], kwargs: Type[MultiDevice], dev_str, mode
 
 class DevMapper(abc.ABC):
 
-    def __init__(self, fn, ret_fn, queue_class, worker_class, dev_strs, timeout=1000.0, constant=None, unique=None):
+    def __init__(self, fn, ret_fn, queue_class, worker_class, dev_strs, timeout=10.0, constant=None, unique=None):
         constant_kwargs = ivy.default(constant, {})
         unique_kwargs = ivy.default(unique, {})
         self._fn = fn
@@ -684,7 +684,7 @@ class DevMapper(abc.ABC):
 
 class DevMapperMultiProc(DevMapper):
 
-    def __init__(self, fn, ret_fn, dev_strs, timeout=1000.0, constant=None, unique=None):
+    def __init__(self, fn, ret_fn, dev_strs, timeout=10.0, constant=None, unique=None):
         multiprocessing = ivy.multiprocessing('forkserver')
         super().__init__(fn, ret_fn, multiprocessing.Queue, multiprocessing.Process, dev_strs, timeout,
                          constant, unique)
