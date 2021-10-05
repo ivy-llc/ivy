@@ -38,20 +38,24 @@ def _to_ivy(x: Any)\
 # ----#
 
 # noinspection PyShadowingBuiltins
-def map(fn: Callable, *xs: Iterable, mean: bool = False)\
+def map(fn: Callable, constant: Dict[str, Any] = None, unique: Dict[str, Iterable[Any]] = None, mean: bool = False)\
         -> List:
     """
     Applies a function on each item of an iterable x.
 
     :param fn: The function to map onto x.
     :type fn: callable
-    :param xs: The iterable or iterables to apply the method to.
-    :type xs: iterable
+    :param constant: keyword arguments which remain constant between each function call. Default is None.
+    :type constant: dict of any, optional
+    :param unique: keyword arguments which are unique for each function call. Default is None.
+    :type unique: dict of iterables of any, optional
     :param mean: Whether to compute the mean across the return values, and return this mean. Default is False.
     :type mean: bool, optional
     :return: x following the applicable of fn to each of it's iterated items.
     """
-    rets = [r for r in _map(fn, *xs)]
+    c = ivy.default(constant, {})
+    u = ivy.default(unique, {})
+    rets = [r for r in _map(lambda *uv: fn(**dict(**c, **dict(zip(u.keys(), uv)))), *u.values())]
     if mean:
         return sum(rets) / len(rets)
     return rets

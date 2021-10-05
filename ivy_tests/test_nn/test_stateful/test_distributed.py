@@ -31,6 +31,15 @@ class TrainableModule(ivy.Module):
         return ivy.tanh(self._linear2(x))[0]
 
 
+def loss_fn(module, x_, v_):
+    out = module(x_, v=v_)
+    return ivy.reduce_mean(out)[0]
+
+
+def map_fn(module, dev_str, xn, vc):
+    return ivy.execute_with_gradients(lambda v: loss_fn(module, xn, v), vc)
+
+
 # distributed training
 @pytest.mark.parametrize(
     "bs_ic_oc", [([2, 1], 4, 5)])
@@ -65,19 +74,15 @@ def test_distributed_training(bs_ic_oc, dev_str, call):
     # optimizer
     optim = ivy.SGD(1e-4)
 
-    # loss
-    def loss_fn(x_, v_):
-        out = module(x_, v=v_)
-        return ivy.reduce_mean(out)[0]
-
     # train
     loss_tm1 = 1e12
     loss = None
     grads = None
     for i in range(10):
         loss_n_grads = ivy.MultiDevIter(
-            ivy.map(lambda xn, vc: ivy.execute_with_gradients(
-                lambda v: loss_fn(xn, v), vc), x.at_devs(), module.v.clone(dev_strs).at_devs()), len(dev_strs))
+            ivy.map(map_fn,
+                    constant={'module': module, 'dev_str': dev_str0},
+                    unique={'xn': x.at_devs(), 'vc': module.v.clone(dev_strs).at_devs()}), len(dev_strs))
         loss, grads = ivy.unify_iter(loss_n_grads, dev_str0, 'mean')
         module.v = optim.step(module.v, grads)
         assert loss < loss_tm1
@@ -105,15 +110,6 @@ def test_distributed_training(bs_ic_oc, dev_str, call):
         return
     if not ivy.wrapped_mode():
         helpers.assert_compilable(loss_fn)
-
-
-def loss_fn(module, x_, v_):
-    out = module(x_, v=v_)
-    return ivy.reduce_mean(out)[0]
-
-
-def map_fn(module, dev_str, xn, vc):
-    return ivy.execute_with_gradients(lambda v: loss_fn(module, xn, v), vc)
 
 
 # distributed multiprocess training
