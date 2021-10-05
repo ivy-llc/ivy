@@ -235,6 +235,11 @@ class Module(abc.ABC):
         # build any child 'on_call' layers
         if not built and from_call:
 
+            # update child modules to share the same device
+            for k, v in self.__dict__.items():
+                if isinstance(v, ivy.Module):
+                    v._dev_str = self._dev_str
+
             # build during forward pass
             self._forward(*args, **kwargs)
 
