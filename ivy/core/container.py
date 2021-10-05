@@ -172,11 +172,11 @@ class Container(dict):
 
     @staticmethod
     def _concat_unify(containers, dev_str, axis=0, ivyh=None):
-        return Container.concat([cont.to_dev(dev_str) for cont in containers], axis, ivyh)
+        return Container.concat([cont.to_dev(dev_str) for cont in containers.at_devs()], axis, ivyh)
 
     @staticmethod
     def _sum_unify(containers, dev_str, _=None, _1=None):
-        return sum([cont.to_dev(dev_str) for cont in containers])
+        return sum([cont.to_dev(dev_str) for cont in containers.at_devs()])
 
     @staticmethod
     def _mean_unify(containers, dev_str, _=None, _1=None):
@@ -1291,7 +1291,7 @@ class Container(dict):
         :type dev_strs: sequence of str
         :return: a set of cloned containers across the specified devices.
         """
-        return self._ivy.Cloned([self.to_dev(dev_str) for dev_str in dev_strs])
+        return self._ivy.ClonedItem([self.to_dev(dev_str) for dev_str in dev_strs])
 
     def distribute(self, dev_strs, axis=0):
         """
@@ -1303,7 +1303,7 @@ class Container(dict):
         :type axis: int, optional
         :return: a set of distributed sub-containers across the specified devices.
         """
-        return self._ivy.Distributed(
+        return self._ivy.DistributedItem(
             [cont.to_dev(dev_str) for cont, dev_str in
              zip(self.split(len(dev_strs), axis, with_remainder=True), dev_strs)])
 
@@ -2700,4 +2700,4 @@ class MultiDevContainer(Container):
         self._num_devs = len(dev_strs)
 
     def to_multi_dev_iter(self):
-        return _ivy.MultiDeviceIter(self.unstack(0), self._num_devs)
+        return _ivy.MultiDevIter(self.unstack(0), self._num_devs)
