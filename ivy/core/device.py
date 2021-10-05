@@ -6,6 +6,7 @@ Collection of device Ivy functions.
 import abc
 import math
 import queue
+import inspect
 import nvidia_smi
 from psutil import virtual_memory
 from typing import Union, Type, Callable, Iterable
@@ -615,7 +616,9 @@ def unify_nest(args: Type[MultiDevice], kwargs: Type[MultiDevice], dev_str, mode
 
 class DevMapper(abc.ABC):
 
-    def __init__(self, fn, ret_fn, queue_class, worker_class, dev_strs, module, *preceding_args, timeout=10.0):
+    def __init__(self, fn, ret_fn, queue_class, worker_class, dev_strs, timeout=1000.0, constant=None, unique=None):
+        constant_kwargs = ivy.default(constant, {})
+        unique_kwargs = ivy.default(unique, {})
         self._fn = fn
         self._ret_fn = ret_fn
         self._dev_strs = dev_strs
@@ -628,9 +631,9 @@ class DevMapper(abc.ABC):
         for i in range(self._num_workers):
             input_queue = queue_class()
             output_queue = queue_class()
+            worker_kwargs = dict(**constant_kwargs, **dict([(k, v[i]) for k, v in unique_kwargs.items()]))
             worker = self._worker_class(
-                target=self._worker_fn, args=(input_queue, output_queue, module, dev_strs[i],
-                                              [a[i] for a in preceding_args]))
+                target=self._worker_fn, args=(input_queue, output_queue, dev_strs[i], worker_kwargs))
             worker.start()
             self._input_queues.append(input_queue)
             self._output_queues.append(output_queue)
@@ -644,34 +647,33 @@ class DevMapper(abc.ABC):
         return state
 
     # noinspection PyShadowingNames
-    def _worker_fn(self, input_queue, output_queue, module, dev_str, preceding_args):
+    def _worker_fn(self, input_queue, output_queue, dev_str, kwargs):
         ivy.set_framework('torch')
-        if ivy.exists(module):
-            module.build(dev_str=dev_str)
+        for k, v in kwargs.items():
+            if isinstance(v, ivy.Module):
+                v.build(dev_str=dev_str)
+        if 'dev_str' in inspect.getfullargspec(self._fn).args:
+            kwargs['dev_str'] = dev_str
         while True:
             try:
-                inp = input_queue.get(timeout=self._timeout)
+                loaded_kwargs = input_queue.get(timeout=self._timeout)
             except queue.Empty:
                 continue
-            if inp is None:
+            if loaded_kwargs is None:
                 return
-            loaded_args, loaded_kwargs = inp
-            ret = self._fn(module, dev_str, *preceding_args, *loaded_args, **loaded_kwargs)
+            ret = self._fn(**loaded_kwargs, **kwargs)
             output_queue.put(ret)
 
-    def map(self, *args, **kwargs):
+    def map(self, **kwargs):
         """
         Map the function fn to each of the MultiDevice args and kwargs, running each function in parallel with CUDA-safe
         multiprocessing.
 
-        :param args: The MutliDevice positional arguments to map the function to.
-        :type args: sequence of any
         :param kwargs: The MutliDevice keyword arguments to map the function to.
         :type kwargs: dict of any
         :return: The results of the function, returned as a MultiDevice instance.
         """
-        [q.put(([a[i] for a in args], dict([(k, v[i]) for k, v in kwargs.items()])))
-         for i, q in enumerate(self._input_queues)]
+        [q.put(dict([(k, v[i]) for k, v in kwargs.items()])) for i, q in enumerate(self._input_queues)]
         return self._ret_fn(
             ivy.MultiDeviceIter([q.get(timeout=self._timeout) for q in self._output_queues], self._num_workers))
 
@@ -682,10 +684,10 @@ class DevMapper(abc.ABC):
 
 class DevMapperMultiProc(DevMapper):
 
-    def __init__(self, fn, ret_fn, dev_strs, module, *preceding_args, timeout=10.0):
+    def __init__(self, fn, ret_fn, dev_strs, timeout=1000.0, constant=None, unique=None):
         multiprocessing = ivy.multiprocessing('forkserver')
-        super().__init__(fn, ret_fn, multiprocessing.Queue, multiprocessing.Process, dev_strs, module, *preceding_args,
-                         timeout=timeout)
+        super().__init__(fn, ret_fn, multiprocessing.Queue, multiprocessing.Process, dev_strs, timeout,
+                         constant, unique)
 
     def __del__(self):
         try:
