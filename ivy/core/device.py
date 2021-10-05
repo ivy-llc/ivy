@@ -237,11 +237,34 @@ def split_func_call(func: Callable, inputs: Iterable[Union[Union[ivy.Array, ivy.
 # Multi-Device #
 # -------------#
 
-class MultiDevice(list):
+class MultiDev:
+
+    def __init__(self, iterable, axis=0):
+        if isinstance(iterable, MultiDev):
+            # noinspection PyUnresolvedReferences,PyProtectedMember
+            iterable = iterable._iterable
+        self._axis = axis
+        self._iterable = iterable
+        self._length = len(iterable)
+        self._counter = 0
+
+    def __len__(self):
+        return self._length
+
+    def __repr__(self):
+        return 'MultiDev(' + self._iterable.__repr__() + ')'
+
+
+class MultiDevItem(MultiDev):
 
     def __init__(self, lst, axis=0):
-        self._axis = axis
-        super().__init__(lst)
+        super().__init__(lst, axis)
+
+    def at_dev(self, idx):
+        return self._iterable[idx]
+
+    def at_devs(self):
+        return self._iterable
 
     @property
     def shape(self):
@@ -254,20 +277,44 @@ class MultiDevice(list):
         shape0[self._axis] = shape0[self._axis]*len(self)
         return tuple(shape0)
 
+    def __getitem__(self, slice_obj):
+        is_int = isinstance(slice_obj, int)
+        stacked_dim_size = 0
+        if is_int:
+            slice_obj = slice(slice_obj, slice_obj+1, 1)
+        ret_list = list()
+        for sub_item in self._iterable:
+            if not hasattr(sub_item, 'shape'):
+                continue
+            shp = sub_item.shape
+            rel_slice_obj = slice(slice_obj.start-stacked_dim_size, slice_obj.stop-stacked_dim_size, 1)
+            stacked_dim_size += shp[self._axis]
+            if slice_obj.start < stacked_dim_size:
+                if slice_obj.stop < stacked_dim_size:
+                    ret_list.append(sub_item[rel_slice_obj])
+                    return MultiDevItem(ret_list)
+                else:
+                    ret_list.append(sub_item[rel_slice_obj.start:])
+        return MultiDevItem(ret_list)
+
     def __repr__(self):
-        return 'MultiDevice(' + list.__repr__(self) + ')'
+        return 'MultiDevItem(' + self._iterable.__repr__() + ')'
 
 
-class MultiDeviceIter(MultiDevice):
+class MultiDevIter(MultiDev):
 
-    def __init__(self, iterable, length):
-        self._counter = 0
-        self._iterable = iterable
-        self._length = length
+    def __init__(self, iterable, num_devs):
+        self._num_devs = num_devs
         super().__init__(iterable)
 
+    def at_dev(self, dev_idx):
+        return [x.at_dev(dev_idx) if isinstance(x, MultiDevItem) else x for x in self._iterable]
+
+    def at_devs(self):
+        return [self.at_dev(i) for i in range(self._num_devs)]
+
     def __getitem__(self, item):
-        return [x[item] if isinstance(x, MultiDevice) else x for x in self._iterable]
+        return self._iterable[item]
 
     def __iter__(self):
         self._counter = 0
@@ -280,49 +327,46 @@ class MultiDeviceIter(MultiDevice):
         self._counter += 1
         return ret
 
-    def __len__(self):
-        return self._length
-
     def __repr__(self):
-        return 'MultiDeviceIter(' + list.__repr__(self) + ')'
+        return 'MultiDevIter(' + self._iterable.__repr__() + ')'
 
 
-class MultiDeviceNest(MultiDeviceIter):
+class MultiDevNest(MultiDevIter):
 
-    def __init__(self, iterable, length, max_depth):
+    def __init__(self, iterable, num_devs, max_depth):
         self._max_depth = max_depth
-        super().__init__(iterable, length)
+        super().__init__(iterable, num_devs)
 
-    def __getitem__(self, item):
-        return ivy.nested_map(self._iterable, lambda x: x[item] if isinstance(x, MultiDevice) else x,
+    def at_dev(self, dev_idx):
+        return ivy.nested_map(self._iterable, lambda x: x.at_dev(dev_idx) if isinstance(x, MultiDevItem) else x,
                               max_depth=self._max_depth)
 
     def __repr__(self):
-        return 'MultiDeviceNest(' + list.__repr__(self) + ')'
+        return 'MultiDevNest(' + self._iterable.__repr__() + ')'
 
 
 # Device Distribution #
 # --------------------#
 
-class Distributed(MultiDevice):
+class DistributedItem(MultiDevItem):
 
     def __repr__(self):
-        return 'Distributed(' + list.__repr__(self) + ')'
+        return 'DistributedItem(' + self._iterable.__repr__() + ')'
 
 
-class DistributedIter(MultiDeviceIter):
+class DistributedIter(MultiDevIter):
 
-    def __init__(self, iterable, length):
-        super().__init__(iterable, length)
+    def __init__(self, iterable, num_devs):
+        super().__init__(iterable, num_devs)
 
     def __repr__(self):
         return 'DistributedIter(' + self._iterable.__repr__() + ')'
 
 
-class DistributedNest(MultiDeviceNest):
+class DistributedNest(MultiDevNest):
 
-    def __init__(self, iterable, length, max_depth=1):
-        super().__init__(iterable, length, max_depth)
+    def __init__(self, iterable, num_devs, max_depth=1):
+        super().__init__(iterable, num_devs, max_depth)
 
     def __repr__(self):
         return 'DistributedNest(' + self._iterable.__repr__() + ')'
@@ -340,7 +384,7 @@ def distribute_array(x, dev_strs, axis=0):
     :type axis: int, optional
     :return: array distributed across the target devices
     """
-    return Distributed(
+    return DistributedItem(
         [ivy.to_dev(x_sub, d) for x_sub, d in zip(ivy.split(x, len(dev_strs), axis, with_remainder=True), dev_strs)])
 
 
@@ -407,25 +451,25 @@ def distribute_nest(args, kwargs, dev_strs, axis=0, max_depth=1):
 # Device Cloning #
 # ---------------#
 
-class Cloned(MultiDevice):
+class ClonedItem(MultiDevItem):
 
     def __repr__(self):
-        return 'Cloned(' + list.__repr__(self) + ')'
+        return 'ClonedItem(' + self._iterable.__repr__() + ')'
 
 
-class ClonedIter(MultiDeviceIter):
+class ClonedIter(MultiDevIter):
 
-    def __init__(self, iterable, length):
-        super().__init__(iterable, length)
+    def __init__(self, iterable, num_devs):
+        super().__init__(iterable, num_devs)
 
     def __repr__(self):
         return 'ClonedIter(' + self._iterable.__repr__() + ')'
 
 
-class ClonedNest(MultiDeviceNest):
+class ClonedNest(MultiDevNest):
 
-    def __init__(self, iterable, length, max_depth=1):
-        super().__init__(iterable, length, max_depth)
+    def __init__(self, iterable, num_devs, max_depth=1):
+        super().__init__(iterable, num_devs, max_depth)
 
     def __repr__(self):
         return 'ClonedNest(' + self._iterable.__repr__() + ')'
@@ -441,7 +485,7 @@ def clone_array(x, dev_strs):
     :type dev_strs: sequence of strs
     :return: array cloned to each of the target devices
     """
-    return Cloned([ivy.stop_gradient(ivy.to_dev(x, d)) for d in dev_strs])
+    return ClonedItem([ivy.stop_gradient(ivy.to_dev(x, d)) for d in dev_strs])
 
 
 def clone(x, dev_strs):
@@ -503,12 +547,12 @@ def clone_nest(args, kwargs, dev_strs, max_depth=1):
 
 # noinspection PyShadowingNames
 def _concat_unify_array(xs, dev_str, axis):
-    return ivy.concatenate([ivy.to_dev(x_sub, dev_str) for x_sub in xs], axis)
+    return ivy.concatenate([ivy.to_dev(x_sub, dev_str) for x_sub in xs.at_devs()], axis)
 
 
 # noinspection PyShadowingNames
 def _sum_unify_array(xs, dev_str, _=None):
-    return sum([ivy.to_dev(x_sub, dev_str) for x_sub in xs])
+    return sum([ivy.to_dev(x_sub, dev_str) for x_sub in xs.at_devs()])
 
 
 # noinspection PyShadowingNames
@@ -551,9 +595,9 @@ def unify(xs, dev_str, mode, axis=0):
     :type axis: int, optional
     :return: array unified to the target device
     """
-    if not isinstance(xs, (list, tuple)):
+    if not isinstance(xs, MultiDevItem):
         return xs
-    xs0 = xs[0]
+    xs0 = xs.at_dev(0)
     if ivy.is_array(xs0):
         return unify_array(xs, dev_str, mode, axis)
     elif isinstance(xs0, ivy.Container):
@@ -577,23 +621,23 @@ def unify_iter(xs, dev_str, mode, axis=0):
     :return: iterable with each element cloned to each of the target devices
     """
     # noinspection PyProtectedMember
-    xs = xs._iterable if isinstance(xs, MultiDeviceIter) else xs
+    xs = xs._iterable if isinstance(xs, MultiDevIter) else xs
     if isinstance(xs[0], (list, tuple)):
-        xs_t = list(map(list, zip(*xs)))
+        xs_t = [MultiDevItem(i) for i in list(map(list, zip(*xs)))]
         return [unify(x, dev_str, mode, axis) for x in xs_t]
     return unify(xs, dev_str, mode, axis)
 
 
 # noinspection PyShadowingNames,PyProtectedMember
-def unify_nest(args: Type[MultiDevice], kwargs: Type[MultiDevice], dev_str, mode, axis=0, max_depth=1):
+def unify_nest(args: Type[MultiDev], kwargs: Type[MultiDev], dev_str, mode, axis=0, max_depth=1):
     """
     Unify the input nested arguments, which consist of sub-arrays spread across arbitrary devices, to unified arrays
     on the single target device.
 
     :param args: The nested positional arguments to unify.
-    :type args: MultiDevice
+    :type args: MultiDev
     :param kwargs: The nested keyword arguments to unify.
-    :type kwargs: MultiDevice
+    :type kwargs: MultiDev
     :param dev_str: The device to unify the nested arguments to.
     :type dev_str: str
     :param mode: The mode by which to unify, must be one of [ concat | mean | sum ]
@@ -604,8 +648,8 @@ def unify_nest(args: Type[MultiDevice], kwargs: Type[MultiDevice], dev_str, mode
     :type max_depth: int, optional
     :return: nested arguments unified to the target device
     """
-    args = args._iterable if isinstance(args, MultiDeviceIter) else args
-    kwargs = kwargs._iterable if isinstance(kwargs, MultiDeviceIter) else kwargs
+    args = args._iterable if isinstance(args, MultiDevIter) else args
+    kwargs = kwargs._iterable if isinstance(kwargs, MultiDevIter) else kwargs
     args_uni = ivy.nested_map(args, lambda x: unify(x, dev_str, mode, axis), max_depth=max_depth)
     kwargs_uni = ivy.nested_map(kwargs, lambda x: unify(x, dev_str, mode, axis), max_depth=max_depth)
     return args_uni, kwargs_uni
@@ -675,7 +719,7 @@ class DevMapper(abc.ABC):
         """
         [q.put(dict([(k, v[i]) for k, v in kwargs.items()])) for i, q in enumerate(self._input_queues)]
         return self._ret_fn(
-            ivy.MultiDeviceIter([q.get(timeout=self._timeout) for q in self._output_queues], self._num_workers))
+            ivy.MultiDevIter([q.get(timeout=self._timeout) for q in self._output_queues], self._num_workers))
 
     @abc.abstractmethod
     def __del__(self):
