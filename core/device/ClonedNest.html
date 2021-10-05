@@ -115,13 +115,13 @@
 <li class="toctree-l2"><a class="reference internal" href="unify.html">unify</a></li>
 <li class="toctree-l2"><a class="reference internal" href="unify_iter.html">unify_iter</a></li>
 <li class="toctree-l2"><a class="reference internal" href="unify_nest.html">unify_nest</a></li>
-<li class="toctree-l2"><a class="reference internal" href="MultiDevice.html">MultiDevice</a></li>
-<li class="toctree-l2"><a class="reference internal" href="MultiDeviceIter.html">MultiDeviceIter</a></li>
-<li class="toctree-l2"><a class="reference internal" href="MultiDeviceNest.html">MultiDeviceNest</a></li>
-<li class="toctree-l2"><a class="reference internal" href="Distributed.html">Distributed</a></li>
+<li class="toctree-l2"><a class="reference internal" href="MultiDevItem.html">MultiDevItem</a></li>
+<li class="toctree-l2"><a class="reference internal" href="MultiDevIter.html">MultiDevIter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="MultiDevNest.html">MultiDevNest</a></li>
+<li class="toctree-l2"><a class="reference internal" href="DistributedItem.html">DistributedItem</a></li>
 <li class="toctree-l2"><a class="reference internal" href="DistributedIter.html">DistributedIter</a></li>
 <li class="toctree-l2"><a class="reference internal" href="DistributedNest.html">DistributedNest</a></li>
-<li class="toctree-l2"><a class="reference internal" href="Cloned.html">Cloned</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ClonedItem.html">ClonedItem</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ClonedIter.html">ClonedIter</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">ClonedNest</a></li>
 <li class="toctree-l2"><a class="reference internal" href="DevMapper.html">DevMapper</a></li>
@@ -235,11 +235,11 @@
 <h1>ClonedNest<a class="headerlink" href="#clonednest" title="Permalink to this headline">¶</a></h1>
 <dl class="py class">
 <dt id="ivy.core.device.ClonedNest">
-<em class="property">class </em><code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">ClonedNest</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">iterable</span></em>, <em class="sig-param"><span class="n">length</span></em>, <em class="sig-param"><span class="n">max_depth</span><span class="o">=</span><span class="default_value">1</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/device.html#ClonedNest"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.device.ClonedNest" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="MultiDeviceNest.html#ivy.core.device.MultiDeviceNest" title="ivy.core.device.MultiDeviceNest"><code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.core.device.MultiDeviceNest</span></code></a></p>
+<em class="property">class </em><code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">ClonedNest</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">iterable</span></em>, <em class="sig-param"><span class="n">num_devs</span></em>, <em class="sig-param"><span class="n">max_depth</span><span class="o">=</span><span class="default_value">1</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/device.html#ClonedNest"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.device.ClonedNest" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="MultiDevNest.html#ivy.core.device.MultiDevNest" title="ivy.core.device.MultiDevNest"><code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.core.device.MultiDevNest</span></code></a></p>
 <dl class="py method">
 <dt id="ivy.core.device.ClonedNest.__init__">
-<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">iterable</span></em>, <em class="sig-param"><span class="n">length</span></em>, <em class="sig-param"><span class="n">max_depth</span><span class="o">=</span><span class="default_value">1</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/device.html#ClonedNest.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.device.ClonedNest.__init__" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">iterable</span></em>, <em class="sig-param"><span class="n">num_devs</span></em>, <em class="sig-param"><span class="n">max_depth</span><span class="o">=</span><span class="default_value">1</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/device.html#ClonedNest.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.device.ClonedNest.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
 </dd></dl>
 

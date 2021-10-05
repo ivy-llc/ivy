@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>unify_nest &mdash; Ivy 1.0 documentation</title>
+  <title>ClonedItem &mdash; Ivy 1.0 documentation</title>
   
 
   
@@ -36,8 +36,8 @@
   <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="MultiDevItem" href="MultiDevItem.html" />
-    <link rel="prev" title="unify_iter" href="unify_iter.html" /> 
+    <link rel="next" title="ClonedIter" href="ClonedIter.html" />
+    <link rel="prev" title="DistributedNest" href="DistributedNest.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -114,14 +114,14 @@
 <li class="toctree-l2"><a class="reference internal" href="unify_array.html">unify_array</a></li>
 <li class="toctree-l2"><a class="reference internal" href="unify.html">unify</a></li>
 <li class="toctree-l2"><a class="reference internal" href="unify_iter.html">unify_iter</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">unify_nest</a></li>
+<li class="toctree-l2"><a class="reference internal" href="unify_nest.html">unify_nest</a></li>
 <li class="toctree-l2"><a class="reference internal" href="MultiDevItem.html">MultiDevItem</a></li>
 <li class="toctree-l2"><a class="reference internal" href="MultiDevIter.html">MultiDevIter</a></li>
 <li class="toctree-l2"><a class="reference internal" href="MultiDevNest.html">MultiDevNest</a></li>
 <li class="toctree-l2"><a class="reference internal" href="DistributedItem.html">DistributedItem</a></li>
 <li class="toctree-l2"><a class="reference internal" href="DistributedIter.html">DistributedIter</a></li>
 <li class="toctree-l2"><a class="reference internal" href="DistributedNest.html">DistributedNest</a></li>
-<li class="toctree-l2"><a class="reference internal" href="ClonedItem.html">ClonedItem</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">ClonedItem</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ClonedIter.html">ClonedIter</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ClonedNest.html">ClonedNest</a></li>
 <li class="toctree-l2"><a class="reference internal" href="DevMapper.html">DevMapper</a></li>
@@ -212,13 +212,13 @@
         
           <li><a href="../device.html">Device</a> &raquo;</li>
         
-      <li>unify_nest</li>
+      <li>ClonedItem</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="../../_sources/core/device/unify_nest.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../_sources/core/device/ClonedItem.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -231,28 +231,12 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="unify-nest">
-<h1>unify_nest<a class="headerlink" href="#unify-nest" title="Permalink to this headline">¶</a></h1>
-<dl class="py function">
-<dt id="ivy.core.device.unify_nest">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">unify_nest</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">args</span><span class="p">:</span> <span class="n">Type<span class="p">[</span><a class="reference internal" href="../device.html#ivy.core.device.MultiDev" title="ivy.core.device.MultiDev">ivy.core.device.MultiDev</a><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">kwargs</span><span class="p">:</span> <span class="n">Type<span class="p">[</span><a class="reference internal" href="../device.html#ivy.core.device.MultiDev" title="ivy.core.device.MultiDev">ivy.core.device.MultiDev</a><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">dev_str</span></em>, <em class="sig-param"><span class="n">mode</span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">max_depth</span><span class="o">=</span><span class="default_value">1</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/device.html#unify_nest"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.device.unify_nest" title="Permalink to this definition">¶</a></dt>
-<dd><p>Unify the input nested arguments, which consist of sub-arrays spread across arbitrary devices, to unified arrays
-on the single target device.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>args</strong> (<a class="reference internal" href="../device.html#ivy.core.device.MultiDev" title="ivy.core.device.MultiDev"><em>MultiDev</em></a>) – The nested positional arguments to unify.</p></li>
-<li><p><strong>kwargs</strong> (<a class="reference internal" href="../device.html#ivy.core.device.MultiDev" title="ivy.core.device.MultiDev"><em>MultiDev</em></a>) – The nested keyword arguments to unify.</p></li>
-<li><p><strong>dev_str</strong> (<em>str</em>) – The device to unify the nested arguments to.</p></li>
-<li><p><strong>mode</strong> (<em>str</em>) – The mode by which to unify, must be one of [ concat | mean | sum ]</p></li>
-<li><p><strong>axis</strong> (<em>int</em><em>, </em><em>optional</em>) – The axis along which to concattenate the sub-arrays. Default is 0.</p></li>
-<li><p><strong>max_depth</strong> (<em>int</em><em>, </em><em>optional</em>) – The maximum nested depth to reach. Default is 1. Increase this if the nest is deeper.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>nested arguments unified to the target device</p>
-</dd>
-</dl>
+  <div class="section" id="cloneditem">
+<h1>ClonedItem<a class="headerlink" href="#cloneditem" title="Permalink to this headline">¶</a></h1>
+<dl class="py class">
+<dt id="ivy.core.device.ClonedItem">
+<em class="property">class </em><code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">ClonedItem</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">lst</span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">0</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/device.html#ClonedItem"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.device.ClonedItem" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="MultiDevItem.html#ivy.core.device.MultiDevItem" title="ivy.core.device.MultiDevItem"><code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.core.device.MultiDevItem</span></code></a></p>
 </dd></dl>
 
 <div class="line-block">
@@ -270,10 +254,10 @@ on the single target device.</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="MultiDevItem.html" class="btn btn-neutral float-right" title="MultiDevItem" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="ClonedIter.html" class="btn btn-neutral float-right" title="ClonedIter" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="unify_iter.html" class="btn btn-neutral float-left" title="unify_iter" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="DistributedNest.html" class="btn btn-neutral float-left" title="DistributedNest" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

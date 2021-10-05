@@ -37,7 +37,7 @@
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
     <link rel="next" title="DistributedNest" href="DistributedNest.html" />
-    <link rel="prev" title="Distributed" href="Distributed.html" /> 
+    <link rel="prev" title="DistributedItem" href="DistributedItem.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -115,13 +115,13 @@
 <li class="toctree-l2"><a class="reference internal" href="unify.html">unify</a></li>
 <li class="toctree-l2"><a class="reference internal" href="unify_iter.html">unify_iter</a></li>
 <li class="toctree-l2"><a class="reference internal" href="unify_nest.html">unify_nest</a></li>
-<li class="toctree-l2"><a class="reference internal" href="MultiDevice.html">MultiDevice</a></li>
-<li class="toctree-l2"><a class="reference internal" href="MultiDeviceIter.html">MultiDeviceIter</a></li>
-<li class="toctree-l2"><a class="reference internal" href="MultiDeviceNest.html">MultiDeviceNest</a></li>
-<li class="toctree-l2"><a class="reference internal" href="Distributed.html">Distributed</a></li>
+<li class="toctree-l2"><a class="reference internal" href="MultiDevItem.html">MultiDevItem</a></li>
+<li class="toctree-l2"><a class="reference internal" href="MultiDevIter.html">MultiDevIter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="MultiDevNest.html">MultiDevNest</a></li>
+<li class="toctree-l2"><a class="reference internal" href="DistributedItem.html">DistributedItem</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">DistributedIter</a></li>
 <li class="toctree-l2"><a class="reference internal" href="DistributedNest.html">DistributedNest</a></li>
-<li class="toctree-l2"><a class="reference internal" href="Cloned.html">Cloned</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ClonedItem.html">ClonedItem</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ClonedIter.html">ClonedIter</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ClonedNest.html">ClonedNest</a></li>
 <li class="toctree-l2"><a class="reference internal" href="DevMapper.html">DevMapper</a></li>
@@ -235,11 +235,11 @@
 <h1>DistributedIter<a class="headerlink" href="#distributediter" title="Permalink to this headline">¶</a></h1>
 <dl class="py class">
 <dt id="ivy.core.device.DistributedIter">
-<em class="property">class </em><code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">DistributedIter</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">iterable</span></em>, <em class="sig-param"><span class="n">length</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/device.html#DistributedIter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.device.DistributedIter" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="MultiDeviceIter.html#ivy.core.device.MultiDeviceIter" title="ivy.core.device.MultiDeviceIter"><code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.core.device.MultiDeviceIter</span></code></a></p>
+<em class="property">class </em><code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">DistributedIter</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">iterable</span></em>, <em class="sig-param"><span class="n">num_devs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/device.html#DistributedIter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.device.DistributedIter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="MultiDevIter.html#ivy.core.device.MultiDevIter" title="ivy.core.device.MultiDevIter"><code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.core.device.MultiDevIter</span></code></a></p>
 <dl class="py method">
 <dt id="ivy.core.device.DistributedIter.__init__">
-<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">iterable</span></em>, <em class="sig-param"><span class="n">length</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/device.html#DistributedIter.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.device.DistributedIter.__init__" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">iterable</span></em>, <em class="sig-param"><span class="n">num_devs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/device.html#DistributedIter.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.device.DistributedIter.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
 </dd></dl>
 
@@ -263,7 +263,7 @@
         <a href="DistributedNest.html" class="btn btn-neutral float-right" title="DistributedNest" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="Distributed.html" class="btn btn-neutral float-left" title="Distributed" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="DistributedItem.html" class="btn btn-neutral float-left" title="DistributedItem" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

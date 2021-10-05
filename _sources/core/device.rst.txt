@@ -36,13 +36,16 @@ Device
    device/unify.rst
    device/unify_iter.rst
    device/unify_nest.rst
-   device/MultiDevice.rst
-   device/MultiDeviceIter.rst
-   device/MultiDeviceNest.rst
-   device/Distributed.rst
+   device/MultiDev:
+
+    def __init__.rst
+   device/MultiDevItem.rst
+   device/MultiDevIter.rst
+   device/MultiDevNest.rst
+   device/DistributedItem.rst
    device/DistributedIter.rst
    device/DistributedNest.rst
-   device/Cloned.rst
+   device/ClonedItem.rst
    device/ClonedIter.rst
    device/ClonedNest.rst
    device/DevMapper.rst
