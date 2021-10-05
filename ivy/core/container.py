@@ -615,7 +615,7 @@ class Container(dict):
             return [0]
         sub_shapes =\
             [v for k, v in self.map(lambda x, kc: list(x.shape) if self._ivy.is_array(x)
-                else ([len(x)] if isinstance(x, (list, tuple)) else None)).to_iterator() if v]
+                else ([len(x)] if isinstance(x, (list, tuple, _ivy.MultiDev)) else None)).to_iterator() if v]
         if not sub_shapes:
             return sub_shapes
         min_num_dims = min([len(sub_shape) for sub_shape in sub_shapes])
@@ -2699,5 +2699,8 @@ class MultiDevContainer(Container):
         self._dev_strs = dev_strs
         self._num_devs = len(dev_strs)
 
-    def to_multi_dev_iter(self):
-        return _ivy.MultiDevIter(self.unstack(0), self._num_devs)
+    def at_dev(self, dev_idx):
+        return self.map(lambda x, kc: x.at_dev(dev_idx) if isinstance(x, _ivy.MultiDevItem) else x)
+
+    def at_devs(self):
+        return [self.at_dev(i) for i in range(self._num_devs)]

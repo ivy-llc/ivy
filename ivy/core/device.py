@@ -734,6 +734,7 @@ class DevMapperMultiProc(DevMapper):
                          constant, unique)
 
     def __del__(self):
+        # noinspection PyBroadException
         try:
             for i, w in enumerate(self._workers):
                 self._input_queues[i].put(None)
@@ -744,6 +745,8 @@ class DevMapperMultiProc(DevMapper):
             for q in self._output_queues:
                 q.cancel_join_thread()
                 q.close()
+        except Exception:
+            pass
         finally:
             for w in self._workers:
                 if w.is_alive():
