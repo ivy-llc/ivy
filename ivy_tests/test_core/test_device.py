@@ -119,7 +119,7 @@ def test_dev_str(x, dtype_str, tensor_fn, dev_str, call):
 
 # memory_on_dev
 @pytest.mark.parametrize(
-    "dev_str_to_check", ['cpu', 'cpu:0', 'gpu:0'])
+    "dev_str_to_check", ['cpu', 'gpu:0'])
 def test_memory_on_dev(dev_str_to_check, dev_str, call):
     if 'gpu' in dev_str_to_check and ivy.num_gpus() == 0:
         # cannot get amount of memory for gpu which is not present
