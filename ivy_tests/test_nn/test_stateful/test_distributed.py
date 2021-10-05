@@ -56,7 +56,7 @@ def test_distributed_training(bs_ic_oc, dev_str, call):
                                input_channels, dev_str=dev_str0), 'float32')
     x1 = ivy.cast(ivy.linspace(ivy.zeros(dev_batch_shape), ivy.ones(dev_batch_shape),
                                input_channels, dev_str=dev_str1), 'float32')
-    x = ivy.Distributed([x0, x1])
+    x = ivy.DistributedItem([x0, x1])
 
     # module
     module = TrainableModule(input_channels, output_channels, dev_str=dev_str0)
@@ -75,9 +75,9 @@ def test_distributed_training(bs_ic_oc, dev_str, call):
     loss = None
     grads = None
     for i in range(10):
-        loss_n_grads = ivy.MultiDevice(
+        loss_n_grads = ivy.MultiDevIter(
             ivy.map(lambda xn, vc: ivy.execute_with_gradients(
-                lambda v: loss_fn(xn, v), vc), x, module.v.clone(dev_strs)))
+                lambda v: loss_fn(xn, v), vc), x.at_devs(), module.v.clone(dev_strs).at_devs()), len(dev_strs))
         loss, grads = ivy.unify_iter(loss_n_grads, dev_str0, 'mean')
         module.v = optim.step(module.v, grads)
         assert loss < loss_tm1
@@ -145,7 +145,7 @@ def test_distributed_multiprocess_training(bs_ic_oc, dev_str, call):
                                input_channels, dev_str=dev_str0), 'float32')
     x1 = ivy.cast(ivy.linspace(ivy.zeros(dev_batch_shape), ivy.ones(dev_batch_shape),
                                input_channels, dev_str=dev_str1), 'float32')
-    x = ivy.Distributed([x0, x1])
+    x = ivy.DistributedItem([x0, x1])
 
     # module for processes
     module = TrainableModule(input_channels, output_channels, dev_str=dev_str0, store_vars=False)
@@ -168,7 +168,7 @@ def test_distributed_multiprocess_training(bs_ic_oc, dev_str, call):
     loss = None
     grads = None
     for i in range(10):
-        loss, grads = dev_mapper.map(xn=x, vc=module.v.clone(dev_strs))
+        loss, grads = dev_mapper.map(xn=x.at_devs(), vc=module.v.clone(dev_strs).at_devs())
         module.v = optim.step(module.v, grads)
         assert loss < loss_tm1
         loss_tm1 = loss

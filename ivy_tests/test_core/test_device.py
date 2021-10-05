@@ -277,7 +277,7 @@ def test_distribute_array(x, axis, tensor_fn, dev_str, call):
     assert len(x_split) == math.floor(x.shape[axis] / len(dev_strs))
 
     # value test
-    assert min([ivy.dev_str(x_sub) == dev_strs[i] for i, x_sub in enumerate(x_split)])
+    assert min([ivy.dev_str(x_sub) == dev_strs[i] for i, x_sub in enumerate(x_split.at_devs())])
 
 
 @pytest.mark.parametrize(
@@ -309,7 +309,7 @@ def test_clone_array(x, axis, tensor_fn, dev_str, call):
     assert len(x_split) == math.floor(x.shape[axis] / len(dev_strs))
 
     # value test
-    assert min([ivy.dev_str(x_sub) == dev_strs[i] for i, x_sub in enumerate(x_split)])
+    assert min([ivy.dev_str(x_sub) == dev_strs[i] for i, x_sub in enumerate(x_split.at_devs())])
 
 
 @pytest.mark.parametrize(
@@ -337,7 +337,7 @@ def test_unify_array(xs, axis, tensor_fn, dev_str, call):
     x1 = tensor_fn(xs[1], 'float32', dev_str1)
 
     # output
-    x_unified = ivy.unify_array(ivy.Distributed([x0, x1]), dev_str0, 'concat', axis)
+    x_unified = ivy.unify_array(ivy.DistributedItem([x0, x1]), dev_str0, 'concat', axis)
 
     # shape test
     assert x_unified.shape[axis] == x0.shape[axis] + x1.shape[axis]
@@ -375,26 +375,28 @@ def test_distribute_args(args, kwargs, axis, tensor_fn, dev_str, call):
     dist_args, dist_kwargs = ivy.distribute_nest(args, kwargs, dev_strs, axis=axis)
 
     # device specific args
-    assert dist_args[0]
-    assert dist_args[1]
+    assert dist_args.at_dev(0)
+    assert dist_args.at_dev(1)
     three_present = True
     try:
-        dist_args[3]
+        dist_args.at_dev(2)
     except IndexError:
         three_present = False
     assert not three_present
-    assert dist_kwargs[0]
-    assert dist_kwargs[1]
+    assert dist_kwargs.at_dev(0)
+    assert dist_kwargs.at_dev(1)
     three_present = True
     try:
-        dist_kwargs[3]
+        dist_kwargs.at_dev(3)
     except IndexError:
         three_present = False
     assert not three_present
 
     # value test
-    assert min([ivy.dev_str(dist_args_i[0]) == dev_strs[i] for i, dist_args_i in enumerate(dist_args)])
-    assert min([ivy.dev_str(dist_kwargs_i['a']) == dev_strs[i] for i, dist_kwargs_i in enumerate(dist_kwargs)])
+    assert min([ivy.dev_str(dist_args_i[0]) == dev_strs[i]
+                for i, dist_args_i in enumerate(dist_args.at_devs())])
+    assert min([ivy.dev_str(dist_kwargs_i['a']) == dev_strs[i]
+                for i, dist_kwargs_i in enumerate(dist_kwargs.at_devs())])
 
 
 @pytest.mark.parametrize(
@@ -426,26 +428,28 @@ def test_clone_args(args, kwargs, axis, tensor_fn, dev_str, call):
     cloned_args, cloned_kwargs = ivy.clone_nest(args, kwargs, dev_strs)
 
     # device specific args
-    assert cloned_args[0]
-    assert cloned_args[1]
+    assert cloned_args.at_dev(0)
+    assert cloned_args.at_dev(1)
     three_present = True
     try:
-        cloned_args[3]
+        cloned_args.at_dev(3)
     except IndexError:
         three_present = False
     assert not three_present
-    assert cloned_kwargs[0]
-    assert cloned_kwargs[1]
+    assert cloned_kwargs.at_dev(0)
+    assert cloned_kwargs.at_dev(1)
     three_present = True
     try:
-        cloned_kwargs[3]
+        cloned_kwargs.at_dev(3)
     except IndexError:
         three_present = False
     assert not three_present
 
     # value test
-    assert min([ivy.dev_str(dist_args_i[0]) == dev_strs[i] for i, dist_args_i in enumerate(cloned_args)])
-    assert min([ivy.dev_str(dist_kwargs_i['a']) == dev_strs[i] for i, dist_kwargs_i in enumerate(cloned_kwargs)])
+    assert min([ivy.dev_str(dist_args_i[0]) == dev_strs[i]
+                for i, dist_args_i in enumerate(cloned_args.at_devs())])
+    assert min([ivy.dev_str(dist_kwargs_i['a']) == dev_strs[i]
+                for i, dist_kwargs_i in enumerate(cloned_kwargs.at_devs())])
 
 
 @pytest.mark.parametrize(
@@ -473,18 +477,20 @@ def test_unify_args(args, kwargs, axis, tensor_fn, dev_str, call):
     arg_len = len(dev_strs)
 
     # inputs
-    args = ivy.DistributedNest([ivy.Distributed([tensor_fn(args[0][0], 'float32', dev_str0),
-                                                 tensor_fn(args[0][1], 'float32', dev_str1)])] + args[1:], arg_len)
-    kwargs = ivy.DistributedNest({'a': ivy.Distributed([tensor_fn(kwargs['a'][0], 'float32', dev_str0),
-                                                        tensor_fn(kwargs['a'][1], 'float32', dev_str1)]),
+    args = ivy.DistributedNest([ivy.DistributedItem([tensor_fn(args[0][0], 'float32', dev_str0),
+                                                     tensor_fn(args[0][1], 'float32', dev_str1)])] + args[1:], arg_len)
+    kwargs = ivy.DistributedNest({'a': ivy.DistributedItem([tensor_fn(kwargs['a'][0], 'float32', dev_str0),
+                                                            tensor_fn(kwargs['a'][1], 'float32', dev_str1)]),
                                   'b': kwargs['b']}, arg_len)
 
     # outputs
     args_uni, kwargs_uni = ivy.unify_nest(args, kwargs, dev_str0, 'concat', axis=axis)
 
     # shape test
-    assert args_uni[0].shape[axis] == args._iterable[0][0].shape[axis] + args._iterable[0][1].shape[axis]
-    assert kwargs_uni['a'].shape[axis] == kwargs._iterable['a'][0].shape[axis] + kwargs._iterable['a'][1].shape[axis]
+    assert args_uni[0].shape[axis] == args._iterable[0].at_dev(0).shape[axis] +\
+           args._iterable[0].at_dev(1).shape[axis]
+    assert kwargs_uni['a'].shape[axis] == kwargs._iterable['a'].at_dev(0).shape[axis] +\
+           kwargs._iterable['a'].at_dev(1).shape[axis]
 
     # value test
     assert ivy.dev_str(args_uni[0]) == dev_str0
