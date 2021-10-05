@@ -228,20 +228,24 @@
 <span class="c1"># ----#</span>
 
 <span class="c1"># noinspection PyShadowingBuiltins</span>
-<div class="viewcode-block" id="map"><a class="viewcode-back" href="../../../core/general/map.html#ivy.core.general.map">[docs]</a><span class="k">def</span> <span class="nf">map</span><span class="p">(</span><span class="n">fn</span><span class="p">:</span> <span class="n">Callable</span><span class="p">,</span> <span class="o">*</span><span class="n">xs</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">mean</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>\
+<div class="viewcode-block" id="map"><a class="viewcode-back" href="../../../core/general/map.html#ivy.core.general.map">[docs]</a><span class="k">def</span> <span class="nf">map</span><span class="p">(</span><span class="n">fn</span><span class="p">:</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">constant</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">unique</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">mean</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>\
         <span class="o">-&gt;</span> <span class="n">List</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Applies a function on each item of an iterable x.</span>
 
 <span class="sd">    :param fn: The function to map onto x.</span>
 <span class="sd">    :type fn: callable</span>
-<span class="sd">    :param xs: The iterable or iterables to apply the method to.</span>
-<span class="sd">    :type xs: iterable</span>
+<span class="sd">    :param constant: keyword arguments which remain constant between each function call. Default is None.</span>
+<span class="sd">    :type constant: dict of any, optional</span>
+<span class="sd">    :param unique: keyword arguments which are unique for each function call. Default is None.</span>
+<span class="sd">    :type unique: dict of iterables of any, optional</span>
 <span class="sd">    :param mean: Whether to compute the mean across the return values, and return this mean. Default is False.</span>
 <span class="sd">    :type mean: bool, optional</span>
 <span class="sd">    :return: x following the applicable of fn to each of it&#39;s iterated items.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">rets</span> <span class="o">=</span> <span class="p">[</span><span class="n">r</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">_map</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="o">*</span><span class="n">xs</span><span class="p">)]</span>
+    <span class="n">c</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">default</span><span class="p">(</span><span class="n">constant</span><span class="p">,</span> <span class="p">{})</span>
+    <span class="n">u</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">default</span><span class="p">(</span><span class="n">unique</span><span class="p">,</span> <span class="p">{})</span>
+    <span class="n">rets</span> <span class="o">=</span> <span class="p">[</span><span class="n">r</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">_map</span><span class="p">(</span><span class="k">lambda</span> <span class="o">*</span><span class="n">uv</span><span class="p">:</span> <span class="n">fn</span><span class="p">(</span><span class="o">**</span><span class="nb">dict</span><span class="p">(</span><span class="o">**</span><span class="n">c</span><span class="p">,</span> <span class="o">**</span><span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">u</span><span class="o">.</span><span class="n">keys</span><span class="p">(),</span> <span class="n">uv</span><span class="p">)))),</span> <span class="o">*</span><span class="n">u</span><span class="o">.</span><span class="n">values</span><span class="p">())]</span>
     <span class="k">if</span> <span class="n">mean</span><span class="p">:</span>
         <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span><span class="n">rets</span><span class="p">)</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">rets</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">rets</span></div>
