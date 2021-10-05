@@ -41,7 +41,7 @@ def pytest_generate_tests(metafunc):
     # dev_str
     raw_value = metafunc.config.getoption('--dev_str')
     if raw_value == 'all':
-        dev_strs = ['cpu:0', 'gpu:0', 'tpu:0']
+        dev_strs = ['cpu', 'gpu:0', 'tpu:0']
     else:
         dev_strs = raw_value.split(',')
 
@@ -71,6 +71,6 @@ def pytest_generate_tests(metafunc):
 
 
 def pytest_addoption(parser):
-    parser.addoption('--dev_str', action="store", default="cpu:0")
+    parser.addoption('--dev_str', action="store", default="cpu")
     parser.addoption('--framework', action="store", default="all")
     parser.addoption('--wrapped_mode', action="store", default="false")

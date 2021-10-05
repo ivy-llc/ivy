@@ -10,12 +10,12 @@ import time
 from ivy.core.device import Profiler as BaseProfiler
 
 
-dev = lambda x: 'cpu:0'
+dev = lambda x: 'cpu'
 to_dev = lambda x, dev_str=None: x
-dev_str = lambda x: 'cpu:0'
+dev_str = lambda x: 'cpu'
 _dev_str_callable = dev_str
-dev_to_str = lambda dev_in: 'cpu:0'
-str_to_dev = lambda dev_str: 'cpu:0'
+dev_to_str = lambda dev_in: 'cpu'
+str_to_dev = lambda dev_str: 'cpu'
 gpu_is_available = lambda: False
 num_gpus = lambda: 0
 tpu_is_available = lambda: False
