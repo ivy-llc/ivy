@@ -21,8 +21,11 @@ def to_dev(x, dev_str=None):
     return x
 
 
-dev_to_str = lambda dev_in:\
-    dev_in.device_type + (':' + (str(dev_in.device_id) if dev_in.device_id is not None else '0'))
+def dev_to_str(dev_in):
+    device_type = dev_in.device_type
+    if device_type == 'cpu':
+        return device_type
+    return device_type + (':' + (str(dev_in.device_id) if dev_in.device_id is not None else '0'))
 
 
 def str_to_dev(dev_str):

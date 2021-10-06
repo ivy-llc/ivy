@@ -36,6 +36,8 @@ def to_dev(x, dev_str=None):
 
 def dev_to_str(dev_in):
     p, dev_id = (dev_in.platform, dev_in.id)
+    if p == 'cpu':
+        return p
     return p + ':' + str(dev_id)
 
 
