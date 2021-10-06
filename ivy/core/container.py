@@ -46,7 +46,7 @@ def _repr(x):
 class Container(dict):
 
     def __init__(self, dict_in=None, queues=None, queue_load_sizes=None, container_combine_method='list_join',
-                 queue_timeout=5.0, print_limit=10, print_indent=4, print_line_spacing=0, ivyh=None,
+                 queue_timeout=None, print_limit=10, print_indent=4, print_line_spacing=0, ivyh=None,
                  keyword_color_dict=None, rebuild_child_containers=False, **kwargs):
         """
         Initialize container object from input dict representation.
@@ -62,7 +62,7 @@ class Container(dict):
         :param container_combine_method: The method to use for combining containers arriving from different queues.
                                          Default is ivy.Container.list_join
         :type container_combine_method: str, optional
-        :param queue_timeout: The timeout when waiting for containers to arrive from the queues. Default is 5 seconds.
+        :param queue_timeout: The timeout when waiting for containers to arrive from the queues. Default is global.
         :type queue_timeout: float, optional
         :param print_limit: The total array size limit when printing the container. Default is 10.
         :type print_limit: int, optional
@@ -93,7 +93,7 @@ class Container(dict):
                      'concat': lambda conts: self.concat(conts, 0)}[self._container_combine_method]
             self._loaded_containers_from_queues = dict()
             self._queue_load_sizes_cum = _np.cumsum(queue_load_sizes)
-            self._queue_timeout = queue_timeout
+            self._queue_timeout = _ivy.default(queue_timeout, _ivy.queue_timeout())
         self._local_ivy = ivyh
         self._keyword_color_dict = _ivy.default(keyword_color_dict, {})
         if dict_in is None:
@@ -2692,7 +2692,7 @@ class Container(dict):
 class MultiDevContainer(Container):
 
     def __init__(self, dict_in, dev_strs, queues=None, queue_load_sizes=None, container_combine_method='list_join',
-                 queue_timeout=5.0, print_limit=10, print_indent=4, print_line_spacing=0, ivyh=None,
+                 queue_timeout=None, print_limit=10, print_indent=4, print_line_spacing=0, ivyh=None,
                  keyword_color_dict=None, rebuild_child_containers=False, **kwargs):
         super().__init__(dict_in, queues, queue_load_sizes, container_combine_method, queue_timeout, print_limit,
                          print_indent, print_line_spacing, ivyh, keyword_color_dict, rebuild_child_containers, **kwargs)
