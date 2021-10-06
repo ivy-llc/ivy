@@ -13,6 +13,7 @@ Device
    :caption: Device
 
    device/to_dev.rst
+   device/dev_to_str.rst
    device/str_to_dev.rst
    device/Profiler.rst
 
