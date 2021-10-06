@@ -59,7 +59,9 @@ def test_to_ivy_module(bs_ic_oc, from_class_and_args, dev_str, call):
     x = ivy.cast(ivy.linspace(ivy.zeros(batch_shape), ivy.ones(batch_shape), input_channels), 'float32')
     natvie_module_class = NATIVE_MODULES[ivy.current_framework_str()]
     if from_class_and_args:
-        ivy_module = ivy.to_ivy_module(native_module_class=natvie_module_class, args=[input_channels, output_channels])
+        ivy_module = ivy.to_ivy_module(native_module_class=natvie_module_class,
+                                       args=[input_channels, output_channels],
+                                       dev_strs=[dev_str])
     else:
         if call is helpers.jnp_call:
             def forward_fn(*a, **kw):
@@ -68,7 +70,7 @@ def test_to_ivy_module(bs_ic_oc, from_class_and_args, dev_str, call):
             native_module = hk.transform(forward_fn)
         else:
             native_module = natvie_module_class(input_channels, output_channels)
-        ivy_module = ivy.to_ivy_module(native_module)
+        ivy_module = ivy.to_ivy_module(native_module, dev_strs=[dev_str])
 
     def loss_fn(v_=None):
         out = ivy_module(x, v=v_)
