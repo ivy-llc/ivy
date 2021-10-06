@@ -13,4 +13,5 @@ Converters
    :caption: Converters
 
    converters/to_ivy_module.rst
+   converters/IvyModule.rst
 
