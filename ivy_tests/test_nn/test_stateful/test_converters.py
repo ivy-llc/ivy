@@ -13,12 +13,22 @@ import ivy
 import ivy_tests.helpers as helpers
 
 
+class TorchLinearModule(torch.nn.Module):
+
+    def __init__(self, in_size, out_size):
+        super(TorchLinearModule, self).__init__()
+        self._linear = torch.nn.Linear(in_size, out_size)
+
+    def forward(self, x):
+        return self._linear(x)
+
+
 class TorchModule(torch.nn.Module):
     def __init__(self, in_size, out_size, dev_str='cpu', hidden_size=64):
         super(TorchModule, self).__init__()
-        self._linear0 = torch.nn.Linear(in_size, hidden_size)
-        self._linear1 = torch.nn.Linear(hidden_size, hidden_size)
-        self._linear2 = torch.nn.Linear(hidden_size, out_size)
+        self._linear0 = TorchLinearModule(in_size, hidden_size)
+        self._linear1 = TorchLinearModule(hidden_size, hidden_size)
+        self._linear2 = TorchLinearModule(hidden_size, out_size)
 
     def forward(self, x):
         x = x.unsqueeze(0)
@@ -50,7 +60,9 @@ NATIVE_MODULES = {'torch': TorchModule,
     "bs_ic_oc", [([1, 2], 4, 5)])
 @pytest.mark.parametrize(
     "from_class_and_args", [True, False])
-def test_to_ivy_module(bs_ic_oc, from_class_and_args, dev_str, call):
+@pytest.mark.parametrize(
+    "inplace_update", [True, False])
+def test_to_ivy_module(bs_ic_oc, from_class_and_args, inplace_update, dev_str, call):
     # smoke test
     if call not in [helpers.torch_call, helpers.jnp_call]:
         # Currently only implemented for PyTorch
@@ -61,7 +73,7 @@ def test_to_ivy_module(bs_ic_oc, from_class_and_args, dev_str, call):
     if from_class_and_args:
         ivy_module = ivy.to_ivy_module(native_module_class=natvie_module_class,
                                        args=[input_channels, output_channels],
-                                       dev_strs=[dev_str])
+                                       dev_str=dev_str, inplace_update=inplace_update)
     else:
         if call is helpers.jnp_call:
             def forward_fn(*a, **kw):
@@ -70,7 +82,7 @@ def test_to_ivy_module(bs_ic_oc, from_class_and_args, dev_str, call):
             native_module = hk.transform(forward_fn)
         else:
             native_module = natvie_module_class(input_channels, output_channels)
-        ivy_module = ivy.to_ivy_module(native_module, dev_strs=[dev_str])
+        ivy_module = ivy.to_ivy_module(native_module, dev_str=dev_str, inplace_update=inplace_update)
 
     def loss_fn(v_=None):
         out = ivy_module(x, v=v_)
