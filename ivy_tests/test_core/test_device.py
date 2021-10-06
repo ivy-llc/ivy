@@ -249,12 +249,14 @@ def test_split_func_call_with_cont_input(x0, x1, chunk_size, axis, tensor_fn, de
 
 
 @pytest.mark.parametrize(
-    "x", [[0, 1, 2, 3, 4]])
+    "x", [[0, 1, 2, 3, 4, 5]])
 @pytest.mark.parametrize(
     "axis", [0])
 @pytest.mark.parametrize(
     "tensor_fn", [ivy.array, helpers.var_fn])
-def test_distribute_array(x, axis, tensor_fn, dev_str, call):
+@pytest.mark.parametrize(
+    "dev_strs_as_dict", [True, False])
+def test_distribute_array(x, axis, tensor_fn, dev_strs_as_dict, dev_str, call):
 
     if call is helpers.mx_call:
         # MXNet does not support splitting based on section sizes, only integer number of sections input is supported.
@@ -265,19 +267,21 @@ def test_distribute_array(x, axis, tensor_fn, dev_str, call):
 
     # predictions
     dev_str0 = dev_str
+    dev_strs = [dev_str0]
     if 'gpu' in dev_str:
         idx = ivy.num_gpus() - 1
         dev_str1 = dev_str[:-1] + str(idx)
-    else:
-        dev_str1 = dev_str
-    dev_strs = [dev_str0, dev_str1]
+        dev_strs.append(dev_str1)
+    if dev_strs_as_dict:
+        dev_strs = dict(zip(dev_strs, [int((1/len(dev_strs))*x.shape[axis])]*len(dev_strs)))
     x_split = ivy.distribute_array(x, dev_strs, axis)
 
     # shape test
-    assert len(x_split) == math.floor(x.shape[axis] / len(dev_strs))
+    assert x_split.at_dev(0).shape[axis] == math.floor(x.shape[axis] / len(dev_strs))
 
     # value test
-    assert min([ivy.dev_str(x_sub) == dev_strs[i] for i, x_sub in enumerate(x_split.at_devs())])
+    dev_strs_keys = list(dev_strs.keys()) if dev_strs_as_dict else dev_strs
+    assert min([ivy.dev_str(x_sub) == dev_strs_keys[i] for i, x_sub in enumerate(x_split.at_devs())])
 
 
 @pytest.mark.parametrize(
