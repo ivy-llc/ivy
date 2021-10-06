@@ -180,6 +180,8 @@
 <li class="toctree-l2"><a class="reference internal" href="general/set_min_base.html">set_min_base</a></li>
 <li class="toctree-l2"><a class="reference internal" href="general/stable_pow.html">stable_pow</a></li>
 <li class="toctree-l2"><a class="reference internal" href="general/multiprocessing.html">multiprocessing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="general/set_queue_timeout.html">set_queue_timeout</a></li>
+<li class="toctree-l2"><a class="reference internal" href="general/queue_timeout.html">queue_timeout</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="gradients.html">Gradients</a></li>
@@ -1401,6 +1403,12 @@ If not given, then the type of the original array is used.</p></li>
 </dd></dl>
 
 <dl class="py function">
+<dt id="ivy.core.general.queue_timeout">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">queue_timeout</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#queue_timeout"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.queue_timeout" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the global queue timeout values (in seconds). Default value without this function being called is 10 seconds.</p>
+</dd></dl>
+
+<dl class="py function">
 <dt id="ivy.core.general.repeat">
 <code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">repeat</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">repeats</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>int<span class="p">, </span>Iterable<span class="p">[</span>int<span class="p">]</span><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">axis</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>int<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">f</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>ivy.Framework<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; Union<span class="p">[</span>ivy.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span><a class="reference internal" href="../_modules/ivy/core/general.html#repeat"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.repeat" title="Permalink to this definition">¶</a></dt>
 <dd><p>Repeat values along a given dimension</p>
@@ -1516,6 +1524,17 @@ In this case, the value is inferred from the length of the array and remaining d
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>val</strong> (<em>float</em>) – The new value to set the minimum denominator to.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.core.general.set_queue_timeout">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">set_queue_timeout</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">timeout</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#set_queue_timeout"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.set_queue_timeout" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the global queue timeout values (in seconds). Default value without this function being called is 10 seconds.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>timeout</strong> (<em>float</em>) – The timeout to set in seconds.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1987,6 +2006,8 @@ If not given, then the type of the original array is used.</p></li>
 <li class="toctree-l1"><a class="reference internal" href="general/set_min_base.html">set_min_base</a></li>
 <li class="toctree-l1"><a class="reference internal" href="general/stable_pow.html">stable_pow</a></li>
 <li class="toctree-l1"><a class="reference internal" href="general/multiprocessing.html">multiprocessing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="general/set_queue_timeout.html">set_queue_timeout</a></li>
+<li class="toctree-l1"><a class="reference internal" href="general/queue_timeout.html">queue_timeout</a></li>
 </ul>
 </div>
 </div>

@@ -207,6 +207,7 @@
 
 <span class="n">FN_CACHE</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
 <span class="n">INF</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="s1">&#39;inf&#39;</span><span class="p">)</span>
+<span class="n">TIMEOUT</span> <span class="o">=</span> <span class="mf">10.0</span>
 
 
 <span class="c1"># Helpers #</span>
@@ -1852,6 +1853,25 @@
 <span class="sd">    :return: Multiprocessing module</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">multiprocessing</span><span class="p">(</span><span class="n">context</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="set_queue_timeout"><a class="viewcode-back" href="../../../core/general/set_queue_timeout.html#ivy.core.general.set_queue_timeout">[docs]</a><span class="k">def</span> <span class="nf">set_queue_timeout</span><span class="p">(</span><span class="n">timeout</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Set the global queue timeout values (in seconds). Default value without this function being called is 10 seconds.</span>
+
+<span class="sd">    :param timeout: The timeout to set in seconds.</span>
+<span class="sd">    :type timeout: float</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">global</span> <span class="n">TIMEOUT</span>
+    <span class="n">TIMEOUT</span> <span class="o">=</span> <span class="n">timeout</span></div>
+
+
+<div class="viewcode-block" id="queue_timeout"><a class="viewcode-back" href="../../../core/general/queue_timeout.html#ivy.core.general.queue_timeout">[docs]</a><span class="k">def</span> <span class="nf">queue_timeout</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get the global queue timeout values (in seconds). Default value without this function being called is 10 seconds.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">global</span> <span class="n">TIMEOUT</span>
+    <span class="k">return</span> <span class="n">TIMEOUT</span></div>
 </pre></div>
 
            </div>
