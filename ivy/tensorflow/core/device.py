@@ -26,7 +26,10 @@ def to_dev(x, dev_str=None):
 
 
 def dev_to_str(dev_in):
-    dev_type, dev_idx = dev_in[1:].split(':')[-2:]
+    dev_in_split = dev_in[1:].split(':')[-2:]
+    if len(dev_in_split) == 1:
+        return dev_in_split[0]
+    dev_type, dev_idx = dev_in_split
     dev_type = dev_type.lower()
     if dev_type == 'cpu':
         return dev_type
@@ -34,7 +37,10 @@ def dev_to_str(dev_in):
 
 
 def str_to_dev(dev_str):
-    return '/' + dev_str.upper()
+    ret = '/' + dev_str.upper()
+    if not ret[-1].isnumeric():
+        ret = ret + ':0'
+    return ret
 
 
 dev_str = lambda x: dev_to_str(dev(x))
