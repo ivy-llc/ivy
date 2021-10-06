@@ -199,7 +199,7 @@ def test_split_func_call(x0, x1, chunk_size, axis, tensor_fn, dev_str, call):
         return t0 * t1, t0 - t1, t1 - t0
 
     # predictions
-    a, b, c = ivy.split_func_call(func, [in0, in1], chunk_size, axis)
+    a, b, c = ivy.split_func_call(func, [in0, in1], 'concat', chunk_size, axis)
 
     # true
     a_true, b_true, c_true = func(in0, in1)

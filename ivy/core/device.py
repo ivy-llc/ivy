@@ -183,25 +183,24 @@ def to_dev(x: Union[ivy.Array, ivy.NativeArray], dev_str: str = None, f: ivy.Fra
 # -------------------#
 
 def split_func_call(func: Callable, inputs: Iterable[Union[Union[ivy.Array, ivy.NativeArray], ivy.Container]],
-                    chunk_size: int, input_axes: Union[int, Iterable[int]] = 0,
-                    output_axes: Union[int, Iterable[int]] = None, mean: bool = False)\
+                    mode: str, chunk_size: int, input_axes: Union[int, Iterable[int]] = 0,
+                    output_axes: Union[int, Iterable[int]] = None)\
         -> Iterable[Union[Union[ivy.Array, ivy.NativeArray], ivy.Container]]:
     """
-    # ToDo: re-implement this as a composition of nested methods as building blocks
     Call a function by splitting its inputs along a given axis, and calling the function in chunks, rather than feeding
     the entire input array at once. This can be useful to reduce memory usage of the device the arrays are on.
     :param func: The function to be called.
     :type func: callable
     :param inputs: A list of inputs to pass into the function.
     :type inputs: sequence of arrays
+    :param mode: The mode by which to unify the return values, must be one of [ concat | mean | sum ]
+    :type mode: str
     :param chunk_size: The size of each of the chunks to be fed into the function.
     :type chunk_size: int
     :param input_axes: The axes along which to split each of the inputs, before passing to the function. Default is 0.
     :type input_axes: int or sequence of ints, optional
     :param output_axes: The axes along which to concat each of the returned outputs. Default is same as fist input axis.
     :type output_axes: int or sequence of ints, optional
-    :param mean: Whether to compute a weighted mean based on the return from each chunk. Default is False.
-    :type mean: bool, optional
     :return: The return from the function, following input splitting and re-concattenation.
     """
     if isinstance(input_axes, int):
@@ -221,16 +220,21 @@ def split_func_call(func: Callable, inputs: Iterable[Union[Union[ivy.Array, ivy.
         output_axes = [input_axes[0]] * num_outputs
     elif isinstance(output_axes, int):
         output_axes = [output_axes] * num_outputs
-    if mean:
+    is_mean = mode == 'mean'
+    is_sum = mode == 'sum'
+    if is_mean or is_sum:
         rets = [[(r.expand_dims(output_axis) if isinstance(r, ivy.Container) else ivy.expand_dims(r, output_axis)) * cs
                  for output_axis, r in zip(output_axes, ret)] for ret, cs in zip(rets, chunk_sizes)]
     concatted = [ivy.concatenate([r[i] for r in rets], output_axes[i]) if ivy.is_array(rets[0][i])
                  else ivy.Container.concat([r[i] for r in rets], output_axes[i])
                  for i in range(num_outputs)]
-    if mean:
+    if is_mean:
         return [(item.reduce_sum(output_axis) if isinstance(item, ivy.Container)
-                 else ivy.reduce_sum(item, output_axis))/sum(chunk_sizes)
-                for item, output_axis in zip(concatted, output_axes)]
+                else ivy.reduce_sum(item, output_axis))/sum(chunk_sizes)
+               for item, output_axis in zip(concatted, output_axes)]
+    elif is_sum:
+        return [(item.reduce_sum(output_axis) if isinstance(item, ivy.Container)
+                else ivy.reduce_sum(item, output_axis)) for item, output_axis in zip(concatted, output_axes)]
     return concatted
 
 
