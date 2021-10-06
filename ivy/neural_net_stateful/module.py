@@ -16,11 +16,11 @@ from ivy.core.container import Container
 
 class Module(abc.ABC):
 
-    def __init__(self, dev_str=None, v=None, build_mode='on_init', store_vars=True):
+    def __init__(self, dev_str=None, v=None, build_mode='on_init', store_vars=True, dev_strs=None):
         """
         Initialze Ivy layer, which is a stateful object consisting of trainable variables.
 
-        :param dev_str: device on which to create the layer's variables 'cuda:0', 'cuda:1', 'cpu' etc.
+        :param dev_str: device on which to create the module's variables 'cuda:0', 'cuda:1', 'cpu' etc.
         :type dev_str: str, optional
         :param v: Ivy container of trainable variables. Created internally by default.
         :type v: ivy container, optional
@@ -29,15 +29,16 @@ class Module(abc.ABC):
         :type build_mode: str, optional
         :param store_vars: Whether or not to store the variables created. Default is True.
         :type store_vars: bool, optional
+        :param dev_strs: devices on which to distribute the module's variables 'cuda:0', 'cuda:1', 'cpu' etc.
+        :type dev_strs: sequence of str, optional
         :type build_mode: str, optional
         """
         valid_build_modes = ['on_init', 'explicit', 'on_call']
         if build_mode not in valid_build_modes:
             raise Exception('build_mode must be one of {} of type str, but found {} of type{}'.format(
                 valid_build_modes, build_mode, type(build_mode)))
-        if dev_str is None:
-            dev_str = 'gpu:0' if ivy.gpu_is_available() else 'cpu'
-        self._dev_str = dev_str
+        self._dev_strs = ivy.default(dev_strs, [ivy.default_device()])
+        self._dev_str = ivy.default(dev_str, self._dev_strs[0])
         self._build_mode = build_mode
         self._store_vars = store_vars
         self._built = False
