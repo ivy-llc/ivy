@@ -663,6 +663,26 @@ def unify_nest(args: Type[MultiDev], kwargs: Type[MultiDev], dev_str, mode, axis
 class DevMapper(abc.ABC):
 
     def __init__(self, fn, ret_fn, queue_class, worker_class, dev_strs, timeout=10.0, constant=None, unique=None):
+        """
+        Device Mapper base class.
+
+        :param fn: The function which the device mapper parallelises across devices.
+        :type fn: callable
+        :param ret_fn: The function which receives the ivy.MultiDevIter as input, and produces a single device output.
+        :type ret_fn: callable
+        :param queue_class: The class to use for creating queues.
+        :type queue_class: class
+        :param worker_class: The class to use for creating parallel workers.
+        :type worker_class: class
+        :param dev_strs: A list of devices on which to parallelise the function.
+        :type dev_strs: sequence of str
+        :param timeout: The timeout for getting items from the queues. Default is 10 seconds.
+        :type timeout: float, optional
+        :param constant: A dict of keyword arguments which are the same for each process. Default is None.
+        :type constant: dict of any, optional
+        :param unique: A dict of keyword argument sequences which are unique for each process. Default is None.
+        :type unique: dict of iterables of any, optional
+        """
         constant_kwargs = ivy.default(constant, {})
         unique_kwargs = ivy.default(unique, {})
         self._fn = fn
@@ -678,8 +698,8 @@ class DevMapper(abc.ABC):
             input_queue = queue_class()
             output_queue = queue_class()
             worker_kwargs = dict(**constant_kwargs, **dict([(k, v[i]) for k, v in unique_kwargs.items()]))
-            worker = self._worker_class(
-                target=self._worker_fn, args=(input_queue, output_queue, dev_strs[i], worker_kwargs))
+            worker = self._worker_class(target=self._worker_fn, args=(input_queue, output_queue, dev_strs[i],
+                                                                      worker_kwargs))
             worker.start()
             self._input_queues.append(input_queue)
             self._output_queues.append(output_queue)
@@ -696,7 +716,7 @@ class DevMapper(abc.ABC):
     def _worker_fn(self, input_queue, output_queue, dev_str, kwargs):
         ivy.set_framework('torch')
         for k, v in kwargs.items():
-            if isinstance(v, ivy.Module):
+            if isinstance(v, ivy.Module) and not v.built:
                 v.build(dev_str=dev_str)
         if 'dev_str' in inspect.getfullargspec(self._fn).args:
             kwargs['dev_str'] = dev_str
