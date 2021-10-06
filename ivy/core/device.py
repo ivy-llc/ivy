@@ -662,7 +662,7 @@ def unify_nest(args: Type[MultiDev], kwargs: Type[MultiDev], dev_str, mode, axis
 
 class DevMapper(abc.ABC):
 
-    def __init__(self, fn, ret_fn, queue_class, worker_class, dev_strs, timeout=10.0, constant=None, unique=None):
+    def __init__(self, fn, ret_fn, queue_class, worker_class, dev_strs, timeout=None, constant=None, unique=None):
         """
         Device Mapper base class.
 
@@ -676,7 +676,7 @@ class DevMapper(abc.ABC):
         :type worker_class: class
         :param dev_strs: A list of devices on which to parallelise the function.
         :type dev_strs: sequence of str
-        :param timeout: The timeout for getting items from the queues. Default is 10 seconds.
+        :param timeout: The timeout for getting items from the queues. Default is global.
         :type timeout: float, optional
         :param constant: A dict of keyword arguments which are the same for each process. Default is None.
         :type constant: dict of any, optional
@@ -689,7 +689,7 @@ class DevMapper(abc.ABC):
         self._ret_fn = ret_fn
         self._dev_strs = dev_strs
         self._num_workers = len(dev_strs)
-        self._timeout = timeout
+        self._timeout = ivy.default(timeout, ivy.queue_timeout())
         self._workers = list()
         self._input_queues = list()
         self._output_queues = list()
@@ -750,7 +750,7 @@ class DevMapper(abc.ABC):
 
 class DevMapperMultiProc(DevMapper):
 
-    def __init__(self, fn, ret_fn, dev_strs, timeout=10.0, constant=None, unique=None):
+    def __init__(self, fn, ret_fn, dev_strs, timeout=None, constant=None, unique=None):
         multiprocessing = ivy.multiprocessing('forkserver')
         super().__init__(fn, ret_fn, multiprocessing.Queue, multiprocessing.Process, dev_strs, timeout,
                          constant, unique)

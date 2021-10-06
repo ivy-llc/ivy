@@ -17,6 +17,7 @@ from ivy.framework_handler import current_framework as _cur_framework
 
 FN_CACHE = dict()
 INF = float('inf')
+TIMEOUT = 10.0
 
 
 # Helpers #
@@ -1662,3 +1663,22 @@ def multiprocessing(context: str = None, f: ivy.Framework = None):
     :return: Multiprocessing module
     """
     return _cur_framework(f=f).multiprocessing(context)
+
+
+def set_queue_timeout(timeout):
+    """
+    Set the global queue timeout values (in seconds). Default value without this function being called is 10 seconds.
+
+    :param timeout: The timeout to set in seconds.
+    :type timeout: float
+    """
+    global TIMEOUT
+    TIMEOUT = timeout
+
+
+def queue_timeout():
+    """
+    Get the global queue timeout values (in seconds). Default value without this function being called is 10 seconds.
+    """
+    global TIMEOUT
+    return TIMEOUT
