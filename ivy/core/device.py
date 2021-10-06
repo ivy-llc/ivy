@@ -9,7 +9,7 @@ import queue
 import inspect
 import nvidia_smi
 from psutil import virtual_memory
-from typing import Union, Type, Callable, Iterable
+from typing import Union, Type, Callable, Iterable, Dict
 
 # local
 import ivy
@@ -372,30 +372,31 @@ class DistributedNest(MultiDevNest):
         return 'DistributedNest(' + self._iterable.__repr__() + ')'
 
 
-def distribute_array(x, dev_strs, axis=0):
+def distribute_array(x, dev_strs: Union[Iterable[str], Dict[str, int]], axis=0):
     """
     Distribute an array across the specified devices, returning a list of sub-arrays, each on a different device.
 
     :param x: The array to distribute across devices.
     :type x: array
     :param dev_strs: The devices to distribute the array across.
-    :type dev_strs: sequence of strs
+    :type dev_strs: sequence of strs or dict of split sizes
     :param axis: The axis along which to split the array. Default is 0.
     :type axis: int, optional
     :return: array distributed across the target devices
     """
+    split_arg = list(dev_strs.values()) if isinstance(dev_strs, dict) else len(dev_strs)
     return DistributedItem(
-        [ivy.to_dev(x_sub, d) for x_sub, d in zip(ivy.split(x, len(dev_strs), axis, with_remainder=True), dev_strs)])
+        [ivy.to_dev(x_sub, d) for x_sub, d in zip(ivy.split(x, split_arg, axis, with_remainder=True), dev_strs)])
 
 
-def distribute(x, dev_strs, axis=0):
+def distribute(x, dev_strs: Union[Iterable[str], Dict[str, int]], axis=0):
     """
     Distribute the input item across the specified devices, returning a list of sub-items, each on a different device.
 
     :param x: The input array or container to distribute across devices.
     :type x: array or container
     :param dev_strs: The devices to distribute the input across.
-    :type dev_strs: sequence of strs
+    :type dev_strs: sequence of strs or dict of split sizes
     :param axis: The axis along which to split the input. Default is 0.
     :type axis: int, optional
     :return: array or container distributed across the target devices
@@ -407,14 +408,14 @@ def distribute(x, dev_strs, axis=0):
     return x
 
 
-def distribute_iter(xs, dev_strs, axis=0):
+def distribute_iter(xs, dev_strs: Union[Iterable[str], Dict[str, int]], axis=0):
     """
     Distribute elements of the iterbale xs across the specified devices.
 
     :param xs: The iterable of items to distribute.
     :type xs: iterable of any
     :param dev_strs: The devices to distribute the iterable elements across.
-    :type dev_strs: sequence of strs
+    :type dev_strs: sequence of strs or dict of split sizes
     :param axis: The axis along which to split the arrays in the iterable xs. Default is 0.
     :type axis: int, optional
     :return: iterable with each element distributed to the target devices
@@ -424,7 +425,7 @@ def distribute_iter(xs, dev_strs, axis=0):
     return DistributedIter([distribute(x, dev_strs, axis) for x in xs], len(dev_strs))
 
 
-def distribute_nest(args, kwargs, dev_strs, axis=0, max_depth=1):
+def distribute_nest(args, kwargs, dev_strs: Union[Iterable[str], Dict[str, int]], axis=0, max_depth=1):
     """
     Distribute the nested input arguments across the specified devices.
 
@@ -433,7 +434,7 @@ def distribute_nest(args, kwargs, dev_strs, axis=0, max_depth=1):
     :param kwargs: The keyword nested arguments to distribute.
     :type kwargs: dict of any
     :param dev_strs: The devices to distribute the nested arguments across.
-    :type dev_strs: sequence of strs
+    :type dev_strs: sequence of strs or dict of split sizes
     :param axis: The axis along which to split the arrays in the arguments. Default is 0.
     :type axis: int, optional
     :param max_depth: The maximum nested depth to reach. Default is 1. Increase this if the nest is deeper.
