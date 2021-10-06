@@ -217,6 +217,7 @@
                   <span class="s1">&#39;torch&#39;</span><span class="p">:</span> <span class="p">[],</span>
                   <span class="s1">&#39;mxnd&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;ndarray&#39;</span><span class="p">]}</span>
 
+<span class="n">queue_timeout</span> <span class="o">=</span> <span class="mf">10.</span>
 <span class="n">debug_mode_val</span> <span class="o">=</span> <span class="kc">False</span>
 <span class="n">wrapped_mode_val</span> <span class="o">=</span> <span class="kc">False</span>
 <span class="n">ivy_original_dict</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
@@ -535,6 +536,9 @@
     <span class="k">assert</span> <span class="n">debug_mode_in</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;breakpoint&#39;</span><span class="p">,</span> <span class="s1">&#39;exception&#39;</span><span class="p">]</span>
     <span class="k">global</span> <span class="n">debug_mode_val</span>
     <span class="n">debug_mode_val</span> <span class="o">=</span> <span class="n">debug_mode_in</span>
+    <span class="k">global</span> <span class="n">queue_timeout</span>
+    <span class="n">queue_timeout</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">queue_timeout</span><span class="p">()</span>
+    <span class="n">ivy</span><span class="o">.</span><span class="n">set_queue_timeout</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
     <span class="n">_wrap_methods_for_debugging</span><span class="p">()</span></div>
 
 
@@ -549,7 +553,9 @@
 <div class="viewcode-block" id="unset_debug_mode"><a class="viewcode-back" href="../../framework_handler/unset_debug_mode.html#ivy.framework_handler.unset_debug_mode">[docs]</a><span class="k">def</span> <span class="nf">unset_debug_mode</span><span class="p">():</span>
     <span class="k">global</span> <span class="n">debug_mode_val</span>
     <span class="n">debug_mode_val</span> <span class="o">=</span> <span class="kc">False</span>
-    <span class="n">_unwrap_methods_from_debugging</span><span class="p">()</span></div>
+    <span class="n">_unwrap_methods_from_debugging</span><span class="p">()</span>
+    <span class="k">global</span> <span class="n">queue_timeout</span>
+    <span class="n">ivy</span><span class="o">.</span><span class="n">set_queue_timeout</span><span class="p">(</span><span class="n">queue_timeout</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="debug_mode"><a class="viewcode-back" href="../../framework_handler/debug_mode.html#ivy.framework_handler.debug_mode">[docs]</a><span class="k">def</span> <span class="nf">debug_mode</span><span class="p">():</span>
