@@ -33,7 +33,7 @@ def _dict_to_hk_flat_map(dict_in):
     return FlatMapping(ret_flat_map)
 
 
-def to_ivy_module(native_module=None, native_module_class=None, args=None, kwargs=None):
+def to_ivy_module(native_module=None, native_module_class=None, args=None, kwargs=None, dev_strs=None):
 
     args = ivy.default(args, [])
     kwargs = ivy.default(kwargs, {})
