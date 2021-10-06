@@ -20,6 +20,7 @@ from operator import mul as _mul
 from operator import pow as _pow
 from operator import not_ as _not
 from functools import reduce as _reduce
+from typing import Union, Iterable, Dict
 from operator import truediv as _truediv
 from operator import floordiv as _floordiv
 
@@ -1293,19 +1294,20 @@ class Container(dict):
         """
         return self._ivy.ClonedItem([self.to_dev(dev_str) for dev_str in dev_strs])
 
-    def distribute(self, dev_strs, axis=0):
+    def distribute(self, dev_strs: Union[Iterable[str], Dict[str, int]], axis=0):
         """
         Distribute the current container across multiple devices.
 
         :param dev_strs: The devices along which to distribute the container.
-        :type dev_strs: sequence of str
+        :type dev_strs: sequence of strs or dict of split sizes
         :param axis: The axis along which to split the arrays at the container leaves. Default is 0.
         :type axis: int, optional
         :return: a set of distributed sub-containers across the specified devices.
         """
+        split_arg = list(dev_strs.values()) if isinstance(dev_strs, dict) else len(dev_strs)
         return self._ivy.DistributedItem(
             [cont.to_dev(dev_str) for cont, dev_str in
-             zip(self.split(len(dev_strs), axis, with_remainder=True), dev_strs)])
+             zip(self.split(split_arg, axis, with_remainder=True), dev_strs)])
 
     def to_multi_dev(self, dev_strs, axis=0):
         """
