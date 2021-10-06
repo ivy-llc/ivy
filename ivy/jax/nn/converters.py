@@ -68,7 +68,8 @@ class IvyModule(ivy.Module):
         return ret
 
 
-def to_ivy_module(native_module=None, native_module_class=None, args=None, kwargs=None, dev_str=None, dev_strs=None):
+def to_ivy_module(native_module=None, native_module_class=None, args=None, kwargs=None, dev_str=None, dev_strs=None,
+                  inplace_update=False):
 
     args = ivy.default(args, [])
     kwargs = ivy.default(kwargs, {})
