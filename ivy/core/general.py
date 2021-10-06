@@ -1670,7 +1670,7 @@ def set_queue_timeout(timeout):
     Set the global queue timeout values (in seconds). Default value without this function being called is 10 seconds.
 
     :param timeout: The timeout to set in seconds.
-    :type timeout: float
+    :type timeout: float, optional
     """
     global TIMEOUT
     TIMEOUT = timeout
