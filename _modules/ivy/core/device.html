@@ -970,6 +970,83 @@
                     <span class="n">w</span><span class="o">.</span><span class="n">terminate</span><span class="p">()</span></div>
 
 
+<span class="c1"># Device Manager #</span>
+<span class="c1"># ---------------#</span>
+
+<div class="viewcode-block" id="DevManager"><a class="viewcode-back" href="../../../core/device.html#ivy.core.device.DevManager">[docs]</a><span class="k">class</span> <span class="nc">DevManager</span><span class="p">:</span>
+
+<div class="viewcode-block" id="DevManager.__init__"><a class="viewcode-back" href="../../../core/device.html#ivy.core.device.DevManager.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dev_mapper</span><span class="p">,</span> <span class="n">dev_strs</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]],</span> <span class="n">dim_size</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create device manager, which unlike the device mapper, handles all argument cloning and distributing internally.</span>
+<span class="sd">        The device manager only receivess a specification regarding the ratio of the batch each device should consume.</span>
+
+<span class="sd">        :param dev_mapper: The pre-built device mapper used by the manager internally.</span>
+<span class="sd">        :type dev_mapper: DevMapper</span>
+<span class="sd">        :param dev_strs: The devices to distribute and clone the arguments across.</span>
+<span class="sd">        :type dev_strs: sequence of strs or dict of split sizes</span>
+<span class="sd">        :param dim_size: The size of the dimension along which the device splitting is performed.</span>
+<span class="sd">        :type dim_size: int</span>
+<span class="sd">        :param axis: The axis along which each argument is split when passing to multiple devices. Default is 0.</span>
+<span class="sd">        :type axis: int, optional</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_dev_mapper</span> <span class="o">=</span> <span class="n">dev_mapper</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_num_devs</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">dev_strs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_dim_size</span> <span class="o">=</span> <span class="n">dim_size</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_axis</span> <span class="o">=</span> <span class="n">axis</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">dev_strs</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_dev_str_ratios</span> <span class="o">=</span> <span class="n">dev_strs</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_dev_str_ratios</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">dev_strs</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">_num_devs</span><span class="p">]</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">_num_devs</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_dev_strs_keys</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dev_str_ratios</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_compute_dev_strs_dict</span><span class="p">()</span></div>
+
+    <span class="k">def</span> <span class="nf">_compute_dev_strs_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">split_sizes</span> <span class="o">=</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">r</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dim_size</span><span class="p">))</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dev_str_ratios</span><span class="o">.</span><span class="n">values</span><span class="p">()]</span>
+        <span class="n">combined_batch_size</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">split_sizes</span><span class="p">)</span>
+        <span class="n">excess_size</span> <span class="o">=</span> <span class="n">combined_batch_size</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dim_size</span>
+        <span class="k">if</span> <span class="n">excess_size</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">excess_size</span><span class="p">)):</span>
+                <span class="n">split_sizes</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-=</span> <span class="mi">1</span>
+        <span class="k">elif</span> <span class="n">excess_size</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">excess_size</span><span class="p">)):</span>
+                <span class="n">split_sizes</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_dev_strs_dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">([(</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dev_strs_keys</span><span class="p">,</span> <span class="n">split_sizes</span><span class="p">)])</span>
+
+<div class="viewcode-block" id="DevManager.map"><a class="viewcode-back" href="../../../core/device.html#ivy.core.device.DevManager.map">[docs]</a>    <span class="k">def</span> <span class="nf">map</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">to_clone</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">to_distribute</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Map the function fn to each of the MultiDevice args and kwargs, running each function in parallel with CUDA-safe</span>
+<span class="sd">        multiprocessing.</span>
+
+<span class="sd">        :param to_clone: The MutliDevice keyword arguments to clone and map to the function. Default is None.</span>
+<span class="sd">        :type to_clone: dict of any, optional</span>
+<span class="sd">        :param to_distribute: The MutliDevice keyword arguments to distribute and map to the function. Default is None.</span>
+<span class="sd">        :type to_distribute: dict of any, optional</span>
+<span class="sd">        :return: The results of the function, returned as a MultiDevice instance.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">to_clone</span><span class="p">):</span>
+            <span class="n">to_clone</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">([(</span><span class="n">k</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">clone</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dev_strs_keys</span><span class="p">))</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">to_clone</span><span class="o">.</span><span class="n">items</span><span class="p">()])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">to_clone</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">to_distribute</span><span class="p">):</span>
+            <span class="n">to_distribute</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">to_distribute</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">([(</span><span class="n">k</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">distribute</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dev_strs_dict</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_axis</span><span class="p">))</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">to_clone</span><span class="o">.</span><span class="n">items</span><span class="p">()])</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dev_mapper</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="o">**</span><span class="n">to_clone</span><span class="p">,</span> <span class="o">**</span><span class="n">to_distribute</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="fm">__del__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_dev_mapper</span><span class="o">.</span><span class="fm">__del__</span><span class="p">()</span>
+        <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dev_mapper</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">dim_size</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dim_size</span>
+
+    <span class="nd">@dim_size</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">dim_size</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_dim_size</span> <span class="o">=</span> <span class="n">batch_size</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_compute_dev_strs_dict</span><span class="p">()</span></div>
+
+
 <span class="c1"># Profiler #</span>
 <span class="c1"># ---------#</span>
 
