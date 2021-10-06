@@ -23,7 +23,10 @@ def dev(x):
 
 
 def to_dev(x, dev_str: Optional[str] = None):
-    return x.to(str_to_dev(dev_str))
+    ret = x.to(str_to_dev(dev_str))
+    if isinstance(x, torch.nn.Parameter):
+        return torch.nn.Parameter(ret)
+    return ret
 
 
 def dev_to_str(dev_in: torch.device):
