@@ -3,7 +3,6 @@ Converter from PyTorch Modules to Ivy Modules
 """
 
 # global
-import copy
 from collections import OrderedDict
 
 # local
@@ -22,34 +21,29 @@ class IvyModule(ivy.Module):
         ivy.Module.__init__(self, dev_str=dev_str, dev_strs=dev_strs)
 
     def _create_variables(self, dev_str):
-        self.vs = self._all_native_params
-        return self._all_native_params[dev_str]
+        return self._native_params
 
     def _build(self):
-        native_module = ivy.default(
+        self._native_module = ivy.default(
             lambda: self._native_module,
             lambda: self._native_module_class(*self._args, **self._kwargs), with_callable=True)
-        self._native_modules = dict([(ds, copy.deepcopy(native_module).to(ivy.str_to_dev(ds)))
-                                     for ds in self._dev_strs])
-        self._all_native_params = dict([(ds, ivy.Container(OrderedDict(
-            sorted([(k.replace('.', '/'), v) for k, v in dict(native_module.named_parameters()).items()]))).map(
-            lambda x, kc: torch.nn.Parameter(x)))
-            for ds, native_module in zip(self._dev_strs, self._native_modules.values())])
+        self._native_params = ivy.Container(OrderedDict(
+            sorted([(k.replace('.', '/'), v) for k, v in dict(self._native_module.named_parameters()).items()]))).map(
+            lambda x, kc: torch.nn.Parameter(x))
 
     @staticmethod
     def _inplace_update(p, v):
         p.data = v
 
-    def _inplace_update_v(self, new_v, dev_str):
-        ivy.Container.multi_map(lambda xs, kc: self._inplace_update(xs[0], xs[1]),
-                                [self._all_native_params[dev_str], new_v])
+    def _inplace_update_v(self, new_v):
+        ivy.Container.multi_map(lambda xs, kc: self._inplace_update(xs[0], xs[1]), [self._native_params, new_v])
 
-    def _replace_update_v(self, new_v, dev_str, native=None):
-        native = ivy.default(native, self._native_modules[dev_str])
+    def _replace_update_v(self, new_v, native=None):
+        native = ivy.default(native, self._native_module)
         for k, v in new_v.items():
             if isinstance(v, ivy.Container):
                 # noinspection PyProtectedMember
-                native._modules[k] = self._replace_update_v(v, dev_str, native._modules[k])
+                native._modules[k] = self._replace_update_v(v, native._modules[k])
             elif ivy.is_variable(v):
                 # noinspection PyProtectedMember
                 native.__setattr__(k, v)
@@ -62,9 +56,8 @@ class IvyModule(ivy.Module):
         wrapped_mode = ivy.wrapped_mode()
         if wrapped_mode:
             a, kw = ivy.args_to_native(*a, **kw)
-        dev_str = self.v.dev_str
-        self._update_v(self.v, dev_str)
-        ret = self._native_modules[dev_str](*a, **kw)
+        self._update_v(self.v)
+        ret = self._native_module(*a, **kw)
         if wrapped_mode:
             if isinstance(ret, tuple):
                 return ivy.args_to_native(*ret)

@@ -249,6 +249,17 @@ def test_to_ivy_module_distributed(bs_ic_oc, from_class_and_args, inplace_update
     # return fn
     ret_fn = lambda ret: ivy.unify_iter(ret, dev_str0, 'mean')
 
+    # test loss_fn
+    ret_val = ivy.map(loss_fn,
+                      constant={'module': ivy_module},
+                      unique={'x_': x.at_devs(),
+                              'v_': ivy_module.v.clone(dev_strs).at_devs()})[0]
+    assert ivy.is_array(ret_val)
+
+    if inplace_update:
+        # inplace_update mode does not support gradient propagation
+        return
+
     # train
     loss_tm1 = 1e12
     loss = None
@@ -259,7 +270,7 @@ def test_to_ivy_module_distributed(bs_ic_oc, from_class_and_args, inplace_update
                     constant={'module': ivy_module},
                     unique={'dev_str': dev_strs,
                             'xn': x.at_devs(),
-                            'vc': ivy.MultiDevIter(list(ivy_module.vs.values()), len(dev_strs))}),
+                            'vc': ivy_module.v.clone(dev_strs).at_devs()}),
             len(dev_strs))
         loss, grads = ret_fn(loss_n_grads)
         ivy_module.v = optim.step(ivy_module.v, grads)
@@ -284,7 +295,9 @@ def test_to_ivy_module_distributed(bs_ic_oc, from_class_and_args, inplace_update
     "bs_ic_oc", [([2, 1], 4, 5)])
 @pytest.mark.parametrize(
     "from_class_and_args", [True, False])
-def test_to_ivy_module_distributed_multiprocess(bs_ic_oc, from_class_and_args, dev_str, call):
+@pytest.mark.parametrize(
+    "inplace_update", [True, False])
+def test_to_ivy_module_distributed_multiprocess(bs_ic_oc, from_class_and_args, inplace_update, dev_str, call):
     # smoke test
     if call is not helpers.torch_call:
         # Currently only implemented for PyTorch
@@ -333,6 +346,17 @@ def test_to_ivy_module_distributed_multiprocess(bs_ic_oc, from_class_and_args, d
     # return fn
     ret_fn = lambda ret: ivy.unify_iter(ret, dev_str0, 'mean')
 
+    # test loss_fn
+    ret_val = ivy.map(loss_fn,
+                      constant={'module': ivy_module},
+                      unique={'x_': x.at_devs(),
+                              'v_': ivy_module.v.clone(dev_strs).at_devs()})[0]
+    assert ivy.is_array(ret_val)
+
+    if inplace_update:
+        # inplace_update mode does not support gradient propagation
+        return
+
     # device manager
     dev_mapper = ivy.DevMapperMultiProc(map_fn, ret_fn, dev_strs, constant={'module': ivy_module})
 
@@ -341,7 +365,7 @@ def test_to_ivy_module_distributed_multiprocess(bs_ic_oc, from_class_and_args, d
     loss = None
     grads = None
     for i in range(10):
-        loss, grads = dev_mapper.map(xn=x.at_devs(), vc=ivy.MultiDevIter(list(ivy_module.vs.values()), len(dev_strs)))
+        loss, grads = dev_mapper.map(xn=x.at_devs(), vc=ivy_module.v.clone(dev_strs).at_devs())
         ivy_module.v = optim.step(ivy_module.v, grads)
         assert loss < loss_tm1
         loss_tm1 = loss
