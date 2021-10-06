@@ -210,6 +210,7 @@
 <span class="kn">from</span> <span class="nn">operator</span> <span class="kn">import</span> <span class="nb">pow</span> <span class="k">as</span> <span class="n">_pow</span>
 <span class="kn">from</span> <span class="nn">operator</span> <span class="kn">import</span> <span class="n">not_</span> <span class="k">as</span> <span class="n">_not</span>
 <span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">reduce</span> <span class="k">as</span> <span class="n">_reduce</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">Dict</span>
 <span class="kn">from</span> <span class="nn">operator</span> <span class="kn">import</span> <span class="n">truediv</span> <span class="k">as</span> <span class="n">_truediv</span>
 <span class="kn">from</span> <span class="nn">operator</span> <span class="kn">import</span> <span class="n">floordiv</span> <span class="k">as</span> <span class="n">_floordiv</span>
 
@@ -1483,19 +1484,20 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ivy</span><span class="o">.</span><span class="n">ClonedItem</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">to_dev</span><span class="p">(</span><span class="n">dev_str</span><span class="p">)</span> <span class="k">for</span> <span class="n">dev_str</span> <span class="ow">in</span> <span class="n">dev_strs</span><span class="p">])</span></div>
 
-<div class="viewcode-block" id="Container.distribute"><a class="viewcode-back" href="../../../core/container/Container.html#ivy.core.container.Container.distribute">[docs]</a>    <span class="k">def</span> <span class="nf">distribute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dev_strs</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+<div class="viewcode-block" id="Container.distribute"><a class="viewcode-back" href="../../../core/container/Container.html#ivy.core.container.Container.distribute">[docs]</a>    <span class="k">def</span> <span class="nf">distribute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dev_strs</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Distribute the current container across multiple devices.</span>
 
 <span class="sd">        :param dev_strs: The devices along which to distribute the container.</span>
-<span class="sd">        :type dev_strs: sequence of str</span>
+<span class="sd">        :type dev_strs: sequence of strs or dict of split sizes</span>
 <span class="sd">        :param axis: The axis along which to split the arrays at the container leaves. Default is 0.</span>
 <span class="sd">        :type axis: int, optional</span>
 <span class="sd">        :return: a set of distributed sub-containers across the specified devices.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">split_arg</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">dev_strs</span><span class="o">.</span><span class="n">values</span><span class="p">())</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">dev_strs</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span> <span class="k">else</span> <span class="nb">len</span><span class="p">(</span><span class="n">dev_strs</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ivy</span><span class="o">.</span><span class="n">DistributedItem</span><span class="p">(</span>
             <span class="p">[</span><span class="n">cont</span><span class="o">.</span><span class="n">to_dev</span><span class="p">(</span><span class="n">dev_str</span><span class="p">)</span> <span class="k">for</span> <span class="n">cont</span><span class="p">,</span> <span class="n">dev_str</span> <span class="ow">in</span>
-             <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">dev_strs</span><span class="p">),</span> <span class="n">axis</span><span class="p">,</span> <span class="n">with_remainder</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span> <span class="n">dev_strs</span><span class="p">)])</span></div>
+             <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">split_arg</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">with_remainder</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span> <span class="n">dev_strs</span><span class="p">)])</span></div>
 
 <div class="viewcode-block" id="Container.to_multi_dev"><a class="viewcode-back" href="../../../core/container/Container.html#ivy.core.container.Container.to_multi_dev">[docs]</a>    <span class="k">def</span> <span class="nf">to_multi_dev</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dev_strs</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>

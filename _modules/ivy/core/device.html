@@ -199,7 +199,7 @@
 <span class="kn">import</span> <span class="nn">inspect</span>
 <span class="kn">import</span> <span class="nn">nvidia_smi</span>
 <span class="kn">from</span> <span class="nn">psutil</span> <span class="kn">import</span> <span class="n">virtual_memory</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Type</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Iterable</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Type</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">Dict</span>
 
 <span class="c1"># local</span>
 <span class="kn">import</span> <span class="nn">ivy</span>
@@ -562,30 +562,31 @@
         <span class="k">return</span> <span class="s1">&#39;DistributedNest(&#39;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_iterable</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">()</span> <span class="o">+</span> <span class="s1">&#39;)&#39;</span></div>
 
 
-<div class="viewcode-block" id="distribute_array"><a class="viewcode-back" href="../../../core/device/distribute_array.html#ivy.core.device.distribute_array">[docs]</a><span class="k">def</span> <span class="nf">distribute_array</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">dev_strs</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+<div class="viewcode-block" id="distribute_array"><a class="viewcode-back" href="../../../core/device/distribute_array.html#ivy.core.device.distribute_array">[docs]</a><span class="k">def</span> <span class="nf">distribute_array</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">dev_strs</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Distribute an array across the specified devices, returning a list of sub-arrays, each on a different device.</span>
 
 <span class="sd">    :param x: The array to distribute across devices.</span>
 <span class="sd">    :type x: array</span>
 <span class="sd">    :param dev_strs: The devices to distribute the array across.</span>
-<span class="sd">    :type dev_strs: sequence of strs</span>
+<span class="sd">    :type dev_strs: sequence of strs or dict of split sizes</span>
 <span class="sd">    :param axis: The axis along which to split the array. Default is 0.</span>
 <span class="sd">    :type axis: int, optional</span>
 <span class="sd">    :return: array distributed across the target devices</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">split_arg</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">dev_strs</span><span class="o">.</span><span class="n">values</span><span class="p">())</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">dev_strs</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span> <span class="k">else</span> <span class="nb">len</span><span class="p">(</span><span class="n">dev_strs</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">DistributedItem</span><span class="p">(</span>
-        <span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">to_dev</span><span class="p">(</span><span class="n">x_sub</span><span class="p">,</span> <span class="n">d</span><span class="p">)</span> <span class="k">for</span> <span class="n">x_sub</span><span class="p">,</span> <span class="n">d</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">dev_strs</span><span class="p">),</span> <span class="n">axis</span><span class="p">,</span> <span class="n">with_remainder</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span> <span class="n">dev_strs</span><span class="p">)])</span></div>
+        <span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">to_dev</span><span class="p">(</span><span class="n">x_sub</span><span class="p">,</span> <span class="n">d</span><span class="p">)</span> <span class="k">for</span> <span class="n">x_sub</span><span class="p">,</span> <span class="n">d</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">split_arg</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">with_remainder</span><span class="o">=</span><span class="kc">True</span><span class="p">),</span> <span class="n">dev_strs</span><span class="p">)])</span></div>
 
 
-<div class="viewcode-block" id="distribute"><a class="viewcode-back" href="../../../core/device/distribute.html#ivy.core.device.distribute">[docs]</a><span class="k">def</span> <span class="nf">distribute</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">dev_strs</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+<div class="viewcode-block" id="distribute"><a class="viewcode-back" href="../../../core/device/distribute.html#ivy.core.device.distribute">[docs]</a><span class="k">def</span> <span class="nf">distribute</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">dev_strs</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Distribute the input item across the specified devices, returning a list of sub-items, each on a different device.</span>
 
 <span class="sd">    :param x: The input array or container to distribute across devices.</span>
 <span class="sd">    :type x: array or container</span>
 <span class="sd">    :param dev_strs: The devices to distribute the input across.</span>
-<span class="sd">    :type dev_strs: sequence of strs</span>
+<span class="sd">    :type dev_strs: sequence of strs or dict of split sizes</span>
 <span class="sd">    :param axis: The axis along which to split the input. Default is 0.</span>
 <span class="sd">    :type axis: int, optional</span>
 <span class="sd">    :return: array or container distributed across the target devices</span>
@@ -597,14 +598,14 @@
     <span class="k">return</span> <span class="n">x</span></div>
 
 
-<div class="viewcode-block" id="distribute_iter"><a class="viewcode-back" href="../../../core/device/distribute_iter.html#ivy.core.device.distribute_iter">[docs]</a><span class="k">def</span> <span class="nf">distribute_iter</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="n">dev_strs</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+<div class="viewcode-block" id="distribute_iter"><a class="viewcode-back" href="../../../core/device/distribute_iter.html#ivy.core.device.distribute_iter">[docs]</a><span class="k">def</span> <span class="nf">distribute_iter</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="n">dev_strs</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Distribute elements of the iterbale xs across the specified devices.</span>
 
 <span class="sd">    :param xs: The iterable of items to distribute.</span>
 <span class="sd">    :type xs: iterable of any</span>
 <span class="sd">    :param dev_strs: The devices to distribute the iterable elements across.</span>
-<span class="sd">    :type dev_strs: sequence of strs</span>
+<span class="sd">    :type dev_strs: sequence of strs or dict of split sizes</span>
 <span class="sd">    :param axis: The axis along which to split the arrays in the iterable xs. Default is 0.</span>
 <span class="sd">    :type axis: int, optional</span>
 <span class="sd">    :return: iterable with each element distributed to the target devices</span>
@@ -614,7 +615,7 @@
     <span class="k">return</span> <span class="n">DistributedIter</span><span class="p">([</span><span class="n">distribute</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">dev_strs</span><span class="p">,</span> <span class="n">axis</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">xs</span><span class="p">],</span> <span class="nb">len</span><span class="p">(</span><span class="n">dev_strs</span><span class="p">))</span></div>
 
 
-<div class="viewcode-block" id="distribute_nest"><a class="viewcode-back" href="../../../core/device/distribute_nest.html#ivy.core.device.distribute_nest">[docs]</a><span class="k">def</span> <span class="nf">distribute_nest</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">,</span> <span class="n">dev_strs</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">max_depth</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+<div class="viewcode-block" id="distribute_nest"><a class="viewcode-back" href="../../../core/device/distribute_nest.html#ivy.core.device.distribute_nest">[docs]</a><span class="k">def</span> <span class="nf">distribute_nest</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">,</span> <span class="n">dev_strs</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">max_depth</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Distribute the nested input arguments across the specified devices.</span>
 
@@ -623,7 +624,7 @@
 <span class="sd">    :param kwargs: The keyword nested arguments to distribute.</span>
 <span class="sd">    :type kwargs: dict of any</span>
 <span class="sd">    :param dev_strs: The devices to distribute the nested arguments across.</span>
-<span class="sd">    :type dev_strs: sequence of strs</span>
+<span class="sd">    :type dev_strs: sequence of strs or dict of split sizes</span>
 <span class="sd">    :param axis: The axis along which to split the arrays in the arguments. Default is 0.</span>
 <span class="sd">    :type axis: int, optional</span>
 <span class="sd">    :param max_depth: The maximum nested depth to reach. Default is 1. Increase this if the nest is deeper.</span>

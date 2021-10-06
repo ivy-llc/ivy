@@ -585,12 +585,12 @@ differences. Default is True.</p></li>
 
 <dl class="py method">
 <dt id="ivy.core.container.Container.distribute">
-<code class="sig-name descname">distribute</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dev_strs</span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">0</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/container.html#Container.distribute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.distribute" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">distribute</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dev_strs</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>Iterable<span class="p">[</span>str<span class="p">]</span><span class="p">, </span>Dict<span class="p">[</span>str<span class="p">, </span>int<span class="p">]</span><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">0</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/container.html#Container.distribute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.distribute" title="Permalink to this definition">¶</a></dt>
 <dd><p>Distribute the current container across multiple devices.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>dev_strs</strong> (<em>sequence of str</em>) – The devices along which to distribute the container.</p></li>
+<li><p><strong>dev_strs</strong> (<em>sequence of strs</em><em> or </em><em>dict of split sizes</em>) – The devices along which to distribute the container.</p></li>
 <li><p><strong>axis</strong> (<em>int</em><em>, </em><em>optional</em>) – The axis along which to split the arrays at the container leaves. Default is 0.</p></li>
 </ul>
 </dd>
