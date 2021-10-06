@@ -8,6 +8,7 @@ from collections import OrderedDict
 
 # local
 import ivy
+import torch.nn
 
 
 class IvyModule(ivy.Module):
@@ -21,7 +22,7 @@ class IvyModule(ivy.Module):
         ivy.Module.__init__(self, dev_str=dev_str, dev_strs=dev_strs)
 
     def _create_variables(self, dev_str):
-        self.vs = dict([(k, ivy.Container(v)) for k, v in self._all_native_params.items()])
+        self.vs = self._all_native_params
         return self._all_native_params[dev_str]
 
     def _build(self):
@@ -31,7 +32,8 @@ class IvyModule(ivy.Module):
         self._native_modules = dict([(ds, copy.deepcopy(native_module).to(ivy.str_to_dev(ds)))
                                      for ds in self._dev_strs])
         self._all_native_params = dict([(ds, ivy.Container(OrderedDict(
-            sorted([(k.replace('.', '/'), v) for k, v in dict(native_module.named_parameters()).items()]))))
+            sorted([(k.replace('.', '/'), v) for k, v in dict(native_module.named_parameters()).items()]))).map(
+            lambda x, kc: torch.nn.Parameter(x)))
             for ds, native_module in zip(self._dev_strs, self._native_modules.values())])
 
     @staticmethod
