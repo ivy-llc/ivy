@@ -40,11 +40,6 @@ def map_fn(module, dev_str, xn, vc):
     return ivy.execute_with_gradients(lambda v: loss_fn(module, xn, v), vc)
 
 
-def map_fn_w_inplace(module, dev_str, xn, vc):
-    module.inplace_update_v(vc, dev_str)
-    return ivy.execute_with_gradients(lambda v: loss_fn(module, xn, v), module.vs[dev_str])
-
-
 # distributed training
 @pytest.mark.parametrize(
     "bs_ic_oc", [([2, 1], 4, 5)])
@@ -203,7 +198,9 @@ def test_distributed_multiprocess_training(bs_ic_oc, dev_str, call):
     "bs_ic_oc", [([2, 1], 4, 5)])
 @pytest.mark.parametrize(
     "from_class_and_args", [True, False])
-def test_to_ivy_module_distributed(bs_ic_oc, from_class_and_args, dev_str, call):
+@pytest.mark.parametrize(
+    "inplace_update", [True, False])
+def test_to_ivy_module_distributed(bs_ic_oc, from_class_and_args, inplace_update, dev_str, call):
     # smoke test
     if call is not helpers.torch_call:
         # Currently only implemented for PyTorch
@@ -241,10 +238,10 @@ def test_to_ivy_module_distributed(bs_ic_oc, from_class_and_args, dev_str, call)
     if from_class_and_args:
         ivy_module = ivy.to_ivy_module(native_module_class=natvie_module_class,
                                        args=[input_channels, output_channels],
-                                       dev_strs=dev_strs)
+                                       dev_strs=dev_strs, inplace_update=inplace_update)
     else:
         native_module = natvie_module_class(input_channels, output_channels)
-        ivy_module = ivy.to_ivy_module(native_module, dev_strs=dev_strs)
+        ivy_module = ivy.to_ivy_module(native_module, dev_strs=dev_strs, inplace_update=inplace_update)
 
     # optimizer
     optim = ivy.SGD(1e-4)
@@ -325,10 +322,10 @@ def test_to_ivy_module_distributed_multiprocess(bs_ic_oc, from_class_and_args, d
     if from_class_and_args:
         ivy_module = ivy.to_ivy_module(native_module_class=natvie_module_class,
                                        args=[input_channels, output_channels],
-                                       dev_strs=dev_strs)
+                                       dev_strs=dev_strs, inplace_update=False)
     else:
         native_module = natvie_module_class(input_channels, output_channels)
-        ivy_module = ivy.to_ivy_module(native_module, dev_strs=dev_strs)
+        ivy_module = ivy.to_ivy_module(native_module, dev_strs=dev_strs, inplace_update=False)
 
     # optimizer
     optim = ivy.SGD(1e-4)
@@ -337,7 +334,7 @@ def test_to_ivy_module_distributed_multiprocess(bs_ic_oc, from_class_and_args, d
     ret_fn = lambda ret: ivy.unify_iter(ret, dev_str0, 'mean')
 
     # device manager
-    dev_mapper = ivy.DevMapperMultiProc(map_fn_w_inplace, ret_fn, dev_strs, constant={'module': ivy_module})
+    dev_mapper = ivy.DevMapperMultiProc(map_fn, ret_fn, dev_strs, constant={'module': ivy_module})
 
     # train
     loss_tm1 = 1e12
