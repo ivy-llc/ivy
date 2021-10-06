@@ -27,6 +27,7 @@ FW_FN_KEYWORDS = {'numpy': [],
                   'torch': [],
                   'mxnd': ['ndarray']}
 
+queue_timeout = 10.
 debug_mode_val = False
 wrapped_mode_val = False
 ivy_original_dict = ivy.__dict__.copy()
@@ -345,6 +346,9 @@ def set_debug_mode(debug_mode_in='exception'):
     assert debug_mode_in in ['breakpoint', 'exception']
     global debug_mode_val
     debug_mode_val = debug_mode_in
+    global queue_timeout
+    queue_timeout = ivy.queue_timeout()
+    ivy.set_queue_timeout(None)
     _wrap_methods_for_debugging()
 
 
@@ -360,6 +364,8 @@ def unset_debug_mode():
     global debug_mode_val
     debug_mode_val = False
     _unwrap_methods_from_debugging()
+    global queue_timeout
+    ivy.set_queue_timeout(queue_timeout)
 
 
 def debug_mode():
