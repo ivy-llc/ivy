@@ -30,8 +30,8 @@ class IvyModule(ivy.Module):
             lambda: self._native_module_class(*self._args, **self._kwargs), with_callable=True)
         self._native_modules = dict([(ds, copy.deepcopy(native_module).to(ivy.str_to_dev(ds)))
                                      for ds in self._dev_strs])
-        self._all_native_params = dict([(ds, OrderedDict(
-            sorted([(k.replace('.', '_'), v) for k, v in dict(native_module.named_parameters()).items()])))
+        self._all_native_params = dict([(ds, ivy.Container(OrderedDict(
+            sorted([(k.replace('.', '/'), v) for k, v in dict(native_module.named_parameters()).items()]))))
             for ds, native_module in zip(self._dev_strs, self._native_modules.values())])
 
     @staticmethod
@@ -39,15 +39,22 @@ class IvyModule(ivy.Module):
         p.data = v
 
     def _inplace_update_v(self, new_v, dev_str):
-        [self._inplace_update(p, v) for p, v in zip(self._all_native_params[dev_str].values(), new_v.values())]
+        ivy.Container.multi_map(lambda xs, kc: self._inplace_update(xs[0], xs[1]),
+                                [self._all_native_params[dev_str], new_v])
 
-    def _replace_update_v(self, new_v, dev_str):
-        for (k, p), v in zip(self._all_native_params[dev_str].items(), new_v.values()):
-            key_split = k.split('_')
-            native_key = '_'.join(key_split[:-1])
-            var_type = key_split[-1]
-            # noinspection PyProtectedMember
-            self._native_modules[dev_str]._modules[native_key].__setattr__(var_type, v)
+    def _replace_update_v(self, new_v, dev_str, native=None):
+        native = ivy.default(native, self._native_modules[dev_str])
+        for k, v in new_v.items():
+            if isinstance(v, ivy.Container):
+                # noinspection PyProtectedMember
+                native._modules[k] = self._replace_update_v(v, dev_str, native._modules[k])
+            elif ivy.is_variable(v):
+                # noinspection PyProtectedMember
+                native.__setattr__(k, v)
+            else:
+                raise Exception('found item in variable container {} which was neither a sub ivy.Container'
+                                'nor a variable.'.format(v))
+        return native
 
     def _forward(self, *a, **kw):
         wrapped_mode = ivy.wrapped_mode()
