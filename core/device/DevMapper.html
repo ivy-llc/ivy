@@ -240,7 +240,21 @@
 <dl class="py method">
 <dt id="ivy.core.device.DevMapper.__init__">
 <code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">fn</span></em>, <em class="sig-param"><span class="n">ret_fn</span></em>, <em class="sig-param"><span class="n">queue_class</span></em>, <em class="sig-param"><span class="n">worker_class</span></em>, <em class="sig-param"><span class="n">dev_strs</span></em>, <em class="sig-param"><span class="n">timeout</span><span class="o">=</span><span class="default_value">10.0</span></em>, <em class="sig-param"><span class="n">constant</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">unique</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/device.html#DevMapper.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.device.DevMapper.__init__" title="Permalink to this definition">¶</a></dt>
-<dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
+<dd><p>Device Mapper base class.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>fn</strong> (<em>callable</em>) – The function which the device mapper parallelises across devices.</p></li>
+<li><p><strong>ret_fn</strong> (<em>callable</em>) – The function which receives the ivy.MultiDevIter as input, and produces a single device output.</p></li>
+<li><p><strong>queue_class</strong> (<em>class</em>) – The class to use for creating queues.</p></li>
+<li><p><strong>worker_class</strong> (<em>class</em>) – The class to use for creating parallel workers.</p></li>
+<li><p><strong>dev_strs</strong> (<em>sequence of str</em>) – A list of devices on which to parallelise the function.</p></li>
+<li><p><strong>timeout</strong> (<em>float</em><em>, </em><em>optional</em>) – The timeout for getting items from the queues. Default is 10 seconds.</p></li>
+<li><p><strong>constant</strong> (<em>dict of any</em><em>, </em><em>optional</em>) – A dict of keyword arguments which are the same for each process. Default is None.</p></li>
+<li><p><strong>unique</strong> (<em>dict of iterables of any</em><em>, </em><em>optional</em>) – A dict of keyword argument sequences which are unique for each process. Default is None.</p></li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">

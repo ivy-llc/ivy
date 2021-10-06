@@ -853,6 +853,26 @@
 <div class="viewcode-block" id="DevMapper"><a class="viewcode-back" href="../../../core/device/DevMapper.html#ivy.core.device.DevMapper">[docs]</a><span class="k">class</span> <span class="nc">DevMapper</span><span class="p">(</span><span class="n">abc</span><span class="o">.</span><span class="n">ABC</span><span class="p">):</span>
 
 <div class="viewcode-block" id="DevMapper.__init__"><a class="viewcode-back" href="../../../core/device/DevMapper.html#ivy.core.device.DevMapper.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fn</span><span class="p">,</span> <span class="n">ret_fn</span><span class="p">,</span> <span class="n">queue_class</span><span class="p">,</span> <span class="n">worker_class</span><span class="p">,</span> <span class="n">dev_strs</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mf">10.0</span><span class="p">,</span> <span class="n">constant</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">unique</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Device Mapper base class.</span>
+
+<span class="sd">        :param fn: The function which the device mapper parallelises across devices.</span>
+<span class="sd">        :type fn: callable</span>
+<span class="sd">        :param ret_fn: The function which receives the ivy.MultiDevIter as input, and produces a single device output.</span>
+<span class="sd">        :type ret_fn: callable</span>
+<span class="sd">        :param queue_class: The class to use for creating queues.</span>
+<span class="sd">        :type queue_class: class</span>
+<span class="sd">        :param worker_class: The class to use for creating parallel workers.</span>
+<span class="sd">        :type worker_class: class</span>
+<span class="sd">        :param dev_strs: A list of devices on which to parallelise the function.</span>
+<span class="sd">        :type dev_strs: sequence of str</span>
+<span class="sd">        :param timeout: The timeout for getting items from the queues. Default is 10 seconds.</span>
+<span class="sd">        :type timeout: float, optional</span>
+<span class="sd">        :param constant: A dict of keyword arguments which are the same for each process. Default is None.</span>
+<span class="sd">        :type constant: dict of any, optional</span>
+<span class="sd">        :param unique: A dict of keyword argument sequences which are unique for each process. Default is None.</span>
+<span class="sd">        :type unique: dict of iterables of any, optional</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">constant_kwargs</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">default</span><span class="p">(</span><span class="n">constant</span><span class="p">,</span> <span class="p">{})</span>
         <span class="n">unique_kwargs</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">default</span><span class="p">(</span><span class="n">unique</span><span class="p">,</span> <span class="p">{})</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_fn</span> <span class="o">=</span> <span class="n">fn</span>
@@ -868,8 +888,8 @@
             <span class="n">input_queue</span> <span class="o">=</span> <span class="n">queue_class</span><span class="p">()</span>
             <span class="n">output_queue</span> <span class="o">=</span> <span class="n">queue_class</span><span class="p">()</span>
             <span class="n">worker_kwargs</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="o">**</span><span class="n">constant_kwargs</span><span class="p">,</span> <span class="o">**</span><span class="nb">dict</span><span class="p">([(</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">unique_kwargs</span><span class="o">.</span><span class="n">items</span><span class="p">()]))</span>
-            <span class="n">worker</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_worker_class</span><span class="p">(</span>
-                <span class="n">target</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_worker_fn</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">input_queue</span><span class="p">,</span> <span class="n">output_queue</span><span class="p">,</span> <span class="n">dev_strs</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">worker_kwargs</span><span class="p">))</span>
+            <span class="n">worker</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_worker_class</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_worker_fn</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">input_queue</span><span class="p">,</span> <span class="n">output_queue</span><span class="p">,</span> <span class="n">dev_strs</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
+                                                                      <span class="n">worker_kwargs</span><span class="p">))</span>
             <span class="n">worker</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_input_queues</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">input_queue</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_output_queues</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">output_queue</span><span class="p">)</span>
@@ -886,7 +906,7 @@
     <span class="k">def</span> <span class="nf">_worker_fn</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_queue</span><span class="p">,</span> <span class="n">output_queue</span><span class="p">,</span> <span class="n">dev_str</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">):</span>
         <span class="n">ivy</span><span class="o">.</span><span class="n">set_framework</span><span class="p">(</span><span class="s1">&#39;torch&#39;</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Module</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">v</span><span class="o">.</span><span class="n">built</span><span class="p">:</span>
                 <span class="n">v</span><span class="o">.</span><span class="n">build</span><span class="p">(</span><span class="n">dev_str</span><span class="o">=</span><span class="n">dev_str</span><span class="p">)</span>
         <span class="k">if</span> <span class="s1">&#39;dev_str&#39;</span> <span class="ow">in</span> <span class="n">inspect</span><span class="o">.</span><span class="n">getfullargspec</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_fn</span><span class="p">)</span><span class="o">.</span><span class="n">args</span><span class="p">:</span>
             <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;dev_str&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">dev_str</span>
