@@ -780,6 +780,83 @@ class DevMapperMultiProc(DevMapper):
                     w.terminate()
 
 
+# Device Manager #
+# ---------------#
+
+class DevManager:
+
+    def __init__(self, dev_mapper, dev_strs: Union[Iterable[str], Dict[str, int]], dim_size, axis=0):
+        """
+        Create device manager, which unlike the device mapper, handles all argument cloning and distributing internally.
+        The device manager only receivess a specification regarding the ratio of the batch each device should consume.
+
+        :param dev_mapper: The pre-built device mapper used by the manager internally.
+        :type dev_mapper: DevMapper
+        :param dev_strs: The devices to distribute and clone the arguments across.
+        :type dev_strs: sequence of strs or dict of split sizes
+        :param dim_size: The size of the dimension along which the device splitting is performed.
+        :type dim_size: int
+        :param axis: The axis along which each argument is split when passing to multiple devices. Default is 0.
+        :type axis: int, optional
+        """
+        self._dev_mapper = dev_mapper
+        self._num_devs = len(dev_strs)
+        self._dim_size = dim_size
+        self._axis = axis
+        if isinstance(dev_strs, dict):
+            self._dev_str_ratios = dev_strs
+        else:
+            self._dev_str_ratios = dict(zip(dev_strs, [1/self._num_devs]*self._num_devs))
+        self._dev_strs_keys = self._dev_str_ratios.keys()
+        self._compute_dev_strs_dict()
+
+    def _compute_dev_strs_dict(self):
+        split_sizes = [int(round(r * self._dim_size)) for r in self._dev_str_ratios.values()]
+        combined_batch_size = sum(split_sizes)
+        excess_size = combined_batch_size - self._dim_size
+        if excess_size > 0:
+            for i in range(abs(excess_size)):
+                split_sizes[i] -= 1
+        elif excess_size < 0:
+            for i in range(abs(excess_size)):
+                split_sizes[i] += 1
+        self._dev_strs_dict = dict([(k, v) for k, v in zip(self._dev_strs_keys, split_sizes)])
+
+    def map(self, to_clone=None, to_distribute=None):
+        """
+        Map the function fn to each of the MultiDevice args and kwargs, running each function in parallel with CUDA-safe
+        multiprocessing.
+
+        :param to_clone: The MutliDevice keyword arguments to clone and map to the function. Default is None.
+        :type to_clone: dict of any, optional
+        :param to_distribute: The MutliDevice keyword arguments to distribute and map to the function. Default is None.
+        :type to_distribute: dict of any, optional
+        :return: The results of the function, returned as a MultiDevice instance.
+        """
+        if ivy.exists(to_clone):
+            to_clone = dict([(k, ivy.clone(v, self._dev_strs_keys)) for k, v in to_clone.items()])
+        else:
+            to_clone = {}
+        if ivy.exists(to_distribute):
+            to_distribute = None
+        else:
+            to_distribute = dict([(k, ivy.distribute(v, self._dev_strs_dict, self._axis)) for k, v in to_clone.items()])
+        return self._dev_mapper.map(**to_clone, **to_distribute)
+
+    def __del__(self):
+        self._dev_mapper.__del__()
+        del self._dev_mapper
+
+    @property
+    def dim_size(self):
+        return self._dim_size
+
+    @dim_size.setter
+    def dim_size(self, batch_size):
+        self._dim_size = batch_size
+        self._compute_dev_strs_dict()
+
+
 # Profiler #
 # ---------#
 
