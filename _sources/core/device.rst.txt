@@ -50,5 +50,8 @@ Device
    device/ClonedNest.rst
    device/DevMapper.rst
    device/DevMapperMultiProc.rst
+   device/DevManager:
+
+    def __init__.rst
    device/Profiler.rst
 
