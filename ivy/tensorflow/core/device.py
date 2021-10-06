@@ -26,7 +26,11 @@ def to_dev(x, dev_str=None):
 
 
 def dev_to_str(dev_in):
-    return ':'.join(dev_in[1:].split(':')[-2:]).lower()
+    dev_type, dev_idx = dev_in[1:].split(':')[-2:]
+    dev_type = dev_type.lower()
+    if dev_type == 'cpu':
+        return dev_type
+    return ':'.join([dev_type, dev_idx])
 
 
 def str_to_dev(dev_str):
