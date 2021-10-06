@@ -649,11 +649,15 @@ def test_container_clone(dev_str, call):
         lambda xs, _: ivy.arrays_equal(xs), [c for c in container_cloned.at_devs()]).all_true()
 
 
-def test_container_distribute(dev_str, call):
-    dict_in = {'a': ivy.array([[1], [2], [3]], dev_str=dev_str),
-               'b': {'c': ivy.array([[2], [3], [4]], dev_str=dev_str),
-                     'd': ivy.array([[3], [4], [5]], dev_str=dev_str)}}
+@pytest.mark.parametrize(
+    "dev_strs_as_dict", [True, False])
+def test_container_distribute(dev_strs_as_dict, dev_str, call):
+    array_a = ivy.array([[1], [2], [3], [4]], dev_str=dev_str)
+    array_bc = ivy.array([[2], [3], [4], [5]], dev_str=dev_str)
+    array_bd = ivy.array([[3], [4], [5], [6]], dev_str=dev_str)
+    dict_in = {'a': array_a, 'b': {'c': array_bc, 'd': array_bd}}
     container = Container(dict_in)
+    batch_size = array_a.shape[0]
 
     if call is helpers.mx_call:
         # MXNet does not support splitting along an axis with a remainder after division.
@@ -661,26 +665,24 @@ def test_container_distribute(dev_str, call):
 
     # devices
     dev_str0 = dev_str
+    dev_strs = [dev_str0]
     if 'gpu' in dev_str:
         idx = ivy.num_gpus() - 1
         dev_str1 = dev_str[:-1] + str(idx)
-    else:
-        dev_str1 = dev_str
-    dev_strs = [dev_str0, dev_str1]
+        dev_strs.append(dev_str1)
+    if dev_strs_as_dict:
+        dev_strs = dict(zip(dev_strs, [int((1/len(dev_strs))*4)]*len(dev_strs)))
+    num_devs = len(dev_strs)
+    sub_size = int(batch_size/num_devs)
 
     # without key_chains specification
     container_dist = container.distribute(dev_strs)
     assert isinstance(container_dist, ivy.DistributedItem)
     assert min([cont.dev_str == d for cont, d in zip(container_dist.at_devs(), dev_strs)])
-    sub_conts = [c for c in container_dist.at_devs()]
-    sub_cont0 = sub_conts[0]
-    assert np.array_equal(sub_cont0.a, np.array([[1], [2]]))
-    assert np.array_equal(sub_cont0.b.c, np.array([[2], [3]]))
-    assert np.array_equal(sub_cont0.b.d, np.array([[3], [4]]))
-    sub_cont1 = sub_conts[1]
-    assert np.array_equal(sub_cont1.a, np.array([[3]]))
-    assert np.array_equal(sub_cont1.b.c, np.array([[4]]))
-    assert np.array_equal(sub_cont1.b.d, np.array([[5]]))
+    for i, sub_cont in enumerate(container_dist.at_devs()):
+        assert np.array_equal(ivy.to_numpy(sub_cont.a), ivy.to_numpy(array_a)[i*sub_size:i*sub_size+sub_size])
+        assert np.array_equal(ivy.to_numpy(sub_cont.b.c), ivy.to_numpy(array_bc)[i*sub_size:i*sub_size+sub_size])
+        assert np.array_equal(ivy.to_numpy(sub_cont.b.d), ivy.to_numpy(array_bd)[i*sub_size:i*sub_size+sub_size])
 
 
 def test_container_unstack(dev_str, call):
