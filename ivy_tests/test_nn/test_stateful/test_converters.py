@@ -105,6 +105,11 @@ def test_to_ivy_module(bs_ic_oc, from_class_and_args, inplace_update, dev_str, c
     loss = None
     grads = None
     loss_fn()  # for on-call mode
+
+    if inplace_update:
+        # inplace_update mode does not support gradient propagation
+        return
+
     for i in range(10):
         loss, grads = ivy.execute_with_gradients(loss_fn, ivy_module.v)
         ivy_module.v = ivy.gradient_descent_update(ivy_module.v, grads, 1e-3)
