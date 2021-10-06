@@ -37,8 +37,8 @@ class Module(abc.ABC):
         if build_mode not in valid_build_modes:
             raise Exception('build_mode must be one of {} of type str, but found {} of type{}'.format(
                 valid_build_modes, build_mode, type(build_mode)))
-        self._dev_strs = ivy.default(dev_strs, [ivy.default_device()])
-        self._dev_str = ivy.default(dev_str, self._dev_strs[0])
+        self._dev_str = ivy.default(dev_str, ivy.default(lambda: dev_strs[0], ivy.default_device(), True))
+        self._dev_strs = ivy.default(dev_strs, [self._dev_str])
         self._build_mode = build_mode
         self._store_vars = store_vars
         self._built = False
