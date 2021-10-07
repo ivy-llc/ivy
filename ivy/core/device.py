@@ -6,11 +6,12 @@ Collection of device Ivy functions.
 import os
 import abc
 import math
-import time
 import queue
 import psutil
 import inspect
 import nvidia_smi
+
+# noinspection PyUnresolvedReferences
 try:
     nvidia_smi.nvmlInit()
 except nvidia_smi.NVMLError_LibraryNotFound:
@@ -999,13 +1000,14 @@ class DevManager:
         :return: The results of the function, returned as a MultiDevice instance.
         """
         if ivy.exists(to_clone):
-            to_clone = dict([(k, ivy.clone(v, self._dev_strs_keys)) for k, v in to_clone.items()])
+            to_clone = dict([(k, ivy.clone(v, self._dev_strs_keys).at_devs()) for k, v in to_clone.items()])
         else:
             to_clone = {}
         if ivy.exists(to_distribute):
-            to_distribute = None
+            to_distribute = dict([(k, ivy.distribute(v, self._dev_strs_keys).at_devs())
+                                  for k, v in to_distribute.items()])
         else:
-            to_distribute = dict([(k, ivy.distribute(v, self._dev_strs_dict, self._axis)) for k, v in to_clone.items()])
+            to_distribute = {}
         ret = self._dev_mapper.map(**to_clone, **to_distribute)
         if self._tuned:
             return ret
