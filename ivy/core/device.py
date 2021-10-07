@@ -839,20 +839,20 @@ class DevMapper(abc.ABC):
         self._dev_strs = dev_strs
         self._num_workers = len(dev_strs)
         self._timeout = ivy.default(timeout, ivy.queue_timeout())
-        self._workers = list()
-        self._input_queues = list()
-        self._output_queues = list()
+        self._workers = dict()
+        self._input_queues = dict()
+        self._output_queues = dict()
         self._worker_class = worker_class
-        for i in range(self._num_workers):
+        for i, ds in enumerate(self._dev_strs):
             input_queue = queue_class()
             output_queue = queue_class()
             worker_kwargs = dict(**constant_kwargs, **{k: v[i] for k, v in unique_kwargs.items()})
             worker = self._worker_class(target=self._worker_fn, args=(input_queue, output_queue, dev_strs[i],
                                                                       worker_kwargs))
             worker.start()
-            self._input_queues.append(input_queue)
-            self._output_queues.append(output_queue)
-            self._workers.append(worker)
+            self._input_queues[ds] = input_queue
+            self._output_queues[ds] = output_queue
+            self._workers[ds] = worker
 
     def __getstate__(self):
         # prevent already running processes from being pickled as sent to new processes
@@ -879,18 +879,22 @@ class DevMapper(abc.ABC):
             ret = self._fn(**loaded_kwargs, **kwargs)
             output_queue.put(ret)
 
-    def map(self, **kwargs):
+    def map(self, used_dev_strs=None, **kwargs):
         """
         Map the function fn to each of the MultiDevice args and kwargs, running each function in parallel with CUDA-safe
         multiprocessing.
 
+        :param used_dev_strs: The devices used in the current mapping pass. Default is all dev_strs.
+        :type used_dev_strs: sequence of str, optional
         :param kwargs: The MutliDevice keyword arguments to map the function to.
         :type kwargs: dict of any
         :return: The results of the function, returned as a MultiDevice instance.
         """
-        [q.put({k: v[i] for k, v in kwargs.items()}) for i, q in enumerate(self._input_queues)]
+        used_dev_strs = ivy.default(used_dev_strs, self._dev_strs)
+        [self._input_queues[ds].put({k: v[i] for k, v in kwargs.items()}) for i, ds in enumerate(used_dev_strs)]
         return self._ret_fn(
-            ivy.MultiDevIter([q.get(timeout=self._timeout) for q in self._output_queues], self._num_workers))
+            ivy.MultiDevIter([self._output_queues[ds].get(timeout=self._timeout) for ds in used_dev_strs],
+                             self._num_workers))
 
     @abc.abstractmethod
     def __del__(self):
