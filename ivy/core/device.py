@@ -977,7 +977,8 @@ class DevManager:
         self._tune_da = tune_dev_alloc
         self._tune_ds = tune_dev_splits
         self._tuned = (not tune_dev_alloc and not tune_dev_splits) or self._num_devs == 1
-        self._first_tune_step = True
+        self._first_da_tune_step = True
+        self._first_ds_tune_step = True
         self._da_tune_count = 0
         self._ds_tune_count = 0
         self._tune_step = self.da_tune_step
@@ -991,9 +992,10 @@ class DevManager:
         self._dev_strs_keys = self._dev_str_da_ratios.keys()
         if self._tune_ds:
             [ivy.set_split_factor(starting_split_factor, ds) for ds in self._dev_strs_keys]
-        self._percent_mem_inc_per_unit_dim = dict(zip(self._dev_strs_keys, [0] * self._num_devs))
-        self._percent_util_inc_per_unit_dim = dict(zip(self._dev_strs_keys, [1] * self._num_devs))
-        self._delta_dim_sizes = dict(zip(self._dev_strs_keys, [0]*self._num_devs))
+        self._percent_mem_inc_per_unit_da_dim = dict(zip(self._dev_strs_keys, [0] * self._num_devs))
+        self._percent_mem_inc_per_unit_ds_dim = dict(zip(self._dev_strs_keys, [0] * self._num_devs))
+        self._percent_util_inc_per_unit_da_dim = dict(zip(self._dev_strs_keys, [1] * self._num_devs))
+        self._delta_da_dim_sizes = dict(zip(self._dev_strs_keys, [0] * self._num_devs))
         self._dev_percent_mems = None
         self._dev_utils = None
         self._compute_dev_strs_da()
@@ -1012,11 +1014,11 @@ class DevManager:
             if ivy.exists(self._max_dev_dim_step_size):
                 delta = min(delta, self._max_dev_dim_step_size)
             self._dev_strs_da[less_util_dev_str] += delta
-            self._delta_dim_sizes[less_util_dev_str] = delta
+            self._delta_da_dim_sizes[less_util_dev_str] = delta
 
             # more utilized
             self._dev_strs_da[more_util_dev_str] -= delta
-            self._delta_dim_sizes[more_util_dev_str] = -delta
+            self._delta_da_dim_sizes[more_util_dev_str] = -delta
 
     def _compute_dev_strs_da(self):
         split_sizes = [int(round(r * self._dim_size)) for r in self._dev_str_da_ratios.values()]
@@ -1042,7 +1044,7 @@ class DevManager:
                                            key=lambda item: item[1]))
 
         # first step
-        if self._first_tune_step:
+        if self._first_da_tune_step:
 
             # shift the device splits by 1
             self._shift_da_splits(new_dev_utils_keys, {k: 1 for k in self._dev_strs_keys})
@@ -1053,7 +1055,7 @@ class DevManager:
 
             # increment count, update ratios and tune step, and return
             self._da_tune_count += 1
-            self._first_tune_step = False
+            self._first_da_tune_step = False
             self._compute_dev_da_ratios()
             if self._tune_ds:
                 self._tune_step = self.ds_tune_step
@@ -1075,26 +1077,26 @@ class DevManager:
 
         # percentage memory increase per unit dim
         delta_percent_mems = {k: new_dev_percent_mems[k] - self._dev_percent_mems[k] for k in self._dev_strs_keys}
-        self._percent_mem_inc_per_unit_dim = \
-            {k: (((self._da_tune_count - 1) * self._percent_mem_inc_per_unit_dim[k] +
+        self._percent_mem_inc_per_unit_da_dim = \
+            {k: (((self._da_tune_count - 1) * self._percent_mem_inc_per_unit_da_dim[k] +
                   (delta_percent_mems[k]/delta_dim_size)) / self._da_tune_count)
-            if delta_dim_size != 0 else self._percent_mem_inc_per_unit_dim[k]
-             for k, delta_dim_size in self._delta_dim_sizes.items()}
+            if delta_dim_size != 0 else self._percent_mem_inc_per_unit_da_dim[k]
+             for k, delta_dim_size in self._delta_da_dim_sizes.items()}
 
         # percentage utility increase per unit dim
         delta_utils = {k: new_dev_utils[k] - self._dev_utils[k] for k in self._dev_strs_keys}
-        self._percent_util_inc_per_unit_dim = \
-            {k: max((((self._da_tune_count - 1) * self._percent_util_inc_per_unit_dim[k] +
+        self._percent_util_inc_per_unit_da_dim = \
+            {k: max((((self._da_tune_count - 1) * self._percent_util_inc_per_unit_da_dim[k] +
                       (delta_utils[k]/delta_dim_size)) / self._da_tune_count), 0.1)
-            if delta_dim_size != 0 else self._percent_util_inc_per_unit_dim[k]
-             for k, delta_dim_size in self._delta_dim_sizes.items()}
+            if delta_dim_size != 0 else self._percent_util_inc_per_unit_da_dim[k]
+             for k, delta_dim_size in self._delta_da_dim_sizes.items()}
 
         # shift the device splits
         desired_percent_increases = {k: highest_util - new_dev_utils[k] for k in self._dev_strs_keys}
-        raw_deltas = {k: int(round(desired_percent_increases[k] / self._percent_util_inc_per_unit_dim[k]))
+        raw_deltas = {k: int(round(desired_percent_increases[k] / self._percent_util_inc_per_unit_da_dim[k]))
                       for k in self._dev_strs_keys}
         permissable_steps = \
-            {k: min(math.floor(((100-new_dev_percent_mems[k]) / max(self._percent_mem_inc_per_unit_dim[k], 0.1))
+            {k: min(math.floor(((100-new_dev_percent_mems[k]) / max(self._percent_mem_inc_per_unit_da_dim[k], 0.1))
                                / self._safety_factor), self._dim_size) for k in self._dev_strs_keys}
         deltas = {k: min(v, pm) for (k, v), pm in zip(raw_deltas.items(), permissable_steps.values())}
         self._shift_da_splits(new_dev_utils_keys, deltas)
@@ -1111,25 +1113,84 @@ class DevManager:
 
         # if step size is 1, check if tuning is complete, and return if so
         if self._max_dev_dim_step_size == 1:
-            config = tuple(self._dev_strs_da.values())
-            if config in self._observed_configs:
-                self._observed_configs.clear()
-                self._percent_mem_inc_per_unit_dim.clear()
-                self._delta_dim_sizes.clear()
-                self._dev_percent_mems.clear()
-                self._tuned = True
-                return
 
-            # otherwise add the current config to those observed
-            self._observed_configs.add(config)
+            # check if da tuning is complete
+            self._termination_check()
 
     # Device Splitting #
 
+    @staticmethod
+    def _shift_ds(deltas):
+        for ds, delta in deltas.items():
+            ivy.set_split_factor(ivy.split_factor(ds) + delta, ds)
+
     def ds_tune_step(self):
+        new_dev_percent_mems = dict(sorted({k: percent_used_mem_on_dev(k) for k in self._dev_strs_keys}.items(),
+                                           key=lambda item: item[1]))
+
+        # first step
+        if self._first_ds_tune_step:
+
+            # shift the device splits by 1
+            self._shift_ds({k: 1 for k in self._dev_strs_keys})
+
+            # update device percentage memory usages and utilizations
+            self._dev_percent_mems = new_dev_percent_mems
+
+            # increment count, update ratios and tune step, and return
+            self._ds_tune_count += 1
+            self._first_ds_tune_step = False
+            if self._tune_da:
+                self._tune_step = self.da_tune_step
+            return
+
+        # otherwise
+
+        # percentage memory increase per unit dim
+        delta_percent_mems = {k: new_dev_percent_mems[k] - self._dev_percent_mems[k] for k in self._dev_strs_keys}
+        self._percent_mem_inc_per_unit_ds_dim = \
+            {k: (((self._ds_tune_count - 1) * self._percent_mem_inc_per_unit_ds_dim[k] +
+                  (delta_percent_mems[k]/delta_dim_size)) / self._ds_tune_count)
+            if delta_dim_size != 0 else self._percent_mem_inc_per_unit_ds_dim[k]
+             for k, delta_dim_size in self._delta_da_dim_sizes.items()}
+
+        # shift the device splits
+        deltas = {k: min(math.floor(((100-new_dev_percent_mems[k]) / max(self._percent_mem_inc_per_unit_ds_dim[k], 0.1))
+                               / self._safety_factor), self._dim_size) for k in self._dev_strs_keys}
+        self._shift_ds(deltas)
+
+        # update device percentage memory usages
+        self._dev_percent_mems = new_dev_percent_mems
+
+        # increment count, update ratios and tune step
         self._ds_tune_count += 1
-        self._compute_dev_da_ratios()
         if self._tune_da:
             self._tune_step = self.da_tune_step
+
+        # check if ds tuning is complete
+        self._termination_check()
+
+    # Termination Checking #
+
+    def _termination_check(self):
+
+        # check whether device allocation tuning is ready to terminate
+        da_can_terminate = self._max_dev_dim_step_size == 1 or not self._tune_da
+
+        # check if ds tuning is complete, and return if so
+        config = tuple([ivy.split_factor(ds) for ds in self._dev_strs_keys] + list(self._dev_strs_da.values()))
+        if config in self._observed_configs and da_can_terminate:
+            self._observed_configs.clear()
+            self._percent_mem_inc_per_unit_da_dim.clear()
+            self._delta_da_dim_sizes.clear()
+            self._dev_percent_mems.clear()
+            self._tuned = True
+            return
+
+        # otherwise add the current config to those observed
+        self._observed_configs.add(config)
+
+    # Mapping #
 
     def map(self, to_clone=None, to_distribute=None):
         """
