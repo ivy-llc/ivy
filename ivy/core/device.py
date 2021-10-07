@@ -123,7 +123,7 @@ def total_mem_on_dev(dev_str: str)\
     elif dev_str == 'cpu':
         return psutil.virtual_memory().total/1e9
     else:
-        raise Exception('Invalid device string input, must be on the form "gpu:idx" or "cpu:idx",'
+        raise Exception('Invalid device string input, must be on the form "gpu:idx" or "cpu",'
                         'but found {}'.format(dev_str))
 
 
@@ -151,7 +151,7 @@ def used_mem_on_dev(dev_str: str, process_specific=False)\
         vm = psutil.virtual_memory()
         return (vm.total - vm.available)/1e9
     else:
-        raise Exception('Invalid device string input, must be on the form "gpu:idx" or "cpu:idx",'
+        raise Exception('Invalid device string input, must be on the form "gpu:idx" or "cpu",'
                         'but found {}'.format(dev_str))
 
 
@@ -179,7 +179,7 @@ def percent_used_mem_on_dev(dev_str: str, process_specific=False)\
             return (psutil.Process(os.getpid()).memory_info().rss/vm.total)*100
         return (1-(vm.available/vm.total))*100
     else:
-        raise Exception('Invalid device string input, must be on the form "gpu:idx" or "cpu:idx",'
+        raise Exception('Invalid device string input, must be on the form "gpu:idx" or "cpu",'
                         'but found {}'.format(dev_str))
 
 
@@ -201,7 +201,7 @@ def dev_util(dev_str: str)\
         handle = _get_nvml_gpu_handle(dev_str)
         return nvidia_smi.nvmlDeviceGetUtilizationRates(handle).gpu
     else:
-        raise Exception('Invalid device string input, must be on the form "gpu:idx" or "cpu:idx",'
+        raise Exception('Invalid device string input, must be on the form "gpu:idx" or "cpu",'
                         'but found {}'.format(dev_str))
 
 
@@ -912,8 +912,8 @@ class DevManager:
         self._num_devs = len(dev_strs)
         self._dim_size = dim_size
         self._axis = axis
-        self._tune = tune
-        self._tuned = not tune
+        self._tune = tune and self._num_devs > 1
+        self._tuned = not self._tune
         self._first_tune_step = True
         self._tune_count = 0
         self._log_devs = False
@@ -924,6 +924,8 @@ class DevManager:
             self._dev_str_ratios = dict(zip(dev_strs, [1/self._num_devs]*self._num_devs))
         self._dev_strs_keys = self._dev_str_ratios.keys()
         self._percent_inc_per_unit_dim = dict(zip(self._dev_strs_keys, [0]*self._num_devs))
+        self._delta_dim_sizes = dict(zip(self._dev_strs_keys, [0]*self._num_devs))
+        self._dev_percent_mems = None
         self._compute_dev_strs_dict()
 
     def _tune_step(self):
@@ -933,22 +935,27 @@ class DevManager:
 
         # first step
         if self._first_tune_step:
+            new_dev_utils_keys = list(new_dev_utils.keys())
             for i in range(math.floor(self._num_devs/2)):
 
                 # less utilized
-                less_util_dev = new_dev_utils[i]
+                less_util_dev_str = new_dev_utils_keys[i]
                 less_util_delta = 1
-                self._dev_strs_dict[less_util_dev] += less_util_delta
-                self._delta_dim_sizes[less_util_dev] = less_util_delta
+                self._dev_strs_dict[less_util_dev_str] += less_util_delta
+                self._delta_dim_sizes[less_util_dev_str] = less_util_delta
 
                 # more utilized
-                more_util_dev = new_dev_utils[-i]
+                more_util_dev_str = new_dev_utils_keys[-i-1]
                 more_util_delta = -1
-                self._dev_strs_dict[more_util_dev] += more_util_delta
-                self._delta_dim_sizes[more_util_dev] = more_util_delta
+                self._dev_strs_dict[more_util_dev_str] += more_util_delta
+                self._delta_dim_sizes[more_util_dev_str] = more_util_delta
+
+            # update device percentage memory usages
+            self._dev_percent_mems = new_dev_percent_mems
 
             # increment count and return
             self._tune_count += 1
+            self._first_tune_step = False
             return
 
         # otherwise
@@ -958,6 +965,8 @@ class DevManager:
             {k: ((self._tune_count-1)*self._percent_inc_per_unit_dim[k] +
                  (delta_percent_mems[k]/self._delta_dim_sizes[k])) / self._tune_count
              for k in self._dev_strs_keys}
+
+        # update device utilizations and percentage memory usages
         self._dev_utils = new_dev_utils
         self._dev_percent_mems = new_dev_percent_mems
 

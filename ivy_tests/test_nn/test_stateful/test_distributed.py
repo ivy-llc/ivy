@@ -383,7 +383,7 @@ def test_to_ivy_module_distributed_multiprocess(bs_ic_oc, from_class_and_args, i
     assert (abs(grads).reduce_max() > 0).all_true()
 
 
-# device mapper tuning
+# device manager tuning
 @pytest.mark.parametrize(
     "bs_ic_oc", [([2, 1], 4, 5)])
 def test_device_manager_tuning(bs_ic_oc, dev_str, call):
