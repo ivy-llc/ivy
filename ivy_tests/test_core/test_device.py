@@ -124,7 +124,7 @@ def test_memory_on_dev(dev_str_to_check, dev_str, call):
     if 'gpu' in dev_str_to_check and ivy.num_gpus() == 0:
         # cannot get amount of memory for gpu which is not present
         pytest.skip()
-    ret = ivy.memory_on_dev(dev_str_to_check)
+    ret = ivy.total_mem_on_dev(dev_str_to_check)
     # type test
     assert isinstance(ret, float)
     # value test
@@ -134,7 +134,7 @@ def test_memory_on_dev(dev_str_to_check, dev_str, call):
         # global variables aren't supported for pytorch scripting
         pytest.skip()
     if not ivy.wrapped_mode():
-        helpers.assert_compilable(ivy.memory_on_dev)
+        helpers.assert_compilable(ivy.total_mem_on_dev)
 
 
 # Device Allocation #
