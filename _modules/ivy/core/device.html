@@ -1163,6 +1163,7 @@
 
         <span class="c1"># first step</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_first_tune_step</span><span class="p">:</span>
+            <span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">set_split_factor</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">ds</span><span class="p">)</span> <span class="k">for</span> <span class="n">ds</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dev_strs_keys</span><span class="p">]</span>
             <span class="n">new_dev_utils_keys</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">new_dev_utils</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
             <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_num_devs</span><span class="o">/</span><span class="mi">2</span><span class="p">)):</span>
 
@@ -1181,9 +1182,10 @@
             <span class="c1"># update device percentage memory usages</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_dev_percent_mems</span> <span class="o">=</span> <span class="n">new_dev_percent_mems</span>
 
-            <span class="c1"># increment count and return</span>
+            <span class="c1"># increment count, update ratios and return</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_tune_count</span> <span class="o">+=</span> <span class="mi">1</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_first_tune_step</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_compute_dev_ratios_dict</span><span class="p">()</span>
             <span class="k">return</span>
 
         <span class="c1"># otherwise</span>
@@ -1198,7 +1200,8 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_dev_utils</span> <span class="o">=</span> <span class="n">new_dev_utils</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_dev_percent_mems</span> <span class="o">=</span> <span class="n">new_dev_percent_mems</span>
 
-        <span class="c1"># increment count and return</span>
+        <span class="c1"># increment count, update ratios and return</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_compute_dev_ratios_dict</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_tune_count</span> <span class="o">+=</span> <span class="mi">1</span>
 
     <span class="k">def</span> <span class="nf">_compute_dev_strs_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -1214,7 +1217,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_dev_strs_dict</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dev_strs_keys</span><span class="p">,</span> <span class="n">split_sizes</span><span class="p">)}</span>
 
     <span class="k">def</span> <span class="nf">_compute_dev_ratios_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_dev_str_ratios</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_dev_str_ratios</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">v</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">_dim_size</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dev_strs_dict</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
 
 <div class="viewcode-block" id="DevManager.map"><a class="viewcode-back" href="../../../core/device.html#ivy.core.device.DevManager.map">[docs]</a>    <span class="k">def</span> <span class="nf">map</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">to_clone</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">to_distribute</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
