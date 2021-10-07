@@ -24,6 +24,7 @@ from ivy.framework_handler import current_framework as _cur_framework
 
 DEFAULT_DEVICE = None
 DEV_HANDLES = dict()
+SPLIT_FACTORS = dict()
 
 
 # Helpers #
@@ -287,6 +288,41 @@ def to_dev(x: Union[ivy.Array, ivy.NativeArray], dev_str: str = None, f: ivy.Fra
 
 # Function Splitting #
 # -------------------#
+
+# noinspection PyShadowingNames
+def split_factor(dev_str=None):
+    """
+    Get the global split factor for a given device, which can be used to scale batch splitting chunk sizes for the
+    device across the codebase. Default global value for each device is 1.
+
+    :param dev_str: The device to query the split factor for. Sets the default device by default.
+    :type dev_str: str, optional
+    :return: The split factor for the specified device.
+    """
+    global SPLIT_FACTORS
+    dev_str = ivy.default(dev_str, default_device())
+    if dev_str in SPLIT_FACTORS:
+        return SPLIT_FACTORS[dev_str]
+    SPLIT_FACTORS[dev_str] = 1.
+    return SPLIT_FACTORS[dev_str]
+
+
+# noinspection PyShadowingNames
+def set_split_factor(factor, dev_str=None):
+    """
+    Set the global split factor for a given device, which can be used to scale batch splitting chunk sizes for the
+    device across the codebase.
+
+    :param factor: The factor to set the device-specific split factor to.
+    :type factor: float
+    :param dev_str: The device to set the split factor for. Sets the default device by default.
+    :type dev_str: str, optional
+    """
+    assert 0 <= factor
+    global SPLIT_FACTORS
+    dev_str = ivy.default(dev_str, default_device())
+    SPLIT_FACTORS[dev_str] = factor
+
 
 def split_func_call(func: Callable, inputs: Iterable[Union[Union[ivy.Array, ivy.NativeArray], ivy.Container]],
                     mode: str, chunk_size: int, input_axes: Union[int, Iterable[int]] = 0,
