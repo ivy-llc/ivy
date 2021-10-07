@@ -17,6 +17,7 @@ Device
    device/str_to_dev.rst
    device/dev_str.rst
    device/memory_on_dev.rst
+   device/dev_util.rst
    device/gpu_is_available.rst
    device/num_gpus.rst
    device/tpu_is_available.rst
