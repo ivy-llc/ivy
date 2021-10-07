@@ -1123,7 +1123,7 @@
 
 <div class="viewcode-block" id="DevManager"><a class="viewcode-back" href="../../../core/device.html#ivy.core.device.DevManager">[docs]</a><span class="k">class</span> <span class="nc">DevManager</span><span class="p">:</span>
 
-<div class="viewcode-block" id="DevManager.__init__"><a class="viewcode-back" href="../../../core/device.html#ivy.core.device.DevManager.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dev_mapper</span><span class="p">,</span> <span class="n">dev_strs</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]],</span> <span class="n">dim_size</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">safety_factor</span><span class="o">=</span><span class="mf">1.1</span><span class="p">,</span>
+<div class="viewcode-block" id="DevManager.__init__"><a class="viewcode-back" href="../../../core/device.html#ivy.core.device.DevManager.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dev_mapper</span><span class="p">,</span> <span class="n">dev_strs</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]],</span> <span class="n">dim_size</span><span class="p">,</span> <span class="n">safety_factor</span><span class="o">=</span><span class="mf">1.1</span><span class="p">,</span>
                  <span class="n">min_dev_dim_size</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">max_dev_dim_step_size</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">tune</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Create device manager, which unlike the device mapper, handles all argument cloning and distributing internally.</span>
@@ -1135,8 +1135,6 @@
 <span class="sd">        :type dev_strs: sequence of strs or dict of split sizes</span>
 <span class="sd">        :param dim_size: The size of the dimension along which the device splitting is performed.</span>
 <span class="sd">        :type dim_size: int</span>
-<span class="sd">        :param axis: The axis along which each argument is split when passing to multiple devices. Default is 0.</span>
-<span class="sd">        :type axis: int, optional</span>
 <span class="sd">        :param safety_factor: The factor by which to be safe in the avoidance of OOM GPU errors. Default is 1.1.</span>
 <span class="sd">        :type safety_factor: float, optional</span>
 <span class="sd">        :param min_dev_dim_size: The minimum dimension size to pass to a device. Default is 0.</span>
@@ -1150,17 +1148,14 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_dev_mapper</span> <span class="o">=</span> <span class="n">dev_mapper</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_num_devs</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">dev_strs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_dim_size</span> <span class="o">=</span> <span class="n">dim_size</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_axis</span> <span class="o">=</span> <span class="n">axis</span>
         <span class="k">assert</span> <span class="mi">1</span> <span class="o">&lt;=</span> <span class="n">safety_factor</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_safety_factor</span> <span class="o">=</span> <span class="n">safety_factor</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_min_dev_dim_size</span> <span class="o">=</span> <span class="n">min_dev_dim_size</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_max_dev_dim_step_size</span> <span class="o">=</span> <span class="n">max_dev_dim_step_size</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_tune</span> <span class="o">=</span> <span class="n">tune</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_num_devs</span> <span class="o">&gt;</span> <span class="mi">1</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_tuned</span> <span class="o">=</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tune</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tuned</span> <span class="o">=</span> <span class="ow">not</span> <span class="n">tune</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">_num_devs</span> <span class="o">==</span> <span class="mi">1</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_first_tune_step</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_tune_count</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_log_devs</span> <span class="o">=</span> <span class="kc">False</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_dev_util_logs</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_observed_configs</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">dev_strs</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_dev_str_ratios</span> <span class="o">=</span> <span class="n">dev_strs</span>
         <span class="k">else</span><span class="p">:</span>
@@ -1236,6 +1231,19 @@
         <span class="c1"># increment count, update ratios and return</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_compute_dev_ratios_dict</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_tune_count</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="c1"># check if tuning is complete, and return if so</span>
+        <span class="n">config</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dev_strs_dict</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+        <span class="k">if</span> <span class="n">config</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_observed_configs</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_observed_configs</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_percent_inc_per_unit_dim</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_delta_dim_sizes</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_dev_percent_mems</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_tuned</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="k">return</span>
+
+        <span class="c1"># otherwise add the current config to those observed</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_observed_configs</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_compute_dev_strs_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">split_sizes</span> <span class="o">=</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">r</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dim_size</span><span class="p">))</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dev_str_ratios</span><span class="o">.</span><span class="n">values</span><span class="p">()]</span>
