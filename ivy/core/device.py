@@ -846,7 +846,7 @@ class DevMapper(abc.ABC):
         for i in range(self._num_workers):
             input_queue = queue_class()
             output_queue = queue_class()
-            worker_kwargs = dict(**constant_kwargs, **dict([(k, v[i]) for k, v in unique_kwargs.items()]))
+            worker_kwargs = dict(**constant_kwargs, **{k: v[i] for k, v in unique_kwargs.items()})
             worker = self._worker_class(target=self._worker_fn, args=(input_queue, output_queue, dev_strs[i],
                                                                       worker_kwargs))
             worker.start()
@@ -888,7 +888,7 @@ class DevMapper(abc.ABC):
         :type kwargs: dict of any
         :return: The results of the function, returned as a MultiDevice instance.
         """
-        [q.put(dict([(k, v[i]) for k, v in kwargs.items()])) for i, q in enumerate(self._input_queues)]
+        [q.put({k: v[i] for k, v in kwargs.items()}) for i, q in enumerate(self._input_queues)]
         return self._ret_fn(
             ivy.MultiDevIter([q.get(timeout=self._timeout) for q in self._output_queues], self._num_workers))
 
@@ -1021,19 +1021,10 @@ class DevManager:
         elif excess_size < 0:
             for i in range(abs(excess_size)):
                 split_sizes[i] += 1
-        self._dev_strs_dict = dict([(k, v) for k, v in zip(self._dev_strs_keys, split_sizes)])
+        self._dev_strs_dict = {k: v for k, v in zip(self._dev_strs_keys, split_sizes)}
 
     def _compute_dev_ratios_dict(self):
-        split_sizes = [int(round(r * self._dim_size)) for r in self._dev_str_ratios.values()]
-        combined_batch_size = sum(split_sizes)
-        excess_size = combined_batch_size - self._dim_size
-        if excess_size > 0:
-            for i in range(abs(excess_size)):
-                split_sizes[i] -= 1
-        elif excess_size < 0:
-            for i in range(abs(excess_size)):
-                split_sizes[i] += 1
-        self._dev_strs_dict = dict([(k, v) for k, v in zip(self._dev_strs_keys, split_sizes)])
+        self._dev_str_ratios = None
 
     def map(self, to_clone=None, to_distribute=None):
         """
@@ -1047,12 +1038,11 @@ class DevManager:
         :return: The results of the function, returned as a MultiDevice instance.
         """
         if ivy.exists(to_clone):
-            to_clone = dict([(k, ivy.clone(v, self._dev_strs_keys).at_devs()) for k, v in to_clone.items()])
+            to_clone = {k: ivy.clone(v, self._dev_strs_keys).at_devs() for k, v in to_clone.items()}
         else:
             to_clone = {}
         if ivy.exists(to_distribute):
-            to_distribute = dict([(k, ivy.distribute(v, self._dev_strs_keys).at_devs())
-                                  for k, v in to_distribute.items()])
+            to_distribute = {k: ivy.distribute(v, self._dev_strs_keys).at_devs() for k, v in to_distribute.items()}
         else:
             to_distribute = {}
         ret = self._dev_mapper.map(**to_clone, **to_distribute)

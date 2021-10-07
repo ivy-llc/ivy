@@ -2374,7 +2374,7 @@ class Container(dict):
 
         def _align_arrays(str_in):
             chunks = str_in.split('\n' + indent_str)
-            aligned_array_chunks = dict([(i, _align_array(c)) for i, c in enumerate(chunks) if '\\n' in c])
+            aligned_array_chunks = {i: _align_array(c) for i, c in enumerate(chunks) if '\\n' in c}
             chunks = [aligned_array_chunks[i] if i in aligned_array_chunks else c_orig
                       for i, c_orig in enumerate(chunks)]
             return ('\n' + indent_str).join(chunks)

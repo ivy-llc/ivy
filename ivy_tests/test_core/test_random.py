@@ -28,7 +28,7 @@ def test_random_uniform(low, high, shape, dtype_str, tensor_fn, dev_str, call):
     if tensor_fn == helpers.var_fn and call is helpers.mx_call:
         # mxnet does not support 0-dimensional variables
         pytest.skip()
-    kwargs = dict([(k, tensor_fn(v)) for k, v in zip(['low', 'high'], [low, high]) if v is not None])
+    kwargs = {k: tensor_fn(v) for k, v in zip(['low', 'high'], [low, high]) if v is not None}
     if shape is not None:
         kwargs['shape'] = shape
     ret = ivy.random_uniform(**kwargs, dev_str=dev_str)
@@ -65,7 +65,7 @@ def test_random_normal(mean, std, shape, dtype_str, tensor_fn, dev_str, call):
     if tensor_fn == helpers.var_fn and call is helpers.mx_call:
         # mxnet does not support 0-dimensional variables
         pytest.skip()
-    kwargs = dict([(k, tensor_fn(v)) for k, v in zip(['mean', 'std'], [mean, std]) if v is not None])
+    kwargs = {k: tensor_fn(v) for k, v in zip(['mean', 'std'], [mean, std]) if v is not None}
     if shape is not None:
         kwargs['shape'] = shape
     ret = ivy.random_normal(**kwargs, dev_str=dev_str)
