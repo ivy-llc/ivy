@@ -91,7 +91,7 @@ def nested_map(x: Union[Union[ivy.Array, ivy.NativeArray], Iterable], fn: Callab
         return class_instance([nested_map(i, fn, include_derived, max_depth, depth+1) for i in x])
     elif check_fn(x, dict):
         class_instance = type(x)
-        return class_instance(dict([(k, nested_map(v, fn, include_derived, max_depth, depth+1)) for k, v in x.items()]))
+        return class_instance({k: nested_map(v, fn, include_derived, max_depth, depth+1) for k, v in x.items()})
     return fn(x)
 
 

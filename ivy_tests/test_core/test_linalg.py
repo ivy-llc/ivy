@@ -62,7 +62,7 @@ def test_vector_norm(x_n_p_n_ax_n_kd_n_tn, dtype_str, tensor_fn, dev_str, call):
     # smoke test
     x, p, ax, kd, true_norm = x_n_p_n_ax_n_kd_n_tn
     x = tensor_fn(x, dtype_str, dev_str)
-    kwargs = dict([(k, v) for k, v in zip(['x', 'p', 'axis', 'keepdims'], [x, p, ax, kd]) if v is not None])
+    kwargs = {k: v for k, v in zip(['x', 'p', 'axis', 'keepdims'], [x, p, ax, kd]) if v is not None}
     ret = ivy.vector_norm(**kwargs)
     # type test
     assert ivy.is_array(ret)
@@ -108,7 +108,7 @@ def test_matrix_norm(x_n_p_n_ax_n_kd, dtype_str, tensor_fn, dev_str, call):
         # MXNet does not support matrix norms
         pytest.skip()
     x = tensor_fn(x_raw, dtype_str, dev_str)
-    kwargs = dict([(k, v) for k, v in zip(['x', 'p', 'axes', 'keepdims'], [x, p, ax, kd]) if v is not None])
+    kwargs = {k: v for k, v in zip(['x', 'p', 'axes', 'keepdims'], [x, p, ax, kd]) if v is not None}
     ret = ivy.matrix_norm(**kwargs)
     # type test
     assert ivy.is_array(ret)
