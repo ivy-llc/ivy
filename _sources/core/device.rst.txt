@@ -13,10 +13,12 @@ Device
    :caption: Device
 
    device/dev.rst
+   device/dev_str.rst
    device/dev_to_str.rst
    device/str_to_dev.rst
-   device/dev_str.rst
-   device/memory_on_dev.rst
+   device/total_mem_on_dev.rst
+   device/used_mem_on_dev.rst
+   device/percent_used_mem_on_dev.rst
    device/dev_util.rst
    device/gpu_is_available.rst
    device/num_gpus.rst
