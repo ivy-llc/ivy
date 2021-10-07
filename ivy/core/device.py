@@ -934,7 +934,7 @@ class DevMapperMultiProc(DevMapper):
 class DevManager:
 
     def __init__(self, dev_mapper=None, dev_strs: Union[Iterable[str], Dict[str, int]] = None, da_dim_size=None,
-                 safety_factor=1.1, min_dev_dim_size=0, max_dev_dim_step_size=1, starting_split_factor=0.,
+                 safety_factor=1.1, min_dev_dim_size=0, max_dev_dim_step_ratio=0.2, starting_split_factor=0.,
                  max_split_factor_step_size=0.05, tune_dev_alloc=True, tune_dev_splits=True):
         """
         Create device manager, which unlike the device mapper, handles all argument cloning and distributing internally.
@@ -950,8 +950,8 @@ class DevManager:
         :type safety_factor: float, optional
         :param min_dev_dim_size: The minimum dimension size to pass to a device. Default is 0.
         :type min_dev_dim_size: int, optional
-        :param max_dev_dim_step_size: The maximum step size for changing the dimension for a device. Default is 1.
-        :type max_dev_dim_step_size: int, optional
+        :param max_dev_dim_step_ratio: The maximum step ratio for changing the dimension for a device. Default is 0.2.
+        :type max_dev_dim_step_ratio: int, optional
         :param starting_split_factor: The initial device-specific split factor. Default is 0.
         :type starting_split_factor: float, optional
         :param max_split_factor_step_size: The maximum step size for changing the split factor for a device.
@@ -972,7 +972,7 @@ class DevManager:
         assert 1 <= safety_factor
         self._safety_factor = safety_factor
         self._min_dev_dim_size = min_dev_dim_size
-        self._max_dev_dim_step_size = max_dev_dim_step_size
+        self._max_dev_dim_step_size = max(int(round(max_dev_dim_step_ratio * da_dim_size)), 1)
         self._max_split_factor_step_size = max_split_factor_step_size
         self._tune_da = tune_dev_alloc
         self._tune_ds = tune_dev_splits
@@ -982,6 +982,8 @@ class DevManager:
         self._ds_tune_count = 0
         self._tune_step = self.da_tune_step
         self._observed_configs = set()
+        self._da_directions = dict()
+        self._da_directions_flipped = dict()
         if isinstance(dev_strs, dict):
             self._dev_str_da_ratios = dev_strs
         else:
@@ -1059,6 +1061,18 @@ class DevManager:
 
         # otherwise
 
+        # check if all directions have changed, and if so, half the max dev dim step size
+        da_directions = {k: 1 if i < math.floor(self._num_devs/2) else -1
+                         for i, (k, v) in enumerate(new_dev_utils.items())}
+        if len(self._da_directions) == 0:
+            self._da_directions = da_directions
+            self._da_directions_flipped = {k: False for k in self._dev_strs_keys}
+        else:
+            self._da_directions_flipped = {k: da_directions[k] * v < 0 for k, v in self._da_directions.items()}
+        if sum(self._da_directions_flipped.values()) == self._num_devs:
+            self._da_directions.clear()
+            self._max_dev_dim_step_size = max(int(round(self._max_dev_dim_step_size/2)), 1)
+
         # percentage memory increase per unit dim
         delta_percent_mems = {k: new_dev_percent_mems[k] - self._dev_percent_mems[k] for k in self._dev_strs_keys}
         self._percent_mem_inc_per_unit_dim = \
@@ -1077,12 +1091,12 @@ class DevManager:
 
         # shift the device splits
         desired_percent_increases = {k: highest_util - new_dev_utils[k] for k in self._dev_strs_keys}
-        raw_deltas = {k: desired_percent_increases[k] / self._percent_util_inc_per_unit_dim[k]
+        raw_deltas = {k: int(round(desired_percent_increases[k] / self._percent_util_inc_per_unit_dim[k]))
                       for k in self._dev_strs_keys}
         permissable_steps = \
             {k: min(math.floor(((100-new_dev_percent_mems[k]) / max(self._percent_mem_inc_per_unit_dim[k], 0.1))
                                / self._safety_factor), self._dim_size) for k in self._dev_strs_keys}
-        deltas = {k: ivy.minimum(v, pm) for (k, v), pm in zip(raw_deltas.items(), permissable_steps.values())}
+        deltas = {k: min(v, pm) for (k, v), pm in zip(raw_deltas.items(), permissable_steps.values())}
         self._shift_da_splits(new_dev_utils_keys, deltas)
 
         # update device utilizations and percentage memory usages
@@ -1095,18 +1109,19 @@ class DevManager:
         if self._tune_ds:
             self._tune_step = self.ds_tune_step
 
-        # check if tuning is complete, and return if so
-        config = tuple(self._dev_strs_da.values())
-        if config in self._observed_configs:
-            self._observed_configs.clear()
-            self._percent_mem_inc_per_unit_dim.clear()
-            self._delta_dim_sizes.clear()
-            self._dev_percent_mems.clear()
-            self._tuned = True
-            return
+        # if step size is 1, check if tuning is complete, and return if so
+        if self._max_dev_dim_step_size == 1:
+            config = tuple(self._dev_strs_da.values())
+            if config in self._observed_configs:
+                self._observed_configs.clear()
+                self._percent_mem_inc_per_unit_dim.clear()
+                self._delta_dim_sizes.clear()
+                self._dev_percent_mems.clear()
+                self._tuned = True
+                return
 
-        # otherwise add the current config to those observed
-        self._observed_configs.add(config)
+            # otherwise add the current config to those observed
+            self._observed_configs.add(config)
 
     # Device Splitting #
 
