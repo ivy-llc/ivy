@@ -989,9 +989,11 @@ class DevManager:
         self._dev_strs_keys = self._dev_str_da_ratios.keys()
         if self._tune_ds:
             [ivy.set_split_factor(starting_split_factor, ds) for ds in self._dev_strs_keys]
-        self._percent_inc_per_unit_dim = dict(zip(self._dev_strs_keys, [0]*self._num_devs))
+        self._percent_mem_inc_per_unit_dim = dict(zip(self._dev_strs_keys, [0] * self._num_devs))
+        self._percent_util_inc_per_unit_dim = dict(zip(self._dev_strs_keys, [1] * self._num_devs))
         self._delta_dim_sizes = dict(zip(self._dev_strs_keys, [0]*self._num_devs))
         self._dev_percent_mems = None
+        self._dev_utils = None
         self._compute_dev_strs_da()
 
     # Device Allocation #
@@ -1032,6 +1034,8 @@ class DevManager:
     def da_tune_step(self):
         new_dev_utils = dict(sorted({k: dev_util(k) for k in self._dev_strs_keys}.items(), key=lambda item: item[1]))
         new_dev_utils_keys = list(new_dev_utils.keys())
+        highest_util_dev = new_dev_utils_keys[-1]
+        highest_util = new_dev_utils[highest_util_dev]
         new_dev_percent_mems = dict(sorted({k: percent_used_mem_on_dev(k) for k in self._dev_strs_keys}.items(),
                                            key=lambda item: item[1]))
 
@@ -1041,8 +1045,9 @@ class DevManager:
             # shift the device splits by 1
             self._shift_da_splits(new_dev_utils_keys, {k: 1 for k in self._dev_strs_keys})
 
-            # update device percentage memory usages
+            # update device percentage memory usages and utilizations
             self._dev_percent_mems = new_dev_percent_mems
+            self._dev_utils = new_dev_utils
 
             # increment count, update ratios and tune step, and return
             self._da_tune_count += 1
@@ -1056,17 +1061,29 @@ class DevManager:
 
         # percentage memory increase per unit dim
         delta_percent_mems = {k: new_dev_percent_mems[k] - self._dev_percent_mems[k] for k in self._dev_strs_keys}
-        self._percent_inc_per_unit_dim = \
-            {k: (((self._da_tune_count - 1) * self._percent_inc_per_unit_dim[k] +
+        self._percent_mem_inc_per_unit_dim = \
+            {k: (((self._da_tune_count - 1) * self._percent_mem_inc_per_unit_dim[k] +
                   (delta_percent_mems[k]/delta_dim_size)) / self._da_tune_count)
-            if delta_dim_size != 0 else self._percent_inc_per_unit_dim[k]
+            if delta_dim_size != 0 else self._percent_mem_inc_per_unit_dim[k]
+             for k, delta_dim_size in self._delta_dim_sizes.items()}
+
+        # percentage utility increase per unit dim
+        delta_utils = {k: new_dev_utils[k] - self._dev_utils[k] for k in self._dev_strs_keys}
+        self._percent_util_inc_per_unit_dim = \
+            {k: max((((self._da_tune_count - 1) * self._percent_util_inc_per_unit_dim[k] +
+                      (delta_utils[k]/delta_dim_size)) / self._da_tune_count), 0.1)
+            if delta_dim_size != 0 else self._percent_util_inc_per_unit_dim[k]
              for k, delta_dim_size in self._delta_dim_sizes.items()}
 
         # shift the device splits
+        desired_percent_increases = {k: highest_util - new_dev_utils[k] for k in self._dev_strs_keys}
+        raw_deltas = {k: desired_percent_increases[k] / self._percent_util_inc_per_unit_dim[k]
+                      for k in self._dev_strs_keys}
         permissable_steps = \
-            {k: min(math.floor(((100-new_dev_percent_mems[k]) / max(self._percent_inc_per_unit_dim[k], 0.1))
+            {k: min(math.floor(((100-new_dev_percent_mems[k]) / max(self._percent_mem_inc_per_unit_dim[k], 0.1))
                                / self._safety_factor), self._dim_size) for k in self._dev_strs_keys}
-        self._shift_da_splits(new_dev_utils_keys, permissable_steps)
+        deltas = {k: ivy.minimum(v, pm) for (k, v), pm in zip(raw_deltas.items(), permissable_steps.values())}
+        self._shift_da_splits(new_dev_utils_keys, deltas)
 
         # update device utilizations and percentage memory usages
         self._dev_utils = new_dev_utils
@@ -1082,7 +1099,7 @@ class DevManager:
         config = tuple(self._dev_strs_da.values())
         if config in self._observed_configs:
             self._observed_configs.clear()
-            self._percent_inc_per_unit_dim.clear()
+            self._percent_mem_inc_per_unit_dim.clear()
             self._delta_dim_sizes.clear()
             self._dev_percent_mems.clear()
             self._tuned = True
