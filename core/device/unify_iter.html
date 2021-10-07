@@ -24,6 +24,7 @@
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../_static/js/theme.js"></script>
 
@@ -235,6 +236,25 @@
             
   <div class="section" id="unify-iter">
 <h1>unify_iter<a class="headerlink" href="#unify-iter" title="Permalink to this headline">¶</a></h1>
+<dl class="py function">
+<dt id="ivy.core.device.unify_iter">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">unify_iter</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">xs</span></em>, <em class="sig-param"><span class="n">dev_str</span></em>, <em class="sig-param"><span class="n">mode</span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">0</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/device.html#unify_iter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.device.unify_iter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Unify elements of the iterbale xs to a single target device.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>xs</strong> (<em>iterable of any</em>) – The iterable of items to clone.</p></li>
+<li><p><strong>dev_str</strong> (<em>str</em>) – The device to unify the elements of the iterable to.</p></li>
+<li><p><strong>mode</strong> (<em>str</em>) – The mode by which to unify, must be one of [ concat | mean | sum ]</p></li>
+<li><p><strong>axis</strong> (<em>int</em><em>, </em><em>optional</em>) – The axis along which to concattenate the sub-arrays. Default is 0.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>iterable with each element cloned to each of the target devices</p>
+</dd>
+</dl>
+</dd></dl>
+
 <div class="line-block">
 <div class="line"><br /></div>
 <div class="line"><strong>Supported Frameworks:</strong></div>
