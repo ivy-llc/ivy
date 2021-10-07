@@ -17,6 +17,7 @@ import ivy
 from ivy.framework_handler import current_framework as _cur_framework
 
 DEFAULT_DEVICE = None
+DEV_HANDLES = dict()
 
 
 # Helpers #
@@ -24,8 +25,13 @@ DEFAULT_DEVICE = None
 
 # noinspection PyShadowingNames
 def _get_nvml_gpu_handle(dev_str):
+    global DEV_HANDLES
+    if dev_str in DEV_HANDLES:
+        return DEV_HANDLES[dev_str]
     gpu_idx = int(dev_str.split(':')[-1])
-    return nvidia_smi.nvmlDeviceGetHandleByIndex(gpu_idx)
+    handle = nvidia_smi.nvmlDeviceGetHandleByIndex(gpu_idx)
+    DEV_HANDLES[dev_str] = handle
+    return handle
 
 
 # Device Queries #
