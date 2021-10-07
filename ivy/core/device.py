@@ -973,6 +973,7 @@ class DevManager:
 
         # first step
         if self._first_tune_step:
+            [ivy.set_split_factor(0, ds) for ds in self._dev_strs_keys]
             new_dev_utils_keys = list(new_dev_utils.keys())
             for i in range(math.floor(self._num_devs/2)):
 
@@ -991,9 +992,10 @@ class DevManager:
             # update device percentage memory usages
             self._dev_percent_mems = new_dev_percent_mems
 
-            # increment count and return
+            # increment count, update ratios and return
             self._tune_count += 1
             self._first_tune_step = False
+            self._compute_dev_ratios_dict()
             return
 
         # otherwise
@@ -1008,7 +1010,8 @@ class DevManager:
         self._dev_utils = new_dev_utils
         self._dev_percent_mems = new_dev_percent_mems
 
-        # increment count and return
+        # increment count, update ratios and return
+        self._compute_dev_ratios_dict()
         self._tune_count += 1
 
     def _compute_dev_strs_dict(self):
@@ -1024,7 +1027,7 @@ class DevManager:
         self._dev_strs_dict = {k: v for k, v in zip(self._dev_strs_keys, split_sizes)}
 
     def _compute_dev_ratios_dict(self):
-        self._dev_str_ratios = None
+        self._dev_str_ratios = {k: v/self._dim_size for k, v in self._dev_strs_dict.items()}
 
     def map(self, to_clone=None, to_distribute=None):
         """

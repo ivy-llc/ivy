@@ -51,7 +51,7 @@ class TrainableModuleWithSplit(ivy.Module):
         return ivy.tanh(self._linear2(x))[0]
 
     def _forward(self, x):
-        return ivy.split_func_call(self._forward_unsplit, [x], 'concat', int(round(ivy.split_factor())))
+        return ivy.split_func_call(self._forward_unsplit, [x], 'concat', max(int(round(ivy.split_factor())), 1))
 
 
 def loss_fn(module, x_, v_):
