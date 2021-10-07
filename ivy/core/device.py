@@ -933,7 +933,7 @@ class DevMapperMultiProc(DevMapper):
 
 class DevManager:
 
-    def __init__(self, dev_mapper, dev_strs: Union[Iterable[str], Dict[str, int]], dim_size, axis=0, safety_factor=1.1,
+    def __init__(self, dev_mapper, dev_strs: Union[Iterable[str], Dict[str, int]], dim_size, safety_factor=1.1,
                  min_dev_dim_size=0, max_dev_dim_step_size=1, tune=True):
         """
         Create device manager, which unlike the device mapper, handles all argument cloning and distributing internally.
@@ -945,8 +945,6 @@ class DevManager:
         :type dev_strs: sequence of strs or dict of split sizes
         :param dim_size: The size of the dimension along which the device splitting is performed.
         :type dim_size: int
-        :param axis: The axis along which each argument is split when passing to multiple devices. Default is 0.
-        :type axis: int, optional
         :param safety_factor: The factor by which to be safe in the avoidance of OOM GPU errors. Default is 1.1.
         :type safety_factor: float, optional
         :param min_dev_dim_size: The minimum dimension size to pass to a device. Default is 0.
@@ -960,17 +958,14 @@ class DevManager:
         self._dev_mapper = dev_mapper
         self._num_devs = len(dev_strs)
         self._dim_size = dim_size
-        self._axis = axis
         assert 1 <= safety_factor
         self._safety_factor = safety_factor
         self._min_dev_dim_size = min_dev_dim_size
         self._max_dev_dim_step_size = max_dev_dim_step_size
-        self._tune = tune and self._num_devs > 1
-        self._tuned = not self._tune
+        self._tuned = not tune or self._num_devs == 1
         self._first_tune_step = True
         self._tune_count = 0
-        self._log_devs = False
-        self._dev_util_logs = dict()
+        self._observed_configs = set()
         if isinstance(dev_strs, dict):
             self._dev_str_ratios = dev_strs
         else:
@@ -1046,6 +1041,19 @@ class DevManager:
         # increment count, update ratios and return
         self._compute_dev_ratios_dict()
         self._tune_count += 1
+
+        # check if tuning is complete, and return if so
+        config = tuple(self._dev_strs_dict.values())
+        if config in self._observed_configs:
+            self._observed_configs.clear()
+            self._percent_inc_per_unit_dim.clear()
+            self._delta_dim_sizes.clear()
+            self._dev_percent_mems.clear()
+            self._tuned = True
+            return
+
+        # otherwise add the current config to those observed
+        self._observed_configs.add(config)
 
     def _compute_dev_strs_dict(self):
         split_sizes = [int(round(r * self._dim_size)) for r in self._dev_str_ratios.values()]
