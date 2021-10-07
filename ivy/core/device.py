@@ -929,7 +929,8 @@ class DevMapperMultiProc(DevMapper):
 
 class DevManager:
 
-    def __init__(self, dev_mapper, dev_strs: Union[Iterable[str], Dict[str, int]], dim_size, axis=0, tune=True):
+    def __init__(self, dev_mapper, dev_strs: Union[Iterable[str], Dict[str, int]], dim_size, axis=0, safety_factor=1.1,
+                 tune=True):
         """
         Create device manager, which unlike the device mapper, handles all argument cloning and distributing internally.
         The device manager only receivess a specification regarding the ratio of the batch each device should consume.
@@ -942,6 +943,8 @@ class DevManager:
         :type dim_size: int
         :param axis: The axis along which each argument is split when passing to multiple devices. Default is 0.
         :type axis: int, optional
+        :param safety_factor: The factor by which to be safe in the avoidance of OOM GPU errors. Default is 1.1.
+        :type safety_factor: float, optional
         :param tune: Whether to tune the devices split sizes internally based on device utilization tracking,
                      and use the provided values for initialization. Default is True.
         :type tune: bool, optional
@@ -950,6 +953,8 @@ class DevManager:
         self._num_devs = len(dev_strs)
         self._dim_size = dim_size
         self._axis = axis
+        assert 1 <= safety_factor
+        self._safety_factor = safety_factor
         self._tune = tune and self._num_devs > 1
         self._tuned = not self._tune
         self._first_tune_step = True
@@ -966,28 +971,36 @@ class DevManager:
         self._dev_percent_mems = None
         self._compute_dev_strs_dict()
 
+    def _shift_splits(self, ordered_dev_util_keys, deltas):
+        for i in range(math.floor(self._num_devs / 2)):
+
+            # less and more utilized keys
+            less_util_dev_str = ordered_dev_util_keys[i]
+            more_util_dev_str = ordered_dev_util_keys[-i - 1]
+
+            # less utilized
+            delta = min(deltas[less_util_dev_str], self._dev_strs_dict[more_util_dev_str])
+            self._dev_strs_dict[less_util_dev_str] += delta
+            self._delta_dim_sizes[less_util_dev_str] = delta
+
+            # more utilized
+            self._dev_strs_dict[more_util_dev_str] -= delta
+            self._delta_dim_sizes[more_util_dev_str] = -delta
+
     def _tune_step(self):
         new_dev_utils = dict(sorted({k: dev_util(k) for k in self._dev_strs_keys}.items(), key=lambda item: item[1]))
+        new_dev_utils_keys = list(new_dev_utils.keys())
         new_dev_percent_mems = dict(sorted({k: percent_used_mem_on_dev(k) for k in self._dev_strs_keys}.items(),
                                            key=lambda item: item[1]))
 
         # first step
         if self._first_tune_step:
+
+            # set split factor so dim size one is used in all per-device splits
             [ivy.set_split_factor(0, ds) for ds in self._dev_strs_keys]
-            new_dev_utils_keys = list(new_dev_utils.keys())
-            for i in range(math.floor(self._num_devs/2)):
 
-                # less utilized
-                less_util_dev_str = new_dev_utils_keys[i]
-                less_util_delta = 1
-                self._dev_strs_dict[less_util_dev_str] += less_util_delta
-                self._delta_dim_sizes[less_util_dev_str] = less_util_delta
-
-                # more utilized
-                more_util_dev_str = new_dev_utils_keys[-i-1]
-                more_util_delta = -1
-                self._dev_strs_dict[more_util_dev_str] += more_util_delta
-                self._delta_dim_sizes[more_util_dev_str] = more_util_delta
+            # shift the device splits by 1
+            self._shift_splits(new_dev_utils_keys, {k: 1 for k in self._dev_strs_keys})
 
             # update device percentage memory usages
             self._dev_percent_mems = new_dev_percent_mems
@@ -1000,11 +1013,19 @@ class DevManager:
 
         # otherwise
 
+        # percentage memory increase per unit dim
         delta_percent_mems = {k: new_dev_percent_mems[k] - self._dev_percent_mems[k] for k in self._dev_strs_keys}
         self._percent_inc_per_unit_dim =\
-            {k: ((self._tune_count-1)*self._percent_inc_per_unit_dim[k] +
-                 (delta_percent_mems[k]/self._delta_dim_sizes[k])) / self._tune_count
-             for k in self._dev_strs_keys}
+            {k: (((self._tune_count-1)*self._percent_inc_per_unit_dim[k] +
+                  (delta_percent_mems[k]/delta_dim_size)) / self._tune_count)
+            if delta_dim_size != 0 else self._percent_inc_per_unit_dim[k]
+             for k, delta_dim_size in self._delta_dim_sizes.items()}
+
+        # shift the device splits
+        permissable_steps =\
+            {k: min(math.floor(((100-new_dev_percent_mems[k]) / max(self._percent_inc_per_unit_dim[k], 0.1))
+                           / self._safety_factor), self._dim_size) for k in self._dev_strs_keys}
+        self._shift_splits(new_dev_utils_keys, permissable_steps)
 
         # update device utilizations and percentage memory usages
         self._dev_utils = new_dev_utils
