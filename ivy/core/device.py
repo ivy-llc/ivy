@@ -3,6 +3,7 @@ Collection of device Ivy functions.
 """
 
 # global
+import os
 import abc
 import math
 import queue
@@ -122,20 +123,26 @@ def total_mem_on_dev(dev_str: str)\
 
 
 # noinspection PyShadowingNames
-def used_mem_on_dev(dev_str: str)\
+def used_mem_on_dev(dev_str: str, process_specific=False)\
         -> float:
     """
     Get the used memory (in GB) for a given device string. In case of CPU, the used RAM is returned.
 
     :param dev_str: The device string to conver to native device handle.
     :type dev_str: str
+    :param process_specific: Whether the check the memory used by this python process alone. Default is False.
+    :type process_specific: bool, optional
     :return: The used memory on the device in GB.
     """
     if 'gpu' in dev_str:
+        if process_specific:
+            raise Exception('process-specific GPU queries are currently not supported')
         handle = _get_nvml_gpu_handle(dev_str)
         info = nvidia_smi.nvmlDeviceGetMemoryInfo(handle)
         return info.used/1e9
     elif dev_str == 'cpu':
+        if process_specific:
+            return psutil.Process(os.getpid()).memory_info().rss
         vm = psutil.virtual_memory()
         return (vm.total - vm.available)/1e9
     else:
@@ -144,21 +151,27 @@ def used_mem_on_dev(dev_str: str)\
 
 
 # noinspection PyShadowingNames
-def percent_used_mem_on_dev(dev_str: str)\
+def percent_used_mem_on_dev(dev_str: str, process_specific=False)\
         -> float:
     """
     Get the percentage used memory for a given device string. In case of CPU, the used RAM is returned.
 
     :param dev_str: The device string to conver to native device handle.
     :type dev_str: str
+    :param process_specific: Whether the check the memory used by this python process alone. Default is False.
+    :type process_specific: bool, optional
     :return: The percentage used memory on the device.
     """
     if 'gpu' in dev_str:
+        if process_specific:
+            raise Exception('process-specific GPU queries are currently not supported')
         handle = _get_nvml_gpu_handle(dev_str)
         info = nvidia_smi.nvmlDeviceGetMemoryInfo(handle)
         return (info.used/info.total)*100
     elif dev_str == 'cpu':
         vm = psutil.virtual_memory()
+        if process_specific:
+            return (psutil.Process(os.getpid()).memory_info().rss/vm.total)*100
         return (1-(vm.available/vm.total))*100
     else:
         raise Exception('Invalid device string input, must be on the form "gpu:idx" or "cpu:idx",'
