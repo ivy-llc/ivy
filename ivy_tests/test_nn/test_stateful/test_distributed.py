@@ -148,23 +148,32 @@ def test_distributed_multiprocess_training(bs_ic_oc, dev_str, call):
         # ToDo: add support for other frameworks, currently only supported for torch
         pytest.skip()
 
-    # devices
+    # devices and inputs
+    dev_strs = list()
+    xs = list()
+
+    # first device
     dev_str0 = dev_str
+    dev_strs.append(dev_str0)
+
+    # first input
+    batch_shape, input_channels, output_channels = bs_ic_oc
+    dev_batch_shape = [int(batch_shape[0]/2)] + batch_shape[1:]
+    xs.append(ivy.cast(ivy.linspace(ivy.zeros(dev_batch_shape), ivy.ones(dev_batch_shape),
+                                   input_channels, dev_str=dev_str0), 'float32'))
+
+    # second device
     if 'gpu' in dev_str:
         idx = ivy.num_gpus() - 1
         dev_str1 = dev_str[:-1] + str(idx)
-    else:
-        dev_str1 = dev_str
-    dev_strs = [dev_str0, dev_str1]
+        dev_strs.append(dev_str1)
 
-    # input
-    batch_shape, input_channels, output_channels = bs_ic_oc
-    dev_batch_shape = [int(batch_shape[0]/2)] + batch_shape[1:]
-    x0 = ivy.cast(ivy.linspace(ivy.zeros(dev_batch_shape), ivy.ones(dev_batch_shape),
-                               input_channels, dev_str=dev_str0), 'float32')
-    x1 = ivy.cast(ivy.linspace(ivy.zeros(dev_batch_shape), ivy.ones(dev_batch_shape),
-                               input_channels, dev_str=dev_str1), 'float32')
-    x = ivy.DistributedItem([x0, x1])
+        # second input
+        xs.append(ivy.cast(ivy.linspace(ivy.zeros(dev_batch_shape), ivy.ones(dev_batch_shape),
+                                       input_channels, dev_str=dev_str1), 'float32'))
+
+    # combined inputs
+    x = ivy.DistributedItem(xs)
 
     # module for processes
     module = TrainableModule(input_channels, output_channels, dev_str=dev_str0, store_vars=False)
