@@ -385,6 +385,7 @@ def test_to_ivy_module_distributed_multiprocess(bs_ic_oc, from_class_and_args, i
 
 # device manager tuning
 @pytest.mark.parametrize(
+    # "bs_ic_oc", [([384, 1], 2048, 2048)])
     "bs_ic_oc", [([2, 1], 4, 5)])
 def test_device_manager_tuning(bs_ic_oc, dev_str, call):
     # smoke test
@@ -426,13 +427,14 @@ def test_device_manager_tuning(bs_ic_oc, dev_str, call):
     dev_manager = ivy.DevManager(dev_mapper, dev_strs, batch_shape[0])
 
     # local module
-    module = TrainableModule(input_channels, output_channels, dev_str=dev_str0, store_vars=True)
+    module = TrainableModule(input_channels, output_channels, dev_str=dev_str0, store_vars=True)  # , hidden_size=2048)
     module.build()
 
     # train
     loss_tm1 = 1e12
     loss = None
     grads = None
+    # for i in range(1000):
     for i in range(10):
         loss, grads = dev_manager.map(to_distribute={'xn': x}, to_clone={'vc': module.v})
         module.v = optim.step(module.v, grads)
