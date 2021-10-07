@@ -1123,9 +1123,9 @@
 
 <div class="viewcode-block" id="DevManager"><a class="viewcode-back" href="../../../core/device.html#ivy.core.device.DevManager">[docs]</a><span class="k">class</span> <span class="nc">DevManager</span><span class="p">:</span>
 
-<div class="viewcode-block" id="DevManager.__init__"><a class="viewcode-back" href="../../../core/device.html#ivy.core.device.DevManager.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dev_mapper</span><span class="p">,</span> <span class="n">dev_strs</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]],</span> <span class="n">dim_size</span><span class="p">,</span> <span class="n">safety_factor</span><span class="o">=</span><span class="mf">1.1</span><span class="p">,</span>
-                 <span class="n">min_dev_dim_size</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">max_dev_dim_step_size</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">starting_split_factor</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> <span class="n">max_split_factor_step_size</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span>
-                 <span class="n">tune_dev_alloc</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">tune_dev_splits</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="DevManager.__init__"><a class="viewcode-back" href="../../../core/device.html#ivy.core.device.DevManager.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dev_mapper</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dev_strs</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">da_dim_size</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">safety_factor</span><span class="o">=</span><span class="mf">1.1</span><span class="p">,</span> <span class="n">min_dev_dim_size</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">max_dev_dim_step_size</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">starting_split_factor</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span>
+                 <span class="n">max_split_factor_step_size</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span> <span class="n">tune_dev_alloc</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">tune_dev_splits</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Create device manager, which unlike the device mapper, handles all argument cloning and distributing internally.</span>
 <span class="sd">        The device manager only receivess a specification regarding the ratio of the batch each device should consume.</span>
@@ -1134,8 +1134,8 @@
 <span class="sd">        :type dev_mapper: DevMapper</span>
 <span class="sd">        :param dev_strs: The devices to distribute and clone the arguments across.</span>
 <span class="sd">        :type dev_strs: sequence of strs or dict of split sizes</span>
-<span class="sd">        :param dim_size: The size of the dimension along which the device splitting is performed.</span>
-<span class="sd">        :type dim_size: int</span>
+<span class="sd">        :param da_dim_size: The size of the dimension along which the device allocation splitting is performed.</span>
+<span class="sd">        :type da_dim_size: int</span>
 <span class="sd">        :param safety_factor: The factor by which to be safe in the avoidance of OOM GPU errors. Default is 1.1.</span>
 <span class="sd">        :type safety_factor: float, optional</span>
 <span class="sd">        :param min_dev_dim_size: The minimum dimension size to pass to a device. Default is 0.</span>
@@ -1150,11 +1150,15 @@
 <span class="sd">        :param tune_dev_alloc: Whether to tune the devices split sizes internally based on device utilization tracking,</span>
 <span class="sd">                               and use the provided values for initialization. Default is True.</span>
 <span class="sd">        :type tune_dev_alloc: bool, optional</span>
-
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">num_dev_args</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">([</span><span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">dev_mapper</span><span class="p">),</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">dev_strs</span><span class="p">),</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">da_dim_size</span><span class="p">)])</span>
+        <span class="k">if</span> <span class="n">num_dev_args</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">]:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;either all or None of dev_mapper, dev_strs and da_dim_size must be specified, but found &#39;</span>
+                            <span class="s1">&#39;dev_mapper=</span><span class="si">{}</span><span class="s1">, dev_strs=</span><span class="si">{}</span><span class="s1">, da_dim_size=</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">dev_mapper</span><span class="p">,</span> <span class="n">dev_strs</span><span class="p">,</span> <span class="n">da_dim_size</span><span class="p">))</span>
+        <span class="n">tune_dev_alloc</span> <span class="o">=</span> <span class="kc">False</span> <span class="k">if</span> <span class="n">num_dev_args</span> <span class="o">==</span> <span class="mi">0</span> <span class="k">else</span> <span class="n">tune_dev_alloc</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_dev_mapper</span> <span class="o">=</span> <span class="n">dev_mapper</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_num_devs</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">dev_strs</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_dim_size</span> <span class="o">=</span> <span class="n">dim_size</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_dim_size</span> <span class="o">=</span> <span class="n">da_dim_size</span>
         <span class="k">assert</span> <span class="mi">1</span> <span class="o">&lt;=</span> <span class="n">safety_factor</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_safety_factor</span> <span class="o">=</span> <span class="n">safety_factor</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_min_dev_dim_size</span> <span class="o">=</span> <span class="n">min_dev_dim_size</span>
@@ -1166,21 +1170,23 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_first_tune_step</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_da_tune_count</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_ds_tune_count</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_tune_step</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_da_tune_step</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tune_step</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">da_tune_step</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_observed_configs</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">dev_strs</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_dev_str_ratios</span> <span class="o">=</span> <span class="n">dev_strs</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_dev_str_da_ratios</span> <span class="o">=</span> <span class="n">dev_strs</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_dev_str_ratios</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">dev_strs</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">_num_devs</span><span class="p">]</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">_num_devs</span><span class="p">))</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_dev_strs_keys</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dev_str_ratios</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_dev_str_da_ratios</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">dev_strs</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">_num_devs</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_num_devs</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_dev_strs_keys</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dev_str_da_ratios</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tune_ds</span><span class="p">:</span>
             <span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">set_split_factor</span><span class="p">(</span><span class="n">starting_split_factor</span><span class="p">,</span> <span class="n">ds</span><span class="p">)</span> <span class="k">for</span> <span class="n">ds</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dev_strs_keys</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_percent_inc_per_unit_dim</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dev_strs_keys</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">_num_devs</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_delta_dim_sizes</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dev_strs_keys</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">_num_devs</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_dev_percent_mems</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_compute_dev_strs_dict</span><span class="p">()</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_compute_dev_strs_da</span><span class="p">()</span></div>
 
-    <span class="k">def</span> <span class="nf">_shift_splits</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ordered_dev_util_keys</span><span class="p">,</span> <span class="n">deltas</span><span class="p">):</span>
+    <span class="c1"># Device Allocation #</span>
+
+    <span class="k">def</span> <span class="nf">_shift_da_splits</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ordered_dev_util_keys</span><span class="p">,</span> <span class="n">deltas</span><span class="p">):</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_num_devs</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)):</span>
 
             <span class="c1"># less and more utilized keys</span>
@@ -1188,17 +1194,32 @@
             <span class="n">more_util_dev_str</span> <span class="o">=</span> <span class="n">ordered_dev_util_keys</span><span class="p">[</span><span class="o">-</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
 
             <span class="c1"># less utilized</span>
-            <span class="n">delta</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">deltas</span><span class="p">[</span><span class="n">less_util_dev_str</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dev_strs_dict</span><span class="p">[</span><span class="n">more_util_dev_str</span><span class="p">]</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_min_dev_dim_size</span><span class="p">)</span>
+            <span class="n">delta</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">deltas</span><span class="p">[</span><span class="n">less_util_dev_str</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dev_strs_da</span><span class="p">[</span><span class="n">more_util_dev_str</span><span class="p">]</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_min_dev_dim_size</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_max_dev_dim_step_size</span><span class="p">):</span>
                 <span class="n">delta</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">delta</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_max_dev_dim_step_size</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_dev_strs_dict</span><span class="p">[</span><span class="n">less_util_dev_str</span><span class="p">]</span> <span class="o">+=</span> <span class="n">delta</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_dev_strs_da</span><span class="p">[</span><span class="n">less_util_dev_str</span><span class="p">]</span> <span class="o">+=</span> <span class="n">delta</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_delta_dim_sizes</span><span class="p">[</span><span class="n">less_util_dev_str</span><span class="p">]</span> <span class="o">=</span> <span class="n">delta</span>
 
             <span class="c1"># more utilized</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_dev_strs_dict</span><span class="p">[</span><span class="n">more_util_dev_str</span><span class="p">]</span> <span class="o">-=</span> <span class="n">delta</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_dev_strs_da</span><span class="p">[</span><span class="n">more_util_dev_str</span><span class="p">]</span> <span class="o">-=</span> <span class="n">delta</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_delta_dim_sizes</span><span class="p">[</span><span class="n">more_util_dev_str</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="n">delta</span>
 
-    <span class="k">def</span> <span class="nf">_da_tune_step</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_compute_dev_strs_da</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">split_sizes</span> <span class="o">=</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">r</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dim_size</span><span class="p">))</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dev_str_da_ratios</span><span class="o">.</span><span class="n">values</span><span class="p">()]</span>
+        <span class="n">combined_batch_size</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">split_sizes</span><span class="p">)</span>
+        <span class="n">excess_size</span> <span class="o">=</span> <span class="n">combined_batch_size</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dim_size</span>
+        <span class="k">if</span> <span class="n">excess_size</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">excess_size</span><span class="p">)):</span>
+                <span class="n">split_sizes</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-=</span> <span class="mi">1</span>
+        <span class="k">elif</span> <span class="n">excess_size</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">excess_size</span><span class="p">)):</span>
+                <span class="n">split_sizes</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_dev_strs_da</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dev_strs_keys</span><span class="p">,</span> <span class="n">split_sizes</span><span class="p">)}</span>
+
+    <span class="k">def</span> <span class="nf">_compute_dev_da_ratios</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_dev_str_da_ratios</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">v</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dim_size</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dev_strs_da</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+
+<div class="viewcode-block" id="DevManager.da_tune_step"><a class="viewcode-back" href="../../../core/device.html#ivy.core.device.DevManager.da_tune_step">[docs]</a>    <span class="k">def</span> <span class="nf">da_tune_step</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">new_dev_utils</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">sorted</span><span class="p">({</span><span class="n">k</span><span class="p">:</span> <span class="n">dev_util</span><span class="p">(</span><span class="n">k</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dev_strs_keys</span><span class="p">}</span><span class="o">.</span><span class="n">items</span><span class="p">(),</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">item</span><span class="p">:</span> <span class="n">item</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
         <span class="n">new_dev_utils_keys</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">new_dev_utils</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
         <span class="n">new_dev_percent_mems</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">sorted</span><span class="p">({</span><span class="n">k</span><span class="p">:</span> <span class="n">percent_used_mem_on_dev</span><span class="p">(</span><span class="n">k</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dev_strs_keys</span><span class="p">}</span><span class="o">.</span><span class="n">items</span><span class="p">(),</span>
@@ -1208,7 +1229,7 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_first_tune_step</span><span class="p">:</span>
 
             <span class="c1"># shift the device splits by 1</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_shift_splits</span><span class="p">(</span><span class="n">new_dev_utils_keys</span><span class="p">,</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="mi">1</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dev_strs_keys</span><span class="p">})</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_shift_da_splits</span><span class="p">(</span><span class="n">new_dev_utils_keys</span><span class="p">,</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="mi">1</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dev_strs_keys</span><span class="p">})</span>
 
             <span class="c1"># update device percentage memory usages</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_dev_percent_mems</span> <span class="o">=</span> <span class="n">new_dev_percent_mems</span>
@@ -1216,9 +1237,9 @@
             <span class="c1"># increment count, update ratios and tune step, and return</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_da_tune_count</span> <span class="o">+=</span> <span class="mi">1</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_first_tune_step</span> <span class="o">=</span> <span class="kc">False</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_compute_dev_ratios_dict</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_compute_dev_da_ratios</span><span class="p">()</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tune_ds</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_tune_step</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ds_tune_step</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_tune_step</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ds_tune_step</span>
             <span class="k">return</span>
 
         <span class="c1"># otherwise</span>
@@ -1235,20 +1256,20 @@
         <span class="n">permissable_steps</span> <span class="o">=</span> \
             <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="nb">min</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">floor</span><span class="p">(((</span><span class="mi">100</span><span class="o">-</span><span class="n">new_dev_percent_mems</span><span class="p">[</span><span class="n">k</span><span class="p">])</span> <span class="o">/</span> <span class="nb">max</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_percent_inc_per_unit_dim</span><span class="p">[</span><span class="n">k</span><span class="p">],</span> <span class="mf">0.1</span><span class="p">))</span>
                                <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">_safety_factor</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dim_size</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dev_strs_keys</span><span class="p">}</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_shift_splits</span><span class="p">(</span><span class="n">new_dev_utils_keys</span><span class="p">,</span> <span class="n">permissable_steps</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_shift_da_splits</span><span class="p">(</span><span class="n">new_dev_utils_keys</span><span class="p">,</span> <span class="n">permissable_steps</span><span class="p">)</span>
 
         <span class="c1"># update device utilizations and percentage memory usages</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_dev_utils</span> <span class="o">=</span> <span class="n">new_dev_utils</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_dev_percent_mems</span> <span class="o">=</span> <span class="n">new_dev_percent_mems</span>
 
         <span class="c1"># increment count, update ratios and tune step</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_compute_dev_ratios_dict</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_compute_dev_da_ratios</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_da_tune_count</span> <span class="o">+=</span> <span class="mi">1</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tune_ds</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_tune_step</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ds_tune_step</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_tune_step</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ds_tune_step</span>
 
         <span class="c1"># check if tuning is complete, and return if so</span>
-        <span class="n">config</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dev_strs_dict</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+        <span class="n">config</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dev_strs_da</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
         <span class="k">if</span> <span class="n">config</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_observed_configs</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_observed_configs</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_percent_inc_per_unit_dim</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
@@ -1258,28 +1279,15 @@
             <span class="k">return</span>
 
         <span class="c1"># otherwise add the current config to those observed</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_observed_configs</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_observed_configs</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">config</span><span class="p">)</span></div>
 
-    <span class="k">def</span> <span class="nf">_ds_tune_step</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="c1"># Device Splitting #</span>
+
+<div class="viewcode-block" id="DevManager.ds_tune_step"><a class="viewcode-back" href="../../../core/device.html#ivy.core.device.DevManager.ds_tune_step">[docs]</a>    <span class="k">def</span> <span class="nf">ds_tune_step</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_ds_tune_count</span> <span class="o">+=</span> <span class="mi">1</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_compute_dev_ratios_dict</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_compute_dev_da_ratios</span><span class="p">()</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tune_da</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_tune_step</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_da_tune_step</span>
-
-    <span class="k">def</span> <span class="nf">_compute_dev_strs_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">split_sizes</span> <span class="o">=</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">r</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dim_size</span><span class="p">))</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dev_str_ratios</span><span class="o">.</span><span class="n">values</span><span class="p">()]</span>
-        <span class="n">combined_batch_size</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">split_sizes</span><span class="p">)</span>
-        <span class="n">excess_size</span> <span class="o">=</span> <span class="n">combined_batch_size</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dim_size</span>
-        <span class="k">if</span> <span class="n">excess_size</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">excess_size</span><span class="p">)):</span>
-                <span class="n">split_sizes</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">-=</span> <span class="mi">1</span>
-        <span class="k">elif</span> <span class="n">excess_size</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">excess_size</span><span class="p">)):</span>
-                <span class="n">split_sizes</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_dev_strs_dict</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dev_strs_keys</span><span class="p">,</span> <span class="n">split_sizes</span><span class="p">)}</span>
-
-    <span class="k">def</span> <span class="nf">_compute_dev_ratios_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_dev_str_ratios</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">v</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">_dim_size</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dev_strs_dict</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_tune_step</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">da_tune_step</span></div>
 
 <div class="viewcode-block" id="DevManager.map"><a class="viewcode-back" href="../../../core/device.html#ivy.core.device.DevManager.map">[docs]</a>    <span class="k">def</span> <span class="nf">map</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">to_clone</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">to_distribute</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -1292,7 +1300,7 @@
 <span class="sd">        :type to_distribute: dict of any, optional</span>
 <span class="sd">        :return: The results of the function, returned as a MultiDevice instance.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">used_dev_strs_dict</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dev_strs_dict</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">v</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">}</span>
+        <span class="n">used_dev_strs_dict</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dev_strs_da</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">v</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">}</span>
         <span class="n">used_dev_strs</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">used_dev_strs_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
         <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">to_clone</span><span class="p">):</span>
             <span class="n">to_clone</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">clone</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">used_dev_strs</span><span class="p">)</span><span class="o">.</span><span class="n">at_devs</span><span class="p">()</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">to_clone</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
@@ -1319,7 +1327,11 @@
     <span class="nd">@dim_size</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">dim_size</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_dim_size</span> <span class="o">=</span> <span class="n">batch_size</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_compute_dev_strs_dict</span><span class="p">()</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_compute_dev_strs_da</span><span class="p">()</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">tune_step</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tune_step</span></div>
 
 
 <span class="c1"># Profiler #</span>
