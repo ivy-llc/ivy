@@ -24,7 +24,6 @@
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../_static/js/theme.js"></script>
 
@@ -96,6 +95,7 @@
 <li class="toctree-l2"><a class="reference internal" href="str_to_dev.html">str_to_dev</a></li>
 <li class="toctree-l2"><a class="reference internal" href="dev_str.html">dev_str</a></li>
 <li class="toctree-l2"><a class="reference internal" href="memory_on_dev.html">memory_on_dev</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dev_util.html">dev_util</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gpu_is_available.html">gpu_is_available</a></li>
 <li class="toctree-l2"><a class="reference internal" href="num_gpus.html">num_gpus</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tpu_is_available.html">tpu_is_available</a></li>
@@ -233,24 +233,6 @@
             
   <div class="section" id="distribute">
 <h1>distribute<a class="headerlink" href="#distribute" title="Permalink to this headline">¶</a></h1>
-<dl class="py function">
-<dt id="ivy.core.device.distribute">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">distribute</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">dev_strs</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>Iterable<span class="p">[</span>str<span class="p">]</span><span class="p">, </span>Dict<span class="p">[</span>str<span class="p">, </span>int<span class="p">]</span><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">0</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/device.html#distribute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.device.distribute" title="Permalink to this definition">¶</a></dt>
-<dd><p>Distribute the input item across the specified devices, returning a list of sub-items, each on a different device.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<em>array</em><em> or </em><em>container</em>) – The input array or container to distribute across devices.</p></li>
-<li><p><strong>dev_strs</strong> (<em>sequence of strs</em><em> or </em><em>dict of split sizes</em>) – The devices to distribute the input across.</p></li>
-<li><p><strong>axis</strong> (<em>int</em><em>, </em><em>optional</em>) – The axis along which to split the input. Default is 0.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>array or container distributed across the target devices</p>
-</dd>
-</dl>
-</dd></dl>
-
 <div class="line-block">
 <div class="line"><br /></div>
 <div class="line"><strong>Supported Frameworks:</strong></div>
