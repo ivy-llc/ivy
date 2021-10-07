@@ -6,6 +6,7 @@ Collection of device Ivy functions.
 import os
 import abc
 import math
+import time
 import queue
 import psutil
 import inspect
@@ -889,7 +890,7 @@ class DevMapperMultiProc(DevMapper):
 
 class DevManager:
 
-    def __init__(self, dev_mapper, dev_strs: Union[Iterable[str], Dict[str, int]], dim_size, axis=0):
+    def __init__(self, dev_mapper, dev_strs: Union[Iterable[str], Dict[str, int]], dim_size, axis=0, tune=True):
         """
         Create device manager, which unlike the device mapper, handles all argument cloning and distributing internally.
         The device manager only receivess a specification regarding the ratio of the batch each device should consume.
@@ -902,19 +903,79 @@ class DevManager:
         :type dim_size: int
         :param axis: The axis along which each argument is split when passing to multiple devices. Default is 0.
         :type axis: int, optional
+        :param tune: Whether to tune the devices split sizes internally based on device utilization tracking,
+                     and use the provided values for initialization. Default is True.
+        :type tune: bool, optional
         """
         self._dev_mapper = dev_mapper
         self._num_devs = len(dev_strs)
         self._dim_size = dim_size
         self._axis = axis
+        self._tune = tune
+        self._tuned = not tune
+        self._first_tune_step = True
+        self._tune_count = 0
+        self._log_devs = False
+        self._dev_util_logs = dict()
         if isinstance(dev_strs, dict):
             self._dev_str_ratios = dev_strs
         else:
             self._dev_str_ratios = dict(zip(dev_strs, [1/self._num_devs]*self._num_devs))
         self._dev_strs_keys = self._dev_str_ratios.keys()
+        self._percent_inc_per_unit_dim = dict(zip(self._dev_strs_keys, [0]*self._num_devs))
         self._compute_dev_strs_dict()
 
+    def _tune_step(self):
+        new_dev_utils = dict(sorted({k: dev_util(k) for k in self._dev_strs_keys}.items(), key=lambda item: item[1]))
+        new_dev_percent_mems = dict(sorted({k: percent_used_mem_on_dev(k) for k in self._dev_strs_keys}.items(),
+                                           key=lambda item: item[1]))
+
+        # first step
+        if self._first_tune_step:
+            for i in range(math.floor(self._num_devs/2)):
+
+                # less utilized
+                less_util_dev = new_dev_utils[i]
+                less_util_delta = 1
+                self._dev_strs_dict[less_util_dev] += less_util_delta
+                self._delta_dim_sizes[less_util_dev] = less_util_delta
+
+                # more utilized
+                more_util_dev = new_dev_utils[-i]
+                more_util_delta = -1
+                self._dev_strs_dict[more_util_dev] += more_util_delta
+                self._delta_dim_sizes[more_util_dev] = more_util_delta
+
+            # increment count and return
+            self._tune_count += 1
+            return
+
+        # otherwise
+
+        delta_percent_mems = {k: new_dev_percent_mems[k] - self._dev_percent_mems[k] for k in self._dev_strs_keys}
+        self._percent_inc_per_unit_dim =\
+            {k: ((self._tune_count-1)*self._percent_inc_per_unit_dim[k] +
+                 (delta_percent_mems[k]/self._delta_dim_sizes[k])) / self._tune_count
+             for k in self._dev_strs_keys}
+        self._dev_utils = new_dev_utils
+        self._dev_percent_mems = new_dev_percent_mems
+
+        # increment count and return
+        self._tune_count += 1
+
     def _compute_dev_strs_dict(self):
+        split_sizes = [int(round(r * self._dim_size)) for r in self._dev_str_ratios.values()]
+        combined_batch_size = sum(split_sizes)
+        excess_size = combined_batch_size - self._dim_size
+        if excess_size > 0:
+            for i in range(abs(excess_size)):
+                split_sizes[i] -= 1
+        elif excess_size < 0:
+            for i in range(abs(excess_size)):
+                split_sizes[i] += 1
+        self._dev_strs_dict = dict([(k, v) for k, v in zip(self._dev_strs_keys, split_sizes)])
+
+    def _compute_dev_ratios_dict(self):
         split_sizes = [int(round(r * self._dim_size)) for r in self._dev_str_ratios.values()]
         combined_batch_size = sum(split_sizes)
         excess_size = combined_batch_size - self._dim_size
@@ -945,7 +1006,11 @@ class DevManager:
             to_distribute = None
         else:
             to_distribute = dict([(k, ivy.distribute(v, self._dev_strs_dict, self._axis)) for k, v in to_clone.items()])
-        return self._dev_mapper.map(**to_clone, **to_distribute)
+        ret = self._dev_mapper.map(**to_clone, **to_distribute)
+        if self._tuned:
+            return ret
+        self._tune_step()
+        return ret
 
     def __del__(self):
         self._dev_mapper.__del__()
