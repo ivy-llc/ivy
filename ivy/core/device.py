@@ -10,7 +10,10 @@ import queue
 import psutil
 import inspect
 import nvidia_smi
-nvidia_smi.nvmlInit()
+try:
+    nvidia_smi.nvmlInit()
+except nvidia_smi.NVMLError_LibraryNotFound:
+    pass
 from typing import Union, Type, Callable, Iterable, Dict
 
 # local
