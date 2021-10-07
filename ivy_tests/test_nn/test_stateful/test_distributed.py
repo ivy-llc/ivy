@@ -425,7 +425,11 @@ def test_to_ivy_module_distributed_multiprocess(bs_ic_oc, from_class_and_args, i
 @pytest.mark.parametrize(
     # "bs_ic_oc", [([384, 1], 2048, 2048)])
     "bs_ic_oc", [([2, 1], 4, 5)])
-def test_device_manager_tuning(bs_ic_oc, dev_str, call):
+@pytest.mark.parametrize(
+    "tune_dev_alloc", [True, False])
+@pytest.mark.parametrize(
+    "tune_dev_splits", [True, False])
+def test_device_manager_tuning(bs_ic_oc, tune_dev_alloc, tune_dev_splits, dev_str, call):
     # smoke test
     if call is helpers.np_call:
         # NumPy does not support gradients
@@ -463,7 +467,8 @@ def test_device_manager_tuning(bs_ic_oc, dev_str, call):
     dev_mapper = ivy.DevMapperMultiProc(map_fn, ret_fn, dev_strs, constant={'module': module})
 
     # device manager
-    dev_manager = ivy.DevManager(dev_mapper, dev_strs, batch_shape[0])
+    dev_manager = ivy.DevManager(dev_mapper, dev_strs, batch_shape[0], tune_dev_alloc=tune_dev_alloc,
+                                 tune_dev_splits=tune_dev_splits)
 
     # local module
     module = TrainableModuleWithSplit(input_channels, output_channels,
