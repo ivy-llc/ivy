@@ -6,9 +6,10 @@ Collection of device Ivy functions.
 import abc
 import math
 import queue
+import psutil
 import inspect
 import nvidia_smi
-from psutil import virtual_memory
+nvidia_smi.nvmlInit()
 from typing import Union, Type, Callable, Iterable, Dict
 
 # local
@@ -16,6 +17,15 @@ import ivy
 from ivy.framework_handler import current_framework as _cur_framework
 
 DEFAULT_DEVICE = None
+
+
+# Helpers #
+# --------#
+
+# noinspection PyShadowingNames
+def _get_nvml_gpu_handle(dev_str):
+    gpu_idx = int(dev_str.split(':')[-1])
+    return nvidia_smi.nvmlDeviceGetHandleByIndex(gpu_idx)
 
 
 # Device Queries #
@@ -88,14 +98,32 @@ def memory_on_dev(dev_str: str)\
     :type dev_str: str
     :return: The total memory on the device in GB.
     """
-    if 'gpu' in dev_str or 'cuda' in dev_str:
-        gpu_idx = int(dev_str.split(':')[-1])
-        nvidia_smi.nvmlInit()
-        handle = nvidia_smi.nvmlDeviceGetHandleByIndex(gpu_idx)
+    if 'gpu' in dev_str:
+        handle = _get_nvml_gpu_handle(dev_str)
         info = nvidia_smi.nvmlDeviceGetMemoryInfo(handle)
         return info.total/1e9
-    elif 'cpu' in dev_str:
-        return virtual_memory().total/1e9
+    elif dev_str == 'cpu':
+        return psutil.virtual_memory().total/1e9
+    else:
+        raise Exception('Invalid device string input, must be on the form "gpu:idx" or "cpu:idx",'
+                        'but found {}'.format(dev_str))
+
+
+# noinspection PyShadowingNames
+def dev_util(dev_str: str)\
+        -> float:
+    """
+    Get the current utilization (%) for a given device.
+
+    :param dev_str: The device string of the device to query utilization for.
+    :type dev_str: str
+    :return: The device utilization (%)
+    """
+    if dev_str == 'cpu':
+        return psutil.cpu_percent()
+    elif 'gpu' in dev_str:
+        handle = _get_nvml_gpu_handle(dev_str)
+        return nvidia_smi.nvmlDeviceGetUtilizationRates(handle).gpu
     else:
         raise Exception('Invalid device string input, must be on the form "gpu:idx" or "cpu:idx",'
                         'but found {}'.format(dev_str))
