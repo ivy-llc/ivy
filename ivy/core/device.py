@@ -934,7 +934,7 @@ class DevMapperMultiProc(DevMapper):
 class DevManager:
 
     def __init__(self, dev_mapper, dev_strs: Union[Iterable[str], Dict[str, int]], dim_size, axis=0, safety_factor=1.1,
-                 tune=True):
+                 min_dev_dim_size=0, max_dev_dim_step_size=1, tune=True):
         """
         Create device manager, which unlike the device mapper, handles all argument cloning and distributing internally.
         The device manager only receivess a specification regarding the ratio of the batch each device should consume.
@@ -949,6 +949,10 @@ class DevManager:
         :type axis: int, optional
         :param safety_factor: The factor by which to be safe in the avoidance of OOM GPU errors. Default is 1.1.
         :type safety_factor: float, optional
+        :param min_dev_dim_size: The minimum dimension size to pass to a device. Default is 0.
+        :type min_dev_dim_size: int, optional
+        :param max_dev_dim_step_size: The maximum step size for changing the dimension for a device. Default is None.
+        :type max_dev_dim_step_size: int, optional
         :param tune: Whether to tune the devices split sizes internally based on device utilization tracking,
                      and use the provided values for initialization. Default is True.
         :type tune: bool, optional
@@ -959,6 +963,8 @@ class DevManager:
         self._axis = axis
         assert 1 <= safety_factor
         self._safety_factor = safety_factor
+        self._min_dev_dim_size = min_dev_dim_size
+        self._max_dev_dim_step_size = max_dev_dim_step_size
         self._tune = tune and self._num_devs > 1
         self._tuned = not self._tune
         self._first_tune_step = True
@@ -983,7 +989,9 @@ class DevManager:
             more_util_dev_str = ordered_dev_util_keys[-i - 1]
 
             # less utilized
-            delta = min(deltas[less_util_dev_str], self._dev_strs_dict[more_util_dev_str])
+            delta = min(deltas[less_util_dev_str], self._dev_strs_dict[more_util_dev_str] - self._min_dev_dim_size)
+            if ivy.exists(self._max_dev_dim_step_size):
+                delta = min(delta, self._max_dev_dim_step_size)
             self._dev_strs_dict[less_util_dev_str] += delta
             self._delta_dim_sizes[less_util_dev_str] = delta
 
@@ -1065,15 +1073,17 @@ class DevManager:
         :type to_distribute: dict of any, optional
         :return: The results of the function, returned as a MultiDevice instance.
         """
+        used_dev_strs_dict = {k: v for k, v in self._dev_strs_dict.items() if v > 0}
+        used_dev_strs = list(used_dev_strs_dict.keys())
         if ivy.exists(to_clone):
-            to_clone = {k: ivy.clone(v, self._dev_strs_keys).at_devs() for k, v in to_clone.items()}
+            to_clone = {k: ivy.clone(v, used_dev_strs).at_devs() for k, v in to_clone.items()}
         else:
             to_clone = {}
         if ivy.exists(to_distribute):
-            to_distribute = {k: ivy.distribute(v, self._dev_strs_keys).at_devs() for k, v in to_distribute.items()}
+            to_distribute = {k: ivy.distribute(v, used_dev_strs_dict).at_devs() for k, v in to_distribute.items()}
         else:
             to_distribute = {}
-        ret = self._dev_mapper.map(**to_clone, **to_distribute)
+        ret = self._dev_mapper.map(**to_clone, **to_distribute, used_dev_strs=used_dev_strs)
         if self._tuned:
             return ret
         self._tune_step()
