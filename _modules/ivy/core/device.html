@@ -193,12 +193,17 @@
 <span class="sd">&quot;&quot;&quot;</span>
 
 <span class="c1"># global</span>
+<span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">abc</span>
 <span class="kn">import</span> <span class="nn">math</span>
 <span class="kn">import</span> <span class="nn">queue</span>
+<span class="kn">import</span> <span class="nn">psutil</span>
 <span class="kn">import</span> <span class="nn">inspect</span>
 <span class="kn">import</span> <span class="nn">nvidia_smi</span>
-<span class="kn">from</span> <span class="nn">psutil</span> <span class="kn">import</span> <span class="n">virtual_memory</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="n">nvidia_smi</span><span class="o">.</span><span class="n">nvmlInit</span><span class="p">()</span>
+<span class="k">except</span> <span class="n">nvidia_smi</span><span class="o">.</span><span class="n">NVMLError_LibraryNotFound</span><span class="p">:</span>
+    <span class="k">pass</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Type</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">Dict</span>
 
 <span class="c1"># local</span>
@@ -206,10 +211,27 @@
 <span class="kn">from</span> <span class="nn">ivy.framework_handler</span> <span class="kn">import</span> <span class="n">current_framework</span> <span class="k">as</span> <span class="n">_cur_framework</span>
 
 <span class="n">DEFAULT_DEVICE</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="n">DEV_HANDLES</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+
+
+<span class="c1"># Helpers #</span>
+<span class="c1"># --------#</span>
+
+<span class="c1"># noinspection PyShadowingNames</span>
+<span class="k">def</span> <span class="nf">_get_nvml_gpu_handle</span><span class="p">(</span><span class="n">dev_str</span><span class="p">):</span>
+    <span class="k">global</span> <span class="n">DEV_HANDLES</span>
+    <span class="k">if</span> <span class="n">dev_str</span> <span class="ow">in</span> <span class="n">DEV_HANDLES</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">DEV_HANDLES</span><span class="p">[</span><span class="n">dev_str</span><span class="p">]</span>
+    <span class="n">gpu_idx</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">dev_str</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;:&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+    <span class="n">handle</span> <span class="o">=</span> <span class="n">nvidia_smi</span><span class="o">.</span><span class="n">nvmlDeviceGetHandleByIndex</span><span class="p">(</span><span class="n">gpu_idx</span><span class="p">)</span>
+    <span class="n">DEV_HANDLES</span><span class="p">[</span><span class="n">dev_str</span><span class="p">]</span> <span class="o">=</span> <span class="n">handle</span>
+    <span class="k">return</span> <span class="n">handle</span>
 
 
 <span class="c1"># Device Queries #</span>
 <span class="c1"># ---------------#</span>
+
+<span class="c1"># Retreival #</span>
 
 <div class="viewcode-block" id="dev"><a class="viewcode-back" href="../../../core/device/dev.html#ivy.core.device.dev">[docs]</a><span class="k">def</span> <span class="nf">dev</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span> <span class="n">f</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Framework</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span>\
         <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Device</span><span class="p">:</span>
@@ -224,6 +246,22 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">dev</span><span class="p">(</span><span class="n">x</span><span class="p">)</span></div>
 
+
+<div class="viewcode-block" id="dev_str"><a class="viewcode-back" href="../../../core/device/dev_str.html#ivy.core.device.dev_str">[docs]</a><span class="k">def</span> <span class="nf">dev_str</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span> <span class="n">f</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Framework</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span>\
+        <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get the device string for input array x.</span>
+
+<span class="sd">    :param x: Tensor for which to get the device string.</span>
+<span class="sd">    :type x: array</span>
+<span class="sd">    :param f: Machine learning framework. Inferred from inputs if None.</span>
+<span class="sd">    :type f: ml_framework, optional</span>
+<span class="sd">    :return: Device string for the array, e.g. &#39;cuda:0&#39;, &#39;cuda:1&#39;, &#39;cpu&#39; etc..</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">dev_str</span><span class="p">(</span><span class="n">x</span><span class="p">)</span></div>
+
+
+<span class="c1"># Conversions #</span>
 
 <div class="viewcode-block" id="dev_to_str"><a class="viewcode-back" href="../../../core/device/dev_to_str.html#ivy.core.device.dev_to_str">[docs]</a><span class="k">def</span> <span class="nf">dev_to_str</span><span class="p">(</span><span class="n">dev_in</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Device</span><span class="p">,</span> <span class="n">f</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Framework</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span>\
         <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
@@ -254,42 +292,108 @@
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">str_to_dev</span><span class="p">(</span><span class="n">dev_str</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="dev_str"><a class="viewcode-back" href="../../../core/device/dev_str.html#ivy.core.device.dev_str">[docs]</a><span class="k">def</span> <span class="nf">dev_str</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span> <span class="n">f</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Framework</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span>\
-        <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Get the device string for input array x.</span>
-
-<span class="sd">    :param x: Tensor for which to get the device string.</span>
-<span class="sd">    :type x: array</span>
-<span class="sd">    :param f: Machine learning framework. Inferred from inputs if None.</span>
-<span class="sd">    :type f: ml_framework, optional</span>
-<span class="sd">    :return: Device string for the array, e.g. &#39;cuda:0&#39;, &#39;cuda:1&#39;, &#39;cpu&#39; etc..</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">dev_str</span><span class="p">(</span><span class="n">x</span><span class="p">)</span></div>
-
+<span class="c1"># Memory #</span>
 
 <span class="c1"># noinspection PyShadowingNames</span>
-<div class="viewcode-block" id="memory_on_dev"><a class="viewcode-back" href="../../../core/device/memory_on_dev.html#ivy.core.device.memory_on_dev">[docs]</a><span class="k">def</span> <span class="nf">memory_on_dev</span><span class="p">(</span><span class="n">dev_str</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span>\
+<div class="viewcode-block" id="total_mem_on_dev"><a class="viewcode-back" href="../../../core/device/total_mem_on_dev.html#ivy.core.device.total_mem_on_dev">[docs]</a><span class="k">def</span> <span class="nf">total_mem_on_dev</span><span class="p">(</span><span class="n">dev_str</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span>\
         <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Get the total amount of memory for a given device string. In case of CPU, the total RAM is returned.</span>
+<span class="sd">    Get the total amount of memory (in GB) for a given device string. In case of CPU, the total RAM is returned.</span>
 
 <span class="sd">    :param dev_str: The device string to conver to native device handle.</span>
 <span class="sd">    :type dev_str: str</span>
 <span class="sd">    :return: The total memory on the device in GB.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="s1">&#39;gpu&#39;</span> <span class="ow">in</span> <span class="n">dev_str</span> <span class="ow">or</span> <span class="s1">&#39;cuda&#39;</span> <span class="ow">in</span> <span class="n">dev_str</span><span class="p">:</span>
-        <span class="n">gpu_idx</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">dev_str</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;:&#39;</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
-        <span class="n">nvidia_smi</span><span class="o">.</span><span class="n">nvmlInit</span><span class="p">()</span>
-        <span class="n">handle</span> <span class="o">=</span> <span class="n">nvidia_smi</span><span class="o">.</span><span class="n">nvmlDeviceGetHandleByIndex</span><span class="p">(</span><span class="n">gpu_idx</span><span class="p">)</span>
+    <span class="k">if</span> <span class="s1">&#39;gpu&#39;</span> <span class="ow">in</span> <span class="n">dev_str</span><span class="p">:</span>
+        <span class="n">handle</span> <span class="o">=</span> <span class="n">_get_nvml_gpu_handle</span><span class="p">(</span><span class="n">dev_str</span><span class="p">)</span>
         <span class="n">info</span> <span class="o">=</span> <span class="n">nvidia_smi</span><span class="o">.</span><span class="n">nvmlDeviceGetMemoryInfo</span><span class="p">(</span><span class="n">handle</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">info</span><span class="o">.</span><span class="n">total</span><span class="o">/</span><span class="mf">1e9</span>
-    <span class="k">elif</span> <span class="s1">&#39;cpu&#39;</span> <span class="ow">in</span> <span class="n">dev_str</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">virtual_memory</span><span class="p">()</span><span class="o">.</span><span class="n">total</span><span class="o">/</span><span class="mf">1e9</span>
+    <span class="k">elif</span> <span class="n">dev_str</span> <span class="o">==</span> <span class="s1">&#39;cpu&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">psutil</span><span class="o">.</span><span class="n">virtual_memory</span><span class="p">()</span><span class="o">.</span><span class="n">total</span><span class="o">/</span><span class="mf">1e9</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;Invalid device string input, must be on the form &quot;gpu:idx&quot; or &quot;cpu:idx&quot;,&#39;</span>
                         <span class="s1">&#39;but found </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">dev_str</span><span class="p">))</span></div>
 
+
+<span class="c1"># noinspection PyShadowingNames</span>
+<div class="viewcode-block" id="used_mem_on_dev"><a class="viewcode-back" href="../../../core/device/used_mem_on_dev.html#ivy.core.device.used_mem_on_dev">[docs]</a><span class="k">def</span> <span class="nf">used_mem_on_dev</span><span class="p">(</span><span class="n">dev_str</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">process_specific</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>\
+        <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get the used memory (in GB) for a given device string. In case of CPU, the used RAM is returned.</span>
+
+<span class="sd">    :param dev_str: The device string to conver to native device handle.</span>
+<span class="sd">    :type dev_str: str</span>
+<span class="sd">    :param process_specific: Whether the check the memory used by this python process alone. Default is False.</span>
+<span class="sd">    :type process_specific: bool, optional</span>
+<span class="sd">    :return: The used memory on the device in GB.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="s1">&#39;gpu&#39;</span> <span class="ow">in</span> <span class="n">dev_str</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">process_specific</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;process-specific GPU queries are currently not supported&#39;</span><span class="p">)</span>
+        <span class="n">handle</span> <span class="o">=</span> <span class="n">_get_nvml_gpu_handle</span><span class="p">(</span><span class="n">dev_str</span><span class="p">)</span>
+        <span class="n">info</span> <span class="o">=</span> <span class="n">nvidia_smi</span><span class="o">.</span><span class="n">nvmlDeviceGetMemoryInfo</span><span class="p">(</span><span class="n">handle</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">info</span><span class="o">.</span><span class="n">used</span><span class="o">/</span><span class="mf">1e9</span>
+    <span class="k">elif</span> <span class="n">dev_str</span> <span class="o">==</span> <span class="s1">&#39;cpu&#39;</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">process_specific</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">psutil</span><span class="o">.</span><span class="n">Process</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getpid</span><span class="p">())</span><span class="o">.</span><span class="n">memory_info</span><span class="p">()</span><span class="o">.</span><span class="n">rss</span>
+        <span class="n">vm</span> <span class="o">=</span> <span class="n">psutil</span><span class="o">.</span><span class="n">virtual_memory</span><span class="p">()</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">vm</span><span class="o">.</span><span class="n">total</span> <span class="o">-</span> <span class="n">vm</span><span class="o">.</span><span class="n">available</span><span class="p">)</span><span class="o">/</span><span class="mf">1e9</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;Invalid device string input, must be on the form &quot;gpu:idx&quot; or &quot;cpu:idx&quot;,&#39;</span>
+                        <span class="s1">&#39;but found </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">dev_str</span><span class="p">))</span></div>
+
+
+<span class="c1"># noinspection PyShadowingNames</span>
+<div class="viewcode-block" id="percent_used_mem_on_dev"><a class="viewcode-back" href="../../../core/device/percent_used_mem_on_dev.html#ivy.core.device.percent_used_mem_on_dev">[docs]</a><span class="k">def</span> <span class="nf">percent_used_mem_on_dev</span><span class="p">(</span><span class="n">dev_str</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">process_specific</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>\
+        <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get the percentage used memory for a given device string. In case of CPU, the used RAM is returned.</span>
+
+<span class="sd">    :param dev_str: The device string to conver to native device handle.</span>
+<span class="sd">    :type dev_str: str</span>
+<span class="sd">    :param process_specific: Whether the check the memory used by this python process alone. Default is False.</span>
+<span class="sd">    :type process_specific: bool, optional</span>
+<span class="sd">    :return: The percentage used memory on the device.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="s1">&#39;gpu&#39;</span> <span class="ow">in</span> <span class="n">dev_str</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">process_specific</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;process-specific GPU queries are currently not supported&#39;</span><span class="p">)</span>
+        <span class="n">handle</span> <span class="o">=</span> <span class="n">_get_nvml_gpu_handle</span><span class="p">(</span><span class="n">dev_str</span><span class="p">)</span>
+        <span class="n">info</span> <span class="o">=</span> <span class="n">nvidia_smi</span><span class="o">.</span><span class="n">nvmlDeviceGetMemoryInfo</span><span class="p">(</span><span class="n">handle</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">info</span><span class="o">.</span><span class="n">used</span><span class="o">/</span><span class="n">info</span><span class="o">.</span><span class="n">total</span><span class="p">)</span><span class="o">*</span><span class="mi">100</span>
+    <span class="k">elif</span> <span class="n">dev_str</span> <span class="o">==</span> <span class="s1">&#39;cpu&#39;</span><span class="p">:</span>
+        <span class="n">vm</span> <span class="o">=</span> <span class="n">psutil</span><span class="o">.</span><span class="n">virtual_memory</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">process_specific</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">(</span><span class="n">psutil</span><span class="o">.</span><span class="n">Process</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getpid</span><span class="p">())</span><span class="o">.</span><span class="n">memory_info</span><span class="p">()</span><span class="o">.</span><span class="n">rss</span><span class="o">/</span><span class="n">vm</span><span class="o">.</span><span class="n">total</span><span class="p">)</span><span class="o">*</span><span class="mi">100</span>
+        <span class="k">return</span> <span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="p">(</span><span class="n">vm</span><span class="o">.</span><span class="n">available</span><span class="o">/</span><span class="n">vm</span><span class="o">.</span><span class="n">total</span><span class="p">))</span><span class="o">*</span><span class="mi">100</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;Invalid device string input, must be on the form &quot;gpu:idx&quot; or &quot;cpu:idx&quot;,&#39;</span>
+                        <span class="s1">&#39;but found </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">dev_str</span><span class="p">))</span></div>
+
+
+<span class="c1"># Utilization #</span>
+
+<span class="c1"># noinspection PyShadowingNames</span>
+<div class="viewcode-block" id="dev_util"><a class="viewcode-back" href="../../../core/device/dev_util.html#ivy.core.device.dev_util">[docs]</a><span class="k">def</span> <span class="nf">dev_util</span><span class="p">(</span><span class="n">dev_str</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span>\
+        <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get the current utilization (%) for a given device.</span>
+
+<span class="sd">    :param dev_str: The device string of the device to query utilization for.</span>
+<span class="sd">    :type dev_str: str</span>
+<span class="sd">    :return: The device utilization (%)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">dev_str</span> <span class="o">==</span> <span class="s1">&#39;cpu&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">psutil</span><span class="o">.</span><span class="n">cpu_percent</span><span class="p">()</span>
+    <span class="k">elif</span> <span class="s1">&#39;gpu&#39;</span> <span class="ow">in</span> <span class="n">dev_str</span><span class="p">:</span>
+        <span class="n">handle</span> <span class="o">=</span> <span class="n">_get_nvml_gpu_handle</span><span class="p">(</span><span class="n">dev_str</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">nvidia_smi</span><span class="o">.</span><span class="n">nvmlDeviceGetUtilizationRates</span><span class="p">(</span><span class="n">handle</span><span class="p">)</span><span class="o">.</span><span class="n">gpu</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;Invalid device string input, must be on the form &quot;gpu:idx&quot; or &quot;cpu:idx&quot;,&#39;</span>
+                        <span class="s1">&#39;but found </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">dev_str</span><span class="p">))</span></div>
+
+
+<span class="c1"># Availability #</span>
 
 <div class="viewcode-block" id="gpu_is_available"><a class="viewcode-back" href="../../../core/device/gpu_is_available.html#ivy.core.device.gpu_is_available">[docs]</a><span class="k">def</span> <span class="nf">gpu_is_available</span><span class="p">(</span><span class="n">f</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Framework</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span>\
         <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>

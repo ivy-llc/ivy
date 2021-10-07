@@ -24,6 +24,7 @@
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
@@ -188,8 +189,81 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="framework-handler">
-<h1>Framework handler<a class="headerlink" href="#framework-handler" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="module-ivy.framework_handler">
+<span id="framework-handler"></span><h1>Framework handler<a class="headerlink" href="#module-ivy.framework_handler" title="Permalink to this headline">¶</a></h1>
+<dl class="py class">
+<dt id="ivy.framework_handler.ContextManager">
+<em class="property">class </em><code class="sig-prename descclassname">ivy.framework_handler.</code><code class="sig-name descname">ContextManager</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">module</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ivy/framework_handler.html#ContextManager"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.framework_handler.ContextManager" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt id="ivy.framework_handler.ContextManager.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">module</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ivy/framework_handler.html#ContextManager.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.framework_handler.ContextManager.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.framework_handler.current_framework">
+<code class="sig-prename descclassname">ivy.framework_handler.</code><code class="sig-name descname">current_framework</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="n">f</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ivy/framework_handler.html#current_framework"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.framework_handler.current_framework" title="Permalink to this definition">¶</a></dt>
+<dd><p>Priorities: framework &gt; global_framework &gt; input’s framework.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.framework_handler.debug_mode">
+<code class="sig-prename descclassname">ivy.framework_handler.</code><code class="sig-name descname">debug_mode</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ivy/framework_handler.html#debug_mode"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.framework_handler.debug_mode" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="ivy.framework_handler.get_framework">
+<code class="sig-prename descclassname">ivy.framework_handler.</code><code class="sig-name descname">get_framework</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">f</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ivy/framework_handler.html#get_framework"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.framework_handler.get_framework" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="ivy.framework_handler.set_breakpoint_debug_mode">
+<code class="sig-prename descclassname">ivy.framework_handler.</code><code class="sig-name descname">set_breakpoint_debug_mode</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ivy/framework_handler.html#set_breakpoint_debug_mode"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.framework_handler.set_breakpoint_debug_mode" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="ivy.framework_handler.set_debug_mode">
+<code class="sig-prename descclassname">ivy.framework_handler.</code><code class="sig-name descname">set_debug_mode</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">debug_mode_in</span><span class="o">=</span><span class="default_value">'exception'</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ivy/framework_handler.html#set_debug_mode"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.framework_handler.set_debug_mode" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="ivy.framework_handler.set_exception_debug_mode">
+<code class="sig-prename descclassname">ivy.framework_handler.</code><code class="sig-name descname">set_exception_debug_mode</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ivy/framework_handler.html#set_exception_debug_mode"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.framework_handler.set_exception_debug_mode" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="ivy.framework_handler.set_framework">
+<code class="sig-prename descclassname">ivy.framework_handler.</code><code class="sig-name descname">set_framework</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">f</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ivy/framework_handler.html#set_framework"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.framework_handler.set_framework" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="ivy.framework_handler.set_wrapped_mode">
+<code class="sig-prename descclassname">ivy.framework_handler.</code><code class="sig-name descname">set_wrapped_mode</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">val</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ivy/framework_handler.html#set_wrapped_mode"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.framework_handler.set_wrapped_mode" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="ivy.framework_handler.unset_debug_mode">
+<code class="sig-prename descclassname">ivy.framework_handler.</code><code class="sig-name descname">unset_debug_mode</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ivy/framework_handler.html#unset_debug_mode"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.framework_handler.unset_debug_mode" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="ivy.framework_handler.unset_framework">
+<code class="sig-prename descclassname">ivy.framework_handler.</code><code class="sig-name descname">unset_framework</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ivy/framework_handler.html#unset_framework"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.framework_handler.unset_framework" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="ivy.framework_handler.unset_wrapped_mode">
+<code class="sig-prename descclassname">ivy.framework_handler.</code><code class="sig-name descname">unset_wrapped_mode</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ivy/framework_handler.html#unset_wrapped_mode"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.framework_handler.unset_wrapped_mode" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="ivy.framework_handler.wrapped_mode">
+<code class="sig-prename descclassname">ivy.framework_handler.</code><code class="sig-name descname">wrapped_mode</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/ivy/framework_handler.html#wrapped_mode"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.framework_handler.wrapped_mode" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 <div class="toctree-wrapper compound">
 <p class="caption"><span class="caption-text">Framework handler</span></p>
 <ul>
