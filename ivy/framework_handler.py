@@ -27,7 +27,7 @@ FW_FN_KEYWORDS = {'numpy': [],
                   'torch': [],
                   'mxnd': ['ndarray']}
 
-queue_timeout = 10.
+queue_timeout = None
 debug_mode_val = False
 wrapped_mode_val = False
 ivy_original_dict = ivy.__dict__.copy()
