@@ -31,6 +31,8 @@ def _get_nvml_gpu_handle(dev_str):
 # Device Queries #
 # ---------------#
 
+# Retreival #
+
 def dev(x: Union[ivy.Array, ivy.NativeArray], f: ivy.Framework = None)\
         -> ivy.Device:
     """
@@ -44,6 +46,22 @@ def dev(x: Union[ivy.Array, ivy.NativeArray], f: ivy.Framework = None)\
     """
     return _cur_framework(x, f=f).dev(x)
 
+
+def dev_str(x: Union[ivy.Array, ivy.NativeArray], f: ivy.Framework = None)\
+        -> str:
+    """
+    Get the device string for input array x.
+
+    :param x: Tensor for which to get the device string.
+    :type x: array
+    :param f: Machine learning framework. Inferred from inputs if None.
+    :type f: ml_framework, optional
+    :return: Device string for the array, e.g. 'cuda:0', 'cuda:1', 'cpu' etc..
+    """
+    return _cur_framework(x, f=f).dev_str(x)
+
+
+# Conversions #
 
 def dev_to_str(dev_in: ivy.Device, f: ivy.Framework = None)\
         -> str:
@@ -74,25 +92,13 @@ def str_to_dev(dev_str: str, f: ivy.Framework = None)\
     return _cur_framework(None, f=f).str_to_dev(dev_str)
 
 
-def dev_str(x: Union[ivy.Array, ivy.NativeArray], f: ivy.Framework = None)\
-        -> str:
-    """
-    Get the device string for input array x.
-
-    :param x: Tensor for which to get the device string.
-    :type x: array
-    :param f: Machine learning framework. Inferred from inputs if None.
-    :type f: ml_framework, optional
-    :return: Device string for the array, e.g. 'cuda:0', 'cuda:1', 'cpu' etc..
-    """
-    return _cur_framework(x, f=f).dev_str(x)
-
+# Memory #
 
 # noinspection PyShadowingNames
-def memory_on_dev(dev_str: str)\
+def total_mem_on_dev(dev_str: str)\
         -> float:
     """
-    Get the total amount of memory for a given device string. In case of CPU, the total RAM is returned.
+    Get the total amount of memory (in GB) for a given device string. In case of CPU, the total RAM is returned.
 
     :param dev_str: The device string to conver to native device handle.
     :type dev_str: str
@@ -108,6 +114,52 @@ def memory_on_dev(dev_str: str)\
         raise Exception('Invalid device string input, must be on the form "gpu:idx" or "cpu:idx",'
                         'but found {}'.format(dev_str))
 
+
+# noinspection PyShadowingNames
+def used_mem_on_dev(dev_str: str)\
+        -> float:
+    """
+    Get the used memory (in GB) for a given device string. In case of CPU, the used RAM is returned.
+
+    :param dev_str: The device string to conver to native device handle.
+    :type dev_str: str
+    :return: The used memory on the device in GB.
+    """
+    if 'gpu' in dev_str:
+        handle = _get_nvml_gpu_handle(dev_str)
+        info = nvidia_smi.nvmlDeviceGetMemoryInfo(handle)
+        return info.used/1e9
+    elif dev_str == 'cpu':
+        vm = psutil.virtual_memory()
+        return (vm.total - vm.available)/1e9
+    else:
+        raise Exception('Invalid device string input, must be on the form "gpu:idx" or "cpu:idx",'
+                        'but found {}'.format(dev_str))
+
+
+# noinspection PyShadowingNames
+def percent_used_mem_on_dev(dev_str: str)\
+        -> float:
+    """
+    Get the percentage used memory for a given device string. In case of CPU, the used RAM is returned.
+
+    :param dev_str: The device string to conver to native device handle.
+    :type dev_str: str
+    :return: The percentage used memory on the device.
+    """
+    if 'gpu' in dev_str:
+        handle = _get_nvml_gpu_handle(dev_str)
+        info = nvidia_smi.nvmlDeviceGetMemoryInfo(handle)
+        return (info.used/info.total)*100
+    elif dev_str == 'cpu':
+        vm = psutil.virtual_memory()
+        return (1-(vm.available/vm.total))*100
+    else:
+        raise Exception('Invalid device string input, must be on the form "gpu:idx" or "cpu:idx",'
+                        'but found {}'.format(dev_str))
+
+
+# Utilization #
 
 # noinspection PyShadowingNames
 def dev_util(dev_str: str)\
@@ -128,6 +180,8 @@ def dev_util(dev_str: str)\
         raise Exception('Invalid device string input, must be on the form "gpu:idx" or "cpu:idx",'
                         'but found {}'.format(dev_str))
 
+
+# Availability #
 
 def gpu_is_available(f: ivy.Framework = None)\
         -> bool:
