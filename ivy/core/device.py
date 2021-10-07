@@ -933,9 +933,9 @@ class DevMapperMultiProc(DevMapper):
 
 class DevManager:
 
-    def __init__(self, dev_mapper, dev_strs: Union[Iterable[str], Dict[str, int]], dim_size, safety_factor=1.1,
-                 min_dev_dim_size=0, max_dev_dim_step_size=1, starting_split_factor=0., max_split_factor_step_size=0.05,
-                 tune_dev_alloc=True, tune_dev_splits=True):
+    def __init__(self, dev_mapper=None, dev_strs: Union[Iterable[str], Dict[str, int]] = None, da_dim_size=None,
+                 safety_factor=1.1, min_dev_dim_size=0, max_dev_dim_step_size=1, starting_split_factor=0.,
+                 max_split_factor_step_size=0.05, tune_dev_alloc=True, tune_dev_splits=True):
         """
         Create device manager, which unlike the device mapper, handles all argument cloning and distributing internally.
         The device manager only receivess a specification regarding the ratio of the batch each device should consume.
@@ -944,8 +944,8 @@ class DevManager:
         :type dev_mapper: DevMapper
         :param dev_strs: The devices to distribute and clone the arguments across.
         :type dev_strs: sequence of strs or dict of split sizes
-        :param dim_size: The size of the dimension along which the device splitting is performed.
-        :type dim_size: int
+        :param da_dim_size: The size of the dimension along which the device allocation splitting is performed.
+        :type da_dim_size: int
         :param safety_factor: The factor by which to be safe in the avoidance of OOM GPU errors. Default is 1.1.
         :type safety_factor: float, optional
         :param min_dev_dim_size: The minimum dimension size to pass to a device. Default is 0.
@@ -960,11 +960,15 @@ class DevManager:
         :param tune_dev_alloc: Whether to tune the devices split sizes internally based on device utilization tracking,
                                and use the provided values for initialization. Default is True.
         :type tune_dev_alloc: bool, optional
-
         """
+        num_dev_args = sum([ivy.exists(dev_mapper), ivy.exists(dev_strs), ivy.exists(da_dim_size)])
+        if num_dev_args not in [0, 3]:
+            raise Exception('either all or None of dev_mapper, dev_strs and da_dim_size must be specified, but found '
+                            'dev_mapper={}, dev_strs={}, da_dim_size={}'.format(dev_mapper, dev_strs, da_dim_size))
+        tune_dev_alloc = False if num_dev_args == 0 else tune_dev_alloc
         self._dev_mapper = dev_mapper
         self._num_devs = len(dev_strs)
-        self._dim_size = dim_size
+        self._dim_size = da_dim_size
         assert 1 <= safety_factor
         self._safety_factor = safety_factor
         self._min_dev_dim_size = min_dev_dim_size
@@ -976,21 +980,23 @@ class DevManager:
         self._first_tune_step = True
         self._da_tune_count = 0
         self._ds_tune_count = 0
-        self._tune_step = self._da_tune_step
+        self._tune_step = self.da_tune_step
         self._observed_configs = set()
         if isinstance(dev_strs, dict):
-            self._dev_str_ratios = dev_strs
+            self._dev_str_da_ratios = dev_strs
         else:
-            self._dev_str_ratios = dict(zip(dev_strs, [1/self._num_devs]*self._num_devs))
-        self._dev_strs_keys = self._dev_str_ratios.keys()
+            self._dev_str_da_ratios = dict(zip(dev_strs, [1 / self._num_devs] * self._num_devs))
+        self._dev_strs_keys = self._dev_str_da_ratios.keys()
         if self._tune_ds:
             [ivy.set_split_factor(starting_split_factor, ds) for ds in self._dev_strs_keys]
         self._percent_inc_per_unit_dim = dict(zip(self._dev_strs_keys, [0]*self._num_devs))
         self._delta_dim_sizes = dict(zip(self._dev_strs_keys, [0]*self._num_devs))
         self._dev_percent_mems = None
-        self._compute_dev_strs_dict()
+        self._compute_dev_strs_da()
 
-    def _shift_splits(self, ordered_dev_util_keys, deltas):
+    # Device Allocation #
+
+    def _shift_da_splits(self, ordered_dev_util_keys, deltas):
         for i in range(math.floor(self._num_devs / 2)):
 
             # less and more utilized keys
@@ -998,17 +1004,32 @@ class DevManager:
             more_util_dev_str = ordered_dev_util_keys[-i - 1]
 
             # less utilized
-            delta = min(deltas[less_util_dev_str], self._dev_strs_dict[more_util_dev_str] - self._min_dev_dim_size)
+            delta = min(deltas[less_util_dev_str], self._dev_strs_da[more_util_dev_str] - self._min_dev_dim_size)
             if ivy.exists(self._max_dev_dim_step_size):
                 delta = min(delta, self._max_dev_dim_step_size)
-            self._dev_strs_dict[less_util_dev_str] += delta
+            self._dev_strs_da[less_util_dev_str] += delta
             self._delta_dim_sizes[less_util_dev_str] = delta
 
             # more utilized
-            self._dev_strs_dict[more_util_dev_str] -= delta
+            self._dev_strs_da[more_util_dev_str] -= delta
             self._delta_dim_sizes[more_util_dev_str] = -delta
 
-    def _da_tune_step(self):
+    def _compute_dev_strs_da(self):
+        split_sizes = [int(round(r * self._dim_size)) for r in self._dev_str_da_ratios.values()]
+        combined_batch_size = sum(split_sizes)
+        excess_size = combined_batch_size - self._dim_size
+        if excess_size > 0:
+            for i in range(abs(excess_size)):
+                split_sizes[i] -= 1
+        elif excess_size < 0:
+            for i in range(abs(excess_size)):
+                split_sizes[i] += 1
+        self._dev_strs_da = {k: v for k, v in zip(self._dev_strs_keys, split_sizes)}
+
+    def _compute_dev_da_ratios(self):
+        self._dev_str_da_ratios = {k: v / self._dim_size for k, v in self._dev_strs_da.items()}
+
+    def da_tune_step(self):
         new_dev_utils = dict(sorted({k: dev_util(k) for k in self._dev_strs_keys}.items(), key=lambda item: item[1]))
         new_dev_utils_keys = list(new_dev_utils.keys())
         new_dev_percent_mems = dict(sorted({k: percent_used_mem_on_dev(k) for k in self._dev_strs_keys}.items(),
@@ -1018,7 +1039,7 @@ class DevManager:
         if self._first_tune_step:
 
             # shift the device splits by 1
-            self._shift_splits(new_dev_utils_keys, {k: 1 for k in self._dev_strs_keys})
+            self._shift_da_splits(new_dev_utils_keys, {k: 1 for k in self._dev_strs_keys})
 
             # update device percentage memory usages
             self._dev_percent_mems = new_dev_percent_mems
@@ -1026,9 +1047,9 @@ class DevManager:
             # increment count, update ratios and tune step, and return
             self._da_tune_count += 1
             self._first_tune_step = False
-            self._compute_dev_ratios_dict()
+            self._compute_dev_da_ratios()
             if self._tune_ds:
-                self._tune_step = self._ds_tune_step
+                self._tune_step = self.ds_tune_step
             return
 
         # otherwise
@@ -1045,20 +1066,20 @@ class DevManager:
         permissable_steps = \
             {k: min(math.floor(((100-new_dev_percent_mems[k]) / max(self._percent_inc_per_unit_dim[k], 0.1))
                                / self._safety_factor), self._dim_size) for k in self._dev_strs_keys}
-        self._shift_splits(new_dev_utils_keys, permissable_steps)
+        self._shift_da_splits(new_dev_utils_keys, permissable_steps)
 
         # update device utilizations and percentage memory usages
         self._dev_utils = new_dev_utils
         self._dev_percent_mems = new_dev_percent_mems
 
         # increment count, update ratios and tune step
-        self._compute_dev_ratios_dict()
+        self._compute_dev_da_ratios()
         self._da_tune_count += 1
         if self._tune_ds:
-            self._tune_step = self._ds_tune_step
+            self._tune_step = self.ds_tune_step
 
         # check if tuning is complete, and return if so
-        config = tuple(self._dev_strs_dict.values())
+        config = tuple(self._dev_strs_da.values())
         if config in self._observed_configs:
             self._observed_configs.clear()
             self._percent_inc_per_unit_dim.clear()
@@ -1070,26 +1091,13 @@ class DevManager:
         # otherwise add the current config to those observed
         self._observed_configs.add(config)
 
-    def _ds_tune_step(self):
+    # Device Splitting #
+
+    def ds_tune_step(self):
         self._ds_tune_count += 1
-        self._compute_dev_ratios_dict()
+        self._compute_dev_da_ratios()
         if self._tune_da:
-            self._tune_step = self._da_tune_step
-
-    def _compute_dev_strs_dict(self):
-        split_sizes = [int(round(r * self._dim_size)) for r in self._dev_str_ratios.values()]
-        combined_batch_size = sum(split_sizes)
-        excess_size = combined_batch_size - self._dim_size
-        if excess_size > 0:
-            for i in range(abs(excess_size)):
-                split_sizes[i] -= 1
-        elif excess_size < 0:
-            for i in range(abs(excess_size)):
-                split_sizes[i] += 1
-        self._dev_strs_dict = {k: v for k, v in zip(self._dev_strs_keys, split_sizes)}
-
-    def _compute_dev_ratios_dict(self):
-        self._dev_str_ratios = {k: v/self._dim_size for k, v in self._dev_strs_dict.items()}
+            self._tune_step = self.da_tune_step
 
     def map(self, to_clone=None, to_distribute=None):
         """
@@ -1102,7 +1110,7 @@ class DevManager:
         :type to_distribute: dict of any, optional
         :return: The results of the function, returned as a MultiDevice instance.
         """
-        used_dev_strs_dict = {k: v for k, v in self._dev_strs_dict.items() if v > 0}
+        used_dev_strs_dict = {k: v for k, v in self._dev_strs_da.items() if v > 0}
         used_dev_strs = list(used_dev_strs_dict.keys())
         if ivy.exists(to_clone):
             to_clone = {k: ivy.clone(v, used_dev_strs).at_devs() for k, v in to_clone.items()}
@@ -1129,7 +1137,11 @@ class DevManager:
     @dim_size.setter
     def dim_size(self, batch_size):
         self._dim_size = batch_size
-        self._compute_dev_strs_dict()
+        self._compute_dev_strs_da()
+
+    @property
+    def tune_step(self):
+        return self._tune_step
 
 
 # Profiler #
