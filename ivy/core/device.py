@@ -371,13 +371,15 @@ def split_func_call(func: Callable, inputs: Iterable[Union[Union[ivy.Array, ivy.
                  else ivy.Container.concat([r[i] for r in rets], output_axes[i])
                  for i in range(num_outputs)]
     if is_mean:
-        return [(item.reduce_sum(output_axis) if isinstance(item, ivy.Container)
+        ret = [(item.reduce_sum(output_axis) if isinstance(item, ivy.Container)
                 else ivy.reduce_sum(item, output_axis))/sum(chunk_sizes)
                for item, output_axis in zip(concatted, output_axes)]
     elif is_sum:
-        return [(item.reduce_sum(output_axis) if isinstance(item, ivy.Container)
+        ret = [(item.reduce_sum(output_axis) if isinstance(item, ivy.Container)
                 else ivy.reduce_sum(item, output_axis)) for item, output_axis in zip(concatted, output_axes)]
-    return concatted
+    else:
+        ret = concatted
+    return ret[0] if len(ret) == 1 else ret
 
 
 # Multi-Device #

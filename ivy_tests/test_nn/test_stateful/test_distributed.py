@@ -31,6 +31,29 @@ class TrainableModule(ivy.Module):
         return ivy.tanh(self._linear2(x))[0]
 
 
+class TrainableModuleWithSplit(ivy.Module):
+
+    def __init__(self, in_size, out_size, dev_str=None, build_mode='explicit', hidden_size=64, store_vars=True):
+        self._in_size = in_size
+        self._out_size = out_size
+        self._hidden_size = hidden_size
+        ivy.Module.__init__(self, dev_str, build_mode=build_mode, store_vars=store_vars)
+
+    def _build(self):
+        self._linear0 = ivy.Linear(self._in_size, self._hidden_size, dev_str=self._dev_str)
+        self._linear1 = ivy.Linear(self._hidden_size, self._hidden_size, dev_str=self._dev_str)
+        self._linear2 = ivy.Linear(self._hidden_size, self._out_size, dev_str=self._dev_str)
+
+    def _forward_unsplit(self, x):
+        x = ivy.expand_dims(x, 0)
+        x = ivy.tanh(self._linear0(x))
+        x = ivy.tanh(self._linear1(x))
+        return ivy.tanh(self._linear2(x))[0]
+
+    def _forward(self, x):
+        return ivy.split_func_call(self._forward_unsplit, [x], 'concat', int(round(ivy.split_factor())))
+
+
 def loss_fn(module, x_, v_):
     out = module(x_, v=v_)
     return ivy.reduce_mean(out)[0]
@@ -412,7 +435,8 @@ def test_device_manager_tuning(bs_ic_oc, dev_str, call):
                               input_channels, dev_str=dev_str0), 'float32')
 
     # module for processes
-    module = TrainableModule(input_channels, output_channels, dev_str=dev_str0, store_vars=False)
+    module = TrainableModuleWithSplit(input_channels, output_channels,
+                                      dev_str=dev_str0, store_vars=False)  # , hidden_size=2048)
 
     # optimizer
     optim = ivy.SGD(1e-4)
@@ -427,7 +451,8 @@ def test_device_manager_tuning(bs_ic_oc, dev_str, call):
     dev_manager = ivy.DevManager(dev_mapper, dev_strs, batch_shape[0])
 
     # local module
-    module = TrainableModule(input_channels, output_channels, dev_str=dev_str0, store_vars=True)  # , hidden_size=2048)
+    module = TrainableModuleWithSplit(input_channels, output_channels,
+                                      dev_str=dev_str0, store_vars=True)  # , hidden_size=2048)
     module.build()
 
     # train
