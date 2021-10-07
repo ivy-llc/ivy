@@ -1124,7 +1124,7 @@
 <div class="viewcode-block" id="DevManager"><a class="viewcode-back" href="../../../core/device.html#ivy.core.device.DevManager">[docs]</a><span class="k">class</span> <span class="nc">DevManager</span><span class="p">:</span>
 
 <div class="viewcode-block" id="DevManager.__init__"><a class="viewcode-back" href="../../../core/device.html#ivy.core.device.DevManager.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dev_mapper</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dev_strs</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">da_dim_size</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                 <span class="n">safety_factor</span><span class="o">=</span><span class="mf">1.1</span><span class="p">,</span> <span class="n">min_dev_dim_size</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">max_dev_dim_step_ratio</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">starting_split_factor</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span>
+                 <span class="n">safety_factor</span><span class="o">=</span><span class="mf">1.1</span><span class="p">,</span> <span class="n">min_dev_dim_size</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">max_dev_dim_step_ratio</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">starting_split_factor</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span>
                  <span class="n">max_split_factor_step_size</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span> <span class="n">tune_dev_alloc</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">tune_dev_splits</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Create device manager, which unlike the device mapper, handles all argument cloning and distributing internally.</span>
@@ -1140,7 +1140,7 @@
 <span class="sd">        :type safety_factor: float, optional</span>
 <span class="sd">        :param min_dev_dim_size: The minimum dimension size to pass to a device. Default is 0.</span>
 <span class="sd">        :type min_dev_dim_size: int, optional</span>
-<span class="sd">        :param max_dev_dim_step_ratio: The maximum step ratio for changing the dimension for a device. Default is 0.2.</span>
+<span class="sd">        :param max_dev_dim_step_ratio: The maximum step ratio for changing the dimension for a device. Default is 0.1.</span>
 <span class="sd">        :type max_dev_dim_step_ratio: int, optional</span>
 <span class="sd">        :param starting_split_factor: The initial device-specific split factor. Default is 0.</span>
 <span class="sd">        :type starting_split_factor: float, optional</span>
@@ -1200,7 +1200,8 @@
             <span class="n">more_util_dev_str</span> <span class="o">=</span> <span class="n">ordered_dev_util_keys</span><span class="p">[</span><span class="o">-</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span>
 
             <span class="c1"># less utilized</span>
-            <span class="n">delta</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">deltas</span><span class="p">[</span><span class="n">less_util_dev_str</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dev_strs_da</span><span class="p">[</span><span class="n">more_util_dev_str</span><span class="p">]</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_min_dev_dim_size</span><span class="p">)</span>
+            <span class="n">delta</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="n">deltas</span><span class="p">[</span><span class="n">less_util_dev_str</span><span class="p">],</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">_dev_strs_da</span><span class="p">[</span><span class="n">more_util_dev_str</span><span class="p">]</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_min_dev_dim_size</span><span class="p">),</span> <span class="mi">1</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_max_dev_dim_step_size</span><span class="p">):</span>
                 <span class="n">delta</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">delta</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_max_dev_dim_step_size</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_dev_strs_da</span><span class="p">[</span><span class="n">less_util_dev_str</span><span class="p">]</span> <span class="o">+=</span> <span class="n">delta</span>
@@ -1254,16 +1255,17 @@
         <span class="c1"># otherwise</span>
 
         <span class="c1"># check if all directions have changed, and if so, half the max dev dim step size</span>
-        <span class="n">da_directions</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="mi">1</span> <span class="k">if</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">math</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_num_devs</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span> <span class="k">else</span> <span class="o">-</span><span class="mi">1</span>
-                         <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">new_dev_utils</span><span class="o">.</span><span class="n">items</span><span class="p">())}</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_da_directions</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_da_directions</span> <span class="o">=</span> <span class="n">da_directions</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_da_directions_flipped</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="kc">False</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dev_strs_keys</span><span class="p">}</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_da_directions_flipped</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">da_directions</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">*</span> <span class="n">v</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_da_directions</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
-        <span class="k">if</span> <span class="nb">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_da_directions_flipped</span><span class="o">.</span><span class="n">values</span><span class="p">())</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">_num_devs</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_da_directions</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_max_dev_dim_step_size</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_max_dev_dim_step_size</span><span class="o">/</span><span class="mi">2</span><span class="p">)),</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_max_dev_dim_step_size</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">da_directions</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="mi">1</span> <span class="k">if</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">math</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_num_devs</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span> <span class="k">else</span> <span class="o">-</span><span class="mi">1</span>
+                             <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">new_dev_utils</span><span class="o">.</span><span class="n">items</span><span class="p">())}</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_da_directions</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_da_directions</span> <span class="o">=</span> <span class="n">da_directions</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_da_directions_flipped</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="kc">False</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dev_strs_keys</span><span class="p">}</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_da_directions_flipped</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">da_directions</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">*</span> <span class="n">v</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_da_directions</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+            <span class="k">if</span> <span class="nb">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_da_directions_flipped</span><span class="o">.</span><span class="n">values</span><span class="p">())</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">_num_devs</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_da_directions</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_max_dev_dim_step_size</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_max_dev_dim_step_size</span><span class="o">/</span><span class="mi">2</span><span class="p">)),</span> <span class="mi">1</span><span class="p">)</span>
 
         <span class="c1"># percentage memory increase per unit dim</span>
         <span class="n">delta_percent_mems</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">new_dev_percent_mems</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dev_percent_mems</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dev_strs_keys</span><span class="p">}</span>
@@ -1305,14 +1307,18 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_max_dev_dim_step_size</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
 
             <span class="c1"># check if da tuning is complete</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_termination_check</span><span class="p">()</span></div>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">repeated_config_check</span><span class="p">():</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_observed_configs</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_percent_mem_inc_per_unit_da_dim</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_delta_da_dim_sizes</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_dev_percent_mems</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_tuned</span> <span class="o">=</span> <span class="kc">True</span></div>
 
     <span class="c1"># Device Splitting #</span>
 
-    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">_shift_ds</span><span class="p">(</span><span class="n">deltas</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_shift_ds</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">deltas</span><span class="p">):</span>
         <span class="k">for</span> <span class="n">ds</span><span class="p">,</span> <span class="n">delta</span> <span class="ow">in</span> <span class="n">deltas</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-            <span class="n">ivy</span><span class="o">.</span><span class="n">set_split_factor</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">split_factor</span><span class="p">(</span><span class="n">ds</span><span class="p">)</span> <span class="o">+</span> <span class="n">delta</span><span class="p">,</span> <span class="n">ds</span><span class="p">)</span>
+            <span class="n">ivy</span><span class="o">.</span><span class="n">set_split_factor</span><span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">split_factor</span><span class="p">(</span><span class="n">ds</span><span class="p">)</span> <span class="o">+</span> <span class="nb">min</span><span class="p">(</span><span class="n">delta</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_max_split_factor_step_size</span><span class="p">),</span> <span class="mi">1</span><span class="p">),</span> <span class="n">ds</span><span class="p">)</span>
 
 <div class="viewcode-block" id="DevManager.ds_tune_step"><a class="viewcode-back" href="../../../core/device.html#ivy.core.device.DevManager.ds_tune_step">[docs]</a>    <span class="k">def</span> <span class="nf">ds_tune_step</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">new_dev_percent_mems</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">sorted</span><span class="p">({</span><span class="n">k</span><span class="p">:</span> <span class="n">percent_used_mem_on_dev</span><span class="p">(</span><span class="n">k</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dev_strs_keys</span><span class="p">}</span><span class="o">.</span><span class="n">items</span><span class="p">(),</span>
@@ -1357,28 +1363,34 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tune_da</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_tune_step</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">da_tune_step</span>
 
-        <span class="c1"># check if ds tuning is complete</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_termination_check</span><span class="p">()</span></div>
-
-    <span class="c1"># Termination Checking #</span>
-
-    <span class="k">def</span> <span class="nf">_termination_check</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-
         <span class="c1"># check whether device allocation tuning is ready to terminate</span>
         <span class="n">da_can_terminate</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_max_dev_dim_step_size</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">or</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tune_da</span>
 
-        <span class="c1"># check if ds tuning is complete, and return if so</span>
-        <span class="n">config</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">([</span><span class="n">ivy</span><span class="o">.</span><span class="n">split_factor</span><span class="p">(</span><span class="n">ds</span><span class="p">)</span> <span class="k">for</span> <span class="n">ds</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dev_strs_keys</span><span class="p">]</span> <span class="o">+</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dev_strs_da</span><span class="o">.</span><span class="n">values</span><span class="p">()))</span>
-        <span class="k">if</span> <span class="n">config</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_observed_configs</span> <span class="ow">and</span> <span class="n">da_can_terminate</span><span class="p">:</span>
+        <span class="c1"># check if ds tuning is complete</span>
+        <span class="k">if</span> <span class="n">da_can_terminate</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">repeated_config_check</span><span class="p">():</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_observed_configs</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_percent_mem_inc_per_unit_da_dim</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_delta_da_dim_sizes</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_percent_mem_inc_per_unit_ds_dim</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_dev_percent_mems</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_tuned</span> <span class="o">=</span> <span class="kc">True</span>
-            <span class="k">return</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_tuned</span> <span class="o">=</span> <span class="kc">True</span></div>
+
+    <span class="c1"># Repeated Config Checking #</span>
+
+<div class="viewcode-block" id="DevManager.repeated_config_check"><a class="viewcode-back" href="../../../core/device.html#ivy.core.device.DevManager.repeated_config_check">[docs]</a>    <span class="k">def</span> <span class="nf">repeated_config_check</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="c1"># check if ds tuning is complete, and return if so</span>
+        <span class="n">config_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tune_da</span><span class="p">:</span>
+            <span class="n">config_list</span> <span class="o">+=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dev_strs_da</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tune_ds</span><span class="p">:</span>
+            <span class="n">config_list</span> <span class="o">+=</span> <span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">split_factor</span><span class="p">(</span><span class="n">ds</span><span class="p">)</span> <span class="k">for</span> <span class="n">ds</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dev_strs_keys</span><span class="p">]</span>
+        <span class="n">config</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">config_list</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">config</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_observed_configs</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">True</span>
 
         <span class="c1"># otherwise add the current config to those observed</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_observed_configs</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="kc">False</span></div>
 
     <span class="c1"># Mapping #</span>
 
