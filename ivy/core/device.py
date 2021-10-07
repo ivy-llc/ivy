@@ -934,7 +934,7 @@ class DevMapperMultiProc(DevMapper):
 class DevManager:
 
     def __init__(self, dev_mapper=None, dev_strs: Union[Iterable[str], Dict[str, int]] = None, da_dim_size=None,
-                 safety_factor=1.1, min_dev_dim_size=0, max_dev_dim_step_ratio=0.2, starting_split_factor=0.,
+                 safety_factor=1.1, min_dev_dim_size=0, max_dev_dim_step_ratio=0.1, starting_split_factor=0.,
                  max_split_factor_step_size=0.05, tune_dev_alloc=True, tune_dev_splits=True):
         """
         Create device manager, which unlike the device mapper, handles all argument cloning and distributing internally.
@@ -950,7 +950,7 @@ class DevManager:
         :type safety_factor: float, optional
         :param min_dev_dim_size: The minimum dimension size to pass to a device. Default is 0.
         :type min_dev_dim_size: int, optional
-        :param max_dev_dim_step_ratio: The maximum step ratio for changing the dimension for a device. Default is 0.2.
+        :param max_dev_dim_step_ratio: The maximum step ratio for changing the dimension for a device. Default is 0.1.
         :type max_dev_dim_step_ratio: int, optional
         :param starting_split_factor: The initial device-specific split factor. Default is 0.
         :type starting_split_factor: float, optional
@@ -1010,7 +1010,8 @@ class DevManager:
             more_util_dev_str = ordered_dev_util_keys[-i - 1]
 
             # less utilized
-            delta = min(deltas[less_util_dev_str], self._dev_strs_da[more_util_dev_str] - self._min_dev_dim_size)
+            delta = max(min(deltas[less_util_dev_str],
+                            self._dev_strs_da[more_util_dev_str] - self._min_dev_dim_size), 1)
             if ivy.exists(self._max_dev_dim_step_size):
                 delta = min(delta, self._max_dev_dim_step_size)
             self._dev_strs_da[less_util_dev_str] += delta
@@ -1064,16 +1065,17 @@ class DevManager:
         # otherwise
 
         # check if all directions have changed, and if so, half the max dev dim step size
-        da_directions = {k: 1 if i < math.floor(self._num_devs/2) else -1
-                         for i, (k, v) in enumerate(new_dev_utils.items())}
-        if len(self._da_directions) == 0:
-            self._da_directions = da_directions
-            self._da_directions_flipped = {k: False for k in self._dev_strs_keys}
-        else:
-            self._da_directions_flipped = {k: da_directions[k] * v < 0 for k, v in self._da_directions.items()}
-        if sum(self._da_directions_flipped.values()) == self._num_devs:
-            self._da_directions.clear()
-            self._max_dev_dim_step_size = max(int(round(self._max_dev_dim_step_size/2)), 1)
+        if self._max_dev_dim_step_size > 1:
+            da_directions = {k: 1 if i < math.floor(self._num_devs/2) else -1
+                             for i, (k, v) in enumerate(new_dev_utils.items())}
+            if len(self._da_directions) == 0:
+                self._da_directions = da_directions
+                self._da_directions_flipped = {k: False for k in self._dev_strs_keys}
+            else:
+                self._da_directions_flipped = {k: da_directions[k] * v < 0 for k, v in self._da_directions.items()}
+            if sum(self._da_directions_flipped.values()) == self._num_devs:
+                self._da_directions.clear()
+                self._max_dev_dim_step_size = max(int(round(self._max_dev_dim_step_size/2)), 1)
 
         # percentage memory increase per unit dim
         delta_percent_mems = {k: new_dev_percent_mems[k] - self._dev_percent_mems[k] for k in self._dev_strs_keys}
@@ -1115,14 +1117,18 @@ class DevManager:
         if self._max_dev_dim_step_size == 1:
 
             # check if da tuning is complete
-            self._termination_check()
+            if self.repeated_config_check():
+                self._observed_configs.clear()
+                self._percent_mem_inc_per_unit_da_dim.clear()
+                self._delta_da_dim_sizes.clear()
+                self._dev_percent_mems.clear()
+                self._tuned = True
 
     # Device Splitting #
 
-    @staticmethod
-    def _shift_ds(deltas):
+    def _shift_ds(self, deltas):
         for ds, delta in deltas.items():
-            ivy.set_split_factor(ivy.split_factor(ds) + delta, ds)
+            ivy.set_split_factor(min(ivy.split_factor(ds) + min(delta, self._max_split_factor_step_size), 1), ds)
 
     def ds_tune_step(self):
         new_dev_percent_mems = dict(sorted({k: percent_used_mem_on_dev(k) for k in self._dev_strs_keys}.items(),
@@ -1167,28 +1173,34 @@ class DevManager:
         if self._tune_da:
             self._tune_step = self.da_tune_step
 
-        # check if ds tuning is complete
-        self._termination_check()
-
-    # Termination Checking #
-
-    def _termination_check(self):
-
         # check whether device allocation tuning is ready to terminate
         da_can_terminate = self._max_dev_dim_step_size == 1 or not self._tune_da
 
-        # check if ds tuning is complete, and return if so
-        config = tuple([ivy.split_factor(ds) for ds in self._dev_strs_keys] + list(self._dev_strs_da.values()))
-        if config in self._observed_configs and da_can_terminate:
+        # check if ds tuning is complete
+        if da_can_terminate and self.repeated_config_check():
             self._observed_configs.clear()
-            self._percent_mem_inc_per_unit_da_dim.clear()
-            self._delta_da_dim_sizes.clear()
+            self._percent_mem_inc_per_unit_ds_dim.clear()
             self._dev_percent_mems.clear()
             self._tuned = True
-            return
+
+    # Repeated Config Checking #
+
+    def repeated_config_check(self):
+
+        # check if ds tuning is complete, and return if so
+        config_list = list()
+        if self._tune_da:
+            config_list += list(self._dev_strs_da.values())
+        if self._tune_ds:
+            config_list += [ivy.split_factor(ds) for ds in self._dev_strs_keys]
+        config = tuple(config_list)
+        if config in self._observed_configs:
+            return True
 
         # otherwise add the current config to those observed
         self._observed_configs.add(config)
+
+        return False
 
     # Mapping #
 
