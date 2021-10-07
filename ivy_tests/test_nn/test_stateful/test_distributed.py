@@ -152,7 +152,7 @@ def test_distributed_multiprocess_training(bs_ic_oc, dev_str, call):
     # return fn
     ret_fn = lambda ret: ivy.unify_iter(ret, dev_str0, 'mean')
 
-    # device manager
+    # device mapper
     dev_mapper = ivy.DevMapperMultiProc(map_fn, ret_fn, dev_strs, constant={'module': module})
 
     # local module
@@ -357,7 +357,7 @@ def test_to_ivy_module_distributed_multiprocess(bs_ic_oc, from_class_and_args, i
         # inplace_update mode does not support gradient propagation
         return
 
-    # device manager
+    # device mapper
     dev_mapper = ivy.DevMapperMultiProc(map_fn, ret_fn, dev_strs, constant={'module': ivy_module})
 
     # train
@@ -381,3 +381,83 @@ def test_to_ivy_module_distributed_multiprocess(bs_ic_oc, from_class_and_args, i
         assert loss.shape == ()
     # value test
     assert (abs(grads).reduce_max() > 0).all_true()
+
+
+# device mapper tuning
+@pytest.mark.parametrize(
+    "bs_ic_oc", [([2, 1], 4, 5)])
+def test_device_manager_tuning(bs_ic_oc, dev_str, call):
+    # smoke test
+    if call is helpers.np_call:
+        # NumPy does not support gradients
+        pytest.skip()
+
+    if call is not helpers.torch_call:
+        # ToDo: add support for other frameworks, currently only supported for torch
+        pytest.skip()
+
+    # devices
+    dev_strs = list()
+    dev_str0 = dev_str
+    dev_strs.append(dev_str0)
+    if 'gpu' in dev_str:
+        idx = ivy.num_gpus() - 1
+        dev_str1 = dev_str[:-1] + str(idx)
+        dev_strs.append(dev_str1)
+
+    # input
+    batch_shape, input_channels, output_channels = bs_ic_oc
+    x = ivy.cast(ivy.linspace(ivy.zeros(batch_shape), ivy.ones(batch_shape),
+                              input_channels, dev_str=dev_str0), 'float32')
+
+    # module for processes
+    module = TrainableModule(input_channels, output_channels, dev_str=dev_str0, store_vars=False)
+
+    # optimizer
+    optim = ivy.SGD(1e-4)
+
+    # return fn
+    ret_fn = lambda ret: ivy.unify_iter(ret, dev_str0, 'mean')
+
+    # device mapper
+    dev_mapper = ivy.DevMapperMultiProc(map_fn, ret_fn, dev_strs, constant={'module': module})
+
+    # device manager
+    dev_manager = ivy.DevManager(dev_mapper, dev_strs, batch_shape[0])
+
+    # local module
+    module = TrainableModule(input_channels, output_channels, dev_str=dev_str0, store_vars=True)
+    module.build()
+
+    # train
+    loss_tm1 = 1e12
+    loss = None
+    grads = None
+    for i in range(10):
+        loss, grads = dev_manager.map(to_distribute={'xn': x}, to_clone={'vc': module.v})
+        module.v = optim.step(module.v, grads)
+        assert loss < loss_tm1
+        loss_tm1 = loss
+
+    # type test
+    assert ivy.is_array(loss)
+    assert isinstance(grads, ivy.Container)
+    # cardinality test
+    if call is helpers.mx_call:
+        # mxnet slicing cannot reduce dimension to zero
+        assert loss.shape == (1,)
+    else:
+        assert loss.shape == ()
+    # value test
+    assert ivy.reduce_max(ivy.abs(grads.linear0.b)) > 0
+    assert ivy.reduce_max(ivy.abs(grads.linear0.w)) > 0
+    assert ivy.reduce_max(ivy.abs(grads.linear1.b)) > 0
+    assert ivy.reduce_max(ivy.abs(grads.linear1.w)) > 0
+    assert ivy.reduce_max(ivy.abs(grads.linear2.b)) > 0
+    assert ivy.reduce_max(ivy.abs(grads.linear2.w)) > 0
+    # compilation test
+    if call is helpers.torch_call:
+        # pytest scripting does not support **kwargs
+        return
+    if not ivy.wrapped_mode():
+        helpers.assert_compilable(loss_fn)
