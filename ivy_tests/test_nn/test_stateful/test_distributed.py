@@ -208,6 +208,9 @@ def test_distributed_multiprocess_training(bs_ic_oc, dev_str, call):
     assert ivy.reduce_max(ivy.abs(grads.linear1.w)) > 0
     assert ivy.reduce_max(ivy.abs(grads.linear2.b)) > 0
     assert ivy.reduce_max(ivy.abs(grads.linear2.w)) > 0
+    # delete dev mapper
+    dev_mapper.__del__()
+    del dev_mapper
     # compilation test
     if call is helpers.torch_call:
         # pytest scripting does not support **kwargs
@@ -404,6 +407,9 @@ def test_to_ivy_module_distributed_multiprocess(bs_ic_oc, from_class_and_args, i
         assert loss.shape == ()
     # value test
     assert (abs(grads).reduce_max() > 0).all_true()
+    # delete dev mapper
+    dev_mapper.__del__()
+    del dev_mapper
 
 
 # device manager tuning
@@ -482,6 +488,9 @@ def test_device_manager_tuning(bs_ic_oc, dev_str, call):
     assert ivy.reduce_max(ivy.abs(grads.linear1.w)) > 0
     assert ivy.reduce_max(ivy.abs(grads.linear2.b)) > 0
     assert ivy.reduce_max(ivy.abs(grads.linear2.w)) > 0
+    # delete dev manager
+    dev_manager.__del__()
+    del dev_manager
     # compilation test
     if call is helpers.torch_call:
         # pytest scripting does not support **kwargs
