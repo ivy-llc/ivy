@@ -1101,19 +1101,19 @@
     <span class="k">def</span> <span class="fm">__del__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="c1"># noinspection PyBroadException</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">w</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_workers</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">w</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_workers</span><span class="o">.</span><span class="n">values</span><span class="p">()):</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_input_queues</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
                 <span class="n">w</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">timeout</span><span class="o">=</span><span class="mf">0.25</span><span class="p">)</span>
-            <span class="k">for</span> <span class="n">q</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_input_queues</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">q</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_input_queues</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
                 <span class="n">q</span><span class="o">.</span><span class="n">cancel_join_thread</span><span class="p">()</span>
                 <span class="n">q</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-            <span class="k">for</span> <span class="n">q</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_output_queues</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">q</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_output_queues</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
                 <span class="n">q</span><span class="o">.</span><span class="n">cancel_join_thread</span><span class="p">()</span>
                 <span class="n">q</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
         <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
             <span class="k">pass</span>
         <span class="k">finally</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_workers</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_workers</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
                 <span class="k">if</span> <span class="n">w</span><span class="o">.</span><span class="n">is_alive</span><span class="p">():</span>
                     <span class="n">w</span><span class="o">.</span><span class="n">terminate</span><span class="p">()</span></div>
 
