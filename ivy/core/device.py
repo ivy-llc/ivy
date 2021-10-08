@@ -875,22 +875,29 @@ class DevMapper(abc.ABC):
                 continue
             if loaded_kwargs is None:
                 return
+            if 'split_factors' in loaded_kwargs:
+                ivy.set_split_factor(loaded_kwargs['split_factor'], dev_str)
+                del loaded_kwargs['split_factors']
             ret = self._fn(**loaded_kwargs, **kwargs)
             output_queue.put(ret)
 
-    def map(self, used_dev_strs=None, **kwargs):
+    def map(self, used_dev_strs=None, split_factors=None, **kwargs):
         """
         Map the function fn to each of the MultiDevice args and kwargs, running each function in parallel with CUDA-safe
         multiprocessing.
 
         :param used_dev_strs: The devices used in the current mapping pass. Default is all dev_strs.
         :type used_dev_strs: sequence of str, optional
+        :param split_factors: The updated split factors 0 < sf < 1 for each device. Default is None.
+        :type split_factors: dict of floats, optional
         :param kwargs: The MutliDevice keyword arguments to map the function to.
         :type kwargs: dict of any
         :return: The results of the function, returned as a MultiDevice instance.
         """
+        if ivy.exists(split_factors):
+            kwargs['split_factor'] = split_factors
         used_dev_strs = ivy.default(used_dev_strs, self._dev_strs)
-        [self._input_queues[ds].put({k: v[i] for k, v in kwargs.items()}) for i, ds in enumerate(used_dev_strs)]
+        [self._input_queues[ds].put({k: v[ds] for k, v in kwargs.items()}) for ds in used_dev_strs]
         return self._ret_fn(
             ivy.MultiDevIter([self._output_queues[ds].get(timeout=self._timeout) for ds in used_dev_strs],
                              self._num_workers))

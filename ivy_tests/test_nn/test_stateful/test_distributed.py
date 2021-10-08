@@ -87,7 +87,7 @@ def test_distributed_training(bs_ic_oc, dev_str, call):
                                          input_channels, dev_str=dev_str0), 'float32')
 
     # second device
-    if 'gpu' in dev_str:
+    if 'gpu' in dev_str and ivy.num_gpus() > 1:
         idx = ivy.num_gpus() - 1
         dev_str1 = dev_str[:-1] + str(idx)
         dev_strs.append(dev_str1)
@@ -172,7 +172,7 @@ def test_distributed_multiprocess_training(bs_ic_oc, dev_str, call):
                                          input_channels, dev_str=dev_str0), 'float32')
 
     # second device
-    if 'gpu' in dev_str:
+    if 'gpu' in dev_str and ivy.num_gpus() > 1:
         idx = ivy.num_gpus() - 1
         dev_str1 = dev_str[:-1] + str(idx)
         dev_strs.append(dev_str1)
@@ -265,7 +265,7 @@ def test_to_ivy_module_distributed(bs_ic_oc, from_class_and_args, inplace_update
                                          input_channels, dev_str=dev_str0), 'float32')
 
     # second device
-    if 'gpu' in dev_str:
+    if 'gpu' in dev_str and ivy.num_gpus() > 1:
         idx = ivy.num_gpus() - 1
         dev_str1 = dev_str[:-1] + str(idx)
         dev_strs.append(dev_str1)
@@ -362,7 +362,7 @@ def test_to_ivy_module_distributed_multiprocess(bs_ic_oc, from_class_and_args, i
                                          input_channels, dev_str=dev_str0), 'float32')
 
     # second device
-    if 'gpu' in dev_str:
+    if 'gpu' in dev_str and ivy.num_gpus() > 1:
         idx = ivy.num_gpus() - 1
         dev_str1 = dev_str[:-1] + str(idx)
         dev_strs.append(dev_str1)
@@ -452,7 +452,7 @@ def test_device_manager_tuning(bs_ic_oc, tune_dev_alloc, tune_dev_splits, dev_st
     dev_strs = list()
     dev_str0 = dev_str
     dev_strs.append(dev_str0)
-    if 'gpu' in dev_str:
+    if 'gpu' in dev_str and ivy.num_gpus() > 1:
         idx = ivy.num_gpus() - 1
         dev_str1 = dev_str[:-1] + str(idx)
         dev_strs.append(dev_str1)
