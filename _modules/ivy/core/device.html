@@ -206,7 +206,7 @@
     <span class="n">nvidia_smi</span><span class="o">.</span><span class="n">nvmlInit</span><span class="p">()</span>
 <span class="k">except</span> <span class="n">nvidia_smi</span><span class="o">.</span><span class="n">NVMLError_LibraryNotFound</span><span class="p">:</span>
     <span class="k">pass</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Type</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Tuple</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Type</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Any</span>
 
 <span class="c1"># local</span>
 <span class="kn">import</span> <span class="nn">ivy</span>
@@ -1167,12 +1167,8 @@
 <span class="sd">        :param tune_dev_splits: Whether to tune the per-device split sizes internally. Default is True.</span>
 <span class="sd">        :type tune_dev_splits: bool, optional</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">num_dev_args</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">([</span><span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">dev_mapper</span><span class="p">),</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">da_dim_size</span><span class="p">)])</span>
-        <span class="k">if</span> <span class="n">num_dev_args</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">]:</span>
-            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;either both or neither of dev_mapper and da_dim_size must be specified, but found &#39;</span>
-                            <span class="s1">&#39;dev_mapper=</span><span class="si">{}</span><span class="s1">, da_dim_size=</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">dev_mapper</span><span class="p">,</span> <span class="n">da_dim_size</span><span class="p">))</span>
-        <span class="n">with_dev_mapping</span> <span class="o">=</span> <span class="kc">False</span> <span class="k">if</span> <span class="n">num_dev_args</span> <span class="o">==</span> <span class="mi">0</span> <span class="k">else</span> <span class="kc">True</span>
-        <span class="n">tune_dev_alloc</span> <span class="o">=</span> <span class="kc">False</span> <span class="k">if</span> <span class="n">num_dev_args</span> <span class="o">==</span> <span class="mi">0</span> <span class="k">else</span> <span class="n">tune_dev_alloc</span>
+        <span class="n">with_dev_mapping</span> <span class="o">=</span> <span class="kc">True</span> <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">dev_mapper</span><span class="p">)</span> <span class="k">else</span> <span class="kc">False</span>
+        <span class="n">tune_dev_alloc</span> <span class="o">=</span> <span class="kc">False</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">with_dev_mapping</span> <span class="k">else</span> <span class="n">tune_dev_alloc</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_dev_mapper</span> <span class="o">=</span> <span class="n">dev_mapper</span>
         <span class="n">dev_strs</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">default</span><span class="p">(</span><span class="n">dev_strs</span><span class="p">,</span> <span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">default_device</span><span class="p">()])</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_num_devs</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">dev_strs</span><span class="p">)</span>
