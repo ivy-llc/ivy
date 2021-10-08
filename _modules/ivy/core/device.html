@@ -314,7 +314,7 @@
     <span class="k">elif</span> <span class="n">dev_str</span> <span class="o">==</span> <span class="s1">&#39;cpu&#39;</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">psutil</span><span class="o">.</span><span class="n">virtual_memory</span><span class="p">()</span><span class="o">.</span><span class="n">total</span><span class="o">/</span><span class="mf">1e9</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;Invalid device string input, must be on the form &quot;gpu:idx&quot; or &quot;cpu&quot;,&#39;</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;Invalid device string input, must be on the form &quot;gpu:idx&quot; or &quot;cpu&quot;, &#39;</span>
                         <span class="s1">&#39;but found </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">dev_str</span><span class="p">))</span></div>
 
 
@@ -342,7 +342,7 @@
         <span class="n">vm</span> <span class="o">=</span> <span class="n">psutil</span><span class="o">.</span><span class="n">virtual_memory</span><span class="p">()</span>
         <span class="k">return</span> <span class="p">(</span><span class="n">vm</span><span class="o">.</span><span class="n">total</span> <span class="o">-</span> <span class="n">vm</span><span class="o">.</span><span class="n">available</span><span class="p">)</span><span class="o">/</span><span class="mf">1e9</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;Invalid device string input, must be on the form &quot;gpu:idx&quot; or &quot;cpu&quot;,&#39;</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;Invalid device string input, must be on the form &quot;gpu:idx&quot; or &quot;cpu&quot;, &#39;</span>
                         <span class="s1">&#39;but found </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">dev_str</span><span class="p">))</span></div>
 
 
@@ -370,7 +370,7 @@
             <span class="k">return</span> <span class="p">(</span><span class="n">psutil</span><span class="o">.</span><span class="n">Process</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">getpid</span><span class="p">())</span><span class="o">.</span><span class="n">memory_info</span><span class="p">()</span><span class="o">.</span><span class="n">rss</span><span class="o">/</span><span class="n">vm</span><span class="o">.</span><span class="n">total</span><span class="p">)</span><span class="o">*</span><span class="mi">100</span>
         <span class="k">return</span> <span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="p">(</span><span class="n">vm</span><span class="o">.</span><span class="n">available</span><span class="o">/</span><span class="n">vm</span><span class="o">.</span><span class="n">total</span><span class="p">))</span><span class="o">*</span><span class="mi">100</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;Invalid device string input, must be on the form &quot;gpu:idx&quot; or &quot;cpu&quot;,&#39;</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;Invalid device string input, must be on the form &quot;gpu:idx&quot; or &quot;cpu&quot;, &#39;</span>
                         <span class="s1">&#39;but found </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">dev_str</span><span class="p">))</span></div>
 
 
@@ -392,7 +392,7 @@
         <span class="n">handle</span> <span class="o">=</span> <span class="n">_get_nvml_gpu_handle</span><span class="p">(</span><span class="n">dev_str</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">nvidia_smi</span><span class="o">.</span><span class="n">nvmlDeviceGetUtilizationRates</span><span class="p">(</span><span class="n">handle</span><span class="p">)</span><span class="o">.</span><span class="n">gpu</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;Invalid device string input, must be on the form &quot;gpu:idx&quot; or &quot;cpu&quot;,&#39;</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;Invalid device string input, must be on the form &quot;gpu:idx&quot; or &quot;cpu&quot;, &#39;</span>
                         <span class="s1">&#39;but found </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">dev_str</span><span class="p">))</span></div>
 
 
@@ -1477,7 +1477,8 @@
     <span class="nd">@dim_size</span><span class="o">.</span><span class="n">setter</span>
     <span class="k">def</span> <span class="nf">dim_size</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_dim_size</span> <span class="o">=</span> <span class="n">batch_size</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_compute_dev_strs_da</span><span class="p">()</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tune_da</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_compute_dev_strs_da</span><span class="p">()</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">tune_step</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
