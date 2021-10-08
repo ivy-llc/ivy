@@ -875,9 +875,9 @@ class DevMapper(abc.ABC):
                 continue
             if loaded_kwargs is None:
                 return
-            if 'split_factors' in loaded_kwargs:
+            if 'split_factor' in loaded_kwargs:
                 ivy.set_split_factor(loaded_kwargs['split_factor'], dev_str)
-                del loaded_kwargs['split_factors']
+                del loaded_kwargs['split_factor']
             ret = self._fn(**loaded_kwargs, **kwargs)
             output_queue.put(ret)
 
@@ -940,8 +940,9 @@ class DevMapperMultiProc(DevMapper):
 class DevManager:
 
     def __init__(self, dev_mapper=None, dev_strs: Union[Iterable[str], Dict[str, int]] = None, da_dim_size=None,
-                 safety_factor=1.1, min_dev_dim_size=0, max_dev_dim_step_ratio=0.1, min_unit_dev_steps=10,
-                 starting_split_factor=0., max_split_factor_step_size=0.05, tune_dev_alloc=True, tune_dev_splits=True):
+                 safety_factor=1.1, min_dev_dim_size=0, max_dev_dim_step_ratio=0.1, min_unit_dev_tune_steps=10,
+                 min_sf_tune_steps=10, starting_split_factor=0., max_split_factor_step_size=0.05, tune_dev_alloc=True,
+                 tune_dev_splits=True):
         """
         Create device manager, which unlike the device mapper, handles all argument cloning and distributing internally.
         The device manager only receivess a specification regarding the ratio of the batch each device should consume.
@@ -958,9 +959,11 @@ class DevManager:
         :type min_dev_dim_size: int, optional
         :param max_dev_dim_step_ratio: The maximum step ratio for changing the dimension for a device. Default is 0.1.
         :type max_dev_dim_step_ratio: int, optional
-        :param min_unit_dev_steps: The minimum number of tune steps to make when optimizing with unit step size.
+        :param min_unit_dev_tune_steps: The minimum number of tune steps to make when optimizing with unit step size.
                                    Default is 10.
-        :type min_unit_dev_steps: int, optional
+        :type min_unit_dev_tune_steps: int, optional
+        :param min_sf_tune_steps: Minimum number of split factor tune steps. Default is 10.
+        :type min_sf_tune_steps: int, optional
         :param starting_split_factor: The initial device-specific split factor. Default is 0.
         :type starting_split_factor: float, optional
         :param max_split_factor_step_size: The maximum step size for changing the split factor for a device.
@@ -984,7 +987,8 @@ class DevManager:
         self._safety_factor = safety_factor
         self._min_dev_dim_size = min_dev_dim_size
         self._max_dev_dim_step_size = max(int(round(max_dev_dim_step_ratio * da_dim_size)), 1)
-        self._min_unit_dev_steps = min_unit_dev_steps
+        self._min_unit_dev_tune_steps = min_unit_dev_tune_steps
+        self._min_sf_tune_steps = min_sf_tune_steps
         self._max_split_factor_step_size = max_split_factor_step_size
         self._tune_da = tune_dev_alloc
         self._tune_ds = tune_dev_splits
@@ -1006,12 +1010,14 @@ class DevManager:
         if self._tune_ds:
             [ivy.set_split_factor(starting_split_factor, ds) for ds in self._dev_strs_keys]
         self._percent_mem_inc_per_unit_da_dim = dict(zip(self._dev_strs_keys, [0] * self._num_devs))
-        self._percent_mem_inc_per_unit_ds_dim = dict(zip(self._dev_strs_keys, [0] * self._num_devs))
+        self._percent_mem_inc_per_sf = dict(zip(self._dev_strs_keys, [0] * self._num_devs))
         self._percent_util_inc_per_unit_da_dim = dict(zip(self._dev_strs_keys, [1] * self._num_devs))
         self._delta_da_dim_sizes = dict(zip(self._dev_strs_keys, [0] * self._num_devs))
+        self._delta_sfs = dict(zip(self._dev_strs_keys, [0] * self._num_devs))
         self._dev_percent_mems = None
         self._dev_utils = None
         self._compute_dev_strs_da()
+        self._dev_strs_ds = {ds: 0. for ds in self._dev_strs_keys}
 
     # Device Allocation #
 
@@ -1130,7 +1136,7 @@ class DevManager:
         if self._max_dev_dim_step_size == 1:
 
             # check if da tuning is complete
-            if self.repeated_config_check() and self._unit_da_tune_count >= self._min_unit_dev_steps:
+            if self.repeated_config_check() and self._unit_da_tune_count >= self._min_unit_dev_tune_steps:
                 self._observed_configs.clear()
                 self._percent_mem_inc_per_unit_da_dim.clear()
                 self._delta_da_dim_sizes.clear()
@@ -1143,7 +1149,9 @@ class DevManager:
 
     def _shift_ds(self, deltas):
         for ds, delta in deltas.items():
-            ivy.set_split_factor(min(ivy.split_factor(ds) + min(delta, self._max_split_factor_step_size), 1), ds)
+            clipped_delta = min(delta, self._max_split_factor_step_size)
+            self._dev_strs_ds[ds] = min(self._dev_strs_ds[ds] + clipped_delta, 1)
+            self._delta_sfs[ds] = clipped_delta
 
     def ds_tune_step(self):
         new_dev_percent_mems = dict(sorted({k: percent_used_mem_on_dev(k) for k in self._dev_strs_keys}.items(),
@@ -1152,8 +1160,8 @@ class DevManager:
         # first step
         if self._first_ds_tune_step:
 
-            # shift the device splits by 1
-            self._shift_ds({k: 1 for k in self._dev_strs_keys})
+            # shift the device splits by 1%
+            self._shift_ds({k: 0.01 for k in self._dev_strs_keys})
 
             # update device percentage memory usages and utilizations
             self._dev_percent_mems = new_dev_percent_mems
@@ -1169,15 +1177,16 @@ class DevManager:
 
         # percentage memory increase per unit dim
         delta_percent_mems = {k: new_dev_percent_mems[k] - self._dev_percent_mems[k] for k in self._dev_strs_keys}
-        self._percent_mem_inc_per_unit_ds_dim = \
-            {k: (((self._ds_tune_count - 1) * self._percent_mem_inc_per_unit_ds_dim[k] +
-                  (delta_percent_mems[k]/delta_dim_size)) / self._ds_tune_count)
-            if delta_dim_size != 0 else self._percent_mem_inc_per_unit_ds_dim[k]
-             for k, delta_dim_size in self._delta_da_dim_sizes.items()}
+        self._percent_mem_inc_per_sf = \
+            {k: (((self._ds_tune_count - 1) * self._percent_mem_inc_per_sf[k] +
+                  (delta_percent_mems[k]/delta_sf)) / self._ds_tune_count)
+            if delta_sf != 0 else self._percent_mem_inc_per_sf[k]
+             for k, delta_sf in self._delta_sfs.items()}
 
         # shift the device splits
-        deltas = {k: min(math.floor(((100-new_dev_percent_mems[k]) / max(self._percent_mem_inc_per_unit_ds_dim[k], 0.1))
-                               / self._safety_factor), self._dim_size) for k in self._dev_strs_keys}
+        deltas =\
+            {k: min((max(100/self._safety_factor-new_dev_percent_mems[k], 0)) / max(self._percent_mem_inc_per_sf[k], 1),
+                    self._max_split_factor_step_size) for k in self._dev_strs_keys}
         self._shift_ds(deltas)
 
         # update device percentage memory usages
@@ -1192,9 +1201,9 @@ class DevManager:
         da_can_terminate = self._max_dev_dim_step_size == 1 or not self._tune_da
 
         # check if ds tuning is complete
-        if da_can_terminate and self.repeated_config_check():
+        if da_can_terminate and self.repeated_config_check() and self._ds_tune_count >= self._min_sf_tune_steps:
             self._observed_configs.clear()
-            self._percent_mem_inc_per_unit_ds_dim.clear()
+            self._percent_mem_inc_per_sf.clear()
             self._dev_percent_mems.clear()
             self._tuned = True
 
@@ -1207,7 +1216,7 @@ class DevManager:
         if self._tune_da:
             config_list += list(self._dev_strs_da.values())
         if self._tune_ds:
-            config_list += [ivy.split_factor(ds) for ds in self._dev_strs_keys]
+            config_list += [self._dev_strs_ds[ds] for ds in self._dev_strs_keys]
         config = tuple(config_list)
         if config in self._observed_configs:
             return True
@@ -1240,7 +1249,11 @@ class DevManager:
             to_distribute = {k: ivy.distribute(v, used_dev_strs_dict) for k, v in to_distribute.items()}
         else:
             to_distribute = {}
-        ret = self._dev_mapper.map(**to_clone, **to_distribute, used_dev_strs=used_dev_strs)
+        if self._tune_ds:
+            ret = self._dev_mapper.map(**to_clone, **to_distribute, used_dev_strs=used_dev_strs,
+                                       split_factors=self._dev_strs_ds)
+        else:
+            ret = self._dev_mapper.map(**to_clone, **to_distribute, used_dev_strs=used_dev_strs)
         if self._tuned:
             return ret
         self._tune_step()
