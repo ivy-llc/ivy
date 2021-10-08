@@ -326,8 +326,8 @@ def set_split_factor(factor, dev_str=None):
 
 
 def split_func_call(func: Callable, inputs: Iterable[Union[Union[ivy.Array, ivy.NativeArray], ivy.Container]],
-                    mode: str, chunk_size: int, input_axes: Union[int, Iterable[int]] = 0,
-                    output_axes: Union[int, Iterable[int]] = None)\
+                    mode: str, max_chunk_size: int = None, chunk_size: int = None,
+                    input_axes: Union[int, Iterable[int]] = 0, output_axes: Union[int, Iterable[int]] = None)\
         -> Iterable[Union[Union[ivy.Array, ivy.NativeArray], ivy.Container]]:
     """
     Call a function by splitting its inputs along a given axis, and calling the function in chunks, rather than feeding
@@ -338,20 +338,26 @@ def split_func_call(func: Callable, inputs: Iterable[Union[Union[ivy.Array, ivy.
     :type inputs: sequence of arrays
     :param mode: The mode by which to unify the return values, must be one of [ concat | mean | sum ]
     :type mode: str
-    :param chunk_size: The size of each of the chunks to be fed into the function.
-    :type chunk_size: int
+    :param max_chunk_size: The maximum size of each of the chunks to be fed into the function.
+    :type max_chunk_size: int
+    :param chunk_size: The size of each of the chunks to be fed into the function. Specifying this arg overwrites the
+                       global split factor. Default is None.
+    :type chunk_size: int, optional
     :param input_axes: The axes along which to split each of the inputs, before passing to the function. Default is 0.
     :type input_axes: int or sequence of ints, optional
     :param output_axes: The axes along which to concat each of the returned outputs. Default is same as fist input axis.
     :type output_axes: int or sequence of ints, optional
     :return: The return from the function, following input splitting and re-concattenation.
     """
+    if not ivy.exists(max_chunk_size) and not ivy.exists(chunk_size):
+        raise Exception('Either max_chunk_size or chunk_size must be specified, but neither were provided.')
     if isinstance(input_axes, int):
         input_axes = [input_axes]*len(inputs)
+    chunk_size = ivy.default(chunk_size, max(int(round(max_chunk_size * ivy.split_factor(ivy.default_device()))), 1))
     dim_size = inputs[0].shape[input_axes[0]]
     num_chunks = dim_size / chunk_size
     num_chunks_floored = math.floor(dim_size / chunk_size)
-    chunk_sizes = [chunk_size]*num_chunks_floored
+    chunk_sizes = [chunk_size] * num_chunks_floored
     if num_chunks != num_chunks_floored:
         chunk_sizes.append(dim_size - chunk_size * num_chunks_floored)
     inputs_split = [ivy.split(inp, chunk_sizes, input_axes[i], True) if ivy.is_array(inp)
