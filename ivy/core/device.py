@@ -1136,7 +1136,8 @@ class DevManager:
         if self._max_dev_dim_step_size == 1:
 
             # check if da tuning is complete
-            if self.repeated_config_check() and self._unit_da_tune_count >= self._min_unit_dev_tune_steps:
+            if self.repeated_config_check() and self._unit_da_tune_count >= self._min_unit_dev_tune_steps and \
+                    (self._ds_tune_count >= self._min_sf_tune_steps) or not self._tune_ds:
                 self._observed_configs.clear()
                 self._percent_mem_inc_per_unit_da_dim.clear()
                 self._delta_da_dim_sizes.clear()
@@ -1201,7 +1202,8 @@ class DevManager:
         da_can_terminate = self._max_dev_dim_step_size == 1 or not self._tune_da
 
         # check if ds tuning is complete
-        if da_can_terminate and self.repeated_config_check() and self._ds_tune_count >= self._min_sf_tune_steps:
+        if da_can_terminate and self.repeated_config_check() and self._ds_tune_count >= self._min_sf_tune_steps and \
+                (self._unit_da_tune_count >= self._min_unit_dev_tune_steps) or not self._tune_da:
             self._observed_configs.clear()
             self._percent_mem_inc_per_sf.clear()
             self._dev_percent_mems.clear()
