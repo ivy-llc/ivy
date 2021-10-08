@@ -1224,11 +1224,11 @@ class DevManager:
         used_dev_strs_dict = {k: v for k, v in self._dev_strs_da.items() if v > 0}
         used_dev_strs = list(used_dev_strs_dict.keys())
         if ivy.exists(to_clone):
-            to_clone = {k: ivy.clone(v, used_dev_strs).at_devs() for k, v in to_clone.items()}
+            to_clone = {k: ivy.clone(v, used_dev_strs) for k, v in to_clone.items()}
         else:
             to_clone = {}
         if ivy.exists(to_distribute):
-            to_distribute = {k: ivy.distribute(v, used_dev_strs_dict).at_devs() for k, v in to_distribute.items()}
+            to_distribute = {k: ivy.distribute(v, used_dev_strs_dict) for k, v in to_distribute.items()}
         else:
             to_distribute = {}
         ret = self._dev_mapper.map(**to_clone, **to_distribute, used_dev_strs=used_dev_strs)
