@@ -996,7 +996,7 @@ class DevManager:
         self._with_dev_mappig = with_dev_mapping
         self._tune_da = tune_dev_alloc
         self._tune_ds = tune_dev_splits
-        self._tuned = (not tune_dev_alloc and not tune_dev_splits) or self._num_devs == 1
+        self._tuned = ((not tune_dev_alloc or self._num_devs == 1) and not tune_dev_splits)
         self._first_da_tune_step = True
         self._first_ds_tune_step = True
         self._da_tune_count = 0
@@ -1016,8 +1016,6 @@ class DevManager:
         else:
             self._dev_str_da_ratios = dict(zip(dev_strs, [1 / self._num_devs] * self._num_devs))
         self._dev_strs_keys = self._dev_str_da_ratios.keys()
-        if self._tune_ds:
-            [ivy.set_split_factor(starting_split_factor, ds) for ds in self._dev_strs_keys]
         self._percent_mem_inc_per_unit_da_dim = dict(zip(self._dev_strs_keys, [0] * self._num_devs))
         self._percent_mem_inc_per_sf = dict(zip(self._dev_strs_keys, [0] * self._num_devs))
         self._percent_util_inc_per_unit_da_dim = dict(zip(self._dev_strs_keys, [1] * self._num_devs))
@@ -1027,7 +1025,9 @@ class DevManager:
         self._dev_utils = None
         if with_dev_mapping:
             self._compute_dev_strs_da()
-        self._dev_strs_ds = {ds: 0. for ds in self._dev_strs_keys}
+        self._dev_strs_ds = {ds: starting_split_factor for ds in self._dev_strs_keys}
+        if self._tune_ds and not with_dev_mapping:
+            [ivy.set_split_factor(starting_split_factor, ds) for ds in self._dev_strs_keys]
 
     # Device Allocation #
 
