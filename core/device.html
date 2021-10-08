@@ -304,13 +304,15 @@ and use the provided values for initialization. Default is True.</p></li>
 
 <dl class="py method">
 <dt id="ivy.core.device.DevManager.map">
-<code class="sig-name descname">map</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">to_clone</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">to_distribute</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/device.html#DevManager.map"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.device.DevManager.map" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">map</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">cloned</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">to_clone</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">distributed</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">to_distribute</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/device.html#DevManager.map"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.device.DevManager.map" title="Permalink to this definition">¶</a></dt>
 <dd><p>Map the function fn to each of the MultiDevice args and kwargs, running each function in parallel with CUDA-safe
 multiprocessing.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
+<li><p><strong>cloned</strong> (<em>dict of any</em><em>, </em><em>optional</em>) – The MutliDevice keyword arguments which are already cloned. Default is None.</p></li>
 <li><p><strong>to_clone</strong> (<em>dict of any</em><em>, </em><em>optional</em>) – The MutliDevice keyword arguments to clone and map to the function. Default is None.</p></li>
+<li><p><strong>distributed</strong> (<em>dict of any</em><em>, </em><em>optional</em>) – The MutliDevice keyword arguments which already distributed. Default is None.</p></li>
 <li><p><strong>to_distribute</strong> (<em>dict of any</em><em>, </em><em>optional</em>) – The MutliDevice keyword arguments to distribute and map to the function. Default is None.</p></li>
 </ul>
 </dd>
