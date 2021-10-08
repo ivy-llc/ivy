@@ -124,7 +124,7 @@ def total_mem_on_dev(dev_str: str)\
     elif dev_str == 'cpu':
         return psutil.virtual_memory().total/1e9
     else:
-        raise Exception('Invalid device string input, must be on the form "gpu:idx" or "cpu",'
+        raise Exception('Invalid device string input, must be on the form "gpu:idx" or "cpu", '
                         'but found {}'.format(dev_str))
 
 
@@ -152,7 +152,7 @@ def used_mem_on_dev(dev_str: str, process_specific=False)\
         vm = psutil.virtual_memory()
         return (vm.total - vm.available)/1e9
     else:
-        raise Exception('Invalid device string input, must be on the form "gpu:idx" or "cpu",'
+        raise Exception('Invalid device string input, must be on the form "gpu:idx" or "cpu", '
                         'but found {}'.format(dev_str))
 
 
@@ -180,7 +180,7 @@ def percent_used_mem_on_dev(dev_str: str, process_specific=False)\
             return (psutil.Process(os.getpid()).memory_info().rss/vm.total)*100
         return (1-(vm.available/vm.total))*100
     else:
-        raise Exception('Invalid device string input, must be on the form "gpu:idx" or "cpu",'
+        raise Exception('Invalid device string input, must be on the form "gpu:idx" or "cpu", '
                         'but found {}'.format(dev_str))
 
 
@@ -202,7 +202,7 @@ def dev_util(dev_str: str)\
         handle = _get_nvml_gpu_handle(dev_str)
         return nvidia_smi.nvmlDeviceGetUtilizationRates(handle).gpu
     else:
-        raise Exception('Invalid device string input, must be on the form "gpu:idx" or "cpu",'
+        raise Exception('Invalid device string input, must be on the form "gpu:idx" or "cpu", '
                         'but found {}'.format(dev_str))
 
 
@@ -1287,7 +1287,8 @@ class DevManager:
     @dim_size.setter
     def dim_size(self, batch_size):
         self._dim_size = batch_size
-        self._compute_dev_strs_da()
+        if self._tune_da:
+            self._compute_dev_strs_da()
 
     @property
     def tune_step(self):
