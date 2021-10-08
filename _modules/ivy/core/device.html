@@ -944,7 +944,7 @@
 
 
 <span class="c1"># noinspection PyShadowingNames</span>
-<div class="viewcode-block" id="unify_iter"><a class="viewcode-back" href="../../../core/device/unify_iter.html#ivy.core.device.unify_iter">[docs]</a><span class="k">def</span> <span class="nf">unify_iter</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="n">dev_str</span><span class="p">,</span> <span class="n">mode</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+<div class="viewcode-block" id="unify_iter"><a class="viewcode-back" href="../../../core/device/unify_iter.html#ivy.core.device.unify_iter">[docs]</a><span class="k">def</span> <span class="nf">unify_iter</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="n">dev_str</span><span class="p">,</span> <span class="n">mode</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">transpose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Unify elements of the iterbale xs to a single target device.</span>
 
@@ -956,12 +956,14 @@
 <span class="sd">    :type mode: str</span>
 <span class="sd">    :param axis: The axis along which to concattenate the sub-arrays. Default is 0.</span>
 <span class="sd">    :type axis: int, optional</span>
+<span class="sd">    :param transpose: Whether to transpose the first and second dimensions of the iterator. Default is False.</span>
+<span class="sd">    :type transpose: bool, optional</span>
 <span class="sd">    :return: iterable with each element unified to a single target devices</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># noinspection PyProtectedMember</span>
     <span class="n">xs</span> <span class="o">=</span> <span class="n">xs</span><span class="o">.</span><span class="n">_data</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="n">MultiDevIter</span><span class="p">)</span> <span class="k">else</span> <span class="n">xs</span>
-    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">xs</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)):</span>
-        <span class="c1"># ToDo: make this transposing option more elegant, checking if the first argument is iterable is insufficient</span>
+    <span class="k">if</span> <span class="n">transpose</span><span class="p">:</span>
+        <span class="c1"># ToDo: make this more elegant, this method should not be responsible for transposing iterators</span>
         <span class="n">xs_t</span> <span class="o">=</span> <span class="p">[</span><span class="n">MultiDevItem</span><span class="p">({</span><span class="n">ivy</span><span class="o">.</span><span class="n">dev_str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_array</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">else</span> <span class="n">i</span><span class="o">.</span><span class="n">dev_str</span><span class="p">:</span> <span class="n">i</span>
                               <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">mdi</span><span class="p">})</span> <span class="k">for</span> <span class="n">mdi</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">xs</span><span class="p">)))]</span>
         <span class="k">return</span> <span class="p">[</span><span class="n">unify</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">dev_str</span><span class="p">,</span> <span class="n">mode</span><span class="p">,</span> <span class="n">axis</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">xs_t</span><span class="p">]</span>
