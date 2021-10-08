@@ -542,17 +542,13 @@ def test_device_manager_unwrapped_tuning(bs_ic_oc, dev_str, call):
     x = ivy.cast(ivy.linspace(ivy.zeros(batch_shape), ivy.ones(batch_shape),
                               input_channels, dev_str=dev_str), 'float32')
 
-    # module for processes
-    module = TrainableModuleWithSplit(input_channels, output_channels,
-                                      dev_str=dev_str, store_vars=False)  # , hidden_size=2048)
-
     # optimizer
     optim = ivy.SGD(1e-4)
 
     # device manager
     dev_manager = ivy.DevManager(dev_strs=[dev_str], tune_dev_alloc=False)
 
-    # local module
+    # module
     module = TrainableModuleWithSplit(input_channels, output_channels,
                                       dev_str=dev_str, store_vars=True)  # , hidden_size=2048)
     module.build()
