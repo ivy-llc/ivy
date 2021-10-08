@@ -940,8 +940,8 @@ class DevMapperMultiProc(DevMapper):
 class DevManager:
 
     def __init__(self, dev_mapper=None, dev_strs: Union[Iterable[str], Dict[str, int]] = None, da_dim_size=None,
-                 safety_factor=1.1, min_dev_dim_size=0, max_dev_dim_step_ratio=0.1, starting_split_factor=0.,
-                 max_split_factor_step_size=0.05, tune_dev_alloc=True, tune_dev_splits=True):
+                 safety_factor=1.1, min_dev_dim_size=0, max_dev_dim_step_ratio=0.1, min_unit_dev_steps=10,
+                 starting_split_factor=0., max_split_factor_step_size=0.05, tune_dev_alloc=True, tune_dev_splits=True):
         """
         Create device manager, which unlike the device mapper, handles all argument cloning and distributing internally.
         The device manager only receivess a specification regarding the ratio of the batch each device should consume.
@@ -958,14 +958,19 @@ class DevManager:
         :type min_dev_dim_size: int, optional
         :param max_dev_dim_step_ratio: The maximum step ratio for changing the dimension for a device. Default is 0.1.
         :type max_dev_dim_step_ratio: int, optional
+        :param min_unit_dev_steps: The minimum number of tune steps to make when optimizing with unit step size.
+                                   Default is 10.
+        :type min_unit_dev_steps: int, optional
         :param starting_split_factor: The initial device-specific split factor. Default is 0.
         :type starting_split_factor: float, optional
         :param max_split_factor_step_size: The maximum step size for changing the split factor for a device.
                                            Default is 0.05.
         :type max_split_factor_step_size: float, optional
-        :param tune_dev_alloc: Whether to tune the devices split sizes internally based on device utilization tracking,
+        :param tune_dev_alloc: Whether to tune the device split sizes internally based on device utilization tracking,
                                and use the provided values for initialization. Default is True.
         :type tune_dev_alloc: bool, optional
+        :param tune_dev_splits: Whether to tune the per-device split sizes internally. Default is True.
+        :type tune_dev_splits: bool, optional
         """
         num_dev_args = sum([ivy.exists(dev_mapper), ivy.exists(dev_strs), ivy.exists(da_dim_size)])
         if num_dev_args not in [0, 3]:
@@ -979,6 +984,7 @@ class DevManager:
         self._safety_factor = safety_factor
         self._min_dev_dim_size = min_dev_dim_size
         self._max_dev_dim_step_size = max(int(round(max_dev_dim_step_ratio * da_dim_size)), 1)
+        self._min_unit_dev_steps = min_unit_dev_steps
         self._max_split_factor_step_size = max_split_factor_step_size
         self._tune_da = tune_dev_alloc
         self._tune_ds = tune_dev_splits
@@ -986,6 +992,7 @@ class DevManager:
         self._first_da_tune_step = True
         self._first_ds_tune_step = True
         self._da_tune_count = 0
+        self._unit_da_tune_count = 0
         self._ds_tune_count = 0
         self._tune_step = self.da_tune_step
         self._observed_configs = set()
@@ -1123,12 +1130,14 @@ class DevManager:
         if self._max_dev_dim_step_size == 1:
 
             # check if da tuning is complete
-            if self.repeated_config_check():
+            if self.repeated_config_check() and self._unit_da_tune_count >= self._min_unit_dev_steps:
                 self._observed_configs.clear()
                 self._percent_mem_inc_per_unit_da_dim.clear()
                 self._delta_da_dim_sizes.clear()
                 self._dev_percent_mems.clear()
                 self._tuned = True
+
+            self._unit_da_tune_count += 1
 
     # Device Splitting #
 
