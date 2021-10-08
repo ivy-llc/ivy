@@ -353,7 +353,8 @@ def split_func_call(func: Callable, inputs: Iterable[Union[Union[ivy.Array, ivy.
         raise Exception('Either max_chunk_size or chunk_size must be specified, but neither were provided.')
     if isinstance(input_axes, int):
         input_axes = [input_axes]*len(inputs)
-    chunk_size = ivy.default(chunk_size, max(int(round(max_chunk_size * ivy.split_factor(ivy.default_device()))), 1))
+    chunk_size = ivy.default(
+        chunk_size, lambda: max(int(round(max_chunk_size * ivy.split_factor(ivy.default_device()))), 1), True)
     dim_size = inputs[0].shape[input_axes[0]]
     num_chunks = dim_size / chunk_size
     num_chunks_floored = math.floor(dim_size / chunk_size)
