@@ -16,7 +16,7 @@ try:
     nvidia_smi.nvmlInit()
 except nvidia_smi.NVMLError_LibraryNotFound:
     pass
-from typing import Union, Type, Callable, Iterable, Dict
+from typing import Union, Type, Callable, Iterable, Dict, Any, List, Tuple
 
 # local
 import ivy
@@ -387,36 +387,37 @@ def split_func_call(func: Callable, inputs: Iterable[Union[Union[ivy.Array, ivy.
 
 class MultiDev:
 
-    def __init__(self, iterable, axis=0):
-        if isinstance(iterable, MultiDev):
+    def __init__(self, data: Iterable, axis=0):
+        if isinstance(data, MultiDev):
             # noinspection PyUnresolvedReferences,PyProtectedMember
-            iterable = iterable._iterable
+            data = data._dict
         self._axis = axis
-        self._iterable = iterable
-        self._length = len(iterable)
+        self._data = data
+        self._length = len(data)
         self._counter = 0
 
     def __len__(self):
         return self._length
 
     def __repr__(self):
-        return 'MultiDev(' + self._iterable.__repr__() + ')'
+        return 'MultiDev(' + self._data.__repr__() + ')'
 
 
 class MultiDevItem(MultiDev):
 
-    def __init__(self, lst, axis=0):
-        super().__init__(lst, axis)
+    def __init__(self, data: Dict[ivy.Device, Any], axis=0):
+        super().__init__(data, axis)
 
-    def at_dev(self, idx):
-        return self._iterable[idx]
+    # noinspection PyShadowingNames
+    def at_dev(self, dev_str):
+        return self._data[dev_str]
 
     def at_devs(self):
-        return self._iterable
+        return self._data
 
     @property
     def shape(self):
-        shapes = [list(x.shape) if hasattr(x, 'shape') else None for x in self._iterable]
+        shapes = [list(x.shape) if hasattr(x, 'shape') else None for x in self._data.values()]
         if not shapes or None in shapes:
             return None
         shape0 = shapes[0]
@@ -431,7 +432,7 @@ class MultiDevItem(MultiDev):
         if is_int:
             slice_obj = slice(slice_obj, slice_obj+1, 1)
         ret_list = list()
-        for sub_item in self._iterable:
+        for sub_item in self._data.values():
             if not hasattr(sub_item, 'shape'):
                 continue
             shp = sub_item.shape
@@ -446,23 +447,24 @@ class MultiDevItem(MultiDev):
         return MultiDevItem(ret_list)
 
     def __repr__(self):
-        return 'MultiDevItem(' + self._iterable.__repr__() + ')'
+        return 'MultiDevItem(' + self._data.__repr__() + ')'
 
 
 class MultiDevIter(MultiDev):
 
-    def __init__(self, iterable, num_devs):
-        self._num_devs = num_devs
-        super().__init__(iterable)
+    def __init__(self, data: Iterable, dev_strs):
+        self._dev_strs = dev_strs
+        super().__init__(data)
 
-    def at_dev(self, dev_idx):
-        return [x.at_dev(dev_idx) if isinstance(x, MultiDevItem) else x for x in self._iterable]
+    # noinspection PyShadowingNames
+    def at_dev(self, dev_str):
+        return [x.at_dev(dev_str) if isinstance(x, MultiDevItem) else x for x in self._data]
 
     def at_devs(self):
-        return [self.at_dev(i) for i in range(self._num_devs)]
+        return [self.at_dev(ds) for ds in self._dev_strs]
 
     def __getitem__(self, item):
-        return self._iterable[item]
+        return self._data[item]
 
     def __iter__(self):
         self._counter = 0
@@ -476,21 +478,22 @@ class MultiDevIter(MultiDev):
         return ret
 
     def __repr__(self):
-        return 'MultiDevIter(' + self._iterable.__repr__() + ')'
+        return 'MultiDevIter(' + self._data.__repr__() + ')'
 
 
 class MultiDevNest(MultiDevIter):
 
-    def __init__(self, iterable, num_devs, max_depth):
+    def __init__(self, data: Iterable, dev_strs, max_depth=1):
         self._max_depth = max_depth
-        super().__init__(iterable, num_devs)
+        super().__init__(data, dev_strs)
 
-    def at_dev(self, dev_idx):
-        return ivy.nested_map(self._iterable, lambda x: x.at_dev(dev_idx) if isinstance(x, MultiDevItem) else x,
+    # noinspection PyShadowingNames
+    def at_dev(self, dev_str):
+        return ivy.nested_map(self._data, lambda x: x.at_dev(dev_str) if isinstance(x, MultiDevItem) else x,
                               max_depth=self._max_depth)
 
     def __repr__(self):
-        return 'MultiDevNest(' + self._iterable.__repr__() + ')'
+        return 'MultiDevNest(' + self._data.__repr__() + ')'
 
 
 # Device Distribution #
@@ -499,25 +502,19 @@ class MultiDevNest(MultiDevIter):
 class DistributedItem(MultiDevItem):
 
     def __repr__(self):
-        return 'DistributedItem(' + self._iterable.__repr__() + ')'
+        return 'DistributedItem(' + self._data.__repr__() + ')'
 
 
 class DistributedIter(MultiDevIter):
 
-    def __init__(self, iterable, num_devs):
-        super().__init__(iterable, num_devs)
-
     def __repr__(self):
-        return 'DistributedIter(' + self._iterable.__repr__() + ')'
+        return 'DistributedIter(' + self._data.__repr__() + ')'
 
 
 class DistributedNest(MultiDevNest):
 
-    def __init__(self, iterable, num_devs, max_depth=1):
-        super().__init__(iterable, num_devs, max_depth)
-
     def __repr__(self):
-        return 'DistributedNest(' + self._iterable.__repr__() + ')'
+        return 'DistributedNest(' + self._data.__repr__() + ')'
 
 
 def distribute_array(x, dev_strs: Union[Iterable[str], Dict[str, int]], axis=0):
@@ -568,9 +565,9 @@ def distribute_iter(xs, dev_strs: Union[Iterable[str], Dict[str, int]], axis=0):
     :type axis: int, optional
     :return: iterable with each element distributed to the target devices
     """
-    if isinstance(dev_strs, str) or len(dev_strs) == 1:
-        return xs
-    return DistributedIter([distribute(x, dev_strs, axis) for x in xs], len(dev_strs))
+    if isinstance(dev_strs, str):
+        dev_strs = [dev_strs]
+    return DistributedIter([distribute(x, dev_strs, axis) for x in xs], dev_strs)
 
 
 def distribute_nest(args, kwargs, dev_strs: Union[Iterable[str], Dict[str, int]], axis=0, max_depth=1):
@@ -589,12 +586,11 @@ def distribute_nest(args, kwargs, dev_strs: Union[Iterable[str], Dict[str, int]]
     :type max_depth: int, optional
     :return: nested arguments distributed to the target devices
     """
-    if isinstance(dev_strs, str) or len(dev_strs) == 1:
-        return args, kwargs
+    if isinstance(dev_strs, str):
+        dev_strs = [dev_strs]
     args_dist = ivy.nested_map(args, lambda x: distribute(x, dev_strs, axis), max_depth=max_depth)
     kwargs_dist = ivy.nested_map(kwargs, lambda x: distribute(x, dev_strs, axis), max_depth=max_depth)
-    args_lengths = len(dev_strs)
-    return DistributedNest(args_dist, args_lengths), DistributedNest(kwargs_dist, args_lengths)
+    return DistributedNest(args_dist, dev_strs), DistributedNest(kwargs_dist, dev_strs)
 
 
 # Device Cloning #
@@ -603,25 +599,19 @@ def distribute_nest(args, kwargs, dev_strs: Union[Iterable[str], Dict[str, int]]
 class ClonedItem(MultiDevItem):
 
     def __repr__(self):
-        return 'ClonedItem(' + self._iterable.__repr__() + ')'
+        return 'ClonedItem(' + self._data.__repr__() + ')'
 
 
 class ClonedIter(MultiDevIter):
 
-    def __init__(self, iterable, num_devs):
-        super().__init__(iterable, num_devs)
-
     def __repr__(self):
-        return 'ClonedIter(' + self._iterable.__repr__() + ')'
+        return 'ClonedIter(' + self._data.__repr__() + ')'
 
 
 class ClonedNest(MultiDevNest):
 
-    def __init__(self, iterable, num_devs, max_depth=1):
-        super().__init__(iterable, num_devs, max_depth)
-
     def __repr__(self):
-        return 'ClonedNest(' + self._iterable.__repr__() + ')'
+        return 'ClonedNest(' + self._data.__repr__() + ')'
 
 
 def clone_array(x, dev_strs):
@@ -634,7 +624,7 @@ def clone_array(x, dev_strs):
     :type dev_strs: sequence of strs
     :return: array cloned to each of the target devices
     """
-    return ClonedItem([ivy.stop_gradient(ivy.to_dev(x, d)) for d in dev_strs])
+    return ClonedItem({ds: ivy.stop_gradient(ivy.to_dev(x, ds)) for ds in dev_strs})
 
 
 def clone(x, dev_strs):
@@ -664,9 +654,9 @@ def clone_iter(xs, dev_strs):
     :type dev_strs: sequence of strs
     :return: iterable with each element cloned to each of the target devices
     """
-    if isinstance(dev_strs, str) or len(dev_strs) == 1:
-        return xs
-    return ClonedIter([clone(x, dev_strs) for x in xs], len(dev_strs))
+    if isinstance(dev_strs, str):
+        dev_strs = [dev_strs]
+    return ClonedIter([clone(x, dev_strs) for x in xs], dev_strs)
 
 
 def clone_nest(args, kwargs, dev_strs, max_depth=1):
@@ -683,12 +673,11 @@ def clone_nest(args, kwargs, dev_strs, max_depth=1):
     :type max_depth: int, optional
     :return: arguments cloned to each of the target devices
     """
-    if isinstance(dev_strs, str) or len(dev_strs) == 1:
-        return args, kwargs
+    if isinstance(dev_strs, str):
+        dev_strs = [dev_strs]
     args_cloned = ivy.nested_map(args, lambda x: clone(x, dev_strs), max_depth=max_depth)
     kwargs_cloned = ivy.nested_map(kwargs, lambda x: clone(x, dev_strs), max_depth=max_depth)
-    args_lengths = len(dev_strs)
-    return ClonedNest(args_cloned, args_lengths), ClonedNest(kwargs_cloned, args_lengths)
+    return ClonedNest(args_cloned, dev_strs), ClonedNest(kwargs_cloned, dev_strs)
 
 
 # Device Unification #
@@ -772,7 +761,7 @@ def unify_iter(xs, dev_str, mode, axis=0):
     :return: iterable with each element cloned to each of the target devices
     """
     # noinspection PyProtectedMember
-    xs = xs._iterable if isinstance(xs, MultiDevIter) else xs
+    xs = xs._data if isinstance(xs, MultiDevIter) else xs
     if isinstance(xs[0], (list, tuple)):
         xs_t = [MultiDevItem(i) for i in list(map(list, zip(*xs)))]
         return [unify(x, dev_str, mode, axis) for x in xs_t]
@@ -799,8 +788,8 @@ def unify_nest(args: Type[MultiDev], kwargs: Type[MultiDev], dev_str, mode, axis
     :type max_depth: int, optional
     :return: nested arguments unified to the target device
     """
-    args = args._iterable if isinstance(args, MultiDevIter) else args
-    kwargs = kwargs._iterable if isinstance(kwargs, MultiDevIter) else kwargs
+    args = args._data if isinstance(args, MultiDevIter) else args
+    kwargs = kwargs._data if isinstance(kwargs, MultiDevIter) else kwargs
     args_uni = ivy.nested_map(args, lambda x: unify(x, dev_str, mode, axis), max_depth=max_depth)
     kwargs_uni = ivy.nested_map(kwargs, lambda x: unify(x, dev_str, mode, axis), max_depth=max_depth)
     return args_uni, kwargs_uni
