@@ -771,8 +771,9 @@ def unify_iter(xs, dev_str, mode, axis=0):
     # noinspection PyProtectedMember
     xs = xs._data if isinstance(xs, MultiDevIter) else xs
     if isinstance(xs[0], (list, tuple)):
-        # ToDo: fix this, so a dict is passed to MultiDevItem()
-        xs_t = [MultiDevItem(i) for i in list(map(list, zip(*xs)))]
+        # ToDo: make this transposing option more elegant, checking if the first argument is iterable is insufficient
+        xs_t = [MultiDevItem({ivy.dev_str(i) if ivy.is_array(i) else i.dev_str: i
+                              for i in mdi}) for mdi in list(map(list, zip(*xs)))]
         return [unify(x, dev_str, mode, axis) for x in xs_t]
     return unify(xs, dev_str, mode, axis)
 

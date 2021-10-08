@@ -72,23 +72,32 @@ def test_distributed_training(bs_ic_oc, dev_str, call):
         # NumPy does not support gradients
         pytest.skip()
 
-    # devices
+    # devices and inputs
+    dev_strs = list()
+    xs = dict()
+
+    # first device
     dev_str0 = dev_str
+    dev_strs.append(dev_str0)
+
+    # first input
+    batch_shape, input_channels, output_channels = bs_ic_oc
+    dev_batch_shape = [int(batch_shape[0]/2)] + batch_shape[1:]
+    xs[dev_str0] = ivy.cast(ivy.linspace(ivy.zeros(dev_batch_shape), ivy.ones(dev_batch_shape),
+                                         input_channels, dev_str=dev_str0), 'float32')
+
+    # second device
     if 'gpu' in dev_str:
         idx = ivy.num_gpus() - 1
         dev_str1 = dev_str[:-1] + str(idx)
-    else:
-        dev_str1 = dev_str
-    dev_strs = [dev_str0, dev_str1]
+        dev_strs.append(dev_str1)
 
-    # input
-    batch_shape, input_channels, output_channels = bs_ic_oc
-    dev_batch_shape = [int(batch_shape[0]/2)] + batch_shape[1:]
-    x0 = ivy.cast(ivy.linspace(ivy.zeros(dev_batch_shape), ivy.ones(dev_batch_shape),
-                               input_channels, dev_str=dev_str0), 'float32')
-    x1 = ivy.cast(ivy.linspace(ivy.zeros(dev_batch_shape), ivy.ones(dev_batch_shape),
-                               input_channels, dev_str=dev_str1), 'float32')
-    x = ivy.DistributedItem([x0, x1])
+        # second input
+        xs[dev_str1] = ivy.cast(ivy.linspace(ivy.zeros(dev_batch_shape), ivy.ones(dev_batch_shape),
+                                             input_channels, dev_str=dev_str1), 'float32')
+
+    # combined inputs
+    x = ivy.DistributedItem(xs)
 
     # module
     module = TrainableModule(input_channels, output_channels, dev_str=dev_str0)
@@ -105,7 +114,7 @@ def test_distributed_training(bs_ic_oc, dev_str, call):
         loss_n_grads = ivy.MultiDevIter(
             ivy.map(map_fn,
                     constant={'module': module, 'dev_str': dev_str0},
-                    unique={'xn': x.at_devs(), 'vc': module.v.clone(dev_strs).at_devs()}), len(dev_strs))
+                    unique={'xn': x.values(), 'vc': module.v.clone(dev_strs).values()}), dev_strs)
         loss, grads = ivy.unify_iter(loss_n_grads, dev_str0, 'mean')
         module.v = optim.step(module.v, grads)
         assert loss < loss_tm1
@@ -150,7 +159,7 @@ def test_distributed_multiprocess_training(bs_ic_oc, dev_str, call):
 
     # devices and inputs
     dev_strs = list()
-    xs = list()
+    xs = dict()
 
     # first device
     dev_str0 = dev_str
@@ -159,8 +168,8 @@ def test_distributed_multiprocess_training(bs_ic_oc, dev_str, call):
     # first input
     batch_shape, input_channels, output_channels = bs_ic_oc
     dev_batch_shape = [int(batch_shape[0]/2)] + batch_shape[1:]
-    xs.append(ivy.cast(ivy.linspace(ivy.zeros(dev_batch_shape), ivy.ones(dev_batch_shape),
-                                   input_channels, dev_str=dev_str0), 'float32'))
+    xs[dev_str0] = ivy.cast(ivy.linspace(ivy.zeros(dev_batch_shape), ivy.ones(dev_batch_shape),
+                                         input_channels, dev_str=dev_str0), 'float32')
 
     # second device
     if 'gpu' in dev_str:
@@ -169,8 +178,8 @@ def test_distributed_multiprocess_training(bs_ic_oc, dev_str, call):
         dev_strs.append(dev_str1)
 
         # second input
-        xs.append(ivy.cast(ivy.linspace(ivy.zeros(dev_batch_shape), ivy.ones(dev_batch_shape),
-                                       input_channels, dev_str=dev_str1), 'float32'))
+        xs[dev_str1] = ivy.cast(ivy.linspace(ivy.zeros(dev_batch_shape), ivy.ones(dev_batch_shape),
+                                             input_channels, dev_str=dev_str1), 'float32')
 
     # combined inputs
     x = ivy.DistributedItem(xs)
@@ -196,7 +205,7 @@ def test_distributed_multiprocess_training(bs_ic_oc, dev_str, call):
     loss = None
     grads = None
     for i in range(10):
-        loss, grads = dev_mapper.map(xn=x.at_devs(), vc=module.v.clone(dev_strs).at_devs())
+        loss, grads = dev_mapper.map(xn=x, vc=module.v.clone(dev_strs))
         module.v = optim.step(module.v, grads)
         assert loss < loss_tm1
         loss_tm1 = loss
@@ -243,7 +252,7 @@ def test_to_ivy_module_distributed(bs_ic_oc, from_class_and_args, inplace_update
 
     # devices and inputs
     dev_strs = list()
-    xs = list()
+    xs = dict()
 
     # first device
     dev_str0 = dev_str
@@ -252,8 +261,8 @@ def test_to_ivy_module_distributed(bs_ic_oc, from_class_and_args, inplace_update
     # first input
     batch_shape, input_channels, output_channels = bs_ic_oc
     dev_batch_shape = [int(batch_shape[0]/2)] + batch_shape[1:]
-    xs.append(ivy.cast(ivy.linspace(ivy.zeros(dev_batch_shape), ivy.ones(dev_batch_shape),
-                                   input_channels, dev_str=dev_str0), 'float32'))
+    xs[dev_str0] = ivy.cast(ivy.linspace(ivy.zeros(dev_batch_shape), ivy.ones(dev_batch_shape),
+                                         input_channels, dev_str=dev_str0), 'float32')
 
     # second device
     if 'gpu' in dev_str:
@@ -262,8 +271,8 @@ def test_to_ivy_module_distributed(bs_ic_oc, from_class_and_args, inplace_update
         dev_strs.append(dev_str1)
 
         # second input
-        xs.append(ivy.cast(ivy.linspace(ivy.zeros(dev_batch_shape), ivy.ones(dev_batch_shape),
-                                       input_channels, dev_str=dev_str1), 'float32'))
+        xs[dev_str1] = ivy.cast(ivy.linspace(ivy.zeros(dev_batch_shape), ivy.ones(dev_batch_shape),
+                                             input_channels, dev_str=dev_str1), 'float32')
 
     # combined inputs
     x = ivy.DistributedItem(xs)
@@ -287,8 +296,8 @@ def test_to_ivy_module_distributed(bs_ic_oc, from_class_and_args, inplace_update
     # test loss_fn
     ret_val = ivy.map(loss_fn,
                       constant={'module': ivy_module},
-                      unique={'x_': x.at_devs(),
-                              'v_': ivy_module.v.clone(dev_strs).at_devs()})[0]
+                      unique={'x_': x.values(),
+                              'v_': ivy_module.v.clone(dev_strs).values()})[0]
     assert ivy.is_array(ret_val)
 
     if inplace_update:
@@ -304,8 +313,8 @@ def test_to_ivy_module_distributed(bs_ic_oc, from_class_and_args, inplace_update
             ivy.map(map_fn,
                     constant={'module': ivy_module},
                     unique={'dev_str': dev_strs,
-                            'xn': x.at_devs(),
-                            'vc': ivy_module.v.clone(dev_strs).at_devs()}),
+                            'xn': x.values(),
+                            'vc': ivy_module.v.clone(dev_strs).values()}),
             len(dev_strs))
         loss, grads = ret_fn(loss_n_grads)
         ivy_module.v = optim.step(ivy_module.v, grads)
@@ -340,7 +349,7 @@ def test_to_ivy_module_distributed_multiprocess(bs_ic_oc, from_class_and_args, i
 
     # devices and inputs
     dev_strs = list()
-    xs = list()
+    xs = dict()
 
     # first device
     dev_str0 = dev_str
@@ -349,8 +358,8 @@ def test_to_ivy_module_distributed_multiprocess(bs_ic_oc, from_class_and_args, i
     # first input
     batch_shape, input_channels, output_channels = bs_ic_oc
     dev_batch_shape = [int(batch_shape[0]/2)] + batch_shape[1:]
-    xs.append(ivy.cast(ivy.linspace(ivy.zeros(dev_batch_shape), ivy.ones(dev_batch_shape),
-                                   input_channels, dev_str=dev_str0), 'float32'))
+    xs[dev_str0] = ivy.cast(ivy.linspace(ivy.zeros(dev_batch_shape), ivy.ones(dev_batch_shape),
+                                         input_channels, dev_str=dev_str0), 'float32')
 
     # second device
     if 'gpu' in dev_str:
@@ -359,8 +368,8 @@ def test_to_ivy_module_distributed_multiprocess(bs_ic_oc, from_class_and_args, i
         dev_strs.append(dev_str1)
 
         # second input
-        xs.append(ivy.cast(ivy.linspace(ivy.zeros(dev_batch_shape), ivy.ones(dev_batch_shape),
-                                       input_channels, dev_str=dev_str1), 'float32'))
+        xs[dev_str1] = ivy.cast(ivy.linspace(ivy.zeros(dev_batch_shape), ivy.ones(dev_batch_shape),
+                                             input_channels, dev_str=dev_str1), 'float32')
 
     # combined inputs
     x = ivy.DistributedItem(xs)
@@ -384,8 +393,8 @@ def test_to_ivy_module_distributed_multiprocess(bs_ic_oc, from_class_and_args, i
     # test loss_fn
     ret_val = ivy.map(loss_fn,
                       constant={'module': ivy_module},
-                      unique={'x_': x.at_devs(),
-                              'v_': ivy_module.v.clone(dev_strs).at_devs()})[0]
+                      unique={'x_': x.values(),
+                              'v_': ivy_module.v.clone(dev_strs).values()})[0]
     assert ivy.is_array(ret_val)
 
     if inplace_update:
@@ -400,7 +409,7 @@ def test_to_ivy_module_distributed_multiprocess(bs_ic_oc, from_class_and_args, i
     loss = None
     grads = None
     for i in range(10):
-        loss, grads = dev_mapper.map(xn=x.at_devs(), vc=ivy_module.v.clone(dev_strs).at_devs())
+        loss, grads = dev_mapper.map(xn=x, vc=ivy_module.v.clone(dev_strs))
         ivy_module.v = optim.step(ivy_module.v, grads)
         assert loss < loss_tm1
         loss_tm1 = loss
