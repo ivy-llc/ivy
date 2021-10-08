@@ -16,7 +16,7 @@ try:
     nvidia_smi.nvmlInit()
 except nvidia_smi.NVMLError_LibraryNotFound:
     pass
-from typing import Union, Type, Callable, Iterable, Dict, Any, List, Tuple
+from typing import Union, Type, Callable, Iterable, Dict, Any
 
 # local
 import ivy
@@ -977,12 +977,8 @@ class DevManager:
         :param tune_dev_splits: Whether to tune the per-device split sizes internally. Default is True.
         :type tune_dev_splits: bool, optional
         """
-        num_dev_args = sum([ivy.exists(dev_mapper), ivy.exists(da_dim_size)])
-        if num_dev_args not in [0, 2]:
-            raise Exception('either both or neither of dev_mapper and da_dim_size must be specified, but found '
-                            'dev_mapper={}, da_dim_size={}'.format(dev_mapper, da_dim_size))
-        with_dev_mapping = False if num_dev_args == 0 else True
-        tune_dev_alloc = False if num_dev_args == 0 else tune_dev_alloc
+        with_dev_mapping = True if ivy.exists(dev_mapper) else False
+        tune_dev_alloc = False if not with_dev_mapping else tune_dev_alloc
         self._dev_mapper = dev_mapper
         dev_strs = ivy.default(dev_strs, [ivy.default_device()])
         self._num_devs = len(dev_strs)
