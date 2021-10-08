@@ -1066,6 +1066,8 @@ class DevManager:
         self._dev_str_da_ratios = {k: v / self._dim_size for k, v in self._dev_strs_da.items()}
 
     def da_tune_step(self):
+        if self._tuned:
+            return
         new_dev_utils = dict(sorted({k: dev_util(k) for k in self._dev_strs_keys}.items(), key=lambda item: item[1]))
         new_dev_utils_keys = list(new_dev_utils.keys())
         highest_util_dev = new_dev_utils_keys[-1]
@@ -1163,8 +1165,12 @@ class DevManager:
             clipped_delta = min(delta, self._max_split_factor_step_size)
             self._dev_strs_ds[ds] = min(self._dev_strs_ds[ds] + clipped_delta, 1)
             self._delta_sfs[ds] = clipped_delta
+            if not self._with_dev_mappig:
+                ivy.set_split_factor(min(self._dev_strs_ds[ds] + clipped_delta, 1), ds)
 
     def ds_tune_step(self):
+        if self._tuned:
+            return
         new_dev_percent_mems = dict(sorted({k: percent_used_mem_on_dev(k) for k in self._dev_strs_keys}.items(),
                                            key=lambda item: item[1]))
 
