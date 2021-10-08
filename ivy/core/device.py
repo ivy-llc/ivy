@@ -408,13 +408,6 @@ class MultiDevItem(MultiDev):
     def __init__(self, data: Dict[ivy.Device, Any], axis=0):
         super().__init__(data, axis)
 
-    # noinspection PyShadowingNames
-    def at_dev(self, dev_str):
-        return self._data[dev_str]
-
-    def at_devs(self):
-        return self._data
-
     @property
     def shape(self):
         shapes = [list(x.shape) if hasattr(x, 'shape') else None for x in self._data.values()]
@@ -426,13 +419,10 @@ class MultiDevItem(MultiDev):
         shape0[self._axis] = shape0[self._axis]*len(self)
         return tuple(shape0)
 
-    def __getitem__(self, slice_obj):
-        is_int = isinstance(slice_obj, int)
+    def _slice(self, slice_obj: slice):
         stacked_dim_size = 0
-        if is_int:
-            slice_obj = slice(slice_obj, slice_obj+1, 1)
-        ret_list = list()
-        for sub_item in self._data.values():
+        ret_dict = dict()
+        for ds, sub_item in self._data.items():
             if not hasattr(sub_item, 'shape'):
                 continue
             shp = sub_item.shape
@@ -440,11 +430,28 @@ class MultiDevItem(MultiDev):
             stacked_dim_size += shp[self._axis]
             if slice_obj.start < stacked_dim_size:
                 if slice_obj.stop < stacked_dim_size:
-                    ret_list.append(sub_item[rel_slice_obj])
-                    return MultiDevItem(ret_list)
+                    ret_dict[ds] = sub_item[rel_slice_obj]
+                    return MultiDevItem(ret_dict)
                 else:
-                    ret_list.append(sub_item[rel_slice_obj.start:])
-        return MultiDevItem(ret_list)
+                    ret_dict[ds] = sub_item[rel_slice_obj.start:]
+        return MultiDevItem(ret_dict)
+
+    def __getitem__(self, query):
+        if isinstance(query, str):
+            return self._data[query]
+        elif isinstance(query, int):
+            return self._slice(slice(query, query+1, 1))
+        elif isinstance(query, slice):
+            return self._slice(query)
+
+    def keys(self):
+        return self._data.keys()
+
+    def values(self):
+        return self._data.values()
+
+    def items(self):
+        return self._data.items()
 
     def __repr__(self):
         return 'MultiDevItem(' + self._data.__repr__() + ')'
@@ -458,10 +465,10 @@ class MultiDevIter(MultiDev):
 
     # noinspection PyShadowingNames
     def at_dev(self, dev_str):
-        return [x.at_dev(dev_str) if isinstance(x, MultiDevItem) else x for x in self._data]
+        return [x[dev_str] if isinstance(x, MultiDevItem) else x for x in self._data]
 
     def at_devs(self):
-        return [self.at_dev(ds) for ds in self._dev_strs]
+        return {ds: self.at_dev(ds) for ds in self._dev_strs}
 
     def __getitem__(self, item):
         return self._data[item]
@@ -489,7 +496,7 @@ class MultiDevNest(MultiDevIter):
 
     # noinspection PyShadowingNames
     def at_dev(self, dev_str):
-        return ivy.nested_map(self._data, lambda x: x.at_dev(dev_str) if isinstance(x, MultiDevItem) else x,
+        return ivy.nested_map(self._data, lambda x: x[dev_str] if isinstance(x, MultiDevItem) else x,
                               max_depth=self._max_depth)
 
     def __repr__(self):
@@ -531,7 +538,7 @@ def distribute_array(x, dev_strs: Union[Iterable[str], Dict[str, int]], axis=0):
     """
     split_arg = list(dev_strs.values()) if isinstance(dev_strs, dict) else len(dev_strs)
     return DistributedItem(
-        [ivy.to_dev(x_sub, d) for x_sub, d in zip(ivy.split(x, split_arg, axis, with_remainder=True), dev_strs)])
+        {ds: ivy.to_dev(x_sub, ds) for x_sub, ds in zip(ivy.split(x, split_arg, axis, with_remainder=True), dev_strs)})
 
 
 def distribute(x, dev_strs: Union[Iterable[str], Dict[str, int]], axis=0):
@@ -685,12 +692,12 @@ def clone_nest(args, kwargs, dev_strs, max_depth=1):
 
 # noinspection PyShadowingNames
 def _concat_unify_array(xs, dev_str, axis):
-    return ivy.concatenate([ivy.to_dev(x_sub, dev_str) for x_sub in xs.at_devs()], axis)
+    return ivy.concatenate([ivy.to_dev(x_sub, dev_str) for x_sub in xs.values()], axis)
 
 
 # noinspection PyShadowingNames
 def _sum_unify_array(xs, dev_str, _=None):
-    return sum([ivy.to_dev(x_sub, dev_str) for x_sub in xs.at_devs()])
+    return sum([ivy.to_dev(x_sub, dev_str) for x_sub in xs.values()])
 
 
 # noinspection PyShadowingNames
@@ -737,7 +744,8 @@ def unify(xs, dev_str, mode, axis=0):
         xs = MultiDevItem(xs.at_devs())
     elif not isinstance(xs, MultiDevItem):
         return xs
-    xs0 = xs.at_dev(0)
+    # noinspection PyProtectedMember
+    xs0 = next(iter(xs.items()))[1]
     if ivy.is_array(xs0):
         return unify_array(xs, dev_str, mode, axis)
     elif isinstance(xs0, ivy.Container):
@@ -763,6 +771,7 @@ def unify_iter(xs, dev_str, mode, axis=0):
     # noinspection PyProtectedMember
     xs = xs._data if isinstance(xs, MultiDevIter) else xs
     if isinstance(xs[0], (list, tuple)):
+        # ToDo: fix this, so a dict is passed to MultiDevItem()
         xs_t = [MultiDevItem(i) for i in list(map(list, zip(*xs)))]
         return [unify(x, dev_str, mode, axis) for x in xs_t]
     return unify(xs, dev_str, mode, axis)
