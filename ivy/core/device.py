@@ -871,7 +871,9 @@ class DevMapper(abc.ABC):
 
     # noinspection PyShadowingNames
     def _worker_fn(self, input_queue, output_queue, dev_str, kwargs):
+        # ToDo: make this framework configurable
         ivy.set_framework('torch')
+        ivy.set_default_device(dev_str)
         for k, v in kwargs.items():
             if isinstance(v, ivy.Module) and not v.built:
                 v.build(dev_str=dev_str)
@@ -993,8 +995,9 @@ class DevManager:
         assert 1 <= safety_factor
         self._safety_factor = safety_factor
         self._min_dev_dim_size = min_dev_dim_size
-        if da_dim_size:
-            self._max_dev_dim_step_size = max(int(round(max_dev_dim_step_ratio * da_dim_size)), 1)
+        self._max_dev_dim_step_ratio = max_dev_dim_step_ratio
+        if self._dim_size:
+            self._max_dev_dim_step_size = max(int(round(self._max_dev_dim_step_ratio * self._dim_size)), 1)
         self._min_unit_dev_tune_steps = min_unit_dev_tune_steps
         self._min_sf_tune_steps = min_sf_tune_steps
         self._max_split_factor_step_size = max_split_factor_step_size
@@ -1028,7 +1031,7 @@ class DevManager:
         self._delta_sfs = dict(zip(self._dev_strs_keys, [0] * self._num_devs))
         self._dev_percent_mems = None
         self._dev_utils = None
-        if with_dev_mapping:
+        if with_dev_mapping and ivy.exists(self._dim_size):
             self._compute_dev_strs_da()
         self._dev_strs_ds = {ds: starting_split_factor for ds in self._dev_strs_keys}
         if self._tune_ds and not with_dev_mapping:
@@ -1267,32 +1270,39 @@ class DevManager:
 
     # Mapping #
 
-    def map(self, to_clone=None, to_distribute=None):
+    def map(self, cloned=None, to_clone=None, distributed=None, to_distribute=None):
         """
         Map the function fn to each of the MultiDevice args and kwargs, running each function in parallel with CUDA-safe
         multiprocessing.
 
+        :param cloned: The MutliDevice keyword arguments which are already cloned. Default is None.
+        :type cloned: dict of any, optional
         :param to_clone: The MutliDevice keyword arguments to clone and map to the function. Default is None.
         :type to_clone: dict of any, optional
+        :param distributed: The MutliDevice keyword arguments which already distributed. Default is None.
+        :type distributed: dict of any, optional
         :param to_distribute: The MutliDevice keyword arguments to distribute and map to the function. Default is None.
         :type to_distribute: dict of any, optional
         :return: The results of the function, returned as a MultiDevice instance.
         """
         used_dev_strs_dict = {k: v for k, v in self._dev_strs_da.items() if v > 0}
         used_dev_strs = list(used_dev_strs_dict.keys())
+        cloned = ivy.default(cloned, {})
         if ivy.exists(to_clone):
             to_clone = {k: ivy.clone(v, used_dev_strs) for k, v in to_clone.items()}
         else:
             to_clone = {}
+        distributed = ivy.default(distributed, {})
         if ivy.exists(to_distribute):
             to_distribute = {k: ivy.distribute(v, used_dev_strs_dict) for k, v in to_distribute.items()}
         else:
             to_distribute = {}
         if self._tune_ds:
-            ret = self._dev_mapper.map(**to_clone, **to_distribute, used_dev_strs=used_dev_strs,
-                                       split_factors=self._dev_strs_ds)
+            ret = self._dev_mapper.map(**cloned, **to_clone, **distributed, **to_distribute,
+                                       used_dev_strs=used_dev_strs, split_factors=self._dev_strs_ds)
         else:
-            ret = self._dev_mapper.map(**to_clone, **to_distribute, used_dev_strs=used_dev_strs)
+            ret = self._dev_mapper.map(**cloned, **to_clone, **distributed, **to_distribute,
+                                       used_dev_strs=used_dev_strs)
         if self._tuned:
             return ret
         self._tune_step()
@@ -1310,6 +1320,7 @@ class DevManager:
     @dim_size.setter
     def dim_size(self, batch_size):
         self._dim_size = batch_size
+        self._max_dev_dim_step_size = max(int(round(self._max_dev_dim_step_ratio * self._dim_size)), 1)
         if self._tune_da:
             self._compute_dev_strs_da()
 
