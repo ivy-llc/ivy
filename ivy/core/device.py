@@ -1320,8 +1320,8 @@ class DevManager:
     @dim_size.setter
     def dim_size(self, batch_size):
         self._dim_size = batch_size
-        self._max_dev_dim_step_size = max(int(round(self._max_dev_dim_step_ratio * self._dim_size)), 1)
         if self._tune_da:
+            self._max_dev_dim_step_size = max(int(round(self._max_dev_dim_step_ratio * self._dim_size)), 1)
             self._compute_dev_strs_da()
 
     @property
