@@ -269,7 +269,7 @@ def test_distribute_array(x, axis, tensor_fn, dev_strs_as_dict, dev_str, call):
     dev_strs = list()
     dev_str0 = dev_str
     dev_strs.append(dev_str0)
-    if 'gpu' in dev_str:
+    if 'gpu' in dev_str and ivy.num_gpus() > 1:
         idx = ivy.num_gpus() - 1
         dev_str1 = dev_str[:-1] + str(idx)
         dev_strs.append(dev_str1)
@@ -305,7 +305,7 @@ def test_clone_array(x, axis, tensor_fn, dev_str, call):
     dev_strs = list()
     dev_str0 = dev_str
     dev_strs.append(dev_str0)
-    if 'gpu' in dev_str:
+    if 'gpu' in dev_str and ivy.num_gpus() > 1:
         idx = ivy.num_gpus() - 1
         dev_str1 = dev_str[:-1] + str(idx)
         dev_strs.append(dev_str1)
@@ -337,7 +337,7 @@ def test_unify_array(xs, axis, tensor_fn, dev_str, call):
     dev_str0 = dev_str
     x = {dev_str0: tensor_fn(xs[0], 'float32', dev_str0)}
     dev_strs.append(dev_str0)
-    if 'gpu' in dev_str:
+    if 'gpu' in dev_str and ivy.num_gpus() > 1:
         idx = ivy.num_gpus() - 1
         dev_str1 = dev_str[:-1] + str(idx)
         x[dev_str1] = tensor_fn(xs[1], 'float32', dev_str1)
@@ -378,7 +378,7 @@ def test_distribute_args(args, kwargs, axis, tensor_fn, dev_str, call):
     dev_strs = list()
     dev_str0 = dev_str
     dev_strs.append(dev_str0)
-    if 'gpu' in dev_str:
+    if 'gpu' in dev_str and ivy.num_gpus() > 1:
         idx = ivy.num_gpus() - 1
         dev_str1 = dev_str[:-1] + str(idx)
         dev_strs.append(dev_str1)
@@ -420,7 +420,7 @@ def test_clone_args(args, kwargs, axis, tensor_fn, dev_str, call):
     dev_strs = list()
     dev_str0 = dev_str
     dev_strs.append(dev_str0)
-    if 'gpu' in dev_str:
+    if 'gpu' in dev_str and ivy.num_gpus() > 1:
         idx = ivy.num_gpus() - 1
         dev_str1 = dev_str[:-1] + str(idx)
         dev_strs.append(dev_str1)
@@ -462,7 +462,7 @@ def test_unify_args(args, kwargs, axis, tensor_fn, dev_str, call):
     args_dict[dev_str0] = tensor_fn(args[0][0], 'float32', dev_str0)
     kwargs_dict = dict()
     kwargs_dict[dev_str0] = tensor_fn(kwargs['a'][0], 'float32', dev_str0)
-    if 'gpu' in dev_str:
+    if 'gpu' in dev_str and ivy.num_gpus() > 1:
         idx = ivy.num_gpus() - 1
         dev_str1 = dev_str[:-1] + str(idx)
         dev_strs.append(dev_str1)

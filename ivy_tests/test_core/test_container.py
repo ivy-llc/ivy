@@ -63,7 +63,7 @@ def test_container_unify(dev_str, call):
     conts[dev_str0] = Container(
         {'a': ivy.array([1], dev_str=dev_str0),
          'b': {'c': ivy.array([2], dev_str=dev_str0), 'd': ivy.array([3], dev_str=dev_str0)}})
-    if 'gpu' in dev_str:
+    if 'gpu' in dev_str and ivy.num_gpus() > 1:
         idx = ivy.num_gpus() - 1
         dev_str1 = dev_str[:-1] + str(idx)
         dev_strs.append(dev_str1)
@@ -644,7 +644,7 @@ def test_container_clone(dev_str, call):
     dev_strs = list()
     dev_str0 = dev_str
     dev_strs.append(dev_str0)
-    if 'gpu' in dev_str:
+    if 'gpu' in dev_str and ivy.num_gpus() > 1:
         idx = ivy.num_gpus() - 1
         dev_str1 = dev_str[:-1] + str(idx)
         dev_strs.append(dev_str1)
@@ -674,7 +674,7 @@ def test_container_distribute(dev_strs_as_dict, dev_str, call):
     # devices
     dev_str0 = dev_str
     dev_strs = [dev_str0]
-    if 'gpu' in dev_str:
+    if 'gpu' in dev_str and ivy.num_gpus() > 1:
         idx = ivy.num_gpus() - 1
         dev_str1 = dev_str[:-1] + str(idx)
         dev_strs.append(dev_str1)
