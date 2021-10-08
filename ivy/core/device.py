@@ -303,7 +303,7 @@ def split_factor(dev_str=None):
     dev_str = ivy.default(dev_str, default_device())
     if dev_str in SPLIT_FACTORS:
         return SPLIT_FACTORS[dev_str]
-    SPLIT_FACTORS[dev_str] = 1.
+    SPLIT_FACTORS[dev_str] = 0.
     return SPLIT_FACTORS[dev_str]
 
 
