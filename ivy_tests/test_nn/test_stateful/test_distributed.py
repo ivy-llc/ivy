@@ -431,7 +431,7 @@ def test_to_ivy_module_distributed_multiprocess(bs_ic_oc, from_class_and_args, i
     del dev_mapper
 
 
-# device manager tuning
+# device manager wrapped tuning
 @pytest.mark.parametrize(
     # "bs_ic_oc", [([384, 1], 2048, 2048)])
     "bs_ic_oc", [([2, 1], 4, 5)])
@@ -439,7 +439,7 @@ def test_to_ivy_module_distributed_multiprocess(bs_ic_oc, from_class_and_args, i
     "tune_dev_alloc", [True, False])
 @pytest.mark.parametrize(
     "tune_dev_splits", [True, False])
-def test_device_manager_tuning(bs_ic_oc, tune_dev_alloc, tune_dev_splits, dev_str, call):
+def test_device_manager_wrapped_tuning(bs_ic_oc, tune_dev_alloc, tune_dev_splits, dev_str, call):
     # smoke test
     if call is helpers.np_call:
         # NumPy does not support gradients
@@ -492,6 +492,79 @@ def test_device_manager_tuning(bs_ic_oc, tune_dev_alloc, tune_dev_splits, dev_st
     # for i in range(1000):
     for i in range(10):
         loss, grads = dev_manager.map(to_distribute={'xn': x}, to_clone={'vc': module.v})
+        module.v = optim.step(module.v, grads)
+        assert loss < loss_tm1
+        loss_tm1 = loss
+
+    # type test
+    assert ivy.is_array(loss)
+    assert isinstance(grads, ivy.Container)
+    # cardinality test
+    if call is helpers.mx_call:
+        # mxnet slicing cannot reduce dimension to zero
+        assert loss.shape == (1,)
+    else:
+        assert loss.shape == ()
+    # value test
+    assert ivy.reduce_max(ivy.abs(grads.linear0.b)) > 0
+    assert ivy.reduce_max(ivy.abs(grads.linear0.w)) > 0
+    assert ivy.reduce_max(ivy.abs(grads.linear1.b)) > 0
+    assert ivy.reduce_max(ivy.abs(grads.linear1.w)) > 0
+    assert ivy.reduce_max(ivy.abs(grads.linear2.b)) > 0
+    assert ivy.reduce_max(ivy.abs(grads.linear2.w)) > 0
+    # delete dev manager
+    dev_manager.__del__()
+    del dev_manager
+    # compilation test
+    if call is helpers.torch_call:
+        # pytest scripting does not support **kwargs
+        return
+    if not ivy.wrapped_mode():
+        helpers.assert_compilable(loss_fn)
+
+
+# device manager unwrapped tuning
+@pytest.mark.parametrize(
+    # "bs_ic_oc", [([384, 1], 2048, 2048)])
+    "bs_ic_oc", [([2, 1], 4, 5)])
+def test_device_manager_unwrapped_tuning(bs_ic_oc, dev_str, call):
+    # smoke test
+    if call is helpers.np_call:
+        # NumPy does not support gradients
+        pytest.skip()
+
+    if call is not helpers.torch_call:
+        # ToDo: add support for other frameworks, currently only supported for torch
+        pytest.skip()
+
+    # input
+    batch_shape, input_channels, output_channels = bs_ic_oc
+    x = ivy.cast(ivy.linspace(ivy.zeros(batch_shape), ivy.ones(batch_shape),
+                              input_channels, dev_str=dev_str), 'float32')
+
+    # module for processes
+    module = TrainableModuleWithSplit(input_channels, output_channels,
+                                      dev_str=dev_str, store_vars=False)  # , hidden_size=2048)
+
+    # optimizer
+    optim = ivy.SGD(1e-4)
+
+    # device manager
+    dev_manager = ivy.DevManager(dev_strs=[dev_str], tune_dev_alloc=False)
+
+    # local module
+    module = TrainableModuleWithSplit(input_channels, output_channels,
+                                      dev_str=dev_str, store_vars=True)  # , hidden_size=2048)
+    module.build()
+
+    # train
+    loss_tm1 = 1e12
+    loss = None
+    grads = None
+    # for i in range(1000):
+    for i in range(10):
+        loss, grads = map_fn(module, dev_str, x, module.v)
+        dev_manager.tune_step()
         module.v = optim.step(module.v, grads)
         assert loss < loss_tm1
         loss_tm1 = loss

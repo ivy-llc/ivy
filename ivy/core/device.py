@@ -975,21 +975,25 @@ class DevManager:
         :param tune_dev_splits: Whether to tune the per-device split sizes internally. Default is True.
         :type tune_dev_splits: bool, optional
         """
-        num_dev_args = sum([ivy.exists(dev_mapper), ivy.exists(dev_strs), ivy.exists(da_dim_size)])
-        if num_dev_args not in [0, 3]:
-            raise Exception('either all or None of dev_mapper, dev_strs and da_dim_size must be specified, but found '
-                            'dev_mapper={}, dev_strs={}, da_dim_size={}'.format(dev_mapper, dev_strs, da_dim_size))
+        num_dev_args = sum([ivy.exists(dev_mapper), ivy.exists(da_dim_size)])
+        if num_dev_args not in [0, 2]:
+            raise Exception('either both or neither of dev_mapper and da_dim_size must be specified, but found '
+                            'dev_mapper={}, da_dim_size={}'.format(dev_mapper, da_dim_size))
+        with_dev_mapping = False if num_dev_args == 0 else True
         tune_dev_alloc = False if num_dev_args == 0 else tune_dev_alloc
         self._dev_mapper = dev_mapper
+        dev_strs = ivy.default(dev_strs, [ivy.default_device()])
         self._num_devs = len(dev_strs)
         self._dim_size = da_dim_size
         assert 1 <= safety_factor
         self._safety_factor = safety_factor
         self._min_dev_dim_size = min_dev_dim_size
-        self._max_dev_dim_step_size = max(int(round(max_dev_dim_step_ratio * da_dim_size)), 1)
+        if da_dim_size:
+            self._max_dev_dim_step_size = max(int(round(max_dev_dim_step_ratio * da_dim_size)), 1)
         self._min_unit_dev_tune_steps = min_unit_dev_tune_steps
         self._min_sf_tune_steps = min_sf_tune_steps
         self._max_split_factor_step_size = max_split_factor_step_size
+        self._with_dev_mappig = with_dev_mapping
         self._tune_da = tune_dev_alloc
         self._tune_ds = tune_dev_splits
         self._tuned = (not tune_dev_alloc and not tune_dev_splits) or self._num_devs == 1
@@ -998,7 +1002,12 @@ class DevManager:
         self._da_tune_count = 0
         self._unit_da_tune_count = 0
         self._ds_tune_count = 0
-        self._tune_step = self.da_tune_step
+        if tune_dev_alloc:
+            self._tune_step = self.da_tune_step
+        elif tune_dev_splits:
+            self._tune_step = self.ds_tune_step
+        else:
+            self._tune_step = None
         self._observed_configs = set()
         self._da_directions = dict()
         self._da_directions_flipped = dict()
@@ -1016,7 +1025,8 @@ class DevManager:
         self._delta_sfs = dict(zip(self._dev_strs_keys, [0] * self._num_devs))
         self._dev_percent_mems = None
         self._dev_utils = None
-        self._compute_dev_strs_da()
+        if with_dev_mapping:
+            self._compute_dev_strs_da()
         self._dev_strs_ds = {ds: 0. for ds in self._dev_strs_keys}
 
     # Device Allocation #
@@ -1137,7 +1147,7 @@ class DevManager:
 
             # check if da tuning is complete
             if self.repeated_config_check() and self._unit_da_tune_count >= self._min_unit_dev_tune_steps and \
-                    (self._ds_tune_count >= self._min_sf_tune_steps) or not self._tune_ds:
+                    not self._tune_ds or (self._ds_tune_count >= self._min_sf_tune_steps):
                 self._observed_configs.clear()
                 self._percent_mem_inc_per_unit_da_dim.clear()
                 self._delta_da_dim_sizes.clear()
@@ -1199,11 +1209,11 @@ class DevManager:
             self._tune_step = self.da_tune_step
 
         # check whether device allocation tuning is ready to terminate
-        da_can_terminate = self._max_dev_dim_step_size == 1 or not self._tune_da
+        da_can_terminate = not self._tune_da or self._max_dev_dim_step_size == 1
 
         # check if ds tuning is complete
         if da_can_terminate and self.repeated_config_check() and self._ds_tune_count >= self._min_sf_tune_steps and \
-                (self._unit_da_tune_count >= self._min_unit_dev_tune_steps) or not self._tune_da:
+                not self._tune_da or (self._unit_da_tune_count >= self._min_unit_dev_tune_steps):
             self._observed_configs.clear()
             self._percent_mem_inc_per_sf.clear()
             self._dev_percent_mems.clear()
@@ -1262,8 +1272,9 @@ class DevManager:
         return ret
 
     def __del__(self):
-        self._dev_mapper.__del__()
-        del self._dev_mapper
+        if ivy.exists(self._dev_mapper):
+            self._dev_mapper.__del__()
+            del self._dev_mapper
 
     @property
     def dim_size(self):
