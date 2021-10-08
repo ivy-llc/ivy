@@ -1130,8 +1130,8 @@
 <div class="viewcode-block" id="DevManager"><a class="viewcode-back" href="../../../core/device.html#ivy.core.device.DevManager">[docs]</a><span class="k">class</span> <span class="nc">DevManager</span><span class="p">:</span>
 
 <div class="viewcode-block" id="DevManager.__init__"><a class="viewcode-back" href="../../../core/device.html#ivy.core.device.DevManager.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dev_mapper</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dev_strs</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">da_dim_size</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                 <span class="n">safety_factor</span><span class="o">=</span><span class="mf">1.1</span><span class="p">,</span> <span class="n">min_dev_dim_size</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">max_dev_dim_step_ratio</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">starting_split_factor</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span>
-                 <span class="n">max_split_factor_step_size</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span> <span class="n">tune_dev_alloc</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">tune_dev_splits</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+                 <span class="n">safety_factor</span><span class="o">=</span><span class="mf">1.1</span><span class="p">,</span> <span class="n">min_dev_dim_size</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">max_dev_dim_step_ratio</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">min_unit_dev_steps</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+                 <span class="n">starting_split_factor</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> <span class="n">max_split_factor_step_size</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span> <span class="n">tune_dev_alloc</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">tune_dev_splits</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Create device manager, which unlike the device mapper, handles all argument cloning and distributing internally.</span>
 <span class="sd">        The device manager only receivess a specification regarding the ratio of the batch each device should consume.</span>
@@ -1148,14 +1148,19 @@
 <span class="sd">        :type min_dev_dim_size: int, optional</span>
 <span class="sd">        :param max_dev_dim_step_ratio: The maximum step ratio for changing the dimension for a device. Default is 0.1.</span>
 <span class="sd">        :type max_dev_dim_step_ratio: int, optional</span>
+<span class="sd">        :param min_unit_dev_steps: The minimum number of tune steps to make when optimizing with unit step size.</span>
+<span class="sd">                                   Default is 10.</span>
+<span class="sd">        :type min_unit_dev_steps: int, optional</span>
 <span class="sd">        :param starting_split_factor: The initial device-specific split factor. Default is 0.</span>
 <span class="sd">        :type starting_split_factor: float, optional</span>
 <span class="sd">        :param max_split_factor_step_size: The maximum step size for changing the split factor for a device.</span>
 <span class="sd">                                           Default is 0.05.</span>
 <span class="sd">        :type max_split_factor_step_size: float, optional</span>
-<span class="sd">        :param tune_dev_alloc: Whether to tune the devices split sizes internally based on device utilization tracking,</span>
+<span class="sd">        :param tune_dev_alloc: Whether to tune the device split sizes internally based on device utilization tracking,</span>
 <span class="sd">                               and use the provided values for initialization. Default is True.</span>
 <span class="sd">        :type tune_dev_alloc: bool, optional</span>
+<span class="sd">        :param tune_dev_splits: Whether to tune the per-device split sizes internally. Default is True.</span>
+<span class="sd">        :type tune_dev_splits: bool, optional</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">num_dev_args</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">([</span><span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">dev_mapper</span><span class="p">),</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">dev_strs</span><span class="p">),</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">da_dim_size</span><span class="p">)])</span>
         <span class="k">if</span> <span class="n">num_dev_args</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">]:</span>
@@ -1169,6 +1174,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_safety_factor</span> <span class="o">=</span> <span class="n">safety_factor</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_min_dev_dim_size</span> <span class="o">=</span> <span class="n">min_dev_dim_size</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_max_dev_dim_step_size</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">max_dev_dim_step_ratio</span> <span class="o">*</span> <span class="n">da_dim_size</span><span class="p">)),</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_min_unit_dev_steps</span> <span class="o">=</span> <span class="n">min_unit_dev_steps</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_max_split_factor_step_size</span> <span class="o">=</span> <span class="n">max_split_factor_step_size</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_tune_da</span> <span class="o">=</span> <span class="n">tune_dev_alloc</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_tune_ds</span> <span class="o">=</span> <span class="n">tune_dev_splits</span>
@@ -1176,6 +1182,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_first_da_tune_step</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_first_ds_tune_step</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_da_tune_count</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_unit_da_tune_count</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_ds_tune_count</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_tune_step</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">da_tune_step</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_observed_configs</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
@@ -1313,12 +1320,14 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_max_dev_dim_step_size</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
 
             <span class="c1"># check if da tuning is complete</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">repeated_config_check</span><span class="p">():</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">repeated_config_check</span><span class="p">()</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_unit_da_tune_count</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_min_unit_dev_steps</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_observed_configs</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_percent_mem_inc_per_unit_da_dim</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_delta_da_dim_sizes</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_dev_percent_mems</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_tuned</span> <span class="o">=</span> <span class="kc">True</span></div>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_tuned</span> <span class="o">=</span> <span class="kc">True</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">_unit_da_tune_count</span> <span class="o">+=</span> <span class="mi">1</span></div>
 
     <span class="c1"># Device Splitting #</span>
 
