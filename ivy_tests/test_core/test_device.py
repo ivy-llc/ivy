@@ -368,33 +368,22 @@ def test_distribute_args(args, kwargs, axis, tensor_fn, dev_str, call):
     args = [tensor_fn(args[0], 'float32', dev_str)] + args[1:]
     kwargs = {'a': tensor_fn(kwargs['a'], 'float32', dev_str), 'b': kwargs['b']}
 
-    # predictions
+    # devices
+    dev_strs = list()
     dev_str0 = dev_str
+    dev_strs.append(dev_str0)
     if 'gpu' in dev_str:
         idx = ivy.num_gpus() - 1
         dev_str1 = dev_str[:-1] + str(idx)
-    else:
-        dev_str1 = dev_str
-    dev_strs = [dev_str0, dev_str1]
+        dev_strs.append(dev_str1)
+
+    # returns
     dist_args, dist_kwargs = ivy.distribute_nest(args, kwargs, dev_strs, axis=axis)
 
     # device specific args
-    assert dist_args.at_dev(0)
-    assert dist_args.at_dev(1)
-    three_present = True
-    try:
-        dist_args.at_dev(2)
-    except IndexError:
-        three_present = False
-    assert not three_present
-    assert dist_kwargs.at_dev(0)
-    assert dist_kwargs.at_dev(1)
-    three_present = True
-    try:
-        dist_kwargs.at_dev(3)
-    except IndexError:
-        three_present = False
-    assert not three_present
+    for ds in dev_strs:
+        assert dist_args.at_dev(ds)
+        assert dist_kwargs.at_dev(ds)
 
     # value test
     assert min([ivy.dev_str(dist_args_i[0]) == dev_strs[i]
@@ -421,33 +410,22 @@ def test_clone_args(args, kwargs, axis, tensor_fn, dev_str, call):
     args = [tensor_fn(args[0], 'float32', dev_str)] + args[1:]
     kwargs = {'a': tensor_fn(kwargs['a'], 'float32', dev_str), 'b': kwargs['b']}
 
-    # predictions
+    # devices
+    dev_strs = list()
     dev_str0 = dev_str
+    dev_strs.append(dev_str0)
     if 'gpu' in dev_str:
         idx = ivy.num_gpus() - 1
         dev_str1 = dev_str[:-1] + str(idx)
-    else:
-        dev_str1 = dev_str
-    dev_strs = [dev_str0, dev_str1]
+        dev_strs.append(dev_str1)
+
+    # returns
     cloned_args, cloned_kwargs = ivy.clone_nest(args, kwargs, dev_strs)
 
     # device specific args
-    assert cloned_args.at_dev(0)
-    assert cloned_args.at_dev(1)
-    three_present = True
-    try:
-        cloned_args.at_dev(3)
-    except IndexError:
-        three_present = False
-    assert not three_present
-    assert cloned_kwargs.at_dev(0)
-    assert cloned_kwargs.at_dev(1)
-    three_present = True
-    try:
-        cloned_kwargs.at_dev(3)
-    except IndexError:
-        three_present = False
-    assert not three_present
+    for ds in dev_strs:
+        assert cloned_args.at_dev(ds)
+        assert cloned_kwargs.at_dev(ds)
 
     # value test
     assert min([ivy.dev_str(dist_args_i[0]) == dev_strs[i]
@@ -491,10 +469,10 @@ def test_unify_args(args, kwargs, axis, tensor_fn, dev_str, call):
     args_uni, kwargs_uni = ivy.unify_nest(args, kwargs, dev_str0, 'concat', axis=axis)
 
     # shape test
-    assert args_uni[0].shape[axis] == args._iterable[0].at_dev(0).shape[axis] +\
-           args._iterable[0].at_dev(1).shape[axis]
-    assert kwargs_uni['a'].shape[axis] == kwargs._iterable['a'].at_dev(0).shape[axis] +\
-           kwargs._iterable['a'].at_dev(1).shape[axis]
+    assert args_uni[0].shape[axis] == args._data[0].at_dev(0).shape[axis] + \
+           args._data[0].at_dev(1).shape[axis]
+    assert kwargs_uni['a'].shape[axis] == kwargs._data['a'].at_dev(0).shape[axis] + \
+           kwargs._data['a'].at_dev(1).shape[axis]
 
     # value test
     assert ivy.dev_str(args_uni[0]) == dev_str0
