@@ -196,6 +196,7 @@
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">abc</span>
 <span class="kn">import</span> <span class="nn">math</span>
+<span class="kn">import</span> <span class="nn">time</span>
 <span class="kn">import</span> <span class="nn">queue</span>
 <span class="kn">import</span> <span class="nn">psutil</span>
 <span class="kn">import</span> <span class="nn">inspect</span>
@@ -1215,7 +1216,11 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_compute_dev_strs_da</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_dev_strs_ds</span> <span class="o">=</span> <span class="p">{</span><span class="n">ds</span><span class="p">:</span> <span class="n">starting_split_factor</span> <span class="k">for</span> <span class="n">ds</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dev_strs_keys</span><span class="p">}</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tune_ds</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">with_dev_mapping</span><span class="p">:</span>
-            <span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">set_split_factor</span><span class="p">(</span><span class="n">starting_split_factor</span><span class="p">,</span> <span class="n">ds</span><span class="p">)</span> <span class="k">for</span> <span class="n">ds</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dev_strs_keys</span><span class="p">]</span></div>
+            <span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">set_split_factor</span><span class="p">(</span><span class="n">starting_split_factor</span><span class="p">,</span> <span class="n">ds</span><span class="p">)</span> <span class="k">for</span> <span class="n">ds</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dev_strs_keys</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_da_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">perf_counter</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_da_step_time</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ds_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">perf_counter</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ds_step_time</span> <span class="o">=</span> <span class="mi">0</span></div>
 
     <span class="c1"># Device Allocation #</span>
 
@@ -1279,6 +1284,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_compute_dev_da_ratios</span><span class="p">()</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tune_ds</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_tune_step</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ds_tune_step</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_da_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">perf_counter</span><span class="p">()</span>
             <span class="k">return</span>
 
         <span class="c1"># otherwise</span>
@@ -1344,7 +1350,12 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">_dev_percent_mems</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_tuned</span> <span class="o">=</span> <span class="kc">True</span>
 
-            <span class="bp">self</span><span class="o">.</span><span class="n">_unit_da_tune_count</span> <span class="o">+=</span> <span class="mi">1</span></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_unit_da_tune_count</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="c1"># log time</span>
+        <span class="n">now</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">perf_counter</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_da_step_time</span> <span class="o">=</span> <span class="n">now</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_da_time</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_da_time</span> <span class="o">=</span> <span class="n">now</span></div>
 
     <span class="c1"># Device Splitting #</span>
 
@@ -1376,6 +1387,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_first_ds_tune_step</span> <span class="o">=</span> <span class="kc">False</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tune_da</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_tune_step</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">da_tune_step</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_ds_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">perf_counter</span><span class="p">()</span>
             <span class="k">return</span>
 
         <span class="c1"># otherwise</span>
@@ -1411,7 +1423,12 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_observed_configs</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_percent_mem_inc_per_sf</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_dev_percent_mems</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_tuned</span> <span class="o">=</span> <span class="kc">True</span></div>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_tuned</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="c1"># log time</span>
+        <span class="n">now</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">perf_counter</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ds_step_time</span> <span class="o">=</span> <span class="n">now</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ds_time</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ds_time</span> <span class="o">=</span> <span class="n">now</span></div>
 
     <span class="c1"># Repeated Config Checking #</span>
 
