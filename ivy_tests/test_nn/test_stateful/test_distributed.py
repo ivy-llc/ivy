@@ -116,7 +116,7 @@ def test_distributed_training(bs_ic_oc, dev_str, call):
             ivy.map(map_fn,
                     constant={'module': module, 'dev_str': dev_str0},
                     unique={'xn': x.values(), 'vc': module.v.clone(dev_strs).values()}), dev_strs)
-        loss, grads = ivy.unify_iter(loss_n_grads, dev_str0, 'mean')
+        loss, grads = ivy.unify_iter(loss_n_grads, dev_str0, 'mean', transpose=True)
         module.v = optim.step(module.v, grads)
         assert loss < loss_tm1
         loss_tm1 = loss
@@ -192,7 +192,7 @@ def test_distributed_multiprocess_training(bs_ic_oc, dev_str, call):
     optim = ivy.SGD(1e-4)
 
     # return fn
-    ret_fn = lambda ret: ivy.unify_iter(ret, dev_str0, 'mean')
+    ret_fn = lambda ret: ivy.unify_iter(ret, dev_str0, 'mean', transpose=True)
 
     # device mapper
     dev_mapper = ivy.DevMapperMultiProc(map_fn, ret_fn, dev_strs, constant={'module': module})
@@ -292,7 +292,7 @@ def test_to_ivy_module_distributed(bs_ic_oc, from_class_and_args, inplace_update
     optim = ivy.SGD(1e-4)
 
     # return fn
-    ret_fn = lambda ret: ivy.unify_iter(ret, dev_str0, 'mean')
+    ret_fn = lambda ret: ivy.unify_iter(ret, dev_str0, 'mean', transpose=True)
 
     # test loss_fn
     ret_val = ivy.map(loss_fn,
@@ -389,7 +389,7 @@ def test_to_ivy_module_distributed_multiprocess(bs_ic_oc, from_class_and_args, i
     optim = ivy.SGD(1e-4)
 
     # return fn
-    ret_fn = lambda ret: ivy.unify_iter(ret, dev_str0, 'mean')
+    ret_fn = lambda ret: ivy.unify_iter(ret, dev_str0, 'mean', transpose=True)
 
     # test loss_fn
     ret_val = ivy.map(loss_fn,
@@ -471,7 +471,7 @@ def test_device_manager_wrapped_tuning(bs_ic_oc, tune_dev_alloc, tune_dev_splits
     optim = ivy.SGD(1e-4)
 
     # return fn
-    ret_fn = lambda ret: ivy.unify_iter(ret, dev_str0, 'mean')
+    ret_fn = lambda ret: ivy.unify_iter(ret, dev_str0, 'mean', transpose=True)
 
     # device mapper
     dev_mapper = ivy.DevMapperMultiProc(map_fn, ret_fn, dev_strs, constant={'module': module})

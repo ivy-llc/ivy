@@ -754,7 +754,7 @@ def unify(xs, dev_str, mode, axis=0):
 
 
 # noinspection PyShadowingNames
-def unify_iter(xs, dev_str, mode, axis=0):
+def unify_iter(xs, dev_str, mode, axis=0, transpose=False):
     """
     Unify elements of the iterbale xs to a single target device.
 
@@ -766,12 +766,14 @@ def unify_iter(xs, dev_str, mode, axis=0):
     :type mode: str
     :param axis: The axis along which to concattenate the sub-arrays. Default is 0.
     :type axis: int, optional
+    :param transpose: Whether to transpose the first and second dimensions of the iterator. Default is False.
+    :type transpose: bool, optional
     :return: iterable with each element unified to a single target devices
     """
     # noinspection PyProtectedMember
     xs = xs._data if isinstance(xs, MultiDevIter) else xs
-    if isinstance(xs[0], (list, tuple)):
-        # ToDo: make this transposing option more elegant, checking if the first argument is iterable is insufficient
+    if transpose:
+        # ToDo: make this more elegant, this method should not be responsible for transposing iterators
         xs_t = [MultiDevItem({ivy.dev_str(i) if ivy.is_array(i) else i.dev_str: i
                               for i in mdi}) for mdi in list(map(list, zip(*xs)))]
         return [unify(x, dev_str, mode, axis) for x in xs_t]
