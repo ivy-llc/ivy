@@ -265,23 +265,25 @@ def test_distribute_array(x, axis, tensor_fn, dev_strs_as_dict, dev_str, call):
     # inputs
     x = tensor_fn(x, 'float32', dev_str)
 
-    # predictions
+    # devices
+    dev_strs = list()
     dev_str0 = dev_str
-    dev_strs = [dev_str0]
+    dev_strs.append(dev_str0)
     if 'gpu' in dev_str:
         idx = ivy.num_gpus() - 1
         dev_str1 = dev_str[:-1] + str(idx)
         dev_strs.append(dev_str1)
     if dev_strs_as_dict:
         dev_strs = dict(zip(dev_strs, [int((1/len(dev_strs))*x.shape[axis])]*len(dev_strs)))
+
+    # return
     x_split = ivy.distribute_array(x, dev_strs, axis)
 
     # shape test
-    assert x_split.at_dev(0).shape[axis] == math.floor(x.shape[axis] / len(dev_strs))
+    assert x_split[dev_str0].shape[axis] == math.floor(x.shape[axis] / len(dev_strs))
 
     # value test
-    dev_strs_keys = list(dev_strs.keys()) if dev_strs_as_dict else dev_strs
-    assert min([ivy.dev_str(x_sub) == dev_strs_keys[i] for i, x_sub in enumerate(x_split.at_devs())])
+    assert min([ivy.dev_str(x_sub) == ds for ds, x_sub in x_split.items()])
 
 
 @pytest.mark.parametrize(
@@ -299,21 +301,23 @@ def test_clone_array(x, axis, tensor_fn, dev_str, call):
     # inputs
     x = tensor_fn(x, 'float32', dev_str)
 
-    # predictions
+    # devices
+    dev_strs = list()
     dev_str0 = dev_str
+    dev_strs.append(dev_str0)
     if 'gpu' in dev_str:
         idx = ivy.num_gpus() - 1
         dev_str1 = dev_str[:-1] + str(idx)
-    else:
-        dev_str1 = dev_str
-    dev_strs = [dev_str0, dev_str1]
+        dev_strs.append(dev_str1)
+
+    # return
     x_split = ivy.clone_array(x, dev_strs)
 
     # shape test
-    assert len(x_split) == math.floor(x.shape[axis] / len(dev_strs))
+    assert x_split[dev_str0].shape[0] == math.floor(x.shape[axis] / len(dev_strs))
 
     # value test
-    assert min([ivy.dev_str(x_sub) == dev_strs[i] for i, x_sub in enumerate(x_split.at_devs())])
+    assert min([ivy.dev_str(x_sub) == ds for ds, x_sub in x_split.items()])
 
 
 @pytest.mark.parametrize(
@@ -328,23 +332,25 @@ def test_unify_array(xs, axis, tensor_fn, dev_str, call):
         # MXNet does not support splitting based on section sizes, only integer number of sections input is supported.
         pytest.skip()
 
-    # devices
+    # devices and inputs
+    dev_strs = list()
     dev_str0 = dev_str
+    x = {dev_str0: tensor_fn(xs[0], 'float32', dev_str0)}
+    dev_strs.append(dev_str0)
     if 'gpu' in dev_str:
         idx = ivy.num_gpus() - 1
         dev_str1 = dev_str[:-1] + str(idx)
-    else:
-        dev_str1 = dev_str
-
-    # inputs
-    x0 = tensor_fn(xs[0], 'float32', dev_str0)
-    x1 = tensor_fn(xs[1], 'float32', dev_str1)
+        x[dev_str1] = tensor_fn(xs[1], 'float32', dev_str1)
+        dev_strs.append(dev_str1)
 
     # output
-    x_unified = ivy.unify_array(ivy.DistributedItem([x0, x1]), dev_str0, 'concat', axis)
+    x_unified = ivy.unify_array(ivy.DistributedItem(x), dev_str0, 'concat', axis)
 
     # shape test
-    assert x_unified.shape[axis] == x0.shape[axis] + x1.shape[axis]
+    expected_size = 0
+    for ds in dev_strs:
+        expected_size += x[ds].shape[axis]
+    assert x_unified.shape[axis] == expected_size
 
     # value test
     assert ivy.dev_str(x_unified) == dev_str0
@@ -386,10 +392,10 @@ def test_distribute_args(args, kwargs, axis, tensor_fn, dev_str, call):
         assert dist_kwargs.at_dev(ds)
 
     # value test
-    assert min([ivy.dev_str(dist_args_i[0]) == dev_strs[i]
-                for i, dist_args_i in enumerate(dist_args.at_devs())])
-    assert min([ivy.dev_str(dist_kwargs_i['a']) == dev_strs[i]
-                for i, dist_kwargs_i in enumerate(dist_kwargs.at_devs())])
+    assert min([ivy.dev_str(dist_args_ds[0]) == ds
+                for ds, dist_args_ds in dist_args.at_devs().items()])
+    assert min([ivy.dev_str(dist_kwargs_ds['a']) == ds
+                for ds, dist_kwargs_ds in dist_kwargs.at_devs().items()])
 
 
 @pytest.mark.parametrize(
@@ -428,10 +434,10 @@ def test_clone_args(args, kwargs, axis, tensor_fn, dev_str, call):
         assert cloned_kwargs.at_dev(ds)
 
     # value test
-    assert min([ivy.dev_str(dist_args_i[0]) == dev_strs[i]
-                for i, dist_args_i in enumerate(cloned_args.at_devs())])
-    assert min([ivy.dev_str(dist_kwargs_i['a']) == dev_strs[i]
-                for i, dist_kwargs_i in enumerate(cloned_kwargs.at_devs())])
+    assert min([ivy.dev_str(dist_args_ds[0]) == ds
+                for ds, dist_args_ds in cloned_args.at_devs().items()])
+    assert min([ivy.dev_str(dist_kwargs_ds['a']) == ds
+                for ds, dist_kwargs_ds in cloned_kwargs.at_devs().items()])
 
 
 @pytest.mark.parametrize(
@@ -449,30 +455,35 @@ def test_unify_args(args, kwargs, axis, tensor_fn, dev_str, call):
         pytest.skip()
 
     # devices
+    dev_strs = list()
     dev_str0 = dev_str
+    dev_strs.append(dev_str0)
+    args_dict = dict()
+    args_dict[dev_str0] = tensor_fn(args[0][0], 'float32', dev_str0)
+    kwargs_dict = dict()
+    kwargs_dict[dev_str0] = tensor_fn(kwargs['a'][0], 'float32', dev_str0)
     if 'gpu' in dev_str:
         idx = ivy.num_gpus() - 1
         dev_str1 = dev_str[:-1] + str(idx)
-    else:
-        dev_str1 = dev_str
-    dev_strs = [dev_str0, dev_str1]
-    arg_len = len(dev_strs)
+        dev_strs.append(dev_str1)
+        args_dict[dev_str1] = tensor_fn(args[0][1], 'float32', dev_str1)
+        kwargs_dict[dev_str1] = tensor_fn(kwargs['a'][1], 'float32', dev_str1)
 
-    # inputs
-    args = ivy.DistributedNest([ivy.DistributedItem([tensor_fn(args[0][0], 'float32', dev_str0),
-                                                     tensor_fn(args[0][1], 'float32', dev_str1)])] + args[1:], arg_len)
-    kwargs = ivy.DistributedNest({'a': ivy.DistributedItem([tensor_fn(kwargs['a'][0], 'float32', dev_str0),
-                                                            tensor_fn(kwargs['a'][1], 'float32', dev_str1)]),
-                                  'b': kwargs['b']}, arg_len)
+        # inputs
+    args = ivy.DistributedNest([ivy.DistributedItem(args_dict)] + args[1:], dev_strs)
+    kwargs = ivy.DistributedNest({'a': ivy.DistributedItem(kwargs_dict), 'b': kwargs['b']}, dev_strs)
 
     # outputs
     args_uni, kwargs_uni = ivy.unify_nest(args, kwargs, dev_str0, 'concat', axis=axis)
 
     # shape test
-    assert args_uni[0].shape[axis] == args._data[0].at_dev(0).shape[axis] + \
-           args._data[0].at_dev(1).shape[axis]
-    assert kwargs_uni['a'].shape[axis] == kwargs._data['a'].at_dev(0).shape[axis] + \
-           kwargs._data['a'].at_dev(1).shape[axis]
+    expected_size_arg = 0
+    expected_size_kwarg = 0
+    for ds in dev_strs:
+        expected_size_arg += args._data[0][ds].shape[axis]
+        expected_size_kwarg += kwargs._data['a'][ds].shape[axis]
+    assert args_uni[0].shape[axis] == expected_size_arg
+    assert kwargs_uni['a'].shape[axis] == expected_size_kwarg
 
     # value test
     assert ivy.dev_str(args_uni[0]) == dev_str0
