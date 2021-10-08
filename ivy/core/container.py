@@ -173,11 +173,11 @@ class Container(dict):
 
     @staticmethod
     def _concat_unify(containers, dev_str, axis=0, ivyh=None):
-        return Container.concat([cont.to_dev(dev_str) for cont in containers.at_devs()], axis, ivyh)
+        return Container.concat([cont.to_dev(dev_str) for cont in containers.values()], axis, ivyh)
 
     @staticmethod
     def _sum_unify(containers, dev_str, _=None, _1=None):
-        return sum([cont.to_dev(dev_str) for cont in containers.at_devs()])
+        return sum([cont.to_dev(dev_str) for cont in containers.values()])
 
     @staticmethod
     def _mean_unify(containers, dev_str, _=None, _1=None):
@@ -2702,7 +2702,7 @@ class MultiDevContainer(Container):
         self._num_devs = len(dev_strs)
 
     def at_dev(self, dev_str):
-        return self.map(lambda x, kc: x.at_dev(dev_str) if isinstance(x, _ivy.MultiDevItem) else x)
+        return self.map(lambda x, kc: x[dev_str] if isinstance(x, _ivy.MultiDevItem) else x)
 
     def at_devs(self):
-        return [self.at_dev(ds) for ds in self._dev_strs]
+        return {ds: self.at_dev(ds) for ds in self._dev_strs}
