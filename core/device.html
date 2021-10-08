@@ -944,14 +944,14 @@ the entire input array at once. This can be useful to reduce memory usage of the
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>xs</strong> (<em>iterable of any</em>) – The iterable of items to clone.</p></li>
+<li><p><strong>xs</strong> (<em>iterable of any</em>) – The iterable of items to unify.</p></li>
 <li><p><strong>dev_str</strong> (<em>str</em>) – The device to unify the elements of the iterable to.</p></li>
 <li><p><strong>mode</strong> (<em>str</em>) – The mode by which to unify, must be one of [ concat | mean | sum ]</p></li>
 <li><p><strong>axis</strong> (<em>int</em><em>, </em><em>optional</em>) – The axis along which to concattenate the sub-arrays. Default is 0.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>iterable with each element cloned to each of the target devices</p>
+<dd class="field-even"><p>iterable with each element unified to a single target devices</p>
 </dd>
 </dl>
 </dd></dl>

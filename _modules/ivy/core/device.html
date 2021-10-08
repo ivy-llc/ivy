@@ -948,7 +948,7 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Unify elements of the iterbale xs to a single target device.</span>
 
-<span class="sd">    :param xs: The iterable of items to clone.</span>
+<span class="sd">    :param xs: The iterable of items to unify.</span>
 <span class="sd">    :type xs: iterable of any</span>
 <span class="sd">    :param dev_str: The device to unify the elements of the iterable to.</span>
 <span class="sd">    :type dev_str: str</span>
@@ -956,7 +956,7 @@
 <span class="sd">    :type mode: str</span>
 <span class="sd">    :param axis: The axis along which to concattenate the sub-arrays. Default is 0.</span>
 <span class="sd">    :type axis: int, optional</span>
-<span class="sd">    :return: iterable with each element cloned to each of the target devices</span>
+<span class="sd">    :return: iterable with each element unified to a single target devices</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># noinspection PyProtectedMember</span>
     <span class="n">xs</span> <span class="o">=</span> <span class="n">xs</span><span class="o">.</span><span class="n">_data</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">xs</span><span class="p">,</span> <span class="n">MultiDevIter</span><span class="p">)</span> <span class="k">else</span> <span class="n">xs</span>
