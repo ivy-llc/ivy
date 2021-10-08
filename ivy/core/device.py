@@ -6,6 +6,7 @@ Collection of device Ivy functions.
 import os
 import abc
 import math
+import time
 import queue
 import psutil
 import inspect
@@ -1026,6 +1027,10 @@ class DevManager:
         self._dev_strs_ds = {ds: starting_split_factor for ds in self._dev_strs_keys}
         if self._tune_ds and not with_dev_mapping:
             [ivy.set_split_factor(starting_split_factor, ds) for ds in self._dev_strs_keys]
+        self._da_time = time.perf_counter()
+        self._da_step_time = 0
+        self._ds_time = time.perf_counter()
+        self._ds_step_time = 0
 
     # Device Allocation #
 
@@ -1089,6 +1094,7 @@ class DevManager:
             self._compute_dev_da_ratios()
             if self._tune_ds:
                 self._tune_step = self.ds_tune_step
+            self._da_time = time.perf_counter()
             return
 
         # otherwise
@@ -1156,6 +1162,11 @@ class DevManager:
 
             self._unit_da_tune_count += 1
 
+        # log time
+        now = time.perf_counter()
+        self._da_step_time = now - self._da_time
+        self._da_time = now
+
     # Device Splitting #
 
     def _shift_ds(self, deltas):
@@ -1186,6 +1197,7 @@ class DevManager:
             self._first_ds_tune_step = False
             if self._tune_da:
                 self._tune_step = self.da_tune_step
+            self._ds_time = time.perf_counter()
             return
 
         # otherwise
@@ -1222,6 +1234,11 @@ class DevManager:
             self._percent_mem_inc_per_sf.clear()
             self._dev_percent_mems.clear()
             self._tuned = True
+
+        # log time
+        now = time.perf_counter()
+        self._ds_step_time = now - self._ds_time
+        self._ds_time = now
 
     # Repeated Config Checking #
 
