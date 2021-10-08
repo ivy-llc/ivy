@@ -1292,7 +1292,7 @@ class Container(dict):
         :type dev_strs: sequence of str
         :return: a set of cloned containers across the specified devices.
         """
-        return self._ivy.ClonedItem([self.to_dev(dev_str) for dev_str in dev_strs])
+        return self._ivy.ClonedItem({dev_str: self.to_dev(dev_str) for dev_str in dev_strs})
 
     def distribute(self, dev_strs: Union[Iterable[str], Dict[str, int]], axis=0):
         """
@@ -1306,8 +1306,8 @@ class Container(dict):
         """
         split_arg = list(dev_strs.values()) if isinstance(dev_strs, dict) else len(dev_strs)
         return self._ivy.DistributedItem(
-            [cont.to_dev(dev_str) for cont, dev_str in
-             zip(self.split(split_arg, axis, with_remainder=True), dev_strs)])
+            {dev_str: cont.to_dev(dev_str) for cont, dev_str in
+             zip(self.split(split_arg, axis, with_remainder=True), dev_strs)})
 
     def to_multi_dev(self, dev_strs, axis=0):
         """
@@ -2701,8 +2701,8 @@ class MultiDevContainer(Container):
         self._dev_strs = dev_strs
         self._num_devs = len(dev_strs)
 
-    def at_dev(self, dev_idx):
-        return self.map(lambda x, kc: x.at_dev(dev_idx) if isinstance(x, _ivy.MultiDevItem) else x)
+    def at_dev(self, dev_str):
+        return self.map(lambda x, kc: x.at_dev(dev_str) if isinstance(x, _ivy.MultiDevItem) else x)
 
     def at_devs(self):
-        return [self.at_dev(i) for i in range(self._num_devs)]
+        return [self.at_dev(ds) for ds in self._dev_strs]
