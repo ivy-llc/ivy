@@ -1165,21 +1165,25 @@
 <span class="sd">        :param tune_dev_splits: Whether to tune the per-device split sizes internally. Default is True.</span>
 <span class="sd">        :type tune_dev_splits: bool, optional</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">num_dev_args</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">([</span><span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">dev_mapper</span><span class="p">),</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">dev_strs</span><span class="p">),</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">da_dim_size</span><span class="p">)])</span>
-        <span class="k">if</span> <span class="n">num_dev_args</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">]:</span>
-            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;either all or None of dev_mapper, dev_strs and da_dim_size must be specified, but found &#39;</span>
-                            <span class="s1">&#39;dev_mapper=</span><span class="si">{}</span><span class="s1">, dev_strs=</span><span class="si">{}</span><span class="s1">, da_dim_size=</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">dev_mapper</span><span class="p">,</span> <span class="n">dev_strs</span><span class="p">,</span> <span class="n">da_dim_size</span><span class="p">))</span>
+        <span class="n">num_dev_args</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">([</span><span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">dev_mapper</span><span class="p">),</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">da_dim_size</span><span class="p">)])</span>
+        <span class="k">if</span> <span class="n">num_dev_args</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">]:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;either both or neither of dev_mapper and da_dim_size must be specified, but found &#39;</span>
+                            <span class="s1">&#39;dev_mapper=</span><span class="si">{}</span><span class="s1">, da_dim_size=</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">dev_mapper</span><span class="p">,</span> <span class="n">da_dim_size</span><span class="p">))</span>
+        <span class="n">with_dev_mapping</span> <span class="o">=</span> <span class="kc">False</span> <span class="k">if</span> <span class="n">num_dev_args</span> <span class="o">==</span> <span class="mi">0</span> <span class="k">else</span> <span class="kc">True</span>
         <span class="n">tune_dev_alloc</span> <span class="o">=</span> <span class="kc">False</span> <span class="k">if</span> <span class="n">num_dev_args</span> <span class="o">==</span> <span class="mi">0</span> <span class="k">else</span> <span class="n">tune_dev_alloc</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_dev_mapper</span> <span class="o">=</span> <span class="n">dev_mapper</span>
+        <span class="n">dev_strs</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">default</span><span class="p">(</span><span class="n">dev_strs</span><span class="p">,</span> <span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">default_device</span><span class="p">()])</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_num_devs</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">dev_strs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_dim_size</span> <span class="o">=</span> <span class="n">da_dim_size</span>
         <span class="k">assert</span> <span class="mi">1</span> <span class="o">&lt;=</span> <span class="n">safety_factor</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_safety_factor</span> <span class="o">=</span> <span class="n">safety_factor</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_min_dev_dim_size</span> <span class="o">=</span> <span class="n">min_dev_dim_size</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_max_dev_dim_step_size</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">max_dev_dim_step_ratio</span> <span class="o">*</span> <span class="n">da_dim_size</span><span class="p">)),</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">da_dim_size</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_max_dev_dim_step_size</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="nb">round</span><span class="p">(</span><span class="n">max_dev_dim_step_ratio</span> <span class="o">*</span> <span class="n">da_dim_size</span><span class="p">)),</span> <span class="mi">1</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_min_unit_dev_tune_steps</span> <span class="o">=</span> <span class="n">min_unit_dev_tune_steps</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_min_sf_tune_steps</span> <span class="o">=</span> <span class="n">min_sf_tune_steps</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_max_split_factor_step_size</span> <span class="o">=</span> <span class="n">max_split_factor_step_size</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_with_dev_mappig</span> <span class="o">=</span> <span class="n">with_dev_mapping</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_tune_da</span> <span class="o">=</span> <span class="n">tune_dev_alloc</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_tune_ds</span> <span class="o">=</span> <span class="n">tune_dev_splits</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_tuned</span> <span class="o">=</span> <span class="p">(</span><span class="ow">not</span> <span class="n">tune_dev_alloc</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">tune_dev_splits</span><span class="p">)</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">_num_devs</span> <span class="o">==</span> <span class="mi">1</span>
@@ -1188,7 +1192,12 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_da_tune_count</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_unit_da_tune_count</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_ds_tune_count</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_tune_step</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">da_tune_step</span>
+        <span class="k">if</span> <span class="n">tune_dev_alloc</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_tune_step</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">da_tune_step</span>
+        <span class="k">elif</span> <span class="n">tune_dev_splits</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_tune_step</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ds_tune_step</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_tune_step</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_observed_configs</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_da_directions</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_da_directions_flipped</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
@@ -1206,7 +1215,8 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_delta_sfs</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dev_strs_keys</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_num_devs</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_dev_percent_mems</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_dev_utils</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_compute_dev_strs_da</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">with_dev_mapping</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_compute_dev_strs_da</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_dev_strs_ds</span> <span class="o">=</span> <span class="p">{</span><span class="n">ds</span><span class="p">:</span> <span class="mf">0.</span> <span class="k">for</span> <span class="n">ds</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dev_strs_keys</span><span class="p">}</span></div>
 
     <span class="c1"># Device Allocation #</span>
@@ -1327,7 +1337,7 @@
 
             <span class="c1"># check if da tuning is complete</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">repeated_config_check</span><span class="p">()</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_unit_da_tune_count</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_min_unit_dev_tune_steps</span> <span class="ow">and</span> \
-                    <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ds_tune_count</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_min_sf_tune_steps</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tune_ds</span><span class="p">:</span>
+                    <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tune_ds</span> <span class="ow">or</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ds_tune_count</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_min_sf_tune_steps</span><span class="p">):</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_observed_configs</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_percent_mem_inc_per_unit_da_dim</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_delta_da_dim_sizes</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
@@ -1389,11 +1399,11 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_tune_step</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">da_tune_step</span>
 
         <span class="c1"># check whether device allocation tuning is ready to terminate</span>
-        <span class="n">da_can_terminate</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_max_dev_dim_step_size</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">or</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tune_da</span>
+        <span class="n">da_can_terminate</span> <span class="o">=</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tune_da</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">_max_dev_dim_step_size</span> <span class="o">==</span> <span class="mi">1</span>
 
         <span class="c1"># check if ds tuning is complete</span>
         <span class="k">if</span> <span class="n">da_can_terminate</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">repeated_config_check</span><span class="p">()</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ds_tune_count</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_min_sf_tune_steps</span> <span class="ow">and</span> \
-                <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_unit_da_tune_count</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_min_unit_dev_tune_steps</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tune_da</span><span class="p">:</span>
+                <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tune_da</span> <span class="ow">or</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_unit_da_tune_count</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_min_unit_dev_tune_steps</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_observed_configs</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_percent_mem_inc_per_sf</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_dev_percent_mems</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
@@ -1452,8 +1462,9 @@
         <span class="k">return</span> <span class="n">ret</span></div>
 
     <span class="k">def</span> <span class="fm">__del__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_dev_mapper</span><span class="o">.</span><span class="fm">__del__</span><span class="p">()</span>
-        <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dev_mapper</span>
+        <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dev_mapper</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_dev_mapper</span><span class="o">.</span><span class="fm">__del__</span><span class="p">()</span>
+            <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dev_mapper</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">dim_size</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
