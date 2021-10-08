@@ -758,7 +758,7 @@ def unify_iter(xs, dev_str, mode, axis=0):
     """
     Unify elements of the iterbale xs to a single target device.
 
-    :param xs: The iterable of items to clone.
+    :param xs: The iterable of items to unify.
     :type xs: iterable of any
     :param dev_str: The device to unify the elements of the iterable to.
     :type dev_str: str
@@ -766,7 +766,7 @@ def unify_iter(xs, dev_str, mode, axis=0):
     :type mode: str
     :param axis: The axis along which to concattenate the sub-arrays. Default is 0.
     :type axis: int, optional
-    :return: iterable with each element cloned to each of the target devices
+    :return: iterable with each element unified to a single target devices
     """
     # noinspection PyProtectedMember
     xs = xs._data if isinstance(xs, MultiDevIter) else xs

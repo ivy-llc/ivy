@@ -55,23 +55,31 @@ def test_container_list_stack(dev_str, call):
 
 def test_container_unify(dev_str, call):
 
-    # devices
+    # devices and containers
+    dev_strs = list()
     dev_str0 = dev_str
+    dev_strs.append(dev_str0)
+    conts = dict()
+    conts[dev_str0] = Container(
+        {'a': ivy.array([1], dev_str=dev_str0),
+         'b': {'c': ivy.array([2], dev_str=dev_str0), 'd': ivy.array([3], dev_str=dev_str0)}})
     if 'gpu' in dev_str:
         idx = ivy.num_gpus() - 1
         dev_str1 = dev_str[:-1] + str(idx)
-    else:
-        dev_str1 = dev_str
+        dev_strs.append(dev_str1)
+        conts[dev_str1] = Container(
+            {'a': ivy.array([4], dev_str=dev_str1),
+             'b': {'c': ivy.array([5], dev_str=dev_str1), 'd': ivy.array([6], dev_str=dev_str1)}})
 
     # test
-    container_0 = Container({'a': ivy.array([1], dev_str=dev_str0),
-                             'b': {'c': ivy.array([2], dev_str=dev_str0), 'd': ivy.array([3], dev_str=dev_str0)}})
-    container_1 = Container({'a': ivy.array([4], dev_str=dev_str1),
-                             'b': {'c': ivy.array([5], dev_str=dev_str1), 'd': ivy.array([6], dev_str=dev_str1)}})
-    container_unified = ivy.Container.unify(ivy.MultiDevItem([container_0, container_1]), dev_str0, 'concat', 0)
-    assert np.allclose(ivy.to_numpy(container_unified.a), np.array([1, 4]))
-    assert np.allclose(ivy.to_numpy(container_unified.b.c), np.array([2, 5]))
-    assert np.allclose(ivy.to_numpy(container_unified.b.d), np.array([3, 6]))
+    container_unified = ivy.Container.unify(ivy.MultiDevItem(conts), dev_str0, 'concat', 0)
+    assert np.allclose(ivy.to_numpy(container_unified.a[0]), np.array([1]))
+    assert np.allclose(ivy.to_numpy(container_unified.b.c[0]), np.array([2]))
+    assert np.allclose(ivy.to_numpy(container_unified.b.d[0]), np.array([3]))
+    if len(dev_strs) > 1:
+        assert np.allclose(ivy.to_numpy(container_unified.a[1]), np.array([4]))
+        assert np.allclose(ivy.to_numpy(container_unified.b.c[1]), np.array([5]))
+        assert np.allclose(ivy.to_numpy(container_unified.b.d[1]), np.array([6]))
 
 
 def test_container_concat(dev_str, call):
@@ -633,20 +641,20 @@ def test_container_clone(dev_str, call):
     container = Container(dict_in)
 
     # devices
+    dev_strs = list()
     dev_str0 = dev_str
+    dev_strs.append(dev_str0)
     if 'gpu' in dev_str:
         idx = ivy.num_gpus() - 1
         dev_str1 = dev_str[:-1] + str(idx)
-    else:
-        dev_str1 = dev_str
-    dev_strs = [dev_str0, dev_str1]
+        dev_strs.append(dev_str1)
 
     # without key_chains specification
     container_cloned = container.clone(dev_strs)
     assert isinstance(container_cloned, ivy.ClonedItem)
-    assert min([cont.dev_str == d for cont, d in zip(container_cloned.at_devs(), dev_strs)])
+    assert min([cont.dev_str == ds for ds, cont in container_cloned.items()])
     assert ivy.Container.multi_map(
-        lambda xs, _: ivy.arrays_equal(xs), [c for c in container_cloned.at_devs()]).all_true()
+        lambda xs, _: ivy.arrays_equal(xs), [c for c in container_cloned.values()]).all_true()
 
 
 @pytest.mark.parametrize(
@@ -678,8 +686,8 @@ def test_container_distribute(dev_strs_as_dict, dev_str, call):
     # without key_chains specification
     container_dist = container.distribute(dev_strs)
     assert isinstance(container_dist, ivy.DistributedItem)
-    assert min([cont.dev_str == d for cont, d in zip(container_dist.at_devs(), dev_strs)])
-    for i, sub_cont in enumerate(container_dist.at_devs()):
+    assert min([cont.dev_str == ds for ds, cont in container_dist.items()])
+    for i, sub_cont in enumerate(container_dist.values()):
         assert np.array_equal(ivy.to_numpy(sub_cont.a), ivy.to_numpy(array_a)[i*sub_size:i*sub_size+sub_size])
         assert np.array_equal(ivy.to_numpy(sub_cont.b.c), ivy.to_numpy(array_bc)[i*sub_size:i*sub_size+sub_size])
         assert np.array_equal(ivy.to_numpy(sub_cont.b.d), ivy.to_numpy(array_bd)[i*sub_size:i*sub_size+sub_size])
