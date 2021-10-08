@@ -856,7 +856,7 @@ class DevMapper(abc.ABC):
             output_queue = queue_class()
             worker_kwargs = dict(**constant_kwargs, **{k: v[i] for k, v in unique_kwargs.items()})
             worker = self._worker_class(target=self._worker_fn, args=(input_queue, output_queue, dev_strs[i],
-                                                                      worker_kwargs))
+                                                                      worker_kwargs, ivy.current_framework_str()))
             worker.start()
             self._input_queues[ds] = input_queue
             self._output_queues[ds] = output_queue
@@ -870,9 +870,8 @@ class DevMapper(abc.ABC):
         return state
 
     # noinspection PyShadowingNames
-    def _worker_fn(self, input_queue, output_queue, dev_str, kwargs):
-        # ToDo: make this framework configurable
-        ivy.set_framework('torch')
+    def _worker_fn(self, input_queue, output_queue, dev_str, kwargs, framework_str):
+        ivy.set_framework(framework_str)
         ivy.set_default_device(dev_str)
         for k, v in kwargs.items():
             if isinstance(v, ivy.Module) and not v.built:
