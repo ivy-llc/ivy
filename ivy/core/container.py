@@ -641,7 +641,10 @@ class Container(dict):
     def _at_key_chains_input_as_seq(self, key_chains, ignore_key_errors=False):
         return_cont = Container(dict(), ivyh=self._local_ivy)
         for kc in key_chains:
-            return_cont.set_at_key_chain(kc, self.at_key_chain(kc, ignore_key_errors=ignore_key_errors), inplace=True)
+            val = self.at_key_chain(kc, ignore_key_errors=ignore_key_errors)
+            if ignore_key_errors and not _ivy.exists(val):
+                continue
+            return_cont.set_at_key_chain(kc, val, inplace=True)
         return return_cont
 
     def _at_key_chains_input_as_dict(self, key_chains, current_chain='', ignore_key_errors=False):
@@ -655,7 +658,10 @@ class Container(dict):
                 return_dict[k] = self._at_key_chains_input_as_dict(v, new_current_chain,
                                                                    ignore_key_errors=ignore_key_errors)
             else:
-                return_dict[k] = self.at_key_chain(new_current_chain, ignore_key_errors=ignore_key_errors)
+                val = self.at_key_chain(new_current_chain, ignore_key_errors=ignore_key_errors)
+                if ignore_key_errors and not _ivy.exists(val):
+                    continue
+                return_dict[k] = val
         return Container(return_dict, ivyh=self._local_ivy)
 
     def _prune_key_chains_input_as_seq(self, key_chains):
