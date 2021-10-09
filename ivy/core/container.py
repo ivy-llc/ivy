@@ -638,13 +638,13 @@ class Container(dict):
             return sub_dev_strs[0]
         return None
 
-    def _at_key_chains_input_as_seq(self, key_chains):
+    def _at_key_chains_input_as_seq(self, key_chains, ignore_key_errors=False):
         return_cont = Container(dict(), ivyh=self._local_ivy)
         for kc in key_chains:
-            return_cont.set_at_key_chain(kc, self.at_key_chain(kc), inplace=True)
+            return_cont.set_at_key_chain(kc, self.at_key_chain(kc, ignore_key_errors=ignore_key_errors), inplace=True)
         return return_cont
 
-    def _at_key_chains_input_as_dict(self, key_chains, current_chain=''):
+    def _at_key_chains_input_as_dict(self, key_chains, current_chain='', ignore_key_errors=False):
         return_dict = dict()
         for k, v in key_chains.items():
             if current_chain == '':
@@ -652,9 +652,10 @@ class Container(dict):
             else:
                 new_current_chain = current_chain + '/' + k
             if isinstance(v, dict):
-                return_dict[k] = self._at_key_chains_input_as_dict(v, new_current_chain)
+                return_dict[k] = self._at_key_chains_input_as_dict(v, new_current_chain,
+                                                                   ignore_key_errors=ignore_key_errors)
             else:
-                return_dict[k] = self.at_key_chain(new_current_chain)
+                return_dict[k] = self.at_key_chain(new_current_chain, ignore_key_errors=ignore_key_errors)
         return Container(return_dict, ivyh=self._local_ivy)
 
     def _prune_key_chains_input_as_seq(self, key_chains):
@@ -1846,7 +1847,7 @@ class Container(dict):
             return leafwise_res
         return max([v for k, v in leafwise_res.to_iterator()])
 
-    def at_keys(self, queries, ignore_none=True, containing=False):
+    def at_keys(self, queries, ignore_none=True, containing=False, ignore_key_errors=False):
         """
         Query container object at specified keys, either as list or nested dict.
 
@@ -1873,9 +1874,9 @@ class Container(dict):
             return x
 
         self.map(map_fn)
-        return self.at_key_chains(key_chains_to_keep)
+        return self.at_key_chains(key_chains_to_keep, ignore_key_errors=ignore_key_errors)
 
-    def at_key_chain(self, key_chain):
+    def at_key_chain(self, key_chain, ignore_key_errors=False):
         """
         Query container object at a specified key-chain
 
@@ -1884,10 +1885,15 @@ class Container(dict):
         keys = re.split('[/.]', key_chain)
         ret = self
         for key in keys:
-            ret = ret[key]
+            try:
+                ret = ret[key]
+            except KeyError as e:
+                if ignore_key_errors:
+                    return
+                raise e
         return ret
 
-    def at_key_chains(self, key_chains, ignore_none=True):
+    def at_key_chains(self, key_chains, ignore_none=True, ignore_key_errors=False):
         """
         Query container object at specified key-chains, either as list or nested dict.
 
@@ -1896,11 +1902,11 @@ class Container(dict):
         if key_chains is None and ignore_none:
             return self
         if isinstance(key_chains, (list, tuple)):
-            return self._at_key_chains_input_as_seq(key_chains)
+            return self._at_key_chains_input_as_seq(key_chains, ignore_key_errors=ignore_key_errors)
         elif isinstance(key_chains, dict):
-            return self._at_key_chains_input_as_dict(key_chains)
+            return self._at_key_chains_input_as_dict(key_chains, ignore_key_errors=ignore_key_errors)
         elif isinstance(key_chains, str):
-            return self._at_key_chains_input_as_seq([key_chains])
+            return self._at_key_chains_input_as_seq([key_chains], ignore_key_errors=ignore_key_errors)
         else:
             raise Exception('Invalid type for input key_chains, must either be a list, tuple, dict, or ivy.Container,'
                             'but found type {}'.format(type(key_chains)))
