@@ -356,6 +356,8 @@ def split_func_call(func: Callable, inputs: Iterable[Union[Union[ivy.Array, ivy.
     chunk_size = ivy.default(
         chunk_size, lambda: max(int(round(max_chunk_size * ivy.split_factor(ivy.default_device()))), 1), True)
     dim_size = inputs[0].shape[input_axes[0]]
+    if chunk_size >= dim_size:
+        return func(*inputs)
     num_chunks = dim_size / chunk_size
     num_chunks_floored = math.floor(dim_size / chunk_size)
     chunk_sizes = [chunk_size] * num_chunks_floored
