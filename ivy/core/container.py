@@ -2077,6 +2077,16 @@ class Container(dict):
             raise Exception('Invalid type for input key_chains, must either be a list, tuple, dict, or ivy.Container,'
                             'but found type {}'.format(type(key_chains)))
 
+    def sort_by_key(self):
+        new_dict = dict()
+        for k, v in sorted(self.items()):
+            if isinstance(v, Container):
+                v_back = v.sort_by_key()
+            else:
+                v_back = v
+            new_dict[k] = v_back
+        return Container(new_dict)
+
     def restructure_keys(self, key_chain_mapping):
         """
         Restructure the keys of the container.
