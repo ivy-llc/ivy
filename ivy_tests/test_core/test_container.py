@@ -1604,6 +1604,17 @@ def test_container_prune_key_chains(dev_str, call):
     assert _test_bc_exception(container_pruned)
 
 
+def test_container_sort_by_key(dev_str, call):
+    dict_in = {'b': ivy.array([1], dev_str=dev_str),
+               'a': {'d': ivy.array([2], dev_str=dev_str), 'c': ivy.array([3], dev_str=dev_str)}}
+    container = Container(dict_in)
+    container_sorted = container.sort_by_key()
+    for k, k_true in zip(container_sorted.keys(), ['a', 'b']):
+        assert k == k_true
+    for k, k_true in zip(container_sorted.a.keys(), ['c', 'd']):
+        assert k == k_true
+
+
 def test_container_restructure_keys(dev_str, call):
     container = Container({'a': ivy.array([1], dev_str=dev_str),
                            'b': {'c': ivy.array([2], dev_str=dev_str), 'd': ivy.array([3], dev_str=dev_str)}})
