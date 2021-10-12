@@ -493,20 +493,6 @@ Default is True.</p></li>
 </dd></dl>
 
 <dl class="py method">
-<dt id="ivy.core.container.Container.clone">
-<code class="sig-name descname">clone</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dev_strs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/container.html#Container.clone"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.clone" title="Permalink to this definition">¶</a></dt>
-<dd><p>Clone the current container across multiple devices.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>dev_strs</strong> (<em>sequence of str</em>) – The devices on which to clone the container.</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>a set of cloned containers across the specified devices.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
 <dt id="ivy.core.container.Container.combine">
 <em class="property">static </em><code class="sig-name descname">combine</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">containers</span></em>, <em class="sig-param"><span class="n">ivyh</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/container.html#Container.combine"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.combine" title="Permalink to this definition">¶</a></dt>
 <dd><p>Combine keys and values in a sequence of containers, with priority given to the right-most container in the case
@@ -554,6 +540,37 @@ of duplicates.</p>
 </dd></dl>
 
 <dl class="py method">
+<dt id="ivy.core.container.Container.dev_clone">
+<code class="sig-name descname">dev_clone</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dev_strs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/container.html#Container.dev_clone"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.dev_clone" title="Permalink to this definition">¶</a></dt>
+<dd><p>Clone the current container across multiple devices.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>dev_strs</strong> (<em>sequence of str</em>) – The devices on which to clone the container.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>a set of cloned containers across the specified devices.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="ivy.core.container.Container.dev_dist">
+<code class="sig-name descname">dev_dist</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dev_strs</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>Iterable<span class="p">[</span>str<span class="p">]</span><span class="p">, </span>Dict<span class="p">[</span>str<span class="p">, </span>int<span class="p">]</span><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">0</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/container.html#Container.dev_dist"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.dev_dist" title="Permalink to this definition">¶</a></dt>
+<dd><p>Distribute the current container across multiple devices.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dev_strs</strong> (<em>sequence of strs</em><em> or </em><em>dict of split sizes</em>) – The devices along which to distribute the container.</p></li>
+<li><p><strong>axis</strong> (<em>int</em><em>, </em><em>optional</em>) – The axis along which to split the arrays at the container leaves. Default is 0.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>a set of distributed sub-containers across the specified devices.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt id="ivy.core.container.Container.dev_str">
 <em class="property">property </em><code class="sig-name descname">dev_str</code><a class="headerlink" href="#ivy.core.container.Container.dev_str" title="Permalink to this definition">¶</a></dt>
 <dd><p>The device to which the arrays in the container belong, with None returned if the devices are not consistent</p>
@@ -579,23 +596,6 @@ differences. Default is True.</p></li>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>Compared containers</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt id="ivy.core.container.Container.distribute">
-<code class="sig-name descname">distribute</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dev_strs</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>Iterable<span class="p">[</span>str<span class="p">]</span><span class="p">, </span>Dict<span class="p">[</span>str<span class="p">, </span>int<span class="p">]</span><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">0</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/container.html#Container.distribute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.distribute" title="Permalink to this definition">¶</a></dt>
-<dd><p>Distribute the current container across multiple devices.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>dev_strs</strong> (<em>sequence of strs</em><em> or </em><em>dict of split sizes</em>) – The devices along which to distribute the container.</p></li>
-<li><p><strong>axis</strong> (<em>int</em><em>, </em><em>optional</em>) – The axis along which to split the arrays at the container leaves. Default is 0.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>a set of distributed sub-containers across the specified devices.</p>
 </dd>
 </dl>
 </dd></dl>
