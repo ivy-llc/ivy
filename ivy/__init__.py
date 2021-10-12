@@ -24,6 +24,10 @@ class Device:
     pass
 
 
+class Node:
+    pass
+
+
 class Dtype:
     pass
 
