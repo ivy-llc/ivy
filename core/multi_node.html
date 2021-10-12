@@ -1,0 +1,1114 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Multi node &mdash; Ivy 1.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="node" href="multi_node/node.html" />
+    <link rel="prev" title="maml_step" href="meta/maml_step.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> Ivy
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Guides</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../why_ivy.html">Why Ivy?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../using_ivy.html">Using Ivy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../training_a_network.html">Training a Network</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Core</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="container.html">Container</a></li>
+<li class="toctree-l1"><a class="reference internal" href="device.html">Device</a></li>
+<li class="toctree-l1"><a class="reference internal" href="general.html">General</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gradients.html">Gradients</a></li>
+<li class="toctree-l1"><a class="reference internal" href="image.html">Image</a></li>
+<li class="toctree-l1"><a class="reference internal" href="linalg.html">Linalg</a></li>
+<li class="toctree-l1"><a class="reference internal" href="logic.html">Logic</a></li>
+<li class="toctree-l1"><a class="reference internal" href="math.html">Math</a></li>
+<li class="toctree-l1"><a class="reference internal" href="meta.html">Meta</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Multi node</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="multi_node/node.html">node</a></li>
+<li class="toctree-l2"><a class="reference internal" href="multi_node/node_str.html">node_str</a></li>
+<li class="toctree-l2"><a class="reference internal" href="multi_node/node_to_str.html">node_to_str</a></li>
+<li class="toctree-l2"><a class="reference internal" href="multi_node/str_to_node.html">str_to_node</a></li>
+<li class="toctree-l2"><a class="reference internal" href="multi_node/total_mem_on_node.html">total_mem_on_node</a></li>
+<li class="toctree-l2"><a class="reference internal" href="multi_node/used_mem_on_node.html">used_mem_on_node</a></li>
+<li class="toctree-l2"><a class="reference internal" href="multi_node/percent_used_mem_on_node.html">percent_used_mem_on_node</a></li>
+<li class="toctree-l2"><a class="reference internal" href="multi_node/node_util.html">node_util</a></li>
+<li class="toctree-l2"><a class="reference internal" href="multi_node/gpu_is_available.html">gpu_is_available</a></li>
+<li class="toctree-l2"><a class="reference internal" href="multi_node/num_gpus.html">num_gpus</a></li>
+<li class="toctree-l2"><a class="reference internal" href="multi_node/tpu_is_available.html">tpu_is_available</a></li>
+<li class="toctree-l2"><a class="reference internal" href="multi_node/default_node.html">default_node</a></li>
+<li class="toctree-l2"><a class="reference internal" href="multi_node/set_default_node.html">set_default_node</a></li>
+<li class="toctree-l2"><a class="reference internal" href="multi_node/to_node.html">to_node</a></li>
+<li class="toctree-l2"><a class="reference internal" href="multi_node/split_factor.html">split_factor</a></li>
+<li class="toctree-l2"><a class="reference internal" href="multi_node/set_split_factor.html">set_split_factor</a></li>
+<li class="toctree-l2"><a class="reference internal" href="multi_node/split_func_call.html">split_func_call</a></li>
+<li class="toctree-l2"><a class="reference internal" href="multi_node/node_dist_array.html">node_dist_array</a></li>
+<li class="toctree-l2"><a class="reference internal" href="multi_node/node_dist.html">node_dist</a></li>
+<li class="toctree-l2"><a class="reference internal" href="multi_node/node_dist_iter.html">node_dist_iter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="multi_node/distribute_nest.html">distribute_nest</a></li>
+<li class="toctree-l2"><a class="reference internal" href="multi_node/clone_array.html">clone_array</a></li>
+<li class="toctree-l2"><a class="reference internal" href="multi_node/clone.html">clone</a></li>
+<li class="toctree-l2"><a class="reference internal" href="multi_node/clone_iter.html">clone_iter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="multi_node/clone_nest.html">clone_nest</a></li>
+<li class="toctree-l2"><a class="reference internal" href="multi_node/unify_array.html">unify_array</a></li>
+<li class="toctree-l2"><a class="reference internal" href="multi_node/unify.html">unify</a></li>
+<li class="toctree-l2"><a class="reference internal" href="multi_node/unify_iter.html">unify_iter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="multi_node/unify_nest.html">unify_nest</a></li>
+<li class="toctree-l2"><a class="reference internal" href="multi_node/MultiNodeItem.html">MultiNodeItem</a></li>
+<li class="toctree-l2"><a class="reference internal" href="multi_node/MultiNodeIter.html">MultiNodeIter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="multi_node/MultiNodeNest.html">MultiNodeNest</a></li>
+<li class="toctree-l2"><a class="reference internal" href="multi_node/NodeDistItem.html">NodeDistItem</a></li>
+<li class="toctree-l2"><a class="reference internal" href="multi_node/NodeDistIter.html">NodeDistIter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="multi_node/NodeDistNest.html">NodeDistNest</a></li>
+<li class="toctree-l2"><a class="reference internal" href="multi_node/ClonedItem.html">ClonedItem</a></li>
+<li class="toctree-l2"><a class="reference internal" href="multi_node/ClonedIter.html">ClonedIter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="multi_node/ClonedNest.html">ClonedNest</a></li>
+<li class="toctree-l2"><a class="reference internal" href="multi_node/NodeMapper.html">NodeMapper</a></li>
+<li class="toctree-l2"><a class="reference internal" href="multi_node/NodeMapperMultiProc.html">NodeMapperMultiProc</a></li>
+<li class="toctree-l2"><a class="reference internal" href="multi_node/Profiler.html">Profiler</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="random.html">Random</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reductions.html">Reductions</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Neural net functional</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../neural_net_functional/activations.html">Activations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../neural_net_functional/layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../neural_net_functional/losses.html">Losses</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../neural_net_functional/norms.html">Norms</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Neural net stateful</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../neural_net_stateful/activations.html">Activations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../neural_net_stateful/converters.html">Converters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../neural_net_stateful/initializers.html">Initializers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../neural_net_stateful/layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../neural_net_stateful/module.html">Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../neural_net_stateful/norms.html">Norms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../neural_net_stateful/optimizers.html">Optimizers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../neural_net_stateful/sequential.html">Sequential</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Docs</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../ivy"">Ivy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../mech"">Ivy Mech</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../vision"">Ivy Vision</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../robot"">Ivy Robot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../memory"">Ivy Memory</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../gym"">Ivy Gym</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Ivy</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+      <li>Multi node</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/core/multi_node.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-ivy.core.multi_node">
+<span id="multi-node"></span><h1>Multi node<a class="headerlink" href="#module-ivy.core.multi_node" title="Permalink to this headline">¶</a></h1>
+<p>Collection of multi-node Ivy functions.</p>
+<dl class="py class">
+<dt id="ivy.core.multi_node.ClonedItem">
+<em class="property">class </em><code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">ClonedItem</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span><span class="p">:</span> <span class="n">Dict<span class="p">[</span>ivy.Node<span class="p">, </span>Any<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">0</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/multi_node.html#ClonedItem"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.multi_node.ClonedItem" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="multi_node/MultiNodeItem.html#ivy.core.multi_node.MultiNodeItem" title="ivy.core.multi_node.MultiNodeItem"><code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.core.multi_node.MultiNodeItem</span></code></a></p>
+</dd></dl>
+
+<dl class="py class">
+<dt id="ivy.core.multi_node.ClonedIter">
+<em class="property">class </em><code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">ClonedIter</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span><span class="p">:</span> <span class="n">Iterable</span></em>, <em class="sig-param"><span class="n">node_strs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/multi_node.html#ClonedIter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.multi_node.ClonedIter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="multi_node/MultiNodeIter.html#ivy.core.multi_node.MultiNodeIter" title="ivy.core.multi_node.MultiNodeIter"><code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.core.multi_node.MultiNodeIter</span></code></a></p>
+</dd></dl>
+
+<dl class="py class">
+<dt id="ivy.core.multi_node.ClonedNest">
+<em class="property">class </em><code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">ClonedNest</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span><span class="p">:</span> <span class="n">Iterable</span></em>, <em class="sig-param"><span class="n">node_strs</span></em>, <em class="sig-param"><span class="n">max_depth</span><span class="o">=</span><span class="default_value">1</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/multi_node.html#ClonedNest"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.multi_node.ClonedNest" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="multi_node/MultiNodeNest.html#ivy.core.multi_node.MultiNodeNest" title="ivy.core.multi_node.MultiNodeNest"><code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.core.multi_node.MultiNodeNest</span></code></a></p>
+</dd></dl>
+
+<dl class="py class">
+<dt id="ivy.core.multi_node.MultiNode">
+<em class="property">class </em><code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">MultiNode</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span><span class="p">:</span> <span class="n">Iterable</span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">0</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/multi_node.html#MultiNode"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.multi_node.MultiNode" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt id="ivy.core.multi_node.MultiNode.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span><span class="p">:</span> <span class="n">Iterable</span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">0</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/multi_node.html#MultiNode.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.multi_node.MultiNode.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="ivy.core.multi_node.MultiNodeItem">
+<em class="property">class </em><code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">MultiNodeItem</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span><span class="p">:</span> <span class="n">Dict<span class="p">[</span>ivy.Node<span class="p">, </span>Any<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">0</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/multi_node.html#MultiNodeItem"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.multi_node.MultiNodeItem" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#ivy.core.multi_node.MultiNode" title="ivy.core.multi_node.MultiNode"><code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.core.multi_node.MultiNode</span></code></a></p>
+<dl class="py method">
+<dt id="ivy.core.multi_node.MultiNodeItem.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span><span class="p">:</span> <span class="n">Dict<span class="p">[</span>ivy.Node<span class="p">, </span>Any<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">0</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/multi_node.html#MultiNodeItem.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.multi_node.MultiNodeItem.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="ivy.core.multi_node.MultiNodeItem.items">
+<code class="sig-name descname">items</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/multi_node.html#MultiNodeItem.items"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.multi_node.MultiNodeItem.items" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="ivy.core.multi_node.MultiNodeItem.keys">
+<code class="sig-name descname">keys</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/multi_node.html#MultiNodeItem.keys"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.multi_node.MultiNodeItem.keys" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="ivy.core.multi_node.MultiNodeItem.shape">
+<em class="property">property </em><code class="sig-name descname">shape</code><a class="headerlink" href="#ivy.core.multi_node.MultiNodeItem.shape" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="ivy.core.multi_node.MultiNodeItem.values">
+<code class="sig-name descname">values</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/multi_node.html#MultiNodeItem.values"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.multi_node.MultiNodeItem.values" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="ivy.core.multi_node.MultiNodeIter">
+<em class="property">class </em><code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">MultiNodeIter</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span><span class="p">:</span> <span class="n">Iterable</span></em>, <em class="sig-param"><span class="n">node_strs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/multi_node.html#MultiNodeIter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.multi_node.MultiNodeIter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#ivy.core.multi_node.MultiNode" title="ivy.core.multi_node.MultiNode"><code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.core.multi_node.MultiNode</span></code></a></p>
+<dl class="py method">
+<dt id="ivy.core.multi_node.MultiNodeIter.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span><span class="p">:</span> <span class="n">Iterable</span></em>, <em class="sig-param"><span class="n">node_strs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/multi_node.html#MultiNodeIter.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.multi_node.MultiNodeIter.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="ivy.core.multi_node.MultiNodeIter.at_node">
+<code class="sig-name descname">at_node</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">node_str</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/multi_node.html#MultiNodeIter.at_node"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.multi_node.MultiNodeIter.at_node" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="ivy.core.multi_node.MultiNodeIter.at_nodes">
+<code class="sig-name descname">at_nodes</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/multi_node.html#MultiNodeIter.at_nodes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.multi_node.MultiNodeIter.at_nodes" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="ivy.core.multi_node.MultiNodeNest">
+<em class="property">class </em><code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">MultiNodeNest</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span><span class="p">:</span> <span class="n">Iterable</span></em>, <em class="sig-param"><span class="n">node_strs</span></em>, <em class="sig-param"><span class="n">max_depth</span><span class="o">=</span><span class="default_value">1</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/multi_node.html#MultiNodeNest"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.multi_node.MultiNodeNest" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="multi_node/MultiNodeIter.html#ivy.core.multi_node.MultiNodeIter" title="ivy.core.multi_node.MultiNodeIter"><code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.core.multi_node.MultiNodeIter</span></code></a></p>
+<dl class="py method">
+<dt id="ivy.core.multi_node.MultiNodeNest.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span><span class="p">:</span> <span class="n">Iterable</span></em>, <em class="sig-param"><span class="n">node_strs</span></em>, <em class="sig-param"><span class="n">max_depth</span><span class="o">=</span><span class="default_value">1</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/multi_node.html#MultiNodeNest.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.multi_node.MultiNodeNest.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="ivy.core.multi_node.MultiNodeNest.at_node">
+<code class="sig-name descname">at_node</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">node_str</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/multi_node.html#MultiNodeNest.at_node"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.multi_node.MultiNodeNest.at_node" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="ivy.core.multi_node.NodeDistItem">
+<em class="property">class </em><code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">NodeDistItem</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span><span class="p">:</span> <span class="n">Dict<span class="p">[</span>ivy.Node<span class="p">, </span>Any<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">0</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/multi_node.html#NodeDistItem"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.multi_node.NodeDistItem" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="multi_node/MultiNodeItem.html#ivy.core.multi_node.MultiNodeItem" title="ivy.core.multi_node.MultiNodeItem"><code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.core.multi_node.MultiNodeItem</span></code></a></p>
+</dd></dl>
+
+<dl class="py class">
+<dt id="ivy.core.multi_node.NodeDistIter">
+<em class="property">class </em><code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">NodeDistIter</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span><span class="p">:</span> <span class="n">Iterable</span></em>, <em class="sig-param"><span class="n">node_strs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/multi_node.html#NodeDistIter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.multi_node.NodeDistIter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="multi_node/MultiNodeIter.html#ivy.core.multi_node.MultiNodeIter" title="ivy.core.multi_node.MultiNodeIter"><code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.core.multi_node.MultiNodeIter</span></code></a></p>
+</dd></dl>
+
+<dl class="py class">
+<dt id="ivy.core.multi_node.NodeDistNest">
+<em class="property">class </em><code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">NodeDistNest</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span><span class="p">:</span> <span class="n">Iterable</span></em>, <em class="sig-param"><span class="n">node_strs</span></em>, <em class="sig-param"><span class="n">max_depth</span><span class="o">=</span><span class="default_value">1</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/multi_node.html#NodeDistNest"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.multi_node.NodeDistNest" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="multi_node/MultiNodeNest.html#ivy.core.multi_node.MultiNodeNest" title="ivy.core.multi_node.MultiNodeNest"><code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.core.multi_node.MultiNodeNest</span></code></a></p>
+</dd></dl>
+
+<dl class="py class">
+<dt id="ivy.core.multi_node.NodeManager">
+<em class="property">class </em><code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">NodeManager</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">node_mapper</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">node_strs</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Union<span class="p">[</span>Iterable<span class="p">[</span>str<span class="p">]</span><span class="p">, </span>Dict<span class="p">[</span>str<span class="p">, </span>int<span class="p">]</span><span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">da_dim_size</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">safety_factor</span><span class="o">=</span><span class="default_value">1.1</span></em>, <em class="sig-param"><span class="n">min_node_dim_size</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">max_node_dim_step_ratio</span><span class="o">=</span><span class="default_value">0.1</span></em>, <em class="sig-param"><span class="n">min_unit_node_tune_steps</span><span class="o">=</span><span class="default_value">10</span></em>, <em class="sig-param"><span class="n">min_sf_tune_steps</span><span class="o">=</span><span class="default_value">10</span></em>, <em class="sig-param"><span class="n">starting_split_factor</span><span class="o">=</span><span class="default_value">0.0</span></em>, <em class="sig-param"><span class="n">max_split_factor_step_size</span><span class="o">=</span><span class="default_value">0.05</span></em>, <em class="sig-param"><span class="n">tune_node_alloc</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">tune_node_splits</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/multi_node.html#NodeManager"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.multi_node.NodeManager" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt id="ivy.core.multi_node.NodeManager.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">node_mapper</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">node_strs</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Union<span class="p">[</span>Iterable<span class="p">[</span>str<span class="p">]</span><span class="p">, </span>Dict<span class="p">[</span>str<span class="p">, </span>int<span class="p">]</span><span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">da_dim_size</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">safety_factor</span><span class="o">=</span><span class="default_value">1.1</span></em>, <em class="sig-param"><span class="n">min_node_dim_size</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">max_node_dim_step_ratio</span><span class="o">=</span><span class="default_value">0.1</span></em>, <em class="sig-param"><span class="n">min_unit_node_tune_steps</span><span class="o">=</span><span class="default_value">10</span></em>, <em class="sig-param"><span class="n">min_sf_tune_steps</span><span class="o">=</span><span class="default_value">10</span></em>, <em class="sig-param"><span class="n">starting_split_factor</span><span class="o">=</span><span class="default_value">0.0</span></em>, <em class="sig-param"><span class="n">max_split_factor_step_size</span><span class="o">=</span><span class="default_value">0.05</span></em>, <em class="sig-param"><span class="n">tune_node_alloc</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">tune_node_splits</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/multi_node.html#NodeManager.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.multi_node.NodeManager.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create node manager, which unlike the node mapper, handles all argument cloning and distributing internally.
+The node manager only receivess a specification regarding the ratio of the batch each node should consume.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>node_mapper</strong> (<a class="reference internal" href="multi_node/NodeMapper.html#ivy.core.multi_node.NodeMapper" title="ivy.core.multi_node.NodeMapper"><em>NodeMapper</em></a>) – The pre-built node mapper used by the manager internally.</p></li>
+<li><p><strong>node_strs</strong> (<em>sequence of strs</em><em> or </em><em>dict of split sizes</em>) – The nodes to distribute and clone the arguments across.</p></li>
+<li><p><strong>da_dim_size</strong> (<em>int</em>) – The size of the dimension along which the node allocation splitting is performed.</p></li>
+<li><p><strong>safety_factor</strong> (<em>float</em><em>, </em><em>optional</em>) – The factor by which to be safe in the avoidance of OOM GPU errors. Default is 1.1.</p></li>
+<li><p><strong>min_node_dim_size</strong> (<em>int</em><em>, </em><em>optional</em>) – The minimum dimension size to pass to a node. Default is 0.</p></li>
+<li><p><strong>max_node_dim_step_ratio</strong> (<em>int</em><em>, </em><em>optional</em>) – The maximum step ratio for changing the dimension for a node. Default is 0.1.</p></li>
+<li><p><strong>min_unit_node_tune_steps</strong> (<em>int</em><em>, </em><em>optional</em>) – The minimum number of tune steps to make when optimizing with unit step size.
+Default is 10.</p></li>
+<li><p><strong>min_sf_tune_steps</strong> (<em>int</em><em>, </em><em>optional</em>) – Minimum number of split factor tune steps. Default is 10.</p></li>
+<li><p><strong>starting_split_factor</strong> (<em>float</em><em>, </em><em>optional</em>) – The initial node-specific split factor. Default is 0.</p></li>
+<li><p><strong>max_split_factor_step_size</strong> (<em>float</em><em>, </em><em>optional</em>) – The maximum step size for changing the split factor for a node.
+Default is 0.05.</p></li>
+<li><p><strong>tune_node_alloc</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to tune the node split sizes internally based on node utilization tracking,
+and use the provided values for initialization. Default is True.</p></li>
+<li><p><strong>tune_node_splits</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to tune the per-node split sizes internally. Default is True.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="ivy.core.multi_node.NodeManager.da_tune_step">
+<code class="sig-name descname">da_tune_step</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/multi_node.html#NodeManager.da_tune_step"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.multi_node.NodeManager.da_tune_step" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="ivy.core.multi_node.NodeManager.dim_size">
+<em class="property">property </em><code class="sig-name descname">dim_size</code><a class="headerlink" href="#ivy.core.multi_node.NodeManager.dim_size" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="ivy.core.multi_node.NodeManager.map">
+<code class="sig-name descname">map</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">cloned</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">to_clone</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">distributed</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">to_distribute</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/multi_node.html#NodeManager.map"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.multi_node.NodeManager.map" title="Permalink to this definition">¶</a></dt>
+<dd><p>Map the function fn to each of the MultiNode args and kwargs, running each function in parallel with CUDA-safe
+multiprocessing.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>cloned</strong> (<em>dict of any</em><em>, </em><em>optional</em>) – The MutliNode keyword arguments which are already cloned. Default is None.</p></li>
+<li><p><strong>to_clone</strong> (<em>dict of any</em><em>, </em><em>optional</em>) – The MutliNode keyword arguments to clone and map to the function. Default is None.</p></li>
+<li><p><strong>distributed</strong> (<em>dict of any</em><em>, </em><em>optional</em>) – The MutliNode keyword arguments which already distributed. Default is None.</p></li>
+<li><p><strong>to_distribute</strong> (<em>dict of any</em><em>, </em><em>optional</em>) – The MutliNode keyword arguments to distribute and map to the function. Default is None.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The results of the function, returned as a MultiNode instance.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="ivy.core.multi_node.NodeManager.ns_tune_step">
+<code class="sig-name descname">ns_tune_step</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/multi_node.html#NodeManager.ns_tune_step"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.multi_node.NodeManager.ns_tune_step" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="ivy.core.multi_node.NodeManager.repeated_config_check">
+<code class="sig-name descname">repeated_config_check</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/multi_node.html#NodeManager.repeated_config_check"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.multi_node.NodeManager.repeated_config_check" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="ivy.core.multi_node.NodeManager.tune_step">
+<em class="property">property </em><code class="sig-name descname">tune_step</code><a class="headerlink" href="#ivy.core.multi_node.NodeManager.tune_step" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="ivy.core.multi_node.NodeMapper">
+<em class="property">class </em><code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">NodeMapper</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">fn</span></em>, <em class="sig-param"><span class="n">ret_fn</span></em>, <em class="sig-param"><span class="n">queue_class</span></em>, <em class="sig-param"><span class="n">worker_class</span></em>, <em class="sig-param"><span class="n">node_strs</span></em>, <em class="sig-param"><span class="n">timeout</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">constant</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">unique</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/multi_node.html#NodeMapper"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.multi_node.NodeMapper" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">abc.ABC</span></code></p>
+<dl class="py method">
+<dt id="ivy.core.multi_node.NodeMapper.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">fn</span></em>, <em class="sig-param"><span class="n">ret_fn</span></em>, <em class="sig-param"><span class="n">queue_class</span></em>, <em class="sig-param"><span class="n">worker_class</span></em>, <em class="sig-param"><span class="n">node_strs</span></em>, <em class="sig-param"><span class="n">timeout</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">constant</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">unique</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/multi_node.html#NodeMapper.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.multi_node.NodeMapper.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Node Mapper base class.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>fn</strong> (<em>callable</em>) – The function which the node mapper parallelises across nodes.</p></li>
+<li><p><strong>ret_fn</strong> (<em>callable</em>) – The function which receives the ivy.MultiNodeIter as input, and produces a single node output.</p></li>
+<li><p><strong>queue_class</strong> (<em>class</em>) – The class to use for creating queues.</p></li>
+<li><p><strong>worker_class</strong> (<em>class</em>) – The class to use for creating parallel workers.</p></li>
+<li><p><strong>node_strs</strong> (<em>sequence of str</em>) – A list of nodes on which to parallelise the function.</p></li>
+<li><p><strong>timeout</strong> (<em>float</em><em>, </em><em>optional</em>) – The timeout for getting items from the queues. Default is global.</p></li>
+<li><p><strong>constant</strong> (<em>dict of any</em><em>, </em><em>optional</em>) – A dict of keyword arguments which are the same for each process. Default is None.</p></li>
+<li><p><strong>unique</strong> (<em>dict of iterables of any</em><em>, </em><em>optional</em>) – A dict of keyword argument sequences which are unique for each process. Default is None.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="ivy.core.multi_node.NodeMapper.map">
+<code class="sig-name descname">map</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">used_node_strs</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">split_factors</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/multi_node.html#NodeMapper.map"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.multi_node.NodeMapper.map" title="Permalink to this definition">¶</a></dt>
+<dd><p>Map the function fn to each of the MultiNode args and kwargs, running each function in parallel with CUDA-safe
+multiprocessing.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>used_node_strs</strong> (<em>sequence of str</em><em>, </em><em>optional</em>) – The nodes used in the current mapping pass. Default is all node_strs.</p></li>
+<li><p><strong>split_factors</strong> (<em>dict of floats</em><em>, </em><em>optional</em>) – The updated split factors 0 &lt; sf &lt; 1 for each node. Default is None.</p></li>
+<li><p><strong>kwargs</strong> (<em>dict of any</em>) – The MultiNode keyword arguments to map the function to.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The results of the function, returned as a MultiNode instance.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="ivy.core.multi_node.NodeMapperMultiProc">
+<em class="property">class </em><code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">NodeMapperMultiProc</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">fn</span></em>, <em class="sig-param"><span class="n">ret_fn</span></em>, <em class="sig-param"><span class="n">node_strs</span></em>, <em class="sig-param"><span class="n">timeout</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">constant</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">unique</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/multi_node.html#NodeMapperMultiProc"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.multi_node.NodeMapperMultiProc" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="multi_node/NodeMapper.html#ivy.core.multi_node.NodeMapper" title="ivy.core.multi_node.NodeMapper"><code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.core.multi_node.NodeMapper</span></code></a></p>
+<dl class="py method">
+<dt id="ivy.core.multi_node.NodeMapperMultiProc.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">fn</span></em>, <em class="sig-param"><span class="n">ret_fn</span></em>, <em class="sig-param"><span class="n">node_strs</span></em>, <em class="sig-param"><span class="n">timeout</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">constant</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">unique</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/multi_node.html#NodeMapperMultiProc.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.multi_node.NodeMapperMultiProc.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Node Mapper base class.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>fn</strong> (<em>callable</em>) – The function which the node mapper parallelises across nodes.</p></li>
+<li><p><strong>ret_fn</strong> (<em>callable</em>) – The function which receives the ivy.MultiNodeIter as input, and produces a single node output.</p></li>
+<li><p><strong>queue_class</strong> (<em>class</em>) – The class to use for creating queues.</p></li>
+<li><p><strong>worker_class</strong> (<em>class</em>) – The class to use for creating parallel workers.</p></li>
+<li><p><strong>node_strs</strong> (<em>sequence of str</em>) – A list of nodes on which to parallelise the function.</p></li>
+<li><p><strong>timeout</strong> (<em>float</em><em>, </em><em>optional</em>) – The timeout for getting items from the queues. Default is global.</p></li>
+<li><p><strong>constant</strong> (<em>dict of any</em><em>, </em><em>optional</em>) – A dict of keyword arguments which are the same for each process. Default is None.</p></li>
+<li><p><strong>unique</strong> (<em>dict of iterables of any</em><em>, </em><em>optional</em>) – A dict of keyword argument sequences which are unique for each process. Default is None.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="ivy.core.multi_node.Profiler">
+<em class="property">class </em><code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">Profiler</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">save_dir</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/multi_node.html#Profiler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.multi_node.Profiler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">abc.ABC</span></code></p>
+<dl class="py method">
+<dt id="ivy.core.multi_node.Profiler.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">save_dir</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/multi_node.html#Profiler.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.multi_node.Profiler.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="ivy.core.multi_node.Profiler.start">
+<em class="property">abstract </em><code class="sig-name descname">start</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/multi_node.html#Profiler.start"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.multi_node.Profiler.start" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="ivy.core.multi_node.Profiler.stop">
+<em class="property">abstract </em><code class="sig-name descname">stop</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/multi_node.html#Profiler.stop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.multi_node.Profiler.stop" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.core.multi_node.clone">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">clone</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">node_strs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/multi_node.html#clone"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.multi_node.clone" title="Permalink to this definition">¶</a></dt>
+<dd><p>Clone the input item to each of the specified nodes, returning a list of cloned items, each on a different node.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>array</em><em> or </em><em>container</em>) – The input array or container to clone to each node.</p></li>
+<li><p><strong>node_strs</strong> (<em>sequence of strs</em>) – The nodes to clone the input to.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>array or container distributed across the target nodes</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.core.multi_node.clone_array">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">clone_array</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">node_strs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/multi_node.html#clone_array"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.multi_node.clone_array" title="Permalink to this definition">¶</a></dt>
+<dd><p>Clone an array across the specified nodes, returning a list of cloned arrays, each on a different node.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>array</em>) – The array to clone across nodes.</p></li>
+<li><p><strong>node_strs</strong> (<em>sequence of strs</em>) – The nodes to clone the array to.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>array cloned to each of the target nodes</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.core.multi_node.clone_iter">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">clone_iter</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">xs</span></em>, <em class="sig-param"><span class="n">node_strs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/multi_node.html#clone_iter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.multi_node.clone_iter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Clone elements of the iterbale xs to each of the specified nodes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>xs</strong> (<em>iterable of any</em>) – The iterable of items to clone.</p></li>
+<li><p><strong>node_strs</strong> (<em>sequence of strs</em>) – The nodes to clone each of the iterable elements to.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>iterable with each element cloned to each of the target nodes</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.core.multi_node.clone_nest">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">clone_nest</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">args</span></em>, <em class="sig-param"><span class="n">kwargs</span></em>, <em class="sig-param"><span class="n">node_strs</span></em>, <em class="sig-param"><span class="n">max_depth</span><span class="o">=</span><span class="default_value">1</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/multi_node.html#clone_nest"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.multi_node.clone_nest" title="Permalink to this definition">¶</a></dt>
+<dd><p>Clone the input arguments across the specified nodes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>args</strong> (<em>list of any</em>) – The positional arguments to clone.</p></li>
+<li><p><strong>kwargs</strong> (<em>dict of any</em>) – The keyword arguments to clone.</p></li>
+<li><p><strong>node_strs</strong> (<em>sequence of strs</em>) – The nodes to clone the arguments to.</p></li>
+<li><p><strong>max_depth</strong> (<em>int</em><em>, </em><em>optional</em>) – The maximum nested depth to reach. Default is 1. Increase this if the nest is deeper.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>arguments cloned to each of the target nodes</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.core.multi_node.default_node">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">default_node</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/multi_node.html#default_node"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.multi_node.default_node" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the default node.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.core.multi_node.distribute_nest">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">distribute_nest</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">args</span></em>, <em class="sig-param"><span class="n">kwargs</span></em>, <em class="sig-param"><span class="n">node_strs</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>Iterable<span class="p">[</span>str<span class="p">]</span><span class="p">, </span>Dict<span class="p">[</span>str<span class="p">, </span>int<span class="p">]</span><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">max_depth</span><span class="o">=</span><span class="default_value">1</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/multi_node.html#distribute_nest"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.multi_node.distribute_nest" title="Permalink to this definition">¶</a></dt>
+<dd><p>Distribute the nested input arguments across the specified nodes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>args</strong> (<em>list of any</em>) – The positional nested arguments to distribute.</p></li>
+<li><p><strong>kwargs</strong> (<em>dict of any</em>) – The keyword nested arguments to distribute.</p></li>
+<li><p><strong>node_strs</strong> (<em>sequence of strs</em><em> or </em><em>dict of split sizes</em>) – The nodes to distribute the nested arguments across.</p></li>
+<li><p><strong>axis</strong> (<em>int</em><em>, </em><em>optional</em>) – The axis along which to split the arrays in the arguments. Default is 0.</p></li>
+<li><p><strong>max_depth</strong> (<em>int</em><em>, </em><em>optional</em>) – The maximum nested depth to reach. Default is 1. Increase this if the nest is deeper.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>nested arguments distributed to the target nodes</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.core.multi_node.gpu_is_available">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">gpu_is_available</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">f</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>ivy.Framework<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; bool<a class="reference internal" href="../_modules/ivy/core/multi_node.html#gpu_is_available"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.multi_node.gpu_is_available" title="Permalink to this definition">¶</a></dt>
+<dd><p>Determine whether a GPU is available to use, with the backend framework.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning framework. Inferred from inputs if None.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Boolean, as to whether a gpu is available.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.core.multi_node.node">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">node</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">f</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>ivy.Framework<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; ivy.Node<a class="reference internal" href="../_modules/ivy/core/multi_node.html#node"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.multi_node.node" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the native node handle for input array x.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>array</em>) – Tensor for which to get the node handle.</p></li>
+<li><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning framework. Inferred from inputs if None.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>node handle for the array, in native framework format.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.core.multi_node.node_dist">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">node_dist</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">node_strs</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>Iterable<span class="p">[</span>str<span class="p">]</span><span class="p">, </span>Dict<span class="p">[</span>str<span class="p">, </span>int<span class="p">]</span><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">0</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/multi_node.html#node_dist"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.multi_node.node_dist" title="Permalink to this definition">¶</a></dt>
+<dd><p>Distribute the input item across the specified nodes, returning a list of sub-items, each on a different node.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>array</em><em> or </em><em>container</em>) – The input array or container to distribute across nodes.</p></li>
+<li><p><strong>node_strs</strong> (<em>sequence of strs</em><em> or </em><em>dict of split sizes</em>) – The nodes to distribute the input across.</p></li>
+<li><p><strong>axis</strong> (<em>int</em><em>, </em><em>optional</em>) – The axis along which to split the input. Default is 0.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>array or container distributed across the target nodes</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.core.multi_node.node_dist_array">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">node_dist_array</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">node_strs</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>Iterable<span class="p">[</span>str<span class="p">]</span><span class="p">, </span>Dict<span class="p">[</span>str<span class="p">, </span>int<span class="p">]</span><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">0</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/multi_node.html#node_dist_array"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.multi_node.node_dist_array" title="Permalink to this definition">¶</a></dt>
+<dd><p>Distribute an array across the specified nodes, returning a list of sub-arrays, each on a different node.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>array</em>) – The array to distribute across nodes.</p></li>
+<li><p><strong>node_strs</strong> (<em>sequence of strs</em><em> or </em><em>dict of split sizes</em>) – The nodes to distribute the array across.</p></li>
+<li><p><strong>axis</strong> (<em>int</em><em>, </em><em>optional</em>) – The axis along which to split the array. Default is 0.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>array distributed across the target nodes</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.core.multi_node.node_dist_iter">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">node_dist_iter</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">xs</span></em>, <em class="sig-param"><span class="n">node_strs</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>Iterable<span class="p">[</span>str<span class="p">]</span><span class="p">, </span>Dict<span class="p">[</span>str<span class="p">, </span>int<span class="p">]</span><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">0</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/multi_node.html#node_dist_iter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.multi_node.node_dist_iter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Distribute elements of the iterbale xs across the specified nodes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>xs</strong> (<em>iterable of any</em>) – The iterable of items to distribute.</p></li>
+<li><p><strong>node_strs</strong> (<em>sequence of strs</em><em> or </em><em>dict of split sizes</em>) – The nodes to distribute the iterable elements across.</p></li>
+<li><p><strong>axis</strong> (<em>int</em><em>, </em><em>optional</em>) – The axis along which to split the arrays in the iterable xs. Default is 0.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>iterable with each element distributed to the target nodes</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.core.multi_node.node_str">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">node_str</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">f</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>ivy.Framework<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; str<a class="reference internal" href="../_modules/ivy/core/multi_node.html#node_str"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.multi_node.node_str" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the node string for input array x.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>array</em>) – Tensor for which to get the node string.</p></li>
+<li><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning framework. Inferred from inputs if None.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>node string for the array, e.g. ‘cuda:0’, ‘cuda:1’, ‘cpu’ etc..</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.core.multi_node.node_to_str">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">node_to_str</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">node_in</span><span class="p">:</span> <span class="n">ivy.Node</span></em>, <em class="sig-param"><span class="n">f</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>ivy.Framework<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; str<a class="reference internal" href="../_modules/ivy/core/multi_node.html#node_to_str"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.multi_node.node_to_str" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert native data type to string representation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>node_in</strong> (<em>node handle</em>) – The node handle to convert to string.</p></li>
+<li><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning framework. Inferred from inputs if None.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>node string e.g. ‘cuda:0’.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.core.multi_node.node_util">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">node_util</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">node_str</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span> &#x2192; float<a class="reference internal" href="../_modules/ivy/core/multi_node.html#node_util"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.multi_node.node_util" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the current utilization (%) for a given node.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>node_str</strong> (<em>str</em>) – The node string of the node to query utilization for.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The node utilization (%)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.core.multi_node.num_gpus">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">num_gpus</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">f</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>ivy.Framework<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; int<a class="reference internal" href="../_modules/ivy/core/multi_node.html#num_gpus"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.multi_node.num_gpus" title="Permalink to this definition">¶</a></dt>
+<dd><p>Determine the number of available GPUs, with the backend framework.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning framework. Inferred from inputs if None.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Number of available GPUs.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.core.multi_node.percent_used_mem_on_node">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">percent_used_mem_on_node</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">node_str</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">process_specific</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span> &#x2192; float<a class="reference internal" href="../_modules/ivy/core/multi_node.html#percent_used_mem_on_node"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.multi_node.percent_used_mem_on_node" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the percentage used memory for a given node string. In case of CPU, the used RAM is returned.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>node_str</strong> (<em>str</em>) – The node string to conver to native node handle.</p></li>
+<li><p><strong>process_specific</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether the check the memory used by this python process alone. Default is False.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The percentage used memory on the node.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.core.multi_node.set_default_node">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">set_default_node</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">node</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/multi_node.html#set_default_node"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.multi_node.set_default_node" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="ivy.core.multi_node.set_split_factor">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">set_split_factor</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">factor</span></em>, <em class="sig-param"><span class="n">node_str</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/multi_node.html#set_split_factor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.multi_node.set_split_factor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the global split factor for a given node, which can be used to scale batch splitting chunk sizes for the
+node across the codebase.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>factor</strong> (<em>float</em>) – The factor to set the node-specific split factor to.</p></li>
+<li><p><strong>node_str</strong> (<em>str</em><em>, </em><em>optional</em>) – The node to set the split factor for. Sets the default node by default.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.core.multi_node.split_factor">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">split_factor</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">node_str</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/multi_node.html#split_factor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.multi_node.split_factor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the global split factor for a given node, which can be used to scale batch splitting chunk sizes for the
+node across the codebase. Default global value for each node is 1.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>node_str</strong> (<em>str</em><em>, </em><em>optional</em>) – The node to query the split factor for. Sets the default node by default.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The split factor for the specified node.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.core.multi_node.split_func_call">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">split_func_call</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">func</span><span class="p">:</span> <span class="n">Callable</span></em>, <em class="sig-param"><span class="n">inputs</span><span class="p">:</span> <span class="n">Iterable<span class="p">[</span>Union<span class="p">[</span>ivy.Array<span class="p">, </span>ivy.NativeArray<span class="p">, </span>ivy.Container<span class="p">]</span><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">mode</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">max_chunk_size</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>int<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">chunk_size</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>int<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">input_axes</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>int<span class="p">, </span>Iterable<span class="p">[</span>int<span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">0</span></em>, <em class="sig-param"><span class="n">output_axes</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Union<span class="p">[</span>int<span class="p">, </span>Iterable<span class="p">[</span>int<span class="p">]</span><span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; Iterable<span class="p">[</span>Union<span class="p">[</span>ivy.Array<span class="p">, </span>ivy.NativeArray<span class="p">, </span>ivy.Container<span class="p">]</span><span class="p">]</span><a class="reference internal" href="../_modules/ivy/core/multi_node.html#split_func_call"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.multi_node.split_func_call" title="Permalink to this definition">¶</a></dt>
+<dd><p>Call a function by splitting its inputs along a given axis, and calling the function in chunks, rather than feeding
+the entire input array at once. This can be useful to reduce memory usage of the node the arrays are on.
+:param func: The function to be called.
+:type func: callable
+:param inputs: A list of inputs to pass into the function.
+:type inputs: sequence of arrays
+:param mode: The mode by which to unify the return values, must be one of [ concat | mean | sum ]
+:type mode: str
+:param max_chunk_size: The maximum size of each of the chunks to be fed into the function.
+:type max_chunk_size: int
+:param chunk_size: The size of each of the chunks to be fed into the function. Specifying this arg overwrites the</p>
+<blockquote>
+<div><p>global split factor. Default is None.</p>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>input_axes</strong> (<em>int</em><em> or </em><em>sequence of ints</em><em>, </em><em>optional</em>) – The axes along which to split each of the inputs, before passing to the function. Default is 0.</p></li>
+<li><p><strong>output_axes</strong> (<em>int</em><em> or </em><em>sequence of ints</em><em>, </em><em>optional</em>) – The axes along which to concat each of the returned outputs. Default is same as fist input axis.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The return from the function, following input splitting and re-concattenation.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.core.multi_node.str_to_node">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">str_to_node</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">node_str</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">f</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>ivy.Framework<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; ivy.Node<a class="reference internal" href="../_modules/ivy/core/multi_node.html#str_to_node"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.multi_node.str_to_node" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert node string representation to native node type.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>node_str</strong> (<em>str</em>) – The node string to conver to native node handle.</p></li>
+<li><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning framework. Inferred from inputs if None.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Native node handle.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.core.multi_node.to_node">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">to_node</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">node_str</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>str<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">f</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>ivy.Framework<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; Union<span class="p">[</span>ivy.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span><a class="reference internal" href="../_modules/ivy/core/multi_node.html#to_node"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.multi_node.to_node" title="Permalink to this definition">¶</a></dt>
+<dd><p>Move the input array x to the desired node, specified by node string.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>array</em>) – Array to move onto the node.</p></li>
+<li><p><strong>node_str</strong> (<em>str</em><em>, </em><em>optional</em>) – node to move the array to ‘cuda:0’, ‘cuda:1’, ‘cpu’ etc. Keep same node if None.</p></li>
+<li><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning framework. Inferred from inputs if None.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The array x, but now placed on the target node.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.core.multi_node.total_mem_on_node">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">total_mem_on_node</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">node_str</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span> &#x2192; float<a class="reference internal" href="../_modules/ivy/core/multi_node.html#total_mem_on_node"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.multi_node.total_mem_on_node" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the total amount of memory (in GB) for a given node string. In case of CPU, the total RAM is returned.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>node_str</strong> (<em>str</em>) – The node string to conver to native node handle.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The total memory on the node in GB.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.core.multi_node.tpu_is_available">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">tpu_is_available</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">f</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>ivy.Framework<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; bool<a class="reference internal" href="../_modules/ivy/core/multi_node.html#tpu_is_available"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.multi_node.tpu_is_available" title="Permalink to this definition">¶</a></dt>
+<dd><p>Determine whether a TPU is available to use, with the backend framework.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning framework. Inferred from inputs if None.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Boolean, as to whether a tpu is available.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.core.multi_node.unify">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">unify</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">xs</span></em>, <em class="sig-param"><span class="n">node_str</span></em>, <em class="sig-param"><span class="n">mode</span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">0</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/multi_node.html#unify"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.multi_node.unify" title="Permalink to this definition">¶</a></dt>
+<dd><p>Unify a list of sub-arrays, on arbitrary nodes, to a single concattenated array on the specified node.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>xs</strong> (<em>sequence of arrays</em>) – The list of sub-arrays to unify onto the specified node.</p></li>
+<li><p><strong>node_str</strong> (<em>str</em>) – The node to unify the sub-arrays to.</p></li>
+<li><p><strong>mode</strong> (<em>str</em>) – The mode by which to unify, must be one of [ concat | mean | sum ]</p></li>
+<li><p><strong>axis</strong> (<em>int</em><em>, </em><em>optional</em>) – The axis along which to concattenate the array, if concat mode is set. Default is 0.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>array unified to the target node</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.core.multi_node.unify_array">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">unify_array</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">xs</span></em>, <em class="sig-param"><span class="n">node_str</span></em>, <em class="sig-param"><span class="n">mode</span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">0</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/multi_node.html#unify_array"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.multi_node.unify_array" title="Permalink to this definition">¶</a></dt>
+<dd><p>Unify a list of sub-arrays, on arbitrary nodes, to a single array on the specified node.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>xs</strong> (<em>sequence of arrays</em>) – The list of arrays to unify onto the specified node.</p></li>
+<li><p><strong>node_str</strong> (<em>str</em>) – The node to unify the arrays to.</p></li>
+<li><p><strong>mode</strong> (<em>str</em>) – The mode by which to unify, must be one of [ concat | mean | sum ]</p></li>
+<li><p><strong>axis</strong> (<em>int</em><em>, </em><em>optional</em>) – The axis along which to concattenate the array, if concat mode is set. Default is 0.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>array unified to the target node</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.core.multi_node.unify_iter">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">unify_iter</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">xs</span></em>, <em class="sig-param"><span class="n">node_str</span></em>, <em class="sig-param"><span class="n">mode</span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">transpose</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/multi_node.html#unify_iter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.multi_node.unify_iter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Unify elements of the iterbale xs to a single target node.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>xs</strong> (<em>iterable of any</em>) – The iterable of items to unify.</p></li>
+<li><p><strong>node_str</strong> (<em>str</em>) – The node to unify the elements of the iterable to.</p></li>
+<li><p><strong>mode</strong> (<em>str</em>) – The mode by which to unify, must be one of [ concat | mean | sum ]</p></li>
+<li><p><strong>axis</strong> (<em>int</em><em>, </em><em>optional</em>) – The axis along which to concattenate the sub-arrays. Default is 0.</p></li>
+<li><p><strong>transpose</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to transpose the first and second dimensions of the iterator. Default is False.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>iterable with each element unified to a single target nodes</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.core.multi_node.unify_nest">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">unify_nest</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">args</span><span class="p">:</span> <span class="n">Type<span class="p">[</span><a class="reference internal" href="#ivy.core.multi_node.MultiNode" title="ivy.core.multi_node.MultiNode">ivy.core.multi_node.MultiNode</a><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">kwargs</span><span class="p">:</span> <span class="n">Type<span class="p">[</span><a class="reference internal" href="#ivy.core.multi_node.MultiNode" title="ivy.core.multi_node.MultiNode">ivy.core.multi_node.MultiNode</a><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">node_str</span></em>, <em class="sig-param"><span class="n">mode</span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">max_depth</span><span class="o">=</span><span class="default_value">1</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/multi_node.html#unify_nest"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.multi_node.unify_nest" title="Permalink to this definition">¶</a></dt>
+<dd><p>Unify the input nested arguments, which consist of sub-arrays spread across arbitrary nodes, to unified arrays
+on the single target node.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>args</strong> (<a class="reference internal" href="#ivy.core.multi_node.MultiNode" title="ivy.core.multi_node.MultiNode"><em>MultiNode</em></a>) – The nested positional arguments to unify.</p></li>
+<li><p><strong>kwargs</strong> (<a class="reference internal" href="#ivy.core.multi_node.MultiNode" title="ivy.core.multi_node.MultiNode"><em>MultiNode</em></a>) – The nested keyword arguments to unify.</p></li>
+<li><p><strong>node_str</strong> (<em>str</em>) – The node to unify the nested arguments to.</p></li>
+<li><p><strong>mode</strong> (<em>str</em>) – The mode by which to unify, must be one of [ concat | mean | sum ]</p></li>
+<li><p><strong>axis</strong> (<em>int</em><em>, </em><em>optional</em>) – The axis along which to concattenate the sub-arrays. Default is 0.</p></li>
+<li><p><strong>max_depth</strong> (<em>int</em><em>, </em><em>optional</em>) – The maximum nested depth to reach. Default is 1. Increase this if the nest is deeper.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>nested arguments unified to the target node</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.core.multi_node.used_mem_on_node">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">used_mem_on_node</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">node_str</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">process_specific</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span> &#x2192; float<a class="reference internal" href="../_modules/ivy/core/multi_node.html#used_mem_on_node"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.multi_node.used_mem_on_node" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the used memory (in GB) for a given node string. In case of CPU, the used RAM is returned.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>node_str</strong> (<em>str</em>) – The node string to conver to native node handle.</p></li>
+<li><p><strong>process_specific</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether the check the memory used by this python process alone. Default is False.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The used memory on the node in GB.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<div class="toctree-wrapper compound">
+<p class="caption"><span class="caption-text">Multi node</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="multi_node/node.html">node</a></li>
+<li class="toctree-l1"><a class="reference internal" href="multi_node/node_str.html">node_str</a></li>
+<li class="toctree-l1"><a class="reference internal" href="multi_node/node_to_str.html">node_to_str</a></li>
+<li class="toctree-l1"><a class="reference internal" href="multi_node/str_to_node.html">str_to_node</a></li>
+<li class="toctree-l1"><a class="reference internal" href="multi_node/total_mem_on_node.html">total_mem_on_node</a></li>
+<li class="toctree-l1"><a class="reference internal" href="multi_node/used_mem_on_node.html">used_mem_on_node</a></li>
+<li class="toctree-l1"><a class="reference internal" href="multi_node/percent_used_mem_on_node.html">percent_used_mem_on_node</a></li>
+<li class="toctree-l1"><a class="reference internal" href="multi_node/node_util.html">node_util</a></li>
+<li class="toctree-l1"><a class="reference internal" href="multi_node/gpu_is_available.html">gpu_is_available</a></li>
+<li class="toctree-l1"><a class="reference internal" href="multi_node/num_gpus.html">num_gpus</a></li>
+<li class="toctree-l1"><a class="reference internal" href="multi_node/tpu_is_available.html">tpu_is_available</a></li>
+<li class="toctree-l1"><a class="reference internal" href="multi_node/default_node.html">default_node</a></li>
+<li class="toctree-l1"><a class="reference internal" href="multi_node/set_default_node.html">set_default_node</a></li>
+<li class="toctree-l1"><a class="reference internal" href="multi_node/to_node.html">to_node</a></li>
+<li class="toctree-l1"><a class="reference internal" href="multi_node/split_factor.html">split_factor</a></li>
+<li class="toctree-l1"><a class="reference internal" href="multi_node/set_split_factor.html">set_split_factor</a></li>
+<li class="toctree-l1"><a class="reference internal" href="multi_node/split_func_call.html">split_func_call</a></li>
+<li class="toctree-l1"><a class="reference internal" href="multi_node/node_dist_array.html">node_dist_array</a></li>
+<li class="toctree-l1"><a class="reference internal" href="multi_node/node_dist.html">node_dist</a></li>
+<li class="toctree-l1"><a class="reference internal" href="multi_node/node_dist_iter.html">node_dist_iter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="multi_node/distribute_nest.html">distribute_nest</a></li>
+<li class="toctree-l1"><a class="reference internal" href="multi_node/clone_array.html">clone_array</a></li>
+<li class="toctree-l1"><a class="reference internal" href="multi_node/clone.html">clone</a></li>
+<li class="toctree-l1"><a class="reference internal" href="multi_node/clone_iter.html">clone_iter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="multi_node/clone_nest.html">clone_nest</a></li>
+<li class="toctree-l1"><a class="reference internal" href="multi_node/unify_array.html">unify_array</a></li>
+<li class="toctree-l1"><a class="reference internal" href="multi_node/unify.html">unify</a></li>
+<li class="toctree-l1"><a class="reference internal" href="multi_node/unify_iter.html">unify_iter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="multi_node/unify_nest.html">unify_nest</a></li>
+<li class="toctree-l1"><a class="reference internal" href="multi_node/MultiNodeItem.html">MultiNodeItem</a></li>
+<li class="toctree-l1"><a class="reference internal" href="multi_node/MultiNodeIter.html">MultiNodeIter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="multi_node/MultiNodeNest.html">MultiNodeNest</a></li>
+<li class="toctree-l1"><a class="reference internal" href="multi_node/NodeDistItem.html">NodeDistItem</a></li>
+<li class="toctree-l1"><a class="reference internal" href="multi_node/NodeDistIter.html">NodeDistIter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="multi_node/NodeDistNest.html">NodeDistNest</a></li>
+<li class="toctree-l1"><a class="reference internal" href="multi_node/ClonedItem.html">ClonedItem</a></li>
+<li class="toctree-l1"><a class="reference internal" href="multi_node/ClonedIter.html">ClonedIter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="multi_node/ClonedNest.html">ClonedNest</a></li>
+<li class="toctree-l1"><a class="reference internal" href="multi_node/NodeMapper.html">NodeMapper</a></li>
+<li class="toctree-l1"><a class="reference internal" href="multi_node/NodeMapperMultiProc.html">NodeMapperMultiProc</a></li>
+<li class="toctree-l1"><a class="reference internal" href="multi_node/Profiler.html">Profiler</a></li>
+</ul>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="multi_node/node.html" class="btn btn-neutral float-right" title="node" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="meta/maml_step.html" class="btn btn-neutral float-left" title="maml_step" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Ivy Team
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

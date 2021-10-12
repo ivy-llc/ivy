@@ -274,6 +274,7 @@ Documentation Tree
    core/logic.rst
    core/math.rst
    core/meta.rst
+   core/multi_node.rst
    core/random.rst
    core/reductions.rst
 
