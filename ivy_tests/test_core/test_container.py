@@ -650,8 +650,8 @@ def test_container_clone(dev_str, call):
         dev_strs.append(dev_str1)
 
     # without key_chains specification
-    container_cloned = container.clone(dev_strs)
-    assert isinstance(container_cloned, ivy.ClonedItem)
+    container_cloned = container.dev_clone(dev_strs)
+    assert isinstance(container_cloned, ivy.DevClonedItem)
     assert min([cont.dev_str == ds for ds, cont in container_cloned.items()])
     assert ivy.Container.multi_map(
         lambda xs, _: ivy.arrays_equal(xs), [c for c in container_cloned.values()]).all_true()
@@ -684,8 +684,8 @@ def test_container_distribute(dev_strs_as_dict, dev_str, call):
     sub_size = int(batch_size/num_devs)
 
     # without key_chains specification
-    container_dist = container.distribute(dev_strs)
-    assert isinstance(container_dist, ivy.DistributedItem)
+    container_dist = container.dev_dist(dev_strs)
+    assert isinstance(container_dist, ivy.DevDistItem)
     assert min([cont.dev_str == ds for ds, cont in container_dist.items()])
     for i, sub_cont in enumerate(container_dist.values()):
         assert np.array_equal(ivy.to_numpy(sub_cont.a), ivy.to_numpy(array_a)[i*sub_size:i*sub_size+sub_size])
