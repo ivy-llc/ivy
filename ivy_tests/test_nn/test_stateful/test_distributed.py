@@ -97,7 +97,7 @@ def test_distributed_training(bs_ic_oc, dev_str, call):
                                              input_channels, dev_str=dev_str1), 'float32')
 
     # combined inputs
-    x = ivy.DistributedItem(xs)
+    x = ivy.DevDistItem(xs)
 
     # module
     module = TrainableModule(input_channels, output_channels, dev_str=dev_str0)
@@ -114,8 +114,8 @@ def test_distributed_training(bs_ic_oc, dev_str, call):
         loss_n_grads = ivy.MultiDevIter(
             ivy.map(map_fn,
                     constant={'module': module, 'dev_str': dev_str0},
-                    unique={'xn': x.values(), 'vc': module.v.clone(dev_strs).values()}), dev_strs)
-        loss, grads = ivy.unify_iter(loss_n_grads, dev_str0, 'mean', transpose=True)
+                    unique={'xn': x.values(), 'vc': module.v.dev_clone(dev_strs).values()}), dev_strs)
+        loss, grads = ivy.dev_unify_iter(loss_n_grads, dev_str0, 'mean', transpose=True)
         module.v = optim.step(module.v, grads)
         assert loss < loss_tm1
         loss_tm1 = loss
@@ -182,7 +182,7 @@ def test_distributed_multiprocess_training(bs_ic_oc, dev_str, call):
                                              input_channels, dev_str=dev_str1), 'float32')
 
     # combined inputs
-    x = ivy.DistributedItem(xs)
+    x = ivy.DevDistItem(xs)
 
     # module for processes
     module = TrainableModule(input_channels, output_channels, dev_str=dev_str0, store_vars=False)
@@ -191,7 +191,7 @@ def test_distributed_multiprocess_training(bs_ic_oc, dev_str, call):
     optim = ivy.SGD(1e-4)
 
     # return fn
-    ret_fn = lambda ret: ivy.unify_iter(ret, dev_str0, 'mean', transpose=True)
+    ret_fn = lambda ret: ivy.dev_unify_iter(ret, dev_str0, 'mean', transpose=True)
 
     # device mapper
     dev_mapper = ivy.DevMapperMultiProc(map_fn, ret_fn, dev_strs, constant={'module': module})
@@ -205,7 +205,7 @@ def test_distributed_multiprocess_training(bs_ic_oc, dev_str, call):
     loss = None
     grads = None
     for i in range(10):
-        loss, grads = dev_mapper.map(xn=x, vc=module.v.clone(dev_strs))
+        loss, grads = dev_mapper.map(xn=x, vc=module.v.dev_clone(dev_strs))
         module.v = optim.step(module.v, grads)
         assert loss < loss_tm1
         loss_tm1 = loss
@@ -275,7 +275,7 @@ def test_to_ivy_module_distributed(bs_ic_oc, from_class_and_args, inplace_update
                                              input_channels, dev_str=dev_str1), 'float32')
 
     # combined inputs
-    x = ivy.DistributedItem(xs)
+    x = ivy.DevDistItem(xs)
 
     # ivy module
     natvie_module_class = NATIVE_MODULES[ivy.current_framework_str()]
@@ -291,13 +291,13 @@ def test_to_ivy_module_distributed(bs_ic_oc, from_class_and_args, inplace_update
     optim = ivy.SGD(1e-4)
 
     # return fn
-    ret_fn = lambda ret: ivy.unify_iter(ret, dev_str0, 'mean', transpose=True)
+    ret_fn = lambda ret: ivy.dev_unify_iter(ret, dev_str0, 'mean', transpose=True)
 
     # test loss_fn
     ret_val = ivy.map(loss_fn,
                       constant={'module': ivy_module},
                       unique={'x_': x.values(),
-                              'v_': ivy_module.v.clone(dev_strs).values()})[0]
+                              'v_': ivy_module.v.dev_clone(dev_strs).values()})[0]
     assert ivy.is_array(ret_val)
 
     if inplace_update:
@@ -314,7 +314,7 @@ def test_to_ivy_module_distributed(bs_ic_oc, from_class_and_args, inplace_update
                     constant={'module': ivy_module},
                     unique={'dev_str': dev_strs,
                             'xn': x.values(),
-                            'vc': ivy_module.v.clone(dev_strs).values()}),
+                            'vc': ivy_module.v.dev_clone(dev_strs).values()}),
             len(dev_strs))
         loss, grads = ret_fn(loss_n_grads)
         ivy_module.v = optim.step(ivy_module.v, grads)
@@ -372,7 +372,7 @@ def test_to_ivy_module_distributed_multiprocess(bs_ic_oc, from_class_and_args, i
                                              input_channels, dev_str=dev_str1), 'float32')
 
     # combined inputs
-    x = ivy.DistributedItem(xs)
+    x = ivy.DevDistItem(xs)
 
     # ivy module
     natvie_module_class = NATIVE_MODULES[ivy.current_framework_str()]
@@ -388,13 +388,13 @@ def test_to_ivy_module_distributed_multiprocess(bs_ic_oc, from_class_and_args, i
     optim = ivy.SGD(1e-4)
 
     # return fn
-    ret_fn = lambda ret: ivy.unify_iter(ret, dev_str0, 'mean', transpose=True)
+    ret_fn = lambda ret: ivy.dev_unify_iter(ret, dev_str0, 'mean', transpose=True)
 
     # test loss_fn
     ret_val = ivy.map(loss_fn,
                       constant={'module': ivy_module},
                       unique={'x_': x.values(),
-                              'v_': ivy_module.v.clone(dev_strs).values()})[0]
+                              'v_': ivy_module.v.dev_clone(dev_strs).values()})[0]
     assert ivy.is_array(ret_val)
 
     if inplace_update:
@@ -409,7 +409,7 @@ def test_to_ivy_module_distributed_multiprocess(bs_ic_oc, from_class_and_args, i
     loss = None
     grads = None
     for i in range(10):
-        loss, grads = dev_mapper.map(xn=x, vc=ivy_module.v.clone(dev_strs))
+        loss, grads = dev_mapper.map(xn=x, vc=ivy_module.v.dev_clone(dev_strs))
         ivy_module.v = optim.step(ivy_module.v, grads)
         assert loss < loss_tm1
         loss_tm1 = loss
@@ -470,7 +470,7 @@ def test_device_manager_wrapped_tuning(bs_ic_oc, tune_dev_alloc, tune_dev_splits
     optim = ivy.SGD(1e-4)
 
     # return fn
-    ret_fn = lambda ret: ivy.unify_iter(ret, dev_str0, 'mean', transpose=True)
+    ret_fn = lambda ret: ivy.dev_unify_iter(ret, dev_str0, 'mean', transpose=True)
 
     # device mapper
     dev_mapper = ivy.DevMapperMultiProc(map_fn, ret_fn, dev_strs, constant={'module': module})

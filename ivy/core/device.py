@@ -516,25 +516,25 @@ class MultiDevNest(MultiDevIter):
 # Device Distribution #
 # --------------------#
 
-class DistributedItem(MultiDevItem):
+class DevDistItem(MultiDevItem):
 
     def __repr__(self):
-        return 'DistributedItem(' + self._data.__repr__() + ')'
+        return 'DevDistItem(' + self._data.__repr__() + ')'
 
 
-class DistributedIter(MultiDevIter):
-
-    def __repr__(self):
-        return 'DistributedIter(' + self._data.__repr__() + ')'
-
-
-class DistributedNest(MultiDevNest):
+class DevDistIter(MultiDevIter):
 
     def __repr__(self):
-        return 'DistributedNest(' + self._data.__repr__() + ')'
+        return 'DevDistIter(' + self._data.__repr__() + ')'
 
 
-def distribute_array(x, dev_strs: Union[Iterable[str], Dict[str, int]], axis=0):
+class DevDistNest(MultiDevNest):
+
+    def __repr__(self):
+        return 'DevDistNest(' + self._data.__repr__() + ')'
+
+
+def dev_dist_array(x, dev_strs: Union[Iterable[str], Dict[str, int]], axis=0):
     """
     Distribute an array across the specified devices, returning a list of sub-arrays, each on a different device.
 
@@ -547,11 +547,11 @@ def distribute_array(x, dev_strs: Union[Iterable[str], Dict[str, int]], axis=0):
     :return: array distributed across the target devices
     """
     split_arg = list(dev_strs.values()) if isinstance(dev_strs, dict) else len(dev_strs)
-    return DistributedItem(
+    return DevDistItem(
         {ds: ivy.to_dev(x_sub, ds) for x_sub, ds in zip(ivy.split(x, split_arg, axis, with_remainder=True), dev_strs)})
 
 
-def distribute(x, dev_strs: Union[Iterable[str], Dict[str, int]], axis=0):
+def dev_dist(x, dev_strs: Union[Iterable[str], Dict[str, int]], axis=0):
     """
     Distribute the input item across the specified devices, returning a list of sub-items, each on a different device.
 
@@ -564,13 +564,13 @@ def distribute(x, dev_strs: Union[Iterable[str], Dict[str, int]], axis=0):
     :return: array or container distributed across the target devices
     """
     if ivy.is_array(x):
-        return distribute_array(x, dev_strs, axis)
+        return dev_dist_array(x, dev_strs, axis)
     elif isinstance(x, ivy.Container):
-        return x.distribute(dev_strs, axis)
+        return x.dev_dist(dev_strs, axis)
     return x
 
 
-def distribute_iter(xs, dev_strs: Union[Iterable[str], Dict[str, int]], axis=0):
+def dev_dist_iter(xs, dev_strs: Union[Iterable[str], Dict[str, int]], axis=0):
     """
     Distribute elements of the iterbale xs across the specified devices.
 
@@ -584,10 +584,10 @@ def distribute_iter(xs, dev_strs: Union[Iterable[str], Dict[str, int]], axis=0):
     """
     if isinstance(dev_strs, str):
         dev_strs = [dev_strs]
-    return DistributedIter([distribute(x, dev_strs, axis) for x in xs], dev_strs)
+    return DevDistIter([dev_dist(x, dev_strs, axis) for x in xs], dev_strs)
 
 
-def distribute_nest(args, kwargs, dev_strs: Union[Iterable[str], Dict[str, int]], axis=0, max_depth=1):
+def dev_dist_nest(args, kwargs, dev_strs: Union[Iterable[str], Dict[str, int]], axis=0, max_depth=1):
     """
     Distribute the nested input arguments across the specified devices.
 
@@ -605,33 +605,33 @@ def distribute_nest(args, kwargs, dev_strs: Union[Iterable[str], Dict[str, int]]
     """
     if isinstance(dev_strs, str):
         dev_strs = [dev_strs]
-    args_dist = ivy.nested_map(args, lambda x: distribute(x, dev_strs, axis), max_depth=max_depth)
-    kwargs_dist = ivy.nested_map(kwargs, lambda x: distribute(x, dev_strs, axis), max_depth=max_depth)
-    return DistributedNest(args_dist, dev_strs), DistributedNest(kwargs_dist, dev_strs)
+    args_dist = ivy.nested_map(args, lambda x: dev_dist(x, dev_strs, axis), max_depth=max_depth)
+    kwargs_dist = ivy.nested_map(kwargs, lambda x: dev_dist(x, dev_strs, axis), max_depth=max_depth)
+    return DevDistNest(args_dist, dev_strs), DevDistNest(kwargs_dist, dev_strs)
 
 
 # Device Cloning #
 # ---------------#
 
-class ClonedItem(MultiDevItem):
+class DevClonedItem(MultiDevItem):
 
     def __repr__(self):
-        return 'ClonedItem(' + self._data.__repr__() + ')'
+        return 'DevClonedItem(' + self._data.__repr__() + ')'
 
 
-class ClonedIter(MultiDevIter):
-
-    def __repr__(self):
-        return 'ClonedIter(' + self._data.__repr__() + ')'
-
-
-class ClonedNest(MultiDevNest):
+class DevClonedIter(MultiDevIter):
 
     def __repr__(self):
-        return 'ClonedNest(' + self._data.__repr__() + ')'
+        return 'DevClonedIter(' + self._data.__repr__() + ')'
 
 
-def clone_array(x, dev_strs):
+class DevClonedNest(MultiDevNest):
+
+    def __repr__(self):
+        return 'DevClonedNest(' + self._data.__repr__() + ')'
+
+
+def dev_clone_array(x, dev_strs):
     """
     Clone an array across the specified devices, returning a list of cloned arrays, each on a different device.
 
@@ -641,10 +641,10 @@ def clone_array(x, dev_strs):
     :type dev_strs: sequence of strs
     :return: array cloned to each of the target devices
     """
-    return ClonedItem({ds: ivy.stop_gradient(ivy.to_dev(x, ds)) for ds in dev_strs})
+    return DevClonedItem({ds: ivy.stop_gradient(ivy.to_dev(x, ds)) for ds in dev_strs})
 
 
-def clone(x, dev_strs):
+def dev_clone(x, dev_strs):
     """
     Clone the input item to each of the specified devices, returning a list of cloned items, each on a different device.
 
@@ -655,13 +655,13 @@ def clone(x, dev_strs):
     :return: array or container distributed across the target devices
     """
     if ivy.is_array(x):
-        return clone_array(x, dev_strs)
+        return dev_clone_array(x, dev_strs)
     elif isinstance(x, ivy.Container):
-        return x.clone(dev_strs)
+        return x.dev_clone(dev_strs)
     return x
 
 
-def clone_iter(xs, dev_strs):
+def dev_clone_iter(xs, dev_strs):
     """
     Clone elements of the iterbale xs to each of the specified devices.
 
@@ -673,10 +673,10 @@ def clone_iter(xs, dev_strs):
     """
     if isinstance(dev_strs, str):
         dev_strs = [dev_strs]
-    return ClonedIter([clone(x, dev_strs) for x in xs], dev_strs)
+    return DevClonedIter([dev_clone(x, dev_strs) for x in xs], dev_strs)
 
 
-def clone_nest(args, kwargs, dev_strs, max_depth=1):
+def dev_clone_nest(args, kwargs, dev_strs, max_depth=1):
     """
     Clone the input arguments across the specified devices.
 
@@ -692,9 +692,9 @@ def clone_nest(args, kwargs, dev_strs, max_depth=1):
     """
     if isinstance(dev_strs, str):
         dev_strs = [dev_strs]
-    args_cloned = ivy.nested_map(args, lambda x: clone(x, dev_strs), max_depth=max_depth)
-    kwargs_cloned = ivy.nested_map(kwargs, lambda x: clone(x, dev_strs), max_depth=max_depth)
-    return ClonedNest(args_cloned, dev_strs), ClonedNest(kwargs_cloned, dev_strs)
+    args_cloned = ivy.nested_map(args, lambda x: dev_clone(x, dev_strs), max_depth=max_depth)
+    kwargs_cloned = ivy.nested_map(kwargs, lambda x: dev_clone(x, dev_strs), max_depth=max_depth)
+    return DevClonedNest(args_cloned, dev_strs), DevClonedNest(kwargs_cloned, dev_strs)
 
 
 # Device Unification #
@@ -716,7 +716,7 @@ def _mean_unify_array(xs, dev_str, _=None):
 
 
 # noinspection PyShadowingNames
-def unify_array(xs, dev_str, mode, axis=0):
+def dev_unify_array(xs, dev_str, mode, axis=0):
     """
     Unify a list of sub-arrays, on arbitrary devices, to a single array on the specified device.
 
@@ -736,7 +736,7 @@ def unify_array(xs, dev_str, mode, axis=0):
 
 
 # noinspection PyShadowingNames
-def unify(xs, dev_str, mode, axis=0):
+def dev_unify(xs, dev_str, mode, axis=0):
     """
     Unify a list of sub-arrays, on arbitrary devices, to a single concattenated array on the specified device.
 
@@ -757,14 +757,14 @@ def unify(xs, dev_str, mode, axis=0):
     # noinspection PyProtectedMember
     xs0 = next(iter(xs.items()))[1]
     if ivy.is_array(xs0):
-        return unify_array(xs, dev_str, mode, axis)
+        return dev_unify_array(xs, dev_str, mode, axis)
     elif isinstance(xs0, ivy.Container):
         return ivy.Container.unify(xs, dev_str, mode, axis)
     return xs
 
 
 # noinspection PyShadowingNames
-def unify_iter(xs, dev_str, mode, axis=0, transpose=False):
+def dev_unify_iter(xs, dev_str, mode, axis=0, transpose=False):
     """
     Unify elements of the iterbale xs to a single target device.
 
@@ -786,12 +786,12 @@ def unify_iter(xs, dev_str, mode, axis=0, transpose=False):
         # ToDo: make this more elegant, this method should not be responsible for transposing iterators
         xs_t = [MultiDevItem({ivy.dev_str(i) if ivy.is_array(i) else i.dev_str: i
                               for i in mdi}) for mdi in list(map(list, zip(*xs)))]
-        return [unify(x, dev_str, mode, axis) for x in xs_t]
-    return unify(xs, dev_str, mode, axis)
+        return [dev_unify(x, dev_str, mode, axis) for x in xs_t]
+    return dev_unify(xs, dev_str, mode, axis)
 
 
 # noinspection PyShadowingNames,PyProtectedMember
-def unify_nest(args: Type[MultiDev], kwargs: Type[MultiDev], dev_str, mode, axis=0, max_depth=1):
+def dev_unify_nest(args: Type[MultiDev], kwargs: Type[MultiDev], dev_str, mode, axis=0, max_depth=1):
     """
     Unify the input nested arguments, which consist of sub-arrays spread across arbitrary devices, to unified arrays
     on the single target device.
@@ -812,8 +812,8 @@ def unify_nest(args: Type[MultiDev], kwargs: Type[MultiDev], dev_str, mode, axis
     """
     args = args._data if isinstance(args, MultiDevIter) else args
     kwargs = kwargs._data if isinstance(kwargs, MultiDevIter) else kwargs
-    args_uni = ivy.nested_map(args, lambda x: unify(x, dev_str, mode, axis), max_depth=max_depth)
-    kwargs_uni = ivy.nested_map(kwargs, lambda x: unify(x, dev_str, mode, axis), max_depth=max_depth)
+    args_uni = ivy.nested_map(args, lambda x: dev_unify(x, dev_str, mode, axis), max_depth=max_depth)
+    kwargs_uni = ivy.nested_map(kwargs, lambda x: dev_unify(x, dev_str, mode, axis), max_depth=max_depth)
     return args_uni, kwargs_uni
 
 
@@ -1291,12 +1291,12 @@ class DevManager:
         used_dev_strs = list(used_dev_strs_dict.keys())
         cloned = ivy.default(cloned, {})
         if ivy.exists(to_clone):
-            to_clone = {k: ivy.clone(v, used_dev_strs) for k, v in to_clone.items()}
+            to_clone = {k: ivy.dev_clone(v, used_dev_strs) for k, v in to_clone.items()}
         else:
             to_clone = {}
         distributed = ivy.default(distributed, {})
         if ivy.exists(to_distribute):
-            to_distribute = {k: ivy.distribute(v, used_dev_strs_dict) for k, v in to_distribute.items()}
+            to_distribute = {k: ivy.dev_dist(v, used_dev_strs_dict) for k, v in to_distribute.items()}
         else:
             to_distribute = {}
         if self._tune_ds:

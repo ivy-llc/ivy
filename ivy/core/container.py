@@ -1291,7 +1291,7 @@ class Container(dict):
         return self.map(lambda x, kc: self._ivy.expand_dims(x, axis) if self._ivy.is_array(x) else x,
                         key_chains, to_apply, prune_unapplied)
 
-    def clone(self, dev_strs):
+    def dev_clone(self, dev_strs):
         """
         Clone the current container across multiple devices.
 
@@ -1299,9 +1299,9 @@ class Container(dict):
         :type dev_strs: sequence of str
         :return: a set of cloned containers across the specified devices.
         """
-        return self._ivy.ClonedItem({dev_str: self.to_dev(dev_str) for dev_str in dev_strs})
+        return self._ivy.DevClonedItem({dev_str: self.to_dev(dev_str) for dev_str in dev_strs})
 
-    def distribute(self, dev_strs: Union[Iterable[str], Dict[str, int]], axis=0):
+    def dev_dist(self, dev_strs: Union[Iterable[str], Dict[str, int]], axis=0):
         """
         Distribute the current container across multiple devices.
 
@@ -1312,7 +1312,7 @@ class Container(dict):
         :return: a set of distributed sub-containers across the specified devices.
         """
         split_arg = list(dev_strs.values()) if isinstance(dev_strs, dict) else len(dev_strs)
-        return self._ivy.DistributedItem(
+        return self._ivy.DevDistItem(
             {dev_str: cont.to_dev(dev_str) for cont, dev_str in
              zip(self.split(split_arg, axis, with_remainder=True), dev_strs)})
 
@@ -1328,7 +1328,7 @@ class Container(dict):
         :return: a MultiDevContainer instance, with all leafs arrays replaced by DistributedArray instances.
         """
         return MultiDevContainer(
-            self.map(lambda x, kc: self._ivy.distribute_array(x, dev_strs, axis)), dev_strs)
+            self.map(lambda x, kc: self._ivy.dev_dist_array(x, dev_strs, axis)), dev_strs)
 
     def unstack(self, axis, keepdims=False, dim_size=None):
         """
