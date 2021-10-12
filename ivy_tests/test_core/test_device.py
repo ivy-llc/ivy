@@ -277,7 +277,7 @@ def test_distribute_array(x, axis, tensor_fn, dev_strs_as_dict, dev_str, call):
         dev_strs = dict(zip(dev_strs, [int((1/len(dev_strs))*x.shape[axis])]*len(dev_strs)))
 
     # return
-    x_split = ivy.distribute_array(x, dev_strs, axis)
+    x_split = ivy.dev_dist_array(x, dev_strs, axis)
 
     # shape test
     assert x_split[dev_str0].shape[axis] == math.floor(x.shape[axis] / len(dev_strs))
@@ -311,7 +311,7 @@ def test_clone_array(x, axis, tensor_fn, dev_str, call):
         dev_strs.append(dev_str1)
 
     # return
-    x_split = ivy.clone_array(x, dev_strs)
+    x_split = ivy.dev_clone_array(x, dev_strs)
 
     # shape test
     assert x_split[dev_str0].shape[0] == math.floor(x.shape[axis] / len(dev_strs))
@@ -344,7 +344,7 @@ def test_unify_array(xs, axis, tensor_fn, dev_str, call):
         dev_strs.append(dev_str1)
 
     # output
-    x_unified = ivy.unify_array(ivy.DistributedItem(x), dev_str0, 'concat', axis)
+    x_unified = ivy.dev_unify_array(ivy.DevDistItem(x), dev_str0, 'concat', axis)
 
     # shape test
     expected_size = 0
@@ -384,7 +384,7 @@ def test_distribute_args(args, kwargs, axis, tensor_fn, dev_str, call):
         dev_strs.append(dev_str1)
 
     # returns
-    dist_args, dist_kwargs = ivy.distribute_nest(args, kwargs, dev_strs, axis=axis)
+    dist_args, dist_kwargs = ivy.dev_dist_nest(args, kwargs, dev_strs, axis=axis)
 
     # device specific args
     for ds in dev_strs:
@@ -426,7 +426,7 @@ def test_clone_args(args, kwargs, axis, tensor_fn, dev_str, call):
         dev_strs.append(dev_str1)
 
     # returns
-    cloned_args, cloned_kwargs = ivy.clone_nest(args, kwargs, dev_strs)
+    cloned_args, cloned_kwargs = ivy.dev_clone_nest(args, kwargs, dev_strs)
 
     # device specific args
     for ds in dev_strs:
@@ -470,11 +470,11 @@ def test_unify_args(args, kwargs, axis, tensor_fn, dev_str, call):
         kwargs_dict[dev_str1] = tensor_fn(kwargs['a'][1], 'float32', dev_str1)
 
         # inputs
-    args = ivy.DistributedNest([ivy.DistributedItem(args_dict)] + args[1:], dev_strs)
-    kwargs = ivy.DistributedNest({'a': ivy.DistributedItem(kwargs_dict), 'b': kwargs['b']}, dev_strs)
+    args = ivy.DevDistNest([ivy.DevDistItem(args_dict)] + args[1:], dev_strs)
+    kwargs = ivy.DevDistNest({'a': ivy.DevDistItem(kwargs_dict), 'b': kwargs['b']}, dev_strs)
 
     # outputs
-    args_uni, kwargs_uni = ivy.unify_nest(args, kwargs, dev_str0, 'concat', axis=axis)
+    args_uni, kwargs_uni = ivy.dev_unify_nest(args, kwargs, dev_str0, 'concat', axis=axis)
 
     # shape test
     expected_size_arg = 0
