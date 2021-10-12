@@ -29,30 +29,30 @@ Device
    device/split_factor.rst
    device/set_split_factor.rst
    device/split_func_call.rst
-   device/distribute_array.rst
-   device/distribute.rst
-   device/distribute_iter.rst
-   device/distribute_nest.rst
-   device/clone_array.rst
-   device/clone.rst
-   device/clone_iter.rst
-   device/clone_nest.rst
-   device/unify_array.rst
-   device/unify.rst
-   device/unify_iter.rst
-   device/unify_nest.rst
+   device/dev_dist_array.rst
+   device/dev_dist.rst
+   device/dev_dist_iter.rst
+   device/dev_dist_nest.rst
+   device/dev_clone_array.rst
+   device/dev_clone.rst
+   device/dev_clone_iter.rst
+   device/dev_clone_nest.rst
+   device/dev_unify_array.rst
+   device/dev_unify.rst
+   device/dev_unify_iter.rst
+   device/dev_unify_nest.rst
    device/MultiDev:
 
     def __init__.rst
    device/MultiDevItem.rst
    device/MultiDevIter.rst
    device/MultiDevNest.rst
-   device/DistributedItem.rst
-   device/DistributedIter.rst
-   device/DistributedNest.rst
-   device/ClonedItem.rst
-   device/ClonedIter.rst
-   device/ClonedNest.rst
+   device/DevDistItem.rst
+   device/DevDistIter.rst
+   device/DevDistNest.rst
+   device/DevClonedItem.rst
+   device/DevClonedIter.rst
+   device/DevClonedNest.rst
    device/DevMapper.rst
    device/DevMapperMultiProc.rst
    device/DevManager:
