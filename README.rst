@@ -24,7 +24,7 @@
     </a>
     <br clear="all" />
 
-**Build custom Ivy training tasks with clear, hierarchical and robust user specifications.**
+**Off-the-shelf models for a variety of domains.**
 
 .. raw:: html
 
