@@ -1,0 +1,4 @@
+numpy
+pytest
+ivy-core
+nvidia-ml-py3

@@ -1,0 +1,4 @@
+torch
+gitpython
+ray[tune]
+opencv-python

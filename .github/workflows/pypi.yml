@@ -1,0 +1,24 @@
+name: pypi
+on: [push]
+jobs:
+  upload-if-tagged-commit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout 🛎️Ivy Models
+        uses: actions/checkout@v2
+        with:
+          path: ivy_models
+          persist-credentials: false
+
+      - name: Install Dependencies
+        run: |
+          pip3 install --upgrade pip
+          pip3 install twine setuptools wheel
+
+      - name: Upload to Pypi
+        if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags')
+        env:
+          PYPI_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
+        run: |
+          cd ivy_models
+          bash deploy_pypi.sh
