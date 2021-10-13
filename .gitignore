@@ -19,3 +19,4 @@ with_time_logs/
 *.csv
 *.csv#
 *.ods
+*.hdf5
