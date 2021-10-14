@@ -48,7 +48,7 @@ class Container(dict):
 
     def __init__(self, dict_in=None, queues=None, queue_load_sizes=None, container_combine_method='list_join',
                  queue_timeout=None, print_limit=10, print_indent=4, print_line_spacing=0, ivyh=None,
-                 keyword_color_dict=None, rebuild_child_containers=False, **kwargs):
+                 keyword_color_dict=None, rebuild_child_containers=False, include_iters=False, **kwargs):
         """
         Initialize container object from input dict representation.
 
@@ -79,6 +79,8 @@ class Container(dict):
         :param rebuild_child_containers: Whether to rebuild container found in dict_in with these constructor params.
                                          Default is False, in which case the original container are kept as are.
         :type rebuild_child_containers: bool, optional
+        :param include_iters: Whether to include iterators of arrays (such as lists and tuples) as part of the nest.
+        :type include_iters: bool, optional
         :param kwargs: keyword arguments for dict creation. Default is None.
         :type kwargs: keyword arguments.
         """
@@ -105,9 +107,18 @@ class Container(dict):
         elif kwargs:
             raise Exception('dict_in and **kwargs cannot both be specified for ivy.Container constructor,'
                             'please specify one or the other, not both.')
-        dict_in = dict_in if isinstance(dict_in, dict) else dict(dict_in)
+        if isinstance(dict_in, (list, tuple)):
+            if include_iters:
+                dict_in = dict(zip(['k{}'.format(i) for i in range(len(dict_in))], dict_in))
+            else:
+                raise Exception('expected input to inherit from dict, but found input {} of type {}.'
+                                'Please set include_iters=True if you wish to pass lists or tuples as inputs to the'
+                                'Container constructor.'.format(dict_in, type(dict_in)))
+        else:
+            dict_in = dict_in if isinstance(dict_in, dict) else dict(dict_in)
         for key, value in sorted(dict_in.items()):
-            if isinstance(value, dict) and (not isinstance(value, Container) or rebuild_child_containers):
+            if (isinstance(value, dict) and (not isinstance(value, Container) or rebuild_child_containers)) or \
+                    (include_iters and isinstance(value, (list, tuple))):
                 self[key] = Container(value,
                                       container_combine_method=container_combine_method,
                                       print_limit=print_limit,
@@ -115,7 +126,8 @@ class Container(dict):
                                       print_line_spacing=print_line_spacing,
                                       ivyh=ivyh,
                                       keyword_color_dict=keyword_color_dict,
-                                      rebuild_child_containers=rebuild_child_containers)
+                                      rebuild_child_containers=rebuild_child_containers,
+                                      include_iters=include_iters)
             else:
                 self[key] = value
 
