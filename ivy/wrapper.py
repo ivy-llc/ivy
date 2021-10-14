@@ -9,8 +9,9 @@ NON_WRAPPED_METHODS = ['current_framework', 'current_framework_str', 'set_framew
                        'unset_debug_mode', 'debug_mode', 'nested_map', 'to_ivy', 'args_to_ivy', 'to_native',
                        'args_to_native', 'default', 'exists', 'set_min_base', 'get_min_base', 'set_min_denominator',
                        'get_min_denominator', 'split_func_call_across_gpus', 'cache_fn', 'split_func_call',
-                       'compile_fn', 'dev_to_str', 'str_to_dev', 'memory_on_dev', 'gpu_is_available', 'num_gpus',
-                       'tpu_is_available', 'dtype_to_str', 'cprint', 'to_ivy_module', 'tree_flatten', 'tree_unflatten']
+                       'compile_native', 'compile_native', 'dev_to_str', 'str_to_dev', 'memory_on_dev',
+                       'gpu_is_available', 'num_gpus', 'tpu_is_available', 'dtype_to_str', 'cprint', 'to_ivy_module',
+                       'tree_flatten', 'tree_unflatten', 'start_compiling', 'stop_compiling', 'get_compiled']
 NON_ARRAY_RET_METHODS = ['to_numpy', 'to_list', 'to_scalar', 'unstack', 'split', 'shape', 'get_num_dims', 'is_array',
                          'is_variable']
 
