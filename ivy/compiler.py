@@ -96,6 +96,10 @@ graph = None
 
 def _wrap_method_for_compiling(fn):
 
+    if hasattr(fn, 'inner_fn'):
+        # undo wrapped mode if it is set
+        fn = fn.inner_fn
+
     if hasattr(fn, '__name__') and\
             (fn.__name__[0] == '_' or fn.__name__ in NON_WRAPPED_METHODS + NON_ARRAY_RET_METHODS):
         return fn
@@ -178,6 +182,7 @@ def _unwrap_methods_from_compiling():
 
 
 def compile_ivy(fn, *args, **kwargs):
+    ivy.set_wrapped_mode()
     global graph
     graph = Graph(fn, *args, **kwargs)
     _wrap_methods_for_compiling()
@@ -186,4 +191,5 @@ def compile_ivy(fn, *args, **kwargs):
     local_graph = copy.deepcopy(graph)
     fn = local_graph.to_function()
     graph.clear()
+    ivy.unset_wrapped_mode()
     return fn
