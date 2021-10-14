@@ -281,6 +281,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_print_indent</span> <span class="o">=</span> <span class="n">print_indent</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_print_line_spacing</span> <span class="o">=</span> <span class="n">print_line_spacing</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_container_combine_method</span> <span class="o">=</span> <span class="n">container_combine_method</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_include_iters</span> <span class="o">=</span> <span class="n">include_iters</span>
         <span class="k">if</span> <span class="n">_ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_queues</span><span class="p">):</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_container_combine_method</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_container_combine_method</span> <span class="o">=</span>\
@@ -301,7 +302,7 @@
                             <span class="s1">&#39;please specify one or the other, not both.&#39;</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">dict_in</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)):</span>
             <span class="k">if</span> <span class="n">include_iters</span><span class="p">:</span>
-                <span class="n">dict_in</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">([</span><span class="s1">&#39;k</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">dict_in</span><span class="p">))],</span> <span class="n">dict_in</span><span class="p">))</span>
+                <span class="n">dict_in</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">([</span><span class="s1">&#39;it_</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">dict_in</span><span class="p">))],</span> <span class="n">dict_in</span><span class="p">))</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;expected input to inherit from dict, but found input </span><span class="si">{}</span><span class="s1"> of type </span><span class="si">{}</span><span class="s1">.&#39;</span>
                                 <span class="s1">&#39;Please set include_iters=True if you wish to pass lists or tuples as inputs to the&#39;</span>
@@ -1953,6 +1954,24 @@
                 <span class="n">return_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">return_list</span></div>
 
+<div class="viewcode-block" id="Container.to_raw"><a class="viewcode-back" href="../../../core/container/Container.html#ivy.core.container.Container.to_raw">[docs]</a>    <span class="k">def</span> <span class="nf">to_raw</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return nested raw representation of container object. This includes restoring lists and tuples passed in the</span>
+<span class="sd">        constructor to their original form.</span>
+
+<span class="sd">        :return: Container data in it&#39;s raw form.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">return_item</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">())):</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">Container</span><span class="p">):</span>
+                <span class="n">return_item</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">to_raw</span><span class="p">()</span>
+            <span class="k">elif</span> <span class="n">key</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">3</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;it_&#39;</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_include_iters</span><span class="p">:</span>
+                <span class="n">return_item</span> <span class="o">=</span> <span class="nb">list</span><span class="p">([</span><span class="n">v</span><span class="o">.</span><span class="n">to_raw</span><span class="p">()</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">Container</span><span class="p">)</span> <span class="k">else</span> <span class="n">v</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">()])</span>
+                <span class="k">break</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">return_item</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="k">return</span> <span class="n">return_item</span></div>
+
 <div class="viewcode-block" id="Container.to_dict"><a class="viewcode-back" href="../../../core/container/Container.html#ivy.core.container.Container.to_dict">[docs]</a>    <span class="k">def</span> <span class="nf">to_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Return nested pure dict representation of container object.</span>
@@ -1963,7 +1982,7 @@
         <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">Container</span><span class="p">):</span>
                 <span class="n">return_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
-            <span class="k">elif</span> <span class="n">key</span> <span class="o">!=</span> <span class="s1">&#39;_f&#39;</span><span class="p">:</span>
+            <span class="k">else</span><span class="p">:</span>
                 <span class="n">return_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
         <span class="k">return</span> <span class="n">return_dict</span></div>
 
