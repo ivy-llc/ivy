@@ -1,0 +1,20 @@
+Debugger
+========
+
+.. automodule:: ivy.debugger
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :show-inheritance:
+
+
+.. toctree::
+   :maxdepth: -1
+   :caption: Debugger
+
+   debugger/set_debug_mode.rst
+   debugger/set_breakpoint_debug_mode.rst
+   debugger/set_exception_debug_mode.rst
+   debugger/unset_debug_mode.rst
+   debugger/debug_mode.rst
+
