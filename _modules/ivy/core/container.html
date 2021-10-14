@@ -2330,7 +2330,7 @@
             <span class="n">ret_cont</span><span class="p">[</span><span class="n">new_kc</span><span class="p">]</span> <span class="o">=</span> <span class="n">orig_kc_val</span>
         <span class="k">return</span> <span class="n">ret_cont</span></div>
 
-<div class="viewcode-block" id="Container.prune_empty"><a class="viewcode-back" href="../../../core/container/Container.html#ivy.core.container.Container.prune_empty">[docs]</a>    <span class="k">def</span> <span class="nf">prune_empty</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">keep_Nones</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="Container.prune_empty"><a class="viewcode-back" href="../../../core/container/Container.html#ivy.core.container.Container.prune_empty">[docs]</a>    <span class="k">def</span> <span class="nf">prune_empty</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">keep_Nones</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">base</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Recursively prunes empty keys from the container dict structure.</span>
 <span class="sd">        Returns None if the entire container is empty.</span>
@@ -2340,13 +2340,15 @@
         <span class="n">out_dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
         <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">Container</span><span class="p">):</span>
-                <span class="n">new_value</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">prune_empty</span><span class="p">(</span><span class="n">keep_Nones</span><span class="p">)</span>
+                <span class="n">new_value</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">prune_empty</span><span class="p">(</span><span class="n">keep_Nones</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
                 <span class="k">if</span> <span class="n">new_value</span><span class="p">:</span>
                     <span class="n">out_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_value</span>
             <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="ow">or</span> <span class="n">keep_Nones</span><span class="p">:</span>
                 <span class="n">out_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">out_dict</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">Container</span><span class="p">(</span><span class="n">out_dict</span><span class="p">,</span> <span class="n">ivyh</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_local_ivy</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">base</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">Container</span><span class="p">()</span>
         <span class="k">return</span></div>
 
 <div class="viewcode-block" id="Container.prune_key_from_key_chains"><a class="viewcode-back" href="../../../core/container/Container.html#ivy.core.container.Container.prune_key_from_key_chains">[docs]</a>    <span class="k">def</span> <span class="nf">prune_key_from_key_chains</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">absolute</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">containing</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
