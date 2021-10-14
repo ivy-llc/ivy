@@ -445,6 +445,7 @@ Default is True.</p></li>
 <li><p><strong>queries</strong> (<em>sequence of strs</em><em> or </em><em>single str</em>) – The keys to query.</p></li>
 <li><p><strong>ignore_none</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to ignore None input. Default is True.</p></li>
 <li><p><strong>containing</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to include keys which only contain the query substrings. Default is False.</p></li>
+<li><p><strong>ignore_key_errors</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to ignore Key-errors when trying to access the dict. Default is False.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -498,15 +499,12 @@ Default is True.</p></li>
 
 <dl class="py method">
 <dt id="ivy.core.container.Container.combine">
-<em class="property">static </em><code class="sig-name descname">combine</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">containers</span></em>, <em class="sig-param"><span class="n">ivyh</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/container.html#Container.combine"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.combine" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="sig-name descname">combine</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">containers</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/container.html#Container.combine"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.combine" title="Permalink to this definition">¶</a></dt>
 <dd><p>Combine keys and values in a sequence of containers, with priority given to the right-most container in the case
 of duplicates.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>containers</strong> (<em>sequence of Container objects</em>) – containers to compare</p></li>
-<li><p><strong>ivyh</strong> (<em>handle to ivy module</em><em>, </em><em>optional</em>) – Handle to ivy module to use for the calculations. Default is None, which results in the global ivy.</p></li>
-</ul>
+<dd class="field-odd"><p><strong>containers</strong> (<em>sequence of Container objects</em>) – containers to compare</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>Combined containers</p>
@@ -516,14 +514,14 @@ of duplicates.</p>
 
 <dl class="py method">
 <dt id="ivy.core.container.Container.concat">
-<em class="property">static </em><code class="sig-name descname">concat</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">containers</span></em>, <em class="sig-param"><span class="n">dim</span></em>, <em class="sig-param"><span class="n">ivyh</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/container.html#Container.concat"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.concat" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="sig-name descname">concat</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">containers</span></em>, <em class="sig-param"><span class="n">dim</span></em>, <em class="sig-param"><span class="n">config</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/container.html#Container.concat"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.concat" title="Permalink to this definition">¶</a></dt>
 <dd><p>Concatenate containers together along the specified dimension.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>containers</strong> (<em>sequence of Container objects</em>) – containers to concatenate</p></li>
 <li><p><strong>dim</strong> (<em>int</em>) – dimension along which to concatenate</p></li>
-<li><p><strong>ivyh</strong> (<em>handle to ivy module</em><em>, </em><em>optional</em>) – Handle to ivy module to use for the calculations. Default is None, which results in the global ivy.</p></li>
+<li><p><strong>config</strong> (<em>dict</em><em>, </em><em>optional</em>) – The configuration for the containers. Default is the same as container0.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -531,6 +529,11 @@ of duplicates.</p>
 </dd>
 </dl>
 </dd></dl>
+
+<dl class="py method">
+<dt id="ivy.core.container.Container.config">
+<em class="property">property </em><code class="sig-name descname">config</code><a class="headerlink" href="#ivy.core.container.Container.config" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 <dl class="py method">
 <dt id="ivy.core.container.Container.copy">
@@ -582,7 +585,7 @@ of duplicates.</p>
 
 <dl class="py method">
 <dt id="ivy.core.container.Container.diff">
-<em class="property">static </em><code class="sig-name descname">diff</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">containers</span></em>, <em class="sig-param"><span class="n">mode</span><span class="o">=</span><span class="default_value">'all'</span></em>, <em class="sig-param"><span class="n">diff_keys</span><span class="o">=</span><span class="default_value">'diff'</span></em>, <em class="sig-param"><span class="n">detect_key_diffs</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">ivyh</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/container.html#Container.diff"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.diff" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="sig-name descname">diff</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">containers</span></em>, <em class="sig-param"><span class="n">mode</span><span class="o">=</span><span class="default_value">'all'</span></em>, <em class="sig-param"><span class="n">diff_keys</span><span class="o">=</span><span class="default_value">'diff'</span></em>, <em class="sig-param"><span class="n">detect_key_diffs</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">config</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/container.html#Container.diff"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.diff" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compare keys and values in a sequence of containers, returning the single shared values where they are the same,
 and new nested sub-dicts with all values where they are different.</p>
 <dl class="field-list simple">
@@ -595,7 +598,7 @@ only those that are consist across the containers, or only the differences. Defa
 <li><p><strong>detect_key_diffs</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to treat different keys as detected differences.
 If not, the keys among the input containers are simply combined without flagging
 differences. Default is True.</p></li>
-<li><p><strong>ivyh</strong> (<em>handle to ivy module</em><em>, </em><em>optional</em>) – Handle to ivy module to use for the calculations. Default is None, which results in the global ivy.</p></li>
+<li><p><strong>config</strong> (<em>dict</em><em>, </em><em>optional</em>) – The configuration for the containers. Default is the same as container0.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -937,13 +940,13 @@ Default is True.</p></li>
 
 <dl class="py method">
 <dt id="ivy.core.container.Container.list_join">
-<em class="property">static </em><code class="sig-name descname">list_join</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">containers</span></em>, <em class="sig-param"><span class="n">ivyh</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/container.html#Container.list_join"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.list_join" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="sig-name descname">list_join</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">containers</span></em>, <em class="sig-param"><span class="n">config</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/container.html#Container.list_join"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.list_join" title="Permalink to this definition">¶</a></dt>
 <dd><p>Join containers of lists together along the specified dimension.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>containers</strong> (<em>sequence of Container objects</em>) – containers to list join</p></li>
-<li><p><strong>ivyh</strong> (<em>handle to ivy module</em><em>, </em><em>optional</em>) – Handle to ivy module to use for the calculations. Default is None, which results in the global ivy.</p></li>
+<li><p><strong>config</strong> (<em>dict</em><em>, </em><em>optional</em>) – The configuration for the containers. Default is the same as container0.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -954,14 +957,14 @@ Default is True.</p></li>
 
 <dl class="py method">
 <dt id="ivy.core.container.Container.list_stack">
-<em class="property">static </em><code class="sig-name descname">list_stack</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">containers</span></em>, <em class="sig-param"><span class="n">dim</span></em>, <em class="sig-param"><span class="n">ivyh</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/container.html#Container.list_stack"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.list_stack" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="sig-name descname">list_stack</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">containers</span></em>, <em class="sig-param"><span class="n">dim</span></em>, <em class="sig-param"><span class="n">config</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/container.html#Container.list_stack"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.list_stack" title="Permalink to this definition">¶</a></dt>
 <dd><p>List stack containers together along the specified dimension.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>containers</strong> (<em>sequence of Container objects</em>) – containers to list stack</p></li>
 <li><p><strong>dim</strong> (<em>int</em>) – dimension along which to list stack</p></li>
-<li><p><strong>ivyh</strong> (<em>handle to ivy module</em><em>, </em><em>optional</em>) – Handle to ivy module to use for the calculations. Default is None, which results in the global ivy.</p></li>
+<li><p><strong>config</strong> (<em>dict</em><em>, </em><em>optional</em>) – The configuration for the containers. Default is the same as container0.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -1080,7 +1083,7 @@ Default is True.</p></li>
 
 <dl class="py method">
 <dt id="ivy.core.container.Container.multi_map">
-<em class="property">static </em><code class="sig-name descname">multi_map</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">func</span></em>, <em class="sig-param"><span class="n">containers</span></em>, <em class="sig-param"><span class="n">key_chains</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">to_apply</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">prune_unapplied</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">key_chain</span><span class="o">=</span><span class="default_value">''</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/container.html#Container.multi_map"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.multi_map" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="sig-name descname">multi_map</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">func</span></em>, <em class="sig-param"><span class="n">containers</span></em>, <em class="sig-param"><span class="n">key_chains</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">to_apply</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">prune_unapplied</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">key_chain</span><span class="o">=</span><span class="default_value">''</span></em>, <em class="sig-param"><span class="n">config</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/container.html#Container.multi_map"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.multi_map" title="Permalink to this definition">¶</a></dt>
 <dd><p>Apply function to all array values from a collection of identically structured containers.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1093,6 +1096,7 @@ Default is True.</p></li>
 <li><p><strong>prune_unapplied</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to prune key_chains for which the function was not applied,
 otherwise the leftmost container value is used. Default is False.</p></li>
 <li><p><strong>key_chain</strong> (<em>str</em>) – Chain of keys for this dict entry</p></li>
+<li><p><strong>config</strong> (<em>dict</em><em>, </em><em>optional</em>) – The configuration for the containers. Default is the same as container0.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -1204,14 +1208,14 @@ Returns None if the entire container is empty.</p>
 
 <dl class="py method">
 <dt id="ivy.core.container.Container.reduce">
-<em class="property">static </em><code class="sig-name descname">reduce</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">containers</span></em>, <em class="sig-param"><span class="n">reduction</span></em>, <em class="sig-param"><span class="n">ivyh</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/container.html#Container.reduce"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.reduce" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="sig-name descname">reduce</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">containers</span></em>, <em class="sig-param"><span class="n">reduction</span></em>, <em class="sig-param"><span class="n">config</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/container.html#Container.reduce"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.reduce" title="Permalink to this definition">¶</a></dt>
 <dd><p>Reduce containers.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>containers</strong> (<em>sequence of Container objects</em>) – containers to reduce</p></li>
 <li><p><strong>reduction</strong> (<em>callable with single list input x</em>) – the reduction function</p></li>
-<li><p><strong>ivyh</strong> (<em>handle to ivy module</em><em>, </em><em>optional</em>) – Handle to ivy module to use for the calculations. Default is None, which results in the global ivy.</p></li>
+<li><p><strong>config</strong> (<em>dict</em><em>, </em><em>optional</em>) – The configuration for the containers. Default is the same as container0.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -1508,11 +1512,6 @@ chains being the left and right terms respectively.</p>
 <dt id="ivy.core.container.Container.set_framework">
 <code class="sig-name descname">set_framework</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ivyh</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/container.html#Container.set_framework"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.set_framework" title="Permalink to this definition">¶</a></dt>
 <dd><p>Update the framework to use for the container.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>ivyh</strong> (<em>handle to ivy module</em><em>, </em><em>optional</em>) – Handle to ivy module to use for the calculations. Default is None, which results in the global ivy.</p>
-</dd>
-</dl>
 </dd></dl>
 
 <dl class="py method">
@@ -1605,14 +1604,14 @@ Default is True.</p></li>
 
 <dl class="py method">
 <dt id="ivy.core.container.Container.stack">
-<em class="property">static </em><code class="sig-name descname">stack</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">containers</span></em>, <em class="sig-param"><span class="n">dim</span></em>, <em class="sig-param"><span class="n">ivyh</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/container.html#Container.stack"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.stack" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="sig-name descname">stack</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">containers</span></em>, <em class="sig-param"><span class="n">dim</span></em>, <em class="sig-param"><span class="n">config</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/container.html#Container.stack"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.stack" title="Permalink to this definition">¶</a></dt>
 <dd><p>Stack containers together along the specified dimension.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>containers</strong> (<em>sequence of Container objects</em>) – containers to stack</p></li>
 <li><p><strong>dim</strong> (<em>int</em>) – dimension along which to stack</p></li>
-<li><p><strong>ivyh</strong> (<em>handle to ivy module</em><em>, </em><em>optional</em>) – Handle to ivy module to use for the calculations. Default is None, which results in the global ivy.</p></li>
+<li><p><strong>config</strong> (<em>dict</em><em>, </em><em>optional</em>) – The configuration for the containers. Default is the same as container0.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -1873,7 +1872,7 @@ constructor to their original form.</p>
 
 <dl class="py method">
 <dt id="ivy.core.container.Container.unify">
-<em class="property">static </em><code class="sig-name descname">unify</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">containers</span></em>, <em class="sig-param"><span class="n">dev_str</span></em>, <em class="sig-param"><span class="n">mode</span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">ivyh</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/container.html#Container.unify"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.unify" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="sig-name descname">unify</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">containers</span></em>, <em class="sig-param"><span class="n">dev_str</span></em>, <em class="sig-param"><span class="n">mode</span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">0</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/container.html#Container.unify"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.unify" title="Permalink to this definition">¶</a></dt>
 <dd><p>Unify a list of containers, on arbitrary devices, to a single container on the specified device.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1882,7 +1881,6 @@ constructor to their original form.</p>
 <li><p><strong>dev_str</strong> (<em>str</em>) – The device to unify the containers to.</p></li>
 <li><p><strong>mode</strong> (<em>str</em>) – The mode by which to unify, must be one of [ concat | mean | sum ]</p></li>
 <li><p><strong>axis</strong> (<em>int</em><em>, </em><em>optional</em>) – The axis along which to concattenate the container, if concat mode is set. Default is 0.</p></li>
-<li><p><strong>ivyh</strong> (<em>handle to ivy module</em><em>, </em><em>optional</em>) – Handle to ivy module to use for the calculations. Default is None, which results in the global ivy.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
