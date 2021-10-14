@@ -500,12 +500,15 @@ Default is True.</p></li>
 
 <dl class="py method">
 <dt id="ivy.core.container.Container.combine">
-<em class="property">static </em><code class="sig-name descname">combine</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">containers</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/container.html#Container.combine"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.combine" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="sig-name descname">combine</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">containers</span></em>, <em class="sig-param"><span class="n">config</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/container.html#Container.combine"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.combine" title="Permalink to this definition">¶</a></dt>
 <dd><p>Combine keys and values in a sequence of containers, with priority given to the right-most container in the case
 of duplicates.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>containers</strong> (<em>sequence of Container objects</em>) – containers to compare</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>containers</strong> (<em>sequence of Container objects</em>) – containers to compare</p></li>
+<li><p><strong>config</strong> (<em>dict</em><em>, </em><em>optional</em>) – The configuration for the containers. Default is the same as container_rightmost.</p></li>
+</ul>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>Combined containers</p>

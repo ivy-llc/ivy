@@ -477,13 +477,15 @@
                 <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">Container stack operation only valid for containers of arrays&#39;</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Container.combine"><a class="viewcode-back" href="../../../core/container/Container.html#ivy.core.container.Container.combine">[docs]</a>    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">combine</span><span class="p">(</span><span class="o">*</span><span class="n">containers</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">combine</span><span class="p">(</span><span class="o">*</span><span class="n">containers</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Combine keys and values in a sequence of containers, with priority given to the right-most container in the case</span>
 <span class="sd">        of duplicates.</span>
 
 <span class="sd">        :param containers: containers to compare</span>
 <span class="sd">        :type containers: sequence of Container objects</span>
+<span class="sd">        :param config: The configuration for the containers. Default is the same as container_rightmost.</span>
+<span class="sd">        :type config: dict, optional</span>
 <span class="sd">        :return: Combined containers</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
@@ -491,6 +493,9 @@
         <span class="n">container_rightmost</span> <span class="o">=</span> <span class="n">containers</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">container_rightmost</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">container_rightmost</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">_ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">config</span><span class="p">):</span>
+            <span class="n">config</span> <span class="o">=</span> <span class="n">container_rightmost</span><span class="o">.</span><span class="n">config</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">container_rightmost</span><span class="p">,</span> <span class="n">Container</span><span class="p">)</span> <span class="k">else</span> <span class="p">{}</span>
 
         <span class="c1"># return if len==1</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">containers</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
@@ -502,8 +507,8 @@
         <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">all_Keys</span><span class="p">:</span>
             <span class="n">keys_present</span> <span class="o">=</span> <span class="p">[</span><span class="n">key</span> <span class="ow">in</span> <span class="n">cont</span> <span class="k">for</span> <span class="n">cont</span> <span class="ow">in</span> <span class="n">containers</span><span class="p">]</span>
             <span class="n">return_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span>\
-                <span class="n">_ivy</span><span class="o">.</span><span class="n">Container</span><span class="o">.</span><span class="n">combine</span><span class="p">(</span><span class="o">*</span><span class="p">[</span><span class="n">cont</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="k">for</span> <span class="n">cont</span><span class="p">,</span> <span class="n">kp</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">containers</span><span class="p">,</span> <span class="n">keys_present</span><span class="p">)</span> <span class="k">if</span> <span class="n">kp</span><span class="p">])</span>
-        <span class="k">return</span> <span class="n">_ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">return_dict</span><span class="p">,</span> <span class="o">**</span><span class="n">container_rightmost</span><span class="o">.</span><span class="n">config</span><span class="p">)</span></div>
+                <span class="n">_ivy</span><span class="o">.</span><span class="n">Container</span><span class="o">.</span><span class="n">combine</span><span class="p">(</span><span class="o">*</span><span class="p">[</span><span class="n">cont</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="k">for</span> <span class="n">cont</span><span class="p">,</span> <span class="n">kp</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">containers</span><span class="p">,</span> <span class="n">keys_present</span><span class="p">)</span> <span class="k">if</span> <span class="n">kp</span><span class="p">],</span> <span class="n">config</span><span class="o">=</span><span class="n">config</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">_ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">return_dict</span><span class="p">,</span> <span class="o">**</span><span class="n">config</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Container.diff"><a class="viewcode-back" href="../../../core/container/Container.html#ivy.core.container.Container.diff">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">diff</span><span class="p">(</span><span class="o">*</span><span class="n">containers</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;all&#39;</span><span class="p">,</span> <span class="n">diff_keys</span><span class="o">=</span><span class="s1">&#39;diff&#39;</span><span class="p">,</span> <span class="n">detect_key_diffs</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
