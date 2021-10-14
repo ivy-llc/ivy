@@ -45,15 +45,19 @@ import copy
 import logging
 
 # local
+from .wrapper import set_wrapped_mode, unset_wrapped_mode, wrapped_mode, wrapped_mode_val
+from . import wrapper
+from .framework_handler import current_framework, get_framework, set_framework, unset_framework, framework_stack
+from . import framework_handler
+from .debugger import set_debug_mode, set_breakpoint_debug_mode, set_exception_debug_mode, unset_debug_mode, debug_mode,\
+    debug_mode_val
+from . import debugger
 from .core import *
 from . import neural_net_functional
 from .neural_net_functional import *
 from . import neural_net_stateful
 from .neural_net_stateful import *
 from . import verbosity
-from .framework_handler import current_framework, get_framework, set_framework, unset_framework, framework_stack,\
-    set_debug_mode, set_breakpoint_debug_mode, set_exception_debug_mode, unset_debug_mode, debug_mode, debug_mode_val,\
-    set_wrapped_mode, unset_wrapped_mode, wrapped_mode, wrapped_mode_val
 from ivy.core.array import ArrayWithDevice, ArrayWithGeneral, ArrayWithGradients, ArrayWithImage, ArrayWithLinalg,\
     ArrayWithLogic, ArrayWithMath, ArrayWithMeta, ArrayWithRandom, ArrayWithReductions
 
