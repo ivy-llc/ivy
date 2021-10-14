@@ -1545,9 +1545,9 @@ def test_dtype():
     append_to_file(fname, 'end of analysis')
 
 
-def test_compile_fn():
+def test_compile_native():
 
-    fname = os.path.join(this_file_dir, 'runtime_analysis/{}/general/compile_fn.txt'.format(DIM))
+    fname = os.path.join(this_file_dir, 'runtime_analysis/{}/general/compile_native.txt'.format(DIM))
     if os.path.exists(fname):
         os.remove(fname)
     for lib, call in [(l, c) for l, c in helpers.calls if c not in [helpers.tf_graph_call, helpers.mx_graph_call]]:
@@ -1569,11 +1569,11 @@ def test_compile_fn():
         for _ in range(100):
 
             log_time(fname, 'tb0')
-            ivy_gen_w_time.compile_fn(some_fn, x0, f=time_lib)
+            ivy_gen_w_time.compile_native(some_fn, x0, f=time_lib)
             log_time(fname, 'tb4', time_at_start=True)
 
             log_time(fname, 'tt0')
-            ivy_gen.compile_fn(some_fn, x0, f=lib)
+            ivy_gen.compile_native(some_fn, x0, f=lib)
             log_time(fname, 'tt1', time_at_start=True)
 
         write_times()

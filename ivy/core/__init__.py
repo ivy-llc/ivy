@@ -1,3 +1,5 @@
+from . import compilation
+from .compilation import *
 from . import container
 from .container import *
 from . import device
