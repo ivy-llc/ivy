@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Overview: module code &mdash; Ivy 1.0 documentation</title>
+  <title>set_debug_mode &mdash; Ivy 1.0 documentation</title>
   
 
   
@@ -171,10 +171,14 @@
     
       <li><a href="../index.html">Docs</a> &raquo;</li>
         
-      <li>Overview: module code</li>
+      <li>set_debug_mode</li>
     
     
       <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/debugger/set_debug_mode.rst.txt" rel="nofollow"> View page source</a>
+          
         
       </li>
     
@@ -186,56 +190,20 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <h1>All modules for which code is available</h1>
-<ul><li><a href="ivy/core/array/array_device.html">ivy.core.array.array_device</a></li>
-<li><a href="ivy/core/array/array_general.html">ivy.core.array.array_general</a></li>
-<li><a href="ivy/core/array/array_gradients.html">ivy.core.array.array_gradients</a></li>
-<li><a href="ivy/core/array/array_image.html">ivy.core.array.array_image</a></li>
-<li><a href="ivy/core/array/array_linalg.html">ivy.core.array.array_linalg</a></li>
-<li><a href="ivy/core/array/array_logic.html">ivy.core.array.array_logic</a></li>
-<li><a href="ivy/core/array/array_math.html">ivy.core.array.array_math</a></li>
-<li><a href="ivy/core/array/array_meta.html">ivy.core.array.array_meta</a></li>
-<li><a href="ivy/core/array/array_random.html">ivy.core.array.array_random</a></li>
-<li><a href="ivy/core/array/array_reductions.html">ivy.core.array.array_reductions</a></li>
-<li><a href="ivy/core/container.html">ivy.core.container</a></li>
-<li><a href="ivy/core/device.html">ivy.core.device</a></li>
-<li><a href="ivy/core/general.html">ivy.core.general</a></li>
-<li><a href="ivy/core/gradients.html">ivy.core.gradients</a></li>
-<li><a href="ivy/core/image.html">ivy.core.image</a></li>
-<li><a href="ivy/core/linalg.html">ivy.core.linalg</a></li>
-<li><a href="ivy/core/logic.html">ivy.core.logic</a></li>
-<li><a href="ivy/core/math.html">ivy.core.math</a></li>
-<li><a href="ivy/core/meta.html">ivy.core.meta</a></li>
-<li><a href="ivy/core/multi_node.html">ivy.core.multi_node</a></li>
-<li><a href="ivy/core/random.html">ivy.core.random</a></li>
-<li><a href="ivy/core/reductions.html">ivy.core.reductions</a></li>
-<li><a href="ivy/debugger.html">ivy.debugger</a></li>
-<li><a href="ivy/framework_handler.html">ivy.framework_handler</a></li>
-<li><a href="ivy/neural_net_functional/activations.html">ivy.neural_net_functional.activations</a></li>
-<li><a href="ivy/neural_net_functional/layers.html">ivy.neural_net_functional.layers</a></li>
-<li><a href="ivy/neural_net_functional/losses.html">ivy.neural_net_functional.losses</a></li>
-<li><a href="ivy/neural_net_functional/norms.html">ivy.neural_net_functional.norms</a></li>
-<li><a href="ivy/neural_net_stateful/activations.html">ivy.neural_net_stateful.activations</a></li>
-<li><a href="ivy/neural_net_stateful/converters.html">ivy.neural_net_stateful.converters</a></li>
-<li><a href="ivy/neural_net_stateful/initializers.html">ivy.neural_net_stateful.initializers</a></li>
-<li><a href="ivy/neural_net_stateful/layers.html">ivy.neural_net_stateful.layers</a></li>
-<li><a href="ivy/neural_net_stateful/module.html">ivy.neural_net_stateful.module</a></li>
-<li><a href="ivy/neural_net_stateful/norms.html">ivy.neural_net_stateful.norms</a></li>
-<li><a href="ivy/neural_net_stateful/optimizers.html">ivy.neural_net_stateful.optimizers</a></li>
-<li><a href="ivy/neural_net_stateful/sequential.html">ivy.neural_net_stateful.sequential</a></li>
-<li><a href="ivy/numpy/core/device.html">ivy.numpy.core.device</a></li>
-<li><a href="ivy/numpy/core/general.html">ivy.numpy.core.general</a></li>
-<li><a href="ivy/numpy/core/gradients.html">ivy.numpy.core.gradients</a></li>
-<li><a href="ivy/numpy/core/image.html">ivy.numpy.core.image</a></li>
-<li><a href="ivy/numpy/core/linalg.html">ivy.numpy.core.linalg</a></li>
-<li><a href="ivy/numpy/core/math.html">ivy.numpy.core.math</a></li>
-<li><a href="ivy/numpy/core/random.html">ivy.numpy.core.random</a></li>
-<li><a href="ivy/numpy/core/reductions.html">ivy.numpy.core.reductions</a></li>
-<li><a href="ivy/numpy/nn/activations.html">ivy.numpy.nn.activations</a></li>
-<li><a href="ivy/numpy/nn/layers.html">ivy.numpy.nn.layers</a></li>
-<li><a href="ivy/verbosity.html">ivy.verbosity</a></li>
-<li><a href="ivy/wrapper.html">ivy.wrapper</a></li>
-</ul>
+  <div class="section" id="set-debug-mode">
+<h1>set_debug_mode<a class="headerlink" href="#set-debug-mode" title="Permalink to this headline">¶</a></h1>
+<dl class="py function">
+<dt id="ivy.debugger.set_debug_mode">
+<code class="sig-prename descclassname">ivy.debugger.</code><code class="sig-name descname">set_debug_mode</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">debug_mode_in</span><span class="o">=</span><span class="default_value">'exception'</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/debugger.html#set_debug_mode"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.debugger.set_debug_mode" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<div class="line-block">
+<div class="line"><br /></div>
+<div class="line"><strong>Supported Frameworks:</strong></div>
+</div>
+<p><a class="reference internal" href="../_images/empty.png"><img alt="empty" src="../_images/empty.png" style="width: 4%;" /></a> <a class="reference external" href="https://jax.readthedocs.io"><img alt="jax_logo" src="../_images/jax_logo.png" style="width: 14%;" /></a> <a class="reference internal" href="../_images/empty.png"><img alt="empty" src="../_images/empty.png" style="width: 4%;" /></a> <a class="reference external" href="https://www.tensorflow.org"><img alt="tf_logo" src="../_images/tensorflow_logo.png" style="width: 14%;" /></a> <a class="reference internal" href="../_images/empty.png"><img alt="empty" src="../_images/empty.png" style="width: 4%;" /></a> <a class="reference external" href="https://pytorch.org"><img alt="pytorch_logo" src="../_images/pytorch_logo.png" style="width: 14%;" /></a> <a class="reference internal" href="../_images/empty.png"><img alt="empty" src="../_images/empty.png" style="width: 4%;" /></a> <a class="reference external" href="https://mxnet.apache.org"><img alt="mxnet_logo" src="../_images/mxnet_logo.png" style="width: 14%;" /></a> <a class="reference internal" href="../_images/empty.png"><img alt="empty" src="../_images/empty.png" style="width: 4%;" /></a> <a class="reference external" href="https://numpy.org"><img alt="numpy_logo" src="../_images/numpy_logo.png" style="width: 14%;" /></a> <a class="reference internal" href="../_images/empty.png"><img alt="empty" src="../_images/empty.png" style="width: 4%;" /></a></p>
+</div>
+
 
            </div>
            

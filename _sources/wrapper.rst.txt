@@ -1,0 +1,18 @@
+Wrapper
+=======
+
+.. automodule:: ivy.wrapper
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :show-inheritance:
+
+
+.. toctree::
+   :maxdepth: -1
+   :caption: Wrapper
+
+   wrapper/set_wrapped_mode.rst
+   wrapper/unset_wrapped_mode.rst
+   wrapper/wrapped_mode.rst
+

@@ -189,38 +189,17 @@
            <div itemprop="articleBody">
             
   <h1>Source code for ivy.framework_handler</h1><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">ivy</span>
-<span class="kn">import</span> <span class="nn">pdb</span>
-<span class="kn">import</span> <span class="nn">inspect</span>
-<span class="kn">import</span> <span class="nn">logging</span>
+<span></span><span class="c1"># global</span>
+<span class="kn">import</span> <span class="nn">ivy</span>
 <span class="kn">import</span> <span class="nn">importlib</span>
 <span class="kn">import</span> <span class="nn">collections</span>
 <span class="kn">from</span> <span class="nn">ivy</span> <span class="kn">import</span> <span class="n">verbosity</span>
-<span class="kn">from</span> <span class="nn">types</span> <span class="kn">import</span> <span class="n">ModuleType</span>
+
+<span class="c1"># local</span>
+<span class="kn">from</span> <span class="nn">ivy.wrapper</span> <span class="kn">import</span> <span class="n">_wrap_methods</span><span class="p">,</span> <span class="n">wrapped_mode_val</span>
 
 
 <span class="n">framework_stack</span> <span class="o">=</span> <span class="p">[]</span>
-<span class="n">wrap_methods_modules</span> <span class="o">=</span> <span class="p">[]</span>
-<span class="n">NON_WRAPPED_METHODS</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;current_framework&#39;</span><span class="p">,</span> <span class="s1">&#39;current_framework_str&#39;</span><span class="p">,</span> <span class="s1">&#39;set_framework&#39;</span><span class="p">,</span> <span class="s1">&#39;get_framework&#39;</span><span class="p">,</span>
-                       <span class="s1">&#39;unset_framework&#39;</span><span class="p">,</span> <span class="s1">&#39;set_debug_mode&#39;</span><span class="p">,</span> <span class="s1">&#39;set_breakpoint_debug_mode&#39;</span><span class="p">,</span> <span class="s1">&#39;set_exception_debug_mode&#39;</span><span class="p">,</span>
-                       <span class="s1">&#39;unset_debug_mode&#39;</span><span class="p">,</span> <span class="s1">&#39;debug_mode&#39;</span><span class="p">,</span> <span class="s1">&#39;nested_map&#39;</span><span class="p">,</span> <span class="s1">&#39;to_ivy&#39;</span><span class="p">,</span> <span class="s1">&#39;args_to_ivy&#39;</span><span class="p">,</span> <span class="s1">&#39;to_native&#39;</span><span class="p">,</span>
-                       <span class="s1">&#39;args_to_native&#39;</span><span class="p">,</span> <span class="s1">&#39;default&#39;</span><span class="p">,</span> <span class="s1">&#39;exists&#39;</span><span class="p">,</span> <span class="s1">&#39;set_min_base&#39;</span><span class="p">,</span> <span class="s1">&#39;get_min_base&#39;</span><span class="p">,</span> <span class="s1">&#39;set_min_denominator&#39;</span><span class="p">,</span>
-                       <span class="s1">&#39;get_min_denominator&#39;</span><span class="p">,</span> <span class="s1">&#39;split_func_call_across_gpus&#39;</span><span class="p">,</span> <span class="s1">&#39;cache_fn&#39;</span><span class="p">,</span> <span class="s1">&#39;split_func_call&#39;</span><span class="p">,</span>
-                       <span class="s1">&#39;compile_fn&#39;</span><span class="p">,</span> <span class="s1">&#39;dev_to_str&#39;</span><span class="p">,</span> <span class="s1">&#39;str_to_dev&#39;</span><span class="p">,</span> <span class="s1">&#39;memory_on_dev&#39;</span><span class="p">,</span> <span class="s1">&#39;gpu_is_available&#39;</span><span class="p">,</span> <span class="s1">&#39;num_gpus&#39;</span><span class="p">,</span>
-                       <span class="s1">&#39;tpu_is_available&#39;</span><span class="p">,</span> <span class="s1">&#39;dtype_to_str&#39;</span><span class="p">,</span> <span class="s1">&#39;cprint&#39;</span><span class="p">,</span> <span class="s1">&#39;to_ivy_module&#39;</span><span class="p">,</span> <span class="s1">&#39;tree_flatten&#39;</span><span class="p">,</span> <span class="s1">&#39;tree_unflatten&#39;</span><span class="p">]</span>
-<span class="n">NON_ARRAY_RET_METHODS</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;to_numpy&#39;</span><span class="p">,</span> <span class="s1">&#39;to_list&#39;</span><span class="p">,</span> <span class="s1">&#39;to_scalar&#39;</span><span class="p">,</span> <span class="s1">&#39;unstack&#39;</span><span class="p">,</span> <span class="s1">&#39;split&#39;</span><span class="p">,</span> <span class="s1">&#39;shape&#39;</span><span class="p">,</span> <span class="s1">&#39;get_num_dims&#39;</span><span class="p">,</span> <span class="s1">&#39;is_array&#39;</span><span class="p">,</span>
-                         <span class="s1">&#39;is_variable&#39;</span><span class="p">]</span>
-<span class="n">NON_ARRAY_METHODS</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;shape&#39;</span><span class="p">,</span> <span class="s1">&#39;dtype&#39;</span><span class="p">]</span>
-
-<span class="n">FW_FN_KEYWORDS</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;numpy&#39;</span><span class="p">:</span> <span class="p">[],</span>
-                  <span class="s1">&#39;jax&#39;</span><span class="p">:</span> <span class="p">[],</span>
-                  <span class="s1">&#39;tensorflow&#39;</span><span class="p">:</span> <span class="p">[],</span>
-                  <span class="s1">&#39;torch&#39;</span><span class="p">:</span> <span class="p">[],</span>
-                  <span class="s1">&#39;mxnd&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;ndarray&#39;</span><span class="p">]}</span>
-
-<span class="n">queue_timeout</span> <span class="o">=</span> <span class="kc">None</span>
-<span class="n">debug_mode_val</span> <span class="o">=</span> <span class="kc">False</span>
-<span class="n">wrapped_mode_val</span> <span class="o">=</span> <span class="kc">False</span>
 <span class="n">ivy_original_dict</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
 <span class="n">ivy_original_fn_dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
 
@@ -369,198 +348,6 @@
         <span class="n">verbosity</span><span class="o">.</span><span class="n">cprint</span><span class="p">(</span>
             <span class="s1">&#39;framework stack: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">framework_stack</span><span class="p">))</span>
     <span class="k">return</span> <span class="n">fw</span></div>
-
-
-<span class="c1"># Wrapped Mode #</span>
-<span class="c1"># -------------#</span>
-
-<span class="c1"># Methods #</span>
-
-<span class="k">def</span> <span class="nf">_wrap_method</span><span class="p">(</span><span class="n">fn</span><span class="p">):</span>
-
-    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="s1">&#39;__name__&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">fn</span><span class="o">.</span><span class="vm">__name__</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;_&#39;</span> <span class="ow">or</span> <span class="n">fn</span><span class="o">.</span><span class="vm">__name__</span> <span class="ow">in</span> <span class="n">NON_WRAPPED_METHODS</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">fn</span>
-
-    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="s1">&#39;wrapped&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">fn</span><span class="o">.</span><span class="n">wrapped</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">fn</span>
-
-    <span class="k">def</span> <span class="nf">_method_wrapped</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="n">native_args</span><span class="p">,</span> <span class="n">native_kwargs</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">args_to_native</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="n">native_ret</span> <span class="o">=</span> <span class="n">fn</span><span class="p">(</span><span class="o">*</span><span class="n">native_args</span><span class="p">,</span> <span class="o">**</span><span class="n">native_kwargs</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">fn</span><span class="o">.</span><span class="vm">__name__</span> <span class="ow">in</span> <span class="n">NON_ARRAY_RET_METHODS</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">native_ret</span>
-        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">to_ivy</span><span class="p">(</span><span class="n">native_ret</span><span class="p">,</span> <span class="n">nested</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-
-    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="s1">&#39;__name__&#39;</span><span class="p">):</span>
-        <span class="n">_method_wrapped</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">=</span> <span class="n">fn</span><span class="o">.</span><span class="vm">__name__</span>
-    <span class="n">_method_wrapped</span><span class="o">.</span><span class="n">wrapped</span> <span class="o">=</span> <span class="kc">True</span>
-    <span class="n">_method_wrapped</span><span class="o">.</span><span class="n">inner_fn</span> <span class="o">=</span> <span class="n">fn</span>
-    <span class="k">return</span> <span class="n">_method_wrapped</span>
-
-
-<span class="k">def</span> <span class="nf">_unwrap_method</span><span class="p">(</span><span class="n">method_wrapped</span><span class="p">):</span>
-
-    <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">method_wrapped</span><span class="p">,</span> <span class="s1">&#39;wrapped&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">method_wrapped</span><span class="o">.</span><span class="n">wrapped</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">method_wrapped</span>
-    <span class="k">return</span> <span class="n">method_wrapped</span><span class="o">.</span><span class="n">inner_fn</span>
-
-
-<span class="k">def</span> <span class="nf">_invalid_fn</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="n">fs</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="k">if</span> <span class="n">fs</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">fs</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">current_framework_str</span><span class="p">()</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="s1">&#39;__module__&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">fn</span><span class="o">.</span><span class="vm">__module__</span><span class="p">:</span>
-        <span class="k">return</span> <span class="kc">True</span>
-    <span class="n">fw_fn_keywords</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;ivy&#39;</span><span class="p">,</span> <span class="n">fs</span><span class="p">]</span> <span class="o">+</span> <span class="n">FW_FN_KEYWORDS</span><span class="p">[</span><span class="n">fs</span><span class="p">]</span>
-    <span class="k">for</span> <span class="n">kw</span> <span class="ow">in</span> <span class="n">fw_fn_keywords</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">kw</span> <span class="ow">in</span> <span class="n">fn</span><span class="o">.</span><span class="vm">__module__</span><span class="p">:</span>
-            <span class="k">return</span> <span class="kc">False</span>
-    <span class="k">return</span> <span class="kc">True</span>
-
-
-<span class="k">def</span> <span class="nf">_wrap_or_unwrap_methods</span><span class="p">(</span><span class="n">wrap_or_unwrap_fn</span><span class="p">,</span> <span class="n">val</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">fs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">depth</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
-    <span class="k">if</span> <span class="n">val</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">val</span> <span class="o">=</span> <span class="n">ivy</span>
-    <span class="k">if</span> <span class="n">fs</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">fs</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">current_framework_str</span><span class="p">()</span>
-    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">ModuleType</span><span class="p">):</span>
-        <span class="k">if</span> <span class="p">(</span><span class="n">val</span> <span class="ow">in</span> <span class="n">wrap_methods_modules</span> <span class="ow">or</span> <span class="s1">&#39;__file__&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">val</span><span class="o">.</span><span class="vm">__dict__</span> <span class="ow">or</span>
-                <span class="s1">&#39;ivy&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">val</span><span class="o">.</span><span class="vm">__file__</span> <span class="ow">or</span> <span class="s1">&#39;framework_handler&#39;</span> <span class="ow">in</span> <span class="n">val</span><span class="o">.</span><span class="vm">__file__</span><span class="p">):</span>
-            <span class="k">return</span> <span class="n">val</span>
-        <span class="n">wrap_methods_modules</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">val</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-            <span class="k">if</span> <span class="n">v</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">val</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">val</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">_wrap_or_unwrap_methods</span><span class="p">(</span><span class="n">wrap_or_unwrap_fn</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">fs</span><span class="p">,</span> <span class="n">depth</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">depth</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="n">wrap_methods_modules</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
-        <span class="k">return</span> <span class="n">val</span>
-    <span class="k">elif</span> <span class="n">callable</span><span class="p">(</span><span class="n">val</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">inspect</span><span class="o">.</span><span class="n">isclass</span><span class="p">(</span><span class="n">val</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">depth</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="n">wrap_methods_modules</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
-        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="s1">&#39;inner_fn&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">_invalid_fn</span><span class="p">(</span><span class="n">val</span><span class="o">.</span><span class="n">inner_fn</span><span class="p">):</span>
-            <span class="k">return</span> <span class="n">val</span>
-        <span class="k">elif</span> <span class="n">_invalid_fn</span><span class="p">(</span><span class="n">val</span><span class="p">):</span>
-            <span class="k">return</span> <span class="n">val</span>
-        <span class="k">return</span> <span class="n">wrap_or_unwrap_fn</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">depth</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="n">wrap_methods_modules</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
-    <span class="k">return</span> <span class="n">val</span>
-
-
-<span class="k">def</span> <span class="nf">_wrap_methods</span><span class="p">():</span>
-    <span class="k">return</span> <span class="n">_wrap_or_unwrap_methods</span><span class="p">(</span><span class="n">_wrap_method</span><span class="p">)</span>
-
-
-<span class="k">def</span> <span class="nf">_unwrap_methods</span><span class="p">():</span>
-    <span class="k">return</span> <span class="n">_wrap_or_unwrap_methods</span><span class="p">(</span><span class="n">_unwrap_method</span><span class="p">)</span>
-
-
-<span class="c1"># Mode #</span>
-
-<div class="viewcode-block" id="set_wrapped_mode"><a class="viewcode-back" href="../../framework_handler/set_wrapped_mode.html#ivy.framework_handler.set_wrapped_mode">[docs]</a><span class="k">def</span> <span class="nf">set_wrapped_mode</span><span class="p">(</span><span class="n">val</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-    <span class="k">global</span> <span class="n">wrapped_mode_val</span>
-    <span class="n">wrapped_mode_val</span> <span class="o">=</span> <span class="n">val</span>
-    <span class="k">if</span> <span class="n">wrapped_mode_val</span><span class="p">:</span>
-        <span class="n">_wrap_methods</span><span class="p">()</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">_unwrap_methods</span><span class="p">()</span></div>
-
-
-<div class="viewcode-block" id="unset_wrapped_mode"><a class="viewcode-back" href="../../framework_handler/unset_wrapped_mode.html#ivy.framework_handler.unset_wrapped_mode">[docs]</a><span class="k">def</span> <span class="nf">unset_wrapped_mode</span><span class="p">():</span>
-    <span class="k">global</span> <span class="n">wrapped_mode_val</span>
-    <span class="n">wrapped_mode_val</span> <span class="o">=</span> <span class="kc">False</span>
-    <span class="n">_unwrap_methods</span><span class="p">()</span></div>
-
-
-<div class="viewcode-block" id="wrapped_mode"><a class="viewcode-back" href="../../framework_handler/wrapped_mode.html#ivy.framework_handler.wrapped_mode">[docs]</a><span class="k">def</span> <span class="nf">wrapped_mode</span><span class="p">():</span>
-    <span class="k">return</span> <span class="n">wrapped_mode_val</span></div>
-
-
-<span class="c1"># Debug Mode #</span>
-<span class="c1"># -----------#</span>
-
-<span class="c1"># Methods #</span>
-
-<span class="k">def</span> <span class="nf">_wrap_method_for_debugging</span><span class="p">(</span><span class="n">fn</span><span class="p">):</span>
-
-    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="s1">&#39;__name__&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">fn</span><span class="o">.</span><span class="vm">__name__</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;_&#39;</span> <span class="ow">or</span> <span class="n">fn</span><span class="o">.</span><span class="vm">__name__</span> <span class="ow">in</span>
-                                    <span class="nb">set</span><span class="p">(</span><span class="n">NON_WRAPPED_METHODS</span> <span class="o">+</span> <span class="p">[</span><span class="s1">&#39;has_nans&#39;</span><span class="p">,</span> <span class="s1">&#39;is_array&#39;</span><span class="p">,</span> <span class="s1">&#39;value_is_nan&#39;</span><span class="p">,</span> <span class="s1">&#39;reduce_sum&#39;</span><span class="p">,</span>
-                                                               <span class="s1">&#39;to_scalar&#39;</span><span class="p">])):</span>
-        <span class="k">return</span> <span class="n">fn</span>
-
-    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="s1">&#39;wrapped_for_debugging&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">fn</span><span class="o">.</span><span class="n">wrapped_for_debugging</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">fn</span>
-
-    <span class="k">def</span> <span class="nf">_method_wrapped</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-
-        <span class="k">def</span> <span class="nf">_check_nans</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
-            <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_array</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="ow">and</span> <span class="n">ivy</span><span class="o">.</span><span class="n">has_nans</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
-                <span class="k">if</span> <span class="n">debug_mode_val</span> <span class="o">==</span> <span class="s1">&#39;exception&#39;</span><span class="p">:</span>
-                    <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;found nans in </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s1">&#39;found nans in </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
-                    <span class="n">pdb</span><span class="o">.</span><span class="n">set_trace</span><span class="p">()</span>
-            <span class="k">return</span> <span class="n">x</span>
-
-        <span class="n">ivy</span><span class="o">.</span><span class="n">nested_map</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">_check_nans</span><span class="p">)</span>
-        <span class="n">ivy</span><span class="o">.</span><span class="n">nested_map</span><span class="p">(</span><span class="n">kwargs</span><span class="p">,</span> <span class="n">_check_nans</span><span class="p">)</span>
-        <span class="n">ret</span> <span class="o">=</span> <span class="n">fn</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="n">ivy</span><span class="o">.</span><span class="n">nested_map</span><span class="p">(</span><span class="n">ret</span><span class="p">,</span> <span class="n">_check_nans</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">ret</span>
-
-    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="s1">&#39;__name__&#39;</span><span class="p">):</span>
-        <span class="n">_method_wrapped</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">=</span> <span class="n">fn</span><span class="o">.</span><span class="vm">__name__</span>
-    <span class="n">_method_wrapped</span><span class="o">.</span><span class="n">wrapped_for_debugging</span> <span class="o">=</span> <span class="kc">True</span>
-    <span class="n">_method_wrapped</span><span class="o">.</span><span class="n">inner_fn</span> <span class="o">=</span> <span class="n">fn</span>
-    <span class="k">return</span> <span class="n">_method_wrapped</span>
-
-
-<span class="k">def</span> <span class="nf">_unwrap_method_from_debugging</span><span class="p">(</span><span class="n">method_wrapped</span><span class="p">):</span>
-
-    <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">method_wrapped</span><span class="p">,</span> <span class="s1">&#39;wrapped_for_debugging&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">method_wrapped</span><span class="o">.</span><span class="n">wrapped_for_debugging</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">method_wrapped</span>
-    <span class="k">return</span> <span class="n">method_wrapped</span><span class="o">.</span><span class="n">inner_fn</span>
-
-
-<span class="k">def</span> <span class="nf">_wrap_methods_for_debugging</span><span class="p">():</span>
-    <span class="k">return</span> <span class="n">_wrap_or_unwrap_methods</span><span class="p">(</span><span class="n">_wrap_method_for_debugging</span><span class="p">)</span>
-
-
-<span class="k">def</span> <span class="nf">_unwrap_methods_from_debugging</span><span class="p">():</span>
-    <span class="k">return</span> <span class="n">_wrap_or_unwrap_methods</span><span class="p">(</span><span class="n">_unwrap_method_from_debugging</span><span class="p">)</span>
-
-
-<span class="c1"># Mode #</span>
-
-<div class="viewcode-block" id="set_debug_mode"><a class="viewcode-back" href="../../framework_handler/set_debug_mode.html#ivy.framework_handler.set_debug_mode">[docs]</a><span class="k">def</span> <span class="nf">set_debug_mode</span><span class="p">(</span><span class="n">debug_mode_in</span><span class="o">=</span><span class="s1">&#39;exception&#39;</span><span class="p">):</span>
-    <span class="k">assert</span> <span class="n">debug_mode_in</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;breakpoint&#39;</span><span class="p">,</span> <span class="s1">&#39;exception&#39;</span><span class="p">]</span>
-    <span class="k">global</span> <span class="n">debug_mode_val</span>
-    <span class="n">debug_mode_val</span> <span class="o">=</span> <span class="n">debug_mode_in</span>
-    <span class="k">global</span> <span class="n">queue_timeout</span>
-    <span class="n">queue_timeout</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">queue_timeout</span><span class="p">()</span>
-    <span class="n">ivy</span><span class="o">.</span><span class="n">set_queue_timeout</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
-    <span class="n">_wrap_methods_for_debugging</span><span class="p">()</span></div>
-
-
-<div class="viewcode-block" id="set_breakpoint_debug_mode"><a class="viewcode-back" href="../../framework_handler/set_breakpoint_debug_mode.html#ivy.framework_handler.set_breakpoint_debug_mode">[docs]</a><span class="k">def</span> <span class="nf">set_breakpoint_debug_mode</span><span class="p">():</span>
-    <span class="n">set_debug_mode</span><span class="p">(</span><span class="s1">&#39;breakpoint&#39;</span><span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="set_exception_debug_mode"><a class="viewcode-back" href="../../framework_handler/set_exception_debug_mode.html#ivy.framework_handler.set_exception_debug_mode">[docs]</a><span class="k">def</span> <span class="nf">set_exception_debug_mode</span><span class="p">():</span>
-    <span class="n">set_debug_mode</span><span class="p">(</span><span class="s1">&#39;exception&#39;</span><span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="unset_debug_mode"><a class="viewcode-back" href="../../framework_handler/unset_debug_mode.html#ivy.framework_handler.unset_debug_mode">[docs]</a><span class="k">def</span> <span class="nf">unset_debug_mode</span><span class="p">():</span>
-    <span class="k">global</span> <span class="n">debug_mode_val</span>
-    <span class="n">debug_mode_val</span> <span class="o">=</span> <span class="kc">False</span>
-    <span class="n">_unwrap_methods_from_debugging</span><span class="p">()</span>
-    <span class="k">global</span> <span class="n">queue_timeout</span>
-    <span class="n">ivy</span><span class="o">.</span><span class="n">set_queue_timeout</span><span class="p">(</span><span class="n">queue_timeout</span><span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="debug_mode"><a class="viewcode-back" href="../../framework_handler/debug_mode.html#ivy.framework_handler.debug_mode">[docs]</a><span class="k">def</span> <span class="nf">debug_mode</span><span class="p">():</span>
-    <span class="k">return</span> <span class="n">debug_mode_val</span></div>
 </pre></div>
 
            </div>
