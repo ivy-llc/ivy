@@ -48,7 +48,7 @@ class Container(dict):
 
     def __init__(self, dict_in=None, queues=None, queue_load_sizes=None, container_combine_method='list_join',
                  queue_timeout=None, print_limit=10, print_indent=4, print_line_spacing=0, ivyh=None,
-                 keyword_color_dict=None, rebuild_child_containers=False, include_iters=False, **kwargs):
+                 keyword_color_dict=None, rebuild_child_containers=False, types_to_iteratively_nest=None, **kwargs):
         """
         Initialize container object from input dict representation.
 
@@ -79,8 +79,9 @@ class Container(dict):
         :param rebuild_child_containers: Whether to rebuild container found in dict_in with these constructor params.
                                          Default is False, in which case the original container are kept as are.
         :type rebuild_child_containers: bool, optional
-        :param include_iters: Whether to include iterators of arrays (such as lists and tuples) as part of the nest.
-        :type include_iters: bool, optional
+        :param types_to_iteratively_nest: The data types to nest iteratively in the dict structure, each type must be
+                                          iterable. Default is None.
+        :type types_to_iteratively_nest: seq of iterable types
         :param kwargs: keyword arguments for dict creation. Default is None.
         :type kwargs: keyword arguments.
         """
@@ -89,7 +90,7 @@ class Container(dict):
         self._print_indent = print_indent
         self._print_line_spacing = print_line_spacing
         self._container_combine_method = container_combine_method
-        self._include_iters = include_iters
+        self._types_to_iteratively_nest = _ivy.default(tuple(types_to_iteratively_nest), ())
         if _ivy.exists(self._queues):
             if isinstance(self._container_combine_method, str):
                 self._container_combine_method =\
@@ -108,18 +109,15 @@ class Container(dict):
         elif kwargs:
             raise Exception('dict_in and **kwargs cannot both be specified for ivy.Container constructor,'
                             'please specify one or the other, not both.')
-        if isinstance(dict_in, (list, tuple)):
-            if include_iters:
-                dict_in = dict(zip(['it_{}'.format(i) for i in range(len(dict_in))], dict_in))
-            else:
-                raise Exception('expected input to inherit from dict, but found input {} of type {}.'
-                                'Please set include_iters=True if you wish to pass lists or tuples as inputs to the'
-                                'Container constructor.'.format(dict_in, type(dict_in)))
+        if isinstance(dict_in, dict):
+            dict_in = dict_in
+        elif isinstance(dict_in, self._types_to_iteratively_nest):
+            dict_in = dict(zip(['it_{}'.format(i) for i in range(len(dict_in))], dict_in))
         else:
-            dict_in = dict_in if isinstance(dict_in, dict) else dict(dict_in)
+            raise Exception('invalid input {}'.format(dict_in))
         for key, value in sorted(dict_in.items()):
             if (isinstance(value, dict) and (not isinstance(value, Container) or rebuild_child_containers)) or \
-                    (include_iters and isinstance(value, (list, tuple))):
+                    isinstance(value, self._types_to_iteratively_nest):
                 self[key] = Container(value,
                                       container_combine_method=container_combine_method,
                                       print_limit=print_limit,
@@ -128,7 +126,7 @@ class Container(dict):
                                       ivyh=ivyh,
                                       keyword_color_dict=keyword_color_dict,
                                       rebuild_child_containers=rebuild_child_containers,
-                                      include_iters=include_iters)
+                                      types_to_iteratively_nest=types_to_iteratively_nest)
             else:
                 self[key] = value
 
@@ -1773,7 +1771,7 @@ class Container(dict):
         for i, (key, value) in enumerate(sorted(self.items())):
             if isinstance(value, Container):
                 return_item[key] = value.to_raw()
-            elif key[0:3] == 'it_' and self._include_iters:
+            elif key[0:3] == 'it_' and self._types_to_iteratively_nest:
                 return_item = list([v.to_raw() if isinstance(v, Container) else v for v in self.values()])
                 break
             else:
@@ -1962,7 +1960,7 @@ class Container(dict):
                 return_dict[key] = val.set_at_keys(target_dict)
             else:
                 return_dict[key] = val
-        return Container(return_dict, ivyh=self._local_ivy)
+        return Container(return_dict, ivyh=self._local_ivy, types_to_iteratively_nest=self._types_to_iteratively_nest)
 
     def set_at_key_chain(self, key_chain, val, inplace=False):
         """
@@ -2154,9 +2152,9 @@ class Container(dict):
             elif self._ivy.exists(value) or keep_Nones:
                 out_dict[key] = value
         if len(out_dict):
-            return Container(out_dict, ivyh=self._local_ivy)
+            return Container(out_dict, ivyh=self._local_ivy, types_to_iteratively_nest=self._types_to_iteratively_nest)
         if base:
-            return Container()
+            return Container(types_to_iteratively_nest=self._types_to_iteratively_nest)
         return
 
     def prune_key_from_key_chains(self, absolute=None, containing=None):
@@ -2251,7 +2249,8 @@ class Container(dict):
                         return_dict[key] = value
                         continue
                 return_dict[key] = func(value, this_key_chain)
-        return Container(return_dict, ivyh=self._local_ivy)
+        # ToDo: find an elegant way to pass ALL configs from the current container to the new container
+        return Container(return_dict, ivyh=self._local_ivy, types_to_iteratively_nest=self._types_to_iteratively_nest)
 
     def map_conts(self, func, key_chains=None, to_apply=True, prune_unapplied=False, include_self=True, key_chain=''):
         """
