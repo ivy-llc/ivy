@@ -73,7 +73,7 @@ General
    general/dtype.rst
    general/dtype_str.rst
    general/dtype_to_str.rst
-   general/compile_fn.rst
+   general/compile_native.rst
    general/current_framework_str.rst
    general/multiprocessing.rst
 

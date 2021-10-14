@@ -87,6 +87,7 @@
 </ul>
 <p class="caption"><span class="caption-text">Core</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../core/compilation.html">Compilation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../core/container.html">Container</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../core/device.html">Device</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../core/general.html">General</a></li>
@@ -1649,32 +1650,6 @@
 <span class="sd">    :return: Device string e.g. &#39;float32&#39;.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">dtype_str</span><span class="p">(</span><span class="n">x</span><span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="compile_fn"><a class="viewcode-back" href="../../../core/general/compile_fn.html#ivy.core.general.compile_fn">[docs]</a><span class="k">def</span> <span class="nf">compile_fn</span><span class="p">(</span><span class="n">func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">dynamic</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">example_inputs</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-               <span class="n">static_argnums</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">static_argnames</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-               <span class="n">f</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Framework</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Provide a function which should be compiled, for faster inference.</span>
-<span class="sd">    The handle to the newly compiled function is returned.</span>
-
-<span class="sd">    :param func: Function to be compiled.</span>
-<span class="sd">    :type func: callable</span>
-<span class="sd">    :param dynamic: Whether to compile all conditional branches, regardless of inputs during first invocation.</span>
-<span class="sd">    :type dynamic: bool, default True</span>
-<span class="sd">    :param example_inputs: Example of inputs to the function to be compiled.</span>
-<span class="sd">                            Required for torch in non-dynamic mode, unused by other frameworks.</span>
-<span class="sd">    :type example_inputs: single input or tuple of inputs.</span>
-<span class="sd">    :param static_argnums: The argument numbers which should be treated as static for compiling. Default is None.</span>
-<span class="sd">    :type static_argnums: int or sequence of ints, optional</span>
-<span class="sd">    :param static_argnames: The argument names which should be treated as static for compiling. Default is None.</span>
-<span class="sd">    :type static_argnames: str or sequence of strs, optional</span>
-<span class="sd">    :param f: Machine learning framework. Inferred from inputs if None.</span>
-<span class="sd">    :type f: ml_framework, optional</span>
-<span class="sd">    :return: The handle to the newly compiled function.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">example_inputs</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">compile_fn</span><span class="p">(</span>
-        <span class="n">func</span><span class="p">,</span> <span class="n">dynamic</span><span class="p">,</span> <span class="n">example_inputs</span><span class="p">,</span> <span class="n">static_argnums</span><span class="p">,</span> <span class="n">static_argnames</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="cache_fn"><a class="viewcode-back" href="../../../core/general/cache_fn.html#ivy.core.general.cache_fn">[docs]</a><span class="k">def</span> <span class="nf">cache_fn</span><span class="p">(</span><span class="n">func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">)</span>\
