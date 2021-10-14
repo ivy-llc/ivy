@@ -1,0 +1,374 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>ivy.compiler &mdash; Ivy 1.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> Ivy
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Guides</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../why_ivy.html">Why Ivy?</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../using_ivy.html">Using Ivy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../training_a_network.html">Training a Network</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Core</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../core/compilation.html">Compilation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../core/container.html">Container</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../core/device.html">Device</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../core/general.html">General</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../core/gradients.html">Gradients</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../core/image.html">Image</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../core/linalg.html">Linalg</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../core/logic.html">Logic</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../core/math.html">Math</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../core/meta.html">Meta</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../core/multi_node.html">Multi node</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../core/random.html">Random</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../core/reductions.html">Reductions</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Neural net functional</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../neural_net_functional/activations.html">Activations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../neural_net_functional/layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../neural_net_functional/losses.html">Losses</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../neural_net_functional/norms.html">Norms</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Neural net stateful</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../neural_net_stateful/activations.html">Activations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../neural_net_stateful/converters.html">Converters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../neural_net_stateful/initializers.html">Initializers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../neural_net_stateful/layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../neural_net_stateful/module.html">Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../neural_net_stateful/norms.html">Norms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../neural_net_stateful/optimizers.html">Optimizers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../neural_net_stateful/sequential.html">Sequential</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Docs</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../ivy"">Ivy</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../mech"">Ivy Mech</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../vision"">Ivy Vision</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../robot"">Ivy Robot</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../memory"">Ivy Memory</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../gym"">Ivy Gym</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">Ivy</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>ivy.compiler</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for ivy.compiler</h1><div class="highlight"><pre>
+<span></span><span class="c1"># global</span>
+<span class="kn">import</span> <span class="nn">copy</span>
+
+<span class="kn">import</span> <span class="nn">ivy</span>
+
+<span class="c1"># local</span>
+<span class="kn">from</span> <span class="nn">ivy.wrapper</span> <span class="kn">import</span> <span class="n">_wrap_or_unwrap_methods</span><span class="p">,</span> <span class="n">NON_WRAPPED_METHODS</span><span class="p">,</span> <span class="n">NON_ARRAY_RET_METHODS</span>
+
+<span class="n">param_dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+
+<div class="viewcode-block" id="Graph"><a class="viewcode-back" href="../../compiler.html#ivy.compiler.Graph">[docs]</a><span class="k">class</span> <span class="nc">Graph</span><span class="p">:</span>
+
+<div class="viewcode-block" id="Graph.__init__"><a class="viewcode-back" href="../../compiler.html#ivy.compiler.Graph.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fn</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+
+        <span class="c1"># function being compiled into a graph</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_fn</span> <span class="o">=</span> <span class="n">fn</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_args</span> <span class="o">=</span> <span class="n">args</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_kwargs</span> <span class="o">=</span> <span class="n">kwargs</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_arg_input_idxs</span> <span class="o">=</span>\
+            <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">include_iters</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">kc</span><span class="p">:</span> <span class="nb">id</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_array</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">else</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_kwarg_input_idxs</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">kwargs</span><span class="p">,</span> <span class="n">include_iters</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">map</span><span class="p">(</span>
+            <span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">kc</span><span class="p">:</span> <span class="nb">id</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_array</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">else</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_output_idxs</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">()</span>
+
+        <span class="c1"># graph storage</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_param_dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_fn_dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span></div>
+
+    <span class="c1"># Compute output idxs #</span>
+    <span class="c1"># --------------------#</span>
+
+<div class="viewcode-block" id="Graph.foward"><a class="viewcode-back" href="../../compiler.html#ivy.compiler.Graph.foward">[docs]</a>    <span class="k">def</span> <span class="nf">foward</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">ret_raw</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fn</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_kwargs</span><span class="p">)</span>
+        <span class="n">ret</span> <span class="o">=</span> <span class="n">ret_raw</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ret_raw</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)</span> <span class="k">else</span> <span class="p">(</span><span class="n">ret_raw</span><span class="p">,)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_output_idxs</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">ret</span><span class="p">,</span> <span class="n">include_iters</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">kc</span><span class="p">:</span> <span class="nb">id</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_array</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">else</span> <span class="kc">None</span><span class="p">)</span></div>
+
+    <span class="c1"># Setters #</span>
+    <span class="c1"># --------#</span>
+
+<div class="viewcode-block" id="Graph.add_param"><a class="viewcode-back" href="../../compiler.html#ivy.compiler.Graph.add_param">[docs]</a>    <span class="k">def</span> <span class="nf">add_param</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">idx</span><span class="p">,</span> <span class="n">param</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_param_dict</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">param</span></div>
+
+<div class="viewcode-block" id="Graph.add_fn"><a class="viewcode-back" href="../../compiler.html#ivy.compiler.Graph.add_fn">[docs]</a>    <span class="k">def</span> <span class="nf">add_fn</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">idx</span><span class="p">,</span> <span class="n">fn</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_fn_dict</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="n">fn</span></div>
+
+    <span class="c1"># Getters #</span>
+    <span class="c1"># --------#</span>
+
+<div class="viewcode-block" id="Graph.get_param"><a class="viewcode-back" href="../../compiler.html#ivy.compiler.Graph.get_param">[docs]</a>    <span class="k">def</span> <span class="nf">get_param</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">idx</span><span class="p">):</span>
+        <span class="n">param</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_param_dict</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">param</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">param</span>
+        <span class="n">fn</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fn_dict</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
+        <span class="n">input_idxs</span> <span class="o">=</span> <span class="n">fn</span><span class="o">.</span><span class="n">input_idxs</span>
+        <span class="n">inputs</span> <span class="o">=</span> <span class="p">{</span><span class="n">idx</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_param</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span> <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="n">input_idxs</span><span class="p">}</span>
+        <span class="n">ret_dict</span> <span class="o">=</span> <span class="n">fn</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">param</span> <span class="ow">in</span> <span class="n">ret_dict</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">add_param</span><span class="p">(</span><span class="n">idx</span><span class="p">,</span> <span class="n">param</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">ret_dict</span></div>
+
+    <span class="c1"># Function creation #</span>
+    <span class="c1"># ------------------#</span>
+
+    <span class="k">def</span> <span class="nf">_call</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="c1"># ToDo: set the input idxs</span>
+        <span class="c1"># ToDo: query the output idxs</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fn</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Graph.to_function"><a class="viewcode-back" href="../../compiler.html#ivy.compiler.Graph.to_function">[docs]</a>    <span class="k">def</span> <span class="nf">to_function</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_call</span></div>
+
+    <span class="c1"># Clearing #</span>
+    <span class="c1"># ---------#</span>
+
+<div class="viewcode-block" id="Graph.clear"><a class="viewcode-back" href="../../compiler.html#ivy.compiler.Graph.clear">[docs]</a>    <span class="k">def</span> <span class="nf">clear</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_param_dict</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_fn_dict</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span></div></div>
+
+
+<span class="n">graph</span> <span class="o">=</span> <span class="kc">None</span>
+
+
+<span class="c1"># Methods #</span>
+
+<span class="k">def</span> <span class="nf">_wrap_method_for_compiling</span><span class="p">(</span><span class="n">fn</span><span class="p">):</span>
+
+    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="s1">&#39;__name__&#39;</span><span class="p">)</span> <span class="ow">and</span>\
+            <span class="p">(</span><span class="n">fn</span><span class="o">.</span><span class="vm">__name__</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;_&#39;</span> <span class="ow">or</span> <span class="n">fn</span><span class="o">.</span><span class="vm">__name__</span> <span class="ow">in</span> <span class="n">NON_WRAPPED_METHODS</span> <span class="o">+</span> <span class="n">NON_ARRAY_RET_METHODS</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">fn</span>
+
+    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="s1">&#39;wrapped_for_compiling&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">fn</span><span class="o">.</span><span class="n">wrapped_for_compiling</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">fn</span>
+
+    <span class="k">def</span> <span class="nf">_method_wrapped</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">args_cont</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">include_iters</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">arg_input_idxs</span> <span class="o">=</span> <span class="p">[</span><span class="nb">id</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">args_cont</span><span class="o">.</span><span class="n">to_iterator</span><span class="p">()</span> <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_array</span><span class="p">(</span><span class="n">v</span><span class="p">)]</span>
+        <span class="n">kwargs_cont</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">kwargs</span><span class="p">,</span> <span class="n">include_iters</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">kwarg_input_idxs</span> <span class="o">=</span> <span class="p">[</span><span class="nb">id</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">kwargs_cont</span><span class="o">.</span><span class="n">to_iterator</span><span class="p">()</span> <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_array</span><span class="p">(</span><span class="n">v</span><span class="p">)]</span>
+        <span class="n">input_idxs</span> <span class="o">=</span> <span class="n">arg_input_idxs</span> <span class="o">+</span> <span class="n">kwarg_input_idxs</span>
+        <span class="p">[</span><span class="n">graph</span><span class="o">.</span><span class="n">add_param</span><span class="p">(</span><span class="n">idx</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="n">input_idxs</span><span class="p">]</span>
+        <span class="n">ret_raw</span> <span class="o">=</span> <span class="n">fn</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="c1"># ToDo: implement this below</span>
+        <span class="n">new_fn</span> <span class="o">=</span> <span class="k">lambda</span> <span class="o">*</span><span class="n">a</span><span class="p">,</span> <span class="o">**</span><span class="n">kw</span><span class="p">:</span> <span class="n">fn</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">new_fn</span><span class="o">.</span><span class="n">input_idxs</span> <span class="o">=</span> <span class="n">input_idxs</span>
+        <span class="n">ret</span> <span class="o">=</span> <span class="n">ret_raw</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ret_raw</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)</span> <span class="k">else</span> <span class="p">(</span><span class="n">ret_raw</span><span class="p">,)</span>
+        <span class="p">[</span><span class="n">graph</span><span class="o">.</span><span class="n">add_param</span><span class="p">(</span><span class="nb">id</span><span class="p">(</span><span class="n">v</span><span class="p">),</span> <span class="kc">None</span><span class="p">)</span>
+         <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">ret</span><span class="p">,</span> <span class="n">include_iters</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">to_iterator</span><span class="p">()</span> <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_array</span><span class="p">(</span><span class="n">v</span><span class="p">)]</span>
+        <span class="k">return</span> <span class="n">ret_raw</span>
+
+    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="s1">&#39;__name__&#39;</span><span class="p">):</span>
+        <span class="n">_method_wrapped</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">=</span> <span class="n">fn</span><span class="o">.</span><span class="vm">__name__</span>
+    <span class="n">_method_wrapped</span><span class="o">.</span><span class="n">wrapped_for_compiling</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="n">_method_wrapped</span><span class="o">.</span><span class="n">inner_fn</span> <span class="o">=</span> <span class="n">fn</span>
+    <span class="k">return</span> <span class="n">_method_wrapped</span>
+
+
+<span class="k">def</span> <span class="nf">_unwrap_method_from_compiling</span><span class="p">(</span><span class="n">method_wrapped</span><span class="p">):</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">method_wrapped</span><span class="p">,</span> <span class="s1">&#39;wrapped_for_compiling&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">method_wrapped</span><span class="o">.</span><span class="n">wrapped_for_compiling</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">method_wrapped</span>
+    <span class="k">return</span> <span class="n">method_wrapped</span><span class="o">.</span><span class="n">inner_fn</span>
+
+
+<span class="k">def</span> <span class="nf">_wrap_methods_for_compiling</span><span class="p">():</span>
+    <span class="k">return</span> <span class="n">_wrap_or_unwrap_methods</span><span class="p">(</span><span class="n">_wrap_method_for_compiling</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">_unwrap_methods_from_compiling</span><span class="p">():</span>
+    <span class="k">return</span> <span class="n">_wrap_or_unwrap_methods</span><span class="p">(</span><span class="n">_unwrap_method_from_compiling</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="compile_ivy"><a class="viewcode-back" href="../../compiler/compile_ivy.html#ivy.compiler.compile_ivy">[docs]</a><span class="k">def</span> <span class="nf">compile_ivy</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="k">global</span> <span class="n">graph</span>
+    <span class="n">graph</span> <span class="o">=</span> <span class="n">Graph</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="n">_wrap_methods_for_compiling</span><span class="p">()</span>
+    <span class="n">graph</span><span class="o">.</span><span class="n">foward</span><span class="p">()</span>
+    <span class="n">_unwrap_methods_from_compiling</span><span class="p">()</span>
+    <span class="n">local_graph</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">graph</span><span class="p">)</span>
+    <span class="n">fn</span> <span class="o">=</span> <span class="n">local_graph</span><span class="o">.</span><span class="n">to_function</span><span class="p">()</span>
+    <span class="n">graph</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">fn</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, Ivy Team
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

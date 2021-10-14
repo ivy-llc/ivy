@@ -1,0 +1,19 @@
+Compiler
+========
+
+.. automodule:: ivy.compiler
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :show-inheritance:
+
+
+.. toctree::
+   :maxdepth: -1
+   :caption: Compiler
+
+   compiler/compile_ivy.rst
+   compiler/Graph:
+
+    def __init__.rst
+

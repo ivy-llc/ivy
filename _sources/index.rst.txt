@@ -265,6 +265,7 @@ Documentation Tree
    :caption: Core
 
    core/array.rst
+   core/compilation.rst
    core/container.rst
    core/device.rst
    core/general.rst
