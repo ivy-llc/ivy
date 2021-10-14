@@ -90,7 +90,7 @@ class Container(dict):
         self._print_indent = print_indent
         self._print_line_spacing = print_line_spacing
         self._container_combine_method = container_combine_method
-        self._types_to_iteratively_nest = _ivy.default(tuple(types_to_iteratively_nest), ())
+        self._types_to_iteratively_nest = _ivy.default(lambda: tuple(types_to_iteratively_nest), (),  True)
         if _ivy.exists(self._queues):
             if isinstance(self._container_combine_method, str):
                 self._container_combine_method =\
