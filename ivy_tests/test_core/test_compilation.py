@@ -89,6 +89,11 @@ def test_compile_ivy(x, dtype_str, tensor_fn, dev_str, call):
     # type test
     assert callable(comp_fn)
     # value test
+    start_time = time.perf_counter()
     non_compiled_return = _fn_3(x)
+    non_comp_time_taken = time.perf_counter() - start_time
+    start_time = time.perf_counter()
     compiled_return = comp_fn(x)
+    comp_time_taken = time.perf_counter() - start_time
     assert np.allclose(ivy.to_numpy(non_compiled_return), ivy.to_numpy(compiled_return))
+    assert comp_time_taken < non_comp_time_taken
