@@ -89,6 +89,7 @@ class Container(dict):
         self._print_indent = print_indent
         self._print_line_spacing = print_line_spacing
         self._container_combine_method = container_combine_method
+        self._include_iters = include_iters
         if _ivy.exists(self._queues):
             if isinstance(self._container_combine_method, str):
                 self._container_combine_method =\
@@ -109,7 +110,7 @@ class Container(dict):
                             'please specify one or the other, not both.')
         if isinstance(dict_in, (list, tuple)):
             if include_iters:
-                dict_in = dict(zip(['k{}'.format(i) for i in range(len(dict_in))], dict_in))
+                dict_in = dict(zip(['it_{}'.format(i) for i in range(len(dict_in))], dict_in))
             else:
                 raise Exception('expected input to inherit from dict, but found input {} of type {}.'
                                 'Please set include_iters=True if you wish to pass lists or tuples as inputs to the'
@@ -1761,6 +1762,24 @@ class Container(dict):
                 return_list.append(value)
         return return_list
 
+    def to_raw(self):
+        """
+        Return nested raw representation of container object. This includes restoring lists and tuples passed in the
+        constructor to their original form.
+
+        :return: Container data in it's raw form.
+        """
+        return_item = dict()
+        for i, (key, value) in enumerate(sorted(self.items())):
+            if isinstance(value, Container):
+                return_item[key] = value.to_raw()
+            elif key[0:3] == 'it_' and self._include_iters:
+                return_item = list([v.to_raw() if isinstance(v, Container) else v for v in self.values()])
+                break
+            else:
+                return_item[key] = value
+        return return_item
+
     def to_dict(self):
         """
         Return nested pure dict representation of container object.
@@ -1771,7 +1790,7 @@ class Container(dict):
         for key, value in sorted(self.items()):
             if isinstance(value, Container):
                 return_dict[key] = value.to_dict()
-            elif key != '_f':
+            else:
                 return_dict[key] = value
         return return_dict
 
