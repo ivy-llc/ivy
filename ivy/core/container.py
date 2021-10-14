@@ -2119,7 +2119,7 @@ class Container(dict):
             ret_cont[new_kc] = orig_kc_val
         return ret_cont
 
-    def prune_empty(self):
+    def prune_empty(self, keep_Nones=False):
         """
         Recursively prunes empty keys from the container dict structure.
         Returns None if the entire container is empty.
@@ -2129,10 +2129,10 @@ class Container(dict):
         out_dict = dict()
         for key, value in sorted(self.items()):
             if isinstance(value, Container):
-                new_value = value.prune_empty()
+                new_value = value.prune_empty(keep_Nones)
                 if new_value:
                     out_dict[key] = new_value
-            else:
+            elif self._ivy.exists(value) or keep_Nones:
                 out_dict[key] = value
         if len(out_dict):
             return Container(out_dict, ivyh=self._local_ivy)
