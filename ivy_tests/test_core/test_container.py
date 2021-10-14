@@ -260,24 +260,34 @@ def test_container_from_list(dev_str, call):
     list_in = [ivy.array([1], dev_str=dev_str),
                [ivy.array([2], dev_str=dev_str), ivy.array([3], dev_str=dev_str)]]
     container = Container(list_in, include_iters=True)
-    assert np.allclose(ivy.to_numpy(container['k0']), np.array([1]))
-    assert np.allclose(ivy.to_numpy(container.k0), np.array([1]))
-    assert np.allclose(ivy.to_numpy(container['k1']['k0']), np.array([2]))
-    assert np.allclose(ivy.to_numpy(container.k1.k0), np.array([2]))
-    assert np.allclose(ivy.to_numpy(container['k1']['k1']), np.array([3]))
-    assert np.allclose(ivy.to_numpy(container.k1.k1), np.array([3]))
+    assert np.allclose(ivy.to_numpy(container['it_0']), np.array([1]))
+    assert np.allclose(ivy.to_numpy(container.it_0), np.array([1]))
+    assert np.allclose(ivy.to_numpy(container['it_1']['it_0']), np.array([2]))
+    assert np.allclose(ivy.to_numpy(container.it_1.it_0), np.array([2]))
+    assert np.allclose(ivy.to_numpy(container['it_1']['it_1']), np.array([3]))
+    assert np.allclose(ivy.to_numpy(container.it_1.it_1), np.array([3]))
 
 
 def test_container_from_tuple(dev_str, call):
     tuple_in = (ivy.array([1], dev_str=dev_str),
                (ivy.array([2], dev_str=dev_str), ivy.array([3], dev_str=dev_str)))
     container = Container(tuple_in, include_iters=True)
-    assert np.allclose(ivy.to_numpy(container['k0']), np.array([1]))
-    assert np.allclose(ivy.to_numpy(container.k0), np.array([1]))
-    assert np.allclose(ivy.to_numpy(container['k1']['k0']), np.array([2]))
-    assert np.allclose(ivy.to_numpy(container.k1.k0), np.array([2]))
-    assert np.allclose(ivy.to_numpy(container['k1']['k1']), np.array([3]))
-    assert np.allclose(ivy.to_numpy(container.k1.k1), np.array([3]))
+    assert np.allclose(ivy.to_numpy(container['it_0']), np.array([1]))
+    assert np.allclose(ivy.to_numpy(container.it_0), np.array([1]))
+    assert np.allclose(ivy.to_numpy(container['it_1']['it_0']), np.array([2]))
+    assert np.allclose(ivy.to_numpy(container.it_1.it_0), np.array([2]))
+    assert np.allclose(ivy.to_numpy(container['it_1']['it_1']), np.array([3]))
+    assert np.allclose(ivy.to_numpy(container.it_1.it_1), np.array([3]))
+
+
+def test_container_to_raw(dev_str, call):
+    tuple_in = (ivy.array([1], dev_str=dev_str),
+               (ivy.array([2], dev_str=dev_str), ivy.array([3], dev_str=dev_str)))
+    container = Container(tuple_in, include_iters=True)
+    raw = container.to_raw()
+    assert np.allclose(ivy.to_numpy(raw[0]), np.array([1]))
+    assert np.allclose(ivy.to_numpy(raw[1][0]), np.array([2]))
+    assert np.allclose(ivy.to_numpy(raw[1][1]), np.array([3]))
 
 
 def test_container_reduce_sum(dev_str, call):
