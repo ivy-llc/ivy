@@ -285,13 +285,15 @@ class Container(dict):
                 raise Exception(str(e) + '\nContainer stack operation only valid for containers of arrays')
 
     @staticmethod
-    def combine(*containers):
+    def combine(*containers, config=None):
         """
         Combine keys and values in a sequence of containers, with priority given to the right-most container in the case
         of duplicates.
 
         :param containers: containers to compare
         :type containers: sequence of Container objects
+        :param config: The configuration for the containers. Default is the same as container_rightmost.
+        :type config: dict, optional
         :return: Combined containers
         """
 
@@ -299,6 +301,9 @@ class Container(dict):
         container_rightmost = containers[-1]
         if not isinstance(container_rightmost, dict):
             return container_rightmost
+
+        if not _ivy.exists(config):
+            config = container_rightmost.config if isinstance(container_rightmost, Container) else {}
 
         # return if len==1
         if len(containers) == 1:
@@ -310,8 +315,8 @@ class Container(dict):
         for key in all_Keys:
             keys_present = [key in cont for cont in containers]
             return_dict[key] =\
-                _ivy.Container.combine(*[cont[key] for cont, kp in zip(containers, keys_present) if kp])
-        return _ivy.Container(return_dict, **container_rightmost.config)
+                _ivy.Container.combine(*[cont[key] for cont, kp in zip(containers, keys_present) if kp], config=config)
+        return _ivy.Container(return_dict, **config)
 
     @staticmethod
     def diff(*containers, mode='all', diff_keys='diff', detect_key_diffs=True, config=None):
