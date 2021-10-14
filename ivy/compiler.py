@@ -1,12 +1,12 @@
 # global
-import copy
-
 import ivy
+import copy
 
 # local
 from ivy.wrapper import _wrap_or_unwrap_methods, NON_WRAPPED_METHODS, NON_ARRAY_RET_METHODS
 
 param_dict = dict()
+
 
 class Graph:
 
@@ -17,8 +17,9 @@ class Graph:
         self._args = args
         self._kwargs = kwargs
         self._arg_input_idxs =\
-            ivy.Container(args, include_iters=True).map(lambda x, kc: id(x) if ivy.is_array(x) else None)
-        self._kwarg_input_idxs = ivy.Container(kwargs, include_iters=True).map(
+            ivy.Container(args, types_to_iteratively_nest=(list, tuple)).map(
+                lambda x, kc: id(x) if ivy.is_array(x) else None)
+        self._kwarg_input_idxs = ivy.Container(kwargs, types_to_iteratively_nest=(list, tuple)).map(
             lambda x, kc: id(x) if ivy.is_array(x) else None)
         self._output_idxs = ivy.Container()
 
@@ -30,41 +31,52 @@ class Graph:
     # --------------------#
 
     def foward(self):
-        ret_raw = self._fn(*self._args, **self._kwargs)
-        ret = ret_raw if isinstance(ret_raw, tuple) else (ret_raw,)
-        self._output_idxs = ivy.Container(ret, include_iters=True).map(lambda x, kc: id(x) if ivy.is_array(x) else None)
+        ret = self._fn(*self._args, **self._kwargs)
+        if not isinstance(ret, tuple):
+            ret = (ret,)
+        self._output_idxs = ivy.Container(ret, types_to_iteratively_nest=(list, tuple)).map(
+            lambda x, kc: id(x) if ivy.is_array(x) else None)
 
     # Setters #
     # --------#
 
-    def add_param(self, idx, param):
+    def set_param(self, idx, param):
         self._param_dict[idx] = param
 
-    def add_fn(self, idx, fn):
+    def set_fn(self, idx, fn):
         self._fn_dict[idx] = fn
 
     # Getters #
     # --------#
 
     def get_param(self, idx):
+        # ToDo: make this more efficient, this is all called at runtime
         param = self._param_dict[idx]
         if ivy.exists(param):
             return param
         fn = self._fn_dict[idx]
-        input_idxs = fn.input_idxs
-        inputs = {idx: self.get_param(idx) for idx in input_idxs}
-        ret_dict = fn(inputs)
-        for idx, param in ret_dict:
-            self.add_param(idx, param)
-        return ret_dict
+        arg_param_cont = fn.arg_idxs_cont.map(lambda idx_, kc: self.get_param(idx_))
+        kwarg_param_cont = fn.kwarg_idxs_cont.map(lambda idx_, kc: self.get_param(idx_))
+        ret_cont = fn(arg_param_cont, kwarg_param_cont)
+        ivy.Container.multi_map(lambda xs, kc: self.set_param(xs[0], xs[1]), [fn.ret_idxs_cont, ret_cont])
+        return self._param_dict[idx]
 
     # Function creation #
     # ------------------#
 
     def _call(self, *args, **kwargs):
-        # ToDo: set the input idxs
-        # ToDo: query the output idxs
-        return self._fn(*args, **kwargs)
+        # ToDo: make this more efficient, this is all called at runtime
+        args_cont = ivy.Container(args, types_to_iteratively_nest=(list, tuple))
+        ivy.Container.multi_map(lambda xs, kc: self.set_param(xs[0], xs[1]) if ivy.exists(xs[0]) else None,
+                                [self._arg_input_idxs, args_cont])
+        kwargs_cont = ivy.Container(kwargs, types_to_iteratively_nest=(list, tuple))
+        ivy.Container.multi_map(lambda xs, kc: self.set_param(xs[0], xs[1]) if ivy.exists(xs[0]) else None,
+                                [self._kwarg_input_idxs, kwargs_cont])
+        output_cont = self._output_idxs.map(lambda x, kc: self.get_param(x) if ivy.exists(x) else None)
+        ret = output_cont.to_raw()
+        if len(ret) == 1:
+            return ret[0]
+        return ret
 
     def to_function(self):
         return self._call
@@ -91,20 +103,57 @@ def _wrap_method_for_compiling(fn):
     if hasattr(fn, 'wrapped_for_compiling') and fn.wrapped_for_compiling:
         return fn
 
+    # noinspection PyUnresolvedReferences
     def _method_wrapped(*args, **kwargs):
-        args_cont = ivy.Container(args, include_iters=True)
-        arg_input_idxs = [id(v) for _, v in args_cont.to_iterator() if ivy.is_array(v)]
-        kwargs_cont = ivy.Container(kwargs, include_iters=True)
-        kwarg_input_idxs = [id(v) for _, v in kwargs_cont.to_iterator() if ivy.is_array(v)]
-        input_idxs = arg_input_idxs + kwarg_input_idxs
-        [graph.add_param(idx, None) for idx in input_idxs]
+
+        # get array idxs for positional args
+        args_cont = ivy.Container(args, types_to_iteratively_nest=(list, tuple))
+        arg_idxs_cont = args_cont.map(lambda x, kc: id(x) if ivy.is_array(x) else None).prune_empty()
+        arg_input_idxs = [v for _, v in arg_idxs_cont.to_iterator()]
+
+        # get array idxs for key-word args
+        kwargs_cont = ivy.Container(kwargs, types_to_iteratively_nest=(list, tuple))
+        kwarg_idxs_cont = kwargs_cont.map(lambda x, kc: id(x) if ivy.is_array(x) else None).prune_empty()
+        kwarg_input_idxs = [v for _, v in kwarg_idxs_cont.to_iterator()]
+
+        # initialize empty keys for these input parameters in the graph
+        [graph.set_param(idx, None) for idx in arg_input_idxs + kwarg_input_idxs]
+
+        # compute the return
         ret_raw = fn(*args, **kwargs)
-        # ToDo: implement this below
-        new_fn = lambda *a, **kw: fn(*args, **kwargs)
-        new_fn.input_idxs = input_idxs
         ret = ret_raw if isinstance(ret_raw, tuple) else (ret_raw,)
-        [graph.add_param(id(v), None)
-         for _, v in ivy.Container(ret, include_iters=True).to_iterator() if ivy.is_array(v)]
+
+        # get array idxs for return
+        ret_cont = ivy.Container(ret, types_to_iteratively_nest=(list, tuple))
+        ret_idxs_cont = ret_cont.map(lambda x, kc: id(x) if ivy.is_array(x) else None).prune_empty()
+
+        # wrap the function
+        def new_fn(arg_params_cont, kwarg_params_cont):
+            # ToDo: make this more efficient, this is all performed at runtime
+            a_cont = args_cont.set_at_keys(arg_params_cont)
+            kw_cont = kwargs_cont.set_at_keys(kwarg_params_cont)
+            ret_ = fn(*a_cont.to_raw(), **kw_cont.to_raw())
+            if not isinstance(ret_, tuple):
+                ret_ = (ret_,)
+            return ivy.Container(ret_, types_to_iteratively_nest=(list, tuple))
+
+        # add function attributes which inform about the input idxs
+        new_fn.args = args
+        new_fn.kwargs = kwargs
+        new_fn.ret = ret
+        new_fn.arg_idxs_cont = arg_idxs_cont
+        new_fn.kwarg_idxs_cont = kwarg_idxs_cont
+        new_fn.ret_idxs_cont = ret_idxs_cont
+
+        # initialize empty keys for these output parameters in the graph
+        [graph.set_param(id(v), None)
+         for _, v in ivy.Container(ret, types_to_iteratively_nest=(list, tuple)).to_iterator() if ivy.is_array(v)]
+
+        # initialize empty keys for this function in the graph
+        [graph.set_fn(id(v), new_fn)
+         for _, v in ivy.Container(ret, types_to_iteratively_nest=(list, tuple)).to_iterator() if ivy.is_array(v)]
+
+        # return the function output
         return ret_raw
 
     if hasattr(fn, '__name__'):
