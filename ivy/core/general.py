@@ -42,9 +42,9 @@ def index_nest(nest, index):
     """
     Index a nested object, using a tuple of indices or keys in the case of dicts.
 
-    :param nest: The nested object to slice.
+    :param nest: The nested object to index.
     :type nest: nested
-    :param index: A tuple of indices to apply.
+    :param index: A tuple of indices for indexing.
     :type index: tuple of indices
     """
     ret = nest
@@ -54,6 +54,16 @@ def index_nest(nest, index):
 
 
 def set_nest_at_index(nest, index, value):
+    """
+    Set the value of a nested item at a specified index
+
+    :param nest: The nested object to update.
+    :type nest: nested
+    :param index: A tuple of indices for the index at which to update.
+    :type index: tuple of indices
+    :param value: The new value for updating.
+    :type value: any
+    """
     if len(index) == 1:
         nest[index[0]] = value
     else:
@@ -72,16 +82,18 @@ def multi_index_nest(nest, indices):
     return [index_nest(nest, index) for index in indices]
 
 
-def set_nest_at_indices(nest, indices):
+def set_nest_at_indices(nest, indices, values):
     """
-    Repeatedly index a nested object, using a tuple of tuples of indices or keys in the case of dicts.
+    Set the value of a nested item at specified indices with specified values.
 
-    :param nest: The nested object to slice.
+    :param nest: The nested object to update.
     :type nest: nested
-    :param indices: A tuple of tuples of indices to apply.
+    :param indices: A tuple of tuples of indices for the indices at which to update.
     :type indices: tuple of tuples of indices
+    :param values: The new values for updating.
+    :type values: sequence of any
     """
-
+    [set_nest_at_index(nest, index, value) for index, value in zip(indices, values)]
 
 
 # noinspection PyShadowingBuiltins

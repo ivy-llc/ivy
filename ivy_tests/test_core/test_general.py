@@ -39,6 +39,13 @@ def _get_shape_of_list(lst, shape=()):
     return shape
 
 
+def _snai(n, idx, v):
+    if len(idx) == 1:
+        n[idx[0]] = v
+    else:
+        _snai(n[idx[0]], idx[1:], v)
+
+
 # Tests #
 # ------#
 
@@ -65,15 +72,7 @@ def test_index_nest(nest, index, dev_str, call):
 def test_set_nest_at_index(nest, index, value, dev_str, call):
     nest_copy = copy.deepcopy(nest)
     ivy.set_nest_at_index(nest, index, value)
-
-    def snai(n, idx, v):
-        if len(idx) == 1:
-            n[idx[0]] = v
-        else:
-            snai(n[idx[0]], idx[1:], v)
-
-    snai(nest_copy, index, value)
-
+    _snai(nest_copy, index, value)
     assert nest == nest_copy
 
 
@@ -91,6 +90,25 @@ def test_multi_index_nest(nest, multi_indices, dev_str, call):
             true_ret = true_ret[i]
         true_rets.append(true_ret)
     assert rets == true_rets
+
+
+# set_nest_at_indices
+@pytest.mark.parametrize(
+    "nest", [{'a': [[0], [1]], 'b': {'c': [[[2], [4]], [[6], [8]]]}}])
+@pytest.mark.parametrize(
+    "indices", [(('a', 0, 0), ('a', 1, 0)), (('b', 'c', 0), ('b', 'c', 1, 0))])
+@pytest.mark.parametrize(
+    "values", [(1, 2)])
+def test_set_nest_at_indices(nest, indices, values, dev_str, call):
+    nest_copy = copy.deepcopy(nest)
+    ivy.set_nest_at_indices(nest, indices, values)
+
+    def snais(n, idxs, vs):
+        [_snai(n, index, value) for index, value in zip(idxs, vs)]
+
+    snais(nest_copy, indices, values)
+
+    assert nest == nest_copy
 
 
 # set_framework
