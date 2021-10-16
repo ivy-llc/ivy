@@ -46,6 +46,13 @@ def _snai(n, idx, v):
         _snai(n[idx[0]], idx[1:], v)
 
 
+def _mnai(n, idx, fn):
+    if len(idx) == 1:
+        n[idx[0]] = fn(n[idx[0]])
+    else:
+        _mnai(n[idx[0]], idx[1:], fn)
+
+
 # Tests #
 # ------#
 
@@ -73,6 +80,20 @@ def test_set_nest_at_index(nest, index, value, dev_str, call):
     nest_copy = copy.deepcopy(nest)
     ivy.set_nest_at_index(nest, index, value)
     _snai(nest_copy, index, value)
+    assert nest == nest_copy
+
+
+# map_nest_at_index
+@pytest.mark.parametrize(
+    "nest", [{'a': [[0], [1]], 'b': {'c': [[[2], [4]], [[6], [8]]]}}])
+@pytest.mark.parametrize(
+    "index", [('a', 0, 0), ('a', 1, 0), ('b', 'c', 0, 0, 0), ('b', 'c', 1, 0, 0)])
+@pytest.mark.parametrize(
+    "fn", [lambda x: x + 2, lambda x: x**2])
+def test_map_nest_at_index(nest, index, fn, dev_str, call):
+    nest_copy = copy.deepcopy(nest)
+    ivy.map_nest_at_index(nest, index, fn)
+    _mnai(nest_copy, index, fn)
     assert nest == nest_copy
 
 
