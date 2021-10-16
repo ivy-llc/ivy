@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>cast &mdash; Ivy 1.0 documentation</title>
+  <title>nested_indices_where &mdash; Ivy 1.0 documentation</title>
   
 
   
@@ -36,8 +36,8 @@
   <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="arange" href="arange.html" />
-    <link rel="prev" title="argsort" href="argsort.html" /> 
+    <link rel="next" title="map" href="map.html" />
+    <link rel="prev" title="set_nest_at_indices" href="set_nest_at_indices.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -97,7 +97,7 @@
 <li class="toctree-l2"><a class="reference internal" href="set_nest_at_index.html">set_nest_at_index</a></li>
 <li class="toctree-l2"><a class="reference internal" href="multi_index_nest.html">multi_index_nest</a></li>
 <li class="toctree-l2"><a class="reference internal" href="set_nest_at_indices.html">set_nest_at_indices</a></li>
-<li class="toctree-l2"><a class="reference internal" href="nested_indices_where.html">nested_indices_where</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">nested_indices_where</a></li>
 <li class="toctree-l2"><a class="reference internal" href="map.html">map</a></li>
 <li class="toctree-l2"><a class="reference internal" href="nested_map.html">nested_map</a></li>
 <li class="toctree-l2"><a class="reference internal" href="to_ivy.html">to_ivy</a></li>
@@ -127,7 +127,7 @@
 <li class="toctree-l2"><a class="reference internal" href="argmax.html">argmax</a></li>
 <li class="toctree-l2"><a class="reference internal" href="argmin.html">argmin</a></li>
 <li class="toctree-l2"><a class="reference internal" href="argsort.html">argsort</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">cast</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cast.html">cast</a></li>
 <li class="toctree-l2"><a class="reference internal" href="arange.html">arange</a></li>
 <li class="toctree-l2"><a class="reference internal" href="linspace.html">linspace</a></li>
 <li class="toctree-l2"><a class="reference internal" href="logspace.html">logspace</a></li>
@@ -272,13 +272,13 @@
         
           <li><a href="../general.html">General</a> &raquo;</li>
         
-      <li>cast</li>
+      <li>nested_indices_where</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="../../_sources/core/general/cast.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../_sources/core/general/nested_indices_where.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -291,24 +291,24 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="cast">
-<h1>cast<a class="headerlink" href="#cast" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="nested-indices-where">
+<h1>nested_indices_where<a class="headerlink" href="#nested-indices-where" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
-<dt id="ivy.core.general.cast">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">cast</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">dtype_str</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">f</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>ivy.Framework<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; Union<span class="p">[</span>ivy.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span><a class="reference internal" href="../../_modules/ivy/core/general.html#cast"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.cast" title="Permalink to this definition">¶</a></dt>
-<dd><p>Casts an array to a specified type.</p>
+<dt id="ivy.core.general.nested_indices_where">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">nested_indices_where</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">nest</span><span class="p">:</span> <span class="n">Iterable</span></em>, <em class="sig-param"><span class="n">fn</span><span class="p">:</span> <span class="n">Callable</span></em>, <em class="sig-param"><span class="n">_index</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>List<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">_base</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">True</span></em><span class="sig-paren">)</span> &#x2192; Union<span class="p">[</span>Iterable<span class="p">, </span>bool<span class="p">]</span><a class="reference internal" href="../../_modules/ivy/core/general.html#nested_indices_where"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.nested_indices_where" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks the leaf nodes of nested x via function fn, and returns all nest indices where the method evaluates as True.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<em>array</em>) – Input array containing elements to cast.</p></li>
-<li><p><strong>dtype_str</strong> (<em>data-type string</em>) – The desired data-type for the array in string format, i.e. ‘float32’ or ‘int64’.
-If not given, then the type will be determined as the minimum type required to hold the objects in the
-sequence.</p></li>
-<li><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning framework. Inferred from inputs if None.</p></li>
+<li><p><strong>nest</strong> (<em>nest of any</em>) – The nest to check the leaves of.</p></li>
+<li><p><strong>fn</strong> (<em>callable</em>) – The conditon function, returning True or False.</p></li>
+<li><p><strong>_index</strong> (<em>list of tuples of indices</em><em>, </em><em>do not set</em>) – The indices detected so far. None at the beginning. Used internally, do not set manually.</p></li>
+<li><p><strong>_base</strong> (<em>bool</em><em>, </em><em>do not set</em>) – Whether the current function call is the first function call in the recursive stack.
+Used internally, do not set manually.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>A new array of the same shape as input array a, with data type given by dtype_str.</p>
+<dd class="field-even"><p>A set of indices for the nest where the function evaluated as True.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -328,10 +328,10 @@ sequence.</p></li>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="arange.html" class="btn btn-neutral float-right" title="arange" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="map.html" class="btn btn-neutral float-right" title="map" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="argsort.html" class="btn btn-neutral float-left" title="argsort" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="set_nest_at_indices.html" class="btn btn-neutral float-left" title="set_nest_at_indices" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
