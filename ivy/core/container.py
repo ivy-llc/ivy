@@ -1825,6 +1825,36 @@ class Container(dict):
             else:
                 yield kc, value
 
+    def to_iterator_values(self):
+        """
+        Return iterator for traversing through the nested values of container object.
+
+        :return: Iterator for the container values.
+        """
+        for key, value in sorted(self.items()):
+            if isinstance(value, Container):
+                # noinspection PyCompatibility
+                yield from value.to_iterator_values()
+            else:
+                yield value
+
+    def to_iterator_keys(self, key_chain='', leaf_keys_only=False):
+        """
+        Return iterator for traversing through the nested keys of container object.
+
+        :return: Iterator for the container elements.
+        """
+        for key, value in sorted(self.items()):
+            if leaf_keys_only:
+                kc = key
+            else:
+                kc = key_chain + '/' + key if key_chain != '' else key
+            if isinstance(value, Container):
+                # noinspection PyCompatibility
+                yield from value.to_iterator_keys(kc, leaf_keys_only)
+            else:
+                yield kc
+
     def to_flat_list(self):
         """
         Return flat list representation of container object.
