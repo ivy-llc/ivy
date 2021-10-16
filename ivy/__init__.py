@@ -148,6 +148,9 @@ class Array(ArrayWithDevice, ArrayWithGeneral, ArrayWithGradients, ArrayWithImag
         return to_ivy(res)
 
     def __pow__(self, power):
+        # ToDo: add this check to all Array methods
+        if not isinstance(self, Array):
+            return self.__pow__(power)
         power = to_native(power)
         res = self._data.__pow__(power)
         if res is NotImplemented:
@@ -162,6 +165,8 @@ class Array(ArrayWithDevice, ArrayWithGeneral, ArrayWithGradients, ArrayWithImag
         return to_ivy(res)
 
     def __add__(self, other):
+        if not isinstance(self, Array):
+            return self.__add__(other)
         other = to_native(other)
         res = self._data.__add__(other)
         if res is NotImplemented:
@@ -176,6 +181,8 @@ class Array(ArrayWithDevice, ArrayWithGeneral, ArrayWithGradients, ArrayWithImag
         return to_ivy(res)
 
     def __sub__(self, other):
+        if not isinstance(self, Array):
+            return self.__sub__(other)
         other = to_native(other)
         res = self._data.__sub__(other)
         if res is NotImplemented:
