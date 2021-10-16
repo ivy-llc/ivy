@@ -111,6 +111,17 @@ def test_set_nest_at_indices(nest, indices, values, dev_str, call):
     assert nest == nest_copy
 
 
+# nested_indices_where
+@pytest.mark.parametrize(
+    "nest", [{'a': [[0], [1]], 'b': {'c': [[[2], [4]], [[6], [8]]]}}])
+def test_nested_indices_where(nest, dev_str, call):
+    indices = ivy.nested_indices_where(nest, lambda x: x < 5)
+    assert indices[0] == ['a', 0, 0]
+    assert indices[1] == ['a', 1, 0]
+    assert indices[2] == ['b', 'c', 0, 0, 0]
+    assert indices[3] == ['b', 'c', 0, 1, 0]
+
+
 # set_framework
 @pytest.mark.parametrize(
     "fw_str", ['numpy', 'jax', 'tensorflow', 'torch', 'mxnd'])
