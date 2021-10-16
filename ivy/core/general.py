@@ -38,19 +38,31 @@ def _to_ivy(x: Any)\
 # Map #
 # ----#
 
-def nested_slice(nest, slices):
+def index_nest(nest, indices):
     """
-    Slice a nested object, using a tuple of slice objects
+    Index a nested object, using a tuple of indices or keys in the case of dicts.
 
     :param nest: The nested object to slice.
     :type nest: nested
-    :param slices: A tuple of slices to apply.
-    :type slices: tuple of slices
+    :param indices: A tuple of indices to apply.
+    :type indices: tuple of indices
     """
     ret = nest
-    for s in slices:
-        ret = ret[s]
+    for i in indices:
+        ret = ret[i]
     return ret
+
+
+def multi_index_nest(nest, multi_indices):
+    """
+    Repeatedly index a nested object, using a tuple of tuples of indices or keys in the case of dicts.
+
+    :param nest: The nested object to slice.
+    :type nest: nested
+    :param multi_indices: A tuple of tuples of indices to apply.
+    :type multi_indices: tuple of tuples of indices
+    """
+    return [index_nest(nest, indices) for indices in multi_indices]
 
 
 # noinspection PyShadowingBuiltins
