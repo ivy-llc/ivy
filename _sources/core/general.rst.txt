@@ -14,6 +14,7 @@ General
 
    general/index_nest.rst
    general/set_nest_at_index.rst
+   general/map_nest_at_index.rst
    general/multi_index_nest.rst
    general/set_nest_at_indices.rst
    general/nested_indices_where.rst
