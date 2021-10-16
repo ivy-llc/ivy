@@ -96,6 +96,43 @@ def set_nest_at_indices(nest, indices, values):
     [set_nest_at_index(nest, index, value) for index, value in zip(indices, values)]
 
 
+def nested_indices_where(nest: Iterable, fn: Callable, _index: List = None, _base: bool = True)\
+        -> Union[Iterable, bool]:
+    """
+    Checks the leaf nodes of nested x via function fn, and returns all nest indices where the method evaluates as True.
+
+    :param nest: The nest to check the leaves of.
+    :type nest: nest of any
+    :param fn: The conditon function, returning True or False.
+    :type fn: callable
+    :param _index: The indices detected so far. None at the beginning. Used internally, do not set manually.
+    :type _index: list of tuples of indices, do not set
+    :param _base: Whether the current function call is the first function call in the recursive stack.
+                  Used internally, do not set manually.
+    :type _base: bool, do not set
+    :return: A set of indices for the nest where the function evaluated as True.
+    """
+    _index = list() if _index is None else _index
+    if isinstance(nest, (tuple, list)):
+        _indices = list()
+        for i, item in enumerate(nest):
+            ret = nested_indices_where(item, fn, _index + [i], False)
+            if ret:
+                _indices += ret
+    elif isinstance(nest, dict):
+        _indices = list()
+        for k, v in nest.items():
+            ret = nested_indices_where(v, fn, _index + [k], False)
+            if ret:
+                _indices += ret
+    else:
+        cond_met = fn(nest)
+        if cond_met:
+            return [_index]
+        return False
+    return [index for index in _indices if index]
+
+
 # noinspection PyShadowingBuiltins
 def map(fn: Callable, constant: Dict[str, Any] = None, unique: Dict[str, Iterable[Any]] = None, mean: bool = False)\
         -> List:
