@@ -38,31 +38,50 @@ def _to_ivy(x: Any)\
 # Map #
 # ----#
 
-def index_nest(nest, indices):
+def index_nest(nest, index):
     """
     Index a nested object, using a tuple of indices or keys in the case of dicts.
 
     :param nest: The nested object to slice.
     :type nest: nested
-    :param indices: A tuple of indices to apply.
-    :type indices: tuple of indices
+    :param index: A tuple of indices to apply.
+    :type index: tuple of indices
     """
     ret = nest
-    for i in indices:
+    for i in index:
         ret = ret[i]
     return ret
 
 
-def multi_index_nest(nest, multi_indices):
+def set_nest_at_index(nest, index, value):
+    if len(index) == 1:
+        nest[index[0]] = value
+    else:
+        set_nest_at_index(nest[index[0]], index[1:], value)
+
+
+def multi_index_nest(nest, indices):
     """
     Repeatedly index a nested object, using a tuple of tuples of indices or keys in the case of dicts.
 
     :param nest: The nested object to slice.
     :type nest: nested
-    :param multi_indices: A tuple of tuples of indices to apply.
-    :type multi_indices: tuple of tuples of indices
+    :param indices: A tuple of tuples of indices to apply.
+    :type indices: tuple of tuples of indices
     """
-    return [index_nest(nest, indices) for indices in multi_indices]
+    return [index_nest(nest, index) for index in indices]
+
+
+def set_nest_at_indices(nest, indices):
+    """
+    Repeatedly index a nested object, using a tuple of tuples of indices or keys in the case of dicts.
+
+    :param nest: The nested object to slice.
+    :type nest: nested
+    :param indices: A tuple of tuples of indices to apply.
+    :type indices: tuple of tuples of indices
+    """
+
 
 
 # noinspection PyShadowingBuiltins
