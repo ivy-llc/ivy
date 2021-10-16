@@ -62,9 +62,9 @@ class Graph:
         [self.set_param(pid, ivy.index_nest(kwargs, idx))
          for pid, idx in zip(self._kwarg_input_param_ids, self._kwarg_input_nest_idxs)]
         for fn in self._functions:
-            arg_param_cont = fn.arg_idxs_cont.map(lambda idx_, kc: self._param_dict[idx_])
-            kwarg_param_cont = fn.kwarg_idxs_cont.map(lambda idx_, kc: self._param_dict[idx_])
-            ret_cont = fn(arg_param_cont, kwarg_param_cont)
+            arg_vals = [self._param_dict[idx_] for idx_ in fn.arg_param_ids]
+            kwarg_vals = [self._param_dict[idx_] for idx_ in fn.kwarg_param_ids]
+            ret_cont = fn(arg_vals, kwarg_vals)
             ivy.Container.multi_map(lambda xs, kc: self.set_param(xs[0], xs[1]), [fn.ret_idxs_cont, ret_cont])
         ret = self._output_idxs.map(lambda x, kc: self._param_dict[x]).to_raw()
         if len(ret) == 1:
@@ -103,19 +103,22 @@ def _wrap_method_for_compiling(fn):
 
         # convert to native if necessary
         args, kwargs = ivy.args_to_native(*args, **kwargs)
+        args = list(args)
 
         # get array idxs for positional args
+        arg_array_idxs = ivy.nested_indices_where(args, lambda x: ivy.is_array(x))
         args_cont = ivy.Container(args, types_to_iteratively_nest=(list, tuple))
         arg_idxs_cont = args_cont.map(lambda x, kc: id(x) if ivy.is_array(x) else None).prune_empty()
-        arg_input_idxs = [v for _, v in arg_idxs_cont.to_iterator()]
+        arg_param_ids = [v for _, v in arg_idxs_cont.to_iterator()]
 
         # get array idxs for key-word args
+        kwarg_array_idxs = ivy.nested_indices_where(kwargs, lambda x: ivy.is_array(x))
         kwargs_cont = ivy.Container(kwargs, types_to_iteratively_nest=(list, tuple))
         kwarg_idxs_cont = kwargs_cont.map(lambda x, kc: id(x) if ivy.is_array(x) else None).prune_empty()
-        kwarg_input_idxs = [v for _, v in kwarg_idxs_cont.to_iterator()]
+        kwarg_param_ids = [v for _, v in kwarg_idxs_cont.to_iterator()]
 
         # initialize empty keys for these input parameters in the graph
-        [graph.set_param(idx, None) for idx in arg_input_idxs + kwarg_input_idxs]
+        [graph.set_param(idx, None) for idx in arg_param_ids + kwarg_param_ids]
 
         # compute the return
         ret_raw = fn(*args, **kwargs)
@@ -126,21 +129,18 @@ def _wrap_method_for_compiling(fn):
         ret_idxs_cont = ret_cont.map(lambda x, kc: id(x) if ivy.is_array(x) else None).prune_empty()
 
         # wrap the function
-        def new_fn(arg_params_cont, kwarg_params_cont):
+        def new_fn(arg_array_vals, kwarg_array_vals):
             # ToDo: make this more efficient, this is all performed at runtime
-            a_cont = args_cont.set_at_keys(arg_params_cont)
-            kw_cont = kwargs_cont.set_at_keys(kwarg_params_cont)
-            ret_ = fn(*a_cont.to_raw(), **kw_cont.to_raw())
+            ivy.set_nest_at_indices(args, arg_array_idxs, arg_array_vals)
+            ivy.set_nest_at_indices(kwargs, kwarg_array_idxs, kwarg_array_vals)
+            ret_ = fn(*args, **kwargs)
             if not isinstance(ret_, tuple):
                 ret_ = (ret_,)
             return ivy.Container(ret_, types_to_iteratively_nest=(list, tuple))
 
         # add function attributes which inform about the input idxs
-        new_fn.args = args
-        new_fn.kwargs = kwargs
-        new_fn.ret = ret
-        new_fn.arg_idxs_cont = arg_idxs_cont
-        new_fn.kwarg_idxs_cont = kwarg_idxs_cont
+        new_fn.arg_param_ids = arg_param_ids
+        new_fn.kwarg_param_ids = kwarg_param_ids
         new_fn.ret_idxs_cont = ret_idxs_cont
 
         # initialize empty keys for these output parameters in the graph
