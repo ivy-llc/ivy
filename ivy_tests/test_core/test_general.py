@@ -4,6 +4,7 @@ Collection of tests for templated general functions
 
 # global
 import os
+import copy
 import math
 import time
 import einops
@@ -45,13 +46,35 @@ def _get_shape_of_list(lst, shape=()):
 @pytest.mark.parametrize(
     "nest", [{'a': [[0], [1]], 'b': {'c': (((2,), (4,)), ((6,), (8,)))}}])
 @pytest.mark.parametrize(
-    "indices", [('a', 0, 0), ('a', 1, 0), ('b', 'c', 0), ('b', 'c', 1, 0)])
-def test_index_nest(nest, indices, dev_str, call):
-    ret = ivy.index_nest(nest, indices)
+    "index", [('a', 0, 0), ('a', 1, 0), ('b', 'c', 0), ('b', 'c', 1, 0)])
+def test_index_nest(nest, index, dev_str, call):
+    ret = ivy.index_nest(nest, index)
     true_ret = nest
-    for i in indices:
+    for i in index:
         true_ret = true_ret[i]
     assert ret == true_ret
+
+
+# set_nest_at_index
+@pytest.mark.parametrize(
+    "nest", [{'a': [[0], [1]], 'b': {'c': [[[2], [4]], [[6], [8]]]}}])
+@pytest.mark.parametrize(
+    "index", [('a', 0, 0), ('a', 1, 0), ('b', 'c', 0), ('b', 'c', 1, 0)])
+@pytest.mark.parametrize(
+    "value", [1])
+def test_set_nest_at_index(nest, index, value, dev_str, call):
+    nest_copy = copy.deepcopy(nest)
+    ivy.set_nest_at_index(nest, index, value)
+
+    def snai(n, idx, v):
+        if len(idx) == 1:
+            n[idx[0]] = v
+        else:
+            snai(n[idx[0]], idx[1:], v)
+
+    snai(nest_copy, index, value)
+
+    assert nest == nest_copy
 
 
 # multi_index_nest
