@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>repeat &mdash; Ivy 1.0 documentation</title>
+  <title>map_nest_at_indices &mdash; Ivy 1.0 documentation</title>
   
 
   
@@ -36,8 +36,8 @@
   <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="tile" href="tile.html" />
-    <link rel="prev" title="split" href="split.html" /> 
+    <link rel="next" title="nested_indices_where" href="nested_indices_where.html" />
+    <link rel="prev" title="set_nest_at_indices" href="set_nest_at_indices.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -98,7 +98,7 @@
 <li class="toctree-l2"><a class="reference internal" href="map_nest_at_index.html">map_nest_at_index</a></li>
 <li class="toctree-l2"><a class="reference internal" href="multi_index_nest.html">multi_index_nest</a></li>
 <li class="toctree-l2"><a class="reference internal" href="set_nest_at_indices.html">set_nest_at_indices</a></li>
-<li class="toctree-l2"><a class="reference internal" href="map_nest_at_indices.html">map_nest_at_indices</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">map_nest_at_indices</a></li>
 <li class="toctree-l2"><a class="reference internal" href="nested_indices_where.html">nested_indices_where</a></li>
 <li class="toctree-l2"><a class="reference internal" href="map.html">map</a></li>
 <li class="toctree-l2"><a class="reference internal" href="nested_map.html">nested_map</a></li>
@@ -138,7 +138,7 @@
 <li class="toctree-l2"><a class="reference internal" href="stack.html">stack</a></li>
 <li class="toctree-l2"><a class="reference internal" href="unstack.html">unstack</a></li>
 <li class="toctree-l2"><a class="reference internal" href="split.html">split</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">repeat</a></li>
+<li class="toctree-l2"><a class="reference internal" href="repeat.html">repeat</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tile.html">tile</a></li>
 <li class="toctree-l2"><a class="reference internal" href="constant_pad.html">constant_pad</a></li>
 <li class="toctree-l2"><a class="reference internal" href="zero_pad.html">zero_pad</a></li>
@@ -274,13 +274,13 @@
         
           <li><a href="../general.html">General</a> &raquo;</li>
         
-      <li>repeat</li>
+      <li>map_nest_at_indices</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="../../_sources/core/general/repeat.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../_sources/core/general/map_nest_at_indices.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -293,24 +293,19 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="repeat">
-<h1>repeat<a class="headerlink" href="#repeat" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="map-nest-at-indices">
+<h1>map_nest_at_indices<a class="headerlink" href="#map-nest-at-indices" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
-<dt id="ivy.core.general.repeat">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">repeat</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">repeats</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>int<span class="p">, </span>Iterable<span class="p">[</span>int<span class="p">]</span><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">axis</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>int<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">f</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>ivy.Framework<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; Union<span class="p">[</span>ivy.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span><a class="reference internal" href="../../_modules/ivy/core/general.html#repeat"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.repeat" title="Permalink to this definition">¶</a></dt>
-<dd><p>Repeat values along a given dimension</p>
+<dt id="ivy.core.general.map_nest_at_indices">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">map_nest_at_indices</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">nest</span></em>, <em class="sig-param"><span class="n">indices</span></em>, <em class="sig-param"><span class="n">fn</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/general.html#map_nest_at_indices"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.map_nest_at_indices" title="Permalink to this definition">¶</a></dt>
+<dd><p>Map a function to the values of a nested item at the specified indices</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<em>array</em>) – Input array.</p></li>
-<li><p><strong>repeats</strong> (<em>int</em><em> or </em><em>sequence of ints.</em>) – The number of repetitions for each element. repeats is broadcast to fit the shape of the given axis.</p></li>
-<li><p><strong>axis</strong> (<em>int</em><em>, </em><em>optional</em>) – The axis along which to repeat values.
-By default, use the flattened input array, and return a flat output array.</p></li>
-<li><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning framework. Inferred from inputs if None.</p></li>
+<li><p><strong>nest</strong> (<em>nested</em>) – The nested object to update.</p></li>
+<li><p><strong>indices</strong> (<em>tuple of tuples of indices</em>) – A tuple of tuples of indices for the indices at which to update.</p></li>
+<li><p><strong>fn</strong> (<em>callable</em>) – The function to perform on the nest at the given index.</p></li>
 </ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>The repeated output array.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -330,10 +325,10 @@ By default, use the flattened input array, and return a flat output array.</p></
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="tile.html" class="btn btn-neutral float-right" title="tile" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="nested_indices_where.html" class="btn btn-neutral float-right" title="nested_indices_where" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="split.html" class="btn btn-neutral float-left" title="split" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="set_nest_at_indices.html" class="btn btn-neutral float-left" title="set_nest_at_indices" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
