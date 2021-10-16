@@ -1,6 +1,7 @@
 # global
 import ivy
 import copy
+import inspect
 
 # local
 from ivy.wrapper import _wrap_or_unwrap_methods, NON_WRAPPED_METHODS, NON_ARRAY_RET_METHODS
@@ -10,6 +11,7 @@ param_dict = dict()
 
 class Graph:
 
+    # noinspection PyProtectedMember
     def __init__(self, fn, *args, **kwargs):
 
         # function being compiled into a graph
@@ -18,9 +20,9 @@ class Graph:
         self._kwargs = kwargs
         self._arg_input_idxs =\
             ivy.Container(args, types_to_iteratively_nest=(list, tuple)).map(
-                lambda x, kc: id(x) if ivy.is_array(x) else None)
+                lambda x, kc: id(x._data) if ivy.is_array(x) else None)
         self._kwarg_input_idxs = ivy.Container(kwargs, types_to_iteratively_nest=(list, tuple)).map(
-            lambda x, kc: id(x) if ivy.is_array(x) else None)
+            lambda x, kc: id(x._data) if ivy.is_array(x) else None)
         self._output_idxs = ivy.Container()
 
         # graph storage
@@ -30,12 +32,13 @@ class Graph:
     # Compute output idxs #
     # --------------------#
 
+    # noinspection PyProtectedMember
     def foward(self):
         ret = self._fn(*self._args, **self._kwargs)
         if not isinstance(ret, tuple):
             ret = (ret,)
         self._output_idxs = ivy.Container(ret, types_to_iteratively_nest=(list, tuple)).map(
-            lambda x, kc: id(x) if ivy.is_array(x) else None)
+            lambda x, kc: id(x._data) if ivy.is_array(x) else None)
 
     # Setters #
     # --------#
@@ -66,6 +69,7 @@ class Graph:
 
     def _call(self, *args, **kwargs):
         # ToDo: make this more efficient, this is all called at runtime
+        args, kwargs = ivy.args_to_ivy(*args, **kwargs)
         args_cont = ivy.Container(args, types_to_iteratively_nest=(list, tuple))
         ivy.Container.multi_map(lambda xs, kc: self.set_param(xs[0], xs[1]) if ivy.exists(xs[0]) else None,
                                 [self._arg_input_idxs, args_cont])
@@ -74,6 +78,8 @@ class Graph:
                                 [self._kwarg_input_idxs, kwargs_cont])
         output_cont = self._output_idxs.map(lambda x, kc: self.get_param(x) if ivy.exists(x) else None)
         ret = output_cont.to_raw()
+        if not ivy.wrapped_mode():
+            ret = ivy.to_native(ret, True)
         if len(ret) == 1:
             return ret[0]
         return ret
@@ -96,28 +102,26 @@ graph = None
 
 def _wrap_method_for_compiling(fn):
 
-    if hasattr(fn, 'inner_fn'):
-        # undo wrapped mode if it is set
-        fn = fn.inner_fn
-
-    if hasattr(fn, '__name__') and\
-            (fn.__name__[0] == '_' or fn.__name__ in NON_WRAPPED_METHODS + NON_ARRAY_RET_METHODS):
+    if inspect.isclass(fn):
+        return fn
+    elif hasattr(fn, '__name__') and\
+            (fn.__name__[0] == '_' or fn.__name__ in NON_WRAPPED_METHODS + NON_ARRAY_RET_METHODS) and\
+            (not hasattr(fn, '__qualname__') or '__init__' in fn.__qualname__ or fn.__qualname__[0:8] != 'Array.__'):
+        return fn
+    elif hasattr(fn, 'wrapped_for_compiling') and fn.wrapped_for_compiling:
         return fn
 
-    if hasattr(fn, 'wrapped_for_compiling') and fn.wrapped_for_compiling:
-        return fn
-
-    # noinspection PyUnresolvedReferences
+    # noinspection PyUnresolvedReferences,PyProtectedMember
     def _method_wrapped(*args, **kwargs):
 
         # get array idxs for positional args
         args_cont = ivy.Container(args, types_to_iteratively_nest=(list, tuple))
-        arg_idxs_cont = args_cont.map(lambda x, kc: id(x) if ivy.is_array(x) else None).prune_empty()
+        arg_idxs_cont = args_cont.map(lambda x, kc: id(x._data) if ivy.is_array(x) else None).prune_empty()
         arg_input_idxs = [v for _, v in arg_idxs_cont.to_iterator()]
 
         # get array idxs for key-word args
         kwargs_cont = ivy.Container(kwargs, types_to_iteratively_nest=(list, tuple))
-        kwarg_idxs_cont = kwargs_cont.map(lambda x, kc: id(x) if ivy.is_array(x) else None).prune_empty()
+        kwarg_idxs_cont = kwargs_cont.map(lambda x, kc: id(x._data) if ivy.is_array(x) else None).prune_empty()
         kwarg_input_idxs = [v for _, v in kwarg_idxs_cont.to_iterator()]
 
         # initialize empty keys for these input parameters in the graph
@@ -129,7 +133,7 @@ def _wrap_method_for_compiling(fn):
 
         # get array idxs for return
         ret_cont = ivy.Container(ret, types_to_iteratively_nest=(list, tuple))
-        ret_idxs_cont = ret_cont.map(lambda x, kc: id(x) if ivy.is_array(x) else None).prune_empty()
+        ret_idxs_cont = ret_cont.map(lambda x, kc: id(x._data) if ivy.is_array(x) else None).prune_empty()
 
         # wrap the function
         def new_fn(arg_params_cont, kwarg_params_cont):
@@ -150,11 +154,11 @@ def _wrap_method_for_compiling(fn):
         new_fn.ret_idxs_cont = ret_idxs_cont
 
         # initialize empty keys for these output parameters in the graph
-        [graph.set_param(id(v), None)
+        [graph.set_param(id(v._data), None)
          for _, v in ivy.Container(ret, types_to_iteratively_nest=(list, tuple)).to_iterator() if ivy.is_array(v)]
 
         # initialize empty keys for this function in the graph
-        [graph.set_fn(id(v), new_fn)
+        [graph.set_fn(id(v._data), new_fn)
          for _, v in ivy.Container(ret, types_to_iteratively_nest=(list, tuple)).to_iterator() if ivy.is_array(v)]
 
         # return the function output
@@ -174,15 +178,16 @@ def _unwrap_method_from_compiling(method_wrapped):
 
 
 def _wrap_methods_for_compiling():
-    return _wrap_or_unwrap_methods(_wrap_method_for_compiling)
+    return _wrap_or_unwrap_methods(_wrap_method_for_compiling, classes_to_wrap=[ivy.Array])
 
 
 def _unwrap_methods_from_compiling():
-    return _wrap_or_unwrap_methods(_unwrap_method_from_compiling)
+    return _wrap_or_unwrap_methods(_unwrap_method_from_compiling, classes_to_wrap=[ivy.Array])
 
 
 def compile_ivy(fn, *args, **kwargs):
     ivy.set_wrapped_mode()
+    args, kwargs = ivy.args_to_ivy(*args, **kwargs)
     global graph
     graph = Graph(fn, *args, **kwargs)
     _wrap_methods_for_compiling()
