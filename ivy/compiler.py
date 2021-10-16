@@ -14,13 +14,18 @@ class Graph:
 
         # function being compiled into a graph
         self._fn = fn
+
+        # positional args
         self._args = args
+        self._arg_input_nest_idxs = ivy.nested_indices_where(args, lambda x: isinstance(x, ivy.Array))
+        self._arg_input_param_ids = [id(x._data) for x in ivy.multi_index_nest(list(args), self._arg_input_nest_idxs)]
+
+        # key-word args
         self._kwargs = kwargs
-        self._arg_input_idxs =\
-            ivy.Container(args, types_to_iteratively_nest=(list, tuple)).map(
-                lambda x, kc: id(x._data) if isinstance(x, ivy.Array) else None)
-        self._kwarg_input_idxs = ivy.Container(kwargs, types_to_iteratively_nest=(list, tuple)).map(
-            lambda x, kc: id(x._data) if isinstance(x, ivy.Array) else None)
+        self._kwarg_input_nest_idxs = ivy.nested_indices_where(kwargs, lambda x: isinstance(x, ivy.Array))
+        self._kwarg_input_param_ids = [id(x._data) for x in ivy.multi_index_nest(kwargs, self._kwarg_input_nest_idxs)]
+
+        # output idxs
         self._output_idxs = ivy.Container()
 
         # graph storage
@@ -52,10 +57,10 @@ class Graph:
 
     def _call(self, *args, **kwargs):
         # ToDo: make this more efficient, this is all called at runtime
-        args_cont = ivy.Container(args, types_to_iteratively_nest=(list, tuple))
-        ivy.Container.multi_map(lambda xs, kc: self.set_param(xs[0], xs[1]), [self._arg_input_idxs, args_cont])
-        kwargs_cont = ivy.Container(kwargs, types_to_iteratively_nest=(list, tuple))
-        ivy.Container.multi_map(lambda xs, kc: self.set_param(xs[0], xs[1]), [self._kwarg_input_idxs, kwargs_cont])
+        [self.set_param(pid, ivy.index_nest(args, idx))
+         for pid, idx in zip(self._arg_input_param_ids, self._arg_input_nest_idxs)]
+        [self.set_param(pid, ivy.index_nest(kwargs, idx))
+         for pid, idx in zip(self._kwarg_input_param_ids, self._kwarg_input_nest_idxs)]
         for fn in self._functions:
             arg_param_cont = fn.arg_idxs_cont.map(lambda idx_, kc: self._param_dict[idx_])
             kwarg_param_cont = fn.kwarg_idxs_cont.map(lambda idx_, kc: self._param_dict[idx_])
