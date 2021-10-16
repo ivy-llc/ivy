@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>einops_rearrange &mdash; Ivy 1.0 documentation</title>
+  <title>nested_slice &mdash; Ivy 1.0 documentation</title>
   
 
   
@@ -36,8 +36,8 @@
   <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="einops_reduce" href="einops_reduce.html" />
-    <link rel="prev" title="current_framework_str" href="current_framework_str.html" /> 
+    <link rel="next" title="map" href="map.html" />
+    <link rel="prev" title="General" href="../general.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -93,7 +93,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../container.html">Container</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../device.html">Device</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../general.html">General</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="nested_slice.html">nested_slice</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">nested_slice</a></li>
 <li class="toctree-l2"><a class="reference internal" href="map.html">map</a></li>
 <li class="toctree-l2"><a class="reference internal" href="nested_map.html">nested_map</a></li>
 <li class="toctree-l2"><a class="reference internal" href="to_ivy.html">to_ivy</a></li>
@@ -171,7 +171,7 @@
 <li class="toctree-l2"><a class="reference internal" href="dtype_str.html">dtype_str</a></li>
 <li class="toctree-l2"><a class="reference internal" href="cache_fn.html">cache_fn</a></li>
 <li class="toctree-l2"><a class="reference internal" href="current_framework_str.html">current_framework_str</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">einops_rearrange</a></li>
+<li class="toctree-l2"><a class="reference internal" href="einops_rearrange.html">einops_rearrange</a></li>
 <li class="toctree-l2"><a class="reference internal" href="einops_reduce.html">einops_reduce</a></li>
 <li class="toctree-l2"><a class="reference internal" href="einops_repeat.html">einops_repeat</a></li>
 <li class="toctree-l2"><a class="reference internal" href="get_min_denominator.html">get_min_denominator</a></li>
@@ -268,13 +268,13 @@
         
           <li><a href="../general.html">General</a> &raquo;</li>
         
-      <li>einops_rearrange</li>
+      <li>nested_slice</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="../../_sources/core/general/einops_rearrange.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../_sources/core/general/nested_slice.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -287,22 +287,18 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="einops-rearrange">
-<h1>einops_rearrange<a class="headerlink" href="#einops-rearrange" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="nested-slice">
+<h1>nested_slice<a class="headerlink" href="#nested-slice" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
-<dt id="ivy.core.general.einops_rearrange">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">einops_rearrange</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">pattern</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">axes_lengths</span><span class="p">:</span> <span class="n">Dict<span class="p">[</span>str<span class="p">, </span>int<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; Union<span class="p">[</span>ivy.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span><a class="reference internal" href="../../_modules/ivy/core/general.html#einops_rearrange"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.einops_rearrange" title="Permalink to this definition">¶</a></dt>
-<dd><p>Perform einops rearrange operation on input array x.</p>
+<dt id="ivy.core.general.nested_slice">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">nested_slice</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">nest</span></em>, <em class="sig-param"><span class="n">slices</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/general.html#nested_slice"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.nested_slice" title="Permalink to this definition">¶</a></dt>
+<dd><p>Slice a nested object, using a tuple of slice objects</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<em>array</em>) – Input array to be re-arranged.</p></li>
-<li><p><strong>pattern</strong> (<em>str</em>) – Rearrangement pattern.</p></li>
-<li><p><strong>axes_lengths</strong> (<em>keyword parameter args</em>) – Any additional specifications for dimensions.</p></li>
+<li><p><strong>nest</strong> (<em>nested</em>) – The nested object to slice.</p></li>
+<li><p><strong>slices</strong> (<em>tuple of slices</em>) – A tuple of slices to apply.</p></li>
 </ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>New array with einops.rearrange having been applied.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -322,10 +318,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="einops_reduce.html" class="btn btn-neutral float-right" title="einops_reduce" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="map.html" class="btn btn-neutral float-right" title="map" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="current_framework_str.html" class="btn btn-neutral float-left" title="current_framework_str" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="../general.html" class="btn btn-neutral float-left" title="General" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

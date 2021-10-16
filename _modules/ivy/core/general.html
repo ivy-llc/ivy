@@ -230,6 +230,21 @@
 <span class="c1"># Map #</span>
 <span class="c1"># ----#</span>
 
+<div class="viewcode-block" id="nested_slice"><a class="viewcode-back" href="../../../core/general/nested_slice.html#ivy.core.general.nested_slice">[docs]</a><span class="k">def</span> <span class="nf">nested_slice</span><span class="p">(</span><span class="n">nest</span><span class="p">,</span> <span class="n">slices</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Slice a nested object, using a tuple of slice objects</span>
+
+<span class="sd">    :param nest: The nested object to slice.</span>
+<span class="sd">    :type nest: nested</span>
+<span class="sd">    :param slices: A tuple of slices to apply.</span>
+<span class="sd">    :type slices: tuple of slices</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">ret</span> <span class="o">=</span> <span class="n">nest</span>
+    <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">slices</span><span class="p">:</span>
+        <span class="n">ret</span> <span class="o">=</span> <span class="n">ret</span><span class="p">[</span><span class="n">s</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">ret</span></div>
+
+
 <span class="c1"># noinspection PyShadowingBuiltins</span>
 <div class="viewcode-block" id="map"><a class="viewcode-back" href="../../../core/general/map.html#ivy.core.general.map">[docs]</a><span class="k">def</span> <span class="nf">map</span><span class="p">(</span><span class="n">fn</span><span class="p">:</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">constant</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">unique</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">mean</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span>\
         <span class="o">-&gt;</span> <span class="n">List</span><span class="p">:</span>
