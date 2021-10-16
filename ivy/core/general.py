@@ -38,6 +38,21 @@ def _to_ivy(x: Any)\
 # Map #
 # ----#
 
+def nested_slice(nest, slices):
+    """
+    Slice a nested object, using a tuple of slice objects
+
+    :param nest: The nested object to slice.
+    :type nest: nested
+    :param slices: A tuple of slices to apply.
+    :type slices: tuple of slices
+    """
+    ret = nest
+    for s in slices:
+        ret = ret[s]
+    return ret
+
+
 # noinspection PyShadowingBuiltins
 def map(fn: Callable, constant: Dict[str, Any] = None, unique: Dict[str, Iterable[Any]] = None, mean: bool = False)\
         -> List:
