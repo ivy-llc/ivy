@@ -4,15 +4,16 @@ import numpy as np
 from types import ModuleType
 
 
-wrap_methods_modules = []
+wrapped_modules_n_classes = []
 NON_WRAPPED_METHODS = ['current_framework', 'current_framework_str', 'set_framework', 'get_framework',
                        'unset_framework', 'set_debug_mode', 'set_breakpoint_debug_mode', 'set_exception_debug_mode',
                        'unset_debug_mode', 'debug_mode', 'nested_map', 'to_ivy', 'args_to_ivy', 'to_native',
                        'args_to_native', 'default', 'exists', 'set_min_base', 'get_min_base', 'set_min_denominator',
                        'get_min_denominator', 'split_func_call_across_gpus', 'cache_fn', 'split_func_call',
-                       'compile_native', 'compile_ivy', 'dev_to_str', 'str_to_dev', 'memory_on_dev',
-                       'gpu_is_available', 'num_gpus', 'tpu_is_available', 'dtype_to_str', 'cprint', 'to_ivy_module',
-                       'tree_flatten', 'tree_unflatten', 'start_compiling', 'stop_compiling', 'get_compiled']
+                       'compile_native', 'compile_ivy', 'dev', 'dev_str', 'dev_to_str', 'str_to_dev', 'memory_on_dev',
+                       'gpu_is_available', 'num_gpus', 'tpu_is_available', 'dtype', 'dtype_to_str', 'cprint',
+                       'to_ivy_module', 'tree_flatten', 'tree_unflatten', 'start_compiling', 'stop_compiling',
+                       'get_compiled']
 NON_ARRAY_RET_METHODS = ['to_numpy', 'to_list', 'to_scalar', 'unstack', 'split', 'shape', 'get_num_dims', 'is_array',
                          'is_variable']
 
@@ -70,34 +71,42 @@ def _invalid_fn(fn, fs=None):
     return True
 
 
-def _wrap_or_unwrap_methods(wrap_or_unwrap_fn, val=None, fs=None, depth=0):
+def _wrap_or_unwrap_methods(wrap_or_unwrap_fn, val=None, fs=None, classes_to_wrap=None, depth=0):
+    classes_to_wrap = [] if classes_to_wrap is None else classes_to_wrap
     if val is None:
         val = ivy
     if fs is None:
         fs = ivy.current_framework_str()
-    if isinstance(val, ModuleType):
-        if (val in wrap_methods_modules or '__file__' not in val.__dict__ or
-                'ivy' not in val.__file__ or 'framework_handler' in val.__file__):
+    is_class = inspect.isclass(val)
+    if isinstance(val, ModuleType) or (val in classes_to_wrap):
+        if val in wrapped_modules_n_classes or (('__file__' not in val.__dict__ or
+                'ivy' not in val.__file__ or 'framework_handler' in val.__file__) and not is_class):
             return val
-        wrap_methods_modules.append(val)
+        wrapped_modules_n_classes.append(val)
         for k, v in val.__dict__.items():
-            if v is None:
-                val.__dict__[k] = v
+            if is_class:
+                if v is None:
+                    setattr(val, k, v)
+                else:
+                    setattr(val, k, _wrap_or_unwrap_methods(wrap_or_unwrap_fn, v, fs, classes_to_wrap, depth + 1))
             else:
-                val.__dict__[k] = _wrap_or_unwrap_methods(wrap_or_unwrap_fn, v, fs, depth+1)
+                if v is None:
+                    val.__dict__[k] = v
+                else:
+                    val.__dict__[k] = _wrap_or_unwrap_methods(wrap_or_unwrap_fn, v, fs, classes_to_wrap, depth + 1)
         if depth == 0:
-            wrap_methods_modules.clear()
+            wrapped_modules_n_classes.clear()
         return val
-    elif callable(val) and not inspect.isclass(val):
+    elif callable(val) and not is_class:
         if depth == 0:
-            wrap_methods_modules.clear()
+            wrapped_modules_n_classes.clear()
         if hasattr(val, 'inner_fn') and _invalid_fn(val.inner_fn):
             return val
         elif _invalid_fn(val):
             return val
         return wrap_or_unwrap_fn(val)
     if depth == 0:
-        wrap_methods_modules.clear()
+        wrapped_modules_n_classes.clear()
     return val
 
 
