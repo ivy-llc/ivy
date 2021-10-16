@@ -53,17 +53,15 @@ class Graph:
     def _call(self, *args, **kwargs):
         # ToDo: make this more efficient, this is all called at runtime
         args_cont = ivy.Container(args, types_to_iteratively_nest=(list, tuple))
-        ivy.Container.multi_map(lambda xs, kc: self.set_param(xs[0], xs[1]) if ivy.exists(xs[0]) else None,
-                                [self._arg_input_idxs, args_cont])
+        ivy.Container.multi_map(lambda xs, kc: self.set_param(xs[0], xs[1]), [self._arg_input_idxs, args_cont])
         kwargs_cont = ivy.Container(kwargs, types_to_iteratively_nest=(list, tuple))
-        ivy.Container.multi_map(lambda xs, kc: self.set_param(xs[0], xs[1]) if ivy.exists(xs[0]) else None,
-                                [self._kwarg_input_idxs, kwargs_cont])
+        ivy.Container.multi_map(lambda xs, kc: self.set_param(xs[0], xs[1]), [self._kwarg_input_idxs, kwargs_cont])
         for fn in self._functions:
             arg_param_cont = fn.arg_idxs_cont.map(lambda idx_, kc: self._param_dict[idx_])
             kwarg_param_cont = fn.kwarg_idxs_cont.map(lambda idx_, kc: self._param_dict[idx_])
             ret_cont = fn(arg_param_cont, kwarg_param_cont)
             ivy.Container.multi_map(lambda xs, kc: self.set_param(xs[0], xs[1]), [fn.ret_idxs_cont, ret_cont])
-        ret = self._output_idxs.map(lambda x, kc: self._param_dict[x] if ivy.exists(x) else None).to_raw()
+        ret = self._output_idxs.map(lambda x, kc: self._param_dict[x]).to_raw()
         if len(ret) == 1:
             return ret[0]
         return ret
