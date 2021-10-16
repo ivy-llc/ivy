@@ -25,7 +25,7 @@ class Graph:
 
         # graph storage
         self._param_dict = dict()
-        self._fn_dict = dict()
+        self._functions = list()
 
     # Compute output idxs #
     # --------------------#
@@ -44,23 +44,8 @@ class Graph:
     def set_param(self, idx, param):
         self._param_dict[idx] = param
 
-    def set_fn(self, idx, fn):
-        self._fn_dict[idx] = fn
-
-    # Getters #
-    # --------#
-
-    def get_param(self, idx):
-        # ToDo: make this more efficient, this is all called at runtime
-        param = self._param_dict[idx]
-        if ivy.exists(param):
-            return param
-        fn = self._fn_dict[idx]
-        arg_param_cont = fn.arg_idxs_cont.map(lambda idx_, kc: self.get_param(idx_))
-        kwarg_param_cont = fn.kwarg_idxs_cont.map(lambda idx_, kc: self.get_param(idx_))
-        ret_cont = fn(arg_param_cont, kwarg_param_cont)
-        ivy.Container.multi_map(lambda xs, kc: self.set_param(xs[0], xs[1]), [fn.ret_idxs_cont, ret_cont])
-        return self._param_dict[idx]
+    def add_fn(self, fn):
+        self._functions.append(fn)
 
     # Function creation #
     # ------------------#
@@ -73,8 +58,12 @@ class Graph:
         kwargs_cont = ivy.Container(kwargs, types_to_iteratively_nest=(list, tuple))
         ivy.Container.multi_map(lambda xs, kc: self.set_param(xs[0], xs[1]) if ivy.exists(xs[0]) else None,
                                 [self._kwarg_input_idxs, kwargs_cont])
-        output_cont = self._output_idxs.map(lambda x, kc: self.get_param(x) if ivy.exists(x) else None)
-        ret = output_cont.to_raw()
+        for fn in self._functions:
+            arg_param_cont = fn.arg_idxs_cont.map(lambda idx_, kc: self._param_dict[idx_])
+            kwarg_param_cont = fn.kwarg_idxs_cont.map(lambda idx_, kc: self._param_dict[idx_])
+            ret_cont = fn(arg_param_cont, kwarg_param_cont)
+            ivy.Container.multi_map(lambda xs, kc: self.set_param(xs[0], xs[1]), [fn.ret_idxs_cont, ret_cont])
+        ret = self._output_idxs.map(lambda x, kc: self._param_dict[x] if ivy.exists(x) else None).to_raw()
         if len(ret) == 1:
             return ret[0]
         return ret
@@ -87,7 +76,7 @@ class Graph:
 
     def clear(self):
         self._param_dict.clear()
-        self._fn_dict.clear()
+        self._functions.clear()
 
 
 graph = None
@@ -155,9 +144,8 @@ def _wrap_method_for_compiling(fn):
         [graph.set_param(id(v), None)
          for _, v in ivy.Container(ret, types_to_iteratively_nest=(list, tuple)).to_iterator() if ivy.is_array(v)]
 
-        # initialize empty keys for this function in the graph
-        [graph.set_fn(id(v), new_fn)
-         for _, v in ivy.Container(ret, types_to_iteratively_nest=(list, tuple)).to_iterator() if ivy.is_array(v)]
+        # add this function to the graph
+        graph.add_fn(new_fn)
 
         # return the function output, as ivy.Array instances
         return ivy.to_ivy(ret_raw)
