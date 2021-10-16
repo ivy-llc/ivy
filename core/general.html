@@ -94,7 +94,9 @@
 <li class="toctree-l1"><a class="reference internal" href="device.html">Device</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">General</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="general/index_nest.html">index_nest</a></li>
+<li class="toctree-l2"><a class="reference internal" href="general/set_nest_at_index.html">set_nest_at_index</a></li>
 <li class="toctree-l2"><a class="reference internal" href="general/multi_index_nest.html">multi_index_nest</a></li>
+<li class="toctree-l2"><a class="reference internal" href="general/set_nest_at_indices.html">set_nest_at_indices</a></li>
 <li class="toctree-l2"><a class="reference internal" href="general/map.html">map</a></li>
 <li class="toctree-l2"><a class="reference internal" href="general/nested_map.html">nested_map</a></li>
 <li class="toctree-l2"><a class="reference internal" href="general/to_ivy.html">to_ivy</a></li>
@@ -1083,13 +1085,13 @@ Default is ‘float32’.</p></li>
 
 <dl class="py function">
 <dt id="ivy.core.general.index_nest">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">index_nest</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">nest</span></em>, <em class="sig-param"><span class="n">indices</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#index_nest"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.index_nest" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">index_nest</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">nest</span></em>, <em class="sig-param"><span class="n">index</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#index_nest"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.index_nest" title="Permalink to this definition">¶</a></dt>
 <dd><p>Index a nested object, using a tuple of indices or keys in the case of dicts.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>nest</strong> (<em>nested</em>) – The nested object to slice.</p></li>
-<li><p><strong>indices</strong> (<em>tuple of indices</em>) – A tuple of indices to apply.</p></li>
+<li><p><strong>index</strong> (<em>tuple of indices</em>) – A tuple of indices to apply.</p></li>
 </ul>
 </dd>
 </dl>
@@ -1304,13 +1306,13 @@ Default is ‘float32’.</p></li>
 
 <dl class="py function">
 <dt id="ivy.core.general.multi_index_nest">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">multi_index_nest</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">nest</span></em>, <em class="sig-param"><span class="n">multi_indices</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#multi_index_nest"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.multi_index_nest" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">multi_index_nest</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">nest</span></em>, <em class="sig-param"><span class="n">indices</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#multi_index_nest"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.multi_index_nest" title="Permalink to this definition">¶</a></dt>
 <dd><p>Repeatedly index a nested object, using a tuple of tuples of indices or keys in the case of dicts.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>nest</strong> (<em>nested</em>) – The nested object to slice.</p></li>
-<li><p><strong>multi_indices</strong> (<em>tuple of tuples of indices</em>) – A tuple of tuples of indices to apply.</p></li>
+<li><p><strong>indices</strong> (<em>tuple of tuples of indices</em>) – A tuple of tuples of indices to apply.</p></li>
 </ul>
 </dd>
 </dl>
@@ -1532,6 +1534,25 @@ In this case, the value is inferred from the length of the array and remaining d
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>val</strong> (<em>float</em>) – The new value to set the minimum denominator to.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.core.general.set_nest_at_index">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">set_nest_at_index</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">nest</span></em>, <em class="sig-param"><span class="n">index</span></em>, <em class="sig-param"><span class="n">value</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#set_nest_at_index"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.set_nest_at_index" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt id="ivy.core.general.set_nest_at_indices">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">set_nest_at_indices</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">nest</span></em>, <em class="sig-param"><span class="n">indices</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#set_nest_at_indices"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.set_nest_at_indices" title="Permalink to this definition">¶</a></dt>
+<dd><p>Repeatedly index a nested object, using a tuple of tuples of indices or keys in the case of dicts.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>nest</strong> (<em>nested</em>) – The nested object to slice.</p></li>
+<li><p><strong>indices</strong> (<em>tuple of tuples of indices</em>) – A tuple of tuples of indices to apply.</p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>
@@ -1927,7 +1948,9 @@ If not given, then the type of the original array is used.</p></li>
 <p class="caption"><span class="caption-text">General</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="general/index_nest.html">index_nest</a></li>
+<li class="toctree-l1"><a class="reference internal" href="general/set_nest_at_index.html">set_nest_at_index</a></li>
 <li class="toctree-l1"><a class="reference internal" href="general/multi_index_nest.html">multi_index_nest</a></li>
+<li class="toctree-l1"><a class="reference internal" href="general/set_nest_at_indices.html">set_nest_at_indices</a></li>
 <li class="toctree-l1"><a class="reference internal" href="general/map.html">map</a></li>
 <li class="toctree-l1"><a class="reference internal" href="general/nested_map.html">nested_map</a></li>
 <li class="toctree-l1"><a class="reference internal" href="general/to_ivy.html">to_ivy</a></li>

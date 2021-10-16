@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>cross &mdash; Ivy 1.0 documentation</title>
+  <title>set_nest_at_indices &mdash; Ivy 1.0 documentation</title>
   
 
   
@@ -36,8 +36,8 @@
   <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="matmul" href="matmul.html" />
-    <link rel="prev" title="one_hot" href="one_hot.html" /> 
+    <link rel="next" title="map" href="map.html" />
+    <link rel="prev" title="multi_index_nest" href="multi_index_nest.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -96,7 +96,7 @@
 <li class="toctree-l2"><a class="reference internal" href="index_nest.html">index_nest</a></li>
 <li class="toctree-l2"><a class="reference internal" href="set_nest_at_index.html">set_nest_at_index</a></li>
 <li class="toctree-l2"><a class="reference internal" href="multi_index_nest.html">multi_index_nest</a></li>
-<li class="toctree-l2"><a class="reference internal" href="set_nest_at_indices.html">set_nest_at_indices</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">set_nest_at_indices</a></li>
 <li class="toctree-l2"><a class="reference internal" href="map.html">map</a></li>
 <li class="toctree-l2"><a class="reference internal" href="nested_map.html">nested_map</a></li>
 <li class="toctree-l2"><a class="reference internal" href="to_ivy.html">to_ivy</a></li>
@@ -156,7 +156,7 @@
 <li class="toctree-l2"><a class="reference internal" href="ones.html">ones</a></li>
 <li class="toctree-l2"><a class="reference internal" href="ones_like.html">ones_like</a></li>
 <li class="toctree-l2"><a class="reference internal" href="one_hot.html">one_hot</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">cross</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cross.html">cross</a></li>
 <li class="toctree-l2"><a class="reference internal" href="matmul.html">matmul</a></li>
 <li class="toctree-l2"><a class="reference internal" href="cumsum.html">cumsum</a></li>
 <li class="toctree-l2"><a class="reference internal" href="cumprod.html">cumprod</a></li>
@@ -271,13 +271,13 @@
         
           <li><a href="../general.html">General</a> &raquo;</li>
         
-      <li>cross</li>
+      <li>set_nest_at_indices</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="../../_sources/core/general/cross.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../_sources/core/general/set_nest_at_indices.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -290,25 +290,18 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="cross">
-<h1>cross<a class="headerlink" href="#cross" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="set-nest-at-indices">
+<h1>set_nest_at_indices<a class="headerlink" href="#set-nest-at-indices" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
-<dt id="ivy.core.general.cross">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">cross</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x1</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">x2</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">f</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>ivy.Framework<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; Union<span class="p">[</span>ivy.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span><a class="reference internal" href="../../_modules/ivy/core/general.html#cross"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.cross" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns the cross product of two (arrays of) vectors in R^3.
-The cross product of x1 and x2 in R^3 is a vector perpendicular to both x1 and x2.
-If x1 and x2 are arrays of vectors, the vectors are defined by the last axis of x1 and x2 by default which must have
-dimension 3.</p>
+<dt id="ivy.core.general.set_nest_at_indices">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">set_nest_at_indices</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">nest</span></em>, <em class="sig-param"><span class="n">indices</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/general.html#set_nest_at_indices"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.set_nest_at_indices" title="Permalink to this definition">¶</a></dt>
+<dd><p>Repeatedly index a nested object, using a tuple of tuples of indices or keys in the case of dicts.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>x1</strong> (<em>array</em>) – Components of the first vector(s).</p></li>
-<li><p><strong>x2</strong> (<em>array</em>) – Components of the second vector(s).</p></li>
-<li><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning framework. Inferred from inputs if None.</p></li>
+<li><p><strong>nest</strong> (<em>nested</em>) – The nested object to slice.</p></li>
+<li><p><strong>indices</strong> (<em>tuple of tuples of indices</em>) – A tuple of tuples of indices to apply.</p></li>
 </ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Vector cross product(s).</p>
 </dd>
 </dl>
 </dd></dl>
@@ -328,10 +321,10 @@ dimension 3.</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="matmul.html" class="btn btn-neutral float-right" title="matmul" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="map.html" class="btn btn-neutral float-right" title="map" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="one_hot.html" class="btn btn-neutral float-left" title="one_hot" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="multi_index_nest.html" class="btn btn-neutral float-left" title="multi_index_nest" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

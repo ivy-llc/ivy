@@ -230,31 +230,50 @@
 <span class="c1"># Map #</span>
 <span class="c1"># ----#</span>
 
-<div class="viewcode-block" id="index_nest"><a class="viewcode-back" href="../../../core/general/index_nest.html#ivy.core.general.index_nest">[docs]</a><span class="k">def</span> <span class="nf">index_nest</span><span class="p">(</span><span class="n">nest</span><span class="p">,</span> <span class="n">indices</span><span class="p">):</span>
+<div class="viewcode-block" id="index_nest"><a class="viewcode-back" href="../../../core/general/index_nest.html#ivy.core.general.index_nest">[docs]</a><span class="k">def</span> <span class="nf">index_nest</span><span class="p">(</span><span class="n">nest</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Index a nested object, using a tuple of indices or keys in the case of dicts.</span>
 
 <span class="sd">    :param nest: The nested object to slice.</span>
 <span class="sd">    :type nest: nested</span>
-<span class="sd">    :param indices: A tuple of indices to apply.</span>
-<span class="sd">    :type indices: tuple of indices</span>
+<span class="sd">    :param index: A tuple of indices to apply.</span>
+<span class="sd">    :type index: tuple of indices</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">ret</span> <span class="o">=</span> <span class="n">nest</span>
-    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">indices</span><span class="p">:</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">index</span><span class="p">:</span>
         <span class="n">ret</span> <span class="o">=</span> <span class="n">ret</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
     <span class="k">return</span> <span class="n">ret</span></div>
 
 
-<div class="viewcode-block" id="multi_index_nest"><a class="viewcode-back" href="../../../core/general/multi_index_nest.html#ivy.core.general.multi_index_nest">[docs]</a><span class="k">def</span> <span class="nf">multi_index_nest</span><span class="p">(</span><span class="n">nest</span><span class="p">,</span> <span class="n">multi_indices</span><span class="p">):</span>
+<div class="viewcode-block" id="set_nest_at_index"><a class="viewcode-back" href="../../../core/general/set_nest_at_index.html#ivy.core.general.set_nest_at_index">[docs]</a><span class="k">def</span> <span class="nf">set_nest_at_index</span><span class="p">(</span><span class="n">nest</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">index</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">nest</span><span class="p">[</span><span class="n">index</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">=</span> <span class="n">value</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">set_nest_at_index</span><span class="p">(</span><span class="n">nest</span><span class="p">[</span><span class="n">index</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span> <span class="n">index</span><span class="p">[</span><span class="mi">1</span><span class="p">:],</span> <span class="n">value</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="multi_index_nest"><a class="viewcode-back" href="../../../core/general/multi_index_nest.html#ivy.core.general.multi_index_nest">[docs]</a><span class="k">def</span> <span class="nf">multi_index_nest</span><span class="p">(</span><span class="n">nest</span><span class="p">,</span> <span class="n">indices</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Repeatedly index a nested object, using a tuple of tuples of indices or keys in the case of dicts.</span>
 
 <span class="sd">    :param nest: The nested object to slice.</span>
 <span class="sd">    :type nest: nested</span>
-<span class="sd">    :param multi_indices: A tuple of tuples of indices to apply.</span>
-<span class="sd">    :type multi_indices: tuple of tuples of indices</span>
+<span class="sd">    :param indices: A tuple of tuples of indices to apply.</span>
+<span class="sd">    :type indices: tuple of tuples of indices</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="p">[</span><span class="n">index_nest</span><span class="p">(</span><span class="n">nest</span><span class="p">,</span> <span class="n">indices</span><span class="p">)</span> <span class="k">for</span> <span class="n">indices</span> <span class="ow">in</span> <span class="n">multi_indices</span><span class="p">]</span></div>
+    <span class="k">return</span> <span class="p">[</span><span class="n">index_nest</span><span class="p">(</span><span class="n">nest</span><span class="p">,</span> <span class="n">index</span><span class="p">)</span> <span class="k">for</span> <span class="n">index</span> <span class="ow">in</span> <span class="n">indices</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="set_nest_at_indices"><a class="viewcode-back" href="../../../core/general/set_nest_at_indices.html#ivy.core.general.set_nest_at_indices">[docs]</a><span class="k">def</span> <span class="nf">set_nest_at_indices</span><span class="p">(</span><span class="n">nest</span><span class="p">,</span> <span class="n">indices</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Repeatedly index a nested object, using a tuple of tuples of indices or keys in the case of dicts.</span>
+
+<span class="sd">    :param nest: The nested object to slice.</span>
+<span class="sd">    :type nest: nested</span>
+<span class="sd">    :param indices: A tuple of tuples of indices to apply.</span>
+<span class="sd">    :type indices: tuple of tuples of indices</span>
+<span class="sd">    &quot;&quot;&quot;</span></div>
+
 
 
 <span class="c1"># noinspection PyShadowingBuiltins</span>
