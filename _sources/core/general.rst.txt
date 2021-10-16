@@ -16,6 +16,7 @@ General
    general/set_nest_at_index.rst
    general/multi_index_nest.rst
    general/set_nest_at_indices.rst
+   general/nested_indices_where.rst
    general/map.rst
    general/nested_map.rst
    general/to_ivy.rst
