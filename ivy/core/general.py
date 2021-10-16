@@ -70,6 +70,23 @@ def set_nest_at_index(nest, index, value):
         set_nest_at_index(nest[index[0]], index[1:], value)
 
 
+def map_nest_at_index(nest, index, fn):
+    """
+    Set the value of a nested item at a specified index
+
+    :param nest: The nested object to update.
+    :type nest: nested
+    :param index: A tuple of indices for the index at which to update.
+    :type index: tuple of indices
+    :param fn: The function to perform on the nest at the given index.
+    :type fn: callable
+    """
+    if len(index) == 1:
+        nest[index[0]] = fn(nest[index[0]])
+    else:
+        map_nest_at_index(nest[index[0]], index[1:], fn)
+
+
 def multi_index_nest(nest, indices):
     """
     Repeatedly index a nested object, using a tuple of tuples of indices or keys in the case of dicts.
