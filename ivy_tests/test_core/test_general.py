@@ -41,6 +41,19 @@ def _get_shape_of_list(lst, shape=()):
 # Tests #
 # ------#
 
+# nested_slice
+@pytest.mark.parametrize(
+    "nest", [{'a': [[0], [1]], 'b': {'c': (((2,), (4,)), ((6,), (8,)))}}])
+@pytest.mark.parametrize(
+    "slices", [('a', 0, 0), ('a', 1, 0), ('b', 'c', 0), ('b', 'c', 1, 0)])
+def test_nested_slice(nest, slices, dev_str, call):
+    ret = ivy.nested_slice(nest, slices)
+    true_ret = nest
+    for s in slices:
+        true_ret = true_ret[s]
+    assert ret == true_ret
+
+
 # set_framework
 @pytest.mark.parametrize(
     "fw_str", ['numpy', 'jax', 'tensorflow', 'torch', 'mxnd'])
