@@ -41,17 +41,33 @@ def _get_shape_of_list(lst, shape=()):
 # Tests #
 # ------#
 
-# nested_slice
+# index_nest
 @pytest.mark.parametrize(
     "nest", [{'a': [[0], [1]], 'b': {'c': (((2,), (4,)), ((6,), (8,)))}}])
 @pytest.mark.parametrize(
-    "slices", [('a', 0, 0), ('a', 1, 0), ('b', 'c', 0), ('b', 'c', 1, 0)])
-def test_nested_slice(nest, slices, dev_str, call):
-    ret = ivy.nested_slice(nest, slices)
+    "indices", [('a', 0, 0), ('a', 1, 0), ('b', 'c', 0), ('b', 'c', 1, 0)])
+def test_index_nest(nest, indices, dev_str, call):
+    ret = ivy.index_nest(nest, indices)
     true_ret = nest
-    for s in slices:
-        true_ret = true_ret[s]
+    for i in indices:
+        true_ret = true_ret[i]
     assert ret == true_ret
+
+
+# multi_index_nest
+@pytest.mark.parametrize(
+    "nest", [{'a': [[0], [1]], 'b': {'c': (((2,), (4,)), ((6,), (8,)))}}])
+@pytest.mark.parametrize(
+    "multi_indices", [(('a', 0, 0), ('a', 1, 0)), (('b', 'c', 0), ('b', 'c', 1, 0))])
+def test_multi_index_nest(nest, multi_indices, dev_str, call):
+    rets = ivy.multi_index_nest(nest, multi_indices)
+    true_rets = list()
+    for indices in multi_indices:
+        true_ret = nest
+        for i in indices:
+            true_ret = true_ret[i]
+        true_rets.append(true_ret)
+    assert rets == true_rets
 
 
 # set_framework
