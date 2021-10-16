@@ -70,9 +70,6 @@ class Array(ArrayWithDevice, ArrayWithGeneral, ArrayWithGradients, ArrayWithImag
 
     def __init__(self, data):
         assert is_array(data)
-        if not wrapped_mode():
-            logging.info('setting ivy.wrapped_mode=True; using ivy.Array classes in non-wrapped mode is not supported.')
-            set_wrapped_mode()
         self._data = data
         self._shape = data.shape
         self._dtype = dtype(self._data)

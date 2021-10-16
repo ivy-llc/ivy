@@ -13,6 +13,7 @@ from ivy.core.device import Profiler as BaseProfiler
 
 
 dev = lambda x: x.context
+dev.__name__ = 'dev'
 
 
 def to_dev(x, dev_str=None):
@@ -39,6 +40,7 @@ def str_to_dev(dev_str):
 
 
 dev_str = lambda x: dev_to_str(dev(x))
+dev_str.__name__ = 'dev_str'
 _callable_dev_str = dev_str
 gpu_is_available = lambda: _mx.context.num_gpus() > 0
 num_gpus = lambda: _mx.context.num_gpus()
