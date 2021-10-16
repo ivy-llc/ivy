@@ -1861,6 +1861,35 @@ def test_container_to_iterator(dev_str, call):
         assert value == expected_value
 
 
+def test_container_to_iterator_values(dev_str, call):
+    dict_in = {'a': ivy.array([1], dev_str=dev_str),
+               'b': {'c': ivy.array([2], dev_str=dev_str), 'd': ivy.array([3], dev_str=dev_str)}}
+    container = Container(dict_in)
+
+    # with key chains
+    container_iterator = container.to_iterator_values()
+    for value, expected_value in zip(
+            container_iterator, [ivy.array([1], dev_str=dev_str), ivy.array([2], dev_str=dev_str),
+                                 ivy.array([3], dev_str=dev_str)]):
+        assert value == expected_value
+
+
+def test_container_to_iterator_keys(dev_str, call):
+    dict_in = {'a': ivy.array([1], dev_str=dev_str),
+               'b': {'c': ivy.array([2], dev_str=dev_str), 'd': ivy.array([3], dev_str=dev_str)}}
+    container = Container(dict_in)
+
+    # with key chains
+    container_iterator = container.to_iterator_keys()
+    for key_chain, expected_key_chain in zip(container_iterator, ['a', 'b/c', 'b/d']):
+        assert key_chain == expected_key_chain
+
+    # with leaf keys
+    container_iterator = container.to_iterator_keys(leaf_keys_only=True)
+    for key, expected_key in zip(container_iterator, ['a', 'c', 'd']):
+        assert key == expected_key
+
+
 def test_container_to_flat_list(dev_str, call):
     dict_in = {'a': ivy.array([1], dev_str=dev_str),
                'b': {'c': ivy.array([2], dev_str=dev_str), 'd': ivy.array([3], dev_str=dev_str)}}
