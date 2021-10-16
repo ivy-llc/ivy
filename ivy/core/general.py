@@ -114,17 +114,11 @@ def nested_indices_where(nest: Iterable, fn: Callable, _index: List = None, _bas
     """
     _index = list() if _index is None else _index
     if isinstance(nest, (tuple, list)):
-        _indices = list()
-        for i, item in enumerate(nest):
-            ret = nested_indices_where(item, fn, _index + [i], False)
-            if ret:
-                _indices += ret
+        _indices = [nested_indices_where(item, fn, _index + [i], False) for i, item in enumerate(nest)]
+        _indices = [idx for idxs in _indices if idxs for idx in idxs]
     elif isinstance(nest, dict):
-        _indices = list()
-        for k, v in nest.items():
-            ret = nested_indices_where(v, fn, _index + [k], False)
-            if ret:
-                _indices += ret
+        _indices = [nested_indices_where(v, fn, _index + [k], False) for k, v in nest.items()]
+        _indices = [idx for idxs in _indices if idxs for idx in idxs]
     else:
         cond_met = fn(nest)
         if cond_met:
