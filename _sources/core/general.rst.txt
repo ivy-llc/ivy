@@ -12,7 +12,8 @@ General
    :maxdepth: -1
    :caption: General
 
-   general/nested_slice.rst
+   general/index_nest.rst
+   general/multi_index_nest.rst
    general/map.rst
    general/nested_map.rst
    general/to_ivy.rst

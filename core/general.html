@@ -36,7 +36,7 @@
   <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="nested_slice" href="general/nested_slice.html" />
+    <link rel="next" title="index_nest" href="general/index_nest.html" />
     <link rel="prev" title="Profiler" href="device/Profiler.html" /> 
 </head>
 
@@ -93,7 +93,8 @@
 <li class="toctree-l1"><a class="reference internal" href="container.html">Container</a></li>
 <li class="toctree-l1"><a class="reference internal" href="device.html">Device</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">General</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="general/nested_slice.html">nested_slice</a></li>
+<li class="toctree-l2"><a class="reference internal" href="general/index_nest.html">index_nest</a></li>
+<li class="toctree-l2"><a class="reference internal" href="general/multi_index_nest.html">multi_index_nest</a></li>
 <li class="toctree-l2"><a class="reference internal" href="general/map.html">map</a></li>
 <li class="toctree-l2"><a class="reference internal" href="general/nested_map.html">nested_map</a></li>
 <li class="toctree-l2"><a class="reference internal" href="general/to_ivy.html">to_ivy</a></li>
@@ -1081,6 +1082,20 @@ Default is ‘float32’.</p></li>
 </dd></dl>
 
 <dl class="py function">
+<dt id="ivy.core.general.index_nest">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">index_nest</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">nest</span></em>, <em class="sig-param"><span class="n">indices</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#index_nest"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.index_nest" title="Permalink to this definition">¶</a></dt>
+<dd><p>Index a nested object, using a tuple of indices or keys in the case of dicts.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>nest</strong> (<em>nested</em>) – The nested object to slice.</p></li>
+<li><p><strong>indices</strong> (<em>tuple of indices</em>) – A tuple of indices to apply.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt id="ivy.core.general.indices_where">
 <code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">indices_where</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">f</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>ivy.Framework<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; Union<span class="p">[</span>ivy.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span><a class="reference internal" href="../_modules/ivy/core/general.html#indices_where"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.indices_where" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns indices or true elements in an input boolean array.</p>
@@ -1288,6 +1303,20 @@ Default is ‘float32’.</p></li>
 </dd></dl>
 
 <dl class="py function">
+<dt id="ivy.core.general.multi_index_nest">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">multi_index_nest</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">nest</span></em>, <em class="sig-param"><span class="n">multi_indices</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#multi_index_nest"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.multi_index_nest" title="Permalink to this definition">¶</a></dt>
+<dd><p>Repeatedly index a nested object, using a tuple of tuples of indices or keys in the case of dicts.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>nest</strong> (<em>nested</em>) – The nested object to slice.</p></li>
+<li><p><strong>multi_indices</strong> (<em>tuple of tuples of indices</em>) – A tuple of tuples of indices to apply.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt id="ivy.core.general.multiprocessing">
 <code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">multiprocessing</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">context</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>str<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">f</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>ivy.Framework<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#multiprocessing"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.multiprocessing" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return framewrk-specific multi-processing module</p>
@@ -1321,20 +1350,6 @@ leaves before applying the method and returning x. If x is not nested, the metho
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>x following the applicable of fn to it’s nested leaves, or x itself if x is not nested.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt id="ivy.core.general.nested_slice">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">nested_slice</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">nest</span></em>, <em class="sig-param"><span class="n">slices</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#nested_slice"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.nested_slice" title="Permalink to this definition">¶</a></dt>
-<dd><p>Slice a nested object, using a tuple of slice objects</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>nest</strong> (<em>nested</em>) – The nested object to slice.</p></li>
-<li><p><strong>slices</strong> (<em>tuple of slices</em>) – A tuple of slices to apply.</p></li>
-</ul>
 </dd>
 </dl>
 </dd></dl>
@@ -1911,7 +1926,8 @@ If not given, then the type of the original array is used.</p></li>
 <div class="toctree-wrapper compound">
 <p class="caption"><span class="caption-text">General</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="general/nested_slice.html">nested_slice</a></li>
+<li class="toctree-l1"><a class="reference internal" href="general/index_nest.html">index_nest</a></li>
+<li class="toctree-l1"><a class="reference internal" href="general/multi_index_nest.html">multi_index_nest</a></li>
 <li class="toctree-l1"><a class="reference internal" href="general/map.html">map</a></li>
 <li class="toctree-l1"><a class="reference internal" href="general/nested_map.html">nested_map</a></li>
 <li class="toctree-l1"><a class="reference internal" href="general/to_ivy.html">to_ivy</a></li>
@@ -2013,7 +2029,7 @@ If not given, then the type of the original array is used.</p></li>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="general/nested_slice.html" class="btn btn-neutral float-right" title="nested_slice" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="general/index_nest.html" class="btn btn-neutral float-right" title="index_nest" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="device/Profiler.html" class="btn btn-neutral float-left" title="Profiler" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
