@@ -72,7 +72,7 @@ def set_nest_at_index(nest, index, value):
 
 def map_nest_at_index(nest, index, fn):
     """
-    Set the value of a nested item at a specified index
+    Map a function to the value of a nested item at a specified index
 
     :param nest: The nested object to update.
     :type nest: nested
@@ -110,7 +110,23 @@ def set_nest_at_indices(nest, indices, values):
     :param values: The new values for updating.
     :type values: sequence of any
     """
+    if not isinstance(values, (list, tuple)):
+        values = [values]*len(indices)
     [set_nest_at_index(nest, index, value) for index, value in zip(indices, values)]
+
+
+def map_nest_at_indices(nest, indices, fn):
+    """
+    Map a function to the values of a nested item at the specified indices
+
+    :param nest: The nested object to update.
+    :type nest: nested
+    :param indices: A tuple of tuples of indices for the indices at which to update.
+    :type indices: tuple of tuples of indices
+    :param fn: The function to perform on the nest at the given index.
+    :type fn: callable
+    """
+    [map_nest_at_index(nest, index, fn) for index in indices]
 
 
 def nested_indices_where(nest: Iterable, fn: Callable, _index: List = None, _base: bool = True)\
