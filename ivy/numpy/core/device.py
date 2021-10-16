@@ -11,8 +11,10 @@ from ivy.core.device import Profiler as BaseProfiler
 
 
 dev = lambda x: 'cpu'
+dev.__name__ = 'dev'
 to_dev = lambda x, dev_str=None: x
 dev_str = lambda x: 'cpu'
+dev_str.__name__ = 'dev_str'
 _dev_str_callable = dev_str
 dev_to_str = lambda dev_in: 'cpu'
 str_to_dev = lambda dev_str: 'cpu'

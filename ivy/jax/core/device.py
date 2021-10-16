@@ -52,6 +52,7 @@ def str_to_dev(dev_str):
 
 
 dev_str = lambda x: dev_to_str(dev(x))
+dev_str.__name__ = 'dev_str'
 
 
 def _dev_is_available(base_dev_str):

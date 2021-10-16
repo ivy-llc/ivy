@@ -29,7 +29,7 @@ def reduce_prod(x, axis=None, keepdims=False):
     return _mx.nd.prod(x, axis=axis, keepdims=keepdims)
 
 
-def reduce_mean(x, axis=None, keepdims=False):
+def _reduce_mean(x, axis=None, keepdims=False):
     if axis is None:
         num_dims = len(x.shape)
         axis = tuple(range(num_dims))
@@ -40,9 +40,13 @@ def reduce_mean(x, axis=None, keepdims=False):
     return _mx.nd.mean(x, axis=axis, keepdims=keepdims)
 
 
+def reduce_mean(x, axis=None, keepdims=False):
+    return _reduce_mean(x, axis, keepdims)
+
+
 def reduce_var(x, axis=None, keepdims=False):
-    mean_of_x_sqrd = reduce_mean(x ** 2, axis, keepdims)
-    mean_of_x = reduce_mean(x, axis, keepdims)
+    mean_of_x_sqrd = _reduce_mean(x ** 2, axis, keepdims)
+    mean_of_x = _reduce_mean(x, axis, keepdims)
     return mean_of_x_sqrd - mean_of_x ** 2
 
 

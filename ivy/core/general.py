@@ -63,7 +63,7 @@ def map(fn: Callable, constant: Dict[str, Any] = None, unique: Dict[str, Iterabl
 
 
 def nested_map(x: Union[Union[ivy.Array, ivy.NativeArray], Iterable], fn: Callable, include_derived: bool = False,
-               max_depth: int = 1, depth: int = 0)\
+               max_depth: int = None, depth: int = 0)\
         -> Union[Union[ivy.Array, ivy.NativeArray], Iterable]:
     """
     Applies a function on x in a nested manner, whereby all dicts, lists and tuples are traversed to their lowest
@@ -81,7 +81,7 @@ def nested_map(x: Union[Union[ivy.Array, ivy.NativeArray], Iterable], fn: Callab
     :type depth: int, used internally
     :return: x following the applicable of fn to it's nested leaves, or x itself if x is not nested.
     """
-    if depth > max_depth:
+    if exists(max_depth) and depth > max_depth:
         return x
     class_instance = type(x)
     check_fn = (lambda x_, t: isinstance(x, t)) if include_derived else (lambda x_, t: type(x) is t)
