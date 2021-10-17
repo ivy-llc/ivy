@@ -7,9 +7,9 @@ import mxnet as _mx
 
 # local
 # noinspection PyProtectedMember
-from ivy.mxnd.core.general import _mxnet_init_context
+from ivy.mxnet.core.general import _mxnet_init_context
 # noinspection PyProtectedMember
-from ivy.mxnd.core.general import _1_dim_array_to_flat_array
+from ivy.mxnet.core.general import _1_dim_array_to_flat_array
 
 
 def random_uniform(low=0., high=1., shape=None, dev_str='cpu'):

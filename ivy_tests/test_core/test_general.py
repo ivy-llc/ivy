@@ -164,7 +164,7 @@ def test_nested_indices_where(nest, dev_str, call):
 
 # set_framework
 @pytest.mark.parametrize(
-    "fw_str", ['numpy', 'jax', 'tensorflow', 'torch', 'mxnd'])
+    "fw_str", ['numpy', 'jax', 'tensorflow', 'torch', 'mxnet'])
 def test_set_framework(fw_str, dev_str, call):
     ivy.set_framework(fw_str)
     ivy.unset_framework()
