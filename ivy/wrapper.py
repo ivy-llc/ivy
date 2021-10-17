@@ -93,25 +93,30 @@ def _wrap_or_unwrap_methods(wrap_or_unwrap_fn, val=None, fs=None, classes_to_wra
                 (str_to_check not in val.__file__) or 'framework_handler' in val.__file__) and not is_class):
             return val
         wrapped_modules_n_classes.append(val)
-        for k, v in val.__dict__.items():
-            if native and (k in NATIVE_KEYS_TO_SKIP[fs] or k[0] == '_'):
-                continue
-            if is_class:
-                if v is None:
-                    setattr(val, k, v)
-                else:
-                    setattr(val, k, _wrap_or_unwrap_methods(
-                        wrap_or_unwrap_fn, v, fs, classes_to_wrap, native, depth + 1))
-            else:
+        if is_class:
+            for k in dir(val):
+                v = getattr(val, k)
+                if v is not None:
+                    # noinspection PyBroadException
+                    try:
+                        setattr(val, k, _wrap_or_unwrap_methods(
+                            wrap_or_unwrap_fn, v, fs, classes_to_wrap, native, depth + 1))
+                    except Exception:
+                        pass
+        else:
+            for k, v in val.__dict__.items():
+                if native and (k in NATIVE_KEYS_TO_SKIP[fs] or k[0] == '_'):
+                    continue
                 if v is None:
                     val.__dict__[k] = v
                 else:
                     # noinspection PyUnresolvedReferences
                     if not native or k in val.__all__:
+                        # noinspection PyBroadException
                         try:
                             val.__dict__[k] = _wrap_or_unwrap_methods(
                                 wrap_or_unwrap_fn, v, fs, classes_to_wrap, native, depth + 1)
-                        except RuntimeError:
+                        except Exception:
                             pass
         if depth == 0:
             wrapped_modules_n_classes.clear()
