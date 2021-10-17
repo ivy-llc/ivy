@@ -1,5 +1,6 @@
 import ivy
 import inspect
+import importlib
 import numpy as np
 from types import ModuleType
 
@@ -24,6 +25,12 @@ FW_FN_KEYWORDS = {'numpy': [],
                   'tensorflow': [],
                   'torch': [],
                   'mxnet': ['ndarray']}
+
+NATIVE_KEYS_TO_SKIP = {'numpy': [],
+                       'jax': [],
+                       'tensorflow': [],
+                       'torch': ['classes', 'torch', 'is_grad_enabled', 'get_default_dtype'],
+                       'mxnet': []}
 
 wrapped_mode_val = False
 
@@ -73,38 +80,47 @@ def _invalid_fn(fn, fs=None):
     return True
 
 
-def _wrap_or_unwrap_methods(wrap_or_unwrap_fn, val=None, fs=None, classes_to_wrap=None, depth=0):
+def _wrap_or_unwrap_methods(wrap_or_unwrap_fn, val=None, fs=None, classes_to_wrap=None, native=False, depth=0):
     classes_to_wrap = [] if classes_to_wrap is None else classes_to_wrap
-    if val is None:
-        val = ivy
     if fs is None:
         fs = ivy.current_framework_str()
+    if val is None:
+        val = importlib.import_module(ivy.current_framework_str()) if native else ivy
+    str_to_check = fs if native else 'ivy'
     is_class = inspect.isclass(val)
     if isinstance(val, ModuleType) or (val in classes_to_wrap):
         if val in wrapped_modules_n_classes or (('__file__' not in val.__dict__ or
-                'ivy' not in val.__file__ or 'framework_handler' in val.__file__) and not is_class):
+                (str_to_check not in val.__file__) or 'framework_handler' in val.__file__) and not is_class):
             return val
         wrapped_modules_n_classes.append(val)
         for k, v in val.__dict__.items():
+            if native and (k in NATIVE_KEYS_TO_SKIP[fs] or k[0] == '_'):
+                continue
             if is_class:
                 if v is None:
                     setattr(val, k, v)
                 else:
-                    setattr(val, k, _wrap_or_unwrap_methods(wrap_or_unwrap_fn, v, fs, classes_to_wrap, depth + 1))
+                    setattr(val, k, _wrap_or_unwrap_methods(
+                        wrap_or_unwrap_fn, v, fs, classes_to_wrap, native, depth + 1))
             else:
                 if v is None:
                     val.__dict__[k] = v
                 else:
-                    val.__dict__[k] = _wrap_or_unwrap_methods(wrap_or_unwrap_fn, v, fs, classes_to_wrap, depth + 1)
+                    # noinspection PyUnresolvedReferences
+                    if not native or k in val.__all__:
+                        try:
+                            val.__dict__[k] = _wrap_or_unwrap_methods(
+                                wrap_or_unwrap_fn, v, fs, classes_to_wrap, native, depth + 1)
+                        except RuntimeError:
+                            pass
         if depth == 0:
             wrapped_modules_n_classes.clear()
         return val
     elif callable(val) and not is_class:
         if depth == 0:
             wrapped_modules_n_classes.clear()
-        if hasattr(val, 'inner_fn') and _invalid_fn(val.inner_fn):
-            return val
-        elif _invalid_fn(val):
+        if (hasattr(val, 'inner_fn') and (_invalid_fn(val.inner_fn) and not native))\
+                or (_invalid_fn(val) and not native):
             return val
         return wrap_or_unwrap_fn(val)
     if depth == 0:
