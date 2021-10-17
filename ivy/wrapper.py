@@ -29,7 +29,7 @@ FW_FN_KEYWORDS = {'numpy': [],
 NATIVE_KEYS_TO_SKIP = {'numpy': [],
                        'jax': [],
                        'tensorflow': [],
-                       'torch': ['classes', 'torch', 'is_grad_enabled', 'get_default_dtype'],
+                       'torch': ['classes', 'torch', 'is_grad_enabled', 'get_default_dtype', 'numel'],
                        'mxnet': []}
 
 wrapped_mode_val = False
