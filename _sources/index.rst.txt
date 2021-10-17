@@ -290,10 +290,10 @@ Documentation Tree
 
 .. toctree::
    :maxdepth: -1
-   :caption: Mxnd
+   :caption: Mxnet
 
-   mxnd/core.rst
-   mxnd/nn.rst
+   mxnet/core.rst
+   mxnet/nn.rst
 
 
 .. toctree::
