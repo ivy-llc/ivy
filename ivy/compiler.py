@@ -1,10 +1,11 @@
 # global
 import ivy
-import copy
 import inspect
 
 # local
 from ivy.wrapper import _wrap_or_unwrap_methods, NON_WRAPPED_METHODS, NON_ARRAY_RET_METHODS
+
+compiling = False
 
 
 class Graph:
@@ -17,13 +18,13 @@ class Graph:
 
         # positional args
         self._args = args
-        self._arg_nest_idxs = ivy.nested_indices_where(args, lambda x: isinstance(x, ivy.Array))
-        self._arg_param_ids = [id(x._data) for x in ivy.multi_index_nest(list(args), self._arg_nest_idxs)]
+        self._arg_nest_idxs = ivy.nested_indices_where(args, lambda x: ivy.is_array(x))
+        self._arg_param_ids = [id(x) for x in ivy.multi_index_nest(list(args), self._arg_nest_idxs)]
 
         # key-word args
         self._kwargs = kwargs
-        self._kwarg_nest_idxs = ivy.nested_indices_where(kwargs, lambda x: isinstance(x, ivy.Array))
-        self._kwarg_param_ids = [id(x._data) for x in ivy.multi_index_nest(kwargs, self._kwarg_nest_idxs)]
+        self._kwarg_nest_idxs = ivy.nested_indices_where(kwargs, lambda x: ivy.is_array(x))
+        self._kwarg_param_ids = [id(x) for x in ivy.multi_index_nest(kwargs, self._kwarg_nest_idxs)]
 
         # output idxs
         self._output_param_ids = list()
@@ -41,7 +42,7 @@ class Graph:
         if not isinstance(ret, tuple):
             ret = (ret,)
         output_nest_idxs = ivy.nested_indices_where(ret, lambda x: ivy.is_array(x))
-        self._output_param_ids = [id(x._data) for x in ivy.multi_index_nest(list(ret), output_nest_idxs)]
+        self._output_param_ids = [id(x) for x in ivy.multi_index_nest(list(ret), output_nest_idxs)]
 
     # Setters #
     # --------#
@@ -83,12 +84,9 @@ class Graph:
         self._functions.clear()
 
 
-graph = None
-
-
 # Methods #
 
-def _wrap_method_for_compiling(fn):
+def _wrap_method_for_compiling(fn, graph):
 
     if inspect.isclass(fn):
         return fn
@@ -102,8 +100,7 @@ def _wrap_method_for_compiling(fn):
     # noinspection PyUnresolvedReferences,PyProtectedMember
     def _method_wrapped(*args, **kwargs):
 
-        # convert to native if necessary
-        args, kwargs = ivy.args_to_native(*args, **kwargs)
+        # immutable tuple to mutable list
         args = list(args)
 
         # get array idxs for positional args
@@ -117,9 +114,6 @@ def _wrap_method_for_compiling(fn):
         kwargs_cont = ivy.Container(kwargs, types_to_iteratively_nest=(list, tuple))
         kwarg_idxs_cont = kwargs_cont.map(lambda x, kc: id(x) if ivy.is_array(x) else None).prune_empty()
         kwarg_param_ids = list(kwarg_idxs_cont.to_iterator_values())
-
-        # initialize empty keys for these input parameters in the graph
-        [graph.set_param(idx, None) for idx in arg_param_ids + kwarg_param_ids]
 
         # compute the return
         ret_raw = fn(*args, **kwargs)
@@ -147,15 +141,22 @@ def _wrap_method_for_compiling(fn):
         new_fn.output_param_ids = ret_param_ids
         new_fn.output_nest_idxs = ret_nest_idxs
 
-        # initialize empty keys for these output parameters in the graph
-        [graph.set_param(id(v), None)
-         for _, v in ivy.Container(ret, types_to_iteratively_nest=(list, tuple)).to_iterator() if ivy.is_array(v)]
+        # add to graph if compiling
+        if compiling:
 
-        # add this function to the graph
-        graph.add_fn(new_fn)
+            # initialize empty keys for these input parameters in the graph
+            [graph.set_param(idx, None) for idx in arg_param_ids + kwarg_param_ids]
 
-        # return the function output, as ivy.Array instances
-        return ivy.to_ivy(ret_raw)
+            # initialize empty keys for these output parameters in the graph
+            [graph.set_param(id(v), None)
+             for _, v in ivy.Container(ret, types_to_iteratively_nest=(list, tuple)).to_iterator() if
+             ivy.is_array(v)]
+
+            # add this function to the graph
+            graph.add_fn(new_fn)
+
+        # return the function output
+        return ret_raw
 
     if hasattr(fn, '__name__'):
         _method_wrapped.__name__ = fn.__name__
@@ -170,25 +171,20 @@ def _unwrap_method_from_compiling(method_wrapped):
     return method_wrapped.inner_fn
 
 
-def _wrap_methods_for_compiling():
-    return _wrap_or_unwrap_methods(_wrap_method_for_compiling, classes_to_wrap=[ivy.Array])
+def _wrap_methods_for_compiling(graph):
+    return _wrap_or_unwrap_methods(lambda fn: _wrap_method_for_compiling(fn, graph), native=True)
 
 
 def _unwrap_methods_from_compiling():
-    return _wrap_or_unwrap_methods(_unwrap_method_from_compiling, classes_to_wrap=[ivy.Array])
+    return _wrap_or_unwrap_methods(lambda fn: _unwrap_method_from_compiling(fn), native=True)
 
 
 def compile_ivy(fn, *args, **kwargs):
-    args, kwargs = ivy.args_to_ivy(*args, **kwargs)
-    global graph
     graph = Graph(fn, *args, **kwargs)
-    _wrap_methods_for_compiling()
-    # ToDo: work out why the command below assings to the graph param_dict, which cannot then be clearer by any means
-    ivy.set_wrapped_mode()
+    _wrap_methods_for_compiling(graph)
+    global compiling
+    compiling = True
     graph.foward()
-    ivy.unset_wrapped_mode()
+    compiling = False
     _unwrap_methods_from_compiling()
-    local_graph = copy.deepcopy(graph)
-    fn = local_graph.to_function()
-    graph.clear()
-    return fn
+    return graph.to_function()
