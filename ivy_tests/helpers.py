@@ -71,12 +71,12 @@ def get_ivy_torch():
     return ivy.torch
 
 
-def get_ivy_mxnd():
+def get_ivy_mxnet():
     try:
-        import ivy.mxnd
+        import ivy.mxnet
     except ImportError:
         return None
-    return ivy.mxnd
+    return ivy.mxnet
 
 
 _ivy_fws_dict = {'numpy': lambda: get_ivy_numpy(),
@@ -84,7 +84,7 @@ _ivy_fws_dict = {'numpy': lambda: get_ivy_numpy(),
                  'tensorflow': lambda: get_ivy_tensorflow(),
                  'tensorflow_graph': lambda: get_ivy_tensorflow(),
                  'torch': lambda: get_ivy_torch(),
-                 'mxnd': lambda: get_ivy_mxnd()}
+                 'mxnet': lambda: get_ivy_mxnet()}
 
 _iterable_types = [list, tuple, dict]
 _excluded = []

@@ -29,21 +29,21 @@ _array_types['numpy'] = 'ivy.numpy'
 _array_types['jax.interpreters.xla'] = 'ivy.jax'
 _array_types['tensorflow.python.framework.ops'] = 'ivy.tensorflow'
 _array_types['torch'] = 'ivy.torch'
-_array_types['mxnet.ndarray.ndarray'] = 'ivy.mxnd'
+_array_types['mxnet.ndarray.ndarray'] = 'ivy.mxnet'
 
 _framework_dict = dict()
 _framework_dict['numpy'] = 'ivy.numpy'
 _framework_dict['jax'] = 'ivy.jax'
 _framework_dict['tensorflow'] = 'ivy.tensorflow'
 _framework_dict['torch'] = 'ivy.torch'
-_framework_dict['mxnd'] = 'ivy.mxnd'
+_framework_dict['mxnet'] = 'ivy.mxnet'
 
 _framework_reverse_dict = dict()
 _framework_reverse_dict['ivy.numpy'] = 'numpy'
 _framework_reverse_dict['ivy.jax'] = 'jax'
 _framework_reverse_dict['ivy.tensorflow'] = 'tensorflow'
 _framework_reverse_dict['ivy.torch'] = 'torch'
-_framework_reverse_dict['ivy.mxnd'] = 'mxnd'
+_framework_reverse_dict['ivy.mxnet'] = 'mxnet'
 
 
 # Framework Getting/Setting #

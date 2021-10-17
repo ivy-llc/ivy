@@ -14,4 +14,4 @@ NativeVariable = mx.ndarray.ndarray.NDArray
 Device = mx.context.Context
 Dtype = type
 
-backend = 'mxnd'
+backend = 'mxnet'
