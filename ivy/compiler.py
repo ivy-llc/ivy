@@ -9,6 +9,11 @@ from ivy.wrapper import _wrap_or_unwrap_methods, NON_WRAPPED_METHODS, NON_ARRAY_
 
 compiling = False
 
+ARRAY_BUILTINS = ['__neg__', '__pow__', '__rpow__', '__add__', '__radd__', '__sub__', '__rsub__', '__mul__', '__rmul__',
+                  '__truediv__', '__rtruediv__', '__floordiv__', '__rfloordiv__', '__abs__', '__lt__', '__le__',
+                  '__eq__', '__ne__', '__gt__', '__ge__', '__and__', '__rand__', '__or__', '__ror__', '__invert__',
+                  '__xor__', '__rxor__']
+
 CLASSES_TO_WRAP = {'numpy': [],
                    'jax': [],
                    'tensorflow': [],
@@ -96,13 +101,10 @@ class Graph:
 
 def _wrap_method_for_compiling(fn, graph):
 
-    if inspect.isclass(fn):
-        return fn
-    elif hasattr(fn, '__name__') and\
-            (fn.__name__[0] == '_' or fn.__name__ in NON_WRAPPED_METHODS + NON_ARRAY_RET_METHODS) and\
-            (not hasattr(fn, '__qualname__') or '__init__' in fn.__qualname__ or fn.__qualname__[0:8] != 'Array.__'):
-        return fn
-    elif hasattr(fn, 'wrapped_for_compiling') and fn.wrapped_for_compiling:
+    if inspect.isclass(fn) or (hasattr(fn, '__name__') and
+            ((fn.__name__[0] == '_' and fn.__name__ not in ARRAY_BUILTINS) or
+             fn.__name__ in NON_WRAPPED_METHODS + NON_ARRAY_RET_METHODS)) or\
+            (hasattr(fn, 'wrapped_for_compiling') and fn.wrapped_for_compiling):
         return fn
 
     # noinspection PyUnresolvedReferences,PyProtectedMember
