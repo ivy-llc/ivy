@@ -23,7 +23,7 @@ FW_FN_KEYWORDS = {'numpy': [],
                   'jax': [],
                   'tensorflow': [],
                   'torch': [],
-                  'mxnd': ['ndarray']}
+                  'mxnet': ['ndarray']}
 
 wrapped_mode_val = False
 

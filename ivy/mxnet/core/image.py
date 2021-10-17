@@ -9,7 +9,7 @@ from operator import mul as _mul
 import mxnet as _mx
 
 # local
-from ivy import mxnd as _ivy
+from ivy import mxnet as _ivy
 
 
 def stack_images(images, desired_aspect_ratio=(1, 1)):
