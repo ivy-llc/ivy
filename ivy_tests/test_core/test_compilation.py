@@ -37,7 +37,6 @@ def _fn_3(x):
 
 def _fn_4(x):
     y = ivy.reduce_mean(x)
-    ivy.reduce_mean(x)
     z = ivy.reduce_sum(x)
     f = ivy.reduce_var(y)
     time.sleep(0.05)
@@ -83,6 +82,7 @@ def test_compile_native(x, dtype_str, tensor_fn, dev_str, call):
     assert np.allclose(ivy.to_numpy(non_compiled_return), ivy.to_numpy(compiled_return))
 
 
+'''
 @pytest.mark.parametrize(
     "x_raw", [[1]])
 @pytest.mark.parametrize(
@@ -92,6 +92,9 @@ def test_compile_native(x, dtype_str, tensor_fn, dev_str, call):
 def test_compile_ivy_inplace(x_raw, dtype_str, tensor_fn, dev_str, call):
     if ivy.wrapped_mode():
         # Wrapped mode does not yet support function compilation
+        pytest.skip()
+    if call is not helpers.torch_call:
+        # currently only supported by PyTorch
         pytest.skip()
     # smoke test
     if (isinstance(x_raw, Number) or len(x_raw) == 0) and tensor_fn == helpers.var_fn and call is helpers.mx_call:
@@ -127,6 +130,7 @@ def test_compile_ivy_inplace(x_raw, dtype_str, tensor_fn, dev_str, call):
     comp_time_taken = time.perf_counter() - start_time
     assert np.allclose(ivy.to_numpy(non_compiled_return), ivy.to_numpy(compiled_return))
     assert comp_time_taken < non_comp_time_taken
+'''
 
 
 @pytest.mark.parametrize(
@@ -138,6 +142,9 @@ def test_compile_ivy_inplace(x_raw, dtype_str, tensor_fn, dev_str, call):
 def test_compile_ivy(x_raw, dtype_str, tensor_fn, dev_str, call):
     if ivy.wrapped_mode():
         # Wrapped mode does not yet support function compilation
+        pytest.skip()
+    if call is not helpers.torch_call:
+        # currently only supported by PyTorch
         pytest.skip()
     # smoke test
     if (isinstance(x_raw, Number) or len(x_raw) == 0) and tensor_fn == helpers.var_fn and call is helpers.mx_call:
@@ -160,6 +167,7 @@ def test_compile_ivy(x_raw, dtype_str, tensor_fn, dev_str, call):
     assert comp_time_taken < non_comp_time_taken
 
     # function 4
+    '''
     x = tensor_fn(x_raw, dtype_str, dev_str)
     comp_fn = ivy.compile_ivy(_fn_4, x)
     # type test
@@ -173,3 +181,4 @@ def test_compile_ivy(x_raw, dtype_str, tensor_fn, dev_str, call):
     comp_time_taken = time.perf_counter() - start_time
     assert np.allclose(ivy.to_numpy(non_compiled_return), ivy.to_numpy(compiled_return))
     assert comp_time_taken < non_comp_time_taken
+    '''
