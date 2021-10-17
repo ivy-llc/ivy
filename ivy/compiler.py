@@ -150,6 +150,8 @@ def _wrap_method_for_compiling(fn, graph):
         new_fn.kwarg_param_ids = kwarg_param_ids
         new_fn.output_param_ids = ret_param_ids
         new_fn.output_nest_idxs = ret_nest_idxs
+        if hasattr(fn, '__name__'):
+            new_fn.__name__ = fn.__name__
 
         # add to graph if compiling
         if compiling:
