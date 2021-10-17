@@ -1,4 +1,6 @@
 # global
+import importlib
+
 import ivy
 import inspect
 
@@ -6,6 +8,12 @@ import inspect
 from ivy.wrapper import _wrap_or_unwrap_methods, NON_WRAPPED_METHODS, NON_ARRAY_RET_METHODS
 
 compiling = False
+
+CLASSES_TO_WRAP = {'numpy': [],
+                   'jax': [],
+                   'tensorflow': [],
+                   'torch': [('torch', 'Tensor')],
+                   'mxnet': []}
 
 
 class Graph:
@@ -172,11 +180,17 @@ def _unwrap_method_from_compiling(method_wrapped):
 
 
 def _wrap_methods_for_compiling(graph):
-    return _wrap_or_unwrap_methods(lambda fn: _wrap_method_for_compiling(fn, graph), native=True)
+    classes_to_wrap = [getattr(importlib.import_module(ctw[0]), ctw[1])
+                       for ctw in CLASSES_TO_WRAP[ivy.current_framework_str()]]
+    return _wrap_or_unwrap_methods(
+        lambda fn: _wrap_method_for_compiling(fn, graph), classes_to_wrap=classes_to_wrap, native=True)
 
 
 def _unwrap_methods_from_compiling():
-    return _wrap_or_unwrap_methods(lambda fn: _unwrap_method_from_compiling(fn), native=True)
+    classes_to_wrap = [getattr(importlib.import_module(ctw[0]), ctw[1])
+                       for ctw in CLASSES_TO_WRAP[ivy.current_framework_str()]]
+    return _wrap_or_unwrap_methods(
+        lambda fn: _unwrap_method_from_compiling(fn), classes_to_wrap=classes_to_wrap, native=True)
 
 
 def compile_ivy(fn, *args, **kwargs):
