@@ -342,6 +342,8 @@
         <span class="n">new_fn</span><span class="o">.</span><span class="n">kwarg_param_ids</span> <span class="o">=</span> <span class="n">kwarg_param_ids</span>
         <span class="n">new_fn</span><span class="o">.</span><span class="n">output_param_ids</span> <span class="o">=</span> <span class="n">ret_param_ids</span>
         <span class="n">new_fn</span><span class="o">.</span><span class="n">output_nest_idxs</span> <span class="o">=</span> <span class="n">ret_nest_idxs</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="s1">&#39;__name__&#39;</span><span class="p">):</span>
+            <span class="n">new_fn</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">=</span> <span class="n">fn</span><span class="o">.</span><span class="vm">__name__</span>
 
         <span class="c1"># add to graph if compiling</span>
         <span class="k">if</span> <span class="n">compiling</span><span class="p">:</span>
