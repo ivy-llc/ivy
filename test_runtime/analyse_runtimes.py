@@ -5,7 +5,7 @@ import json
 import numpy as np
 import collections
 
-FWS = ['numpy', 'tensorflow', 'torch', 'jax', 'mxnd']
+FWS = ['numpy', 'tensorflow', 'torch', 'jax', 'mxnet']
 DIM = '{}'.format(int(1e4))
 os.makedirs('csvs/{}/'.format(DIM), exist_ok=True)
 RATIO_MODE = 'mean'
@@ -59,13 +59,13 @@ def main():
     # Read Reimplemented Functions #
     # -----------------------------#
 
-    reimplemented_dict = {'jax': {}, 'mxnd': {}, 'numpy': {}, 'tensorflow': {}, 'torch': {}}
+    reimplemented_dict = {'jax': {}, 'mxnet': {}, 'numpy': {}, 'tensorflow': {}, 'torch': {}}
     json_filepaths = [item for item in submodule_dirs if item[-5:] == '.json']
     for json_filepath in json_filepaths:
         with open(json_filepath, 'r') as file:
             loaded_dict = json.loads(file.read())
         reimplemented_dict['jax'] = {**reimplemented_dict['jax'], **loaded_dict['jax']}
-        reimplemented_dict['mxnd'] = {**reimplemented_dict['mxnd'], **loaded_dict['mxnd']}
+        reimplemented_dict['mxnet'] = {**reimplemented_dict['mxnet'], **loaded_dict['mxnet']}
         reimplemented_dict['numpy'] = {**reimplemented_dict['numpy'], **loaded_dict['numpy']}
         reimplemented_dict['tensorflow'] = {**reimplemented_dict['tensorflow'], **loaded_dict['tensorflow']}
         reimplemented_dict['torch'] = {**reimplemented_dict['torch'], **loaded_dict['torch']}

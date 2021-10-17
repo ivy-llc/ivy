@@ -17,19 +17,19 @@ import with_time_logs.ivy.core.linalg as ivy_linalg_w_time
 
 from ivy import torch as _ivy_torch
 from ivy import tensorflow as _ivy_tf
-from ivy import mxnd as _ivy_mxnd
+from ivy import mxnet as _ivy_mxnet
 from ivy import jax as _ivy_jnp
 from ivy import numpy as _ivy_np
 
 from with_time_logs.ivy import torch as _ivy_torch_w_time
 from with_time_logs.ivy import tensorflow as _ivy_tf_w_time
-from with_time_logs.ivy import mxnd as _ivy_mxnd_w_time
+from with_time_logs.ivy import mxnet as _ivy_mxnet_w_time
 from with_time_logs.ivy import jax as _ivy_jnp_w_time
 from with_time_logs.ivy import numpy as _ivy_np_w_time
 
 LIB_DICT = {_ivy_torch: _ivy_torch_w_time,
             _ivy_tf: _ivy_tf_w_time,
-            _ivy_mxnd: _ivy_mxnd_w_time,
+            _ivy_mxnet: _ivy_mxnet_w_time,
             _ivy_jnp: _ivy_jnp_w_time,
             _ivy_np: _ivy_np_w_time}
 

@@ -14,7 +14,7 @@ from functools import reduce as _reduce
 import multiprocessing as _multiprocessing
 
 # local
-from ivy.mxnd.core.device import _callable_dev_str
+from ivy.mxnet.core.device import _callable_dev_str
 
 
 DTYPE_DICT = {_np.bool_: 'bool',
@@ -545,6 +545,6 @@ def compile_native(func, dynamic=True, example_inputs=None, static_argnums=None,
     return func
 
 
-current_framework_str = lambda: 'mxnd'
+current_framework_str = lambda: 'mxnet'
 current_framework_str.__name__ = 'current_framework_str'
 multiprocessing = lambda context=None: _multiprocessing if context is None else _multiprocessing.get_context(context)
