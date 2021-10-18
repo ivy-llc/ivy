@@ -35,20 +35,18 @@ def _fn_2(x, with_non_compiled: bool = False):
     return (x + 10)**0.5 - 5
 
 
-# noinspection PyAugmentAssignment
 def _fn_3(x, with_non_compiled: bool = False, with_internal_gen: bool = False):
     if with_internal_gen:
-        x = x + ivy.array([1.])
+        x += ivy.array([1.])
     time.sleep(0.05)
     if with_non_compiled:
         (x + 3) * 4  # ops not to be compiled into the graph
     return ivy.reduce_mean(ivy.reduce_sum(x, keepdims=True), keepdims=True)
 
 
-# noinspection PyAugmentAssignment
 def _fn_4(x, with_non_compiled: bool = False, with_internal_gen: bool = False):
     if with_internal_gen:
-        x = x + ivy.array([1.])
+        x += ivy.array([1.])
     y = ivy.reduce_mean(x)
     z = ivy.reduce_sum(x)
     f = ivy.reduce_var(y)
@@ -61,10 +59,9 @@ def _fn_4(x, with_non_compiled: bool = False, with_internal_gen: bool = False):
     return ivy.concatenate([k, m, o], -1)
 
 
-# noinspection PyAugmentAssignment
 def _wide_fn(x, with_non_compiled: bool = False, with_internal_gen: bool = False):
     if with_internal_gen:
-        x = x + ivy.array([1.])
+        x += ivy.array([1.])
     if with_non_compiled:
         (x + 3) * 4  # ops not to be compiled into the graph
     graph_width = 10
@@ -90,22 +87,24 @@ def test_compile_native(x, dtype_str, tensor_fn, dev_str, call):
         pytest.skip()
 
     # function 1
-    x = tensor_fn(x, dtype_str, dev_str)
     comp_fn = ivy.compile_native(_fn_1)
     # type test
     assert callable(comp_fn)
     # value test
+    x = tensor_fn(x, dtype_str, dev_str)
     non_compiled_return = _fn_1(x)
+    x = tensor_fn(x, dtype_str, dev_str)
     compiled_return = comp_fn(x)
     assert np.allclose(ivy.to_numpy(non_compiled_return), ivy.to_numpy(compiled_return))
 
     # function 2
-    x = tensor_fn(x, dtype_str, dev_str)
     comp_fn = ivy.compile_native(_fn_2)
     # type test
     assert callable(comp_fn)
     # value test
+    x = tensor_fn(x, dtype_str, dev_str)
     non_compiled_return = _fn_2(x)
+    x = tensor_fn(x, dtype_str, dev_str)
     compiled_return = comp_fn(x)
     assert np.allclose(ivy.to_numpy(non_compiled_return), ivy.to_numpy(compiled_return))
 
@@ -138,12 +137,14 @@ def test_compile_ivy_inplace(x_raw, dtype_str, tensor_fn, with_non_compiled, dev
     assert callable(comp_fn)
     # value test
     start_time = time.perf_counter()
+    x = tensor_fn(x_raw, dtype_str, dev_str)
     non_compiled_return = _fn_1(x, with_non_compiled)
     non_comp_time_taken = time.perf_counter() - start_time
     assert len(comp_fn.__self__._param_dict) == 2
     assert comp_fn.__self__.params_all_empty()
     assert len(list(comp_fn.__self__._functions)) == 1
     start_time = time.perf_counter()
+    x = tensor_fn(x_raw, dtype_str, dev_str)
     compiled_return = comp_fn(x, with_non_compiled)
     comp_time_taken = time.perf_counter() - start_time
     assert len(comp_fn.__self__._param_dict) == 2
@@ -159,12 +160,14 @@ def test_compile_ivy_inplace(x_raw, dtype_str, tensor_fn, with_non_compiled, dev
     assert callable(comp_fn)
     # value test
     start_time = time.perf_counter()
+    x = tensor_fn(x_raw, dtype_str, dev_str)
     non_compiled_return = _fn_2(x, with_non_compiled)
     non_comp_time_taken = time.perf_counter() - start_time
     assert len(comp_fn.__self__._param_dict) == 4
     assert comp_fn.__self__.params_all_empty()
     assert len(list(comp_fn.__self__._functions)) == 3
     start_time = time.perf_counter()
+    x = tensor_fn(x_raw, dtype_str, dev_str)
     compiled_return = comp_fn(x, with_non_compiled)
     comp_time_taken = time.perf_counter() - start_time
     assert len(comp_fn.__self__._param_dict) == 4
@@ -204,12 +207,14 @@ def test_compile_ivy(x_raw, dtype_str, tensor_fn, with_non_compiled, with_intern
     assert callable(comp_fn)
     # value test
     start_time = time.perf_counter()
+    x = tensor_fn(x_raw, dtype_str, dev_str)
     non_compiled_return = _fn_3(x, with_non_compiled, with_internal_gen)
     non_comp_time_taken = time.perf_counter() - start_time
     assert len(comp_fn.__self__._param_dict) == 3 + (1 if with_internal_gen else 0)
     assert comp_fn.__self__.params_all_empty()
     assert len(list(comp_fn.__self__._functions)) == 2 + (1 if with_internal_gen else 0)
     start_time = time.perf_counter()
+    x = tensor_fn(x_raw, dtype_str, dev_str)
     compiled_return = comp_fn(x, with_non_compiled, with_internal_gen)
     comp_time_taken = time.perf_counter() - start_time
     assert len(comp_fn.__self__._param_dict) == 3 + (1 if with_internal_gen else 0)
@@ -225,12 +230,14 @@ def test_compile_ivy(x_raw, dtype_str, tensor_fn, with_non_compiled, with_intern
     assert callable(comp_fn)
     # value test
     start_time = time.perf_counter()
+    x = tensor_fn(x_raw, dtype_str, dev_str)
     non_compiled_return = _fn_4(x, with_non_compiled, with_internal_gen)
     non_comp_time_taken = time.perf_counter() - start_time
     assert len(comp_fn.__self__._param_dict) == 11 + (1 if with_internal_gen else 0)
     assert comp_fn.__self__.params_all_empty()
     assert len(list(comp_fn.__self__._functions)) == 10 + (1 if with_internal_gen else 0)
     start_time = time.perf_counter()
+    x = tensor_fn(x_raw, dtype_str, dev_str)
     compiled_return = comp_fn(x, with_non_compiled, with_internal_gen)
     comp_time_taken = time.perf_counter() - start_time
     assert len(comp_fn.__self__._param_dict) == 11 + (1 if with_internal_gen else 0)
@@ -274,6 +281,7 @@ def test_compile_ivy_multiproc(x_raw, dtype_str, tensor_fn, with_non_compiled, w
     assert st_comp_fn.__self__.params_all_empty()
     assert len(list(st_comp_fn.__self__._functions)) == 51 + (1 if with_internal_gen else 0)
     start_time = time.perf_counter()
+    x = tensor_fn(x_raw, dtype_str, dev_str)
     st_return = st_comp_fn(x, with_non_compiled, with_internal_gen)
     st_time_taken = time.perf_counter() - start_time
     assert len(st_comp_fn.__self__._param_dict) == 52 + (1 if with_internal_gen else 0)
@@ -288,6 +296,7 @@ def test_compile_ivy_multiproc(x_raw, dtype_str, tensor_fn, with_non_compiled, w
     assert multi_comp_fn.__self__.params_all_empty()
     assert len(list(multi_comp_fn.__self__._functions)) == 51 + (1 if with_internal_gen else 0)
     start_time = time.perf_counter()
+    x = tensor_fn(x_raw, dtype_str, dev_str)
     multi_return = multi_comp_fn(x, with_non_compiled, with_internal_gen)
     multi_time_taken = time.perf_counter() - start_time
     assert len(multi_comp_fn.__self__._param_dict) == 52 + (1 if with_internal_gen else 0)
