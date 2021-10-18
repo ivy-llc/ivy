@@ -9,10 +9,11 @@ from ivy.wrapper import _wrap_or_unwrap_methods, NON_WRAPPED_METHODS, NON_ARRAY_
 
 op_logging = False
 
-ARRAY_BUILTINS = ['__neg__', '__pow__', '__rpow__', '__add__', '__radd__', '__sub__', '__rsub__', '__mul__', '__rmul__',
-                  '__truediv__', '__rtruediv__', '__floordiv__', '__rfloordiv__', '__abs__', '__lt__', '__le__',
-                  '__eq__', '__ne__', '__gt__', '__ge__', '__and__', '__rand__', '__or__', '__ror__', '__invert__',
-                  '__xor__', '__rxor__']
+
+ARRAY_BUILTINS = ['__neg__', '__pow__', '__rpow__', '__add__', '__radd__', '__iadd__', '__sub__', '__rsub__',
+                  '__isub__', '__mul__', '__rmul__', '__imul__', '__truediv__', '__rtruediv__', '__itruediv__',
+                  '__floordiv__', '__rfloordiv__', '__ifloordiv__', '__abs__', '__lt__', '__le__', '__eq__', '__ne__',
+                  '__gt__', '__ge__', '__and__', '__rand__', '__or__', '__ror__', '__invert__', '__xor__', '__rxor__']
 
 CLASSES_TO_WRAP = {'numpy': [],
                    'jax': [],
@@ -225,7 +226,7 @@ class Graph:
 
         # function for storing function heights
         def store_fn_heights(fn):
-            heights_in = [store_fn_heights(fn_in) for fn_in in fn.fns_in]
+            heights_in = [store_fn_heights(fn_in) for fn_in in fn.fns_in if fn_in in self._functions]
             if heights_in:
                 _height = max(heights_in) + 1
             else:
@@ -344,24 +345,28 @@ def _wrap_method_for_compiling(fn, graph):
         # get array idxs for positional args
         arg_array_idxs = ivy.nested_indices_where(args, lambda x: ivy.is_array(x))
         args_cont = ivy.Container(args, types_to_iteratively_nest=(list, tuple))
-        arg_idxs_cont = args_cont.map(lambda x, kc: id(x) if ivy.is_array(x) else None).prune_empty()
-        arg_param_ids = list(arg_idxs_cont.to_iterator_values())
+        arg_param_ids_cont = args_cont.map(lambda x, kc: id(x) if ivy.is_array(x) else None).prune_empty()
+        arg_param_ids = list(arg_param_ids_cont.to_iterator_values())
 
         # get array idxs for key-word args
         kwarg_array_idxs = ivy.nested_indices_where(kwargs, lambda x: ivy.is_array(x))
         kwargs_cont = ivy.Container(kwargs, types_to_iteratively_nest=(list, tuple))
-        kwarg_idxs_cont = kwargs_cont.map(lambda x, kc: id(x) if ivy.is_array(x) else None).prune_empty()
-        kwarg_param_ids = list(kwarg_idxs_cont.to_iterator_values())
+        kwarg_param_ids_cont = kwargs_cont.map(lambda x, kc: id(x) if ivy.is_array(x) else None).prune_empty()
+        kwarg_param_ids = list(kwarg_param_ids_cont.to_iterator_values())
 
         # compute the return
         ret_raw = fn(*args, **kwargs)
+        if fn.__name__[0:3] == '__i':
+            # clone the return values if the function is in-place, to ensure output ids are unique from input ids
+            ret_raw = tuple([ivy.array(ivy.to_numpy(x)) if ivy.is_array(x) else x for x in ret_raw]) \
+                if isinstance(ret_raw, tuple) else ivy.array(ivy.to_numpy(ret_raw))
         ret = ret_raw if isinstance(ret_raw, tuple) else (ret_raw,)
 
         # get array idxs for return
         ret_nest_idxs = ivy.nested_indices_where(ret, lambda x: ivy.is_array(x))
         ret_cont = ivy.Container(ret, types_to_iteratively_nest=(list, tuple))
-        ret_idxs_cont = ret_cont.map(lambda x, kc: id(x) if ivy.is_array(x) else None).prune_empty()
-        ret_param_ids = list(ret_idxs_cont.to_iterator_values())
+        ret_params_ids_cont = ret_cont.map(lambda x, kc: id(x) if ivy.is_array(x) else None).prune_empty()
+        ret_param_ids = list(ret_params_ids_cont.to_iterator_values())
 
         # wrap the function
         def new_fn(arg_array_vals, kwarg_array_vals):
@@ -396,9 +401,8 @@ def _wrap_method_for_compiling(fn, graph):
         # add to graph if compiling
         if op_logging:
 
-            # add this function to the graph
-            [graph.add_fn_to_dict(id(v), new_fn)
-             for _, v in ivy.Container(ret, types_to_iteratively_nest=(list, tuple)).to_iterator() if ivy.is_array(v)]
+            # add this function to the graph for each output pid
+            [graph.add_fn_to_dict(pid, new_fn) for pid in ret_param_ids]
 
         # return the function output
         return ret_raw

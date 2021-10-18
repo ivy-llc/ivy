@@ -29,7 +29,8 @@ FW_FN_KEYWORDS = {'numpy': [],
 NATIVE_KEYS_TO_SKIP = {'numpy': [],
                        'jax': [],
                        'tensorflow': [],
-                       'torch': ['classes', 'torch', 'is_grad_enabled', 'get_default_dtype', 'numel', 'tensor'],
+                       'torch': ['classes', 'torch', 'is_grad_enabled', 'get_default_dtype', 'numel', 'tensor',
+                                 'clone', 'cpu', 'detach'],
                        'mxnet': []}
 
 wrapped_mode_val = False
@@ -95,6 +96,8 @@ def _wrap_or_unwrap_methods(wrap_or_unwrap_fn, val=None, fs=None, classes_to_wra
         wrapped_modules_n_classes.append(val)
         if is_class:
             for k in dir(val):
+                if native and (k in NATIVE_KEYS_TO_SKIP[fs]):
+                    continue
                 v = getattr(val, k)
                 if v is not None:
                     # noinspection PyBroadException
