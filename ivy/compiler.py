@@ -180,14 +180,27 @@ class Graph:
     def add_fn_to_dict(self, pid, fn):
         self._functions_dict[pid] = fn
 
-    def get_param_recursive(self, pid, depth):
+    def get_param_recursive(self, pid, depth, receiving_fn=None):
         if pid in self._param_dict:
             return
-        fn = self._functions_dict[pid]
+        if pid in self._functions_dict:
+            fn = self._functions_dict[pid]
+        else:
+            if not ivy.exists(receiving_fn):
+                raise Exception('passing created tensors directly to output function is not yet supported.')
+            if pid in receiving_fn.arg_param_ids:
+                idx = receiving_fn.arg_param_ids.index(pid)
+                del receiving_fn.arg_param_ids[idx]
+                del receiving_fn.arg_array_idxs[idx]
+            if pid in receiving_fn.kwarg_param_ids:
+                idx = receiving_fn.kwarg_param_ids.index(pid)
+                del receiving_fn.kwarg_param_ids[idx]
+                del receiving_fn.kwarg_array_idxs[idx]
+            return
         fn.tree_depth = depth
         self._functions.append(fn)
-        [self.get_param_recursive(pid, depth + 1) for pid in fn.arg_param_ids]
-        [self.get_param_recursive(pid, depth + 1) for pid in fn.kwarg_param_ids]
+        [self.get_param_recursive(pid, depth + 1, fn) for pid in fn.arg_param_ids]
+        [self.get_param_recursive(pid, depth + 1, fn) for pid in fn.kwarg_param_ids]
         [self.increment_param_count(pid) for pid in fn.arg_param_ids + fn.kwarg_param_ids]
         [self.add_param(pid) for pid in fn.output_param_ids]
         return
@@ -284,6 +297,8 @@ class Graph:
         return self._multi_call
 
     def __del__(self):
+        if self._num_workers <= 1:
+            return
         # noinspection PyBroadException
         try:
             for i, w in enumerate(self._workers):
@@ -363,6 +378,8 @@ def _wrap_method_for_compiling(fn, graph):
         new_fn.kwarg_param_ids = kwarg_param_ids
         new_fn.output_param_ids = ret_param_ids
         new_fn.output_nest_idxs = ret_nest_idxs
+        new_fn.arg_array_idxs = arg_array_idxs
+        new_fn.kwarg_array_idxs = kwarg_array_idxs
         fns_in = [graph._functions_dict[pid]
                   for pid in arg_param_ids + kwarg_param_ids if pid in graph._functions_dict]
         for fn_in in fns_in:
