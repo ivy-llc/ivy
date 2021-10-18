@@ -13,6 +13,9 @@ Compiler
    :caption: Compiler
 
    compiler/compile_ivy.rst
+   compiler/Param:
+
+    def __init__.rst
    compiler/Graph:
 
     # noinspection PyProtectedMember
