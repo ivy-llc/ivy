@@ -7,7 +7,7 @@ import inspect
 # local
 from ivy.wrapper import _wrap_or_unwrap_methods, NON_WRAPPED_METHODS, NON_ARRAY_RET_METHODS
 
-compiling = False
+op_logging = False
 
 ARRAY_BUILTINS = ['__neg__', '__pow__', '__rpow__', '__add__', '__radd__', '__sub__', '__rsub__', '__mul__', '__rmul__',
                   '__truediv__', '__rtruediv__', '__floordiv__', '__rfloordiv__', '__abs__', '__lt__', '__le__',
@@ -69,21 +69,25 @@ class Graph:
 
         # graph storage
         self._param_dict = dict()
+        self._functions_dict = dict()
         self._functions = list()
 
-    # Compute output idxs #
-    # --------------------#
+    # Foward with Op Logging #
+    # -----------------------#
 
     # noinspection PyProtectedMember
-    def foward(self):
-        [self.add_param(pid) for pid in self._arg_param_ids]
-        [self.add_param(pid) for pid in self._kwarg_param_ids]
+    def log_all_ops(self):
+
+        global op_logging
+        op_logging = True
+
         ret = self._fn(*self._args, **self._kwargs)
         if not isinstance(ret, tuple):
             ret = (ret,)
         output_nest_idxs = ivy.nested_indices_where(ret, lambda x: ivy.is_array(x))
-        [self.set_param_count(id(x), 1) for x in ivy.multi_index_nest(list(ret), output_nest_idxs)]
         self._output_param_ids = [id(x) for x in ivy.multi_index_nest(list(ret), output_nest_idxs)]
+
+        op_logging = False
 
     # Setters #
     # --------#
@@ -103,8 +107,23 @@ class Graph:
     def get_param(self, pid):
         return self._param_dict[pid].get()
 
+    def get_param_recursive(self, pid, depth):
+        if pid in self._param_dict:
+            return
+        fn = self._functions_dict[pid]
+        fn.tree_depth = depth
+        self.add_fn(fn)
+        [self.get_param_recursive(pid, depth+1) for pid in fn.arg_param_ids]
+        [self.get_param_recursive(pid, depth+1) for pid in fn.kwarg_param_ids]
+        [self.increment_param_count(pid) for pid in fn.arg_param_ids + fn.kwarg_param_ids]
+        [self.add_param(pid) for pid in fn.output_param_ids]
+        return
+
     def has_param(self, pid):
         return pid in self._param_dict
+
+    def add_fn_to_dict(self, pid, fn):
+        self._functions_dict[pid] = fn
 
     def add_fn(self, fn):
         self._functions.append(fn)
@@ -115,24 +134,45 @@ class Graph:
     # Function creation #
     # ------------------#
 
+    def _chain_functions(self):
+
+        # add input params to param dict
+        [self.add_param(pid) for pid in self._arg_param_ids]
+        [self.add_param(pid) for pid in self._kwarg_param_ids]
+
+        # recursively chain the graph via backward traversal
+        [self.get_param_recursive(pid, depth=0) for pid in self._output_param_ids]
+        [self.increment_param_count(pid) for pid in self._output_param_ids]
+
+        # find the depth of the tree
+        max_tree_depth = max([fn.tree_depth for fn in self._functions])
+
+        # ToDo: modify this logic to consider tree height rather than depth, treating all leaf-nodes equally
+        self._grouped_functions = list()
+        for depth in range(max_tree_depth, -1, -1):
+            fns = [fn for fn in self._functions if fn.tree_depth == depth]
+            self._grouped_functions.append(fns)
+
     def _call(self, *args, **kwargs):
         # ToDo: make this as efficient as possible; this is performed at runtime
         [self.set_param(pid, ivy.index_nest(args, idx))
          for pid, idx in zip(self._arg_param_ids, self._arg_nest_idxs)]
         [self.set_param(pid, ivy.index_nest(kwargs, idx))
          for pid, idx in zip(self._kwarg_param_ids, self._kwarg_nest_idxs)]
-        for fn in self._functions:
-            arg_vals = [self.get_param(pid) for pid in fn.arg_param_ids]
-            kwarg_vals = [self.get_param(pid) for pid in fn.kwarg_param_ids]
-            ret = fn(arg_vals, kwarg_vals)
-            [self.set_param(pid, ivy.index_nest(ret, idx))
-             for pid, idx in zip(fn.output_param_ids, fn.output_nest_idxs)]
+        for fns in self._grouped_functions:
+            for fn in fns:
+                arg_vals = [self.get_param(pid) for pid in fn.arg_param_ids]
+                kwarg_vals = [self.get_param(pid) for pid in fn.kwarg_param_ids]
+                ret = fn(arg_vals, kwarg_vals)
+                [self.set_param(pid, ivy.index_nest(ret, idx))
+                 for pid, idx in zip(fn.output_param_ids, fn.output_nest_idxs)]
         ret = [self.get_param(pid) for pid in self._output_param_ids]
         if len(ret) == 1:
             return ret[0]
         return ret
 
-    def to_function(self):
+    def compiled(self):
+        self._chain_functions()
         return self._call
 
     # Clearing #
@@ -200,18 +240,11 @@ def _wrap_method_for_compiling(fn, graph):
             new_fn.__name__ = fn.__name__
 
         # add to graph if compiling
-        if compiling:
-
-            # initialize empty keys for these input parameters in the graph
-            [graph.increment_param_count(pid) for pid in arg_param_ids + kwarg_param_ids]
-
-            # initialize empty keys for these output parameters in the graph
-            [graph.add_param(id(v))
-             for _, v in ivy.Container(ret, types_to_iteratively_nest=(list, tuple)).to_iterator() if
-             ivy.is_array(v)]
+        if op_logging:
 
             # add this function to the graph
-            graph.add_fn(new_fn)
+            [graph.add_fn_to_dict(id(v), new_fn)
+             for _, v in ivy.Container(ret, types_to_iteratively_nest=(list, tuple)).to_iterator() if ivy.is_array(v)]
 
         # return the function output
         return ret_raw
@@ -229,14 +262,14 @@ def _unwrap_method_from_compiling(method_wrapped):
     return method_wrapped.inner_fn
 
 
-def _wrap_methods_for_compiling(graph):
+def _wrap_methods_for_op_logging(graph):
     classes_to_wrap = [getattr(importlib.import_module(ctw[0]), ctw[1])
                        for ctw in CLASSES_TO_WRAP[ivy.current_framework_str()]]
     return _wrap_or_unwrap_methods(
         lambda fn: _wrap_method_for_compiling(fn, graph), classes_to_wrap=classes_to_wrap, native=True)
 
 
-def _unwrap_methods_from_compiling():
+def _unwrap_methods_from_op_logging():
     classes_to_wrap = [getattr(importlib.import_module(ctw[0]), ctw[1])
                        for ctw in CLASSES_TO_WRAP[ivy.current_framework_str()]]
     return _wrap_or_unwrap_methods(
@@ -245,10 +278,7 @@ def _unwrap_methods_from_compiling():
 
 def compile_ivy(fn, *args, **kwargs):
     graph = Graph(fn, *args, **kwargs)
-    _wrap_methods_for_compiling(graph)
-    global compiling
-    compiling = True
-    graph.foward()
-    compiling = False
-    _unwrap_methods_from_compiling()
-    return graph.to_function()
+    _wrap_methods_for_op_logging(graph)
+    graph.log_all_ops()
+    _unwrap_methods_from_op_logging()
+    return graph.compiled()
