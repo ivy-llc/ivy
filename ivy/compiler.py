@@ -5,7 +5,7 @@ import inspect
 import importlib
 
 # local
-from ivy.wrapper import _wrap_or_unwrap_methods, NON_WRAPPED_METHODS, NON_ARRAY_RET_METHODS
+from ivy.wrapper import _wrap_or_unwrap_methods, NON_WRAPPED_METHODS, ARRAYLESS_RET_METHODS
 
 op_logging = False
 
@@ -332,7 +332,7 @@ def _wrap_method_for_compiling(fn, graph):
 
     if inspect.isclass(fn) or (hasattr(fn, '__name__') and
             ((fn.__name__[0] == '_' and fn.__name__ not in ARRAY_BUILTINS) or
-             fn.__name__ in NON_WRAPPED_METHODS + NON_ARRAY_RET_METHODS)) or\
+             fn.__name__ in NON_WRAPPED_METHODS + ARRAYLESS_RET_METHODS)) or\
             (hasattr(fn, 'wrapped_for_compiling') and fn.wrapped_for_compiling):
         return fn
 
