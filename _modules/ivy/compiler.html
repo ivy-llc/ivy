@@ -336,13 +336,26 @@
         <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">get_param_recursive</span><span class="p">(</span><span class="n">pid</span><span class="p">,</span> <span class="n">depth</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="k">for</span> <span class="n">pid</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_output_param_ids</span><span class="p">]</span>
         <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">increment_param_count</span><span class="p">(</span><span class="n">pid</span><span class="p">)</span> <span class="k">for</span> <span class="n">pid</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_output_param_ids</span><span class="p">]</span>
 
-        <span class="c1"># find the depth of the tree</span>
-        <span class="n">max_tree_depth</span> <span class="o">=</span> <span class="nb">max</span><span class="p">([</span><span class="n">fn</span><span class="o">.</span><span class="n">tree_depth</span> <span class="k">for</span> <span class="n">fn</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_functions</span><span class="p">])</span>
+        <span class="c1"># function for storing function heights</span>
+        <span class="k">def</span> <span class="nf">store_fn_heights</span><span class="p">(</span><span class="n">fn</span><span class="p">):</span>
+            <span class="n">child_heights</span> <span class="o">=</span> <span class="p">[</span><span class="n">store_fn_heights</span><span class="p">(</span><span class="n">child_fn</span><span class="p">)</span> <span class="k">for</span> <span class="n">child_fn</span> <span class="ow">in</span> <span class="n">fn</span><span class="o">.</span><span class="n">child_fns</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">child_heights</span><span class="p">:</span>
+                <span class="n">_height</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">child_heights</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">_height</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="n">fn</span><span class="o">.</span><span class="n">tree_height</span> <span class="o">=</span> <span class="n">_height</span>
+            <span class="k">return</span> <span class="n">_height</span>
 
-        <span class="c1"># ToDo: modify this logic to consider tree height rather than depth, treating all leaf-nodes equally</span>
+        <span class="c1"># store function heights</span>
+        <span class="p">[</span><span class="n">store_fn_heights</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_functions_dict</span><span class="p">[</span><span class="n">pid</span><span class="p">])</span> <span class="k">for</span> <span class="n">pid</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_output_param_ids</span><span class="p">]</span>
+
+        <span class="c1"># find the height of the tree</span>
+        <span class="n">max_tree_height</span> <span class="o">=</span> <span class="nb">max</span><span class="p">([</span><span class="n">fn</span><span class="o">.</span><span class="n">tree_height</span> <span class="k">for</span> <span class="n">fn</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_functions</span><span class="p">])</span>
+
+        <span class="c1"># group the functions based on their height in the tree from the starting leaf nodes</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_grouped_functions</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
-        <span class="k">for</span> <span class="n">depth</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">max_tree_depth</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">):</span>
-            <span class="n">fns</span> <span class="o">=</span> <span class="p">[</span><span class="n">fn</span> <span class="k">for</span> <span class="n">fn</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_functions</span> <span class="k">if</span> <span class="n">fn</span><span class="o">.</span><span class="n">tree_depth</span> <span class="o">==</span> <span class="n">depth</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">height</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">max_tree_height</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
+            <span class="n">fns</span> <span class="o">=</span> <span class="p">[</span><span class="n">fn</span> <span class="k">for</span> <span class="n">fn</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_functions</span> <span class="k">if</span> <span class="n">fn</span><span class="o">.</span><span class="n">tree_height</span> <span class="o">==</span> <span class="n">height</span><span class="p">]</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_grouped_functions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">fns</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_call</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
@@ -428,6 +441,8 @@
         <span class="n">new_fn</span><span class="o">.</span><span class="n">kwarg_param_ids</span> <span class="o">=</span> <span class="n">kwarg_param_ids</span>
         <span class="n">new_fn</span><span class="o">.</span><span class="n">output_param_ids</span> <span class="o">=</span> <span class="n">ret_param_ids</span>
         <span class="n">new_fn</span><span class="o">.</span><span class="n">output_nest_idxs</span> <span class="o">=</span> <span class="n">ret_nest_idxs</span>
+        <span class="n">new_fn</span><span class="o">.</span><span class="n">child_fns</span> <span class="o">=</span> <span class="p">[</span><span class="n">graph</span><span class="o">.</span><span class="n">_functions_dict</span><span class="p">[</span><span class="n">pid</span><span class="p">]</span>
+                            <span class="k">for</span> <span class="n">pid</span> <span class="ow">in</span> <span class="n">arg_param_ids</span> <span class="o">+</span> <span class="n">kwarg_param_ids</span> <span class="k">if</span> <span class="n">pid</span> <span class="ow">in</span> <span class="n">graph</span><span class="o">.</span><span class="n">_functions_dict</span><span class="p">]</span>
         <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="s1">&#39;__name__&#39;</span><span class="p">):</span>
             <span class="n">new_fn</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">=</span> <span class="n">fn</span><span class="o">.</span><span class="vm">__name__</span>
 
