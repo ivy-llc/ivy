@@ -144,13 +144,26 @@ class Graph:
         [self.get_param_recursive(pid, depth=0) for pid in self._output_param_ids]
         [self.increment_param_count(pid) for pid in self._output_param_ids]
 
-        # find the depth of the tree
-        max_tree_depth = max([fn.tree_depth for fn in self._functions])
+        # function for storing function heights
+        def store_fn_heights(fn):
+            child_heights = [store_fn_heights(child_fn) for child_fn in fn.child_fns]
+            if child_heights:
+                _height = max(child_heights) + 1
+            else:
+                _height = 0
+            fn.tree_height = _height
+            return _height
 
-        # ToDo: modify this logic to consider tree height rather than depth, treating all leaf-nodes equally
+        # store function heights
+        [store_fn_heights(self._functions_dict[pid]) for pid in self._output_param_ids]
+
+        # find the height of the tree
+        max_tree_height = max([fn.tree_height for fn in self._functions])
+
+        # group the functions based on their height in the tree from the starting leaf nodes
         self._grouped_functions = list()
-        for depth in range(max_tree_depth, -1, -1):
-            fns = [fn for fn in self._functions if fn.tree_depth == depth]
+        for height in range(0, max_tree_height+1):
+            fns = [fn for fn in self._functions if fn.tree_height == height]
             self._grouped_functions.append(fns)
 
     def _call(self, *args, **kwargs):
@@ -236,6 +249,8 @@ def _wrap_method_for_compiling(fn, graph):
         new_fn.kwarg_param_ids = kwarg_param_ids
         new_fn.output_param_ids = ret_param_ids
         new_fn.output_nest_idxs = ret_nest_idxs
+        new_fn.child_fns = [graph._functions_dict[pid]
+                            for pid in arg_param_ids + kwarg_param_ids if pid in graph._functions_dict]
         if hasattr(fn, '__name__'):
             new_fn.__name__ = fn.__name__
 
