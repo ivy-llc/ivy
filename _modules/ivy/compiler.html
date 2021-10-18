@@ -241,7 +241,7 @@
 <div class="viewcode-block" id="Graph"><a class="viewcode-back" href="../../compiler.html#ivy.compiler.Graph">[docs]</a><span class="k">class</span> <span class="nc">Graph</span><span class="p">:</span>
 
     <span class="c1"># noinspection PyProtectedMember</span>
-<div class="viewcode-block" id="Graph.__init__"><a class="viewcode-back" href="../../compiler.html#ivy.compiler.Graph.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fn</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">num_workers</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="Graph.__init__"><a class="viewcode-back" href="../../compiler.html#ivy.compiler.Graph.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fn</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">num_workers</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 
         <span class="c1"># function being compiled into a graph</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_fn</span> <span class="o">=</span> <span class="n">fn</span>
@@ -276,24 +276,32 @@
         <span class="c1"># prevent redundant workers by limiting to graph width</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_num_workers</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_num_workers</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_max_graph_width</span><span class="p">)</span>
 
-        <span class="c1"># create workers</span>
-        <span class="n">multiprocessing</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">multiprocessing</span><span class="p">(</span><span class="s1">&#39;forkserver&#39;</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_input_queues</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_workers</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
-        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_num_workers</span><span class="p">):</span>
-            <span class="n">input_queue</span> <span class="o">=</span> <span class="n">multiprocessing</span><span class="o">.</span><span class="n">Queue</span><span class="p">()</span>
-            <span class="n">worker</span> <span class="o">=</span> <span class="n">multiprocessing</span><span class="o">.</span><span class="n">Process</span><span class="p">(</span>
-                <span class="n">target</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_worker_fn</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span>
-                    <span class="n">input_queue</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">default_device</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">_functions</span><span class="p">[</span><span class="n">i</span><span class="p">::</span><span class="bp">self</span><span class="o">.</span><span class="n">_num_workers</span><span class="p">],</span>
-                    <span class="n">ivy</span><span class="o">.</span><span class="n">current_framework_str</span><span class="p">()))</span>
-            <span class="n">worker</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_input_queues</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">input_queue</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_workers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">worker</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_num_workers</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="c1"># multiprocessing module</span>
+        <span class="n">multiprocessing</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">multiprocessing</span><span class="p">(</span><span class="s1">&#39;fork&#39;</span><span class="p">)</span>
 
         <span class="c1"># initialize multi dict</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_param_dict_multi</span> <span class="o">=</span> <span class="n">multiprocessing</span><span class="o">.</span><span class="n">Manager</span><span class="p">()</span><span class="o">.</span><span class="n">dict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_param_dict</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_worker_fn</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_queue</span><span class="p">,</span> <span class="n">dev_str</span><span class="p">,</span> <span class="n">functions</span><span class="p">,</span> <span class="n">framework_str</span><span class="p">):</span>
+        <span class="c1"># create workers</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_input_queues</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_output_queues</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_workers</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_num_workers</span><span class="p">):</span>
+            <span class="n">input_queue</span> <span class="o">=</span> <span class="n">multiprocessing</span><span class="o">.</span><span class="n">Queue</span><span class="p">()</span>
+            <span class="n">output_queue</span> <span class="o">=</span> <span class="n">multiprocessing</span><span class="o">.</span><span class="n">Queue</span><span class="p">()</span>
+            <span class="n">worker</span> <span class="o">=</span> <span class="n">multiprocessing</span><span class="o">.</span><span class="n">Process</span><span class="p">(</span>
+                <span class="n">target</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_worker_fn</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span>
+                    <span class="n">input_queue</span><span class="p">,</span> <span class="n">output_queue</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">default_device</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">_functions</span><span class="p">[</span><span class="n">i</span><span class="p">::</span><span class="bp">self</span><span class="o">.</span><span class="n">_num_workers</span><span class="p">],</span>
+                    <span class="n">ivy</span><span class="o">.</span><span class="n">current_framework_str</span><span class="p">()))</span>
+            <span class="n">worker</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_input_queues</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">input_queue</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_output_queues</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">output_queue</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_workers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">worker</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_worker_fn</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_queue</span><span class="p">,</span> <span class="n">output_queue</span><span class="p">,</span> <span class="n">dev_str</span><span class="p">,</span> <span class="n">functions</span><span class="p">,</span> <span class="n">framework_str</span><span class="p">):</span>
         <span class="n">ivy</span><span class="o">.</span><span class="n">set_framework</span><span class="p">(</span><span class="n">framework_str</span><span class="p">)</span>
         <span class="n">ivy</span><span class="o">.</span><span class="n">set_default_device</span><span class="p">(</span><span class="n">dev_str</span><span class="p">)</span>
         <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
@@ -307,6 +315,7 @@
                 <span class="n">ret</span> <span class="o">=</span> <span class="n">fn</span><span class="p">(</span><span class="n">arg_vals</span><span class="p">,</span> <span class="n">kwarg_vals</span><span class="p">)</span>
                 <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">set_param_multi</span><span class="p">(</span><span class="n">pid</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">index_nest</span><span class="p">(</span><span class="n">ret</span><span class="p">,</span> <span class="n">idx</span><span class="p">))</span>
                  <span class="k">for</span> <span class="n">pid</span><span class="p">,</span> <span class="n">idx</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">fn</span><span class="o">.</span><span class="n">output_param_ids</span><span class="p">,</span> <span class="n">fn</span><span class="o">.</span><span class="n">output_nest_idxs</span><span class="p">)]</span>
+            <span class="n">output_queue</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
 
     <span class="c1"># Foward with Op Logging #</span>
     <span class="c1"># -----------------------#</span>
@@ -333,16 +342,24 @@
 <div class="viewcode-block" id="Graph.get_param"><a class="viewcode-back" href="../../compiler.html#ivy.compiler.Graph.get_param">[docs]</a>    <span class="k">def</span> <span class="nf">get_param</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pid</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_param_dict</span><span class="p">[</span><span class="n">pid</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="Graph.set_param"><a class="viewcode-back" href="../../compiler.html#ivy.compiler.Graph.set_param">[docs]</a>    <span class="k">def</span> <span class="nf">set_param</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pid</span><span class="p">,</span> <span class="n">param</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_param_dict</span><span class="p">[</span><span class="n">pid</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">param</span><span class="p">)</span></div>
+<div class="viewcode-block" id="Graph.set_param"><a class="viewcode-back" href="../../compiler.html#ivy.compiler.Graph.set_param">[docs]</a>    <span class="k">def</span> <span class="nf">set_param</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pid</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_param_dict</span><span class="p">[</span><span class="n">pid</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">value</span><span class="p">)</span></div>
 
     <span class="c1"># multiprocessing inference</span>
 
 <div class="viewcode-block" id="Graph.get_param_multi"><a class="viewcode-back" href="../../compiler.html#ivy.compiler.Graph.get_param_multi">[docs]</a>    <span class="k">def</span> <span class="nf">get_param_multi</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pid</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_param_dict_multi</span><span class="p">[</span><span class="n">pid</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">()</span></div>
+        <span class="c1"># ToDo: make this more efficient</span>
+        <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_param_dict_multi</span><span class="p">[</span><span class="n">pid</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+            <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
+                <span class="k">pass</span></div>
 
-<div class="viewcode-block" id="Graph.set_param_multi"><a class="viewcode-back" href="../../compiler.html#ivy.compiler.Graph.set_param_multi">[docs]</a>    <span class="k">def</span> <span class="nf">set_param_multi</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pid</span><span class="p">,</span> <span class="n">param</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_param_dict_multi</span><span class="p">[</span><span class="n">pid</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">param</span><span class="p">)</span></div>
+<div class="viewcode-block" id="Graph.set_param_multi"><a class="viewcode-back" href="../../compiler.html#ivy.compiler.Graph.set_param_multi">[docs]</a>    <span class="k">def</span> <span class="nf">set_param_multi</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pid</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="c1"># ToDo: make this more efficient</span>
+        <span class="n">param</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_param_dict_multi</span><span class="p">[</span><span class="n">pid</span><span class="p">]</span>
+        <span class="n">param</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_param_dict_multi</span><span class="p">[</span><span class="n">pid</span><span class="p">]</span> <span class="o">=</span> <span class="n">param</span></div>
 
     <span class="c1"># compiling</span>
 
@@ -445,6 +462,7 @@
         <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">set_param_multi</span><span class="p">(</span><span class="n">pid</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">index_nest</span><span class="p">(</span><span class="n">kwargs</span><span class="p">,</span> <span class="n">idx</span><span class="p">))</span>
          <span class="k">for</span> <span class="n">pid</span><span class="p">,</span> <span class="n">idx</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_kwarg_param_ids</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_kwarg_nest_idxs</span><span class="p">)]</span>
         <span class="p">[</span><span class="n">q</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span> <span class="k">for</span> <span class="n">q</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_input_queues</span><span class="p">]</span>
+        <span class="p">[</span><span class="n">q</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">timeout</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span> <span class="k">for</span> <span class="n">q</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_output_queues</span><span class="p">]</span>
         <span class="n">ret</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">get_param_multi</span><span class="p">(</span><span class="n">pid</span><span class="p">)</span> <span class="k">for</span> <span class="n">pid</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_output_param_ids</span><span class="p">]</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">ret</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">ret</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
@@ -453,9 +471,28 @@
 <div class="viewcode-block" id="Graph.compiled"><a class="viewcode-back" href="../../compiler.html#ivy.compiler.Graph.compiled">[docs]</a>    <span class="k">def</span> <span class="nf">compiled</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_chain_functions</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_initialize_multiprocessing</span><span class="p">()</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_num_workers</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_num_workers</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_call</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_multi_call</span></div>
+
+    <span class="k">def</span> <span class="fm">__del__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># noinspection PyBroadException</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">w</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_workers</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_input_queues</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+                <span class="n">w</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">timeout</span><span class="o">=</span><span class="mf">0.25</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">q</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_input_queues</span><span class="p">:</span>
+                <span class="n">q</span><span class="o">.</span><span class="n">cancel_join_thread</span><span class="p">()</span>
+                <span class="n">q</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">q</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_output_queues</span><span class="p">:</span>
+                <span class="n">q</span><span class="o">.</span><span class="n">cancel_join_thread</span><span class="p">()</span>
+                <span class="n">q</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+            <span class="k">pass</span>
+        <span class="k">finally</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_workers</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">w</span><span class="o">.</span><span class="n">is_alive</span><span class="p">():</span>
+                    <span class="n">w</span><span class="o">.</span><span class="n">terminate</span><span class="p">()</span>
 
     <span class="c1"># Clearing #</span>
     <span class="c1"># ---------#</span>
@@ -568,8 +605,8 @@
         <span class="k">lambda</span> <span class="n">fn</span><span class="p">:</span> <span class="n">_unwrap_method_from_compiling</span><span class="p">(</span><span class="n">fn</span><span class="p">),</span> <span class="n">classes_to_wrap</span><span class="o">=</span><span class="n">classes_to_wrap</span><span class="p">,</span> <span class="n">native</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="compile_ivy"><a class="viewcode-back" href="../../compiler/compile_ivy.html#ivy.compiler.compile_ivy">[docs]</a><span class="k">def</span> <span class="nf">compile_ivy</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-    <span class="n">graph</span> <span class="o">=</span> <span class="n">Graph</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+<div class="viewcode-block" id="compile_ivy"><a class="viewcode-back" href="../../compiler/compile_ivy.html#ivy.compiler.compile_ivy">[docs]</a><span class="k">def</span> <span class="nf">compile_ivy</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">num_workers</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="n">graph</span> <span class="o">=</span> <span class="n">Graph</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span> <span class="n">num_workers</span><span class="o">=</span><span class="n">num_workers</span><span class="p">)</span>
     <span class="n">_wrap_methods_for_op_logging</span><span class="p">(</span><span class="n">graph</span><span class="p">)</span>
     <span class="n">graph</span><span class="o">.</span><span class="n">log_all_ops</span><span class="p">()</span>
     <span class="n">_unwrap_methods_from_op_logging</span><span class="p">()</span>
