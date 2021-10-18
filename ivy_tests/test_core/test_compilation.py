@@ -82,6 +82,7 @@ def test_compile_native(x, dtype_str, tensor_fn, dev_str, call):
     assert np.allclose(ivy.to_numpy(non_compiled_return), ivy.to_numpy(compiled_return))
 
 
+# noinspection PyUnresolvedReferences
 @pytest.mark.parametrize(
     "x_raw", [[1]])
 @pytest.mark.parametrize(
@@ -110,7 +111,9 @@ def test_compile_ivy_inplace(x_raw, dtype_str, tensor_fn, dev_str, call):
     non_compiled_return = _fn_1(x)
     non_comp_time_taken = time.perf_counter() - start_time
     start_time = time.perf_counter()
+    assert comp_fn.__self__.params_all_empty()
     compiled_return = comp_fn(x)
+    assert comp_fn.__self__.params_all_empty()
     comp_time_taken = time.perf_counter() - start_time
     assert np.allclose(ivy.to_numpy(non_compiled_return), ivy.to_numpy(compiled_return))
     assert comp_time_taken < non_comp_time_taken
@@ -125,12 +128,15 @@ def test_compile_ivy_inplace(x_raw, dtype_str, tensor_fn, dev_str, call):
     non_compiled_return = _fn_2(x)
     non_comp_time_taken = time.perf_counter() - start_time
     start_time = time.perf_counter()
+    assert comp_fn.__self__.params_all_empty()
     compiled_return = comp_fn(x)
+    assert comp_fn.__self__.params_all_empty()
     comp_time_taken = time.perf_counter() - start_time
     assert np.allclose(ivy.to_numpy(non_compiled_return), ivy.to_numpy(compiled_return))
     assert comp_time_taken < non_comp_time_taken
 
 
+# noinspection PyUnresolvedReferences
 @pytest.mark.parametrize(
     "x_raw", [[1]])
 @pytest.mark.parametrize(
@@ -159,7 +165,9 @@ def test_compile_ivy(x_raw, dtype_str, tensor_fn, dev_str, call):
     non_compiled_return = _fn_3(x)
     non_comp_time_taken = time.perf_counter() - start_time
     start_time = time.perf_counter()
+    assert comp_fn.__self__.params_all_empty()
     compiled_return = comp_fn(x)
+    assert comp_fn.__self__.params_all_empty()
     comp_time_taken = time.perf_counter() - start_time
     assert np.allclose(ivy.to_numpy(non_compiled_return), ivy.to_numpy(compiled_return))
     assert comp_time_taken < non_comp_time_taken
@@ -174,7 +182,9 @@ def test_compile_ivy(x_raw, dtype_str, tensor_fn, dev_str, call):
     non_compiled_return = _fn_4(x)
     non_comp_time_taken = time.perf_counter() - start_time
     start_time = time.perf_counter()
+    assert comp_fn.__self__.params_all_empty()
     compiled_return = comp_fn(x)
+    assert comp_fn.__self__.params_all_empty()
     comp_time_taken = time.perf_counter() - start_time
     assert np.allclose(ivy.to_numpy(non_compiled_return), ivy.to_numpy(compiled_return))
     assert comp_time_taken < non_comp_time_taken
