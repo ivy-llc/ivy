@@ -49,7 +49,7 @@ class Param:
 class Graph:
 
     # noinspection PyProtectedMember
-    def __init__(self, fn, *args, num_workers=0, **kwargs):
+    def __init__(self, fn, *args, num_workers=1, **kwargs):
 
         # function being compiled into a graph
         self._fn = fn
@@ -84,24 +84,32 @@ class Graph:
         # prevent redundant workers by limiting to graph width
         self._num_workers = min(self._num_workers, self._max_graph_width)
 
-        # create workers
-        multiprocessing = ivy.multiprocessing('forkserver')
-        self._input_queues = list()
-        self._workers = list()
-        for i in range(self._num_workers):
-            input_queue = multiprocessing.Queue()
-            worker = multiprocessing.Process(
-                target=self._worker_fn, args=(
-                    input_queue, ivy.default_device(), self._functions[i::self._num_workers],
-                    ivy.current_framework_str()))
-            worker.start()
-            self._input_queues.append(input_queue)
-            self._workers.append(worker)
+        if self._num_workers <= 1:
+            return
+
+        # multiprocessing module
+        multiprocessing = ivy.multiprocessing('fork')
 
         # initialize multi dict
         self._param_dict_multi = multiprocessing.Manager().dict(self._param_dict)
 
-    def _worker_fn(self, input_queue, dev_str, functions, framework_str):
+        # create workers
+        self._input_queues = list()
+        self._output_queues = list()
+        self._workers = list()
+        for i in range(self._num_workers):
+            input_queue = multiprocessing.Queue()
+            output_queue = multiprocessing.Queue()
+            worker = multiprocessing.Process(
+                target=self._worker_fn, args=(
+                    input_queue, output_queue, ivy.default_device(), self._functions[i::self._num_workers],
+                    ivy.current_framework_str()))
+            worker.start()
+            self._input_queues.append(input_queue)
+            self._output_queues.append(output_queue)
+            self._workers.append(worker)
+
+    def _worker_fn(self, input_queue, output_queue, dev_str, functions, framework_str):
         ivy.set_framework(framework_str)
         ivy.set_default_device(dev_str)
         while True:
@@ -115,6 +123,7 @@ class Graph:
                 ret = fn(arg_vals, kwarg_vals)
                 [self.set_param_multi(pid, ivy.index_nest(ret, idx))
                  for pid, idx in zip(fn.output_param_ids, fn.output_nest_idxs)]
+            output_queue.put(True)
 
     # Foward with Op Logging #
     # -----------------------#
@@ -141,16 +150,24 @@ class Graph:
     def get_param(self, pid):
         return self._param_dict[pid].get()
 
-    def set_param(self, pid, param):
-        self._param_dict[pid].set(param)
+    def set_param(self, pid, value):
+        self._param_dict[pid].set(value)
 
     # multiprocessing inference
 
     def get_param_multi(self, pid):
-        return self._param_dict_multi[pid].get()
+        # ToDo: make this more efficient
+        while True:
+            try:
+                return self._param_dict_multi[pid].get()
+            except IndexError:
+                pass
 
-    def set_param_multi(self, pid, param):
-        self._param_dict_multi[pid].set(param)
+    def set_param_multi(self, pid, value):
+        # ToDo: make this more efficient
+        param = self._param_dict_multi[pid]
+        param.set(value)
+        self._param_dict_multi[pid] = param
 
     # compiling
 
@@ -253,6 +270,7 @@ class Graph:
         [self.set_param_multi(pid, ivy.index_nest(kwargs, idx))
          for pid, idx in zip(self._kwarg_param_ids, self._kwarg_nest_idxs)]
         [q.put(True) for q in self._input_queues]
+        [q.get(timeout=None) for q in self._output_queues]
         ret = [self.get_param_multi(pid) for pid in self._output_param_ids]
         if len(ret) == 1:
             return ret[0]
@@ -261,9 +279,28 @@ class Graph:
     def compiled(self):
         self._chain_functions()
         self._initialize_multiprocessing()
-        if self._num_workers == 0:
+        if self._num_workers <= 1:
             return self._call
         return self._multi_call
+
+    def __del__(self):
+        # noinspection PyBroadException
+        try:
+            for i, w in enumerate(self._workers):
+                self._input_queues[i].put(None)
+                w.join(timeout=0.25)
+            for q in self._input_queues:
+                q.cancel_join_thread()
+                q.close()
+            for q in self._output_queues:
+                q.cancel_join_thread()
+                q.close()
+        except Exception:
+            pass
+        finally:
+            for w in self._workers:
+                if w.is_alive():
+                    w.terminate()
 
     # Clearing #
     # ---------#
@@ -376,8 +413,8 @@ def _unwrap_methods_from_op_logging():
         lambda fn: _unwrap_method_from_compiling(fn), classes_to_wrap=classes_to_wrap, native=True)
 
 
-def compile_ivy(fn, *args, **kwargs):
-    graph = Graph(fn, *args, **kwargs)
+def compile_ivy(fn, *args, num_workers=1, **kwargs):
+    graph = Graph(fn, *args, **kwargs, num_workers=num_workers)
     _wrap_methods_for_op_logging(graph)
     graph.log_all_ops()
     _unwrap_methods_from_op_logging()
