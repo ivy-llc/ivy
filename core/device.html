@@ -101,6 +101,7 @@
 <li class="toctree-l2"><a class="reference internal" href="device/percent_used_mem_on_dev.html">percent_used_mem_on_dev</a></li>
 <li class="toctree-l2"><a class="reference internal" href="device/dev_util.html">dev_util</a></li>
 <li class="toctree-l2"><a class="reference internal" href="device/gpu_is_available.html">gpu_is_available</a></li>
+<li class="toctree-l2"><a class="reference internal" href="device/num_cpu_cores.html">num_cpu_cores</a></li>
 <li class="toctree-l2"><a class="reference internal" href="device/num_gpus.html">num_gpus</a></li>
 <li class="toctree-l2"><a class="reference internal" href="device/tpu_is_available.html">tpu_is_available</a></li>
 <li class="toctree-l2"><a class="reference internal" href="device/default_device.html">default_device</a></li>
@@ -840,6 +841,12 @@ on the single target device.</p>
 </dd></dl>
 
 <dl class="py function">
+<dt id="ivy.core.device.num_cpu_cores">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">num_cpu_cores</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; int<a class="reference internal" href="../_modules/ivy/core/device.html#num_cpu_cores"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.device.num_cpu_cores" title="Permalink to this definition">¶</a></dt>
+<dd><p>Determine the number of cores available in the cpu.</p>
+</dd></dl>
+
+<dl class="py function">
 <dt id="ivy.core.device.num_gpus">
 <code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">num_gpus</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">f</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>ivy.Framework<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; int<a class="reference internal" href="../_modules/ivy/core/device.html#num_gpus"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.device.num_gpus" title="Permalink to this definition">¶</a></dt>
 <dd><p>Determine the number of available GPUs, with the backend framework.</p>
@@ -1027,6 +1034,7 @@ the entire input array at once. This can be useful to reduce memory usage of the
 <li class="toctree-l1"><a class="reference internal" href="device/percent_used_mem_on_dev.html">percent_used_mem_on_dev</a></li>
 <li class="toctree-l1"><a class="reference internal" href="device/dev_util.html">dev_util</a></li>
 <li class="toctree-l1"><a class="reference internal" href="device/gpu_is_available.html">gpu_is_available</a></li>
+<li class="toctree-l1"><a class="reference internal" href="device/num_cpu_cores.html">num_cpu_cores</a></li>
 <li class="toctree-l1"><a class="reference internal" href="device/num_gpus.html">num_gpus</a></li>
 <li class="toctree-l1"><a class="reference internal" href="device/tpu_is_available.html">tpu_is_available</a></li>
 <li class="toctree-l1"><a class="reference internal" href="device/default_device.html">default_device</a></li>

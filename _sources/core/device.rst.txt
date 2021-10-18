@@ -21,6 +21,7 @@ Device
    device/percent_used_mem_on_dev.rst
    device/dev_util.rst
    device/gpu_is_available.rst
+   device/num_cpu_cores.rst
    device/num_gpus.rst
    device/tpu_is_available.rst
    device/default_device.rst
