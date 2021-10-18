@@ -195,18 +195,13 @@
 <span id="compiler"></span><h1>Compiler<a class="headerlink" href="#module-ivy.compiler" title="Permalink to this headline">¶</a></h1>
 <dl class="py class">
 <dt id="ivy.compiler.Graph">
-<em class="property">class </em><code class="sig-prename descclassname">ivy.compiler.</code><code class="sig-name descname">Graph</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">fn</span></em>, <em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ivy/compiler.html#Graph"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.compiler.Graph" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">ivy.compiler.</code><code class="sig-name descname">Graph</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">fn</span></em>, <em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="n">num_workers</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ivy/compiler.html#Graph"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.compiler.Graph" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <dl class="py method">
 <dt id="ivy.compiler.Graph.__init__">
-<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">fn</span></em>, <em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ivy/compiler.html#Graph.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.compiler.Graph.__init__" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">fn</span></em>, <em class="sig-param"><span class="o">*</span><span class="n">args</span></em>, <em class="sig-param"><span class="n">num_workers</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ivy/compiler.html#Graph.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.compiler.Graph.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
 </dd></dl>
-
-<dl class="py method">
-<dt id="ivy.compiler.Graph.add_fn">
-<code class="sig-name descname">add_fn</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">fn</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ivy/compiler.html#Graph.add_fn"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.compiler.Graph.add_fn" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
 
 <dl class="py method">
 <dt id="ivy.compiler.Graph.add_fn_to_dict">
@@ -234,13 +229,13 @@
 <dd></dd></dl>
 
 <dl class="py method">
-<dt id="ivy.compiler.Graph.get_param_recursive">
-<code class="sig-name descname">get_param_recursive</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">pid</span></em>, <em class="sig-param"><span class="n">depth</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ivy/compiler.html#Graph.get_param_recursive"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.compiler.Graph.get_param_recursive" title="Permalink to this definition">¶</a></dt>
+<dt id="ivy.compiler.Graph.get_param_multi">
+<code class="sig-name descname">get_param_multi</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">pid</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ivy/compiler.html#Graph.get_param_multi"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.compiler.Graph.get_param_multi" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
-<dt id="ivy.compiler.Graph.has_param">
-<code class="sig-name descname">has_param</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">pid</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ivy/compiler.html#Graph.has_param"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.compiler.Graph.has_param" title="Permalink to this definition">¶</a></dt>
+<dt id="ivy.compiler.Graph.get_param_recursive">
+<code class="sig-name descname">get_param_recursive</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">pid</span></em>, <em class="sig-param"><span class="n">depth</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ivy/compiler.html#Graph.get_param_recursive"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.compiler.Graph.get_param_recursive" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -264,8 +259,8 @@
 <dd></dd></dl>
 
 <dl class="py method">
-<dt id="ivy.compiler.Graph.set_param_count">
-<code class="sig-name descname">set_param_count</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">pid</span></em>, <em class="sig-param"><span class="n">count</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ivy/compiler.html#Graph.set_param_count"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.compiler.Graph.set_param_count" title="Permalink to this definition">¶</a></dt>
+<dt id="ivy.compiler.Graph.set_param_multi">
+<code class="sig-name descname">set_param_multi</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">pid</span></em>, <em class="sig-param"><span class="n">param</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/ivy/compiler.html#Graph.set_param_multi"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.compiler.Graph.set_param_multi" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
