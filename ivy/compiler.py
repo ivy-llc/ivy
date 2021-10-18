@@ -146,9 +146,9 @@ class Graph:
 
         # function for storing function heights
         def store_fn_heights(fn):
-            child_heights = [store_fn_heights(child_fn) for child_fn in fn.child_fns]
-            if child_heights:
-                _height = max(child_heights) + 1
+            heights_in = [store_fn_heights(fn_in) for fn_in in fn.fns_in]
+            if heights_in:
+                _height = max(heights_in) + 1
             else:
                 _height = 0
             fn.tree_height = _height
@@ -249,8 +249,16 @@ def _wrap_method_for_compiling(fn, graph):
         new_fn.kwarg_param_ids = kwarg_param_ids
         new_fn.output_param_ids = ret_param_ids
         new_fn.output_nest_idxs = ret_nest_idxs
-        new_fn.child_fns = [graph._functions_dict[pid]
-                            for pid in arg_param_ids + kwarg_param_ids if pid in graph._functions_dict]
+        fns_in = [graph._functions_dict[pid]
+                  for pid in arg_param_ids + kwarg_param_ids if pid in graph._functions_dict]
+        for fn_in in fns_in:
+            if not hasattr(fn_in, 'fns_out'):
+                fn_in.fns_out = list()
+            if new_fn not in fn_in.fns_out:
+                fn_in.fns_out.append(new_fn)
+
+        new_fn.fns_in = fns_in
+
         if hasattr(fn, '__name__'):
             new_fn.__name__ = fn.__name__
 
