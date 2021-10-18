@@ -199,7 +199,7 @@
 <span class="c1"># local</span>
 <span class="kn">from</span> <span class="nn">ivy.wrapper</span> <span class="kn">import</span> <span class="n">_wrap_or_unwrap_methods</span><span class="p">,</span> <span class="n">NON_WRAPPED_METHODS</span><span class="p">,</span> <span class="n">NON_ARRAY_RET_METHODS</span>
 
-<span class="n">compiling</span> <span class="o">=</span> <span class="kc">False</span>
+<span class="n">op_logging</span> <span class="o">=</span> <span class="kc">False</span>
 
 <span class="n">ARRAY_BUILTINS</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;__neg__&#39;</span><span class="p">,</span> <span class="s1">&#39;__pow__&#39;</span><span class="p">,</span> <span class="s1">&#39;__rpow__&#39;</span><span class="p">,</span> <span class="s1">&#39;__add__&#39;</span><span class="p">,</span> <span class="s1">&#39;__radd__&#39;</span><span class="p">,</span> <span class="s1">&#39;__sub__&#39;</span><span class="p">,</span> <span class="s1">&#39;__rsub__&#39;</span><span class="p">,</span> <span class="s1">&#39;__mul__&#39;</span><span class="p">,</span> <span class="s1">&#39;__rmul__&#39;</span><span class="p">,</span>
                   <span class="s1">&#39;__truediv__&#39;</span><span class="p">,</span> <span class="s1">&#39;__rtruediv__&#39;</span><span class="p">,</span> <span class="s1">&#39;__floordiv__&#39;</span><span class="p">,</span> <span class="s1">&#39;__rfloordiv__&#39;</span><span class="p">,</span> <span class="s1">&#39;__abs__&#39;</span><span class="p">,</span> <span class="s1">&#39;__lt__&#39;</span><span class="p">,</span> <span class="s1">&#39;__le__&#39;</span><span class="p">,</span>
@@ -261,21 +261,25 @@
 
         <span class="c1"># graph storage</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_param_dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_functions_dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_functions</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span></div>
 
-    <span class="c1"># Compute output idxs #</span>
-    <span class="c1"># --------------------#</span>
+    <span class="c1"># Foward with Op Logging #</span>
+    <span class="c1"># -----------------------#</span>
 
     <span class="c1"># noinspection PyProtectedMember</span>
-<div class="viewcode-block" id="Graph.foward"><a class="viewcode-back" href="../../compiler.html#ivy.compiler.Graph.foward">[docs]</a>    <span class="k">def</span> <span class="nf">foward</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">add_param</span><span class="p">(</span><span class="n">pid</span><span class="p">)</span> <span class="k">for</span> <span class="n">pid</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_arg_param_ids</span><span class="p">]</span>
-        <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">add_param</span><span class="p">(</span><span class="n">pid</span><span class="p">)</span> <span class="k">for</span> <span class="n">pid</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_kwarg_param_ids</span><span class="p">]</span>
+<div class="viewcode-block" id="Graph.log_all_ops"><a class="viewcode-back" href="../../compiler.html#ivy.compiler.Graph.log_all_ops">[docs]</a>    <span class="k">def</span> <span class="nf">log_all_ops</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="k">global</span> <span class="n">op_logging</span>
+        <span class="n">op_logging</span> <span class="o">=</span> <span class="kc">True</span>
+
         <span class="n">ret</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fn</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_kwargs</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ret</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
             <span class="n">ret</span> <span class="o">=</span> <span class="p">(</span><span class="n">ret</span><span class="p">,)</span>
         <span class="n">output_nest_idxs</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">nested_indices_where</span><span class="p">(</span><span class="n">ret</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_array</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
-        <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">set_param_count</span><span class="p">(</span><span class="nb">id</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="mi">1</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">ivy</span><span class="o">.</span><span class="n">multi_index_nest</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">ret</span><span class="p">),</span> <span class="n">output_nest_idxs</span><span class="p">)]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_output_param_ids</span> <span class="o">=</span> <span class="p">[</span><span class="nb">id</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">ivy</span><span class="o">.</span><span class="n">multi_index_nest</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">ret</span><span class="p">),</span> <span class="n">output_nest_idxs</span><span class="p">)]</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_output_param_ids</span> <span class="o">=</span> <span class="p">[</span><span class="nb">id</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">ivy</span><span class="o">.</span><span class="n">multi_index_nest</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">ret</span><span class="p">),</span> <span class="n">output_nest_idxs</span><span class="p">)]</span>
+
+        <span class="n">op_logging</span> <span class="o">=</span> <span class="kc">False</span></div>
 
     <span class="c1"># Setters #</span>
     <span class="c1"># --------#</span>
@@ -295,8 +299,23 @@
 <div class="viewcode-block" id="Graph.get_param"><a class="viewcode-back" href="../../compiler.html#ivy.compiler.Graph.get_param">[docs]</a>    <span class="k">def</span> <span class="nf">get_param</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pid</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_param_dict</span><span class="p">[</span><span class="n">pid</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">()</span></div>
 
+<div class="viewcode-block" id="Graph.get_param_recursive"><a class="viewcode-back" href="../../compiler.html#ivy.compiler.Graph.get_param_recursive">[docs]</a>    <span class="k">def</span> <span class="nf">get_param_recursive</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pid</span><span class="p">,</span> <span class="n">depth</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">pid</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_param_dict</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="n">fn</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_functions_dict</span><span class="p">[</span><span class="n">pid</span><span class="p">]</span>
+        <span class="n">fn</span><span class="o">.</span><span class="n">tree_depth</span> <span class="o">=</span> <span class="n">depth</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_fn</span><span class="p">(</span><span class="n">fn</span><span class="p">)</span>
+        <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">get_param_recursive</span><span class="p">(</span><span class="n">pid</span><span class="p">,</span> <span class="n">depth</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span> <span class="k">for</span> <span class="n">pid</span> <span class="ow">in</span> <span class="n">fn</span><span class="o">.</span><span class="n">arg_param_ids</span><span class="p">]</span>
+        <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">get_param_recursive</span><span class="p">(</span><span class="n">pid</span><span class="p">,</span> <span class="n">depth</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span> <span class="k">for</span> <span class="n">pid</span> <span class="ow">in</span> <span class="n">fn</span><span class="o">.</span><span class="n">kwarg_param_ids</span><span class="p">]</span>
+        <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">increment_param_count</span><span class="p">(</span><span class="n">pid</span><span class="p">)</span> <span class="k">for</span> <span class="n">pid</span> <span class="ow">in</span> <span class="n">fn</span><span class="o">.</span><span class="n">arg_param_ids</span> <span class="o">+</span> <span class="n">fn</span><span class="o">.</span><span class="n">kwarg_param_ids</span><span class="p">]</span>
+        <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">add_param</span><span class="p">(</span><span class="n">pid</span><span class="p">)</span> <span class="k">for</span> <span class="n">pid</span> <span class="ow">in</span> <span class="n">fn</span><span class="o">.</span><span class="n">output_param_ids</span><span class="p">]</span>
+        <span class="k">return</span></div>
+
 <div class="viewcode-block" id="Graph.has_param"><a class="viewcode-back" href="../../compiler.html#ivy.compiler.Graph.has_param">[docs]</a>    <span class="k">def</span> <span class="nf">has_param</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pid</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">pid</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_param_dict</span></div>
+
+<div class="viewcode-block" id="Graph.add_fn_to_dict"><a class="viewcode-back" href="../../compiler.html#ivy.compiler.Graph.add_fn_to_dict">[docs]</a>    <span class="k">def</span> <span class="nf">add_fn_to_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pid</span><span class="p">,</span> <span class="n">fn</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_functions_dict</span><span class="p">[</span><span class="n">pid</span><span class="p">]</span> <span class="o">=</span> <span class="n">fn</span></div>
 
 <div class="viewcode-block" id="Graph.add_fn"><a class="viewcode-back" href="../../compiler.html#ivy.compiler.Graph.add_fn">[docs]</a>    <span class="k">def</span> <span class="nf">add_fn</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fn</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_functions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">fn</span><span class="p">)</span></div>
@@ -307,24 +326,45 @@
     <span class="c1"># Function creation #</span>
     <span class="c1"># ------------------#</span>
 
+    <span class="k">def</span> <span class="nf">_chain_functions</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="c1"># add input params to param dict</span>
+        <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">add_param</span><span class="p">(</span><span class="n">pid</span><span class="p">)</span> <span class="k">for</span> <span class="n">pid</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_arg_param_ids</span><span class="p">]</span>
+        <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">add_param</span><span class="p">(</span><span class="n">pid</span><span class="p">)</span> <span class="k">for</span> <span class="n">pid</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_kwarg_param_ids</span><span class="p">]</span>
+
+        <span class="c1"># recursively chain the graph via backward traversal</span>
+        <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">get_param_recursive</span><span class="p">(</span><span class="n">pid</span><span class="p">,</span> <span class="n">depth</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="k">for</span> <span class="n">pid</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_output_param_ids</span><span class="p">]</span>
+        <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">increment_param_count</span><span class="p">(</span><span class="n">pid</span><span class="p">)</span> <span class="k">for</span> <span class="n">pid</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_output_param_ids</span><span class="p">]</span>
+
+        <span class="c1"># find the depth of the tree</span>
+        <span class="n">max_tree_depth</span> <span class="o">=</span> <span class="nb">max</span><span class="p">([</span><span class="n">fn</span><span class="o">.</span><span class="n">tree_depth</span> <span class="k">for</span> <span class="n">fn</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_functions</span><span class="p">])</span>
+
+        <span class="c1"># ToDo: modify this logic to consider tree height rather than depth, treating all leaf-nodes equally</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_grouped_functions</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">depth</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">max_tree_depth</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+            <span class="n">fns</span> <span class="o">=</span> <span class="p">[</span><span class="n">fn</span> <span class="k">for</span> <span class="n">fn</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_functions</span> <span class="k">if</span> <span class="n">fn</span><span class="o">.</span><span class="n">tree_depth</span> <span class="o">==</span> <span class="n">depth</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_grouped_functions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">fns</span><span class="p">)</span>
+
     <span class="k">def</span> <span class="nf">_call</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="c1"># ToDo: make this as efficient as possible; this is performed at runtime</span>
         <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">set_param</span><span class="p">(</span><span class="n">pid</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">index_nest</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">idx</span><span class="p">))</span>
          <span class="k">for</span> <span class="n">pid</span><span class="p">,</span> <span class="n">idx</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_arg_param_ids</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_arg_nest_idxs</span><span class="p">)]</span>
         <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">set_param</span><span class="p">(</span><span class="n">pid</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">index_nest</span><span class="p">(</span><span class="n">kwargs</span><span class="p">,</span> <span class="n">idx</span><span class="p">))</span>
          <span class="k">for</span> <span class="n">pid</span><span class="p">,</span> <span class="n">idx</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_kwarg_param_ids</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_kwarg_nest_idxs</span><span class="p">)]</span>
-        <span class="k">for</span> <span class="n">fn</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_functions</span><span class="p">:</span>
-            <span class="n">arg_vals</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">get_param</span><span class="p">(</span><span class="n">pid</span><span class="p">)</span> <span class="k">for</span> <span class="n">pid</span> <span class="ow">in</span> <span class="n">fn</span><span class="o">.</span><span class="n">arg_param_ids</span><span class="p">]</span>
-            <span class="n">kwarg_vals</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">get_param</span><span class="p">(</span><span class="n">pid</span><span class="p">)</span> <span class="k">for</span> <span class="n">pid</span> <span class="ow">in</span> <span class="n">fn</span><span class="o">.</span><span class="n">kwarg_param_ids</span><span class="p">]</span>
-            <span class="n">ret</span> <span class="o">=</span> <span class="n">fn</span><span class="p">(</span><span class="n">arg_vals</span><span class="p">,</span> <span class="n">kwarg_vals</span><span class="p">)</span>
-            <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">set_param</span><span class="p">(</span><span class="n">pid</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">index_nest</span><span class="p">(</span><span class="n">ret</span><span class="p">,</span> <span class="n">idx</span><span class="p">))</span>
-             <span class="k">for</span> <span class="n">pid</span><span class="p">,</span> <span class="n">idx</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">fn</span><span class="o">.</span><span class="n">output_param_ids</span><span class="p">,</span> <span class="n">fn</span><span class="o">.</span><span class="n">output_nest_idxs</span><span class="p">)]</span>
+        <span class="k">for</span> <span class="n">fns</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_grouped_functions</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">fn</span> <span class="ow">in</span> <span class="n">fns</span><span class="p">:</span>
+                <span class="n">arg_vals</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">get_param</span><span class="p">(</span><span class="n">pid</span><span class="p">)</span> <span class="k">for</span> <span class="n">pid</span> <span class="ow">in</span> <span class="n">fn</span><span class="o">.</span><span class="n">arg_param_ids</span><span class="p">]</span>
+                <span class="n">kwarg_vals</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">get_param</span><span class="p">(</span><span class="n">pid</span><span class="p">)</span> <span class="k">for</span> <span class="n">pid</span> <span class="ow">in</span> <span class="n">fn</span><span class="o">.</span><span class="n">kwarg_param_ids</span><span class="p">]</span>
+                <span class="n">ret</span> <span class="o">=</span> <span class="n">fn</span><span class="p">(</span><span class="n">arg_vals</span><span class="p">,</span> <span class="n">kwarg_vals</span><span class="p">)</span>
+                <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">set_param</span><span class="p">(</span><span class="n">pid</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">index_nest</span><span class="p">(</span><span class="n">ret</span><span class="p">,</span> <span class="n">idx</span><span class="p">))</span>
+                 <span class="k">for</span> <span class="n">pid</span><span class="p">,</span> <span class="n">idx</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">fn</span><span class="o">.</span><span class="n">output_param_ids</span><span class="p">,</span> <span class="n">fn</span><span class="o">.</span><span class="n">output_nest_idxs</span><span class="p">)]</span>
         <span class="n">ret</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">get_param</span><span class="p">(</span><span class="n">pid</span><span class="p">)</span> <span class="k">for</span> <span class="n">pid</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_output_param_ids</span><span class="p">]</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">ret</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">ret</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
         <span class="k">return</span> <span class="n">ret</span>
 
-<div class="viewcode-block" id="Graph.to_function"><a class="viewcode-back" href="../../compiler.html#ivy.compiler.Graph.to_function">[docs]</a>    <span class="k">def</span> <span class="nf">to_function</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Graph.compiled"><a class="viewcode-back" href="../../compiler.html#ivy.compiler.Graph.compiled">[docs]</a>    <span class="k">def</span> <span class="nf">compiled</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_chain_functions</span><span class="p">()</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_call</span></div>
 
     <span class="c1"># Clearing #</span>
@@ -392,18 +432,11 @@
             <span class="n">new_fn</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">=</span> <span class="n">fn</span><span class="o">.</span><span class="vm">__name__</span>
 
         <span class="c1"># add to graph if compiling</span>
-        <span class="k">if</span> <span class="n">compiling</span><span class="p">:</span>
-
-            <span class="c1"># initialize empty keys for these input parameters in the graph</span>
-            <span class="p">[</span><span class="n">graph</span><span class="o">.</span><span class="n">increment_param_count</span><span class="p">(</span><span class="n">pid</span><span class="p">)</span> <span class="k">for</span> <span class="n">pid</span> <span class="ow">in</span> <span class="n">arg_param_ids</span> <span class="o">+</span> <span class="n">kwarg_param_ids</span><span class="p">]</span>
-
-            <span class="c1"># initialize empty keys for these output parameters in the graph</span>
-            <span class="p">[</span><span class="n">graph</span><span class="o">.</span><span class="n">add_param</span><span class="p">(</span><span class="nb">id</span><span class="p">(</span><span class="n">v</span><span class="p">))</span>
-             <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">ret</span><span class="p">,</span> <span class="n">types_to_iteratively_nest</span><span class="o">=</span><span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">))</span><span class="o">.</span><span class="n">to_iterator</span><span class="p">()</span> <span class="k">if</span>
-             <span class="n">ivy</span><span class="o">.</span><span class="n">is_array</span><span class="p">(</span><span class="n">v</span><span class="p">)]</span>
+        <span class="k">if</span> <span class="n">op_logging</span><span class="p">:</span>
 
             <span class="c1"># add this function to the graph</span>
-            <span class="n">graph</span><span class="o">.</span><span class="n">add_fn</span><span class="p">(</span><span class="n">new_fn</span><span class="p">)</span>
+            <span class="p">[</span><span class="n">graph</span><span class="o">.</span><span class="n">add_fn_to_dict</span><span class="p">(</span><span class="nb">id</span><span class="p">(</span><span class="n">v</span><span class="p">),</span> <span class="n">new_fn</span><span class="p">)</span>
+             <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">ret</span><span class="p">,</span> <span class="n">types_to_iteratively_nest</span><span class="o">=</span><span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">))</span><span class="o">.</span><span class="n">to_iterator</span><span class="p">()</span> <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_array</span><span class="p">(</span><span class="n">v</span><span class="p">)]</span>
 
         <span class="c1"># return the function output</span>
         <span class="k">return</span> <span class="n">ret_raw</span>
@@ -421,14 +454,14 @@
     <span class="k">return</span> <span class="n">method_wrapped</span><span class="o">.</span><span class="n">inner_fn</span>
 
 
-<span class="k">def</span> <span class="nf">_wrap_methods_for_compiling</span><span class="p">(</span><span class="n">graph</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">_wrap_methods_for_op_logging</span><span class="p">(</span><span class="n">graph</span><span class="p">):</span>
     <span class="n">classes_to_wrap</span> <span class="o">=</span> <span class="p">[</span><span class="nb">getattr</span><span class="p">(</span><span class="n">importlib</span><span class="o">.</span><span class="n">import_module</span><span class="p">(</span><span class="n">ctw</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="n">ctw</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
                        <span class="k">for</span> <span class="n">ctw</span> <span class="ow">in</span> <span class="n">CLASSES_TO_WRAP</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">current_framework_str</span><span class="p">()]]</span>
     <span class="k">return</span> <span class="n">_wrap_or_unwrap_methods</span><span class="p">(</span>
         <span class="k">lambda</span> <span class="n">fn</span><span class="p">:</span> <span class="n">_wrap_method_for_compiling</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="n">graph</span><span class="p">),</span> <span class="n">classes_to_wrap</span><span class="o">=</span><span class="n">classes_to_wrap</span><span class="p">,</span> <span class="n">native</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
 
-<span class="k">def</span> <span class="nf">_unwrap_methods_from_compiling</span><span class="p">():</span>
+<span class="k">def</span> <span class="nf">_unwrap_methods_from_op_logging</span><span class="p">():</span>
     <span class="n">classes_to_wrap</span> <span class="o">=</span> <span class="p">[</span><span class="nb">getattr</span><span class="p">(</span><span class="n">importlib</span><span class="o">.</span><span class="n">import_module</span><span class="p">(</span><span class="n">ctw</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="n">ctw</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
                        <span class="k">for</span> <span class="n">ctw</span> <span class="ow">in</span> <span class="n">CLASSES_TO_WRAP</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">current_framework_str</span><span class="p">()]]</span>
     <span class="k">return</span> <span class="n">_wrap_or_unwrap_methods</span><span class="p">(</span>
@@ -437,13 +470,10 @@
 
 <div class="viewcode-block" id="compile_ivy"><a class="viewcode-back" href="../../compiler/compile_ivy.html#ivy.compiler.compile_ivy">[docs]</a><span class="k">def</span> <span class="nf">compile_ivy</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
     <span class="n">graph</span> <span class="o">=</span> <span class="n">Graph</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-    <span class="n">_wrap_methods_for_compiling</span><span class="p">(</span><span class="n">graph</span><span class="p">)</span>
-    <span class="k">global</span> <span class="n">compiling</span>
-    <span class="n">compiling</span> <span class="o">=</span> <span class="kc">True</span>
-    <span class="n">graph</span><span class="o">.</span><span class="n">foward</span><span class="p">()</span>
-    <span class="n">compiling</span> <span class="o">=</span> <span class="kc">False</span>
-    <span class="n">_unwrap_methods_from_compiling</span><span class="p">()</span>
-    <span class="k">return</span> <span class="n">graph</span><span class="o">.</span><span class="n">to_function</span><span class="p">()</span></div>
+    <span class="n">_wrap_methods_for_op_logging</span><span class="p">(</span><span class="n">graph</span><span class="p">)</span>
+    <span class="n">graph</span><span class="o">.</span><span class="n">log_all_ops</span><span class="p">()</span>
+    <span class="n">_unwrap_methods_from_op_logging</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">graph</span><span class="o">.</span><span class="n">compiled</span><span class="p">()</span></div>
 </pre></div>
 
            </div>
