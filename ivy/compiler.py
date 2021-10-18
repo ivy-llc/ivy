@@ -1,8 +1,8 @@
 # global
-import importlib
-
 import ivy
+import queue
 import inspect
+import importlib
 
 # local
 from ivy.wrapper import _wrap_or_unwrap_methods, NON_WRAPPED_METHODS, NON_ARRAY_RET_METHODS
@@ -49,7 +49,7 @@ class Param:
 class Graph:
 
     # noinspection PyProtectedMember
-    def __init__(self, fn, *args, **kwargs):
+    def __init__(self, fn, *args, num_workers=0, **kwargs):
 
         # function being compiled into a graph
         self._fn = fn
@@ -72,6 +72,50 @@ class Graph:
         self._functions_dict = dict()
         self._functions = list()
 
+        # multiprocessing
+        self._timeout = ivy.queue_timeout()
+        self._num_workers = num_workers
+
+    # Multiprocessing #
+    # ----------------#
+
+    def _initialize_multiprocessing(self):
+
+        # prevent redundant workers by limiting to graph width
+        self._num_workers = min(self._num_workers, self._max_graph_width)
+
+        # create workers
+        multiprocessing = ivy.multiprocessing('forkserver')
+        self._input_queues = list()
+        self._workers = list()
+        for i in range(self._num_workers):
+            input_queue = multiprocessing.Queue()
+            worker = multiprocessing.Process(
+                target=self._worker_fn, args=(
+                    input_queue, ivy.default_device(), self._functions[i::self._num_workers],
+                    ivy.current_framework_str()))
+            worker.start()
+            self._input_queues.append(input_queue)
+            self._workers.append(worker)
+
+        # initialize multi dict
+        self._param_dict_multi = multiprocessing.Manager().dict(self._param_dict)
+
+    def _worker_fn(self, input_queue, dev_str, functions, framework_str):
+        ivy.set_framework(framework_str)
+        ivy.set_default_device(dev_str)
+        while True:
+            try:
+                input_queue.get(timeout=self._timeout)
+            except queue.Empty:
+                continue
+            for fn in functions:
+                arg_vals = [self.get_param_multi(pid) for pid in fn.arg_param_ids]
+                kwarg_vals = [self.get_param_multi(pid) for pid in fn.kwarg_param_ids]
+                ret = fn(arg_vals, kwarg_vals)
+                [self.set_param_multi(pid, ivy.index_nest(ret, idx))
+                 for pid, idx in zip(fn.output_param_ids, fn.output_nest_idxs)]
+
     # Foward with Op Logging #
     # -----------------------#
 
@@ -89,44 +133,49 @@ class Graph:
 
         op_logging = False
 
-    # Setters #
-    # --------#
+    # Getters and Setters #
+    # --------------------#
 
-    def add_param(self, pid):
-        self._param_dict[pid] = Param()
+    # inference
+
+    def get_param(self, pid):
+        return self._param_dict[pid].get()
 
     def set_param(self, pid, param):
         self._param_dict[pid].set(param)
 
-    def set_param_count(self, pid, count):
-        self._param_dict[pid].set_count(count)
+    # multiprocessing inference
+
+    def get_param_multi(self, pid):
+        return self._param_dict_multi[pid].get()
+
+    def set_param_multi(self, pid, param):
+        self._param_dict_multi[pid].set(param)
+
+    # compiling
+
+    def add_param(self, pid):
+        self._param_dict[pid] = Param()
 
     def increment_param_count(self, pid):
         self._param_dict[pid].set_count(self._param_dict[pid].count + 1)
 
-    def get_param(self, pid):
-        return self._param_dict[pid].get()
+    def add_fn_to_dict(self, pid, fn):
+        self._functions_dict[pid] = fn
 
     def get_param_recursive(self, pid, depth):
         if pid in self._param_dict:
             return
         fn = self._functions_dict[pid]
         fn.tree_depth = depth
-        self.add_fn(fn)
-        [self.get_param_recursive(pid, depth+1) for pid in fn.arg_param_ids]
-        [self.get_param_recursive(pid, depth+1) for pid in fn.kwarg_param_ids]
+        self._functions.append(fn)
+        [self.get_param_recursive(pid, depth + 1) for pid in fn.arg_param_ids]
+        [self.get_param_recursive(pid, depth + 1) for pid in fn.kwarg_param_ids]
         [self.increment_param_count(pid) for pid in fn.arg_param_ids + fn.kwarg_param_ids]
         [self.add_param(pid) for pid in fn.output_param_ids]
         return
 
-    def has_param(self, pid):
-        return pid in self._param_dict
-
-    def add_fn_to_dict(self, pid, fn):
-        self._functions_dict[pid] = fn
-
-    def add_fn(self, fn):
-        self._functions.append(fn)
+    # debugging
 
     def params_all_empty(self):
         return min([len(param) == 0 for param in self._param_dict.values()]) is True
@@ -173,7 +222,12 @@ class Graph:
                     [max(enumerate([fn in fn_hm1.fns_out for fn_hm1 in fns_hm1]), key=lambda x: x[1])[0] for fn in fns]
                 fns = [fn for fn, _ in sorted(zip(fns, leftmost_idxs), key=lambda x: x[1])]
             grouped_functions.append(fns)
+
+        # stack functions in the best order
         self._functions = [i for sl in grouped_functions for i in sl]
+
+        # compute maximum width of the graph
+        self._max_graph_width = max([len(fns) for fns in grouped_functions])
 
     def _call(self, *args, **kwargs):
         # ToDo: make this as efficient as possible; this is performed at runtime
@@ -192,9 +246,24 @@ class Graph:
             return ret[0]
         return ret
 
+    def _multi_call(self, *args, **kwargs):
+        # ToDo: make this as efficient as possible; this is performed at runtime
+        [self.set_param_multi(pid, ivy.index_nest(args, idx))
+         for pid, idx in zip(self._arg_param_ids, self._arg_nest_idxs)]
+        [self.set_param_multi(pid, ivy.index_nest(kwargs, idx))
+         for pid, idx in zip(self._kwarg_param_ids, self._kwarg_nest_idxs)]
+        [q.put(True) for q in self._input_queues]
+        ret = [self.get_param_multi(pid) for pid in self._output_param_ids]
+        if len(ret) == 1:
+            return ret[0]
+        return ret
+
     def compiled(self):
         self._chain_functions()
-        return self._call
+        self._initialize_multiprocessing()
+        if self._num_workers == 0:
+            return self._call
+        return self._multi_call
 
     # Clearing #
     # ---------#
