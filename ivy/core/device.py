@@ -221,6 +221,14 @@ def gpu_is_available(f: ivy.Framework = None)\
     return _cur_framework(f=f).gpu_is_available()
 
 
+def num_cpu_cores()\
+        -> int:
+    """
+    Determine the number of cores available in the cpu.
+    """
+    return psutil.cpu_count()
+
+
 def num_gpus(f: ivy.Framework = None)\
         -> int:
     """
