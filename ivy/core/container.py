@@ -117,7 +117,8 @@ class Container(dict):
         if isinstance(dict_in, dict):
             dict_in = dict_in
         elif isinstance(dict_in, self._types_to_iteratively_nest):
-            dict_in = dict(zip(['it_{}'.format(i) for i in range(len(dict_in))], dict_in))
+            dict_in = dict(zip(['it_{}'.format(str(i).zfill(len(str(len(dict_in)))))
+                                for i in range(len(dict_in))], dict_in))
         else:
             raise Exception('invalid input {}'.format(dict_in))
         for key, value in sorted(dict_in.items()):
