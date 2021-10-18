@@ -161,10 +161,19 @@ class Graph:
         max_tree_height = max([fn.tree_height for fn in self._functions])
 
         # group the functions based on their height in the tree from the starting leaf nodes
-        self._grouped_functions = list()
+        grouped_functions = list()
         for height in range(0, max_tree_height+1):
             fns = [fn for fn in self._functions if fn.tree_height == height]
-            self._grouped_functions.append(fns)
+            if height == 0:
+                fns = sorted(fns, key=lambda x: len(x.fns_in))
+            else:
+                fns_hm1 = grouped_functions[-1]
+                # noinspection PyUnresolvedReferences
+                leftmost_idxs =\
+                    [max(enumerate([fn in fn_hm1.fns_out for fn_hm1 in fns_hm1]), key=lambda x: x[1])[0] for fn in fns]
+                fns = [fn for fn, _ in sorted(zip(fns, leftmost_idxs), key=lambda x: x[1])]
+            grouped_functions.append(fns)
+        self._functions = [i for sl in grouped_functions for i in sl]
 
     def _call(self, *args, **kwargs):
         # ToDo: make this as efficient as possible; this is performed at runtime
@@ -172,13 +181,12 @@ class Graph:
          for pid, idx in zip(self._arg_param_ids, self._arg_nest_idxs)]
         [self.set_param(pid, ivy.index_nest(kwargs, idx))
          for pid, idx in zip(self._kwarg_param_ids, self._kwarg_nest_idxs)]
-        for fns in self._grouped_functions:
-            for fn in fns:
-                arg_vals = [self.get_param(pid) for pid in fn.arg_param_ids]
-                kwarg_vals = [self.get_param(pid) for pid in fn.kwarg_param_ids]
-                ret = fn(arg_vals, kwarg_vals)
-                [self.set_param(pid, ivy.index_nest(ret, idx))
-                 for pid, idx in zip(fn.output_param_ids, fn.output_nest_idxs)]
+        for fn in self._functions:
+            arg_vals = [self.get_param(pid) for pid in fn.arg_param_ids]
+            kwarg_vals = [self.get_param(pid) for pid in fn.kwarg_param_ids]
+            ret = fn(arg_vals, kwarg_vals)
+            [self.set_param(pid, ivy.index_nest(ret, idx))
+             for pid, idx in zip(fn.output_param_ids, fn.output_nest_idxs)]
         ret = [self.get_param(pid) for pid in self._output_param_ids]
         if len(ret) == 1:
             return ret[0]
