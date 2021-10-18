@@ -17,8 +17,9 @@ NON_WRAPPED_METHODS = ['current_framework', 'current_framework_str', 'set_framew
                        'get_compiled', 'set_wrapped_mode', 'unset_wrapped_mode', 'wrapped_mode', 'index_nest',
                        'set_nest_at_index', 'map_nest_at_index', 'multi_index_nest', 'set_nest_at_indices',
                        'map_nest_at_indices', 'nested_indices_where', 'map']
-NON_ARRAY_RET_METHODS = ['to_numpy', 'to_list', 'to_scalar', 'unstack', 'split', 'shape', 'get_num_dims', 'is_array',
-                         'is_variable']
+
+ARRAYLESS_RET_METHODS = ['to_numpy', 'to_list', 'to_scalar', 'shape', 'get_num_dims', 'is_array', 'is_variable']
+NESTED_ARRAY_RET_METHODS = ['unstack', 'split']
 
 FW_FN_KEYWORDS = {'numpy': [],
                   'jax': [],
@@ -49,7 +50,7 @@ def _wrap_method(fn):
     def _method_wrapped(*args, **kwargs):
         native_args, native_kwargs = ivy.args_to_native(*args, **kwargs)
         native_ret = fn(*native_args, **native_kwargs)
-        if fn.__name__ in NON_ARRAY_RET_METHODS:
+        if fn.__name__ in ARRAYLESS_RET_METHODS + NESTED_ARRAY_RET_METHODS:
             return native_ret
         return ivy.to_ivy(native_ret, nested=True)
 
