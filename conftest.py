@@ -21,7 +21,7 @@ TEST_CALL_METHODS: Dict[str, callable] = {'numpy': helpers.np_call,
 
 
 @pytest.fixture(autouse=True)
-def run_around_tests(dev_str, f, wrapped_mode, call):
+def run_around_tests(dev_str, f, wrapped_mode, compile_fn, call):
     if wrapped_mode and call is helpers.tf_graph_call:
         # ToDo: add support for wrapped_mode and tensorflow compilation
         pytest.skip()
@@ -61,16 +61,28 @@ def pytest_generate_tests(metafunc):
     else:
         wrapped_modes = [False]
 
+    # compile_fn
+    raw_value = metafunc.config.getoption('--compile_fn')
+    if raw_value == 'both':
+        compile_modes = [True, False]
+    elif raw_value == 'true':
+        compile_modes = [True]
+    else:
+        compile_modes = [False]
+
     # create test configs
     configs = list()
     for f_str in f_strs:
         for dev_str in dev_strs:
             for wrapped_mode in wrapped_modes:
-                configs.append((dev_str, TEST_FRAMEWORKS[f_str](), wrapped_mode, TEST_CALL_METHODS[f_str]))
-    metafunc.parametrize('dev_str,f,wrapped_mode,call', configs)
+                for compile_fn in compile_modes:
+                    configs.append(
+                        (dev_str, TEST_FRAMEWORKS[f_str](), wrapped_mode, compile_fn, TEST_CALL_METHODS[f_str]))
+    metafunc.parametrize('dev_str,f,wrapped_mode,compile_fn,call', configs)
 
 
 def pytest_addoption(parser):
     parser.addoption('--dev_str', action="store", default="cpu")
     parser.addoption('--framework', action="store", default="all")
     parser.addoption('--wrapped_mode', action="store", default="false")
+    parser.addoption('--compile_fn', action="store", default="true")
