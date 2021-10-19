@@ -3,6 +3,7 @@ Collection of tests for templated neural network activations
 """
 
 # global
+import time
 import pytest
 import numpy as np
 
@@ -21,13 +22,21 @@ import ivy_tests.helpers as helpers
 @pytest.mark.parametrize(
     "dtype_str", ['float32'])
 @pytest.mark.parametrize(
-    "tensor_fn", [ivy.array, helpers.var_fn])
-def test_geglu(bs_oc_target, dtype_str, tensor_fn, dev_str, call):
+    "tensor_fn", [ivy.array])
+def test_geglu(bs_oc_target, dtype_str, tensor_fn, dev_str, compile_fn, call):
     # smoke test
     batch_shape, output_channels, target = bs_oc_target
     x = ivy.cast(ivy.linspace(ivy.zeros(batch_shape), ivy.ones(batch_shape), output_channels*2), 'float32')
     geglu_layer = ivy.GEGLU()
+
+    # compile if this mode is set
+    if compile_fn and call is helpers.torch_call:
+        # Currently only PyTorch is supported for ivy compilation
+        geglu_layer.compile(x)
+
+    # return
     ret = geglu_layer(x)
+
     # type test
     assert ivy.is_array(ret)
     # cardinality test

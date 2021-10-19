@@ -42,6 +42,8 @@ class Module(abc.ABC):
         self._build_mode = build_mode
         self._store_vars = store_vars
         self._built = False
+        self._compiled = False
+        self._compiled_fn = None
         self._v_in = v
         self.v = v
         if build_mode != 'on_init':
@@ -173,10 +175,7 @@ class Module(abc.ABC):
         """
         raise NotImplementedError
 
-    # Public #
-    # -------#
-
-    def __call__(self, *args, v=None, with_grads=True, **kwargs):
+    def _call(self, *args, v=None, with_grads=True, **kwargs):
         """
         the forward pass of the layer, treating layer instance as callable function.
         """
@@ -187,9 +186,9 @@ class Module(abc.ABC):
             if not with_grads:
                 v = v.stop_gradients()
             self.v = Container(v)
-            res = self._forward(*args, **kwargs)
+            ret = self._forward(*args, **kwargs)
             self.v = v_orig
-            return res
+            return ret
         elif hasattr(self.__call__, 'wrapped'):
             return self.__call__(*args, with_grads=with_grads, **kwargs)
         elif not with_grads:
@@ -199,6 +198,20 @@ class Module(abc.ABC):
             self.v = v_orig
             return ret
         return self._forward(*args, **kwargs)
+
+    # Public #
+    # -------#
+
+    def compile(self, *args, v=None, with_grads=True, **kwargs):
+        kwargs['v'] = ivy.default(v, self.v)
+        kwargs['with_grads'] = with_grads
+        self._compiled_fn = ivy.compile_ivy(self._call, *args, **kwargs)
+        self._compiled = True
+
+    def __call__(self, *args, v=None, with_grads=True, **kwargs):
+        if self._compiled:
+            return self._compiled_fn(*args, v=ivy.default(v, self.v), with_grads=with_grads, **kwargs)
+        return self._call(*args, v=v, with_grads=with_grads, **kwargs)
 
     def save_weights(self, weights_path):
         """
