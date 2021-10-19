@@ -140,9 +140,7 @@ def test_multi_head_attention_layer(x_n_s_n_m_n_c_n_gt, with_v, build_mode, dtyp
         query_dim, context_dim=context_dim, scale=scale, dev_str=dev_str, v=v, build_mode=build_mode)
     if compile_fn and call is helpers.torch_call:
         # Currently only PyTorch is supported for ivy compilation
-        # ToDo: get this working!
-        pass
-        # multi_head_attention_layer.compile(x, context, mask)
+        multi_head_attention_layer.compile(x, context, mask)
     if build_mode == 'explicit':
         multi_head_attention_layer.build()
     ret = multi_head_attention_layer(x, context, mask)
