@@ -1,5 +1,6 @@
 # global
 import ivy
+import copy
 import queue
 import inspect
 import importlib
@@ -8,6 +9,7 @@ import importlib
 from ivy.wrapper import _wrap_or_unwrap_methods, NON_WRAPPED_METHODS, ARRAYLESS_RET_METHODS
 
 op_logging = False
+inside_wrapped = False
 
 
 ARRAY_BUILTINS = ['__neg__', '__pow__', '__rpow__', '__add__', '__radd__', '__iadd__', '__sub__', '__rsub__',
@@ -214,8 +216,8 @@ class Graph:
             return
         fn.tree_depth = depth
         self._functions.append(fn)
-        [self.get_param_recursive(pid, depth + 1, fn) for pid in fn.arg_param_ids]
-        [self.get_param_recursive(pid, depth + 1, fn) for pid in fn.kwarg_param_ids]
+        [self.get_param_recursive(pid, depth + 1, fn) for pid in copy.copy(fn.arg_param_ids)]
+        [self.get_param_recursive(pid, depth + 1, fn) for pid in copy.copy(fn.kwarg_param_ids)]
         [self.increment_param_count(pid) for pid in fn.arg_param_ids + fn.kwarg_param_ids]
         [self.add_param(pid) for pid in fn.output_param_ids]
         return
@@ -358,6 +360,14 @@ def _wrap_method_for_compiling(fn, graph):
     # noinspection PyUnresolvedReferences,PyProtectedMember
     def _method_wrapped(*args, **kwargs):
 
+        # return if the wrapping is already happening on a higher level
+        global inside_wrapped
+        if inside_wrapped:
+            return fn(*args, **kwargs)
+
+        # otherwise, set wrapping as true
+        inside_wrapped = True
+
         # immutable tuple to mutable list
         args = list(args)
 
@@ -415,10 +425,13 @@ def _wrap_method_for_compiling(fn, graph):
             new_fn.__name__ = fn.__name__
 
         # add to graph if compiling
-        if op_logging:
+        if op_logging and inside_wrapped:
 
             # add this function to the graph for each output pid
             [graph.add_fn_to_dict(pid, new_fn) for pid in ret_param_ids]
+
+        # unset wrapping as true
+        inside_wrapped = False
 
         # return the function output
         return ret_raw
