@@ -57,15 +57,17 @@ class Graph:
 
         # positional args
         self._args = args
-        self._arg_nest_idxs = ivy.nested_indices_where(args, lambda x: ivy.is_array(x))
-        self._arg_param_ids = [id(x) for x in ivy.multi_index_nest(list(args), self._arg_nest_idxs)]
+        self._arg_array_idxs = ivy.nested_indices_where(args, lambda x: ivy.is_array(x))
+        self._arg_param_ids = [id(x) for x in ivy.multi_index_nest(list(args), self._arg_array_idxs)]
 
         # key-word args
         self._kwargs = kwargs
-        self._kwarg_nest_idxs = ivy.nested_indices_where(kwargs, lambda x: ivy.is_array(x))
-        self._kwarg_param_ids = [id(x) for x in ivy.multi_index_nest(kwargs, self._kwarg_nest_idxs)]
+        self._kwarg_array_idxs = ivy.nested_indices_where(kwargs, lambda x: ivy.is_array(x))
+        self._kwarg_param_ids = [id(x) for x in ivy.multi_index_nest(kwargs, self._kwarg_array_idxs)]
 
-        # output idxs
+        # output param ids
+        self._output = None  # initialized during op logging
+        self._output_array_idxs = None  # initialized during op logging
         self._output_param_ids = list()
 
         # graph storage
@@ -123,8 +125,10 @@ class Graph:
                 arg_vals = [self.get_param_multi(pid) for pid in fn.arg_param_ids]
                 kwarg_vals = [self.get_param_multi(pid) for pid in fn.kwarg_param_ids]
                 ret = fn(arg_vals, kwarg_vals)
+                if not isinstance(ret, tuple):
+                    ret = (ret,)
                 [self.set_param_multi(pid, ivy.index_nest(ret, idx))
-                 for pid, idx in zip(fn.output_param_ids, fn.output_nest_idxs)]
+                 for pid, idx in zip(fn.output_param_ids, fn.output_array_idxs)]
             output_queue.put(True)
 
     # Foward with Op Logging #
@@ -139,8 +143,14 @@ class Graph:
         ret = self._fn(*self._args, **self._kwargs)
         if not isinstance(ret, tuple):
             ret = (ret,)
-        output_nest_idxs = ivy.nested_indices_where(ret, lambda x: ivy.is_array(x))
-        self._output_param_ids = [id(x) for x in ivy.multi_index_nest(list(ret), output_nest_idxs)]
+
+        self._output = list(ret)
+        self._output_array_idxs = ivy.nested_indices_where(ret, lambda x: ivy.is_array(x))
+
+        if not isinstance(ret, tuple):
+            ret = (ret,)
+        output_array_idxs = ivy.nested_indices_where(ret, lambda x: ivy.is_array(x))
+        self._output_param_ids = [id(x) for x in ivy.multi_index_nest(list(ret), output_array_idxs)]
 
         op_logging = False
 
@@ -189,15 +199,18 @@ class Graph:
             fn = self._functions_dict[pid]
         else:
             if not ivy.exists(receiving_fn):
-                raise Exception('passing created tensors directly to output function is not yet supported.')
+                idx = self._output_param_ids.index(pid)
+                del self._output_array_idxs[idx]
+                del self._output_param_ids[idx]
+                return
             if pid in receiving_fn.arg_param_ids:
                 idx = receiving_fn.arg_param_ids.index(pid)
-                del receiving_fn.arg_param_ids[idx]
                 del receiving_fn.arg_array_idxs[idx]
+                del receiving_fn.arg_param_ids[idx]
             if pid in receiving_fn.kwarg_param_ids:
                 idx = receiving_fn.kwarg_param_ids.index(pid)
-                del receiving_fn.kwarg_param_ids[idx]
                 del receiving_fn.kwarg_array_idxs[idx]
+                del receiving_fn.kwarg_param_ids[idx]
             return
         fn.tree_depth = depth
         self._functions.append(fn)
@@ -265,35 +278,36 @@ class Graph:
     def _call(self, *args, **kwargs):
         # ToDo: make this as efficient as possible; this is performed at runtime
         [self.set_param(pid, ivy.index_nest(args, idx))
-         for pid, idx in zip(self._arg_param_ids, self._arg_nest_idxs)]
+         for pid, idx in zip(self._arg_param_ids, self._arg_array_idxs)]
         [self.set_param(pid, ivy.index_nest(kwargs, idx))
-         for pid, idx in zip(self._kwarg_param_ids, self._kwarg_nest_idxs)]
-        ret = None
+         for pid, idx in zip(self._kwarg_param_ids, self._kwarg_array_idxs)]
         for i, fn in enumerate(self._functions):
             arg_vals = [self.get_param(pid) for pid in fn.arg_param_ids]
             kwarg_vals = [self.get_param(pid) for pid in fn.kwarg_param_ids]
             ret = fn(arg_vals, kwarg_vals)
-            if i == self._num_functions - 1:
-                break
+            if not isinstance(ret, tuple):
+                ret = (ret,)
             [self.set_param(pid, ivy.index_nest(ret, idx))
-             for pid, idx in zip(fn.output_param_ids, fn.output_nest_idxs)]
-        if len(ret) == 1:
-            return ret[0]
-        return ret
+             for pid, idx in zip(fn.output_param_ids, fn.output_array_idxs)]
+        ret_vals = [self.get_param(pid) for pid in self._output_param_ids]
+        ivy.set_nest_at_indices(self._output, self._output_array_idxs, ret_vals)
+        if len(self._output) == 1:
+            return self._output[0]
+        return self._output
 
     def _multi_call(self, *args, **kwargs):
         # ToDo: make this as efficient as possible; this is performed at runtime
         [self.set_param_multi(pid, ivy.index_nest(args, idx))
-         for pid, idx in zip(self._arg_param_ids, self._arg_nest_idxs)]
+         for pid, idx in zip(self._arg_param_ids, self._arg_array_idxs)]
         [self.set_param_multi(pid, ivy.index_nest(kwargs, idx))
-         for pid, idx in zip(self._kwarg_param_ids, self._kwarg_nest_idxs)]
+         for pid, idx in zip(self._kwarg_param_ids, self._kwarg_array_idxs)]
         [q.put(True) for q in self._input_queues]
         [q.get(timeout=None) for q in self._output_queues]
-        # ToDo: implement this correctly by returning arbitrary nested return, not just tuple of returned tensors
-        ret = [self.get_param_multi(pid) for pid in self._output_param_ids]
-        if len(ret) == 1:
-            return ret[0]
-        return ret
+        ret_vals = [self.get_param_multi(pid) for pid in self._output_param_ids]
+        ivy.set_nest_at_indices(self._output, self._output_array_idxs, ret_vals)
+        if len(self._output) == 1:
+            return self._output[0]
+        return self._output
 
     def compiled(self):
         self._chain_functions()
@@ -368,7 +382,7 @@ def _wrap_method_for_compiling(fn, graph):
         ret = ret_raw if isinstance(ret_raw, tuple) else (ret_raw,)
 
         # get array idxs for return
-        ret_nest_idxs = ivy.nested_indices_where(ret, lambda x: ivy.is_array(x))
+        ret_array_idxs = ivy.nested_indices_where(ret, lambda x: ivy.is_array(x))
         ret_cont = ivy.Container(ret, types_to_iteratively_nest=(list, tuple))
         ret_params_ids_cont = ret_cont.map(lambda x, kc: id(x) if ivy.is_array(x) else None).prune_empty()
         ret_param_ids = list(ret_params_ids_cont.to_iterator_values())
@@ -378,16 +392,13 @@ def _wrap_method_for_compiling(fn, graph):
             # ToDo: make this as efficient as possible; this is performed at runtime
             ivy.set_nest_at_indices(args, arg_array_idxs, arg_array_vals)
             ivy.set_nest_at_indices(kwargs, kwarg_array_idxs, kwarg_array_vals)
-            ret_ = fn(*args, **kwargs)
-            if not isinstance(ret_, tuple):
-                ret_ = (ret_,)
-            return ret_
+            return fn(*args, **kwargs)
 
         # add function attributes which inform about the input idxs
         new_fn.arg_param_ids = arg_param_ids
         new_fn.kwarg_param_ids = kwarg_param_ids
         new_fn.output_param_ids = ret_param_ids
-        new_fn.output_nest_idxs = ret_nest_idxs
+        new_fn.output_array_idxs = ret_array_idxs
         new_fn.arg_array_idxs = arg_array_idxs
         new_fn.kwarg_array_idxs = kwarg_array_idxs
         fns_in = [graph._functions_dict[pid]
