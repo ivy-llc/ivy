@@ -62,8 +62,7 @@ def _fn_4(x, with_non_compiled: bool = False, with_internal_gen: bool = False):
 def _rand_fn(x, with_non_compiled: bool = False):
     if with_non_compiled:
         (x + 3) * 4  # ops not to be compiled into the graph
-    x = x + ivy.random_uniform(0., 1., x.shape)
-    return x
+    return x + ivy.random_uniform(0., 1., x.shape)
 
 
 def _wide_fn(x, with_non_compiled: bool = False, with_internal_gen: bool = False):
