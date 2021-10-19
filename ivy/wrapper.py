@@ -31,7 +31,7 @@ NATIVE_KEYS_TO_SKIP = {'numpy': [],
                        'jax': [],
                        'tensorflow': [],
                        'torch': ['classes', 'torch', 'is_grad_enabled', 'get_default_dtype', 'numel', 'tensor',
-                                 'clone', 'cpu', 'detach'],
+                                 'clone', 'cpu', 'detach', 'type'],
                        'mxnet': []}
 
 wrapped_mode_val = False
