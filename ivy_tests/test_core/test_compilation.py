@@ -59,6 +59,13 @@ def _fn_4(x, with_non_compiled: bool = False, with_internal_gen: bool = False):
     return ivy.concatenate([k, m, o], -1)
 
 
+def _rand_fn(x, with_non_compiled: bool = False):
+    if with_non_compiled:
+        (x + 3) * 4  # ops not to be compiled into the graph
+    x = x + ivy.random_uniform(0., 1., x.shape)
+    return x
+
+
 def _wide_fn(x, with_non_compiled: bool = False, with_internal_gen: bool = False):
     if with_internal_gen:
         x += ivy.array([1.])
@@ -245,6 +252,49 @@ def test_compile_ivy(x_raw, dtype_str, tensor_fn, with_non_compiled, with_intern
     assert len(list(comp_fn.__self__._functions)) == 10 + (1 if with_internal_gen else 0)
     assert np.allclose(ivy.to_numpy(non_compiled_return), ivy.to_numpy(compiled_return))
     assert comp_time_taken < non_comp_time_taken
+
+
+# noinspection PyUnresolvedReferences
+@pytest.mark.parametrize(
+    "x_raw", [[1]])
+@pytest.mark.parametrize(
+    "dtype_str", ['float32'])
+@pytest.mark.parametrize(
+    "tensor_fn", [ivy.array])
+@pytest.mark.parametrize(
+    "with_non_compiled", [True, False])
+def test_compile_ivy_w_random(x_raw, dtype_str, tensor_fn, with_non_compiled, dev_str, call):
+    if ivy.wrapped_mode():
+        # Wrapped mode does not yet support function compilation
+        pytest.skip()
+    if call is not helpers.torch_call:
+        # currently only supported by PyTorch
+        pytest.skip()
+    # smoke test
+    if (isinstance(x_raw, Number) or len(x_raw) == 0) and tensor_fn == helpers.var_fn and call is helpers.mx_call:
+        # mxnet does not support 0-dimensional variables
+        pytest.skip()
+
+    # function 3
+    x = tensor_fn(x_raw, dtype_str, dev_str)
+    comp_fn = ivy.compile_ivy(_rand_fn, x, with_non_compiled)
+    # type test
+    assert callable(comp_fn)
+    # value test
+    x = tensor_fn(x_raw, dtype_str, dev_str)
+    nc_return0 = _rand_fn(x, with_non_compiled)
+    nc_return1 = _rand_fn(x, with_non_compiled)
+    assert nc_return0 != nc_return1
+    assert len(comp_fn.__self__._param_dict) == 5
+    assert comp_fn.__self__.params_all_empty()
+    assert len(list(comp_fn.__self__._functions)) == 4
+    x = tensor_fn(x_raw, dtype_str, dev_str)
+    c_return0 = comp_fn(x, with_non_compiled)
+    c_return1 = comp_fn(x, with_non_compiled)
+    assert c_return0 != c_return1
+    assert len(comp_fn.__self__._param_dict) == 5
+    assert comp_fn.__self__.params_all_empty()
+    assert len(list(comp_fn.__self__._functions)) == 4
 
 
 # noinspection PyUnresolvedReferences
