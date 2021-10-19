@@ -77,9 +77,7 @@ def test_dropout_layer(x_shape, dtype_str, tensor_fn, dev_str, compile_fn, call)
     dropout_layer = ivy.Dropout(0.9)
     if compile_fn and call is helpers.torch_call:
         # Currently only PyTorch is supported for ivy compilation
-        # ToDo: get this working!
-        pass
-        # dropout_layer.compile(x)
+        dropout_layer.compile(x)
     ret = dropout_layer(x)
     # type test
     assert ivy.is_array(ret)
@@ -850,9 +848,7 @@ def test_sequential_layer(bs_c_target, with_v, seq_v, dtype_str, tensor_fn, dev_
                                         v=v['submodules']['v2'] if with_v else None), dev_str=dev_str)
     if compile_fn and call is helpers.torch_call:
         # Currently only PyTorch is supported for ivy compilation
-        # ToDo: get this working!
-        pass
-        # seq.compile(x)
+        seq.compile(x)
     ret = seq(x)
     # type test
     assert ivy.is_array(ret)
