@@ -72,6 +72,7 @@ class Graph:
         self._param_dict = dict()
         self._functions_dict = dict()
         self._functions = list()
+        self._num_functions = len(self._functions)
 
         # multiprocessing
         self._timeout = ivy.queue_timeout()
@@ -256,6 +257,7 @@ class Graph:
 
         # stack functions in the best order
         self._functions = [i for sl in grouped_functions for i in sl]
+        self._num_functions = len(self._functions)
 
         # compute maximum width of the graph
         self._max_graph_width = max([len(fns) for fns in grouped_functions])
@@ -266,13 +268,15 @@ class Graph:
          for pid, idx in zip(self._arg_param_ids, self._arg_nest_idxs)]
         [self.set_param(pid, ivy.index_nest(kwargs, idx))
          for pid, idx in zip(self._kwarg_param_ids, self._kwarg_nest_idxs)]
-        for fn in self._functions:
+        ret = None
+        for i, fn in enumerate(self._functions):
             arg_vals = [self.get_param(pid) for pid in fn.arg_param_ids]
             kwarg_vals = [self.get_param(pid) for pid in fn.kwarg_param_ids]
             ret = fn(arg_vals, kwarg_vals)
+            if i == self._num_functions - 1:
+                break
             [self.set_param(pid, ivy.index_nest(ret, idx))
              for pid, idx in zip(fn.output_param_ids, fn.output_nest_idxs)]
-        ret = [self.get_param(pid) for pid in self._output_param_ids]
         if len(ret) == 1:
             return ret[0]
         return ret
@@ -285,6 +289,7 @@ class Graph:
          for pid, idx in zip(self._kwarg_param_ids, self._kwarg_nest_idxs)]
         [q.put(True) for q in self._input_queues]
         [q.get(timeout=None) for q in self._output_queues]
+        # ToDo: implement this correctly by returning arbitrary nested return, not just tuple of returned tensors
         ret = [self.get_param_multi(pid) for pid in self._output_param_ids]
         if len(ret) == 1:
             return ret[0]
