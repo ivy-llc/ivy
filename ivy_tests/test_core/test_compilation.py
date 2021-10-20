@@ -61,8 +61,12 @@ def _fn_4(x, with_non_compiled: bool = False, with_internal_gen: bool = False):
         (x + 3) * 4  # ops not to be compiled into the graph
     return ivy.concatenate([k, m, o], -1)
 
+
+# input in output
+
 def _input_in_output(x, y):
     return x + 2, y
+
 
 # random
 
@@ -71,10 +75,12 @@ def _rand_fn(x, with_non_compiled: bool = False):
         (x + 3) * 4  # ops not to be compiled into the graph
     return x + ivy.random_uniform(0., 1., x.shape)
 
+
 # detached divide
 
 def _detach_div_fn(x):
     return x + (ivy.array([1.]) / ivy.array([2.]))
+
 
 # wide
 
