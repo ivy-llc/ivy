@@ -17,13 +17,19 @@ ARRAY_BUILTINS = ['__neg__', '__pow__', '__rpow__', '__add__', '__radd__', '__ia
                   '__isub__', '__mul__', '__rmul__', '__imul__', '__truediv__', '__rtruediv__', '__itruediv__',
                   '__floordiv__', '__rfloordiv__', '__ifloordiv__', '__abs__', '__lt__', '__le__', '__eq__', '__ne__',
                   '__gt__', '__ge__', '__and__', '__rand__', '__or__', '__ror__', '__invert__', '__xor__', '__rxor__',
-                  '__getitem__']
+                  '__getitem__', '__setitem__', '__getattribute__', '__getattr__', '__setattr__']
 
 CLASSES_TO_WRAP = {'numpy': [],
                    'jax': [],
                    'tensorflow': [],
                    'torch': [('torch', 'Tensor')],
                    'mxnet': []}
+
+def _get_id(x):
+    if hasattr(x, 'param_id'):
+        return x.param_id
+    return id(x)
+
 
 class Param:
 
@@ -62,14 +68,12 @@ class Graph:
         # positional args
         self._args = args
         self._arg_array_idxs = ivy.nested_indices_where(args, lambda x: ivy.is_array(x))
-        self._arg_param_ids = [id(ivy.variable_data(x)) if ivy.is_variable(x) else id(x)
-                               for x in ivy.multi_index_nest(list(args), self._arg_array_idxs)]
+        self._arg_param_ids = [_get_id(x) for x in ivy.multi_index_nest(list(args), self._arg_array_idxs)]
 
         # key-word args
         self._kwargs = kwargs
         self._kwarg_array_idxs = ivy.nested_indices_where(kwargs, lambda x: ivy.is_array(x))
-        self._kwarg_param_ids = [id(ivy.variable_data(x)) if ivy.is_variable(x) else id(x)
-                                 for x in ivy.multi_index_nest(kwargs, self._kwarg_array_idxs)]
+        self._kwarg_param_ids = [_get_id(x) for x in ivy.multi_index_nest(kwargs, self._kwarg_array_idxs)]
 
         # output param ids
         self._output = None  # initialized during op logging
@@ -156,8 +160,7 @@ class Graph:
         if not isinstance(ret, tuple):
             ret = (ret,)
         output_array_idxs = ivy.nested_indices_where(ret, lambda x: ivy.is_array(x))
-        self._output_param_ids = [id(ivy.variable_data(x)) if ivy.is_variable(x) else id(x)
-                                  for x in ivy.multi_index_nest(list(ret), output_array_idxs)]
+        self._output_param_ids = [_get_id(x) for x in ivy.multi_index_nest(list(ret), output_array_idxs)]
 
         # find any inputs which were fed directly to the output, and update pid and add identity function
         for i, pid in enumerate(self._output_param_ids):
@@ -397,33 +400,43 @@ def _wrap_method_for_compiling(fn, graph):
 
         # get array idxs for positional args
         arg_array_idxs = ivy.nested_indices_where(args, lambda x: ivy.is_array(x))
-        arg_param_ids = [id(ivy.variable_data(x)) if ivy.is_variable(x) else id(x)
-                         for x in ivy.multi_index_nest(args, arg_array_idxs)]
+        arg_param_ids = [_get_id(x) for x in ivy.multi_index_nest(args, arg_array_idxs)]
 
         # get array idxs for key-word args
         kwarg_array_idxs = ivy.nested_indices_where(kwargs, lambda x: ivy.is_array(x))
-        kwarg_param_ids = [id(ivy.variable_data(x)) if ivy.is_variable(x) else id(x)
-                           for x in ivy.multi_index_nest(kwargs, kwarg_array_idxs)]
+        kwarg_param_ids = [_get_id(x) for x in ivy.multi_index_nest(kwargs, kwarg_array_idxs)]
+
+        # set the backend function
+        backend_fn = fn
 
         # compute the return
         ret_raw = fn(*args, **kwargs)
         if fn.__name__[0:3] == '__i':
             # clone the return values if the function is in-place, to ensure output ids are unique from input ids
-            ret_raw = tuple([ivy.array(ivy.to_numpy(x)) if ivy.is_array(x) else x for x in ret_raw]) \
+            ret_raw = tuple([ivy.copy_array(x) if ivy.is_array(x) else x for x in ret_raw]) \
                 if isinstance(ret_raw, tuple) else ivy.array(ivy.to_numpy(ret_raw))
+        elif fn.__name__ == '__setattr__':
+            # update the param_id of the stateful object in the graph
+            ret_raw = ivy.copy_array(args[0])
+            args[0].param_id = id(ret_raw)
+
+            # update the setattr method to return the object after attribute setting
+            def backend_fn(__obj, __name, __value):
+                setattr(__obj, __name, __value)
+                return __obj
+
         ret = ret_raw if isinstance(ret_raw, tuple) else (ret_raw,)
 
         # get array idxs for return
         ret_array_idxs = ivy.nested_indices_where(ret, lambda x: ivy.is_array(x))
-        ret_param_ids = [id(ivy.variable_data(x)) if ivy.is_variable(x) else id(x)
-                         for x in ivy.multi_index_nest(list(ret), ret_array_idxs)]
+        ret_param_ids = [_get_id(x) for x in ivy.multi_index_nest(list(ret), ret_array_idxs)]
 
         # wrap the function
         def new_fn(arg_array_vals, kwarg_array_vals):
             # ToDo: make this as efficient as possible; this is performed at runtime
             ivy.set_nest_at_indices(args, arg_array_idxs, arg_array_vals)
             ivy.set_nest_at_indices(kwargs, kwarg_array_idxs, kwarg_array_vals)
-            return fn(*args, **kwargs)
+            return backend_fn(*args, **kwargs)
 
         # add function attributes which inform about the input idxs
         new_fn.arg_param_ids = arg_param_ids

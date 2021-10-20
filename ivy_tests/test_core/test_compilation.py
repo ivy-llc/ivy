@@ -71,7 +71,8 @@ def _input_in_output(x, y):
 # inplace variable update
 
 def _inplace_var_update(weight, grad):
-    return ivy.inplace_decrement(weight, grad)
+    weight.data -= grad
+    return weight
 
 
 # random
@@ -403,9 +404,8 @@ def test_compile_ivy_inplace_var_update(weight_n_grad, dtype_str, dev_str, call)
     weight_raw, grad_raw = weight_n_grad
     # as tensors
     weight = ivy.variable(ivy.array(weight_raw, dtype_str, dev_str))
-    grad = ivy.array(grad_raw, dtype_str, dev_str)
     # compile
-    comp_fn = ivy.compile_ivy(_inplace_var_update, weight, grad)
+    comp_fn = ivy.compile_ivy(_inplace_var_update, weight, ivy.copy_array(weight))
     # type test
     assert callable(comp_fn)
     # value test
