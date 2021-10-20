@@ -12,10 +12,6 @@ General
    :maxdepth: -1
    :caption: General
 
-   general/to_ivy.rst
-   general/args_to_ivy.rst
-   general/to_native.rst
-   general/args_to_native.rst
    general/array.rst
    general/is_array.rst
    general/array_equal.rst

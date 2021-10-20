@@ -36,7 +36,7 @@
   <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="to_ivy" href="general/to_ivy.html" />
+    <link rel="next" title="array" href="general/array.html" />
     <link rel="prev" title="Profiler" href="device/Profiler.html" /> 
 </head>
 
@@ -93,10 +93,6 @@
 <li class="toctree-l1"><a class="reference internal" href="container.html">Container</a></li>
 <li class="toctree-l1"><a class="reference internal" href="device.html">Device</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">General</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="general/to_ivy.html">to_ivy</a></li>
-<li class="toctree-l2"><a class="reference internal" href="general/args_to_ivy.html">args_to_ivy</a></li>
-<li class="toctree-l2"><a class="reference internal" href="general/to_native.html">to_native</a></li>
-<li class="toctree-l2"><a class="reference internal" href="general/args_to_native.html">args_to_native</a></li>
 <li class="toctree-l2"><a class="reference internal" href="general/array.html">array</a></li>
 <li class="toctree-l2"><a class="reference internal" href="general/is_array.html">is_array</a></li>
 <li class="toctree-l2"><a class="reference internal" href="general/array_equal.html">array_equal</a></li>
@@ -192,6 +188,7 @@
 <li class="toctree-l1"><a class="reference internal" href="nest.html">Nest</a></li>
 <li class="toctree-l1"><a class="reference internal" href="random.html">Random</a></li>
 <li class="toctree-l1"><a class="reference internal" href="reductions.html">Reductions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="wrapped.html">Wrapped</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Neural net functional</span></p>
 <ul>
@@ -368,42 +365,6 @@ Because of floating point overflow, this rule may result in the last element of 
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>Tensor containing the indices of the minimum values across the specified axis.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt id="ivy.core.general.args_to_ivy">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">args_to_ivy</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Iterable<span class="p">[</span>Any<span class="p">]</span></span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Dict<span class="p">[</span>str<span class="p">, </span>Any<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; Tuple<span class="p">[</span>Iterable<span class="p">[</span>Any<span class="p">]</span><span class="p">, </span>Dict<span class="p">[</span>str<span class="p">, </span>Any<span class="p">]</span><span class="p">]</span><a class="reference internal" href="../_modules/ivy/core/general.html#args_to_ivy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.args_to_ivy" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns args and keyword args in their ivy.Array or ivy.Variable form for all nested instances,
-otherwise the arguments are returned unchanged.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>args</strong> (<em>sequence of arguments</em>) – The positional arguments to check</p></li>
-<li><p><strong>kwargs</strong> (<em>dict of arguments</em>) – The key-word arguments to check</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>the same arguments, with any nested arrays converted to ivy.Array or ivy.Variable instances.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt id="ivy.core.general.args_to_native">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">args_to_native</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Iterable<span class="p">[</span>Any<span class="p">]</span></span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Dict<span class="p">[</span>str<span class="p">, </span>Any<span class="p">]</span></span></em><span class="sig-paren">)</span> &#x2192; Tuple<span class="p">[</span>Iterable<span class="p">[</span>Any<span class="p">]</span><span class="p">, </span>Dict<span class="p">[</span>str<span class="p">, </span>Any<span class="p">]</span><span class="p">]</span><a class="reference internal" href="../_modules/ivy/core/general.html#args_to_native"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.args_to_native" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns args and keyword args in their native backend framework form for all nested ivy.Array or ivy.Variable
-instances, otherwise the arguments are returned unchanged.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>args</strong> (<em>sequence of arguments</em>) – The positional arguments to check</p></li>
-<li><p><strong>kwargs</strong> (<em>dict of arguments</em>) – The key-word arguments to check</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>the same arguments, with any nested ivy.Array or ivy.Variable instances converted to their native form.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1629,27 +1590,6 @@ For example, if axis: int = 0, it will be the first dimension and if axis: int =
 </dd></dl>
 
 <dl class="py function">
-<dt id="ivy.core.general.to_ivy">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">to_ivy</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.Array<span class="p">, </span>ivy.NativeArray<span class="p">, </span>Iterable<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">nested</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em><span class="sig-paren">)</span> &#x2192; Union<span class="p">[</span>ivy.Array<span class="p">, </span>ivy.NativeArray<span class="p">, </span>Iterable<span class="p">]</span><a class="reference internal" href="../_modules/ivy/core/general.html#to_ivy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.to_ivy" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns the input array converted to an ivy.Array instances if it is an array type, otherwise the input is
-returned unchanged. If nested is set, the check is applied to all nested leafs of tuples,
-lists and dicts contained within x.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<em>any</em>) – The input to maybe convert.</p></li>
-<li><p><strong>nested</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to apply the conversion on arguments in a nested manner. If so, all dicts, lists and
-tuples will be traversed to their lowest leaves in search of ivy.Array and ivy.Variable instances.
-Default is False.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>the input in it’s native framework form in the case of ivy.Array or ivy.Variable instances.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
 <dt id="ivy.core.general.to_list">
 <code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">to_list</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">f</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>ivy.Framework<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; List<a class="reference internal" href="../_modules/ivy/core/general.html#to_list"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.to_list" title="Permalink to this definition">¶</a></dt>
 <dd><p>Creates a (possibly nested) list from input array.</p>
@@ -1662,27 +1602,6 @@ Default is False.</p></li>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>A list representation of the input array.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt id="ivy.core.general.to_native">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">to_native</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.Array<span class="p">, </span>ivy.NativeArray<span class="p">, </span>Iterable<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">nested</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em><span class="sig-paren">)</span> &#x2192; Union<span class="p">[</span>ivy.Array<span class="p">, </span>ivy.NativeArray<span class="p">, </span>Iterable<span class="p">]</span><a class="reference internal" href="../_modules/ivy/core/general.html#to_native"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.to_native" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns the input item in it’s native backend framework form if it is an ivy.Array or ivy.Variable instance.
-otherwise the input is returned unchanged. If nested is set, the check is applied to all nested leafs of tuples,
-lists and dicts contained within x.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<em>any</em>) – The input to maybe convert.</p></li>
-<li><p><strong>nested</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to apply the conversion on arguments in a nested manner. If so, all dicts, lists and
-tuples will be traversed to their lowest leaves in search of ivy.Array and ivy.Variable instances.
-Default is False.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>the input in it’s native framework form in the case of ivy.Array or ivy.Variable instances.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1855,10 +1774,6 @@ If not given, then the type of the original array is used.</p></li>
 <div class="toctree-wrapper compound">
 <p class="caption"><span class="caption-text">General</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="general/to_ivy.html">to_ivy</a></li>
-<li class="toctree-l1"><a class="reference internal" href="general/args_to_ivy.html">args_to_ivy</a></li>
-<li class="toctree-l1"><a class="reference internal" href="general/to_native.html">to_native</a></li>
-<li class="toctree-l1"><a class="reference internal" href="general/args_to_native.html">args_to_native</a></li>
 <li class="toctree-l1"><a class="reference internal" href="general/array.html">array</a></li>
 <li class="toctree-l1"><a class="reference internal" href="general/is_array.html">is_array</a></li>
 <li class="toctree-l1"><a class="reference internal" href="general/array_equal.html">array_equal</a></li>
@@ -1954,7 +1869,7 @@ If not given, then the type of the original array is used.</p></li>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="general/to_ivy.html" class="btn btn-neutral float-right" title="to_ivy" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="general/array.html" class="btn btn-neutral float-right" title="array" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="device/Profiler.html" class="btn btn-neutral float-left" title="Profiler" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
