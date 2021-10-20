@@ -270,6 +270,7 @@ class Graph:
             return _height
 
         # store function heights
+
         [store_fn_heights(self._functions_dict[pid]) for pid in self._output_param_ids]
 
         # find the height of the tree
@@ -392,15 +393,11 @@ def _wrap_method_for_compiling(fn, graph):
 
         # get array idxs for positional args
         arg_array_idxs = ivy.nested_indices_where(args, lambda x: ivy.is_array(x))
-        args_cont = ivy.Container(args, types_to_iteratively_nest=(list, tuple))
-        arg_param_ids_cont = args_cont.map(lambda x, kc: id(x) if ivy.is_array(x) else None).prune_empty()
-        arg_param_ids = list(arg_param_ids_cont.to_iterator_values())
+        arg_param_ids = [id(x) for x in ivy.multi_index_nest(args, arg_array_idxs)]
 
         # get array idxs for key-word args
         kwarg_array_idxs = ivy.nested_indices_where(kwargs, lambda x: ivy.is_array(x))
-        kwargs_cont = ivy.Container(kwargs, types_to_iteratively_nest=(list, tuple))
-        kwarg_param_ids_cont = kwargs_cont.map(lambda x, kc: id(x) if ivy.is_array(x) else None).prune_empty()
-        kwarg_param_ids = list(kwarg_param_ids_cont.to_iterator_values())
+        kwarg_param_ids = [id(x) for x in ivy.multi_index_nest(kwargs, kwarg_array_idxs)]
 
         # compute the return
         ret_raw = fn(*args, **kwargs)
@@ -412,9 +409,7 @@ def _wrap_method_for_compiling(fn, graph):
 
         # get array idxs for return
         ret_array_idxs = ivy.nested_indices_where(ret, lambda x: ivy.is_array(x))
-        ret_cont = ivy.Container(ret, types_to_iteratively_nest=(list, tuple))
-        ret_params_ids_cont = ret_cont.map(lambda x, kc: id(x) if ivy.is_array(x) else None).prune_empty()
-        ret_param_ids = list(ret_params_ids_cont.to_iterator_values())
+        ret_param_ids = [id(x) for x in ivy.multi_index_nest(list(ret), ret_array_idxs)]
 
         # wrap the function
         def new_fn(arg_array_vals, kwarg_array_vals):
