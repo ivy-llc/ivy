@@ -80,6 +80,33 @@ def test_array(object_in, dtype_str, from_numpy, dev_str, call):
         helpers.assert_compilable(ivy.array)
 
 
+# copy array
+@pytest.mark.parametrize(
+    "x", [[0.], [1], [True], [[1., 2.]]])
+@pytest.mark.parametrize(
+    "dtype_str", [None, 'float16', 'float32', 'float64', 'int8', 'int16', 'int32', 'int64', 'bool'])
+def test_copy_array(x, dtype_str, dev_str, call):
+    if call in [helpers.mx_call] and dtype_str == 'int16':
+        # mxnet does not support int16
+        pytest.skip()
+    # smoke test
+    x = ivy.array(x, dtype_str, dev_str)
+    ret = ivy.copy_array(x)
+    # type test
+    assert ivy.is_array(ret)
+    # cardinality test
+    assert ret.shape == x.shape
+    # value test
+    assert np.allclose(ivy.to_numpy(ret), ivy.to_numpy(x))
+    assert id(x) != id(ret)
+    # compilation test
+    if call in [helpers.torch_call]:
+        # pytorch scripting does not support string devices
+        return
+    if not ivy.wrapped_mode():
+        helpers.assert_compilable(ivy.copy_array)
+
+
 # array_equal
 @pytest.mark.parametrize(
     "x0_n_x1_n_res", [([0.], [0.], True), ([0.], [1.], False),
