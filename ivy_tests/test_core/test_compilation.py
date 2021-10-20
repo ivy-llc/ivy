@@ -68,6 +68,12 @@ def _input_in_output(x, y):
     return x + 2, y
 
 
+# inplace variable update
+
+def _inplace_var_update(weight, grad):
+    return ivy.inplace_decrement(weight, grad)
+
+
 # random
 
 def _rand_fn(x, with_non_compiled: bool = False):
@@ -379,6 +385,39 @@ def test_compile_ivy_input_in_output(x_raw, dtype_str, tensor_fn, dev_str, call)
     c_ret_a, c_ret_b = comp_fn(x, y)
     assert np.allclose(ivy.to_numpy(nc_ret_a), ivy.to_numpy(c_ret_a))
     assert np.allclose(ivy.to_numpy(nc_ret_b), ivy.to_numpy(c_ret_b))
+
+
+# noinspection PyUnresolvedReferences
+@pytest.mark.parametrize(
+    "weight_n_grad", [([1], [2])])
+@pytest.mark.parametrize(
+    "dtype_str", ['float32'])
+def test_compile_ivy_inplace_var_update(weight_n_grad, dtype_str, dev_str, call):
+    if ivy.wrapped_mode():
+        # Wrapped mode does not yet support function compilation
+        pytest.skip()
+    if call is not helpers.torch_call:
+        # currently only supported by PyTorch
+        pytest.skip()
+    # raw values
+    weight_raw, grad_raw = weight_n_grad
+    # as tensors
+    weight = ivy.variable(ivy.array(weight_raw, dtype_str, dev_str))
+    grad = ivy.array(grad_raw, dtype_str, dev_str)
+    # compile
+    comp_fn = ivy.compile_ivy(_inplace_var_update, weight, grad)
+    # type test
+    assert callable(comp_fn)
+    # value test
+    nc_weight = ivy.variable(ivy.array(weight_raw, dtype_str, dev_str))
+    grad = ivy.array(grad_raw, dtype_str, dev_str)
+    nc_new_weight = _inplace_var_update(nc_weight, grad)
+    c_weight = ivy.variable(ivy.array(weight_raw, dtype_str, dev_str))
+    grad = ivy.array(grad_raw, dtype_str, dev_str)
+    c_new_weight = comp_fn(c_weight, grad)
+    assert not np.allclose(np.asarray(weight_raw), ivy.to_numpy(nc_new_weight))
+    assert not np.allclose(np.asarray(weight_raw), ivy.to_numpy(c_new_weight))
+    assert np.allclose(ivy.to_numpy(nc_new_weight), ivy.to_numpy(c_new_weight))
 
 
 # noinspection PyUnresolvedReferences
