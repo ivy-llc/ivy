@@ -2264,6 +2264,14 @@ class Container(dict):
         """
         return Container(self.to_dict(), **self._config)
 
+    def deep_copy(self):
+        """
+        Create a deep copy (copying all internal tensors) of this container.
+
+        :return: A deep copy of the container
+        """
+        return self.map(lambda x, kc: _ivy.copy_array(x) if _ivy.is_array(x) else x)
+
     def map(self, func, key_chains=None, to_apply=True, prune_unapplied=False, key_chain=''):
         """
         Apply function to all array values of container
