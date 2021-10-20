@@ -173,9 +173,8 @@ def test_module_w_none_attribute(bs_ic_oc, dev_str, compile_fn, call):
     # compile if this mode is set
     if compile_fn and call is helpers.torch_call:
         # Currently only PyTorch is supported for ivy compilation
-        pass
-        # ToDo: get this working!
-        # module.compile(x)
+        module.compile(x)
+    module(x)
 
 
 class TrainableModuleWithDuplicate(ivy.Module):
