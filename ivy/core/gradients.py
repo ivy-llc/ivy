@@ -40,6 +40,20 @@ def is_variable(x, exclusive=False, f=None):
     return _cur_framework(x, f=f).is_variable(x, exclusive)
 
 
+def variable_data(x, f=None):
+    """
+    Some backends wrap arrays in a dedicated variable class. For those frameworks, this function returns that wrapped
+    array. For frameworks which do not have a dedicated variable class, the function returns the data passed in.
+
+    :param x: An ivy variable.
+    :type x: variable
+    :param f: Machine learning framework. Inferred from inputs if None.
+    :type f: ml_framework, optional
+    :return: The internal data stored by the variable
+    """
+    return _cur_framework(x, f=f).variable_data(x)
+
+
 def inplace_update(x, val, f=None):
     """
     Perform in-place update for the input variable.

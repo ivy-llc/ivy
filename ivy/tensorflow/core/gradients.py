@@ -19,6 +19,9 @@ def is_variable(x, exclusive=False):
     return isinstance(x, _tf.Variable)
 
 
+variable_data = lambda x: x.value()
+
+
 def inplace_update(x, val):
     x.assign(val)
     return x
