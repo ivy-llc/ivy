@@ -77,6 +77,7 @@ def is_array(x, exclusive=False):
     return False
 
 
+copy_array = lambda x: x.copy()
 array_equal = lambda x0, x1: _mx.nd.min(_mx.nd.broadcast_equal(x0, x1)) == 1
 to_numpy = lambda x: x if isinstance(x, _np.ndarray) else (_np.array(x) if isinstance(x, (int, float)) else x.asnumpy())
 to_numpy.__name__ = 'to_numpy'

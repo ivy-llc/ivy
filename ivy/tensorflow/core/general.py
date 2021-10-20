@@ -55,6 +55,7 @@ def is_array(x, exclusive=False):
     return False
 
 
+copy_array = _tf.identity
 array_equal = _tf.experimental.numpy.array_equal
 to_numpy = lambda x: _np.asarray(_tf.convert_to_tensor(x))
 to_numpy.__name__ = 'to_numpy'
