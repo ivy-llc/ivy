@@ -1756,6 +1756,19 @@ def test_container_prune_keys_from_key_chains(dev_str, call):
     assert ('Eee' not in container_pruned)
 
 
+def test_container_deep_copy(dev_str, call):
+    dict_in = {'a': ivy.array([0.], dev_str=dev_str),
+               'b': {'c': ivy.array([1.], dev_str=dev_str), 'd': ivy.array([2.], dev_str=dev_str)}}
+    cont = Container(dict_in)
+    cont_deepcopy = cont.deep_copy()
+    assert np.allclose(ivy.to_numpy(cont.a), ivy.to_numpy(cont_deepcopy.a))
+    assert np.allclose(ivy.to_numpy(cont.b.c), ivy.to_numpy(cont_deepcopy.b.c))
+    assert np.allclose(ivy.to_numpy(cont.b.d), ivy.to_numpy(cont_deepcopy.b.d))
+    assert id(cont.a) != id(cont_deepcopy.a)
+    assert id(cont.b.c) != id(cont_deepcopy.b.c)
+    assert id(cont.b.d) != id(cont_deepcopy.b.d)
+
+
 def test_container_contains(dev_str, call):
     dict_in = {'a': ivy.array([0.], dev_str=dev_str),
                'b': {'c': ivy.array([1.], dev_str=dev_str), 'd': ivy.array([2.], dev_str=dev_str)}}
