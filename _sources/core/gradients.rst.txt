@@ -14,6 +14,7 @@ Gradients
 
    gradients/variable.rst
    gradients/is_variable.rst
+   gradients/variable_data.rst
    gradients/inplace_update.rst
    gradients/inplace_decrement.rst
    gradients/inplace_increment.rst
