@@ -279,6 +279,7 @@ Documentation Tree
    core/nest.rst
    core/random.rst
    core/reductions.rst
+   core/wrapped.rst
 
 
 .. toctree::

@@ -1,0 +1,19 @@
+Wrapped
+=======
+
+.. automodule:: ivy.core.wrapped
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :show-inheritance:
+
+
+.. toctree::
+   :maxdepth: -1
+   :caption: Wrapped
+
+   wrapped/to_ivy.rst
+   wrapped/args_to_ivy.rst
+   wrapped/to_native.rst
+   wrapped/args_to_native.rst
+
