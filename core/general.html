@@ -95,6 +95,7 @@
 <li class="toctree-l1 current"><a class="current reference internal" href="#">General</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="general/array.html">array</a></li>
 <li class="toctree-l2"><a class="reference internal" href="general/is_array.html">is_array</a></li>
+<li class="toctree-l2"><a class="reference internal" href="general/copy_array.html">copy_array</a></li>
 <li class="toctree-l2"><a class="reference internal" href="general/array_equal.html">array_equal</a></li>
 <li class="toctree-l2"><a class="reference internal" href="general/arrays_equal.html">arrays_equal</a></li>
 <li class="toctree-l2"><a class="reference internal" href="general/equal.html">equal</a></li>
@@ -604,6 +605,23 @@ Specified as ((before_1, after_1), … (before_N, after_N)), where N is number o
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>Padded array of rank equal to x with shape increased according to pad_width.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.core.general.copy_array">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">copy_array</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">f</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>ivy.Framework<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; Union<span class="p">[</span>ivy.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span><a class="reference internal" href="../_modules/ivy/core/general.html#copy_array"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.copy_array" title="Permalink to this definition">¶</a></dt>
+<dd><p>Copy an array.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>array</em>) – The array to copy</p></li>
+<li><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning framework. Inferred from inputs if None.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A copy of the input array.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1776,6 +1794,7 @@ If not given, then the type of the original array is used.</p></li>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="general/array.html">array</a></li>
 <li class="toctree-l1"><a class="reference internal" href="general/is_array.html">is_array</a></li>
+<li class="toctree-l1"><a class="reference internal" href="general/copy_array.html">copy_array</a></li>
 <li class="toctree-l1"><a class="reference internal" href="general/array_equal.html">array_equal</a></li>
 <li class="toctree-l1"><a class="reference internal" href="general/arrays_equal.html">arrays_equal</a></li>
 <li class="toctree-l1"><a class="reference internal" href="general/equal.html">equal</a></li>
