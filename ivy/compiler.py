@@ -2,6 +2,7 @@
 import ivy
 import copy
 import queue
+import random
 import inspect
 import importlib
 
@@ -155,6 +156,23 @@ class Graph:
         output_array_idxs = ivy.nested_indices_where(ret, lambda x: ivy.is_array(x))
         self._output_param_ids = [id(x) for x in ivy.multi_index_nest(list(ret), output_array_idxs)]
 
+        # find any inputs which were fed directly to the output, and update pid and add identity function
+        for i, pid in enumerate(self._output_param_ids):
+            if pid in self._arg_param_ids + self._kwarg_param_ids:
+                new_pid = random.randint(0, 2 ** 48)
+
+                def new_fn(a, _):
+                    return a[0]
+
+                new_fn.arg_param_ids = [pid]
+                new_fn.kwarg_param_ids = list()
+                new_fn.output_param_ids = [new_pid]
+                new_fn.fns_in = list()
+                new_fn.output_array_idxs = [[0]]
+
+                self.add_fn_to_dict(new_pid, new_fn)
+                self._output_param_ids[i] = new_pid
+
         op_logging = False
 
     # Getters and Setters #
@@ -255,7 +273,7 @@ class Graph:
         [store_fn_heights(self._functions_dict[pid]) for pid in self._output_param_ids]
 
         # find the height of the tree
-        max_tree_height = max([fn.tree_height for fn in self._functions])
+        max_tree_height = max([fn.tree_height for fn in self._functions]) if self._functions else -1
 
         # group the functions based on their height in the tree from the starting leaf nodes
         grouped_functions = list()
@@ -276,7 +294,7 @@ class Graph:
         self._num_functions = len(self._functions)
 
         # compute maximum width of the graph
-        self._max_graph_width = max([len(fns) for fns in grouped_functions])
+        self._max_graph_width = max([len(fns) for fns in grouped_functions]) if grouped_functions else 0
 
     def _call(self, *args, **kwargs):
         # ToDo: make this as efficient as possible; this is performed at runtime

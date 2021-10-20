@@ -61,6 +61,9 @@ def _fn_4(x, with_non_compiled: bool = False, with_internal_gen: bool = False):
         (x + 3) * 4  # ops not to be compiled into the graph
     return ivy.concatenate([k, m, o], -1)
 
+def _input_in_output(x, y):
+    return x + 2, y
+
 # random
 
 def _rand_fn(x, with_non_compiled: bool = False):
@@ -333,11 +336,43 @@ def test_compile_ivy_w_detached_divide(x_raw, dtype_str, tensor_fn, dev_str, cal
     # value test
     x = tensor_fn(x_raw, dtype_str, dev_str)
     nc_return = _detach_div_fn(x)
-    assert nc_return
     x = tensor_fn(x_raw, dtype_str, dev_str)
     c_return = comp_fn(x)
-    assert c_return
     assert np.allclose(ivy.to_numpy(nc_return), ivy.to_numpy(c_return))
+
+
+# noinspection PyUnresolvedReferences
+@pytest.mark.parametrize(
+    "x_raw", [[1]])
+@pytest.mark.parametrize(
+    "dtype_str", ['float32'])
+@pytest.mark.parametrize(
+    "tensor_fn", [ivy.array])
+def test_compile_ivy_input_in_output(x_raw, dtype_str, tensor_fn, dev_str, call):
+    if ivy.wrapped_mode():
+        # Wrapped mode does not yet support function compilation
+        pytest.skip()
+    if call is not helpers.torch_call:
+        # currently only supported by PyTorch
+        pytest.skip()
+    # smoke test
+    if (isinstance(x_raw, Number) or len(x_raw) == 0) and tensor_fn == helpers.var_fn and call is helpers.mx_call:
+        # mxnet does not support 0-dimensional variables
+        pytest.skip()
+
+    # detached divide function
+    x = tensor_fn(x_raw, dtype_str, dev_str)
+    y = tensor_fn(x_raw, dtype_str, dev_str)
+    comp_fn = ivy.compile_ivy(_input_in_output, x, y)
+    # type test
+    assert callable(comp_fn)
+    # value test
+    x = tensor_fn(x_raw, dtype_str, dev_str)
+    nc_ret_a, nc_ret_b = _input_in_output(x, y)
+    x = tensor_fn(x_raw, dtype_str, dev_str)
+    c_ret_a, c_ret_b = comp_fn(x, y)
+    assert np.allclose(ivy.to_numpy(nc_ret_a), ivy.to_numpy(c_ret_a))
+    assert np.allclose(ivy.to_numpy(nc_ret_b), ivy.to_numpy(c_ret_b))
 
 
 # noinspection PyUnresolvedReferences
