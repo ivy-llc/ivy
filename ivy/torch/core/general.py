@@ -40,6 +40,10 @@ def is_array(x, exclusive=False):
     return False
 
 
+def copy_array(x):
+    return x.detach()
+
+
 def array_equal(x0, x1):
     return torch.equal(x0, x1)
 

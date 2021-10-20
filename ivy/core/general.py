@@ -20,7 +20,7 @@ TIMEOUT = 10.0
 
 
 # noinspection PyShadowingNames
-def array(object_in: Union[List, np.ndarray, Union[ivy.Array, ivy.NativeArray]], dtype_str: str = None,
+def array(object_in: Union[List, np.ndarray, ivy.Array, ivy.NativeArray], dtype_str: str = None,
           dev_str: str = None, f: ivy.Framework = None) -> Union[ivy.Array, ivy.NativeArray]:
     """
     Creates an array.
@@ -58,6 +58,21 @@ def is_array(x: Any, exclusive: bool = False, f: ivy.Framework = None)\
         return _cur_framework(x, f=f).is_array(x, exclusive)
     except ValueError:
         return False
+
+
+# noinspection PyShadowingNames
+def copy_array(x: Union[ivy.Array, ivy.NativeArray], f: ivy.Framework = None)\
+        -> Union[ivy.Array, ivy.NativeArray]:
+    """
+    Copy an array.
+
+    :param x: The array to copy
+    :type x: array
+    :param f: Machine learning framework. Inferred from inputs if None.
+    :type f: ml_framework, optional
+    :return: A copy of the input array.
+    """
+    return _cur_framework(x, f=f).copy_array(x)
 
 
 def array_equal(x0: Union[ivy.Array, ivy.NativeArray], x1: Union[ivy.Array, ivy.NativeArray], f: ivy.Framework = None)\
