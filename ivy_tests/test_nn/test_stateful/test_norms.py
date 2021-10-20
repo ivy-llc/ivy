@@ -26,7 +26,7 @@ from ivy.core.container import Container
     "dtype_str", ['float32'])
 @pytest.mark.parametrize(
     "tensor_fn", [ivy.array, helpers.var_fn])
-def test_layer_norm_layer(x_n_ns_n_target, with_v, dtype_str, tensor_fn, dev_str, call):
+def test_layer_norm_layer(x_n_ns_n_target, with_v, dtype_str, tensor_fn, dev_str, compile_fn, call):
     # smoke test
     x, normalized_shape, target = x_n_ns_n_target
     x = tensor_fn(x, dtype_str, dev_str)
@@ -37,6 +37,10 @@ def test_layer_norm_layer(x_n_ns_n_target, with_v, dtype_str, tensor_fn, dev_str
     else:
         v = None
     norm_layer = ivy.LayerNorm(normalized_shape, dev_str=dev_str, v=v)
+    # compile if this mode is set
+    if compile_fn and call is helpers.torch_call:
+        # Currently only PyTorch is supported for ivy compilation
+        norm_layer.compile(x)
     ret = norm_layer(x)
     # type test
     assert ivy.is_array(ret)
