@@ -62,12 +62,14 @@ class Graph:
         # positional args
         self._args = args
         self._arg_array_idxs = ivy.nested_indices_where(args, lambda x: ivy.is_array(x))
-        self._arg_param_ids = [id(x) for x in ivy.multi_index_nest(list(args), self._arg_array_idxs)]
+        self._arg_param_ids = [id(ivy.variable_data(x)) if ivy.is_variable(x) else id(x)
+                               for x in ivy.multi_index_nest(list(args), self._arg_array_idxs)]
 
         # key-word args
         self._kwargs = kwargs
         self._kwarg_array_idxs = ivy.nested_indices_where(kwargs, lambda x: ivy.is_array(x))
-        self._kwarg_param_ids = [id(x) for x in ivy.multi_index_nest(kwargs, self._kwarg_array_idxs)]
+        self._kwarg_param_ids = [id(ivy.variable_data(x)) if ivy.is_variable(x) else id(x)
+                                 for x in ivy.multi_index_nest(kwargs, self._kwarg_array_idxs)]
 
         # output param ids
         self._output = None  # initialized during op logging
@@ -154,11 +156,13 @@ class Graph:
         if not isinstance(ret, tuple):
             ret = (ret,)
         output_array_idxs = ivy.nested_indices_where(ret, lambda x: ivy.is_array(x))
-        self._output_param_ids = [id(x) for x in ivy.multi_index_nest(list(ret), output_array_idxs)]
+        self._output_param_ids = [id(ivy.variable_data(x)) if ivy.is_variable(x) else id(x)
+                                  for x in ivy.multi_index_nest(list(ret), output_array_idxs)]
 
         # find any inputs which were fed directly to the output, and update pid and add identity function
         for i, pid in enumerate(self._output_param_ids):
             if pid in self._arg_param_ids + self._kwarg_param_ids:
+
                 new_pid = random.randint(0, 2 ** 48)
 
                 def new_fn(a, _):
@@ -393,11 +397,13 @@ def _wrap_method_for_compiling(fn, graph):
 
         # get array idxs for positional args
         arg_array_idxs = ivy.nested_indices_where(args, lambda x: ivy.is_array(x))
-        arg_param_ids = [id(x) for x in ivy.multi_index_nest(args, arg_array_idxs)]
+        arg_param_ids = [id(ivy.variable_data(x)) if ivy.is_variable(x) else id(x)
+                         for x in ivy.multi_index_nest(args, arg_array_idxs)]
 
         # get array idxs for key-word args
         kwarg_array_idxs = ivy.nested_indices_where(kwargs, lambda x: ivy.is_array(x))
-        kwarg_param_ids = [id(x) for x in ivy.multi_index_nest(kwargs, kwarg_array_idxs)]
+        kwarg_param_ids = [id(ivy.variable_data(x)) if ivy.is_variable(x) else id(x)
+                           for x in ivy.multi_index_nest(kwargs, kwarg_array_idxs)]
 
         # compute the return
         ret_raw = fn(*args, **kwargs)
@@ -409,7 +415,8 @@ def _wrap_method_for_compiling(fn, graph):
 
         # get array idxs for return
         ret_array_idxs = ivy.nested_indices_where(ret, lambda x: ivy.is_array(x))
-        ret_param_ids = [id(x) for x in ivy.multi_index_nest(list(ret), ret_array_idxs)]
+        ret_param_ids = [id(ivy.variable_data(x)) if ivy.is_variable(x) else id(x)
+                         for x in ivy.multi_index_nest(list(ret), ret_array_idxs)]
 
         # wrap the function
         def new_fn(arg_array_vals, kwarg_array_vals):
