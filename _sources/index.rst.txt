@@ -276,6 +276,7 @@ Documentation Tree
    core/math.rst
    core/meta.rst
    core/multi_node.rst
+   core/nest.rst
    core/random.rst
    core/reductions.rst
 

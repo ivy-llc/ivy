@@ -12,15 +12,6 @@ General
    :maxdepth: -1
    :caption: General
 
-   general/index_nest.rst
-   general/set_nest_at_index.rst
-   general/map_nest_at_index.rst
-   general/multi_index_nest.rst
-   general/set_nest_at_indices.rst
-   general/map_nest_at_indices.rst
-   general/nested_indices_where.rst
-   general/map.rst
-   general/nested_map.rst
    general/to_ivy.rst
    general/args_to_ivy.rst
    general/to_native.rst
