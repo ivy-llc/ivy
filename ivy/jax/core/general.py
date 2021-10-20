@@ -70,6 +70,7 @@ def is_array(x, exclusive=False):
                           _jax.interpreters.partial_eval.DynamicJaxprTracer))
 
 
+copy_array = _jnp.array
 array_equal = _jnp.array_equal
 to_numpy = lambda x: _onp.asarray(_to_array(x))
 to_numpy.__name__ = 'to_numpy'

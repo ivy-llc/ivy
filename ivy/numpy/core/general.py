@@ -62,6 +62,7 @@ def is_array(x, exclusive=False):
     return False
 
 
+copy_array = lambda x: x.copy()
 array_equal = _np.array_equal
 to_numpy = lambda x: x
 to_numpy.__name__ = 'to_numpy'
