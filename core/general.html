@@ -36,7 +36,7 @@
   <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="index_nest" href="general/index_nest.html" />
+    <link rel="next" title="to_ivy" href="general/to_ivy.html" />
     <link rel="prev" title="Profiler" href="device/Profiler.html" /> 
 </head>
 
@@ -93,15 +93,6 @@
 <li class="toctree-l1"><a class="reference internal" href="container.html">Container</a></li>
 <li class="toctree-l1"><a class="reference internal" href="device.html">Device</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">General</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="general/index_nest.html">index_nest</a></li>
-<li class="toctree-l2"><a class="reference internal" href="general/set_nest_at_index.html">set_nest_at_index</a></li>
-<li class="toctree-l2"><a class="reference internal" href="general/map_nest_at_index.html">map_nest_at_index</a></li>
-<li class="toctree-l2"><a class="reference internal" href="general/multi_index_nest.html">multi_index_nest</a></li>
-<li class="toctree-l2"><a class="reference internal" href="general/set_nest_at_indices.html">set_nest_at_indices</a></li>
-<li class="toctree-l2"><a class="reference internal" href="general/map_nest_at_indices.html">map_nest_at_indices</a></li>
-<li class="toctree-l2"><a class="reference internal" href="general/nested_indices_where.html">nested_indices_where</a></li>
-<li class="toctree-l2"><a class="reference internal" href="general/map.html">map</a></li>
-<li class="toctree-l2"><a class="reference internal" href="general/nested_map.html">nested_map</a></li>
 <li class="toctree-l2"><a class="reference internal" href="general/to_ivy.html">to_ivy</a></li>
 <li class="toctree-l2"><a class="reference internal" href="general/args_to_ivy.html">args_to_ivy</a></li>
 <li class="toctree-l2"><a class="reference internal" href="general/to_native.html">to_native</a></li>
@@ -198,6 +189,7 @@
 <li class="toctree-l1"><a class="reference internal" href="math.html">Math</a></li>
 <li class="toctree-l1"><a class="reference internal" href="meta.html">Meta</a></li>
 <li class="toctree-l1"><a class="reference internal" href="multi_node.html">Multi node</a></li>
+<li class="toctree-l1"><a class="reference internal" href="nest.html">Nest</a></li>
 <li class="toctree-l1"><a class="reference internal" href="random.html">Random</a></li>
 <li class="toctree-l1"><a class="reference internal" href="reductions.html">Reductions</a></li>
 </ul>
@@ -1087,20 +1079,6 @@ Default is ‘float32’.</p></li>
 </dd></dl>
 
 <dl class="py function">
-<dt id="ivy.core.general.index_nest">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">index_nest</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">nest</span></em>, <em class="sig-param"><span class="n">index</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#index_nest"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.index_nest" title="Permalink to this definition">¶</a></dt>
-<dd><p>Index a nested object, using a tuple of indices or keys in the case of dicts.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>nest</strong> (<em>nested</em>) – The nested object to index.</p></li>
-<li><p><strong>index</strong> (<em>tuple of indices</em>) – A tuple of indices for indexing.</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
 <dt id="ivy.core.general.indices_where">
 <code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">indices_where</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">f</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>ivy.Framework<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; Union<span class="p">[</span>ivy.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span><a class="reference internal" href="../_modules/ivy/core/general.html#indices_where"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.indices_where" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns indices or true elements in an input boolean array.</p>
@@ -1217,55 +1195,6 @@ Default is ‘float32’.</p></li>
 </dd></dl>
 
 <dl class="py function">
-<dt id="ivy.core.general.map">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">map</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">fn</span><span class="p">:</span> <span class="n">Callable</span></em>, <em class="sig-param"><span class="n">constant</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Dict<span class="p">[</span>str<span class="p">, </span>Any<span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">unique</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Dict<span class="p">[</span>str<span class="p">, </span>Iterable<span class="p">[</span>Any<span class="p">]</span><span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">mean</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em><span class="sig-paren">)</span> &#x2192; List<a class="reference internal" href="../_modules/ivy/core/general.html#map"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.map" title="Permalink to this definition">¶</a></dt>
-<dd><p>Applies a function on each item of an iterable x.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>fn</strong> (<em>callable</em>) – The function to map onto x.</p></li>
-<li><p><strong>constant</strong> (<em>dict of any</em><em>, </em><em>optional</em>) – keyword arguments which remain constant between each function call. Default is None.</p></li>
-<li><p><strong>unique</strong> (<em>dict of iterables of any</em><em>, </em><em>optional</em>) – keyword arguments which are unique for each function call. Default is None.</p></li>
-<li><p><strong>mean</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to compute the mean across the return values, and return this mean. Default is False.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>x following the applicable of fn to each of it’s iterated items.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt id="ivy.core.general.map_nest_at_index">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">map_nest_at_index</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">nest</span></em>, <em class="sig-param"><span class="n">index</span></em>, <em class="sig-param"><span class="n">fn</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#map_nest_at_index"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.map_nest_at_index" title="Permalink to this definition">¶</a></dt>
-<dd><p>Map a function to the value of a nested item at a specified index</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>nest</strong> (<em>nested</em>) – The nested object to update.</p></li>
-<li><p><strong>index</strong> (<em>tuple of indices</em>) – A tuple of indices for the index at which to update.</p></li>
-<li><p><strong>fn</strong> (<em>callable</em>) – The function to perform on the nest at the given index.</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt id="ivy.core.general.map_nest_at_indices">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">map_nest_at_indices</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">nest</span></em>, <em class="sig-param"><span class="n">indices</span></em>, <em class="sig-param"><span class="n">fn</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#map_nest_at_indices"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.map_nest_at_indices" title="Permalink to this definition">¶</a></dt>
-<dd><p>Map a function to the values of a nested item at the specified indices</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>nest</strong> (<em>nested</em>) – The nested object to update.</p></li>
-<li><p><strong>indices</strong> (<em>tuple of tuples of indices</em>) – A tuple of tuples of indices for the indices at which to update.</p></li>
-<li><p><strong>fn</strong> (<em>callable</em>) – The function to perform on the nest at the given index.</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
 <dt id="ivy.core.general.matmul">
 <code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">matmul</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x1</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">x2</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">f</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>ivy.Framework<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; Union<span class="p">[</span>ivy.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span><a class="reference internal" href="../_modules/ivy/core/general.html#matmul"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.matmul" title="Permalink to this definition">¶</a></dt>
 <dd><p>Computes the matrix product of two arrays x1 and x2.</p>
@@ -1338,20 +1267,6 @@ Default is ‘float32’.</p></li>
 </dd></dl>
 
 <dl class="py function">
-<dt id="ivy.core.general.multi_index_nest">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">multi_index_nest</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">nest</span></em>, <em class="sig-param"><span class="n">indices</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#multi_index_nest"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.multi_index_nest" title="Permalink to this definition">¶</a></dt>
-<dd><p>Repeatedly index a nested object, using a tuple of tuples of indices or keys in the case of dicts.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>nest</strong> (<em>nested</em>) – The nested object to slice.</p></li>
-<li><p><strong>indices</strong> (<em>tuple of tuples of indices</em>) – A tuple of tuples of indices to apply.</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
 <dt id="ivy.core.general.multiprocessing">
 <code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">multiprocessing</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">context</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>str<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">f</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>ivy.Framework<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#multiprocessing"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.multiprocessing" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return framewrk-specific multi-processing module</p>
@@ -1364,47 +1279,6 @@ Default is ‘float32’.</p></li>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>Multiprocessing module</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt id="ivy.core.general.nested_indices_where">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">nested_indices_where</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">nest</span><span class="p">:</span> <span class="n">Iterable</span></em>, <em class="sig-param"><span class="n">fn</span><span class="p">:</span> <span class="n">Callable</span></em>, <em class="sig-param"><span class="n">_index</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>List<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">_base</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">True</span></em><span class="sig-paren">)</span> &#x2192; Union<span class="p">[</span>Iterable<span class="p">, </span>bool<span class="p">]</span><a class="reference internal" href="../_modules/ivy/core/general.html#nested_indices_where"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.nested_indices_where" title="Permalink to this definition">¶</a></dt>
-<dd><p>Checks the leaf nodes of nested x via function fn, and returns all nest indices where the method evaluates as True.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>nest</strong> (<em>nest of any</em>) – The nest to check the leaves of.</p></li>
-<li><p><strong>fn</strong> (<em>callable</em>) – The conditon function, returning True or False.</p></li>
-<li><p><strong>_index</strong> (<em>list of tuples of indices</em><em>, </em><em>do not set</em>) – The indices detected so far. None at the beginning. Used internally, do not set manually.</p></li>
-<li><p><strong>_base</strong> (<em>bool</em><em>, </em><em>do not set</em>) – Whether the current function call is the first function call in the recursive stack.
-Used internally, do not set manually.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>A set of indices for the nest where the function evaluated as True.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt id="ivy.core.general.nested_map">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">nested_map</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.Array<span class="p">, </span>ivy.NativeArray<span class="p">, </span>Iterable<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">fn</span><span class="p">:</span> <span class="n">Callable</span></em>, <em class="sig-param"><span class="n">include_derived</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em>, <em class="sig-param"><span class="n">max_depth</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>int<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">depth</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">0</span></em><span class="sig-paren">)</span> &#x2192; Union<span class="p">[</span>ivy.Array<span class="p">, </span>ivy.NativeArray<span class="p">, </span>Iterable<span class="p">]</span><a class="reference internal" href="../_modules/ivy/core/general.html#nested_map"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.nested_map" title="Permalink to this definition">¶</a></dt>
-<dd><p>Applies a function on x in a nested manner, whereby all dicts, lists and tuples are traversed to their lowest
-leaves before applying the method and returning x. If x is not nested, the method is applied to x directly.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<em>any</em>) – The item to apply the mapped function to.</p></li>
-<li><p><strong>fn</strong> (<em>callable</em>) – The function to map onto x.</p></li>
-<li><p><strong>include_derived</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to also recursive for classes derived from tuple, list and dict. Default is False.</p></li>
-<li><p><strong>max_depth</strong> (<em>int</em><em>, </em><em>optional</em>) – The maximum nested depth to reach. Default is 1. Increase this if the nest is deeper.</p></li>
-<li><p><strong>depth</strong> (<em>int</em><em>, </em><em>used internally</em>) – Placeholder for tracking the recursive depth, do not yet this parameter.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>x following the applicable of fn to it’s nested leaves, or x itself if x is not nested.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1587,36 +1461,6 @@ In this case, the value is inferred from the length of the array and remaining d
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>val</strong> (<em>float</em>) – The new value to set the minimum denominator to.</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt id="ivy.core.general.set_nest_at_index">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">set_nest_at_index</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">nest</span></em>, <em class="sig-param"><span class="n">index</span></em>, <em class="sig-param"><span class="n">value</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#set_nest_at_index"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.set_nest_at_index" title="Permalink to this definition">¶</a></dt>
-<dd><p>Set the value of a nested item at a specified index</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>nest</strong> (<em>nested</em>) – The nested object to update.</p></li>
-<li><p><strong>index</strong> (<em>tuple of indices</em>) – A tuple of indices for the index at which to update.</p></li>
-<li><p><strong>value</strong> (<em>any</em>) – The new value for updating.</p></li>
-</ul>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt id="ivy.core.general.set_nest_at_indices">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">set_nest_at_indices</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">nest</span></em>, <em class="sig-param"><span class="n">indices</span></em>, <em class="sig-param"><span class="n">values</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#set_nest_at_indices"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.set_nest_at_indices" title="Permalink to this definition">¶</a></dt>
-<dd><p>Set the value of a nested item at specified indices with specified values.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>nest</strong> (<em>nested</em>) – The nested object to update.</p></li>
-<li><p><strong>indices</strong> (<em>tuple of tuples of indices</em>) – A tuple of tuples of indices for the indices at which to update.</p></li>
-<li><p><strong>values</strong> (<em>sequence of any</em>) – The new values for updating.</p></li>
-</ul>
 </dd>
 </dl>
 </dd></dl>
@@ -2011,15 +1855,6 @@ If not given, then the type of the original array is used.</p></li>
 <div class="toctree-wrapper compound">
 <p class="caption"><span class="caption-text">General</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="general/index_nest.html">index_nest</a></li>
-<li class="toctree-l1"><a class="reference internal" href="general/set_nest_at_index.html">set_nest_at_index</a></li>
-<li class="toctree-l1"><a class="reference internal" href="general/map_nest_at_index.html">map_nest_at_index</a></li>
-<li class="toctree-l1"><a class="reference internal" href="general/multi_index_nest.html">multi_index_nest</a></li>
-<li class="toctree-l1"><a class="reference internal" href="general/set_nest_at_indices.html">set_nest_at_indices</a></li>
-<li class="toctree-l1"><a class="reference internal" href="general/map_nest_at_indices.html">map_nest_at_indices</a></li>
-<li class="toctree-l1"><a class="reference internal" href="general/nested_indices_where.html">nested_indices_where</a></li>
-<li class="toctree-l1"><a class="reference internal" href="general/map.html">map</a></li>
-<li class="toctree-l1"><a class="reference internal" href="general/nested_map.html">nested_map</a></li>
 <li class="toctree-l1"><a class="reference internal" href="general/to_ivy.html">to_ivy</a></li>
 <li class="toctree-l1"><a class="reference internal" href="general/args_to_ivy.html">args_to_ivy</a></li>
 <li class="toctree-l1"><a class="reference internal" href="general/to_native.html">to_native</a></li>
@@ -2119,7 +1954,7 @@ If not given, then the type of the original array is used.</p></li>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="general/index_nest.html" class="btn btn-neutral float-right" title="index_nest" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="general/to_ivy.html" class="btn btn-neutral float-right" title="to_ivy" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="device/Profiler.html" class="btn btn-neutral float-left" title="Profiler" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
