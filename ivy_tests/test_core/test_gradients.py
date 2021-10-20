@@ -82,6 +82,38 @@ def test_is_variable(object_in, dtype_str, dev_str, call):
         helpers.assert_compilable(ivy.is_variable)
 
 
+# variable data
+@pytest.mark.parametrize(
+    "object_in", [[], [0.], [1], [True], [[1., 2.]]])
+@pytest.mark.parametrize(
+    "dtype_str", ['float16', 'float32', 'float64'])
+def test_variable_data(object_in, dtype_str, dev_str, call):
+    if call is helpers.tf_graph_call:
+        # cannot create variables as part of compiled tf graph
+        pytest.skip()
+    if call in [helpers.mx_call] and dtype_str == 'int16':
+        # mxnet does not support int16
+        pytest.skip()
+    if len(object_in) == 0 and call is helpers.mx_call:
+        # mxnet does not support 0-dimensional variables
+        pytest.skip()
+    # smoke test
+    var = ivy.variable(ivy.array(object_in, dtype_str, dev_str))
+    var_data = ivy.variable_data(var)
+    # type test
+    if call is not helpers.np_call:
+        # numpy does not support variables
+        assert ivy.is_variable(var)
+        if call is not helpers.mx_call:
+            # jax variables and their data are the same instance
+            assert not ivy.is_variable(var_data, exclusive=True)
+        assert ivy.is_array(var_data)
+    # cardinality test
+    assert var_data.shape == var.shape
+    # value test
+    assert np.allclose(ivy.to_numpy(var), ivy.to_numpy(var_data))
+
+
 # stop_gradient
 @pytest.mark.parametrize(
     "x_raw", [[0.]])

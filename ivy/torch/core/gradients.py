@@ -18,6 +18,10 @@ def is_variable(x, exclusive: bool = False):
     return isinstance(x, _torch.Tensor) and x.requires_grad
 
 
+def variable_data(x):
+    return x.data
+
+
 def inplace_update(x, val):
     x.data = val
     return x

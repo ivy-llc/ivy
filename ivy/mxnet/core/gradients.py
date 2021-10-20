@@ -16,9 +16,11 @@ def is_variable(x, exclusive=False):
     return isinstance(x, _mx.ndarray.ndarray.NDArray) and x.grad is not None
 
 
+variable_data = lambda x: x
+
+
 def inplace_update(x, val):
-    x = val
-    return x
+    return val
 
 
 def inplace_decrement(x, val):
