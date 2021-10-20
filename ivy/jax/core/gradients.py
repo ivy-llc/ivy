@@ -23,9 +23,11 @@ def is_variable(x, exclusive=False):
     return isinstance(x, (_jax.interpreters.xla._DeviceArray, _jaxlib.xla_extension.DeviceArray, Buffer))
 
 
+variable_data = lambda x: x
+
+
 def inplace_update(x, val):
-    x = val
-    return x
+    return val
 
 
 def inplace_decrement(x, val):

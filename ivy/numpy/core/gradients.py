@@ -17,6 +17,9 @@ def is_variable(x, exclusive=False):
     return False
 
 
+variable_data = lambda x: x
+
+
 def inplace_update(x, val):
     x = val
     return x
