@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>ivy.core.compilation &mdash; Ivy 1.0 documentation</title>
+  <title>compile &mdash; Ivy 1.0 documentation</title>
   
 
   
@@ -174,12 +174,14 @@
     
       <li><a href="../../../index.html">Docs</a> &raquo;</li>
         
-          <li><a href="../../index.html">Module code</a> &raquo;</li>
-        
-      <li>ivy.core.compilation</li>
+      <li>compile</li>
     
     
       <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../../_sources/torch/core/general/compile.rst.txt" rel="nofollow"> View page source</a>
+          
         
       </li>
     
@@ -191,44 +193,15 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <h1>Source code for ivy.core.compilation</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">Collection of general Ivy compilation functions.</span>
-<span class="sd">&quot;&quot;&quot;</span>
+  <div class="section" id="compile">
+<h1>compile<a class="headerlink" href="#compile" title="Permalink to this headline">¶</a></h1>
+<div class="line-block">
+<div class="line"><br /></div>
+<div class="line"><strong>Supported Frameworks:</strong></div>
+</div>
+<p><a class="reference internal" href="../../../_images/empty.png"><img alt="empty" src="../../../_images/empty.png" style="width: 4%;" /></a> <a class="reference external" href="https://jax.readthedocs.io"><img alt="jax_logo" src="../../../_images/jax_logo.png" style="width: 14%;" /></a> <a class="reference internal" href="../../../_images/empty.png"><img alt="empty" src="../../../_images/empty.png" style="width: 4%;" /></a> <a class="reference external" href="https://www.tensorflow.org"><img alt="tf_logo" src="../../../_images/tensorflow_logo.png" style="width: 14%;" /></a> <a class="reference internal" href="../../../_images/empty.png"><img alt="empty" src="../../../_images/empty.png" style="width: 4%;" /></a> <a class="reference external" href="https://pytorch.org"><img alt="pytorch_logo" src="../../../_images/pytorch_logo.png" style="width: 14%;" /></a> <a class="reference internal" href="../../../_images/empty.png"><img alt="empty" src="../../../_images/empty.png" style="width: 4%;" /></a> <a class="reference external" href="https://mxnet.apache.org"><img alt="mxnet_logo" src="../../../_images/mxnet_logo.png" style="width: 14%;" /></a> <a class="reference internal" href="../../../_images/empty.png"><img alt="empty" src="../../../_images/empty.png" style="width: 4%;" /></a> <a class="reference external" href="https://numpy.org"><img alt="numpy_logo" src="../../../_images/numpy_logo.png" style="width: 14%;" /></a> <a class="reference internal" href="../../../_images/empty.png"><img alt="empty" src="../../../_images/empty.png" style="width: 4%;" /></a></p>
+</div>
 
-<span class="c1"># global</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Iterable</span>
-
-<span class="c1"># local</span>
-<span class="kn">import</span> <span class="nn">ivy</span>
-<span class="kn">from</span> <span class="nn">ivy.framework_handler</span> <span class="kn">import</span> <span class="n">current_framework</span> <span class="k">as</span> <span class="n">_cur_framework</span>
-
-
-<div class="viewcode-block" id="compile"><a class="viewcode-back" href="../../../core/compilation/compile.html#ivy.core.compilation.compile">[docs]</a><span class="k">def</span> <span class="nf">compile</span><span class="p">(</span><span class="n">func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">dynamic</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">example_inputs</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Any</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-            <span class="n">static_argnums</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">static_argnames</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-            <span class="n">f</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Framework</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Provide a function which should be compiled, for faster inference.</span>
-<span class="sd">    The handle to the newly compiled function is returned.</span>
-
-<span class="sd">    :param func: Function to be compiled.</span>
-<span class="sd">    :type func: callable</span>
-<span class="sd">    :param dynamic: Whether to compile all conditional branches, regardless of inputs during first invocation.</span>
-<span class="sd">    :type dynamic: bool, default True</span>
-<span class="sd">    :param example_inputs: Example of inputs to the function to be compiled.</span>
-<span class="sd">                            Required for torch in non-dynamic mode, unused by other frameworks.</span>
-<span class="sd">    :type example_inputs: single input or tuple of inputs.</span>
-<span class="sd">    :param static_argnums: The argument numbers which should be treated as static for compiling. Default is None.</span>
-<span class="sd">    :type static_argnums: int or sequence of ints, optional</span>
-<span class="sd">    :param static_argnames: The argument names which should be treated as static for compiling. Default is None.</span>
-<span class="sd">    :type static_argnames: str or sequence of strs, optional</span>
-<span class="sd">    :param f: Machine learning framework. Inferred from inputs if None.</span>
-<span class="sd">    :type f: ml_framework, optional</span>
-<span class="sd">    :return: The handle to the newly compiled function.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">example_inputs</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span>
-        <span class="n">func</span><span class="p">,</span> <span class="n">dynamic</span><span class="p">,</span> <span class="n">example_inputs</span><span class="p">,</span> <span class="n">static_argnums</span><span class="p">,</span> <span class="n">static_argnames</span><span class="p">)</span></div>
-</pre></div>
 
            </div>
            

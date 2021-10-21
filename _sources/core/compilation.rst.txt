@@ -12,5 +12,5 @@ Compilation
    :maxdepth: -1
    :caption: Compilation
 
-   compilation/compile_backend.rst
+   compilation/compile.rst
 
