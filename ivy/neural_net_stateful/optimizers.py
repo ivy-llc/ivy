@@ -14,14 +14,12 @@ import ivy
 
 class Optimizer(abc.ABC):
 
-    def __init__(self, lr, compile_step=False, inplace=True, stop_gradients=True):
+    def __init__(self, lr, inplace=True, stop_gradients=True):
         """
         Construct an general Optimizer. This is an abstract class, and must be derived.
 
         :param lr: Learning rate.
         :type lr: function or float.
-        :param compile_step: Whether to compile the optimizer step, default is False.
-        :type compile_step: bool, optional
         :param inplace: Whether to update the variables in-place, or to create new variable handles.
                         This is only relevant for frameworks with stateful variables such as PyTorch. Default is True.
         :type inplace: bool, optional
@@ -29,11 +27,6 @@ class Optimizer(abc.ABC):
         :type stop_gradients: bool, optional
         """
         self._lr = lr
-        self._compile_step = compile_step
-        if compile_step:
-            self._step_fn = ivy.compile_native(self._step)
-        else:
-            self._step_fn = self._step
         self._inplace = inplace
         self._stop_gradients = stop_gradients
 
@@ -70,7 +63,7 @@ class Optimizer(abc.ABC):
 
     def step(self, v, grads, ignore_missing=False):
         """
-        Update nested variables container v from possibly compiled overriden private self._step_fn
+        Update nested variables container v from overriden private self._step
 
         :param v: Nested variables to update.
         :type v: Ivy container of variables
@@ -82,8 +75,8 @@ class Optimizer(abc.ABC):
         :return: The updated variables, following update step.
         """
         if ignore_missing:
-            return v.set_at_keys(self._step_fn(v.at_key_chains(grads), grads))
-        return self._step_fn(v, grads)
+            return v.set_at_keys(self._step(v.at_key_chains(grads), grads))
+        return self._step(v, grads)
 
 
 # Optimizers #
@@ -91,21 +84,19 @@ class Optimizer(abc.ABC):
 
 class SGD(Optimizer):
 
-    def __init__(self, lr=lambda: 1e-4, compile_step=False, inplace=True, stop_gradients=True):
+    def __init__(self, lr=lambda: 1e-4, inplace=True, stop_gradients=True):
         """
         Construct a Stochastic-Gradient-Descent (SGD) optimizer.
 
         :param lr: Learning rate, default is 1e-4.
         :type lr: float, optional
-        :param compile_step: Whether to compile the optimizer step, default is False.
-        :type compile_step: bool, optional
         :param inplace: Whether to update the variables in-place, or to create new variable handles.
                         This is only relevant for frameworks with stateful variables such as PyTorch. Default is True.
         :type inplace: bool, optional
         :param stop_gradients: Whether to stop the gradients of the variables after each gradient step. Default is True.
         :type stop_gradients: bool, optional
         """
-        Optimizer.__init__(self, lr, compile_step, inplace, stop_gradients)
+        Optimizer.__init__(self, lr, inplace, stop_gradients)
 
     # Custom Step
 
@@ -138,7 +129,7 @@ class SGD(Optimizer):
 
 class LARS(Optimizer):
 
-    def __init__(self, lr=lambda: 1e-4, decay_lambda=0, compile_step=False, inplace=True, stop_gradients=True):
+    def __init__(self, lr=lambda: 1e-4, decay_lambda=0, inplace=True, stop_gradients=True):
         """
         Construct a Layerwise Adaptive Rate Scaling (LARS) optimizer.
 
@@ -146,8 +137,6 @@ class LARS(Optimizer):
         :type lr: float, optional
         :param decay_lambda: The factor used for weight decay. Default is zero.
         :type decay_lambda: float, optional
-        :param compile_step: Whether to compile the optimizer step, default is False.
-        :type compile_step: bool, optional
         :param inplace: Whether to update the variables in-place, or to create new variable handles.
                         This is only relevant for frameworks with stateful variables such as PyTorch. Default is True.
         :type inplace: bool, optional
@@ -155,7 +144,7 @@ class LARS(Optimizer):
         :type stop_gradients: bool, optional
         """
         self._decay_lambda = decay_lambda
-        Optimizer.__init__(self, lr, compile_step, inplace, stop_gradients)
+        Optimizer.__init__(self, lr, inplace, stop_gradients)
 
     # Custom Step
 
@@ -188,7 +177,7 @@ class LARS(Optimizer):
 
 class Adam(Optimizer):
 
-    def __init__(self, lr=1e-4, beta1=0.9, beta2=0.999, epsilon=1e-07, compile_step=False, inplace=True,
+    def __init__(self, lr=1e-4, beta1=0.9, beta2=0.999, epsilon=1e-07, inplace=True,
                  stop_gradients=True, dev_str=None):
         """
         Construct an ADAM optimizer.
@@ -201,8 +190,6 @@ class Adam(Optimizer):
         :type beta2: float, optional
         :param epsilon: divisor during adam update, preventing division by zero, default is 1e-07
         :type epsilon: float, optional
-        :param compile_step: Whether to compile the optimizer step, default is False.
-        :type compile_step: bool, optional
         :param inplace: Whether to update the variables in-place, or to create new variable handles.
                         This is only relevant for frameworks with stateful variables such as PyTorch. Default is True.
         :type inplace: bool, optional
@@ -211,7 +198,7 @@ class Adam(Optimizer):
         :param dev_str: device on which to create the layer's variables 'cuda:0', 'cuda:1', 'cpu' etc.
         :type dev_str: str, optional
         """
-        Optimizer.__init__(self, lr, compile_step, inplace, stop_gradients)
+        Optimizer.__init__(self, lr, inplace, stop_gradients)
         self._beta1 = beta1
         self._beta2 = beta2
         self._epsilon = epsilon
@@ -259,8 +246,8 @@ class Adam(Optimizer):
 
 class LAMB(Optimizer):
 
-    def __init__(self, lr=1e-4, beta1=0.9, beta2=0.999, epsilon=1e-07, max_trust_ratio=10, decay_lambda=0,
-                 compile_step=False, inplace=True, stop_gradients=True, dev_str=None):
+    def __init__(self, lr=1e-4, beta1=0.9, beta2=0.999, epsilon=1e-07, max_trust_ratio=10, decay_lambda=0, inplace=True,
+                 stop_gradients=True, dev_str=None):
         """
         Construct an LAMB optimizer.
 
@@ -277,8 +264,6 @@ class LAMB(Optimizer):
         :type max_trust_ratio: float, optional
         :param decay_lambda: The factor used for weight decay. Default is zero.
         :type decay_lambda: float, optional
-        :param compile_step: Whether to compile the optimizer step, default is False.
-        :type compile_step: bool, optional
         :param inplace: Whether to update the variables in-place, or to create new variable handles.
                         This is only relevant for frameworks with stateful variables such as PyTorch. Default is True.
         :type inplace: bool, optional
@@ -287,7 +272,7 @@ class LAMB(Optimizer):
         :param dev_str: device on which to create the layer's variables 'cuda:0', 'cuda:1', 'cpu' etc.
         :type dev_str: str, optional
         """
-        Optimizer.__init__(self, lr, compile_step, inplace, stop_gradients)
+        Optimizer.__init__(self, lr, inplace, stop_gradients)
         self._beta1 = beta1
         self._beta2 = beta2
         self._epsilon = epsilon
