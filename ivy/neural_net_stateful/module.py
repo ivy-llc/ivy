@@ -202,7 +202,7 @@ class Module(abc.ABC):
     # Public #
     # -------#
 
-    def compile(self, *args, v=None, with_grads=True, **kwargs):
+    def compile_graph(self, *args, v=None, with_grads=True, **kwargs):
         kwargs['v'] = ivy.default(v, self.v)
         kwargs['with_grads'] = with_grads
         self._compiled_fn = ivy.compile_graph(self._call, *args, **kwargs)

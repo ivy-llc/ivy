@@ -39,7 +39,7 @@ def test_module_training(bs_ic_oc, dev_str, compile_graph, call):
     # compile if this mode is set
     if compile_graph and call is helpers.torch_call:
         # Currently only PyTorch is supported for ivy compilation
-        module.compile(x)
+        module.compile_graph(x)
 
     def loss_fn(v_):
         out = module(x, v=v_)
@@ -109,7 +109,7 @@ def test_module_w_list_training(bs_ic_oc, dev_str, compile_graph, call):
     # compile if this mode is set
     if compile_graph and call is helpers.torch_call:
         # Currently only PyTorch is supported for ivy compilation
-        module.compile(x)
+        module.compile_graph(x)
 
     def loss_fn(v_):
         out = module(x, v=v_)
@@ -173,7 +173,7 @@ def test_module_w_none_attribute(bs_ic_oc, dev_str, compile_graph, call):
     # compile if this mode is set
     if compile_graph and call is helpers.torch_call:
         # Currently only PyTorch is supported for ivy compilation
-        module.compile(x)
+        module.compile_graph(x)
     module(x)
 
 
@@ -215,7 +215,7 @@ def test_module_training_with_duplicate(bs_c, same_layer, dev_str, compile_graph
     # compile if this mode is set
     if compile_graph and call is helpers.torch_call:
         # Currently only PyTorch is supported for ivy compilation
-        module.compile(x)
+        module.compile_graph(x)
 
     def loss_fn(v_):
         out = module(x, v=v_)
@@ -283,7 +283,7 @@ def test_module_w_dict_training(bs_ic_oc, dev_str, compile_graph, call):
     # compile if this mode is set
     if compile_graph and call is helpers.torch_call:
         # Currently only PyTorch is supported for ivy compilation
-        module.compile(x)
+        module.compile_graph(x)
 
     def loss_fn(v_):
         out = module(x, v=v_)
