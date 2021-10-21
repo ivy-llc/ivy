@@ -17,12 +17,18 @@ ARRAY_BUILTINS = ['__neg__', '__pow__', '__rpow__', '__add__', '__radd__', '__ia
                   '__isub__', '__mul__', '__rmul__', '__imul__', '__truediv__', '__rtruediv__', '__itruediv__',
                   '__floordiv__', '__rfloordiv__', '__ifloordiv__', '__abs__', '__lt__', '__le__', '__eq__', '__ne__',
                   '__gt__', '__ge__', '__and__', '__rand__', '__or__', '__ror__', '__invert__', '__xor__', '__rxor__',
-                  '__getitem__', '__setitem__', '__getattribute__', '__getattr__', '__setattr__']
+                  '__getitem__', '__setitem__', '__getattr__', '__setattr__', '__getattribute__']
 
 CLASSES_TO_WRAP = {'numpy': [],
                    'jax': [],
                    'tensorflow': [],
                    'torch': [('torch', 'Tensor')],
+                   'mxnet': []}
+
+GRAPH_ATTRIBUTES = {'numpy': [],
+                   'jax': [],
+                   'tensorflow': [],
+                   'torch': ['data'],
                    'mxnet': []}
 
 def _get_id(x):
@@ -391,6 +397,12 @@ def _wrap_method_for_compiling(fn, graph):
         global inside_wrapped
         if inside_wrapped:
             return fn(*args, **kwargs)
+
+        # attributes to ignore
+        if fn.__name__ == '__getattribute__':
+            att_name = args[-1]
+            if att_name not in GRAPH_ATTRIBUTES[ivy.current_framework_str()]:
+                return fn(*args, **kwargs)
 
         # otherwise, set wrapping as true
         inside_wrapped = True
