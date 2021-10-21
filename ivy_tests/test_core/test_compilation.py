@@ -109,7 +109,7 @@ def _wide_fn(x, with_non_compiled: bool = False, with_internal_gen: bool = False
     "dtype_str", ['float32'])
 @pytest.mark.parametrize(
     "tensor_fn", [ivy.array, helpers.var_fn])
-def test_compile_native(x, dtype_str, tensor_fn, dev_str, call):
+def test_compile_backend(x, dtype_str, tensor_fn, dev_str, call):
     if ivy.wrapped_mode():
         # Wrapped mode does not yet support function compilation
         pytest.skip()
@@ -119,7 +119,7 @@ def test_compile_native(x, dtype_str, tensor_fn, dev_str, call):
         pytest.skip()
 
     # function 1
-    comp_fn = ivy.compile_native(_fn_1)
+    comp_fn = ivy.compile_backend(_fn_1)
     # type test
     assert callable(comp_fn)
     # value test
@@ -130,7 +130,7 @@ def test_compile_native(x, dtype_str, tensor_fn, dev_str, call):
     assert np.allclose(ivy.to_numpy(non_compiled_return), ivy.to_numpy(compiled_return))
 
     # function 2
-    comp_fn = ivy.compile_native(_fn_2)
+    comp_fn = ivy.compile_backend(_fn_2)
     # type test
     assert callable(comp_fn)
     # value test
@@ -150,7 +150,7 @@ def test_compile_native(x, dtype_str, tensor_fn, dev_str, call):
     "tensor_fn", [ivy.array])
 @pytest.mark.parametrize(
     "with_non_compiled", [True, False])
-def test_compile_ivy_inplace(x_raw, dtype_str, tensor_fn, with_non_compiled, dev_str, call):
+def test_compile_graph_inplace(x_raw, dtype_str, tensor_fn, with_non_compiled, dev_str, call):
     if ivy.wrapped_mode():
         # Wrapped mode does not yet support function compilation
         pytest.skip()
@@ -164,7 +164,7 @@ def test_compile_ivy_inplace(x_raw, dtype_str, tensor_fn, with_non_compiled, dev
 
     # function 1
     x = tensor_fn(x_raw, dtype_str, dev_str)
-    comp_fn = ivy.compile_ivy(_fn_1, x, with_non_compiled)
+    comp_fn = ivy.compile_graph(_fn_1, x, with_non_compiled)
     # type test
     assert callable(comp_fn)
     # value test
@@ -187,7 +187,7 @@ def test_compile_ivy_inplace(x_raw, dtype_str, tensor_fn, with_non_compiled, dev
 
     # function 2
     x = tensor_fn(x_raw, dtype_str, dev_str)
-    comp_fn = ivy.compile_ivy(_fn_2, x, with_non_compiled)
+    comp_fn = ivy.compile_graph(_fn_2, x, with_non_compiled)
     # type test
     assert callable(comp_fn)
     # value test
@@ -220,7 +220,7 @@ def test_compile_ivy_inplace(x_raw, dtype_str, tensor_fn, with_non_compiled, dev
     "with_non_compiled", [True, False])
 @pytest.mark.parametrize(
     "with_internal_gen", [True, False])
-def test_compile_ivy(x_raw, dtype_str, tensor_fn, with_non_compiled, with_internal_gen, dev_str, call):
+def test_compile_graph(x_raw, dtype_str, tensor_fn, with_non_compiled, with_internal_gen, dev_str, call):
     if ivy.wrapped_mode():
         # Wrapped mode does not yet support function compilation
         pytest.skip()
@@ -234,7 +234,7 @@ def test_compile_ivy(x_raw, dtype_str, tensor_fn, with_non_compiled, with_intern
 
     # function 3
     x = tensor_fn(x_raw, dtype_str, dev_str)
-    comp_fn = ivy.compile_ivy(_fn_3, x, with_non_compiled, with_internal_gen)
+    comp_fn = ivy.compile_graph(_fn_3, x, with_non_compiled, with_internal_gen)
     # type test
     assert callable(comp_fn)
     # value test
@@ -257,7 +257,7 @@ def test_compile_ivy(x_raw, dtype_str, tensor_fn, with_non_compiled, with_intern
 
     # function 4
     x = tensor_fn(x_raw, dtype_str, dev_str)
-    comp_fn = ivy.compile_ivy(_fn_4, x, with_non_compiled, with_internal_gen)
+    comp_fn = ivy.compile_graph(_fn_4, x, with_non_compiled, with_internal_gen)
     # type test
     assert callable(comp_fn)
     # value test
@@ -288,7 +288,7 @@ def test_compile_ivy(x_raw, dtype_str, tensor_fn, with_non_compiled, with_intern
     "tensor_fn", [ivy.array])
 @pytest.mark.parametrize(
     "with_non_compiled", [True, False])
-def test_compile_ivy_w_random(x_raw, dtype_str, tensor_fn, with_non_compiled, dev_str, call):
+def test_compile_graph_w_random(x_raw, dtype_str, tensor_fn, with_non_compiled, dev_str, call):
     if ivy.wrapped_mode():
         # Wrapped mode does not yet support function compilation
         pytest.skip()
@@ -302,7 +302,7 @@ def test_compile_ivy_w_random(x_raw, dtype_str, tensor_fn, with_non_compiled, de
 
     # random function
     x = tensor_fn(x_raw, dtype_str, dev_str)
-    comp_fn = ivy.compile_ivy(_rand_fn, x, with_non_compiled)
+    comp_fn = ivy.compile_graph(_rand_fn, x, with_non_compiled)
     # type test
     assert callable(comp_fn)
     # value test
@@ -329,7 +329,7 @@ def test_compile_ivy_w_random(x_raw, dtype_str, tensor_fn, with_non_compiled, de
     "dtype_str", ['float32'])
 @pytest.mark.parametrize(
     "tensor_fn", [ivy.array])
-def test_compile_ivy_w_detached_divide(x_raw, dtype_str, tensor_fn, dev_str, call):
+def test_compile_graph_w_detached_divide(x_raw, dtype_str, tensor_fn, dev_str, call):
     if ivy.wrapped_mode():
         # Wrapped mode does not yet support function compilation
         pytest.skip()
@@ -343,7 +343,7 @@ def test_compile_ivy_w_detached_divide(x_raw, dtype_str, tensor_fn, dev_str, cal
 
     # detached divide function
     x = tensor_fn(x_raw, dtype_str, dev_str)
-    comp_fn = ivy.compile_ivy(_detach_div_fn, x)
+    comp_fn = ivy.compile_graph(_detach_div_fn, x)
     # type test
     assert callable(comp_fn)
     # value test
@@ -361,7 +361,7 @@ def test_compile_ivy_w_detached_divide(x_raw, dtype_str, tensor_fn, dev_str, cal
     "dtype_str", ['float32'])
 @pytest.mark.parametrize(
     "tensor_fn", [ivy.array])
-def test_compile_ivy_input_in_output(x_raw, dtype_str, tensor_fn, dev_str, call):
+def test_compile_graph_input_in_output(x_raw, dtype_str, tensor_fn, dev_str, call):
     if ivy.wrapped_mode():
         # Wrapped mode does not yet support function compilation
         pytest.skip()
@@ -376,7 +376,7 @@ def test_compile_ivy_input_in_output(x_raw, dtype_str, tensor_fn, dev_str, call)
     # detached divide function
     x = tensor_fn(x_raw, dtype_str, dev_str)
     y = tensor_fn(x_raw, dtype_str, dev_str)
-    comp_fn = ivy.compile_ivy(_input_in_output, x, y)
+    comp_fn = ivy.compile_graph(_input_in_output, x, y)
     # type test
     assert callable(comp_fn)
     # value test
@@ -393,7 +393,7 @@ def test_compile_ivy_input_in_output(x_raw, dtype_str, tensor_fn, dev_str, call)
     "weight_n_grad", [([1], [2])])
 @pytest.mark.parametrize(
     "dtype_str", ['float32'])
-def test_compile_ivy_inplace_var_update(weight_n_grad, dtype_str, dev_str, call):
+def test_compile_graph_inplace_var_update(weight_n_grad, dtype_str, dev_str, call):
     if ivy.wrapped_mode():
         # Wrapped mode does not yet support function compilation
         pytest.skip()
@@ -405,7 +405,7 @@ def test_compile_ivy_inplace_var_update(weight_n_grad, dtype_str, dev_str, call)
     # as tensors
     weight = ivy.variable(ivy.array(weight_raw, dtype_str, dev_str))
     # compile
-    comp_fn = ivy.compile_ivy(_inplace_var_update, weight, ivy.copy_array(weight))
+    comp_fn = ivy.compile_graph(_inplace_var_update, weight, ivy.copy_array(weight))
     # type test
     assert callable(comp_fn)
     # value test
@@ -448,7 +448,7 @@ def test_compile_ivy_multiproc(x_raw, dtype_str, tensor_fn, with_non_compiled, w
     non_compiled_return = _wide_fn(x, with_non_compiled, with_internal_gen)
 
     # compiled single threaded
-    st_comp_fn = ivy.compile_ivy(_wide_fn, x, with_non_compiled, with_internal_gen, num_workers=1)
+    st_comp_fn = ivy.compile_graph(_wide_fn, x, with_non_compiled, with_internal_gen, num_workers=1)
     assert callable(st_comp_fn)
     assert len(st_comp_fn.__self__._param_dict) == 52 + (1 if with_internal_gen else 0)
     assert st_comp_fn.__self__.params_all_empty()
@@ -463,7 +463,7 @@ def test_compile_ivy_multiproc(x_raw, dtype_str, tensor_fn, with_non_compiled, w
     assert np.allclose(ivy.to_numpy(non_compiled_return), ivy.to_numpy(st_return))
 
     # compiled multi-processing
-    multi_comp_fn = ivy.compile_ivy(_wide_fn, x, with_non_compiled, with_internal_gen, num_workers=ivy.num_cpu_cores())
+    multi_comp_fn = ivy.compile_graph(_wide_fn, x, with_non_compiled, with_internal_gen, num_workers=ivy.num_cpu_cores())
     assert callable(multi_comp_fn)
     assert len(multi_comp_fn.__self__._param_dict) == 52 + (1 if with_internal_gen else 0)
     assert multi_comp_fn.__self__.params_all_empty()
