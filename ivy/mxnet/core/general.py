@@ -539,7 +539,7 @@ dtype_to_str = lambda dtype_in: DTYPE_DICT[dtype_in]
 
 
 # noinspection PyUnusedLocal
-def compile_backend(func, dynamic=True, example_inputs=None, static_argnums=None, static_argnames=None):
+def compile(func, dynamic=True, example_inputs=None, static_argnums=None, static_argnames=None):
     logging.warning('MXnet does not support compiling arbitrary functions, '
                     'consider writing a function using MXNet Symbolic backend instead for compiling.\n'
                     'Now returning the unmodified function.')
