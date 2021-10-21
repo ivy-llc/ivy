@@ -28,7 +28,7 @@ class TrainableModule(ivy.Module):
 # module training
 @pytest.mark.parametrize(
     "bs_ic_oc", [([1, 2], 4, 5)])
-def test_module_training(bs_ic_oc, dev_str, compile_fn, call):
+def test_module_training(bs_ic_oc, dev_str, compile_graph, call):
     # smoke test
     if call is helpers.np_call:
         # NumPy does not support gradients
@@ -37,7 +37,7 @@ def test_module_training(bs_ic_oc, dev_str, compile_fn, call):
     x = ivy.cast(ivy.linspace(ivy.zeros(batch_shape), ivy.ones(batch_shape), input_channels), 'float32')
     module = TrainableModule(input_channels, output_channels, dev_str=dev_str)
     # compile if this mode is set
-    if compile_fn and call is helpers.torch_call:
+    if compile_graph and call is helpers.torch_call:
         # Currently only PyTorch is supported for ivy compilation
         module.compile(x)
 
@@ -98,7 +98,7 @@ class TrainableModuleWithList(ivy.Module):
 # module with list training
 @pytest.mark.parametrize(
     "bs_ic_oc", [([1, 2], 4, 5)])
-def test_module_w_list_training(bs_ic_oc, dev_str, compile_fn, call):
+def test_module_w_list_training(bs_ic_oc, dev_str, compile_graph, call):
     # smoke test
     if call is helpers.np_call:
         # NumPy does not support gradients
@@ -107,7 +107,7 @@ def test_module_w_list_training(bs_ic_oc, dev_str, compile_fn, call):
     x = ivy.cast(ivy.linspace(ivy.zeros(batch_shape), ivy.ones(batch_shape), input_channels), 'float32')
     module = TrainableModuleWithList(input_channels, output_channels, dev_str=dev_str)
     # compile if this mode is set
-    if compile_fn and call is helpers.torch_call:
+    if compile_graph and call is helpers.torch_call:
         # Currently only PyTorch is supported for ivy compilation
         module.compile(x)
 
@@ -162,7 +162,7 @@ class ModuleWithNoneAttribute(ivy.Module):
 # module with none attribute
 @pytest.mark.parametrize(
     "bs_ic_oc", [([1, 2], 4, 5)])
-def test_module_w_none_attribute(bs_ic_oc, dev_str, compile_fn, call):
+def test_module_w_none_attribute(bs_ic_oc, dev_str, compile_graph, call):
     # smoke test
     if call is helpers.np_call:
         # NumPy does not support gradients
@@ -171,7 +171,7 @@ def test_module_w_none_attribute(bs_ic_oc, dev_str, compile_fn, call):
     x = ivy.cast(ivy.linspace(ivy.zeros(batch_shape), ivy.ones(batch_shape), input_channels), 'float32')
     module = ModuleWithNoneAttribute(dev_str=dev_str)
     # compile if this mode is set
-    if compile_fn and call is helpers.torch_call:
+    if compile_graph and call is helpers.torch_call:
         # Currently only PyTorch is supported for ivy compilation
         module.compile(x)
     module(x)
@@ -204,7 +204,7 @@ class TrainableModuleWithDuplicate(ivy.Module):
     "bs_c", [([1, 2], 64)])
 @pytest.mark.parametrize(
     "same_layer", [True, False])
-def test_module_training_with_duplicate(bs_c, same_layer, dev_str, compile_fn, call):
+def test_module_training_with_duplicate(bs_c, same_layer, dev_str, compile_graph, call):
     # smoke test
     if call is helpers.np_call:
         # NumPy does not support gradients
@@ -213,7 +213,7 @@ def test_module_training_with_duplicate(bs_c, same_layer, dev_str, compile_fn, c
     x = ivy.cast(ivy.linspace(ivy.zeros(batch_shape), ivy.ones(batch_shape), channels), 'float32')
     module = TrainableModuleWithDuplicate(channels, same_layer, dev_str=dev_str)
     # compile if this mode is set
-    if compile_fn and call is helpers.torch_call:
+    if compile_graph and call is helpers.torch_call:
         # Currently only PyTorch is supported for ivy compilation
         module.compile(x)
 
@@ -272,7 +272,7 @@ class TrainableModuleWithDict(ivy.Module):
 # module with dict training
 @pytest.mark.parametrize(
     "bs_ic_oc", [([1, 2], 4, 5)])
-def test_module_w_dict_training(bs_ic_oc, dev_str, compile_fn, call):
+def test_module_w_dict_training(bs_ic_oc, dev_str, compile_graph, call):
     # smoke test
     if call is helpers.np_call:
         # NumPy does not support gradients
@@ -281,7 +281,7 @@ def test_module_w_dict_training(bs_ic_oc, dev_str, compile_fn, call):
     x = ivy.cast(ivy.linspace(ivy.zeros(batch_shape), ivy.ones(batch_shape), input_channels), 'float32')
     module = TrainableModuleWithDict(input_channels, output_channels, dev_str=dev_str)
     # compile if this mode is set
-    if compile_fn and call is helpers.torch_call:
+    if compile_graph and call is helpers.torch_call:
         # Currently only PyTorch is supported for ivy compilation
         module.compile(x)
 
