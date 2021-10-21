@@ -211,12 +211,18 @@
                   <span class="s1">&#39;__isub__&#39;</span><span class="p">,</span> <span class="s1">&#39;__mul__&#39;</span><span class="p">,</span> <span class="s1">&#39;__rmul__&#39;</span><span class="p">,</span> <span class="s1">&#39;__imul__&#39;</span><span class="p">,</span> <span class="s1">&#39;__truediv__&#39;</span><span class="p">,</span> <span class="s1">&#39;__rtruediv__&#39;</span><span class="p">,</span> <span class="s1">&#39;__itruediv__&#39;</span><span class="p">,</span>
                   <span class="s1">&#39;__floordiv__&#39;</span><span class="p">,</span> <span class="s1">&#39;__rfloordiv__&#39;</span><span class="p">,</span> <span class="s1">&#39;__ifloordiv__&#39;</span><span class="p">,</span> <span class="s1">&#39;__abs__&#39;</span><span class="p">,</span> <span class="s1">&#39;__lt__&#39;</span><span class="p">,</span> <span class="s1">&#39;__le__&#39;</span><span class="p">,</span> <span class="s1">&#39;__eq__&#39;</span><span class="p">,</span> <span class="s1">&#39;__ne__&#39;</span><span class="p">,</span>
                   <span class="s1">&#39;__gt__&#39;</span><span class="p">,</span> <span class="s1">&#39;__ge__&#39;</span><span class="p">,</span> <span class="s1">&#39;__and__&#39;</span><span class="p">,</span> <span class="s1">&#39;__rand__&#39;</span><span class="p">,</span> <span class="s1">&#39;__or__&#39;</span><span class="p">,</span> <span class="s1">&#39;__ror__&#39;</span><span class="p">,</span> <span class="s1">&#39;__invert__&#39;</span><span class="p">,</span> <span class="s1">&#39;__xor__&#39;</span><span class="p">,</span> <span class="s1">&#39;__rxor__&#39;</span><span class="p">,</span>
-                  <span class="s1">&#39;__getitem__&#39;</span><span class="p">,</span> <span class="s1">&#39;__setitem__&#39;</span><span class="p">,</span> <span class="s1">&#39;__getattribute__&#39;</span><span class="p">,</span> <span class="s1">&#39;__getattr__&#39;</span><span class="p">,</span> <span class="s1">&#39;__setattr__&#39;</span><span class="p">]</span>
+                  <span class="s1">&#39;__getitem__&#39;</span><span class="p">,</span> <span class="s1">&#39;__setitem__&#39;</span><span class="p">,</span> <span class="s1">&#39;__getattr__&#39;</span><span class="p">,</span> <span class="s1">&#39;__setattr__&#39;</span><span class="p">,</span> <span class="s1">&#39;__getattribute__&#39;</span><span class="p">]</span>
 
 <span class="n">CLASSES_TO_WRAP</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;numpy&#39;</span><span class="p">:</span> <span class="p">[],</span>
                    <span class="s1">&#39;jax&#39;</span><span class="p">:</span> <span class="p">[],</span>
                    <span class="s1">&#39;tensorflow&#39;</span><span class="p">:</span> <span class="p">[],</span>
                    <span class="s1">&#39;torch&#39;</span><span class="p">:</span> <span class="p">[(</span><span class="s1">&#39;torch&#39;</span><span class="p">,</span> <span class="s1">&#39;Tensor&#39;</span><span class="p">)],</span>
+                   <span class="s1">&#39;mxnet&#39;</span><span class="p">:</span> <span class="p">[]}</span>
+
+<span class="n">GRAPH_ATTRIBUTES</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;numpy&#39;</span><span class="p">:</span> <span class="p">[],</span>
+                   <span class="s1">&#39;jax&#39;</span><span class="p">:</span> <span class="p">[],</span>
+                   <span class="s1">&#39;tensorflow&#39;</span><span class="p">:</span> <span class="p">[],</span>
+                   <span class="s1">&#39;torch&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">],</span>
                    <span class="s1">&#39;mxnet&#39;</span><span class="p">:</span> <span class="p">[]}</span>
 
 <span class="k">def</span> <span class="nf">_get_id</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
@@ -585,6 +591,12 @@
         <span class="k">global</span> <span class="n">inside_wrapped</span>
         <span class="k">if</span> <span class="n">inside_wrapped</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">fn</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="c1"># attributes to ignore</span>
+        <span class="k">if</span> <span class="n">fn</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__getattribute__&#39;</span><span class="p">:</span>
+            <span class="n">att_name</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">att_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">GRAPH_ATTRIBUTES</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">current_framework_str</span><span class="p">()]:</span>
+                <span class="k">return</span> <span class="n">fn</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
         <span class="c1"># otherwise, set wrapping as true</span>
         <span class="n">inside_wrapped</span> <span class="o">=</span> <span class="kc">True</span>
