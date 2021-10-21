@@ -208,17 +208,16 @@
 <h1>Optimizer<a class="headerlink" href="#optimizer" title="Permalink to this headline">¶</a></h1>
 <dl class="py class">
 <dt id="ivy.neural_net_stateful.optimizers.Optimizer">
-<em class="property">class </em><code class="sig-prename descclassname">ivy.neural_net_stateful.optimizers.</code><code class="sig-name descname">Optimizer</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">lr</span></em>, <em class="sig-param"><span class="n">compile_step</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">inplace</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">stop_gradients</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/neural_net_stateful/optimizers.html#Optimizer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.neural_net_stateful.optimizers.Optimizer" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">ivy.neural_net_stateful.optimizers.</code><code class="sig-name descname">Optimizer</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">lr</span></em>, <em class="sig-param"><span class="n">inplace</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">stop_gradients</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/neural_net_stateful/optimizers.html#Optimizer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.neural_net_stateful.optimizers.Optimizer" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">abc.ABC</span></code></p>
 <dl class="py method">
 <dt id="ivy.neural_net_stateful.optimizers.Optimizer.__init__">
-<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">lr</span></em>, <em class="sig-param"><span class="n">compile_step</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">inplace</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">stop_gradients</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/neural_net_stateful/optimizers.html#Optimizer.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.neural_net_stateful.optimizers.Optimizer.__init__" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">lr</span></em>, <em class="sig-param"><span class="n">inplace</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">stop_gradients</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/neural_net_stateful/optimizers.html#Optimizer.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.neural_net_stateful.optimizers.Optimizer.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Construct an general Optimizer. This is an abstract class, and must be derived.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>lr</strong> (<em>function</em><em> or </em><em>float.</em>) – Learning rate.</p></li>
-<li><p><strong>compile_step</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to compile the optimizer step, default is False.</p></li>
 <li><p><strong>inplace</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to update the variables in-place, or to create new variable handles.
 This is only relevant for frameworks with stateful variables such as PyTorch. Default is True.</p></li>
 <li><p><strong>stop_gradients</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to stop the gradients of the variables after each gradient step. Default is True.</p></li>
@@ -241,7 +240,7 @@ This is only relevant for frameworks with stateful variables such as PyTorch. De
 <dl class="py method">
 <dt id="ivy.neural_net_stateful.optimizers.Optimizer.step">
 <code class="sig-name descname">step</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">v</span></em>, <em class="sig-param"><span class="n">grads</span></em>, <em class="sig-param"><span class="n">ignore_missing</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/neural_net_stateful/optimizers.html#Optimizer.step"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.neural_net_stateful.optimizers.Optimizer.step" title="Permalink to this definition">¶</a></dt>
-<dd><p>Update nested variables container v from possibly compiled overriden private self._step_fn</p>
+<dd><p>Update nested variables container v from overriden private self._step</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
