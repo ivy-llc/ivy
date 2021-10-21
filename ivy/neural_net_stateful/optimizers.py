@@ -204,7 +204,7 @@ class Adam(Optimizer):
         self._epsilon = epsilon
         self._mw = None
         self._vw = None
-        self._step = ivy.array([0], dev_str=dev_str)
+        self._count = ivy.array([0], dev_str=dev_str)
         self._first_pass = True
 
     # Custom Step
@@ -224,9 +224,9 @@ class Adam(Optimizer):
             self._vw = grads ** 2
             self._first_pass = False
         new_v, self._mw, self._vw = ivy.adam_update(
-            v, grads, self._lr if isinstance(self._lr, float) else self._lr(), self._mw, self._vw, self._step,
+            v, grads, self._lr if isinstance(self._lr, float) else self._lr(), self._mw, self._vw, self._count,
             self._beta1, self._beta2, self._epsilon, self._inplace, self._stop_gradients)
-        self._step += 1
+        self._count += 1
         return new_v
 
     def set_state(self, state):
@@ -279,7 +279,7 @@ class LAMB(Optimizer):
         self._mw = None
         self._vw = None
         self._first_pass = True
-        self._step = ivy.array([0], dev_str=dev_str)
+        self._count = ivy.array([0], dev_str=dev_str)
         self._max_trust_ratio = max_trust_ratio
         self._decay_lambda = decay_lambda
         self._first_pass = True
@@ -301,10 +301,10 @@ class LAMB(Optimizer):
             self._vw = grads ** 2
             self._first_pass = False
         new_v, self._mw, self._vw = ivy.lamb_update(
-            v, grads, self._lr if isinstance(self._lr, float) else self._lr(), self._mw, self._vw, self._step,
+            v, grads, self._lr if isinstance(self._lr, float) else self._lr(), self._mw, self._vw, self._count,
             self._beta1, self._beta2, self._epsilon, self._max_trust_ratio, self._decay_lambda, self._inplace,
             self._stop_gradients)
-        self._step += 1
+        self._count += 1
         return new_v
 
     def set_state(self, state):
