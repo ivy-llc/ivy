@@ -390,7 +390,7 @@ dtype = lambda x: x.dtype
 dtype.__name__ = 'dtype'
 dtype_to_str = lambda dtype_in: DTYPE_DICT[dtype_in]
 dtype_str = lambda x: dtype_to_str(dtype(x))
-compile_backend = lambda fn, dynamic=True, example_inputs=None, static_argnums=None, static_argnames=None:\
+compile = lambda fn, dynamic=True, example_inputs=None, static_argnums=None, static_argnames=None:\
     _jax.jit(fn, static_argnums=static_argnums, static_argnames=static_argnames)
 current_framework_str = lambda: 'jax'
 current_framework_str.__name__ = 'current_framework_str'

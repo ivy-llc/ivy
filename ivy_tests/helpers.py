@@ -187,7 +187,7 @@ _calls = [np_call, jnp_call, tf_call, tf_graph_call, torch_call, mx_call]
 
 def assert_compilable(fn):
     try:
-        ivy.compile_backend(fn)
+        ivy.compile(fn)
     except Exception as e:
         raise e
 
