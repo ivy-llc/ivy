@@ -45,4 +45,4 @@ def seed(seed_value: int = 0) -> None:
 
 def shuffle(x):
     batch_size = x.shape[0]
-    return x[torch.randperm(batch_size)]
+    return torch.index_select(x, 0, torch.randperm(batch_size))
