@@ -40,7 +40,7 @@ def test_layer_norm_layer(x_n_ns_n_target, with_v, dtype_str, tensor_fn, dev_str
     # compile if this mode is set
     if compile_graph and call is helpers.torch_call:
         # Currently only PyTorch is supported for ivy compilation
-        norm_layer.compile(x)
+        norm_layer.compile_graph(x)
     ret = norm_layer(x)
     # type test
     assert ivy.is_array(ret)
