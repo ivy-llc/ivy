@@ -208,14 +208,12 @@
 
 <div class="viewcode-block" id="Optimizer"><a class="viewcode-back" href="../../../neural_net_stateful/optimizers/Optimizer.html#ivy.neural_net_stateful.optimizers.Optimizer">[docs]</a><span class="k">class</span> <span class="nc">Optimizer</span><span class="p">(</span><span class="n">abc</span><span class="o">.</span><span class="n">ABC</span><span class="p">):</span>
 
-<div class="viewcode-block" id="Optimizer.__init__"><a class="viewcode-back" href="../../../neural_net_stateful/optimizers/Optimizer.html#ivy.neural_net_stateful.optimizers.Optimizer.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lr</span><span class="p">,</span> <span class="n">compile_step</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">stop_gradients</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="Optimizer.__init__"><a class="viewcode-back" href="../../../neural_net_stateful/optimizers/Optimizer.html#ivy.neural_net_stateful.optimizers.Optimizer.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lr</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">stop_gradients</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Construct an general Optimizer. This is an abstract class, and must be derived.</span>
 
 <span class="sd">        :param lr: Learning rate.</span>
 <span class="sd">        :type lr: function or float.</span>
-<span class="sd">        :param compile_step: Whether to compile the optimizer step, default is False.</span>
-<span class="sd">        :type compile_step: bool, optional</span>
 <span class="sd">        :param inplace: Whether to update the variables in-place, or to create new variable handles.</span>
 <span class="sd">                        This is only relevant for frameworks with stateful variables such as PyTorch. Default is True.</span>
 <span class="sd">        :type inplace: bool, optional</span>
@@ -223,11 +221,6 @@
 <span class="sd">        :type stop_gradients: bool, optional</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_lr</span> <span class="o">=</span> <span class="n">lr</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_compile_step</span> <span class="o">=</span> <span class="n">compile_step</span>
-        <span class="k">if</span> <span class="n">compile_step</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_step_fn</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">compile_native</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_step</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_step_fn</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_step</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_inplace</span> <span class="o">=</span> <span class="n">inplace</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_stop_gradients</span> <span class="o">=</span> <span class="n">stop_gradients</span></div>
 
@@ -264,7 +257,7 @@
 
 <div class="viewcode-block" id="Optimizer.step"><a class="viewcode-back" href="../../../neural_net_stateful/optimizers/Optimizer.html#ivy.neural_net_stateful.optimizers.Optimizer.step">[docs]</a>    <span class="k">def</span> <span class="nf">step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">grads</span><span class="p">,</span> <span class="n">ignore_missing</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Update nested variables container v from possibly compiled overriden private self._step_fn</span>
+<span class="sd">        Update nested variables container v from overriden private self._step</span>
 
 <span class="sd">        :param v: Nested variables to update.</span>
 <span class="sd">        :type v: Ivy container of variables</span>
@@ -276,8 +269,8 @@
 <span class="sd">        :return: The updated variables, following update step.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">ignore_missing</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">v</span><span class="o">.</span><span class="n">set_at_keys</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_step_fn</span><span class="p">(</span><span class="n">v</span><span class="o">.</span><span class="n">at_key_chains</span><span class="p">(</span><span class="n">grads</span><span class="p">),</span> <span class="n">grads</span><span class="p">))</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_step_fn</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">grads</span><span class="p">)</span></div></div>
+            <span class="k">return</span> <span class="n">v</span><span class="o">.</span><span class="n">set_at_keys</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_step</span><span class="p">(</span><span class="n">v</span><span class="o">.</span><span class="n">at_key_chains</span><span class="p">(</span><span class="n">grads</span><span class="p">),</span> <span class="n">grads</span><span class="p">))</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_step</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">grads</span><span class="p">)</span></div></div>
 
 
 <span class="c1"># Optimizers #</span>
@@ -285,21 +278,19 @@
 
 <div class="viewcode-block" id="SGD"><a class="viewcode-back" href="../../../neural_net_stateful/optimizers/SGD.html#ivy.neural_net_stateful.optimizers.SGD">[docs]</a><span class="k">class</span> <span class="nc">SGD</span><span class="p">(</span><span class="n">Optimizer</span><span class="p">):</span>
 
-<div class="viewcode-block" id="SGD.__init__"><a class="viewcode-back" href="../../../neural_net_stateful/optimizers/SGD.html#ivy.neural_net_stateful.optimizers.SGD.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lr</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="mf">1e-4</span><span class="p">,</span> <span class="n">compile_step</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">stop_gradients</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="SGD.__init__"><a class="viewcode-back" href="../../../neural_net_stateful/optimizers/SGD.html#ivy.neural_net_stateful.optimizers.SGD.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lr</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="mf">1e-4</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">stop_gradients</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Construct a Stochastic-Gradient-Descent (SGD) optimizer.</span>
 
 <span class="sd">        :param lr: Learning rate, default is 1e-4.</span>
 <span class="sd">        :type lr: float, optional</span>
-<span class="sd">        :param compile_step: Whether to compile the optimizer step, default is False.</span>
-<span class="sd">        :type compile_step: bool, optional</span>
 <span class="sd">        :param inplace: Whether to update the variables in-place, or to create new variable handles.</span>
 <span class="sd">                        This is only relevant for frameworks with stateful variables such as PyTorch. Default is True.</span>
 <span class="sd">        :type inplace: bool, optional</span>
 <span class="sd">        :param stop_gradients: Whether to stop the gradients of the variables after each gradient step. Default is True.</span>
 <span class="sd">        :type stop_gradients: bool, optional</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">Optimizer</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lr</span><span class="p">,</span> <span class="n">compile_step</span><span class="p">,</span> <span class="n">inplace</span><span class="p">,</span> <span class="n">stop_gradients</span><span class="p">)</span></div>
+        <span class="n">Optimizer</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lr</span><span class="p">,</span> <span class="n">inplace</span><span class="p">,</span> <span class="n">stop_gradients</span><span class="p">)</span></div>
 
     <span class="c1"># Custom Step</span>
 
@@ -332,7 +323,7 @@
 
 <div class="viewcode-block" id="LARS"><a class="viewcode-back" href="../../../neural_net_stateful/optimizers/LARS.html#ivy.neural_net_stateful.optimizers.LARS">[docs]</a><span class="k">class</span> <span class="nc">LARS</span><span class="p">(</span><span class="n">Optimizer</span><span class="p">):</span>
 
-<div class="viewcode-block" id="LARS.__init__"><a class="viewcode-back" href="../../../neural_net_stateful/optimizers/LARS.html#ivy.neural_net_stateful.optimizers.LARS.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lr</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="mf">1e-4</span><span class="p">,</span> <span class="n">decay_lambda</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">compile_step</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">stop_gradients</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="LARS.__init__"><a class="viewcode-back" href="../../../neural_net_stateful/optimizers/LARS.html#ivy.neural_net_stateful.optimizers.LARS.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lr</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="mf">1e-4</span><span class="p">,</span> <span class="n">decay_lambda</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">stop_gradients</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Construct a Layerwise Adaptive Rate Scaling (LARS) optimizer.</span>
 
@@ -340,8 +331,6 @@
 <span class="sd">        :type lr: float, optional</span>
 <span class="sd">        :param decay_lambda: The factor used for weight decay. Default is zero.</span>
 <span class="sd">        :type decay_lambda: float, optional</span>
-<span class="sd">        :param compile_step: Whether to compile the optimizer step, default is False.</span>
-<span class="sd">        :type compile_step: bool, optional</span>
 <span class="sd">        :param inplace: Whether to update the variables in-place, or to create new variable handles.</span>
 <span class="sd">                        This is only relevant for frameworks with stateful variables such as PyTorch. Default is True.</span>
 <span class="sd">        :type inplace: bool, optional</span>
@@ -349,7 +338,7 @@
 <span class="sd">        :type stop_gradients: bool, optional</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_decay_lambda</span> <span class="o">=</span> <span class="n">decay_lambda</span>
-        <span class="n">Optimizer</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lr</span><span class="p">,</span> <span class="n">compile_step</span><span class="p">,</span> <span class="n">inplace</span><span class="p">,</span> <span class="n">stop_gradients</span><span class="p">)</span></div>
+        <span class="n">Optimizer</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lr</span><span class="p">,</span> <span class="n">inplace</span><span class="p">,</span> <span class="n">stop_gradients</span><span class="p">)</span></div>
 
     <span class="c1"># Custom Step</span>
 
@@ -382,7 +371,7 @@
 
 <div class="viewcode-block" id="Adam"><a class="viewcode-back" href="../../../neural_net_stateful/optimizers/Adam.html#ivy.neural_net_stateful.optimizers.Adam">[docs]</a><span class="k">class</span> <span class="nc">Adam</span><span class="p">(</span><span class="n">Optimizer</span><span class="p">):</span>
 
-<div class="viewcode-block" id="Adam.__init__"><a class="viewcode-back" href="../../../neural_net_stateful/optimizers/Adam.html#ivy.neural_net_stateful.optimizers.Adam.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lr</span><span class="o">=</span><span class="mf">1e-4</span><span class="p">,</span> <span class="n">beta1</span><span class="o">=</span><span class="mf">0.9</span><span class="p">,</span> <span class="n">beta2</span><span class="o">=</span><span class="mf">0.999</span><span class="p">,</span> <span class="n">epsilon</span><span class="o">=</span><span class="mf">1e-07</span><span class="p">,</span> <span class="n">compile_step</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<div class="viewcode-block" id="Adam.__init__"><a class="viewcode-back" href="../../../neural_net_stateful/optimizers/Adam.html#ivy.neural_net_stateful.optimizers.Adam.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lr</span><span class="o">=</span><span class="mf">1e-4</span><span class="p">,</span> <span class="n">beta1</span><span class="o">=</span><span class="mf">0.9</span><span class="p">,</span> <span class="n">beta2</span><span class="o">=</span><span class="mf">0.999</span><span class="p">,</span> <span class="n">epsilon</span><span class="o">=</span><span class="mf">1e-07</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
                  <span class="n">stop_gradients</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">dev_str</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Construct an ADAM optimizer.</span>
@@ -395,8 +384,6 @@
 <span class="sd">        :type beta2: float, optional</span>
 <span class="sd">        :param epsilon: divisor during adam update, preventing division by zero, default is 1e-07</span>
 <span class="sd">        :type epsilon: float, optional</span>
-<span class="sd">        :param compile_step: Whether to compile the optimizer step, default is False.</span>
-<span class="sd">        :type compile_step: bool, optional</span>
 <span class="sd">        :param inplace: Whether to update the variables in-place, or to create new variable handles.</span>
 <span class="sd">                        This is only relevant for frameworks with stateful variables such as PyTorch. Default is True.</span>
 <span class="sd">        :type inplace: bool, optional</span>
@@ -405,7 +392,7 @@
 <span class="sd">        :param dev_str: device on which to create the layer&#39;s variables &#39;cuda:0&#39;, &#39;cuda:1&#39;, &#39;cpu&#39; etc.</span>
 <span class="sd">        :type dev_str: str, optional</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">Optimizer</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lr</span><span class="p">,</span> <span class="n">compile_step</span><span class="p">,</span> <span class="n">inplace</span><span class="p">,</span> <span class="n">stop_gradients</span><span class="p">)</span>
+        <span class="n">Optimizer</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lr</span><span class="p">,</span> <span class="n">inplace</span><span class="p">,</span> <span class="n">stop_gradients</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_beta1</span> <span class="o">=</span> <span class="n">beta1</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_beta2</span> <span class="o">=</span> <span class="n">beta2</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_epsilon</span> <span class="o">=</span> <span class="n">epsilon</span>
@@ -453,8 +440,8 @@
 
 <div class="viewcode-block" id="LAMB"><a class="viewcode-back" href="../../../neural_net_stateful/optimizers/LAMB.html#ivy.neural_net_stateful.optimizers.LAMB">[docs]</a><span class="k">class</span> <span class="nc">LAMB</span><span class="p">(</span><span class="n">Optimizer</span><span class="p">):</span>
 
-<div class="viewcode-block" id="LAMB.__init__"><a class="viewcode-back" href="../../../neural_net_stateful/optimizers/LAMB.html#ivy.neural_net_stateful.optimizers.LAMB.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lr</span><span class="o">=</span><span class="mf">1e-4</span><span class="p">,</span> <span class="n">beta1</span><span class="o">=</span><span class="mf">0.9</span><span class="p">,</span> <span class="n">beta2</span><span class="o">=</span><span class="mf">0.999</span><span class="p">,</span> <span class="n">epsilon</span><span class="o">=</span><span class="mf">1e-07</span><span class="p">,</span> <span class="n">max_trust_ratio</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">decay_lambda</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
-                 <span class="n">compile_step</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">stop_gradients</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">dev_str</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="LAMB.__init__"><a class="viewcode-back" href="../../../neural_net_stateful/optimizers/LAMB.html#ivy.neural_net_stateful.optimizers.LAMB.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lr</span><span class="o">=</span><span class="mf">1e-4</span><span class="p">,</span> <span class="n">beta1</span><span class="o">=</span><span class="mf">0.9</span><span class="p">,</span> <span class="n">beta2</span><span class="o">=</span><span class="mf">0.999</span><span class="p">,</span> <span class="n">epsilon</span><span class="o">=</span><span class="mf">1e-07</span><span class="p">,</span> <span class="n">max_trust_ratio</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">decay_lambda</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                 <span class="n">stop_gradients</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">dev_str</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Construct an LAMB optimizer.</span>
 
@@ -471,8 +458,6 @@
 <span class="sd">        :type max_trust_ratio: float, optional</span>
 <span class="sd">        :param decay_lambda: The factor used for weight decay. Default is zero.</span>
 <span class="sd">        :type decay_lambda: float, optional</span>
-<span class="sd">        :param compile_step: Whether to compile the optimizer step, default is False.</span>
-<span class="sd">        :type compile_step: bool, optional</span>
 <span class="sd">        :param inplace: Whether to update the variables in-place, or to create new variable handles.</span>
 <span class="sd">                        This is only relevant for frameworks with stateful variables such as PyTorch. Default is True.</span>
 <span class="sd">        :type inplace: bool, optional</span>
@@ -481,7 +466,7 @@
 <span class="sd">        :param dev_str: device on which to create the layer&#39;s variables &#39;cuda:0&#39;, &#39;cuda:1&#39;, &#39;cpu&#39; etc.</span>
 <span class="sd">        :type dev_str: str, optional</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">Optimizer</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lr</span><span class="p">,</span> <span class="n">compile_step</span><span class="p">,</span> <span class="n">inplace</span><span class="p">,</span> <span class="n">stop_gradients</span><span class="p">)</span>
+        <span class="n">Optimizer</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lr</span><span class="p">,</span> <span class="n">inplace</span><span class="p">,</span> <span class="n">stop_gradients</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_beta1</span> <span class="o">=</span> <span class="n">beta1</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_beta2</span> <span class="o">=</span> <span class="n">beta2</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_epsilon</span> <span class="o">=</span> <span class="n">epsilon</span>

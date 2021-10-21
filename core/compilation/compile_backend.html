@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>SGD &mdash; Ivy 1.0 documentation</title>
+  <title>compile_backend &mdash; Ivy 1.0 documentation</title>
   
 
   
@@ -36,8 +36,8 @@
   <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="LARS" href="LARS.html" />
-    <link rel="prev" title="Optimizer" href="Optimizer.html" /> 
+    <link rel="next" title="Container" href="../container.html" />
+    <link rel="prev" title="Compilation" href="../compilation.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -88,22 +88,25 @@
 <li class="toctree-l1"><a class="reference internal" href="../../training_a_network.html">Training a Network</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Core</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../../core/compilation.html">Compilation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../core/container.html">Container</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../core/device.html">Device</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../core/general.html">General</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../core/gradients.html">Gradients</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../core/image.html">Image</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../core/linalg.html">Linalg</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../core/logic.html">Logic</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../core/math.html">Math</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../core/meta.html">Meta</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../core/multi_node.html">Multi node</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../core/nest.html">Nest</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../core/random.html">Random</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../core/reductions.html">Reductions</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../core/wrapped.html">Wrapped</a></li>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../compilation.html">Compilation</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">compile_backend</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../container.html">Container</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../device.html">Device</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../general.html">General</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../gradients.html">Gradients</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../image.html">Image</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../linalg.html">Linalg</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../logic.html">Logic</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../math.html">Math</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../meta.html">Meta</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../multi_node.html">Multi node</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../nest.html">Nest</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../random.html">Random</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reductions.html">Reductions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../wrapped.html">Wrapped</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Neural net functional</span></p>
 <ul>
@@ -113,22 +116,15 @@
 <li class="toctree-l1"><a class="reference internal" href="../../neural_net_functional/norms.html">Norms</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Neural net stateful</span></p>
-<ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="../activations.html">Activations</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../converters.html">Converters</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../initializers.html">Initializers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../layers.html">Layers</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../module.html">Module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../norms.html">Norms</a></li>
-<li class="toctree-l1 current"><a class="reference internal" href="../optimizers.html">Optimizers</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="Optimizer.html">Optimizer</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">SGD</a></li>
-<li class="toctree-l2"><a class="reference internal" href="LARS.html">LARS</a></li>
-<li class="toctree-l2"><a class="reference internal" href="Adam.html">Adam</a></li>
-<li class="toctree-l2"><a class="reference internal" href="LAMB.html">LAMB</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="../sequential.html">Sequential</a></li>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../neural_net_stateful/activations.html">Activations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../neural_net_stateful/converters.html">Converters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../neural_net_stateful/initializers.html">Initializers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../neural_net_stateful/layers.html">Layers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../neural_net_stateful/module.html">Module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../neural_net_stateful/norms.html">Norms</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../neural_net_stateful/optimizers.html">Optimizers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../neural_net_stateful/sequential.html">Sequential</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Docs</span></p>
 <ul>
@@ -183,15 +179,15 @@
     
       <li><a href="../../index.html">Docs</a> &raquo;</li>
         
-          <li><a href="../optimizers.html">Optimizers</a> &raquo;</li>
+          <li><a href="../compilation.html">Compilation</a> &raquo;</li>
         
-      <li>SGD</li>
+      <li>compile_backend</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="../../_sources/neural_net_stateful/optimizers/SGD.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../_sources/core/compilation/compile_backend.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -204,44 +200,29 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="sgd">
-<h1>SGD<a class="headerlink" href="#sgd" title="Permalink to this headline">¶</a></h1>
-<dl class="py class">
-<dt id="ivy.neural_net_stateful.optimizers.SGD">
-<em class="property">class </em><code class="sig-prename descclassname">ivy.neural_net_stateful.optimizers.</code><code class="sig-name descname">SGD</code><span class="sig-paren">(</span><em class="sig-param">lr=&lt;function SGD.&lt;lambda&gt;&gt;</em>, <em class="sig-param">inplace=True</em>, <em class="sig-param">stop_gradients=True</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/neural_net_stateful/optimizers.html#SGD"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.neural_net_stateful.optimizers.SGD" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="Optimizer.html#ivy.neural_net_stateful.optimizers.Optimizer" title="ivy.neural_net_stateful.optimizers.Optimizer"><code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.neural_net_stateful.optimizers.Optimizer</span></code></a></p>
-<dl class="py method">
-<dt id="ivy.neural_net_stateful.optimizers.SGD.__init__">
-<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param">lr=&lt;function SGD.&lt;lambda&gt;&gt;</em>, <em class="sig-param">inplace=True</em>, <em class="sig-param">stop_gradients=True</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/neural_net_stateful/optimizers.html#SGD.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.neural_net_stateful.optimizers.SGD.__init__" title="Permalink to this definition">¶</a></dt>
-<dd><p>Construct a Stochastic-Gradient-Descent (SGD) optimizer.</p>
+  <div class="section" id="compile-backend">
+<h1>compile_backend<a class="headerlink" href="#compile-backend" title="Permalink to this headline">¶</a></h1>
+<dl class="py function">
+<dt id="ivy.core.compilation.compile_backend">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">compile_backend</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">func</span><span class="p">:</span> <span class="n">Callable</span></em>, <em class="sig-param"><span class="n">dynamic</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">True</span></em>, <em class="sig-param"><span class="n">example_inputs</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Union<span class="p">[</span>Any<span class="p">, </span>Tuple<span class="p">[</span>Any<span class="p">]</span><span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">static_argnums</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Union<span class="p">[</span>int<span class="p">, </span>Iterable<span class="p">[</span>int<span class="p">]</span><span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">static_argnames</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Union<span class="p">[</span>int<span class="p">, </span>Iterable<span class="p">[</span>int<span class="p">]</span><span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">f</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>ivy.Framework<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; Callable<a class="reference internal" href="../../_modules/ivy/core/compilation.html#compile_backend"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.compilation.compile_backend" title="Permalink to this definition">¶</a></dt>
+<dd><p>Provide a function which should be compiled, for faster inference.
+The handle to the newly compiled function is returned.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>lr</strong> (<em>float</em><em>, </em><em>optional</em>) – Learning rate, default is 1e-4.</p></li>
-<li><p><strong>inplace</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to update the variables in-place, or to create new variable handles.
-This is only relevant for frameworks with stateful variables such as PyTorch. Default is True.</p></li>
-<li><p><strong>stop_gradients</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to stop the gradients of the variables after each gradient step. Default is True.</p></li>
+<li><p><strong>func</strong> (<em>callable</em>) – Function to be compiled.</p></li>
+<li><p><strong>dynamic</strong> (<em>bool</em><em>, </em><em>default True</em>) – Whether to compile all conditional branches, regardless of inputs during first invocation.</p></li>
+<li><p><strong>example_inputs</strong> (<em>single input</em><em> or </em><em>tuple of inputs.</em>) – Example of inputs to the function to be compiled.
+Required for torch in non-dynamic mode, unused by other frameworks.</p></li>
+<li><p><strong>static_argnums</strong> (<em>int</em><em> or </em><em>sequence of ints</em><em>, </em><em>optional</em>) – The argument numbers which should be treated as static for compiling. Default is None.</p></li>
+<li><p><strong>static_argnames</strong> (<em>str</em><em> or </em><em>sequence of strs</em><em>, </em><em>optional</em>) – The argument names which should be treated as static for compiling. Default is None.</p></li>
+<li><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning framework. Inferred from inputs if None.</p></li>
 </ul>
 </dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt id="ivy.neural_net_stateful.optimizers.SGD.set_state">
-<code class="sig-name descname">set_state</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">state</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/neural_net_stateful/optimizers.html#SGD.set_state"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.neural_net_stateful.optimizers.SGD.set_state" title="Permalink to this definition">¶</a></dt>
-<dd><p>Set state of the optimizer.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>state</strong> (<em>Ivy container of state tensors</em>) – Nested state to update.</p>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The handle to the newly compiled function.</p>
 </dd>
 </dl>
-</dd></dl>
-
-<dl class="py method">
-<dt id="ivy.neural_net_stateful.optimizers.SGD.state">
-<em class="property">property </em><code class="sig-name descname">state</code><a class="headerlink" href="#ivy.neural_net_stateful.optimizers.SGD.state" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
 </dd></dl>
 
 <div class="line-block">
@@ -259,10 +240,10 @@ This is only relevant for frameworks with stateful variables such as PyTorch. De
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="LARS.html" class="btn btn-neutral float-right" title="LARS" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="../container.html" class="btn btn-neutral float-right" title="Container" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="Optimizer.html" class="btn btn-neutral float-left" title="Optimizer" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="../compilation.html" class="btn btn-neutral float-left" title="Compilation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

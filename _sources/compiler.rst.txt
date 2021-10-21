@@ -12,7 +12,7 @@ Compiler
    :maxdepth: -1
    :caption: Compiler
 
-   compiler/compile_ivy.rst
+   compiler/compile_graph.rst
    compiler/Param:
 
     def __init__.rst

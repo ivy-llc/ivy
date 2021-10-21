@@ -36,7 +36,7 @@
   <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="compile_native" href="compilation/compile_native.html" />
+    <link rel="next" title="compile_backend" href="compilation/compile_backend.html" />
     <link rel="prev" title="Training a Network" href="../training_a_network.html" /> 
 </head>
 
@@ -90,7 +90,7 @@
 <p class="caption"><span class="caption-text">Core</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Compilation</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="compilation/compile_native.html">compile_native</a></li>
+<li class="toctree-l2"><a class="reference internal" href="compilation/compile_backend.html">compile_backend</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="container.html">Container</a></li>
@@ -202,8 +202,8 @@
 <span id="compilation"></span><h1>Compilation<a class="headerlink" href="#module-ivy.core.compilation" title="Permalink to this headline">¶</a></h1>
 <p>Collection of general Ivy compilation functions.</p>
 <dl class="py function">
-<dt id="ivy.core.compilation.compile_native">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">compile_native</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">func</span><span class="p">:</span> <span class="n">Callable</span></em>, <em class="sig-param"><span class="n">dynamic</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">True</span></em>, <em class="sig-param"><span class="n">example_inputs</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Union<span class="p">[</span>Any<span class="p">, </span>Tuple<span class="p">[</span>Any<span class="p">]</span><span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">static_argnums</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Union<span class="p">[</span>int<span class="p">, </span>Iterable<span class="p">[</span>int<span class="p">]</span><span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">static_argnames</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Union<span class="p">[</span>int<span class="p">, </span>Iterable<span class="p">[</span>int<span class="p">]</span><span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">f</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>ivy.Framework<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; Callable<a class="reference internal" href="../_modules/ivy/core/compilation.html#compile_native"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.compilation.compile_native" title="Permalink to this definition">¶</a></dt>
+<dt id="ivy.core.compilation.compile_backend">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">compile_backend</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">func</span><span class="p">:</span> <span class="n">Callable</span></em>, <em class="sig-param"><span class="n">dynamic</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">True</span></em>, <em class="sig-param"><span class="n">example_inputs</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Union<span class="p">[</span>Any<span class="p">, </span>Tuple<span class="p">[</span>Any<span class="p">]</span><span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">static_argnums</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Union<span class="p">[</span>int<span class="p">, </span>Iterable<span class="p">[</span>int<span class="p">]</span><span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">static_argnames</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Union<span class="p">[</span>int<span class="p">, </span>Iterable<span class="p">[</span>int<span class="p">]</span><span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">f</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>ivy.Framework<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; Callable<a class="reference internal" href="../_modules/ivy/core/compilation.html#compile_backend"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.compilation.compile_backend" title="Permalink to this definition">¶</a></dt>
 <dd><p>Provide a function which should be compiled, for faster inference.
 The handle to the newly compiled function is returned.</p>
 <dl class="field-list simple">
@@ -227,7 +227,7 @@ Required for torch in non-dynamic mode, unused by other frameworks.</p></li>
 <div class="toctree-wrapper compound">
 <p class="caption"><span class="caption-text">Compilation</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="compilation/compile_native.html">compile_native</a></li>
+<li class="toctree-l1"><a class="reference internal" href="compilation/compile_backend.html">compile_backend</a></li>
 </ul>
 </div>
 </div>
@@ -240,7 +240,7 @@ Required for torch in non-dynamic mode, unused by other frameworks.</p></li>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="compilation/compile_native.html" class="btn btn-neutral float-right" title="compile_native" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="compilation/compile_backend.html" class="btn btn-neutral float-right" title="compile_backend" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="../training_a_network.html" class="btn btn-neutral float-left" title="Training a Network" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
