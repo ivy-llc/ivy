@@ -43,7 +43,7 @@ def test_linear_layer(bs_ic_oc_target, with_v, dtype_str, tensor_fn, dev_str, co
     # compile if this mode is set
     if compile_graph and call is helpers.torch_call:
         # Currently only PyTorch is supported for ivy compilation
-        linear_layer.compile(x)
+        linear_layer.compile_graph(x)
     ret = linear_layer(x)
     # type test
     assert ivy.is_array(ret)
@@ -77,7 +77,7 @@ def test_dropout_layer(x_shape, dtype_str, tensor_fn, dev_str, compile_graph, ca
     dropout_layer = ivy.Dropout(0.9)
     if compile_graph and call is helpers.torch_call:
         # Currently only PyTorch is supported for ivy compilation
-        dropout_layer.compile(x)
+        dropout_layer.compile_graph(x)
     ret = dropout_layer(x)
     # type test
     assert ivy.is_array(ret)
@@ -140,7 +140,7 @@ def test_multi_head_attention_layer(x_n_s_n_m_n_c_n_gt, with_v, build_mode, dtyp
         query_dim, context_dim=context_dim, scale=scale, dev_str=dev_str, v=v, build_mode=build_mode)
     if compile_graph and call is helpers.torch_call:
         # Currently only PyTorch is supported for ivy compilation
-        multi_head_attention_layer.compile(x, context, mask)
+        multi_head_attention_layer.compile_graph(x, context, mask)
     if build_mode == 'explicit':
         multi_head_attention_layer.build()
     ret = multi_head_attention_layer(x, context, mask)
@@ -215,7 +215,7 @@ def test_conv1d_layer(x_n_fs_n_pad_n_res, with_v, dtype_str, tensor_fn, dev_str,
     conv1d_layer = ivy.Conv1D(input_channels, output_channels, filter_size, 1, padding, dev_str=dev_str, v=v)
     if compile_graph and call is helpers.torch_call:
         # Currently only PyTorch is supported for ivy compilation
-        conv1d_layer.compile(x)
+        conv1d_layer.compile_graph(x)
     ret = conv1d_layer(x)
     # type test
     assert ivy.is_array(ret)
@@ -289,7 +289,7 @@ def test_conv1d_transpose_layer(x_n_fs_n_pad_n_outshp_n_res, with_v, dtype_str, 
                                              output_shape=out_shape, dev_str=dev_str, v=v)
     if compile_graph and call is helpers.torch_call:
         # Currently only PyTorch is supported for ivy compilation
-        conv1d_trans_layer.compile(x)
+        conv1d_trans_layer.compile_graph(x)
     ret = conv1d_trans_layer(x)
     # type test
     assert ivy.is_array(ret)
@@ -379,7 +379,7 @@ def test_conv2d_layer(x_n_fs_n_pad_n_res, with_v, dtype_str, tensor_fn, dev_str,
     conv2d_layer = ivy.Conv2D(input_channels, output_channels, filter_shape, 1, padding, dev_str=dev_str, v=v)
     if compile_graph and call is helpers.torch_call:
         # Currently only PyTorch is supported for ivy compilation
-        conv2d_layer.compile(x)
+        conv2d_layer.compile_graph(x)
     ret = conv2d_layer(x)
     # type test
     assert ivy.is_array(ret)
@@ -467,7 +467,7 @@ def test_conv2d_transpose_layer(x_n_fs_n_pad_n_outshp_n_res, with_v, dtype_str, 
                                                  output_shape=out_shape, dev_str=dev_str, v=v)
     if compile_graph and call is helpers.torch_call:
         # Currently only PyTorch is supported for ivy compilation
-        conv2d_transpose_layer.compile(x)
+        conv2d_transpose_layer.compile_graph(x)
     ret = conv2d_transpose_layer(x)
     # type test
     assert ivy.is_array(ret)
@@ -545,7 +545,7 @@ def test_depthwise_conv2d_layer(x_n_fs_n_pad_n_res, with_v, dtype_str, tensor_fn
     depthwise_conv2d_layer = ivy.DepthwiseConv2D(num_channels, filter_shape, 1, padding, dev_str=dev_str, v=v)
     if compile_graph and call is helpers.torch_call:
         # Currently only PyTorch is supported for ivy compilation
-        depthwise_conv2d_layer.compile(x)
+        depthwise_conv2d_layer.compile_graph(x)
     ret = depthwise_conv2d_layer(x)
     # type test
     assert ivy.is_array(ret)
@@ -625,7 +625,7 @@ def test_conv3d_layer(x_n_fs_n_pad_n_res, with_v, dtype_str, tensor_fn, dev_str,
     conv3d_layer = ivy.Conv3D(input_channels, output_channels, filter_shape, 1, padding, dev_str=dev_str, v=v)
     if compile_graph and call is helpers.torch_call:
         # Currently only PyTorch is supported for ivy compilation
-        conv3d_layer.compile(x)
+        conv3d_layer.compile_graph(x)
     ret = conv3d_layer(x)
     # type test
     assert ivy.is_array(ret)
@@ -721,7 +721,7 @@ def test_conv3d_transpose_layer(x_n_fs_n_pad_n_outshp_n_res, with_v, dtype_str, 
         input_channels, output_channels, filter_shape, 1, padding, output_shape=out_shape, dev_str=dev_str, v=v)
     if compile_graph and call is helpers.torch_call:
         # Currently only PyTorch is supported for ivy compilation
-        conv3d_transpose_layer.compile(x)
+        conv3d_transpose_layer.compile_graph(x)
     ret = conv3d_transpose_layer(x)
     # type test
     assert ivy.is_array(ret)
@@ -775,7 +775,7 @@ def test_lstm_layer(b_t_ic_hc_otf_sctv, with_v, with_initial_state, dtype_str, t
     lstm_layer = ivy.LSTM(input_channels, hidden_channels, dev_str=dev_str, v=v)
     if compile_graph and call is helpers.torch_call:
         # Currently only PyTorch is supported for ivy compilation
-        lstm_layer.compile(x, initial_state=initial_state)
+        lstm_layer.compile_graph(x, initial_state=initial_state)
     output, (state_h, state_c) = lstm_layer(x, initial_state=initial_state)
     # type test
     assert ivy.is_array(output)
@@ -849,7 +849,7 @@ def test_sequential_layer(bs_c_target, with_v, seq_v, dtype_str, tensor_fn, dev_
                                         v=v['submodules']['v2'] if with_v else None), dev_str=dev_str)
     if compile_graph and call is helpers.torch_call:
         # Currently only PyTorch is supported for ivy compilation
-        seq.compile(x)
+        seq.compile_graph(x)
     ret = seq(x)
     # type test
     assert ivy.is_array(ret)
