@@ -32,7 +32,7 @@ def test_geglu(bs_oc_target, dtype_str, tensor_fn, dev_str, compile_graph, call)
     # compile if this mode is set
     if compile_graph and call is helpers.torch_call:
         # Currently only PyTorch is supported for ivy compilation
-        geglu_layer.compile(x)
+        geglu_layer.compile_graph(x)
 
     # return
     ret = geglu_layer(x)
