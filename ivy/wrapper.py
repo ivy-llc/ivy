@@ -11,7 +11,7 @@ NON_WRAPPED_METHODS = ['current_framework', 'current_framework_str', 'set_framew
                        'unset_debug_mode', 'debug_mode', 'nested_map', 'to_ivy', 'args_to_ivy', 'to_native',
                        'args_to_native', 'default', 'exists', 'set_min_base', 'get_min_base', 'set_min_denominator',
                        'get_min_denominator', 'split_func_call_across_gpus', 'cache_fn', 'split_func_call',
-                       'compile_native', 'compile_ivy', 'dev', 'dev_str', 'dev_to_str', 'str_to_dev', 'memory_on_dev',
+                       'compile_backend', 'compile_graph', 'dev', 'dev_str', 'dev_to_str', 'str_to_dev', 'memory_on_dev',
                        'gpu_is_available', 'num_gpus', 'tpu_is_available', 'dtype', 'dtype_to_str', 'cprint',
                        'to_ivy_module', 'tree_flatten', 'tree_unflatten', 'start_compiling', 'stop_compiling',
                        'get_compiled', 'set_wrapped_mode', 'unset_wrapped_mode', 'wrapped_mode', 'index_nest',

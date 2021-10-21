@@ -509,7 +509,7 @@ def _unwrap_methods_from_op_logging():
         lambda fn: _unwrap_method_from_compiling(fn), classes_to_wrap=classes_to_wrap, native=True)
 
 
-def compile_ivy(fn, *args, num_workers=1, **kwargs):
+def compile_graph(fn, *args, num_workers=1, **kwargs):
     graph = Graph(fn, *args, **kwargs, num_workers=num_workers)
     _wrap_methods_for_op_logging(graph)
     graph.log_all_ops()

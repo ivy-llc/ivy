@@ -52,7 +52,7 @@ from . import framework_handler
 from .debugger import set_debug_mode, set_breakpoint_debug_mode, set_exception_debug_mode, unset_debug_mode, debug_mode,\
     debug_mode_val
 from . import debugger
-from .compiler import compile_ivy
+from .compiler import compile_graph
 from . import compiler
 from .core import *
 from . import neural_net_functional
