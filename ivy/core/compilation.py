@@ -10,9 +10,9 @@ import ivy
 from ivy.framework_handler import current_framework as _cur_framework
 
 
-def compile_backend(func: Callable, dynamic: bool = True, example_inputs: Union[Any, Tuple[Any]] = None,
-                    static_argnums: Union[int, Iterable[int]] = None, static_argnames: Union[int, Iterable[int]] = None,
-                    f: ivy.Framework = None) -> Callable:
+def compile(func: Callable, dynamic: bool = True, example_inputs: Union[Any, Tuple[Any]] = None,
+            static_argnums: Union[int, Iterable[int]] = None, static_argnames: Union[int, Iterable[int]] = None,
+            f: ivy.Framework = None) -> Callable:
     """
     Provide a function which should be compiled, for faster inference.
     The handle to the newly compiled function is returned.
@@ -32,5 +32,5 @@ def compile_backend(func: Callable, dynamic: bool = True, example_inputs: Union[
     :type f: ml_framework, optional
     :return: The handle to the newly compiled function.
     """
-    return _cur_framework(example_inputs, f=f).compile_backend(
+    return _cur_framework(example_inputs, f=f).compile(
         func, dynamic, example_inputs, static_argnums, static_argnames)

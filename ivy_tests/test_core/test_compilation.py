@@ -109,7 +109,7 @@ def _wide_fn(x, with_non_compiled: bool = False, with_internal_gen: bool = False
     "dtype_str", ['float32'])
 @pytest.mark.parametrize(
     "tensor_fn", [ivy.array, helpers.var_fn])
-def test_compile_backend(x, dtype_str, tensor_fn, dev_str, call):
+def test_compile(x, dtype_str, tensor_fn, dev_str, call):
     if ivy.wrapped_mode():
         # Wrapped mode does not yet support function compilation
         pytest.skip()
@@ -119,7 +119,7 @@ def test_compile_backend(x, dtype_str, tensor_fn, dev_str, call):
         pytest.skip()
 
     # function 1
-    comp_fn = ivy.compile_backend(_fn_1)
+    comp_fn = ivy.compile(_fn_1)
     # type test
     assert callable(comp_fn)
     # value test
@@ -130,7 +130,7 @@ def test_compile_backend(x, dtype_str, tensor_fn, dev_str, call):
     assert np.allclose(ivy.to_numpy(non_compiled_return), ivy.to_numpy(compiled_return))
 
     # function 2
-    comp_fn = ivy.compile_backend(_fn_2)
+    comp_fn = ivy.compile(_fn_2)
     # type test
     assert callable(comp_fn)
     # value test
