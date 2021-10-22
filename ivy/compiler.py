@@ -498,7 +498,7 @@ def _wrap_method_for_compiling(fn, graph, limit_attributes=True, stateful_classe
         # clone the param when getting an attribute, to preserve uniqueness in the graph
         if fn.__name__ in ['__getattr__', '__getattribute__']:
             # update the param_id of the retreived attribute object in the graph
-            ret = [ivy.copy_array(ret[0]) if ivy.is_array(ret[0]) else copy.copy(ret[0])]
+            ret = [copy.copy(ret[0])]
 
         # find all duplicate param ids from the input in the return
         duplicates = list()
@@ -508,7 +508,7 @@ def _wrap_method_for_compiling(fn, graph, limit_attributes=True, stateful_classe
 
         # clone method
         def _clone_param(x):
-            x_copy = ivy.copy_array(x) if ivy.is_array(x) else copy.copy(x)  # copy the param
+            x_copy = copy.copy(x)  # copy the param
             if hasattr(x, '__dict__'):
                 x.__dict__['param_id'] = id(x_copy)  # update the id of the original param (for preserved stateful objects)
             return x_copy
@@ -527,7 +527,8 @@ def _wrap_method_for_compiling(fn, graph, limit_attributes=True, stateful_classe
             ivy.set_nest_at_indices(kwargs, kwarg_tracked_idxs, kwarg_array_vals)
             return backend_fn(*args, **kwargs)
 
-        # add function attributes which inform about the input idxs
+        # add function attributes which inform about the arguments and returns
+
         new_fn.args = args
         new_fn.arg_tracked_idxs = arg_tracked_idxs
         new_fn.arg_param_ids = arg_param_ids
@@ -549,6 +550,8 @@ def _wrap_method_for_compiling(fn, graph, limit_attributes=True, stateful_classe
                 fn_in.fns_out.append(new_fn)
 
         new_fn.fns_in = fns_in
+
+        new_fn.__repr__ = lambda: new_fn.__name__
 
         if hasattr(fn, '__name__'):
             new_fn.__name__ = fn.__name__
