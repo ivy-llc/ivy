@@ -39,8 +39,9 @@ def _get_id(x):
 
 class Param:
 
-    def __init__(self):
+    def __init__(self, ptype):
         self._count = 0
+        self._ptype = ptype
         self._param_stack = list()
 
     def set(self, val):
@@ -53,7 +54,7 @@ class Param:
         return self._param_stack.pop()
 
     def __repr__(self):
-        return '<Param, count={}, current={}>'.format(self._count, len(self._param_stack))
+        return '<Param, type={}, count={}, current={}>'.format(self._ptype, self._count, len(self._param_stack))
 
     def __len__(self):
         return len(self._param_stack)
@@ -78,12 +79,14 @@ class Graph:
 
         # positional args
         self._args = args
+        self._arg_param_types = [a.__class__ for a in self._args]
         self._arg_tracked_idxs = ivy.nested_indices_where(
             args, lambda x: ivy.is_array(x) or isinstance(x, self._stateful_classes))
         self._arg_param_ids = [_get_id(x) for x in ivy.multi_index_nest(list(args), self._arg_tracked_idxs)]
 
         # key-word args
         self._kwargs = kwargs
+        self._kwarg_param_types = [v.__class__ for v in self._kwargs.values()]
         self._kwarg_tracked_idxs = ivy.nested_indices_where(
             kwargs, lambda x: ivy.is_array(x) or isinstance(x, self._stateful_classes))
         self._kwarg_param_ids = [_get_id(x) for x in ivy.multi_index_nest(kwargs, self._kwarg_tracked_idxs)]
@@ -100,7 +103,7 @@ class Graph:
         self._num_functions = len(self._functions)
 
         # set unchanging stateful params
-        [self.add_param(pid) for pid in self._stateful_param_ids]
+        [self.add_param(pid, ptype) for pid, ptype in zip(self._stateful_param_ids, self._stateful_classes)]
         [self.set_param(pid, param) for pid, param in zip(self._stateful_param_ids, self._stateful)]
 
         # multiprocessing
@@ -193,6 +196,13 @@ class Graph:
                 new_fn.arg_param_ids = [pid]
                 new_fn.kwarg_param_ids = list()
                 new_fn.output_param_ids = [new_pid]
+                if pid in self._arg_param_ids:
+                    index = self._arg_param_ids.index(pid)
+                    output_param_type = self._arg_param_types[index]
+                else:
+                    index = self._kwarg_param_ids.index(pid)
+                    output_param_type = self._kwarg_param_types[index]
+                new_fn.output_param_types = [output_param_type]
                 new_fn.fns_in = list()
                 new_fn.output_tracked_idxs = [[0]]
 
@@ -230,8 +240,8 @@ class Graph:
 
     # compiling
 
-    def add_param(self, pid):
-        self._param_dict[pid] = Param()
+    def add_param(self, pid, ptype):
+        self._param_dict[pid] = Param(ptype)
 
     def increment_param_count(self, pid):
         self._param_dict[pid].set_count(self._param_dict[pid].count + 1)
@@ -264,7 +274,7 @@ class Graph:
         [self.get_param_recursive(pid, depth + 1, fn) for pid in copy.copy(fn.arg_param_ids)]
         [self.get_param_recursive(pid, depth + 1, fn) for pid in copy.copy(fn.kwarg_param_ids)]
         [self.increment_param_count(pid) for pid in fn.arg_param_ids + fn.kwarg_param_ids]
-        [self.add_param(pid) for pid in fn.output_param_ids]
+        [self.add_param(pid, ptype) for pid, ptype in zip(fn.output_param_ids, fn.output_param_types)]
         return
 
     # debugging
@@ -278,11 +288,11 @@ class Graph:
     def _chain_functions(self):
 
         # add input params to param dict
-        [self.add_param(pid) for pid in self._arg_param_ids]
-        [self.add_param(pid) for pid in self._kwarg_param_ids]
+        [self.add_param(pid, ptype) for pid, ptype in zip(self._arg_param_ids, self._arg_param_types)]
+        [self.add_param(pid, ptype) for pid, ptype in zip(self._kwarg_param_ids, self._kwarg_param_types)]
 
         # add stateful params to param dict
-        [self.add_param(pid) for pid in self._stateful_param_ids]
+        [self.add_param(pid, ptype) for pid, ptype in zip(self._stateful_param_ids, self._stateful_classes)]
 
         # recursively chain the graph via backward traversal
         [self.get_param_recursive(pid, depth=0) for pid in self._output_param_ids]
@@ -466,6 +476,7 @@ def _wrap_method_for_compiling(fn, graph, force=False, stateful_classes=None):
         # get array idxs for return
         ret_tracked_idxs = ivy.nested_indices_where(ret, lambda x: ivy.is_array(x) or isinstance(x, stateful_classes))
         ret_param_ids = [_get_id(x) for x in ivy.multi_index_nest(list(ret), ret_tracked_idxs)]
+        ret_param_types = [x.__class__ for x in ivy.multi_index_nest(list(ret), ret_tracked_idxs)]
 
         # wrap the function
         def new_fn(arg_array_vals, kwarg_array_vals):
@@ -478,6 +489,7 @@ def _wrap_method_for_compiling(fn, graph, force=False, stateful_classes=None):
         new_fn.arg_param_ids = arg_param_ids
         new_fn.kwarg_param_ids = kwarg_param_ids
         new_fn.output_param_ids = ret_param_ids
+        new_fn.output_param_types = ret_param_types
         new_fn.output_tracked_idxs = ret_tracked_idxs
         new_fn.arg_tracked_idxs = arg_tracked_idxs
         new_fn.kwarg_tracked_idxs = kwarg_tracked_idxs
