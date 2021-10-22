@@ -495,6 +495,11 @@ def _wrap_method_for_compiling(fn, graph, limit_attributes=True, stateful_classe
         ret_param_ids = [_get_id(x) for x in ivy.multi_index_nest(list(ret), ret_tracked_idxs)]
         ret_param_types = [x.__class__ for x in ivy.multi_index_nest(list(ret), ret_tracked_idxs)]
 
+        # clone the param when getting an attribute, to preserve uniqueness in the graph
+        if fn.__name__ in ['__getattr__', '__getattribute__']:
+            # update the param_id of the retreived attribute object in the graph
+            ret = [ivy.copy_array(ret[0]) if ivy.is_array(ret[0]) else copy.copy(ret[0])]
+
         # find all duplicate param ids from the input in the return
         duplicates = list()
         for i, ret_pid in enumerate(ret_param_ids):
