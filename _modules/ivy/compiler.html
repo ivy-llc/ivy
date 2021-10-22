@@ -666,30 +666,48 @@
 
         <span class="c1"># compute the return</span>
         <span class="n">ret_raw</span> <span class="o">=</span> <span class="n">fn</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">fn</span><span class="o">.</span><span class="vm">__name__</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">3</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;__i&#39;</span><span class="p">:</span>
-            <span class="c1"># clone the return values if the function is in-place, to ensure output ids are unique from input ids</span>
-            <span class="n">ret_raw</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">([</span><span class="n">ivy</span><span class="o">.</span><span class="n">copy_array</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_array</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">stateful_classes</span><span class="p">)</span>
-                             <span class="k">else</span> <span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">ret_raw</span><span class="p">])</span> \
-                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ret_raw</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)</span> <span class="k">else</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">(</span><span class="n">ret_raw</span><span class="p">))</span>
-        <span class="k">elif</span> <span class="n">fn</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__setattr__&#39;</span><span class="p">:</span>
-            <span class="c1"># update the param_id of the stateful object in the graph</span>
-            <span class="n">ret_raw</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">copy_array</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_array</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="k">else</span> <span class="n">copy</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-            <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="s1">&#39;param_id&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">id</span><span class="p">(</span><span class="n">ret_raw</span><span class="p">)</span>
+
+        <span class="c1"># provide return value for __setattr__</span>
+        <span class="k">if</span> <span class="n">fn</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__setattr__&#39;</span><span class="p">:</span>
+            <span class="n">ret_raw</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 
             <span class="c1"># update the setattr method to return the object after attribute setting</span>
             <span class="k">def</span> <span class="nf">backend_fn</span><span class="p">(</span><span class="n">__obj</span><span class="p">,</span> <span class="n">__name</span><span class="p">,</span> <span class="n">__value</span><span class="p">):</span>
                 <span class="nb">setattr</span><span class="p">(</span><span class="n">__obj</span><span class="p">,</span> <span class="n">__name</span><span class="p">,</span> <span class="n">__value</span><span class="p">)</span>
                 <span class="k">return</span> <span class="n">__obj</span>
-        <span class="k">elif</span> <span class="n">fn</span><span class="o">.</span><span class="vm">__name__</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;__getattr__&#39;</span><span class="p">,</span> <span class="s1">&#39;__getattribute__&#39;</span><span class="p">]:</span>
-            <span class="c1"># update the param_id of the retreived attribute object in the graph</span>
-            <span class="n">ret_raw</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">copy_array</span><span class="p">(</span><span class="n">ret_raw</span><span class="p">)</span> <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_array</span><span class="p">(</span><span class="n">ret_raw</span><span class="p">)</span> <span class="k">else</span> <span class="n">copy</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">ret_raw</span><span class="p">)</span>
 
-        <span class="n">ret</span> <span class="o">=</span> <span class="n">ret_raw</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ret_raw</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)</span> <span class="k">else</span> <span class="p">(</span><span class="n">ret_raw</span><span class="p">,)</span>
+        <span class="c1"># covert return to list</span>
+        <span class="n">ret_listified</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ret_raw</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
+            <span class="n">ret</span> <span class="o">=</span> <span class="n">ret_raw</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">ret</span> <span class="o">=</span> <span class="p">[</span><span class="n">ret_raw</span><span class="p">]</span>
+            <span class="n">ret_listified</span> <span class="o">=</span> <span class="kc">True</span>
 
         <span class="c1"># get array idxs for return</span>
         <span class="n">ret_tracked_idxs</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">nested_indices_where</span><span class="p">(</span><span class="n">ret</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_array</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">stateful_classes</span><span class="p">))</span>
         <span class="n">ret_param_ids</span> <span class="o">=</span> <span class="p">[</span><span class="n">_get_id</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">ivy</span><span class="o">.</span><span class="n">multi_index_nest</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">ret</span><span class="p">),</span> <span class="n">ret_tracked_idxs</span><span class="p">)]</span>
         <span class="n">ret_param_types</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span><span class="o">.</span><span class="vm">__class__</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">ivy</span><span class="o">.</span><span class="n">multi_index_nest</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">ret</span><span class="p">),</span> <span class="n">ret_tracked_idxs</span><span class="p">)]</span>
+
+        <span class="c1"># find all duplicate param ids from the input in the return</span>
+        <span class="n">duplicates</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">ret_pid</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">ret_param_ids</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">ret_pid</span> <span class="ow">in</span> <span class="n">arg_param_ids</span> <span class="o">+</span> <span class="n">kwarg_param_ids</span><span class="p">:</span>
+                <span class="n">duplicates</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+
+        <span class="c1"># clone method</span>
+        <span class="k">def</span> <span class="nf">_clone_param</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+            <span class="n">x_copy</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">copy_array</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_array</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">else</span> <span class="n">copy</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>  <span class="c1"># copy the param</span>
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="s1">&#39;__dict__&#39;</span><span class="p">):</span>
+                <span class="n">x</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="s1">&#39;param_id&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">id</span><span class="p">(</span><span class="n">x_copy</span><span class="p">)</span>  <span class="c1"># update the id of the original param (for preserved stateful objects)</span>
+            <span class="k">return</span> <span class="n">x_copy</span>
+
+        <span class="c1"># clone all repeated return parameters to give unique parameter ids in the graph</span>
+        <span class="n">duplicate_tracked_idxs</span> <span class="o">=</span> <span class="p">[</span><span class="n">ret_tracked_idxs</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">duplicates</span><span class="p">]</span>
+        <span class="n">ivy</span><span class="o">.</span><span class="n">map_nest_at_indices</span><span class="p">(</span><span class="n">ret</span><span class="p">,</span> <span class="n">duplicate_tracked_idxs</span><span class="p">,</span> <span class="n">_clone_param</span><span class="p">)</span>
+
+        <span class="c1"># get return param ids</span>
+        <span class="n">ret_param_ids</span> <span class="o">=</span> <span class="p">[</span><span class="n">_get_id</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">ivy</span><span class="o">.</span><span class="n">multi_index_nest</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">ret</span><span class="p">),</span> <span class="n">ret_tracked_idxs</span><span class="p">)]</span>
 
         <span class="c1"># wrap the function</span>
         <span class="k">def</span> <span class="nf">new_fn</span><span class="p">(</span><span class="n">arg_array_vals</span><span class="p">,</span> <span class="n">kwarg_array_vals</span><span class="p">):</span>
@@ -699,7 +717,6 @@
             <span class="k">return</span> <span class="n">backend_fn</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
         <span class="c1"># add function attributes which inform about the input idxs</span>
-
         <span class="n">new_fn</span><span class="o">.</span><span class="n">args</span> <span class="o">=</span> <span class="n">args</span>
         <span class="n">new_fn</span><span class="o">.</span><span class="n">arg_tracked_idxs</span> <span class="o">=</span> <span class="n">arg_tracked_idxs</span>
         <span class="n">new_fn</span><span class="o">.</span><span class="n">arg_param_ids</span> <span class="o">=</span> <span class="n">arg_param_ids</span>
@@ -726,7 +743,7 @@
             <span class="n">new_fn</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">=</span> <span class="n">fn</span><span class="o">.</span><span class="vm">__name__</span>
 
         <span class="c1"># add to graph if compiling</span>
-        <span class="k">if</span> <span class="n">op_logging</span> <span class="ow">and</span> <span class="n">wrapped_stack</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">op_logging</span><span class="p">:</span>
 
             <span class="c1"># add this function to the graph for each output pid</span>
             <span class="k">for</span> <span class="n">pid</span> <span class="ow">in</span> <span class="n">ret_param_ids</span><span class="p">:</span>
@@ -743,7 +760,7 @@
         <span class="n">wrapped_stack</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
 
         <span class="c1"># return the function output</span>
-        <span class="k">return</span> <span class="n">ret_raw</span>
+        <span class="k">return</span> <span class="n">ret</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="n">ret_listified</span> <span class="k">else</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">ret</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="s1">&#39;__name__&#39;</span><span class="p">):</span>
         <span class="n">_method_wrapped</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">=</span> <span class="n">fn</span><span class="o">.</span><span class="vm">__name__</span>
