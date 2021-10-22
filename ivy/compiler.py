@@ -39,9 +39,10 @@ def _get_id(x):
 
 class Param:
 
-    def __init__(self, ptype):
+    def __init__(self, ptype, tree_depth):
         self._count = 0
         self._ptype = ptype
+        self._tree_depth = tree_depth
         self._param_stack = list()
 
     def set(self, val):
@@ -54,7 +55,8 @@ class Param:
         return self._param_stack.pop()
 
     def __repr__(self):
-        return '<Param, type={}, count={}, current={}>'.format(self._ptype, self._count, len(self._param_stack))
+        return '<Param, type={}, depth={}, count={}, current={}>'.format(
+            self._ptype, self._tree_depth, self._count, len(self._param_stack))
 
     def __len__(self):
         return len(self._param_stack)
@@ -62,6 +64,10 @@ class Param:
     @property
     def count(self):
         return self._count
+
+    @property
+    def depth(self):
+        return self._tree_depth
 
 
 class Graph:
@@ -101,10 +107,6 @@ class Graph:
         self._functions_dict = dict()
         self._functions = list()
         self._num_functions = len(self._functions)
-
-        # set unchanging stateful params
-        [self.add_param(pid, ptype) for pid, ptype in zip(self._stateful_param_ids, self._stateful_classes)]
-        [self.set_param(pid, param) for pid, param in zip(self._stateful_param_ids, self._stateful)]
 
         # multiprocessing
         self._timeout = ivy.queue_timeout()
@@ -240,8 +242,8 @@ class Graph:
 
     # compiling
 
-    def add_param(self, pid, ptype):
-        self._param_dict[pid] = Param(ptype)
+    def add_param(self, pid, ptype, tree_height):
+        self._param_dict[pid] = Param(ptype, tree_height)
 
     def increment_param_count(self, pid):
         self._param_dict[pid].set_count(self._param_dict[pid].count + 1)
@@ -274,7 +276,8 @@ class Graph:
         [self.get_param_recursive(pid, depth + 1, fn) for pid in copy.copy(fn.arg_param_ids)]
         [self.get_param_recursive(pid, depth + 1, fn) for pid in copy.copy(fn.kwarg_param_ids)]
         [self.increment_param_count(pid) for pid in fn.arg_param_ids + fn.kwarg_param_ids]
-        [self.add_param(pid, ptype) for pid, ptype in zip(fn.output_param_ids, fn.output_param_types)]
+        [self.add_param(pid, ptype, depth)
+         for pid, ptype in zip(fn.output_param_ids, fn.output_param_types)]
         return
 
     # debugging
@@ -288,15 +291,23 @@ class Graph:
     def _chain_functions(self):
 
         # add input params to param dict
-        [self.add_param(pid, ptype) for pid, ptype in zip(self._arg_param_ids, self._arg_param_types)]
-        [self.add_param(pid, ptype) for pid, ptype in zip(self._kwarg_param_ids, self._kwarg_param_types)]
+        [self.add_param(pid, ptype, 'leaf') for pid, ptype in zip(self._arg_param_ids, self._arg_param_types)]
+        [self.add_param(pid, ptype, 'leaf') for pid, ptype in zip(self._kwarg_param_ids, self._kwarg_param_types)]
 
         # add stateful params to param dict
-        [self.add_param(pid, ptype) for pid, ptype in zip(self._stateful_param_ids, self._stateful_classes)]
+        [self.add_param(pid, ptype, 'leaf') for pid, ptype in zip(self._stateful_param_ids, self._stateful_classes)]
 
         # recursively chain the graph via backward traversal
         [self.get_param_recursive(pid, depth=0) for pid in self._output_param_ids]
         [self.increment_param_count(pid) for pid in self._output_param_ids]
+
+        # sort the param ids based on depth, in order of input to output
+        max_depth = max([p.depth if isinstance(p.depth, int) else 0 for p in self._param_dict.values()])
+        for k, v in self._param_dict.items():
+            if v.depth == 'leaf':
+                # noinspection PyProtectedMember
+                self._param_dict[k]._tree_depth = max_depth + 1
+        self._param_dict = {k: v for k, v in sorted(self._param_dict.items(), key=lambda knv: -knv[1].depth)}
 
         # function for storing function heights
         def store_fn_heights(fn):
@@ -309,7 +320,6 @@ class Graph:
             return _height
 
         # store function heights
-
         [store_fn_heights(self._functions_dict[pid]) for pid in self._output_param_ids]
 
         # find the height of the tree
@@ -342,6 +352,9 @@ class Graph:
          for pid, idx in zip(self._arg_param_ids, self._arg_tracked_idxs)]
         [self.set_param(pid, ivy.index_nest(kwargs, idx))
          for pid, idx in zip(self._kwarg_param_ids, self._kwarg_tracked_idxs)]
+        # ToDo: change so continual resetting of fixed stateful objects as below is not required
+        [self.set_param(pid, val)
+         for pid, val in zip(self._stateful_param_ids, self._stateful)]
         for i, fn in enumerate(self._functions):
             arg_vals = [self.get_param(pid) for pid in fn.arg_param_ids]
             kwarg_vals = [self.get_param(pid) for pid in fn.kwarg_param_ids]
@@ -408,14 +421,13 @@ class Graph:
 
 # Methods #
 
-def _wrap_method_for_compiling(fn, graph, force=False, stateful_classes=None):
+def _wrap_method_for_compiling(fn, graph, limit_attributes=True, stateful_classes=None):
 
     stateful_classes = tuple(ivy.default(stateful_classes, tuple()))
 
-    if not force and\
-            (inspect.isclass(fn) or (hasattr(fn, '__name__') and
-            ((fn.__name__[0] == '_' and fn.__name__ not in ARRAY_BUILTINS) or
-             fn.__name__ in NON_WRAPPED_METHODS + ARRAYLESS_RET_METHODS)) or
+    if (inspect.isclass(fn) or (hasattr(fn, '__name__') and
+                                ((fn.__name__[0] == '_' and fn.__name__ not in ARRAY_BUILTINS) or
+                                 fn.__name__ in NON_WRAPPED_METHODS + ARRAYLESS_RET_METHODS)) or
             (hasattr(fn, 'wrapped_for_compiling') and fn.wrapped_for_compiling)):
         return fn
 
@@ -423,16 +435,20 @@ def _wrap_method_for_compiling(fn, graph, force=False, stateful_classes=None):
     def _method_wrapped(*args, **kwargs):
 
         # return if the wrapping is already happening on a higher level, and it's not a built-in which legitimately
-        # might need to be nested, unless it's a built-in recursion loop in which case return
+        # might need to be nested, unless it's a built-in recursion loop (ie for __getattribute__) in which case return
         global wrapped_stack
         if wrapped_stack and (wrapped_stack[-1].__name__[0:2] != '__' or
                               (wrapped_stack[-1].__name__ == fn.__name__ and args == args and kwargs == kwargs)):
             return fn(*args, **kwargs)
 
         # attributes to ignore
-        if not force and fn.__name__ == '__getattribute__':
+        if fn.__name__ == '__getattribute__':
             att_name = args[-1]
-            if att_name not in GRAPH_ATTRIBUTES[ivy.current_framework_str()]:
+            # return if the attribute being retrieved is another built-in method
+            if att_name[0:2] == '__':
+                return fn(*args, **kwargs)
+            # if the attribute is not recognized as one which can form part of the graph, then return
+            if limit_attributes and att_name not in GRAPH_ATTRIBUTES[ivy.current_framework_str()]:
                 return fn(*args, **kwargs)
 
         # otherwise, set wrapping as true
@@ -470,6 +486,9 @@ def _wrap_method_for_compiling(fn, graph, force=False, stateful_classes=None):
             def backend_fn(__obj, __name, __value):
                 setattr(__obj, __name, __value)
                 return __obj
+        elif fn.__name__ in ['__getattr__', '__getattribute__']:
+            # update the param_id of the retreived attribute object in the graph
+            ret_raw = ivy.copy_array(ret_raw) if ivy.is_array(ret_raw) else copy.copy(ret_raw)
 
         ret = ret_raw if isinstance(ret_raw, tuple) else (ret_raw,)
 
@@ -486,13 +505,19 @@ def _wrap_method_for_compiling(fn, graph, force=False, stateful_classes=None):
             return backend_fn(*args, **kwargs)
 
         # add function attributes which inform about the input idxs
+
+        new_fn.args = args
+        new_fn.arg_tracked_idxs = arg_tracked_idxs
         new_fn.arg_param_ids = arg_param_ids
+
+        new_fn.kwargs = kwargs
+        new_fn.kwarg_tracked_idxs = kwarg_tracked_idxs
         new_fn.kwarg_param_ids = kwarg_param_ids
+
+        new_fn.output_tracked_idxs = ret_tracked_idxs
         new_fn.output_param_ids = ret_param_ids
         new_fn.output_param_types = ret_param_types
-        new_fn.output_tracked_idxs = ret_tracked_idxs
-        new_fn.arg_tracked_idxs = arg_tracked_idxs
-        new_fn.kwarg_tracked_idxs = kwarg_tracked_idxs
+
         fns_in = [graph._functions_dict[pid]
                   for pid in arg_param_ids + kwarg_param_ids if pid in graph._functions_dict]
         for fn_in in fns_in:
@@ -510,7 +535,15 @@ def _wrap_method_for_compiling(fn, graph, force=False, stateful_classes=None):
         if op_logging and wrapped_stack:
 
             # add this function to the graph for each output pid
-            [graph.add_fn_to_dict(pid, new_fn) for pid in ret_param_ids]
+            for pid in ret_param_ids:
+                if pid in graph._functions_dict:
+                    raise Exception(
+                        'tried to add {} to graph._functions_dict, but function {} with the same output pid {} '
+                        'already exists!'.format(
+                            new_fn.__name__ + '(*{}, **{})'.format(new_fn.args, new_fn.kwargs),
+                            graph._functions_dict[pid].__name__ + '(*{}, **{})'.format(
+                                graph._functions_dict[pid].args, graph._functions_dict[pid].kwargs), pid))
+                graph.add_fn_to_dict(pid, new_fn)
 
         # unset wrapping as true
         wrapped_stack.pop(-1)
@@ -544,13 +577,13 @@ def _wrap_methods_for_op_logging(graph, stateful_classes=None):
     for cls in stateful_classes:
         assert hasattr(cls, '__setattr__') and (hasattr(cls, '__getattr__') or hasattr(cls, '__getattribute__'))
         cls.__setattr__ = _wrap_method_for_compiling(
-            cls.__setattr__, graph, force=True, stateful_classes=stateful_classes)
+            cls.__setattr__, graph, limit_attributes=False, stateful_classes=stateful_classes)
         if hasattr(cls, '__getattr__'):
             cls.__getattr__ = _wrap_method_for_compiling(
-                cls.__getattr__, graph, force=True, stateful_classes=stateful_classes)
+                cls.__getattr__, graph, limit_attributes=False, stateful_classes=stateful_classes)
         if hasattr(cls, '__getattribute__'):
             cls.__getattribute__ = _wrap_method_for_compiling(
-                cls.__getattribute__, graph, force=True, stateful_classes=stateful_classes)
+                cls.__getattribute__, graph, limit_attributes=False, stateful_classes=stateful_classes)
 
 
 def _unwrap_methods_from_op_logging(stateful_classes=None):
@@ -573,10 +606,35 @@ def _unwrap_methods_from_op_logging(stateful_classes=None):
 
 
 def compile_graph(fn, *args, stateful=None, num_workers=1, **kwargs):
+
+    # extra stateful instances modified in the graph
     stateful = ivy.default(stateful, [])
-    stateful_classes = [x.__class__ for x in stateful]
+
+    # extract the associated stateful classes
+    stateful_classes = [s.__class__ for s in stateful]
+
+    # copy the states for resetting after forward pass and compilation
+    state_copies = [copy.deepcopy(s.__dict__) for s in stateful]
+
+    # construct the graph
     graph = Graph(fn, *args, **kwargs, stateful=stateful, num_workers=num_workers)
+
+    # wrap all methods for operation logging
     _wrap_methods_for_op_logging(graph, stateful_classes)
+
+    # forward pass through the graph, logging all operations
     graph.log_all_ops()
+
+    # unwrap all methods, now all operations have been logged
     _unwrap_methods_from_op_logging(stateful_classes)
+
+    # reset the stateful objects to their initial state, prior to compilation
+    for s, sc in zip(stateful, state_copies):
+        for k in list(s.__dict__.keys()):
+            if k not in sc:
+                del s.__dict__[k]
+                continue
+            s.__dict__[k] = sc[k]
+
+    # return an efficient compiled function for executing the graph
     return graph.compiled()
