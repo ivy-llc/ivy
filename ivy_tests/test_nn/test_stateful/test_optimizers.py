@@ -20,10 +20,10 @@ from ivy.core.container import Container
 @pytest.mark.parametrize(
     "with_v", [True, False])
 @pytest.mark.parametrize(
-    "dtype_str", ['float32'])
+    "inplace", [True, False])
 @pytest.mark.parametrize(
-    "tensor_fn", [ivy.array, helpers.var_fn])
-def test_sgd_optimizer(bs_ic_oc_target, with_v, dtype_str, tensor_fn, dev_str, call):
+    "dtype_str", ['float32'])
+def test_sgd_optimizer(bs_ic_oc_target, with_v, inplace, dtype_str, dev_str, compile_graph, call):
     # smoke test
     if call is helpers.np_call:
         # NumPy does not support gradients
@@ -39,14 +39,19 @@ def test_sgd_optimizer(bs_ic_oc_target, with_v, dtype_str, tensor_fn, dev_str, c
         v = Container({'w': w, 'b': b})
     else:
         v = None
-    linear_layer = ivy.Linear(input_channels, output_channels,dev_str=dev_str, v=v)
+    linear_layer = ivy.Linear(input_channels, output_channels, dev_str=dev_str, v=v)
 
     def loss_fn(v_):
         out = linear_layer(x, v=v_)
         return ivy.reduce_mean(out)[0]
 
     # optimizer
-    optimizer = ivy.SGD()
+    optimizer = ivy.SGD(inplace=inplace)
+
+    # compile if this mode is set
+    if compile_graph and call is helpers.torch_call:
+        # Currently only PyTorch is supported for ivy compilation
+        optimizer.compile_graph(linear_layer.v, )
 
     # train
     loss_tm1 = 1e12
@@ -86,10 +91,10 @@ def test_sgd_optimizer(bs_ic_oc_target, with_v, dtype_str, tensor_fn, dev_str, c
 @pytest.mark.parametrize(
     "with_v", [True, False])
 @pytest.mark.parametrize(
-    "dtype_str", ['float32'])
+    "inplace", [True, False])
 @pytest.mark.parametrize(
-    "tensor_fn", [ivy.array, helpers.var_fn])
-def test_lars_optimizer(bs_ic_oc_target, with_v, dtype_str, tensor_fn, dev_str, call):
+    "dtype_str", ['float32'])
+def test_lars_optimizer(bs_ic_oc_target, with_v, inplace, dtype_str, dev_str, compile_graph, call):
     # smoke test
     if call is helpers.np_call:
         # NumPy does not support gradients
@@ -112,7 +117,12 @@ def test_lars_optimizer(bs_ic_oc_target, with_v, dtype_str, tensor_fn, dev_str, 
         return ivy.reduce_mean(out)[0]
 
     # optimizer
-    optimizer = ivy.LARS()
+    optimizer = ivy.LARS(inplace=inplace)
+
+    # compile if this mode is set
+    if compile_graph and call is helpers.torch_call:
+        # Currently only PyTorch is supported for ivy compilation
+        optimizer.compile_graph(linear_layer.v)
 
     # train
     loss_tm1 = 1e12
@@ -152,10 +162,10 @@ def test_lars_optimizer(bs_ic_oc_target, with_v, dtype_str, tensor_fn, dev_str, 
 @pytest.mark.parametrize(
     "with_v", [True, False])
 @pytest.mark.parametrize(
-    "dtype_str", ['float32'])
+    "inplace", [True, False])
 @pytest.mark.parametrize(
-    "tensor_fn", [ivy.array, helpers.var_fn])
-def test_adam_optimizer(bs_ic_oc_target, with_v, dtype_str, tensor_fn, dev_str, call):
+    "dtype_str", ['float32'])
+def test_adam_optimizer(bs_ic_oc_target, with_v, inplace, dtype_str, dev_str, compile_graph, call):
     # smoke test
     if call is helpers.np_call:
         # NumPy does not support gradients
@@ -178,7 +188,7 @@ def test_adam_optimizer(bs_ic_oc_target, with_v, dtype_str, tensor_fn, dev_str, 
         return ivy.reduce_mean(out)[0]
 
     # optimizer
-    optimizer = ivy.Adam(dev_str=dev_str)
+    optimizer = ivy.Adam(dev_str=dev_str, inplace=inplace)
 
     # train
     loss, grads = ivy.execute_with_gradients(loss_fn, linear_layer.v)
@@ -220,10 +230,10 @@ def test_adam_optimizer(bs_ic_oc_target, with_v, dtype_str, tensor_fn, dev_str, 
 @pytest.mark.parametrize(
     "with_v", [True, False])
 @pytest.mark.parametrize(
-    "dtype_str", ['float32'])
+    "inplace", [True, False])
 @pytest.mark.parametrize(
-    "tensor_fn", [ivy.array, helpers.var_fn])
-def test_lamb_optimizer(bs_ic_oc_target, with_v, dtype_str, tensor_fn, dev_str, call):
+    "dtype_str", ['float32'])
+def test_lamb_optimizer(bs_ic_oc_target, with_v, inplace, dtype_str, dev_str, compile_graph, call):
     # smoke test
     if call is helpers.np_call:
         # NumPy does not support gradients
@@ -246,7 +256,7 @@ def test_lamb_optimizer(bs_ic_oc_target, with_v, dtype_str, tensor_fn, dev_str, 
         return ivy.reduce_mean(out)[0]
 
     # optimizer
-    optimizer = ivy.LAMB(dev_str=dev_str)
+    optimizer = ivy.LAMB(dev_str=dev_str, inplace=inplace)
 
     # train
     loss, grads = ivy.execute_with_gradients(loss_fn, linear_layer.v)
