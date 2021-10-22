@@ -10,7 +10,7 @@ import importlib
 from ivy.wrapper import _wrap_or_unwrap_methods, NON_WRAPPED_METHODS, ARRAYLESS_RET_METHODS
 
 op_logging = False
-inside_wrapped = False
+wrapped_stack = list()
 
 
 ARRAY_BUILTINS = ['__neg__', '__pow__', '__rpow__', '__add__', '__radd__', '__iadd__', '__sub__', '__rsub__',
@@ -66,24 +66,31 @@ class Param:
 class Graph:
 
     # noinspection PyProtectedMember
-    def __init__(self, fn, *args, num_workers=1, **kwargs):
+    def __init__(self, fn, *args, stateful=None, num_workers=1, **kwargs):
+
+        # stateful
+        self._stateful = ivy.default(stateful, [])
+        self._stateful_classes = tuple([x.__class__ for x in self._stateful])
+        self._stateful_param_ids = [id(x) for x in self._stateful]
 
         # function being compiled into a graph
         self._fn = fn
 
         # positional args
         self._args = args
-        self._arg_array_idxs = ivy.nested_indices_where(args, lambda x: ivy.is_array(x))
-        self._arg_param_ids = [_get_id(x) for x in ivy.multi_index_nest(list(args), self._arg_array_idxs)]
+        self._arg_tracked_idxs = ivy.nested_indices_where(
+            args, lambda x: ivy.is_array(x) or isinstance(x, self._stateful_classes))
+        self._arg_param_ids = [_get_id(x) for x in ivy.multi_index_nest(list(args), self._arg_tracked_idxs)]
 
         # key-word args
         self._kwargs = kwargs
-        self._kwarg_array_idxs = ivy.nested_indices_where(kwargs, lambda x: ivy.is_array(x))
-        self._kwarg_param_ids = [_get_id(x) for x in ivy.multi_index_nest(kwargs, self._kwarg_array_idxs)]
+        self._kwarg_tracked_idxs = ivy.nested_indices_where(
+            kwargs, lambda x: ivy.is_array(x) or isinstance(x, self._stateful_classes))
+        self._kwarg_param_ids = [_get_id(x) for x in ivy.multi_index_nest(kwargs, self._kwarg_tracked_idxs)]
 
         # output param ids
         self._output = None  # initialized during op logging
-        self._output_array_idxs = None  # initialized during op logging
+        self._output_tracked_idxs = None  # initialized during op logging
         self._output_param_ids = list()
 
         # graph storage
@@ -91,6 +98,10 @@ class Graph:
         self._functions_dict = dict()
         self._functions = list()
         self._num_functions = len(self._functions)
+
+        # set unchanging stateful params
+        [self.add_param(pid) for pid in self._stateful_param_ids]
+        [self.set_param(pid, param) for pid, param in zip(self._stateful_param_ids, self._stateful)]
 
         # multiprocessing
         self._timeout = ivy.queue_timeout()
@@ -144,7 +155,7 @@ class Graph:
                 if not isinstance(ret, tuple):
                     ret = (ret,)
                 [self.set_param_multi(pid, ivy.index_nest(ret, idx))
-                 for pid, idx in zip(fn.output_param_ids, fn.output_array_idxs)]
+                 for pid, idx in zip(fn.output_param_ids, fn.output_tracked_idxs)]
             output_queue.put(True)
 
     # Foward with Op Logging #
@@ -161,12 +172,14 @@ class Graph:
             ret = (ret,)
 
         self._output = list(ret)
-        self._output_array_idxs = ivy.nested_indices_where(ret, lambda x: ivy.is_array(x))
+        self._output_tracked_idxs = ivy.nested_indices_where(
+            ret, lambda x: ivy.is_array(x) or isinstance(x, self._stateful_classes))
 
         if not isinstance(ret, tuple):
             ret = (ret,)
-        output_array_idxs = ivy.nested_indices_where(ret, lambda x: ivy.is_array(x))
-        self._output_param_ids = [_get_id(x) for x in ivy.multi_index_nest(list(ret), output_array_idxs)]
+        output_tracked_idxs = ivy.nested_indices_where(
+            ret, lambda x: ivy.is_array(x) or isinstance(x, self._stateful_classes))
+        self._output_param_ids = [_get_id(x) for x in ivy.multi_index_nest(list(ret), output_tracked_idxs)]
 
         # find any inputs which were fed directly to the output, and update pid and add identity function
         for i, pid in enumerate(self._output_param_ids):
@@ -181,7 +194,7 @@ class Graph:
                 new_fn.kwarg_param_ids = list()
                 new_fn.output_param_ids = [new_pid]
                 new_fn.fns_in = list()
-                new_fn.output_array_idxs = [[0]]
+                new_fn.output_tracked_idxs = [[0]]
 
                 self.add_fn_to_dict(new_pid, new_fn)
                 self._output_param_ids[i] = new_pid
@@ -234,16 +247,16 @@ class Graph:
         else:
             if not ivy.exists(receiving_fn):
                 idx = self._output_param_ids.index(pid)
-                del self._output_array_idxs[idx]
+                del self._output_tracked_idxs[idx]
                 del self._output_param_ids[idx]
                 return
             if pid in receiving_fn.arg_param_ids:
                 idx = receiving_fn.arg_param_ids.index(pid)
-                del receiving_fn.arg_array_idxs[idx]
+                del receiving_fn.arg_tracked_idxs[idx]
                 del receiving_fn.arg_param_ids[idx]
             if pid in receiving_fn.kwarg_param_ids:
                 idx = receiving_fn.kwarg_param_ids.index(pid)
-                del receiving_fn.kwarg_array_idxs[idx]
+                del receiving_fn.kwarg_tracked_idxs[idx]
                 del receiving_fn.kwarg_param_ids[idx]
             return
         fn.tree_depth = depth
@@ -267,6 +280,9 @@ class Graph:
         # add input params to param dict
         [self.add_param(pid) for pid in self._arg_param_ids]
         [self.add_param(pid) for pid in self._kwarg_param_ids]
+
+        # add stateful params to param dict
+        [self.add_param(pid) for pid in self._stateful_param_ids]
 
         # recursively chain the graph via backward traversal
         [self.get_param_recursive(pid, depth=0) for pid in self._output_param_ids]
@@ -313,9 +329,9 @@ class Graph:
     def _call(self, *args, **kwargs):
         # ToDo: make this as efficient as possible; this is performed at runtime
         [self.set_param(pid, ivy.index_nest(args, idx))
-         for pid, idx in zip(self._arg_param_ids, self._arg_array_idxs)]
+         for pid, idx in zip(self._arg_param_ids, self._arg_tracked_idxs)]
         [self.set_param(pid, ivy.index_nest(kwargs, idx))
-         for pid, idx in zip(self._kwarg_param_ids, self._kwarg_array_idxs)]
+         for pid, idx in zip(self._kwarg_param_ids, self._kwarg_tracked_idxs)]
         for i, fn in enumerate(self._functions):
             arg_vals = [self.get_param(pid) for pid in fn.arg_param_ids]
             kwarg_vals = [self.get_param(pid) for pid in fn.kwarg_param_ids]
@@ -323,9 +339,9 @@ class Graph:
             if not isinstance(ret, tuple):
                 ret = (ret,)
             [self.set_param(pid, ivy.index_nest(ret, idx))
-             for pid, idx in zip(fn.output_param_ids, fn.output_array_idxs)]
+             for pid, idx in zip(fn.output_param_ids, fn.output_tracked_idxs)]
         ret_vals = [self.get_param(pid) for pid in self._output_param_ids]
-        ivy.set_nest_at_indices(self._output, self._output_array_idxs, ret_vals)
+        ivy.set_nest_at_indices(self._output, self._output_tracked_idxs, ret_vals)
         if len(self._output) == 1:
             return self._output[0]
         return self._output
@@ -333,13 +349,13 @@ class Graph:
     def _multi_call(self, *args, **kwargs):
         # ToDo: make this as efficient as possible; this is performed at runtime
         [self.set_param_multi(pid, ivy.index_nest(args, idx))
-         for pid, idx in zip(self._arg_param_ids, self._arg_array_idxs)]
+         for pid, idx in zip(self._arg_param_ids, self._arg_tracked_idxs)]
         [self.set_param_multi(pid, ivy.index_nest(kwargs, idx))
-         for pid, idx in zip(self._kwarg_param_ids, self._kwarg_array_idxs)]
+         for pid, idx in zip(self._kwarg_param_ids, self._kwarg_tracked_idxs)]
         [q.put(True) for q in self._input_queues]
         [q.get(timeout=None) for q in self._output_queues]
         ret_vals = [self.get_param_multi(pid) for pid in self._output_param_ids]
-        ivy.set_nest_at_indices(self._output, self._output_array_idxs, ret_vals)
+        ivy.set_nest_at_indices(self._output, self._output_tracked_idxs, ret_vals)
         if len(self._output) == 1:
             return self._output[0]
         return self._output
@@ -382,41 +398,48 @@ class Graph:
 
 # Methods #
 
-def _wrap_method_for_compiling(fn, graph):
+def _wrap_method_for_compiling(fn, graph, force=False, stateful_classes=None):
 
-    if inspect.isclass(fn) or (hasattr(fn, '__name__') and
+    stateful_classes = tuple(ivy.default(stateful_classes, tuple()))
+
+    if not force and\
+            (inspect.isclass(fn) or (hasattr(fn, '__name__') and
             ((fn.__name__[0] == '_' and fn.__name__ not in ARRAY_BUILTINS) or
-             fn.__name__ in NON_WRAPPED_METHODS + ARRAYLESS_RET_METHODS)) or\
-            (hasattr(fn, 'wrapped_for_compiling') and fn.wrapped_for_compiling):
+             fn.__name__ in NON_WRAPPED_METHODS + ARRAYLESS_RET_METHODS)) or
+            (hasattr(fn, 'wrapped_for_compiling') and fn.wrapped_for_compiling)):
         return fn
 
     # noinspection PyUnresolvedReferences,PyProtectedMember
     def _method_wrapped(*args, **kwargs):
 
-        # return if the wrapping is already happening on a higher level
-        global inside_wrapped
-        if inside_wrapped:
+        # return if the wrapping is already happening on a higher level, and it's not a built-in which legitimately
+        # might need to be nested, unless it's a built-in recursion loop in which case return
+        global wrapped_stack
+        if wrapped_stack and (wrapped_stack[-1].__name__[0:2] != '__' or
+                              (wrapped_stack[-1].__name__ == fn.__name__ and args == args and kwargs == kwargs)):
             return fn(*args, **kwargs)
 
         # attributes to ignore
-        if fn.__name__ == '__getattribute__':
+        if not force and fn.__name__ == '__getattribute__':
             att_name = args[-1]
             if att_name not in GRAPH_ATTRIBUTES[ivy.current_framework_str()]:
                 return fn(*args, **kwargs)
 
         # otherwise, set wrapping as true
-        inside_wrapped = True
+        wrapped_stack.append(fn)
 
         # immutable tuple to mutable list
         args = list(args)
 
         # get array idxs for positional args
-        arg_array_idxs = ivy.nested_indices_where(args, lambda x: ivy.is_array(x))
-        arg_param_ids = [_get_id(x) for x in ivy.multi_index_nest(args, arg_array_idxs)]
+        arg_tracked_idxs = ivy.nested_indices_where(
+            args, lambda x: ivy.is_array(x) or isinstance(x, stateful_classes))
+        arg_param_ids = [_get_id(x) for x in ivy.multi_index_nest(args, arg_tracked_idxs)]
 
         # get array idxs for key-word args
-        kwarg_array_idxs = ivy.nested_indices_where(kwargs, lambda x: ivy.is_array(x))
-        kwarg_param_ids = [_get_id(x) for x in ivy.multi_index_nest(kwargs, kwarg_array_idxs)]
+        kwarg_tracked_idxs = ivy.nested_indices_where(
+            kwargs, lambda x: ivy.is_array(x) or isinstance(x, stateful_classes))
+        kwarg_param_ids = [_get_id(x) for x in ivy.multi_index_nest(kwargs, kwarg_tracked_idxs)]
 
         # set the backend function
         backend_fn = fn
@@ -425,12 +448,13 @@ def _wrap_method_for_compiling(fn, graph):
         ret_raw = fn(*args, **kwargs)
         if fn.__name__[0:3] == '__i':
             # clone the return values if the function is in-place, to ensure output ids are unique from input ids
-            ret_raw = tuple([ivy.copy_array(x) if ivy.is_array(x) else x for x in ret_raw]) \
+            ret_raw = tuple([ivy.copy_array(x) if ivy.is_array(x) or isinstance(x, stateful_classes)
+                             else x for x in ret_raw]) \
                 if isinstance(ret_raw, tuple) else ivy.array(ivy.to_numpy(ret_raw))
         elif fn.__name__ == '__setattr__':
             # update the param_id of the stateful object in the graph
-            ret_raw = ivy.copy_array(args[0])
-            args[0].param_id = id(ret_raw)
+            ret_raw = ivy.copy_array(args[0]) if ivy.is_array(args[0]) else copy.copy(args[0])
+            args[0].__dict__['param_id'] = id(ret_raw)
 
             # update the setattr method to return the object after attribute setting
             def backend_fn(__obj, __name, __value):
@@ -440,23 +464,23 @@ def _wrap_method_for_compiling(fn, graph):
         ret = ret_raw if isinstance(ret_raw, tuple) else (ret_raw,)
 
         # get array idxs for return
-        ret_array_idxs = ivy.nested_indices_where(ret, lambda x: ivy.is_array(x))
-        ret_param_ids = [_get_id(x) for x in ivy.multi_index_nest(list(ret), ret_array_idxs)]
+        ret_tracked_idxs = ivy.nested_indices_where(ret, lambda x: ivy.is_array(x) or isinstance(x, stateful_classes))
+        ret_param_ids = [_get_id(x) for x in ivy.multi_index_nest(list(ret), ret_tracked_idxs)]
 
         # wrap the function
         def new_fn(arg_array_vals, kwarg_array_vals):
             # ToDo: make this as efficient as possible; this is performed at runtime
-            ivy.set_nest_at_indices(args, arg_array_idxs, arg_array_vals)
-            ivy.set_nest_at_indices(kwargs, kwarg_array_idxs, kwarg_array_vals)
+            ivy.set_nest_at_indices(args, arg_tracked_idxs, arg_array_vals)
+            ivy.set_nest_at_indices(kwargs, kwarg_tracked_idxs, kwarg_array_vals)
             return backend_fn(*args, **kwargs)
 
         # add function attributes which inform about the input idxs
         new_fn.arg_param_ids = arg_param_ids
         new_fn.kwarg_param_ids = kwarg_param_ids
         new_fn.output_param_ids = ret_param_ids
-        new_fn.output_array_idxs = ret_array_idxs
-        new_fn.arg_array_idxs = arg_array_idxs
-        new_fn.kwarg_array_idxs = kwarg_array_idxs
+        new_fn.output_tracked_idxs = ret_tracked_idxs
+        new_fn.arg_tracked_idxs = arg_tracked_idxs
+        new_fn.kwarg_tracked_idxs = kwarg_tracked_idxs
         fns_in = [graph._functions_dict[pid]
                   for pid in arg_param_ids + kwarg_param_ids if pid in graph._functions_dict]
         for fn_in in fns_in:
@@ -471,13 +495,13 @@ def _wrap_method_for_compiling(fn, graph):
             new_fn.__name__ = fn.__name__
 
         # add to graph if compiling
-        if op_logging and inside_wrapped:
+        if op_logging and wrapped_stack:
 
             # add this function to the graph for each output pid
             [graph.add_fn_to_dict(pid, new_fn) for pid in ret_param_ids]
 
         # unset wrapping as true
-        inside_wrapped = False
+        wrapped_stack.pop(-1)
 
         # return the function output
         return ret_raw
@@ -495,23 +519,52 @@ def _unwrap_method_from_compiling(method_wrapped):
     return method_wrapped.inner_fn
 
 
-def _wrap_methods_for_op_logging(graph):
+def _wrap_methods_for_op_logging(graph, stateful_classes=None):
+
+    # wrap backend framework
     classes_to_wrap = [getattr(importlib.import_module(ctw[0]), ctw[1])
                        for ctw in CLASSES_TO_WRAP[ivy.current_framework_str()]]
-    return _wrap_or_unwrap_methods(
+    _wrap_or_unwrap_methods(
         lambda fn: _wrap_method_for_compiling(fn, graph), classes_to_wrap=classes_to_wrap, native=True)
 
+    # wrap stateful classes
+    stateful_classes = ivy.default(stateful_classes, [])
+    for cls in stateful_classes:
+        assert hasattr(cls, '__setattr__') and (hasattr(cls, '__getattr__') or hasattr(cls, '__getattribute__'))
+        cls.__setattr__ = _wrap_method_for_compiling(
+            cls.__setattr__, graph, force=True, stateful_classes=stateful_classes)
+        if hasattr(cls, '__getattr__'):
+            cls.__getattr__ = _wrap_method_for_compiling(
+                cls.__getattr__, graph, force=True, stateful_classes=stateful_classes)
+        if hasattr(cls, '__getattribute__'):
+            cls.__getattribute__ = _wrap_method_for_compiling(
+                cls.__getattribute__, graph, force=True, stateful_classes=stateful_classes)
 
-def _unwrap_methods_from_op_logging():
+
+def _unwrap_methods_from_op_logging(stateful_classes=None):
+
+    # unwrap backend framework
     classes_to_wrap = [getattr(importlib.import_module(ctw[0]), ctw[1])
-                       for ctw in CLASSES_TO_WRAP[ivy.current_framework_str()]]
-    return _wrap_or_unwrap_methods(
+                       for ctw in CLASSES_TO_WRAP[ivy.current_framework_str()]] + stateful_classes
+    _wrap_or_unwrap_methods(
         lambda fn: _unwrap_method_from_compiling(fn), classes_to_wrap=classes_to_wrap, native=True)
 
+    # unwrap stateful classes
+    stateful_classes = ivy.default(stateful_classes, [])
+    for cls in stateful_classes:
+        assert hasattr(cls, '__setattr__') and (hasattr(cls, '__getattr__') or hasattr(cls, '__getattribute__'))
+        cls.__setattr__ = _unwrap_method_from_compiling(cls.__setattr__)
+        if hasattr(cls, '__getattr__'):
+            cls.__getattr__ = _unwrap_method_from_compiling(cls.__getattr__)
+        if hasattr(cls, '__getattribute__'):
+            cls.__getattribute__ = _unwrap_method_from_compiling(cls.__getattribute__)
 
-def compile_graph(fn, *args, num_workers=1, **kwargs):
-    graph = Graph(fn, *args, **kwargs, num_workers=num_workers)
-    _wrap_methods_for_op_logging(graph)
+
+def compile_graph(fn, *args, stateful=None, num_workers=1, **kwargs):
+    stateful = ivy.default(stateful, [])
+    stateful_classes = [x.__class__ for x in stateful]
+    graph = Graph(fn, *args, **kwargs, stateful=stateful, num_workers=num_workers)
+    _wrap_methods_for_op_logging(graph, stateful_classes)
     graph.log_all_ops()
-    _unwrap_methods_from_op_logging()
+    _unwrap_methods_from_op_logging(stateful_classes)
     return graph.compiled()
