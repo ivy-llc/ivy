@@ -2405,8 +2405,8 @@ class Container(dict):
 
     def with_print_limit(self, print_limit):
         return Container(self,
-                         **{**self._config, **{'print_limit': print_limit}},
-                         rebuild_child_containers=True)
+                         **{**self._config, **{'print_limit': print_limit,
+                                               'rebuild_child_containers': True}})
 
     # noinspection PyTypeChecker
     def remove_print_limit(self):
@@ -2414,13 +2414,13 @@ class Container(dict):
 
     def with_print_indent(self, print_indent):
         return Container(self,
-                         **{**self._config, **{'print_indent': print_indent}},
-                         rebuild_child_containers=True)
+                         **{**self._config, **{'print_indent': print_indent,
+                                               'rebuild_child_containers': True}})
 
     def with_print_line_spacing(self, print_line_spacing):
         return Container(self,
-                         **{**self._config, **{'print_line_spacing': print_line_spacing}},
-                         rebuild_child_containers=True)
+                         **{**self._config, **{'print_line_spacing': print_line_spacing,
+                                               'rebuild_child_containers': True}})
 
     # Built-ins #
     # ----------#
