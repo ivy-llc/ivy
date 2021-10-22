@@ -78,6 +78,21 @@ class Optimizer(abc.ABC):
             return v.set_at_keys(self._step(v.at_key_chains(grads), grads))
         return self._step(v, grads)
 
+    def compile_graph(self, v, grads=None, ignore_missing=False):
+        """
+        Compile the optimizer step.
+
+        :param v: Nested variables to update.
+        :type v: Ivy container of variables
+        :param grads: Nested gradients to update.
+        :type grads: sequence of arrays
+        :param ignore_missing: Whether to ignore keys missing from the gradients which exist in the variables.
+                               Default is False.
+        :type ignore_missing: bool, optional
+        """
+        # noinspection PyAttributeOutsideInit
+        self.step = ivy.compile_graph(self.step, v, ivy.default(grads, v.deep_copy()), ignore_missing, stateful=[self])
+
 
 # Optimizers #
 # -----------#
