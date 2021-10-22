@@ -9,6 +9,7 @@ import importlib
 # local
 from ivy.wrapper import _wrap_or_unwrap_methods, NON_WRAPPED_METHODS, ARRAYLESS_RET_METHODS
 
+cloning = False
 op_logging = False
 wrapped_stack = list()
 
@@ -28,7 +29,7 @@ CLASSES_TO_WRAP = {'numpy': [],
 GRAPH_ATTRIBUTES = {'numpy': [],
                    'jax': [],
                    'tensorflow': [],
-                   'torch': ['data'],
+                   'torch': ['data', 'requires_grad'],
                    'mxnet': []}
 
 def _get_id(x):
@@ -421,6 +422,16 @@ class Graph:
 
 # Methods #
 
+def _clone_param(x):
+    global cloning
+    cloning = True
+    x_copy = copy.copy(x)  # copy the param
+    if hasattr(x, '__dict__'):
+        x.__dict__['param_id'] = id(x_copy)  # update the id of the original param (for preserved stateful objects)
+    cloning = False
+    return x_copy
+
+
 def _wrap_method_for_compiling(fn, graph, limit_attributes=True, stateful_classes=None):
 
     stateful_classes = tuple(ivy.default(stateful_classes, tuple()))
@@ -433,6 +444,11 @@ def _wrap_method_for_compiling(fn, graph, limit_attributes=True, stateful_classe
 
     # noinspection PyUnresolvedReferences,PyProtectedMember
     def _method_wrapped(*args, **kwargs):
+
+        # if cloning a param currently, return directly via the original function
+        global cloning
+        if cloning:
+            return fn(*args, **kwargs)
 
         # return if the wrapping is already happening on a higher level, and it's not a built-in which legitimately
         # might need to be nested, unless it's a built-in recursion loop (ie for __getattribute__) in which case return
@@ -498,20 +514,13 @@ def _wrap_method_for_compiling(fn, graph, limit_attributes=True, stateful_classe
         # clone the param when getting an attribute, to preserve uniqueness in the graph
         if fn.__name__ in ['__getattr__', '__getattribute__']:
             # update the param_id of the retreived attribute object in the graph
-            ret = [copy.copy(ret[0])]
+            ret = [_clone_param(ret[0])]
 
         # find all duplicate param ids from the input in the return
         duplicates = list()
         for i, ret_pid in enumerate(ret_param_ids):
             if ret_pid in arg_param_ids + kwarg_param_ids:
                 duplicates.append(i)
-
-        # clone method
-        def _clone_param(x):
-            x_copy = copy.copy(x)  # copy the param
-            if hasattr(x, '__dict__'):
-                x.__dict__['param_id'] = id(x_copy)  # update the id of the original param (for preserved stateful objects)
-            return x_copy
 
         # clone all repeated return parameters to give unique parameter ids in the graph
         duplicate_tracked_idxs = [ret_tracked_idxs[i] for i in duplicates]
