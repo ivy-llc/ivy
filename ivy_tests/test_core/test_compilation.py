@@ -36,73 +36,6 @@ def _fn_2(x, with_non_compiled: bool = False):
     return (x + 10)**0.5 - 5
 
 
-# functional
-
-def _fn_3(x, with_non_compiled: bool = False, with_internal_gen: bool = False):
-    if with_internal_gen:
-        x += ivy.array([1.])
-    time.sleep(0.05)
-    if with_non_compiled:
-        (x + 3) * 4  # ops not to be compiled into the graph
-    return ivy.reduce_mean(ivy.reduce_sum(x, keepdims=True), keepdims=True)
-
-
-def _fn_4(x, with_non_compiled: bool = False, with_internal_gen: bool = False):
-    if with_internal_gen:
-        x += ivy.array([1.])
-    y = ivy.reduce_mean(x)
-    z = ivy.reduce_sum(x)
-    f = ivy.reduce_var(y)
-    time.sleep(0.05)
-    k = ivy.cos(z)
-    m = ivy.sin(f)
-    o = ivy.tan(y)
-    if with_non_compiled:
-        (x + 3) * 4  # ops not to be compiled into the graph
-    return ivy.concatenate([k, m, o], -1)
-
-
-# input in output
-
-def _input_in_output(x, y):
-    return x + 2, y
-
-
-# inplace variable update
-
-def _inplace_var_update(weight, grad):
-    weight.data -= grad
-    return weight
-
-
-# random
-
-def _rand_fn(x, with_non_compiled: bool = False):
-    if with_non_compiled:
-        (x + 3) * 4  # ops not to be compiled into the graph
-    return x + ivy.random_uniform(0., 1., x.shape)
-
-
-# detached divide
-
-def _detach_div_fn(x):
-    return x + (ivy.array([1.]) / ivy.array([2.]))
-
-
-# wide
-
-def _wide_fn(x, with_non_compiled: bool = False, with_internal_gen: bool = False):
-    if with_internal_gen:
-        x += ivy.array([1.])
-    if with_non_compiled:
-        (x + 3) * 4  # ops not to be compiled into the graph
-    graph_width = 10
-    xs = [x]*graph_width
-    for i in range(5):
-        xs = [x_ + j for x_, j in zip(xs, range(graph_width))]
-    return ivy.concatenate(xs, 0)
-
-
 @pytest.mark.parametrize(
     "x", [[1], [[0.0, 1.0], [2.0, 3.0]]])
 @pytest.mark.parametrize(
@@ -209,6 +142,32 @@ def test_compile_graph_inplace(x_raw, dtype_str, tensor_fn, with_non_compiled, d
     assert comp_time_taken < non_comp_time_taken
 
 
+# functional
+
+def _fn_3(x, with_non_compiled: bool = False, with_internal_gen: bool = False):
+    if with_internal_gen:
+        x += ivy.array([1.])
+    time.sleep(0.05)
+    if with_non_compiled:
+        (x + 3) * 4  # ops not to be compiled into the graph
+    return ivy.reduce_mean(ivy.reduce_sum(x, keepdims=True), keepdims=True)
+
+
+def _fn_4(x, with_non_compiled: bool = False, with_internal_gen: bool = False):
+    if with_internal_gen:
+        x += ivy.array([1.])
+    y = ivy.reduce_mean(x)
+    z = ivy.reduce_sum(x)
+    f = ivy.reduce_var(y)
+    time.sleep(0.05)
+    k = ivy.cos(z)
+    m = ivy.sin(f)
+    o = ivy.tan(y)
+    if with_non_compiled:
+        (x + 3) * 4  # ops not to be compiled into the graph
+    return ivy.concatenate([k, m, o], -1)
+
+
 # noinspection PyUnresolvedReferences
 @pytest.mark.parametrize(
     "x_raw", [[1]])
@@ -279,6 +238,14 @@ def test_compile_graph(x_raw, dtype_str, tensor_fn, with_non_compiled, with_inte
     assert comp_time_taken < non_comp_time_taken
 
 
+# random
+
+def _rand_fn(x, with_non_compiled: bool = False):
+    if with_non_compiled:
+        (x + 3) * 4  # ops not to be compiled into the graph
+    return x + ivy.random_uniform(0., 1., x.shape)
+
+
 # noinspection PyUnresolvedReferences
 @pytest.mark.parametrize(
     "x_raw", [[1]])
@@ -322,6 +289,12 @@ def test_compile_graph_w_random(x_raw, dtype_str, tensor_fn, with_non_compiled, 
     assert len(list(comp_fn.__self__._functions)) == 4
 
 
+# detached divide
+
+def _detach_div_fn(x):
+    return x + (ivy.array([1.]) / ivy.array([2.]))
+
+
 # noinspection PyUnresolvedReferences
 @pytest.mark.parametrize(
     "x_raw", [[1]])
@@ -352,6 +325,12 @@ def test_compile_graph_w_detached_divide(x_raw, dtype_str, tensor_fn, dev_str, c
     x = tensor_fn(x_raw, dtype_str, dev_str)
     c_return = comp_fn(x)
     assert np.allclose(ivy.to_numpy(nc_return), ivy.to_numpy(c_return))
+
+
+# input in output
+
+def _input_in_output(x, y):
+    return x + 2, y
 
 
 # noinspection PyUnresolvedReferences
@@ -388,6 +367,13 @@ def test_compile_graph_input_in_output(x_raw, dtype_str, tensor_fn, dev_str, cal
     assert np.allclose(ivy.to_numpy(nc_ret_b), ivy.to_numpy(c_ret_b))
 
 
+# inplace variable update
+
+def _inplace_var_update(weight, grad):
+    weight.data -= grad
+    return weight
+
+
 # noinspection PyUnresolvedReferences
 @pytest.mark.parametrize(
     "weight_n_grad", [([1], [2])])
@@ -418,6 +404,22 @@ def test_compile_graph_inplace_var_update(weight_n_grad, dtype_str, dev_str, cal
     assert not np.allclose(np.asarray(weight_raw), ivy.to_numpy(nc_new_weight))
     assert not np.allclose(np.asarray(weight_raw), ivy.to_numpy(c_new_weight))
     assert np.allclose(ivy.to_numpy(nc_new_weight), ivy.to_numpy(c_new_weight))
+
+
+
+
+# wide
+
+def _wide_fn(x, with_non_compiled: bool = False, with_internal_gen: bool = False):
+    if with_internal_gen:
+        x += ivy.array([1.])
+    if with_non_compiled:
+        (x + 3) * 4  # ops not to be compiled into the graph
+    graph_width = 10
+    xs = [x]*graph_width
+    for i in range(5):
+        xs = [x_ + j for x_, j in zip(xs, range(graph_width))]
+    return ivy.concatenate(xs, 0)
 
 
 # noinspection PyUnresolvedReferences
