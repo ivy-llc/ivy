@@ -472,30 +472,48 @@ def _wrap_method_for_compiling(fn, graph, limit_attributes=True, stateful_classe
 
         # compute the return
         ret_raw = fn(*args, **kwargs)
-        if fn.__name__[0:3] == '__i':
-            # clone the return values if the function is in-place, to ensure output ids are unique from input ids
-            ret_raw = tuple([ivy.copy_array(x) if ivy.is_array(x) or isinstance(x, stateful_classes)
-                             else x for x in ret_raw]) \
-                if isinstance(ret_raw, tuple) else ivy.array(ivy.to_numpy(ret_raw))
-        elif fn.__name__ == '__setattr__':
-            # update the param_id of the stateful object in the graph
-            ret_raw = ivy.copy_array(args[0]) if ivy.is_array(args[0]) else copy.copy(args[0])
-            args[0].__dict__['param_id'] = id(ret_raw)
+
+        # provide return value for __setattr__
+        if fn.__name__ == '__setattr__':
+            ret_raw = args[0]
 
             # update the setattr method to return the object after attribute setting
             def backend_fn(__obj, __name, __value):
                 setattr(__obj, __name, __value)
                 return __obj
-        elif fn.__name__ in ['__getattr__', '__getattribute__']:
-            # update the param_id of the retreived attribute object in the graph
-            ret_raw = ivy.copy_array(ret_raw) if ivy.is_array(ret_raw) else copy.copy(ret_raw)
 
-        ret = ret_raw if isinstance(ret_raw, tuple) else (ret_raw,)
+        # covert return to list
+        ret_listified = False
+        if isinstance(ret_raw, tuple):
+            ret = ret_raw
+        else:
+            ret = [ret_raw]
+            ret_listified = True
 
         # get array idxs for return
         ret_tracked_idxs = ivy.nested_indices_where(ret, lambda x: ivy.is_array(x) or isinstance(x, stateful_classes))
         ret_param_ids = [_get_id(x) for x in ivy.multi_index_nest(list(ret), ret_tracked_idxs)]
         ret_param_types = [x.__class__ for x in ivy.multi_index_nest(list(ret), ret_tracked_idxs)]
+
+        # find all duplicate param ids from the input in the return
+        duplicates = list()
+        for i, ret_pid in enumerate(ret_param_ids):
+            if ret_pid in arg_param_ids + kwarg_param_ids:
+                duplicates.append(i)
+
+        # clone method
+        def _clone_param(x):
+            x_copy = ivy.copy_array(x) if ivy.is_array(x) else copy.copy(x)  # copy the param
+            if hasattr(x, '__dict__'):
+                x.__dict__['param_id'] = id(x_copy)  # update the id of the original param (for preserved stateful objects)
+            return x_copy
+
+        # clone all repeated return parameters to give unique parameter ids in the graph
+        duplicate_tracked_idxs = [ret_tracked_idxs[i] for i in duplicates]
+        ivy.map_nest_at_indices(ret, duplicate_tracked_idxs, _clone_param)
+
+        # get return param ids
+        ret_param_ids = [_get_id(x) for x in ivy.multi_index_nest(list(ret), ret_tracked_idxs)]
 
         # wrap the function
         def new_fn(arg_array_vals, kwarg_array_vals):
@@ -505,7 +523,6 @@ def _wrap_method_for_compiling(fn, graph, limit_attributes=True, stateful_classe
             return backend_fn(*args, **kwargs)
 
         # add function attributes which inform about the input idxs
-
         new_fn.args = args
         new_fn.arg_tracked_idxs = arg_tracked_idxs
         new_fn.arg_param_ids = arg_param_ids
@@ -532,7 +549,7 @@ def _wrap_method_for_compiling(fn, graph, limit_attributes=True, stateful_classe
             new_fn.__name__ = fn.__name__
 
         # add to graph if compiling
-        if op_logging and wrapped_stack:
+        if op_logging:
 
             # add this function to the graph for each output pid
             for pid in ret_param_ids:
@@ -549,7 +566,7 @@ def _wrap_method_for_compiling(fn, graph, limit_attributes=True, stateful_classe
         wrapped_stack.pop(-1)
 
         # return the function output
-        return ret_raw
+        return ret[0] if ret_listified else tuple(ret)
 
     if hasattr(fn, '__name__'):
         _method_wrapped.__name__ = fn.__name__
