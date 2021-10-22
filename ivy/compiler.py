@@ -302,7 +302,7 @@ class Graph:
         [self.increment_param_count(pid) for pid in self._output_param_ids]
 
         # sort the param ids based on depth, in order of input to output
-        max_depth = max([p.depth if isinstance(p.depth, int) else 0 for p in self._param_dict.values()])
+        max_depth = max([p.depth if isinstance(p.depth, int) else 1 for p in self._param_dict.values()])
         for k, v in self._param_dict.items():
             if v.depth == 'leaf':
                 # noinspection PyProtectedMember
