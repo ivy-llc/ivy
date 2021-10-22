@@ -14,7 +14,7 @@ import ivy
 
 class Optimizer(abc.ABC):
 
-    def __init__(self, lr, inplace=True, stop_gradients=True):
+    def __init__(self, lr, inplace=True, stop_gradients=True, init_on_first_step=False, dev_str=None):
         """
         Construct an general Optimizer. This is an abstract class, and must be derived.
 
@@ -25,13 +25,21 @@ class Optimizer(abc.ABC):
         :type inplace: bool, optional
         :param stop_gradients: Whether to stop the gradients of the variables after each gradient step. Default is True.
         :type stop_gradients: bool, optional
+        :param init_on_first_step: Whether the optimizer is initialized on the first step. Default is False.
+        :type init_on_first_step: bool, optional
+        :param dev_str: device on which to create the layer's variables 'cuda:0', 'cuda:1', 'cpu' etc.
+        :type dev_str: str, optional
         """
         self._lr = lr
         self._inplace = inplace
         self._stop_gradients = stop_gradients
+        self._init_on_first_step = init_on_first_step
+        self._dev_str = ivy.default(dev_str, ivy.default_device())
+        self._count = ivy.array([0], dev_str=self._dev_str)
+        self._compiled = False
 
-    # Public #
-    # -------#
+    # Private #
+    # --------#
 
     # Abstract #
 
@@ -48,6 +56,22 @@ class Optimizer(abc.ABC):
         :return: The updated variables, following update step.
         """
         raise NotImplementedError
+
+    # Given #
+
+    def _step_fn(self, v, grads, ignore_missing):
+        if ignore_missing:
+            return v.set_at_keys(self._step(v.at_key_chains(grads), grads))
+        return self._step(v, grads)
+
+    def _compile_step_fn(self, v, grads, ignore_missing):
+        self._step_fn = \
+            ivy.compile_graph(self._step_fn, v, ivy.default(grads, v.deep_copy()), ignore_missing, stateful=[self])
+
+    # Public #
+    # -------#
+
+    # Abstract #
 
     @abc.abstractmethod
     def set_state(self, state):
@@ -74,9 +98,10 @@ class Optimizer(abc.ABC):
         :type ignore_missing: bool, optional
         :return: The updated variables, following update step.
         """
-        if ignore_missing:
-            return v.set_at_keys(self._step(v.at_key_chains(grads), grads))
-        return self._step(v, grads)
+        if self._count == 1 and self._init_on_first_step and self._compiled:
+            self._compile_step_fn(v, grads, ignore_missing)
+        self._count += 1
+        return self._step_fn(v, grads, ignore_missing=False)
 
     def compile_graph(self, v, grads=None, ignore_missing=False):
         """
@@ -90,8 +115,9 @@ class Optimizer(abc.ABC):
                                Default is False.
         :type ignore_missing: bool, optional
         """
-        # noinspection PyAttributeOutsideInit
-        self.step = ivy.compile_graph(self.step, v, ivy.default(grads, v.deep_copy()), ignore_missing, stateful=[self])
+        if not self._init_on_first_step:
+            self._compile_step_fn(v, grads, ignore_missing)
+        self._compiled = True
 
 
 # Optimizers #
@@ -210,17 +236,15 @@ class Adam(Optimizer):
         :type inplace: bool, optional
         :param stop_gradients: Whether to stop the gradients of the variables after each gradient step. Default is True.
         :type stop_gradients: bool, optional
-        :param dev_str: device on which to create the layer's variables 'cuda:0', 'cuda:1', 'cpu' etc.
-        :type dev_str: str, optional
         """
-        Optimizer.__init__(self, lr, inplace, stop_gradients)
+        Optimizer.__init__(self, lr, inplace, stop_gradients, True, dev_str)
         self._beta1 = beta1
         self._beta2 = beta2
         self._epsilon = epsilon
         self._mw = None
         self._vw = None
-        self._count = ivy.array([0], dev_str=dev_str)
         self._first_pass = True
+        self._should_compile = False
 
     # Custom Step
 
@@ -241,7 +265,6 @@ class Adam(Optimizer):
         new_v, self._mw, self._vw = ivy.adam_update(
             v, grads, self._lr if isinstance(self._lr, float) else self._lr(), self._mw, self._vw, self._count,
             self._beta1, self._beta2, self._epsilon, self._inplace, self._stop_gradients)
-        self._count += 1
         return new_v
 
     def set_state(self, state):
@@ -287,14 +310,12 @@ class LAMB(Optimizer):
         :param dev_str: device on which to create the layer's variables 'cuda:0', 'cuda:1', 'cpu' etc.
         :type dev_str: str, optional
         """
-        Optimizer.__init__(self, lr, inplace, stop_gradients)
+        Optimizer.__init__(self, lr, inplace, stop_gradients, True, dev_str)
         self._beta1 = beta1
         self._beta2 = beta2
         self._epsilon = epsilon
         self._mw = None
         self._vw = None
-        self._first_pass = True
-        self._count = ivy.array([0], dev_str=dev_str)
         self._max_trust_ratio = max_trust_ratio
         self._decay_lambda = decay_lambda
         self._first_pass = True
@@ -319,7 +340,6 @@ class LAMB(Optimizer):
             v, grads, self._lr if isinstance(self._lr, float) else self._lr(), self._mw, self._vw, self._count,
             self._beta1, self._beta2, self._epsilon, self._max_trust_ratio, self._decay_lambda, self._inplace,
             self._stop_gradients)
-        self._count += 1
         return new_v
 
     def set_state(self, state):
