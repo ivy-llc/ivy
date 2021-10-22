@@ -442,8 +442,8 @@ def _wrap_method_for_compiling(fn, graph, limit_attributes=True, stateful_classe
             return fn(*args, **kwargs)
 
         # attributes to ignore
-        if fn.__name__ == '__getattribute__':
-            att_name = args[-1]
+        if fn.__name__ in ['__getattr__', '__setattr__', '__getattribute__']:
+            att_name = args[1]
             # return if the attribute being retrieved is another built-in method
             if att_name[0:2] == '__':
                 return fn(*args, **kwargs)
