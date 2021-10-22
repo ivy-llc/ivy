@@ -84,18 +84,18 @@ class Graph:
         self._fn = fn
 
         # positional args
-        self._args = args
-        self._arg_param_types = [a.__class__ for a in self._args]
+        self._args = list(args)
         self._arg_tracked_idxs = ivy.nested_indices_where(
-            args, lambda x: ivy.is_array(x) or isinstance(x, self._stateful_classes))
-        self._arg_param_ids = [_get_id(x) for x in ivy.multi_index_nest(list(args), self._arg_tracked_idxs)]
+            args, lambda a: ivy.is_array(a) or isinstance(a, self._stateful_classes))
+        self._arg_param_ids = [_get_id(a) for a in ivy.multi_index_nest(args, self._arg_tracked_idxs)]
+        self._arg_param_types = [a.__class__ for a in ivy.multi_index_nest(args, self._arg_tracked_idxs)]
 
         # key-word args
         self._kwargs = kwargs
-        self._kwarg_param_types = [v.__class__ for v in self._kwargs.values()]
         self._kwarg_tracked_idxs = ivy.nested_indices_where(
-            kwargs, lambda x: ivy.is_array(x) or isinstance(x, self._stateful_classes))
-        self._kwarg_param_ids = [_get_id(x) for x in ivy.multi_index_nest(kwargs, self._kwarg_tracked_idxs)]
+            kwargs, lambda v: ivy.is_array(v) or isinstance(v, self._stateful_classes))
+        self._kwarg_param_ids = [_get_id(v) for v in ivy.multi_index_nest(kwargs, self._kwarg_tracked_idxs)]
+        self._kwarg_param_types = [v.__class__ for v in ivy.multi_index_nest(kwargs, self._kwarg_tracked_idxs)]
 
         # output param ids
         self._output = None  # initialized during op logging
@@ -492,8 +492,8 @@ def _wrap_method_for_compiling(fn, graph, limit_attributes=True, stateful_classe
 
         # get array idxs for return
         ret_tracked_idxs = ivy.nested_indices_where(ret, lambda x: ivy.is_array(x) or isinstance(x, stateful_classes))
-        ret_param_ids = [_get_id(x) for x in ivy.multi_index_nest(list(ret), ret_tracked_idxs)]
-        ret_param_types = [x.__class__ for x in ivy.multi_index_nest(list(ret), ret_tracked_idxs)]
+        ret_param_ids = [_get_id(x) for x in ivy.multi_index_nest(ret, ret_tracked_idxs)]
+        ret_param_types = [x.__class__ for x in ivy.multi_index_nest(ret, ret_tracked_idxs)]
 
         # clone the param when getting an attribute, to preserve uniqueness in the graph
         if fn.__name__ in ['__getattr__', '__getattribute__']:
