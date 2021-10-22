@@ -513,8 +513,8 @@ def _wrap_method_for_compiling(fn, graph, limit_attributes=True, stateful_classe
 
         # clone the param when getting an attribute, to preserve uniqueness in the graph
         if fn.__name__ in ['__getattr__', '__getattribute__']:
-            # update the param_id of the retreived attribute object in the graph
-            ret = [_clone_param(ret[0])]
+            # update the param_id for each param in the retreived attribute in the graph
+            ivy.map_nest_at_indices(ret, ret_tracked_idxs, _clone_param)
 
         # find all duplicate param ids from the input in the return
         duplicates = list()
@@ -527,7 +527,7 @@ def _wrap_method_for_compiling(fn, graph, limit_attributes=True, stateful_classe
         ivy.map_nest_at_indices(ret, duplicate_tracked_idxs, _clone_param)
 
         # get return param ids
-        ret_param_ids = [_get_id(x) for x in ivy.multi_index_nest(list(ret), ret_tracked_idxs)]
+        ret_param_ids = [_get_id(x) for x in ivy.multi_index_nest(ret, ret_tracked_idxs)]
 
         # wrap the function
         def new_fn(arg_array_vals, kwarg_array_vals):
