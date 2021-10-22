@@ -203,6 +203,7 @@
 <span class="c1"># local</span>
 <span class="kn">from</span> <span class="nn">ivy.wrapper</span> <span class="kn">import</span> <span class="n">_wrap_or_unwrap_methods</span><span class="p">,</span> <span class="n">NON_WRAPPED_METHODS</span><span class="p">,</span> <span class="n">ARRAYLESS_RET_METHODS</span>
 
+<span class="n">cloning</span> <span class="o">=</span> <span class="kc">False</span>
 <span class="n">op_logging</span> <span class="o">=</span> <span class="kc">False</span>
 <span class="n">wrapped_stack</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
 
@@ -222,7 +223,7 @@
 <span class="n">GRAPH_ATTRIBUTES</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;numpy&#39;</span><span class="p">:</span> <span class="p">[],</span>
                    <span class="s1">&#39;jax&#39;</span><span class="p">:</span> <span class="p">[],</span>
                    <span class="s1">&#39;tensorflow&#39;</span><span class="p">:</span> <span class="p">[],</span>
-                   <span class="s1">&#39;torch&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">],</span>
+                   <span class="s1">&#39;torch&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">,</span> <span class="s1">&#39;requires_grad&#39;</span><span class="p">],</span>
                    <span class="s1">&#39;mxnet&#39;</span><span class="p">:</span> <span class="p">[]}</span>
 
 <span class="k">def</span> <span class="nf">_get_id</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
@@ -615,6 +616,16 @@
 
 <span class="c1"># Methods #</span>
 
+<span class="k">def</span> <span class="nf">_clone_param</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="k">global</span> <span class="n">cloning</span>
+    <span class="n">cloning</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="n">x_copy</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>  <span class="c1"># copy the param</span>
+    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="s1">&#39;__dict__&#39;</span><span class="p">):</span>
+        <span class="n">x</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="s1">&#39;param_id&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">id</span><span class="p">(</span><span class="n">x_copy</span><span class="p">)</span>  <span class="c1"># update the id of the original param (for preserved stateful objects)</span>
+    <span class="n">cloning</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="k">return</span> <span class="n">x_copy</span>
+
+
 <span class="k">def</span> <span class="nf">_wrap_method_for_compiling</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="n">graph</span><span class="p">,</span> <span class="n">limit_attributes</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">stateful_classes</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 
     <span class="n">stateful_classes</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">default</span><span class="p">(</span><span class="n">stateful_classes</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">()))</span>
@@ -627,6 +638,11 @@
 
     <span class="c1"># noinspection PyUnresolvedReferences,PyProtectedMember</span>
     <span class="k">def</span> <span class="nf">_method_wrapped</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+
+        <span class="c1"># if cloning a param currently, return directly via the original function</span>
+        <span class="k">global</span> <span class="n">cloning</span>
+        <span class="k">if</span> <span class="n">cloning</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">fn</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
         <span class="c1"># return if the wrapping is already happening on a higher level, and it&#39;s not a built-in which legitimately</span>
         <span class="c1"># might need to be nested, unless it&#39;s a built-in recursion loop (ie for __getattribute__) in which case return</span>
@@ -692,20 +708,13 @@
         <span class="c1"># clone the param when getting an attribute, to preserve uniqueness in the graph</span>
         <span class="k">if</span> <span class="n">fn</span><span class="o">.</span><span class="vm">__name__</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;__getattr__&#39;</span><span class="p">,</span> <span class="s1">&#39;__getattribute__&#39;</span><span class="p">]:</span>
             <span class="c1"># update the param_id of the retreived attribute object in the graph</span>
-            <span class="n">ret</span> <span class="o">=</span> <span class="p">[</span><span class="n">copy</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">ret</span><span class="p">[</span><span class="mi">0</span><span class="p">])]</span>
+            <span class="n">ret</span> <span class="o">=</span> <span class="p">[</span><span class="n">_clone_param</span><span class="p">(</span><span class="n">ret</span><span class="p">[</span><span class="mi">0</span><span class="p">])]</span>
 
         <span class="c1"># find all duplicate param ids from the input in the return</span>
         <span class="n">duplicates</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
         <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">ret_pid</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">ret_param_ids</span><span class="p">):</span>
             <span class="k">if</span> <span class="n">ret_pid</span> <span class="ow">in</span> <span class="n">arg_param_ids</span> <span class="o">+</span> <span class="n">kwarg_param_ids</span><span class="p">:</span>
                 <span class="n">duplicates</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
-
-        <span class="c1"># clone method</span>
-        <span class="k">def</span> <span class="nf">_clone_param</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
-            <span class="n">x_copy</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>  <span class="c1"># copy the param</span>
-            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="s1">&#39;__dict__&#39;</span><span class="p">):</span>
-                <span class="n">x</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="s1">&#39;param_id&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">id</span><span class="p">(</span><span class="n">x_copy</span><span class="p">)</span>  <span class="c1"># update the id of the original param (for preserved stateful objects)</span>
-            <span class="k">return</span> <span class="n">x_copy</span>
 
         <span class="c1"># clone all repeated return parameters to give unique parameter ids in the graph</span>
         <span class="n">duplicate_tracked_idxs</span> <span class="o">=</span> <span class="p">[</span><span class="n">ret_tracked_idxs</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">duplicates</span><span class="p">]</span>
