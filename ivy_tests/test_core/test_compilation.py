@@ -406,6 +406,60 @@ def test_compile_graph_inplace_var_update(weight_n_grad, dtype_str, dev_str, cal
     assert np.allclose(ivy.to_numpy(nc_new_weight), ivy.to_numpy(c_new_weight))
 
 
+# with stateful
+
+# noinspection PyUnresolvedReferences
+@pytest.mark.parametrize(
+    "x_raw", [([0])])
+@pytest.mark.parametrize(
+    "dtype_str", ['float32'])
+def test_compile_graph_w_stateful(x_raw, dtype_str, dev_str, call):
+    if ivy.wrapped_mode():
+        # Wrapped mode does not yet support function compilation
+        pytest.skip()
+    if call is not helpers.torch_call:
+        # currently only supported by PyTorch
+        pytest.skip()
+    # as tensors
+    x = ivy.array(x_raw, dtype_str, dev_str)
+
+    class Stateful:
+
+        def __init__(self):
+            self._state = ivy.array([0.])
+
+        def forward(self, _x):
+            import torch
+            self.__setattr__('_state', torch.Tensor.__add__(self.__getattribute__('_state'), 1))
+            return torch.Tensor.__add__(_x, self.__getattribute__('_state'))
+            # self._state = self._state + 1
+            # return _x + self._state
+
+        def compile_graph(self, _x):
+            # noinspection PyAttributeOutsideInit
+            self.forward = ivy.compile_graph(self.forward, _x, stateful=[self])
+
+        def __setattr__(self, key, value):
+            self.__dict__[key] = value
+
+    # non-compiled
+    stateful = Stateful()
+    nc_ret_0 = stateful.forward(x)
+    assert nc_ret_0 == x + 1
+    nc_ret_1 = stateful.forward(x)
+    assert nc_ret_1 == x + 2
+    nc_ret_2 = stateful.forward(x)
+    assert nc_ret_2 == x + 3
+
+    # compiled
+    stateful = Stateful()
+    stateful.compile_graph(x)
+    c_ret_0 = stateful.forward(x)
+    assert c_ret_0 == x + 1
+    c_ret_1 = stateful.forward(x)
+    assert c_ret_1 == x + 2
+    c_ret_2 = stateful.forward(x)
+    assert c_ret_2 == x + 3
 
 
 # wide
