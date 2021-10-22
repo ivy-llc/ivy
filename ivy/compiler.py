@@ -670,5 +670,16 @@ def compile_graph(fn, *args, stateful=None, num_workers=1, **kwargs):
                 continue
             s.__dict__[k] = sc[k]
 
-    # return an efficient compiled function for executing the graph
-    return graph.compiled()
+    # compile the graph forward pass into an executable function
+    comp_fn = graph.compiled()
+
+    # reset all global compiler variables, just to be sure
+    global cloning
+    cloning = False
+    global op_logging
+    op_logging = False
+    global wrapped_stack
+    wrapped_stack.clear()
+
+    # return the compiled function
+    return comp_fn
