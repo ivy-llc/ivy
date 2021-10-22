@@ -270,7 +270,22 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">ignore_missing</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">v</span><span class="o">.</span><span class="n">set_at_keys</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_step</span><span class="p">(</span><span class="n">v</span><span class="o">.</span><span class="n">at_key_chains</span><span class="p">(</span><span class="n">grads</span><span class="p">),</span> <span class="n">grads</span><span class="p">))</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_step</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">grads</span><span class="p">)</span></div></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_step</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">grads</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Optimizer.compile_graph"><a class="viewcode-back" href="../../../neural_net_stateful/optimizers/Optimizer.html#ivy.neural_net_stateful.optimizers.Optimizer.compile_graph">[docs]</a>    <span class="k">def</span> <span class="nf">compile_graph</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">grads</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ignore_missing</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Compile the optimizer step.</span>
+
+<span class="sd">        :param v: Nested variables to update.</span>
+<span class="sd">        :type v: Ivy container of variables</span>
+<span class="sd">        :param grads: Nested gradients to update.</span>
+<span class="sd">        :type grads: sequence of arrays</span>
+<span class="sd">        :param ignore_missing: Whether to ignore keys missing from the gradients which exist in the variables.</span>
+<span class="sd">                               Default is False.</span>
+<span class="sd">        :type ignore_missing: bool, optional</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># noinspection PyAttributeOutsideInit</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">step</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">compile_graph</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">step</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">default</span><span class="p">(</span><span class="n">grads</span><span class="p">,</span> <span class="n">v</span><span class="o">.</span><span class="n">deep_copy</span><span class="p">()),</span> <span class="n">ignore_missing</span><span class="p">,</span> <span class="n">stateful</span><span class="o">=</span><span class="p">[</span><span class="bp">self</span><span class="p">])</span></div></div>
 
 
 <span class="c1"># Optimizers #</span>
