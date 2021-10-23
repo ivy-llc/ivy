@@ -83,8 +83,8 @@ def test_compile(x, dtype_str, tensor_fn, dev_str, call):
     "tensor_fn", [ivy.array])
 @pytest.mark.parametrize(
     "with_non_compiled", [True, False])
-def test_compile_graph_inplace(x_raw, dtype_str, tensor_fn, with_non_compiled, dev_str, call):
-    if ivy.wrapped_mode():
+def test_compile_graph_inplace(x_raw, dtype_str, tensor_fn, with_non_compiled, dev_str, compile_graph, call):
+    if ivy.wrapped_mode() or not compile_graph:
         # Wrapped mode does not yet support function compilation
         pytest.skip()
     if call is not helpers.torch_call:
@@ -179,8 +179,8 @@ def _fn_4(x, with_non_compiled: bool = False, with_internal_gen: bool = False):
     "with_non_compiled", [True, False])
 @pytest.mark.parametrize(
     "with_internal_gen", [True, False])
-def test_compile_graph(x_raw, dtype_str, tensor_fn, with_non_compiled, with_internal_gen, dev_str, call):
-    if ivy.wrapped_mode():
+def test_compile_graph(x_raw, dtype_str, tensor_fn, with_non_compiled, with_internal_gen, dev_str, compile_graph, call):
+    if ivy.wrapped_mode() or not compile_graph:
         # Wrapped mode does not yet support function compilation
         pytest.skip()
     if call is not helpers.torch_call:
@@ -255,8 +255,8 @@ def _rand_fn(x, with_non_compiled: bool = False):
     "tensor_fn", [ivy.array])
 @pytest.mark.parametrize(
     "with_non_compiled", [True, False])
-def test_compile_graph_w_random(x_raw, dtype_str, tensor_fn, with_non_compiled, dev_str, call):
-    if ivy.wrapped_mode():
+def test_compile_graph_w_random(x_raw, dtype_str, tensor_fn, with_non_compiled, dev_str, compile_graph, call):
+    if ivy.wrapped_mode() or not compile_graph:
         # Wrapped mode does not yet support function compilation
         pytest.skip()
     if call is not helpers.torch_call:
@@ -302,8 +302,8 @@ def _detach_div_fn(x):
     "dtype_str", ['float32'])
 @pytest.mark.parametrize(
     "tensor_fn", [ivy.array])
-def test_compile_graph_w_detached_divide(x_raw, dtype_str, tensor_fn, dev_str, call):
-    if ivy.wrapped_mode():
+def test_compile_graph_w_detached_divide(x_raw, dtype_str, tensor_fn, dev_str, compile_graph, call):
+    if ivy.wrapped_mode() or not compile_graph:
         # Wrapped mode does not yet support function compilation
         pytest.skip()
     if call is not helpers.torch_call:
@@ -340,8 +340,8 @@ def _input_in_output(x, y):
     "dtype_str", ['float32'])
 @pytest.mark.parametrize(
     "tensor_fn", [ivy.array])
-def test_compile_graph_input_in_output(x_raw, dtype_str, tensor_fn, dev_str, call):
-    if ivy.wrapped_mode():
+def test_compile_graph_input_in_output(x_raw, dtype_str, tensor_fn, dev_str, compile_graph, call):
+    if ivy.wrapped_mode() or not compile_graph:
         # Wrapped mode does not yet support function compilation
         pytest.skip()
     if call is not helpers.torch_call:
@@ -379,8 +379,8 @@ def _inplace_var_update(weight, grad):
     "weight_n_grad", [([1], [2])])
 @pytest.mark.parametrize(
     "dtype_str", ['float32'])
-def test_compile_graph_inplace_var_update(weight_n_grad, dtype_str, dev_str, call):
-    if ivy.wrapped_mode():
+def test_compile_graph_inplace_var_update(weight_n_grad, dtype_str, dev_str, compile_graph, call):
+    if ivy.wrapped_mode() or not compile_graph:
         # Wrapped mode does not yet support function compilation
         pytest.skip()
     if call is not helpers.torch_call:
@@ -413,8 +413,8 @@ def test_compile_graph_inplace_var_update(weight_n_grad, dtype_str, dev_str, cal
     "x_raw", [([0])])
 @pytest.mark.parametrize(
     "dtype_str", ['float32'])
-def test_compile_graph_w_stateful(x_raw, dtype_str, dev_str, call):
-    if ivy.wrapped_mode():
+def test_compile_graph_w_stateful(x_raw, dtype_str, dev_str, compile_graph, call):
+    if ivy.wrapped_mode() or not compile_graph:
         # Wrapped mode does not yet support function compilation
         pytest.skip()
     if call is not helpers.torch_call:
@@ -488,8 +488,9 @@ def _wide_fn(x, with_non_compiled: bool = False, with_internal_gen: bool = False
     "with_non_compiled", [True, False])
 @pytest.mark.parametrize(
     "with_internal_gen", [True, False])
-def test_compile_ivy_multiproc(x_raw, dtype_str, tensor_fn, with_non_compiled, with_internal_gen, dev_str, call):
-    if ivy.wrapped_mode():
+def test_compile_ivy_multiproc(x_raw, dtype_str, tensor_fn, with_non_compiled, with_internal_gen, dev_str,
+                               compile_graph, call):
+    if ivy.wrapped_mode() or not compile_graph:
         # Wrapped mode does not yet support function compilation
         pytest.skip()
     if call is not helpers.torch_call:
@@ -520,7 +521,8 @@ def test_compile_ivy_multiproc(x_raw, dtype_str, tensor_fn, with_non_compiled, w
     assert np.allclose(ivy.to_numpy(non_compiled_return), ivy.to_numpy(st_return))
 
     # compiled multi-processing
-    multi_comp_fn = ivy.compile_graph(_wide_fn, x, with_non_compiled, with_internal_gen, num_workers=ivy.num_cpu_cores())
+    multi_comp_fn = ivy.compile_graph(
+        _wide_fn, x, with_non_compiled, with_internal_gen, num_workers=ivy.num_cpu_cores())
     assert callable(multi_comp_fn)
     assert len(multi_comp_fn.__self__._param_dict) == 52 + (1 if with_internal_gen else 0)
     assert multi_comp_fn.__self__.params_all_empty()
