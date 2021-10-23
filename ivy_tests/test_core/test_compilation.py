@@ -476,6 +476,7 @@ def _wide_fn(x, with_non_compiled: bool = False, with_internal_gen: bool = False
     return ivy.concatenate(xs, 0)
 
 
+'''
 # noinspection PyUnresolvedReferences
 @pytest.mark.parametrize(
     "x_raw", [[0]])
@@ -536,3 +537,4 @@ def test_compile_ivy_multiproc(x_raw, dtype_str, tensor_fn, with_non_compiled, w
     # assert multi-processing was faster
     # ToDo: try to improve multi-processing and make this more efficient, perhaps by removing costly manager dict
     # assert multi_time_taken < st_time_taken
+'''
