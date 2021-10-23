@@ -85,4 +85,4 @@ def pytest_addoption(parser):
     parser.addoption('--dev_str', action="store", default="cpu")
     parser.addoption('--framework', action="store", default="all")
     parser.addoption('--wrapped_mode', action="store", default="false")
-    parser.addoption('--compile_graph', action="store", default="true")
+    parser.addoption('--compile_graph', action="store", default="false")
