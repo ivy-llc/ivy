@@ -208,7 +208,7 @@
 
 <div class="viewcode-block" id="Optimizer"><a class="viewcode-back" href="../../../neural_net_stateful/optimizers/Optimizer.html#ivy.neural_net_stateful.optimizers.Optimizer">[docs]</a><span class="k">class</span> <span class="nc">Optimizer</span><span class="p">(</span><span class="n">abc</span><span class="o">.</span><span class="n">ABC</span><span class="p">):</span>
 
-<div class="viewcode-block" id="Optimizer.__init__"><a class="viewcode-back" href="../../../neural_net_stateful/optimizers/Optimizer.html#ivy.neural_net_stateful.optimizers.Optimizer.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lr</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">stop_gradients</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="Optimizer.__init__"><a class="viewcode-back" href="../../../neural_net_stateful/optimizers/Optimizer.html#ivy.neural_net_stateful.optimizers.Optimizer.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lr</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">stop_gradients</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">init_on_first_step</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">dev_str</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Construct an general Optimizer. This is an abstract class, and must be derived.</span>
 
@@ -219,13 +219,21 @@
 <span class="sd">        :type inplace: bool, optional</span>
 <span class="sd">        :param stop_gradients: Whether to stop the gradients of the variables after each gradient step. Default is True.</span>
 <span class="sd">        :type stop_gradients: bool, optional</span>
+<span class="sd">        :param init_on_first_step: Whether the optimizer is initialized on the first step. Default is False.</span>
+<span class="sd">        :type init_on_first_step: bool, optional</span>
+<span class="sd">        :param dev_str: device on which to create the layer&#39;s variables &#39;cuda:0&#39;, &#39;cuda:1&#39;, &#39;cpu&#39; etc.</span>
+<span class="sd">        :type dev_str: str, optional</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_lr</span> <span class="o">=</span> <span class="n">lr</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_inplace</span> <span class="o">=</span> <span class="n">inplace</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_stop_gradients</span> <span class="o">=</span> <span class="n">stop_gradients</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_stop_gradients</span> <span class="o">=</span> <span class="n">stop_gradients</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_init_on_first_step</span> <span class="o">=</span> <span class="n">init_on_first_step</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_dev_str</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">default</span><span class="p">(</span><span class="n">dev_str</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">default_device</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_count</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">],</span> <span class="n">dev_str</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_dev_str</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_compiled</span> <span class="o">=</span> <span class="kc">False</span></div>
 
-    <span class="c1"># Public #</span>
-    <span class="c1"># -------#</span>
+    <span class="c1"># Private #</span>
+    <span class="c1"># --------#</span>
 
     <span class="c1"># Abstract #</span>
 
@@ -242,6 +250,22 @@
 <span class="sd">        :return: The updated variables, following update step.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+
+    <span class="c1"># Given #</span>
+
+    <span class="k">def</span> <span class="nf">_step_fn</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">grads</span><span class="p">,</span> <span class="n">ignore_missing</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">ignore_missing</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">v</span><span class="o">.</span><span class="n">set_at_keys</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_step</span><span class="p">(</span><span class="n">v</span><span class="o">.</span><span class="n">at_key_chains</span><span class="p">(</span><span class="n">grads</span><span class="p">),</span> <span class="n">grads</span><span class="p">))</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_step</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">grads</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_compile_step_fn</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">grads</span><span class="p">,</span> <span class="n">ignore_missing</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_step_fn</span> <span class="o">=</span> \
+            <span class="n">ivy</span><span class="o">.</span><span class="n">compile_graph</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_step_fn</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">default</span><span class="p">(</span><span class="n">grads</span><span class="p">,</span> <span class="n">v</span><span class="o">.</span><span class="n">deep_copy</span><span class="p">()),</span> <span class="n">ignore_missing</span><span class="p">,</span> <span class="n">stateful</span><span class="o">=</span><span class="p">[</span><span class="bp">self</span><span class="p">])</span>
+
+    <span class="c1"># Public #</span>
+    <span class="c1"># -------#</span>
+
+    <span class="c1"># Abstract #</span>
 
 <div class="viewcode-block" id="Optimizer.set_state"><a class="viewcode-back" href="../../../neural_net_stateful/optimizers/Optimizer.html#ivy.neural_net_stateful.optimizers.Optimizer.set_state">[docs]</a>    <span class="nd">@abc</span><span class="o">.</span><span class="n">abstractmethod</span>
     <span class="k">def</span> <span class="nf">set_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">):</span>
@@ -268,9 +292,10 @@
 <span class="sd">        :type ignore_missing: bool, optional</span>
 <span class="sd">        :return: The updated variables, following update step.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">ignore_missing</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">v</span><span class="o">.</span><span class="n">set_at_keys</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_step</span><span class="p">(</span><span class="n">v</span><span class="o">.</span><span class="n">at_key_chains</span><span class="p">(</span><span class="n">grads</span><span class="p">),</span> <span class="n">grads</span><span class="p">))</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_step</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">grads</span><span class="p">)</span></div>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_count</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_init_on_first_step</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_compiled</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_compile_step_fn</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">grads</span><span class="p">,</span> <span class="n">ignore_missing</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_count</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_step_fn</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">grads</span><span class="p">,</span> <span class="n">ignore_missing</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Optimizer.compile_graph"><a class="viewcode-back" href="../../../neural_net_stateful/optimizers/Optimizer.html#ivy.neural_net_stateful.optimizers.Optimizer.compile_graph">[docs]</a>    <span class="k">def</span> <span class="nf">compile_graph</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">grads</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ignore_missing</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -284,8 +309,9 @@
 <span class="sd">                               Default is False.</span>
 <span class="sd">        :type ignore_missing: bool, optional</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># noinspection PyAttributeOutsideInit</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">step</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">compile_graph</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">step</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">default</span><span class="p">(</span><span class="n">grads</span><span class="p">,</span> <span class="n">v</span><span class="o">.</span><span class="n">deep_copy</span><span class="p">()),</span> <span class="n">ignore_missing</span><span class="p">,</span> <span class="n">stateful</span><span class="o">=</span><span class="p">[</span><span class="bp">self</span><span class="p">])</span></div></div>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_init_on_first_step</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_compile_step_fn</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">grads</span><span class="p">,</span> <span class="n">ignore_missing</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_compiled</span> <span class="o">=</span> <span class="kc">True</span></div></div>
 
 
 <span class="c1"># Optimizers #</span>
@@ -404,17 +430,15 @@
 <span class="sd">        :type inplace: bool, optional</span>
 <span class="sd">        :param stop_gradients: Whether to stop the gradients of the variables after each gradient step. Default is True.</span>
 <span class="sd">        :type stop_gradients: bool, optional</span>
-<span class="sd">        :param dev_str: device on which to create the layer&#39;s variables &#39;cuda:0&#39;, &#39;cuda:1&#39;, &#39;cpu&#39; etc.</span>
-<span class="sd">        :type dev_str: str, optional</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">Optimizer</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lr</span><span class="p">,</span> <span class="n">inplace</span><span class="p">,</span> <span class="n">stop_gradients</span><span class="p">)</span>
+        <span class="n">Optimizer</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lr</span><span class="p">,</span> <span class="n">inplace</span><span class="p">,</span> <span class="n">stop_gradients</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="n">dev_str</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_beta1</span> <span class="o">=</span> <span class="n">beta1</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_beta2</span> <span class="o">=</span> <span class="n">beta2</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_epsilon</span> <span class="o">=</span> <span class="n">epsilon</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_mw</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_vw</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_count</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">],</span> <span class="n">dev_str</span><span class="o">=</span><span class="n">dev_str</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_first_pass</span> <span class="o">=</span> <span class="kc">True</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_first_pass</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_should_compile</span> <span class="o">=</span> <span class="kc">False</span></div>
 
     <span class="c1"># Custom Step</span>
 
@@ -435,7 +459,6 @@
         <span class="n">new_v</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mw</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_vw</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">adam_update</span><span class="p">(</span>
             <span class="n">v</span><span class="p">,</span> <span class="n">grads</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lr</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_lr</span><span class="p">,</span> <span class="nb">float</span><span class="p">)</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lr</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mw</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_vw</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_count</span><span class="p">,</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_beta1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_beta2</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_epsilon</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_inplace</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_stop_gradients</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_count</span> <span class="o">+=</span> <span class="mi">1</span>
         <span class="k">return</span> <span class="n">new_v</span>
 
 <div class="viewcode-block" id="Adam.set_state"><a class="viewcode-back" href="../../../neural_net_stateful/optimizers/Adam.html#ivy.neural_net_stateful.optimizers.Adam.set_state">[docs]</a>    <span class="k">def</span> <span class="nf">set_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">):</span>
@@ -481,14 +504,12 @@
 <span class="sd">        :param dev_str: device on which to create the layer&#39;s variables &#39;cuda:0&#39;, &#39;cuda:1&#39;, &#39;cpu&#39; etc.</span>
 <span class="sd">        :type dev_str: str, optional</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">Optimizer</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lr</span><span class="p">,</span> <span class="n">inplace</span><span class="p">,</span> <span class="n">stop_gradients</span><span class="p">)</span>
+        <span class="n">Optimizer</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lr</span><span class="p">,</span> <span class="n">inplace</span><span class="p">,</span> <span class="n">stop_gradients</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="n">dev_str</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_beta1</span> <span class="o">=</span> <span class="n">beta1</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_beta2</span> <span class="o">=</span> <span class="n">beta2</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_epsilon</span> <span class="o">=</span> <span class="n">epsilon</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_mw</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_vw</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_first_pass</span> <span class="o">=</span> <span class="kc">True</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_count</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">],</span> <span class="n">dev_str</span><span class="o">=</span><span class="n">dev_str</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_max_trust_ratio</span> <span class="o">=</span> <span class="n">max_trust_ratio</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_decay_lambda</span> <span class="o">=</span> <span class="n">decay_lambda</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_first_pass</span> <span class="o">=</span> <span class="kc">True</span></div>
@@ -513,7 +534,6 @@
             <span class="n">v</span><span class="p">,</span> <span class="n">grads</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lr</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_lr</span><span class="p">,</span> <span class="nb">float</span><span class="p">)</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">_lr</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mw</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_vw</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_count</span><span class="p">,</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_beta1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_beta2</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_epsilon</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_max_trust_ratio</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_decay_lambda</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_inplace</span><span class="p">,</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_stop_gradients</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_count</span> <span class="o">+=</span> <span class="mi">1</span>
         <span class="k">return</span> <span class="n">new_v</span>
 
 <div class="viewcode-block" id="LAMB.set_state"><a class="viewcode-back" href="../../../neural_net_stateful/optimizers/LAMB.html#ivy.neural_net_stateful.optimizers.LAMB.set_state">[docs]</a>    <span class="k">def</span> <span class="nf">set_state</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">):</span>

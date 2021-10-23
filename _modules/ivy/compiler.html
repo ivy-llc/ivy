@@ -864,8 +864,19 @@
                 <span class="k">continue</span>
             <span class="n">s</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">sc</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
 
-    <span class="c1"># return an efficient compiled function for executing the graph</span>
-    <span class="k">return</span> <span class="n">graph</span><span class="o">.</span><span class="n">compiled</span><span class="p">()</span></div>
+    <span class="c1"># compile the graph forward pass into an executable function</span>
+    <span class="n">comp_fn</span> <span class="o">=</span> <span class="n">graph</span><span class="o">.</span><span class="n">compiled</span><span class="p">()</span>
+
+    <span class="c1"># reset all global compiler variables, just to be sure</span>
+    <span class="k">global</span> <span class="n">cloning</span>
+    <span class="n">cloning</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="k">global</span> <span class="n">op_logging</span>
+    <span class="n">op_logging</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="k">global</span> <span class="n">wrapped_stack</span>
+    <span class="n">wrapped_stack</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+
+    <span class="c1"># return the compiled function</span>
+    <span class="k">return</span> <span class="n">comp_fn</span></div>
 </pre></div>
 
            </div>
