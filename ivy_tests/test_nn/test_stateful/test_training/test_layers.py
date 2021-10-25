@@ -113,7 +113,7 @@ def test_linear_layer_training(bs_ic_oc, with_v, dtype_str, tensor_fn, dev_str, 
     "dtype_str", ['float32'])
 @pytest.mark.parametrize(
     "tensor_fn", [ivy.array, helpers.var_fn])
-def test_conv1d_layer_training(x_n_fs_n_pad_n_oc, with_v, dtype_str, tensor_fn, dev_str, call):
+def test_conv1d_layer_training(x_n_fs_n_pad_n_oc, with_v, dtype_str, tensor_fn, dev_str, compile_graph, call):
     if call in [helpers.tf_call, helpers.tf_graph_call] and 'cpu' in dev_str:
         # tf conv1d does not work when CUDA is installed, but array is on CPU
         pytest.skip()
@@ -124,8 +124,6 @@ def test_conv1d_layer_training(x_n_fs_n_pad_n_oc, with_v, dtype_str, tensor_fn, 
     x, filter_size, padding, output_channels = x_n_fs_n_pad_n_oc
     x = tensor_fn(x, dtype_str, dev_str)
     input_channels = x.shape[-1]
-    batch_size = x.shape[0]
-    width = x.shape[1]
     if with_v:
         np.random.seed(0)
         wlim = (6 / (output_channels + input_channels)) ** 0.5
@@ -137,17 +135,26 @@ def test_conv1d_layer_training(x_n_fs_n_pad_n_oc, with_v, dtype_str, tensor_fn, 
         v = None
     conv1d_layer = ivy.Conv1D(input_channels, output_channels, filter_size, 1, padding, dev_str=dev_str, v=v)
 
-    def loss_fn(v_):
-        out = conv1d_layer(x, v=v_)
+    def loss_fn(x_, v_):
+        out = conv1d_layer(x_, v=v_)
         return ivy.reduce_mean(out)[0]
+
+    def train_step(x_, v_):
+        lss, grds = ivy.execute_with_gradients(lambda _v_: loss_fn(x_, _v_), v_)
+        v_ = ivy.gradient_descent_update(conv1d_layer.v, grds, 1e-3)
+        return lss, grds, v_
+
+    # compile if this mode is set
+    if compile_graph and call is helpers.torch_call:
+        # Currently only PyTorch is supported for ivy compilation
+        train_step = ivy.compile_graph(train_step, x, conv1d_layer.v)
 
     # train
     loss_tm1 = 1e12
     loss = None
     grads = None
     for i in range(10):
-        loss, grads = ivy.execute_with_gradients(loss_fn, conv1d_layer.v)
-        conv1d_layer.v = ivy.gradient_descent_update(conv1d_layer.v, grads, 1e-3)
+        loss, grads, conv1d_layer.v = train_step(x, conv1d_layer.v)
         assert loss < loss_tm1
         loss_tm1 = loss
 
@@ -196,7 +203,8 @@ def test_conv1d_layer_training(x_n_fs_n_pad_n_oc, with_v, dtype_str, tensor_fn, 
     "dtype_str", ['float32'])
 @pytest.mark.parametrize(
     "tensor_fn", [ivy.array, helpers.var_fn])
-def test_conv1d_transpose_layer_training(x_n_fs_n_pad_n_outshp_n_oc, with_v, dtype_str, tensor_fn, dev_str, call):
+def test_conv1d_transpose_layer_training(x_n_fs_n_pad_n_outshp_n_oc, with_v, dtype_str, tensor_fn, dev_str,
+                                         compile_graph, call):
     if call in [helpers.tf_call, helpers.tf_graph_call] and 'cpu' in dev_str:
         # tf conv1d does not work when CUDA is installed, but array is on CPU
         pytest.skip()
@@ -207,8 +215,6 @@ def test_conv1d_transpose_layer_training(x_n_fs_n_pad_n_outshp_n_oc, with_v, dty
     x, filter_size, padding, out_shape, output_channels = x_n_fs_n_pad_n_outshp_n_oc
     x = tensor_fn(x, dtype_str, dev_str)
     input_channels = x.shape[-1]
-    batch_size = x.shape[0]
-    width = x.shape[1]
     if with_v:
         np.random.seed(0)
         wlim = (6 / (output_channels + input_channels)) ** 0.5
@@ -221,17 +227,26 @@ def test_conv1d_transpose_layer_training(x_n_fs_n_pad_n_outshp_n_oc, with_v, dty
     conv1d_trans_layer = ivy.Conv1DTranspose(input_channels, output_channels, filter_size, 1, padding,
                                              output_shape=out_shape, dev_str=dev_str, v=v)
 
-    def loss_fn(v_):
-        out = conv1d_trans_layer(x, v=v_)
+    def loss_fn(x_, v_):
+        out = conv1d_trans_layer(x_, v=v_)
         return ivy.reduce_mean(out)[0]
+
+    def train_step(x_, v_):
+        lss, grds = ivy.execute_with_gradients(lambda _v_: loss_fn(x_, _v_), v_)
+        v_ = ivy.gradient_descent_update(conv1d_trans_layer.v, grds, 1e-3)
+        return lss, grds, v_
+
+    # compile if this mode is set
+    if compile_graph and call is helpers.torch_call:
+        # Currently only PyTorch is supported for ivy compilation
+        train_step = ivy.compile_graph(train_step, x, conv1d_trans_layer.v)
 
     # train
     loss_tm1 = 1e12
     loss = None
     grads = None
     for i in range(10):
-        loss, grads = ivy.execute_with_gradients(loss_fn, conv1d_trans_layer.v)
-        conv1d_trans_layer.v = ivy.gradient_descent_update(conv1d_trans_layer.v, grads, 1e-3)
+        loss, grads, conv1d_trans_layer.v = train_step(x, conv1d_trans_layer.v)
         assert loss < loss_tm1
         loss_tm1 = loss
 
@@ -288,7 +303,7 @@ def test_conv1d_transpose_layer_training(x_n_fs_n_pad_n_outshp_n_oc, with_v, dty
     "dtype_str", ['float32'])
 @pytest.mark.parametrize(
     "tensor_fn", [ivy.array, helpers.var_fn])
-def test_conv2d_layer_training(x_n_fs_n_pad_n_oc, with_v, dtype_str, tensor_fn, dev_str, call):
+def test_conv2d_layer_training(x_n_fs_n_pad_n_oc, with_v, dtype_str, tensor_fn, dev_str, compile_graph, call):
     if call in [helpers.tf_call, helpers.tf_graph_call] and 'cpu' in dev_str:
         # tf conv1d does not work when CUDA is installed, but array is on CPU
         pytest.skip()
@@ -299,8 +314,6 @@ def test_conv2d_layer_training(x_n_fs_n_pad_n_oc, with_v, dtype_str, tensor_fn, 
     x, filter_shape, padding, output_channels = x_n_fs_n_pad_n_oc
     x = tensor_fn(x, dtype_str, dev_str)
     input_channels = x.shape[-1]
-    batch_size = x.shape[0]
-    input_shape = list(x.shape[1:3])
     if with_v:
         np.random.seed(0)
         wlim = (6 / (output_channels + input_channels)) ** 0.5
@@ -312,17 +325,26 @@ def test_conv2d_layer_training(x_n_fs_n_pad_n_oc, with_v, dtype_str, tensor_fn, 
         v = None
     conv2d_layer = ivy.Conv2D(input_channels, output_channels, filter_shape, 1, padding, dev_str=dev_str, v=v)
 
-    def loss_fn(v_):
-        out = conv2d_layer(x, v=v_)
+    def loss_fn(x_, v_):
+        out = conv2d_layer(x_, v=v_)
         return ivy.reduce_mean(out)[0]
+
+    def train_step(x_, v_):
+        lss, grds = ivy.execute_with_gradients(lambda _v_: loss_fn(x_, _v_), v_)
+        v_ = ivy.gradient_descent_update(conv2d_layer.v, grds, 1e-3)
+        return lss, grds, v_
+
+    # compile if this mode is set
+    if compile_graph and call is helpers.torch_call:
+        # Currently only PyTorch is supported for ivy compilation
+        train_step = ivy.compile_graph(train_step, x, conv2d_layer.v)
 
     # train
     loss_tm1 = 1e12
     loss = None
     grads = None
     for i in range(10):
-        loss, grads = ivy.execute_with_gradients(loss_fn, conv2d_layer.v)
-        conv2d_layer.v = ivy.gradient_descent_update(conv2d_layer.v, grads, 1e-3)
+        loss, grads, conv2d_layer.v = train_step(x, conv2d_layer.v)
         assert loss < loss_tm1
         loss_tm1 = loss
 
@@ -377,7 +399,8 @@ def test_conv2d_layer_training(x_n_fs_n_pad_n_oc, with_v, dtype_str, tensor_fn, 
     "dtype_str", ['float32'])
 @pytest.mark.parametrize(
     "tensor_fn", [ivy.array, helpers.var_fn])
-def test_conv2d_transpose_layer_training(x_n_fs_n_pad_n_outshp_n_oc, with_v, dtype_str, tensor_fn, dev_str, call):
+def test_conv2d_transpose_layer_training(x_n_fs_n_pad_n_outshp_n_oc, with_v, dtype_str, tensor_fn, dev_str,
+                                         compile_graph, call):
     if call in [helpers.tf_call, helpers.tf_graph_call] and 'cpu' in dev_str:
         # tf conv1d does not work when CUDA is installed, but array is on CPU
         pytest.skip()
@@ -388,8 +411,6 @@ def test_conv2d_transpose_layer_training(x_n_fs_n_pad_n_outshp_n_oc, with_v, dty
     x, filter_shape, padding, out_shape, output_channels = x_n_fs_n_pad_n_outshp_n_oc
     x = tensor_fn(x, dtype_str, dev_str)
     input_channels = x.shape[-1]
-    batch_size = x.shape[0]
-    input_shape = list(x.shape[1:3])
     if with_v:
         np.random.seed(0)
         wlim = (6 / (output_channels + input_channels)) ** 0.5
@@ -402,17 +423,26 @@ def test_conv2d_transpose_layer_training(x_n_fs_n_pad_n_outshp_n_oc, with_v, dty
     conv2d_transpose_layer = ivy.Conv2DTranspose(
         input_channels, output_channels, filter_shape, 1, padding, output_shape=out_shape, dev_str=dev_str, v=v)
 
-    def loss_fn(v_):
-        out = conv2d_transpose_layer(x, v=v_)
+    def loss_fn(x_, v_):
+        out = conv2d_transpose_layer(x_, v=v_)
         return ivy.reduce_mean(out)[0]
+
+    def train_step(x_, v_):
+        lss, grds = ivy.execute_with_gradients(lambda _v_: loss_fn(x_, _v_), v_)
+        v_ = ivy.gradient_descent_update(conv2d_transpose_layer.v, grds, 1e-3)
+        return lss, grds, v_
+
+    # compile if this mode is set
+    if compile_graph and call is helpers.torch_call:
+        # Currently only PyTorch is supported for ivy compilation
+        train_step = ivy.compile_graph(train_step, x, conv2d_transpose_layer.v)
 
     # train
     loss_tm1 = 1e12
     loss = None
     grads = None
     for i in range(10):
-        loss, grads = ivy.execute_with_gradients(loss_fn, conv2d_transpose_layer.v)
-        conv2d_transpose_layer.v = ivy.gradient_descent_update(conv2d_transpose_layer.v, grads, 1e-3)
+        loss, grads, conv2d_transpose_layer.v = train_step(x, conv2d_transpose_layer.v)
         assert loss < loss_tm1
         loss_tm1 = loss
 
@@ -461,7 +491,7 @@ def test_conv2d_transpose_layer_training(x_n_fs_n_pad_n_outshp_n_oc, with_v, dty
     "dtype_str", ['float32'])
 @pytest.mark.parametrize(
     "tensor_fn", [ivy.array, helpers.var_fn])
-def test_depthwise_conv2d_layer_training(x_n_fs_n_pad, with_v, dtype_str, tensor_fn, dev_str, call):
+def test_depthwise_conv2d_layer_training(x_n_fs_n_pad, with_v, dtype_str, tensor_fn, dev_str, compile_graph, call):
     if call in [helpers.tf_call, helpers.tf_graph_call] and 'cpu' in dev_str:
         # tf conv1d does not work when CUDA is installed, but array is on CPU
         pytest.skip()
@@ -472,8 +502,6 @@ def test_depthwise_conv2d_layer_training(x_n_fs_n_pad, with_v, dtype_str, tensor
     x, filter_shape, padding = x_n_fs_n_pad
     x = tensor_fn(x, dtype_str, dev_str)
     num_channels = x.shape[-1]
-    batch_size = x.shape[0]
-    input_shape = list(x.shape[1:3])
     if with_v:
         np.random.seed(0)
         wlim = (6 / (num_channels*2)) ** 0.5
@@ -485,17 +513,26 @@ def test_depthwise_conv2d_layer_training(x_n_fs_n_pad, with_v, dtype_str, tensor
         v = None
     depthwise_conv2d_layer = ivy.DepthwiseConv2D(num_channels, filter_shape, 1, padding, dev_str=dev_str, v=v)
 
-    def loss_fn(v_):
-        out = depthwise_conv2d_layer(x, v=v_)
+    def loss_fn(x_, v_):
+        out = depthwise_conv2d_layer(x_, v=v_)
         return ivy.reduce_mean(out)[0]
+
+    def train_step(x_, v_):
+        lss, grds = ivy.execute_with_gradients(lambda _v_: loss_fn(x_, _v_), v_)
+        v_ = ivy.gradient_descent_update(depthwise_conv2d_layer.v, grds, 1e-3)
+        return lss, grds, v_
+
+    # compile if this mode is set
+    if compile_graph and call is helpers.torch_call:
+        # Currently only PyTorch is supported for ivy compilation
+        train_step = ivy.compile_graph(train_step, x, depthwise_conv2d_layer.v)
 
     # train
     loss_tm1 = 1e12
     loss = None
     grads = None
     for i in range(10):
-        loss, grads = ivy.execute_with_gradients(loss_fn, depthwise_conv2d_layer.v)
-        depthwise_conv2d_layer.v = ivy.gradient_descent_update(depthwise_conv2d_layer.v, grads, 1e-3)
+        loss, grads, depthwise_conv2d_layer.v = train_step(x, depthwise_conv2d_layer.v)
         assert loss < loss_tm1
         loss_tm1 = loss
 
@@ -547,7 +584,7 @@ def test_depthwise_conv2d_layer_training(x_n_fs_n_pad, with_v, dtype_str, tensor
     "dtype_str", ['float32'])
 @pytest.mark.parametrize(
     "tensor_fn", [ivy.array, helpers.var_fn])
-def test_conv3d_layer_training(x_n_fs_n_pad_n_oc, with_v, dtype_str, tensor_fn, dev_str, call):
+def test_conv3d_layer_training(x_n_fs_n_pad_n_oc, with_v, dtype_str, tensor_fn, dev_str, compile_graph, call):
     if call in [helpers.tf_call, helpers.tf_graph_call] and 'cpu' in dev_str:
         # tf conv1d does not work when CUDA is installed, but array is on CPU
         pytest.skip()
@@ -558,8 +595,6 @@ def test_conv3d_layer_training(x_n_fs_n_pad_n_oc, with_v, dtype_str, tensor_fn, 
     x, filter_shape, padding, output_channels = x_n_fs_n_pad_n_oc
     x = tensor_fn(x, dtype_str, dev_str)
     input_channels = x.shape[-1]
-    batch_size = x.shape[0]
-    input_shape = list(x.shape[1:4])
     if with_v:
         np.random.seed(0)
         wlim = (6 / (output_channels + input_channels)) ** 0.5
@@ -571,17 +606,26 @@ def test_conv3d_layer_training(x_n_fs_n_pad_n_oc, with_v, dtype_str, tensor_fn, 
         v = None
     conv3d_layer = ivy.Conv3D(input_channels, output_channels, filter_shape, 1, padding, dev_str=dev_str, v=v)
 
-    def loss_fn(v_):
-        out = conv3d_layer(x, v=v_)
+    def loss_fn(x_, v_):
+        out = conv3d_layer(x_, v=v_)
         return ivy.reduce_mean(out)[0]
+
+    def train_step(x_, v_):
+        lss, grds = ivy.execute_with_gradients(lambda _v_: loss_fn(x_, _v_), v_)
+        v_ = ivy.gradient_descent_update(conv3d_layer.v, grds, 1e-3)
+        return lss, grds, v_
+
+    # compile if this mode is set
+    if compile_graph and call is helpers.torch_call:
+        # Currently only PyTorch is supported for ivy compilation
+        train_step = ivy.compile_graph(train_step, x, conv3d_layer.v)
 
     # train
     loss_tm1 = 1e12
     loss = None
     grads = None
     for i in range(10):
-        loss, grads = ivy.execute_with_gradients(loss_fn, conv3d_layer.v)
-        conv3d_layer.v = ivy.gradient_descent_update(conv3d_layer.v, grads, 1e-3)
+        loss, grads, conv3d_layer.v = train_step(x, conv3d_layer.v)
         assert loss < loss_tm1
         loss_tm1 = loss
 
@@ -636,7 +680,8 @@ def test_conv3d_layer_training(x_n_fs_n_pad_n_oc, with_v, dtype_str, tensor_fn, 
     "dtype_str", ['float32'])
 @pytest.mark.parametrize(
     "tensor_fn", [ivy.array, helpers.var_fn])
-def test_conv3d_transpose_layer_training(x_n_fs_n_pad_n_outshp_n_oc, with_v, dtype_str, tensor_fn, dev_str, call):
+def test_conv3d_transpose_layer_training(x_n_fs_n_pad_n_outshp_n_oc, with_v, dtype_str, tensor_fn, dev_str,
+                                         compile_graph, call):
     if call in [helpers.tf_call, helpers.tf_graph_call] and 'cpu' in dev_str:
         # tf conv1d does not work when CUDA is installed, but array is on CPU
         pytest.skip()
@@ -650,8 +695,6 @@ def test_conv3d_transpose_layer_training(x_n_fs_n_pad_n_outshp_n_oc, with_v, dty
     x, filter_shape, padding, out_shape, output_channels = x_n_fs_n_pad_n_outshp_n_oc
     x = tensor_fn(x, dtype_str, dev_str)
     input_channels = x.shape[-1]
-    batch_size = x.shape[0]
-    input_shape = list(x.shape[1:4])
     if with_v:
         np.random.seed(0)
         wlim = (6 / (output_channels + input_channels)) ** 0.5
@@ -664,17 +707,26 @@ def test_conv3d_transpose_layer_training(x_n_fs_n_pad_n_outshp_n_oc, with_v, dty
     conv3d_transpose_layer = ivy.Conv3DTranspose(
         input_channels, output_channels, filter_shape, 1, padding, output_shape=out_shape, dev_str=dev_str, v=v)
 
-    def loss_fn(v_):
-        out = conv3d_transpose_layer(x, v=v_)
+    def loss_fn(x_, v_):
+        out = conv3d_transpose_layer(x_, v=v_)
         return ivy.reduce_mean(out)[0]
+
+    def train_step(x_, v_):
+        lss, grds = ivy.execute_with_gradients(lambda _v_: loss_fn(x_, _v_), v_)
+        v_ = ivy.gradient_descent_update(conv3d_transpose_layer.v, grds, 1e-3)
+        return lss, grds, v_
+
+    # compile if this mode is set
+    if compile_graph and call is helpers.torch_call:
+        # Currently only PyTorch is supported for ivy compilation
+        train_step = ivy.compile_graph(train_step, x, conv3d_transpose_layer.v)
 
     # train
     loss_tm1 = 1e12
     loss = None
     grads = None
     for i in range(10):
-        loss, grads = ivy.execute_with_gradients(loss_fn, conv3d_transpose_layer.v)
-        conv3d_transpose_layer.v = ivy.gradient_descent_update(conv3d_transpose_layer.v, grads, 1e-3)
+        loss, grads, conv3d_transpose_layer.v = train_step(x, conv3d_transpose_layer.v)
         assert loss < loss_tm1
         loss_tm1 = loss
 
@@ -705,12 +757,12 @@ def test_conv3d_transpose_layer_training(x_n_fs_n_pad_n_outshp_n_oc, with_v, dty
         (2, 3, 4, 5, [0.93137765, 0.9587628, 0.96644664, 0.93137765, 0.9587628, 0.96644664], 3.708991),
     ])
 @pytest.mark.parametrize(
-    "with_v", [True, False])
+    "with_v", [False])
 @pytest.mark.parametrize(
     "dtype_str", ['float32'])
 @pytest.mark.parametrize(
-    "tensor_fn", [ivy.array, helpers.var_fn])
-def test_lstm_layer_training(b_t_ic_hc_otf_sctv, with_v, dtype_str, tensor_fn, dev_str, call):
+    "tensor_fn", [ivy.array])
+def test_lstm_layer_training(b_t_ic_hc_otf_sctv, with_v, dtype_str, tensor_fn, dev_str, compile_graph, call):
     # smoke test
     if call is helpers.np_call:
         # NumPy does not support gradients
@@ -728,17 +780,26 @@ def test_lstm_layer_training(b_t_ic_hc_otf_sctv, with_v, dtype_str, tensor_fn, d
         v = None
     lstm_layer = ivy.LSTM(input_channels, hidden_channels, dev_str=dev_str, v=v)
 
-    def loss_fn(v_):
-        out, (state_h, state_c) = lstm_layer(x, v=v_)
+    def loss_fn(x_, v_):
+        out, (state_h, state_c) = lstm_layer(x_, v=v_)
         return ivy.reduce_mean(out)[0]
+
+    def train_step(x_, v_):
+        lss, grds = ivy.execute_with_gradients(lambda _v_: loss_fn(x_, _v_), v_)
+        v_ = ivy.gradient_descent_update(lstm_layer.v, grds, 1e-3)
+        return lss, grds, v_
+
+    # compile if this mode is set
+    if compile_graph and call is helpers.torch_call:
+        # Currently only PyTorch is supported for ivy compilation
+        train_step = ivy.compile_graph(train_step, x, lstm_layer.v)
 
     # train
     loss_tm1 = 1e12
     loss = None
     grads = None
     for i in range(10):
-        loss, grads = ivy.execute_with_gradients(loss_fn, lstm_layer.v)
-        lstm_layer.v = ivy.gradient_descent_update(lstm_layer.v, grads, 1e-3)
+        loss, grads, lstm_layer.v = train_step(x, lstm_layer.v)
         assert loss < loss_tm1
         loss_tm1 = loss
 
@@ -776,7 +837,7 @@ def test_lstm_layer_training(b_t_ic_hc_otf_sctv, with_v, dtype_str, tensor_fn, d
     "dtype_str", ['float32'])
 @pytest.mark.parametrize(
     "tensor_fn", [ivy.array, helpers.var_fn])
-def test_sequential_layer_training(bs_c, with_v, seq_v, dtype_str, tensor_fn, dev_str, call):
+def test_sequential_layer_training(bs_c, with_v, seq_v, dtype_str, tensor_fn, dev_str, compile_graph, call):
     # smoke test
     if call is helpers.np_call:
         # NumPy does not support gradients
@@ -815,17 +876,26 @@ def test_sequential_layer_training(bs_c, with_v, seq_v, dtype_str, tensor_fn, de
                              ivy.Linear(channels, channels, dev_str=dev_str,
                                         v=v['submodules']['v2'] if with_v else None), dev_str=dev_str)
 
-    def loss_fn(v_):
-        out = seq(x, v=v_)
+    def loss_fn(x_, v_):
+        out = seq(x_, v=v_)
         return ivy.reduce_mean(out)[0]
+
+    def train_step(x_, v_):
+        lss, grds = ivy.execute_with_gradients(lambda _v_: loss_fn(x_, _v_), v_)
+        v_ = ivy.gradient_descent_update(seq.v, grds, 1e-3)
+        return lss, grds, v_
+
+    # compile if this mode is set
+    if compile_graph and call is helpers.torch_call:
+        # Currently only PyTorch is supported for ivy compilation
+        train_step = ivy.compile_graph(train_step, x, seq.v)
 
     # train
     loss_tm1 = 1e12
     loss = None
     grads = None
     for i in range(10):
-        loss, grads = ivy.execute_with_gradients(loss_fn, seq.v)
-        seq.v = ivy.gradient_descent_update(seq.v, grads, 1e-3)
+        loss, grads, seq.v = train_step(x, seq.v)
         assert loss < loss_tm1
         loss_tm1 = loss
 
