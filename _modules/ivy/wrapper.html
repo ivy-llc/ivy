@@ -308,14 +308,12 @@
                 <span class="k">if</span> <span class="n">v</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                     <span class="n">val</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
                 <span class="k">else</span><span class="p">:</span>
-                    <span class="c1"># noinspection PyUnresolvedReferences</span>
-                    <span class="k">if</span> <span class="ow">not</span> <span class="n">native</span> <span class="ow">or</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">val</span><span class="o">.</span><span class="n">__all__</span><span class="p">:</span>
-                        <span class="c1"># noinspection PyBroadException</span>
-                        <span class="k">try</span><span class="p">:</span>
-                            <span class="n">val</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">_wrap_or_unwrap_methods</span><span class="p">(</span>
-                                <span class="n">wrap_or_unwrap_fn</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">fs</span><span class="p">,</span> <span class="n">classes_to_wrap</span><span class="p">,</span> <span class="n">native</span><span class="p">,</span> <span class="n">depth</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
-                        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
-                            <span class="k">pass</span>
+                    <span class="c1"># noinspection PyBroadException</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="n">val</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">_wrap_or_unwrap_methods</span><span class="p">(</span>
+                            <span class="n">wrap_or_unwrap_fn</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">fs</span><span class="p">,</span> <span class="n">classes_to_wrap</span><span class="p">,</span> <span class="n">native</span><span class="p">,</span> <span class="n">depth</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+                    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+                        <span class="k">pass</span>
         <span class="k">if</span> <span class="n">depth</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="n">wrapped_modules_n_classes</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
         <span class="k">return</span> <span class="n">val</span>
