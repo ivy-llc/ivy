@@ -159,15 +159,19 @@ def test_stop_gradient(x_raw, dtype_str, tensor_fn, dev_str, call):
     "dtype_str", ['float32'])
 @pytest.mark.parametrize(
     "tensor_fn", [ivy.array])
-def test_execute_with_gradients(func_n_xs_n_ty_n_te_n_tg, dtype_str, tensor_fn, dev_str, call):
+def test_execute_with_gradients(func_n_xs_n_ty_n_te_n_tg, dtype_str, tensor_fn, dev_str, compile_graph, call):
     # smoke test
     func, xs_raw, true_y, true_extra, true_dydxs = func_n_xs_n_ty_n_te_n_tg
     xs = xs_raw.map(lambda x, _: ivy.variable(ivy.array(x)))
+    grad_fn = lambda xs_: ivy.execute_with_gradients(func, xs_)
+    if compile_graph and call is helpers.torch_call:
+        # Currently only PyTorch is supported for ivy compilation
+        grad_fn = ivy.compile_graph(grad_fn, xs)
     if true_extra is None:
-        y, dydxs = ivy.execute_with_gradients(func, xs)
+        y, dydxs = grad_fn(xs)
         extra_out = None
     else:
-        y, dydxs, extra_out = ivy.execute_with_gradients(func, xs)
+        y, dydxs, extra_out = grad_fn(xs)
     # type test
     assert ivy.is_array(y) or isinstance(y, Number)
     if call is not helpers.np_call:
