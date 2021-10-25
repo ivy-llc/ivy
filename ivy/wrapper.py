@@ -114,14 +114,12 @@ def _wrap_or_unwrap_methods(wrap_or_unwrap_fn, val=None, fs=None, classes_to_wra
                 if v is None:
                     val.__dict__[k] = v
                 else:
-                    # noinspection PyUnresolvedReferences
-                    if not native or k in val.__all__:
-                        # noinspection PyBroadException
-                        try:
-                            val.__dict__[k] = _wrap_or_unwrap_methods(
-                                wrap_or_unwrap_fn, v, fs, classes_to_wrap, native, depth + 1)
-                        except Exception:
-                            pass
+                    # noinspection PyBroadException
+                    try:
+                        val.__dict__[k] = _wrap_or_unwrap_methods(
+                            wrap_or_unwrap_fn, v, fs, classes_to_wrap, native, depth + 1)
+                    except Exception:
+                        pass
         if depth == 0:
             wrapped_modules_n_classes.clear()
         return val
