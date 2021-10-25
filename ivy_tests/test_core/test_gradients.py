@@ -164,6 +164,7 @@ def test_execute_with_gradients(func_n_xs_n_ty_n_te_n_tg, dtype_str, tensor_fn, 
     func, xs_raw, true_y, true_extra, true_dydxs = func_n_xs_n_ty_n_te_n_tg
     xs = xs_raw.map(lambda x, _: ivy.variable(ivy.array(x)))
     grad_fn = lambda xs_: ivy.execute_with_gradients(func, xs_)
+    # compile if this mode is set
     if compile_graph and call is helpers.torch_call:
         # Currently only PyTorch is supported for ivy compilation
         grad_fn = ivy.compile_graph(grad_fn, xs)
