@@ -25,7 +25,7 @@ from ivy.core.container import Container
     "dtype_str", ['float32'])
 @pytest.mark.parametrize(
     "tensor_fn", [ivy.array, helpers.var_fn])
-def test_linear_layer_training(bs_ic_oc, with_v, dtype_str, tensor_fn, dev_str, call):
+def test_linear_layer_training(bs_ic_oc, with_v, dtype_str, tensor_fn, dev_str, compile_graph, call):
     # smoke test
     if call is helpers.np_call:
         # NumPy does not support gradients
@@ -44,17 +44,26 @@ def test_linear_layer_training(bs_ic_oc, with_v, dtype_str, tensor_fn, dev_str, 
         v = None
     linear_layer = ivy.Linear(input_channels, output_channels, dev_str=dev_str, v=v)
 
-    def loss_fn(v_):
-        out = linear_layer(x, v=v_)
+    def loss_fn(x_, v_):
+        out = linear_layer(x_, v=v_)
         return ivy.reduce_mean(out)[0]
+
+    def train_step(x_, v_):
+        lss, grds = ivy.execute_with_gradients(lambda _v_: loss_fn(x_, _v_), v_)
+        v_ = ivy.gradient_descent_update(linear_layer.v, grds, 1e-3)
+        return lss, grds, v_
+
+    # compile if this mode is set
+    if compile_graph and call is helpers.torch_call:
+        # Currently only PyTorch is supported for ivy compilation
+        train_step = ivy.compile_graph(train_step, x, linear_layer.v)
 
     # train
     loss_tm1 = 1e12
     loss = None
     grads = None
     for i in range(10):
-        loss, grads = ivy.execute_with_gradients(loss_fn, linear_layer.v)
-        linear_layer.v = ivy.gradient_descent_update(linear_layer.v, grads, 1e-3)
+        loss, grads, linear_layer.v = train_step(x, linear_layer.v)
         assert loss < loss_tm1
         loss_tm1 = loss
 
