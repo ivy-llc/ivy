@@ -16,7 +16,7 @@ from ivy.framework_handler import current_framework as _cur_framework
 
 FN_CACHE = dict()
 INF = float('inf')
-TIMEOUT = 10.0
+TIMEOUT = 15.0
 
 
 # noinspection PyShadowingNames
