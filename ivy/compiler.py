@@ -336,7 +336,8 @@ class Graph:
                 fns_hm1 = grouped_functions[-1]
                 # noinspection PyUnresolvedReferences
                 leftmost_idxs =\
-                    [max(enumerate([fn in fn_hm1.fns_out for fn_hm1 in fns_hm1]), key=lambda x: x[1])[0] for fn in fns]
+                    [max(enumerate([fn in fn_hm1.fns_out for fn_hm1 in fns_hm1 if hasattr(fn_hm1, 'fns_out')]),
+                         key=lambda x: x[1])[0] for fn in fns]
                 fns = [fn for fn, _ in sorted(zip(fns, leftmost_idxs), key=lambda x: x[1])]
             grouped_functions.append(fns)
 
