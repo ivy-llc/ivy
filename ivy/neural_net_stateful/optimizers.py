@@ -101,7 +101,7 @@ class Optimizer(abc.ABC):
         if self._count == 1 and self._init_on_first_step and self._compiled:
             self._compile_step_fn(v, grads, ignore_missing)
         self._count += 1
-        return self._step_fn(v, grads, ignore_missing=False)
+        return self._step_fn(v, grads, ignore_missing)
 
     def compile_graph(self, v, grads=None, ignore_missing=False):
         """
