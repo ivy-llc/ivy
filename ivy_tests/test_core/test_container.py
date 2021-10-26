@@ -2951,6 +2951,17 @@ def test_container_dev_str(dev_str, call):
     assert container.dev_str == dev_str
 
 
+def test_container_create_if_absent(dev_str, call):
+    dict_in = {'a': ivy.array([[[1.], [2.], [3.]]], dev_str=dev_str),
+               'b': {'c': ivy.array([[[2.], [4.], [6.]]], dev_str=dev_str),
+                     'd': ivy.array([[[3.], [6.], [9.]]], dev_str=dev_str)}}
+    container = Container(dict_in)
+    container.create_if_absent('a', None)
+    assert np.allclose(ivy.to_numpy(container.a), np.array([[[1.], [2.], [3.]]]))
+    container.create_if_absent('e', ivy.array([[[4.], [8.], [12.]]]))
+    assert np.allclose(ivy.to_numpy(container.e), np.array([[[4.], [8.], [12.]]]))
+
+
 def test_container_if_exists(dev_str, call):
     dict_in = {'a': ivy.array([[[1.], [2.], [3.]]], dev_str=dev_str),
                'b': {'c': ivy.array([[[2.], [4.], [6.]]], dev_str=dev_str),
