@@ -2385,18 +2385,13 @@ class Container(dict):
                 return_cont[k] = self._ivy.reshape(v, leading_shape + list(v_shape))
         return Container(return_cont, **self._config)
 
-    def create_if_absent(self, key, value):
+    def create_if_absent(self, key, value, inplace=False):
         """
         Add a key to the container with corresponding value, if it is not already present. otherwise, do nothing.
-
-        :param key: The key to potentially add to the container.
-        :type key: str
-        :param value: The value to potentially add to the container.
-        :type value: any
         """
         if key in self:
             return
-        self[key] = value
+        self.set_at_key_chain(key, value, inplace)
 
     def if_exists(self, key):
         """
