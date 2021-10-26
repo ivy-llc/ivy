@@ -502,7 +502,7 @@ def _wrap_method_for_compiling(fn, graph, limit_attributes=True, stateful_classe
         # covert return to list
         ret_listified = False
         if isinstance(ret_raw, tuple):
-            ret = ret_raw
+            ret = list(ret_raw)
         else:
             ret = [ret_raw]
             ret_listified = True
