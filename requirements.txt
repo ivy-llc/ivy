@@ -3,5 +3,6 @@ numpy
 einops
 pytest
 psutil
+networkx
 termcolor
 nvidia-ml-py3
