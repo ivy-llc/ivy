@@ -16,7 +16,8 @@ from ivy.core.container import Container
 
 class Module(abc.ABC):
 
-    def __init__(self, dev_str=None, v=None, build_mode='on_init', store_vars=True, dev_strs=None):
+    def __init__(self, dev_str=None, v=None, build_mode='on_init', compile_on_first_call=False, store_vars=True,
+                 dev_strs=None):
         """
         Initialze Ivy layer, which is a stateful object consisting of trainable variables.
 
@@ -27,6 +28,8 @@ class Module(abc.ABC):
         :param build_mode: How the Module is built, either on initialization (now), explicitly by the user by calling
                            build(), or the first time the __call__ method is run. Default is on initialization.
         :type build_mode: str, optional
+        :param compile_on_first_call: Whether to compile the network on the first forward pass. Default is False.
+        :type compile_on_first_call: bool, optional
         :param store_vars: Whether or not to store the variables created. Default is True.
         :type store_vars: bool, optional
         :param dev_strs: devices on which to distribute the module's variables 'cuda:0', 'cuda:1', 'cpu' etc.
@@ -44,6 +47,7 @@ class Module(abc.ABC):
         self._built = False
         self._compiled = False
         self._compiled_fn = None
+        self._compile_on_first_call = compile_on_first_call
         self._v_in = v
         self.v = v
         if build_mode != 'on_init':
@@ -210,6 +214,9 @@ class Module(abc.ABC):
 
     def __call__(self, *args, v=None, with_grads=True, **kwargs):
         if self._compiled:
+            return self._compiled_fn(*args, v=ivy.default(v, self.v), with_grads=with_grads, **kwargs)
+        elif self._compile_on_first_call and not self._compiled:
+            self.compile_graph(*args, v=v, with_grads=with_grads, **kwargs)
             return self._compiled_fn(*args, v=ivy.default(v, self.v), with_grads=with_grads, **kwargs)
         return self._call(*args, v=v, with_grads=with_grads, **kwargs)
 
