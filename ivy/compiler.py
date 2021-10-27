@@ -460,14 +460,18 @@ class Graph:
         # show
         plt.cla()
         ax = plt.subplot(111)
+        max_dim = max(self._max_graph_width, self._max_graph_height)
         ax.set_aspect(self._max_graph_width/self._max_graph_height)
         nx.draw_networkx(g, arrows=True, pos=self._position_nodes(g, num_inputs),
                          node_color=[(0., 200 / 255, 0.)]*len(g.nodes), node_shape='s',
                          edge_color=[(0., 100 / 255, 0.)]*len(g.edges),
-                         labels={n: n[1].replace('_', '') for n in g.nodes})
+                         labels={n: n[1].replace('_', '') for n in g.nodes}, node_size=[300/max_dim]*len(g.nodes),
+                         font_size=int(round(12/max_dim)), linewidths=1/max_dim, width=1/max_dim,
+                         arrowsize=max(int(round(10/max_dim)), 1))
         plt.show()
         if save_to_disk:
-            plt.savefig('graph_{}.png'.format(''.join([f.__name__.replace('_', '')[0] for f in self._functions])))
+            plt.savefig('graph_{}.png'.format(''.join([f.__name__.replace('_', '')[0] for f in self._functions])),
+                        bbox_inches='tight', dpi=1500)
 
     def __del__(self):
         if self._num_workers <= 1:
