@@ -516,6 +516,8 @@ def _clone_param(x):
     if hasattr(x, '__dict__'):
         x.__dict__['param_id'] = id(x_copy)  # update the id of the original param (for preserved stateful objects)
     wrapping_paused = False
+    for k, v in x.__dict__.items():
+        x_copy.__dict__[k] = v
     return x_copy
 
 
