@@ -215,6 +215,14 @@ class Module(abc.ABC):
         self._compiled_fn = ivy.compile_graph(self._call, *args, **kwargs)
         self._compiled = True
 
+    def show_graph(self, *args, v=None, with_grads=True, save_to_disk=False, **kwargs):
+        self(*args, v=v, with_grads=with_grads, **kwargs)  # for on call build modes
+        if not self._built:
+            self.build(*args, from_call=False, **kwargs)  # for explicit build modes
+        kwargs['v'] = ivy.default(v, self.v)
+        kwargs['with_grads'] = with_grads
+        ivy.show_graph(self._call, *args, **kwargs, save_to_disk=save_to_disk)
+
     def __call__(self, *args, v=None, with_grads=True, **kwargs):
         if self._compiled:
             return self._compiled_fn(*args, v=ivy.default(v, self.v), with_grads=with_grads, **kwargs)
