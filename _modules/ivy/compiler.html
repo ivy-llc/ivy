@@ -199,6 +199,11 @@
 <span class="kn">import</span> <span class="nn">random</span>
 <span class="kn">import</span> <span class="nn">inspect</span>
 <span class="kn">import</span> <span class="nn">importlib</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">networkx</span> <span class="k">as</span> <span class="nn">nx</span>
+<span class="kn">import</span> <span class="nn">matplotlib</span>
+<span class="n">matplotlib</span><span class="o">.</span><span class="n">use</span><span class="p">(</span><span class="s2">&quot;Agg&quot;</span><span class="p">)</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 
 <span class="c1"># local</span>
 <span class="kn">from</span> <span class="nn">ivy.wrapper</span> <span class="kn">import</span> <span class="n">_wrap_or_unwrap_methods</span><span class="p">,</span> <span class="n">NON_WRAPPED_METHODS</span><span class="p">,</span> <span class="n">ARRAYLESS_RET_METHODS</span>
@@ -305,7 +310,10 @@
 
         <span class="c1"># multiprocessing</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_timeout</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">queue_timeout</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_num_workers</span> <span class="o">=</span> <span class="n">num_workers</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_num_workers</span> <span class="o">=</span> <span class="n">num_workers</span>
+
+        <span class="c1"># connected flag</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_connected</span> <span class="o">=</span> <span class="kc">False</span></div>
 
     <span class="c1"># Multiprocessing #</span>
     <span class="c1"># ----------------#</span>
@@ -521,26 +529,27 @@
         <span class="n">max_tree_height</span> <span class="o">=</span> <span class="nb">max</span><span class="p">([</span><span class="n">fn</span><span class="o">.</span><span class="n">tree_height</span> <span class="k">for</span> <span class="n">fn</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_functions</span><span class="p">])</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_functions</span> <span class="k">else</span> <span class="o">-</span><span class="mi">1</span>
 
         <span class="c1"># group the functions based on their height in the tree from the starting leaf nodes</span>
-        <span class="n">grouped_functions</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_grouped_functions</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
         <span class="k">for</span> <span class="n">height</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">max_tree_height</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
             <span class="n">fns</span> <span class="o">=</span> <span class="p">[</span><span class="n">fn</span> <span class="k">for</span> <span class="n">fn</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_functions</span> <span class="k">if</span> <span class="n">fn</span><span class="o">.</span><span class="n">tree_height</span> <span class="o">==</span> <span class="n">height</span><span class="p">]</span>
             <span class="k">if</span> <span class="n">height</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
                 <span class="n">fns</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">fns</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">fns_in</span><span class="p">))</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">fns_hm1</span> <span class="o">=</span> <span class="n">grouped_functions</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+                <span class="n">fns_hm1</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_grouped_functions</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
                 <span class="c1"># noinspection PyUnresolvedReferences</span>
                 <span class="n">leftmost_idxs</span> <span class="o">=</span>\
                     <span class="p">[</span><span class="nb">max</span><span class="p">(</span><span class="nb">enumerate</span><span class="p">([</span><span class="n">fn</span> <span class="ow">in</span> <span class="n">fn_hm1</span><span class="o">.</span><span class="n">fns_out</span> <span class="k">for</span> <span class="n">fn_hm1</span> <span class="ow">in</span> <span class="n">fns_hm1</span> <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">fn_hm1</span><span class="p">,</span> <span class="s1">&#39;fns_out&#39;</span><span class="p">)]),</span>
                          <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">fn</span> <span class="ow">in</span> <span class="n">fns</span><span class="p">]</span>
                 <span class="n">fns</span> <span class="o">=</span> <span class="p">[</span><span class="n">fn</span> <span class="k">for</span> <span class="n">fn</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">fns</span><span class="p">,</span> <span class="n">leftmost_idxs</span><span class="p">),</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">])]</span>
-            <span class="n">grouped_functions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">fns</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_grouped_functions</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">fns</span><span class="p">)</span>
 
         <span class="c1"># stack functions in the best order</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_functions</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">sl</span> <span class="ow">in</span> <span class="n">grouped_functions</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">sl</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_functions</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">sl</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_grouped_functions</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">sl</span><span class="p">]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_num_functions</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_functions</span><span class="p">)</span>
 
-        <span class="c1"># compute maximum width of the graph</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_max_graph_width</span> <span class="o">=</span> <span class="nb">max</span><span class="p">([</span><span class="nb">len</span><span class="p">(</span><span class="n">fns</span><span class="p">)</span> <span class="k">for</span> <span class="n">fns</span> <span class="ow">in</span> <span class="n">grouped_functions</span><span class="p">])</span> <span class="k">if</span> <span class="n">grouped_functions</span> <span class="k">else</span> <span class="mi">0</span>
+        <span class="c1"># compute maximum width and height of the graph</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_max_graph_width</span> <span class="o">=</span> <span class="nb">max</span><span class="p">([</span><span class="nb">len</span><span class="p">(</span><span class="n">fns</span><span class="p">)</span> <span class="k">for</span> <span class="n">fns</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_grouped_functions</span><span class="p">])</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_grouped_functions</span> <span class="k">else</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_max_graph_height</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_grouped_functions</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_call</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="c1"># ToDo: make this as efficient as possible; this is performed at runtime</span>
@@ -579,12 +588,72 @@
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_output</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_output</span>
 
-<div class="viewcode-block" id="Graph.compiled"><a class="viewcode-back" href="../../compiler.html#ivy.compiler.Graph.compiled">[docs]</a>    <span class="k">def</span> <span class="nf">compiled</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Graph.connect"><a class="viewcode-back" href="../../compiler.html#ivy.compiler.Graph.connect">[docs]</a>    <span class="k">def</span> <span class="nf">connect</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_chain_functions</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_initialize_multiprocessing</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_connected</span> <span class="o">=</span> <span class="kc">True</span></div>
+
+<div class="viewcode-block" id="Graph.compiled"><a class="viewcode-back" href="../../compiler.html#ivy.compiler.Graph.compiled">[docs]</a>    <span class="k">def</span> <span class="nf">compiled</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_connected</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">connect</span><span class="p">()</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_num_workers</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_call</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_multi_call</span></div>
+
+    <span class="k">def</span> <span class="nf">_position_nodes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">g</span><span class="p">,</span> <span class="n">num_inputs</span><span class="p">):</span>
+
+        <span class="n">pos_dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+
+        <span class="c1"># select position based on width and height of graph</span>
+        <span class="k">for</span> <span class="n">height</span><span class="p">,</span> <span class="n">fns</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_grouped_functions</span><span class="p">):</span>
+            <span class="n">width</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">fns</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">fns</span><span class="p">:</span>
+                <span class="n">pos_dict</span><span class="p">[(</span><span class="n">f</span><span class="o">.</span><span class="n">output_param_ids</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">f</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)]</span> <span class="o">=</span>\
+                    <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([(</span><span class="n">height</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">_max_graph_height</span><span class="p">,</span> <span class="n">width</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">_max_graph_width</span><span class="p">])</span>
+
+        <span class="c1"># add inputs</span>
+        <span class="n">input_idx</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">g</span><span class="o">.</span><span class="n">nodes</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">n</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">pos_dict</span><span class="p">:</span>
+                <span class="n">pos_dict</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">,</span> <span class="p">(</span><span class="n">input_idx</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="n">num_inputs</span><span class="p">])</span>
+                <span class="n">input_idx</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="k">return</span> <span class="n">pos_dict</span>
+
+<div class="viewcode-block" id="Graph.show"><a class="viewcode-back" href="../../compiler.html#ivy.compiler.Graph.show">[docs]</a>    <span class="k">def</span> <span class="nf">show</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">save_to_disk</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+
+        <span class="c1"># ensure graph is connected</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_connected</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">connect</span><span class="p">()</span>
+
+        <span class="c1"># create directed networkX graph</span>
+        <span class="n">g</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">DiGraph</span><span class="p">()</span>
+
+        <span class="k">def</span> <span class="nf">inp</span><span class="p">():</span>
+            <span class="k">pass</span>
+
+        <span class="n">inp</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">=</span> <span class="s1">&#39;input&#39;</span>
+        <span class="n">num_inputs</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="k">for</span> <span class="n">pid</span><span class="p">,</span> <span class="n">func</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_functions_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">for</span> <span class="n">pid_in</span> <span class="ow">in</span> <span class="n">func</span><span class="o">.</span><span class="n">arg_param_ids</span> <span class="o">+</span> <span class="n">func</span><span class="o">.</span><span class="n">kwarg_param_ids</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">pid_in</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_functions_dict</span><span class="p">:</span>
+                    <span class="n">fn_in</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_functions_dict</span><span class="p">[</span><span class="n">pid_in</span><span class="p">]</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">fn_in</span> <span class="o">=</span> <span class="n">inp</span>
+                    <span class="n">num_inputs</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="n">start_node</span> <span class="o">=</span> <span class="p">(</span><span class="n">pid_in</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">default</span><span class="p">(</span><span class="n">fn_in</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="s1">&#39;unnamed&#39;</span><span class="p">))</span>
+                <span class="n">end_node</span> <span class="o">=</span> <span class="p">(</span><span class="n">pid</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">default</span><span class="p">(</span><span class="n">func</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="s1">&#39;output&#39;</span><span class="p">))</span>
+                <span class="n">g</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">start_node</span><span class="p">,</span> <span class="n">end_node</span><span class="p">)</span>
+
+        <span class="c1"># show</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">111</span><span class="p">)</span>
+        <span class="n">nx</span><span class="o">.</span><span class="n">draw_networkx</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">arrows</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">pos</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_position_nodes</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">num_inputs</span><span class="p">),</span> <span class="n">node_color</span><span class="o">=</span><span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="mi">200</span> <span class="o">/</span> <span class="mi">255</span><span class="p">,</span> <span class="mf">0.</span><span class="p">),</span>
+                         <span class="n">node_shape</span><span class="o">=</span><span class="s1">&#39;s&#39;</span><span class="p">,</span> <span class="n">edge_color</span><span class="o">=</span><span class="p">[(</span><span class="mf">0.</span><span class="p">,</span> <span class="mi">100</span> <span class="o">/</span> <span class="mi">255</span><span class="p">,</span> <span class="mf">0.</span><span class="p">)]</span><span class="o">*</span><span class="mi">3</span><span class="p">,</span>
+                         <span class="n">labels</span><span class="o">=</span><span class="p">{</span><span class="n">n</span><span class="p">:</span> <span class="n">n</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">g</span><span class="o">.</span><span class="n">nodes</span><span class="p">})</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">save_to_disk</span><span class="p">:</span>
+            <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s1">&#39;graph_</span><span class="si">{}</span><span class="s1">.png&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">f</span><span class="o">.</span><span class="vm">__name__</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_functions</span><span class="p">])))</span></div>
 
     <span class="k">def</span> <span class="fm">__del__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_num_workers</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">:</span>
@@ -834,7 +903,7 @@
             <span class="bp">cls</span><span class="o">.</span><span class="fm">__getattribute__</span> <span class="o">=</span> <span class="n">_unwrap_method_from_compiling</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="fm">__getattribute__</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="compile_graph"><a class="viewcode-back" href="../../compiler/compile_graph.html#ivy.compiler.compile_graph">[docs]</a><span class="k">def</span> <span class="nf">compile_graph</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">stateful</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">num_workers</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">_create_graph</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">stateful</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">num_workers</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 
     <span class="c1"># extra stateful instances modified in the graph</span>
     <span class="n">stateful</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">default</span><span class="p">(</span><span class="n">stateful</span><span class="p">,</span> <span class="p">[])</span>
@@ -865,8 +934,8 @@
                 <span class="k">continue</span>
             <span class="n">s</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">sc</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
 
-    <span class="c1"># compile the graph forward pass into an executable function</span>
-    <span class="n">comp_fn</span> <span class="o">=</span> <span class="n">graph</span><span class="o">.</span><span class="n">compiled</span><span class="p">()</span>
+    <span class="c1"># connect graph</span>
+    <span class="n">graph</span><span class="o">.</span><span class="n">connect</span><span class="p">()</span>
 
     <span class="c1"># reset all global compiler variables, just to be sure</span>
     <span class="k">global</span> <span class="n">cloning</span>
@@ -876,8 +945,26 @@
     <span class="k">global</span> <span class="n">wrapped_stack</span>
     <span class="n">wrapped_stack</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
 
-    <span class="c1"># return the compiled function</span>
-    <span class="k">return</span> <span class="n">comp_fn</span></div>
+    <span class="c1"># return graph</span>
+    <span class="k">return</span> <span class="n">graph</span>
+
+
+<div class="viewcode-block" id="compile_graph"><a class="viewcode-back" href="../../compiler/compile_graph.html#ivy.compiler.compile_graph">[docs]</a><span class="k">def</span> <span class="nf">compile_graph</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">stateful</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">num_workers</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+
+    <span class="c1"># create graph</span>
+    <span class="n">graph</span> <span class="o">=</span> <span class="n">_create_graph</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">stateful</span><span class="o">=</span><span class="n">stateful</span><span class="p">,</span> <span class="n">num_workers</span><span class="o">=</span><span class="n">num_workers</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="c1"># compile the graph forward pass into an executable function</span>
+    <span class="k">return</span> <span class="n">graph</span><span class="o">.</span><span class="n">compiled</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="show_graph"><a class="viewcode-back" href="../../compiler/show_graph.html#ivy.compiler.show_graph">[docs]</a><span class="k">def</span> <span class="nf">show_graph</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">stateful</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">num_workers</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+
+    <span class="c1"># create graph</span>
+    <span class="n">graph</span> <span class="o">=</span> <span class="n">_create_graph</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">stateful</span><span class="o">=</span><span class="n">stateful</span><span class="p">,</span> <span class="n">num_workers</span><span class="o">=</span><span class="n">num_workers</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="c1"># show the compiled graph</span>
+    <span class="n">graph</span><span class="o">.</span><span class="n">show</span><span class="p">()</span></div>
 </pre></div>
 
            </div>
