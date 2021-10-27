@@ -453,12 +453,15 @@ class Graph:
                 g.add_edge(start_node, end_node)
 
         # num inputs
-        height_0_fns = self._grouped_functions[0]
-        input_param_ids = list()
-        for fn in height_0_fns:
-            input_param_ids += fn.arg_param_ids + fn.kwarg_param_ids
-        input_param_ids = set(input_param_ids)
-        num_inputs = len(input_param_ids)
+        if not self._grouped_functions:
+            num_inputs = 0
+        else:
+            height_0_fns = self._grouped_functions[0]
+            input_param_ids = list()
+            for fn in height_0_fns:
+                input_param_ids += fn.arg_param_ids + fn.kwarg_param_ids
+            input_param_ids = set(input_param_ids)
+            num_inputs = len(input_param_ids)
 
         # show
         plt.cla()
