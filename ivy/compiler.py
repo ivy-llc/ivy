@@ -14,7 +14,7 @@ import matplotlib.pyplot as plt
 # local
 from ivy.wrapper import _wrap_or_unwrap_methods, NON_WRAPPED_METHODS, ARRAYLESS_RET_METHODS
 
-cloning = False
+wrapping_paused = False
 op_logging = False
 wrapped_stack = list()
 
@@ -36,11 +36,6 @@ GRAPH_ATTRIBUTES = {'numpy': [],
                    'tensorflow': [],
                    'torch': ['data', 'requires_grad'],
                    'mxnet': []}
-
-def _get_id(x):
-    if hasattr(x, 'param_id'):
-        return x.param_id
-    return id(x)
 
 
 class Param:
@@ -464,7 +459,8 @@ class Graph:
 
         # show
         plt.cla()
-        plt.subplot(111)
+        ax = plt.subplot(111)
+        ax.set_aspect(self._max_graph_width/self._max_graph_height)
         nx.draw_networkx(g, arrows=True, pos=self._position_nodes(g, num_inputs),
                          node_color=[(0., 200 / 255, 0.)]*len(g.nodes), node_shape='s',
                          edge_color=[(0., 100 / 255, 0.)]*len(g.edges),
@@ -504,13 +500,22 @@ class Graph:
 
 # Methods #
 
+def _get_id(x):
+    global wrapping_paused
+    wrapping_paused = True
+    if hasattr(x, 'param_id'):
+        return x.__dict__['param_id']
+    wrapping_paused = False
+    return id(x)
+
+
 def _clone_param(x):
-    global cloning
-    cloning = True
+    global wrapping_paused
+    wrapping_paused = True
     x_copy = copy.copy(x)  # copy the param
     if hasattr(x, '__dict__'):
         x.__dict__['param_id'] = id(x_copy)  # update the id of the original param (for preserved stateful objects)
-    cloning = False
+    wrapping_paused = False
     return x_copy
 
 
@@ -528,8 +533,8 @@ def _wrap_method_for_compiling(fn, graph, limit_attributes=True, stateful_classe
     def _method_wrapped(*args, **kwargs):
 
         # if cloning a param currently, return directly via the original function
-        global cloning
-        if cloning:
+        global wrapping_paused
+        if wrapping_paused:
             return fn(*args, **kwargs)
 
         # return if the wrapping is already happening on a higher level, and it's not a built-in which legitimately
@@ -761,8 +766,8 @@ def _create_graph(fn, *args, stateful=None, num_workers=1, **kwargs):
     graph.connect()
 
     # reset all global compiler variables, just to be sure
-    global cloning
-    cloning = False
+    global wrapping_paused
+    wrapping_paused = False
     global op_logging
     op_logging = False
     global wrapped_stack
