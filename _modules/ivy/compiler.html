@@ -647,12 +647,15 @@
                 <span class="n">g</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">start_node</span><span class="p">,</span> <span class="n">end_node</span><span class="p">)</span>
 
         <span class="c1"># num inputs</span>
-        <span class="n">height_0_fns</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_grouped_functions</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-        <span class="n">input_param_ids</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
-        <span class="k">for</span> <span class="n">fn</span> <span class="ow">in</span> <span class="n">height_0_fns</span><span class="p">:</span>
-            <span class="n">input_param_ids</span> <span class="o">+=</span> <span class="n">fn</span><span class="o">.</span><span class="n">arg_param_ids</span> <span class="o">+</span> <span class="n">fn</span><span class="o">.</span><span class="n">kwarg_param_ids</span>
-        <span class="n">input_param_ids</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">input_param_ids</span><span class="p">)</span>
-        <span class="n">num_inputs</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">input_param_ids</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_grouped_functions</span><span class="p">:</span>
+            <span class="n">num_inputs</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">height_0_fns</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_grouped_functions</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">input_param_ids</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">fn</span> <span class="ow">in</span> <span class="n">height_0_fns</span><span class="p">:</span>
+                <span class="n">input_param_ids</span> <span class="o">+=</span> <span class="n">fn</span><span class="o">.</span><span class="n">arg_param_ids</span> <span class="o">+</span> <span class="n">fn</span><span class="o">.</span><span class="n">kwarg_param_ids</span>
+            <span class="n">input_param_ids</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">input_param_ids</span><span class="p">)</span>
+            <span class="n">num_inputs</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">input_param_ids</span><span class="p">)</span>
 
         <span class="c1"># show</span>
         <span class="n">plt</span><span class="o">.</span><span class="n">cla</span><span class="p">()</span>
