@@ -175,22 +175,16 @@ class Graph:
     # Foward with Op Logging #
     # -----------------------#
 
-    # noinspection PyProtectedMember
-    def log_all_ops(self):
-
-        global op_logging
-        op_logging = True
-
+    def _compute_return(self):
         ret = self._fn(*self._args, **self._kwargs)
         if not isinstance(ret, tuple):
             ret = (ret,)
+        return ret
 
+    def _register_output(self, ret):
         self._output = list(ret)
         self._output_tracked_idxs = ivy.nested_indices_where(
             ret, lambda x: ivy.is_array(x) or isinstance(x, self._stateful_classes))
-
-        if not isinstance(ret, tuple):
-            ret = (ret,)
         output_tracked_idxs = ivy.nested_indices_where(
             ret, lambda x: ivy.is_array(x) or isinstance(x, self._stateful_classes))
         self._output_param_ids = [_get_id(x) for x in ivy.multi_index_nest(list(ret), output_tracked_idxs)]
@@ -220,6 +214,11 @@ class Graph:
                 self.add_fn_to_dict(new_pid, new_fn)
                 self._output_param_ids[i] = new_pid
 
+    # noinspection PyProtectedMember
+    def log_all_ops(self):
+        global op_logging
+        op_logging = True
+        self._register_output(self._compute_return())
         op_logging = False
 
     # Getters and Setters #
@@ -649,11 +648,16 @@ def _wrap_method_for_compiling(fn, graph, limit_attributes=True, stateful_classe
             new_fn.__name__ = fn.__name__
 
         # add to graph if compiling
+        global op_logging
         if op_logging:
 
             # add this function to the graph for each output pid
             for pid in ret_param_ids:
                 if pid in graph._functions_dict:
+                    graph._register_output(ret)
+                    op_logging = False
+                    _unwrap_methods_from_op_logging(list(graph._stateful_classes))
+                    graph.show(save_to_disk=True)
                     raise Exception(
                         'tried to add {} to graph._functions_dict, but function {} with the same output pid {} '
                         'already exists!'.format(
