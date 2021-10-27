@@ -369,22 +369,16 @@
     <span class="c1"># Foward with Op Logging #</span>
     <span class="c1"># -----------------------#</span>
 
-    <span class="c1"># noinspection PyProtectedMember</span>
-<div class="viewcode-block" id="Graph.log_all_ops"><a class="viewcode-back" href="../../compiler.html#ivy.compiler.Graph.log_all_ops">[docs]</a>    <span class="k">def</span> <span class="nf">log_all_ops</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-
-        <span class="k">global</span> <span class="n">op_logging</span>
-        <span class="n">op_logging</span> <span class="o">=</span> <span class="kc">True</span>
-
+    <span class="k">def</span> <span class="nf">_compute_return</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">ret</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fn</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_kwargs</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ret</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
             <span class="n">ret</span> <span class="o">=</span> <span class="p">(</span><span class="n">ret</span><span class="p">,)</span>
+        <span class="k">return</span> <span class="n">ret</span>
 
+    <span class="k">def</span> <span class="nf">_register_output</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ret</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_output</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">ret</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_output_tracked_idxs</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">nested_indices_where</span><span class="p">(</span>
             <span class="n">ret</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_array</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_stateful_classes</span><span class="p">))</span>
-
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ret</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
-            <span class="n">ret</span> <span class="o">=</span> <span class="p">(</span><span class="n">ret</span><span class="p">,)</span>
         <span class="n">output_tracked_idxs</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">nested_indices_where</span><span class="p">(</span>
             <span class="n">ret</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_array</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_stateful_classes</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_output_param_ids</span> <span class="o">=</span> <span class="p">[</span><span class="n">_get_id</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">ivy</span><span class="o">.</span><span class="n">multi_index_nest</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">ret</span><span class="p">),</span> <span class="n">output_tracked_idxs</span><span class="p">)]</span>
@@ -414,6 +408,11 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">add_fn_to_dict</span><span class="p">(</span><span class="n">new_pid</span><span class="p">,</span> <span class="n">new_fn</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_output_param_ids</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_pid</span>
 
+    <span class="c1"># noinspection PyProtectedMember</span>
+<div class="viewcode-block" id="Graph.log_all_ops"><a class="viewcode-back" href="../../compiler.html#ivy.compiler.Graph.log_all_ops">[docs]</a>    <span class="k">def</span> <span class="nf">log_all_ops</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">global</span> <span class="n">op_logging</span>
+        <span class="n">op_logging</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_register_output</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_compute_return</span><span class="p">())</span>
         <span class="n">op_logging</span> <span class="o">=</span> <span class="kc">False</span></div>
 
     <span class="c1"># Getters and Setters #</span>
@@ -843,11 +842,16 @@
             <span class="n">new_fn</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">=</span> <span class="n">fn</span><span class="o">.</span><span class="vm">__name__</span>
 
         <span class="c1"># add to graph if compiling</span>
+        <span class="k">global</span> <span class="n">op_logging</span>
         <span class="k">if</span> <span class="n">op_logging</span><span class="p">:</span>
 
             <span class="c1"># add this function to the graph for each output pid</span>
             <span class="k">for</span> <span class="n">pid</span> <span class="ow">in</span> <span class="n">ret_param_ids</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">pid</span> <span class="ow">in</span> <span class="n">graph</span><span class="o">.</span><span class="n">_functions_dict</span><span class="p">:</span>
+                    <span class="n">graph</span><span class="o">.</span><span class="n">_register_output</span><span class="p">(</span><span class="n">ret</span><span class="p">)</span>
+                    <span class="n">op_logging</span> <span class="o">=</span> <span class="kc">False</span>
+                    <span class="n">_unwrap_methods_from_op_logging</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">graph</span><span class="o">.</span><span class="n">_stateful_classes</span><span class="p">))</span>
+                    <span class="n">graph</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="n">save_to_disk</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
                     <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span>
                         <span class="s1">&#39;tried to add </span><span class="si">{}</span><span class="s1"> to graph._functions_dict, but function </span><span class="si">{}</span><span class="s1"> with the same output pid </span><span class="si">{}</span><span class="s1"> &#39;</span>
                         <span class="s1">&#39;already exists!&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
