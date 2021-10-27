@@ -5,6 +5,11 @@ import queue
 import random
 import inspect
 import importlib
+import numpy as np
+import networkx as nx
+import matplotlib
+matplotlib.use("Agg")
+import matplotlib.pyplot as plt
 
 # local
 from ivy.wrapper import _wrap_or_unwrap_methods, NON_WRAPPED_METHODS, ARRAYLESS_RET_METHODS
@@ -112,6 +117,9 @@ class Graph:
         # multiprocessing
         self._timeout = ivy.queue_timeout()
         self._num_workers = num_workers
+
+        # connected flag
+        self._connected = False
 
     # Multiprocessing #
     # ----------------#
@@ -327,26 +335,27 @@ class Graph:
         max_tree_height = max([fn.tree_height for fn in self._functions]) if self._functions else -1
 
         # group the functions based on their height in the tree from the starting leaf nodes
-        grouped_functions = list()
+        self._grouped_functions = list()
         for height in range(0, max_tree_height+1):
             fns = [fn for fn in self._functions if fn.tree_height == height]
             if height == 0:
                 fns = sorted(fns, key=lambda x: len(x.fns_in))
             else:
-                fns_hm1 = grouped_functions[-1]
+                fns_hm1 = self._grouped_functions[-1]
                 # noinspection PyUnresolvedReferences
                 leftmost_idxs =\
                     [max(enumerate([fn in fn_hm1.fns_out for fn_hm1 in fns_hm1 if hasattr(fn_hm1, 'fns_out')]),
                          key=lambda x: x[1])[0] for fn in fns]
                 fns = [fn for fn, _ in sorted(zip(fns, leftmost_idxs), key=lambda x: x[1])]
-            grouped_functions.append(fns)
+            self._grouped_functions.append(fns)
 
         # stack functions in the best order
-        self._functions = [i for sl in grouped_functions for i in sl]
+        self._functions = [i for sl in self._grouped_functions for i in sl]
         self._num_functions = len(self._functions)
 
-        # compute maximum width of the graph
-        self._max_graph_width = max([len(fns) for fns in grouped_functions]) if grouped_functions else 0
+        # compute maximum width and height of the graph
+        self._max_graph_width = max([len(fns) for fns in self._grouped_functions]) if self._grouped_functions else 0
+        self._max_graph_height = len(self._grouped_functions)
 
     def _call(self, *args, **kwargs):
         # ToDo: make this as efficient as possible; this is performed at runtime
@@ -385,12 +394,72 @@ class Graph:
             return self._output[0]
         return self._output
 
-    def compiled(self):
+    def connect(self):
         self._chain_functions()
         self._initialize_multiprocessing()
+        self._connected = True
+
+    def compiled(self):
+        if not self._connected:
+            self.connect()
         if self._num_workers <= 1:
             return self._call
         return self._multi_call
+
+    def _position_nodes(self, g, num_inputs):
+
+        pos_dict = dict()
+
+        # select position based on width and height of graph
+        for height, fns in enumerate(self._grouped_functions):
+            width = len(fns)
+            for f in fns:
+                pos_dict[(f.output_param_ids[0], f.__name__)] =\
+                    np.array([(height+1)/self._max_graph_height, width/self._max_graph_width])
+
+        # add inputs
+        input_idx = 0
+        for n in g.nodes:
+            if n not in pos_dict:
+                pos_dict[n] = np.array([0., (input_idx+1)/num_inputs])
+                input_idx += 1
+
+        return pos_dict
+
+    def show(self, save_to_disk=False):
+
+        # ensure graph is connected
+        if not self._connected:
+            self.connect()
+
+        # create directed networkX graph
+        g = nx.DiGraph()
+
+        def inp():
+            pass
+
+        inp.__name__ = 'input'
+        num_inputs = 0
+
+        for pid, func in self._functions_dict.items():
+            for pid_in in func.arg_param_ids + func.kwarg_param_ids:
+                if pid_in in self._functions_dict:
+                    fn_in = self._functions_dict[pid_in]
+                else:
+                    fn_in = inp
+                    num_inputs += 1
+                start_node = (pid_in, ivy.default(fn_in.__name__, 'unnamed'))
+                end_node = (pid, ivy.default(func.__name__, 'output'))
+                g.add_edge(start_node, end_node)
+
+        # show
+        plt.subplot(111)
+        nx.draw_networkx(g, arrows=True, pos=self._position_nodes(g, num_inputs), node_color=(0., 200 / 255, 0.),
+                         node_shape='s', edge_color=[(0., 100 / 255, 0.)]*3,
+                         labels={n: n[1].replace('_', '') for n in g.nodes})
+        plt.show()
+        if save_to_disk:
+            plt.savefig('graph_{}.png'.format(''.join([f.__name__.replace('_', '')[0] for f in self._functions])))
 
     def __del__(self):
         if self._num_workers <= 1:
@@ -640,7 +709,7 @@ def _unwrap_methods_from_op_logging(stateful_classes=None):
             cls.__getattribute__ = _unwrap_method_from_compiling(cls.__getattribute__)
 
 
-def compile_graph(fn, *args, stateful=None, num_workers=1, **kwargs):
+def _create_graph(fn, *args, stateful=None, num_workers=1, **kwargs):
 
     # extra stateful instances modified in the graph
     stateful = ivy.default(stateful, [])
@@ -671,8 +740,8 @@ def compile_graph(fn, *args, stateful=None, num_workers=1, **kwargs):
                 continue
             s.__dict__[k] = sc[k]
 
-    # compile the graph forward pass into an executable function
-    comp_fn = graph.compiled()
+    # connect graph
+    graph.connect()
 
     # reset all global compiler variables, just to be sure
     global cloning
@@ -682,5 +751,23 @@ def compile_graph(fn, *args, stateful=None, num_workers=1, **kwargs):
     global wrapped_stack
     wrapped_stack.clear()
 
-    # return the compiled function
-    return comp_fn
+    # return graph
+    return graph
+
+
+def compile_graph(fn, *args, stateful=None, num_workers=1, **kwargs):
+
+    # create graph
+    graph = _create_graph(fn, *args, stateful=stateful, num_workers=num_workers, **kwargs)
+
+    # compile the graph forward pass into an executable function
+    return graph.compiled()
+
+
+def show_graph(fn, *args, stateful=None, num_workers=1, **kwargs):
+
+    # create graph
+    graph = _create_graph(fn, *args, stateful=stateful, num_workers=num_workers, **kwargs)
+
+    # show the compiled graph
+    graph.show()
