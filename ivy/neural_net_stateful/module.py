@@ -207,6 +207,9 @@ class Module(abc.ABC):
     # -------#
 
     def compile_graph(self, *args, v=None, with_grads=True, **kwargs):
+        self(*args, v=v, with_grads=with_grads, **kwargs)  # for on call build modes
+        if not self._built:
+            self.build(*args, from_call=False, **kwargs)  # for explicit build modes
         kwargs['v'] = ivy.default(v, self.v)
         kwargs['with_grads'] = with_grads
         self._compiled_fn = ivy.compile_graph(self._call, *args, **kwargs)
