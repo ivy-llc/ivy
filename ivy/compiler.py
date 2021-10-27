@@ -442,6 +442,8 @@ class Graph:
         num_inputs = 0
 
         for pid, func in self._functions_dict.items():
+            if func not in self._functions:
+                continue
             for pid_in in func.arg_param_ids + func.kwarg_param_ids:
                 if pid_in in self._functions_dict:
                     fn_in = self._functions_dict[pid_in]
@@ -453,6 +455,7 @@ class Graph:
                 g.add_edge(start_node, end_node)
 
         # show
+        plt.cla()
         plt.subplot(111)
         nx.draw_networkx(g, arrows=True, pos=self._position_nodes(g, num_inputs), node_color=(0., 200 / 255, 0.),
                          node_shape='s', edge_color=[(0., 100 / 255, 0.)]*3,
