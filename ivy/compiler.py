@@ -413,15 +413,15 @@ class Graph:
         # select position based on width and height of graph
         for height, fns in enumerate(self._grouped_functions):
             width = len(fns)
-            for f in fns:
+            for w, f in enumerate(fns):
                 pos_dict[(f.output_param_ids[0], f.__name__)] =\
-                    np.array([(height+1)/self._max_graph_height, width/self._max_graph_width])
+                    np.array([(height+1)/self._max_graph_height, 0.5 if width == 1 else w/(width-1)])
 
         # add inputs
         input_idx = 0
         for n in g.nodes:
             if n not in pos_dict:
-                pos_dict[n] = np.array([0., (input_idx+1)/num_inputs])
+                pos_dict[n] = np.array([0., 0.5 if num_inputs == 1 else input_idx/(num_inputs-1)])
                 input_idx += 1
 
         return pos_dict
@@ -439,7 +439,6 @@ class Graph:
             pass
 
         inp.__name__ = 'input'
-        num_inputs = 0
 
         for pid, func in self._functions_dict.items():
             if func not in self._functions:
@@ -449,16 +448,24 @@ class Graph:
                     fn_in = self._functions_dict[pid_in]
                 else:
                     fn_in = inp
-                    num_inputs += 1
                 start_node = (pid_in, ivy.default(fn_in.__name__, 'unnamed'))
                 end_node = (pid, ivy.default(func.__name__, 'output'))
                 g.add_edge(start_node, end_node)
 
+        # num inputs
+        height_0_fns = self._grouped_functions[0]
+        input_param_ids = list()
+        for fn in height_0_fns:
+            input_param_ids += fn.arg_param_ids + fn.kwarg_param_ids
+        input_param_ids = set(input_param_ids)
+        num_inputs = len(input_param_ids)
+
         # show
         plt.cla()
         plt.subplot(111)
-        nx.draw_networkx(g, arrows=True, pos=self._position_nodes(g, num_inputs), node_color=(0., 200 / 255, 0.),
-                         node_shape='s', edge_color=[(0., 100 / 255, 0.)]*3,
+        nx.draw_networkx(g, arrows=True, pos=self._position_nodes(g, num_inputs),
+                         node_color=[(0., 200 / 255, 0.)]*len(g.nodes), node_shape='s',
+                         edge_color=[(0., 100 / 255, 0.)]*len(g.edges),
                          labels={n: n[1].replace('_', '') for n in g.nodes})
         plt.show()
         if save_to_disk:
