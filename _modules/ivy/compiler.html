@@ -714,12 +714,10 @@
 <span class="k">def</span> <span class="nf">_clone_param</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
     <span class="k">global</span> <span class="n">wrapping_paused</span>
     <span class="n">wrapping_paused</span> <span class="o">=</span> <span class="kc">True</span>
-    <span class="n">x_copy</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>  <span class="c1"># copy the param</span>
+    <span class="n">x_copy</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">copy_array</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>  <span class="c1"># copy the param</span>
     <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="s1">&#39;__dict__&#39;</span><span class="p">):</span>
         <span class="n">x</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="s1">&#39;param_id&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">id</span><span class="p">(</span><span class="n">x_copy</span><span class="p">)</span>  <span class="c1"># update the id of the original param (for preserved stateful objects)</span>
     <span class="n">wrapping_paused</span> <span class="o">=</span> <span class="kc">False</span>
-    <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">x</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-        <span class="n">x_copy</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
     <span class="k">return</span> <span class="n">x_copy</span>
 
 
