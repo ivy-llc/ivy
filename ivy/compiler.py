@@ -403,23 +403,23 @@ class Graph:
             return self._call
         return self._multi_call
 
-    def _position_nodes(self, g, num_inputs, with_randomness=True):
+    def _position_nodes(self, g, num_inputs, randomness_factor=0.75):
 
         pos_dict = dict()
+        assert 0 <= randomness_factor <= 1
 
         # select position based on width and height of graph
         for height, fns in enumerate(self._grouped_functions):
             width = len(fns)
             for w, f in enumerate(fns):
                 pos = np.array([(height+1)/self._max_graph_height, 0.5 if width == 1 else w/(width-1)])
-                if with_randomness:
-                    h_delta = 0.5/self._max_graph_height
-                    h_rand = np.random.uniform(-h_delta, h_delta)
-                    w_delta = 0.5 if width == 1 else 0.5/(width-1)
-                    w_delta_low = 0 if w == 0 else -w_delta
-                    w_delta_high = 0 if w == 1 else w_delta
-                    w_rand = np.random.uniform(w_delta_low, w_delta_high)
-                    pos += np.array([h_rand, w_rand])
+                h_delta = 0.5/self._max_graph_height
+                h_rand = np.random.uniform(-h_delta, h_delta)
+                w_delta = 0.5 if width == 1 else 0.5/(width-1)
+                w_delta_low = 0 if w == 0 else -w_delta
+                w_delta_high = 0 if w == 1 else w_delta
+                w_rand = np.random.uniform(w_delta_low, w_delta_high)
+                pos += np.array([h_rand, w_rand]) * randomness_factor
                 pos_dict[(f.output_param_ids[0], f.__name__)] = pos
 
         # add inputs
@@ -427,14 +427,13 @@ class Graph:
         for n in g.nodes:
             if n not in pos_dict and n[1] == 'input':
                 pos = np.array([0., 0.5 if num_inputs == 1 else input_idx/(num_inputs-1)])
-                if with_randomness:
-                    h_delta = 0.5/self._max_graph_height
-                    h_rand = np.random.uniform(0, h_delta)
-                    w_delta = 0.5 if num_inputs == 1 else 0.5/(num_inputs-1)
-                    w_delta_low = 0 if input_idx == 0 else -w_delta
-                    w_delta_high = 0 if input_idx == 1 else w_delta
-                    w_rand = np.random.uniform(w_delta_low, w_delta_high)
-                    pos += np.array([h_rand, w_rand])
+                h_delta = 0.5/self._max_graph_height
+                h_rand = np.random.uniform(0, h_delta)
+                w_delta = 0.5 if num_inputs == 1 else 0.5/(num_inputs-1)
+                w_delta_low = 0 if input_idx == 0 else -w_delta
+                w_delta_high = 0 if input_idx == 1 else w_delta
+                w_rand = np.random.uniform(w_delta_low, w_delta_high)
+                pos += np.array([h_rand, w_rand]) * randomness_factor
                 pos_dict[n] = pos
                 input_idx += 1
 
