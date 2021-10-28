@@ -531,7 +531,7 @@ class Graph:
         for height, fns in enumerate(self._all_grouped_functions):
             width = len(fns)
             for w, f in enumerate(fns):
-                pos = np.array([(height+1) / self._max_graph_height, 0.5 if width == 1 else w / (width - 1)])
+                pos = np.array([(height+1) / (self._max_graph_height+1), 0.5 if width == 1 else w / (width - 1)])
                 h_delta = 0.5/self._max_graph_height
                 h_rand = np.random.uniform(-h_delta, h_delta)
                 w_delta = 0.5 if width == 1 else 0.5/(width-1)
@@ -556,6 +556,21 @@ class Graph:
                 pos_dict[n] = pos
                 input_idx += 1
 
+        # add outputs
+        output_idx = 0
+        for n in g.nodes:
+            if n not in pos_dict and n[1] == 'output':
+                pos = np.array([1., 0.5 if num_inputs == 1 else output_idx/(num_inputs-1)])
+                h_delta = 0.5/self._max_graph_height
+                h_rand = np.random.uniform(-h_delta, 0)
+                w_delta = 0.5 if num_inputs == 1 else 0.5/(num_inputs-1)
+                w_delta_low = 0 if output_idx == 0 else -w_delta
+                w_delta_high = 0 if output_idx == 1 else w_delta
+                w_rand = np.random.uniform(w_delta_low, w_delta_high)
+                pos += np.array([h_rand, w_rand]) * randomness_factor
+                pos_dict[n] = pos
+                output_idx += 1
+
         # assert all positions are in range 0-1
         for pos in pos_dict.values():
             assert (0 <= pos.all() <= 1)
@@ -571,6 +586,7 @@ class Graph:
         # create directed networkX graph
         g = nx.DiGraph()
 
+        # add input and intermediate nodes
         def inp():
             pass
 
@@ -591,6 +607,21 @@ class Graph:
                 end_args = _args_str_from_fn(func)
                 end_node = (func.output_param_ids[0], ivy.default(func.__name__, 'output'), end_args)
                 g.add_edge(start_node, end_node)
+
+        # add output nodes
+        def out():
+            pass
+
+        out.__name__ = 'output'
+
+        for pid_in in self._output_param_ids:
+            fn_in = self._pid_to_functions_dict[pid_in]
+            fn_pid = fn_in.output_param_ids[0]
+            start_args = _args_str_from_fn(fn_in)
+            start_node = (fn_pid, ivy.default(fn_in.__name__, 'unnamed'), start_args)
+            end_args = _args_str_from_fn(out)
+            end_node = (fn_pid, out.__name__, end_args)
+            g.add_edge(start_node, end_node)
 
         # num inputs
         if not self._grouped_functions:
@@ -679,8 +710,9 @@ class Graph:
 
         # maybe save to disk
         if save_to_disk:
-            plt.savefig('graph_{}.png'.format(''.join([f.__name__.replace('_', '')[0] for f in self._tmp_sub_functions])),
-                        bbox_inches='tight', dpi=1500)
+            plt.savefig('graph_{}.png'.format(
+                ''.join([f.__name__.replace('_', '')[0] for f in self._tmp_sub_functions])),
+                bbox_inches='tight', dpi=1500)
 
     def __del__(self):
         if self._num_workers <= 1:
