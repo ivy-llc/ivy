@@ -417,7 +417,7 @@ class Graph:
         # add inputs
         input_idx = 0
         for n in g.nodes:
-            if n not in pos_dict:
+            if n not in pos_dict and n[1] == 'input':
                 pos_dict[n] = np.array([0., 0.5 if num_inputs == 1 else input_idx/(num_inputs-1)])
                 input_idx += 1
 
@@ -437,16 +437,16 @@ class Graph:
 
         inp.__name__ = 'input'
 
-        for pid, func in self._functions_dict.items():
-            if func not in self._functions:
-                continue
+        for func in self._functions:
             for pid_in in func.arg_param_ids + func.kwarg_param_ids:
                 if pid_in in self._functions_dict:
                     fn_in = self._functions_dict[pid_in]
+                    fn_pid = fn_in.output_param_ids[0]
                 else:
                     fn_in = inp
-                start_node = (pid_in, ivy.default(fn_in.__name__, 'unnamed'))
-                end_node = (pid, ivy.default(func.__name__, 'output'))
+                    fn_pid = pid_in
+                start_node = (fn_pid, ivy.default(fn_in.__name__, 'unnamed'))
+                end_node = (func.output_param_ids[0], ivy.default(func.__name__, 'output'))
                 g.add_edge(start_node, end_node)
 
         # num inputs
