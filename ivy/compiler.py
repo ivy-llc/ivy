@@ -69,7 +69,11 @@ def _tensor_to_label(tnsr):
 
 
 def _param_to_label(param):
-    return _format_label(param.ptype, tuple(param.shape))
+    return _format_label(param.ptype, param.shape)
+
+
+def _terminal_pids_to_key(terminal_pids):
+    return '_'.join([str(pid) for pid in terminal_pids])
 
 
 class Param:
@@ -79,7 +83,7 @@ class Param:
         self._ptype = ptype
         self._tree_depth = tree_depth
         self._param_stack = list()
-        self._shape = shape
+        self._shape = tuple(shape) if ivy.exists(shape) else None
 
     def set(self, val):
         self._param_stack = [val]*self._count
@@ -149,11 +153,19 @@ class Graph:
         self._output_tracked_idxs = None  # initialized during op logging
         self._output_param_ids = list()
 
+        # op logging storage
+        self._pid_to_functions_dict = dict()
+
+        # temporary sub-graph storage
+        self._tmp_sub_param_dict = dict()
+        self._tmp_sub_functions = list()
+
         # graph storage
         self._param_dict = dict()
-        self._functions_dict = dict()
-        self._functions = list()
-        self._num_functions = len(self._functions)
+        self._functions = dict()
+        self._num_functions = dict()
+        self._max_subgraph_widths = dict()
+        self._max_subgraph_heights = dict()
 
         # multiprocessing
         self._timeout = ivy.queue_timeout()
@@ -162,13 +174,52 @@ class Graph:
         # connected flag
         self._connected = False
 
+        # grouped functions
+        self._grouped_functions = dict()
+
+    # Properties #
+    # -----------#
+
+    @property
+    def _all_grouped_functions(self):
+        all_grouped_functions = list()
+        for gfs in self._grouped_functions.values():
+            for i, fs in enumerate(gfs):
+                if len(all_grouped_functions) == i:
+                    all_grouped_functions.append(list())
+                all_grouped_functions[i] += fs
+        return all_grouped_functions
+
+    @property
+    def _all_param_dict(self):
+        all_param_dict = dict()
+        for pd in self._param_dict.values():
+            all_param_dict = {**all_param_dict, **pd}
+        return all_param_dict
+
+    @property
+    def _all_functions(self):
+        all_functions = list()
+        for fn in self._functions.values():
+            all_functions += fn
+        return all_functions
+
+    @property
+    def _max_graph_width(self):
+        return max([len(fns) for fns in self._all_grouped_functions]) if self._all_grouped_functions else 0
+
+    @property
+    def _max_graph_height(self):
+        return len(self._all_grouped_functions)
+
     # Multiprocessing #
     # ----------------#
 
     def _initialize_multiprocessing(self):
 
         # prevent redundant workers by limiting to graph width
-        self._num_workers = min(self._num_workers, self._max_graph_width)
+        self._num_workers =\
+            min(self._num_workers, self._max_subgraph_widths[_terminal_pids_to_key(self._output_param_ids)])
 
         if self._num_workers <= 1:
             return
@@ -177,7 +228,7 @@ class Graph:
         multiprocessing = ivy.multiprocessing('fork')
 
         # initialize multi dict
-        self._param_dict_multi = multiprocessing.Manager().dict(self._param_dict)
+        self._param_dict_multi = multiprocessing.Manager().dict(self._tmp_sub_param_dict)
 
         # create workers
         self._input_queues = list()
@@ -188,7 +239,7 @@ class Graph:
             output_queue = multiprocessing.Queue()
             worker = multiprocessing.Process(
                 target=self._worker_fn, args=(
-                    input_queue, output_queue, ivy.default_device(), self._functions[i::self._num_workers],
+                    input_queue, output_queue, ivy.default_device(), self._tmp_sub_functions[i::self._num_workers],
                     ivy.current_framework_str()))
             worker.start()
             self._input_queues.append(input_queue)
@@ -271,10 +322,10 @@ class Graph:
     # inference
 
     def get_param(self, pid):
-        return self._param_dict[pid].get()
+        return self._tmp_sub_param_dict[pid].get()
 
     def set_param(self, pid, value):
-        self._param_dict[pid].set(value)
+        self._tmp_sub_param_dict[pid].set(value)
 
     # multiprocessing inference
 
@@ -295,19 +346,19 @@ class Graph:
     # compiling
 
     def add_param(self, pid, ptype, tree_height, shape=None):
-        self._param_dict[pid] = Param(ptype, tree_height, shape)
+        self._tmp_sub_param_dict[pid] = Param(ptype, tree_height, shape)
 
     def increment_param_count(self, pid):
-        self._param_dict[pid].set_count(self._param_dict[pid].count + 1)
+        self._tmp_sub_param_dict[pid].set_count(self._tmp_sub_param_dict[pid].count + 1)
 
     def add_fn_to_dict(self, pid, fn):
-        self._functions_dict[pid] = fn
+        self._pid_to_functions_dict[pid] = fn
 
     def get_param_recursive(self, pid, depth, receiving_fn=None):
-        if pid in self._param_dict:
+        if pid in self._tmp_sub_param_dict:
             return
-        if pid in self._functions_dict:
-            fn = self._functions_dict[pid]
+        if pid in self._pid_to_functions_dict:
+            fn = self._pid_to_functions_dict[pid]
         else:
             if not ivy.exists(receiving_fn):
                 idx = self._output_param_ids.index(pid)
@@ -324,7 +375,7 @@ class Graph:
                 del receiving_fn.kwarg_param_ids[idx]
             return
         fn.tree_depth = depth
-        self._functions.append(fn)
+        self._tmp_sub_functions.append(fn)
         [self.get_param_recursive(pid, depth + 1, fn) for pid in copy.copy(fn.arg_param_ids)]
         [self.get_param_recursive(pid, depth + 1, fn) for pid in copy.copy(fn.kwarg_param_ids)]
         [self.increment_param_count(pid) for pid in fn.arg_param_ids + fn.kwarg_param_ids]
@@ -335,12 +386,15 @@ class Graph:
     # debugging
 
     def params_all_empty(self):
-        return min([len(param) == 0 for param in self._param_dict.values()]) is True
+        return min([len(param) == 0 for param in self._tmp_sub_param_dict.values()]) is True
 
     # Function creation #
     # ------------------#
 
-    def _chain_functions(self):
+    def _chain_functions(self, terminal_pids):
+
+        # dict key
+        dict_key = _terminal_pids_to_key(terminal_pids)
 
         # add input params to param dict
         [self.add_param(pid, ptype, 'leaf', shape) for pid, ptype, shape in
@@ -353,23 +407,27 @@ class Graph:
          zip(self._stateful_param_ids, self._stateful_classes, self._stateful_param_shapes)]
 
         # recursively chain the graph via backward traversal
-        [self.get_param_recursive(pid, depth=0) for pid in self._output_param_ids]
-        [self.increment_param_count(pid) for pid in self._output_param_ids]
+        [self.get_param_recursive(pid, depth=0) for pid in terminal_pids]
+        [self.increment_param_count(pid) for pid in terminal_pids]
 
         # assert there are some functions in the graph
-        assert self._functions, 'Tried to chain functions for an empty graph'
+        assert self._tmp_sub_functions, 'Tried to chain functions for an empty graph'
 
         # sort the param ids based on depth, in order of input to output
-        max_depth = max([p.depth if isinstance(p.depth, int) else 1 for p in self._param_dict.values()])
-        for k, v in self._param_dict.items():
+        max_depth = max([p.depth if isinstance(p.depth, int) else 1 for p in self._tmp_sub_param_dict.values()])
+        for k, v in self._tmp_sub_param_dict.items():
             if v.depth == 'leaf':
                 # noinspection PyProtectedMember
-                self._param_dict[k]._tree_depth = max_depth + 1
-        self._param_dict = {k: v for k, v in sorted(self._param_dict.items(), key=lambda knv: -knv[1].depth)}
+                self._tmp_sub_param_dict[k]._tree_depth = max_depth + 1
+
+        self._tmp_sub_param_dict = {k: v for k, v in sorted(self._tmp_sub_param_dict.items(), key=lambda knv: -knv[1].depth)}
+
+        # save this sub-graph in the param dict
+        self._param_dict[dict_key] = self._tmp_sub_param_dict
 
         # function for storing function heights
         def store_fn_heights(fn):
-            heights_in = [store_fn_heights(fn_in) for fn_in in fn.fns_in if fn_in in self._functions]
+            heights_in = [store_fn_heights(fn_in) for fn_in in fn.fns_in if fn_in in self._tmp_sub_functions]
             if heights_in:
                 _height = max(heights_in) + 1
             else:
@@ -378,33 +436,38 @@ class Graph:
             return _height
 
         # store function heights
-        [store_fn_heights(self._functions_dict[pid]) for pid in self._output_param_ids]
+        [store_fn_heights(self._pid_to_functions_dict[pid]) for pid in terminal_pids]
 
         # find the height of the tree
-        max_tree_height = max([fn.tree_height for fn in self._functions]) if self._functions else -1
+        max_tree_height = max([fn.tree_height for fn in self._tmp_sub_functions]) if self._tmp_sub_functions else -1
 
         # group the functions based on their height in the tree from the starting leaf nodes
-        self._grouped_functions = list()
+        grouped_functions = list()
         for height in range(0, max_tree_height+1):
-            fns = [fn for fn in self._functions if fn.tree_height == height]
+            fns = [fn for fn in self._tmp_sub_functions if fn.tree_height == height]
             if height == 0:
                 fns = sorted(fns, key=lambda x: len(x.fns_in))
             else:
-                fns_hm1 = self._grouped_functions[-1]
+                fns_hm1 = grouped_functions[-1]
                 # noinspection PyUnresolvedReferences
                 leftmost_idxs =\
                     [max(enumerate([fn in fn_hm1.fns_out for fn_hm1 in fns_hm1 if hasattr(fn_hm1, 'fns_out')]),
                          key=lambda x: x[1])[0] for fn in fns]
                 fns = [fn for fn, _ in sorted(zip(fns, leftmost_idxs), key=lambda x: x[1])]
-            self._grouped_functions.append(fns)
+            grouped_functions.append(fns)
+        self._grouped_functions[dict_key] = grouped_functions
 
         # stack functions in the best order
-        self._functions = [i for sl in self._grouped_functions for i in sl]
-        self._num_functions = len(self._functions)
+        self._tmp_sub_functions = [i for sl in grouped_functions for i in sl]
+
+        # update the total graph storage
+        self._num_functions[dict_key] = len(self._tmp_sub_functions)
+        self._functions[dict_key] = self._tmp_sub_functions
 
         # compute maximum width and height of the graph
-        self._max_graph_width = max([len(fns) for fns in self._grouped_functions]) if self._grouped_functions else 0
-        self._max_graph_height = len(self._grouped_functions)
+        self._max_subgraph_widths[dict_key] =\
+            max([len(fns) for fns in self._grouped_functions]) if self._grouped_functions else 0
+        self._max_subgraph_heights[dict_key] = len(self._grouped_functions)
 
     def _call(self, *args, **kwargs):
         # ToDo: make this as efficient as possible; this is performed at runtime
@@ -415,7 +478,7 @@ class Graph:
         # ToDo: change so continual resetting of fixed stateful objects as below is not required
         [self.set_param(pid, val)
          for pid, val in zip(self._stateful_param_ids, self._stateful)]
-        for i, fn in enumerate(self._functions):
+        for i, fn in enumerate(self._tmp_sub_functions):
             arg_vals = [self.get_param(pid) for pid in fn.arg_param_ids]
             kwarg_vals = [self.get_param(pid) for pid in fn.kwarg_param_ids]
             ret = fn(arg_vals, kwarg_vals)
@@ -443,8 +506,12 @@ class Graph:
             return self._output[0]
         return self._output
 
-    def connect(self):
-        self._chain_functions()
+    def connect(self, output_connected_only=True):
+        self._chain_functions(self._output_param_ids)
+        if not output_connected_only:
+            for pid, fn in self._pid_to_functions_dict.items():
+                if fn.terminal:
+                    self._chain_functions(fn.output_param_ids)
         self._initialize_multiprocessing()
         self._connected = True
 
@@ -461,10 +528,10 @@ class Graph:
         assert 0 <= randomness_factor <= 1
 
         # select position based on width and height of graph
-        for height, fns in enumerate(self._grouped_functions):
+        for height, fns in enumerate(self._all_grouped_functions):
             width = len(fns)
             for w, f in enumerate(fns):
-                pos = np.array([(height+1)/self._max_graph_height, 0.5 if width == 1 else w/(width-1)])
+                pos = np.array([(height+1) / self._max_graph_height, 0.5 if width == 1 else w / (width - 1)])
                 h_delta = 0.5/self._max_graph_height
                 h_rand = np.random.uniform(-h_delta, h_delta)
                 w_delta = 0.5 if width == 1 else 0.5/(width-1)
@@ -495,7 +562,7 @@ class Graph:
 
         return pos_dict
 
-    def show(self, save_to_disk=False, with_edge_labels=True, with_arg_labels=True):
+    def show(self, save_to_disk=False, with_edge_labels=True, with_arg_labels=True, output_connected_only=True):
 
         # ensure graph is connected
         if not self._connected:
@@ -509,10 +576,12 @@ class Graph:
 
         inp.__name__ = 'input'
 
-        for func in self._functions:
+        for func in self._pid_to_functions_dict.values():
+            if func not in self._tmp_sub_functions and output_connected_only:
+                continue
             for pid_in in func.arg_param_ids + func.kwarg_param_ids:
-                if pid_in in self._functions_dict:
-                    fn_in = self._functions_dict[pid_in]
+                if pid_in in self._pid_to_functions_dict:
+                    fn_in = self._pid_to_functions_dict[pid_in]
                     fn_pid = fn_in.output_param_ids[0]
                 else:
                     fn_in = inp
@@ -527,7 +596,7 @@ class Graph:
         if not self._grouped_functions:
             num_inputs = 0
         else:
-            height_0_fns = self._grouped_functions[0]
+            height_0_fns = [i for s in [gf[0] for gf in self._grouped_functions.values()] for i in s]
             input_param_ids = list()
             for fn in height_0_fns:
                 input_param_ids += fn.arg_param_ids + fn.kwarg_param_ids
@@ -538,7 +607,7 @@ class Graph:
         plt.cla()
         ax = plt.subplot(111)
         max_dim = max(self._max_graph_width, self._max_graph_height)
-        ax.set_aspect(self._max_graph_width/self._max_graph_height)
+        ax.set_aspect(self._max_graph_width / self._max_graph_height)
         pos = self._position_nodes(g, num_inputs)
         nx.draw_networkx(g, arrows=True, pos=pos,
                          node_color=[(0., 200 / 255, 0.)]*len(g.nodes), node_shape='s',
@@ -551,15 +620,15 @@ class Graph:
             for edge in g.edges:
                 node_in = edge[0]
                 node_out = edge[1]
-                if node_in[0] in self._functions_dict:
-                    producing_fn = self._functions_dict[node_in[0]]
+                if node_in[0] in self._pid_to_functions_dict:
+                    producing_fn = self._pid_to_functions_dict[node_in[0]]
                     output_param_ids = producing_fn.output_param_ids
                 else:
                     output_param_ids = self._arg_param_ids + self._kwarg_param_ids + self._stateful_param_ids
-                consuming_fn = self._functions_dict[node_out[0]]
+                consuming_fn = self._pid_to_functions_dict[node_out[0]]
                 incoming_pids = consuming_fn.arg_param_ids + consuming_fn.kwarg_param_ids
                 pids = [pid for pid in output_param_ids if pid in incoming_pids]
-                params = [self._param_dict[pid] for pid in pids]
+                params = [self._tmp_sub_param_dict[pid] for pid in pids]
                 edge_labels[edge] = '_'.join([_param_to_label(p) for p in params])
             nx.draw_networkx_edge_labels(g, pos, edge_labels=edge_labels, font_size=10/max_dim)
         if with_arg_labels:
@@ -574,7 +643,7 @@ class Graph:
         ax.set_ylim(pos_min[1] - 0.2/max_dim, pos_max[1] + 0.2/max_dim)
         plt.show()
         if save_to_disk:
-            plt.savefig('graph_{}.png'.format(''.join([f.__name__.replace('_', '')[0] for f in self._functions])),
+            plt.savefig('graph_{}.png'.format(''.join([f.__name__.replace('_', '')[0] for f in self._tmp_sub_functions])),
                         bbox_inches='tight', dpi=1500)
 
     def __del__(self):
@@ -602,8 +671,8 @@ class Graph:
     # ---------#
 
     def clear(self):
-        self._param_dict.clear()
-        self._functions.clear()
+        self._tmp_sub_param_dict.clear()
+        self._tmp_sub_functions.clear()
 
 
 # Methods #
@@ -748,9 +817,12 @@ def _wrap_method_for_compiling(fn, graph, limit_attributes=True, stateful_classe
         new_fn.output_param_types = ret_param_types
         new_fn.output_param_shapes = ret_param_shapes
 
-        fns_in = [graph._functions_dict[pid]
-                  for pid in arg_param_ids + kwarg_param_ids if pid in graph._functions_dict]
+        new_fn.terminal = True
+
+        fns_in = [graph._pid_to_functions_dict[pid]
+                  for pid in arg_param_ids + kwarg_param_ids if pid in graph._pid_to_functions_dict]
         for fn_in in fns_in:
+            fn_in.terminal = False
             if not hasattr(fn_in, 'fns_out'):
                 fn_in.fns_out = list()
             if new_fn not in fn_in.fns_out:
@@ -769,7 +841,7 @@ def _wrap_method_for_compiling(fn, graph, limit_attributes=True, stateful_classe
 
             # add this function to the graph for each output pid
             for pid in ret_param_ids:
-                if pid in graph._functions_dict:
+                if pid in graph._pid_to_functions_dict:
                     graph._register_output(ret)
                     op_logging = False
                     _unwrap_methods_from_op_logging(list(graph._stateful_classes))
@@ -778,8 +850,8 @@ def _wrap_method_for_compiling(fn, graph, limit_attributes=True, stateful_classe
                         'tried to add {} to graph._functions_dict, but function {} with the same output pid {} '
                         'already exists!'.format(
                             new_fn.__name__ + '(*{}, **{})'.format(new_fn.args, new_fn.kwargs),
-                            graph._functions_dict[pid].__name__ + '(*{}, **{})'.format(
-                                graph._functions_dict[pid].args, graph._functions_dict[pid].kwargs), pid))
+                            graph._pid_to_functions_dict[pid].__name__ + '(*{}, **{})'.format(
+                                graph._pid_to_functions_dict[pid].args, graph._pid_to_functions_dict[pid].kwargs), pid))
                 graph.add_fn_to_dict(pid, new_fn)
 
         # unset wrapping as true
@@ -842,7 +914,7 @@ def _unwrap_methods_from_op_logging(stateful_classes=None):
             cls.__getattribute__ = _unwrap_method_from_compiling(cls.__getattribute__)
 
 
-def _create_graph(fn, *args, stateful=None, num_workers=1, **kwargs):
+def _create_graph(fn, *args, stateful=None, num_workers=1, output_connected_only=True, **kwargs):
 
     # extra stateful instances modified in the graph
     stateful = ivy.default(stateful, [])
@@ -874,7 +946,7 @@ def _create_graph(fn, *args, stateful=None, num_workers=1, **kwargs):
             s.__dict__[k] = sc[k]
 
     # connect graph
-    graph.connect()
+    graph.connect(output_connected_only)
 
     # reset all global compiler variables, just to be sure
     global wrapping_paused
@@ -897,10 +969,12 @@ def compile_graph(fn, *args, stateful=None, num_workers=1, **kwargs):
     return graph.compiled()
 
 
-def show_graph(fn, *args, stateful=None, num_workers=1, save_to_disk=False, **kwargs):
+def show_graph(fn, *args, stateful=None, num_workers=1, save_to_disk=False, with_edge_labels=True, with_arg_labels=True,
+               output_connected_only=True, **kwargs):
 
     # create graph
-    graph = _create_graph(fn, *args, stateful=stateful, num_workers=num_workers, **kwargs)
+    graph = _create_graph(fn, *args, stateful=stateful, num_workers=num_workers,
+                          output_connected_only=output_connected_only, **kwargs)
 
     # show the compiled graph
-    graph.show(save_to_disk)
+    graph.show(save_to_disk, with_edge_labels, with_arg_labels, output_connected_only)
