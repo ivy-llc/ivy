@@ -45,6 +45,14 @@ def _get_shape(x_in):
     except Exception:
         return None
 
+def _args_str_from_fn(fn):
+    if hasattr(fn, 'args') and hasattr(fn, 'kwargs'):
+        return '\n'.join(
+            ['{}: {}'.format(k, v) for k, v in dict(**dict(
+                [(str(i), a) for i, a in enumerate(fn.args)]), **fn.kwargs).items()])
+    else:
+        return ''
+
 
 class Param:
 
@@ -446,7 +454,7 @@ class Graph:
                 w_delta_high = 0 if w == 1 else w_delta
                 w_rand = np.random.uniform(w_delta_low, w_delta_high)
                 pos += np.array([h_rand, w_rand]) * randomness_factor
-                pos_dict[(f.output_param_ids[0], f.__name__)] = pos
+                pos_dict[(f.output_param_ids[0], f.__name__, _args_str_from_fn(f))] = pos
 
         # add inputs
         input_idx = 0
@@ -477,7 +485,7 @@ class Graph:
             return ptype_str + ', {}'.format(param.shape)
         return ptype_str
 
-    def show(self, save_to_disk=False, with_edge_labels=True):
+    def show(self, save_to_disk=False, with_edge_labels=True, with_arg_labels=True):
 
         # ensure graph is connected
         if not self._connected:
@@ -499,8 +507,10 @@ class Graph:
                 else:
                     fn_in = inp
                     fn_pid = pid_in
-                start_node = (fn_pid, ivy.default(fn_in.__name__, 'unnamed'))
-                end_node = (func.output_param_ids[0], ivy.default(func.__name__, 'output'))
+                start_args = _args_str_from_fn(fn_in)
+                start_node = (fn_pid, ivy.default(fn_in.__name__, 'unnamed'), start_args)
+                end_args = _args_str_from_fn(func)
+                end_node = (func.output_param_ids[0], ivy.default(func.__name__, 'output'), end_args)
                 g.add_edge(start_node, end_node)
 
         # num inputs
@@ -524,8 +534,8 @@ class Graph:
                          node_color=[(0., 200 / 255, 0.)]*len(g.nodes), node_shape='s',
                          edge_color=[(0., 100 / 255, 0.)]*len(g.edges),
                          labels={n: n[1].replace('_', '') for n in g.nodes}, node_size=[300/max_dim]*len(g.nodes),
-                         font_size=int(round(12/max_dim)), linewidths=1/max_dim, width=1/max_dim,
-                         arrowsize=max(int(round(10/max_dim)), 1))
+                         font_size=12/max_dim, linewidths=1/max_dim, width=1/max_dim,
+                         arrowsize=max(10/max_dim, 1))
         if with_edge_labels:
             edge_labels = dict()
             for edge in g.edges:
@@ -542,6 +552,12 @@ class Graph:
                 params = [self._param_dict[pid] for pid in pids]
                 edge_labels[edge] = '_'.join([self._param_to_label(p) for p in params])
             nx.draw_networkx_edge_labels(g, pos, edge_labels=edge_labels, font_size=10/max_dim)
+        if with_arg_labels:
+            font_size = 9/max_dim
+            nx.draw_networkx_labels(g, pos={k: v - np.array([0., font_size/45]) for k, v in pos.items()},
+                                    font_size=font_size, font_color=(0., 100/255, 0.), labels={n: n[2] for n in g.nodes})
+        ax.set_xlim(0., 1.25)
+        ax.set_ylim(0., 1.25)
         plt.show()
         if save_to_disk:
             plt.savefig('graph_{}.png'.format(''.join([f.__name__.replace('_', '')[0] for f in self._functions])),
