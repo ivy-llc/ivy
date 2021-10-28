@@ -520,7 +520,7 @@ def _get_id(x):
 def _clone_param(x):
     global wrapping_paused
     wrapping_paused = True
-    x_copy = ivy.copy_array(x)  # copy the param
+    x_copy = ivy.copy_array(x) if ivy.is_array(x) else copy.copy(x)  # copy the param
     if hasattr(x, '__dict__'):
         x.__dict__['param_id'] = id(x_copy)  # update the id of the original param (for preserved stateful objects)
     wrapping_paused = False
