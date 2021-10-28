@@ -498,6 +498,9 @@
         <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">get_param_recursive</span><span class="p">(</span><span class="n">pid</span><span class="p">,</span> <span class="n">depth</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="k">for</span> <span class="n">pid</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_output_param_ids</span><span class="p">]</span>
         <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">increment_param_count</span><span class="p">(</span><span class="n">pid</span><span class="p">)</span> <span class="k">for</span> <span class="n">pid</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_output_param_ids</span><span class="p">]</span>
 
+        <span class="c1"># assert there are some functions in the graph</span>
+        <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">_functions</span><span class="p">,</span> <span class="s1">&#39;Tried to chain functions for an empty graph&#39;</span>
+
         <span class="c1"># sort the param ids based on depth, in order of input to output</span>
         <span class="n">max_depth</span> <span class="o">=</span> <span class="nb">max</span><span class="p">([</span><span class="n">p</span><span class="o">.</span><span class="n">depth</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">p</span><span class="o">.</span><span class="n">depth</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="k">else</span> <span class="mi">1</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_param_dict</span><span class="o">.</span><span class="n">values</span><span class="p">()])</span>
         <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_param_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
@@ -702,6 +705,7 @@
     <span class="k">global</span> <span class="n">wrapping_paused</span>
     <span class="n">wrapping_paused</span> <span class="o">=</span> <span class="kc">True</span>
     <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="s1">&#39;param_id&#39;</span><span class="p">):</span>
+        <span class="n">wrapping_paused</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="k">return</span> <span class="n">x</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="s1">&#39;param_id&#39;</span><span class="p">]</span>
     <span class="n">wrapping_paused</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="k">return</span> <span class="nb">id</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
@@ -986,13 +990,13 @@
     <span class="k">return</span> <span class="n">graph</span><span class="o">.</span><span class="n">compiled</span><span class="p">()</span></div>
 
 
-<div class="viewcode-block" id="show_graph"><a class="viewcode-back" href="../../compiler/show_graph.html#ivy.compiler.show_graph">[docs]</a><span class="k">def</span> <span class="nf">show_graph</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">stateful</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">num_workers</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="show_graph"><a class="viewcode-back" href="../../compiler/show_graph.html#ivy.compiler.show_graph">[docs]</a><span class="k">def</span> <span class="nf">show_graph</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">stateful</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">num_workers</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">save_to_disk</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 
     <span class="c1"># create graph</span>
     <span class="n">graph</span> <span class="o">=</span> <span class="n">_create_graph</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">stateful</span><span class="o">=</span><span class="n">stateful</span><span class="p">,</span> <span class="n">num_workers</span><span class="o">=</span><span class="n">num_workers</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
     <span class="c1"># show the compiled graph</span>
-    <span class="n">graph</span><span class="o">.</span><span class="n">show</span><span class="p">()</span></div>
+    <span class="n">graph</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="n">save_to_disk</span><span class="p">)</span></div>
 </pre></div>
 
            </div>
