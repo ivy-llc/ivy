@@ -124,7 +124,7 @@ class Graph:
             kwargs, lambda v: ivy.is_array(v) or isinstance(v, self._stateful_classes))
         self._kwarg_param_ids = [_get_id(v) for v in ivy.multi_index_nest(kwargs, self._kwarg_tracked_idxs)]
         self._kwarg_param_types = [v.__class__ for v in ivy.multi_index_nest(kwargs, self._kwarg_tracked_idxs)]
-        self._kwarg_param_shapes = [_get_shape(a) for a in ivy.multi_index_nest(args, self._kwarg_tracked_idxs)]
+        self._kwarg_param_shapes = [_get_shape(a) for a in ivy.multi_index_nest(kwargs, self._kwarg_tracked_idxs)]
 
         # output param ids
         self._output = None  # initialized during op logging
