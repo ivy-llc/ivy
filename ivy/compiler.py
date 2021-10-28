@@ -565,10 +565,13 @@ class Graph:
         if with_arg_labels:
             font_size = 9/max_dim
             nx.draw_networkx_labels(
-                g, pos={k: v - np.array([0., font_size/45]) for k, v in pos.items()}, font_size=font_size,
+                g, pos={k: v - np.array([0., font_size/90]) for k, v in pos.items()}, font_size=font_size,
                 font_color=(0., 100/255, 0.), labels={n: n[2] for n in g.nodes})
-        ax.set_xlim(0., 1.25)
-        ax.set_ylim(0., 1.25)
+        pos_list = list(pos.values())
+        pos_min = np.min(pos_list, axis=0)
+        pos_max = np.max(pos_list, axis=0)
+        ax.set_xlim(pos_min[0] - 0.2/max_dim, pos_max[0] + 0.2/max_dim)
+        ax.set_ylim(pos_min[1] - 0.2/max_dim, pos_max[1] + 0.2/max_dim)
         plt.show()
         if save_to_disk:
             plt.savefig('graph_{}.png'.format(''.join([f.__name__.replace('_', '')[0] for f in self._functions])),
