@@ -304,6 +304,9 @@ class Graph:
         [self.get_param_recursive(pid, depth=0) for pid in self._output_param_ids]
         [self.increment_param_count(pid) for pid in self._output_param_ids]
 
+        # assert there are some functions in the graph
+        assert self._functions, 'Tried to chain functions for an empty graph'
+
         # sort the param ids based on depth, in order of input to output
         max_depth = max([p.depth if isinstance(p.depth, int) else 1 for p in self._param_dict.values()])
         for k, v in self._param_dict.items():
@@ -508,6 +511,7 @@ def _get_id(x):
     global wrapping_paused
     wrapping_paused = True
     if hasattr(x, 'param_id'):
+        wrapping_paused = False
         return x.__dict__['param_id']
     wrapping_paused = False
     return id(x)
@@ -792,10 +796,10 @@ def compile_graph(fn, *args, stateful=None, num_workers=1, **kwargs):
     return graph.compiled()
 
 
-def show_graph(fn, *args, stateful=None, num_workers=1, **kwargs):
+def show_graph(fn, *args, stateful=None, num_workers=1, save_to_disk=False, **kwargs):
 
     # create graph
     graph = _create_graph(fn, *args, stateful=stateful, num_workers=num_workers, **kwargs)
 
     # show the compiled graph
-    graph.show()
+    graph.show(save_to_disk)
