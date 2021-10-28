@@ -4,6 +4,7 @@ Collection of PyTorch general functions, wrapped to fit Ivy syntax and signature
 
 # global
 import ivy
+import copy
 import torch
 import numpy as np
 torch_scatter = None
@@ -41,7 +42,7 @@ def is_array(x, exclusive=False):
 
 
 def copy_array(x):
-    return x.detach()
+    return x.clone()
 
 
 def array_equal(x0, x1):
