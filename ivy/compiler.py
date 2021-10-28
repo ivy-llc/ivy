@@ -609,12 +609,42 @@ class Graph:
         max_dim = max(self._max_graph_width, self._max_graph_height)
         ax.set_aspect(self._max_graph_width / self._max_graph_height)
         pos = self._position_nodes(g, num_inputs)
-        nx.draw_networkx(g, arrows=True, pos=pos,
-                         node_color=[(0., 200 / 255, 0.)]*len(g.nodes), node_shape='s',
-                         edge_color=[(0., 100 / 255, 0.)]*len(g.edges),
-                         labels={n: n[1].replace('_', '') for n in g.nodes}, node_size=[300/max_dim]*len(g.nodes),
-                         font_size=12/max_dim, linewidths=1/max_dim, width=1/max_dim,
-                         arrowsize=max(10/max_dim, 1))
+
+        # draw nodes
+
+        # input
+        input_nodes = [n for n in g.nodes if n[1] == 'input']
+        input_pos = {n: pos[n] for n in g.nodes if n[1] == 'input'}
+
+        nx.draw_networkx_nodes(g, input_pos, input_nodes, node_color=[(0.2, 0.2, 1.)]*len(input_nodes),
+                               node_shape='s', node_size=[300/max_dim]*len(input_nodes), linewidths=1/max_dim)
+
+        # intermediate
+        intermediate_nodes = [n for n in g.nodes if n[1] not in ['input', 'output']]
+        intermediate_pos = {n: pos[n] for n in g.nodes if n[1] not in ['input', 'output']}
+
+        nx.draw_networkx_nodes(g, intermediate_pos, intermediate_nodes,
+                               node_color=[(0., 0.8, 0.)]*len(intermediate_nodes),
+                               node_shape='s', node_size=[300/max_dim]*len(intermediate_nodes), linewidths=1/max_dim)
+
+        # output
+        output_nodes = [n for n in g.nodes if n[1] == 'output']
+        output_pos = {n: pos[n] for n in g.nodes if n[1] == 'output'}
+
+        nx.draw_networkx_nodes(g, output_pos, output_nodes, node_color=[(0.2, 0.2, 1.)]*len(output_nodes),
+                               node_shape='s', node_size=[300/max_dim]*len(output_nodes), linewidths=1/max_dim)
+
+        # draw edges
+        nx.draw_networkx_edges(g, arrows=True, pos=pos, edge_color=[(0., 0.4, 0.)]*len(g.edges), width=1/max_dim,
+                               arrowsize=max(10/max_dim, 1))
+
+        # draw node labels
+        nx.draw_networkx_labels(g, pos=pos, labels={n: n[1].replace('_', '') for n in g.nodes}, font_size=12/max_dim)
+
+        # draw
+        plt.draw_if_interactive()
+
+        # maybe add edge labels
         if with_edge_labels:
             edge_labels = dict()
             for edge in g.edges:
@@ -631,17 +661,23 @@ class Graph:
                 params = [self._tmp_sub_param_dict[pid] for pid in pids]
                 edge_labels[edge] = '_'.join([_param_to_label(p) for p in params])
             nx.draw_networkx_edge_labels(g, pos, edge_labels=edge_labels, font_size=10/max_dim)
+
+        # maybe add function arg labels
         if with_arg_labels:
             font_size = 9/max_dim
             nx.draw_networkx_labels(
                 g, pos={k: v - np.array([0., font_size/90]) for k, v in pos.items()}, font_size=font_size,
                 font_color=(0., 100/255, 0.), labels={n: n[2] for n in g.nodes})
+
+        # scale axes and show
         pos_list = list(pos.values())
         pos_min = np.min(pos_list, axis=0)
         pos_max = np.max(pos_list, axis=0)
         ax.set_xlim(pos_min[0] - 0.2/max_dim, pos_max[0] + 0.2/max_dim)
         ax.set_ylim(pos_min[1] - 0.2/max_dim, pos_max[1] + 0.2/max_dim)
         plt.show()
+
+        # maybe save to disk
         if save_to_disk:
             plt.savefig('graph_{}.png'.format(''.join([f.__name__.replace('_', '')[0] for f in self._tmp_sub_functions])),
                         bbox_inches='tight', dpi=1500)
