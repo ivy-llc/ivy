@@ -106,16 +106,16 @@ def test_compile_graph_inplace(x_raw, dtype_str, tensor_fn, with_non_compiled, d
     x = tensor_fn(x_raw, dtype_str, dev_str)
     non_compiled_return = _fn_1(x, with_non_compiled)
     non_comp_time_taken = time.perf_counter() - start_time
-    assert len(comp_fn.__self__._param_dict) == 2
+    assert len(comp_fn.__self__._all_param_dict) == 2
     assert comp_fn.__self__.params_all_empty()
-    assert len(list(comp_fn.__self__._functions)) == 1
+    assert len(list(comp_fn.__self__._all_functions)) == 1
     start_time = time.perf_counter()
     x = tensor_fn(x_raw, dtype_str, dev_str)
     compiled_return = comp_fn(x, with_non_compiled)
     comp_time_taken = time.perf_counter() - start_time
-    assert len(comp_fn.__self__._param_dict) == 2
+    assert len(comp_fn.__self__._all_param_dict) == 2
     assert comp_fn.__self__.params_all_empty()
-    assert len(list(comp_fn.__self__._functions)) == 1
+    assert len(list(comp_fn.__self__._all_functions)) == 1
     assert np.allclose(ivy.to_numpy(non_compiled_return), ivy.to_numpy(compiled_return))
     assert comp_time_taken < non_comp_time_taken
 
@@ -130,16 +130,16 @@ def test_compile_graph_inplace(x_raw, dtype_str, tensor_fn, with_non_compiled, d
     x = tensor_fn(x_raw, dtype_str, dev_str)
     non_compiled_return = _fn_2(x, with_non_compiled)
     non_comp_time_taken = time.perf_counter() - start_time
-    assert len(comp_fn.__self__._param_dict) == 4
+    assert len(comp_fn.__self__._all_param_dict) == 4
     assert comp_fn.__self__.params_all_empty()
-    assert len(list(comp_fn.__self__._functions)) == 3
+    assert len(list(comp_fn.__self__._all_functions)) == 3
     start_time = time.perf_counter()
     x = tensor_fn(x_raw, dtype_str, dev_str)
     compiled_return = comp_fn(x, with_non_compiled)
     comp_time_taken = time.perf_counter() - start_time
-    assert len(comp_fn.__self__._param_dict) == 4
+    assert len(comp_fn.__self__._all_param_dict) == 4
     assert comp_fn.__self__.params_all_empty()
-    assert len(list(comp_fn.__self__._functions)) == 3
+    assert len(list(comp_fn.__self__._all_functions)) == 3
     assert np.allclose(ivy.to_numpy(non_compiled_return), ivy.to_numpy(compiled_return))
     assert comp_time_taken < non_comp_time_taken
 
@@ -204,16 +204,16 @@ def test_compile_graph(x_raw, dtype_str, tensor_fn, with_non_compiled, with_inte
     x = tensor_fn(x_raw, dtype_str, dev_str)
     non_compiled_return = _fn_3(x, with_non_compiled, with_internal_gen)
     non_comp_time_taken = time.perf_counter() - start_time
-    assert len(comp_fn.__self__._param_dict) == 3 + (1 if with_internal_gen else 0)
+    assert len(comp_fn.__self__._all_param_dict) == 3 + (1 if with_internal_gen else 0)
     assert comp_fn.__self__.params_all_empty()
-    assert len(list(comp_fn.__self__._functions)) == 2 + (1 if with_internal_gen else 0)
+    assert len(list(comp_fn.__self__._all_functions)) == 2 + (1 if with_internal_gen else 0)
     start_time = time.perf_counter()
     x = tensor_fn(x_raw, dtype_str, dev_str)
     compiled_return = comp_fn(x, with_non_compiled, with_internal_gen)
     comp_time_taken = time.perf_counter() - start_time
-    assert len(comp_fn.__self__._param_dict) == 3 + (1 if with_internal_gen else 0)
+    assert len(comp_fn.__self__._all_param_dict) == 3 + (1 if with_internal_gen else 0)
     assert comp_fn.__self__.params_all_empty()
-    assert len(list(comp_fn.__self__._functions)) == 2 + (1 if with_internal_gen else 0)
+    assert len(list(comp_fn.__self__._all_functions)) == 2 + (1 if with_internal_gen else 0)
     assert np.allclose(ivy.to_numpy(non_compiled_return), ivy.to_numpy(compiled_return))
     assert comp_time_taken < non_comp_time_taken
 
@@ -228,16 +228,16 @@ def test_compile_graph(x_raw, dtype_str, tensor_fn, with_non_compiled, with_inte
     x = tensor_fn(x_raw, dtype_str, dev_str)
     non_compiled_return = _fn_4(x, with_non_compiled, with_internal_gen)
     non_comp_time_taken = time.perf_counter() - start_time
-    assert len(comp_fn.__self__._param_dict) == 11 + (1 if with_internal_gen else 0)
+    assert len(comp_fn.__self__._all_param_dict) == 11 + (1 if with_internal_gen else 0)
     assert comp_fn.__self__.params_all_empty()
-    assert len(list(comp_fn.__self__._functions)) == 10 + (1 if with_internal_gen else 0)
+    assert len(list(comp_fn.__self__._all_functions)) == 10 + (1 if with_internal_gen else 0)
     start_time = time.perf_counter()
     x = tensor_fn(x_raw, dtype_str, dev_str)
     compiled_return = comp_fn(x, with_non_compiled, with_internal_gen)
     comp_time_taken = time.perf_counter() - start_time
-    assert len(comp_fn.__self__._param_dict) == 11 + (1 if with_internal_gen else 0)
+    assert len(comp_fn.__self__._all_param_dict) == 11 + (1 if with_internal_gen else 0)
     assert comp_fn.__self__.params_all_empty()
-    assert len(list(comp_fn.__self__._functions)) == 10 + (1 if with_internal_gen else 0)
+    assert len(list(comp_fn.__self__._all_functions)) == 10 + (1 if with_internal_gen else 0)
     assert np.allclose(ivy.to_numpy(non_compiled_return), ivy.to_numpy(compiled_return))
     assert comp_time_taken < non_comp_time_taken
 
@@ -282,16 +282,16 @@ def test_compile_graph_w_random(x_raw, dtype_str, tensor_fn, with_non_compiled, 
     nc_return0 = _rand_fn(x, with_non_compiled)
     nc_return1 = _rand_fn(x, with_non_compiled)
     assert nc_return0 != nc_return1
-    assert len(comp_fn.__self__._param_dict) == 5
+    assert len(comp_fn.__self__._all_param_dict) == 5
     assert comp_fn.__self__.params_all_empty()
-    assert len(list(comp_fn.__self__._functions)) == 4
+    assert len(list(comp_fn.__self__._all_functions)) == 4
     x = tensor_fn(x_raw, dtype_str, dev_str)
     c_return0 = comp_fn(x, with_non_compiled)
     c_return1 = comp_fn(x, with_non_compiled)
     assert c_return0 != c_return1
-    assert len(comp_fn.__self__._param_dict) == 5
+    assert len(comp_fn.__self__._all_param_dict) == 5
     assert comp_fn.__self__.params_all_empty()
-    assert len(list(comp_fn.__self__._functions)) == 4
+    assert len(list(comp_fn.__self__._all_functions)) == 4
 
 
 # detached divide
@@ -518,16 +518,16 @@ def test_compile_ivy_multiproc(x_raw, dtype_str, tensor_fn, with_non_compiled, w
     ivy.show_graph(_wide_fn, x, with_non_compiled, with_internal_gen, num_workers=1)
     st_comp_fn = ivy.compile_graph(_wide_fn, x, with_non_compiled, with_internal_gen, num_workers=1)
     assert callable(st_comp_fn)
-    assert len(st_comp_fn.__self__._param_dict) == 52 + (1 if with_internal_gen else 0)
+    assert len(st_comp_fn.__self__._all_param_dict) == 52 + (1 if with_internal_gen else 0)
     assert st_comp_fn.__self__.params_all_empty()
-    assert len(list(st_comp_fn.__self__._functions)) == 51 + (1 if with_internal_gen else 0)
+    assert len(list(st_comp_fn.__self__._all_functions)) == 51 + (1 if with_internal_gen else 0)
     start_time = time.perf_counter()
     x = tensor_fn(x_raw, dtype_str, dev_str)
     st_return = st_comp_fn(x, with_non_compiled, with_internal_gen)
     st_time_taken = time.perf_counter() - start_time
-    assert len(st_comp_fn.__self__._param_dict) == 52 + (1 if with_internal_gen else 0)
+    assert len(st_comp_fn.__self__._all_param_dict) == 52 + (1 if with_internal_gen else 0)
     assert st_comp_fn.__self__.params_all_empty()
-    assert len(list(st_comp_fn.__self__._functions)) == 51 + (1 if with_internal_gen else 0)
+    assert len(list(st_comp_fn.__self__._all_functions)) == 51 + (1 if with_internal_gen else 0)
     assert np.allclose(ivy.to_numpy(non_compiled_return), ivy.to_numpy(st_return))
 
     # compiled multi-processing
@@ -535,16 +535,16 @@ def test_compile_ivy_multiproc(x_raw, dtype_str, tensor_fn, with_non_compiled, w
     multi_comp_fn = ivy.compile_graph(
         _wide_fn, x, with_non_compiled, with_internal_gen, num_workers=ivy.num_cpu_cores())
     assert callable(multi_comp_fn)
-    assert len(multi_comp_fn.__self__._param_dict) == 52 + (1 if with_internal_gen else 0)
+    assert len(multi_comp_fn.__self__._all_param_dict) == 52 + (1 if with_internal_gen else 0)
     assert multi_comp_fn.__self__.params_all_empty()
-    assert len(list(multi_comp_fn.__self__._functions)) == 51 + (1 if with_internal_gen else 0)
+    assert len(list(multi_comp_fn.__self__._all_functions)) == 51 + (1 if with_internal_gen else 0)
     start_time = time.perf_counter()
     x = tensor_fn(x_raw, dtype_str, dev_str)
     multi_return = multi_comp_fn(x, with_non_compiled, with_internal_gen)
     multi_time_taken = time.perf_counter() - start_time
-    assert len(multi_comp_fn.__self__._param_dict) == 52 + (1 if with_internal_gen else 0)
+    assert len(multi_comp_fn.__self__._all_param_dict) == 52 + (1 if with_internal_gen else 0)
     assert multi_comp_fn.__self__.params_all_empty()
-    assert len(list(multi_comp_fn.__self__._functions)) == 51 + (1 if with_internal_gen else 0)
+    assert len(list(multi_comp_fn.__self__._all_functions)) == 51 + (1 if with_internal_gen else 0)
     assert np.allclose(ivy.to_numpy(non_compiled_return), ivy.to_numpy(multi_return))
 
     # assert multi-processing was faster
