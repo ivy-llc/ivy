@@ -70,6 +70,10 @@ class Param:
     def depth(self):
         return self._tree_depth
 
+    @property
+    def ptype(self):
+        return self._ptype
+
 
 class Graph:
 
@@ -443,7 +447,12 @@ class Graph:
 
         return pos_dict
 
-    def show(self, save_to_disk=False):
+    @staticmethod
+    def _param_to_label(param):
+        return '{}'.format(param.ptype).replace(
+            "'", '').replace(' ', '').replace('<', '').replace('>', '').replace('class', '')
+
+    def show(self, save_to_disk=False, with_edge_labels=True):
 
         # ensure graph is connected
         if not self._connected:
@@ -485,12 +494,29 @@ class Graph:
         ax = plt.subplot(111)
         max_dim = max(self._max_graph_width, self._max_graph_height)
         ax.set_aspect(self._max_graph_width/self._max_graph_height)
-        nx.draw_networkx(g, arrows=True, pos=self._position_nodes(g, num_inputs),
+        pos = self._position_nodes(g, num_inputs)
+        nx.draw_networkx(g, arrows=True, pos=pos,
                          node_color=[(0., 200 / 255, 0.)]*len(g.nodes), node_shape='s',
                          edge_color=[(0., 100 / 255, 0.)]*len(g.edges),
                          labels={n: n[1].replace('_', '') for n in g.nodes}, node_size=[300/max_dim]*len(g.nodes),
                          font_size=int(round(12/max_dim)), linewidths=1/max_dim, width=1/max_dim,
                          arrowsize=max(int(round(10/max_dim)), 1))
+        if with_edge_labels:
+            edge_labels = dict()
+            for edge in g.edges:
+                node_in = edge[0]
+                node_out = edge[1]
+                if node_in[0] in self._functions_dict:
+                    producing_fn = self._functions_dict[node_in[0]]
+                    output_param_ids = producing_fn.output_param_ids
+                else:
+                    output_param_ids = self._arg_param_ids + self._kwarg_param_ids
+                consuming_fn = self._functions_dict[node_out[0]]
+                incoming_pids = consuming_fn.arg_param_ids + consuming_fn.kwarg_param_ids
+                pids = [pid for pid in output_param_ids if pid in incoming_pids]
+                params = [self._param_dict[pid] for pid in pids]
+                edge_labels[edge] = '_'.join([self._param_to_label(p) for p in params])
+            nx.draw_networkx_edge_labels(g, pos, edge_labels=edge_labels, font_size=10/max_dim)
         plt.show()
         if save_to_disk:
             plt.savefig('graph_{}.png'.format(''.join([f.__name__.replace('_', '')[0] for f in self._functions])),
