@@ -41,7 +41,7 @@ GRAPH_ATTRIBUTES = {'numpy': [],
 def _get_shape(x_in):
     # noinspection PyBroadException
     try:
-        return list(x_in.shape)
+        return tuple(x_in.shape)
     except Exception:
         return None
 
@@ -471,8 +471,11 @@ class Graph:
 
     @staticmethod
     def _param_to_label(param):
-        return '{}'.format(param.ptype).replace(
+        ptype_str = '{}'.format(param.ptype).replace(
             "'", '').replace(' ', '').replace('<', '').replace('>', '').replace('class', '').split('.')[-1]
+        if ivy.exists(param.shape):
+            return ptype_str + ', {}'.format(param.shape)
+        return ptype_str
 
     def show(self, save_to_disk=False, with_edge_labels=True):
 
