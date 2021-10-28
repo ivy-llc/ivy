@@ -38,13 +38,22 @@ GRAPH_ATTRIBUTES = {'numpy': [],
                    'mxnet': []}
 
 
+def _get_shape(x_in):
+    # noinspection PyBroadException
+    try:
+        return list(x_in.shape)
+    except Exception:
+        return None
+
+
 class Param:
 
-    def __init__(self, ptype, tree_depth):
+    def __init__(self, ptype, tree_depth, shape=None):
         self._count = 0
         self._ptype = ptype
         self._tree_depth = tree_depth
         self._param_stack = list()
+        self._shape = shape
 
     def set(self, val):
         self._param_stack = [val]*self._count
@@ -74,6 +83,10 @@ class Param:
     def ptype(self):
         return self._ptype
 
+    @property
+    def shape(self):
+        return self._shape
+
 
 class Graph:
 
@@ -84,6 +97,7 @@ class Graph:
         self._stateful = ivy.default(stateful, [])
         self._stateful_classes = tuple([x.__class__ for x in self._stateful])
         self._stateful_param_ids = [id(x) for x in self._stateful]
+        self._stateful_param_shapes = [_get_shape(x) for x in self._stateful]
 
         # function being compiled into a graph
         self._fn = fn
@@ -94,6 +108,7 @@ class Graph:
             args, lambda a: ivy.is_array(a) or isinstance(a, self._stateful_classes))
         self._arg_param_ids = [_get_id(a) for a in ivy.multi_index_nest(args, self._arg_tracked_idxs)]
         self._arg_param_types = [a.__class__ for a in ivy.multi_index_nest(args, self._arg_tracked_idxs)]
+        self._arg_param_shapes = [_get_shape(a) for a in ivy.multi_index_nest(args, self._arg_tracked_idxs)]
 
         # key-word args
         self._kwargs = kwargs
@@ -101,6 +116,7 @@ class Graph:
             kwargs, lambda v: ivy.is_array(v) or isinstance(v, self._stateful_classes))
         self._kwarg_param_ids = [_get_id(v) for v in ivy.multi_index_nest(kwargs, self._kwarg_tracked_idxs)]
         self._kwarg_param_types = [v.__class__ for v in ivy.multi_index_nest(kwargs, self._kwarg_tracked_idxs)]
+        self._kwarg_param_shapes = [_get_shape(a) for a in ivy.multi_index_nest(args, self._kwarg_tracked_idxs)]
 
         # output param ids
         self._output = None  # initialized during op logging
@@ -203,12 +219,15 @@ class Graph:
                 if pid in self._arg_param_ids:
                     index = self._arg_param_ids.index(pid)
                     output_param_type = self._arg_param_types[index]
+                    output_param_shape = self._arg_param_shapes[index]
                 else:
                     index = self._kwarg_param_ids.index(pid)
                     output_param_type = self._kwarg_param_types[index]
+                    output_param_shape = self._kwarg_param_shapes[index]
                 new_fn.output_param_types = [output_param_type]
                 new_fn.fns_in = list()
                 new_fn.output_tracked_idxs = [[0]]
+                new_fn.output_param_shapes = [output_param_shape]
 
                 self.add_fn_to_dict(new_pid, new_fn)
                 self._output_param_ids[i] = new_pid
@@ -249,8 +268,8 @@ class Graph:
 
     # compiling
 
-    def add_param(self, pid, ptype, tree_height):
-        self._param_dict[pid] = Param(ptype, tree_height)
+    def add_param(self, pid, ptype, tree_height, shape=None):
+        self._param_dict[pid] = Param(ptype, tree_height, shape)
 
     def increment_param_count(self, pid):
         self._param_dict[pid].set_count(self._param_dict[pid].count + 1)
@@ -283,8 +302,8 @@ class Graph:
         [self.get_param_recursive(pid, depth + 1, fn) for pid in copy.copy(fn.arg_param_ids)]
         [self.get_param_recursive(pid, depth + 1, fn) for pid in copy.copy(fn.kwarg_param_ids)]
         [self.increment_param_count(pid) for pid in fn.arg_param_ids + fn.kwarg_param_ids]
-        [self.add_param(pid, ptype, depth)
-         for pid, ptype in zip(fn.output_param_ids, fn.output_param_types)]
+        [self.add_param(pid, ptype, depth, shape)
+         for pid, ptype, shape in zip(fn.output_param_ids, fn.output_param_types, fn.output_param_shapes)]
         return
 
     # debugging
@@ -298,11 +317,14 @@ class Graph:
     def _chain_functions(self):
 
         # add input params to param dict
-        [self.add_param(pid, ptype, 'leaf') for pid, ptype in zip(self._arg_param_ids, self._arg_param_types)]
-        [self.add_param(pid, ptype, 'leaf') for pid, ptype in zip(self._kwarg_param_ids, self._kwarg_param_types)]
+        [self.add_param(pid, ptype, 'leaf', shape) for pid, ptype, shape in
+         zip(self._arg_param_ids, self._arg_param_types, self._arg_param_shapes)]
+        [self.add_param(pid, ptype, 'leaf', shape) for pid, ptype, shape in
+         zip(self._kwarg_param_ids, self._kwarg_param_types, self._kwarg_param_shapes)]
 
         # add stateful params to param dict
-        [self.add_param(pid, ptype, 'leaf') for pid, ptype in zip(self._stateful_param_ids, self._stateful_classes)]
+        [self.add_param(pid, ptype, 'leaf', shape) for pid, ptype, shape in
+         zip(self._stateful_param_ids, self._stateful_classes, self._stateful_param_shapes)]
 
         # recursively chain the graph via backward traversal
         [self.get_param_recursive(pid, depth=0) for pid in self._output_param_ids]
@@ -651,6 +673,7 @@ def _wrap_method_for_compiling(fn, graph, limit_attributes=True, stateful_classe
         ret_tracked_idxs = ivy.nested_indices_where(ret, lambda x: ivy.is_array(x) or isinstance(x, stateful_classes))
         ret_param_ids = [_get_id(x) for x in ivy.multi_index_nest(ret, ret_tracked_idxs)]
         ret_param_types = [x.__class__ for x in ivy.multi_index_nest(ret, ret_tracked_idxs)]
+        ret_param_shapes = [_get_shape(x) for x in ivy.multi_index_nest(ret, ret_tracked_idxs)]
 
         # clone the param when getting an attribute, to preserve uniqueness in the graph
         if fn.__name__ in ['__getattr__', '__getattribute__']:
@@ -690,6 +713,7 @@ def _wrap_method_for_compiling(fn, graph, limit_attributes=True, stateful_classe
         new_fn.output_tracked_idxs = ret_tracked_idxs
         new_fn.output_param_ids = ret_param_ids
         new_fn.output_param_types = ret_param_types
+        new_fn.output_param_shapes = ret_param_shapes
 
         fns_in = [graph._functions_dict[pid]
                   for pid in arg_param_ids + kwarg_param_ids if pid in graph._functions_dict]
