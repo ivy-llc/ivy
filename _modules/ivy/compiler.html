@@ -611,7 +611,7 @@
         <span class="c1"># add inputs</span>
         <span class="n">input_idx</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">g</span><span class="o">.</span><span class="n">nodes</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">n</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">pos_dict</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">n</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">pos_dict</span> <span class="ow">and</span> <span class="n">n</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;input&#39;</span><span class="p">:</span>
                 <span class="n">pos_dict</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">0.5</span> <span class="k">if</span> <span class="n">num_inputs</span> <span class="o">==</span> <span class="mi">1</span> <span class="k">else</span> <span class="n">input_idx</span><span class="o">/</span><span class="p">(</span><span class="n">num_inputs</span><span class="o">-</span><span class="mi">1</span><span class="p">)])</span>
                 <span class="n">input_idx</span> <span class="o">+=</span> <span class="mi">1</span>
 
@@ -631,16 +631,16 @@
 
         <span class="n">inp</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">=</span> <span class="s1">&#39;input&#39;</span>
 
-        <span class="k">for</span> <span class="n">pid</span><span class="p">,</span> <span class="n">func</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_functions_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-            <span class="k">if</span> <span class="n">func</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_functions</span><span class="p">:</span>
-                <span class="k">continue</span>
+        <span class="k">for</span> <span class="n">func</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_functions</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">pid_in</span> <span class="ow">in</span> <span class="n">func</span><span class="o">.</span><span class="n">arg_param_ids</span> <span class="o">+</span> <span class="n">func</span><span class="o">.</span><span class="n">kwarg_param_ids</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">pid_in</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_functions_dict</span><span class="p">:</span>
                     <span class="n">fn_in</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_functions_dict</span><span class="p">[</span><span class="n">pid_in</span><span class="p">]</span>
+                    <span class="n">fn_pid</span> <span class="o">=</span> <span class="n">fn_in</span><span class="o">.</span><span class="n">output_param_ids</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="n">fn_in</span> <span class="o">=</span> <span class="n">inp</span>
-                <span class="n">start_node</span> <span class="o">=</span> <span class="p">(</span><span class="n">pid_in</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">default</span><span class="p">(</span><span class="n">fn_in</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="s1">&#39;unnamed&#39;</span><span class="p">))</span>
-                <span class="n">end_node</span> <span class="o">=</span> <span class="p">(</span><span class="n">pid</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">default</span><span class="p">(</span><span class="n">func</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="s1">&#39;output&#39;</span><span class="p">))</span>
+                    <span class="n">fn_pid</span> <span class="o">=</span> <span class="n">pid_in</span>
+                <span class="n">start_node</span> <span class="o">=</span> <span class="p">(</span><span class="n">fn_pid</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">default</span><span class="p">(</span><span class="n">fn_in</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="s1">&#39;unnamed&#39;</span><span class="p">))</span>
+                <span class="n">end_node</span> <span class="o">=</span> <span class="p">(</span><span class="n">func</span><span class="o">.</span><span class="n">output_param_ids</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">ivy</span><span class="o">.</span><span class="n">default</span><span class="p">(</span><span class="n">func</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="s1">&#39;output&#39;</span><span class="p">))</span>
                 <span class="n">g</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">start_node</span><span class="p">,</span> <span class="n">end_node</span><span class="p">)</span>
 
         <span class="c1"># num inputs</span>
