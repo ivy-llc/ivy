@@ -45,13 +45,31 @@ def _get_shape(x_in):
     except Exception:
         return None
 
+
 def _args_str_from_fn(fn):
     if hasattr(fn, 'args') and hasattr(fn, 'kwargs'):
         return '\n'.join(
             ['{}: {}'.format(k, v) for k, v in dict(**dict(
-                [(str(i), a) for i, a in enumerate(fn.args)]), **fn.kwargs).items()])
+                [(str(i), _tensor_to_label(a) if ivy.is_array(a) else a)
+                 for i, a in enumerate(fn.args)]), **fn.kwargs).items()])
     else:
         return ''
+
+
+def _format_label(cls, shape):
+    ptype_str = '{}'.format(cls).replace(
+        "'", '').replace(' ', '').replace('<', '').replace('>', '').replace('class', '').split('.')[-1]
+    if ivy.exists(shape):
+        return ptype_str + ', {}'.format(shape)
+    return ptype_str
+
+
+def _tensor_to_label(tnsr):
+    return _format_label(type(tnsr), tuple(tnsr.shape))
+
+
+def _param_to_label(param):
+    return _format_label(param.ptype, tuple(param.shape))
 
 
 class Param:
@@ -477,14 +495,6 @@ class Graph:
 
         return pos_dict
 
-    @staticmethod
-    def _param_to_label(param):
-        ptype_str = '{}'.format(param.ptype).replace(
-            "'", '').replace(' ', '').replace('<', '').replace('>', '').replace('class', '').split('.')[-1]
-        if ivy.exists(param.shape):
-            return ptype_str + ', {}'.format(param.shape)
-        return ptype_str
-
     def show(self, save_to_disk=False, with_edge_labels=True, with_arg_labels=True):
 
         # ensure graph is connected
@@ -550,12 +560,13 @@ class Graph:
                 incoming_pids = consuming_fn.arg_param_ids + consuming_fn.kwarg_param_ids
                 pids = [pid for pid in output_param_ids if pid in incoming_pids]
                 params = [self._param_dict[pid] for pid in pids]
-                edge_labels[edge] = '_'.join([self._param_to_label(p) for p in params])
+                edge_labels[edge] = '_'.join([_param_to_label(p) for p in params])
             nx.draw_networkx_edge_labels(g, pos, edge_labels=edge_labels, font_size=10/max_dim)
         if with_arg_labels:
             font_size = 9/max_dim
-            nx.draw_networkx_labels(g, pos={k: v - np.array([0., font_size/45]) for k, v in pos.items()},
-                                    font_size=font_size, font_color=(0., 100/255, 0.), labels={n: n[2] for n in g.nodes})
+            nx.draw_networkx_labels(
+                g, pos={k: v - np.array([0., font_size/45]) for k, v in pos.items()}, font_size=font_size,
+                font_color=(0., 100/255, 0.), labels={n: n[2] for n in g.nodes})
         ax.set_xlim(0., 1.25)
         ax.set_ylim(0., 1.25)
         plt.show()
