@@ -450,7 +450,7 @@ class Graph:
     @staticmethod
     def _param_to_label(param):
         return '{}'.format(param.ptype).replace(
-            "'", '').replace(' ', '').replace('<', '').replace('>', '').replace('class', '')
+            "'", '').replace(' ', '').replace('<', '').replace('>', '').replace('class', '').split('.')[-1]
 
     def show(self, save_to_disk=False, with_edge_labels=True):
 
@@ -510,7 +510,7 @@ class Graph:
                     producing_fn = self._functions_dict[node_in[0]]
                     output_param_ids = producing_fn.output_param_ids
                 else:
-                    output_param_ids = self._arg_param_ids + self._kwarg_param_ids
+                    output_param_ids = self._arg_param_ids + self._kwarg_param_ids + self._stateful_param_ids
                 consuming_fn = self._functions_dict[node_out[0]]
                 incoming_pids = consuming_fn.arg_param_ids + consuming_fn.kwarg_param_ids
                 pids = [pid for pid in output_param_ids if pid in incoming_pids]
