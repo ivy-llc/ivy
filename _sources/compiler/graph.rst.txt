@@ -1,0 +1,19 @@
+Graph
+=====
+
+.. automodule:: ivy.compiler.graph
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :show-inheritance:
+
+
+.. toctree::
+   :maxdepth: -1
+   :caption: Graph
+
+   graph/Graph:
+
+    # noinspection PyProtectedMember
+    def __init__.rst
+

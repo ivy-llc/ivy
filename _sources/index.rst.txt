@@ -262,6 +262,18 @@ Documentation Tree
 
 .. toctree::
    :maxdepth: -1
+   :caption: Compiler
+
+   compiler/compiler.rst
+   compiler/globals.rst
+   compiler/graph.rst
+   compiler/helpers.rst
+   compiler/op_logging.rst
+   compiler/param.rst
+
+
+.. toctree::
+   :maxdepth: -1
    :caption: Core
 
    core/array.rst
