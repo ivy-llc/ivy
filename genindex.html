@@ -85,6 +85,15 @@
 <li class="toctree-l1"><a class="reference internal" href="using_ivy.html">Using Ivy</a></li>
 <li class="toctree-l1"><a class="reference internal" href="training_a_network.html">Training a Network</a></li>
 </ul>
+<p class="caption"><span class="caption-text">Compiler</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="compiler/compiler.html">Compiler</a></li>
+<li class="toctree-l1"><a class="reference internal" href="compiler/globals.html">Globals</a></li>
+<li class="toctree-l1"><a class="reference internal" href="compiler/graph.html">Graph</a></li>
+<li class="toctree-l1"><a class="reference internal" href="compiler/helpers.html">Helpers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="compiler/op_logging.html">Op logging</a></li>
+<li class="toctree-l1"><a class="reference internal" href="compiler/param.html">Param</a></li>
+</ul>
 <p class="caption"><span class="caption-text">Core</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="core/compilation.html">Compilation</a></li>
@@ -224,10 +233,10 @@
 <h2 id="_">_</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="compiler.html#ivy.compiler.Graph.__init__">__init__() (ivy.compiler.Graph method)</a>
+      <li><a href="compiler/graph.html#ivy.compiler.graph.Graph.__init__">__init__() (ivy.compiler.graph.Graph method)</a>
 
       <ul>
-        <li><a href="compiler.html#ivy.compiler.Param.__init__">(ivy.compiler.Param method)</a>
+        <li><a href="compiler/param.html#ivy.compiler.param.Param.__init__">(ivy.compiler.param.Param method)</a>
 </li>
         <li><a href="core/container.html#ivy.core.container.Container.__init__">(ivy.core.container.Container method)</a>, <a href="core/container/Container.html#ivy.core.container.Container.__init__">[1]</a>
 </li>
@@ -348,9 +357,9 @@
 </li>
       <li><a href="core/gradients.html#ivy.core.gradients.adam_update">adam_update() (in module ivy.core.gradients)</a>, <a href="core/gradients/adam_update.html#ivy.core.gradients.adam_update">[1]</a>
 </li>
-      <li><a href="compiler.html#ivy.compiler.Graph.add_fn_to_dict">add_fn_to_dict() (ivy.compiler.Graph method)</a>
+      <li><a href="compiler/graph.html#ivy.compiler.graph.Graph.add_fn_to_dict">add_fn_to_dict() (ivy.compiler.graph.Graph method)</a>
 </li>
-      <li><a href="compiler.html#ivy.compiler.Graph.add_param">add_param() (ivy.compiler.Graph method)</a>
+      <li><a href="compiler/graph.html#ivy.compiler.graph.Graph.add_param">add_param() (ivy.compiler.graph.Graph method)</a>
 </li>
       <li><a href="core/container.html#ivy.core.container.Container.all_false">all_false() (ivy.core.container.Container method)</a>, <a href="core/container/Container.html#ivy.core.container.Container.all_false">[1]</a>
 </li>
@@ -512,7 +521,7 @@
         <li><a href="numpy/core/general.html#ivy.numpy.core.general.ceil">(in module ivy.numpy.core.general)</a>
 </li>
       </ul></li>
-      <li><a href="compiler.html#ivy.compiler.Graph.clear">clear() (ivy.compiler.Graph method)</a>
+      <li><a href="compiler/graph.html#ivy.compiler.graph.Graph.clear">clear() (ivy.compiler.graph.Graph method)</a>
 </li>
       <li><a href="core/general.html#ivy.core.general.clip">clip() (in module ivy.core.general)</a>, <a href="core/general/clip.html#ivy.core.general.clip">[1]</a>
 
@@ -552,7 +561,7 @@
         <li><a href="numpy/core/general.html#ivy.numpy.core.general.compile">(in module ivy.numpy.core.general)</a>, <a href="numpy/core/general/compile.html#ivy.numpy.core.general.compile">[1]</a>
 </li>
       </ul></li>
-      <li><a href="compiler.html#ivy.compiler.compile_graph">compile_graph() (in module ivy.compiler)</a>, <a href="compiler/compile_graph.html#ivy.compiler.compile_graph">[1]</a>
+      <li><a href="compiler/compiler.html#ivy.compiler.compiler.compile_graph">compile_graph() (in module ivy.compiler.compiler)</a>, <a href="compiler/compiler/compile_graph.html#ivy.compiler.compiler.compile_graph">[1]</a>
 
       <ul>
         <li><a href="neural_net_stateful/module.html#ivy.neural_net_stateful.module.Module.compile_graph">(ivy.neural_net_stateful.module.Module method)</a>, <a href="neural_net_stateful/module/Module.html#ivy.neural_net_stateful.module.Module.compile_graph">[1]</a>
@@ -560,7 +569,7 @@
         <li><a href="neural_net_stateful/optimizers.html#ivy.neural_net_stateful.optimizers.Optimizer.compile_graph">(ivy.neural_net_stateful.optimizers.Optimizer method)</a>, <a href="neural_net_stateful/optimizers/Optimizer.html#ivy.neural_net_stateful.optimizers.Optimizer.compile_graph">[1]</a>
 </li>
       </ul></li>
-      <li><a href="compiler.html#ivy.compiler.Graph.compiled">compiled() (ivy.compiler.Graph method)</a>
+      <li><a href="compiler/graph.html#ivy.compiler.graph.Graph.compiled">compiled() (ivy.compiler.graph.Graph method)</a>
 </li>
       <li><a href="core/container.html#ivy.core.container.Container.concat">concat() (ivy.core.container.Container static method)</a>, <a href="core/container/Container.html#ivy.core.container.Container.concat">[1]</a>
 </li>
@@ -572,7 +581,7 @@
       </ul></li>
       <li><a href="core/container.html#ivy.core.container.Container.config">config() (ivy.core.container.Container property)</a>, <a href="core/container/Container.html#ivy.core.container.Container.config">[1]</a>
 </li>
-      <li><a href="compiler.html#ivy.compiler.Graph.connect">connect() (ivy.compiler.Graph method)</a>
+      <li><a href="compiler/graph.html#ivy.compiler.graph.Graph.connect">connect() (ivy.compiler.graph.Graph method)</a>
 </li>
       <li><a href="neural_net_stateful/initializers.html#ivy.neural_net_stateful.initializers.Constant">Constant (class in ivy.neural_net_stateful.initializers)</a>
 </li>
@@ -648,7 +657,7 @@
 </li>
       <li><a href="core/math.html#ivy.core.math.cosh">cosh() (in module ivy.core.math)</a>, <a href="core/math/cosh.html#ivy.core.math.cosh">[1]</a>
 </li>
-      <li><a href="compiler.html#ivy.compiler.Param.count">count() (ivy.compiler.Param property)</a>
+      <li><a href="compiler/param.html#ivy.compiler.param.Param.count">count() (ivy.compiler.param.Param property)</a>
 </li>
       <li><a href="verbosity.html#ivy.verbosity.cprint">cprint() (in module ivy.verbosity)</a>, <a href="verbosity/cprint.html#ivy.verbosity.cprint">[1]</a>
 </li>
@@ -704,7 +713,7 @@
 </li>
       <li><a href="core/multi_node.html#ivy.core.multi_node.default_node">default_node() (in module ivy.core.multi_node)</a>, <a href="core/multi_node/default_node.html#ivy.core.multi_node.default_node">[1]</a>
 </li>
-      <li><a href="compiler.html#ivy.compiler.Param.depth">depth() (ivy.compiler.Param property)</a>
+      <li><a href="compiler/param.html#ivy.compiler.param.Param.depth">depth() (ivy.compiler.param.Param property)</a>
 </li>
       <li><a href="neural_net_functional/layers.html#ivy.neural_net_functional.layers.depthwise_conv2d">depthwise_conv2d() (in module ivy.neural_net_functional.layers)</a>, <a href="neural_net_functional/layers/depthwise_conv2d.html#ivy.neural_net_functional.layers.depthwise_conv2d">[1]</a>
 
@@ -956,7 +965,7 @@
         <li><a href="numpy/nn/activations.html#ivy.numpy.nn.activations.gelu">(in module ivy.numpy.nn.activations)</a>, <a href="numpy/nn/activations/gelu.html#ivy.numpy.nn.activations.gelu">[1]</a>
 </li>
       </ul></li>
-      <li><a href="compiler.html#ivy.compiler.Param.get">get() (ivy.compiler.Param method)</a>
+      <li><a href="compiler/param.html#ivy.compiler.param.Param.get">get() (ivy.compiler.param.Param method)</a>
 </li>
       <li><a href="framework_handler.html#ivy.framework_handler.get_framework">get_framework() (in module ivy.framework_handler)</a>, <a href="framework_handler/get_framework.html#ivy.framework_handler.get_framework">[1]</a>
 </li>
@@ -974,11 +983,11 @@
         <li><a href="numpy/core/general.html#ivy.numpy.core.general.get_num_dims">(in module ivy.numpy.core.general)</a>
 </li>
       </ul></li>
-      <li><a href="compiler.html#ivy.compiler.Graph.get_param">get_param() (ivy.compiler.Graph method)</a>
+      <li><a href="compiler/graph.html#ivy.compiler.graph.Graph.get_param">get_param() (ivy.compiler.graph.Graph method)</a>
 </li>
-      <li><a href="compiler.html#ivy.compiler.Graph.get_param_multi">get_param_multi() (ivy.compiler.Graph method)</a>
+      <li><a href="compiler/graph.html#ivy.compiler.graph.Graph.get_param_multi">get_param_multi() (ivy.compiler.graph.Graph method)</a>
 </li>
-      <li><a href="compiler.html#ivy.compiler.Graph.get_param_recursive">get_param_recursive() (ivy.compiler.Graph method)</a>
+      <li><a href="compiler/graph.html#ivy.compiler.graph.Graph.get_param_recursive">get_param_recursive() (ivy.compiler.graph.Graph method)</a>
 </li>
       <li><a href="neural_net_stateful/initializers.html#ivy.neural_net_stateful.initializers.GlorotUniform">GlorotUniform (class in ivy.neural_net_stateful.initializers)</a>, <a href="neural_net_stateful/initializers/GlorotUniform.html#ivy.neural_net_stateful.initializers.GlorotUniform">[1]</a>
 </li>
@@ -998,7 +1007,7 @@
         <li><a href="numpy/core/image.html#ivy.numpy.core.image.gradient_image">(in module ivy.numpy.core.image)</a>, <a href="numpy/core/image/gradient_image.html#ivy.numpy.core.image.gradient_image">[1]</a>
 </li>
       </ul></li>
-      <li><a href="compiler.html#ivy.compiler.Graph">Graph (class in ivy.compiler)</a>
+      <li><a href="compiler/graph.html#ivy.compiler.graph.Graph">Graph (class in ivy.compiler.graph)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -1036,7 +1045,7 @@
       </ul></li>
       <li><a href="core/container.html#ivy.core.container.Container.if_exists">if_exists() (ivy.core.container.Container method)</a>, <a href="core/container/Container.html#ivy.core.container.Container.if_exists">[1]</a>
 </li>
-      <li><a href="compiler.html#ivy.compiler.Graph.increment_param_count">increment_param_count() (ivy.compiler.Graph method)</a>
+      <li><a href="compiler/graph.html#ivy.compiler.graph.Graph.increment_param_count">increment_param_count() (ivy.compiler.graph.Graph method)</a>
 </li>
       <li><a href="core/nest.html#ivy.core.nest.index_nest">index_nest() (in module ivy.core.nest)</a>, <a href="core/nest/index_nest.html#ivy.core.nest.index_nest">[1]</a>
 </li>
@@ -1089,10 +1098,45 @@
       <li><a href="core/container.html#ivy.core.container.Container.ivy">ivy() (ivy.core.container.Container property)</a>, <a href="core/container/Container.html#ivy.core.container.Container.ivy">[1]</a>
 </li>
       <li>
-    ivy.compiler
+    ivy.compiler.compiler
 
       <ul>
-        <li><a href="compiler.html#module-ivy.compiler">module</a>
+        <li><a href="compiler/compiler.html#module-ivy.compiler.compiler">module</a>
+</li>
+      </ul></li>
+      <li>
+    ivy.compiler.globals
+
+      <ul>
+        <li><a href="compiler/globals.html#module-ivy.compiler.globals">module</a>
+</li>
+      </ul></li>
+      <li>
+    ivy.compiler.graph
+
+      <ul>
+        <li><a href="compiler/graph.html#module-ivy.compiler.graph">module</a>
+</li>
+      </ul></li>
+      <li>
+    ivy.compiler.helpers
+
+      <ul>
+        <li><a href="compiler/helpers.html#module-ivy.compiler.helpers">module</a>
+</li>
+      </ul></li>
+      <li>
+    ivy.compiler.op_logging
+
+      <ul>
+        <li><a href="compiler/op_logging.html#module-ivy.compiler.op_logging">module</a>
+</li>
+      </ul></li>
+      <li>
+    ivy.compiler.param
+
+      <ul>
+        <li><a href="compiler/param.html#module-ivy.compiler.param">module</a>
 </li>
       </ul></li>
       <li>
@@ -1214,6 +1258,8 @@
         <li><a href="core/linalg.html#module-ivy.core.linalg">module</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     ivy.core.logic
 
@@ -1235,8 +1281,6 @@
         <li><a href="core/meta.html#module-ivy.core.meta">module</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     ivy.core.multi_node
 
@@ -1525,7 +1569,7 @@
 </li>
       <li><a href="core/math.html#ivy.core.math.log">log() (in module ivy.core.math)</a>, <a href="core/math/log.html#ivy.core.math.log">[1]</a>
 </li>
-      <li><a href="compiler.html#ivy.compiler.Graph.log_all_ops">log_all_ops() (ivy.compiler.Graph method)</a>
+      <li><a href="compiler/graph.html#ivy.compiler.graph.Graph.log_all_ops">log_all_ops() (ivy.compiler.graph.Graph method)</a>
 </li>
       <li><a href="core/logic.html#ivy.core.logic.logical_and">logical_and() (in module ivy.core.logic)</a>, <a href="core/logic/logical_and.html#ivy.core.logic.logical_and">[1]</a>
 </li>
@@ -1607,7 +1651,17 @@
     module
 
       <ul>
-        <li><a href="compiler.html#module-ivy.compiler">ivy.compiler</a>
+        <li><a href="compiler/compiler.html#module-ivy.compiler.compiler">ivy.compiler.compiler</a>
+</li>
+        <li><a href="compiler/globals.html#module-ivy.compiler.globals">ivy.compiler.globals</a>
+</li>
+        <li><a href="compiler/graph.html#module-ivy.compiler.graph">ivy.compiler.graph</a>
+</li>
+        <li><a href="compiler/helpers.html#module-ivy.compiler.helpers">ivy.compiler.helpers</a>
+</li>
+        <li><a href="compiler/op_logging.html#module-ivy.compiler.op_logging">ivy.compiler.op_logging</a>
+</li>
+        <li><a href="compiler/param.html#module-ivy.compiler.param">ivy.compiler.param</a>
 </li>
         <li><a href="core/array/array_device.html#module-ivy.core.array.array_device">ivy.core.array.array_device</a>
 </li>
@@ -1848,9 +1902,9 @@
 <h2 id="P">P</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="compiler.html#ivy.compiler.Param">Param (class in ivy.compiler)</a>
+      <li><a href="compiler/param.html#ivy.compiler.param.Param">Param (class in ivy.compiler.param)</a>
 </li>
-      <li><a href="compiler.html#ivy.compiler.Graph.params_all_empty">params_all_empty() (ivy.compiler.Graph method)</a>
+      <li><a href="compiler/graph.html#ivy.compiler.graph.Graph.params_all_empty">params_all_empty() (ivy.compiler.graph.Graph method)</a>
 </li>
       <li><a href="core/device.html#ivy.core.device.percent_used_mem_on_dev">percent_used_mem_on_dev() (in module ivy.core.device)</a>, <a href="core/device/percent_used_mem_on_dev.html#ivy.core.device.percent_used_mem_on_dev">[1]</a>
 </li>
@@ -1880,7 +1934,7 @@
 </li>
       <li><a href="core/container.html#ivy.core.container.Container.prune_keys_from_key_chains">prune_keys_from_key_chains() (ivy.core.container.Container method)</a>, <a href="core/container/Container.html#ivy.core.container.Container.prune_keys_from_key_chains">[1]</a>
 </li>
-      <li><a href="compiler.html#ivy.compiler.Param.ptype">ptype() (ivy.compiler.Param property)</a>
+      <li><a href="compiler/param.html#ivy.compiler.param.Param.ptype">ptype() (ivy.compiler.param.Param property)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -2042,7 +2096,7 @@
       </ul></li>
       <li><a href="neural_net_stateful/sequential.html#ivy.neural_net_stateful.sequential.Sequential">Sequential (class in ivy.neural_net_stateful.sequential)</a>, <a href="neural_net_stateful/sequential/Sequential.html#ivy.neural_net_stateful.sequential.Sequential">[1]</a>
 </li>
-      <li><a href="compiler.html#ivy.compiler.Param.set">set() (ivy.compiler.Param method)</a>
+      <li><a href="compiler/param.html#ivy.compiler.param.Param.set">set() (ivy.compiler.param.Param method)</a>
 </li>
       <li><a href="core/container.html#ivy.core.container.Container.set_at_key_chain">set_at_key_chain() (ivy.core.container.Container method)</a>, <a href="core/container/Container.html#ivy.core.container.Container.set_at_key_chain">[1]</a>
 </li>
@@ -2052,7 +2106,7 @@
 </li>
       <li><a href="debugger.html#ivy.debugger.set_breakpoint_debug_mode">set_breakpoint_debug_mode() (in module ivy.debugger)</a>, <a href="debugger/set_breakpoint_debug_mode.html#ivy.debugger.set_breakpoint_debug_mode">[1]</a>
 </li>
-      <li><a href="compiler.html#ivy.compiler.Param.set_count">set_count() (ivy.compiler.Param method)</a>
+      <li><a href="compiler/param.html#ivy.compiler.param.Param.set_count">set_count() (ivy.compiler.param.Param method)</a>
 </li>
       <li><a href="debugger.html#ivy.debugger.set_debug_mode">set_debug_mode() (in module ivy.debugger)</a>, <a href="debugger/set_debug_mode.html#ivy.debugger.set_debug_mode">[1]</a>
 </li>
@@ -2076,9 +2130,9 @@
 </li>
       <li><a href="core/nest.html#ivy.core.nest.set_nest_at_indices">set_nest_at_indices() (in module ivy.core.nest)</a>, <a href="core/nest/set_nest_at_indices.html#ivy.core.nest.set_nest_at_indices">[1]</a>
 </li>
-      <li><a href="compiler.html#ivy.compiler.Graph.set_param">set_param() (ivy.compiler.Graph method)</a>
+      <li><a href="compiler/graph.html#ivy.compiler.graph.Graph.set_param">set_param() (ivy.compiler.graph.Graph method)</a>
 </li>
-      <li><a href="compiler.html#ivy.compiler.Graph.set_param_multi">set_param_multi() (ivy.compiler.Graph method)</a>
+      <li><a href="compiler/graph.html#ivy.compiler.graph.Graph.set_param_multi">set_param_multi() (ivy.compiler.graph.Graph method)</a>
 </li>
       <li><a href="core/general.html#ivy.core.general.set_queue_timeout">set_queue_timeout() (in module ivy.core.general)</a>, <a href="core/general/set_queue_timeout.html#ivy.core.general.set_queue_timeout">[1]</a>
 </li>
@@ -2109,7 +2163,7 @@
       <ul>
         <li><a href="numpy/core/general.html#ivy.numpy.core.general.shape">(in module ivy.numpy.core.general)</a>
 </li>
-        <li><a href="compiler.html#ivy.compiler.Param.shape">(ivy.compiler.Param property)</a>
+        <li><a href="compiler/param.html#ivy.compiler.param.Param.shape">(ivy.compiler.param.Param property)</a>
 </li>
         <li><a href="core/container.html#ivy.core.container.Container.shape">(ivy.core.container.Container property)</a>, <a href="core/container/Container.html#ivy.core.container.Container.shape">[1]</a>
 </li>
@@ -2120,9 +2174,9 @@
       </ul></li>
       <li><a href="core/container.html#ivy.core.container.Container.shapes">shapes() (ivy.core.container.Container property)</a>, <a href="core/container/Container.html#ivy.core.container.Container.shapes">[1]</a>
 </li>
-      <li><a href="compiler.html#ivy.compiler.Graph.show">show() (ivy.compiler.Graph method)</a>
+      <li><a href="compiler/graph.html#ivy.compiler.graph.Graph.show">show() (ivy.compiler.graph.Graph method)</a>
 </li>
-      <li><a href="compiler.html#ivy.compiler.show_graph">show_graph() (in module ivy.compiler)</a>, <a href="compiler/show_graph.html#ivy.compiler.show_graph">[1]</a>
+      <li><a href="compiler/compiler.html#ivy.compiler.compiler.show_graph">show_graph() (in module ivy.compiler.compiler)</a>, <a href="compiler/compiler/show_graph.html#ivy.compiler.compiler.show_graph">[1]</a>
 
       <ul>
         <li><a href="neural_net_stateful/module.html#ivy.neural_net_stateful.module.Module.show_graph">(ivy.neural_net_stateful.module.Module method)</a>, <a href="neural_net_stateful/module/Module.html#ivy.neural_net_stateful.module.Module.show_graph">[1]</a>
