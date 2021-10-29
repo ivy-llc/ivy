@@ -681,14 +681,26 @@ class Graph:
             for edge in g.edges:
                 node_in = edge[0]
                 node_out = edge[1]
-                if node_in[0] in self._pid_to_functions_dict:
-                    producing_fn = self._pid_to_functions_dict[node_in[0]]
-                    output_param_ids = producing_fn.output_param_ids
+                node_in_pid = node_in[0]
+                node_in_name = node_in[1]
+                node_out_pid = node_out[0]
+                node_out_name = node_out[1]
+                if node_in_pid in self._pid_to_functions_dict:
+                    base_fn = self._pid_to_functions_dict[node_in_pid]
+                    base_pids = base_fn.output_param_ids
+                    if node_out_name == 'output':
+                        tip_pids = self._output_param_ids
+                    else:
+                        tip_fn = self._pid_to_functions_dict[node_out_pid]
+                        tip_pids = tip_fn.arg_param_ids + tip_fn.kwarg_param_ids
+                elif node_in_name == 'input':
+                    base_pids = self._arg_param_ids + self._kwarg_param_ids + self._stateful_param_ids
+                    tip_fn = self._pid_to_functions_dict[node_out_pid]
+                    tip_pids = tip_fn.arg_param_ids + tip_fn.kwarg_param_ids
                 else:
-                    output_param_ids = self._arg_param_ids + self._kwarg_param_ids + self._stateful_param_ids
-                consuming_fn = self._pid_to_functions_dict[node_out[0]]
-                incoming_pids = consuming_fn.arg_param_ids + consuming_fn.kwarg_param_ids
-                pids = [pid for pid in output_param_ids if pid in incoming_pids]
+                    raise Exception('node {} not found in self._pid_to_functions_dict,'
+                                    'and is not of type input or output'.format(node_in))
+                pids = [pid for pid in base_pids if pid in tip_pids]
                 params = [self._tmp_sub_param_dict[pid] for pid in pids]
                 edge_labels[edge] = '_'.join([_param_to_label(p) for p in params])
             nx.draw_networkx_edge_labels(g, pos, edge_labels=edge_labels, font_size=10/max_dim)
