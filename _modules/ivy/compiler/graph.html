@@ -692,7 +692,7 @@
 
         <span class="c1"># assert all positions are in range 0-1</span>
         <span class="k">for</span> <span class="n">pos</span> <span class="ow">in</span> <span class="n">pos_dict</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
-            <span class="k">assert</span> <span class="p">(</span><span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">pos</span><span class="o">.</span><span class="n">all</span><span class="p">()</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">logical_and</span><span class="p">((</span><span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">pos</span><span class="p">),</span> <span class="p">(</span><span class="n">pos</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">))</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
 
         <span class="k">return</span> <span class="n">pos_dict</span>
 
