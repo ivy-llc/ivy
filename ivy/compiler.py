@@ -1048,7 +1048,7 @@ def compile_graph(fn, *args, stateful=None, num_workers=1, **kwargs):
     return graph.compiled()
 
 
-def show_graph(fn, *args, stateful=None, num_workers=1, save_to_disk=True, with_edge_labels=True, with_arg_labels=True,
+def show_graph(fn, *args, stateful=None, num_workers=1, save_to_disk=False, with_edge_labels=True, with_arg_labels=True,
                output_connected_only=True, **kwargs):
 
     # create graph
