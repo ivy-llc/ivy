@@ -205,6 +205,7 @@ class Graph:
                 new_fn.fns_in = list()
                 new_fn.output_tracked_idxs = [[0]]
                 new_fn.output_param_shapes = [output_param_shape]
+                new_fn.terminal = True
 
                 self.add_fn_to_dict(new_pid, new_fn)
                 self._output_param_ids[i] = new_pid
@@ -491,7 +492,7 @@ class Graph:
         return pos_dict
 
     def show(self, save_to_disk=False, with_edge_labels=True, with_arg_labels=True, with_output_labels=True,
-             output_connected_only=True):
+             output_connected_only=True, fname=None):
 
         # ensure graph is connected
         if not self._connected:
@@ -657,9 +658,13 @@ class Graph:
 
         # maybe save to disk
         if save_to_disk:
-            plt.savefig('graph_{}.png'.format(
-                ''.join([f.__name__.replace('_', '')[0] for f in self._tmp_sub_functions])),
-                bbox_inches='tight', dpi=1500)
+            fname = ivy.default(fname, 'graph_{}.png'.format(''.join(
+                [f.__name__.replace('_', '')[0] for f in self._tmp_sub_functions][0:20])))
+            if fname[-4:] != '.png':
+                if '.' in fname:
+                    fname = '.'.join(fname.split('.')[:-1])
+                fname += '.png'
+            plt.savefig(fname, bbox_inches='tight', dpi=1500)
 
     def __del__(self):
         if self._num_workers <= 1:
