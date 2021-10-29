@@ -213,8 +213,9 @@
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 
 <span class="c1"># local</span>
-<span class="kn">import</span> <span class="nn">ivy.compiler.globals</span> <span class="k">as</span> <span class="nn">glob</span>
 <span class="kn">from</span> <span class="nn">ivy.compiler.param</span> <span class="kn">import</span> <span class="n">Param</span>
+<span class="kn">from</span> <span class="nn">ivy.compiler</span> <span class="kn">import</span> <span class="nb">globals</span> <span class="k">as</span> <span class="n">glob</span>
+<span class="c1"># noinspection PyProtectedMember</span>
 <span class="kn">from</span> <span class="nn">ivy.compiler.helpers</span> <span class="kn">import</span> <span class="n">_get_shape</span><span class="p">,</span> <span class="n">_get_id</span><span class="p">,</span> <span class="n">_terminal_pids_to_key</span><span class="p">,</span> <span class="n">_args_str_from_fn</span><span class="p">,</span> <span class="n">_output_str_from_fn</span><span class="p">,</span>\
     <span class="n">_param_to_label</span>
 
