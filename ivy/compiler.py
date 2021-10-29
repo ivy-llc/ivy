@@ -538,12 +538,12 @@ class Graph:
                 w_delta_high = 0 if w == 1 else w_delta
                 w_rand = np.random.uniform(w_delta_low, w_delta_high)
                 pos += np.array([h_rand, w_rand]) * randomness_factor
-                pos_dict[(f.output_param_ids[0], f.__name__, _args_str_from_fn(f))] = pos
+                pos_dict[(f.output_param_ids[0], f, _args_str_from_fn(f))] = pos
 
         # add inputs
         input_idx = 0
         for n in g.nodes:
-            if n not in pos_dict and n[1] == 'input':
+            if n not in pos_dict and n[1].__name__ == 'input':
                 pos = np.array([0., 0.5 if num_inputs == 1 else input_idx/(num_inputs-1)])
                 h_delta = 0.5/self._max_graph_height
                 h_rand = np.random.uniform(0, h_delta)
@@ -558,7 +558,7 @@ class Graph:
         # add outputs
         output_idx = 0
         for n in g.nodes:
-            if n not in pos_dict and n[1] == 'output':
+            if n not in pos_dict and n[1].__name__ == 'output':
                 pos = np.array([1., 0.5 if num_inputs == 1 else output_idx/(num_inputs-1)])
                 h_delta = 0.5/self._max_graph_height
                 h_rand = np.random.uniform(-h_delta, 0)
@@ -602,9 +602,9 @@ class Graph:
                     fn_in = inp
                     fn_pid = pid_in
                 start_args = _args_str_from_fn(fn_in)
-                start_node = (fn_pid, ivy.default(fn_in.__name__, 'unnamed'), start_args)
+                start_node = (fn_pid, fn_in, start_args)
                 end_args = _args_str_from_fn(func)
-                end_node = (func.output_param_ids[0], ivy.default(func.__name__, 'output'), end_args)
+                end_node = (func.output_param_ids[0], func, end_args)
                 g.add_edge(start_node, end_node)
 
         # add output nodes
@@ -617,9 +617,9 @@ class Graph:
             fn_in = self._pid_to_functions_dict[pid_in]
             fn_pid = fn_in.output_param_ids[0]
             start_args = _args_str_from_fn(fn_in)
-            start_node = (fn_pid, ivy.default(fn_in.__name__, 'unnamed'), start_args)
+            start_node = (fn_pid, fn_in, start_args)
             end_args = _args_str_from_fn(out)
-            end_node = (fn_pid, out.__name__, end_args)
+            end_node = (fn_pid, out, end_args)
             g.add_edge(start_node, end_node)
 
         # num inputs
@@ -643,23 +643,23 @@ class Graph:
         # draw nodes
 
         # input
-        input_nodes = [n for n in g.nodes if n[1] == 'input']
-        input_pos = {n: pos[n] for n in g.nodes if n[1] == 'input'}
+        input_nodes = [n for n in g.nodes if n[1].__name__ == 'input']
+        input_pos = {n: pos[n] for n in g.nodes if n[1].__name__ == 'input'}
 
         nx.draw_networkx_nodes(g, input_pos, input_nodes, node_color=[(0.2, 0.2, 1.)]*len(input_nodes),
                                node_shape='s', node_size=[300/max_dim]*len(input_nodes), linewidths=1/max_dim)
 
         # intermediate
-        intermediate_nodes = [n for n in g.nodes if n[1] not in ['input', 'output']]
-        intermediate_pos = {n: pos[n] for n in g.nodes if n[1] not in ['input', 'output']}
+        intermediate_nodes = [n for n in g.nodes if n[1].__name__ not in ['input', 'output']]
+        intermediate_pos = {n: pos[n] for n in g.nodes if n[1].__name__ not in ['input', 'output']}
 
         nx.draw_networkx_nodes(g, intermediate_pos, intermediate_nodes,
                                node_color=[(0., 0.8, 0.)]*len(intermediate_nodes),
                                node_shape='s', node_size=[300/max_dim]*len(intermediate_nodes), linewidths=1/max_dim)
 
         # output
-        output_nodes = [n for n in g.nodes if n[1] == 'output']
-        output_pos = {n: pos[n] for n in g.nodes if n[1] == 'output'}
+        output_nodes = [n for n in g.nodes if n[1].__name__ == 'output']
+        output_pos = {n: pos[n] for n in g.nodes if n[1].__name__ == 'output'}
 
         nx.draw_networkx_nodes(g, output_pos, output_nodes, node_color=[(0.2, 0.2, 1.)]*len(output_nodes),
                                node_shape='s', node_size=[300/max_dim]*len(output_nodes), linewidths=1/max_dim)
@@ -669,7 +669,8 @@ class Graph:
                                arrowsize=max(10/max_dim, 1))
 
         # draw node labels
-        nx.draw_networkx_labels(g, pos=pos, labels={n: n[1].replace('_', '') for n in g.nodes}, font_size=12/max_dim)
+        nx.draw_networkx_labels(
+            g, pos=pos, labels={n: n[1].__name__.replace('_', '') for n in g.nodes}, font_size=12/max_dim)
 
         # draw
         plt.draw_if_interactive()
@@ -681,9 +682,9 @@ class Graph:
                 node_in = edge[0]
                 node_out = edge[1]
                 node_in_pid = node_in[0]
-                node_in_name = node_in[1]
+                node_in_name = node_in[1].__name__
                 node_out_pid = node_out[0]
-                node_out_name = node_out[1]
+                node_out_name = node_out[1].__name__
                 if node_in_pid in self._pid_to_functions_dict:
                     base_fn = self._pid_to_functions_dict[node_in_pid]
                     base_pids = base_fn.output_param_ids
