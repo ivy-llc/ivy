@@ -97,7 +97,8 @@ def test_compile_graph_inplace(x_raw, dtype_str, tensor_fn, with_non_compiled, d
 
     # function 1
     x = tensor_fn(x_raw, dtype_str, dev_str)
-    ivy.show_graph(_fn_1, x, with_non_compiled)
+    ivy.show_graph(_fn_1, x, with_non_compiled, output_connected_only=False,
+                   fname='fn1_inplace_{}.png'.format(with_non_compiled))
     comp_fn = ivy.compile_graph(_fn_1, x, with_non_compiled)
     # type test
     assert callable(comp_fn)
@@ -121,7 +122,8 @@ def test_compile_graph_inplace(x_raw, dtype_str, tensor_fn, with_non_compiled, d
 
     # function 2
     x = tensor_fn(x_raw, dtype_str, dev_str)
-    ivy.show_graph(_fn_2, x, with_non_compiled)
+    ivy.show_graph(_fn_2, x, with_non_compiled, output_connected_only=False,
+                   fname='fn2_inplace_{}.png'.format(with_non_compiled))
     comp_fn = ivy.compile_graph(_fn_2, x, with_non_compiled)
     # type test
     assert callable(comp_fn)
@@ -195,7 +197,8 @@ def test_compile_graph(x_raw, dtype_str, tensor_fn, with_non_compiled, with_inte
 
     # function 3
     x = tensor_fn(x_raw, dtype_str, dev_str)
-    ivy.show_graph(_fn_3, x, with_non_compiled, with_internal_gen)
+    ivy.show_graph(_fn_3, x, with_non_compiled, with_internal_gen, output_connected_only=False,
+                   fname='fn3_{}_{}.png'.format(with_non_compiled, with_internal_gen))
     comp_fn = ivy.compile_graph(_fn_3, x, with_non_compiled, with_internal_gen)
     # type test
     assert callable(comp_fn)
@@ -219,7 +222,8 @@ def test_compile_graph(x_raw, dtype_str, tensor_fn, with_non_compiled, with_inte
 
     # function 4
     x = tensor_fn(x_raw, dtype_str, dev_str)
-    ivy.show_graph(_fn_4, x, with_non_compiled, with_internal_gen)
+    ivy.show_graph(_fn_4, x, with_non_compiled, with_internal_gen, output_connected_only=False,
+                   fname='fn4_{}_{}.png'.format(with_non_compiled, with_internal_gen))
     comp_fn = ivy.compile_graph(_fn_4, x, with_non_compiled, with_internal_gen)
     # type test
     assert callable(comp_fn)
@@ -273,7 +277,8 @@ def test_compile_graph_w_random(x_raw, dtype_str, tensor_fn, with_non_compiled, 
 
     # random function
     x = tensor_fn(x_raw, dtype_str, dev_str)
-    ivy.show_graph(_rand_fn, x, with_non_compiled)
+    ivy.show_graph(_rand_fn, x, with_non_compiled, output_connected_only=False,
+                   fname='w_random_{}.png'.format(with_non_compiled))
     comp_fn = ivy.compile_graph(_rand_fn, x, with_non_compiled)
     # type test
     assert callable(comp_fn)
@@ -321,7 +326,8 @@ def test_compile_graph_w_detached_divide(x_raw, dtype_str, tensor_fn, dev_str, c
 
     # detached divide function
     x = tensor_fn(x_raw, dtype_str, dev_str)
-    ivy.show_graph(_detach_div_fn, x)
+    ivy.show_graph(_detach_div_fn, x, output_connected_only=False,
+                   fname='w_detached_divide.png')
     comp_fn = ivy.compile_graph(_detach_div_fn, x)
     # type test
     assert callable(comp_fn)
@@ -361,7 +367,8 @@ def test_compile_graph_input_in_output(x_raw, dtype_str, tensor_fn, dev_str, com
     # detached divide function
     x = tensor_fn(x_raw, dtype_str, dev_str)
     y = tensor_fn(x_raw, dtype_str, dev_str)
-    ivy.show_graph(_input_in_output, x, y)
+    ivy.show_graph(_input_in_output, x, y, output_connected_only=False,
+                   fname='input_in_output.png')
     comp_fn = ivy.compile_graph(_input_in_output, x, y)
     # type test
     assert callable(comp_fn)
@@ -398,7 +405,8 @@ def test_compile_graph_inplace_var_update(weight_n_grad, dtype_str, dev_str, com
     # as tensors
     weight = ivy.variable(ivy.array(weight_raw, dtype_str, dev_str))
     # compile
-    ivy.show_graph(_inplace_var_update, weight, ivy.copy_array(weight))
+    ivy.show_graph(_inplace_var_update, weight, ivy.copy_array(weight), output_connected_only=False,
+                   fname='inplace_var_update.png')
     comp_fn = ivy.compile_graph(_inplace_var_update, weight, ivy.copy_array(weight))
     # type test
     assert callable(comp_fn)
@@ -442,7 +450,8 @@ def test_compile_graph_w_stateful(x_raw, dtype_str, dev_str, compile_graph, call
             return _x + self._state
 
         def compile_graph(self, _x):
-            ivy.show_graph(self.forward, _x, stateful=[self])
+            ivy.show_graph(self.forward, _x, stateful=[self], output_connected_only=False,
+                           fname='w_stateful.png')
             # noinspection PyAttributeOutsideInit
             self.forward = ivy.compile_graph(self.forward, _x, stateful=[self])
 
@@ -513,7 +522,8 @@ def test_compile_ivy_multiproc(x_raw, dtype_str, tensor_fn, with_non_compiled, w
     non_compiled_return = _wide_fn(x, with_non_compiled, with_internal_gen)
 
     # compiled single threaded
-    ivy.show_graph(_wide_fn, x, with_non_compiled, with_internal_gen, num_workers=1)
+    ivy.show_graph(_wide_fn, x, with_non_compiled, with_internal_gen, num_workers=1, output_connected_only=False,
+                   fname='single_thread_{}_{}.png'.format(with_non_compiled, with_internal_gen))
     st_comp_fn = ivy.compile_graph(_wide_fn, x, with_non_compiled, with_internal_gen, num_workers=1)
     assert callable(st_comp_fn)
     assert len(st_comp_fn.__self__._all_param_dict) == 52 + (1 if with_internal_gen else 0)
@@ -529,7 +539,8 @@ def test_compile_ivy_multiproc(x_raw, dtype_str, tensor_fn, with_non_compiled, w
     assert np.allclose(ivy.to_numpy(non_compiled_return), ivy.to_numpy(st_return))
 
     # compiled multi-processing
-    ivy.show_graph(_wide_fn, x, with_non_compiled, with_internal_gen, num_workers=ivy.num_cpu_cores())
+    ivy.show_graph(_wide_fn, x, with_non_compiled, with_internal_gen, num_workers=ivy.num_cpu_cores(),
+                   fname='multiproc_{}_{}.png'.format(with_non_compiled, with_internal_gen))
     multi_comp_fn = ivy.compile_graph(
         _wide_fn, x, with_non_compiled, with_internal_gen, num_workers=ivy.num_cpu_cores())
     assert callable(multi_comp_fn)
