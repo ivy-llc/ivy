@@ -5,8 +5,10 @@ import inspect
 import importlib
 
 # local
-import ivy.compiler.globals as glob
+from ivy.compiler import globals as glob
+# noinspection PyProtectedMember
 from ivy.compiler.helpers import _get_id, _get_shape
+# noinspection PyProtectedMember
 from ivy.wrapper import _wrap_or_unwrap_methods, NON_WRAPPED_METHODS, ARRAYLESS_RET_METHODS
 
 

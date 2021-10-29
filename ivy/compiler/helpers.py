@@ -3,7 +3,7 @@ import ivy
 import numbers
 
 # local
-import ivy.compiler.globals as glob
+from ivy.compiler import globals as glob
 
 
 def _get_shape(x_in):
