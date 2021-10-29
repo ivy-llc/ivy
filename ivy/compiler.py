@@ -521,6 +521,20 @@ class Graph:
             return self._call
         return self._multi_call
 
+    # Graph Visualization #
+    # --------------------#
+
+    def _is_stateful(self, f):
+        if hasattr(f, 'args'):
+            for a in ivy.multi_index_nest(f.args, f.arg_tracked_idxs):
+                if isinstance(a, self._stateful_classes):
+                    return True
+        if hasattr(f, 'kwargs'):
+            for kwa in ivy.multi_index_nest(f.kwargs, f.kwarg_tracked_idxs):
+                if isinstance(kwa, self._stateful_classes):
+                    return True
+        return False
+
     def _position_nodes(self, g, num_inputs, randomness_factor=0.75):
 
         pos_dict = dict()
@@ -646,22 +660,30 @@ class Graph:
         input_nodes = [n for n in g.nodes if n[1].__name__ == 'input']
         input_pos = {n: pos[n] for n in g.nodes if n[1].__name__ == 'input'}
 
-        nx.draw_networkx_nodes(g, input_pos, input_nodes, node_color=[(0.2, 0.2, 1.)]*len(input_nodes),
+        nx.draw_networkx_nodes(g, input_pos, input_nodes, node_color=[(0.4, 0.4, 1.)]*len(input_nodes),
                                node_shape='s', node_size=[300/max_dim]*len(input_nodes), linewidths=1/max_dim)
 
         # intermediate
-        intermediate_nodes = [n for n in g.nodes if n[1].__name__ not in ['input', 'output']]
+        intermediate_nodes =\
+            [n for n in g.nodes if (n[1].__name__ not in ['input', 'output'] and not self._is_stateful(n[1]))]
         intermediate_pos = {n: pos[n] for n in g.nodes if n[1].__name__ not in ['input', 'output']}
 
         nx.draw_networkx_nodes(g, intermediate_pos, intermediate_nodes,
                                node_color=[(0., 0.8, 0.)]*len(intermediate_nodes),
                                node_shape='s', node_size=[300/max_dim]*len(intermediate_nodes), linewidths=1/max_dim)
 
+        # stateful
+        stateful_nodes = [n for n in g.nodes if self._is_stateful(n[1])]
+        stateful_pos = {n: pos[n] for n in g.nodes if self._is_stateful(n[1])}
+
+        nx.draw_networkx_nodes(g, stateful_pos, stateful_nodes, node_color=[(0.9, 0.7, 0.2)]*len(stateful_nodes),
+                               node_shape='s', node_size=[300/max_dim]*len(stateful_nodes), linewidths=1/max_dim)
+
         # output
         output_nodes = [n for n in g.nodes if n[1].__name__ == 'output']
         output_pos = {n: pos[n] for n in g.nodes if n[1].__name__ == 'output'}
 
-        nx.draw_networkx_nodes(g, output_pos, output_nodes, node_color=[(0.2, 0.2, 1.)]*len(output_nodes),
+        nx.draw_networkx_nodes(g, output_pos, output_nodes, node_color=[(0.4, 0.4, 1.)]*len(output_nodes),
                                node_shape='s', node_size=[300/max_dim]*len(output_nodes), linewidths=1/max_dim)
 
         # draw edges
