@@ -438,7 +438,7 @@ class Graph:
                     return True
         return False
 
-    def _position_nodes(self, g, num_inputs, randomness_factor=0.75):
+    def _position_nodes(self, g, num_inputs, num_outputs, randomness_factor=0.75):
 
         pos_dict = dict()
         assert 0 <= randomness_factor <= 1
@@ -448,48 +448,52 @@ class Graph:
             width = len(fns)
             for w, f in enumerate(fns):
                 pos = np.array([(height+1) / (self._max_graph_height+1), 0.5 if width == 1 else w / (width - 1)])
+                assert np.logical_and((0 <= pos), (pos <= 1)).all()
                 h_delta = 0.5/self._max_graph_height
                 h_rand = np.random.uniform(-h_delta, h_delta)
                 w_delta = 0.5 if width == 1 else 0.5/(width-1)
                 w_delta_low = 0 if w == 0 else -w_delta
-                w_delta_high = 0 if w == 1 else w_delta
+                w_delta_high = 0 if w == (width-1) else w_delta
                 w_rand = np.random.uniform(w_delta_low, w_delta_high)
                 pos += np.array([h_rand, w_rand]) * randomness_factor
+                assert np.logical_and((0 <= pos), (pos <= 1)).all()
                 pos_dict[(f.output_param_ids[0], f, _args_str_from_fn(f), _output_str_from_fn(f))] = pos
 
         # add inputs
-        input_idx = 0
-        for n in g.nodes:
-            if n not in pos_dict and n[1].__name__ == 'input':
-                pos = np.array([0., 0.5 if num_inputs == 1 else input_idx/(num_inputs-1)])
-                h_delta = 0.5/self._max_graph_height
-                h_rand = np.random.uniform(0, h_delta)
-                w_delta = 0.5 if num_inputs == 1 else 0.5/(num_inputs-1)
-                w_delta_low = 0 if input_idx == 0 else -w_delta
-                w_delta_high = 0 if input_idx == 1 else w_delta
-                w_rand = np.random.uniform(w_delta_low, w_delta_high)
-                pos += np.array([h_rand, w_rand]) * randomness_factor
-                pos_dict[n] = pos
-                input_idx += 1
+        if num_inputs > 0:
+            input_idx = 0
+            for n in g.nodes:
+                if n not in pos_dict and n[1].__name__ == 'input':
+                    pos = np.array([0., 0.5 if num_inputs == 1 else input_idx/(num_inputs-1)])
+                    assert np.logical_and((0 <= pos), (pos <= 1)).all()
+                    h_delta = 0.5/self._max_graph_height
+                    h_rand = np.random.uniform(0, h_delta)
+                    w_delta = 0.5 if num_inputs == 1 else 0.5/(num_inputs-1)
+                    w_delta_low = 0 if input_idx == 0 else -w_delta
+                    w_delta_high = 0 if input_idx == (num_inputs-1) else w_delta
+                    w_rand = np.random.uniform(w_delta_low, w_delta_high)
+                    pos += np.array([h_rand, w_rand]) * randomness_factor
+                    assert np.logical_and((0 <= pos), (pos <= 1)).all()
+                    pos_dict[n] = pos
+                    input_idx += 1
 
         # add outputs
-        output_idx = 0
-        for n in g.nodes:
-            if n not in pos_dict and n[1].__name__ == 'output':
-                pos = np.array([1., 0.5 if num_inputs == 1 else output_idx/(num_inputs-1)])
-                h_delta = 0.5/self._max_graph_height
-                h_rand = np.random.uniform(-h_delta, 0)
-                w_delta = 0.5 if num_inputs == 1 else 0.5/(num_inputs-1)
-                w_delta_low = 0 if output_idx == 0 else -w_delta
-                w_delta_high = 0 if output_idx == 1 else w_delta
-                w_rand = np.random.uniform(w_delta_low, w_delta_high)
-                pos += np.array([h_rand, w_rand]) * randomness_factor
-                pos_dict[n] = pos
-                output_idx += 1
-
-        # assert all positions are in range 0-1
-        for pos in pos_dict.values():
-            assert np.logical_and((0 <= pos), (pos <= 1)).all()
+        if num_outputs > 0:
+            output_idx = 0
+            for n in g.nodes:
+                if n not in pos_dict and n[1].__name__ == 'output':
+                    pos = np.array([1., 0.5 if num_outputs == 1 else output_idx/(num_outputs-1)])
+                    assert np.logical_and((0 <= pos), (pos <= 1)).all()
+                    h_delta = 0.5/self._max_graph_height
+                    h_rand = np.random.uniform(-h_delta, 0)
+                    w_delta = 0.5 if num_outputs == 1 else 0.5/(num_outputs-1)
+                    w_delta_low = 0 if output_idx == 0 else -w_delta
+                    w_delta_high = 0 if output_idx == (num_outputs-1) else w_delta
+                    w_rand = np.random.uniform(w_delta_low, w_delta_high)
+                    pos += np.array([h_rand, w_rand]) * randomness_factor
+                    assert np.logical_and((0 <= pos), (pos <= 1)).all()
+                    pos_dict[n] = pos
+                    output_idx += 1
 
         return pos_dict
 
@@ -509,6 +513,8 @@ class Graph:
 
         inp.__name__ = 'input'
 
+        num_inputs = 0
+
         for func in self._pid_to_functions_dict.values():
             if func not in self._tmp_sub_functions and output_connected_only:
                 continue
@@ -519,6 +525,7 @@ class Graph:
                 else:
                     fn_in = inp
                     fn_pid = pid_in
+                    num_inputs += 1
                 start_args = _args_str_from_fn(fn_in)
                 start_output = _output_str_from_fn(fn_in)
                 start_node = (fn_pid, fn_in, start_args, start_output)
@@ -533,7 +540,10 @@ class Graph:
 
         out.__name__ = 'output'
 
+        num_outputs = 0
+
         for pid_in in self._output_param_ids:
+            num_outputs += 1
             fn_in = self._pid_to_functions_dict[pid_in]
             fn_pid = fn_in.output_param_ids[0]
             start_args = _args_str_from_fn(fn_in)
@@ -544,23 +554,12 @@ class Graph:
             end_node = (fn_pid, out, end_args, end_output)
             g.add_edge(start_node, end_node)
 
-        # num inputs
-        if not self._grouped_functions:
-            num_inputs = 0
-        else:
-            height_0_fns = [i for s in [gf[0] for gf in self._grouped_functions.values()] for i in s]
-            input_param_ids = list()
-            for fn in height_0_fns:
-                input_param_ids += fn.arg_param_ids + fn.kwarg_param_ids
-            input_param_ids = set(input_param_ids)
-            num_inputs = len(input_param_ids)
-
         # show
         plt.cla()
         ax = plt.subplot(111)
         max_dim = max(self._max_graph_width, self._max_graph_height)
         ax.set_aspect(self._max_graph_width / self._max_graph_height)
-        pos = self._position_nodes(g, num_inputs)
+        pos = self._position_nodes(g, num_inputs, num_outputs)
 
         # draw nodes
 
