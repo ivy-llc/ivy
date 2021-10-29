@@ -55,6 +55,14 @@ def _args_str_from_fn(fn):
         return ''
 
 
+def _output_str_from_fn(fn):
+    if hasattr(fn, 'output'):
+        return '\n'.join(
+            ['{}: {}'.format(k, v) for k, v in dict([(str(i), _to_label(a)) for i, a in enumerate(fn.output)]).items()])
+    else:
+        return ''
+
+
 def _format_label(cls, shape):
     ptype_str = '{}'.format(cls).replace(
         "'", '').replace(' ', '').replace('<', '').replace('>', '').replace('class', '').split('.')[-1]
@@ -552,7 +560,7 @@ class Graph:
                 w_delta_high = 0 if w == 1 else w_delta
                 w_rand = np.random.uniform(w_delta_low, w_delta_high)
                 pos += np.array([h_rand, w_rand]) * randomness_factor
-                pos_dict[(f.output_param_ids[0], f, _args_str_from_fn(f))] = pos
+                pos_dict[(f.output_param_ids[0], f, _args_str_from_fn(f), _output_str_from_fn(f))] = pos
 
         # add inputs
         input_idx = 0
@@ -590,7 +598,8 @@ class Graph:
 
         return pos_dict
 
-    def show(self, save_to_disk=False, with_edge_labels=True, with_arg_labels=True, output_connected_only=True):
+    def show(self, save_to_disk=False, with_edge_labels=True, with_arg_labels=True, with_output_labels=True,
+             output_connected_only=True):
 
         # ensure graph is connected
         if not self._connected:
@@ -616,9 +625,11 @@ class Graph:
                     fn_in = inp
                     fn_pid = pid_in
                 start_args = _args_str_from_fn(fn_in)
-                start_node = (fn_pid, fn_in, start_args)
+                start_output = _output_str_from_fn(fn_in)
+                start_node = (fn_pid, fn_in, start_args, start_output)
                 end_args = _args_str_from_fn(func)
-                end_node = (func.output_param_ids[0], func, end_args)
+                end_output = _output_str_from_fn(func)
+                end_node = (func.output_param_ids[0], func, end_args, end_output)
                 g.add_edge(start_node, end_node)
 
         # add output nodes
@@ -631,9 +642,11 @@ class Graph:
             fn_in = self._pid_to_functions_dict[pid_in]
             fn_pid = fn_in.output_param_ids[0]
             start_args = _args_str_from_fn(fn_in)
-            start_node = (fn_pid, fn_in, start_args)
+            start_output = _output_str_from_fn(fn_in)
+            start_node = (fn_pid, fn_in, start_args, start_output)
             end_args = _args_str_from_fn(out)
-            end_node = (fn_pid, out, end_args)
+            end_output = _output_str_from_fn(out)
+            end_node = (fn_pid, out, end_args, end_output)
             g.add_edge(start_node, end_node)
 
         # num inputs
@@ -666,7 +679,8 @@ class Graph:
         # intermediate
         intermediate_nodes =\
             [n for n in g.nodes if (n[1].__name__ not in ['input', 'output'] and not self._is_stateful(n[1]))]
-        intermediate_pos = {n: pos[n] for n in g.nodes if n[1].__name__ not in ['input', 'output']}
+        intermediate_pos =\
+            {n: pos[n] for n in g.nodes if (n[1].__name__ not in ['input', 'output'] and not self._is_stateful(n[1]))}
 
         nx.draw_networkx_nodes(g, intermediate_pos, intermediate_nodes,
                                node_color=[(0., 0.8, 0.)]*len(intermediate_nodes),
@@ -731,8 +745,15 @@ class Graph:
         if with_arg_labels:
             font_size = 9/max_dim
             nx.draw_networkx_labels(
-                g, pos={k: v - np.array([0., font_size/30]) for k, v in pos.items()}, font_size=font_size,
+                g, pos={k: v + np.array([0., font_size/30]) for k, v in pos.items()}, font_size=font_size,
                 font_color=(0., 100/255, 0.), labels={n: n[2] for n in g.nodes})
+
+        # maybe add function output labels
+        if with_output_labels:
+            font_size = 9/max_dim
+            nx.draw_networkx_labels(
+                g, pos={k: v - np.array([0., font_size/30]) for k, v in pos.items()}, font_size=font_size,
+                font_color=(0., 100/255, 0.), labels={n: n[3] for n in g.nodes})
 
         # scale axes and show
         pos_list = list(pos.values())
@@ -914,6 +935,7 @@ def _wrap_method_for_compiling(fn, graph, limit_attributes=True, stateful_classe
         new_fn.kwarg_tracked_idxs = kwarg_tracked_idxs
         new_fn.kwarg_param_ids = kwarg_param_ids
 
+        new_fn.output = ret
         new_fn.output_tracked_idxs = ret_tracked_idxs
         new_fn.output_param_ids = ret_param_ids
         new_fn.output_param_types = ret_param_types
