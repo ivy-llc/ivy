@@ -50,8 +50,7 @@ def _args_str_from_fn(fn):
     if hasattr(fn, 'args') and hasattr(fn, 'kwargs'):
         return '\n'.join(
             ['{}: {}'.format(k, v) for k, v in dict(**dict(
-                [(str(i), _tensor_to_label(a) if ivy.is_array(a) else a)
-                 for i, a in enumerate(fn.args)]), **fn.kwargs).items()])
+                [(str(i), _to_label(a)) for i, a in enumerate(fn.args)]), **fn.kwargs).items()])
     else:
         return ''
 
@@ -64,8 +63,8 @@ def _format_label(cls, shape):
     return ptype_str
 
 
-def _tensor_to_label(tnsr):
-    return _format_label(type(tnsr), tuple(tnsr.shape))
+def _to_label(tnsr):
+    return _format_label(type(tnsr), ivy.default(lambda: tuple(tnsr.shape), None, True))
 
 
 def _param_to_label(param):
@@ -709,7 +708,7 @@ class Graph:
         if with_arg_labels:
             font_size = 9/max_dim
             nx.draw_networkx_labels(
-                g, pos={k: v - np.array([0., font_size/90]) for k, v in pos.items()}, font_size=font_size,
+                g, pos={k: v - np.array([0., font_size/30]) for k, v in pos.items()}, font_size=font_size,
                 font_color=(0., 100/255, 0.), labels={n: n[2] for n in g.nodes})
 
         # scale axes and show
@@ -1049,7 +1048,7 @@ def compile_graph(fn, *args, stateful=None, num_workers=1, **kwargs):
     return graph.compiled()
 
 
-def show_graph(fn, *args, stateful=None, num_workers=1, save_to_disk=False, with_edge_labels=True, with_arg_labels=True,
+def show_graph(fn, *args, stateful=None, num_workers=1, save_to_disk=True, with_edge_labels=True, with_arg_labels=True,
                output_connected_only=True, **kwargs):
 
     # create graph
