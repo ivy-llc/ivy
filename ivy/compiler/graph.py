@@ -76,11 +76,15 @@ class Graph:
         # grouped functions
         self._grouped_functions = dict()
 
+        # all functions
+        self._all_functions_fixed = list()
+
     # Properties #
     # -----------#
 
     @property
     def _all_grouped_functions(self):
+        # ToDo: make this order more optimal, in the same manner by which the each sub-graph order is optimal
         all_grouped_functions = list()
         for gfs in self._grouped_functions.values():
             for i, fs in enumerate(gfs):
@@ -98,10 +102,7 @@ class Graph:
 
     @property
     def _all_functions(self):
-        all_functions = list()
-        for fn in self._functions.values():
-            all_functions += fn
-        return all_functions
+        return [i for sl in self._all_grouped_functions for i in sl]
 
     @property
     def _max_graph_width(self):
@@ -378,7 +379,7 @@ class Graph:
         # ToDo: change so continual resetting of fixed stateful objects as below is not required
         [self.set_param(pid, val)
          for pid, val in zip(self._stateful_param_ids, self._stateful)]
-        for i, fn in enumerate(self._tmp_sub_functions):
+        for i, fn in enumerate(self._all_functions_fixed):
             arg_vals = [self.get_param(pid) for pid in fn.arg_param_ids]
             kwarg_vals = [self.get_param(pid) for pid in fn.kwarg_param_ids]
             ret = fn(arg_vals, kwarg_vals)
@@ -418,6 +419,7 @@ class Graph:
     def compiled(self):
         if not self._connected:
             self.connect()
+        self._all_functions_fixed = self._all_functions
         if self._num_workers <= 1:
             return self._call
         return self._multi_call
