@@ -10,8 +10,9 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
 # local
-import ivy.compiler.globals as glob
 from ivy.compiler.param import Param
+from ivy.compiler import globals as glob
+# noinspection PyProtectedMember
 from ivy.compiler.helpers import _get_shape, _get_id, _terminal_pids_to_key, _args_str_from_fn, _output_str_from_fn,\
     _param_to_label
 
