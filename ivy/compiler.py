@@ -4,6 +4,7 @@ import copy
 import queue
 import random
 import inspect
+import numbers
 import importlib
 import numpy as np
 import networkx as nx
@@ -63,16 +64,17 @@ def _output_str_from_fn(fn):
         return ''
 
 
-def _format_label(cls, shape):
+def _format_label(cls, shape_or_val):
     ptype_str = '{}'.format(cls).replace(
         "'", '').replace(' ', '').replace('<', '').replace('>', '').replace('class', '').split('.')[-1]
-    if ivy.exists(shape):
-        return ptype_str + ', {}'.format(shape)
+    if ivy.exists(shape_or_val):
+        return ptype_str + ', {}'.format(shape_or_val)
     return ptype_str
 
 
-def _to_label(tnsr):
-    return _format_label(type(tnsr), ivy.default(lambda: tuple(tnsr.shape), None, True))
+def _to_label(x):
+    return _format_label(
+        type(x), ivy.default(lambda: tuple(x.shape), x if isinstance(x, (str, numbers.Number)) else None, True))
 
 
 def _param_to_label(param):
