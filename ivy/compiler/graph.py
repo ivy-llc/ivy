@@ -489,7 +489,7 @@ class Graph:
 
         # assert all positions are in range 0-1
         for pos in pos_dict.values():
-            assert (0 <= pos.all() <= 1)
+            assert np.logical_and((0 <= pos), (pos <= 1)).all()
 
         return pos_dict
 
