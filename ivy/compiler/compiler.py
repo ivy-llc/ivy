@@ -3,8 +3,9 @@ import ivy
 import copy
 
 # local
-import ivy.compiler.globals as glob
 from ivy.compiler.graph import Graph
+from ivy.compiler import globals as glob
+# noinspection PyProtectedMember
 from ivy.compiler.op_logging import _wrap_methods_for_op_logging, _unwrap_methods_from_op_logging
 
 
