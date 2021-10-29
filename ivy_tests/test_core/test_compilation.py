@@ -436,12 +436,10 @@ def test_compile_graph_w_stateful(x_raw, dtype_str, dev_str, compile_graph, call
         def __init__(self):
             self._state = ivy.array([0.])
 
+        # noinspection PyAugmentAssignment
         def forward(self, _x):
-            import torch
-            self.__setattr__('_state', torch.Tensor.__add__(self.__getattribute__('_state'), 1))
-            return torch.Tensor.__add__(_x, self.__getattribute__('_state'))
-            # self._state = self._state + 1
-            # return _x + self._state
+            self._state = self._state + 1
+            return _x + self._state
 
         def compile_graph(self, _x):
             ivy.show_graph(self.forward, _x, stateful=[self])
