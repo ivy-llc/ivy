@@ -453,8 +453,8 @@ class Graph:
                 h_delta = 0.5/self._max_graph_height
                 h_rand = np.random.uniform(-h_delta, h_delta)
                 w_delta = 0.5 if width == 1 else 0.5/(width-1)
-                w_delta_low = 0 if w == 0 else -w_delta
-                w_delta_high = 0 if w == (width-1) else w_delta
+                w_delta_low = 0 if (w == 0 and width != 1) else -w_delta
+                w_delta_high = 0 if (w == (width-1) and width != 1) else w_delta
                 w_rand = np.random.uniform(w_delta_low, w_delta_high)
                 pos += np.array([h_rand, w_rand]) * randomness_factor
                 assert np.logical_and((0 <= pos), (pos <= 1)).all()
