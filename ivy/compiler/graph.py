@@ -33,7 +33,7 @@ class Graph:
         self._fn = fn
 
         # function args and kwargs
-        self._fn_arg_n_kwarg_names = dict(inspect.signature(self._fn).parameters)
+        self._fn_signature = dict(inspect.signature(self._fn).parameters)
 
         # positional args
         self._args = list(args)
@@ -196,16 +196,26 @@ class Graph:
                     return a[0]
 
                 new_fn.arg_param_ids = [pid]
+                new_fn.arg_tracked_idxs = [[0]]
+                new_fn.kwarg_tracked_idxs = list()
                 new_fn.kwarg_param_ids = list()
+                new_fn.kwarg_param_types = list()
+                new_fn.kwarg_param_shapes = list()
                 new_fn.output_param_ids = [new_pid]
                 if pid in self._arg_param_ids:
                     index = self._arg_param_ids.index(pid)
+                    arg_param_types = [self._arg_param_types[index]]
+                    arg_param_shapes = [self._arg_param_shapes[index]]
                     output_param_type = self._arg_param_types[index]
                     output_param_shape = self._arg_param_shapes[index]
                 else:
                     index = self._kwarg_param_ids.index(pid)
+                    arg_param_types = [self._kwarg_param_types[index]]
+                    arg_param_shapes = [self._kwarg_param_shapes[index]]
                     output_param_type = self._kwarg_param_types[index]
                     output_param_shape = self._kwarg_param_shapes[index]
+                new_fn.arg_param_types = arg_param_types
+                new_fn.arg_param_shapes = arg_param_shapes
                 new_fn.output_param_types = [output_param_type]
                 new_fn.fns_in = list()
                 new_fn.output_tracked_idxs = [[0]]
@@ -540,7 +550,7 @@ class Graph:
                     if isinstance(idx0, str):
                         arg_name = idx0
                     else:
-                        arg_name = list(self._fn_arg_n_kwarg_names.keys())[idx0]
+                        arg_name = list(self._fn_signature.keys())[idx0]
                     fnc_name = 'input: ' + arg_name
                     idx1on = idx[1:]
                     if idx1on:
@@ -559,7 +569,7 @@ class Graph:
                     if isinstance(idx0, str):
                         arg_name = idx0
                     else:
-                        arg_name = list(self._fn_arg_n_kwarg_names.keys())[idx0]
+                        arg_name = list(self._fn_signature.keys())[idx0]
                     fnc_name = 'input: ' + arg_name
                     idx1on = idx[1:]
                     if idx1on:
