@@ -20,3 +20,9 @@ GRAPH_ATTRIBUTES = {'numpy': [],
                    'tensorflow': [],
                    'torch': ['data', 'requires_grad'],
                    'mxnet': []}
+
+GENERATOR_METHODS = {'numpy': [],
+                     'jax': [],
+                     'tensorflow': [],
+                     'torch': ['rand'],
+                     'mxnet': []}
