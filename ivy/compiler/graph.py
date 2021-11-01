@@ -176,6 +176,7 @@ class Graph:
                 new_fn.output_tracked_idxs = [[0]]
                 new_fn.output_param_shapes = [output_param_shape]
                 new_fn.terminal = True
+                new_fn.is_constant = False
 
                 self.add_fn_to_dict(new_pid, new_fn)
                 self._output_param_ids[i] = new_pid
@@ -223,18 +224,44 @@ class Graph:
                 idx = receiving_fn.arg_param_ids.index(pid)
                 del receiving_fn.arg_tracked_idxs[idx]
                 del receiving_fn.arg_param_ids[idx]
+                del receiving_fn.arg_param_types[idx]
+                del receiving_fn.arg_param_shapes[idx]
             if pid in receiving_fn.kwarg_param_ids:
                 idx = receiving_fn.kwarg_param_ids.index(pid)
                 del receiving_fn.kwarg_tracked_idxs[idx]
                 del receiving_fn.kwarg_param_ids[idx]
+                del receiving_fn.kwarg_param_types[idx]
+                del receiving_fn.kwarg_param_shapes[idx]
+            receiving_fn.is_constant = len(receiving_fn.arg_param_ids + receiving_fn.kwarg_param_ids) == 0
             return
-        fn.tree_depth = depth
-        self._tmp_sub_functions.append(fn)
         [self.get_param_recursive(pid, depth + 1, fn) for pid in copy.copy(fn.arg_param_ids)]
         [self.get_param_recursive(pid, depth + 1, fn) for pid in copy.copy(fn.kwarg_param_ids)]
         [self.increment_param_count(pid) for pid in fn.arg_param_ids + fn.kwarg_param_ids]
-        [self.add_param(pid, ptype, depth, shape)
-         for pid, ptype, shape in zip(fn.output_param_ids, fn.output_param_types, fn.output_param_shapes)]
+        fn.tree_depth = depth
+        if fn.is_constant:
+            if not ivy.exists(receiving_fn):
+                return
+            for pid in fn.output_param_ids:
+                if pid in receiving_fn.arg_param_ids:
+                    idx = receiving_fn.arg_param_ids.index(pid)
+                    del receiving_fn.arg_tracked_idxs[idx]
+                    del receiving_fn.arg_param_ids[idx]
+                    del receiving_fn.arg_param_types[idx]
+                    del receiving_fn.arg_param_shapes[idx]
+                if pid in receiving_fn.kwarg_param_ids:
+                    idx = receiving_fn.kwarg_param_ids.index(pid)
+                    del receiving_fn.kwarg_tracked_idxs[idx]
+                    del receiving_fn.kwarg_param_ids[idx]
+                    del receiving_fn.kwarg_param_types[idx]
+                    del receiving_fn.kwarg_param_shapes[idx]
+            fn.output_tracked_idxs.clear()
+            fn.output_param_ids.clear()
+            fn.output_param_types.clear()
+            fn.output_param_shapes.clear()
+        else:
+            self._tmp_sub_functions.append(fn)
+            [self.add_param(pid, ptype, depth, shape)
+             for pid, ptype, shape in zip(fn.output_param_ids, fn.output_param_types, fn.output_param_shapes)]
         return
 
     # debugging
@@ -645,7 +672,7 @@ class Graph:
         return pos
 
     def show(self, save_to_disk=False, with_edge_labels=True, with_arg_labels=True, with_output_labels=True,
-             output_connected_only=True, randomness_factor=0., highlight_subgraph=None, fname=None):
+             output_connected_only=True, randomness_factor=0.1, highlight_subgraph=None, fname=None):
 
         # ensure graph is connected
         if not self._outer_connected or (not output_connected_only and not self._all_connected):
