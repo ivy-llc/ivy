@@ -522,7 +522,7 @@ class Graph:
         g.add_edge(start_node, end_node)
 
     def show(self, save_to_disk=False, with_edge_labels=True, with_arg_labels=True, with_output_labels=True,
-             output_connected_only=True, randomness_factor=0.75, fname=None):
+             output_connected_only=True, randomness_factor=0., fname=None):
 
         # ensure graph is connected
         if not self._connected:
@@ -650,7 +650,7 @@ class Graph:
 
         # draw edges
         nx.draw_networkx_edges(g, arrows=True, pos=pos, edge_color=[(0., 0.4, 0.)]*len(g.edges), width=1/max_dim,
-                               arrowsize=max(10/max_dim, 1))
+                               arrowsize=max(10/max_dim, 1), node_size=[300/max_dim]*len(g.nodes), node_shape='s')
 
         # draw node labels
         nx.draw_networkx_labels(
@@ -687,18 +687,18 @@ class Graph:
                 pids = [pid for pid in base_pids if pid in tip_pids]
                 params = [self._tmp_sub_param_dict[pid] for pid in pids]
                 edge_labels[edge] = '_'.join([_param_to_label(p) for p in params])
-            nx.draw_networkx_edge_labels(g, pos, edge_labels=edge_labels, font_size=10/max_dim)
+            nx.draw_networkx_edge_labels(g, pos, edge_labels=edge_labels, font_size=3/max_dim)
 
         # maybe add function arg labels
         if with_arg_labels:
-            font_size = 9/max_dim
+            font_size = 2/max_dim
             nx.draw_networkx_labels(
                 g, pos={k: v + np.array([0., font_size/30]) for k, v in pos.items()}, font_size=font_size,
                 font_color=(0., 100/255, 0.), labels={n: n[2] for n in g.nodes})
 
         # maybe add function output labels
         if with_output_labels:
-            font_size = 9/max_dim
+            font_size = 2/max_dim
             nx.draw_networkx_labels(
                 g, pos={k: v - np.array([0., font_size/30]) for k, v in pos.items()}, font_size=font_size,
                 font_color=(0., 100/255, 0.), labels={n: n[3] for n in g.nodes})
