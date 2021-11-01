@@ -71,7 +71,8 @@ class Graph:
         self._max_subgraph_heights = dict()
 
         # connected flag
-        self._connected = False
+        self._outer_connected = False
+        self._all_connected = False
 
         # grouped functions
         self._grouped_functions = dict()
@@ -82,6 +83,10 @@ class Graph:
         # set node color as green
         self._node_color = (0., 0.8, 0.)
         self._edge_color = (0., 0.4, 0.)
+        self._node_size = 300
+        self._linewidths = 1.
+        self._arrow_size = 10
+        self._font_size = 12
 
     # Properties #
     # -----------#
@@ -347,10 +352,11 @@ class Graph:
                 if fn.terminal:
                     self._chain_functions(fn.output_param_ids)
                     self._num_subgrahs += 1
-        self._connected = True
+            self._all_connected = True
+        self._outer_connected = True
 
     def compiled(self):
-        if not self._connected:
+        if not self._outer_connected:
             self.connect()
         self._all_functions_fixed = self._all_functions
         return self._call
@@ -428,7 +434,7 @@ class Graph:
 
         return pos_dict
 
-    def _add_edge(self, g, func, pid_in, idx, inp, num_inputs):
+    def _add_edge(self, g, func, pid_in, idx, inp, num_inputs, pos):
         if pid_in in self._pid_to_functions_dict:
             fn_in = self._pid_to_functions_dict[pid_in]
             fn_pid = fn_in.output_param_ids[0]
@@ -452,11 +458,16 @@ class Graph:
         end_args = _args_str_from_fn(func)
         end_output = _output_str_from_fn(func)
         end_node = (func.output_param_ids[0], func, end_args, end_output)
-        g.add_edge(start_node, end_node)
+        # ToDo: remove this check below eventually, it shouldn't be needed
+        if not ivy.exists(pos) or (start_node in pos and end_node in pos):
+            g.add_edge(start_node, end_node)
         return num_inputs
 
-    def _show_for_functions(self, g, functions, with_edge_labels, with_arg_labels, with_output_labels,
-                            output_connected_only, randomness_factor):
+    def _show_for_functions(self, ax, functions, with_edge_labels, with_arg_labels, with_output_labels,
+                            output_connected_only, randomness_factor, format_graph, pos=None):
+
+        # create directed networkX graph
+        g = nx.DiGraph()
 
         # add input and intermediate nodes
         def inp():
@@ -468,9 +479,13 @@ class Graph:
             if func not in functions and output_connected_only:
                 continue
             for pid_in, idx in zip(func.arg_param_ids, func.arg_tracked_idxs):
-                num_inputs = self._add_edge(g, func, pid_in, idx, inp, num_inputs)
+                num_inputs = self._add_edge(g, func, pid_in, idx, inp, num_inputs, pos)
             for pid_in, idx in zip(func.kwarg_param_ids, func.kwarg_tracked_idxs):
-                num_inputs = self._add_edge(g, func, pid_in, idx, inp, num_inputs)
+                num_inputs = self._add_edge(g, func, pid_in, idx, inp, num_inputs, pos)
+
+        # assert all positions are accounted for, if provided
+        if ivy.exists(pos):
+            assert min([n in pos for n in g.nodes])
 
         # add output nodes
         def out():
@@ -490,11 +505,9 @@ class Graph:
             end_args = _args_str_from_fn(out)
             end_output = _output_str_from_fn(out)
             end_node = (fn_pid, out, end_args, end_output)
-            g.add_edge(start_node, end_node)
-
-        # show
-        plt.cla()
-        ax = plt.subplot(111)
+            # ToDo: remove this check below eventually, it shouldn't be needed
+            if not ivy.exists(pos) or (start_node in pos and end_node in pos):
+                g.add_edge(start_node, end_node)
 
         # position nodes
         all_nodes = list()
@@ -504,7 +517,15 @@ class Graph:
             max_graph_width = max(max_graph_width, len(nodes))
             all_nodes.append(nodes)
         max_dim = max(max_graph_width, self._max_graph_height)
-        pos = self._position_nodes(g, num_inputs, num_outputs, all_nodes, randomness_factor)
+        pos = ivy.default(pos, self._position_nodes(g, num_inputs, num_outputs, all_nodes, randomness_factor))
+        pos = {n: p for n, p in pos.items() if n in g.nodes}
+
+        # formatting
+
+        self._node_size = 300 / max_dim if format_graph else self._node_size
+        self._linewidths = 1 / max_dim if format_graph else self._linewidths
+        self._arrow_size = max(10 / max_dim, 1) if format_graph else self._arrow_size
+        self._font_size = 12 / max_dim if format_graph else self._font_size
 
         # draw nodes
 
@@ -514,7 +535,8 @@ class Graph:
         input_pos = {n: pos[n] for n in g.nodes if n[1].__name__[0:7] == 'input: '}
 
         nx.draw_networkx_nodes(g, input_pos, input_nodes, node_color=[(0.4, 0.4, 1.)]*len(input_nodes),
-                               node_shape='s', node_size=[300/max_dim]*len(input_nodes), linewidths=1/max_dim)
+                               node_shape='s', node_size=[self._node_size]*len(input_nodes),
+                               linewidths=self._linewidths)
 
         # intermediate
         intermediate_nodes =\
@@ -525,29 +547,33 @@ class Graph:
 
         nx.draw_networkx_nodes(g, intermediate_pos, intermediate_nodes,
                                node_color=[self._node_color]*len(intermediate_nodes),
-                               node_shape='s', node_size=[300/max_dim]*len(intermediate_nodes), linewidths=1/max_dim)
+                               node_shape='s', node_size=[self._node_size]*len(intermediate_nodes),
+                               linewidths=self._linewidths)
 
         # stateful
         stateful_nodes = [n for n in g.nodes if self._is_stateful(n[1])]
         stateful_pos = {n: pos[n] for n in g.nodes if self._is_stateful(n[1])}
 
         nx.draw_networkx_nodes(g, stateful_pos, stateful_nodes, node_color=[(0.9, 0.7, 0.2)]*len(stateful_nodes),
-                               node_shape='s', node_size=[300/max_dim]*len(stateful_nodes), linewidths=1/max_dim)
+                               node_shape='s', node_size=[self._node_size]*len(stateful_nodes),
+                               linewidths=self._linewidths)
 
         # output
         output_nodes = [n for n in g.nodes if n[1].__name__ == 'output']
         output_pos = {n: pos[n] for n in g.nodes if n[1].__name__ == 'output'}
 
         nx.draw_networkx_nodes(g, output_pos, output_nodes, node_color=[(0.4, 0.4, 1.)]*len(output_nodes),
-                               node_shape='s', node_size=[300/max_dim]*len(output_nodes), linewidths=1/max_dim)
+                               node_shape='s', node_size=[self._node_size]*len(output_nodes),
+                               linewidths=self._linewidths)
 
         # draw edges
-        nx.draw_networkx_edges(g, arrows=True, pos=pos, edge_color=[self._edge_color]*len(g.edges), width=1/max_dim,
-                               arrowsize=max(10/max_dim, 1), node_size=[300/max_dim]*len(g.nodes), node_shape='s')
+        nx.draw_networkx_edges(g, arrows=True, pos=pos, edge_color=[self._edge_color]*len(g.edges),
+                               width=self._linewidths, arrowsize=self._arrow_size,
+                               node_size=[self._node_size]*len(g.nodes), node_shape='s')
 
         # draw node labels
         nx.draw_networkx_labels(
-            g, pos=pos, labels={n: n[1].__name__.replace('_', '') for n in g.nodes}, font_size=12/max_dim)
+            g, pos=pos, labels={n: n[1].__name__.replace('_', '') for n in g.nodes}, font_size=self._font_size)
 
         # draw
         plt.draw_if_interactive()
@@ -584,40 +610,44 @@ class Graph:
 
         # maybe add function arg labels
         if with_arg_labels:
-            font_size = 2/max_dim
+            font_size = self._font_size / 6
             nx.draw_networkx_labels(
                 g, pos={k: v + np.array([0., font_size/30]) for k, v in pos.items()}, font_size=font_size,
                 font_color=(0., 100/255, 0.), labels={n: n[2] for n in g.nodes})
 
         # maybe add function output labels
         if with_output_labels:
-            font_size = 2/max_dim
+            font_size = self._font_size / 6
             nx.draw_networkx_labels(
                 g, pos={k: v - np.array([0., font_size/30]) for k, v in pos.items()}, font_size=font_size,
                 font_color=(0., 100/255, 0.), labels={n: n[3] for n in g.nodes})
 
         # scale axes and show
-        ax.set_aspect(max_graph_width / self._max_graph_height)
-        pos_list = list(pos.values())
-        pos_min = np.min(pos_list, axis=0)
-        pos_max = np.max(pos_list, axis=0)
-        ax.set_xlim(pos_min[0] - 0.2/max_dim, pos_max[0] + 0.2/max_dim)
-        ax.set_ylim(pos_min[1] - 0.2/max_dim, pos_max[1] + 0.2/max_dim)
-        plt.show()
+        if format_graph:
+            ax.set_aspect(max_graph_width / self._max_graph_height)
+            pos_list = list(pos.values())
+            pos_min = np.min(pos_list, axis=0)
+            pos_max = np.max(pos_list, axis=0)
+            ax.set_xlim(pos_min[0] - 0.2/max_dim, pos_max[0] + 0.2/max_dim)
+            ax.set_ylim(pos_min[1] - 0.2/max_dim, pos_max[1] + 0.2/max_dim)
+
+        # return positions, in case subsequent graph highlighting is needed
+        return pos
 
     def show(self, save_to_disk=False, with_edge_labels=True, with_arg_labels=True, with_output_labels=True,
              output_connected_only=True, randomness_factor=0., highlight_subgraph=None, fname=None):
 
         # ensure graph is connected
-        if not self._connected:
+        if not self._outer_connected or (not output_connected_only and not self._all_connected):
             self.connect()
 
-        # create directed networkX graph
-        g = nx.DiGraph()
+        # matplotlib
+        plt.cla()
+        ax = plt.subplot(111)
 
         # show for functions
-        self._show_for_functions(g, self._functions, with_edge_labels, with_arg_labels, with_output_labels,
-                                 output_connected_only, randomness_factor)
+        pos = self._show_for_functions(ax, self._all_functions, with_edge_labels, with_arg_labels, with_output_labels,
+                                       output_connected_only, randomness_factor, True)
 
         # maybe highlight sub-graph
         if isinstance(highlight_subgraph, int):
@@ -626,14 +656,17 @@ class Graph:
             self._node_color = (0.8, 0., 0.)
             self._edge_color = (0.4, 0., 0.)
 
-            # do something else
-            subgraph_pid = list(self._grouped_functions.keys())[highlight_subgraph]
-            self._show_for_functions(g, self._grouped_functions[subgraph_pid], with_edge_labels, with_arg_labels,
-                                     with_output_labels, output_connected_only, randomness_factor)
+            # show highlighted sub-graph
+            subgraph_pid = list(self._functions.keys())[highlight_subgraph]
+            self._show_for_functions(ax, self._functions[subgraph_pid], with_edge_labels,
+                                     with_arg_labels, with_output_labels, True, randomness_factor, False, pos)
 
         # reset node color as green
         self._node_color = (0., 0.8, 0.)
         self._edge_color = (0., 0.4, 0.)
+
+        # show
+        plt.show()
 
         # maybe save to disk
         if save_to_disk:
