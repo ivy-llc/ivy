@@ -258,6 +258,7 @@ class Graph:
             fn.output_param_ids.clear()
             fn.output_param_types.clear()
             fn.output_param_shapes.clear()
+            receiving_fn.is_constant = len(receiving_fn.arg_param_ids + receiving_fn.kwarg_param_ids) == 0
         else:
             self._tmp_sub_functions.append(fn)
             [self.add_param(pid, ptype, depth, shape)
