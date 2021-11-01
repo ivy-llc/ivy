@@ -81,7 +81,9 @@ class Graph:
         self._all_functions_fixed = list()
 
         # set node color as green
-        self._node_color = (0., 0.8, 0.)
+        self._inter_node_color = (0., 0.8, 0.)
+        self._stateful_node_color = (0.9, 0.7, 0.2)
+        self._io_node_color = (0.4, 0.4, 1.)
         self._edge_color = (0., 0.4, 0.)
         self._node_size = 300
         self._linewidths = 1.
@@ -243,7 +245,7 @@ class Graph:
     # Function creation #
     # ------------------#
 
-    def _chain_functions(self, terminal_pids):
+    def _chain_functions(self, terminal_pids, assert_non_empty=True):
 
         # dict key
         dict_key = _terminal_pids_to_key(terminal_pids)
@@ -263,7 +265,10 @@ class Graph:
         [self.increment_param_count(pid) for pid in terminal_pids]
 
         # assert there are some functions in the graph
-        assert self._tmp_sub_functions, 'Tried to chain functions for an empty graph'
+        if assert_non_empty:
+            assert self._tmp_sub_functions, 'Tried to chain functions for an empty graph'
+        elif not self._tmp_sub_functions:
+            return
 
         # sort the param ids based on depth, in order of input to output
         max_depth = max([p.depth if isinstance(p.depth, int) else 1 for p in self._tmp_sub_param_dict.values()])
@@ -279,6 +284,8 @@ class Graph:
 
         # function for storing function heights
         def store_fn_heights(fn):
+            if hasattr(fn, 'tree_height'):
+                return fn.tree_height
             heights_in = [store_fn_heights(fn_in) for fn_in in fn.fns_in if fn_in in self._tmp_sub_functions]
             if heights_in:
                 _height = max(heights_in) + 1
@@ -534,7 +541,7 @@ class Graph:
         max_graph_width = max(max_graph_width, len(input_nodes))
         input_pos = {n: pos[n] for n in g.nodes if n[1].__name__[0:7] == 'input: '}
 
-        nx.draw_networkx_nodes(g, input_pos, input_nodes, node_color=[(0.4, 0.4, 1.)]*len(input_nodes),
+        nx.draw_networkx_nodes(g, input_pos, input_nodes, node_color=[self._io_node_color]*len(input_nodes),
                                node_shape='s', node_size=[self._node_size]*len(input_nodes),
                                linewidths=self._linewidths)
 
@@ -546,7 +553,7 @@ class Graph:
              (n[1].__name__[0:6] not in ['input:', 'output'] and not self._is_stateful(n[1]))}
 
         nx.draw_networkx_nodes(g, intermediate_pos, intermediate_nodes,
-                               node_color=[self._node_color]*len(intermediate_nodes),
+                               node_color=[self._inter_node_color] * len(intermediate_nodes),
                                node_shape='s', node_size=[self._node_size]*len(intermediate_nodes),
                                linewidths=self._linewidths)
 
@@ -554,15 +561,15 @@ class Graph:
         stateful_nodes = [n for n in g.nodes if self._is_stateful(n[1])]
         stateful_pos = {n: pos[n] for n in g.nodes if self._is_stateful(n[1])}
 
-        nx.draw_networkx_nodes(g, stateful_pos, stateful_nodes, node_color=[(0.9, 0.7, 0.2)]*len(stateful_nodes),
-                               node_shape='s', node_size=[self._node_size]*len(stateful_nodes),
-                               linewidths=self._linewidths)
+        nx.draw_networkx_nodes(g, stateful_pos, stateful_nodes,
+                               node_color=[self._stateful_node_color]*len(stateful_nodes), node_shape='s',
+                               node_size=[self._node_size]*len(stateful_nodes), linewidths=self._linewidths)
 
         # output
         output_nodes = [n for n in g.nodes if n[1].__name__ == 'output']
         output_pos = {n: pos[n] for n in g.nodes if n[1].__name__ == 'output'}
 
-        nx.draw_networkx_nodes(g, output_pos, output_nodes, node_color=[(0.4, 0.4, 1.)]*len(output_nodes),
+        nx.draw_networkx_nodes(g, output_pos, output_nodes, node_color=[self._io_node_color]*len(output_nodes),
                                node_shape='s', node_size=[self._node_size]*len(output_nodes),
                                linewidths=self._linewidths)
 
@@ -653,7 +660,9 @@ class Graph:
         if isinstance(highlight_subgraph, int):
 
             # set node color as red
-            self._node_color = (0.8, 0., 0.)
+            self._inter_node_color = (0.8, 0., 0.)
+            self._stateful_node_color = (0.8, 0., 0.)
+            self._io_node_color = (0.8, 0., 0.)
             self._edge_color = (0.4, 0., 0.)
 
             # show highlighted sub-graph
@@ -662,7 +671,9 @@ class Graph:
                                      with_arg_labels, with_output_labels, True, randomness_factor, False, pos)
 
         # reset node color as green
-        self._node_color = (0., 0.8, 0.)
+        self._inter_node_color = (0., 0.8, 0.)
+        self._stateful_node_color = (0.9, 0.7, 0.2)
+        self._io_node_color = (0.4, 0.4, 1.)
         self._edge_color = (0., 0.4, 0.)
 
         # show
