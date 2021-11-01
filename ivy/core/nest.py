@@ -157,7 +157,7 @@ def map(fn: Callable, constant: Dict[str, Any] = None, unique: Dict[str, Iterabl
 
 
 def nested_map(x: Union[Union[ivy.Array, ivy.NativeArray], Iterable], fn: Callable, include_derived: bool = False,
-               max_depth: int = None, depth: int = 0)\
+               to_mutable: bool = False, max_depth: int = None, depth: int = 0)\
         -> Union[Union[ivy.Array, ivy.NativeArray], Iterable]:
     """
     Applies a function on x in a nested manner, whereby all dicts, lists and tuples are traversed to their lowest
@@ -169,6 +169,8 @@ def nested_map(x: Union[Union[ivy.Array, ivy.NativeArray], Iterable], fn: Callab
     :type fn: callable
     :param include_derived: Whether to also recursive for classes derived from tuple, list and dict. Default is False.
     :type include_derived: bool, optional
+    :param to_mutable: Whether to convert the nest to a mutable form, changing all tuples to lists. Default is False.
+    :type to_mutable: bool, optional
     :param max_depth: The maximum nested depth to reach. Default is 1. Increase this if the nest is deeper.
     :type max_depth: int, optional
     :param depth: Placeholder for tracking the recursive depth, do not yet this parameter.
@@ -180,10 +182,14 @@ def nested_map(x: Union[Union[ivy.Array, ivy.NativeArray], Iterable], fn: Callab
     class_instance = type(x)
     check_fn = (lambda x_, t: isinstance(x, t)) if include_derived else (lambda x_, t: type(x) is t)
     if check_fn(x, tuple):
-        return class_instance(tuple([nested_map(i, fn, include_derived, max_depth, depth+1) for i in x]))
+        ret_list = [nested_map(i, fn, include_derived, to_mutable, max_depth, depth + 1) for i in x]
+        if to_mutable:
+            return ret_list
+        return class_instance(tuple(ret_list))
     elif check_fn(x, list):
-        return class_instance([nested_map(i, fn, include_derived, max_depth, depth+1) for i in x])
+        return class_instance([nested_map(i, fn, include_derived, to_mutable, max_depth, depth+1) for i in x])
     elif check_fn(x, dict):
         class_instance = type(x)
-        return class_instance({k: nested_map(v, fn, include_derived, max_depth, depth+1) for k, v in x.items()})
+        return class_instance({k: nested_map(v, fn, include_derived, to_mutable, max_depth, depth+1)
+                               for k, v in x.items()})
     return fn(x)
