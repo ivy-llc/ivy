@@ -2,6 +2,7 @@
 import ivy
 import types
 import numbers
+import inspect
 import functools
 
 # local
@@ -31,9 +32,11 @@ def _terminal_pids_to_key(terminal_pids):
 
 def _args_str_from_fn(fn):
     if hasattr(fn, 'args') and hasattr(fn, 'kwargs'):
+        keys = list(fn.signature.keys())
         return '\n'.join(
             ['{}: {}'.format(k, v) for k, v in dict(**dict(
-                [(str(i), _to_label(a)) for i, a in enumerate(fn.args)]), **fn.kwargs).items()])
+                [(keys[i] if i < len(keys) else str(i),
+                  _to_label(a)) for i, a in enumerate(fn.args)]), **fn.kwargs).items()])
     else:
         return ''
 
@@ -70,3 +73,10 @@ def _copy_func(f):
     g = functools.update_wrapper(g, f)
     g.__kwdefaults__ = f.__kwdefaults__
     return g
+
+
+def _get_fn_signature(fn):
+    try:
+        return dict(inspect.signature(fn).parameters)
+    except ValueError:
+        return {}
