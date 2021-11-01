@@ -236,7 +236,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_fn</span> <span class="o">=</span> <span class="n">fn</span>
 
         <span class="c1"># function args and kwargs</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_fn_arg_n_kwarg_names</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">inspect</span><span class="o">.</span><span class="n">signature</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_fn</span><span class="p">)</span><span class="o">.</span><span class="n">parameters</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_fn_signature</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">inspect</span><span class="o">.</span><span class="n">signature</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_fn</span><span class="p">)</span><span class="o">.</span><span class="n">parameters</span><span class="p">)</span>
 
         <span class="c1"># positional args</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_args</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
@@ -399,16 +399,26 @@
                     <span class="k">return</span> <span class="n">a</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 
                 <span class="n">new_fn</span><span class="o">.</span><span class="n">arg_param_ids</span> <span class="o">=</span> <span class="p">[</span><span class="n">pid</span><span class="p">]</span>
+                <span class="n">new_fn</span><span class="o">.</span><span class="n">arg_tracked_idxs</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">0</span><span class="p">]]</span>
+                <span class="n">new_fn</span><span class="o">.</span><span class="n">kwarg_tracked_idxs</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
                 <span class="n">new_fn</span><span class="o">.</span><span class="n">kwarg_param_ids</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+                <span class="n">new_fn</span><span class="o">.</span><span class="n">kwarg_param_types</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+                <span class="n">new_fn</span><span class="o">.</span><span class="n">kwarg_param_shapes</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
                 <span class="n">new_fn</span><span class="o">.</span><span class="n">output_param_ids</span> <span class="o">=</span> <span class="p">[</span><span class="n">new_pid</span><span class="p">]</span>
                 <span class="k">if</span> <span class="n">pid</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_arg_param_ids</span><span class="p">:</span>
                     <span class="n">index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_arg_param_ids</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">pid</span><span class="p">)</span>
+                    <span class="n">arg_param_types</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_arg_param_types</span><span class="p">[</span><span class="n">index</span><span class="p">]]</span>
+                    <span class="n">arg_param_shapes</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_arg_param_shapes</span><span class="p">[</span><span class="n">index</span><span class="p">]]</span>
                     <span class="n">output_param_type</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_arg_param_types</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
                     <span class="n">output_param_shape</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_arg_param_shapes</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="n">index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_kwarg_param_ids</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">pid</span><span class="p">)</span>
+                    <span class="n">arg_param_types</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_kwarg_param_types</span><span class="p">[</span><span class="n">index</span><span class="p">]]</span>
+                    <span class="n">arg_param_shapes</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_kwarg_param_shapes</span><span class="p">[</span><span class="n">index</span><span class="p">]]</span>
                     <span class="n">output_param_type</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_kwarg_param_types</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
                     <span class="n">output_param_shape</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_kwarg_param_shapes</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
+                <span class="n">new_fn</span><span class="o">.</span><span class="n">arg_param_types</span> <span class="o">=</span> <span class="n">arg_param_types</span>
+                <span class="n">new_fn</span><span class="o">.</span><span class="n">arg_param_shapes</span> <span class="o">=</span> <span class="n">arg_param_shapes</span>
                 <span class="n">new_fn</span><span class="o">.</span><span class="n">output_param_types</span> <span class="o">=</span> <span class="p">[</span><span class="n">output_param_type</span><span class="p">]</span>
                 <span class="n">new_fn</span><span class="o">.</span><span class="n">fns_in</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
                 <span class="n">new_fn</span><span class="o">.</span><span class="n">output_tracked_idxs</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">0</span><span class="p">]]</span>
@@ -743,7 +753,7 @@
                     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">idx0</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
                         <span class="n">arg_name</span> <span class="o">=</span> <span class="n">idx0</span>
                     <span class="k">else</span><span class="p">:</span>
-                        <span class="n">arg_name</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_fn_arg_n_kwarg_names</span><span class="o">.</span><span class="n">keys</span><span class="p">())[</span><span class="n">idx0</span><span class="p">]</span>
+                        <span class="n">arg_name</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_fn_signature</span><span class="o">.</span><span class="n">keys</span><span class="p">())[</span><span class="n">idx0</span><span class="p">]</span>
                     <span class="n">fnc_name</span> <span class="o">=</span> <span class="s1">&#39;input: &#39;</span> <span class="o">+</span> <span class="n">arg_name</span>
                     <span class="n">idx1on</span> <span class="o">=</span> <span class="n">idx</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
                     <span class="k">if</span> <span class="n">idx1on</span><span class="p">:</span>
@@ -762,7 +772,7 @@
                     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">idx0</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
                         <span class="n">arg_name</span> <span class="o">=</span> <span class="n">idx0</span>
                     <span class="k">else</span><span class="p">:</span>
-                        <span class="n">arg_name</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_fn_arg_n_kwarg_names</span><span class="o">.</span><span class="n">keys</span><span class="p">())[</span><span class="n">idx0</span><span class="p">]</span>
+                        <span class="n">arg_name</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_fn_signature</span><span class="o">.</span><span class="n">keys</span><span class="p">())[</span><span class="n">idx0</span><span class="p">]</span>
                     <span class="n">fnc_name</span> <span class="o">=</span> <span class="s1">&#39;input: &#39;</span> <span class="o">+</span> <span class="n">arg_name</span>
                     <span class="n">idx1on</span> <span class="o">=</span> <span class="n">idx</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
                     <span class="k">if</span> <span class="n">idx1on</span><span class="p">:</span>
