@@ -448,10 +448,13 @@ class Graph:
         else:
             fn_in = _copy_func(inp)
             idx0 = idx[0]
+            sig = list(self._fn_signature.keys())
             if isinstance(idx0, str):
                 arg_name = idx0
+            elif 'args' not in sig and isinstance(idx0, int) and idx0 < len(sig):
+                arg_name = sig[idx0]
             else:
-                arg_name = list(self._fn_signature.keys())[idx0]
+                arg_name = str(idx0)
             fnc_name = 'input: ' + arg_name
             idx1on = idx[1:]
             if idx1on:
