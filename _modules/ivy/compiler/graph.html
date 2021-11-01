@@ -265,6 +265,7 @@
         <span class="c1"># temporary sub-graph storage</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_tmp_sub_param_dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_tmp_sub_functions</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_num_subgrahs</span> <span class="o">=</span> <span class="mi">0</span>
 
         <span class="c1"># graph storage</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_param_dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
@@ -626,10 +627,12 @@
 
 <div class="viewcode-block" id="Graph.connect"><a class="viewcode-back" href="../../../compiler/graph.html#ivy.compiler.graph.Graph.connect">[docs]</a>    <span class="k">def</span> <span class="nf">connect</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">output_connected_only</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_chain_functions</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_output_param_ids</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_num_subgrahs</span> <span class="o">=</span> <span class="mi">1</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">output_connected_only</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">pid</span><span class="p">,</span> <span class="n">fn</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pid_to_functions_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
                 <span class="k">if</span> <span class="n">fn</span><span class="o">.</span><span class="n">terminal</span><span class="p">:</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">_chain_functions</span><span class="p">(</span><span class="n">fn</span><span class="o">.</span><span class="n">output_param_ids</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_num_subgrahs</span> <span class="o">+=</span> <span class="mi">1</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_initialize_multiprocessing</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_connected</span> <span class="o">=</span> <span class="kc">True</span></div>
 
