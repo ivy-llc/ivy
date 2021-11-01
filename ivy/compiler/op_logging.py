@@ -151,7 +151,8 @@ def _wrap_method_for_op_logging(fn, graph, limit_attributes=True, stateful_class
 
         new_fn.signature = _get_fn_signature(backend_fn)
         new_fn.terminal = True
-        new_fn.is_constant = len(arg_param_ids + kwarg_param_ids) == 0
+        new_fn.is_constant = len(arg_param_ids + kwarg_param_ids) == 0 and \
+                             fn.__name__ not in glob.GENERATOR_METHODS[ivy.current_framework_str()]
 
         fns_in = [graph._pid_to_functions_dict[pid]
                   for pid in arg_param_ids + kwarg_param_ids if pid in graph._pid_to_functions_dict]
