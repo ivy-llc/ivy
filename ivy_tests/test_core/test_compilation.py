@@ -492,6 +492,78 @@ def _wide_fn(x, with_non_compiled: bool = False, with_internal_gen: bool = False
     return ivy.concatenate(xs, 0)
 
 
+# einops
+
+# noinspection PyUnresolvedReferences
+@pytest.mark.parametrize(
+    "x_n_kwargs_n_ret_n_fname", [([[0., 1., 2., 3.]], {'pattern': 'b n -> n b'},
+                                  [[0.], [1.], [2.], [3.]], 'rearrange'),
+                                 ([[0., 1., 2., 3.]], {'pattern': 'b n -> b', 'reduction': 'mean'},
+                                  [1.5], 'reduce'),
+                                 ([[0., 1., 2., 3.]], {'pattern': 'b n -> b n c', 'c': 2},
+                                  [[[0., 0.], [1., 1.], [2., 2.], [3., 3.]]], 'repeat')])
+@pytest.mark.parametrize(
+    "dtype_str", ['float32'])
+def test_compile_graph_w_einops(x_n_kwargs_n_ret_n_fname, dtype_str, dev_str, compile_graph, call):
+    if ivy.wrapped_mode() or not compile_graph:
+        # Wrapped mode does not yet support function compilation
+        pytest.skip()
+    if call is not helpers.torch_call:
+        # currently only supported by PyTorch
+        pytest.skip()
+    # raw
+    x, kwargs, true_ret, fn_name = x_n_kwargs_n_ret_n_fname
+    # method
+    fn = {'rearrange': ivy.einops_rearrange,
+          'reduce': ivy.einops_reduce,
+          'repeat': ivy.einops_repeat}[fn_name]
+    # as tensor
+    x = ivy.array(x, dtype_str, dev_str)
+    # compile
+    ivy.show_graph(fn, x, **kwargs, fname='{}.png'.format(fn_name))
+    comp_fn = ivy.compile_graph(fn, x, **kwargs)
+    # type test
+    assert callable(comp_fn)
+    # value test
+    nc_ret = fn(x, **kwargs)
+    c_ret = comp_fn(x, **kwargs)
+    assert np.allclose(ivy.to_numpy(nc_ret), ivy.to_numpy(c_ret))
+
+
+# noinspection PyUnresolvedReferences
+@pytest.mark.parametrize(
+    "weight_n_grad", [([1], [2])])
+@pytest.mark.parametrize(
+    "dtype_str", ['float32'])
+def test_compile_graph_inplace_var_update(weight_n_grad, dtype_str, dev_str, compile_graph, call):
+    if ivy.wrapped_mode() or not compile_graph:
+        # Wrapped mode does not yet support function compilation
+        pytest.skip()
+    if call is not helpers.torch_call:
+        # currently only supported by PyTorch
+        pytest.skip()
+    # raw values
+    weight_raw, grad_raw = weight_n_grad
+    # as tensors
+    weight = ivy.variable(ivy.array(weight_raw, dtype_str, dev_str))
+    # compile
+    ivy.show_graph(_inplace_var_update, weight, ivy.copy_array(weight), output_connected_only=False,
+                   fname='inplace_var_update.png')
+    comp_fn = ivy.compile_graph(_inplace_var_update, weight, ivy.copy_array(weight))
+    # type test
+    assert callable(comp_fn)
+    # value test
+    nc_weight = ivy.variable(ivy.array(weight_raw, dtype_str, dev_str))
+    grad = ivy.array(grad_raw, dtype_str, dev_str)
+    nc_new_weight = _inplace_var_update(nc_weight, grad)
+    c_weight = ivy.variable(ivy.array(weight_raw, dtype_str, dev_str))
+    grad = ivy.array(grad_raw, dtype_str, dev_str)
+    c_new_weight = comp_fn(c_weight, grad)
+    assert not np.allclose(np.asarray(weight_raw), ivy.to_numpy(nc_new_weight))
+    assert not np.allclose(np.asarray(weight_raw), ivy.to_numpy(c_new_weight))
+    assert np.allclose(ivy.to_numpy(nc_new_weight), ivy.to_numpy(c_new_weight))
+
+
 '''
 # noinspection PyUnresolvedReferences
 @pytest.mark.parametrize(
