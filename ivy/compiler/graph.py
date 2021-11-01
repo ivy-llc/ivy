@@ -3,6 +3,7 @@ import ivy
 import copy
 import queue
 import random
+import inspect
 import numpy as np
 import networkx as nx
 import matplotlib
@@ -14,7 +15,7 @@ from ivy.compiler.param import Param
 from ivy.compiler import globals as glob
 # noinspection PyProtectedMember
 from ivy.compiler.helpers import _get_shape, _get_id, _terminal_pids_to_key, _args_str_from_fn, _output_str_from_fn,\
-    _param_to_label
+    _param_to_label, _copy_func
 
 
 class Graph:
@@ -30,6 +31,9 @@ class Graph:
 
         # function being compiled into a graph
         self._fn = fn
+
+        # function args and kwargs
+        self._fn_arg_n_kwarg_names = dict(inspect.signature(self._fn).parameters)
 
         # positional args
         self._args = list(args)
@@ -463,7 +467,7 @@ class Graph:
         if num_inputs > 0:
             input_idx = 0
             for n in g.nodes:
-                if n not in pos_dict and n[1].__name__ == 'input':
+                if n not in pos_dict and n[1].__name__[0:7] == 'input: ':
                     pos = np.array([0., 0.5 if num_inputs == 1 else input_idx/(num_inputs-1)])
                     assert np.logical_and((0 <= pos), (pos <= 1)).all()
                     h_delta = 0.5/self._max_graph_height
@@ -497,6 +501,16 @@ class Graph:
 
         return pos_dict
 
+    @staticmethod
+    def _add_edge(g, func, fn_in, fn_pid):
+        start_args = _args_str_from_fn(fn_in)
+        start_output = _output_str_from_fn(fn_in)
+        start_node = (fn_pid, fn_in, start_args, start_output)
+        end_args = _args_str_from_fn(func)
+        end_output = _output_str_from_fn(func)
+        end_node = (func.output_param_ids[0], func, end_args, end_output)
+        g.add_edge(start_node, end_node)
+
     def show(self, save_to_disk=False, with_edge_labels=True, with_arg_labels=True, with_output_labels=True,
              output_connected_only=True, randomness_factor=0.75, fname=None):
 
@@ -511,28 +525,49 @@ class Graph:
         def inp():
             pass
 
-        inp.__name__ = 'input'
-
         num_inputs = 0
 
         for func in self._pid_to_functions_dict.values():
             if func not in self._tmp_sub_functions and output_connected_only:
                 continue
-            for pid_in in func.arg_param_ids + func.kwarg_param_ids:
+            for pid_in, ptype, idx in zip(func.arg_param_ids, func.arg_param_types, func.arg_tracked_idxs):
                 if pid_in in self._pid_to_functions_dict:
                     fn_in = self._pid_to_functions_dict[pid_in]
                     fn_pid = fn_in.output_param_ids[0]
                 else:
-                    fn_in = inp
+                    fn_in = _copy_func(inp)
+                    idx0 = idx[0]
+                    if isinstance(idx0, str):
+                        arg_name = idx0
+                    else:
+                        arg_name = list(self._fn_arg_n_kwarg_names.keys())[idx0]
+                    fnc_name = 'input: ' + arg_name
+                    idx1on = idx[1:]
+                    if idx1on:
+                        fnc_name += ', {}'.format(idx1on)
+                    fn_in.__name__ = fnc_name
                     fn_pid = pid_in
                     num_inputs += 1
-                start_args = _args_str_from_fn(fn_in)
-                start_output = _output_str_from_fn(fn_in)
-                start_node = (fn_pid, fn_in, start_args, start_output)
-                end_args = _args_str_from_fn(func)
-                end_output = _output_str_from_fn(func)
-                end_node = (func.output_param_ids[0], func, end_args, end_output)
-                g.add_edge(start_node, end_node)
+                self._add_edge(g, func, fn_in, fn_pid)
+            for pid_in, ptype, idx in zip(func.kwarg_param_ids, func.kwarg_param_types, func.kwarg_tracked_idxs):
+                if pid_in in self._pid_to_functions_dict:
+                    fn_in = self._pid_to_functions_dict[pid_in]
+                    fn_pid = fn_in.output_param_ids[0]
+                else:
+                    fn_in = _copy_func(inp)
+                    idx0 = idx[0]
+                    if isinstance(idx0, str):
+                        arg_name = idx0
+                    else:
+                        arg_name = list(self._fn_arg_n_kwarg_names.keys())[idx0]
+                    fnc_name = 'input: ' + arg_name
+                    idx1on = idx[1:]
+                    if idx1on:
+                        fnc_name += ', {}'.format(idx1on)
+                    fn_in.__name__ = fnc_name
+                    fn_pid = pid_in
+                    num_inputs += 1
+                self._add_edge(g, func, fn_in, fn_pid)
 
         # add output nodes
         def out():
@@ -560,7 +595,7 @@ class Graph:
 
         # position nodes
         all_nodes = list()
-        max_graph_width = len(self._arg_param_ids + self._kwarg_param_ids)
+        max_graph_width = 0
         for fns in self._all_grouped_functions:
             nodes = set([(f.output_param_ids[0], f, _args_str_from_fn(f), _output_str_from_fn(f)) for f in fns])
             max_graph_width = max(max_graph_width, len(nodes))
@@ -571,17 +606,19 @@ class Graph:
         # draw nodes
 
         # input
-        input_nodes = [n for n in g.nodes if n[1].__name__ == 'input']
-        input_pos = {n: pos[n] for n in g.nodes if n[1].__name__ == 'input'}
+        input_nodes = [n for n in g.nodes if n[1].__name__[0:7] == 'input: ']
+        max_graph_width = max(max_graph_width, len(input_nodes))
+        input_pos = {n: pos[n] for n in g.nodes if n[1].__name__[0:7] == 'input: '}
 
         nx.draw_networkx_nodes(g, input_pos, input_nodes, node_color=[(0.4, 0.4, 1.)]*len(input_nodes),
                                node_shape='s', node_size=[300/max_dim]*len(input_nodes), linewidths=1/max_dim)
 
         # intermediate
         intermediate_nodes =\
-            [n for n in g.nodes if (n[1].__name__ not in ['input', 'output'] and not self._is_stateful(n[1]))]
+            [n for n in g.nodes if (n[1].__name__[0:6] not in ['input:', 'output'] and not self._is_stateful(n[1]))]
         intermediate_pos =\
-            {n: pos[n] for n in g.nodes if (n[1].__name__ not in ['input', 'output'] and not self._is_stateful(n[1]))}
+            {n: pos[n] for n in g.nodes if
+             (n[1].__name__[0:6] not in ['input:', 'output'] and not self._is_stateful(n[1]))}
 
         nx.draw_networkx_nodes(g, intermediate_pos, intermediate_nodes,
                                node_color=[(0., 0.8, 0.)]*len(intermediate_nodes),
@@ -630,7 +667,7 @@ class Graph:
                     else:
                         tip_fn = self._pid_to_functions_dict[node_out_pid]
                         tip_pids = tip_fn.arg_param_ids + tip_fn.kwarg_param_ids
-                elif node_in_name == 'input':
+                elif node_in_name[0:7] == 'input: ':
                     base_pids = self._arg_param_ids + self._kwarg_param_ids + self._stateful_param_ids
                     tip_fn = self._pid_to_functions_dict[node_out_pid]
                     tip_pids = tip_fn.arg_param_ids + tip_fn.kwarg_param_ids
