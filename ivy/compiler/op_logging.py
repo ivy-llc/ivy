@@ -64,11 +64,15 @@ def _wrap_method_for_op_logging(fn, graph, limit_attributes=True, stateful_class
         arg_tracked_idxs = ivy.nested_indices_where(
             args, lambda x: ivy.is_array(x) or isinstance(x, stateful_classes))
         arg_param_ids = [_get_id(x) for x in ivy.multi_index_nest(args, arg_tracked_idxs)]
+        arg_param_types = [x.__class__ for x in ivy.multi_index_nest(args, arg_tracked_idxs)]
+        arg_param_shapes = [_get_shape(x) for x in ivy.multi_index_nest(args, arg_tracked_idxs)]
 
         # get array idxs for key-word args
         kwarg_tracked_idxs = ivy.nested_indices_where(
             kwargs, lambda x: ivy.is_array(x) or isinstance(x, stateful_classes))
         kwarg_param_ids = [_get_id(x) for x in ivy.multi_index_nest(kwargs, kwarg_tracked_idxs)]
+        kwarg_param_types = [x.__class__ for x in ivy.multi_index_nest(kwargs, kwarg_tracked_idxs)]
+        kwarg_param_shapes = [_get_shape(x) for x in ivy.multi_index_nest(kwargs, kwarg_tracked_idxs)]
 
         # set the backend function
         backend_fn = fn
@@ -129,10 +133,14 @@ def _wrap_method_for_op_logging(fn, graph, limit_attributes=True, stateful_class
         new_fn.args = args
         new_fn.arg_tracked_idxs = arg_tracked_idxs
         new_fn.arg_param_ids = arg_param_ids
+        new_fn.arg_param_types = arg_param_types
+        new_fn.arg_param_shapes = arg_param_shapes
 
         new_fn.kwargs = kwargs
         new_fn.kwarg_tracked_idxs = kwarg_tracked_idxs
         new_fn.kwarg_param_ids = kwarg_param_ids
+        new_fn.kwarg_param_types = kwarg_param_types
+        new_fn.kwarg_param_shapes = kwarg_param_shapes
 
         new_fn.output = ret
         new_fn.output_tracked_idxs = ret_tracked_idxs
