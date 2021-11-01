@@ -9,7 +9,7 @@ from ivy.compiler import globals as glob
 from ivy.compiler.op_logging import _wrap_methods_for_op_logging, _unwrap_methods_from_op_logging
 
 
-def _create_graph(fn, *args, stateful=None, num_workers=1, output_connected_only=True, **kwargs):
+def _create_graph(fn, *args, stateful=None, output_connected_only=True, **kwargs):
 
     # extra stateful instances modified in the graph
     stateful = ivy.default(stateful, [])
@@ -21,7 +21,7 @@ def _create_graph(fn, *args, stateful=None, num_workers=1, output_connected_only
     state_copies = [copy.deepcopy(s.__dict__) for s in stateful]
 
     # construct the graph
-    graph = Graph(fn, *args, **kwargs, stateful=stateful, num_workers=num_workers)
+    graph = Graph(fn, *args, **kwargs, stateful=stateful)
 
     # wrap all methods for operation logging
     _wrap_methods_for_op_logging(graph, stateful_classes)
@@ -52,23 +52,22 @@ def _create_graph(fn, *args, stateful=None, num_workers=1, output_connected_only
     return graph
 
 
-def compile_graph(fn, *args, stateful=None, num_workers=1, **kwargs):
+def compile_graph(fn, *args, stateful=None, **kwargs):
 
     # create graph
-    graph = _create_graph(fn, *args, stateful=stateful, num_workers=num_workers, **kwargs)
+    graph = _create_graph(fn, *args, stateful=stateful, **kwargs)
 
     # compile the graph forward pass into an executable function
     return graph.compiled()
 
 
-def show_graph(fn, *args, stateful=None, num_workers=1, randomness_factor=0., save_to_disk=False,
-               with_edge_labels=True, with_arg_labels=True, with_output_labels=True, output_connected_only=True,
+def show_graph(fn, *args, stateful=None, randomness_factor=0., save_to_disk=False, with_edge_labels=True,
+               with_arg_labels=True, with_output_labels=True, output_connected_only=True, highlight_subgraph=None,
                fname=None, **kwargs):
 
     # create graph
-    graph = _create_graph(fn, *args, stateful=stateful, num_workers=num_workers,
-                          output_connected_only=output_connected_only, **kwargs)
+    graph = _create_graph(fn, *args, stateful=stateful, output_connected_only=output_connected_only, **kwargs)
 
     # show the compiled graph
     graph.show(save_to_disk, with_edge_labels, with_arg_labels, with_output_labels, output_connected_only,
-               randomness_factor, fname)
+               randomness_factor, highlight_subgraph, fname)
