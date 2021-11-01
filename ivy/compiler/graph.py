@@ -438,7 +438,7 @@ class Graph:
                     return True
         return False
 
-    def _position_nodes(self, g, num_inputs, num_outputs, all_nodes, randomness_factor=0.75):
+    def _position_nodes(self, g, num_inputs, num_outputs, all_nodes, randomness_factor):
 
         pos_dict = dict()
         assert 0 <= randomness_factor <= 1
@@ -498,7 +498,7 @@ class Graph:
         return pos_dict
 
     def show(self, save_to_disk=False, with_edge_labels=True, with_arg_labels=True, with_output_labels=True,
-             output_connected_only=True, fname=None):
+             output_connected_only=True, randomness_factor=0.75, fname=None):
 
         # ensure graph is connected
         if not self._connected:
@@ -560,13 +560,13 @@ class Graph:
 
         # position nodes
         all_nodes = list()
-        max_graph_width = 0
+        max_graph_width = len(self._arg_param_ids + self._kwarg_param_ids)
         for fns in self._all_grouped_functions:
             nodes = set([(f.output_param_ids[0], f, _args_str_from_fn(f), _output_str_from_fn(f)) for f in fns])
             max_graph_width = max(max_graph_width, len(nodes))
             all_nodes.append(nodes)
         max_dim = max(max_graph_width, self._max_graph_height)
-        pos = self._position_nodes(g, num_inputs, num_outputs, all_nodes)
+        pos = self._position_nodes(g, num_inputs, num_outputs, all_nodes, randomness_factor)
 
         # draw nodes
 

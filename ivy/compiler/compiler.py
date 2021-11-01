@@ -61,12 +61,14 @@ def compile_graph(fn, *args, stateful=None, num_workers=1, **kwargs):
     return graph.compiled()
 
 
-def show_graph(fn, *args, stateful=None, num_workers=1, save_to_disk=False, with_edge_labels=True, with_arg_labels=True,
-               with_output_labels=True, output_connected_only=True, fname=None, **kwargs):
+def show_graph(fn, *args, stateful=None, num_workers=1, randomness_factor=0.75, save_to_disk=False,
+               with_edge_labels=True, with_arg_labels=True, with_output_labels=True, output_connected_only=True,
+               fname=None, **kwargs):
 
     # create graph
     graph = _create_graph(fn, *args, stateful=stateful, num_workers=num_workers,
                           output_connected_only=output_connected_only, **kwargs)
 
     # show the compiled graph
-    graph.show(save_to_disk, with_edge_labels, with_arg_labels, with_output_labels, output_connected_only, fname)
+    graph.show(save_to_disk, with_edge_labels, with_arg_labels, with_output_labels, output_connected_only,
+               randomness_factor, fname)
