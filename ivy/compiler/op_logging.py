@@ -58,7 +58,8 @@ def _wrap_method_for_op_logging(fn, graph, limit_attributes=True, stateful_class
         glob.wrapped_stack.append(fn)
 
         # immutable tuple to mutable list
-        args = list(args)
+        args = list(ivy.nested_map(args, lambda a: a, to_mutable=True))
+        kwargs = ivy.nested_map(kwargs, lambda v: v, to_mutable=True)
 
         # get array idxs for positional args
         arg_tracked_idxs = ivy.nested_indices_where(
