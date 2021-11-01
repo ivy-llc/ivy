@@ -1,7 +1,6 @@
 # global
 import ivy
 import copy
-import queue
 import random
 import inspect
 import numpy as np
@@ -21,7 +20,7 @@ from ivy.compiler.helpers import _get_shape, _get_id, _terminal_pids_to_key, _ar
 class Graph:
 
     # noinspection PyProtectedMember
-    def __init__(self, fn, *args, stateful=None, num_workers=1, **kwargs):
+    def __init__(self, fn, *args, stateful=None, **kwargs):
 
         # stateful
         self._stateful = ivy.default(stateful, [])
@@ -71,10 +70,6 @@ class Graph:
         self._max_subgraph_widths = dict()
         self._max_subgraph_heights = dict()
 
-        # multiprocessing
-        self._timeout = ivy.queue_timeout()
-        self._num_workers = num_workers
-
         # connected flag
         self._connected = False
 
@@ -83,6 +78,10 @@ class Graph:
 
         # all functions
         self._all_functions_fixed = list()
+
+        # set node color as green
+        self._node_color = (0., 0.8, 0.)
+        self._edge_color = (0., 0.4, 0.)
 
     # Properties #
     # -----------#
@@ -116,58 +115,6 @@ class Graph:
     @property
     def _max_graph_height(self):
         return len(self._all_grouped_functions)
-
-    # Multiprocessing #
-    # ----------------#
-
-    def _initialize_multiprocessing(self):
-
-        # prevent redundant workers by limiting to graph width
-        self._num_workers =\
-            min(self._num_workers, self._max_subgraph_widths[_terminal_pids_to_key(self._output_param_ids)])
-
-        if self._num_workers <= 1:
-            return
-
-        # multiprocessing module
-        multiprocessing = ivy.multiprocessing('fork')
-
-        # initialize multi dict
-        self._param_dict_multi = multiprocessing.Manager().dict(self._tmp_sub_param_dict)
-
-        # create workers
-        self._input_queues = list()
-        self._output_queues = list()
-        self._workers = list()
-        for i in range(self._num_workers):
-            input_queue = multiprocessing.Queue()
-            output_queue = multiprocessing.Queue()
-            worker = multiprocessing.Process(
-                target=self._worker_fn, args=(
-                    input_queue, output_queue, ivy.default_device(), self._tmp_sub_functions[i::self._num_workers],
-                    ivy.current_framework_str()))
-            worker.start()
-            self._input_queues.append(input_queue)
-            self._output_queues.append(output_queue)
-            self._workers.append(worker)
-
-    def _worker_fn(self, input_queue, output_queue, dev_str, functions, framework_str):
-        ivy.set_framework(framework_str)
-        ivy.set_default_device(dev_str)
-        while True:
-            try:
-                input_queue.get(timeout=self._timeout)
-            except queue.Empty:
-                continue
-            for fn in functions:
-                arg_vals = [self.get_param_multi(pid) for pid in fn.arg_param_ids]
-                kwarg_vals = [self.get_param_multi(pid) for pid in fn.kwarg_param_ids]
-                ret = fn(arg_vals, kwarg_vals)
-                if not isinstance(ret, tuple):
-                    ret = (ret,)
-                [self.set_param_multi(pid, ivy.index_nest(ret, idx))
-                 for pid, idx in zip(fn.output_param_ids, fn.output_tracked_idxs)]
-            output_queue.put(True)
 
     # Foward with Op Logging #
     # -----------------------#
@@ -242,22 +189,6 @@ class Graph:
 
     def set_param(self, pid, value):
         self._tmp_sub_param_dict[pid].set(value)
-
-    # multiprocessing inference
-
-    def get_param_multi(self, pid):
-        # ToDo: make this more efficient
-        while True:
-            try:
-                return self._param_dict_multi[pid].get()
-            except IndexError:
-                pass
-
-    def set_param_multi(self, pid, value):
-        # ToDo: make this more efficient
-        param = self._param_dict_multi[pid]
-        param.set(value)
-        self._param_dict_multi[pid] = param
 
     # compiling
 
@@ -408,20 +339,6 @@ class Graph:
             return self._output[0]
         return self._output
 
-    def _multi_call(self, *args, **kwargs):
-        # ToDo: make this as efficient as possible; this is performed at runtime
-        [self.set_param_multi(pid, ivy.index_nest(args, idx))
-         for pid, idx in zip(self._arg_param_ids, self._arg_tracked_idxs)]
-        [self.set_param_multi(pid, ivy.index_nest(kwargs, idx))
-         for pid, idx in zip(self._kwarg_param_ids, self._kwarg_tracked_idxs)]
-        [q.put(True) for q in self._input_queues]
-        [q.get(timeout=None) for q in self._output_queues]
-        ret_vals = [self.get_param_multi(pid) for pid in self._output_param_ids]
-        ivy.set_nest_at_indices(self._output, self._output_tracked_idxs, ret_vals)
-        if len(self._output) == 1:
-            return self._output[0]
-        return self._output
-
     def connect(self, output_connected_only=True):
         self._chain_functions(self._output_param_ids)
         self._num_subgrahs = 1
@@ -430,16 +347,13 @@ class Graph:
                 if fn.terminal:
                     self._chain_functions(fn.output_param_ids)
                     self._num_subgrahs += 1
-        self._initialize_multiprocessing()
         self._connected = True
 
     def compiled(self):
         if not self._connected:
             self.connect()
         self._all_functions_fixed = self._all_functions
-        if self._num_workers <= 1:
-            return self._call
-        return self._multi_call
+        return self._call
 
     # Graph Visualization #
     # --------------------#
@@ -541,15 +455,8 @@ class Graph:
         g.add_edge(start_node, end_node)
         return num_inputs
 
-    def show(self, save_to_disk=False, with_edge_labels=True, with_arg_labels=True, with_output_labels=True,
-             output_connected_only=True, randomness_factor=0., fname=None):
-
-        # ensure graph is connected
-        if not self._connected:
-            self.connect()
-
-        # create directed networkX graph
-        g = nx.DiGraph()
+    def _show_for_functions(self, g, functions, with_edge_labels, with_arg_labels, with_output_labels,
+                            output_connected_only, randomness_factor):
 
         # add input and intermediate nodes
         def inp():
@@ -558,7 +465,7 @@ class Graph:
         num_inputs = 0
 
         for func in self._pid_to_functions_dict.values():
-            if func not in self._tmp_sub_functions and output_connected_only:
+            if func not in functions and output_connected_only:
                 continue
             for pid_in, idx in zip(func.arg_param_ids, func.arg_tracked_idxs):
                 num_inputs = self._add_edge(g, func, pid_in, idx, inp, num_inputs)
@@ -617,7 +524,7 @@ class Graph:
              (n[1].__name__[0:6] not in ['input:', 'output'] and not self._is_stateful(n[1]))}
 
         nx.draw_networkx_nodes(g, intermediate_pos, intermediate_nodes,
-                               node_color=[(0., 0.8, 0.)]*len(intermediate_nodes),
+                               node_color=[self._node_color]*len(intermediate_nodes),
                                node_shape='s', node_size=[300/max_dim]*len(intermediate_nodes), linewidths=1/max_dim)
 
         # stateful
@@ -635,7 +542,7 @@ class Graph:
                                node_shape='s', node_size=[300/max_dim]*len(output_nodes), linewidths=1/max_dim)
 
         # draw edges
-        nx.draw_networkx_edges(g, arrows=True, pos=pos, edge_color=[(0., 0.4, 0.)]*len(g.edges), width=1/max_dim,
+        nx.draw_networkx_edges(g, arrows=True, pos=pos, edge_color=[self._edge_color]*len(g.edges), width=1/max_dim,
                                arrowsize=max(10/max_dim, 1), node_size=[300/max_dim]*len(g.nodes), node_shape='s')
 
         # draw node labels
@@ -698,6 +605,36 @@ class Graph:
         ax.set_ylim(pos_min[1] - 0.2/max_dim, pos_max[1] + 0.2/max_dim)
         plt.show()
 
+    def show(self, save_to_disk=False, with_edge_labels=True, with_arg_labels=True, with_output_labels=True,
+             output_connected_only=True, randomness_factor=0., highlight_subgraph=None, fname=None):
+
+        # ensure graph is connected
+        if not self._connected:
+            self.connect()
+
+        # create directed networkX graph
+        g = nx.DiGraph()
+
+        # show for functions
+        self._show_for_functions(g, self._functions, with_edge_labels, with_arg_labels, with_output_labels,
+                                 output_connected_only, randomness_factor)
+
+        # maybe highlight sub-graph
+        if isinstance(highlight_subgraph, int):
+
+            # set node color as red
+            self._node_color = (0.8, 0., 0.)
+            self._edge_color = (0.4, 0., 0.)
+
+            # do something else
+            subgraph_pid = list(self._grouped_functions.keys())[highlight_subgraph]
+            self._show_for_functions(g, self._grouped_functions[subgraph_pid], with_edge_labels, with_arg_labels,
+                                     with_output_labels, output_connected_only, randomness_factor)
+
+        # reset node color as green
+        self._node_color = (0., 0.8, 0.)
+        self._edge_color = (0., 0.4, 0.)
+
         # maybe save to disk
         if save_to_disk:
             fname = ivy.default(fname, 'graph_{}.png'.format(''.join(
@@ -707,27 +644,6 @@ class Graph:
                     fname = '.'.join(fname.split('.')[:-1])
                 fname += '.png'
             plt.savefig(fname, bbox_inches='tight', dpi=1500)
-
-    def __del__(self):
-        if self._num_workers <= 1:
-            return
-        # noinspection PyBroadException
-        try:
-            for i, w in enumerate(self._workers):
-                self._input_queues[i].put(None)
-                w.join(timeout=0.25)
-            for q in self._input_queues:
-                q.cancel_join_thread()
-                q.close()
-            for q in self._output_queues:
-                q.cancel_join_thread()
-                q.close()
-        except Exception:
-            pass
-        finally:
-            for w in self._workers:
-                if w.is_alive():
-                    w.terminate()
 
     # Clearing #
     # ---------#
