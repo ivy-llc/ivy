@@ -7,7 +7,7 @@ import importlib
 # local
 from ivy.compiler import globals as glob
 # noinspection PyProtectedMember
-from ivy.compiler.helpers import _get_id, _get_shape
+from ivy.compiler.helpers import _get_id, _get_shape, _get_fn_signature
 # noinspection PyProtectedMember
 from ivy.wrapper import _wrap_or_unwrap_methods, NON_WRAPPED_METHODS, ARRAYLESS_RET_METHODS
 
@@ -148,6 +148,7 @@ def _wrap_method_for_op_logging(fn, graph, limit_attributes=True, stateful_class
         new_fn.output_param_types = ret_param_types
         new_fn.output_param_shapes = ret_param_shapes
 
+        new_fn.signature = _get_fn_signature(backend_fn)
         new_fn.terminal = True
 
         fns_in = [graph._pid_to_functions_dict[pid]
