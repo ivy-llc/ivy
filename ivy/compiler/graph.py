@@ -62,6 +62,7 @@ class Graph:
         # temporary sub-graph storage
         self._tmp_sub_param_dict = dict()
         self._tmp_sub_functions = list()
+        self._num_subgrahs = 0
 
         # graph storage
         self._param_dict = dict()
@@ -423,10 +424,12 @@ class Graph:
 
     def connect(self, output_connected_only=True):
         self._chain_functions(self._output_param_ids)
+        self._num_subgrahs = 1
         if not output_connected_only:
             for pid, fn in self._pid_to_functions_dict.items():
                 if fn.terminal:
                     self._chain_functions(fn.output_param_ids)
+                    self._num_subgrahs += 1
         self._initialize_multiprocessing()
         self._connected = True
 

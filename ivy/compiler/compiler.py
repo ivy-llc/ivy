@@ -61,7 +61,7 @@ def compile_graph(fn, *args, stateful=None, num_workers=1, **kwargs):
     return graph.compiled()
 
 
-def show_graph(fn, *args, stateful=None, num_workers=1, randomness_factor=0.75, save_to_disk=False,
+def show_graph(fn, *args, stateful=None, num_workers=1, randomness_factor=0., save_to_disk=False,
                with_edge_labels=True, with_arg_labels=True, with_output_labels=True, output_connected_only=True,
                fname=None, **kwargs):
 
