@@ -1,6 +1,8 @@
 # global
 import ivy
+import types
 import numbers
+import functools
 
 # local
 from ivy.compiler import globals as glob
@@ -59,3 +61,12 @@ def _output_str_from_fn(fn):
 
 def _param_to_label(param):
     return _format_label(param.ptype, param.shape)
+
+
+def _copy_func(f):
+    g = types.FunctionType(f.__code__, f.__globals__, name=f.__name__,
+                           argdefs=f.__defaults__,
+                           closure=f.__closure__)
+    g = functools.update_wrapper(g, f)
+    g.__kwdefaults__ = f.__kwdefaults__
+    return g
