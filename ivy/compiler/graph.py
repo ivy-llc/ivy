@@ -445,8 +445,9 @@ class Graph:
 
         # select position based on width and height of graph
         for height, fns in enumerate(self._all_grouped_functions):
-            width = len(fns)
-            for w, f in enumerate(fns):
+            nodes = set([(f.output_param_ids[0], f, _args_str_from_fn(f), _output_str_from_fn(f)) for f in fns])
+            width = len(nodes)
+            for w, n in enumerate(nodes):
                 pos = np.array([(height+1) / (self._max_graph_height+1), 0.5 if width == 1 else w / (width - 1)])
                 assert np.logical_and((0 <= pos), (pos <= 1)).all()
                 h_delta = 0.5/self._max_graph_height
@@ -457,7 +458,7 @@ class Graph:
                 w_rand = np.random.uniform(w_delta_low, w_delta_high)
                 pos += np.array([h_rand, w_rand]) * randomness_factor
                 assert np.logical_and((0 <= pos), (pos <= 1)).all()
-                pos_dict[(f.output_param_ids[0], f, _args_str_from_fn(f), _output_str_from_fn(f))] = pos
+                pos_dict[n] = pos
 
         # add inputs
         if num_inputs > 0:
