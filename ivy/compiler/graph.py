@@ -80,7 +80,7 @@ class Graph:
         # all functions
         self._all_functions_fixed = list()
 
-        # set node color as green
+        # graph formatting
         self._inter_node_color = (0., 0.8, 0.)
         self._stateful_node_color = (0.9, 0.7, 0.2)
         self._io_node_color = (0.4, 0.4, 1.)
@@ -89,6 +89,8 @@ class Graph:
         self._linewidths = 1.
         self._arrow_size = 10
         self._font_size = 12
+        self._input_functions = dict()
+        self._output_functions = dict()
 
     # Properties #
     # -----------#
@@ -472,6 +474,10 @@ class Graph:
         if pid_in in self._pid_to_functions_dict:
             fn_in = self._pid_to_functions_dict[pid_in]
             fn_pid = fn_in.output_param_ids[0]
+        elif pid_in in self._input_functions:
+            fn_in = self._input_functions[pid_in]
+            fn_pid = pid_in
+            num_inputs += 1
         else:
             fn_in = _copy_func(inp)
             idx0 = idx[0]
@@ -488,6 +494,7 @@ class Graph:
                 fnc_name += ', {}'.format(idx1on)
             fn_in.__name__ = fnc_name
             fn_pid = pid_in
+            self._input_functions[pid_in] = fn_in
             num_inputs += 1
         start_args = _args_str_from_fn(fn_in)
         start_output = _output_str_from_fn(fn_in)
@@ -495,9 +502,7 @@ class Graph:
         end_args = _args_str_from_fn(func)
         end_output = _output_str_from_fn(func)
         end_node = (func.output_param_ids[0], func, end_args, end_output)
-        # ToDo: remove this check below eventually, it shouldn't be needed
-        if not ivy.exists(pos) or (start_node in pos and end_node in pos):
-            g.add_edge(start_node, end_node)
+        g.add_edge(start_node, end_node)
         return num_inputs
 
     def _show_for_functions(self, ax, functions, with_edge_labels, with_arg_labels, with_output_labels,
@@ -533,18 +538,19 @@ class Graph:
         num_outputs = 0
 
         for pid_in in self._output_param_ids:
-            num_outputs += 1
+            if pid_in not in self._output_functions:
+                self._output_functions[pid_in] = _copy_func(out)
             fn_in = self._pid_to_functions_dict[pid_in]
             fn_pid = fn_in.output_param_ids[0]
             start_args = _args_str_from_fn(fn_in)
             start_output = _output_str_from_fn(fn_in)
             start_node = (fn_pid, fn_in, start_args, start_output)
-            end_args = _args_str_from_fn(out)
-            end_output = _output_str_from_fn(out)
-            end_node = (fn_pid, out, end_args, end_output)
-            # ToDo: remove this check below eventually, it shouldn't be needed
-            if not ivy.exists(pos) or (start_node in pos and end_node in pos):
-                g.add_edge(start_node, end_node)
+            fn_out = self._output_functions[pid_in]
+            end_args = _args_str_from_fn(fn_out)
+            end_output = _output_str_from_fn(fn_out)
+            end_node = (fn_pid, fn_out, end_args, end_output)
+            g.add_edge(start_node, end_node)
+            num_outputs += 1
 
         # position nodes
         all_nodes = list()

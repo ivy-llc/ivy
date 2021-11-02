@@ -158,12 +158,11 @@ def _wrap_method_for_op_logging(fn, graph, limit_attributes=True, stateful_class
                   for pid in arg_param_ids + kwarg_param_ids if pid in graph._pid_to_functions_dict]
         for fn_in in fns_in:
             fn_in.terminal = False
-            if not hasattr(fn_in, 'fns_out'):
-                fn_in.fns_out = list()
             if new_fn not in fn_in.fns_out:
                 fn_in.fns_out.append(new_fn)
 
         new_fn.fns_in = fns_in
+        new_fn.fns_out = list()
 
         new_fn.__repr__ = lambda: new_fn.__name__
 
