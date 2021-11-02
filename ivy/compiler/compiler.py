@@ -70,4 +70,4 @@ def show_graph(fn, *args, stateful=None, randomness_factor=0.1, save_to_disk=Fal
 
     # show the compiled graph
     graph.show(save_to_disk, with_edge_labels, with_arg_labels, with_output_labels, output_connected_only,
-               randomness_factor, highlight_subgraph, fname)
+               randomness_factor, highlight_subgraph, fname=fname)
