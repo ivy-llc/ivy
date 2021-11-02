@@ -1,13 +1,17 @@
 # global
+import os
 import ivy
+import cv2
 import copy
 import random
 import inspect
 import numpy as np
 import networkx as nx
 import matplotlib
+matplotlib.rcParams['figure.dpi'] = 2000
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
+from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 
 # local
 from ivy.compiler.param import Param
@@ -88,9 +92,21 @@ class Graph:
         self._node_size = 300
         self._linewidths = 1.
         self._arrow_size = 10
-        self._font_size = 12
+        self._cv2_font_size = 12
+        self._plt_font_size = 12
         self._input_functions = dict()
         self._output_functions = dict()
+        self._labels_layer = None
+        self._labels_mask = None
+        self._x_limits = (0, 1)
+        self._y_limits = (0, 1)
+        # ToDo: remove the need for saving temporary images tmp_img.png
+        #  if fig.canvas.tostring_rgb or similar can return correct formatting
+        self._img_tmp_fpath = os.path.join(ivy.tmp_dir(), 'tmp_img.png')
+        self._border_divisor = 10
+        self._border_divisor_p2 = self._border_divisor + 2
+        self._canvas_scale = self._border_divisor / self._border_divisor_p2
+        self._canvas_normed_origin = np.array([1 / self._border_divisor_p2, 1 / self._border_divisor_p2])
 
     # Properties #
     # -----------#
@@ -470,7 +486,7 @@ class Graph:
 
         return pos_dict
 
-    def _add_edge(self, g, func, pid_in, idx, inp, num_inputs, pos):
+    def _add_edge(self, g, func, pid_in, idx, inp, num_inputs):
         if pid_in in self._pid_to_functions_dict:
             fn_in = self._pid_to_functions_dict[pid_in]
             fn_pid = fn_in.output_param_ids[0]
@@ -505,8 +521,91 @@ class Graph:
         g.add_edge(start_node, end_node)
         return num_inputs
 
+    def _draw_labels_plt(self, g, pos, with_arg_labels, with_output_labels):
+
+        # draw node labels
+        nx.draw_networkx_labels(
+            g, pos=pos, labels={n: n[1].__name__.replace('_', '') for n in g.nodes}, font_size=self._plt_font_size)
+
+        # maybe add function arg labels
+        if with_arg_labels:
+            font_size = self._plt_font_size / 2
+            nx.draw_networkx_labels(
+                g, pos={k: v + np.array([0., font_size/100]) for k, v in pos.items()}, font_size=font_size,
+                font_color=(0., 100/255, 0.), labels={n: n[2] for n in g.nodes})
+
+        # maybe add function output labels
+        if with_output_labels:
+            font_size = self._plt_font_size / 2
+            nx.draw_networkx_labels(
+                g, pos={k: v - np.array([0., font_size/100]) for k, v in pos.items()}, font_size=font_size,
+                font_color=(0., 100/255, 0.), labels={n: n[3] for n in g.nodes})
+
+    def _draw_labels_cv2(self, g, pos, img_dims, with_arg_labels, with_output_labels):
+
+        # get rgb image
+        img = np.full(img_dims + [3], 255, dtype=np.uint8)
+
+        # canvas dims
+        canvas_dims = np.asarray(img_dims)
+        canvas_dims_pix = np.flip(canvas_dims, -1)
+
+        # draw node labels
+        for node, label in {node: node[1].__name__.replace('_', '') for node in g.nodes}.items():
+            normed_pos = pos[node]
+            canvas_normed_pos = (normed_pos * self._canvas_scale) + self._canvas_normed_origin
+            thickness = max(int(round(self._cv2_font_size)), 1)
+            textsize = cv2.getTextSize(label, cv2.FONT_HERSHEY_SIMPLEX, self._cv2_font_size, thickness)[0]
+            txt_offset = np.array([-textsize[0]/2, textsize[1]/2])
+            pixel_pos = canvas_normed_pos * canvas_dims_pix
+            pixel_pos = np.array([pixel_pos[0], canvas_dims_pix[1] - pixel_pos[1]])
+            pixel_pos = np.clip(np.round(pixel_pos + txt_offset), 0, canvas_dims_pix).astype(np.int32)
+            cv2.putText(img, label, pixel_pos, cv2.FONT_HERSHEY_SIMPLEX, color=(0, 0, 0), fontScale=self._cv2_font_size,
+                        thickness=thickness)
+
+        # maybe add function arg labels
+        if with_arg_labels:
+            font_size = self._cv2_font_size / 2
+            for node, normed_pos in {node: v + np.array([0., font_size/120]) for node, v in pos.items()}.items():
+                label = node[2]
+                canvas_normed_pos = (normed_pos * self._canvas_scale) + self._canvas_normed_origin
+                thickness = max(int(round(font_size)), 1)
+                lines = label.split('\n')
+                num_lines = len(lines)
+                for i, line in enumerate(lines):
+                    textsize = cv2.getTextSize(line, cv2.FONT_HERSHEY_SIMPLEX, font_size, thickness)[0]
+                    txt_offset = np.array([-textsize[0] / 2, (i - num_lines + 1) * (textsize[1]) + textsize[1] / 2])
+                    pixel_pos = canvas_normed_pos * canvas_dims_pix
+                    pixel_pos = np.array([pixel_pos[0], canvas_dims_pix[1] - pixel_pos[1]])
+                    pixel_pos = np.clip(np.round(pixel_pos + txt_offset), 0, canvas_dims_pix).astype(np.int32)
+                    cv2.putText(img, line, pixel_pos, cv2.FONT_HERSHEY_SIMPLEX, color=(0, 100, 0), fontScale=font_size,
+                                thickness=thickness)
+
+        # maybe add function output labels
+        if with_output_labels:
+            font_size = self._cv2_font_size / 2
+            for node, normed_pos in {k: v - np.array([0., font_size/120]) for k, v in pos.items()}.items():
+                label = node[3]
+                canvas_normed_pos = (normed_pos * self._canvas_scale) + self._canvas_normed_origin
+                thickness = max(int(round(font_size)), 1)
+                lines = label.split('\n')
+                for i, line in enumerate(lines):
+                    textsize = cv2.getTextSize(line, cv2.FONT_HERSHEY_SIMPLEX, font_size, thickness)[0]
+                    txt_offset = np.array([-textsize[0]/2, i*textsize[1] + textsize[1]/2])
+                    pixel_pos = canvas_normed_pos * canvas_dims_pix
+                    pixel_pos = np.array([pixel_pos[0], canvas_dims_pix[1] - pixel_pos[1]])
+                    pixel_pos = np.clip(np.round(pixel_pos + txt_offset), 0, canvas_dims_pix).astype(np.int32)
+                    cv2.putText(img, line, pixel_pos, cv2.FONT_HERSHEY_SIMPLEX, color=(0, 100, 0), fontScale=font_size,
+                                thickness=thickness)
+
+        # mask
+        mask = np.logical_not(np.min(img == np.array([255, 255, 255]), -1))
+
+        # return
+        return img, mask
+
     def _show_for_functions(self, ax, functions, with_edge_labels, with_arg_labels, with_output_labels,
-                            output_connected_only, randomness_factor, format_graph, pos=None):
+                            output_connected_only, randomness_factor, format_graph, cv2_labels=True, pos=None):
 
         # create directed networkX graph
         g = nx.DiGraph()
@@ -521,9 +620,9 @@ class Graph:
             if func not in functions and output_connected_only:
                 continue
             for pid_in, idx in zip(func.arg_param_ids, func.arg_tracked_idxs):
-                num_inputs = self._add_edge(g, func, pid_in, idx, inp, num_inputs, pos)
+                num_inputs = self._add_edge(g, func, pid_in, idx, inp, num_inputs)
             for pid_in, idx in zip(func.kwarg_param_ids, func.kwarg_tracked_idxs):
-                num_inputs = self._add_edge(g, func, pid_in, idx, inp, num_inputs, pos)
+                num_inputs = self._add_edge(g, func, pid_in, idx, inp, num_inputs)
 
         # assert all positions are accounted for, if provided
         if ivy.exists(pos):
@@ -559,16 +658,18 @@ class Graph:
             nodes = set([(f.output_param_ids[0], f, _args_str_from_fn(f), _output_str_from_fn(f)) for f in fns])
             max_graph_width = max(max_graph_width, len(nodes))
             all_nodes.append(nodes)
-        max_dim = max(max_graph_width, self._max_graph_height)
+        max_dim = max(max_graph_width, self._max_graph_height + 2)
         pos = ivy.default(pos, self._position_nodes(g, num_inputs, num_outputs, all_nodes, randomness_factor))
         pos = {n: p for n, p in pos.items() if n in g.nodes}
 
         # formatting
 
-        self._node_size = 300 / max_dim if format_graph else self._node_size
-        self._linewidths = 1 / max_dim if format_graph else self._linewidths
-        self._arrow_size = max(10 / max_dim, 1) if format_graph else self._arrow_size
-        self._font_size = 12 / max_dim if format_graph else self._font_size
+        if format_graph:
+            self._node_size = 500 / max_dim
+            self._linewidths = 1 / max_dim
+            self._arrow_size = max(10 / max_dim, 1)
+            self._plt_font_size = 12 / max_dim
+            self._cv2_font_size = min(50 / max_dim, 10)
 
         # draw nodes
 
@@ -614,13 +715,6 @@ class Graph:
                                width=self._linewidths, arrowsize=self._arrow_size,
                                node_size=[self._node_size]*len(g.nodes), node_shape='s')
 
-        # draw node labels
-        nx.draw_networkx_labels(
-            g, pos=pos, labels={n: n[1].__name__.replace('_', '') for n in g.nodes}, font_size=self._font_size)
-
-        # draw
-        plt.draw_if_interactive()
-
         # maybe add edge labels
         if with_edge_labels:
             edge_labels = dict()
@@ -649,36 +743,48 @@ class Graph:
                 pids = [pid for pid in base_pids if pid in tip_pids]
                 params = [self._tmp_sub_param_dict[pid] for pid in pids]
                 edge_labels[edge] = '_'.join([_param_to_label(p) for p in params])
-            nx.draw_networkx_edge_labels(g, pos, edge_labels=edge_labels, font_size=3/max_dim)
+            nx.draw_networkx_edge_labels(g, pos, edge_labels=edge_labels, font_size=10/max_dim)
 
-        # maybe add function arg labels
-        if with_arg_labels:
-            font_size = self._font_size / 6
-            nx.draw_networkx_labels(
-                g, pos={k: v + np.array([0., font_size/30]) for k, v in pos.items()}, font_size=font_size,
-                font_color=(0., 100/255, 0.), labels={n: n[2] for n in g.nodes})
-
-        # maybe add function output labels
-        if with_output_labels:
-            font_size = self._font_size / 6
-            nx.draw_networkx_labels(
-                g, pos={k: v - np.array([0., font_size/30]) for k, v in pos.items()}, font_size=font_size,
-                font_color=(0., 100/255, 0.), labels={n: n[3] for n in g.nodes})
-
-        # scale axes and show
+        # format graph
         if format_graph:
             ax.set_aspect(max_graph_width / self._max_graph_height)
-            pos_list = list(pos.values())
-            pos_min = np.min(pos_list, axis=0)
-            pos_max = np.max(pos_list, axis=0)
-            ax.set_xlim(pos_min[0] - 0.2/max_dim, pos_max[0] + 0.2/max_dim)
-            ax.set_ylim(pos_min[1] - 0.2/max_dim, pos_max[1] + 0.2/max_dim)
+            x_border = 1 / self._border_divisor
+            self._x_limits = (-x_border, 1 + x_border)
+            y_border = 1 / self._border_divisor
+            self._y_limits = (-y_border, 1 + y_border)
+            ax.set_xlim(*self._x_limits)
+            ax.set_ylim(*self._y_limits)
+            plt.subplots_adjust(left=self._x_limits[0], right=self._x_limits[1], bottom=self._y_limits[0],
+                                top=self._y_limits[1], hspace=0., wspace=0.)
+            ax.margins(x=0, y=0, tight=True)
+
+        # draw
+        plt.draw_if_interactive()
+
+        # labels
+        if cv2_labels:
+
+            # determine canvas size
+            plt.savefig(self._img_tmp_fpath, bbox_inches='tight', pad_inches=0)
+            img = cv2.imread(self._img_tmp_fpath, -1)
+            img_dims = list(img.shape[0:2])
+
+            # draw labels
+            layer, mask = self._draw_labels_cv2(g, pos, img_dims, with_arg_labels, with_output_labels)
+            if ivy.exists(self._labels_mask) and ivy.exists(self._labels_layer):
+                self._labels_mask = np.logical_or(mask, self._labels_mask)
+                self._labels_layer = np.where(mask, layer, self._labels_layer)
+            else:
+                self._labels_mask = mask
+                self._labels_layer = layer
+        else:
+            self._draw_labels_plt(g, pos, with_arg_labels, with_output_labels)
 
         # return positions, in case subsequent graph highlighting is needed
         return pos
 
     def show(self, save_to_disk=False, with_edge_labels=True, with_arg_labels=True, with_output_labels=True,
-             output_connected_only=True, randomness_factor=0.1, highlight_subgraph=None, fname=None):
+             output_connected_only=True, randomness_factor=0.1, highlight_subgraph=None, cv2_labels=True, fname=None):
 
         # ensure graph is connected
         if not self._outer_connected or (not output_connected_only and not self._all_connected):
@@ -686,11 +792,15 @@ class Graph:
 
         # matplotlib
         plt.cla()
-        ax = plt.subplot(111)
+        ax = plt.gca()
+        ax.axis('off')
+        fig = ax.figure
+        fig.set_canvas(FigureCanvas(fig))
 
         # show for functions
-        pos = self._show_for_functions(ax, self._all_functions, with_edge_labels, with_arg_labels, with_output_labels,
-                                       output_connected_only, randomness_factor, True)
+        pos = self._show_for_functions(
+            ax, self._all_functions, with_edge_labels, with_arg_labels, with_output_labels, output_connected_only,
+            randomness_factor, True, cv2_labels)
 
         # maybe highlight sub-graph
         if isinstance(highlight_subgraph, int):
@@ -703,8 +813,9 @@ class Graph:
 
             # show highlighted sub-graph
             subgraph_pid = list(self._functions.keys())[highlight_subgraph]
-            self._show_for_functions(ax, self._functions[subgraph_pid], with_edge_labels,
-                                     with_arg_labels, with_output_labels, True, randomness_factor, False, pos)
+            self._show_for_functions(
+                ax, self._functions[subgraph_pid], with_edge_labels, with_arg_labels, with_output_labels, True,
+                randomness_factor, False, cv2_labels, pos=pos)
 
         # reset node color as green
         self._inter_node_color = (0., 0.8, 0.)
@@ -713,6 +824,9 @@ class Graph:
         self._edge_color = (0., 0.4, 0.)
 
         # show
+        plt.subplots_adjust(left=self._x_limits[0], right=self._x_limits[1], bottom=self._y_limits[0],
+                            top=self._y_limits[1], hspace=0., wspace=0.)
+        ax.margins(x=0, y=0, tight=True)
         plt.show()
 
         # maybe save to disk
@@ -723,7 +837,14 @@ class Graph:
                 if '.' in fname:
                     fname = '.'.join(fname.split('.')[:-1])
                 fname += '.png'
-            plt.savefig(fname, bbox_inches='tight', dpi=1500)
+            if cv2_labels:
+                plt.savefig(self._img_tmp_fpath, bbox_inches='tight', pad_inches=0)
+                img = cv2.imread(self._img_tmp_fpath, -1)[..., 0:3]
+                if ivy.exists(self._labels_mask) and ivy.exists(self._labels_layer):
+                    img = np.where(np.expand_dims(self._labels_mask, -1), self._labels_layer, img)
+                cv2.imwrite(fname, img)
+            else:
+                plt.savefig(fname, bbox_inches='tight', pad_inches=0)
 
     # Clearing #
     # ---------#
