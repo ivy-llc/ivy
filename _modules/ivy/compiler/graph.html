@@ -283,7 +283,7 @@
         <span class="c1"># all functions</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_all_functions_fixed</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
 
-        <span class="c1"># set node color as green</span>
+        <span class="c1"># graph formatting</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_inter_node_color</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">,</span> <span class="mf">0.</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_stateful_node_color</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.9</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_io_node_color</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.4</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">,</span> <span class="mf">1.</span><span class="p">)</span>
@@ -291,7 +291,9 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_node_size</span> <span class="o">=</span> <span class="mi">300</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_linewidths</span> <span class="o">=</span> <span class="mf">1.</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_arrow_size</span> <span class="o">=</span> <span class="mi">10</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_font_size</span> <span class="o">=</span> <span class="mi">12</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_font_size</span> <span class="o">=</span> <span class="mi">12</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_input_functions</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_output_functions</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span></div>
 
     <span class="c1"># Properties #</span>
     <span class="c1"># -----------#</span>
@@ -675,6 +677,10 @@
         <span class="k">if</span> <span class="n">pid_in</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pid_to_functions_dict</span><span class="p">:</span>
             <span class="n">fn_in</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pid_to_functions_dict</span><span class="p">[</span><span class="n">pid_in</span><span class="p">]</span>
             <span class="n">fn_pid</span> <span class="o">=</span> <span class="n">fn_in</span><span class="o">.</span><span class="n">output_param_ids</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">elif</span> <span class="n">pid_in</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_input_functions</span><span class="p">:</span>
+            <span class="n">fn_in</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_input_functions</span><span class="p">[</span><span class="n">pid_in</span><span class="p">]</span>
+            <span class="n">fn_pid</span> <span class="o">=</span> <span class="n">pid_in</span>
+            <span class="n">num_inputs</span> <span class="o">+=</span> <span class="mi">1</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">fn_in</span> <span class="o">=</span> <span class="n">_copy_func</span><span class="p">(</span><span class="n">inp</span><span class="p">)</span>
             <span class="n">idx0</span> <span class="o">=</span> <span class="n">idx</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
@@ -691,6 +697,7 @@
                 <span class="n">fnc_name</span> <span class="o">+=</span> <span class="s1">&#39;, </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">idx1on</span><span class="p">)</span>
             <span class="n">fn_in</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">=</span> <span class="n">fnc_name</span>
             <span class="n">fn_pid</span> <span class="o">=</span> <span class="n">pid_in</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_input_functions</span><span class="p">[</span><span class="n">pid_in</span><span class="p">]</span> <span class="o">=</span> <span class="n">fn_in</span>
             <span class="n">num_inputs</span> <span class="o">+=</span> <span class="mi">1</span>
         <span class="n">start_args</span> <span class="o">=</span> <span class="n">_args_str_from_fn</span><span class="p">(</span><span class="n">fn_in</span><span class="p">)</span>
         <span class="n">start_output</span> <span class="o">=</span> <span class="n">_output_str_from_fn</span><span class="p">(</span><span class="n">fn_in</span><span class="p">)</span>
@@ -698,9 +705,7 @@
         <span class="n">end_args</span> <span class="o">=</span> <span class="n">_args_str_from_fn</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
         <span class="n">end_output</span> <span class="o">=</span> <span class="n">_output_str_from_fn</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
         <span class="n">end_node</span> <span class="o">=</span> <span class="p">(</span><span class="n">func</span><span class="o">.</span><span class="n">output_param_ids</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">func</span><span class="p">,</span> <span class="n">end_args</span><span class="p">,</span> <span class="n">end_output</span><span class="p">)</span>
-        <span class="c1"># ToDo: remove this check below eventually, it shouldn&#39;t be needed</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">pos</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">start_node</span> <span class="ow">in</span> <span class="n">pos</span> <span class="ow">and</span> <span class="n">end_node</span> <span class="ow">in</span> <span class="n">pos</span><span class="p">):</span>
-            <span class="n">g</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">start_node</span><span class="p">,</span> <span class="n">end_node</span><span class="p">)</span>
+        <span class="n">g</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">start_node</span><span class="p">,</span> <span class="n">end_node</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">num_inputs</span>
 
     <span class="k">def</span> <span class="nf">_show_for_functions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ax</span><span class="p">,</span> <span class="n">functions</span><span class="p">,</span> <span class="n">with_edge_labels</span><span class="p">,</span> <span class="n">with_arg_labels</span><span class="p">,</span> <span class="n">with_output_labels</span><span class="p">,</span>
@@ -736,18 +741,19 @@
         <span class="n">num_outputs</span> <span class="o">=</span> <span class="mi">0</span>
 
         <span class="k">for</span> <span class="n">pid_in</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_output_param_ids</span><span class="p">:</span>
-            <span class="n">num_outputs</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="k">if</span> <span class="n">pid_in</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_output_functions</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_output_functions</span><span class="p">[</span><span class="n">pid_in</span><span class="p">]</span> <span class="o">=</span> <span class="n">_copy_func</span><span class="p">(</span><span class="n">out</span><span class="p">)</span>
             <span class="n">fn_in</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pid_to_functions_dict</span><span class="p">[</span><span class="n">pid_in</span><span class="p">]</span>
             <span class="n">fn_pid</span> <span class="o">=</span> <span class="n">fn_in</span><span class="o">.</span><span class="n">output_param_ids</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
             <span class="n">start_args</span> <span class="o">=</span> <span class="n">_args_str_from_fn</span><span class="p">(</span><span class="n">fn_in</span><span class="p">)</span>
             <span class="n">start_output</span> <span class="o">=</span> <span class="n">_output_str_from_fn</span><span class="p">(</span><span class="n">fn_in</span><span class="p">)</span>
             <span class="n">start_node</span> <span class="o">=</span> <span class="p">(</span><span class="n">fn_pid</span><span class="p">,</span> <span class="n">fn_in</span><span class="p">,</span> <span class="n">start_args</span><span class="p">,</span> <span class="n">start_output</span><span class="p">)</span>
-            <span class="n">end_args</span> <span class="o">=</span> <span class="n">_args_str_from_fn</span><span class="p">(</span><span class="n">out</span><span class="p">)</span>
-            <span class="n">end_output</span> <span class="o">=</span> <span class="n">_output_str_from_fn</span><span class="p">(</span><span class="n">out</span><span class="p">)</span>
-            <span class="n">end_node</span> <span class="o">=</span> <span class="p">(</span><span class="n">fn_pid</span><span class="p">,</span> <span class="n">out</span><span class="p">,</span> <span class="n">end_args</span><span class="p">,</span> <span class="n">end_output</span><span class="p">)</span>
-            <span class="c1"># ToDo: remove this check below eventually, it shouldn&#39;t be needed</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">pos</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">start_node</span> <span class="ow">in</span> <span class="n">pos</span> <span class="ow">and</span> <span class="n">end_node</span> <span class="ow">in</span> <span class="n">pos</span><span class="p">):</span>
-                <span class="n">g</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">start_node</span><span class="p">,</span> <span class="n">end_node</span><span class="p">)</span>
+            <span class="n">fn_out</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_output_functions</span><span class="p">[</span><span class="n">pid_in</span><span class="p">]</span>
+            <span class="n">end_args</span> <span class="o">=</span> <span class="n">_args_str_from_fn</span><span class="p">(</span><span class="n">fn_out</span><span class="p">)</span>
+            <span class="n">end_output</span> <span class="o">=</span> <span class="n">_output_str_from_fn</span><span class="p">(</span><span class="n">fn_out</span><span class="p">)</span>
+            <span class="n">end_node</span> <span class="o">=</span> <span class="p">(</span><span class="n">fn_pid</span><span class="p">,</span> <span class="n">fn_out</span><span class="p">,</span> <span class="n">end_args</span><span class="p">,</span> <span class="n">end_output</span><span class="p">)</span>
+            <span class="n">g</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span><span class="n">start_node</span><span class="p">,</span> <span class="n">end_node</span><span class="p">)</span>
+            <span class="n">num_outputs</span> <span class="o">+=</span> <span class="mi">1</span>
 
         <span class="c1"># position nodes</span>
         <span class="n">all_nodes</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
