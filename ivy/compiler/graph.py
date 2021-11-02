@@ -668,7 +668,7 @@ class Graph:
             self._node_size = 500 / max_dim
             self._linewidths = 1 / max_dim
             self._arrow_size = max(10 / max_dim, 1)
-            self._plt_font_size = 12 / max_dim
+            self._plt_font_size = 36 / max_dim
             self._cv2_font_size = min(50 / max_dim, 10)
 
         # draw nodes
@@ -743,7 +743,7 @@ class Graph:
                 pids = [pid for pid in base_pids if pid in tip_pids]
                 params = [self._tmp_sub_param_dict[pid] for pid in pids]
                 edge_labels[edge] = '_'.join([_param_to_label(p) for p in params])
-            nx.draw_networkx_edge_labels(g, pos, edge_labels=edge_labels, font_size=10/max_dim)
+            nx.draw_networkx_edge_labels(g, pos, edge_labels=edge_labels, font_size=self._plt_font_size / 2)
 
         # format graph
         if format_graph:
