@@ -17,6 +17,7 @@ from ivy.framework_handler import current_framework as _cur_framework
 FN_CACHE = dict()
 INF = float('inf')
 TIMEOUT = 15.0
+TMP_DIR = '/tmp'
 
 
 # noinspection PyShadowingNames
@@ -1515,3 +1516,18 @@ def queue_timeout():
     """
     global TIMEOUT
     return TIMEOUT
+
+
+def tmp_dir():
+    """
+    Return the directory for saving temporary files.
+    """
+    return TMP_DIR
+
+
+def set_tmp_dir(tmp_dr):
+    """
+    Set the directory for saving temporary files.
+    """
+    global TMP_DIR
+    TMP_DIR = tmp_dr
