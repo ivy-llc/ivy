@@ -239,26 +239,25 @@ class Graph:
         [self.increment_param_count(pid) for pid in fn.arg_param_ids + fn.kwarg_param_ids]
         fn.tree_depth = depth
         if fn.is_constant:
-            if not ivy.exists(receiving_fn):
-                return
-            for pid in fn.output_param_ids:
-                if pid in receiving_fn.arg_param_ids:
-                    idx = receiving_fn.arg_param_ids.index(pid)
-                    del receiving_fn.arg_tracked_idxs[idx]
-                    del receiving_fn.arg_param_ids[idx]
-                    del receiving_fn.arg_param_types[idx]
-                    del receiving_fn.arg_param_shapes[idx]
-                if pid in receiving_fn.kwarg_param_ids:
-                    idx = receiving_fn.kwarg_param_ids.index(pid)
-                    del receiving_fn.kwarg_tracked_idxs[idx]
-                    del receiving_fn.kwarg_param_ids[idx]
-                    del receiving_fn.kwarg_param_types[idx]
-                    del receiving_fn.kwarg_param_shapes[idx]
+            for recv_fn in fn.fns_out:
+                for pid in fn.output_param_ids:
+                    if pid in recv_fn.arg_param_ids:
+                        idx = recv_fn.arg_param_ids.index(pid)
+                        del recv_fn.arg_tracked_idxs[idx]
+                        del recv_fn.arg_param_ids[idx]
+                        del recv_fn.arg_param_types[idx]
+                        del recv_fn.arg_param_shapes[idx]
+                    if pid in recv_fn.kwarg_param_ids:
+                        idx = recv_fn.kwarg_param_ids.index(pid)
+                        del recv_fn.kwarg_tracked_idxs[idx]
+                        del recv_fn.kwarg_param_ids[idx]
+                        del recv_fn.kwarg_param_types[idx]
+                        del recv_fn.kwarg_param_shapes[idx]
+                recv_fn.is_constant = len(recv_fn.arg_param_ids + recv_fn.kwarg_param_ids) == 0
             fn.output_tracked_idxs.clear()
             fn.output_param_ids.clear()
             fn.output_param_types.clear()
             fn.output_param_shapes.clear()
-            receiving_fn.is_constant = len(receiving_fn.arg_param_ids + receiving_fn.kwarg_param_ids) == 0
         else:
             self._tmp_sub_functions.append(fn)
             [self.add_param(pid, ptype, depth, shape)
