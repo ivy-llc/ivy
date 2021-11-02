@@ -186,6 +186,8 @@
 <li class="toctree-l2"><a class="reference internal" href="general/multiprocessing.html">multiprocessing</a></li>
 <li class="toctree-l2"><a class="reference internal" href="general/set_queue_timeout.html">set_queue_timeout</a></li>
 <li class="toctree-l2"><a class="reference internal" href="general/queue_timeout.html">queue_timeout</a></li>
+<li class="toctree-l2"><a class="reference internal" href="general/tmp_dir.html">tmp_dir</a></li>
+<li class="toctree-l2"><a class="reference internal" href="general/set_tmp_dir.html">set_tmp_dir</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="gradients.html">Gradients</a></li>
@@ -1465,6 +1467,12 @@ In this case, the value is inferred from the length of the array and remaining d
 </dd></dl>
 
 <dl class="py function">
+<dt id="ivy.core.general.set_tmp_dir">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">set_tmp_dir</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tmp_dr</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#set_tmp_dir"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.set_tmp_dir" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the directory for saving temporary files.</p>
+</dd></dl>
+
+<dl class="py function">
 <dt id="ivy.core.general.shape">
 <code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">shape</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">as_array</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em>, <em class="sig-param"><span class="n">f</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>ivy.Framework<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; Iterable<span class="p">[</span>int<span class="p">]</span><a class="reference internal" href="../_modules/ivy/core/general.html#shape"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.shape" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the shape of the array x.</p>
@@ -1614,6 +1622,12 @@ For example, if axis: int = 0, it will be the first dimension and if axis: int =
 <dd class="field-even"><p>The tiled output array.</p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.core.general.tmp_dir">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">tmp_dir</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#tmp_dir"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.tmp_dir" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the directory for saving temporary files.</p>
 </dd></dl>
 
 <dl class="py function">
@@ -1885,6 +1899,8 @@ If not given, then the type of the original array is used.</p></li>
 <li class="toctree-l1"><a class="reference internal" href="general/multiprocessing.html">multiprocessing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="general/set_queue_timeout.html">set_queue_timeout</a></li>
 <li class="toctree-l1"><a class="reference internal" href="general/queue_timeout.html">queue_timeout</a></li>
+<li class="toctree-l1"><a class="reference internal" href="general/tmp_dir.html">tmp_dir</a></li>
+<li class="toctree-l1"><a class="reference internal" href="general/set_tmp_dir.html">set_tmp_dir</a></li>
 </ul>
 </div>
 </div>
