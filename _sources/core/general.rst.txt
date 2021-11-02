@@ -96,4 +96,6 @@ General
    general/multiprocessing.rst
    general/set_queue_timeout.rst
    general/queue_timeout.rst
+   general/tmp_dir.rst
+   general/set_tmp_dir.rst
 
