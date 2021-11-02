@@ -8,7 +8,6 @@ import inspect
 import numpy as np
 import networkx as nx
 import matplotlib
-matplotlib.rcParams['figure.dpi'] = 2000
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
@@ -107,6 +106,9 @@ class Graph:
         self._border_divisor_p2 = self._border_divisor + 2
         self._canvas_scale = self._border_divisor / self._border_divisor_p2
         self._canvas_normed_origin = np.array([1 / self._border_divisor_p2, 1 / self._border_divisor_p2])
+        self._default_dpi = 2000
+        self._dpi = self._default_dpi
+        matplotlib.rcParams['figure.dpi'] = self._dpi
 
     # Properties #
     # -----------#
@@ -566,7 +568,8 @@ class Graph:
         # maybe add function arg labels
         if with_arg_labels:
             font_size = self._cv2_font_size / 2
-            for node, normed_pos in {node: v + np.array([0., font_size/120]) for node, v in pos.items()}.items():
+            increment = (font_size/120) * (self._default_dpi/self._dpi)
+            for node, normed_pos in {node: v + np.array([0., increment]) for node, v in pos.items()}.items():
                 label = node[2]
                 canvas_normed_pos = (normed_pos * self._canvas_scale) + self._canvas_normed_origin
                 thickness = max(int(round(font_size)), 1)
@@ -584,7 +587,8 @@ class Graph:
         # maybe add function output labels
         if with_output_labels:
             font_size = self._cv2_font_size / 2
-            for node, normed_pos in {k: v - np.array([0., font_size/120]) for k, v in pos.items()}.items():
+            increment = (font_size / 120) * (self._default_dpi / self._dpi)
+            for node, normed_pos in {k: v - np.array([0., increment]) for k, v in pos.items()}.items():
                 label = node[3]
                 canvas_normed_pos = (normed_pos * self._canvas_scale) + self._canvas_normed_origin
                 thickness = max(int(round(font_size)), 1)
@@ -665,11 +669,13 @@ class Graph:
         # formatting
 
         if format_graph:
+            self._dpi = np.clip(max_dim * 50, 300, self._default_dpi)
+            ax.figure.dpi = self._dpi
             self._node_size = 500 / max_dim
             self._linewidths = 1 / max_dim
             self._arrow_size = max(10 / max_dim, 1)
             self._plt_font_size = 36 / max_dim
-            self._cv2_font_size = min(50 / max_dim, 10)
+            self._cv2_font_size = min((50 / max_dim) * (self._dpi/self._default_dpi), self._dpi/200)
 
         # draw nodes
 
