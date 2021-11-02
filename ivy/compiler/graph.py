@@ -107,6 +107,7 @@ class Graph:
         self._canvas_scale = self._border_divisor / self._border_divisor_p2
         self._canvas_normed_origin = np.array([1 / self._border_divisor_p2, 1 / self._border_divisor_p2])
         self._default_dpi = 2000
+        self._max_dpi = 4000
         self._dpi = self._default_dpi
         matplotlib.rcParams['figure.dpi'] = self._dpi
 
@@ -669,7 +670,7 @@ class Graph:
         # formatting
 
         if format_graph:
-            self._dpi = np.clip(max_dim * 50, 300, self._default_dpi)
+            self._dpi = np.clip(max_dim * 50, 300, self._max_dpi)
             ax.figure.dpi = self._dpi
             self._node_size = 500 / max_dim
             self._linewidths = 1 / max_dim
