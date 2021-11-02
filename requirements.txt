@@ -7,3 +7,4 @@ networkx
 termcolor
 matplotlib
 nvidia-ml-py3
+opencv-python
