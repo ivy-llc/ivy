@@ -43,7 +43,7 @@ def _get_shape_of_list(lst, shape=()):
 
 # set_framework
 @pytest.mark.parametrize(
-    "fw_str", ['numpy', 'jax', 'tensorflow', 'torch', 'mxnet'])
+    "fw_str", ['numpy', 'jax', 'torch', 'mxnet'])
 def test_set_framework(fw_str, dev_str, call):
     ivy.set_framework(fw_str)
     ivy.unset_framework()
