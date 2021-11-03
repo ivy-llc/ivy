@@ -498,6 +498,10 @@
 
     <span class="k">def</span> <span class="nf">_chain_functions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">terminal_pids</span><span class="p">,</span> <span class="n">assert_non_empty</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
 
+        <span class="c1"># clear tmps</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tmp_sub_param_dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_tmp_sub_functions</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+
         <span class="c1"># dict key</span>
         <span class="n">dict_key</span> <span class="o">=</span> <span class="n">_terminal_pids_to_key</span><span class="p">(</span><span class="n">terminal_pids</span><span class="p">)</span>
 
@@ -953,7 +957,7 @@
                     <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;node </span><span class="si">{}</span><span class="s1"> not found in self._pid_to_functions_dict,&#39;</span>
                                     <span class="s1">&#39;and is not of type input or output&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">node_in</span><span class="p">))</span>
                 <span class="n">pids</span> <span class="o">=</span> <span class="p">[</span><span class="n">pid</span> <span class="k">for</span> <span class="n">pid</span> <span class="ow">in</span> <span class="n">base_pids</span> <span class="k">if</span> <span class="n">pid</span> <span class="ow">in</span> <span class="n">tip_pids</span><span class="p">]</span>
-                <span class="n">params</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_tmp_sub_param_dict</span><span class="p">[</span><span class="n">pid</span><span class="p">]</span> <span class="k">for</span> <span class="n">pid</span> <span class="ow">in</span> <span class="n">pids</span><span class="p">]</span>
+                <span class="n">params</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_all_param_dict</span><span class="p">[</span><span class="n">pid</span><span class="p">]</span> <span class="k">for</span> <span class="n">pid</span> <span class="ow">in</span> <span class="n">pids</span><span class="p">]</span>
                 <span class="n">edge_labels</span><span class="p">[</span><span class="n">edge</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;_&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">_param_to_label</span><span class="p">(</span><span class="n">p</span><span class="p">)</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">params</span><span class="p">])</span>
             <span class="n">nx</span><span class="o">.</span><span class="n">draw_networkx_edge_labels</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span> <span class="n">edge_labels</span><span class="o">=</span><span class="n">edge_labels</span><span class="p">,</span> <span class="n">font_size</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_plt_font_size</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
 
