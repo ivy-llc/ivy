@@ -38,11 +38,18 @@ def _wrap_method_for_op_logging(fn, graph, limit_attributes=True, stateful_class
         if glob.wrapping_paused:
             return fn(*args, **kwargs)
 
-        # return if the wrapping is already happening on a higher level, and it's not a built-in which legitimately
-        # might need to be nested, unless it's a built-in recursion loop (ie for __getattribute__) in which case return
-        if glob.wrapped_stack and (glob.wrapped_stack[-1].__name__[0:2] != '__' or
-                              (glob.wrapped_stack[-1].__name__ == fn.__name__ and args == args and kwargs == kwargs)):
-            return fn(*args, **kwargs)
+        if glob.wrapped_stack:
+            # return if the wrapping is already happening on a higher level, and it's not a built-in which legitimately
+            # might need to be nested, unless it's a built-in recursion loop (ie for __getattribute__) in which case return
+            if (glob.wrapped_stack[-1].__name__[0:2] != '__' or
+                    (glob.wrapped_stack[-1].__name__ == fn.__name__ and args == args and kwargs == kwargs)):
+                return fn(*args, **kwargs)
+
+            # return if the current method is a (possibly reversed) built-in operator, and the last entry of the wrapped
+            # stack is a version of that same operator
+            elif fn.__name__.replace('r', '').replace('_', '') in\
+                    glob.wrapped_stack[-1].__name__.replace('r', '').replace('_', ''):
+                return fn(*args, **kwargs)
 
         # attributes to ignore
         if fn.__name__ in ['__getattr__', '__setattr__', '__getattribute__']:
