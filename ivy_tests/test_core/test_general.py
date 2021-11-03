@@ -4,7 +4,6 @@ Collection of tests for templated general functions
 
 # global
 import os
-import copy
 import math
 import time
 import einops

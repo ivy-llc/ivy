@@ -29,6 +29,7 @@ class Graph:
         self._stateful = ivy.default(stateful, [])
         self._stateful_classes = tuple([x.__class__ for x in self._stateful])
         self._stateful_param_ids = [id(x) for x in self._stateful]
+        self._stateful_param_var_flags = [ivy.is_variable(x, exclusive=True) for x in self._stateful]
         self._stateful_param_shapes = [_get_shape(x) for x in self._stateful]
 
         # function being compiled into a graph
@@ -43,6 +44,8 @@ class Graph:
             args, lambda a: ivy.is_array(a) or isinstance(a, self._stateful_classes))
         self._arg_param_ids = [_get_id(a) for a in ivy.multi_index_nest(args, self._arg_tracked_idxs)]
         self._arg_param_types = [a.__class__ for a in ivy.multi_index_nest(args, self._arg_tracked_idxs)]
+        self._arg_param_var_flags = [ivy.is_variable(a, exclusive=True)
+                                     for a in ivy.multi_index_nest(args, self._arg_tracked_idxs)]
         self._arg_param_shapes = [_get_shape(a) for a in ivy.multi_index_nest(args, self._arg_tracked_idxs)]
 
         # key-word args
@@ -51,7 +54,9 @@ class Graph:
             kwargs, lambda v: ivy.is_array(v) or isinstance(v, self._stateful_classes))
         self._kwarg_param_ids = [_get_id(v) for v in ivy.multi_index_nest(kwargs, self._kwarg_tracked_idxs)]
         self._kwarg_param_types = [v.__class__ for v in ivy.multi_index_nest(kwargs, self._kwarg_tracked_idxs)]
-        self._kwarg_param_shapes = [_get_shape(a) for a in ivy.multi_index_nest(kwargs, self._kwarg_tracked_idxs)]
+        self._kwarg_param_var_flags = [ivy.is_variable(v, exclusive=True)
+                                       for v in ivy.multi_index_nest(kwargs, self._kwarg_tracked_idxs)]
+        self._kwarg_param_shapes = [_get_shape(v) for v in ivy.multi_index_nest(kwargs, self._kwarg_tracked_idxs)]
 
         # output param ids
         self._output = None  # initialized during op logging
@@ -87,6 +92,7 @@ class Graph:
         self._inter_node_color = (0., 0.8, 0.)
         self._stateful_node_color = (0.9, 0.7, 0.2)
         self._io_node_color = (0.4, 0.4, 1.)
+        self._var_node_color = (1., 0.4, 0.6)
         self._edge_color = (0., 0.4, 0.)
         self._node_size = 300
         self._linewidths = 1.
@@ -177,25 +183,32 @@ class Graph:
                 new_fn.kwarg_param_ids = list()
                 new_fn.kwarg_param_types = list()
                 new_fn.kwarg_param_shapes = list()
+                new_fn.kwarg_param_var_flags = list()
                 new_fn.output_param_ids = [new_pid]
                 if pid in self._arg_param_ids:
                     index = self._arg_param_ids.index(pid)
                     arg_param_types = [self._arg_param_types[index]]
                     arg_param_shapes = [self._arg_param_shapes[index]]
+                    arg_param_var_flags = [self._arg_param_var_flags[index]]
                     output_param_type = self._arg_param_types[index]
                     output_param_shape = self._arg_param_shapes[index]
+                    output_param_var_flag = self._arg_param_var_flags[index]
                 else:
                     index = self._kwarg_param_ids.index(pid)
                     arg_param_types = [self._kwarg_param_types[index]]
                     arg_param_shapes = [self._kwarg_param_shapes[index]]
+                    arg_param_var_flags = [self._kwarg_param_var_flags[index]]
                     output_param_type = self._kwarg_param_types[index]
                     output_param_shape = self._kwarg_param_shapes[index]
+                    output_param_var_flag = self._kwarg_param_var_flags[index]
                 new_fn.arg_param_types = arg_param_types
                 new_fn.arg_param_shapes = arg_param_shapes
+                new_fn.arg_param_var_flags = arg_param_var_flags
                 new_fn.output_param_types = [output_param_type]
                 new_fn.fns_in = list()
                 new_fn.output_tracked_idxs = [[0]]
                 new_fn.output_param_shapes = [output_param_shape]
+                new_fn.output_param_var_flags = [output_param_var_flag]
                 new_fn.terminal = True
                 new_fn.is_constant = False
 
@@ -221,8 +234,8 @@ class Graph:
 
     # compiling
 
-    def add_param(self, pid, ptype, tree_height, shape=None):
-        self._tmp_sub_param_dict[pid] = Param(ptype, tree_height, shape)
+    def add_param(self, pid, ptype, tree_height, is_var=False, shape=None):
+        self._tmp_sub_param_dict[pid] = Param(ptype, tree_height, is_var, shape)
 
     def increment_param_count(self, pid):
         self._tmp_sub_param_dict[pid].set_count(self._tmp_sub_param_dict[pid].count + 1)
@@ -281,8 +294,8 @@ class Graph:
             fn.output_param_shapes.clear()
         else:
             self._tmp_sub_functions.append(fn)
-            [self.add_param(pid, ptype, depth, shape)
-             for pid, ptype, shape in zip(fn.output_param_ids, fn.output_param_types, fn.output_param_shapes)]
+            [self.add_param(pid, ptype, depth, is_var, shape) for pid, ptype, is_var, shape in
+             zip(fn.output_param_ids, fn.output_param_types, fn.output_param_var_flags, fn.output_param_shapes)]
         return
 
     # debugging
@@ -303,14 +316,15 @@ class Graph:
         dict_key = _terminal_pids_to_key(terminal_pids)
 
         # add input params to param dict
-        [self.add_param(pid, ptype, 'leaf', shape) for pid, ptype, shape in
-         zip(self._arg_param_ids, self._arg_param_types, self._arg_param_shapes)]
-        [self.add_param(pid, ptype, 'leaf', shape) for pid, ptype, shape in
-         zip(self._kwarg_param_ids, self._kwarg_param_types, self._kwarg_param_shapes)]
+        [self.add_param(pid, ptype, 'leaf', is_var, shape) for pid, ptype, is_var, shape in
+         zip(self._arg_param_ids, self._arg_param_types, self._arg_param_var_flags, self._arg_param_shapes)]
+        [self.add_param(pid, ptype, 'leaf', is_var, shape) for pid, ptype, is_var, shape in
+         zip(self._kwarg_param_ids, self._kwarg_param_types, self._kwarg_param_var_flags, self._kwarg_param_shapes)]
 
         # add stateful params to param dict
-        [self.add_param(pid, ptype, 'leaf', shape) for pid, ptype, shape in
-         zip(self._stateful_param_ids, self._stateful_classes, self._stateful_param_shapes)]
+        [self.add_param(pid, ptype, 'leaf', is_var, shape) for pid, ptype, is_var, shape in
+         zip(self._stateful_param_ids, self._stateful_classes, self._stateful_param_var_flags,
+             self._stateful_param_shapes)]
 
         # recursively chain the graph via backward traversal
         [self.get_param_recursive(pid, depth=0) for pid in terminal_pids]
@@ -329,7 +343,8 @@ class Graph:
                 # noinspection PyProtectedMember
                 self._tmp_sub_param_dict[k]._tree_depth = max_depth + 1
 
-        self._tmp_sub_param_dict = {k: v for k, v in sorted(self._tmp_sub_param_dict.items(), key=lambda knv: -knv[1].depth)}
+        self._tmp_sub_param_dict =\
+            {k: v for k, v in sorted(self._tmp_sub_param_dict.items(), key=lambda knv: -knv[1].depth)}
 
         # save this sub-graph in the param dict
         self._param_dict[dict_key] = self._tmp_sub_param_dict
@@ -686,21 +701,22 @@ class Graph:
 
         # draw nodes
 
+        all_param_dict = self._all_param_dict
+
         # input
         input_nodes = [n for n in g.nodes if n[1].__name__[0:7] == 'input: ']
         max_graph_width = max(max_graph_width, len(input_nodes))
-        input_pos = {n: pos[n] for n in g.nodes if n[1].__name__[0:7] == 'input: '}
+        input_pos = {n: pos[n] for n in input_nodes}
+        var_flags = [all_param_dict[n[0]].is_var for n in input_nodes]
+        node_color = [self._var_node_color if is_var else self._io_node_color for is_var in var_flags]
 
-        nx.draw_networkx_nodes(g, input_pos, input_nodes, node_color=[self._io_node_color]*len(input_nodes),
-                               node_shape='s', node_size=[self._node_size]*len(input_nodes),
-                               linewidths=self._linewidths)
+        nx.draw_networkx_nodes(g, input_pos, input_nodes, node_color=node_color, node_shape='s',
+                               node_size=[self._node_size]*len(input_nodes), linewidths=self._linewidths)
 
         # intermediate
         intermediate_nodes =\
             [n for n in g.nodes if (n[1].__name__[0:6] not in ['input:', 'output'] and not self._is_stateful(n[1]))]
-        intermediate_pos =\
-            {n: pos[n] for n in g.nodes if
-             (n[1].__name__[0:6] not in ['input:', 'output'] and not self._is_stateful(n[1]))}
+        intermediate_pos = {n: pos[n] for n in intermediate_nodes}
 
         nx.draw_networkx_nodes(g, intermediate_pos, intermediate_nodes,
                                node_color=[self._inter_node_color] * len(intermediate_nodes),
@@ -709,19 +725,21 @@ class Graph:
 
         # stateful
         stateful_nodes = [n for n in g.nodes if self._is_stateful(n[1])]
-        stateful_pos = {n: pos[n] for n in g.nodes if self._is_stateful(n[1])}
+        stateful_pos = {n: pos[n] for n in stateful_nodes}
+        var_flags = [all_param_dict[n[0]].is_var if n[0] in all_param_dict else False for n in stateful_nodes]
+        node_color = [self._var_node_color if is_var else self._stateful_node_color for is_var in var_flags]
 
-        nx.draw_networkx_nodes(g, stateful_pos, stateful_nodes,
-                               node_color=[self._stateful_node_color]*len(stateful_nodes), node_shape='s',
+        nx.draw_networkx_nodes(g, stateful_pos, stateful_nodes, node_color=node_color, node_shape='s',
                                node_size=[self._node_size]*len(stateful_nodes), linewidths=self._linewidths)
 
         # output
         output_nodes = [n for n in g.nodes if n[1].__name__ == 'output']
-        output_pos = {n: pos[n] for n in g.nodes if n[1].__name__ == 'output'}
+        output_pos = {n: pos[n] for n in output_nodes}
+        var_flags = [all_param_dict[n[0]].is_var if n[0] in all_param_dict else False for n in output_nodes]
+        node_color = [self._var_node_color if is_var else self._io_node_color for is_var in var_flags]
 
-        nx.draw_networkx_nodes(g, output_pos, output_nodes, node_color=[self._io_node_color]*len(output_nodes),
-                               node_shape='s', node_size=[self._node_size]*len(output_nodes),
-                               linewidths=self._linewidths)
+        nx.draw_networkx_nodes(g, output_pos, output_nodes, node_color=node_color, node_shape='s',
+                               node_size=[self._node_size]*len(output_nodes), linewidths=self._linewidths)
 
         # draw edges
         nx.draw_networkx_edges(g, arrows=True, pos=pos, edge_color=[self._edge_color]*len(g.edges),

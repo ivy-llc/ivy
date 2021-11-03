@@ -66,6 +66,8 @@ def _wrap_method_for_op_logging(fn, graph, limit_attributes=True, stateful_class
             args, lambda x: ivy.is_array(x) or isinstance(x, stateful_classes))
         arg_param_ids = [_get_id(x) for x in ivy.multi_index_nest(args, arg_tracked_idxs)]
         arg_param_types = [x.__class__ for x in ivy.multi_index_nest(args, arg_tracked_idxs)]
+        arg_param_var_flags = [ivy.is_variable(x, exclusive=True)
+                               for x in ivy.multi_index_nest(args, arg_tracked_idxs)]
         arg_param_shapes = [_get_shape(x) for x in ivy.multi_index_nest(args, arg_tracked_idxs)]
 
         # get array idxs for key-word args
@@ -73,6 +75,8 @@ def _wrap_method_for_op_logging(fn, graph, limit_attributes=True, stateful_class
             kwargs, lambda x: ivy.is_array(x) or isinstance(x, stateful_classes))
         kwarg_param_ids = [_get_id(x) for x in ivy.multi_index_nest(kwargs, kwarg_tracked_idxs)]
         kwarg_param_types = [x.__class__ for x in ivy.multi_index_nest(kwargs, kwarg_tracked_idxs)]
+        kwarg_param_var_flags = [ivy.is_variable(x, exclusive=True)
+                                 for x in ivy.multi_index_nest(kwargs, kwarg_tracked_idxs)]
         kwarg_param_shapes = [_get_shape(x) for x in ivy.multi_index_nest(kwargs, kwarg_tracked_idxs)]
 
         # set the backend function
@@ -99,28 +103,31 @@ def _wrap_method_for_op_logging(fn, graph, limit_attributes=True, stateful_class
             ret_listified = True
 
         # get array idxs for return
-        ret_tracked_idxs = ivy.nested_indices_where(ret, lambda x: ivy.is_array(x) or isinstance(x, stateful_classes))
-        ret_param_ids = [_get_id(x) for x in ivy.multi_index_nest(ret, ret_tracked_idxs)]
-        ret_param_types = [x.__class__ for x in ivy.multi_index_nest(ret, ret_tracked_idxs)]
-        ret_param_shapes = [_get_shape(x) for x in ivy.multi_index_nest(ret, ret_tracked_idxs)]
+        output_tracked_idxs = ivy.nested_indices_where(
+            ret, lambda x: ivy.is_array(x) or isinstance(x, stateful_classes))
+        output_param_ids = [_get_id(x) for x in ivy.multi_index_nest(ret, output_tracked_idxs)]
+        output_param_types = [x.__class__ for x in ivy.multi_index_nest(ret, output_tracked_idxs)]
+        output_param_var_flags = [ivy.is_variable(x, exclusive=True)
+                                  for x in ivy.multi_index_nest(ret, output_tracked_idxs)]
+        output_param_shapes = [_get_shape(x) for x in ivy.multi_index_nest(ret, output_tracked_idxs)]
 
         # clone the param when getting an attribute, to preserve uniqueness in the graph
         if fn.__name__ in ['__getattr__', '__getattribute__']:
             # update the param_id for each param in the retreived attribute in the graph
-            ivy.map_nest_at_indices(ret, ret_tracked_idxs, _clone_param)
+            ivy.map_nest_at_indices(ret, output_tracked_idxs, _clone_param)
 
         # find all duplicate param ids from the input in the return
         duplicates = list()
-        for i, ret_pid in enumerate(ret_param_ids):
+        for i, ret_pid in enumerate(output_param_ids):
             if ret_pid in arg_param_ids + kwarg_param_ids:
                 duplicates.append(i)
 
         # clone all repeated return parameters to give unique parameter ids in the graph
-        duplicate_tracked_idxs = [ret_tracked_idxs[i] for i in duplicates]
+        duplicate_tracked_idxs = [output_tracked_idxs[i] for i in duplicates]
         ivy.map_nest_at_indices(ret, duplicate_tracked_idxs, _clone_param)
 
         # get return param ids
-        ret_param_ids = [_get_id(x) for x in ivy.multi_index_nest(ret, ret_tracked_idxs)]
+        output_param_ids = [_get_id(x) for x in ivy.multi_index_nest(ret, output_tracked_idxs)]
 
         # wrap the function
         def new_fn(arg_array_vals, kwarg_array_vals):
@@ -135,19 +142,22 @@ def _wrap_method_for_op_logging(fn, graph, limit_attributes=True, stateful_class
         new_fn.arg_tracked_idxs = arg_tracked_idxs
         new_fn.arg_param_ids = arg_param_ids
         new_fn.arg_param_types = arg_param_types
+        new_fn.arg_param_var_flags = arg_param_var_flags
         new_fn.arg_param_shapes = arg_param_shapes
 
         new_fn.kwargs = kwargs
         new_fn.kwarg_tracked_idxs = kwarg_tracked_idxs
         new_fn.kwarg_param_ids = kwarg_param_ids
         new_fn.kwarg_param_types = kwarg_param_types
+        new_fn.kwarg_param_var_flags = kwarg_param_var_flags
         new_fn.kwarg_param_shapes = kwarg_param_shapes
 
         new_fn.output = ret
-        new_fn.output_tracked_idxs = ret_tracked_idxs
-        new_fn.output_param_ids = ret_param_ids
-        new_fn.output_param_types = ret_param_types
-        new_fn.output_param_shapes = ret_param_shapes
+        new_fn.output_tracked_idxs = output_tracked_idxs
+        new_fn.output_param_ids = output_param_ids
+        new_fn.output_param_types = output_param_types
+        new_fn.output_param_var_flags = output_param_var_flags
+        new_fn.output_param_shapes = output_param_shapes
 
         new_fn.signature = _get_fn_signature(backend_fn)
         new_fn.terminal = True
@@ -173,7 +183,7 @@ def _wrap_method_for_op_logging(fn, graph, limit_attributes=True, stateful_class
         if glob.op_logging:
 
             # add this function to the graph for each output pid
-            for pid in ret_param_ids:
+            for pid in output_param_ids:
                 if pid in graph._pid_to_functions_dict:
                     graph._register_output(ret)
                     glob.op_logging = False
