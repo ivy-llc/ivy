@@ -116,14 +116,15 @@ class Container(dict):
                             'please specify one or the other, not both.')
         if isinstance(dict_in, dict):
             dict_in = dict_in
-        elif isinstance(dict_in, self._types_to_iteratively_nest):
+        elif isinstance(dict_in, tuple(self._types_to_iteratively_nest)):
             dict_in = dict(zip(['it_{}'.format(str(i).zfill(len(str(len(dict_in)))))
                                 for i in range(len(dict_in))], dict_in))
         else:
             raise Exception('invalid input {}'.format(dict_in))
         for key, value in sorted(dict_in.items()):
+            d = isinstance(value, tuple(self._types_to_iteratively_nest))
             if (isinstance(value, dict) and (not isinstance(value, Container) or rebuild_child_containers)) or \
-                    isinstance(value, self._types_to_iteratively_nest):
+                    isinstance(value, tuple(self._types_to_iteratively_nest)):
                 self[key] = Container(value, **self._config)
             else:
                 self[key] = value
@@ -1788,7 +1789,7 @@ class Container(dict):
         for i, (key, value) in enumerate(sorted(self.items())):
             if isinstance(value, Container):
                 return_item[key] = value.to_raw()
-            elif key[0:3] == 'it_' and self._types_to_iteratively_nest:
+            elif key[0:3] == 'it_' and tuple(self._types_to_iteratively_nest):
                 return_item = list([v.to_raw() if isinstance(v, Container) else v for v in self.values()])
                 break
             else:
