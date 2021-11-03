@@ -23,7 +23,10 @@ from ivy.compiler.helpers import _get_shape, _get_id, _terminal_pids_to_key, _ar
 class Graph:
 
     # noinspection PyProtectedMember
-    def __init__(self, fn, *args, stateful=None, **kwargs):
+    def __init__(self, fn, *args, stateful=None, include_generators=True, **kwargs):
+
+        # config
+        self._include_generators = include_generators
 
         # stateful
         self._stateful = ivy.default(stateful, [])
@@ -272,7 +275,8 @@ class Graph:
         [self.get_param_recursive(pid, depth + 1, fn) for pid in copy.copy(fn.kwarg_param_ids)]
         [self.increment_param_count(pid) for pid in fn.arg_param_ids + fn.kwarg_param_ids]
         fn.tree_depth = depth
-        if fn.is_constant:
+        if fn.is_constant or\
+                (not self._include_generators and fn.__name__ in glob.GENERATOR_METHODS[ivy.current_framework_str()]):
             for recv_fn in fn.fns_out:
                 for pid in fn.output_param_ids:
                     if pid in recv_fn.arg_param_ids:
@@ -327,7 +331,7 @@ class Graph:
              self._stateful_param_shapes)]
 
         # recursively chain the graph via backward traversal
-        [self.get_param_recursive(pid, depth=0) for pid in terminal_pids]
+        [self.get_param_recursive(pid, 0) for pid in terminal_pids]
         [self.increment_param_count(pid) for pid in terminal_pids]
 
         # assert there are some functions in the graph
