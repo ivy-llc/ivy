@@ -295,6 +295,10 @@ class Graph:
 
     def _chain_functions(self, terminal_pids, assert_non_empty=True):
 
+        # clear tmps
+        self._tmp_sub_param_dict = dict()
+        self._tmp_sub_functions = list()
+
         # dict key
         dict_key = _terminal_pids_to_key(terminal_pids)
 
@@ -750,7 +754,7 @@ class Graph:
                     raise Exception('node {} not found in self._pid_to_functions_dict,'
                                     'and is not of type input or output'.format(node_in))
                 pids = [pid for pid in base_pids if pid in tip_pids]
-                params = [self._tmp_sub_param_dict[pid] for pid in pids]
+                params = [self._all_param_dict[pid] for pid in pids]
                 edge_labels[edge] = '_'.join([_param_to_label(p) for p in params])
             nx.draw_networkx_edge_labels(g, pos, edge_labels=edge_labels, font_size=self._plt_font_size / 2)
 
