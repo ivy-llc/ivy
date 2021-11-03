@@ -310,7 +310,7 @@ class Graph:
     # Function creation #
     # ------------------#
 
-    def _chain_functions(self, terminal_pids, assert_non_empty=True):
+    def _chain_functions(self, terminal_pids, assert_non_empty=False):
 
         # clear tmps
         self._tmp_sub_param_dict = dict()
@@ -332,7 +332,7 @@ class Graph:
 
         # recursively chain the graph via backward traversal
         [self.get_param_recursive(pid, 0) for pid in terminal_pids]
-        [self.increment_param_count(pid) for pid in terminal_pids]
+        [self.increment_param_count(pid) for pid in terminal_pids if pid in self._tmp_sub_param_dict]
 
         # assert there are some functions in the graph
         if assert_non_empty:
