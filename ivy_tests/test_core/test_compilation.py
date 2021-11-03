@@ -533,10 +533,10 @@ def test_compile_graph_reverse_builtin(dev_str, compile_graph, call):
     x = ivy.array([0., 1., 2.])
     # compile
     ivy.show_graph(_rev_builtin, x, output_connected_only=False, fname='rev_builtin.png')
-    comp_fn = ivy.compile_graph(_rev_builtin, x, dev_str=dev_str)
+    comp_fn = ivy.compile_graph(_rev_builtin, x)
     # type test
     assert callable(comp_fn)
     # value test
     nc_ret = _rev_builtin(x)
-    c_ret = comp_fn(x, dev_str=dev_str)
+    c_ret = comp_fn(x)
     assert np.allclose(ivy.to_numpy(nc_ret), ivy.to_numpy(c_ret))
