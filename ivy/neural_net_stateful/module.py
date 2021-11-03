@@ -206,7 +206,7 @@ class Module(abc.ABC):
     # Public #
     # -------#
 
-    def compile_graph(self, *args, v=None, with_grads=True, include_generators=True, **kwargs):
+    def compile_graph(self, *args, v=None, with_grads=True, stateful=None, include_generators=True, **kwargs):
         if not self._built:
             if self._build_mode == 'on_call':
                 self(*args, v=v, with_grads=with_grads, **kwargs)
@@ -219,10 +219,11 @@ class Module(abc.ABC):
                 raise Exception('invalid build_mode, must be one of [ on_call | explicit | on_init ]')
         kwargs['v'] = ivy.default(v, self.v)
         kwargs['with_grads'] = with_grads
-        self._compiled_fn = ivy.compile_graph(self._call, *args, **kwargs, include_generators=include_generators)
+        self._compiled_fn = ivy.compile_graph(self._call, *args, **kwargs, stateful=stateful,
+                                              include_generators=include_generators)
         self._compiled = True
 
-    def show_graph(self, *args, v=None, with_grads=True, randomness_factor=0., save_to_disk=False,
+    def show_graph(self, *args, v=None, with_grads=True, stateful=None, randomness_factor=0., save_to_disk=False,
                    with_edge_labels=True, with_arg_labels=True, with_output_labels=True, output_connected_only=True,
                    include_generators=True, fname=None, **kwargs):
         self(*args, v=v, with_grads=with_grads, **kwargs)  # for on call build modes
@@ -230,8 +231,8 @@ class Module(abc.ABC):
             self.build(*args, from_call=False, **kwargs)  # for explicit build modes
         kwargs['v'] = ivy.default(v, self.v)
         kwargs['with_grads'] = with_grads
-        ivy.show_graph(self._call, *args, **kwargs, randomness_factor=randomness_factor, save_to_disk=save_to_disk,
-                       with_edge_labels=with_edge_labels, with_arg_labels=with_arg_labels,
+        ivy.show_graph(self._call, *args, **kwargs, stateful=stateful, randomness_factor=randomness_factor,
+                       save_to_disk=save_to_disk, with_edge_labels=with_edge_labels, with_arg_labels=with_arg_labels,
                        with_output_labels=with_output_labels, output_connected_only=output_connected_only,
                        include_generators=include_generators, fname=fname)
 
