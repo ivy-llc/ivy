@@ -206,18 +206,25 @@ class Module(abc.ABC):
     # Public #
     # -------#
 
-    def compile_graph(self, *args, v=None, with_grads=True, **kwargs):
-        self(*args, v=v, with_grads=with_grads, **kwargs)  # for on call build modes
+    def compile_graph(self, *args, v=None, with_grads=True, include_generators=True, **kwargs):
         if not self._built:
-            self.build(*args, from_call=False, **kwargs)  # for explicit build modes
+            if self._build_mode == 'on_call':
+                self(*args, v=v, with_grads=with_grads, **kwargs)
+            elif self._build_mode == 'explicit':
+                self.build(*args, from_call=False, **kwargs)
+            elif self._build_mode == 'on_init':
+                raise Exception('ivy.Module constructor was called but module was not built despite '
+                                'on_init mode being set.')
+            else:
+                raise Exception('invalid build_mode, must be one of [ on_call | explicit | on_init ]')
         kwargs['v'] = ivy.default(v, self.v)
         kwargs['with_grads'] = with_grads
-        self._compiled_fn = ivy.compile_graph(self._call, *args, **kwargs)
+        self._compiled_fn = ivy.compile_graph(self._call, *args, **kwargs, include_generators=include_generators)
         self._compiled = True
 
     def show_graph(self, *args, v=None, with_grads=True, randomness_factor=0., save_to_disk=False,
                    with_edge_labels=True, with_arg_labels=True, with_output_labels=True, output_connected_only=True,
-                   fname=None, **kwargs):
+                   include_generators=True, fname=None, **kwargs):
         self(*args, v=v, with_grads=with_grads, **kwargs)  # for on call build modes
         if not self._built:
             self.build(*args, from_call=False, **kwargs)  # for explicit build modes
@@ -225,7 +232,8 @@ class Module(abc.ABC):
         kwargs['with_grads'] = with_grads
         ivy.show_graph(self._call, *args, **kwargs, randomness_factor=randomness_factor, save_to_disk=save_to_disk,
                        with_edge_labels=with_edge_labels, with_arg_labels=with_arg_labels,
-                       with_output_labels=with_output_labels, output_connected_only=output_connected_only, fname=fname)
+                       with_output_labels=with_output_labels, output_connected_only=output_connected_only,
+                       include_generators=include_generators, fname=fname)
 
     def __call__(self, *args, v=None, with_grads=True, **kwargs):
         if self._compiled:
