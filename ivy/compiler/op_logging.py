@@ -188,7 +188,7 @@ def _wrap_method_for_op_logging(fn, graph, limit_attributes=True, stateful_class
                     graph._register_output(ret)
                     glob.op_logging = False
                     _unwrap_methods_from_op_logging(list(graph._stateful_classes))
-                    graph.show(save_to_disk=True)
+                    graph.show(save_to_disk=True, output_connected_only=False)
                     raise Exception(
                         'tried to add {} to graph._functions_dict, but function {} with the same output pid {} '
                         'already exists!'.format(
