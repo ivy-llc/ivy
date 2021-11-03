@@ -547,9 +547,10 @@ def test_compile_graph_inplace_var_update(weight_n_grad, dtype_str, dev_str, com
     # as tensors
     weight = ivy.variable(ivy.array(weight_raw, dtype_str, dev_str))
     # compile
-    ivy.show_graph(_inplace_var_update, weight, ivy.copy_array(weight), output_connected_only=False,
-                   fname='inplace_var_update.png')
-    comp_fn = ivy.compile_graph(_inplace_var_update, weight, ivy.copy_array(weight))
+    ivy.show_graph(_inplace_var_update, weight, ivy.stop_gradient(ivy.copy_array(weight), preserve_type=False),
+                   output_connected_only=False, fname='inplace_var_update.png')
+    comp_fn = ivy.compile_graph(_inplace_var_update, weight,
+                                ivy.stop_gradient(ivy.copy_array(weight), preserve_type=False))
     # type test
     assert callable(comp_fn)
     # value test
