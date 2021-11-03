@@ -478,20 +478,6 @@ def test_compile_graph_w_stateful(x_raw, dtype_str, dev_str, compile_graph, call
     assert c_ret_2 == x + 3
 
 
-# wide
-
-def _wide_fn(x, with_non_compiled: bool = False, with_internal_gen: bool = False):
-    if with_internal_gen:
-        x += ivy.array([1.])
-    if with_non_compiled:
-        (x + 3) * 4  # ops not to be compiled into the graph
-    graph_width = 10
-    xs = [x]*graph_width
-    for i in range(5):
-        xs = [x_ + j for x_, j in zip(xs, range(graph_width))]
-    return ivy.concatenate(xs, 0)
-
-
 # einops
 
 # noinspection PyUnresolvedReferences
@@ -530,36 +516,27 @@ def test_compile_graph_w_einops(x_n_kwargs_n_ret_n_fname, dtype_str, dev_str, co
     assert np.allclose(ivy.to_numpy(nc_ret), ivy.to_numpy(c_ret))
 
 
-# noinspection PyUnresolvedReferences
-@pytest.mark.parametrize(
-    "weight_n_grad", [([1], [2])])
-@pytest.mark.parametrize(
-    "dtype_str", ['float32'])
-def test_compile_graph_inplace_var_update(weight_n_grad, dtype_str, dev_str, compile_graph, call):
+# reverse built-in
+
+def _rev_builtin(x):
+    return 10. ** x
+
+
+def test_compile_graph_reverse_builtin(dev_str, compile_graph, call):
     if ivy.wrapped_mode() or not compile_graph:
         # Wrapped mode does not yet support function compilation
         pytest.skip()
     if call is not helpers.torch_call:
         # currently only supported by PyTorch
         pytest.skip()
-    # raw values
-    weight_raw, grad_raw = weight_n_grad
-    # as tensors
-    weight = ivy.variable(ivy.array(weight_raw, dtype_str, dev_str))
+    # config
+    x = ivy.array([0., 1., 2.])
     # compile
-    ivy.show_graph(_inplace_var_update, weight, ivy.stop_gradient(ivy.copy_array(weight), preserve_type=False),
-                   output_connected_only=False, fname='inplace_var_update.png')
-    comp_fn = ivy.compile_graph(_inplace_var_update, weight,
-                                ivy.stop_gradient(ivy.copy_array(weight), preserve_type=False))
+    ivy.show_graph(_rev_builtin, x, output_connected_only=False, fname='rev_builtin.png')
+    comp_fn = ivy.compile_graph(_rev_builtin, x, dev_str=dev_str)
     # type test
     assert callable(comp_fn)
     # value test
-    nc_weight = ivy.variable(ivy.array(weight_raw, dtype_str, dev_str))
-    grad = ivy.array(grad_raw, dtype_str, dev_str)
-    nc_new_weight = _inplace_var_update(nc_weight, grad)
-    c_weight = ivy.variable(ivy.array(weight_raw, dtype_str, dev_str))
-    grad = ivy.array(grad_raw, dtype_str, dev_str)
-    c_new_weight = comp_fn(c_weight, grad)
-    assert not np.allclose(np.asarray(weight_raw), ivy.to_numpy(nc_new_weight))
-    assert not np.allclose(np.asarray(weight_raw), ivy.to_numpy(c_new_weight))
-    assert np.allclose(ivy.to_numpy(nc_new_weight), ivy.to_numpy(c_new_weight))
+    nc_ret = _rev_builtin(x)
+    c_ret = comp_fn(x, dev_str=dev_str)
+    assert np.allclose(ivy.to_numpy(nc_ret), ivy.to_numpy(c_ret))
