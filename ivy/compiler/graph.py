@@ -519,7 +519,6 @@ class Graph:
         elif pid_in in self._input_functions:
             fn_in = self._input_functions[pid_in]
             fn_pid = pid_in
-            num_inputs += 1
         else:
             fn_in = _copy_func(inp)
             idx0 = idx[0]
