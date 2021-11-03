@@ -4,11 +4,12 @@ import ivy
 
 class Param:
 
-    def __init__(self, ptype, tree_depth, shape=None):
+    def __init__(self, ptype, tree_depth, is_var=False, shape=None):
         self._count = 0
         self._ptype = ptype
         self._tree_depth = tree_depth
         self._param_stack = list()
+        self._is_var = is_var
         self._shape = tuple(shape) if ivy.exists(shape) else None
 
     def set(self, val):
@@ -38,6 +39,10 @@ class Param:
     @property
     def ptype(self):
         return self._ptype
+
+    @property
+    def is_var(self):
+        return self._is_var
 
     @property
     def shape(self):
