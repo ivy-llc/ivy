@@ -473,38 +473,42 @@ class Graph:
         # add inputs
         if num_inputs > 0:
             input_idx = 0
-            for n in g.nodes:
-                if n not in pos_dict and n[1].__name__[0:7] == 'input: ':
-                    pos = np.array([0., 0.5 if num_inputs == 1 else input_idx/(num_inputs-1)])
-                    assert np.logical_and((0 <= pos), (pos <= 1)).all()
-                    h_delta = 0.5/self._max_graph_height
-                    h_rand = np.random.uniform(0, h_delta)
-                    w_delta = 0.5 if num_inputs == 1 else 0.5/(num_inputs-1)
-                    w_delta_low = 0 if input_idx == 0 else -w_delta
-                    w_delta_high = 0 if input_idx == (num_inputs-1) else w_delta
-                    w_rand = np.random.uniform(w_delta_low, w_delta_high)
-                    pos += np.array([h_rand, w_rand]) * randomness_factor
-                    assert np.logical_and((0 <= pos), (pos <= 1)).all()
-                    pos_dict[n] = pos
-                    input_idx += 1
+            input_nodes = [n for n in g.nodes if n not in pos_dict and n[1].__name__[0:7] == 'input: ']
+            min_output_y_coords = [min([pos_dict[e[1]][1] for e in g.edges if n in e]) for n in input_nodes]
+            input_nodes = [n for _, n in sorted(zip(min_output_y_coords, input_nodes))]
+            for n in input_nodes:
+                pos = np.array([0., 0.5 if num_inputs == 1 else input_idx/(num_inputs-1)])
+                assert np.logical_and((0 <= pos), (pos <= 1)).all()
+                h_delta = 0.5/self._max_graph_height
+                h_rand = np.random.uniform(0, h_delta)
+                w_delta = 0.5 if num_inputs == 1 else 0.5/(num_inputs-1)
+                w_delta_low = 0 if input_idx == 0 else -w_delta
+                w_delta_high = 0 if input_idx == (num_inputs-1) else w_delta
+                w_rand = np.random.uniform(w_delta_low, w_delta_high)
+                pos += np.array([h_rand, w_rand]) * randomness_factor
+                assert np.logical_and((0 <= pos), (pos <= 1)).all()
+                pos_dict[n] = pos
+                input_idx += 1
 
         # add outputs
         if num_outputs > 0:
             output_idx = 0
-            for n in g.nodes:
-                if n not in pos_dict and n[1].__name__ == 'output':
-                    pos = np.array([1., 0.5 if num_outputs == 1 else output_idx/(num_outputs-1)])
-                    assert np.logical_and((0 <= pos), (pos <= 1)).all()
-                    h_delta = 0.5/self._max_graph_height
-                    h_rand = np.random.uniform(-h_delta, 0)
-                    w_delta = 0.5 if num_outputs == 1 else 0.5/(num_outputs-1)
-                    w_delta_low = 0 if output_idx == 0 else -w_delta
-                    w_delta_high = 0 if output_idx == (num_outputs-1) else w_delta
-                    w_rand = np.random.uniform(w_delta_low, w_delta_high)
-                    pos += np.array([h_rand, w_rand]) * randomness_factor
-                    assert np.logical_and((0 <= pos), (pos <= 1)).all()
-                    pos_dict[n] = pos
-                    output_idx += 1
+            output_nodes = [n for n in g.nodes if n not in pos_dict and n[1].__name__ == 'output']
+            min_input_y_coords = [min([pos_dict[e[0]][1] for e in g.edges if n in e]) for n in output_nodes]
+            output_nodes = [n for _, n in sorted(zip(min_input_y_coords, output_nodes))]
+            for n in output_nodes:
+                pos = np.array([1., 0.5 if num_outputs == 1 else output_idx/(num_outputs-1)])
+                assert np.logical_and((0 <= pos), (pos <= 1)).all()
+                h_delta = 0.5/self._max_graph_height
+                h_rand = np.random.uniform(-h_delta, 0)
+                w_delta = 0.5 if num_outputs == 1 else 0.5/(num_outputs-1)
+                w_delta_low = 0 if output_idx == 0 else -w_delta
+                w_delta_high = 0 if output_idx == (num_outputs-1) else w_delta
+                w_rand = np.random.uniform(w_delta_low, w_delta_high)
+                pos += np.array([h_rand, w_rand]) * randomness_factor
+                assert np.logical_and((0 <= pos), (pos <= 1)).all()
+                pos_dict[n] = pos
+                output_idx += 1
 
         return pos_dict
 
