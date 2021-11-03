@@ -660,7 +660,9 @@ class Graph:
         all_nodes = list()
         max_graph_width = 0
         for fns in self._all_grouped_functions:
-            nodes = set([(f.output_param_ids[0], f, _args_str_from_fn(f), _output_str_from_fn(f)) for f in fns])
+            nodes = [(f.output_param_ids[0], f, _args_str_from_fn(f), _output_str_from_fn(f)) for f in fns]
+            seen = set()
+            nodes = [n for n in nodes if not (n in seen or seen.add(n))]
             max_graph_width = max(max_graph_width, len(nodes))
             all_nodes.append(nodes)
         max_dim = max(max_graph_width, self._max_graph_height + 2)
