@@ -513,7 +513,7 @@
     <span class="c1"># Function creation #</span>
     <span class="c1"># ------------------#</span>
 
-    <span class="k">def</span> <span class="nf">_chain_functions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">terminal_pids</span><span class="p">,</span> <span class="n">assert_non_empty</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_chain_functions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">terminal_pids</span><span class="p">,</span> <span class="n">assert_non_empty</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 
         <span class="c1"># clear tmps</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_tmp_sub_param_dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
@@ -535,7 +535,7 @@
 
         <span class="c1"># recursively chain the graph via backward traversal</span>
         <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">get_param_recursive</span><span class="p">(</span><span class="n">pid</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="k">for</span> <span class="n">pid</span> <span class="ow">in</span> <span class="n">terminal_pids</span><span class="p">]</span>
-        <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">increment_param_count</span><span class="p">(</span><span class="n">pid</span><span class="p">)</span> <span class="k">for</span> <span class="n">pid</span> <span class="ow">in</span> <span class="n">terminal_pids</span><span class="p">]</span>
+        <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">increment_param_count</span><span class="p">(</span><span class="n">pid</span><span class="p">)</span> <span class="k">for</span> <span class="n">pid</span> <span class="ow">in</span> <span class="n">terminal_pids</span> <span class="k">if</span> <span class="n">pid</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tmp_sub_param_dict</span><span class="p">]</span>
 
         <span class="c1"># assert there are some functions in the graph</span>
         <span class="k">if</span> <span class="n">assert_non_empty</span><span class="p">:</span>
