@@ -207,11 +207,12 @@
 
 <div class="viewcode-block" id="Param"><a class="viewcode-back" href="../../../compiler/param.html#ivy.compiler.param.Param">[docs]</a><span class="k">class</span> <span class="nc">Param</span><span class="p">:</span>
 
-<div class="viewcode-block" id="Param.__init__"><a class="viewcode-back" href="../../../compiler/param.html#ivy.compiler.param.Param.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ptype</span><span class="p">,</span> <span class="n">tree_depth</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="Param.__init__"><a class="viewcode-back" href="../../../compiler/param.html#ivy.compiler.param.Param.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ptype</span><span class="p">,</span> <span class="n">tree_depth</span><span class="p">,</span> <span class="n">is_var</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">shape</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_count</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_ptype</span> <span class="o">=</span> <span class="n">ptype</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_tree_depth</span> <span class="o">=</span> <span class="n">tree_depth</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_param_stack</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_is_var</span> <span class="o">=</span> <span class="n">is_var</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_shape</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span> <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">shape</span><span class="p">)</span> <span class="k">else</span> <span class="kc">None</span></div>
 
 <div class="viewcode-block" id="Param.set"><a class="viewcode-back" href="../../../compiler/param.html#ivy.compiler.param.Param.set">[docs]</a>    <span class="k">def</span> <span class="nf">set</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
@@ -241,6 +242,10 @@
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">ptype</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ptype</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">is_var</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_var</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">shape</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
