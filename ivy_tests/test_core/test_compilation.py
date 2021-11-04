@@ -480,6 +480,7 @@ def test_compile_graph_w_stateful(x_raw, dtype_str, dev_str, compile_graph, call
     assert c_ret_2 == x + 3
 
 
+'''
 # with stateful container
 
 def _update_container(cont, x):
@@ -518,6 +519,7 @@ def test_compile_graph_w_stateful_cont(x_raw, dtype_str, dev_str, compile_graph,
     assert c_ret_0 == x + 1
     assert hasattr(cont, 'new_attribute')
     assert cont.new_attribute == 2
+'''
 
 
 # with stateful in args
