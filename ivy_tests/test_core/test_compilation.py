@@ -480,6 +480,46 @@ def test_compile_graph_w_stateful(x_raw, dtype_str, dev_str, compile_graph, call
     assert c_ret_2 == x + 3
 
 
+# with stateful container
+
+def _update_container(cont, x):
+    cont.new_attribute = 2
+    return x + 1
+
+
+# noinspection PyUnresolvedReferences
+@pytest.mark.parametrize(
+    "x_raw", [([0])])
+@pytest.mark.parametrize(
+    "dtype_str", ['float32'])
+def test_compile_graph_w_stateful_cont(x_raw, dtype_str, dev_str, compile_graph, call):
+    if ivy.wrapped_mode() or not compile_graph:
+        # Wrapped mode does not yet support function compilation
+        pytest.skip()
+    if call is not helpers.torch_call:
+        # currently only supported by PyTorch
+        pytest.skip()
+    # as tensors
+    x = ivy.array(x_raw, dtype_str, dev_str)
+
+    # non-compiled
+    cont = ivy.Container(x=x)
+    assert not hasattr(cont, 'new_attribute')
+    nc_ret_0 = _update_container(cont, x)
+    assert nc_ret_0 == x + 1
+    assert hasattr(cont, 'new_attribute')
+    assert cont.new_attribute == 2
+
+    # compiled
+    cont = ivy.Container(x=x)
+    comp_fn = ivy.compile_graph(_update_container, cont.deep_copy(), x, arg_stateful_idxs=[[0]])
+    assert not hasattr(cont, 'new_attribute')
+    c_ret_0 = comp_fn(cont, x)
+    assert c_ret_0 == x + 1
+    assert hasattr(cont, 'new_attribute')
+    assert cont.new_attribute == 2
+
+
 # with stateful in args
 
 class StatefulInArg:
