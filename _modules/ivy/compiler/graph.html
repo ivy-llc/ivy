@@ -204,6 +204,7 @@
 <span></span><span class="c1"># global</span>
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">ivy</span>
+<span class="kn">import</span> <span class="nn">sys</span>
 <span class="kn">import</span> <span class="nn">cv2</span>
 <span class="kn">import</span> <span class="nn">copy</span>
 <span class="kn">import</span> <span class="nn">random</span>
@@ -230,6 +231,7 @@
 
         <span class="c1"># config</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_include_generators</span> <span class="o">=</span> <span class="n">include_generators</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_orig_recursion_limit</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">getrecursionlimit</span><span class="p">()</span>
 
         <span class="c1"># stateful</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_stateful</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">default</span><span class="p">(</span><span class="n">stateful</span><span class="p">,</span> <span class="p">[])</span>
@@ -626,6 +628,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_output</span>
 
 <div class="viewcode-block" id="Graph.connect"><a class="viewcode-back" href="../../../compiler/graph.html#ivy.compiler.graph.Graph.connect">[docs]</a>    <span class="k">def</span> <span class="nf">connect</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">output_connected_only</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">setrecursionlimit</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_pid_to_functions_dict</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_chain_functions</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_output_param_ids</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_num_subgrahs</span> <span class="o">=</span> <span class="mi">1</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">output_connected_only</span><span class="p">:</span>
@@ -634,7 +637,8 @@
                     <span class="bp">self</span><span class="o">.</span><span class="n">_chain_functions</span><span class="p">(</span><span class="n">fn</span><span class="o">.</span><span class="n">output_param_ids</span><span class="p">)</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">_num_subgrahs</span> <span class="o">+=</span> <span class="mi">1</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_all_connected</span> <span class="o">=</span> <span class="kc">True</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_outer_connected</span> <span class="o">=</span> <span class="kc">True</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_outer_connected</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">setrecursionlimit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_orig_recursion_limit</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Graph.compiled"><a class="viewcode-back" href="../../../compiler/graph.html#ivy.compiler.graph.Graph.compiled">[docs]</a>    <span class="k">def</span> <span class="nf">compiled</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_outer_connected</span><span class="p">:</span>
