@@ -1,6 +1,7 @@
 # global
 import os
 import ivy
+import sys
 import cv2
 import copy
 import random
@@ -27,6 +28,7 @@ class Graph:
 
         # config
         self._include_generators = include_generators
+        self._orig_recursion_limit = sys.getrecursionlimit()
 
         # stateful
         self._stateful = ivy.default(stateful, [])
@@ -423,6 +425,7 @@ class Graph:
         return self._output
 
     def connect(self, output_connected_only=True):
+        sys.setrecursionlimit(len(self._pid_to_functions_dict))
         self._chain_functions(self._output_param_ids)
         self._num_subgrahs = 1
         if not output_connected_only:
@@ -432,6 +435,7 @@ class Graph:
                     self._num_subgrahs += 1
             self._all_connected = True
         self._outer_connected = True
+        sys.setrecursionlimit(self._orig_recursion_limit)
 
     def compiled(self):
         if not self._outer_connected:
