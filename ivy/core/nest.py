@@ -101,8 +101,8 @@ def map_nest_at_indices(nest, indices, fn):
     [map_nest_at_index(nest, index, fn) for index in indices]
 
 
-def nested_indices_where(nest: Iterable, fn: Callable, _index: List = None, _base: bool = True)\
-        -> Union[Iterable, bool]:
+def nested_indices_where(nest: Iterable, fn: Callable, check_nests: bool = False, _index: List = None,
+                         _base: bool = True) -> Union[Iterable, bool]:
     """
     Checks the leaf nodes of nested x via function fn, and returns all nest indices where the method evaluates as True.
 
@@ -110,6 +110,8 @@ def nested_indices_where(nest: Iterable, fn: Callable, _index: List = None, _bas
     :type nest: nest of any
     :param fn: The conditon function, returning True or False.
     :type fn: callable
+    :param check_nests: Whether to also check the nests for the condition, not only nest leaves. Default is False.
+    :type check_nests: bool, optional
     :param _index: The indices detected so far. None at the beginning. Used internally, do not set manually.
     :type _index: list of tuples of indices, do not set
     :param _base: Whether the current function call is the first function call in the recursive stack.
@@ -119,11 +121,15 @@ def nested_indices_where(nest: Iterable, fn: Callable, _index: List = None, _bas
     """
     _index = list() if _index is None else _index
     if isinstance(nest, (tuple, list)):
-        _indices = [nested_indices_where(item, fn, _index + [i], False) for i, item in enumerate(nest)]
+        _indices = [nested_indices_where(item, fn, check_nests, _index + [i], False) for i, item in enumerate(nest)]
         _indices = [idx for idxs in _indices if idxs for idx in idxs]
+        if check_nests and fn(nest):
+            _indices.append(_index)
     elif isinstance(nest, dict):
-        _indices = [nested_indices_where(v, fn, _index + [k], False) for k, v in nest.items()]
+        _indices = [nested_indices_where(v, fn, check_nests, _index + [k], False) for k, v in nest.items()]
         _indices = [idx for idxs in _indices if idxs for idx in idxs]
+        if check_nests and fn(nest):
+            _indices.append(_index)
     else:
         cond_met = fn(nest)
         if cond_met:
