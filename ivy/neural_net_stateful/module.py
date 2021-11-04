@@ -17,7 +17,7 @@ from ivy.core.container import Container
 class Module(abc.ABC):
 
     def __init__(self, dev_str=None, v=None, build_mode='on_init', compile_on_first_call=False, store_vars=True,
-                 dev_strs=None):
+                 stateful=None, arg_stateful_idxs=None, kwarg_stateful_idxs=None, dev_strs=None):
         """
         Initialze Ivy layer, which is a stateful object consisting of trainable variables.
 
@@ -32,6 +32,15 @@ class Module(abc.ABC):
         :type compile_on_first_call: bool, optional
         :param store_vars: Whether or not to store the variables created. Default is True.
         :type store_vars: bool, optional
+        :param stateful: The constant id stateful items to track as part of the forward pass.
+                         Used when graph compiling, default is None.
+        :type stateful: seq of any, optional
+        :param arg_stateful_idxs: The nested argument indices of stateful items to track as part of the forward pass.
+                                  Used when graph compiling, default is None.
+        :type arg_stateful_idxs: seq of any, optional
+        :param kwarg_stateful_idxs: The nested keyword argument indices of stateful items to track as part of the
+                                    forward pass. Used when graph compiling, default is None.
+        :type kwarg_stateful_idxs: seq of any, optional
         :param dev_strs: devices on which to distribute the module's variables 'cuda:0', 'cuda:1', 'cpu' etc.
         :type dev_strs: sequence of str, optional
         :type build_mode: str, optional
@@ -43,6 +52,9 @@ class Module(abc.ABC):
         self._dev_str = ivy.default(dev_str, ivy.default(lambda: dev_strs[0], ivy.default_device(), True))
         self._dev_strs = ivy.default(dev_strs, [self._dev_str])
         self._build_mode = build_mode
+        self._stateful = stateful
+        self._arg_stateful_idxs = arg_stateful_idxs
+        self._kwarg_stateful_idxs = kwarg_stateful_idxs
         self._store_vars = store_vars
         self._built = False
         self._compiled = False
@@ -208,6 +220,10 @@ class Module(abc.ABC):
 
     def compile_graph(self, *args, v=None, with_grads=True, stateful=None, arg_stateful_idxs=None,
                       kwarg_stateful_idxs=None, include_generators=True, **kwargs):
+        stateful = ivy.default(stateful, self._stateful)
+        arg_stateful_idxs = ivy.default(arg_stateful_idxs, self._arg_stateful_idxs)
+        kwarg_stateful_idxs = ivy.default(kwarg_stateful_idxs, self._kwarg_stateful_idxs)
+        stateful = ivy.default(stateful, self._stateful)
         if not self._built:
             if self._build_mode == 'on_call':
                 self(*args, v=v, with_grads=with_grads, **kwargs)
@@ -240,11 +256,13 @@ class Module(abc.ABC):
                        with_output_labels=with_output_labels, output_connected_only=output_connected_only,
                        include_generators=include_generators, fname=fname)
 
-    def __call__(self, *args, v=None, with_grads=True, **kwargs):
+    def __call__(self, *args, v=None, with_grads=True, stateful=None, arg_stateful_idxs=None, kwarg_stateful_idxs=None,
+                 **kwargs):
         if self._compiled:
             return self._compiled_fn(*args, v=ivy.default(v, self.v), with_grads=with_grads, **kwargs)
         elif self._compile_on_first_call and not self._compiled:
-            self.compile_graph(*args, v=v, with_grads=with_grads, **kwargs)
+            self.compile_graph(*args, v=v, with_grads=with_grads, stateful=stateful,
+                               arg_stateful_idxs=arg_stateful_idxs, kwarg_stateful_idxs=kwarg_stateful_idxs, **kwargs)
             return self._compiled_fn(*args, v=ivy.default(v, self.v), with_grads=with_grads, **kwargs)
         return self._call(*args, v=v, with_grads=with_grads, **kwargs)
 
