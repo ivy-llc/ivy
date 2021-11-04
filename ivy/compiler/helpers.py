@@ -10,11 +10,13 @@ from ivy.compiler import globals as glob
 
 
 def _get_shape(x_in):
-    # noinspection PyBroadException
-    try:
-        return tuple(x_in.shape)
-    except Exception:
-        return None
+    if hasattr(x_in, 'shape') or hasattr(x_in, '__dict__') and 'shape' in x_in.__dict__:
+        # noinspection PyBroadException
+        try:
+            return tuple(x_in.shape)
+        except Exception:
+            return None
+    return None
 
 
 def _get_id(x):
