@@ -24,7 +24,8 @@ from ivy.compiler.helpers import _get_shape, _get_id, _terminal_pids_to_key, _ar
 class Graph:
 
     # noinspection PyProtectedMember
-    def __init__(self, fn, *args, stateful=None, include_generators=True, **kwargs):
+    def __init__(self, fn, *args, stateful=None, arg_stateful_idxs=None, kwarg_stateful_idxs=None,
+                 include_generators=True, **kwargs):
 
         # config
         self._include_generators = include_generators
@@ -37,6 +38,18 @@ class Graph:
         self._stateful_param_var_flags = [ivy.is_variable(x, exclusive=True) for x in self._stateful]
         self._stateful_param_shapes = [_get_shape(x) for x in self._stateful]
 
+        # all stateful
+        stateful_args = ivy.multi_index_nest(args, arg_stateful_idxs)
+        stateful_kwargs = ivy.multi_index_nest(kwargs, kwarg_stateful_idxs)
+        self._all_stateful = self._stateful + stateful_args + stateful_kwargs
+        self._all_stateful_classes = tuple([x.__class__ for x in self._all_stateful])
+        self._all_stateful_param_ids = [id(x) for x in self._all_stateful]
+        self._all_stateful_param_var_flags = [ivy.is_variable(x, exclusive=True) for x in self._all_stateful]
+        self._all_stateful_param_shapes = [_get_shape(x) for x in self._all_stateful]
+
+        # stateful clone pid dict
+        self._stateful_clone_pid_dict = dict(zip(self._all_stateful_param_ids, self._all_stateful_param_ids))
+
         # function being compiled into a graph
         self._fn = fn
 
@@ -45,8 +58,7 @@ class Graph:
 
         # positional args
         self._args = list(args)
-        self._arg_tracked_idxs = ivy.nested_indices_where(
-            args, lambda a: ivy.is_array(a) or isinstance(a, self._stateful_classes))
+        self._arg_tracked_idxs = ivy.nested_indices_where(args, lambda a: ivy.is_array(a)) + arg_stateful_idxs
         self._arg_param_ids = [_get_id(a) for a in ivy.multi_index_nest(args, self._arg_tracked_idxs)]
         self._arg_param_types = [a.__class__ for a in ivy.multi_index_nest(args, self._arg_tracked_idxs)]
         self._arg_param_var_flags = [ivy.is_variable(a, exclusive=True)
@@ -55,8 +67,7 @@ class Graph:
 
         # key-word args
         self._kwargs = kwargs
-        self._kwarg_tracked_idxs = ivy.nested_indices_where(
-            kwargs, lambda v: ivy.is_array(v) or isinstance(v, self._stateful_classes))
+        self._kwarg_tracked_idxs = ivy.nested_indices_where(kwargs, lambda v: ivy.is_array(v)) + kwarg_stateful_idxs
         self._kwarg_param_ids = [_get_id(v) for v in ivy.multi_index_nest(kwargs, self._kwarg_tracked_idxs)]
         self._kwarg_param_types = [v.__class__ for v in ivy.multi_index_nest(kwargs, self._kwarg_tracked_idxs)]
         self._kwarg_param_var_flags = [ivy.is_variable(v, exclusive=True)
@@ -167,11 +178,9 @@ class Graph:
     def _register_output(self, ret):
         self._output = list(ret)
         self._output_tracked_idxs = ivy.nested_indices_where(
-            ret, lambda x: ivy.is_array(x) or isinstance(x, self._stateful_classes))
-        output_tracked_idxs = ivy.nested_indices_where(
-            ret, lambda x: ivy.is_array(x) or isinstance(x, self._stateful_classes))
+            ret, lambda x: ivy.is_array(x) or id(x) in self._all_stateful_param_ids)
         # noinspection PyProtectedMember
-        self._output_param_ids = [_get_id(x) for x in ivy.multi_index_nest(list(ret), output_tracked_idxs)]
+        self._output_param_ids = [_get_id(x) for x in ivy.multi_index_nest(list(ret), self._output_tracked_idxs)]
 
         # find any inputs which were fed directly to the output, and update pid and add identity function
         for i, pid in enumerate(self._output_param_ids):
@@ -332,7 +341,7 @@ class Graph:
          zip(self._stateful_param_ids, self._stateful_classes, self._stateful_param_var_flags,
              self._stateful_param_shapes)]
 
-        # recursively chain the graph via backward traversal
+        # recursively chain the graph via backward traversal from the outputs
         [self.get_param_recursive(pid, 0) for pid in terminal_pids]
         [self.increment_param_count(pid) for pid in terminal_pids if pid in self._tmp_sub_param_dict]
 
@@ -408,8 +417,7 @@ class Graph:
         [self.set_param(pid, ivy.index_nest(kwargs, idx))
          for pid, idx in zip(self._kwarg_param_ids, self._kwarg_tracked_idxs)]
         # ToDo: change so continual resetting of fixed stateful objects as below is not required
-        [self.set_param(pid, val)
-         for pid, val in zip(self._stateful_param_ids, self._stateful)]
+        [self.set_param(pid, val) for pid, val in zip(self._stateful_param_ids, self._stateful)]
         for i, fn in enumerate(self._all_functions_fixed):
             arg_vals = [self.get_param(pid) for pid in fn.arg_param_ids]
             kwarg_vals = [self.get_param(pid) for pid in fn.kwarg_param_ids]
@@ -426,7 +434,9 @@ class Graph:
 
     def connect(self, output_connected_only=True):
         sys.setrecursionlimit(max(len(self._pid_to_functions_dict), 1000))
-        self._chain_functions(self._output_param_ids)
+        terminal_pids = self._output_param_ids + [pid for pid, fn in self._pid_to_functions_dict.items() if fn.terminal
+                                                  and pid in self._stateful_clone_pid_dict]
+        self._chain_functions(terminal_pids)
         self._num_subgrahs = 1
         if not output_connected_only:
             for pid, fn in self._pid_to_functions_dict.items():

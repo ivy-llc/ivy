@@ -12,9 +12,14 @@ from ivy.compiler.helpers import _get_id, _get_shape, _get_fn_signature
 from ivy.wrapper import _wrap_or_unwrap_methods, NON_WRAPPED_METHODS, ARRAYLESS_RET_METHODS
 
 
-def _clone_param(x):
+# noinspection PyProtectedMember
+def _clone_param(x, graph):
     glob.wrapping_paused = True
+    orig_id = id(x)
     x_copy = ivy.copy_array(x) if ivy.is_array(x) else copy.copy(x)  # copy the param
+    new_id = id(x_copy)
+    if orig_id in graph._stateful_clone_pid_dict:
+        graph._stateful_clone_pid_dict[new_id] = graph._stateful_clone_pid_dict[orig_id]
     if hasattr(x, '__dict__'):
         x.__dict__['param_id'] = id(x_copy)  # update the id of the original param (for preserved stateful objects)
     glob.wrapping_paused = False
@@ -121,7 +126,7 @@ def _wrap_method_for_op_logging(fn, graph, limit_attributes=True, stateful_class
         # clone the param when getting an attribute, to preserve uniqueness in the graph
         if fn.__name__ in ['__getattr__', '__getattribute__']:
             # update the param_id for each param in the retreived attribute in the graph
-            ivy.map_nest_at_indices(ret, output_tracked_idxs, _clone_param)
+            ivy.map_nest_at_indices(ret, output_tracked_idxs, lambda x: _clone_param(x, graph))
 
         # find all duplicate param ids from the input in the return
         duplicates = list()
@@ -131,7 +136,7 @@ def _wrap_method_for_op_logging(fn, graph, limit_attributes=True, stateful_class
 
         # clone all repeated return parameters to give unique parameter ids in the graph
         duplicate_tracked_idxs = [output_tracked_idxs[i] for i in duplicates]
-        ivy.map_nest_at_indices(ret, duplicate_tracked_idxs, _clone_param)
+        ivy.map_nest_at_indices(ret, duplicate_tracked_idxs, lambda x: _clone_param(x, graph))
 
         # get return param ids
         output_param_ids = [_get_id(x) for x in ivy.multi_index_nest(ret, output_tracked_idxs)]
