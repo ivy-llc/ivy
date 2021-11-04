@@ -424,6 +424,27 @@ def test_compile_graph_inplace_var_update(weight_n_grad, dtype_str, dev_str, com
 
 # with stateful
 
+
+class Stateful:
+
+    def __init__(self):
+        self._state = ivy.array([0.])
+
+    # noinspection PyAugmentAssignment
+    def forward(self, _x):
+        self._state = self._state + 1
+        return _x + self._state
+
+    def compile_graph(self, _x):
+        ivy.show_graph(self.forward, _x, stateful=[self], output_connected_only=False,
+                       fname='w_stateful.png')
+        # noinspection PyAttributeOutsideInit
+        self.forward = ivy.compile_graph(self.forward, _x, stateful=[self])
+
+    def __setattr__(self, key, value):
+        self.__dict__[key] = value
+
+
 # noinspection PyUnresolvedReferences
 @pytest.mark.parametrize(
     "x_raw", [([0])])
@@ -438,25 +459,6 @@ def test_compile_graph_w_stateful(x_raw, dtype_str, dev_str, compile_graph, call
         pytest.skip()
     # as tensors
     x = ivy.array(x_raw, dtype_str, dev_str)
-
-    class Stateful:
-
-        def __init__(self):
-            self._state = ivy.array([0.])
-
-        # noinspection PyAugmentAssignment
-        def forward(self, _x):
-            self._state = self._state + 1
-            return _x + self._state
-
-        def compile_graph(self, _x):
-            ivy.show_graph(self.forward, _x, stateful=[self], output_connected_only=False,
-                           fname='w_stateful.png')
-            # noinspection PyAttributeOutsideInit
-            self.forward = ivy.compile_graph(self.forward, _x, stateful=[self])
-
-        def __setattr__(self, key, value):
-            self.__dict__[key] = value
 
     # non-compiled
     stateful = Stateful()
@@ -478,42 +480,51 @@ def test_compile_graph_w_stateful(x_raw, dtype_str, dev_str, compile_graph, call
     assert c_ret_2 == x + 3
 
 
-# einops
+# with stateful in args
+
+class StatefulInArg:
+
+    def __init__(self):
+        self._state = ivy.array([0.])
+
+    def add_one(self):
+        self._state += 1
+
+    @property
+    def state(self):
+        return self._state
+
+def _stateful_in_arg_method(x, sia):
+    x = x + 1
+    sia.add_one()
+    return x
+
 
 # noinspection PyUnresolvedReferences
 @pytest.mark.parametrize(
-    "x_n_kwargs_n_ret_n_fname", [([[0., 1., 2., 3.]], {'pattern': 'b n -> n b'},
-                                  [[0.], [1.], [2.], [3.]], 'rearrange'),
-                                 ([[0., 1., 2., 3.]], {'pattern': 'b n -> b', 'reduction': 'mean'},
-                                  [1.5], 'reduce'),
-                                 ([[0., 1., 2., 3.]], {'pattern': 'b n -> b n c', 'c': 2},
-                                  [[[0., 0.], [1., 1.], [2., 2.], [3., 3.]]], 'repeat')])
+    "x_raw", [([0])])
 @pytest.mark.parametrize(
     "dtype_str", ['float32'])
-def test_compile_graph_w_einops(x_n_kwargs_n_ret_n_fname, dtype_str, dev_str, compile_graph, call):
+def test_compile_graph_w_stateful_in_args(x_raw, dtype_str, dev_str, compile_graph, call):
     if ivy.wrapped_mode() or not compile_graph:
         # Wrapped mode does not yet support function compilation
         pytest.skip()
     if call is not helpers.torch_call:
         # currently only supported by PyTorch
         pytest.skip()
-    # raw
-    x, kwargs, true_ret, fn_name = x_n_kwargs_n_ret_n_fname
-    # method
-    fn = {'rearrange': ivy.einops_rearrange,
-          'reduce': ivy.einops_reduce,
-          'repeat': ivy.einops_repeat}[fn_name]
-    # as tensor
-    x = ivy.array(x, dtype_str, dev_str)
+    # as tensors
+    x = ivy.array(x_raw, dtype_str, dev_str)
+    sia = StatefulInArg()
     # compile
-    ivy.show_graph(fn, x, **kwargs, fname='{}.png'.format(fn_name))
-    comp_fn = ivy.compile_graph(fn, x, **kwargs)
+    ivy.show_graph(_stateful_in_arg_method, x, sia, arg_stateful_idxs=[[1]], output_connected_only=False,
+                   fname='w_stateful_in_args.png')
+    comp_fn = ivy.compile_graph(_stateful_in_arg_method, x, sia, arg_stateful_idxs=[[1]])
     # type test
     assert callable(comp_fn)
     # value test
-    nc_ret = fn(x, **kwargs)
-    c_ret = comp_fn(x, **kwargs)
-    assert np.allclose(ivy.to_numpy(nc_ret), ivy.to_numpy(c_ret))
+    ret = comp_fn(x, sia)
+    assert ret == 1
+    assert sia.state == 1
 
 
 # reverse built-in
