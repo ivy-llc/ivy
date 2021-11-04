@@ -425,7 +425,7 @@ class Graph:
         return self._output
 
     def connect(self, output_connected_only=True):
-        sys.setrecursionlimit(len(self._pid_to_functions_dict))
+        sys.setrecursionlimit(max(len(self._pid_to_functions_dict), 1000))
         self._chain_functions(self._output_param_ids)
         self._num_subgrahs = 1
         if not output_connected_only:
