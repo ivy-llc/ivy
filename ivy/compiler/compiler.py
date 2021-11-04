@@ -24,7 +24,12 @@ def _create_graph(fn, *args, stateful=None, arg_stateful_idxs=None, kwarg_statef
     all_stateful_classes = [s.__class__ for s in all_stateful]
 
     # copy the states for resetting after forward pass and compilation
-    all_state_copies = [copy.deepcopy(s.__dict__) for s in all_stateful]
+    all_state_copies = list()
+    for s in all_stateful:
+        state_copy = copy.deepcopy(s.__dict__)
+        if isinstance(s, dict):
+            state_copy = {**state_copy, **s}
+        all_state_copies.append(state_copy)
 
     # construct the graph
     graph = Graph(fn, *args, **kwargs, stateful=stateful, arg_stateful_idxs=arg_stateful_idxs,
@@ -46,6 +51,12 @@ def _create_graph(fn, *args, stateful=None, arg_stateful_idxs=None, kwarg_statef
                 del s.__dict__[k]
                 continue
             s.__dict__[k] = sc[k]
+        if isinstance(s, dict):
+            for k in list(s.keys()):
+                if k not in sc:
+                    del s[k]
+                    continue
+                s[k] = sc[k]
 
     # connect graph
     graph.connect(output_connected_only)
