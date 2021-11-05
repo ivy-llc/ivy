@@ -899,10 +899,3 @@ class Graph:
                 cv2.imwrite(fname, img)
             else:
                 plt.savefig(fname, bbox_inches='tight', pad_inches=0)
-
-    # Clearing #
-    # ---------#
-
-    def clear(self):
-        self._tmp_sub_param_dict.clear()
-        self._tmp_sub_functions.clear()
