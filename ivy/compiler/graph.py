@@ -899,3 +899,19 @@ class Graph:
                 cv2.imwrite(fname, img)
             else:
                 plt.savefig(fname, bbox_inches='tight', pad_inches=0)
+
+    def print_cached_tensors(self, fname=None):
+        all_tensors = ivy.Container()
+        for fn in self._pid_to_functions_dict.values():
+            arg_idxs = ivy.nested_indices_where(fn.args, lambda x: ivy.is_array(x))
+            arg_arrays = ivy.multi_index_nest(fn.args, arg_idxs)
+            kwarg_idxs = ivy.nested_indices_where(fn.kwargs, lambda x: ivy.is_array(x))
+            kwarg_arrays = ivy.multi_index_nest(fn.kwargs, kwarg_idxs)
+            if arg_idxs or kwarg_idxs:
+                all_tensors[fn.__name__] = ivy.Container(
+                    {'args': dict(zip([str(idx) for idx in arg_idxs], arg_arrays)),
+                     'kwargs': dict(zip([str(idx) for idx in kwarg_idxs], kwarg_arrays))}
+                )
+        print(all_tensors)
+        if isinstance(fname, str):
+            all_tensors.to_disk_as_json(fname)
