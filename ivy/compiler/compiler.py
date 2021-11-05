@@ -39,7 +39,12 @@ def _create_graph(fn, *args, stateful=None, arg_stateful_idxs=None, kwarg_statef
     _wrap_methods_for_op_logging(graph, all_stateful_classes)
 
     # forward pass through the graph, logging all operations
-    graph.log_all_ops()
+    try:
+        graph.log_all_ops()
+    except Exception as e:
+        _unwrap_methods_from_op_logging(all_stateful_classes)
+        graph.print_cached_tensors()
+        raise e
 
     # unwrap all methods, now all operations have been logged
     _unwrap_methods_from_op_logging(all_stateful_classes)
