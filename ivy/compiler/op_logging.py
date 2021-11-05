@@ -20,8 +20,10 @@ def _clone_param(x, graph):
     new_id = id(x_copy)
     if orig_id in graph._stateful_clone_pid_dict:
         graph._stateful_clone_pid_dict[new_id] = graph._stateful_clone_pid_dict[orig_id]
+    if hasattr(x_copy, '__dict__'):
+        x_copy.__dict__['param_id'] = new_id  # update the id of the new param
     if hasattr(x, '__dict__'):
-        x.__dict__['param_id'] = id(x_copy)  # update the id of the original param (for preserved stateful objects)
+        x.__dict__['param_id'] = new_id  # update the id of the original param (for preserved stateful objects)
     glob.wrapping_paused = False
     return x_copy
 
