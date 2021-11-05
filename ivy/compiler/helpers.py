@@ -10,12 +10,16 @@ from ivy.compiler import globals as glob
 
 
 def _get_shape(x_in):
+    glob.wrapping_paused = True
     if hasattr(x_in, 'shape') or hasattr(x_in, '__dict__') and 'shape' in x_in.__dict__:
         # noinspection PyBroadException
         try:
+            glob.wrapping_paused = False
             return tuple(x_in.shape)
         except Exception:
+            glob.wrapping_paused = False
             return None
+    glob.wrapping_paused = False
     return None
 
 
