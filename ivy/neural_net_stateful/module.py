@@ -17,7 +17,8 @@ from ivy.core.container import Container
 class Module(abc.ABC):
 
     def __init__(self, dev_str=None, v=None, build_mode='on_init', compile_on_first_call=False, store_vars=True,
-                 stateful=None, arg_stateful_idxs=None, kwarg_stateful_idxs=None, dev_strs=None):
+                 stateful=None, arg_stateful_idxs=None, kwarg_stateful_idxs=None, fallback_to_non_compiled=True,
+                 dev_strs=None):
         """
         Initialze Ivy layer, which is a stateful object consisting of trainable variables.
 
@@ -41,6 +42,9 @@ class Module(abc.ABC):
         :param kwarg_stateful_idxs: The nested keyword argument indices of stateful items to track as part of the
                                     forward pass. Used when graph compiling, default is None.
         :type kwarg_stateful_idxs: seq of any, optional
+        :param fallback_to_non_compiled: Whether to fall back to non-compiled forward call in the case that an error is
+                                         raised during the compiled forward pass. Default is True.
+        :type fallback_to_non_compiled: bool, optional
         :param dev_strs: devices on which to distribute the module's variables 'cuda:0', 'cuda:1', 'cpu' etc.
         :type dev_strs: sequence of str, optional
         :type build_mode: str, optional
@@ -55,6 +59,7 @@ class Module(abc.ABC):
         self._stateful = stateful
         self._arg_stateful_idxs = arg_stateful_idxs
         self._kwarg_stateful_idxs = kwarg_stateful_idxs
+        self._fallback_to_non_compiled = fallback_to_non_compiled
         self._store_vars = store_vars
         self._built = False
         self._compiled = False
@@ -259,7 +264,12 @@ class Module(abc.ABC):
     def __call__(self, *args, v=None, with_grads=True, stateful=None, arg_stateful_idxs=None, kwarg_stateful_idxs=None,
                  **kwargs):
         if self._compiled:
-            return self._compiled_fn(*args, v=ivy.default(v, self.v), with_grads=with_grads, **kwargs)
+            try:
+                return self._compiled_fn(*args, v=ivy.default(v, self.v), with_grads=with_grads, **kwargs)
+            except Exception as e:
+                if self._fallback_to_non_compiled:
+                    return self._call(*args, v=v, with_grads=with_grads, **kwargs)
+                raise e
         elif self._compile_on_first_call and not self._compiled:
             self.compile_graph(*args, v=v, with_grads=with_grads, stateful=stateful,
                                arg_stateful_idxs=arg_stateful_idxs, kwarg_stateful_idxs=kwarg_stateful_idxs, **kwargs)
