@@ -25,10 +25,11 @@ class Graph:
 
     # noinspection PyProtectedMember
     def __init__(self, fn, *args, stateful=None, arg_stateful_idxs=None, kwarg_stateful_idxs=None,
-                 include_generators=True, **kwargs):
+                 include_generators=True, with_array_caching=True, **kwargs):
 
         # config
         self._include_generators = include_generators
+        self._with_array_caching = with_array_caching
         self._orig_recursion_limit = sys.getrecursionlimit()
 
         # stateful
@@ -60,7 +61,7 @@ class Graph:
         self._args = list(args)
         self._arg_tracked_idxs = ivy.nested_indices_where(args, lambda a: ivy.is_array(a)) + arg_stateful_idxs
         self._arg_param_ids = [_get_id(a) for a in ivy.multi_index_nest(args, self._arg_tracked_idxs)]
-        [glob.input_connected_pids.add(pid) for pid in self._arg_param_ids]
+        [glob.placeholder_pids.add(pid) for pid in self._arg_param_ids]
         self._arg_param_types = [a.__class__ for a in ivy.multi_index_nest(args, self._arg_tracked_idxs)]
         self._arg_param_var_flags = [ivy.is_variable(a, exclusive=True)
                                      for a in ivy.multi_index_nest(args, self._arg_tracked_idxs)]
@@ -70,7 +71,7 @@ class Graph:
         self._kwargs = kwargs
         self._kwarg_tracked_idxs = ivy.nested_indices_where(kwargs, lambda v: ivy.is_array(v)) + kwarg_stateful_idxs
         self._kwarg_param_ids = [_get_id(v) for v in ivy.multi_index_nest(kwargs, self._kwarg_tracked_idxs)]
-        [glob.input_connected_pids.add(pid) for pid in self._kwarg_param_ids]
+        [glob.placeholder_pids.add(pid) for pid in self._kwarg_param_ids]
         self._kwarg_param_types = [v.__class__ for v in ivy.multi_index_nest(kwargs, self._kwarg_tracked_idxs)]
         self._kwarg_param_var_flags = [ivy.is_variable(v, exclusive=True)
                                        for v in ivy.multi_index_nest(kwargs, self._kwarg_tracked_idxs)]
@@ -168,6 +169,10 @@ class Graph:
     def _max_graph_height(self):
         return len(self._all_grouped_functions)
 
+    @property
+    def with_array_caching(self):
+        return self._with_array_caching
+
     # Foward with Op Logging #
     # -----------------------#
 
@@ -264,7 +269,7 @@ class Graph:
             return
         if pid in self._pid_to_functions_dict:
             fn = self._pid_to_functions_dict[pid]
-        else:
+        elif self._with_array_caching:
             if not ivy.exists(receiving_fn):
                 idx = self._output_param_ids.index(pid)
                 del self._output_tracked_idxs[idx]
@@ -284,12 +289,16 @@ class Graph:
                 del receiving_fn.kwarg_param_shapes[idx]
             receiving_fn.is_constant = len(receiving_fn.arg_param_ids + receiving_fn.kwarg_param_ids) == 0
             return
+        else:
+            raise Exception(
+                'array caching is not permitted, but pid {} was not found in pid_to_functions_dict.'.format(pid))
         [self.get_param_recursive(pid, depth + 1, fn) for pid in copy.copy(fn.arg_param_ids)]
         [self.get_param_recursive(pid, depth + 1, fn) for pid in copy.copy(fn.kwarg_param_ids)]
         [self.increment_param_count(pid) for pid in fn.arg_param_ids + fn.kwarg_param_ids]
         fn.tree_depth = depth
-        if fn.is_constant or\
-                (not self._include_generators and fn.__name__ in glob.GENERATOR_METHODS[ivy.current_framework_str()]):
+        if self._with_array_caching and\
+                (fn.is_constant or (not self._include_generators and
+                                    fn.__name__ in glob.GENERATOR_METHODS[ivy.current_framework_str()])):
             for recv_fn in fn.fns_out:
                 for pid in fn.output_param_ids:
                     if pid in recv_fn.arg_param_ids:
