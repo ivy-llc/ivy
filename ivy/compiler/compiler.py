@@ -10,7 +10,7 @@ from ivy.compiler.op_logging import _wrap_methods_for_op_logging, _unwrap_method
 
 
 def _create_graph(fn, *args, stateful=None, arg_stateful_idxs=None, kwarg_stateful_idxs=None,
-                  output_connected_only=True, include_generators=True, **kwargs):
+                  output_connected_only=True, include_generators=True, with_array_caching=True, **kwargs):
 
     # extra stateful instances modified in the graph
     stateful = ivy.default(stateful, [])
@@ -33,7 +33,8 @@ def _create_graph(fn, *args, stateful=None, arg_stateful_idxs=None, kwarg_statef
 
     # construct the graph
     graph = Graph(fn, *args, **kwargs, stateful=stateful, arg_stateful_idxs=arg_stateful_idxs,
-                  kwarg_stateful_idxs=kwarg_stateful_idxs, include_generators=include_generators)
+                  kwarg_stateful_idxs=kwarg_stateful_idxs, include_generators=include_generators,
+                  with_array_caching=with_array_caching)
 
     # wrap all methods for operation logging
     _wrap_methods_for_op_logging(graph, all_stateful_classes)
@@ -44,6 +45,7 @@ def _create_graph(fn, *args, stateful=None, arg_stateful_idxs=None, kwarg_statef
     except Exception as e:
         _unwrap_methods_from_op_logging(all_stateful_classes)
         graph.print_cached_tensors()
+        graph.show(save_to_disk=True, output_connected_only=False, fname='graph_at_point_of_failure.png')
         raise e
 
     # unwrap all methods, now all operations have been logged
@@ -72,19 +74,19 @@ def _create_graph(fn, *args, stateful=None, arg_stateful_idxs=None, kwarg_statef
     glob.wrapped_stack.clear()
     glob.params_removed_from_args = dict()
     glob.pid_to_unique_id_dict = dict()
-    glob.input_connected_pids = set()
+    glob.placeholder_pids = set()
 
     # return graph
     return graph
 
 
 def compile_graph(fn, *args, stateful=None, arg_stateful_idxs=None, kwarg_stateful_idxs=None, include_generators=True,
-                  **kwargs):
+                  with_array_caching=True, **kwargs):
 
     # create graph
     graph = _create_graph(
         fn, *args, stateful=stateful, arg_stateful_idxs=arg_stateful_idxs, kwarg_stateful_idxs=kwarg_stateful_idxs,
-        include_generators=include_generators, **kwargs)
+        include_generators=include_generators, with_array_caching=with_array_caching, **kwargs)
 
     # compile the graph forward pass into an executable function
     return graph.compiled()
@@ -92,12 +94,14 @@ def compile_graph(fn, *args, stateful=None, arg_stateful_idxs=None, kwarg_statef
 
 def show_graph(fn, *args, stateful=None, arg_stateful_idxs=None, kwarg_stateful_idxs=None, randomness_factor=0.1,
                save_to_disk=False, with_edge_labels=True, with_arg_labels=True, with_output_labels=True,
-               output_connected_only=True, include_generators=True, highlight_subgraph=None, fname=None, **kwargs):
+               output_connected_only=True, include_generators=True, with_array_caching=True, highlight_subgraph=None,
+               fname=None, **kwargs):
 
     # create graph
     graph = _create_graph(
         fn, *args, stateful=stateful, arg_stateful_idxs=arg_stateful_idxs, kwarg_stateful_idxs=kwarg_stateful_idxs,
-        output_connected_only=output_connected_only, include_generators=include_generators, **kwargs)
+        output_connected_only=output_connected_only, include_generators=include_generators,
+        with_array_caching=with_array_caching, **kwargs)
 
     # show the compiled graph
     graph.show(save_to_disk, with_edge_labels, with_arg_labels, with_output_labels, output_connected_only,
