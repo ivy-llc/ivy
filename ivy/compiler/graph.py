@@ -60,6 +60,7 @@ class Graph:
         self._args = list(args)
         self._arg_tracked_idxs = ivy.nested_indices_where(args, lambda a: ivy.is_array(a)) + arg_stateful_idxs
         self._arg_param_ids = [_get_id(a) for a in ivy.multi_index_nest(args, self._arg_tracked_idxs)]
+        [glob.input_connected_pids.add(pid) for pid in self._arg_param_ids]
         self._arg_param_types = [a.__class__ for a in ivy.multi_index_nest(args, self._arg_tracked_idxs)]
         self._arg_param_var_flags = [ivy.is_variable(a, exclusive=True)
                                      for a in ivy.multi_index_nest(args, self._arg_tracked_idxs)]
@@ -69,6 +70,7 @@ class Graph:
         self._kwargs = kwargs
         self._kwarg_tracked_idxs = ivy.nested_indices_where(kwargs, lambda v: ivy.is_array(v)) + kwarg_stateful_idxs
         self._kwarg_param_ids = [_get_id(v) for v in ivy.multi_index_nest(kwargs, self._kwarg_tracked_idxs)]
+        [glob.input_connected_pids.add(pid) for pid in self._kwarg_param_ids]
         self._kwarg_param_types = [v.__class__ for v in ivy.multi_index_nest(kwargs, self._kwarg_tracked_idxs)]
         self._kwarg_param_var_flags = [ivy.is_variable(v, exclusive=True)
                                        for v in ivy.multi_index_nest(kwargs, self._kwarg_tracked_idxs)]

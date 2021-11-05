@@ -1,9 +1,11 @@
 # global
 import ivy
+import sys
 import types
 import numbers
 import inspect
 import functools
+import numpy as np
 
 # local
 from ivy.compiler import globals as glob
@@ -29,7 +31,11 @@ def _get_id(x):
         glob.wrapping_paused = False
         return x.__dict__['param_id']
     glob.wrapping_paused = False
-    return id(x)
+    pid = id(x)
+    if pid in glob.params_removed_from_args and not ivy.exists(glob.params_removed_from_args[pid]()):
+        del glob.params_removed_from_args[pid]
+        glob.pid_to_unique_id_dict[pid] = np.random.randint(0, sys.maxsize)
+    return glob.pid_to_unique_id_dict[pid] if pid in glob.pid_to_unique_id_dict else pid
 
 
 def _terminal_pids_to_key(terminal_pids):

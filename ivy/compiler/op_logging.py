@@ -1,6 +1,7 @@
 # global
 import ivy
 import copy
+import weakref
 import inspect
 import importlib
 
@@ -116,6 +117,17 @@ def _wrap_method_for_op_logging(fn, graph, limit_attributes=True, stateful_class
                 setattr(__obj, __name, __value)
                 return __obj
 
+        # remove parameters from args and kwargs
+
+        def _maybe_delete_param(x):
+            _pid = id(x)
+            if _pid not in glob.input_connected_pids:
+                return x
+            glob.params_removed_from_args[_pid] = weakref.ref(x)
+
+        ivy.map_nest_at_indices(args, arg_tracked_idxs, _maybe_delete_param)
+        ivy.map_nest_at_indices(kwargs, kwarg_tracked_idxs, _maybe_delete_param)
+
         # covert return to list
         ret_listified = False
         if isinstance(ret_raw, tuple):
@@ -154,6 +166,12 @@ def _wrap_method_for_op_logging(fn, graph, limit_attributes=True, stateful_class
 
         # get return param ids
         output_param_ids = [_get_id(x) for x in ivy.multi_index_nest(ret, output_tracked_idxs)]
+
+        # maybe add to set of input_connected_pids
+        for pid in arg_param_ids + kwarg_param_ids:
+            if pid in glob.input_connected_pids:
+                [glob.input_connected_pids.add(pid) for pid in output_param_ids]
+                break
 
         # wrap the function
         def new_fn(arg_array_vals, kwarg_array_vals):
