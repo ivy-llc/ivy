@@ -65,6 +65,9 @@ def _create_graph(fn, *args, stateful=None, arg_stateful_idxs=None, kwarg_statef
     glob.wrapping_paused = False
     glob.op_logging = False
     glob.wrapped_stack.clear()
+    glob.params_removed_from_args = dict()
+    glob.pid_to_unique_id_dict = dict()
+    glob.input_connected_pids = set()
 
     # return graph
     return graph
