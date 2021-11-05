@@ -242,7 +242,12 @@
     <span class="n">_wrap_methods_for_op_logging</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="n">all_stateful_classes</span><span class="p">)</span>
 
     <span class="c1"># forward pass through the graph, logging all operations</span>
-    <span class="n">graph</span><span class="o">.</span><span class="n">log_all_ops</span><span class="p">()</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">graph</span><span class="o">.</span><span class="n">log_all_ops</span><span class="p">()</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="n">_unwrap_methods_from_op_logging</span><span class="p">(</span><span class="n">all_stateful_classes</span><span class="p">)</span>
+        <span class="n">graph</span><span class="o">.</span><span class="n">print_cached_tensors</span><span class="p">()</span>
+        <span class="k">raise</span> <span class="n">e</span>
 
     <span class="c1"># unwrap all methods, now all operations have been logged</span>
     <span class="n">_unwrap_methods_from_op_logging</span><span class="p">(</span><span class="n">all_stateful_classes</span><span class="p">)</span>
