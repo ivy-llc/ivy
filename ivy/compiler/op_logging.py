@@ -74,6 +74,10 @@ def _wrap_method_for_op_logging(fn, graph, limit_attributes=True, stateful_class
         kwargs = ivy.nested_map(kwargs, lambda v: v, to_mutable=True)
 
         # get array idxs for positional args
+        # ToDo: work out why adding check_nests=True causes errors.
+        #  This is needed in order to support stateful updates of ivy.Containers.
+        # arg_tracked_idxs = ivy.nested_indices_where(
+        #     args, lambda x: ivy.is_array(x) or isinstance(x, stateful_classes), check_nests=True)
         arg_tracked_idxs = ivy.nested_indices_where(
             args, lambda x: ivy.is_array(x) or isinstance(x, stateful_classes))
         arg_param_ids = [_get_id(x) for x in ivy.multi_index_nest(args, arg_tracked_idxs)]
@@ -83,6 +87,10 @@ def _wrap_method_for_op_logging(fn, graph, limit_attributes=True, stateful_class
         arg_param_shapes = [_get_shape(x) for x in ivy.multi_index_nest(args, arg_tracked_idxs)]
 
         # get array idxs for key-word args
+        # ToDo: work out why adding check_nests=True causes errors.
+        #  This is needed in order to support stateful updates of ivy.Containers.
+        # kwarg_tracked_idxs = ivy.nested_indices_where(
+        #     kwargs, lambda x: ivy.is_array(x) or isinstance(x, stateful_classes), check_nests=True)
         kwarg_tracked_idxs = ivy.nested_indices_where(
             kwargs, lambda x: ivy.is_array(x) or isinstance(x, stateful_classes))
         kwarg_param_ids = [_get_id(x) for x in ivy.multi_index_nest(kwargs, kwarg_tracked_idxs)]
@@ -115,6 +123,10 @@ def _wrap_method_for_op_logging(fn, graph, limit_attributes=True, stateful_class
             ret_listified = True
 
         # get array idxs for return
+        # ToDo: work out why adding check_nests=True causes errors.
+        #  This is needed in order to support stateful updates of ivy.Containers.
+        # output_tracked_idxs = ivy.nested_indices_where(
+        #     ret, lambda x: ivy.is_array(x) or isinstance(x, stateful_classes), check_nests=True)
         output_tracked_idxs = ivy.nested_indices_where(
             ret, lambda x: ivy.is_array(x) or isinstance(x, stateful_classes))
         output_param_ids = [_get_id(x) for x in ivy.multi_index_nest(ret, output_tracked_idxs)]
