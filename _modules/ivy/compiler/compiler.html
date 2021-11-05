@@ -213,7 +213,7 @@
 
 
 <span class="k">def</span> <span class="nf">_create_graph</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">stateful</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">arg_stateful_idxs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">kwarg_stateful_idxs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                  <span class="n">output_connected_only</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">include_generators</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+                  <span class="n">output_connected_only</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">include_generators</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">with_array_caching</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 
     <span class="c1"># extra stateful instances modified in the graph</span>
     <span class="n">stateful</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">default</span><span class="p">(</span><span class="n">stateful</span><span class="p">,</span> <span class="p">[])</span>
@@ -236,7 +236,8 @@
 
     <span class="c1"># construct the graph</span>
     <span class="n">graph</span> <span class="o">=</span> <span class="n">Graph</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span> <span class="n">stateful</span><span class="o">=</span><span class="n">stateful</span><span class="p">,</span> <span class="n">arg_stateful_idxs</span><span class="o">=</span><span class="n">arg_stateful_idxs</span><span class="p">,</span>
-                  <span class="n">kwarg_stateful_idxs</span><span class="o">=</span><span class="n">kwarg_stateful_idxs</span><span class="p">,</span> <span class="n">include_generators</span><span class="o">=</span><span class="n">include_generators</span><span class="p">)</span>
+                  <span class="n">kwarg_stateful_idxs</span><span class="o">=</span><span class="n">kwarg_stateful_idxs</span><span class="p">,</span> <span class="n">include_generators</span><span class="o">=</span><span class="n">include_generators</span><span class="p">,</span>
+                  <span class="n">with_array_caching</span><span class="o">=</span><span class="n">with_array_caching</span><span class="p">)</span>
 
     <span class="c1"># wrap all methods for operation logging</span>
     <span class="n">_wrap_methods_for_op_logging</span><span class="p">(</span><span class="n">graph</span><span class="p">,</span> <span class="n">all_stateful_classes</span><span class="p">)</span>
@@ -247,6 +248,7 @@
     <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
         <span class="n">_unwrap_methods_from_op_logging</span><span class="p">(</span><span class="n">all_stateful_classes</span><span class="p">)</span>
         <span class="n">graph</span><span class="o">.</span><span class="n">print_cached_tensors</span><span class="p">()</span>
+        <span class="n">graph</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="n">save_to_disk</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">output_connected_only</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">fname</span><span class="o">=</span><span class="s1">&#39;graph_at_point_of_failure.png&#39;</span><span class="p">)</span>
         <span class="k">raise</span> <span class="n">e</span>
 
     <span class="c1"># unwrap all methods, now all operations have been logged</span>
@@ -275,19 +277,19 @@
     <span class="n">glob</span><span class="o">.</span><span class="n">wrapped_stack</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
     <span class="n">glob</span><span class="o">.</span><span class="n">params_removed_from_args</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
     <span class="n">glob</span><span class="o">.</span><span class="n">pid_to_unique_id_dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
-    <span class="n">glob</span><span class="o">.</span><span class="n">input_connected_pids</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+    <span class="n">glob</span><span class="o">.</span><span class="n">placeholder_pids</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
 
     <span class="c1"># return graph</span>
     <span class="k">return</span> <span class="n">graph</span>
 
 
 <div class="viewcode-block" id="compile_graph"><a class="viewcode-back" href="../../../compiler/compiler/compile_graph.html#ivy.compiler.compiler.compile_graph">[docs]</a><span class="k">def</span> <span class="nf">compile_graph</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">stateful</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">arg_stateful_idxs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">kwarg_stateful_idxs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">include_generators</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-                  <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+                  <span class="n">with_array_caching</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 
     <span class="c1"># create graph</span>
     <span class="n">graph</span> <span class="o">=</span> <span class="n">_create_graph</span><span class="p">(</span>
         <span class="n">fn</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">stateful</span><span class="o">=</span><span class="n">stateful</span><span class="p">,</span> <span class="n">arg_stateful_idxs</span><span class="o">=</span><span class="n">arg_stateful_idxs</span><span class="p">,</span> <span class="n">kwarg_stateful_idxs</span><span class="o">=</span><span class="n">kwarg_stateful_idxs</span><span class="p">,</span>
-        <span class="n">include_generators</span><span class="o">=</span><span class="n">include_generators</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">include_generators</span><span class="o">=</span><span class="n">include_generators</span><span class="p">,</span> <span class="n">with_array_caching</span><span class="o">=</span><span class="n">with_array_caching</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
     <span class="c1"># compile the graph forward pass into an executable function</span>
     <span class="k">return</span> <span class="n">graph</span><span class="o">.</span><span class="n">compiled</span><span class="p">()</span></div>
@@ -295,12 +297,14 @@
 
 <div class="viewcode-block" id="show_graph"><a class="viewcode-back" href="../../../compiler/compiler/show_graph.html#ivy.compiler.compiler.show_graph">[docs]</a><span class="k">def</span> <span class="nf">show_graph</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">stateful</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">arg_stateful_idxs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">kwarg_stateful_idxs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">randomness_factor</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
                <span class="n">save_to_disk</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">with_edge_labels</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">with_arg_labels</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">with_output_labels</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-               <span class="n">output_connected_only</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">include_generators</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">highlight_subgraph</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">fname</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+               <span class="n">output_connected_only</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">include_generators</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">with_array_caching</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">highlight_subgraph</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+               <span class="n">fname</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 
     <span class="c1"># create graph</span>
     <span class="n">graph</span> <span class="o">=</span> <span class="n">_create_graph</span><span class="p">(</span>
         <span class="n">fn</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">stateful</span><span class="o">=</span><span class="n">stateful</span><span class="p">,</span> <span class="n">arg_stateful_idxs</span><span class="o">=</span><span class="n">arg_stateful_idxs</span><span class="p">,</span> <span class="n">kwarg_stateful_idxs</span><span class="o">=</span><span class="n">kwarg_stateful_idxs</span><span class="p">,</span>
-        <span class="n">output_connected_only</span><span class="o">=</span><span class="n">output_connected_only</span><span class="p">,</span> <span class="n">include_generators</span><span class="o">=</span><span class="n">include_generators</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">output_connected_only</span><span class="o">=</span><span class="n">output_connected_only</span><span class="p">,</span> <span class="n">include_generators</span><span class="o">=</span><span class="n">include_generators</span><span class="p">,</span>
+        <span class="n">with_array_caching</span><span class="o">=</span><span class="n">with_array_caching</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
     <span class="c1"># show the compiled graph</span>
     <span class="n">graph</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="n">save_to_disk</span><span class="p">,</span> <span class="n">with_edge_labels</span><span class="p">,</span> <span class="n">with_arg_labels</span><span class="p">,</span> <span class="n">with_output_labels</span><span class="p">,</span> <span class="n">output_connected_only</span><span class="p">,</span>
