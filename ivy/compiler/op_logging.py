@@ -168,10 +168,13 @@ def _wrap_method_for_op_logging(fn, graph, limit_attributes=True, stateful_class
         output_param_ids = [_get_id(x) for x in ivy.multi_index_nest(ret, output_tracked_idxs)]
 
         # maybe add to set of input_connected_pids
-        for pid in arg_param_ids + kwarg_param_ids:
-            if pid in glob.input_connected_pids:
-                [glob.input_connected_pids.add(pid) for pid in output_param_ids]
-                break
+        if fn.__name__ in glob.GENERATOR_METHODS:
+            [glob.input_connected_pids.add(pid) for pid in output_param_ids]
+        else:
+            for pid in arg_param_ids + kwarg_param_ids:
+                if pid in glob.input_connected_pids:
+                    [glob.input_connected_pids.add(pid) for pid in output_param_ids]
+                    break
 
         # wrap the function
         def new_fn(arg_array_vals, kwarg_array_vals):
