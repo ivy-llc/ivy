@@ -3,7 +3,7 @@ op_logging = False
 wrapped_stack = list()
 params_removed_from_args = dict()
 pid_to_unique_id_dict = dict()
-input_connected_pids = set()
+placeholder_pids = set()
 
 
 ARRAY_BUILTINS = ['__neg__', '__pow__', '__rpow__', '__add__', '__radd__', '__iadd__', '__sub__', '__rsub__',
