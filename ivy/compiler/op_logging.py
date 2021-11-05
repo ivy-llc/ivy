@@ -121,7 +121,7 @@ def _wrap_method_for_op_logging(fn, graph, limit_attributes=True, stateful_class
 
         def _maybe_delete_param(x):
             _pid = id(x)
-            if _pid not in glob.input_connected_pids:
+            if _pid not in glob.placeholder_pids and graph.with_array_caching:
                 return x
             glob.params_removed_from_args[_pid] = weakref.ref(x)
 
@@ -169,11 +169,11 @@ def _wrap_method_for_op_logging(fn, graph, limit_attributes=True, stateful_class
 
         # maybe add to set of input_connected_pids
         if fn.__name__ in glob.GENERATOR_METHODS:
-            [glob.input_connected_pids.add(pid) for pid in output_param_ids]
+            [glob.placeholder_pids.add(pid) for pid in output_param_ids]
         else:
             for pid in arg_param_ids + kwarg_param_ids:
-                if pid in glob.input_connected_pids:
-                    [glob.input_connected_pids.add(pid) for pid in output_param_ids]
+                if pid in glob.placeholder_pids:
+                    [glob.placeholder_pids.add(pid) for pid in output_param_ids]
                     break
 
         # wrap the function
