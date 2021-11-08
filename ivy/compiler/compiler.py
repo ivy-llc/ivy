@@ -81,7 +81,7 @@ def _create_graph(fn, *args, stateful=None, arg_stateful_idxs=None, kwarg_statef
 
 
 def compile_graph(fn, *args, stateful=None, arg_stateful_idxs=None, kwarg_stateful_idxs=None, include_generators=True,
-                  with_array_caching=True, **kwargs):
+                  with_array_caching=True, return_graph=False, **kwargs):
 
     # create graph
     graph = _create_graph(
@@ -89,13 +89,18 @@ def compile_graph(fn, *args, stateful=None, arg_stateful_idxs=None, kwarg_statef
         include_generators=include_generators, with_array_caching=with_array_caching, **kwargs)
 
     # compile the graph forward pass into an executable function
-    return graph.compiled()
+    comp_fn = graph.compiled()
+
+    # return
+    if return_graph:
+        return comp_fn, graph
+    return comp_fn
 
 
 def show_graph(fn, *args, stateful=None, arg_stateful_idxs=None, kwarg_stateful_idxs=None, randomness_factor=0.1,
                save_to_disk=False, with_edge_labels=True, with_arg_labels=True, with_output_labels=True,
                output_connected_only=True, include_generators=True, with_array_caching=True, highlight_subgraph=None,
-               fname=None, **kwargs):
+               fname=None, return_graph=False, **kwargs):
 
     # create graph
     graph = _create_graph(
@@ -106,3 +111,7 @@ def show_graph(fn, *args, stateful=None, arg_stateful_idxs=None, kwarg_stateful_
     # show the compiled graph
     graph.show(save_to_disk, with_edge_labels, with_arg_labels, with_output_labels, output_connected_only,
                randomness_factor, highlight_subgraph, fname=fname)
+
+    # return
+    if return_graph:
+        return graph
