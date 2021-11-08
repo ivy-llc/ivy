@@ -1534,14 +1534,31 @@ def set_tmp_dir(tmp_dr):
     TMP_DIR = tmp_dr
 
 
-def print_all_arrays_in_memory():
+def get_all_arrays_in_memory():
     """
-    Prints all arrays which are currently alive.
+    Gets all arrays which are currently alive.
     """
+    all_arrays = list()
     for obj in gc.get_objects():
         # noinspection PyBroadException
         try:
             if ivy.is_array(obj):
-                print(type(obj), obj.size())
+                all_arrays.append(obj)
         except Exception:
             pass
+    return all_arrays
+
+
+def num_arrays_in_memory():
+    """
+    Returns the number of arrays which are currently alive.
+    """
+    return len(get_all_arrays_in_memory())
+
+
+def print_all_arrays_in_memory():
+    """
+    Prints all arrays which are currently alive.
+    """
+    for arr in get_all_arrays_in_memory():
+        print(type(arr), arr.shape)
