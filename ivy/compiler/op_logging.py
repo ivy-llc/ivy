@@ -8,25 +8,9 @@ import importlib
 # local
 from ivy.compiler import globals as glob
 # noinspection PyProtectedMember
-from ivy.compiler.helpers import _get_id, _get_shape, _get_fn_signature
+from ivy.compiler.helpers import _get_raw_id, _get_id, _get_shape, _get_fn_signature, _clone_param
 # noinspection PyProtectedMember
 from ivy.wrapper import _wrap_or_unwrap_methods, NON_WRAPPED_METHODS, ARRAYLESS_RET_METHODS
-
-
-# noinspection PyProtectedMember
-def _clone_param(x, graph):
-    glob.wrapping_paused = True
-    orig_id = id(x)
-    x_copy = ivy.copy_array(x) if ivy.is_array(x) else copy.copy(x)  # copy the param
-    new_id = id(x_copy)
-    if orig_id in graph._stateful_clone_pid_dict:
-        graph._stateful_clone_pid_dict[new_id] = graph._stateful_clone_pid_dict[orig_id]
-    if hasattr(x_copy, '__dict__'):
-        x_copy.__dict__['param_id'] = new_id  # update the id of the new param
-    if hasattr(x, '__dict__'):
-        x.__dict__['param_id'] = new_id  # update the id of the original param (for preserved stateful objects)
-    glob.wrapping_paused = False
-    return x_copy
 
 
 def _wrap_method_for_op_logging(fn, graph, limit_attributes=True, stateful_classes=None):
@@ -123,7 +107,7 @@ def _wrap_method_for_op_logging(fn, graph, limit_attributes=True, stateful_class
             _pid = _get_id(x)
             if _pid not in glob.dependent_pids and graph.with_array_caching:
                 return x
-            glob.params_removed_from_args[_pid] = weakref.ref(x)
+            glob.params_removed_from_args[_get_raw_id(x)] = weakref.ref(x)
 
         ivy.map_nest_at_indices(args, arg_tracked_idxs, _maybe_delete_param)
         ivy.map_nest_at_indices(kwargs, kwarg_tracked_idxs, _maybe_delete_param)
@@ -199,7 +183,6 @@ def _wrap_method_for_op_logging(fn, graph, limit_attributes=True, stateful_class
         new_fn.kwarg_param_var_flags = kwarg_param_var_flags
         new_fn.kwarg_param_shapes = kwarg_param_shapes
 
-        new_fn.output = ret
         new_fn.output_tracked_idxs = output_tracked_idxs
         new_fn.output_param_ids = output_param_ids
         new_fn.output_param_types = output_param_types
