@@ -48,19 +48,37 @@ def _get_nvml_gpu_handle(dev_str):
 
 # Array Printing #
 
-
 # noinspection PyShadowingNames
-def print_all_arrays_on_dev(dev_str):
+def get_all_arrays_on_dev(dev_str):
     """
-    Prints all arrays which are currently alive.
+    Gets all arrays which are currently alive on the specified device.
     """
+    all_arrays = list()
     for obj in gc.get_objects():
         # noinspection PyBroadException
         try:
             if ivy.is_array(obj) and ivy.dev_str(obj) == dev_str:
-                print(type(obj), obj.size())
+                all_arrays.append(obj)
         except Exception:
             pass
+    return all_arrays
+
+
+# noinspection PyShadowingNames
+def num_arrays_on_dev(dev_str):
+    """
+    Returns the number of arrays which are currently alive on the specified device.
+    """
+    return len(get_all_arrays_on_dev(dev_str))
+
+
+# noinspection PyShadowingNames
+def print_all_arrays_on_dev(dev_str):
+    """
+    Prints all arrays which are currently alive on the specified device.
+    """
+    for arr in get_all_arrays_on_dev(dev_str):
+        print(type(arr), arr.shape)
 
 
 # Retreival #
