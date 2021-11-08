@@ -188,6 +188,8 @@
 <li class="toctree-l2"><a class="reference internal" href="general/queue_timeout.html">queue_timeout</a></li>
 <li class="toctree-l2"><a class="reference internal" href="general/tmp_dir.html">tmp_dir</a></li>
 <li class="toctree-l2"><a class="reference internal" href="general/set_tmp_dir.html">set_tmp_dir</a></li>
+<li class="toctree-l2"><a class="reference internal" href="general/get_all_arrays_in_memory.html">get_all_arrays_in_memory</a></li>
+<li class="toctree-l2"><a class="reference internal" href="general/num_arrays_in_memory.html">num_arrays_in_memory</a></li>
 <li class="toctree-l2"><a class="reference internal" href="general/print_all_arrays_in_memory.html">print_all_arrays_in_memory</a></li>
 </ul>
 </li>
@@ -1001,6 +1003,12 @@ The shape of the array is preserved, but the elements are reordered.</p>
 </dd></dl>
 
 <dl class="py function">
+<dt id="ivy.core.general.get_all_arrays_in_memory">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">get_all_arrays_in_memory</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#get_all_arrays_in_memory"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.get_all_arrays_in_memory" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets all arrays which are currently alive.</p>
+</dd></dl>
+
+<dl class="py function">
 <dt id="ivy.core.general.get_min_base">
 <code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">get_min_base</code><span class="sig-paren">(</span><span class="sig-paren">)</span> &#x2192; float<a class="reference internal" href="../_modules/ivy/core/general.html#get_min_base"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.get_min_base" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the global minimum base used by ivy for numerically stable power raising.</p>
@@ -1272,6 +1280,12 @@ Default is ‘float32’.</p></li>
 <dd class="field-even"><p>Multiprocessing module</p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.core.general.num_arrays_in_memory">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">num_arrays_in_memory</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#num_arrays_in_memory"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.num_arrays_in_memory" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the number of arrays which are currently alive.</p>
 </dd></dl>
 
 <dl class="py function">
@@ -1908,6 +1922,8 @@ If not given, then the type of the original array is used.</p></li>
 <li class="toctree-l1"><a class="reference internal" href="general/queue_timeout.html">queue_timeout</a></li>
 <li class="toctree-l1"><a class="reference internal" href="general/tmp_dir.html">tmp_dir</a></li>
 <li class="toctree-l1"><a class="reference internal" href="general/set_tmp_dir.html">set_tmp_dir</a></li>
+<li class="toctree-l1"><a class="reference internal" href="general/get_all_arrays_in_memory.html">get_all_arrays_in_memory</a></li>
+<li class="toctree-l1"><a class="reference internal" href="general/num_arrays_in_memory.html">num_arrays_in_memory</a></li>
 <li class="toctree-l1"><a class="reference internal" href="general/print_all_arrays_in_memory.html">print_all_arrays_in_memory</a></li>
 </ul>
 </div>

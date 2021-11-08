@@ -251,19 +251,37 @@
 
 <span class="c1"># Array Printing #</span>
 
-
 <span class="c1"># noinspection PyShadowingNames</span>
-<div class="viewcode-block" id="print_all_arrays_on_dev"><a class="viewcode-back" href="../../../core/device/print_all_arrays_on_dev.html#ivy.core.device.print_all_arrays_on_dev">[docs]</a><span class="k">def</span> <span class="nf">print_all_arrays_on_dev</span><span class="p">(</span><span class="n">dev_str</span><span class="p">):</span>
+<div class="viewcode-block" id="get_all_arrays_on_dev"><a class="viewcode-back" href="../../../core/device/get_all_arrays_on_dev.html#ivy.core.device.get_all_arrays_on_dev">[docs]</a><span class="k">def</span> <span class="nf">get_all_arrays_on_dev</span><span class="p">(</span><span class="n">dev_str</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Prints all arrays which are currently alive.</span>
+<span class="sd">    Gets all arrays which are currently alive on the specified device.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">all_arrays</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
     <span class="k">for</span> <span class="n">obj</span> <span class="ow">in</span> <span class="n">gc</span><span class="o">.</span><span class="n">get_objects</span><span class="p">():</span>
         <span class="c1"># noinspection PyBroadException</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_array</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span> <span class="ow">and</span> <span class="n">ivy</span><span class="o">.</span><span class="n">dev_str</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span> <span class="o">==</span> <span class="n">dev_str</span><span class="p">:</span>
-                <span class="nb">print</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">obj</span><span class="p">),</span> <span class="n">obj</span><span class="o">.</span><span class="n">size</span><span class="p">())</span>
+                <span class="n">all_arrays</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
-            <span class="k">pass</span></div>
+            <span class="k">pass</span>
+    <span class="k">return</span> <span class="n">all_arrays</span></div>
+
+
+<span class="c1"># noinspection PyShadowingNames</span>
+<div class="viewcode-block" id="num_arrays_on_dev"><a class="viewcode-back" href="../../../core/device/num_arrays_on_dev.html#ivy.core.device.num_arrays_on_dev">[docs]</a><span class="k">def</span> <span class="nf">num_arrays_on_dev</span><span class="p">(</span><span class="n">dev_str</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Returns the number of arrays which are currently alive on the specified device.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="n">get_all_arrays_on_dev</span><span class="p">(</span><span class="n">dev_str</span><span class="p">))</span></div>
+
+
+<span class="c1"># noinspection PyShadowingNames</span>
+<div class="viewcode-block" id="print_all_arrays_on_dev"><a class="viewcode-back" href="../../../core/device/print_all_arrays_on_dev.html#ivy.core.device.print_all_arrays_on_dev">[docs]</a><span class="k">def</span> <span class="nf">print_all_arrays_on_dev</span><span class="p">(</span><span class="n">dev_str</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Prints all arrays which are currently alive on the specified device.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">arr</span> <span class="ow">in</span> <span class="n">get_all_arrays_on_dev</span><span class="p">(</span><span class="n">dev_str</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">arr</span><span class="p">),</span> <span class="n">arr</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span></div>
 
 
 <span class="c1"># Retreival #</span>
