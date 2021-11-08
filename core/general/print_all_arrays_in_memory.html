@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Profiler &mdash; Ivy 1.0 documentation</title>
+  <title>print_all_arrays_in_memory &mdash; Ivy 1.0 documentation</title>
   
 
   
@@ -36,8 +36,8 @@
   <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="General" href="../general.html" />
-    <link rel="prev" title="DevMapperMultiProc" href="DevMapperMultiProc.html" /> 
+    <link rel="next" title="Gradients" href="../gradients.html" />
+    <link rel="prev" title="set_tmp_dir" href="set_tmp_dir.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -100,53 +100,97 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../compilation.html">Compilation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../container.html">Container</a></li>
-<li class="toctree-l1 current"><a class="reference internal" href="../device.html">Device</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="print_all_arrays_on_dev.html">print_all_arrays_on_dev</a></li>
-<li class="toctree-l2"><a class="reference internal" href="dev.html">dev</a></li>
-<li class="toctree-l2"><a class="reference internal" href="dev_str.html">dev_str</a></li>
-<li class="toctree-l2"><a class="reference internal" href="dev_to_str.html">dev_to_str</a></li>
-<li class="toctree-l2"><a class="reference internal" href="str_to_dev.html">str_to_dev</a></li>
-<li class="toctree-l2"><a class="reference internal" href="total_mem_on_dev.html">total_mem_on_dev</a></li>
-<li class="toctree-l2"><a class="reference internal" href="used_mem_on_dev.html">used_mem_on_dev</a></li>
-<li class="toctree-l2"><a class="reference internal" href="percent_used_mem_on_dev.html">percent_used_mem_on_dev</a></li>
-<li class="toctree-l2"><a class="reference internal" href="dev_util.html">dev_util</a></li>
-<li class="toctree-l2"><a class="reference internal" href="gpu_is_available.html">gpu_is_available</a></li>
-<li class="toctree-l2"><a class="reference internal" href="num_cpu_cores.html">num_cpu_cores</a></li>
-<li class="toctree-l2"><a class="reference internal" href="num_gpus.html">num_gpus</a></li>
-<li class="toctree-l2"><a class="reference internal" href="tpu_is_available.html">tpu_is_available</a></li>
-<li class="toctree-l2"><a class="reference internal" href="default_device.html">default_device</a></li>
-<li class="toctree-l2"><a class="reference internal" href="set_default_device.html">set_default_device</a></li>
-<li class="toctree-l2"><a class="reference internal" href="to_dev.html">to_dev</a></li>
-<li class="toctree-l2"><a class="reference internal" href="split_factor.html">split_factor</a></li>
-<li class="toctree-l2"><a class="reference internal" href="set_split_factor.html">set_split_factor</a></li>
-<li class="toctree-l2"><a class="reference internal" href="split_func_call.html">split_func_call</a></li>
-<li class="toctree-l2"><a class="reference internal" href="dev_dist_array.html">dev_dist_array</a></li>
-<li class="toctree-l2"><a class="reference internal" href="dev_dist.html">dev_dist</a></li>
-<li class="toctree-l2"><a class="reference internal" href="dev_dist_iter.html">dev_dist_iter</a></li>
-<li class="toctree-l2"><a class="reference internal" href="dev_dist_nest.html">dev_dist_nest</a></li>
-<li class="toctree-l2"><a class="reference internal" href="dev_clone_array.html">dev_clone_array</a></li>
-<li class="toctree-l2"><a class="reference internal" href="dev_clone.html">dev_clone</a></li>
-<li class="toctree-l2"><a class="reference internal" href="dev_clone_iter.html">dev_clone_iter</a></li>
-<li class="toctree-l2"><a class="reference internal" href="dev_clone_nest.html">dev_clone_nest</a></li>
-<li class="toctree-l2"><a class="reference internal" href="dev_unify_array.html">dev_unify_array</a></li>
-<li class="toctree-l2"><a class="reference internal" href="dev_unify.html">dev_unify</a></li>
-<li class="toctree-l2"><a class="reference internal" href="dev_unify_iter.html">dev_unify_iter</a></li>
-<li class="toctree-l2"><a class="reference internal" href="dev_unify_nest.html">dev_unify_nest</a></li>
-<li class="toctree-l2"><a class="reference internal" href="MultiDevItem.html">MultiDevItem</a></li>
-<li class="toctree-l2"><a class="reference internal" href="MultiDevIter.html">MultiDevIter</a></li>
-<li class="toctree-l2"><a class="reference internal" href="MultiDevNest.html">MultiDevNest</a></li>
-<li class="toctree-l2"><a class="reference internal" href="DevDistItem.html">DevDistItem</a></li>
-<li class="toctree-l2"><a class="reference internal" href="DevDistIter.html">DevDistIter</a></li>
-<li class="toctree-l2"><a class="reference internal" href="DevDistNest.html">DevDistNest</a></li>
-<li class="toctree-l2"><a class="reference internal" href="DevClonedItem.html">DevClonedItem</a></li>
-<li class="toctree-l2"><a class="reference internal" href="DevClonedIter.html">DevClonedIter</a></li>
-<li class="toctree-l2"><a class="reference internal" href="DevClonedNest.html">DevClonedNest</a></li>
-<li class="toctree-l2"><a class="reference internal" href="DevMapper.html">DevMapper</a></li>
-<li class="toctree-l2"><a class="reference internal" href="DevMapperMultiProc.html">DevMapperMultiProc</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">Profiler</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../device.html">Device</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../general.html">General</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="array.html">array</a></li>
+<li class="toctree-l2"><a class="reference internal" href="is_array.html">is_array</a></li>
+<li class="toctree-l2"><a class="reference internal" href="copy_array.html">copy_array</a></li>
+<li class="toctree-l2"><a class="reference internal" href="array_equal.html">array_equal</a></li>
+<li class="toctree-l2"><a class="reference internal" href="arrays_equal.html">arrays_equal</a></li>
+<li class="toctree-l2"><a class="reference internal" href="equal.html">equal</a></li>
+<li class="toctree-l2"><a class="reference internal" href="to_numpy.html">to_numpy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="to_scalar.html">to_scalar</a></li>
+<li class="toctree-l2"><a class="reference internal" href="to_list.html">to_list</a></li>
+<li class="toctree-l2"><a class="reference internal" href="shape.html">shape</a></li>
+<li class="toctree-l2"><a class="reference internal" href="get_num_dims.html">get_num_dims</a></li>
+<li class="toctree-l2"><a class="reference internal" href="minimum.html">minimum</a></li>
+<li class="toctree-l2"><a class="reference internal" href="maximum.html">maximum</a></li>
+<li class="toctree-l2"><a class="reference internal" href="clip.html">clip</a></li>
+<li class="toctree-l2"><a class="reference internal" href="clip_vector_norm.html">clip_vector_norm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="clip_matrix_norm.html">clip_matrix_norm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="round.html">round</a></li>
+<li class="toctree-l2"><a class="reference internal" href="floormod.html">floormod</a></li>
+<li class="toctree-l2"><a class="reference internal" href="floor.html">floor</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ceil.html">ceil</a></li>
+<li class="toctree-l2"><a class="reference internal" href="abs.html">abs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="argmax.html">argmax</a></li>
+<li class="toctree-l2"><a class="reference internal" href="argmin.html">argmin</a></li>
+<li class="toctree-l2"><a class="reference internal" href="argsort.html">argsort</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cast.html">cast</a></li>
+<li class="toctree-l2"><a class="reference internal" href="arange.html">arange</a></li>
+<li class="toctree-l2"><a class="reference internal" href="linspace.html">linspace</a></li>
+<li class="toctree-l2"><a class="reference internal" href="logspace.html">logspace</a></li>
+<li class="toctree-l2"><a class="reference internal" href="concatenate.html">concatenate</a></li>
+<li class="toctree-l2"><a class="reference internal" href="flip.html">flip</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stack.html">stack</a></li>
+<li class="toctree-l2"><a class="reference internal" href="unstack.html">unstack</a></li>
+<li class="toctree-l2"><a class="reference internal" href="split.html">split</a></li>
+<li class="toctree-l2"><a class="reference internal" href="repeat.html">repeat</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tile.html">tile</a></li>
+<li class="toctree-l2"><a class="reference internal" href="constant_pad.html">constant_pad</a></li>
+<li class="toctree-l2"><a class="reference internal" href="zero_pad.html">zero_pad</a></li>
+<li class="toctree-l2"><a class="reference internal" href="fourier_encode.html">fourier_encode</a></li>
+<li class="toctree-l2"><a class="reference internal" href="swapaxes.html">swapaxes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="transpose.html">transpose</a></li>
+<li class="toctree-l2"><a class="reference internal" href="expand_dims.html">expand_dims</a></li>
+<li class="toctree-l2"><a class="reference internal" href="where.html">where</a></li>
+<li class="toctree-l2"><a class="reference internal" href="indices_where.html">indices_where</a></li>
+<li class="toctree-l2"><a class="reference internal" href="isnan.html">isnan</a></li>
+<li class="toctree-l2"><a class="reference internal" href="value_is_nan.html">value_is_nan</a></li>
+<li class="toctree-l2"><a class="reference internal" href="has_nans.html">has_nans</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reshape.html">reshape</a></li>
+<li class="toctree-l2"><a class="reference internal" href="broadcast_to.html">broadcast_to</a></li>
+<li class="toctree-l2"><a class="reference internal" href="squeeze.html">squeeze</a></li>
+<li class="toctree-l2"><a class="reference internal" href="zeros.html">zeros</a></li>
+<li class="toctree-l2"><a class="reference internal" href="zeros_like.html">zeros_like</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ones.html">ones</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ones_like.html">ones_like</a></li>
+<li class="toctree-l2"><a class="reference internal" href="one_hot.html">one_hot</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cross.html">cross</a></li>
+<li class="toctree-l2"><a class="reference internal" href="matmul.html">matmul</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cumsum.html">cumsum</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cumprod.html">cumprod</a></li>
+<li class="toctree-l2"><a class="reference internal" href="identity.html">identity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="meshgrid.html">meshgrid</a></li>
+<li class="toctree-l2"><a class="reference internal" href="scatter_flat.html">scatter_flat</a></li>
+<li class="toctree-l2"><a class="reference internal" href="scatter_nd.html">scatter_nd</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gather.html">gather</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gather_nd.html">gather_nd</a></li>
+<li class="toctree-l2"><a class="reference internal" href="linear_resample.html">linear_resample</a></li>
+<li class="toctree-l2"><a class="reference internal" href="exists.html">exists</a></li>
+<li class="toctree-l2"><a class="reference internal" href="default.html">default</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dtype.html">dtype</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dtype_to_str.html">dtype_to_str</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dtype_str.html">dtype_str</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cache_fn.html">cache_fn</a></li>
+<li class="toctree-l2"><a class="reference internal" href="current_framework_str.html">current_framework_str</a></li>
+<li class="toctree-l2"><a class="reference internal" href="einops_rearrange.html">einops_rearrange</a></li>
+<li class="toctree-l2"><a class="reference internal" href="einops_reduce.html">einops_reduce</a></li>
+<li class="toctree-l2"><a class="reference internal" href="einops_repeat.html">einops_repeat</a></li>
+<li class="toctree-l2"><a class="reference internal" href="get_min_denominator.html">get_min_denominator</a></li>
+<li class="toctree-l2"><a class="reference internal" href="set_min_denominator.html">set_min_denominator</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stable_divide.html">stable_divide</a></li>
+<li class="toctree-l2"><a class="reference internal" href="get_min_base.html">get_min_base</a></li>
+<li class="toctree-l2"><a class="reference internal" href="set_min_base.html">set_min_base</a></li>
+<li class="toctree-l2"><a class="reference internal" href="stable_pow.html">stable_pow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="multiprocessing.html">multiprocessing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="set_queue_timeout.html">set_queue_timeout</a></li>
+<li class="toctree-l2"><a class="reference internal" href="queue_timeout.html">queue_timeout</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tmp_dir.html">tmp_dir</a></li>
+<li class="toctree-l2"><a class="reference internal" href="set_tmp_dir.html">set_tmp_dir</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">print_all_arrays_in_memory</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../general.html">General</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../gradients.html">Gradients</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../image.html">Image</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../linalg.html">Linalg</a></li>
@@ -230,15 +274,15 @@
     
       <li><a href="../../index.html">Docs</a> &raquo;</li>
         
-          <li><a href="../device.html">Device</a> &raquo;</li>
+          <li><a href="../general.html">General</a> &raquo;</li>
         
-      <li>Profiler</li>
+      <li>print_all_arrays_in_memory</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="../../_sources/core/device/Profiler.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../_sources/core/general/print_all_arrays_in_memory.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -251,28 +295,12 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="profiler">
-<h1>Profiler<a class="headerlink" href="#profiler" title="Permalink to this headline">¶</a></h1>
-<dl class="py class">
-<dt id="ivy.core.device.Profiler">
-<em class="property">class </em><code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">Profiler</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">save_dir</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/device.html#Profiler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.device.Profiler" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">abc.ABC</span></code></p>
-<dl class="py method">
-<dt id="ivy.core.device.Profiler.__init__">
-<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">save_dir</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/device.html#Profiler.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.device.Profiler.__init__" title="Permalink to this definition">¶</a></dt>
-<dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
-</dd></dl>
-
-<dl class="py method">
-<dt id="ivy.core.device.Profiler.start">
-<em class="property">abstract </em><code class="sig-name descname">start</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/device.html#Profiler.start"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.device.Profiler.start" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
-<dt id="ivy.core.device.Profiler.stop">
-<em class="property">abstract </em><code class="sig-name descname">stop</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/device.html#Profiler.stop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.device.Profiler.stop" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
+  <div class="section" id="print-all-arrays-in-memory">
+<h1>print_all_arrays_in_memory<a class="headerlink" href="#print-all-arrays-in-memory" title="Permalink to this headline">¶</a></h1>
+<dl class="py function">
+<dt id="ivy.core.general.print_all_arrays_in_memory">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">print_all_arrays_in_memory</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/general.html#print_all_arrays_in_memory"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.print_all_arrays_in_memory" title="Permalink to this definition">¶</a></dt>
+<dd><p>Prints all arrays which are currently alive.</p>
 </dd></dl>
 
 <div class="line-block">
@@ -290,10 +318,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="../general.html" class="btn btn-neutral float-right" title="General" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="../gradients.html" class="btn btn-neutral float-right" title="Gradients" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="DevMapperMultiProc.html" class="btn btn-neutral float-left" title="DevMapperMultiProc" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="set_tmp_dir.html" class="btn btn-neutral float-left" title="set_tmp_dir" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

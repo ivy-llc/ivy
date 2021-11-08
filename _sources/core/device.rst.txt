@@ -12,6 +12,7 @@ Device
    :maxdepth: -1
    :caption: Device
 
+   device/print_all_arrays_on_dev.rst
    device/dev.rst
    device/dev_str.rst
    device/dev_to_str.rst
