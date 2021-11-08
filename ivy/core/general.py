@@ -3,6 +3,7 @@ Collection of general Ivy functions.
 """
 
 # global
+import gc
 import math
 import einops
 import numpy as np
@@ -1531,3 +1532,16 @@ def set_tmp_dir(tmp_dr):
     """
     global TMP_DIR
     TMP_DIR = tmp_dr
+
+
+def print_all_arrays_in_memory():
+    """
+    Prints all arrays which are currently alive.
+    """
+    for obj in gc.get_objects():
+        # noinspection PyBroadException
+        try:
+            if ivy.is_array(obj):
+                print(type(obj), obj.size())
+        except Exception:
+            pass
