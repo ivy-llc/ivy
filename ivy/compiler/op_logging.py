@@ -169,7 +169,7 @@ def _wrap_method_for_op_logging(fn, graph, limit_attributes=True, stateful_class
 
         # maybe add to set of input_connected_pids
         if graph.with_array_caching:
-            if fn.__name__ in glob.GENERATOR_METHODS:
+            if fn.__name__ in glob.GENERATOR_METHODS and graph.include_generators:
                 [glob.placeholder_pids.add(pid) for pid in output_param_ids]
             else:
                 for pid in arg_param_ids + kwarg_param_ids:
