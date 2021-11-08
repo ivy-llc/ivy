@@ -909,6 +909,21 @@ class Graph:
             else:
                 plt.savefig(fname, bbox_inches='tight', pad_inches=0)
 
+    def debug_info(self):
+        # ToDo: add any other useful attributes to this container for debugging
+        return ivy.Container(
+            pid_to_functions_dict={
+                str(k): {'name': v.__name__, 'arg_pids': v.arg_param_ids, 'kwarg_pids': v.kwarg_param_ids}
+                for k, v in self._pid_to_functions_dict.items()})
+
+    def show_debug_info(self):
+        print(self.debug_info())
+
+    def save_debug_info(self, fname):
+        if fname[-8:] != '.pickled':
+            fname = '.'.join(fname.split('.')[:-1]) + '.pickled'
+        self.debug_info().to_disk_as_pickled(fname)
+
     def print_cached_tensors(self, fname=None):
         all_tensors = ivy.Container()
         for fn in self._pid_to_functions_dict.values():
