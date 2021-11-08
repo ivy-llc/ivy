@@ -28,14 +28,14 @@ def _get_shape(x_in):
 def _get_id(x):
     glob.wrapping_paused = True
     if hasattr(x, 'param_id'):
-        glob.wrapping_paused = False
-        return x.__dict__['param_id']
+        pid_raw = x.__dict__['param_id']
+    else:
+        pid_raw = id(x)
+    if pid_raw in glob.params_removed_from_args and not ivy.exists(glob.params_removed_from_args[pid_raw]()):
+        del glob.params_removed_from_args[pid_raw]
+        glob.pid_to_unique_id_dict[pid_raw] = np.random.randint(0, sys.maxsize)
     glob.wrapping_paused = False
-    pid = id(x)
-    if pid in glob.params_removed_from_args and not ivy.exists(glob.params_removed_from_args[pid]()):
-        del glob.params_removed_from_args[pid]
-        glob.pid_to_unique_id_dict[pid] = np.random.randint(0, sys.maxsize)
-    return glob.pid_to_unique_id_dict[pid] if pid in glob.pid_to_unique_id_dict else pid
+    return glob.pid_to_unique_id_dict[pid_raw] if pid_raw in glob.pid_to_unique_id_dict else pid_raw
 
 
 def _terminal_pids_to_key(terminal_pids):
