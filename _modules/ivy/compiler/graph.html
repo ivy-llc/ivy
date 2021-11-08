@@ -376,6 +376,10 @@
     <span class="k">def</span> <span class="nf">with_array_caching</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_with_array_caching</span>
 
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">include_generators</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_include_generators</span>
+
     <span class="c1"># Foward with Op Logging #</span>
     <span class="c1"># -----------------------#</span>
 
@@ -1116,7 +1120,12 @@
         <span class="c1"># ToDo: add any other useful attributes to this container for debugging</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span>
             <span class="n">pid_to_functions_dict</span><span class="o">=</span><span class="p">{</span>
-                <span class="nb">str</span><span class="p">(</span><span class="n">k</span><span class="p">):</span> <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="n">v</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="s1">&#39;arg_pids&#39;</span><span class="p">:</span> <span class="n">v</span><span class="o">.</span><span class="n">arg_param_ids</span><span class="p">,</span> <span class="s1">&#39;kwarg_pids&#39;</span><span class="p">:</span> <span class="n">v</span><span class="o">.</span><span class="n">kwarg_param_ids</span><span class="p">}</span>
+                <span class="nb">str</span><span class="p">(</span><span class="n">k</span><span class="p">):</span> <span class="p">{</span><span class="n">k_</span><span class="p">:</span> <span class="n">v_</span> <span class="k">for</span> <span class="n">k_</span><span class="p">,</span> <span class="n">v_</span> <span class="ow">in</span>
+                         <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="n">v</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span>
+                          <span class="s1">&#39;args&#39;</span><span class="p">:</span> <span class="n">v</span><span class="o">.</span><span class="n">args</span><span class="p">,</span>
+                          <span class="s1">&#39;arg_pids&#39;</span><span class="p">:</span> <span class="n">v</span><span class="o">.</span><span class="n">arg_param_ids</span><span class="p">,</span>
+                          <span class="s1">&#39;kwargs&#39;</span><span class="p">:</span> <span class="n">v</span><span class="o">.</span><span class="n">kwargs</span><span class="p">,</span>
+                          <span class="s1">&#39;kwarg_pids&#39;</span><span class="p">:</span> <span class="n">v</span><span class="o">.</span><span class="n">kwarg_param_ids</span><span class="p">}</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">v_</span><span class="p">}</span>
                 <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pid_to_functions_dict</span><span class="o">.</span><span class="n">items</span><span class="p">()})</span></div>
 
 <div class="viewcode-block" id="Graph.show_debug_info"><a class="viewcode-back" href="../../../compiler/graph.html#ivy.compiler.graph.Graph.show_debug_info">[docs]</a>    <span class="k">def</span> <span class="nf">show_debug_info</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
