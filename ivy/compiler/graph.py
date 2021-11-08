@@ -173,6 +173,10 @@ class Graph:
     def with_array_caching(self):
         return self._with_array_caching
 
+    @property
+    def include_generators(self):
+        return self._include_generators
+
     # Foward with Op Logging #
     # -----------------------#
 
@@ -913,7 +917,12 @@ class Graph:
         # ToDo: add any other useful attributes to this container for debugging
         return ivy.Container(
             pid_to_functions_dict={
-                str(k): {'name': v.__name__, 'arg_pids': v.arg_param_ids, 'kwarg_pids': v.kwarg_param_ids}
+                str(k): {k_: v_ for k_, v_ in
+                         {'name': v.__name__,
+                          'args': v.args,
+                          'arg_pids': v.arg_param_ids,
+                          'kwargs': v.kwargs,
+                          'kwarg_pids': v.kwarg_param_ids}.items() if v_}
                 for k, v in self._pid_to_functions_dict.items()})
 
     def show_debug_info(self):

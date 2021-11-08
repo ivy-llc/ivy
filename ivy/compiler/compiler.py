@@ -45,7 +45,11 @@ def _create_graph(fn, *args, stateful=None, arg_stateful_idxs=None, kwarg_statef
     except Exception as e:
         _unwrap_methods_from_op_logging(all_stateful_classes)
         graph.print_cached_tensors()
-        graph.show(save_to_disk=True, output_connected_only=False, fname='graph_at_point_of_failure.png')
+        # noinspection PyBroadException
+        try:
+            graph.show(save_to_disk=True, output_connected_only=False, fname='graph_at_point_of_failure.png')
+        except Exception:
+            pass
         raise e
 
     # unwrap all methods, now all operations have been logged

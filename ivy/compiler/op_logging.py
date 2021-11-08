@@ -168,13 +168,14 @@ def _wrap_method_for_op_logging(fn, graph, limit_attributes=True, stateful_class
         output_param_ids = [_get_id(x) for x in ivy.multi_index_nest(ret, output_tracked_idxs)]
 
         # maybe add to set of input_connected_pids
-        if fn.__name__ in glob.GENERATOR_METHODS:
-            [glob.placeholder_pids.add(pid) for pid in output_param_ids]
-        else:
-            for pid in arg_param_ids + kwarg_param_ids:
-                if pid in glob.placeholder_pids:
-                    [glob.placeholder_pids.add(pid) for pid in output_param_ids]
-                    break
+        if graph.with_array_caching:
+            if fn.__name__ in glob.GENERATOR_METHODS:
+                [glob.placeholder_pids.add(pid) for pid in output_param_ids]
+            else:
+                for pid in arg_param_ids + kwarg_param_ids:
+                    if pid in glob.placeholder_pids:
+                        [glob.placeholder_pids.add(pid) for pid in output_param_ids]
+                        break
 
         # wrap the function
         def new_fn(arg_array_vals, kwarg_array_vals):
@@ -209,7 +210,8 @@ def _wrap_method_for_op_logging(fn, graph, limit_attributes=True, stateful_class
         new_fn.signature = _get_fn_signature(backend_fn)
         new_fn.terminal = True
         new_fn.is_constant = len(arg_param_ids + kwarg_param_ids) == 0 and \
-                             fn.__name__ not in glob.GENERATOR_METHODS[ivy.current_framework_str()]
+                             (not graph.include_generators or
+                              fn.__name__ not in glob.GENERATOR_METHODS[ivy.current_framework_str()])
 
         fns_in = [graph._pid_to_functions_dict[pid]
                   for pid in arg_param_ids + kwarg_param_ids if pid in graph._pid_to_functions_dict]
