@@ -78,7 +78,7 @@ def _create_graph(fn, *args, stateful=None, arg_stateful_idxs=None, kwarg_statef
     glob.wrapped_stack.clear()
     glob.params_removed_from_args = dict()
     glob.pid_to_unique_id_dict = dict()
-    glob.placeholder_pids = set()
+    glob.dependent_pids = set()
 
     # return graph
     return graph
