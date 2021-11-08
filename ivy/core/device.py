@@ -4,6 +4,7 @@ Collection of device Ivy functions.
 
 # global
 import os
+import gc
 import abc
 import math
 import time
@@ -44,6 +45,23 @@ def _get_nvml_gpu_handle(dev_str):
 
 # Device Queries #
 # ---------------#
+
+# Array Printing #
+
+
+# noinspection PyShadowingNames
+def print_all_arrays_on_dev(dev_str):
+    """
+    Prints all arrays which are currently alive.
+    """
+    for obj in gc.get_objects():
+        # noinspection PyBroadException
+        try:
+            if ivy.is_array(obj) and ivy.dev_str(obj) == dev_str:
+                print(type(obj), obj.size())
+        except Exception:
+            pass
+
 
 # Retreival #
 
