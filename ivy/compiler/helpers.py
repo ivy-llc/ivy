@@ -1,6 +1,7 @@
 # global
 import ivy
 import sys
+import copy
 import types
 import numbers
 import inspect
@@ -9,6 +10,22 @@ import numpy as np
 
 # local
 from ivy.compiler import globals as glob
+
+
+# noinspection PyProtectedMember
+def _clone_param(x, graph):
+    glob.wrapping_paused = True
+    orig_id = id(x)
+    x_copy = ivy.copy_array(x) if ivy.is_array(x) else copy.copy(x)  # copy the param
+    new_id = id(x_copy)
+    if orig_id in graph._stateful_clone_pid_dict:
+        graph._stateful_clone_pid_dict[new_id] = graph._stateful_clone_pid_dict[orig_id]
+    if hasattr(x_copy, '__dict__'):
+        x_copy.__dict__['param_id'] = new_id  # update the id of the new param
+    if hasattr(x, '__dict__'):
+        x.__dict__['param_id'] = new_id  # update the id of the original param (for preserved stateful objects)
+    glob.wrapping_paused = False
+    return x_copy
 
 
 def _get_shape(x_in):
@@ -24,18 +41,25 @@ def _get_shape(x_in):
     glob.wrapping_paused = False
     return None
 
-
-def _get_id(x):
+def _get_raw_id(x):
     glob.wrapping_paused = True
     if hasattr(x, 'param_id'):
         pid_raw = x.__dict__['param_id']
     else:
         pid_raw = id(x)
+    glob.wrapping_paused = False
+    return pid_raw
+
+
+def _get_id(x):
+    glob.wrapping_paused = True
+    pid_raw = _get_raw_id(x)
     if pid_raw in glob.params_removed_from_args and not ivy.exists(glob.params_removed_from_args[pid_raw]()):
         del glob.params_removed_from_args[pid_raw]
         glob.pid_to_unique_id_dict[pid_raw] = np.random.randint(0, sys.maxsize)
+    pid = glob.pid_to_unique_id_dict[pid_raw] if pid_raw in glob.pid_to_unique_id_dict else pid_raw
     glob.wrapping_paused = False
-    return glob.pid_to_unique_id_dict[pid_raw] if pid_raw in glob.pid_to_unique_id_dict else pid_raw
+    return pid
 
 
 def _terminal_pids_to_key(terminal_pids):
