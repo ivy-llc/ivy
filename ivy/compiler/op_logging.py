@@ -241,7 +241,7 @@ def _wrap_method_for_op_logging(fn, graph, limit_attributes=True, stateful_class
                     except Exception:
                         pass
                     raise Exception(
-                        'tried to add {} to graph._functions_dict, but function {} with the same output pid {} '
+                        '\n\ntried to add {} to graph._functions_dict, but function {} with the same output pid {} '
                         'already exists!'.format(
                             new_fn.__name__ + '(*{}, **{})'.format(new_fn.args, new_fn.kwargs),
                             graph._pid_to_functions_dict[pid].__name__ + '(*{}, **{})'.format(
