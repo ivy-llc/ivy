@@ -183,7 +183,6 @@ def _wrap_method_for_op_logging(fn, graph, limit_attributes=True, stateful_class
         new_fn.kwarg_param_var_flags = kwarg_param_var_flags
         new_fn.kwarg_param_shapes = kwarg_param_shapes
 
-        new_fn.output = ret  # ToDo: get compilation working with this line removed
         new_fn.output_tracked_idxs = output_tracked_idxs
         new_fn.output_param_ids = output_param_ids
         new_fn.output_param_types = output_param_types
