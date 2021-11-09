@@ -42,7 +42,7 @@ def _get_raw_id(x):
 def _get_id(x):
     glob.wrapping_paused = True
     pid_raw = _get_raw_id(x)
-    if pid_raw in glob.raw_pids_to_weakrefs and not ivy.exists(lambda: glob.raw_pids_to_weakrefs[pid_raw]()):
+    if pid_raw in glob.raw_pids_to_weakrefs and not ivy.exists(glob.raw_pids_to_weakrefs[pid_raw]()):
         glob.raw_pids_to_weakrefs[pid_raw] = lambda: False
         glob.raw_pids_to_unique_pids[pid_raw] = np.random.randint(0, sys.maxsize)
     pid = glob.raw_pids_to_unique_pids[pid_raw] if pid_raw in glob.raw_pids_to_unique_pids else pid_raw
