@@ -4,6 +4,7 @@ import sys
 import copy
 import types
 import numbers
+import weakref
 import inspect
 import functools
 import numpy as np
@@ -28,19 +29,6 @@ def _clone_param(x, graph):
     return x_copy
 
 
-def _get_shape(x_in):
-    glob.wrapping_paused = True
-    if hasattr(x_in, 'shape') or hasattr(x_in, '__dict__') and 'shape' in x_in.__dict__:
-        # noinspection PyBroadException
-        try:
-            glob.wrapping_paused = False
-            return tuple(x_in.shape)
-        except Exception:
-            glob.wrapping_paused = False
-            return None
-    glob.wrapping_paused = False
-    return None
-
 def _get_raw_id(x):
     glob.wrapping_paused = True
     if hasattr(x, 'param_id'):
@@ -54,12 +42,32 @@ def _get_raw_id(x):
 def _get_id(x):
     glob.wrapping_paused = True
     pid_raw = _get_raw_id(x)
-    if pid_raw in glob.params_removed_from_args and not ivy.exists(glob.params_removed_from_args[pid_raw]()):
-        del glob.params_removed_from_args[pid_raw]
-        glob.pid_to_unique_id_dict[pid_raw] = np.random.randint(0, sys.maxsize)
-    pid = glob.pid_to_unique_id_dict[pid_raw] if pid_raw in glob.pid_to_unique_id_dict else pid_raw
+    if pid_raw in glob.raw_pids_to_weakrefs and not ivy.exists(lambda: glob.raw_pids_to_weakrefs[pid_raw]()):
+        glob.raw_pids_to_weakrefs[pid_raw] = lambda: False
+        glob.raw_pids_to_unique_pids[pid_raw] = np.random.randint(0, sys.maxsize)
+    pid = glob.raw_pids_to_unique_pids[pid_raw] if pid_raw in glob.raw_pids_to_unique_pids else pid_raw
     glob.wrapping_paused = False
     return pid
+
+
+def _delete_dependent_param(x, graph):
+    _pid = _get_id(x)
+    if _pid not in glob.dependent_pids and graph.with_array_caching:
+        return x
+
+
+def _get_shape(x_in):
+    glob.wrapping_paused = True
+    if hasattr(x_in, 'shape') or hasattr(x_in, '__dict__') and 'shape' in x_in.__dict__:
+        # noinspection PyBroadException
+        try:
+            glob.wrapping_paused = False
+            return tuple(x_in.shape)
+        except Exception:
+            glob.wrapping_paused = False
+            return None
+    glob.wrapping_paused = False
+    return None
 
 
 def _terminal_pids_to_key(terminal_pids):
