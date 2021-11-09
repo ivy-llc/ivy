@@ -4,7 +4,6 @@ import sys
 import copy
 import types
 import numbers
-import weakref
 import inspect
 import functools
 import numpy as np
@@ -13,12 +12,23 @@ import numpy as np
 from ivy.compiler import globals as glob
 
 
+def _generate_pid():
+    return np.random.randint(0, sys.maxsize)
+
+
 # noinspection PyProtectedMember
 def _clone_param(x, graph):
     glob.wrapping_paused = True
     orig_id = id(x)
-    x_copy = ivy.copy_array(x) if ivy.is_array(x) else copy.copy(x)  # copy the param
-    new_id = id(x_copy)
+    if ivy.is_array(x):
+        x_copy = ivy.copy_array(x)
+        new_id = id(x_copy)
+    elif hasattr(x, '__dict__'):
+        x_copy = copy.copy(x)
+        new_id = _generate_pid()
+    else:
+        x_copy = copy.copy(x)
+        new_id = id(x_copy)
     if orig_id in graph._stateful_clone_pid_dict:
         graph._stateful_clone_pid_dict[new_id] = graph._stateful_clone_pid_dict[orig_id]
     if hasattr(x_copy, '__dict__'):
@@ -29,7 +39,7 @@ def _clone_param(x, graph):
     return x_copy
 
 
-def _get_raw_id(x):
+def _get_id(x):
     glob.wrapping_paused = True
     if hasattr(x, 'param_id'):
         pid_raw = x.__dict__['param_id']
@@ -39,19 +49,23 @@ def _get_raw_id(x):
     return pid_raw
 
 
-def _get_id(x):
+def _get_unique_id(x):
     glob.wrapping_paused = True
-    pid_raw = _get_raw_id(x)
-    if pid_raw in glob.raw_pids_to_weakrefs and not ivy.exists(glob.raw_pids_to_weakrefs[pid_raw]()):
-        glob.raw_pids_to_weakrefs[pid_raw] = lambda: False
-        glob.raw_pids_to_unique_pids[pid_raw] = np.random.randint(0, sys.maxsize)
-    pid = glob.raw_pids_to_unique_pids[pid_raw] if pid_raw in glob.raw_pids_to_unique_pids else pid_raw
+    if hasattr(x, 'param_id'):
+        unique_pid = x.__dict__['param_id']
+        glob.wrapping_paused = False
+        return unique_pid
+    pid = id(x)
+    if pid in glob.raw_pids_to_weakrefs and not ivy.exists(glob.raw_pids_to_weakrefs[pid]()):
+        glob.raw_pids_to_weakrefs[pid] = lambda: False
+        glob.raw_pids_to_unique_pids[pid] = np.random.randint(0, sys.maxsize)
+    unique_pid = glob.raw_pids_to_unique_pids[pid] if pid in glob.raw_pids_to_unique_pids else pid
     glob.wrapping_paused = False
-    return pid
+    return unique_pid
 
 
 def _delete_dependent_param(x, graph):
-    _pid = _get_id(x)
+    _pid = _get_unique_id(x)
     if _pid not in glob.dependent_pids and graph.with_array_caching:
         return x
 
