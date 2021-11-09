@@ -156,3 +156,40 @@ def test_nested_indices_where_w_nest_checks(nest, dev_str, call):
     assert indices[11] == ['b', 'c', 1, 1]
     assert indices[12] == ['b', 'c', 1]
     assert indices[13] == ['b', 'c']
+
+
+# all_nested_indices
+@pytest.mark.parametrize(
+    "nest", [{'a': [[0], [1]], 'b': {'c': [[[2], [4]], [[6], [8]]]}}])
+def test_all_nested_indices(nest, dev_str, call):
+    indices = ivy.all_nested_indices(nest)
+    assert indices[0] == ['a', 0, 0]
+    assert indices[1] == ['a', 1, 0]
+    assert indices[2] == ['b', 'c', 0, 0, 0]
+    assert indices[3] == ['b', 'c', 0, 1, 0]
+    assert indices[4] == ['b', 'c', 1, 0, 0]
+    assert indices[5] == ['b', 'c', 1, 1, 0]
+
+
+# all_nested_indices_w_nest_checks
+@pytest.mark.parametrize(
+    "nest", [{'a': [[0], [1]], 'b': {'c': [[[2], [4]], [[6], [8]]]}}])
+def test_all_nested_indices_w_nest_checks(nest, dev_str, call):
+    indices = ivy.all_nested_indices(nest, True)
+    assert indices[0] == ['a', 0, 0]
+    assert indices[1] == ['a', 0]
+    assert indices[2] == ['a', 1, 0]
+    assert indices[3] == ['a', 1]
+    assert indices[4] == ['a']
+    assert indices[5] == ['b', 'c', 0, 0, 0]
+    assert indices[6] == ['b', 'c', 0, 0]
+    assert indices[7] == ['b', 'c', 0, 1, 0]
+    assert indices[8] == ['b', 'c', 0, 1]
+    assert indices[9] == ['b', 'c', 0]
+    assert indices[10] == ['b', 'c', 1, 0, 0]
+    assert indices[11] == ['b', 'c', 1, 0]
+    assert indices[12] == ['b', 'c', 1, 1, 0]
+    assert indices[13] == ['b', 'c', 1, 1]
+    assert indices[14] == ['b', 'c', 1]
+    assert indices[15] == ['b', 'c']
+    assert indices[16] == ['b']
