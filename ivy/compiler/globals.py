@@ -1,8 +1,8 @@
 wrapping_paused = False
 op_logging = False
 wrapped_stack = list()
-params_removed_from_args = dict()
-pid_to_unique_id_dict = dict()
+raw_pids_to_weakrefs = dict()
+raw_pids_to_unique_pids = dict()
 dependent_pids = set()
 
 
