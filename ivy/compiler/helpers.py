@@ -20,12 +20,12 @@ def _generate_pid():
 def _clone_param(x, graph):
     glob.wrapping_paused = True
     orig_id = id(x)
-    if ivy.is_array(x):
-        x_copy = ivy.copy_array(x)
-        new_id = id(x_copy)
-    elif hasattr(x, '__dict__'):
+    if hasattr(x, '__dict__'):
         x_copy = copy.copy(x)
         new_id = _generate_pid()
+    elif ivy.is_array(x):
+        x_copy = ivy.copy_array(x)
+        new_id = id(x_copy)
     else:
         x_copy = copy.copy(x)
         new_id = id(x_copy)
