@@ -7,7 +7,7 @@ import importlib
 # local
 from ivy.compiler import globals as glob
 # noinspection PyProtectedMember
-from ivy.compiler.helpers import _get_raw_id, _get_id, _get_shape, _get_fn_signature, _clone_param,\
+from ivy.compiler.helpers import _get_id, _get_unique_id, _get_shape, _get_fn_signature, _clone_param,\
     _delete_dependent_param
 # noinspection PyProtectedMember
 from ivy.wrapper import _wrap_or_unwrap_methods, NON_WRAPPED_METHODS, ARRAYLESS_RET_METHODS
@@ -68,9 +68,9 @@ def _wrap_method_for_op_logging(fn, graph, limit_attributes=True, stateful_class
         arg_tracked_idxs = ivy.nested_indices_where(
             args, lambda x_: ivy.is_array(x_) or isinstance(x_, stateful_classes))
         arg_vals = list(ivy.multi_index_nest(args, arg_tracked_idxs))
-        arg_param_ids = [_get_id(x) for x in arg_vals]
+        arg_param_ids = [_get_unique_id(x) for x in arg_vals]
         for x in arg_vals:
-            glob.raw_pids_to_weakrefs[_get_raw_id(x)] = weakref.ref(x)
+            glob.raw_pids_to_weakrefs[id(x)] = weakref.ref(x)
         arg_param_types = [x.__class__ for x in arg_vals]
         arg_param_var_flags = [ivy.is_variable(x, exclusive=True) for x in arg_vals]
         arg_param_shapes = [_get_shape(x) for x in arg_vals]
@@ -83,9 +83,9 @@ def _wrap_method_for_op_logging(fn, graph, limit_attributes=True, stateful_class
         kwarg_tracked_idxs = ivy.nested_indices_where(
             kwargs, lambda x_: ivy.is_array(x_) or isinstance(x_, stateful_classes))
         kwarg_vals = list(ivy.multi_index_nest(kwargs, kwarg_tracked_idxs))
-        kwarg_param_ids = [_get_id(x) for x in kwarg_vals]
+        kwarg_param_ids = [_get_unique_id(x) for x in kwarg_vals]
         for x in kwarg_vals:
-            glob.raw_pids_to_weakrefs[_get_raw_id(x)] = weakref.ref(x)
+            glob.raw_pids_to_weakrefs[id(x)] = weakref.ref(x)
         kwarg_param_types = [x.__class__ for x in kwarg_vals]
         kwarg_param_var_flags = [ivy.is_variable(x, exclusive=True) for x in kwarg_vals]
         kwarg_param_shapes = [_get_shape(x) for x in kwarg_vals]
@@ -125,7 +125,7 @@ def _wrap_method_for_op_logging(fn, graph, limit_attributes=True, stateful_class
         output_tracked_idxs = ivy.nested_indices_where(
             ret, lambda x_: ivy.is_array(x_) or isinstance(x_, stateful_classes))
         output_vals = list(ivy.multi_index_nest(ret, output_tracked_idxs))
-        output_param_ids = [_get_id(x) for x in output_vals]
+        output_param_ids = [_get_unique_id(x) for x in output_vals]
         output_param_types = [x.__class__ for x in output_vals]
         output_param_var_flags = [ivy.is_variable(x, exclusive=True) for x in output_vals]
         output_param_shapes = [_get_shape(x) for x in output_vals]
@@ -147,9 +147,9 @@ def _wrap_method_for_op_logging(fn, graph, limit_attributes=True, stateful_class
 
         # get return param ids after cloning
         output_vals = list(ivy.multi_index_nest(ret, output_tracked_idxs))
-        output_param_ids = [_get_id(x) for x in output_vals]
+        output_param_ids = [_get_unique_id(x) for x in output_vals]
         for x in output_vals:
-            glob.raw_pids_to_weakrefs[_get_raw_id(x)] = weakref.ref(x)
+            glob.raw_pids_to_weakrefs[id(x)] = weakref.ref(x)
 
         # maybe add to set of dependent_pids
         if fn.__name__ in glob.GENERATOR_METHODS and graph.include_generators:

@@ -17,7 +17,7 @@ from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 from ivy.compiler.param import Param
 from ivy.compiler import globals as glob
 # noinspection PyProtectedMember
-from ivy.compiler.helpers import _get_shape, _get_id, _terminal_pids_to_key, _args_str_from_fn, _output_str_from_fn,\
+from ivy.compiler.helpers import _get_shape, _get_unique_id, _terminal_pids_to_key, _args_str_from_fn, _output_str_from_fn,\
     _param_to_label, _copy_func
 
 
@@ -60,7 +60,7 @@ class Graph:
         # positional args
         self._args = list(args)
         self._arg_tracked_idxs = ivy.nested_indices_where(args, lambda a: ivy.is_array(a)) + arg_stateful_idxs
-        self._arg_param_ids = [_get_id(a) for a in ivy.multi_index_nest(args, self._arg_tracked_idxs)]
+        self._arg_param_ids = [_get_unique_id(a) for a in ivy.multi_index_nest(args, self._arg_tracked_idxs)]
         [glob.dependent_pids.add(pid) for pid in self._arg_param_ids]
         self._arg_param_types = [a.__class__ for a in ivy.multi_index_nest(args, self._arg_tracked_idxs)]
         self._arg_param_var_flags = [ivy.is_variable(a, exclusive=True)
@@ -70,7 +70,7 @@ class Graph:
         # key-word args
         self._kwargs = kwargs
         self._kwarg_tracked_idxs = ivy.nested_indices_where(kwargs, lambda v: ivy.is_array(v)) + kwarg_stateful_idxs
-        self._kwarg_param_ids = [_get_id(v) for v in ivy.multi_index_nest(kwargs, self._kwarg_tracked_idxs)]
+        self._kwarg_param_ids = [_get_unique_id(v) for v in ivy.multi_index_nest(kwargs, self._kwarg_tracked_idxs)]
         [glob.dependent_pids.add(pid) for pid in self._kwarg_param_ids]
         self._kwarg_param_types = [v.__class__ for v in ivy.multi_index_nest(kwargs, self._kwarg_tracked_idxs)]
         self._kwarg_param_var_flags = [ivy.is_variable(v, exclusive=True)
@@ -191,7 +191,7 @@ class Graph:
         self._output_tracked_idxs = ivy.nested_indices_where(
             ret, lambda x: ivy.is_array(x) or id(x) in self._all_stateful_param_ids)
         # noinspection PyProtectedMember
-        self._output_param_ids = [_get_id(x) for x in ivy.multi_index_nest(list(ret), self._output_tracked_idxs)]
+        self._output_param_ids = [_get_unique_id(x) for x in ivy.multi_index_nest(list(ret), self._output_tracked_idxs)]
 
         # find any inputs which were fed directly to the output, and update pid and add identity function
         for i, pid in enumerate(self._output_param_ids):
@@ -452,6 +452,7 @@ class Graph:
         terminal_pids = self._output_param_ids + [pid for pid, fn in self._pid_to_functions_dict.items() if fn.terminal
                                                   and pid in self._stateful_clone_pid_dict]
         self._chain_functions(terminal_pids)
+        assert self._all_grouped_functions, 'tried to connect an empty function'
         self._num_subgrahs = 1
         if not output_connected_only:
             for pid, fn in self._pid_to_functions_dict.items():
