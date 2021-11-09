@@ -125,8 +125,6 @@ def _wrap_method_for_op_logging(fn, graph, limit_attributes=True, stateful_class
         output_tracked_idxs = ivy.nested_indices_where(
             ret, lambda x_: ivy.is_array(x_) or isinstance(x_, stateful_classes))
         output_vals = list(ivy.multi_index_nest(ret, output_tracked_idxs))
-        for x in output_vals:
-            glob.raw_pids_to_weakrefs[_get_raw_id(x)] = weakref.ref(x)
         output_param_ids = [_get_id(x) for x in output_vals]
         output_param_types = [x.__class__ for x in output_vals]
         output_param_var_flags = [ivy.is_variable(x, exclusive=True) for x in output_vals]
@@ -147,8 +145,11 @@ def _wrap_method_for_op_logging(fn, graph, limit_attributes=True, stateful_class
         duplicate_tracked_idxs = [output_tracked_idxs[i] for i in duplicates]
         ivy.map_nest_at_indices(ret, duplicate_tracked_idxs, lambda x: _clone_param(x, graph))
 
-        # get return param ids
-        output_param_ids = [_get_id(x) for x in ivy.multi_index_nest(ret, output_tracked_idxs)]
+        # get return param ids after cloning
+        output_vals = list(ivy.multi_index_nest(ret, output_tracked_idxs))
+        output_param_ids = [_get_id(x) for x in output_vals]
+        for x in output_vals:
+            glob.raw_pids_to_weakrefs[_get_raw_id(x)] = weakref.ref(x)
 
         # maybe add to set of dependent_pids
         if fn.__name__ in glob.GENERATOR_METHODS and graph.include_generators:
