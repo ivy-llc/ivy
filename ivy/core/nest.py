@@ -138,6 +138,38 @@ def nested_indices_where(nest: Iterable, fn: Callable, check_nests: bool = False
     return [index for index in _indices if index]
 
 
+def all_nested_indices(nest: Iterable, include_nests: bool = False, _index: List = None, _base: bool = True)\
+        -> Union[Iterable, bool]:
+    """
+    Checks the leaf nodes of nested x via function fn, and returns all nest indices where the method evaluates as True.
+
+    :param nest: The nest to check the leaves of.
+    :type nest: nest of any
+    :param include_nests: Whether to also include indices of the nests themselves, not only leaves. Default is False.
+    :type include_nests: bool, optional
+    :param _index: The indices detected so far. None at the beginning. Used internally, do not set manually.
+    :type _index: list of tuples of indices, do not set
+    :param _base: Whether the current function call is the first function call in the recursive stack.
+                  Used internally, do not set manually.
+    :type _base: bool, do not set
+    :return: A set of indices for the nest where the function evaluated as True.
+    """
+    _index = list() if _index is None else _index
+    if isinstance(nest, (tuple, list)):
+        _indices = [all_nested_indices(item, include_nests, _index + [i], False) for i, item in enumerate(nest)]
+        _indices = [idx for idxs in _indices if idxs for idx in idxs]
+        if include_nests:
+            _indices.append(_index)
+    elif isinstance(nest, dict):
+        _indices = [all_nested_indices(v, include_nests, _index + [k], False) for k, v in nest.items()]
+        _indices = [idx for idxs in _indices if idxs for idx in idxs]
+        if include_nests:
+            _indices.append(_index)
+    else:
+        return [_index]
+    return [index for index in _indices if index]
+
+
 # noinspection PyShadowingBuiltins
 def map(fn: Callable, constant: Dict[str, Any] = None, unique: Dict[str, Iterable[Any]] = None, mean: bool = False)\
         -> List:
