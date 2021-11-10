@@ -251,24 +251,6 @@
             
   <div class="section" id="node-dist-array">
 <h1>node_dist_array<a class="headerlink" href="#node-dist-array" title="Permalink to this headline">¶</a></h1>
-<dl class="py function">
-<dt id="ivy.core.multi_node.node_dist_array">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">node_dist_array</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">node_strs</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>Iterable<span class="p">[</span>str<span class="p">]</span><span class="p">, </span>Dict<span class="p">[</span>str<span class="p">, </span>int<span class="p">]</span><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">0</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/multi_node.html#node_dist_array"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.multi_node.node_dist_array" title="Permalink to this definition">¶</a></dt>
-<dd><p>Distribute an array across the specified nodes, returning a list of sub-arrays, each on a different node.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<em>array</em>) – The array to distribute across nodes.</p></li>
-<li><p><strong>node_strs</strong> (<em>sequence of strs</em><em> or </em><em>dict of split sizes</em>) – The nodes to distribute the array across.</p></li>
-<li><p><strong>axis</strong> (<em>int</em><em>, </em><em>optional</em>) – The axis along which to split the array. Default is 0.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>array distributed across the target nodes</p>
-</dd>
-</dl>
-</dd></dl>
-
 <div class="line-block">
 <div class="line"><br /></div>
 <div class="line"><strong>Supported Frameworks:</strong></div>

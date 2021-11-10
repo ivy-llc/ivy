@@ -251,25 +251,6 @@
             
   <div class="section" id="unify-array">
 <h1>unify_array<a class="headerlink" href="#unify-array" title="Permalink to this headline">¶</a></h1>
-<dl class="py function">
-<dt id="ivy.core.multi_node.unify_array">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">unify_array</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">xs</span></em>, <em class="sig-param"><span class="n">node_str</span></em>, <em class="sig-param"><span class="n">mode</span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">0</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/multi_node.html#unify_array"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.multi_node.unify_array" title="Permalink to this definition">¶</a></dt>
-<dd><p>Unify a list of sub-arrays, on arbitrary nodes, to a single array on the specified node.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>xs</strong> (<em>sequence of arrays</em>) – The list of arrays to unify onto the specified node.</p></li>
-<li><p><strong>node_str</strong> (<em>str</em>) – The node to unify the arrays to.</p></li>
-<li><p><strong>mode</strong> (<em>str</em>) – The mode by which to unify, must be one of [ concat | mean | sum ]</p></li>
-<li><p><strong>axis</strong> (<em>int</em><em>, </em><em>optional</em>) – The axis along which to concattenate the array, if concat mode is set. Default is 0.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>array unified to the target node</p>
-</dd>
-</dl>
-</dd></dl>
-
 <div class="line-block">
 <div class="line"><br /></div>
 <div class="line"><strong>Supported Frameworks:</strong></div>
