@@ -96,12 +96,15 @@ class Optimizer(abc.ABC):
         # ToDo: add more options to this function, like in ivy.Module
         logging.info('compiling step for optimizer {} ...'.format(self))
         self._compiled_step_fn = \
-            ivy.compile_graph(self._step_fn, v, ivy.default(grads, v.deep_copy()), ignore_missing, stateful=[self])
+            ivy.compile_graph(self._step_fn, v, ivy.default(grads, v.deep_copy()), ignore_missing, stateful=[self],
+                              name=str(self))
         logging.info('{} step compiled!'.format(self))
+        self._compiled = True
 
     def show_graph(self, v, grads=None, ignore_missing=False):
         # ToDo: add more options to this function, like in ivy.Module
-        ivy.show_graph(self._step_fn, v, ivy.default(grads, v.deep_copy()), ignore_missing, stateful=[self])
+        ivy.show_graph(self._step_fn, v, ivy.default(grads, v.deep_copy()), ignore_missing, stateful=[self],
+                       name=str(self))
 
     def compile_on_next_step(self):
         self._compile_on_next_step = True
