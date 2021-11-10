@@ -4,6 +4,7 @@ Collection of tests for templated general functions
 
 # global
 import time
+import torch
 import pytest
 import numpy as np
 from numbers import Number
@@ -642,3 +643,32 @@ def test_compile_graph_reverse_builtin(with_array_caching, dev_str, compile_grap
     nc_ret = _rev_builtin(x)
     c_ret = comp_fn(x)
     assert np.allclose(ivy.to_numpy(nc_ret), ivy.to_numpy(c_ret))
+
+
+# torch resnet
+
+@pytest.mark.parametrize(
+    "batch_size", [1])
+@pytest.mark.parametrize(
+    "image_dims", [[224, 224]])
+def test_resnet_18_imagenet(batch_size, image_dims, dev_str, compile_graph, call):
+    if ivy.wrapped_mode() or not compile_graph:
+        # Wrapped mode does not yet support function compilation
+        pytest.skip()
+    if call is not helpers.torch_call:
+        # currently only supported by PyTorch
+        pytest.skip()
+    model = torch.hub.load('pytorch/vision:v0.10.0', 'resnet18', pretrained=True)
+    net = ivy.to_ivy_module(model.to(ivy.str_to_dev(dev_str)))
+    x0 = ivy.random_uniform(0, 1, [batch_size] + [3] + image_dims, dev_str=ivy.default_device())
+    x1 = ivy.random_uniform(0, 1, [batch_size] + [3] + image_dims, dev_str=ivy.default_device())
+    ret0_nc = net(x0)
+    ret1_nc = net(x1)
+    assert not np.allclose(ivy.to_numpy(ret0_nc), ivy.to_numpy(ret1_nc))
+    net.compile_graph(x0)
+    net.show_graph(x0, save_to_disk=False, fname='resnet_18_imagenet.png')
+    ret0_c = net(x0)
+    ret1_c = net(x1)
+    assert not np.allclose(ivy.to_numpy(ret0_c), ivy.to_numpy(ret1_c))
+    assert np.allclose(ivy.to_numpy(ret0_nc), ivy.to_numpy(ret0_c))
+    assert np.allclose(ivy.to_numpy(ret1_nc), ivy.to_numpy(ret1_c))
