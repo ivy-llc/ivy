@@ -165,7 +165,10 @@ def _wrap_method_for_op_logging(fn, graph, limit_attributes=True, stateful_class
             # ToDo: make this as efficient as possible; this is performed at runtime
             ivy.set_nest_at_indices(args, arg_tracked_idxs, arg_array_vals)
             ivy.set_nest_at_indices(kwargs, kwarg_tracked_idxs, kwarg_array_vals)
-            return backend_fn(*args, **kwargs)
+            ret_ = backend_fn(*args, **kwargs)
+            ivy.map_nest_at_indices(args, arg_tracked_idxs, lambda x_: None)
+            ivy.map_nest_at_indices(kwargs, kwarg_tracked_idxs, lambda x_: None)
+            return ret_
 
         # add function attributes which inform about the arguments and returns
 
