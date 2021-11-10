@@ -119,7 +119,7 @@ class Optimizer(abc.ABC):
         :type ignore_missing: bool, optional
         :return: The updated variables, following update step.
         """
-        if self._compiled:
+        if self._compiled and ivy.try_use_compiled:
             try:
                 self._count += 1
                 return self._compiled_step_fn(v, grads, ignore_missing)
