@@ -17,7 +17,7 @@ from ivy.core.container import Container
 
 class Module(abc.ABC):
 
-    def __init__(self, dev_str=None, v=None, build_mode='on_init', compile_on_first_call=False, store_vars=True,
+    def __init__(self, dev_str=None, v=None, build_mode='on_init', compile_on_next_step=False, store_vars=True,
                  stateful=None, arg_stateful_idxs=None, kwarg_stateful_idxs=None, fallback_to_non_compiled=True,
                  dev_strs=None):
         """
@@ -30,8 +30,8 @@ class Module(abc.ABC):
         :param build_mode: How the Module is built, either on initialization (now), explicitly by the user by calling
                            build(), or the first time the __call__ method is run. Default is on initialization.
         :type build_mode: str, optional
-        :param compile_on_first_call: Whether to compile the network on the first forward pass. Default is False.
-        :type compile_on_first_call: bool, optional
+        :param compile_on_next_step: Whether to compile the network on the first forward pass. Default is False.
+        :type compile_on_next_step: bool, optional
         :param store_vars: Whether or not to store the variables created. Default is True.
         :type store_vars: bool, optional
         :param stateful: The constant id stateful items to track as part of the forward pass.
@@ -65,7 +65,7 @@ class Module(abc.ABC):
         self._built = False
         self._compiled = False
         self._compiled_fn = None
-        self._compile_on_first_call = compile_on_first_call
+        self._compile_on_next_step = compile_on_next_step
         self._v_in = v
         self.v = v
         if build_mode != 'on_init':
@@ -264,6 +264,9 @@ class Module(abc.ABC):
                        with_output_labels=with_output_labels, output_connected_only=output_connected_only,
                        include_generators=include_generators, fname=fname)
 
+    def compile_on_next_step(self):
+        self._compile_on_next_step = True
+
     def __call__(self, *args, v=None, with_grads=True, stateful=None, arg_stateful_idxs=None, kwarg_stateful_idxs=None,
                  **kwargs):
         if self._compiled:
@@ -273,9 +276,10 @@ class Module(abc.ABC):
                 if self._fallback_to_non_compiled:
                     return self._call(*args, v=v, with_grads=with_grads, **kwargs)
                 raise e
-        elif self._compile_on_first_call and not self._compiled:
+        elif self._compile_on_next_step and not self._compiled:
             self.compile_graph(*args, v=v, with_grads=with_grads, stateful=stateful,
                                arg_stateful_idxs=arg_stateful_idxs, kwarg_stateful_idxs=kwarg_stateful_idxs, **kwargs)
+            self._compile_on_next_step = False
             return self._compiled_fn(*args, v=ivy.default(v, self.v), with_grads=with_grads, **kwargs)
         return self._call(*args, v=v, with_grads=with_grads, **kwargs)
 
