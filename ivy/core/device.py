@@ -1374,6 +1374,10 @@ class DevManager:
     def tune_step(self):
         return self._tune_step
 
+    @property
+    def tuned(self):
+        return self._tuned
+
 
 # Profiler #
 # ---------#
