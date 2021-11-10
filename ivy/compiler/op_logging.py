@@ -7,8 +7,8 @@ import importlib
 # local
 from ivy.compiler import globals as glob
 # noinspection PyProtectedMember
-from ivy.compiler.helpers import _get_id, _get_unique_id, _get_shape, _get_fn_signature, _clone_param,\
-    _delete_dependent_param
+from ivy.compiler.helpers import _get_unique_id, _get_shape, _get_fn_signature, _clone_param, _delete_dependent_param,\
+    _args_n_kwarg_reprs_from_keys_n_args_n_kwargs, _output_reprs_from_output
 # noinspection PyProtectedMember
 from ivy.wrapper import _wrap_or_unwrap_methods, NON_WRAPPED_METHODS, ARRAYLESS_RET_METHODS
 
@@ -171,17 +171,28 @@ def _wrap_method_for_op_logging(fn, graph, limit_attributes=True, stateful_class
 
         # add function attributes which inform about the arguments and returns
 
+        glob.wrapping_paused = True
+
+        new_fn.arg_reprs = str(args)
         new_fn.arg_tracked_idxs = arg_tracked_idxs
         new_fn.arg_param_ids = arg_param_ids
         new_fn.arg_param_types = arg_param_types
         new_fn.arg_param_var_flags = arg_param_var_flags
         new_fn.arg_param_shapes = arg_param_shapes
 
+        new_fn.kwarg_reprs = str(kwargs)
         new_fn.kwarg_tracked_idxs = kwarg_tracked_idxs
         new_fn.kwarg_param_ids = kwarg_param_ids
         new_fn.kwarg_param_types = kwarg_param_types
         new_fn.kwarg_param_var_flags = kwarg_param_var_flags
         new_fn.kwarg_param_shapes = kwarg_param_shapes
+
+        try:
+            sig = inspect.signature(fn)
+            sig_keys = list(sig.parameters.keys())
+        except ValueError:
+            sig_keys = list()
+        new_fn.arg_n_kwarg_reprs = _args_n_kwarg_reprs_from_keys_n_args_n_kwargs(sig_keys, args, kwargs)
 
         new_fn.output_tracked_idxs = output_tracked_idxs
         new_fn.output_param_ids = output_param_ids
@@ -189,11 +200,15 @@ def _wrap_method_for_op_logging(fn, graph, limit_attributes=True, stateful_class
         new_fn.output_param_var_flags = output_param_var_flags
         new_fn.output_param_shapes = output_param_shapes
 
+        new_fn.output_reprs = _output_reprs_from_output(ret)
+
         new_fn.signature = _get_fn_signature(backend_fn)
         new_fn.terminal = True
         new_fn.is_constant = len(arg_param_ids + kwarg_param_ids) == 0 and \
                              (not graph.include_generators or
                               fn.__name__ not in glob.GENERATOR_METHODS[ivy.current_framework_str()])
+
+        glob.wrapping_paused = False
 
         fns_in = [graph._pid_to_functions_dict[pid]
                   for pid in arg_param_ids + kwarg_param_ids if pid in graph._pid_to_functions_dict]
@@ -227,9 +242,10 @@ def _wrap_method_for_op_logging(fn, graph, limit_attributes=True, stateful_class
                     raise Exception(
                         '\n\ntried to add {} to graph._functions_dict, but function {} with the same output pid {} '
                         'already exists!'.format(
-                            new_fn.__name__ + '(*{}, **{})'.format(new_fn.args, new_fn.kwargs),
+                            new_fn.__name__ + '(*{}, **{})'.format(new_fn.arg_reprs, new_fn.kwarg_reprs),
                             graph._pid_to_functions_dict[pid].__name__ + '(*{}, **{})'.format(
-                                graph._pid_to_functions_dict[pid].args, graph._pid_to_functions_dict[pid].kwargs), pid))
+                                graph._pid_to_functions_dict[pid].arg_reprs,
+                                graph._pid_to_functions_dict[pid].kwarg_reprs), pid))
                 graph.add_fn_to_dict(pid, new_fn)
 
         # unset wrapping as true
