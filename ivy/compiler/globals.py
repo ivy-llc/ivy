@@ -4,6 +4,16 @@ wrapped_stack = list()
 raw_pids_to_weakrefs = dict()
 raw_pids_to_unique_pids = dict()
 dependent_pids = set()
+time_inference = False
+inference_rel_times = {'0_init_param_setting': 0,
+                       '1_pre_param_setting': 0,
+                       '2_fn_call': 0,
+                       '2_0_arg_n_kwarg_copying': 0,
+                       '2_1_arg_n_kwarg_writing': 0,
+                       '2_2_backend_fn': 0,
+                       '3_post_param_setting': 0,
+                       '4_end_param_setting': 0,
+                       'total': 0}
 
 
 ARRAY_BUILTINS = ['__neg__', '__pow__', '__rpow__', '__add__', '__radd__', '__iadd__', '__sub__', '__rsub__',
