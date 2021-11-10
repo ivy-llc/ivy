@@ -92,14 +92,17 @@ def _terminal_pids_to_key(terminal_pids):
 
 
 def _args_str_from_fn(fn):
-    if hasattr(fn, 'args') and hasattr(fn, 'kwargs'):
-        keys = list(fn.signature.keys())
-        return '\n'.join(
-            ['{}: {}'.format(k, v) for k, v in dict(**dict(
-                [(keys[i] if i < len(keys) else str(i),
-                  _to_label(a)) for i, a in enumerate(fn.args)]), **fn.kwargs).items()])
+    if hasattr(fn, 'arg_n_kwarg_reprs'):
+        return fn.arg_n_kwarg_reprs
     else:
         return ''
+
+
+def _args_n_kwarg_reprs_from_keys_n_args_n_kwargs(keys, args, kwargs):
+    return '\n'.join(
+        ['{}: {}'.format(k, v) for k, v in dict(**dict(
+            [(keys[i] if i < len(keys) else str(i),
+              _to_label(a)) for i, a in enumerate(args)]), **kwargs).items()])
 
 
 def _to_label(x):
@@ -116,11 +119,15 @@ def _format_label(cls, shape_or_val):
 
 
 def _output_str_from_fn(fn):
-    if hasattr(fn, 'output'):
-        return '\n'.join(
-            ['{}: {}'.format(k, v) for k, v in dict([(str(i), _to_label(a)) for i, a in enumerate(fn.output)]).items()])
+    if hasattr(fn, 'output_reprs'):
+        return fn.output_reprs
     else:
         return ''
+
+
+def _output_reprs_from_output(output):
+    return '\n'.join(
+        ['{}: {}'.format(k, v) for k, v in dict([(str(i), _to_label(a)) for i, a in enumerate(output)]).items()])
 
 
 def _param_to_label(param):
