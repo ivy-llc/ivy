@@ -4,6 +4,7 @@ Collection of Ivy optimizers.
 
 # global
 import abc
+import logging
 
 # local
 import ivy
@@ -93,8 +94,10 @@ class Optimizer(abc.ABC):
 
     def compile_graph(self, v, grads=None, ignore_missing=False):
         # ToDo: add more options to this function, like in ivy.Module
+        logging.info('compiling step for optimizer {} ...'.format(self))
         self._compiled_step_fn = \
             ivy.compile_graph(self._step_fn, v, ivy.default(grads, v.deep_copy()), ignore_missing, stateful=[self])
+        logging.info('{} step compiled!'.format(self))
 
     def show_graph(self, v, grads=None, ignore_missing=False):
         # ToDo: add more options to this function, like in ivy.Module
