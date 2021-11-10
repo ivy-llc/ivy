@@ -247,7 +247,6 @@
         <span class="n">graph</span><span class="o">.</span><span class="n">log_all_ops</span><span class="p">()</span>
     <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
         <span class="n">_unwrap_methods_from_op_logging</span><span class="p">(</span><span class="n">all_stateful_classes</span><span class="p">)</span>
-        <span class="n">graph</span><span class="o">.</span><span class="n">print_cached_tensors</span><span class="p">()</span>
         <span class="c1"># noinspection PyBroadException</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">graph</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="n">save_to_disk</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">output_connected_only</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">fname</span><span class="o">=</span><span class="s1">&#39;graph_at_point_of_failure.png&#39;</span><span class="p">)</span>
