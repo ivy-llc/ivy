@@ -269,7 +269,7 @@ class Module(abc.ABC):
 
     def __call__(self, *args, v=None, with_grads=True, stateful=None, arg_stateful_idxs=None, kwarg_stateful_idxs=None,
                  **kwargs):
-        if self._compiled:
+        if self._compiled and ivy.try_use_compiled:
             try:
                 return self._compiled_fn(*args, v=ivy.default(v, self.v), with_grads=with_grads, **kwargs)
             except Exception as e:
