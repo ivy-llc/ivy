@@ -193,7 +193,7 @@ def test_adam_optimizer(bs_ic_oc_target, with_v, inplace, dtype_str, dev_str, co
     # compile if this mode is set
     if compile_graph and call is helpers.torch_call:
         # Currently only PyTorch is supported for ivy compilation
-        optimizer.compile_graph(linear_layer.v)
+        optimizer.compile_on_next_step()
 
     # train
     loss, grads = ivy.execute_with_gradients(loss_fn, linear_layer.v)
@@ -266,7 +266,7 @@ def test_lamb_optimizer(bs_ic_oc_target, with_v, inplace, dtype_str, dev_str, co
     # compile if this mode is set
     if compile_graph and call is helpers.torch_call:
         # Currently only PyTorch is supported for ivy compilation
-        optimizer.compile_graph(linear_layer.v)
+        optimizer.compile_on_next_step()
 
     # train
     loss, grads = ivy.execute_with_gradients(loss_fn, linear_layer.v)

@@ -14,7 +14,8 @@ import ivy
 
 class Optimizer(abc.ABC):
 
-    def __init__(self, lr, inplace=True, stop_gradients=True, init_on_first_step=False, dev_str=None):
+    def __init__(self, lr, inplace=True, stop_gradients=True, init_on_first_step=False, compile_on_next_step=False,
+                 fallback_to_non_compiled=False, dev_str=None):
         """
         Construct an general Optimizer. This is an abstract class, and must be derived.
 
@@ -27,6 +28,11 @@ class Optimizer(abc.ABC):
         :type stop_gradients: bool, optional
         :param init_on_first_step: Whether the optimizer is initialized on the first step. Default is False.
         :type init_on_first_step: bool, optional
+        :param compile_on_next_step: Whether to compile the optimizer on the next step. Default is False.
+        :type compile_on_next_step: bool, optional
+        :param fallback_to_non_compiled: Whether to fall back to non-compiled forward call in the case that an error is
+                                         raised during the compiled forward pass. Default is True.
+        :type fallback_to_non_compiled: bool, optional
         :param dev_str: device on which to create the layer's variables 'cuda:0', 'cuda:1', 'cpu' etc.
         :type dev_str: str, optional
         """
@@ -34,8 +40,12 @@ class Optimizer(abc.ABC):
         self._inplace = inplace
         self._stop_gradients = stop_gradients
         self._init_on_first_step = init_on_first_step
+        self._initialized = not init_on_first_step
+        self._compile_on_next_step = compile_on_next_step
+        self._fallback_to_non_compiled = fallback_to_non_compiled
         self._dev_str = ivy.default(dev_str, ivy.default_device())
         self._count = ivy.array([0], dev_str=self._dev_str)
+        self._compiled_step_fn = None
         self._compiled = False
 
     # Private #
@@ -64,10 +74,6 @@ class Optimizer(abc.ABC):
             return v.set_at_keys(self._step(v.at_key_chains(grads), grads))
         return self._step(v, grads)
 
-    def _compile_step_fn(self, v, grads, ignore_missing):
-        self._step_fn = \
-            ivy.compile_graph(self._step_fn, v, ivy.default(grads, v.deep_copy()), ignore_missing, stateful=[self])
-
     # Public #
     # -------#
 
@@ -85,6 +91,18 @@ class Optimizer(abc.ABC):
 
     # Given #
 
+    def compile_graph(self, v, grads=None, ignore_missing=False):
+        # ToDo: add more options to this function, like in ivy.Module
+        self._compiled_step_fn = \
+            ivy.compile_graph(self._step_fn, v, ivy.default(grads, v.deep_copy()), ignore_missing, stateful=[self])
+
+    def show_graph(self, v, grads=None, ignore_missing=False):
+        # ToDo: add more options to this function, like in ivy.Module
+        ivy.show_graph(self._step_fn, v, ivy.default(grads, v.deep_copy()), ignore_missing, stateful=[self])
+
+    def compile_on_next_step(self):
+        self._compile_on_next_step = True
+
     def step(self, v, grads, ignore_missing=False):
         """
         Update nested variables container v from overriden private self._step
@@ -98,26 +116,22 @@ class Optimizer(abc.ABC):
         :type ignore_missing: bool, optional
         :return: The updated variables, following update step.
         """
-        if self._count == 1 and self._init_on_first_step and self._compiled:
-            self._compile_step_fn(v, grads, ignore_missing)
+        if self._compiled:
+            try:
+                self._count += 1
+                return self._compiled_step_fn(v, grads, ignore_missing)
+            except Exception as e:
+                if self._fallback_to_non_compiled:
+                    return self._step_fn(v, grads, ignore_missing)
+                raise e
+        elif self._compile_on_next_step and self._initialized and not self._compiled:
+            self.compile_graph(v, grads, ignore_missing)
+            self._compile_on_next_step = False
+            self._count += 1
+            return self._compiled_step_fn(v, grads, ignore_missing)
         self._count += 1
+        self._initialized = True
         return self._step_fn(v, grads, ignore_missing)
-
-    def compile_graph(self, v, grads=None, ignore_missing=False):
-        """
-        Compile the optimizer step.
-
-        :param v: Nested variables to update.
-        :type v: Ivy container of variables
-        :param grads: Nested gradients to update.
-        :type grads: sequence of arrays
-        :param ignore_missing: Whether to ignore keys missing from the gradients which exist in the variables.
-                               Default is False.
-        :type ignore_missing: bool, optional
-        """
-        if not self._init_on_first_step:
-            self._compile_step_fn(v, grads, ignore_missing)
-        self._compiled = True
 
 
 # Optimizers #
@@ -125,7 +139,7 @@ class Optimizer(abc.ABC):
 
 class SGD(Optimizer):
 
-    def __init__(self, lr=lambda: 1e-4, inplace=True, stop_gradients=True):
+    def __init__(self, lr=lambda: 1e-4, inplace=True, stop_gradients=True, compile_on_next_step=False):
         """
         Construct a Stochastic-Gradient-Descent (SGD) optimizer.
 
@@ -136,8 +150,10 @@ class SGD(Optimizer):
         :type inplace: bool, optional
         :param stop_gradients: Whether to stop the gradients of the variables after each gradient step. Default is True.
         :type stop_gradients: bool, optional
+        :param compile_on_next_step: Whether to compile the optimizer on the next step. Default is False.
+        :type compile_on_next_step: bool, optional
         """
-        Optimizer.__init__(self, lr, inplace, stop_gradients)
+        Optimizer.__init__(self, lr, inplace, stop_gradients, compile_on_next_step=compile_on_next_step)
 
     # Custom Step
 
@@ -170,7 +186,7 @@ class SGD(Optimizer):
 
 class LARS(Optimizer):
 
-    def __init__(self, lr=lambda: 1e-4, decay_lambda=0, inplace=True, stop_gradients=True):
+    def __init__(self, lr=lambda: 1e-4, decay_lambda=0, inplace=True, stop_gradients=True, compile_on_next_step=False):
         """
         Construct a Layerwise Adaptive Rate Scaling (LARS) optimizer.
 
@@ -183,9 +199,11 @@ class LARS(Optimizer):
         :type inplace: bool, optional
         :param stop_gradients: Whether to stop the gradients of the variables after each gradient step. Default is True.
         :type stop_gradients: bool, optional
+        :param compile_on_next_step: Whether to compile the optimizer on the next step. Default is False.
+        :type compile_on_next_step: bool, optional
         """
         self._decay_lambda = decay_lambda
-        Optimizer.__init__(self, lr, inplace, stop_gradients)
+        Optimizer.__init__(self, lr, inplace, stop_gradients, compile_on_next_step=compile_on_next_step)
 
     # Custom Step
 
@@ -219,7 +237,7 @@ class LARS(Optimizer):
 class Adam(Optimizer):
 
     def __init__(self, lr=1e-4, beta1=0.9, beta2=0.999, epsilon=1e-07, inplace=True,
-                 stop_gradients=True, dev_str=None):
+                 stop_gradients=True, compile_on_next_step=False, dev_str=None):
         """
         Construct an ADAM optimizer.
 
@@ -236,8 +254,12 @@ class Adam(Optimizer):
         :type inplace: bool, optional
         :param stop_gradients: Whether to stop the gradients of the variables after each gradient step. Default is True.
         :type stop_gradients: bool, optional
+        :param compile_on_next_step: Whether to compile the optimizer on the next step. Default is False.
+        :type compile_on_next_step: bool, optional
+        :param dev_str: device on which to create the layer's variables 'cuda:0', 'cuda:1', 'cpu' etc.
+        :type dev_str: str, optional
         """
-        Optimizer.__init__(self, lr, inplace, stop_gradients, True, dev_str)
+        Optimizer.__init__(self, lr, inplace, stop_gradients, True, compile_on_next_step, dev_str)
         self._beta1 = beta1
         self._beta2 = beta2
         self._epsilon = epsilon
@@ -285,7 +307,7 @@ class Adam(Optimizer):
 class LAMB(Optimizer):
 
     def __init__(self, lr=1e-4, beta1=0.9, beta2=0.999, epsilon=1e-07, max_trust_ratio=10, decay_lambda=0, inplace=True,
-                 stop_gradients=True, dev_str=None):
+                 stop_gradients=True, compile_on_next_step=False, dev_str=None):
         """
         Construct an LAMB optimizer.
 
@@ -307,10 +329,12 @@ class LAMB(Optimizer):
         :type inplace: bool, optional
         :param stop_gradients: Whether to stop the gradients of the variables after each gradient step. Default is True.
         :type stop_gradients: bool, optional
+        :param compile_on_next_step: Whether to compile the optimizer on the next step. Default is False.
+        :type compile_on_next_step: bool, optional
         :param dev_str: device on which to create the layer's variables 'cuda:0', 'cuda:1', 'cpu' etc.
         :type dev_str: str, optional
         """
-        Optimizer.__init__(self, lr, inplace, stop_gradients, True, dev_str)
+        Optimizer.__init__(self, lr, inplace, stop_gradients, True, compile_on_next_step, dev_str)
         self._beta1 = beta1
         self._beta2 = beta2
         self._epsilon = epsilon
