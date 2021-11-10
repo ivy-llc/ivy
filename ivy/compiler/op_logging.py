@@ -175,14 +175,14 @@ def _wrap_method_for_op_logging(fn, graph, limit_attributes=True, stateful_class
             start = time.perf_counter()
             args_writeable = ivy.copy_nest(args)
             kwargs_writeable = ivy.copy_nest(kwargs)
-            glob.inference_rel_times['2_0_arg_n_kwarg_copying'] += time.perf_counter() - start
+            graph.update_inference_times('2_0_arg_n_kwarg_copying', time.perf_counter() - start)
             start = time.perf_counter()
             ivy.set_nest_at_indices(args_writeable, arg_tracked_idxs, arg_array_vals)
             ivy.set_nest_at_indices(kwargs_writeable, kwarg_tracked_idxs, kwarg_array_vals)
-            glob.inference_rel_times['2_1_arg_n_kwarg_writing'] += time.perf_counter() - start
+            graph.update_inference_times('2_1_arg_n_kwarg_writing', time.perf_counter() - start)
             start = time.perf_counter()
             ret_ = backend_fn(*args_writeable, **kwargs_writeable)
-            glob.inference_rel_times['2_2_backend_fn'] += time.perf_counter() - start
+            graph.update_inference_times('2_2_backend_fn', time.perf_counter() - start)
             return ret_
 
         # add function attributes which inform about the arguments and returns
