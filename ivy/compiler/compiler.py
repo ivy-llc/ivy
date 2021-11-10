@@ -84,7 +84,7 @@ def _create_graph(fn, *args, stateful=None, arg_stateful_idxs=None, kwarg_statef
 
 
 def compile_graph(fn, *args, stateful=None, arg_stateful_idxs=None, kwarg_stateful_idxs=None, include_generators=True,
-                  with_array_caching=True, return_graph=False, time_chronological=True, time_inference=True,
+                  with_array_caching=True, return_graph=False, time_chronological=True, time_inference=False,
                   name='graph', **kwargs):
 
     # set time inference flag
