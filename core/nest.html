@@ -120,6 +120,7 @@
 <li class="toctree-l2"><a class="reference internal" href="nest/all_nested_indices.html">all_nested_indices</a></li>
 <li class="toctree-l2"><a class="reference internal" href="nest/map.html">map</a></li>
 <li class="toctree-l2"><a class="reference internal" href="nest/nested_map.html">nested_map</a></li>
+<li class="toctree-l2"><a class="reference internal" href="nest/copy_nest.html">copy_nest</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="random.html">Random</a></li>
@@ -235,6 +236,24 @@ Used internally, do not set manually.</p></li>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>A set of indices for the nest where the function evaluated as True.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.core.nest.copy_nest">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">copy_nest</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">nest</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.Array<span class="p">, </span>ivy.NativeArray<span class="p">, </span>Iterable<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">include_derived</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em>, <em class="sig-param"><span class="n">to_mutable</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em><span class="sig-paren">)</span> &#x2192; Union<span class="p">[</span>ivy.Array<span class="p">, </span>ivy.NativeArray<span class="p">, </span>Iterable<span class="p">]</span><a class="reference internal" href="../_modules/ivy/core/nest.html#copy_nest"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.nest.copy_nest" title="Permalink to this definition">¶</a></dt>
+<dd><p>Copies a nest deeply, but without copying leaves of the nest, only the nest lists, tuples and dicts are copied.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>nest</strong> (<em>nested</em>) – The nest to copy.</p></li>
+<li><p><strong>include_derived</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to also recursive for classes derived from tuple, list and dict. Default is False.</p></li>
+<li><p><strong>to_mutable</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to convert the nest to a mutable form, changing all tuples to lists. Default is False.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The copied nest.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -402,6 +421,7 @@ leaves before applying the method and returning x. If x is not nested, the metho
 <li class="toctree-l1"><a class="reference internal" href="nest/all_nested_indices.html">all_nested_indices</a></li>
 <li class="toctree-l1"><a class="reference internal" href="nest/map.html">map</a></li>
 <li class="toctree-l1"><a class="reference internal" href="nest/nested_map.html">nested_map</a></li>
+<li class="toctree-l1"><a class="reference internal" href="nest/copy_nest.html">copy_nest</a></li>
 </ul>
 </div>
 </div>

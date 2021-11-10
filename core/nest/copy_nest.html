@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>map_nest_at_index &mdash; Ivy 1.0 documentation</title>
+  <title>copy_nest &mdash; Ivy 1.0 documentation</title>
   
 
   
@@ -36,8 +36,8 @@
   <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="multi_index_nest" href="multi_index_nest.html" />
-    <link rel="prev" title="set_nest_at_index" href="set_nest_at_index.html" /> 
+    <link rel="next" title="Random" href="../random.html" />
+    <link rel="prev" title="nested_map" href="nested_map.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -112,7 +112,7 @@
 <li class="toctree-l1 current"><a class="reference internal" href="../nest.html">Nest</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="index_nest.html">index_nest</a></li>
 <li class="toctree-l2"><a class="reference internal" href="set_nest_at_index.html">set_nest_at_index</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">map_nest_at_index</a></li>
+<li class="toctree-l2"><a class="reference internal" href="map_nest_at_index.html">map_nest_at_index</a></li>
 <li class="toctree-l2"><a class="reference internal" href="multi_index_nest.html">multi_index_nest</a></li>
 <li class="toctree-l2"><a class="reference internal" href="set_nest_at_indices.html">set_nest_at_indices</a></li>
 <li class="toctree-l2"><a class="reference internal" href="map_nest_at_indices.html">map_nest_at_indices</a></li>
@@ -120,7 +120,7 @@
 <li class="toctree-l2"><a class="reference internal" href="all_nested_indices.html">all_nested_indices</a></li>
 <li class="toctree-l2"><a class="reference internal" href="map.html">map</a></li>
 <li class="toctree-l2"><a class="reference internal" href="nested_map.html">nested_map</a></li>
-<li class="toctree-l2"><a class="reference internal" href="copy_nest.html">copy_nest</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">copy_nest</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../random.html">Random</a></li>
@@ -200,13 +200,13 @@
         
           <li><a href="../nest.html">Nest</a> &raquo;</li>
         
-      <li>map_nest_at_index</li>
+      <li>copy_nest</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="../../_sources/core/nest/map_nest_at_index.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../_sources/core/nest/copy_nest.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -219,19 +219,22 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="map-nest-at-index">
-<h1>map_nest_at_index<a class="headerlink" href="#map-nest-at-index" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="copy-nest">
+<h1>copy_nest<a class="headerlink" href="#copy-nest" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
-<dt id="ivy.core.nest.map_nest_at_index">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">map_nest_at_index</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">nest</span></em>, <em class="sig-param"><span class="n">index</span></em>, <em class="sig-param"><span class="n">fn</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/nest.html#map_nest_at_index"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.nest.map_nest_at_index" title="Permalink to this definition">¶</a></dt>
-<dd><p>Map a function to the value of a nested item at a specified index</p>
+<dt id="ivy.core.nest.copy_nest">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">copy_nest</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">nest</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.Array<span class="p">, </span>ivy.NativeArray<span class="p">, </span>Iterable<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">include_derived</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em>, <em class="sig-param"><span class="n">to_mutable</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em><span class="sig-paren">)</span> &#x2192; Union<span class="p">[</span>ivy.Array<span class="p">, </span>ivy.NativeArray<span class="p">, </span>Iterable<span class="p">]</span><a class="reference internal" href="../../_modules/ivy/core/nest.html#copy_nest"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.nest.copy_nest" title="Permalink to this definition">¶</a></dt>
+<dd><p>Copies a nest deeply, but without copying leaves of the nest, only the nest lists, tuples and dicts are copied.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>nest</strong> (<em>nested</em>) – The nested object to update.</p></li>
-<li><p><strong>index</strong> (<em>tuple of indices</em>) – A tuple of indices for the index at which to update.</p></li>
-<li><p><strong>fn</strong> (<em>callable</em>) – The function to perform on the nest at the given index.</p></li>
+<li><p><strong>nest</strong> (<em>nested</em>) – The nest to copy.</p></li>
+<li><p><strong>include_derived</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to also recursive for classes derived from tuple, list and dict. Default is False.</p></li>
+<li><p><strong>to_mutable</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to convert the nest to a mutable form, changing all tuples to lists. Default is False.</p></li>
 </ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The copied nest.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -251,10 +254,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="multi_index_nest.html" class="btn btn-neutral float-right" title="multi_index_nest" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="../random.html" class="btn btn-neutral float-right" title="Random" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="set_nest_at_index.html" class="btn btn-neutral float-left" title="set_nest_at_index" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="nested_map.html" class="btn btn-neutral float-left" title="nested_map" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
