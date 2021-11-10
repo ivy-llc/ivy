@@ -3,8 +3,10 @@ import os
 import ivy
 import sys
 import cv2
+import time
 import copy
 import random
+import logging
 import inspect
 import numpy as np
 import networkx as nx
@@ -448,6 +450,41 @@ class Graph:
             return self._output[0]
         return self._output
 
+    def _call_w_timing(self, *args, **kwargs):
+        total_start = time.perf_counter()
+        [self.set_param(pid, ivy.index_nest(args, idx))
+         for pid, idx in zip(self._arg_param_ids, self._arg_tracked_idxs)]
+        [self.set_param(pid, ivy.index_nest(kwargs, idx))
+         for pid, idx in zip(self._kwarg_param_ids, self._kwarg_tracked_idxs)]
+        [self.set_param(pid, val) for pid, val in zip(self._stateful_param_ids, self._stateful)]
+        glob.inference_rel_times['0_init_param_setting'] += time.perf_counter() - total_start
+        for i, fn in enumerate(self._all_functions_fixed):
+            start = time.perf_counter()
+            arg_vals = [self.get_param(pid) for pid in fn.arg_param_ids]
+            kwarg_vals = [self.get_param(pid) for pid in fn.kwarg_param_ids]
+            glob.inference_rel_times['1_pre_param_setting'] += time.perf_counter() - start
+            start = time.perf_counter()
+            ret = fn(arg_vals, kwarg_vals)
+            glob.inference_rel_times['2_fn_call'] += time.perf_counter() - start
+            start = time.perf_counter()
+            if not isinstance(ret, tuple):
+                ret = (ret,)
+            [self.set_param(pid, ivy.index_nest(ret, idx))
+             for pid, idx in zip(fn.output_param_ids, fn.output_tracked_idxs)]
+            glob.inference_rel_times['3_post_param_setting'] += time.perf_counter() - start
+        start = time.perf_counter()
+        ret_vals = [self.get_param(pid) for pid in self._output_param_ids]
+        ivy.set_nest_at_indices(self._output, self._output_tracked_idxs, ret_vals)
+        glob.inference_rel_times['4_end_param_setting'] += time.perf_counter() - start
+        total_time = time.perf_counter() - total_start
+        glob.inference_rel_times['total'] += total_time
+        logging.info('relative times: {}'.format(
+            ivy.Container({k: v/glob.inference_rel_times['total'] for k, v in glob.inference_rel_times.items()})))
+        glob.inference_rel_times = {k: 0 for k in glob.inference_rel_times}
+        if len(self._output) == 1:
+            return self._output[0]
+        return self._output
+
     def connect(self, output_connected_only=True):
         sys.setrecursionlimit(max(len(self._pid_to_functions_dict), 1000))
         terminal_pids = self._output_param_ids + [pid for pid, fn in self._pid_to_functions_dict.items() if fn.terminal
@@ -471,6 +508,8 @@ class Graph:
         if time_chronological:
             all_functions = sorted(all_functions, key=lambda f: f.timestamp)
         self._all_functions_fixed = all_functions
+        if glob.time_inference:
+            return self._call_w_timing
         return self._call
 
     # Graph Visualization #
