@@ -231,3 +231,32 @@ def nested_map(x: Union[Union[ivy.Array, ivy.NativeArray], Iterable], fn: Callab
         return class_instance({k: nested_map(v, fn, include_derived, to_mutable, max_depth, depth+1)
                                for k, v in x.items()})
     return fn(x)
+
+
+def copy_nest(nest: Union[Union[ivy.Array, ivy.NativeArray], Iterable], include_derived: bool = False,
+              to_mutable: bool = False)\
+        -> Union[Union[ivy.Array, ivy.NativeArray], Iterable]:
+    """
+    Copies a nest deeply, but without copying leaves of the nest, only the nest lists, tuples and dicts are copied.
+
+    :param nest: The nest to copy.
+    :type nest: nested
+    :param include_derived: Whether to also recursive for classes derived from tuple, list and dict. Default is False.
+    :type include_derived: bool, optional
+    :param to_mutable: Whether to convert the nest to a mutable form, changing all tuples to lists. Default is False.
+    :type to_mutable: bool, optional
+    :return: The copied nest.
+    """
+    class_instance = type(nest)
+    check_fn = (lambda x_, t: isinstance(nest, t)) if include_derived else (lambda x_, t: type(nest) is t)
+    if check_fn(nest, tuple):
+        ret_list = [copy_nest(i, include_derived, to_mutable) for i in nest]
+        if to_mutable:
+            return ret_list
+        return class_instance(tuple(ret_list))
+    elif check_fn(nest, list):
+        return class_instance([copy_nest(i, include_derived, to_mutable) for i in nest])
+    elif check_fn(nest, dict):
+        class_instance = type(nest)
+        return class_instance({k: copy_nest(v, include_derived, to_mutable) for k, v in nest.items()})
+    return nest
