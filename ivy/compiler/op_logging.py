@@ -109,6 +109,10 @@ def _wrap_method_for_op_logging(fn, graph, limit_attributes=True, stateful_class
         ivy.map_nest_at_indices(args, arg_tracked_idxs, lambda x_: _delete_dependent_param(x_, graph))
         ivy.map_nest_at_indices(kwargs, kwarg_tracked_idxs, lambda x_: _delete_dependent_param(x_, graph))
 
+        # create writeable copies of the args and kwargs
+        args_writeable = ivy.copy_nest(args)
+        kwargs_writeable = ivy.copy_nest(kwargs)
+
         # covert return to list
         ret_listified = False
         if isinstance(ret_raw, tuple):
@@ -163,12 +167,9 @@ def _wrap_method_for_op_logging(fn, graph, limit_attributes=True, stateful_class
         # wrap the function
         def new_fn(arg_array_vals, kwarg_array_vals):
             # ToDo: make this as efficient as possible; this is performed at runtime
-            ivy.set_nest_at_indices(args, arg_tracked_idxs, arg_array_vals)
-            ivy.set_nest_at_indices(kwargs, kwarg_tracked_idxs, kwarg_array_vals)
-            ret_ = backend_fn(*args, **kwargs)
-            ivy.map_nest_at_indices(args, arg_tracked_idxs, lambda x_: None)
-            ivy.map_nest_at_indices(kwargs, kwarg_tracked_idxs, lambda x_: None)
-            return ret_
+            ivy.set_nest_at_indices(args_writeable, arg_tracked_idxs, arg_array_vals)
+            ivy.set_nest_at_indices(kwargs_writeable, kwarg_tracked_idxs, kwarg_array_vals)
+            return backend_fn(*args_writeable, **kwargs_writeable)
 
         # add function attributes which inform about the arguments and returns
 
