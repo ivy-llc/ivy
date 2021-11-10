@@ -5,6 +5,7 @@ Base class for deriving trainable modules
 # global
 import os
 import abc
+import logging
 
 # local
 import ivy
@@ -225,6 +226,7 @@ class Module(abc.ABC):
 
     def compile_graph(self, *args, v=None, with_grads=True, stateful=None, arg_stateful_idxs=None,
                       kwarg_stateful_idxs=None, include_generators=True, **kwargs):
+        logging.info('compiling forward pass for network {} ...'.format(self))
         stateful = ivy.default(stateful, self._stateful)
         arg_stateful_idxs = ivy.default(arg_stateful_idxs, self._arg_stateful_idxs)
         kwarg_stateful_idxs = ivy.default(kwarg_stateful_idxs, self._kwarg_stateful_idxs)
@@ -244,6 +246,7 @@ class Module(abc.ABC):
         self._compiled_fn = ivy.compile_graph(
             self._call, *args, **kwargs, stateful=stateful, arg_stateful_idxs=arg_stateful_idxs,
             kwarg_stateful_idxs=kwarg_stateful_idxs, include_generators=include_generators)
+        logging.info('{} forward pass compiled!'.format(self))
         self._compiled = True
 
     def show_graph(self, *args, v=None, with_grads=True, stateful=None, arg_stateful_idxs=None,
