@@ -245,7 +245,7 @@ class Module(abc.ABC):
         kwargs['with_grads'] = with_grads
         self._compiled_fn = ivy.compile_graph(
             self._call, *args, **kwargs, stateful=stateful, arg_stateful_idxs=arg_stateful_idxs,
-            kwarg_stateful_idxs=kwarg_stateful_idxs, include_generators=include_generators)
+            kwarg_stateful_idxs=kwarg_stateful_idxs, include_generators=include_generators, name=str(self))
         logging.info('{} forward pass compiled!'.format(self))
         self._compiled = True
 
@@ -262,7 +262,7 @@ class Module(abc.ABC):
                        kwarg_stateful_idxs=kwarg_stateful_idxs, randomness_factor=randomness_factor,
                        save_to_disk=save_to_disk, with_edge_labels=with_edge_labels, with_arg_labels=with_arg_labels,
                        with_output_labels=with_output_labels, output_connected_only=output_connected_only,
-                       include_generators=include_generators, fname=fname)
+                       include_generators=include_generators, fname=fname, name=str(self))
 
     def compile_on_next_step(self):
         self._compile_on_next_step = True
