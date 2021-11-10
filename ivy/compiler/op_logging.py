@@ -1,5 +1,6 @@
 # global
 import ivy
+import time
 import weakref
 import inspect
 import importlib
@@ -201,6 +202,8 @@ def _wrap_method_for_op_logging(fn, graph, limit_attributes=True, stateful_class
         new_fn.output_param_shapes = output_param_shapes
 
         new_fn.output_reprs = _output_reprs_from_output(ret)
+
+        new_fn.timestamp = time.perf_counter()
 
         new_fn.signature = _get_fn_signature(backend_fn)
         new_fn.terminal = True
