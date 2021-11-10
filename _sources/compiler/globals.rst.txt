@@ -12,4 +12,6 @@ Globals
    :maxdepth: -1
    :caption: Globals
 
+   globals/log_global_inference_abs_times.rst
+   globals/log_global_inference_rel_times.rst
 
