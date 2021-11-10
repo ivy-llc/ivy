@@ -193,3 +193,20 @@ def test_all_nested_indices_w_nest_checks(nest, dev_str, call):
     assert indices[14] == ['b', 'c', 1]
     assert indices[15] == ['b', 'c']
     assert indices[16] == ['b']
+
+
+# copy_nest
+def test_copy_nest(dev_str, call):
+    nest = {'a': [ivy.array([0]), ivy.array([1])], 'b': {'c': [ivy.array([[2], [4]]), ivy.array([[6], [8]])]}}
+    nest_copy = ivy.copy_nest(nest)
+
+    # copied nests
+    assert nest['a'] is not nest_copy['a']
+    assert nest['b'] is not nest_copy['b']
+    assert nest['b']['c'] is not nest_copy['b']['c']
+
+    # non-copied arrays
+    assert nest['a'][0] is nest_copy['a'][0]
+    assert nest['a'][1] is nest_copy['a'][1]
+    assert nest['b']['c'][0] is nest_copy['b']['c'][0]
+    assert nest['b']['c'][1] is nest_copy['b']['c'][1]
