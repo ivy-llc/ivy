@@ -18,7 +18,7 @@ from ivy.core.container import Container
 class Module(abc.ABC):
 
     def __init__(self, dev_str=None, v=None, build_mode='on_init', compile_on_next_step=False, store_vars=True,
-                 stateful=None, arg_stateful_idxs=None, kwarg_stateful_idxs=None, fallback_to_non_compiled=True,
+                 stateful=None, arg_stateful_idxs=None, kwarg_stateful_idxs=None, fallback_to_non_compiled=False,
                  dev_strs=None):
         """
         Initialze Ivy layer, which is a stateful object consisting of trainable variables.
@@ -30,7 +30,7 @@ class Module(abc.ABC):
         :param build_mode: How the Module is built, either on initialization (now), explicitly by the user by calling
                            build(), or the first time the __call__ method is run. Default is on initialization.
         :type build_mode: str, optional
-        :param compile_on_next_step: Whether to compile the network on the first forward pass. Default is False.
+        :param compile_on_next_step: Whether to compile the network on the next forward pass. Default is False.
         :type compile_on_next_step: bool, optional
         :param store_vars: Whether or not to store the variables created. Default is True.
         :type store_vars: bool, optional
