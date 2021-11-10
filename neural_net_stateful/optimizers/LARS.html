@@ -217,11 +217,11 @@
 <h1>LARS<a class="headerlink" href="#lars" title="Permalink to this headline">¶</a></h1>
 <dl class="py class">
 <dt id="ivy.neural_net_stateful.optimizers.LARS">
-<em class="property">class </em><code class="sig-prename descclassname">ivy.neural_net_stateful.optimizers.</code><code class="sig-name descname">LARS</code><span class="sig-paren">(</span><em class="sig-param">lr=&lt;function LARS.&lt;lambda&gt;&gt;</em>, <em class="sig-param">decay_lambda=0</em>, <em class="sig-param">inplace=True</em>, <em class="sig-param">stop_gradients=True</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/neural_net_stateful/optimizers.html#LARS"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.neural_net_stateful.optimizers.LARS" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">ivy.neural_net_stateful.optimizers.</code><code class="sig-name descname">LARS</code><span class="sig-paren">(</span><em class="sig-param">lr=&lt;function LARS.&lt;lambda&gt;&gt;</em>, <em class="sig-param">decay_lambda=0</em>, <em class="sig-param">inplace=True</em>, <em class="sig-param">stop_gradients=True</em>, <em class="sig-param">compile_on_next_step=False</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/neural_net_stateful/optimizers.html#LARS"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.neural_net_stateful.optimizers.LARS" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="Optimizer.html#ivy.neural_net_stateful.optimizers.Optimizer" title="ivy.neural_net_stateful.optimizers.Optimizer"><code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.neural_net_stateful.optimizers.Optimizer</span></code></a></p>
 <dl class="py method">
 <dt id="ivy.neural_net_stateful.optimizers.LARS.__init__">
-<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param">lr=&lt;function LARS.&lt;lambda&gt;&gt;</em>, <em class="sig-param">decay_lambda=0</em>, <em class="sig-param">inplace=True</em>, <em class="sig-param">stop_gradients=True</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/neural_net_stateful/optimizers.html#LARS.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.neural_net_stateful.optimizers.LARS.__init__" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param">lr=&lt;function LARS.&lt;lambda&gt;&gt;</em>, <em class="sig-param">decay_lambda=0</em>, <em class="sig-param">inplace=True</em>, <em class="sig-param">stop_gradients=True</em>, <em class="sig-param">compile_on_next_step=False</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/neural_net_stateful/optimizers.html#LARS.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.neural_net_stateful.optimizers.LARS.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Construct a Layerwise Adaptive Rate Scaling (LARS) optimizer.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -231,6 +231,7 @@
 <li><p><strong>inplace</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to update the variables in-place, or to create new variable handles.
 This is only relevant for frameworks with stateful variables such as PyTorch. Default is True.</p></li>
 <li><p><strong>stop_gradients</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to stop the gradients of the variables after each gradient step. Default is True.</p></li>
+<li><p><strong>compile_on_next_step</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to compile the optimizer on the next step. Default is False.</p></li>
 </ul>
 </dd>
 </dl>
