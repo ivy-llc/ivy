@@ -236,6 +236,7 @@ class Graph:
                 new_fn.output_param_var_flags = [output_param_var_flag]
                 new_fn.terminal = True
                 new_fn.is_constant = False
+                new_fn.timestamp = 0
 
                 self.add_fn_to_dict(new_pid, new_fn)
                 self._output_param_ids[i] = new_pid
@@ -463,10 +464,13 @@ class Graph:
         self._outer_connected = True
         sys.setrecursionlimit(self._orig_recursion_limit)
 
-    def compiled(self):
+    def compiled(self, time_chronological=True):
         if not self._outer_connected:
             self.connect()
-        self._all_functions_fixed = self._all_functions
+        all_functions = self._all_functions
+        if time_chronological:
+            all_functions = sorted(all_functions, key=lambda f: f.timestamp)
+        self._all_functions_fixed = all_functions
         return self._call
 
     # Graph Visualization #
