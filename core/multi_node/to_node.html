@@ -251,24 +251,6 @@
             
   <div class="section" id="to-node">
 <h1>to_node<a class="headerlink" href="#to-node" title="Permalink to this headline">¶</a></h1>
-<dl class="py function">
-<dt id="ivy.core.multi_node.to_node">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">to_node</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">node_str</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>str<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">f</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>ivy.Framework<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; Union<span class="p">[</span>ivy.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span><a class="reference internal" href="../../_modules/ivy/core/multi_node.html#to_node"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.multi_node.to_node" title="Permalink to this definition">¶</a></dt>
-<dd><p>Move the input array x to the desired node, specified by node string.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<em>array</em>) – Array to move onto the node.</p></li>
-<li><p><strong>node_str</strong> (<em>str</em><em>, </em><em>optional</em>) – node to move the array to ‘cuda:0’, ‘cuda:1’, ‘cpu’ etc. Keep same node if None.</p></li>
-<li><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning framework. Inferred from inputs if None.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>The array x, but now placed on the target node.</p>
-</dd>
-</dl>
-</dd></dl>
-
 <div class="line-block">
 <div class="line"><br /></div>
 <div class="line"><strong>Supported Frameworks:</strong></div>
