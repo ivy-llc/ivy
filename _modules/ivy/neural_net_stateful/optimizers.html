@@ -322,7 +322,7 @@
 <span class="sd">        :type ignore_missing: bool, optional</span>
 <span class="sd">        :return: The updated variables, following update step.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_compiled</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_compiled</span> <span class="ow">and</span> <span class="n">ivy</span><span class="o">.</span><span class="n">try_use_compiled</span><span class="p">:</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_count</span> <span class="o">+=</span> <span class="mi">1</span>
                 <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_compiled_step_fn</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">grads</span><span class="p">,</span> <span class="n">ignore_missing</span><span class="p">)</span>
