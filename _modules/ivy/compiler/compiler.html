@@ -288,10 +288,11 @@
 
 <div class="viewcode-block" id="compile_graph"><a class="viewcode-back" href="../../../compiler/compiler/compile_graph.html#ivy.compiler.compiler.compile_graph">[docs]</a><span class="k">def</span> <span class="nf">compile_graph</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">stateful</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">arg_stateful_idxs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">kwarg_stateful_idxs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">include_generators</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
                   <span class="n">with_array_caching</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">return_graph</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">time_chronological</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">time_inference</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-                  <span class="n">name</span><span class="o">=</span><span class="s1">&#39;graph&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+                  <span class="n">timing_fname</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;graph&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
 
     <span class="c1"># set time inference flag</span>
     <span class="n">glob</span><span class="o">.</span><span class="n">time_inference</span> <span class="o">=</span> <span class="n">time_inference</span>
+    <span class="n">glob</span><span class="o">.</span><span class="n">timing_fname</span> <span class="o">=</span> <span class="n">timing_fname</span>
 
     <span class="c1"># create graph</span>
     <span class="n">graph</span> <span class="o">=</span> <span class="n">_create_graph</span><span class="p">(</span>
