@@ -483,14 +483,27 @@ class Graph:
         total_time = time.perf_counter() - total_start
         self.update_inference_times('total', total_time)
         self.update_inference_times('count', 1)
-        logging.info(self._name)
-        logging.info('abs times: {}'.format(
-            ivy.Container({k: v/self._sum_inference_times['count'] for k, v in self._sum_inference_times.items()})))
-        logging.info('relative times: {}'.format(
-            ivy.Container({k: v/self._sum_inference_times['total'] for k, v in self._sum_inference_times.items()})))
+        self._log_timing_info()
         if len(self._output) == 1:
             return self._output[0]
         return self._output
+
+    def _log_timing_info(self):
+        if glob.timing_fname is None:
+            logging.info(self._name)
+            logging.info('abs times: {}'.format(
+                ivy.Container({k: v/self._sum_inference_times['count'] for k, v in self._sum_inference_times.items()})))
+            logging.info('relative times: {}'.format(
+                ivy.Container({k: v/self._sum_inference_times['total'] for k, v in self._sum_inference_times.items()})))
+            return
+        with open(glob.timing_fname, 'w+') as f:
+            f.write(self._name + '\n')
+            f.write('abs times: {}\n'.format(
+                str(ivy.Container({k: v/self._sum_inference_times['count']
+                                   for k, v in self._sum_inference_times.items()}))))
+            f.write('relative times: {}\n'.format(
+                str(ivy.Container({k: v/self._sum_inference_times['total']
+                                   for k, v in self._sum_inference_times.items()}))))
 
     def update_inference_times(self, name, delta):
         self._sum_inference_times[name] += delta

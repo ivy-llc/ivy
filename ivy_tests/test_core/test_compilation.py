@@ -103,9 +103,11 @@ def test_compile_graph_inplace(x_raw, dtype_str, tensor_fn, with_non_compiled, w
 
     # function 1
     x = tensor_fn(x_raw, dtype_str, dev_str)
+    fname = 'fn1_inplace_{}_{}'.format(with_non_compiled, with_array_caching)
     ivy.show_graph(_fn_1, x, with_non_compiled, output_connected_only=False, with_array_caching=with_array_caching,
-                   fname='fn1_inplace_{}_{}.png'.format(with_non_compiled, with_array_caching))
-    comp_fn = ivy.compile_graph(_fn_1, x, with_non_compiled, with_array_caching=with_array_caching)
+                   fname=fname + '.png')
+    comp_fn = ivy.compile_graph(_fn_1, x, with_non_compiled, with_array_caching=with_array_caching,
+                                time_inference=False, timing_fname=fname + '.txt')
     # type test
     assert callable(comp_fn)
     # value test
@@ -128,9 +130,11 @@ def test_compile_graph_inplace(x_raw, dtype_str, tensor_fn, with_non_compiled, w
 
     # function 2
     x = tensor_fn(x_raw, dtype_str, dev_str)
+    fname = 'fn2_inplace_{}_{}.png'.format(with_non_compiled, with_array_caching)
     ivy.show_graph(_fn_2, x, with_non_compiled, output_connected_only=False, with_array_caching=with_array_caching,
-                   fname='fn2_inplace_{}_{}.png'.format(with_non_compiled, with_array_caching))
-    comp_fn = ivy.compile_graph(_fn_2, x, with_non_compiled, with_array_caching=with_array_caching)
+                   fname=fname + '.png')
+    comp_fn = ivy.compile_graph(_fn_2, x, with_non_compiled, with_array_caching=with_array_caching,
+                                time_inference=False, timing_fname=fname + '.txt')
     # type test
     assert callable(comp_fn)
     # value test
@@ -206,10 +210,11 @@ def test_compile_graph(x_raw, dtype_str, tensor_fn, with_non_compiled, with_inte
 
     # function 3
     x = tensor_fn(x_raw, dtype_str, dev_str)
+    fname = 'fn3_{}_{}_{}'.format(with_non_compiled, with_internal_gen, with_array_caching)
     ivy.show_graph(_fn_3, x, with_non_compiled, with_internal_gen, output_connected_only=False,
-                   with_array_caching=with_array_caching,
-                   fname='fn3_{}_{}_{}.png'.format(with_non_compiled, with_internal_gen, with_array_caching))
-    comp_fn = ivy.compile_graph(_fn_3, x, with_non_compiled, with_internal_gen, with_array_caching=with_array_caching)
+                   with_array_caching=with_array_caching, fname=fname + '.png')
+    comp_fn = ivy.compile_graph(_fn_3, x, with_non_compiled, with_internal_gen, with_array_caching=with_array_caching,
+                                time_inference=False, timing_fname=fname + '.txt')
     # type test
     assert callable(comp_fn)
     # value test
@@ -236,10 +241,11 @@ def test_compile_graph(x_raw, dtype_str, tensor_fn, with_non_compiled, with_inte
 
     # function 4
     x = tensor_fn(x_raw, dtype_str, dev_str)
+    fname = 'fn4_{}_{}_{}'.format(with_non_compiled, with_internal_gen, with_array_caching)
     ivy.show_graph(_fn_4, x, with_non_compiled, with_internal_gen, output_connected_only=False,
-                   with_array_caching=with_array_caching,
-                   fname='fn4_{}_{}_{}.png'.format(with_non_compiled, with_internal_gen, with_array_caching))
-    comp_fn = ivy.compile_graph(_fn_4, x, with_non_compiled, with_internal_gen, with_array_caching=with_array_caching)
+                   with_array_caching=with_array_caching, fname=fname + '.png')
+    comp_fn = ivy.compile_graph(_fn_4, x, with_non_compiled, with_internal_gen, with_array_caching=with_array_caching,
+                                time_inference=False, timing_fname=fname + '.txt')
     # type test
     assert callable(comp_fn)
     # value test
@@ -301,11 +307,12 @@ def test_compile_graph_w_random(x_raw, dtype_str, tensor_fn, with_non_compiled, 
 
     # random function
     x = tensor_fn(x_raw, dtype_str, dev_str)
+    fname = 'w_random_{}_{}_{}'.format(with_non_compiled, include_generators, with_array_caching)
     ivy.show_graph(_rand_fn, x, with_non_compiled, output_connected_only=False, include_generators=include_generators,
-                   with_array_caching=with_array_caching, fname='w_random_{}_{}_{}.png'.format(
-                    with_non_compiled, include_generators, with_array_caching))
+                   with_array_caching=with_array_caching, fname=fname + '.png')
     comp_fn = ivy.compile_graph(_rand_fn, x, with_non_compiled, include_generators=include_generators,
-                                with_array_caching=with_array_caching)
+                                with_array_caching=with_array_caching, time_inference=False,
+                                timing_fname=fname + '.txt')
     # type test
     assert callable(comp_fn)
     # value test
@@ -357,9 +364,11 @@ def test_compile_graph_w_detached_divide(x_raw, dtype_str, tensor_fn, with_array
 
     # detached divide function
     x = tensor_fn(x_raw, dtype_str, dev_str)
+    fname = 'w_detached_divide_{}'.format(with_array_caching)
     ivy.show_graph(_detach_div_fn, x, output_connected_only=False, with_array_caching=with_array_caching,
-                   fname='w_detached_divide_{}.png'.format(with_array_caching))
-    comp_fn = ivy.compile_graph(_detach_div_fn, x, with_array_caching=with_array_caching)
+                   fname=fname + '.png')
+    comp_fn = ivy.compile_graph(_detach_div_fn, x, with_array_caching=with_array_caching, time_inference=False,
+                                timing_fname=fname + '.txt')
     # type test
     assert callable(comp_fn)
     # value test
@@ -400,9 +409,11 @@ def test_compile_graph_input_in_output(x_raw, dtype_str, tensor_fn, with_array_c
     # detached divide function
     x = tensor_fn(x_raw, dtype_str, dev_str)
     y = tensor_fn(x_raw, dtype_str, dev_str)
+    fname = 'input_in_output_{}'.format(with_array_caching)
     ivy.show_graph(_input_in_output, x, y, output_connected_only=False, with_array_caching=with_array_caching,
-                   fname='input_in_output_{}.png'.format(with_array_caching))
-    comp_fn = ivy.compile_graph(_input_in_output, x, y, with_array_caching=with_array_caching)
+                   fname=fname + '.png')
+    comp_fn = ivy.compile_graph(_input_in_output, x, y, with_array_caching=with_array_caching, time_inference=False,
+                                timing_fname=fname + '.txt')
     # type test
     assert callable(comp_fn)
     # value test
@@ -440,11 +451,12 @@ def test_compile_graph_inplace_var_update(weight_n_grad, dtype_str, with_array_c
     # as tensors
     weight = ivy.variable(ivy.array(weight_raw, dtype_str, dev_str))
     # compile
+    fname = 'inplace_var_update_{}'.format(with_array_caching)
     ivy.show_graph(_inplace_var_update, weight, ivy.copy_array(weight), output_connected_only=False,
-                   with_array_caching=with_array_caching,
-                   fname='inplace_var_update_{}.png'.format(with_array_caching))
-    comp_fn = ivy.compile_graph(_inplace_var_update, weight, ivy.copy_array(weight),
-                                with_array_caching=with_array_caching)
+                   with_array_caching=with_array_caching, fname=fname + '.png')
+    comp_fn = ivy.compile_graph(
+        _inplace_var_update, weight, ivy.copy_array(weight), with_array_caching=with_array_caching,
+        time_inference=False, timing_fname=fname + '.txt')
     # type test
     assert callable(comp_fn)
     # value test
@@ -474,11 +486,12 @@ class Stateful:
         return _x + self._state
 
     def compile_graph(self, _x):
+        fname = 'w_stateful_{}'.format(self._with_array_caching)
         ivy.show_graph(self.forward, _x, stateful=[self], output_connected_only=False,
-                       with_array_caching=self._with_array_caching,
-                       fname='w_stateful_{}.png'.format(self._with_array_caching))
+                       with_array_caching=self._with_array_caching, fname=fname + '.png')
         # noinspection PyAttributeOutsideInit
-        self.forward = ivy.compile_graph(self.forward, _x, stateful=[self], with_array_caching=self._with_array_caching)
+        self.forward = ivy.compile_graph(self.forward, _x, stateful=[self], with_array_caching=self._with_array_caching,
+                                         time_inference=False, timing_fname=fname + '.txt')
 
     def __setattr__(self, key, value):
         self.__dict__[key] = value
@@ -556,8 +569,10 @@ def test_compile_graph_w_stateful_cont(x_raw, dtype_str, with_array_caching, dev
 
     # compiled
     cont = ivy.Container(x=x)
+    fname = 'w_stateful_cont_{}'.format(with_array_caching)
     comp_fn = ivy.compile_graph(_update_container, cont.deep_copy(), x, arg_stateful_idxs=[[0]],
-                                with_array_caching=with_array_caching)
+                                with_array_caching=with_array_caching, time_inference=False,
+                                timing_fname=fname + '.txt')
     assert not hasattr(cont, 'new_attribute')
     c_ret_0 = comp_fn(cont, x)
     assert c_ret_0 == x + 1
@@ -604,10 +619,12 @@ def test_compile_graph_w_stateful_in_args(x_raw, dtype_str, with_array_caching, 
     x = ivy.array(x_raw, dtype_str, dev_str)
     sia = StatefulInArg()
     # compile
+    fname = 'w_stateful_in_args_{}'.format(with_array_caching)
     ivy.show_graph(_stateful_in_arg_method, x, sia, arg_stateful_idxs=[[1]], output_connected_only=False,
-                   with_array_caching=with_array_caching, fname='w_stateful_in_args_{}.png'.format(with_array_caching))
-    comp_fn = ivy.compile_graph(_stateful_in_arg_method, x, sia, arg_stateful_idxs=[[1]],
-                                with_array_caching=with_array_caching)
+                   with_array_caching=with_array_caching, fname=fname + '.png')
+    comp_fn = ivy.compile_graph(
+        _stateful_in_arg_method, x, sia, arg_stateful_idxs=[[1]], with_array_caching=with_array_caching,
+        time_inference=False, timing_fname=fname + '.txt')
     # type test
     assert callable(comp_fn)
     # value test
@@ -634,9 +651,11 @@ def test_compile_graph_reverse_builtin(with_array_caching, dev_str, compile_grap
     # config
     x = ivy.array([0., 1., 2.])
     # compile
-    ivy.show_graph(_rev_builtin, x, output_connected_only=False, fname='rev_builtin_{}.png'.format(with_array_caching),
+    fname = 'rev_builtin_{}'.format(with_array_caching)
+    ivy.show_graph(_rev_builtin, x, output_connected_only=False, fname=fname + '.png',
                    with_array_caching=with_array_caching)
-    comp_fn = ivy.compile_graph(_rev_builtin, x, with_array_caching=with_array_caching)
+    comp_fn = ivy.compile_graph(_rev_builtin, x, with_array_caching=with_array_caching, time_inference=False,
+                                timing_fname=fname + '.txt')
     # type test
     assert callable(comp_fn)
     # value test
