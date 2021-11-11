@@ -11,7 +11,7 @@ TEST_FRAMEWORKS: Dict[str, callable] = {'numpy': lambda: helpers.get_ivy_numpy()
                                         'tensorflow': lambda: helpers.get_ivy_tensorflow(),
                                         'tensorflow_graph': lambda: helpers.get_ivy_tensorflow(),
                                         'torch': lambda: helpers.get_ivy_torch(),
-                                        'mxnd': lambda: helpers.get_ivy_mxnd()}
+                                        'mxnd': lambda: helpers.get_ivy_mxnet()}
 TEST_CALL_METHODS: Dict[str, callable] = {'numpy': helpers.np_call,
                                           'jax': helpers.jnp_call,
                                           'tensorflow': helpers.tf_call,
