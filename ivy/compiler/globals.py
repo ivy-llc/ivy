@@ -7,6 +7,7 @@ raw_pids_to_weakrefs = dict()
 raw_pids_to_unique_pids = dict()
 dependent_pids = set()
 time_inference = False
+timing_fname = None
 sum_inference_times = {'0_init_param_setting': 0,
                        '1_pre_param_setting': 0,
                        '2_fn_call': 0,
