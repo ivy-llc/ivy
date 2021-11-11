@@ -21,13 +21,23 @@ sum_inference_times = {'0_init_param_setting': 0,
 
 
 def log_global_inference_abs_times():
-    logging.info('abs times: {}'.format(
-        ivy.Container({k: v / sum_inference_times['count'] for k, v in sum_inference_times.items()})))
+    if timing_fname is None:
+        logging.info('abs times: {}'.format(
+            ivy.Container({k: v / sum_inference_times['count'] for k, v in sum_inference_times.items()})))
+    # noinspection PyTypeChecker
+    with open(timing_fname, 'w+') as f:
+        f.write('abs times: {}\n'.format(
+            str(ivy.Container({k: v/sum_inference_times['count'] for k, v in sum_inference_times.items()}))))
 
 
 def log_global_inference_rel_times():
-    logging.info('relative times: {}'.format(
-        ivy.Container({k: v / sum_inference_times['total'] for k, v in sum_inference_times.items()})))
+    if timing_fname is None:
+        logging.info('relative times: {}'.format(
+            ivy.Container({k: v / sum_inference_times['total'] for k, v in sum_inference_times.items()})))
+    # noinspection PyTypeChecker
+    with open(timing_fname, 'w+') as f:
+        f.write('relative times: {}\n'.format(
+            str(ivy.Container({k: v / sum_inference_times['total'] for k, v in sum_inference_times.items()}))))
 
 
 ARRAY_BUILTINS = ['__neg__', '__pow__', '__rpow__', '__add__', '__radd__', '__iadd__', '__sub__', '__rsub__',
