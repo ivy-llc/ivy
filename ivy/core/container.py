@@ -1665,6 +1665,16 @@ class Container(dict):
             lambda x, kc: self._ivy.stop_gradient(x, False) if self._ivy.is_variable(x)
             else (x if self._ivy.is_array(x) else self._ivy.array(x)), key_chains, to_apply, prune_unapplied)
 
+    def num_arrays(self, exclusive=True):
+        """
+        Compute the number of arrays present at the leaf nodes, including variables by default.
+
+        :param exclusive: Whether to check if the data type is exclusively an array,
+                          rather than a variable or traced array.
+        :type exclusive: bool, optional
+        """
+        return sum(self.map(lambda x, kc: _ivy.is_array(x, exclusive)).to_iterator_values())
+
     def to_numpy(self, key_chains=None, to_apply=True, prune_unapplied=False):
         """
         Converts all nested ivy arrays to numpy arrays.
