@@ -712,6 +712,29 @@
                     <span class="k">return</span> <span class="kc">False</span>
         <span class="k">return</span> <span class="kc">True</span></div>
 
+<div class="viewcode-block" id="Container.identical_array_shapes"><a class="viewcode-back" href="../../../core/container/Container.html#ivy.core.container.Container.identical_array_shapes">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">identical_array_shapes</span><span class="p">(</span><span class="n">containers</span><span class="p">,</span> <span class="n">exclusive</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Determine whether all of the containers have identical number of arrays and identical array shapes,</span>
+<span class="sd">        regardless of their key-chain structures.</span>
+
+<span class="sd">        :param containers: containers to check.</span>
+<span class="sd">        :type containers: sequence of Container objects</span>
+<span class="sd">        :param exclusive: Whether to check if the data type is exclusively an array, rather than a variable</span>
+<span class="sd">                          or traced array.</span>
+<span class="sd">        :type exclusive: bool, optional</span>
+<span class="sd">        :return: Boolean</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">array_conts</span> <span class="o">=</span> <span class="p">[</span><span class="n">cont</span><span class="o">.</span><span class="n">size_ordered_arrays</span><span class="p">(</span><span class="n">exclusive</span><span class="p">)</span> <span class="k">for</span> <span class="n">cont</span> <span class="ow">in</span> <span class="n">containers</span><span class="p">]</span>
+        <span class="n">array_cont0</span> <span class="o">=</span> <span class="n">array_conts</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">array_cont0_len</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">array_cont0</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">array_cont</span> <span class="ow">in</span> <span class="n">array_conts</span><span class="p">[</span><span class="mi">1</span><span class="p">:]:</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">array_cont</span><span class="p">)</span> <span class="o">!=</span> <span class="n">array_cont0_len</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">False</span>
+            <span class="k">elif</span> <span class="ow">not</span> <span class="nb">min</span><span class="p">([</span><span class="n">a</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="n">a0</span><span class="o">.</span><span class="n">shape</span> <span class="k">for</span> <span class="n">a</span><span class="p">,</span> <span class="n">a0</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">array_cont</span><span class="o">.</span><span class="n">values</span><span class="p">(),</span> <span class="n">array_cont0</span><span class="o">.</span><span class="n">values</span><span class="p">())]):</span>
+                <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">return</span> <span class="kc">True</span></div>
+
 <div class="viewcode-block" id="Container.from_disk_as_hdf5"><a class="viewcode-back" href="../../../core/container/Container.html#ivy.core.container.Container.from_disk_as_hdf5">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">from_disk_as_hdf5</span><span class="p">(</span><span class="n">h5_obj_or_filepath</span><span class="p">,</span> <span class="n">slice_obj</span><span class="o">=</span><span class="nb">slice</span><span class="p">(</span><span class="kc">None</span><span class="p">),</span> <span class="n">alphabetical_keys</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ivyh</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
