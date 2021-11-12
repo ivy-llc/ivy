@@ -2057,24 +2057,32 @@ def test_container_map(inplace, dev_str, call):
         assert 'b/d' not in container_mapped
 
 
-def test_container_map_conts(dev_str, call):
+@pytest.mark.parametrize(
+    "inplace", [True, False])
+def test_container_map_conts(inplace, dev_str, call):
     # without key_chains specification
-    container = Container({'a': ivy.array([1], dev_str=dev_str),
-                           'b': {'c': ivy.array([2], dev_str=dev_str), 'd': ivy.array([3], dev_str=dev_str)}})
+    container_orig = Container({'a': ivy.array([1], dev_str=dev_str),
+                                'b': {'c': ivy.array([2], dev_str=dev_str), 'd': ivy.array([3], dev_str=dev_str)}})
 
     def _add_e_attr(cont_in):
         cont_in.e = ivy.array([4], dev_str=dev_str)
         return cont_in
 
     # with self
-    container_mapped = container.map_conts(lambda c, _: _add_e_attr(c))
+    container = container_orig.deep_copy()
+    container_mapped = container.map_conts(lambda c, _: _add_e_attr(c), inplace=inplace)
+    if inplace:
+        container_mapped = container
     assert 'e' in container_mapped
     assert np.array_equal(ivy.to_numpy(container_mapped.e), np.array([4]))
     assert 'e' in container_mapped.b
     assert np.array_equal(ivy.to_numpy(container_mapped.b.e), np.array([4]))
 
     # without self
-    container_mapped = container.map_conts(lambda c, _: _add_e_attr(c), include_self=False)
+    container = container_orig.deep_copy()
+    container_mapped = container.map_conts(lambda c, _: _add_e_attr(c), include_self=False, inplace=inplace)
+    if inplace:
+        container_mapped = container
     assert 'e' not in container_mapped
     assert 'e' in container_mapped.b
     assert np.array_equal(ivy.to_numpy(container_mapped.b.e), np.array([4]))
