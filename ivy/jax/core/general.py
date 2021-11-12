@@ -3,7 +3,6 @@ Collection of Jax general functions, wrapped to fit Ivy syntax and signature.
 """
 
 # global
-import os
 import jax as _jax
 import math as _math
 import numpy as _onp
@@ -15,8 +14,8 @@ from jaxlib.xla_extension import Buffer
 import multiprocessing as _multiprocessing
 
 # local
-from ivy.jax.core.device import to_dev
-from ivy.jax.core.device import dev_str as callable_dev_str
+from ivy.core.device import default_device
+from ivy.jax.core.device import to_dev, dev_str as callable_dev_str
 
 DTYPE_DICT = {_jnp.dtype('bool'): 'bool',
               _jnp.dtype('int8'): 'int8',
@@ -55,7 +54,7 @@ def array(object_in, dtype_str=None, dev_str=None):
         dtype = _jnp.__dict__[dtype_str]
     else:
         dtype = None
-    return to_dev(_jnp.array(object_in, dtype=dtype), dev_str)
+    return to_dev(_jnp.array(object_in, dtype=dtype), default_device(dev_str))
 
 
 # noinspection PyUnresolvedReferences,PyProtectedMember
@@ -121,19 +120,19 @@ def arange(stop, start=0, step=1, dtype_str=None, dev_str=None):
         dtype = _jnp.__dict__[dtype_str]
     else:
         dtype = None
-    return to_dev(_jnp.arange(start, stop, step=step, dtype=dtype), dev_str)
+    return to_dev(_jnp.arange(start, stop, step=step, dtype=dtype), default_device(dev_str))
 
 
 def linspace(start, stop, num, axis=None, dev_str=None):
     if axis is None:
         axis = -1
-    return to_dev(_jnp.linspace(start, stop, num, axis=axis), dev_str)
+    return to_dev(_jnp.linspace(start, stop, num, axis=axis), default_device(dev_str))
 
 
 def logspace(start, stop, num, base=10., axis=None, dev_str=None):
     if axis is None:
         axis = -1
-    return to_dev(_jnp.logspace(start, stop, num, base=base, axis=axis), dev_str)
+    return to_dev(_jnp.logspace(start, stop, num, base=base, axis=axis), default_device(dev_str))
 
 
 def concatenate(xs, axis=-1):
@@ -227,7 +226,7 @@ def squeeze(x, axis=None):
 # noinspection PyShadowingNames
 def zeros(shape, dtype_str='float32', dev_str=None):
     dtype = _jnp.__dict__[dtype_str]
-    return to_dev(_jnp.zeros(shape, dtype), dev_str)
+    return to_dev(_jnp.zeros(shape, dtype), default_device(dev_str))
 
 
 # noinspection PyShadowingNames
@@ -236,13 +235,13 @@ def zeros_like(x, dtype_str=None, dev_str=None):
         dtype = _jnp.__dict__[dtype_str]
     else:
         dtype = x.dtype
-    return to_dev(_jnp.zeros_like(x, dtype=dtype), dev_str)
+    return to_dev(_jnp.zeros_like(x, dtype=dtype), default_device(dev_str))
 
 
 # noinspection PyShadowingNames
 def ones(shape, dtype_str='float32', dev_str=None):
     dtype = _jnp.__dict__[dtype_str]
-    return to_dev(_jnp.ones(shape, dtype), dev_str)
+    return to_dev(_jnp.ones(shape, dtype), default_device(dev_str))
 
 
 # noinspection PyShadowingNames
@@ -251,14 +250,14 @@ def ones_like(x, dtype_str=None, dev_str=None):
         dtype = _jnp.__dict__[dtype_str]
     else:
         dtype = x.dtype
-    return to_dev(_jnp.ones_like(x, dtype=dtype), dev_str)
+    return to_dev(_jnp.ones_like(x, dtype=dtype), default_device(dev_str))
 
 
 # noinspection PyUnusedLocal
 def one_hot(indices, depth, dev_str=None):
     # from https://stackoverflow.com/questions/38592324/one-hot-encoding-using-numpy
     res = _jnp.eye(depth)[_jnp.array(indices).reshape(-1)]
-    return to_dev(res.reshape(list(indices.shape) + [depth]), dev_str)
+    return to_dev(res.reshape(list(indices.shape) + [depth]), default_device(dev_str))
 
 
 cross = _jnp.cross
@@ -285,7 +284,7 @@ def identity(n, dtype_str='float32', batch_shape=None, dev_str=None):
         reshape_dims = [1]*len(batch_shape) + [n, n]
         tile_dims = list(batch_shape) + [1, 1]
         return_mat = _jnp.tile(_jnp.reshape(mat, reshape_dims), tile_dims)
-    return to_dev(return_mat, dev_str)
+    return to_dev(return_mat, default_device(dev_str))
 
 
 meshgrid = lambda *xs, indexing='ij': _jnp.meshgrid(*xs, indexing=indexing)
