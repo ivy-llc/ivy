@@ -1569,4 +1569,8 @@ def container_types(f: ivy.Framework = None):
     Return all framework-specific types which should be hierarchically parsed in an ivy.Container. Such types must adopt
     a key-value structure, and exposes public methods .keys(), .values() and items().
     """
-    return _cur_framework(f=f).container_types()
+    # noinspection PyBroadException
+    try:
+        return _cur_framework(f=f).container_types()
+    except ValueError:
+        return []
