@@ -1772,11 +1772,7 @@
 <span class="sd">    Return all framework-specific types which should be hierarchically parsed in an ivy.Container. Such types must adopt</span>
 <span class="sd">    a key-value structure, and exposes public methods .keys(), .values() and items().</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># noinspection PyBroadException</span>
-    <span class="k">try</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">container_types</span><span class="p">()</span>
-    <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
-        <span class="k">return</span> <span class="p">[]</span></div>
+    <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">container_types</span><span class="p">()</span></div>
 </pre></div>
 
            </div>
