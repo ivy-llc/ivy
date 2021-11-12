@@ -251,7 +251,8 @@
 
 <div class="viewcode-block" id="Container.__init__"><a class="viewcode-back" href="../../../core/container/Container.html#ivy.core.container.Container.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dict_in</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">queues</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">queue_load_sizes</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">container_combine_method</span><span class="o">=</span><span class="s1">&#39;list_join&#39;</span><span class="p">,</span>
                  <span class="n">queue_timeout</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">print_limit</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">print_indent</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">print_line_spacing</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">ivyh</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                 <span class="n">keyword_color_dict</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">rebuild_child_containers</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">types_to_iteratively_nest</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+                 <span class="n">keyword_color_dict</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">rebuild_child_containers</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">types_to_iteratively_nest</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">alphabetical_keys</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Initialize container object from input dict representation.</span>
 
@@ -285,6 +286,9 @@
 <span class="sd">        :param types_to_iteratively_nest: The data types to nest iteratively in the dict structure, each type must be</span>
 <span class="sd">                                          iterable. Default is None.</span>
 <span class="sd">        :type types_to_iteratively_nest: seq of iterable types</span>
+<span class="sd">        :param alphabetical_keys: Whether to sort the container keys alphabetically, or preserve the dict order.</span>
+<span class="sd">                                  Default is True.</span>
+<span class="sd">        :type alphabetical_keys: bool, optional</span>
 <span class="sd">        :param kwargs: keyword arguments for dict creation. Default is None.</span>
 <span class="sd">        :type kwargs: keyword arguments.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -294,6 +298,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_print_line_spacing</span> <span class="o">=</span> <span class="n">print_line_spacing</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_container_combine_method</span> <span class="o">=</span> <span class="n">container_combine_method</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_types_to_iteratively_nest</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">default</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">types_to_iteratively_nest</span><span class="p">),</span> <span class="p">(),</span>  <span class="kc">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_alphabetical_keys</span> <span class="o">=</span> <span class="n">alphabetical_keys</span>
         <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_queues</span><span class="p">):</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_container_combine_method</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_container_combine_method</span> <span class="o">=</span>\
@@ -308,7 +313,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_config</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
             <span class="n">print_limit</span><span class="o">=</span><span class="n">print_limit</span><span class="p">,</span> <span class="n">print_indent</span><span class="o">=</span><span class="n">print_indent</span><span class="p">,</span> <span class="n">print_line_spacing</span><span class="o">=</span><span class="n">print_line_spacing</span><span class="p">,</span> <span class="n">ivyh</span><span class="o">=</span><span class="n">ivyh</span><span class="p">,</span>
             <span class="n">keyword_color_dict</span><span class="o">=</span><span class="n">keyword_color_dict</span><span class="p">,</span> <span class="n">rebuild_child_containers</span><span class="o">=</span><span class="n">rebuild_child_containers</span><span class="p">,</span>
-            <span class="n">types_to_iteratively_nest</span><span class="o">=</span><span class="n">types_to_iteratively_nest</span><span class="p">)</span>
+            <span class="n">types_to_iteratively_nest</span><span class="o">=</span><span class="n">types_to_iteratively_nest</span><span class="p">,</span> <span class="n">alphabetical_keys</span><span class="o">=</span><span class="n">alphabetical_keys</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">dict_in</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">kwargs</span><span class="p">:</span>
                 <span class="n">dict_in</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
@@ -325,7 +330,8 @@
                                 <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">dict_in</span><span class="p">))],</span> <span class="n">dict_in</span><span class="p">))</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;invalid input </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">dict_in</span><span class="p">))</span>
-        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">dict_in</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
+        <span class="n">items</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">dict_in</span><span class="o">.</span><span class="n">items</span><span class="p">())</span> <span class="k">if</span> <span class="n">alphabetical_keys</span> <span class="k">else</span> <span class="n">dict_in</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">items</span><span class="p">:</span>
             <span class="k">if</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">dict_types</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">Container</span><span class="p">)</span> <span class="ow">or</span> <span class="n">rebuild_child_containers</span><span class="p">))</span> <span class="ow">or</span> \
                     <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_types_to_iteratively_nest</span><span class="p">)):</span>
                 <span class="bp">self</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">Container</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_config</span><span class="p">)</span>
@@ -639,7 +645,7 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">config</span><span class="p">):</span>
             <span class="n">config</span> <span class="o">=</span> <span class="n">container0</span><span class="o">.</span><span class="n">config</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">container0</span><span class="p">,</span> <span class="n">Container</span><span class="p">)</span> <span class="k">else</span> <span class="p">{}</span>
         <span class="n">return_dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
-        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">container0</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">container0</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
             <span class="n">values</span> <span class="o">=</span> <span class="p">[</span><span class="n">cont</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="k">for</span> <span class="n">cont</span> <span class="ow">in</span> <span class="n">containers</span><span class="p">]</span>
             <span class="n">value0</span> <span class="o">=</span> <span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
             <span class="n">this_key_chain</span> <span class="o">=</span> <span class="n">key</span> <span class="k">if</span> <span class="n">key_chain</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span> <span class="k">else</span> <span class="p">(</span><span class="n">key_chain</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span> <span class="o">+</span> <span class="n">key</span><span class="p">)</span>
@@ -682,7 +688,8 @@
 <span class="sd">        :return: Boolean</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">keys</span> <span class="o">=</span> <span class="nb">set</span><span class="p">([</span><span class="n">i</span> <span class="k">for</span> <span class="n">sl</span> <span class="ow">in</span> <span class="p">[</span><span class="nb">list</span><span class="p">(</span><span class="n">cont</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="k">for</span> <span class="n">cont</span> <span class="ow">in</span> <span class="n">containers</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">sl</span><span class="p">])</span>
-        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">keys</span><span class="p">):</span>
+        <span class="c1"># noinspection PyProtectedMember</span>
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">keys</span><span class="p">:</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="nb">min</span><span class="p">([</span><span class="n">key</span> <span class="ow">in</span> <span class="n">cont</span> <span class="k">for</span> <span class="n">cont</span> <span class="ow">in</span> <span class="n">containers</span><span class="p">]):</span>
                 <span class="k">return</span> <span class="kc">False</span>
             <span class="n">values</span> <span class="o">=</span> <span class="p">[</span><span class="n">cont</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="k">for</span> <span class="n">cont</span> <span class="ow">in</span> <span class="n">containers</span><span class="p">]</span>
@@ -706,7 +713,7 @@
         <span class="k">return</span> <span class="kc">True</span></div>
 
 <div class="viewcode-block" id="Container.from_disk_as_hdf5"><a class="viewcode-back" href="../../../core/container/Container.html#ivy.core.container.Container.from_disk_as_hdf5">[docs]</a>    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">from_disk_as_hdf5</span><span class="p">(</span><span class="n">h5_obj_or_filepath</span><span class="p">,</span> <span class="n">slice_obj</span><span class="o">=</span><span class="nb">slice</span><span class="p">(</span><span class="kc">None</span><span class="p">),</span> <span class="n">ivyh</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">from_disk_as_hdf5</span><span class="p">(</span><span class="n">h5_obj_or_filepath</span><span class="p">,</span> <span class="n">slice_obj</span><span class="o">=</span><span class="nb">slice</span><span class="p">(</span><span class="kc">None</span><span class="p">),</span> <span class="n">alphabetical_keys</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ivyh</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Load container object from disk, as an h5py file, at the specified hdf5 filepath.</span>
 
@@ -714,6 +721,9 @@
 <span class="sd">        :type h5_obj_or_filepath: str or h5 obj</span>
 <span class="sd">        :param slice_obj: slice object to slice all h5 elements.</span>
 <span class="sd">        :type slice_obj: slice or sequence of slices</span>
+<span class="sd">        :param alphabetical_keys: Whether to sort the container keys alphabetically, or preserve the dict order.</span>
+<span class="sd">                                  Default is True.</span>
+<span class="sd">        :type alphabetical_keys: bool, optional</span>
 <span class="sd">        :param ivyh: Handle to ivy module to use for the calculations. Default is None, which results in the global ivy.</span>
 <span class="sd">        :type ivyh: handle to ivy module, optional</span>
 <span class="sd">        :return: Container loaded from disk</span>
@@ -723,8 +733,8 @@
             <span class="n">h5_obj</span> <span class="o">=</span> <span class="n">_h5py</span><span class="o">.</span><span class="n">File</span><span class="p">(</span><span class="n">h5_obj_or_filepath</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">h5_obj</span> <span class="o">=</span> <span class="n">h5_obj_or_filepath</span>
-
-        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">h5_obj</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
+        <span class="n">items</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">h5_obj</span><span class="o">.</span><span class="n">items</span><span class="p">())</span> <span class="k">if</span> <span class="n">alphabetical_keys</span> <span class="k">else</span> <span class="n">h5_obj</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">items</span><span class="p">:</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">_h5py</span><span class="o">.</span><span class="n">Group</span><span class="p">):</span>
                 <span class="n">container_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">Container</span><span class="o">.</span><span class="n">from_disk_as_hdf5</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">slice_obj</span><span class="p">,</span> <span class="n">ivyh</span><span class="p">)</span>
             <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">_h5py</span><span class="o">.</span><span class="n">Dataset</span><span class="p">):</span>
@@ -779,7 +789,7 @@
 
         <span class="n">size</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="n">batch_size</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">h5_obj</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">h5_obj</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">_h5py</span><span class="o">.</span><span class="n">Group</span><span class="p">):</span>
                 <span class="n">size_to_add</span><span class="p">,</span> <span class="n">batch_size</span> <span class="o">=</span> <span class="n">Container</span><span class="o">.</span><span class="n">h5_file_size</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
                 <span class="n">size</span> <span class="o">+=</span> <span class="n">size_to_add</span>
@@ -808,7 +818,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="n">h5_obj</span> <span class="o">=</span> <span class="n">h5_obj_or_filepath</span>
 
-        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">h5_obj</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">h5_obj</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">_h5py</span><span class="o">.</span><span class="n">Group</span><span class="p">):</span>
                 <span class="n">Container</span><span class="o">.</span><span class="n">shuffle_h5_file</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">seed_value</span><span class="p">)</span>
             <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">_h5py</span><span class="o">.</span><span class="n">Dataset</span><span class="p">):</span>
@@ -1361,7 +1371,7 @@
         <span class="n">return_dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">seed_value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">seed_value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ivy</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_ivy</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1000</span><span class="p">,</span> <span class="p">()))</span><span class="o">.</span><span class="n">item</span><span class="p">()</span>
-        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="n">this_key_chain</span> <span class="o">=</span> <span class="n">key</span> <span class="k">if</span> <span class="n">key_chain</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span> <span class="k">else</span> <span class="p">(</span><span class="n">key_chain</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span> <span class="o">+</span> <span class="n">key</span><span class="p">)</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">Container</span><span class="p">):</span>
                 <span class="n">ret</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">shuffle</span><span class="p">(</span><span class="n">seed_value</span><span class="p">,</span> <span class="n">key_chains</span><span class="p">,</span> <span class="n">to_apply</span><span class="p">,</span> <span class="n">prune_unapplied</span><span class="p">,</span> <span class="n">this_key_chain</span><span class="p">)</span>
@@ -1388,7 +1398,7 @@
 <span class="sd">        :return: Container object sliced at desired key.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">return_dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
-        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="n">slice_key</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">value</span>
             <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">Container</span><span class="p">):</span>
@@ -1868,7 +1878,7 @@
             <span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">kc</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ivy</span><span class="o">.</span><span class="n">stop_gradient</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ivy</span><span class="o">.</span><span class="n">is_variable</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
             <span class="k">else</span> <span class="p">(</span><span class="n">x</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ivy</span><span class="o">.</span><span class="n">is_array</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ivy</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">x</span><span class="p">)),</span> <span class="n">key_chains</span><span class="p">,</span> <span class="n">to_apply</span><span class="p">,</span> <span class="n">prune_unapplied</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Container.num_arrays"><a class="viewcode-back" href="../../../core/container/Container.html#ivy.core.container.Container.num_arrays">[docs]</a>    <span class="k">def</span> <span class="nf">num_arrays</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exclusive</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="Container.num_arrays"><a class="viewcode-back" href="../../../core/container/Container.html#ivy.core.container.Container.num_arrays">[docs]</a>    <span class="k">def</span> <span class="nf">num_arrays</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exclusive</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Compute the number of arrays present at the leaf nodes, including variables by default.</span>
 
@@ -1928,7 +1938,7 @@
             <span class="n">h5_obj</span> <span class="o">=</span> <span class="n">_h5py</span><span class="o">.</span><span class="n">File</span><span class="p">(</span><span class="n">h5_obj_or_filepath</span><span class="p">,</span> <span class="n">mode</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">h5_obj</span> <span class="o">=</span> <span class="n">h5_obj_or_filepath</span>
-        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">Container</span><span class="p">):</span>
                 <span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">h5_obj</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
                     <span class="n">h5_group</span> <span class="o">=</span> <span class="n">h5_obj</span><span class="o">.</span><span class="n">create_group</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
@@ -1993,7 +2003,7 @@
 <span class="sd">        :return: Container as nested list.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">return_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
-        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">Container</span><span class="p">):</span>
                 <span class="n">return_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">value</span><span class="o">.</span><span class="n">to_list</span><span class="p">())</span>
             <span class="k">elif</span> <span class="n">value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">key</span> <span class="o">!=</span> <span class="s1">&#39;_f&#39;</span><span class="p">:</span>
@@ -2008,7 +2018,7 @@
 <span class="sd">        :return: Container data in it&#39;s raw form.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">return_item</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
-        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">())):</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">Container</span><span class="p">):</span>
                 <span class="n">return_item</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">to_raw</span><span class="p">()</span>
             <span class="k">elif</span> <span class="n">key</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">3</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;it_&#39;</span> <span class="ow">and</span> <span class="nb">tuple</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_types_to_iteratively_nest</span><span class="p">):</span>
@@ -2025,7 +2035,7 @@
 <span class="sd">        :return: Container as nested dict.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">return_dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
-        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">Container</span><span class="p">):</span>
                 <span class="n">return_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
             <span class="k">else</span><span class="p">:</span>
@@ -2038,7 +2048,7 @@
 
 <span class="sd">        :return: Iterator for the container elements.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="k">if</span> <span class="n">leaf_keys_only</span><span class="p">:</span>
                 <span class="n">kc</span> <span class="o">=</span> <span class="n">key</span>
             <span class="k">else</span><span class="p">:</span>
@@ -2055,7 +2065,7 @@
 
 <span class="sd">        :return: Iterator for the container values.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">Container</span><span class="p">):</span>
                 <span class="c1"># noinspection PyCompatibility</span>
                 <span class="k">yield from</span> <span class="n">value</span><span class="o">.</span><span class="n">to_iterator_values</span><span class="p">()</span>
@@ -2068,7 +2078,7 @@
 
 <span class="sd">        :return: Iterator for the container elements.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="k">if</span> <span class="n">leaf_keys_only</span><span class="p">:</span>
                 <span class="n">kc</span> <span class="o">=</span> <span class="n">key</span>
             <span class="k">else</span><span class="p">:</span>
@@ -2096,7 +2106,7 @@
 <span class="sd">        :return: Container.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">new_dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
-        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">Container</span><span class="p">):</span>
                 <span class="n">new_value</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">from_flat_list</span><span class="p">(</span><span class="n">flat_list</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
@@ -2342,7 +2352,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">keys_in_chain</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;[/.]&#39;</span><span class="p">,</span> <span class="n">key_chain</span><span class="p">)</span>
         <span class="n">out_dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
-        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">Container</span><span class="p">):</span>
                 <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="n">keys_in_chain</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
                     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">keys_in_chain</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
@@ -2380,7 +2390,7 @@
 
 <div class="viewcode-block" id="Container.sort_by_key"><a class="viewcode-back" href="../../../core/container/Container.html#ivy.core.container.Container.sort_by_key">[docs]</a>    <span class="k">def</span> <span class="nf">sort_by_key</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">new_dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
-        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">Container</span><span class="p">):</span>
                 <span class="n">v_back</span> <span class="o">=</span> <span class="n">v</span><span class="o">.</span><span class="n">sort_by_key</span><span class="p">()</span>
             <span class="k">else</span><span class="p">:</span>
@@ -2396,7 +2406,7 @@
 <span class="sd">        :return: Container with empty keys pruned.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">out_dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
-        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">Container</span><span class="p">):</span>
                 <span class="n">new_value</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">prune_empty</span><span class="p">(</span><span class="n">keep_Nones</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
                 <span class="k">if</span> <span class="n">new_value</span><span class="p">:</span>
@@ -2422,7 +2432,7 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="n">absolute</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">containing</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;At least one of absolute or containing arguments must be specified.&#39;</span><span class="p">)</span>
         <span class="n">out_cont</span> <span class="o">=</span> <span class="n">Container</span><span class="p">(</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_config</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="k">if</span> <span class="p">(</span><span class="n">absolute</span> <span class="ow">and</span> <span class="n">key</span> <span class="o">==</span> <span class="n">absolute</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">containing</span> <span class="ow">and</span> <span class="n">containing</span> <span class="ow">in</span> <span class="n">key</span><span class="p">):</span>
                 <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">Container</span><span class="p">):</span>
                     <span class="n">out_cont</span> <span class="o">=</span> <span class="n">Container</span><span class="o">.</span><span class="n">combine</span><span class="p">(</span><span class="n">out_cont</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
@@ -2447,7 +2457,7 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="n">absolute</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">containing</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;At least one of absolute or containing arguments must be specified.&#39;</span><span class="p">)</span>
         <span class="n">out_cont</span> <span class="o">=</span> <span class="n">Container</span><span class="p">(</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_config</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="k">if</span> <span class="p">(</span><span class="n">absolute</span> <span class="ow">and</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">absolute</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">containing</span> <span class="ow">and</span> <span class="nb">max</span><span class="p">([</span><span class="n">con</span> <span class="ow">in</span> <span class="n">key</span> <span class="k">for</span> <span class="n">con</span> <span class="ow">in</span> <span class="n">containing</span><span class="p">])):</span>
                 <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">Container</span><span class="p">):</span>
                     <span class="n">out_cont</span> <span class="o">=</span> <span class="n">Container</span><span class="o">.</span><span class="n">combine</span><span class="p">(</span><span class="n">out_cont</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
@@ -2506,7 +2516,7 @@
 <span class="sd">        :return: New container following the function mapped to each sub-array.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">return_dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
-        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="n">this_key_chain</span> <span class="o">=</span> <span class="n">key</span> <span class="k">if</span> <span class="n">key_chain</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span> <span class="k">else</span> <span class="p">(</span><span class="n">key_chain</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span> <span class="o">+</span> <span class="n">key</span><span class="p">)</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">Container</span><span class="p">):</span>
                 <span class="n">ret</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">key_chains</span><span class="p">,</span> <span class="n">to_apply</span><span class="p">,</span> <span class="n">prune_unapplied</span><span class="p">,</span> <span class="n">this_key_chain</span><span class="p">)</span>
@@ -2545,7 +2555,7 @@
 <span class="sd">        :return: New container following the function mapped to each sub-container.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">return_dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
-        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="n">this_key_chain</span> <span class="o">=</span> <span class="n">key</span> <span class="k">if</span> <span class="n">key_chain</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span> <span class="k">else</span> <span class="p">(</span><span class="n">key_chain</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span> <span class="o">+</span> <span class="n">key</span><span class="p">)</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">Container</span><span class="p">):</span>
                 <span class="n">ret</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">map_conts</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">key_chains</span><span class="p">,</span> <span class="n">to_apply</span><span class="p">,</span> <span class="n">prune_unapplied</span><span class="p">,</span> <span class="n">key_chain</span><span class="o">=</span><span class="n">this_key_chain</span><span class="p">)</span>
@@ -2818,7 +2828,7 @@
         <span class="k">elif</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_queues</span><span class="p">):</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_queue_item</span><span class="p">(</span><span class="n">query</span><span class="p">)</span>
         <span class="n">return_dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
-        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">Container</span><span class="p">):</span>
                 <span class="n">return_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span><span class="p">[</span><span class="n">query</span><span class="p">]</span>
             <span class="k">else</span><span class="p">:</span>
