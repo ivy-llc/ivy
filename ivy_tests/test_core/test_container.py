@@ -1,4 +1,5 @@
 # global
+import copy
 import os
 import queue
 import pickle
@@ -1987,19 +1988,29 @@ def test_container_from_flat_list(dev_str, call):
     assert np.allclose(ivy.to_numpy(container.b.d), np.array([6]))
 
 
-def test_container_map(dev_str, call):
+@pytest.mark.parametrize(
+    "inplace", [True, False])
+def test_container_map(inplace, dev_str, call):
     # without key_chains specification
     dict_in = {'a': ivy.array([1], dev_str=dev_str),
                'b': {'c': ivy.array([2], dev_str=dev_str), 'd': ivy.array([3], dev_str=dev_str)}}
-    container = Container(dict_in)
-    container_iterator = container.map(lambda x, _: x + 1).to_iterator()
+    container_orig = Container(dict_in)
+    container = container_orig.deep_copy()
+    container_it = container.map(lambda x, _: x + 1, inplace=inplace)
+    if inplace:
+        container_iterator = container.to_iterator()
+    else:
+        container_iterator = container_it.to_iterator()
     for (key, value), expected_value in zip(container_iterator,
                                             [ivy.array([2], dev_str=dev_str), ivy.array([3], dev_str=dev_str),
                                              ivy.array([4], dev_str=dev_str)]):
         assert call(lambda x: x, value) == call(lambda x: x, expected_value)
 
     # with key_chains to apply
-    container_mapped = container.map(lambda x, _: x + 1, ['a', 'b/c'])
+    container = container_orig.deep_copy()
+    container_mapped = container.map(lambda x, _: x + 1, ['a', 'b/c'], inplace=inplace)
+    if inplace:
+        container_mapped = container
     assert np.allclose(ivy.to_numpy(container_mapped['a']), np.array([[2]]))
     assert np.allclose(ivy.to_numpy(container_mapped.a), np.array([[2]]))
     assert np.allclose(ivy.to_numpy(container_mapped['b']['c']), np.array([[3]]))
@@ -2008,15 +2019,23 @@ def test_container_map(dev_str, call):
     assert np.allclose(ivy.to_numpy(container_mapped.b.d), np.array([[3]]))
 
     # with key_chains to apply pruned
-    container_mapped = container.map(lambda x, _: x + 1, ['a', 'b/c'], prune_unapplied=True)
+    container = container_orig.deep_copy()
+    container_mapped = container.map(lambda x, _: x + 1, ['a', 'b/c'], prune_unapplied=True, inplace=inplace)
+    if inplace:
+        container_mapped = container
     assert np.allclose(ivy.to_numpy(container_mapped['a']), np.array([[2]]))
     assert np.allclose(ivy.to_numpy(container_mapped.a), np.array([[2]]))
     assert np.allclose(ivy.to_numpy(container_mapped['b']['c']), np.array([[3]]))
     assert np.allclose(ivy.to_numpy(container_mapped.b.c), np.array([[3]]))
-    assert 'b/d' not in container_mapped
+    if not inplace:
+        assert 'b/d' not in container_mapped
 
     # with key_chains to not apply
-    container_mapped = container.map(lambda x, _: x + 1, Container({'a': None, 'b': {'d': None}}), to_apply=False)
+    container = container_orig.deep_copy()
+    container_mapped = container.map(lambda x, _: x + 1, Container({'a': None, 'b': {'d': None}}), to_apply=False,
+                                     inplace=inplace)
+    if inplace:
+        container_mapped = container
     assert np.allclose(ivy.to_numpy(container_mapped['a']), np.array([[1]]))
     assert np.allclose(ivy.to_numpy(container_mapped.a), np.array([[1]]))
     assert np.allclose(ivy.to_numpy(container_mapped['b']['c']), np.array([[3]]))
@@ -2025,12 +2044,17 @@ def test_container_map(dev_str, call):
     assert np.allclose(ivy.to_numpy(container_mapped.b.d), np.array([[3]]))
 
     # with key_chains to not apply pruned
+    container = container_orig.deep_copy()
     container_mapped = container.map(lambda x, _: x + 1, Container({'a': None, 'b': {'d': None}}), to_apply=False,
-                                     prune_unapplied=True)
-    assert 'a' not in container_mapped
+                                     prune_unapplied=True, inplace=inplace)
+    if inplace:
+        container_mapped = container
+    if not inplace:
+        assert 'a' not in container_mapped
     assert np.allclose(ivy.to_numpy(container_mapped['b']['c']), np.array([[3]]))
     assert np.allclose(ivy.to_numpy(container_mapped.b.c), np.array([[3]]))
-    assert 'b/d' not in container_mapped
+    if not inplace:
+        assert 'b/d' not in container_mapped
 
 
 def test_container_map_conts(dev_str, call):
