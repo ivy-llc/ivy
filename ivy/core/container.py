@@ -2504,8 +2504,9 @@ class Container(dict):
             return self
 
     def with_print_limit(self, print_limit, inplace=False):
-        def _update_print_limit(cont):
+        def _update_print_limit(cont, _):
             cont._print_limit = print_limit
+            return cont
         ret = self.map_conts(_update_print_limit, inplace=inplace)
         if inplace:
             return
@@ -2516,16 +2517,18 @@ class Container(dict):
         return self.with_print_limit(None, inplace)
 
     def with_print_indent(self, print_indent, inplace=False):
-        def _update_print_indent(cont):
+        def _update_print_indent(cont, _):
             cont._print_indent = print_indent
+            return cont
         ret = self.map_conts(_update_print_indent, inplace=inplace)
         if inplace:
             return
         return ret
 
     def with_print_line_spacing(self, print_line_spacing, inplace=False):
-        def _update_print_line_spacing(cont):
+        def _update_print_line_spacing(cont, _):
             cont._print_line_spacing = print_line_spacing
+            return cont
         ret = self.map_conts(_update_print_line_spacing, inplace=inplace)
         if inplace:
             return
