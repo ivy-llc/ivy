@@ -12,6 +12,7 @@ from operator import mul as _mul
 from functools import reduce as _reduce
 from jaxlib.xla_extension import Buffer
 import multiprocessing as _multiprocessing
+from haiku._src.data_structures import FlatMapping
 
 # local
 from ivy.core.device import default_device
@@ -394,3 +395,4 @@ compile = lambda fn, dynamic=True, example_inputs=None, static_argnums=None, sta
 current_framework_str = lambda: 'jax'
 current_framework_str.__name__ = 'current_framework_str'
 multiprocessing = lambda context=None: _multiprocessing if context is None else _multiprocessing.get_context(context)
+container_types = lambda: [FlatMapping]
