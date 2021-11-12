@@ -1031,7 +1031,7 @@ Default is True.</p></li>
 
 <dl class="py method">
 <dt id="ivy.core.container.Container.map">
-<code class="sig-name descname">map</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">func</span></em>, <em class="sig-param"><span class="n">key_chains</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">to_apply</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">prune_unapplied</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">key_chain</span><span class="o">=</span><span class="default_value">''</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/container.html#Container.map"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.map" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">map</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">func</span></em>, <em class="sig-param"><span class="n">key_chains</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">to_apply</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">prune_unapplied</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">inplace</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">key_chain</span><span class="o">=</span><span class="default_value">''</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/container.html#Container.map"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.map" title="Permalink to this definition">¶</a></dt>
 <dd><p>Apply function to all array values of container</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1041,6 +1041,7 @@ Default is True.</p></li>
 <li><p><strong>to_apply</strong> (<em>bool</em><em>, </em><em>optional</em>) – If True, the method will be applied to key_chains, otherwise key_chains will be skipped.
 Default is True.</p></li>
 <li><p><strong>prune_unapplied</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to prune key_chains for which the function was not applied. Default is False.</p></li>
+<li><p><strong>inplace</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to apply the mapping inplace, or return a new container. Default is False.</p></li>
 <li><p><strong>key_chain</strong> (<em>str</em>) – Chain of keys for this dict entry</p></li>
 </ul>
 </dd>
