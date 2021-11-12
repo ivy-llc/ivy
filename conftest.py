@@ -1,3 +1,4 @@
+import ivy
 import pytest
 from typing import Dict
 from ivy_tests import helpers
@@ -33,6 +34,7 @@ def run_around_tests(dev_str, f, wrapped_mode, call):
         pytest.skip()
     with f.use:
         f.set_wrapped_mode(wrapped_mode)
+        ivy.set_default_device(dev_str)
         yield
 
 
