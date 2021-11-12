@@ -1454,8 +1454,6 @@ class Container(dict):
         :type prune_unapplied: bool, optional
         :return: A list of sub-arrays.
         """
-        # ToDo: make this more efficient, without so many recursive container calls. For example the splits indices
-        #  can be calculated here, and then slices applied directly only once
         dim_size = num_or_size_splits if isinstance(num_or_size_splits, int) else len(num_or_size_splits)
         # noinspection PyTypeChecker
         return self.map(
@@ -2356,7 +2354,7 @@ class Container(dict):
         """
         return self.map(lambda x, kc: ivy.copy_array(x) if ivy.is_array(x) else x)
 
-    def map(self, func, key_chains=None, to_apply=True, prune_unapplied=False, key_chain=''):
+    def map(self, func, key_chains=None, to_apply=True, prune_unapplied=False, inplace=False, key_chain=''):
         """
         Apply function to all array values of container
 
@@ -2369,18 +2367,21 @@ class Container(dict):
         :type to_apply: bool, optional
         :param prune_unapplied: Whether to prune key_chains for which the function was not applied. Default is False.
         :type prune_unapplied: bool, optional
+        :param inplace: Whether to apply the mapping inplace, or return a new container. Default is False.
+        :type inplace: bool, optional
         :param key_chain: Chain of keys for this dict entry
         :type key_chain: str
         :return: New container following the function mapped to each sub-array.
         """
-        return_dict = dict()
+        return_dict = self if inplace else dict()
         for key, value in self.items():
             this_key_chain = key if key_chain == '' else (key_chain + '/' + key)
             if isinstance(value, Container):
-                ret = value.map(func, key_chains, to_apply, prune_unapplied, this_key_chain)
+                ret = value.map(func, key_chains, to_apply, prune_unapplied, inplace, this_key_chain)
                 if prune_unapplied and not ret:
                     continue
-                return_dict[key] = ret
+                if not inplace:
+                    return_dict[key] = ret
             else:
                 if key_chains is not None:
                     if (this_key_chain in key_chains and not to_apply) or (
@@ -2390,7 +2391,8 @@ class Container(dict):
                         return_dict[key] = value
                         continue
                 return_dict[key] = func(value, this_key_chain)
-        # ToDo: find an elegant way to pass ALL configs from the current container to the new container
+        if inplace:
+            return
         return Container(return_dict, **self._config)
 
     def map_conts(self, func, key_chains=None, to_apply=True, prune_unapplied=False, include_self=True, key_chain=''):
