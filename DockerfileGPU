@@ -85,24 +85,35 @@ RUN apt-get install libnccl2=2.8.4-1+cuda11.0 libnccl-dev=2.8.4-1+cuda11.0
 # OpenBLAS
 RUN apt-get install -y libopenblas-dev
 
-# Ivy #
-# ----#
+# CUDA-specific Installations #
+# ----------------------------#
 
-RUN apt-get install -y python-opengl
-RUN apt-get install -y git
 RUN pip3 install pytest
+RUN apt-get install -y git
+RUN apt-get install -y python-opengl
 
-COPY requirements.txt .
-RUN pip3 install --no-cache-dir -r requirements.txt && \
-    rm -rf requirements.txt
-
-COPY optional.txt .
-RUN pip3 install --no-cache-dir -r optional.txt && \
-    rm -rf optional.txt
-RUN pip3 install torch==1.9.0+cu111 -f https://download.pytorch.org/whl/torch_stable.html
-
-# CUDA-specific Installations
 RUN pip install --upgrade "jax[cuda110]" -f https://storage.googleapis.com/jax-releases/jax_releases.html
 # ToDo: work out why most recent jaxlib installs are not working
 RUN pip3 install --upgrade jaxlib==0.1.69+cuda110 -f https://storage.googleapis.com/jax-releases/jax_releases.html
 RUN pip3 install --upgrade torch-scatter -f https://pytorch-geometric.com/whl/torch-1.9.0+cu111.html
+
+# Ivy #
+# ----#
+
+# Install Ivy Upstream
+RUN git clone https://github.com/ivy-dl/ivy && \
+    cd ivy && \
+    cat requirements.txt | grep -v "ivy-" | pip3 install --no-cache-dir -r /dev/stdin && \
+    cat optional.txt | grep -v "ivy-" | pip3 install --no-cache-dir -r /dev/stdin && \
+    python3 setup.py develop --no-deps
+
+# Install local requirements
+COPY requirements.txt .
+RUN pip3 install --no-cache-dir -r requirements.txt && \
+    rm -rf requirements.txt
+
+# Install local optional
+COPY optional.txt .
+RUN pip3 install --no-cache-dir -r optional.txt && \
+    rm -rf optional.txt
+RUN pip3 install torch==1.9.0+cu111 -f https://download.pytorch.org/whl/torch_stable.html
