@@ -2350,3 +2350,13 @@ def test_profiler(dev_str, call):
     profiler.stop()
     if call is helpers.mx_call:
         time.sleep(1)  # required by MXNet for some reason
+
+
+# container types
+def test_container_types(dev_str, call):
+    cont_types = ivy.container_types()
+    assert isinstance(cont_types, list)
+    for cont_type in cont_types:
+        assert hasattr(cont_type, 'keys')
+        assert hasattr(cont_type, 'values')
+        assert hasattr(cont_type, 'items')

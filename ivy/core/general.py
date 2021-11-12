@@ -1562,3 +1562,11 @@ def print_all_arrays_in_memory():
     """
     for arr in get_all_arrays_in_memory():
         print(type(arr), arr.shape)
+
+
+def container_types(f: ivy.Framework = None):
+    """
+    Return all framework-specific types which should be hierarchically parsed in an ivy.Container. Such types must adopt
+    a key-value structure, and exposes public methods .keys(), .values() and items().
+    """
+    return _cur_framework(f=f).container_types()
