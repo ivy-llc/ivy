@@ -11,6 +11,7 @@ from functools import reduce as _reduce
 import multiprocessing as _multiprocessing
 
 # local
+from ivy.core.device import default_device
 from ivy.numpy.core.device import _dev_str_callable
 
 
@@ -55,7 +56,7 @@ def array(object_in, dtype_str=None, dev_str=None):
         dtype = _np.__dict__[dtype_str]
     else:
         dtype = None
-    return _to_dev(_np.array(object_in, dtype=dtype), dev_str)
+    return _to_dev(_np.array(object_in, dtype=dtype), default_device(dev_str))
 
 
 def is_array(x, exclusive=False):
@@ -115,7 +116,7 @@ def arange(stop, start=0, step=1, dtype_str=None, dev_str=None):
         dtype = _np.__dict__[dtype_str]
     else:
         dtype = None
-    res = _to_dev(_np.arange(start, stop, step=step, dtype=dtype), dev_str)
+    res = _to_dev(_np.arange(start, stop, step=step, dtype=dtype), default_device(dev_str))
     if not dtype:
         if res.dtype == _np.dtype('float64'):
             return res.astype(_np.float32)
@@ -127,13 +128,13 @@ def arange(stop, start=0, step=1, dtype_str=None, dev_str=None):
 def linspace(start, stop, num, axis=None, dev_str=None):
     if axis is None:
         axis = -1
-    return _to_dev(_np.linspace(start, stop, num, axis=axis), dev_str)
+    return _to_dev(_np.linspace(start, stop, num, axis=axis), default_device(dev_str))
 
 
 def logspace(start, stop, num, base=10., axis=None, dev_str=None):
     if axis is None:
         axis = -1
-    return _to_dev(_np.logspace(start, stop, num, base=base, axis=axis), dev_str)
+    return _to_dev(_np.logspace(start, stop, num, base=base, axis=axis), default_device(dev_str))
 
 
 def concatenate(xs, axis=-1):
@@ -228,7 +229,7 @@ def squeeze(x, axis=None):
 def zeros(shape, dtype_str='float32', dev_str=None):
     dtype_str = 'bool_' if dtype_str == 'bool' else dtype_str
     dtype = _np.__dict__[dtype_str]
-    return _to_dev(_np.zeros(shape, dtype), dev_str)
+    return _to_dev(_np.zeros(shape, dtype), default_device(dev_str))
 
 
 # noinspection PyShadowingNames
@@ -238,14 +239,14 @@ def zeros_like(x, dtype_str=None, dev_str=None):
         dtype = _np.__dict__[dtype_str]
     else:
         dtype = x.dtype
-    return _to_dev(_np.zeros_like(x, dtype=dtype), dev_str)
+    return _to_dev(_np.zeros_like(x, dtype=dtype), default_device(dev_str))
 
 
 # noinspection PyShadowingNames
 def ones(shape, dtype_str='float32', dev_str=None):
     dtype_str = 'bool_' if dtype_str == 'bool' else dtype_str
     dtype = _np.__dict__[dtype_str]
-    return _to_dev(_np.ones(shape, dtype), dev_str)
+    return _to_dev(_np.ones(shape, dtype), default_device(dev_str))
 
 
 # noinspection PyShadowingNames
@@ -255,7 +256,7 @@ def ones_like(x, dtype_str=None, dev_str=None):
         dtype = _np.__dict__[dtype_str]
     else:
         dtype = x.dtype
-    return _to_dev(_np.ones_like(x, dtype=dtype), dev_str)
+    return _to_dev(_np.ones_like(x, dtype=dtype), default_device(dev_str))
 
 
 # noinspection PyUnusedLocal
@@ -290,7 +291,7 @@ def identity(n, dtype_str='float32', batch_shape=None, dev_str=None):
         reshape_dims = [1] * len(batch_shape) + [n, n]
         tile_dims = list(batch_shape) + [1, 1]
         return_mat = _np.tile(_np.reshape(mat, reshape_dims), tile_dims)
-    return _to_dev(return_mat, dev_str)
+    return _to_dev(return_mat, default_device(dev_str))
 
 
 meshgrid = lambda *xs, indexing='ij': _np.meshgrid(*xs, indexing=indexing)

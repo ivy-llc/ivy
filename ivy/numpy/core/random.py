@@ -5,11 +5,11 @@ Collection of Numpy random functions, wrapped to fit Ivy syntax and signature.
 # global
 import numpy as _np
 
-random_uniform = lambda low=0., high=1., shape=None, dev_str='cpu': _np.asarray(_np.random.uniform(low, high, shape))
-random_normal = lambda mean=0., std=1., shape=None, dev_str='cpu': _np.asarray(_np.random.normal(mean, std, shape))
+random_uniform = lambda low=0., high=1., shape=None, dev_str=None: _np.asarray(_np.random.uniform(low, high, shape))
+random_normal = lambda mean=0., std=1., shape=None, dev_str=None: _np.asarray(_np.random.normal(mean, std, shape))
 
 
-def multinomial(population_size, num_samples, batch_size, probs=None, replace=True, dev_str='cpu'):
+def multinomial(population_size, num_samples, batch_size, probs=None, replace=True, dev_str=None):
     if probs is None:
         probs = _np.ones((batch_size, population_size,)) / population_size
     orig_probs_shape = list(probs.shape)
@@ -22,6 +22,6 @@ def multinomial(population_size, num_samples, batch_size, probs=None, replace=Tr
     return _np.asarray(_np.reshape(samples_flat, orig_probs_shape[:-1] + [num_samples]))
 
 
-randint = lambda low, high, shape, dev_str='cpu': _np.random.randint(low, high, shape)
+randint = lambda low, high, shape, dev_str=None: _np.random.randint(low, high, shape)
 seed = lambda seed_value=0: _np.random.seed(seed_value)
 shuffle = _np.random.permutation
