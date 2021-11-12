@@ -1,10 +1,12 @@
 # global
+import os
 import ivy
 import pytest
 
 # local
 from ivy_models.transformers.helpers import FeedForward, PreNorm
 from ivy_models.transformers.perceiver_io import PerceiverIOSpec, PerceiverIO
+
 
 # Helpers #
 # --------#
@@ -37,8 +39,10 @@ def test_prenorm(dev_str, f, call):
     "queries_dim", [32])
 @pytest.mark.parametrize(
     "learn_query", [True, False])
-def test_perceiver_io_img_classification(dev_str, f, call, batch_size, img_dims, queries_dim, learn_query):
-
+@pytest.mark.parametrize(
+    "load_weights", [True, False])
+def test_perceiver_io_img_classification(dev_str, f, call, batch_size, img_dims, queries_dim, learn_query,
+                                         load_weights):
     # params
     input_dim = 3
     num_input_axes = 2
@@ -48,7 +52,6 @@ def test_perceiver_io_img_classification(dev_str, f, call, batch_size, img_dims,
     img = ivy.random_uniform(shape=[batch_size] + img_dims + [3], dev_str=dev_str)
     queries = None if learn_query else ivy.random_uniform(shape=[batch_size, 1, queries_dim], dev_str=dev_str)
 
-    # model
     model = PerceiverIO(PerceiverIOSpec(input_dim=input_dim,
                                         num_input_axes=num_input_axes,
                                         output_dim=output_dim,
@@ -57,6 +60,33 @@ def test_perceiver_io_img_classification(dev_str, f, call, batch_size, img_dims,
                                         query_shape=[1],
                                         max_fourier_freq=img_dims[0],
                                         device=dev_str))
+
+    # maybe load weights
+    if load_weights:
+        this_dir = os.path.dirname(os.path.realpath(__file__))
+        weight_fpath = os.path.join(this_dir, '../ivy_models/transformers/pretrained_weights/perceiver_io.hdf5')
+        v = ivy.Container.from_disk_as_hdf5(weight_fpath)
+        # v = v.restructure_key_chains({})
+
+        try:
+            assert model.v.num_arrays() == v.num_arrays()
+            assert ivy.Container.identical_array_shapes([model.v, v])
+        except AssertionError:
+            raise Exception(
+                'model.v.size_ordered_arrays(): {}\n\n'
+                'v.size_ordered_arrays(): {}\n\n'.format(
+                    model.v.size_ordered_arrays(), v.size_ordered_arrays()))
+
+        assert ivy.Container.identical_structure([model.v, v])
+
+        model = PerceiverIO(PerceiverIOSpec(input_dim=input_dim,
+                                            num_input_axes=num_input_axes,
+                                            output_dim=output_dim,
+                                            queries_dim=queries_dim,
+                                            learn_query=learn_query,
+                                            query_shape=[1],
+                                            max_fourier_freq=img_dims[0],
+                                            device=dev_str), v=v)
 
     # output
     output = model(img, queries=queries)
@@ -74,7 +104,6 @@ def test_perceiver_io_img_classification(dev_str, f, call, batch_size, img_dims,
 @pytest.mark.parametrize(
     "learn_query", [True, False])
 def test_perceiver_io_flow_prediction(dev_str, f, call, batch_size, img_dims, queries_dim, learn_query):
-
     # params
     input_dim = 3
     num_input_axes = 3
