@@ -2383,7 +2383,7 @@ class Container(dict):
                 if not inplace:
                     return_dict[key] = ret
             else:
-                if key_chains is not None:
+                if not inplace and key_chains is not None:
                     if (this_key_chain in key_chains and not to_apply) or (
                             this_key_chain not in key_chains and to_apply):
                         if prune_unapplied:
@@ -2395,7 +2395,8 @@ class Container(dict):
             return
         return Container(return_dict, **self._config)
 
-    def map_conts(self, func, key_chains=None, to_apply=True, prune_unapplied=False, include_self=True, key_chain=''):
+    def map_conts(self, func, key_chains=None, to_apply=True, prune_unapplied=False, inplace=False, key_chain='',
+                  include_self=True):
         """
         Apply function to all sub-contains in the container.
 
@@ -2408,21 +2409,24 @@ class Container(dict):
         :type to_apply: bool, optional
         :param prune_unapplied: Whether to prune key_chains for which the function was not applied. Default is False.
         :type prune_unapplied: bool, optional
-        :param include_self: Whether to also apply the (possiby in-place) function to this container. Default is True.
-        :type include_self: bool, optional
+        :param inplace: Whether to apply the mapping inplace, or return a new container. Default is False.
+        :type inplace: bool, optional
         :param key_chain: Chain of keys for this dict entry
         :type key_chain: str
+        :param include_self: Whether to also apply the (possiby in-place) function to this container. Default is True.
+        :type include_self: bool, optional
         :return: New container following the function mapped to each sub-container.
         """
-        return_dict = dict()
+        return_dict = self if inplace else dict()
         for key, value in self.items():
             this_key_chain = key if key_chain == '' else (key_chain + '/' + key)
             if isinstance(value, Container):
-                ret = value.map_conts(func, key_chains, to_apply, prune_unapplied, key_chain=this_key_chain)
+                ret = value.map_conts(func, key_chains, to_apply, prune_unapplied, inplace, this_key_chain)
                 if prune_unapplied and not ret:
                     continue
-                return_dict[key] = ret
-            else:
+                if not inplace:
+                    return_dict[key] = ret
+            elif not inplace:
                 if key_chains is not None:
                     if (this_key_chain in key_chains and not to_apply) or (
                             this_key_chain not in key_chains and to_apply):
@@ -2431,9 +2435,11 @@ class Container(dict):
                         return_dict[key] = value
                         continue
                 return_dict[key] = value
-        ret = Container(return_dict, **self._config)
+        ret = return_dict if inplace else Container(return_dict, **self._config)
         if key_chain != '' or include_self:
-            return func(ret, key_chain)
+            ret = func(ret, key_chain)
+        if inplace:
+            return
         return ret
 
     def dtype(self):
