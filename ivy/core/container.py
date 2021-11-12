@@ -4,6 +4,8 @@ Base Container Object
 
 # global
 import re
+import copy
+import time
 import termcolor
 import numpy as _np
 import json as _json
@@ -27,6 +29,8 @@ from operator import floordiv as _floordiv
 # local
 import ivy
 
+retrieval_key_chain = list()
+base_cont = None
 
 def _is_jsonable(x):
     try:
@@ -49,7 +53,7 @@ class Container(dict):
     def __init__(self, dict_in=None, queues=None, queue_load_sizes=None, container_combine_method='list_join',
                  queue_timeout=None, print_limit=10, print_indent=4, print_line_spacing=0, ivyh=None,
                  keyword_color_dict=None, rebuild_child_containers=False, types_to_iteratively_nest=None,
-                 alphabetical_keys=True, **kwargs):
+                 alphabetical_keys=True, logging_retrieval_times=False, **kwargs):
         """
         Initialize container object from input dict representation.
 
@@ -86,6 +90,8 @@ class Container(dict):
         :param alphabetical_keys: Whether to sort the container keys alphabetically, or preserve the dict order.
                                   Default is True.
         :type alphabetical_keys: bool, optional
+        :param logging_retrieval_times: Whether retrieval times should be logged. Default is False.
+        :type logging_retrieval_times: bool, optional
         :param kwargs: keyword arguments for dict creation. Default is None.
         :type kwargs: keyword arguments.
         """
@@ -107,10 +113,13 @@ class Container(dict):
         self._local_ivy = ivyh
         self._keyword_color_dict = ivy.default(keyword_color_dict, {})
         self._rebuild_child_containers = rebuild_child_containers
+        self._logging_retrieval_times = logging_retrieval_times
+        self._retrieval_times = dict()
         self._config = dict(
             print_limit=print_limit, print_indent=print_indent, print_line_spacing=print_line_spacing, ivyh=ivyh,
             keyword_color_dict=keyword_color_dict, rebuild_child_containers=rebuild_child_containers,
-            types_to_iteratively_nest=types_to_iteratively_nest, alphabetical_keys=alphabetical_keys)
+            types_to_iteratively_nest=types_to_iteratively_nest, alphabetical_keys=alphabetical_keys,
+            logging_retrieval_times=logging_retrieval_times)
         if dict_in is None:
             if kwargs:
                 dict_in = dict(**kwargs)
@@ -1721,6 +1730,22 @@ class Container(dict):
         return ivy.Container(dict(sorted(array_dict.items(), key=lambda item: _reduce(_mul, item[1].shape, 1))),
                              alphabetical_keys=False)
 
+    def retrieval_time_ordered(self):
+        """
+        Return a container with keychains mapped to flat keys, and retrieved values given in order they were retrieved.
+        """
+        ret_dict = {kc.replace('/', '_').replace('.', '_'): v for kc, v in self.to_iterator()}
+        retrieval_dict = dict()
+        for k, v in ret_dict.items():
+            if k not in self._retrieval_times:
+                continue
+            rt = self._retrieval_times[k]
+            for i in range(0, len(rt)):
+                key = k + '_' + str(i)
+                retrieval_dict[key] = (v, rt.pop(0))
+        retrieval_dict = {k: v[0] for k, v in sorted(retrieval_dict.items(), key=lambda knv: knv[1][1])}
+        return ivy.Container(retrieval_dict, alphabetical_keys=False)
+
     def to_numpy(self, key_chains=None, to_apply=True, prune_unapplied=False):
         """
         Converts all nested ivy arrays to numpy arrays.
@@ -2489,6 +2514,16 @@ class Container(dict):
                          **{**self._config, **{'print_line_spacing': print_line_spacing,
                                                'rebuild_child_containers': True}})
 
+    def start_logging_retrieval_times(self):
+        return Container(self, **{**self._config, **{'logging_retrieval_times': True,
+                                                     'rebuild_child_containers': True}})
+
+    def stop_logging_retrieval_times(self):
+        cont = Container(self, **{**self._config, **{'logging_retrieval_times': False,
+                                                     'rebuild_child_containers': True}})
+        cont._retrieval_times = self._retrieval_times
+        return cont
+
     # Built-ins #
     # ----------#
 
@@ -2601,12 +2636,31 @@ class Container(dict):
     def __dir__(self):
         return list(super.__dir__(self)) + list(self.keys())
 
+    def _log_retrieval(self, item, ret):
+        if self._logging_retrieval_times:
+            global base_cont
+            if not ivy.exists(base_cont):
+                base_cont = self
+            global retrieval_key_chain
+            retrieval_key_chain.append(item)
+            if isinstance(ret, Container):
+                return ret
+            rkc = '_'.join(retrieval_key_chain)
+            retrieval_key_chain.clear()
+            if rkc not in base_cont._retrieval_times:
+                base_cont._retrieval_times[rkc] = list()
+            base_cont._retrieval_times[rkc].append(time.perf_counter())
+            base_cont = None
+
+    # noinspection PyProtectedMember
     def __getattr__(self, item):
         try:
-            return dict.__getitem__(self, item)
+            ret = dict.__getitem__(self, item)
         except KeyError:
             # noinspection PyUnresolvedReferences
-            return super.__getattr__(item)
+            ret = super.__getattr__(item)
+        self._log_retrieval(item, ret)
+        return ret
 
     def __setattr__(self, name, value):
         if name[0] != '_':
@@ -2656,10 +2710,14 @@ class Container(dict):
         """
         if isinstance(query, str):
             if '/' in query or '.' in query:
-                return self.at_key_chain(query)
-            return dict.__getitem__(self, query)
+                ret = self.at_key_chain(query)
+                return ret
+            ret = dict.__getitem__(self, query)
+            self._log_retrieval(query, ret)
+            return ret
         elif ivy.exists(self._queues):
-            return self._get_queue_item(query)
+            ret = self._get_queue_item(query)
+            return ret
         return_dict = dict()
         for key, value in self.items():
             if isinstance(value, Container):
@@ -2675,8 +2733,8 @@ class Container(dict):
                     return_dict[key] = value
                 else:
                     return_dict[key] = value[query]
-
-        return Container(return_dict, **self._config)
+        ret = Container(return_dict, **self._config)
+        return ret
 
     def __setitem__(self, query, val):
         """
