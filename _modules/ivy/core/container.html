@@ -207,6 +207,8 @@
 
 <span class="c1"># global</span>
 <span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">import</span> <span class="nn">copy</span>
+<span class="kn">import</span> <span class="nn">time</span>
 <span class="kn">import</span> <span class="nn">termcolor</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">_np</span>
 <span class="kn">import</span> <span class="nn">json</span> <span class="k">as</span> <span class="nn">_json</span>
@@ -230,6 +232,8 @@
 <span class="c1"># local</span>
 <span class="kn">import</span> <span class="nn">ivy</span>
 
+<span class="n">retrieval_key_chain</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+<span class="n">base_cont</span> <span class="o">=</span> <span class="kc">None</span>
 
 <span class="k">def</span> <span class="nf">_is_jsonable</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
     <span class="k">try</span><span class="p">:</span>
@@ -252,7 +256,7 @@
 <div class="viewcode-block" id="Container.__init__"><a class="viewcode-back" href="../../../core/container/Container.html#ivy.core.container.Container.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dict_in</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">queues</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">queue_load_sizes</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">container_combine_method</span><span class="o">=</span><span class="s1">&#39;list_join&#39;</span><span class="p">,</span>
                  <span class="n">queue_timeout</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">print_limit</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">print_indent</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">print_line_spacing</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">ivyh</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">keyword_color_dict</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">rebuild_child_containers</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">types_to_iteratively_nest</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                 <span class="n">alphabetical_keys</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+                 <span class="n">alphabetical_keys</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">logging_retrieval_times</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Initialize container object from input dict representation.</span>
 
@@ -289,6 +293,8 @@
 <span class="sd">        :param alphabetical_keys: Whether to sort the container keys alphabetically, or preserve the dict order.</span>
 <span class="sd">                                  Default is True.</span>
 <span class="sd">        :type alphabetical_keys: bool, optional</span>
+<span class="sd">        :param logging_retrieval_times: Whether retrieval times should be logged. Default is False.</span>
+<span class="sd">        :type logging_retrieval_times: bool, optional</span>
 <span class="sd">        :param kwargs: keyword arguments for dict creation. Default is None.</span>
 <span class="sd">        :type kwargs: keyword arguments.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -310,10 +316,13 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_local_ivy</span> <span class="o">=</span> <span class="n">ivyh</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_keyword_color_dict</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">default</span><span class="p">(</span><span class="n">keyword_color_dict</span><span class="p">,</span> <span class="p">{})</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_rebuild_child_containers</span> <span class="o">=</span> <span class="n">rebuild_child_containers</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_logging_retrieval_times</span> <span class="o">=</span> <span class="n">logging_retrieval_times</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_retrieval_times</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_config</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
             <span class="n">print_limit</span><span class="o">=</span><span class="n">print_limit</span><span class="p">,</span> <span class="n">print_indent</span><span class="o">=</span><span class="n">print_indent</span><span class="p">,</span> <span class="n">print_line_spacing</span><span class="o">=</span><span class="n">print_line_spacing</span><span class="p">,</span> <span class="n">ivyh</span><span class="o">=</span><span class="n">ivyh</span><span class="p">,</span>
             <span class="n">keyword_color_dict</span><span class="o">=</span><span class="n">keyword_color_dict</span><span class="p">,</span> <span class="n">rebuild_child_containers</span><span class="o">=</span><span class="n">rebuild_child_containers</span><span class="p">,</span>
-            <span class="n">types_to_iteratively_nest</span><span class="o">=</span><span class="n">types_to_iteratively_nest</span><span class="p">,</span> <span class="n">alphabetical_keys</span><span class="o">=</span><span class="n">alphabetical_keys</span><span class="p">)</span>
+            <span class="n">types_to_iteratively_nest</span><span class="o">=</span><span class="n">types_to_iteratively_nest</span><span class="p">,</span> <span class="n">alphabetical_keys</span><span class="o">=</span><span class="n">alphabetical_keys</span><span class="p">,</span>
+            <span class="n">logging_retrieval_times</span><span class="o">=</span><span class="n">logging_retrieval_times</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">dict_in</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">kwargs</span><span class="p">:</span>
                 <span class="n">dict_in</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
@@ -1924,6 +1933,22 @@
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">array_dict</span><span class="o">.</span><span class="n">items</span><span class="p">(),</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">item</span><span class="p">:</span> <span class="n">_reduce</span><span class="p">(</span><span class="n">_mul</span><span class="p">,</span> <span class="n">item</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="mi">1</span><span class="p">))),</span>
                              <span class="n">alphabetical_keys</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
 
+<div class="viewcode-block" id="Container.retrieval_time_ordered"><a class="viewcode-back" href="../../../core/container/Container.html#ivy.core.container.Container.retrieval_time_ordered">[docs]</a>    <span class="k">def</span> <span class="nf">retrieval_time_ordered</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return a container with keychains mapped to flat keys, and retrieved values given in order they were retrieved.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">ret_dict</span> <span class="o">=</span> <span class="p">{</span><span class="n">kc</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">,</span> <span class="s1">&#39;_&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="s1">&#39;_&#39;</span><span class="p">):</span> <span class="n">v</span> <span class="k">for</span> <span class="n">kc</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">to_iterator</span><span class="p">()}</span>
+        <span class="n">retrieval_dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">ret_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">k</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_retrieval_times</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="n">rt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_retrieval_times</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">rt</span><span class="p">)):</span>
+                <span class="n">key</span> <span class="o">=</span> <span class="n">k</span> <span class="o">+</span> <span class="s1">&#39;_&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+                <span class="n">retrieval_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">rt</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>
+        <span class="n">retrieval_dict</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">retrieval_dict</span><span class="o">.</span><span class="n">items</span><span class="p">(),</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">knv</span><span class="p">:</span> <span class="n">knv</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">])}</span>
+        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">retrieval_dict</span><span class="p">,</span> <span class="n">alphabetical_keys</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
+
 <div class="viewcode-block" id="Container.to_numpy"><a class="viewcode-back" href="../../../core/container/Container.html#ivy.core.container.Container.to_numpy">[docs]</a>    <span class="k">def</span> <span class="nf">to_numpy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key_chains</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">to_apply</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">prune_unapplied</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Converts all nested ivy arrays to numpy arrays.</span>
@@ -2692,6 +2717,16 @@
                          <span class="o">**</span><span class="p">{</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_config</span><span class="p">,</span> <span class="o">**</span><span class="p">{</span><span class="s1">&#39;print_line_spacing&#39;</span><span class="p">:</span> <span class="n">print_line_spacing</span><span class="p">,</span>
                                                <span class="s1">&#39;rebuild_child_containers&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">}})</span></div>
 
+<div class="viewcode-block" id="Container.start_logging_retrieval_times"><a class="viewcode-back" href="../../../core/container/Container.html#ivy.core.container.Container.start_logging_retrieval_times">[docs]</a>    <span class="k">def</span> <span class="nf">start_logging_retrieval_times</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">Container</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="p">{</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_config</span><span class="p">,</span> <span class="o">**</span><span class="p">{</span><span class="s1">&#39;logging_retrieval_times&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+                                                     <span class="s1">&#39;rebuild_child_containers&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">}})</span></div>
+
+<div class="viewcode-block" id="Container.stop_logging_retrieval_times"><a class="viewcode-back" href="../../../core/container/Container.html#ivy.core.container.Container.stop_logging_retrieval_times">[docs]</a>    <span class="k">def</span> <span class="nf">stop_logging_retrieval_times</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">cont</span> <span class="o">=</span> <span class="n">Container</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="p">{</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_config</span><span class="p">,</span> <span class="o">**</span><span class="p">{</span><span class="s1">&#39;logging_retrieval_times&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+                                                     <span class="s1">&#39;rebuild_child_containers&#39;</span><span class="p">:</span> <span class="kc">True</span><span class="p">}})</span>
+        <span class="n">cont</span><span class="o">.</span><span class="n">_retrieval_times</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_retrieval_times</span>
+        <span class="k">return</span> <span class="n">cont</span></div>
+
     <span class="c1"># Built-ins #</span>
     <span class="c1"># ----------#</span>
 
@@ -2804,12 +2839,31 @@
     <span class="k">def</span> <span class="fm">__dir__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="nb">super</span><span class="o">.</span><span class="fm">__dir__</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span> <span class="o">+</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
 
+    <span class="k">def</span> <span class="nf">_log_retrieval</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">,</span> <span class="n">ret</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_logging_retrieval_times</span><span class="p">:</span>
+            <span class="k">global</span> <span class="n">base_cont</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">base_cont</span><span class="p">):</span>
+                <span class="n">base_cont</span> <span class="o">=</span> <span class="bp">self</span>
+            <span class="k">global</span> <span class="n">retrieval_key_chain</span>
+            <span class="n">retrieval_key_chain</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ret</span><span class="p">,</span> <span class="n">Container</span><span class="p">):</span>
+                <span class="k">return</span> <span class="n">ret</span>
+            <span class="n">rkc</span> <span class="o">=</span> <span class="s1">&#39;_&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">retrieval_key_chain</span><span class="p">)</span>
+            <span class="n">retrieval_key_chain</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">rkc</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">base_cont</span><span class="o">.</span><span class="n">_retrieval_times</span><span class="p">:</span>
+                <span class="n">base_cont</span><span class="o">.</span><span class="n">_retrieval_times</span><span class="p">[</span><span class="n">rkc</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+            <span class="n">base_cont</span><span class="o">.</span><span class="n">_retrieval_times</span><span class="p">[</span><span class="n">rkc</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">perf_counter</span><span class="p">())</span>
+            <span class="n">base_cont</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="c1"># noinspection PyProtectedMember</span>
     <span class="k">def</span> <span class="fm">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="k">return</span> <span class="nb">dict</span><span class="o">.</span><span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">)</span>
+            <span class="n">ret</span> <span class="o">=</span> <span class="nb">dict</span><span class="o">.</span><span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
             <span class="c1"># noinspection PyUnresolvedReferences</span>
-            <span class="k">return</span> <span class="nb">super</span><span class="o">.</span><span class="fm">__getattr__</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+            <span class="n">ret</span> <span class="o">=</span> <span class="nb">super</span><span class="o">.</span><span class="fm">__getattr__</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_log_retrieval</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">ret</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">ret</span>
 
     <span class="k">def</span> <span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">name</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="s1">&#39;_&#39;</span><span class="p">:</span>
@@ -2859,10 +2913,14 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
             <span class="k">if</span> <span class="s1">&#39;/&#39;</span> <span class="ow">in</span> <span class="n">query</span> <span class="ow">or</span> <span class="s1">&#39;.&#39;</span> <span class="ow">in</span> <span class="n">query</span><span class="p">:</span>
-                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">at_key_chain</span><span class="p">(</span><span class="n">query</span><span class="p">)</span>
-            <span class="k">return</span> <span class="nb">dict</span><span class="o">.</span><span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query</span><span class="p">)</span>
+                <span class="n">ret</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">at_key_chain</span><span class="p">(</span><span class="n">query</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">ret</span>
+            <span class="n">ret</span> <span class="o">=</span> <span class="nb">dict</span><span class="o">.</span><span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_log_retrieval</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="n">ret</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">ret</span>
         <span class="k">elif</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_queues</span><span class="p">):</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_queue_item</span><span class="p">(</span><span class="n">query</span><span class="p">)</span>
+            <span class="n">ret</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_queue_item</span><span class="p">(</span><span class="n">query</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">ret</span>
         <span class="n">return_dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
         <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">Container</span><span class="p">):</span>
@@ -2878,8 +2936,8 @@
                     <span class="n">return_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="n">return_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span><span class="p">[</span><span class="n">query</span><span class="p">]</span>
-
-        <span class="k">return</span> <span class="n">Container</span><span class="p">(</span><span class="n">return_dict</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_config</span><span class="p">)</span>
+        <span class="n">ret</span> <span class="o">=</span> <span class="n">Container</span><span class="p">(</span><span class="n">return_dict</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_config</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">ret</span>
 
     <span class="k">def</span> <span class="fm">__setitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query</span><span class="p">,</span> <span class="n">val</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
