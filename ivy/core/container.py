@@ -510,6 +510,29 @@ class Container(dict):
         return True
 
     @staticmethod
+    def identical_array_shapes(containers, exclusive=False):
+        """
+        Determine whether all of the containers have identical number of arrays and identical array shapes,
+        regardless of their key-chain structures.
+
+        :param containers: containers to check.
+        :type containers: sequence of Container objects
+        :param exclusive: Whether to check if the data type is exclusively an array, rather than a variable
+                          or traced array.
+        :type exclusive: bool, optional
+        :return: Boolean
+        """
+        array_conts = [cont.size_ordered_arrays(exclusive) for cont in containers]
+        array_cont0 = array_conts[0]
+        array_cont0_len = len(array_cont0)
+        for array_cont in array_conts[1:]:
+            if len(array_cont) != array_cont0_len:
+                return False
+            elif not min([a.shape == a0.shape for a, a0 in zip(array_cont.values(), array_cont0.values())]):
+                return False
+        return True
+
+    @staticmethod
     def from_disk_as_hdf5(h5_obj_or_filepath, slice_obj=slice(None), alphabetical_keys=True, ivyh=None):
         """
         Load container object from disk, as an h5py file, at the specified hdf5 filepath.
