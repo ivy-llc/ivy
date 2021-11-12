@@ -661,3 +661,7 @@ def multiprocessing(context=None):
     if context is None:
         return torch.multiprocessing
     return torch.multiprocessing.get_context(context)
+
+
+def container_types():
+    return []

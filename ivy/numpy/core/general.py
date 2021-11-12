@@ -408,3 +408,4 @@ def compile(func, dynamic=True, example_inputs=None, static_argnums=None, static
 current_framework_str = lambda: 'numpy'
 current_framework_str.__name__ = 'current_framework_str'
 multiprocessing = lambda context=None: _multiprocessing if context is None else _multiprocessing.get_context(context)
+container_types = lambda: []
