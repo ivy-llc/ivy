@@ -48,7 +48,8 @@ class Container(dict):
 
     def __init__(self, dict_in=None, queues=None, queue_load_sizes=None, container_combine_method='list_join',
                  queue_timeout=None, print_limit=10, print_indent=4, print_line_spacing=0, ivyh=None,
-                 keyword_color_dict=None, rebuild_child_containers=False, types_to_iteratively_nest=None, **kwargs):
+                 keyword_color_dict=None, rebuild_child_containers=False, types_to_iteratively_nest=None,
+                 alphabetical_keys=True, **kwargs):
         """
         Initialize container object from input dict representation.
 
@@ -82,6 +83,9 @@ class Container(dict):
         :param types_to_iteratively_nest: The data types to nest iteratively in the dict structure, each type must be
                                           iterable. Default is None.
         :type types_to_iteratively_nest: seq of iterable types
+        :param alphabetical_keys: Whether to sort the container keys alphabetically, or preserve the dict order.
+                                  Default is True.
+        :type alphabetical_keys: bool, optional
         :param kwargs: keyword arguments for dict creation. Default is None.
         :type kwargs: keyword arguments.
         """
@@ -91,6 +95,7 @@ class Container(dict):
         self._print_line_spacing = print_line_spacing
         self._container_combine_method = container_combine_method
         self._types_to_iteratively_nest = ivy.default(lambda: tuple(types_to_iteratively_nest), (),  True)
+        self._alphabetical_keys = alphabetical_keys
         if ivy.exists(self._queues):
             if isinstance(self._container_combine_method, str):
                 self._container_combine_method =\
@@ -105,7 +110,7 @@ class Container(dict):
         self._config = dict(
             print_limit=print_limit, print_indent=print_indent, print_line_spacing=print_line_spacing, ivyh=ivyh,
             keyword_color_dict=keyword_color_dict, rebuild_child_containers=rebuild_child_containers,
-            types_to_iteratively_nest=types_to_iteratively_nest)
+            types_to_iteratively_nest=types_to_iteratively_nest, alphabetical_keys=alphabetical_keys)
         if dict_in is None:
             if kwargs:
                 dict_in = dict(**kwargs)
@@ -122,7 +127,8 @@ class Container(dict):
                                 for i in range(len(dict_in))], dict_in))
         else:
             raise Exception('invalid input {}'.format(dict_in))
-        for key, value in sorted(dict_in.items()):
+        items = sorted(dict_in.items()) if alphabetical_keys else dict_in.items()
+        for key, value in items:
             if (isinstance(value, dict_types) and (not isinstance(value, Container) or rebuild_child_containers)) or \
                     isinstance(value, tuple(self._types_to_iteratively_nest)):
                 self[key] = Container(value, **self._config)
@@ -436,7 +442,7 @@ class Container(dict):
         if not ivy.exists(config):
             config = container0.config if isinstance(container0, Container) else {}
         return_dict = dict()
-        for key in sorted(container0.keys()):
+        for key in container0.keys():
             values = [cont[key] for cont in containers]
             value0 = values[0]
             this_key_chain = key if key_chain == '' else (key_chain + '/' + key)
@@ -479,7 +485,8 @@ class Container(dict):
         :return: Boolean
         """
         keys = set([i for sl in [list(cont.keys()) for cont in containers] for i in sl])
-        for key in sorted(keys):
+        # noinspection PyProtectedMember
+        for key in keys:
             if not min([key in cont for cont in containers]):
                 return False
             values = [cont[key] for cont in containers]
@@ -503,7 +510,7 @@ class Container(dict):
         return True
 
     @staticmethod
-    def from_disk_as_hdf5(h5_obj_or_filepath, slice_obj=slice(None), ivyh=None):
+    def from_disk_as_hdf5(h5_obj_or_filepath, slice_obj=slice(None), alphabetical_keys=True, ivyh=None):
         """
         Load container object from disk, as an h5py file, at the specified hdf5 filepath.
 
@@ -511,6 +518,9 @@ class Container(dict):
         :type h5_obj_or_filepath: str or h5 obj
         :param slice_obj: slice object to slice all h5 elements.
         :type slice_obj: slice or sequence of slices
+        :param alphabetical_keys: Whether to sort the container keys alphabetically, or preserve the dict order.
+                                  Default is True.
+        :type alphabetical_keys: bool, optional
         :param ivyh: Handle to ivy module to use for the calculations. Default is None, which results in the global ivy.
         :type ivyh: handle to ivy module, optional
         :return: Container loaded from disk
@@ -520,8 +530,8 @@ class Container(dict):
             h5_obj = _h5py.File(h5_obj_or_filepath, 'r')
         else:
             h5_obj = h5_obj_or_filepath
-
-        for key, value in sorted(h5_obj.items()):
+        items = sorted(h5_obj.items()) if alphabetical_keys else h5_obj.items()
+        for key, value in items:
             if isinstance(value, _h5py.Group):
                 container_dict[key] = Container.from_disk_as_hdf5(value, slice_obj, ivyh)
             elif isinstance(value, _h5py.Dataset):
@@ -576,7 +586,7 @@ class Container(dict):
 
         size = 0
         batch_size = 0
-        for key, value in sorted(h5_obj.items()):
+        for key, value in h5_obj.items():
             if isinstance(value, _h5py.Group):
                 size_to_add, batch_size = Container.h5_file_size(value)
                 size += size_to_add
@@ -605,7 +615,7 @@ class Container(dict):
         else:
             h5_obj = h5_obj_or_filepath
 
-        for key, value in sorted(h5_obj.items()):
+        for key, value in h5_obj.items():
             if isinstance(value, _h5py.Group):
                 Container.shuffle_h5_file(value, seed_value)
             elif isinstance(value, _h5py.Dataset):
@@ -1158,7 +1168,7 @@ class Container(dict):
         return_dict = dict()
         if seed_value is None:
             seed_value = self._ivy.to_numpy(self._ivy.random.randint(0, 1000, ())).item()
-        for key, value in sorted(self.items()):
+        for key, value in self.items():
             this_key_chain = key if key_chain == '' else (key_chain + '/' + key)
             if isinstance(value, Container):
                 ret = value.shuffle(seed_value, key_chains, to_apply, prune_unapplied, this_key_chain)
@@ -1185,7 +1195,7 @@ class Container(dict):
         :return: Container object sliced at desired key.
         """
         return_dict = dict()
-        for key, value in sorted(self.items()):
+        for key, value in self.items():
             if key == slice_key:
                 return value
             elif isinstance(value, Container):
@@ -1665,7 +1675,7 @@ class Container(dict):
             lambda x, kc: self._ivy.stop_gradient(x, False) if self._ivy.is_variable(x)
             else (x if self._ivy.is_array(x) else self._ivy.array(x)), key_chains, to_apply, prune_unapplied)
 
-    def num_arrays(self, exclusive=True):
+    def num_arrays(self, exclusive=False):
         """
         Compute the number of arrays present at the leaf nodes, including variables by default.
 
@@ -1725,7 +1735,7 @@ class Container(dict):
             h5_obj = _h5py.File(h5_obj_or_filepath, mode)
         else:
             h5_obj = h5_obj_or_filepath
-        for key, value in sorted(self.items()):
+        for key, value in self.items():
             if isinstance(value, Container):
                 if key not in h5_obj.keys():
                     h5_group = h5_obj.create_group(key)
@@ -1790,7 +1800,7 @@ class Container(dict):
         :return: Container as nested list.
         """
         return_list = list()
-        for key, value in sorted(self.items()):
+        for key, value in self.items():
             if isinstance(value, Container):
                 return_list.append(value.to_list())
             elif value is not None and key != '_f':
@@ -1805,7 +1815,7 @@ class Container(dict):
         :return: Container data in it's raw form.
         """
         return_item = dict()
-        for i, (key, value) in enumerate(sorted(self.items())):
+        for i, (key, value) in enumerate(self.items()):
             if isinstance(value, Container):
                 return_item[key] = value.to_raw()
             elif key[0:3] == 'it_' and tuple(self._types_to_iteratively_nest):
@@ -1822,7 +1832,7 @@ class Container(dict):
         :return: Container as nested dict.
         """
         return_dict = dict()
-        for key, value in sorted(self.items()):
+        for key, value in self.items():
             if isinstance(value, Container):
                 return_dict[key] = value.to_dict()
             else:
@@ -1835,7 +1845,7 @@ class Container(dict):
 
         :return: Iterator for the container elements.
         """
-        for key, value in sorted(self.items()):
+        for key, value in self.items():
             if leaf_keys_only:
                 kc = key
             else:
@@ -1852,7 +1862,7 @@ class Container(dict):
 
         :return: Iterator for the container values.
         """
-        for key, value in sorted(self.items()):
+        for key, value in self.items():
             if isinstance(value, Container):
                 # noinspection PyCompatibility
                 yield from value.to_iterator_values()
@@ -1865,7 +1875,7 @@ class Container(dict):
 
         :return: Iterator for the container elements.
         """
-        for key, value in sorted(self.items()):
+        for key, value in self.items():
             if leaf_keys_only:
                 kc = key
             else:
@@ -1893,7 +1903,7 @@ class Container(dict):
         :return: Container.
         """
         new_dict = dict()
-        for key, value in sorted(self.items()):
+        for key, value in self.items():
             if isinstance(value, Container):
                 new_value = value.from_flat_list(flat_list)
             else:
@@ -2139,7 +2149,7 @@ class Container(dict):
         """
         keys_in_chain = re.split('[/.]', key_chain)
         out_dict = dict()
-        for key, value in sorted(self.items()):
+        for key, value in self.items():
             if isinstance(value, Container):
                 if key == keys_in_chain[0]:
                     if len(keys_in_chain) == 1:
@@ -2177,7 +2187,7 @@ class Container(dict):
 
     def sort_by_key(self):
         new_dict = dict()
-        for k, v in sorted(self.items()):
+        for k, v in self.items():
             if isinstance(v, Container):
                 v_back = v.sort_by_key()
             else:
@@ -2193,7 +2203,7 @@ class Container(dict):
         :return: Container with empty keys pruned.
         """
         out_dict = dict()
-        for key, value in sorted(self.items()):
+        for key, value in self.items():
             if isinstance(value, Container):
                 new_value = value.prune_empty(keep_Nones, False)
                 if new_value:
@@ -2219,7 +2229,7 @@ class Container(dict):
         if not absolute and not containing:
             raise Exception('At least one of absolute or containing arguments must be specified.')
         out_cont = Container(**self._config)
-        for key, value in sorted(self.items()):
+        for key, value in self.items():
             if (absolute and key == absolute) or (containing and containing in key):
                 if isinstance(value, Container):
                     out_cont = Container.combine(out_cont, value)
@@ -2244,7 +2254,7 @@ class Container(dict):
         if not absolute and not containing:
             raise Exception('At least one of absolute or containing arguments must be specified.')
         out_cont = Container(**self._config)
-        for key, value in sorted(self.items()):
+        for key, value in self.items():
             if (absolute and key in absolute) or (containing and max([con in key for con in containing])):
                 if isinstance(value, Container):
                     out_cont = Container.combine(out_cont, value)
@@ -2303,7 +2313,7 @@ class Container(dict):
         :return: New container following the function mapped to each sub-array.
         """
         return_dict = dict()
-        for key, value in sorted(self.items()):
+        for key, value in self.items():
             this_key_chain = key if key_chain == '' else (key_chain + '/' + key)
             if isinstance(value, Container):
                 ret = value.map(func, key_chains, to_apply, prune_unapplied, this_key_chain)
@@ -2342,7 +2352,7 @@ class Container(dict):
         :return: New container following the function mapped to each sub-container.
         """
         return_dict = dict()
-        for key, value in sorted(self.items()):
+        for key, value in self.items():
             this_key_chain = key if key_chain == '' else (key_chain + '/' + key)
             if isinstance(value, Container):
                 ret = value.map_conts(func, key_chains, to_apply, prune_unapplied, key_chain=this_key_chain)
@@ -2615,7 +2625,7 @@ class Container(dict):
         elif ivy.exists(self._queues):
             return self._get_queue_item(query)
         return_dict = dict()
-        for key, value in sorted(self.items()):
+        for key, value in self.items():
             if isinstance(value, Container):
                 return_dict[key] = value[query]
             else:
