@@ -245,6 +245,22 @@ def test_container_from_dict(dev_str, call):
     assert np.allclose(ivy.to_numpy(container.b.d), np.array([3]))
 
 
+def test_container_from_dict_w_cont_types(dev_str, call):
+    # ToDo: add tests for backends other than jax
+    if call is not helpers.jnp_call:
+        pytest.skip()
+    from haiku._src.data_structures import FlatMapping
+    dict_in = {'a': ivy.array([1], dev_str=dev_str),
+               'b': FlatMapping({'c': ivy.array([2], dev_str=dev_str), 'd': ivy.array([3], dev_str=dev_str)})}
+    container = Container(dict_in)
+    assert np.allclose(ivy.to_numpy(container['a']), np.array([1]))
+    assert np.allclose(ivy.to_numpy(container.a), np.array([1]))
+    assert np.allclose(ivy.to_numpy(container['b']['c']), np.array([2]))
+    assert np.allclose(ivy.to_numpy(container.b.c), np.array([2]))
+    assert np.allclose(ivy.to_numpy(container['b']['d']), np.array([3]))
+    assert np.allclose(ivy.to_numpy(container.b.d), np.array([3]))
+
+
 def test_container_from_kwargs(dev_str, call):
     container = Container(a=ivy.array([1], dev_str=dev_str),
                           b={'c': ivy.array([2], dev_str=dev_str), 'd': ivy.array([3], dev_str=dev_str)})
