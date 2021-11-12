@@ -2073,6 +2073,27 @@ def test_container_identical_structure(dev_str, call):
     assert not ivy.Container.identical_structure([container1, container0, container2])
 
 
+def test_container_identical_array_shapes(dev_str, call):
+    # without key_chains specification
+    container0 = Container({'a': ivy.array([1, 2], dev_str=dev_str),
+                            'b': {'c': ivy.array([2, 3, 4], dev_str=dev_str),
+                                  'd': ivy.array([3, 4, 5, 6], dev_str=dev_str)}})
+    container1 = Container({'a': ivy.array([1, 2, 3, 4], dev_str=dev_str),
+                            'b': {'c': ivy.array([3, 4], dev_str=dev_str),
+                                  'd': ivy.array([3, 4, 5], dev_str=dev_str)}})
+    container2 = Container({'a': ivy.array([1, 2, 3, 4], dev_str=dev_str),
+                            'b': {'c': ivy.array([3, 4], dev_str=dev_str),
+                                  'd': ivy.array([3, 4, 5, 6], dev_str=dev_str)}})
+
+    # with identical
+    assert ivy.Container.identical_array_shapes([container0, container1])
+    assert ivy.Container.identical_array_shapes([container1, container0])
+    assert ivy.Container.identical_array_shapes([container1, container0, container1])
+    assert not ivy.Container.identical_structure([container0, container2])
+    assert not ivy.Container.identical_structure([container1, container2])
+    assert not ivy.Container.identical_structure([container0, container1, container2])
+
+
 def test_container_dtype(dev_str, call):
     dict_in = {'a': ivy.array([1], dev_str=dev_str),
                'b': {'c': ivy.array([2.], dev_str=dev_str), 'd': ivy.array([3], dev_str=dev_str)}}
