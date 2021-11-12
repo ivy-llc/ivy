@@ -1256,6 +1256,31 @@ def test_container_size_ordered_arrays(dev_str, call):
         assert np.allclose(ivy.to_numpy(v), arr)
 
 
+def test_container_retrieval_time_ordered(dev_str, call):
+    dict_in = {'a': ivy.array([[0., 1., 2., 3.]], dev_str=dev_str),
+               'b': {'c': ivy.array([[5., 10.]], dev_str=dev_str),
+                     'd': ivy.array([[10., 9., 8.]], dev_str=dev_str)}}
+    cont = Container(dict_in)
+    cont.a
+    cont.b.c
+    cont = cont.start_logging_retrieval_times()
+    cont.b.d
+    cont['a']
+    cont['b/c']
+    cont['b'].d
+    cont = cont.stop_logging_retrieval_times()
+    cont_rto = cont.retrieval_time_ordered()
+    assert np.allclose(ivy.to_numpy(cont_rto.b_d_0), np.array([[10., 9., 8.]]))
+    assert np.allclose(ivy.to_numpy(cont_rto.a_0), np.array([[0., 1., 2., 3.]]))
+    assert np.allclose(ivy.to_numpy(cont_rto.b_c_0), np.array([[5., 10.]]))
+    assert np.allclose(ivy.to_numpy(cont_rto.b_d_1), np.array([[10., 9., 8.]]))
+    for v, arr in zip(cont_rto.values(), [np.array([[10., 9., 8.]]),
+                                          np.array([[0., 1., 2., 3.]]),
+                                          np.array([[5., 10.]]),
+                                          np.array([[10., 9., 8.]])]):
+        assert np.allclose(ivy.to_numpy(v), arr)
+
+
 def test_container_to_numpy(dev_str, call):
     dict_in = {'a': ivy.variable(ivy.array([[[1., 2.], [3., 4.]], [[5., 6.], [7., 8.]]], dev_str=dev_str)),
                'b': {'c': ivy.variable(ivy.array([[[8., 7.], [6., 5.]], [[4., 3.], [2., 1.]]], dev_str=dev_str)),
