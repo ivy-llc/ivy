@@ -292,23 +292,33 @@ def tpu_is_available(f: ivy.Framework = None)\
 # Default Device #
 # ---------------#
 
-def default_device():
+# noinspection PyShadowingNames
+def _assert_dev_str_correct_formatting(dev_str):
+    assert dev_str[0:3] in ['gpu', 'tpu', 'cpu']
+    if dev_str != 'cpu':
+        assert dev_str[3] == ':'
+        assert dev_str[4:].isnumeric()
+
+
+# noinspection PyShadowingNames
+def default_device(dev_str=None):
     """
-    Return the default device.
+    Return the input dev_str if provided, otherwise return the global default device.
     """
+    if ivy.exists(dev_str):
+        _assert_dev_str_correct_formatting(dev_str)
+        return dev_str
     global DEFAULT_DEVICE
     if not ivy.exists(DEFAULT_DEVICE):
         DEFAULT_DEVICE = 'gpu:0' if ivy.gpu_is_available() else 'cpu'
     return DEFAULT_DEVICE
 
 
-def set_default_device(device):
-    assert device[0:3] in ['gpu', 'tpu', 'cpu']
-    if device != 'cpu':
-        assert device[3] == ':'
-        assert device[4:].isnumeric()
+# noinspection PyShadowingNames
+def set_default_device(dev_str):
+    _assert_dev_str_correct_formatting(dev_str)
     global DEFAULT_DEVICE
-    DEFAULT_DEVICE = device
+    DEFAULT_DEVICE = dev_str
 
 
 # Device Allocation #
