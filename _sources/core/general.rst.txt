@@ -101,4 +101,5 @@ General
    general/get_all_arrays_in_memory.rst
    general/num_arrays_in_memory.rst
    general/print_all_arrays_in_memory.rst
+   general/container_types.rst
 

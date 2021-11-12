@@ -77,4 +77,5 @@ General
    general/compile.rst
    general/current_framework_str.rst
    general/multiprocessing.rst
+   general/container_types.rst
 
