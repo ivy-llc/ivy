@@ -1765,6 +1765,14 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">for</span> <span class="n">arr</span> <span class="ow">in</span> <span class="n">get_all_arrays_in_memory</span><span class="p">():</span>
         <span class="nb">print</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">arr</span><span class="p">),</span> <span class="n">arr</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="container_types"><a class="viewcode-back" href="../../../core/general/container_types.html#ivy.core.general.container_types">[docs]</a><span class="k">def</span> <span class="nf">container_types</span><span class="p">(</span><span class="n">f</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Framework</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return all framework-specific types which should be hierarchically parsed in an ivy.Container. Such types must adopt</span>
+<span class="sd">    a key-value structure, and exposes public methods .keys(), .values() and items().</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">container_types</span><span class="p">()</span></div>
 </pre></div>
 
            </div>
