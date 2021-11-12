@@ -2378,26 +2378,6 @@
             <span class="n">new_dict</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v_back</span>
         <span class="k">return</span> <span class="n">Container</span><span class="p">(</span><span class="n">new_dict</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_config</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Container.restructure_keys"><a class="viewcode-back" href="../../../core/container/Container.html#ivy.core.container.Container.restructure_keys">[docs]</a>    <span class="k">def</span> <span class="nf">restructure_keys</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key_chain_mapping</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Restructure the keys of the container.</span>
-
-<span class="sd">        :param key_chain_mapping: Sequence of lists/tuples of key chain mapping to apply, with original and new key</span>
-<span class="sd">                                  chains being the left and right terms respectively.</span>
-<span class="sd">        :type key_chain_mapping: sequence of len-2 sequences</span>
-<span class="sd">        :return: New contaienr with the key chains updated.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">ret_cont</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-        <span class="k">for</span> <span class="n">orig_kc</span><span class="p">,</span> <span class="n">new_kc</span> <span class="ow">in</span> <span class="n">key_chain_mapping</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">orig_kc</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
-                <span class="n">orig_kc_val</span> <span class="o">=</span> <span class="n">ret_cont</span>
-                <span class="n">ret_cont</span> <span class="o">=</span> <span class="n">Container</span><span class="p">(</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_config</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">orig_kc_val</span> <span class="o">=</span> <span class="n">ret_cont</span><span class="p">[</span><span class="n">orig_kc</span><span class="p">]</span>
-                <span class="n">ret_cont</span> <span class="o">=</span> <span class="n">ret_cont</span><span class="o">.</span><span class="n">prune_key_chain</span><span class="p">(</span><span class="n">orig_kc</span><span class="p">)</span>
-            <span class="n">ret_cont</span><span class="p">[</span><span class="n">new_kc</span><span class="p">]</span> <span class="o">=</span> <span class="n">orig_kc_val</span>
-        <span class="k">return</span> <span class="n">ret_cont</span></div>
-
 <div class="viewcode-block" id="Container.prune_empty"><a class="viewcode-back" href="../../../core/container/Container.html#ivy.core.container.Container.prune_empty">[docs]</a>    <span class="k">def</span> <span class="nf">prune_empty</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">keep_Nones</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">base</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Recursively prunes empty keys from the container dict structure.</span>
@@ -2468,6 +2448,19 @@
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">out_cont</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
         <span class="k">return</span> <span class="n">out_cont</span></div>
+
+<div class="viewcode-block" id="Container.restructure_key_chains"><a class="viewcode-back" href="../../../core/container/Container.html#ivy.core.container.Container.restructure_key_chains">[docs]</a>    <span class="k">def</span> <span class="nf">restructure_key_chains</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">keychain_mapping</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Create a new container with the same contents, but a new key-chain structure. Given by the mapping with keys as</span>
+<span class="sd">        old key-chains and values as new key-chains.</span>
+
+<span class="sd">        :param keychain_mapping: A dict with keys as old key-chains and values as new key-chains.</span>
+<span class="sd">        :type keychain_mapping: dict</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">new_cont</span> <span class="o">=</span> <span class="n">_ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">old_kc</span><span class="p">,</span> <span class="n">new_kc</span> <span class="ow">in</span> <span class="n">keychain_mapping</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">new_cont</span> <span class="o">=</span> <span class="n">_ivy</span><span class="o">.</span><span class="n">Container</span><span class="o">.</span><span class="n">combine</span><span class="p">(</span><span class="n">new_cont</span><span class="p">,</span> <span class="n">_ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">({</span><span class="n">new_kc</span><span class="p">:</span> <span class="bp">self</span><span class="p">[</span><span class="n">old_kc</span><span class="p">]}))</span>
+        <span class="k">return</span> <span class="n">new_cont</span></div>
 
 <div class="viewcode-block" id="Container.copy"><a class="viewcode-back" href="../../../core/container/Container.html#ivy.core.container.Container.copy">[docs]</a>    <span class="k">def</span> <span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
