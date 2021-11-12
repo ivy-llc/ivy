@@ -1264,12 +1264,12 @@ def test_container_retrieval_time_ordered(dev_str, call):
     cont = Container(dict_in)
     cont.a
     cont.b.c
-    cont = cont.start_logging_retrieval_times()
+    cont.start_logging_retrieval_times()
     cont.b.d
     cont['a']
     cont['b/c']
     cont['b'].d
-    cont = cont.stop_logging_retrieval_times()
+    cont.stop_logging_retrieval_times()
     cont_rto = cont.retrieval_time_ordered()
     assert np.allclose(ivy.to_numpy(cont_rto.b_d_0), np.array([[10., 9., 8.]]))
     assert np.allclose(ivy.to_numpy(cont_rto.a_0), np.array([[0., 1., 2., 3.]]))
