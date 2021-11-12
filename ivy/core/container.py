@@ -25,7 +25,7 @@ from operator import truediv as _truediv
 from operator import floordiv as _floordiv
 
 # local
-import ivy as _ivy
+import ivy
 
 
 def _is_jsonable(x):
@@ -90,17 +90,17 @@ class Container(dict):
         self._print_indent = print_indent
         self._print_line_spacing = print_line_spacing
         self._container_combine_method = container_combine_method
-        self._types_to_iteratively_nest = _ivy.default(lambda: tuple(types_to_iteratively_nest), (),  True)
-        if _ivy.exists(self._queues):
+        self._types_to_iteratively_nest = ivy.default(lambda: tuple(types_to_iteratively_nest), (),  True)
+        if ivy.exists(self._queues):
             if isinstance(self._container_combine_method, str):
                 self._container_combine_method =\
                     {'list_join': self.list_join,
                      'concat': lambda conts: self.concat(conts, 0)}[self._container_combine_method]
             self._loaded_containers_from_queues = dict()
             self._queue_load_sizes_cum = _np.cumsum(queue_load_sizes)
-            self._queue_timeout = _ivy.default(queue_timeout, _ivy.queue_timeout())
+            self._queue_timeout = ivy.default(queue_timeout, ivy.queue_timeout())
         self._local_ivy = ivyh
-        self._keyword_color_dict = _ivy.default(keyword_color_dict, {})
+        self._keyword_color_dict = ivy.default(keyword_color_dict, {})
         self._rebuild_child_containers = rebuild_child_containers
         self._config = dict(
             print_limit=print_limit, print_indent=print_indent, print_line_spacing=print_line_spacing, ivyh=ivyh,
@@ -114,7 +114,7 @@ class Container(dict):
         elif kwargs:
             raise Exception('dict_in and **kwargs cannot both be specified for ivy.Container constructor,'
                             'please specify one or the other, not both.')
-        dict_types = tuple([dict] + _ivy.container_types())
+        dict_types = tuple([dict] + ivy.container_types())
         if isinstance(dict_in, dict_types):
             dict_in = dict_in
         elif isinstance(dict_in, tuple(self._types_to_iteratively_nest)):
@@ -145,7 +145,7 @@ class Container(dict):
         """
 
         container0 = containers[0]
-        if not _ivy.exists(config):
+        if not ivy.exists(config):
             config = container0.config if isinstance(container0, Container) else {}
 
         if isinstance(container0, Container):
@@ -174,7 +174,7 @@ class Container(dict):
         """
 
         container0 = containers[0]
-        if not _ivy.exists(config):
+        if not ivy.exists(config):
             config = container0.config if isinstance(container0, Container) else {}
 
         if isinstance(container0, Container):
@@ -231,7 +231,7 @@ class Container(dict):
         """
 
         container0 = containers[0]
-        if not _ivy.exists(config):
+        if not ivy.exists(config):
             config = container0.config if isinstance(container0, Container) else {}
 
         if isinstance(container0, Container):
@@ -241,7 +241,7 @@ class Container(dict):
             return Container(return_dict, **config)
         else:
             # noinspection PyProtectedMember
-            ivyh = _ivy.default(config['ivyh'], _ivy)
+            ivyh = ivy.default(config['ivyh'], ivy)
             # noinspection PyBroadException
             try:
                 if len(containers[0].shape) == 0:
@@ -266,7 +266,7 @@ class Container(dict):
         """
 
         container0 = containers[0]
-        if not _ivy.exists(config):
+        if not ivy.exists(config):
             config = container0.config if isinstance(container0, Container) else {}
 
         if isinstance(container0, Container):
@@ -276,7 +276,7 @@ class Container(dict):
             return Container(return_dict, **config)
         else:
             # noinspection PyProtectedMember
-            ivyh = _ivy.default(config['ivyh'], _ivy)
+            ivyh = ivy.default(config['ivyh'], ivy)
             # noinspection PyBroadException
             try:
                 if len(containers[0].shape) == 0:
@@ -304,7 +304,7 @@ class Container(dict):
         if not isinstance(container_rightmost, dict):
             return container_rightmost
 
-        if not _ivy.exists(config):
+        if not ivy.exists(config):
             config = container_rightmost.config if isinstance(container_rightmost, Container) else {}
 
         # return if len==1
@@ -317,8 +317,8 @@ class Container(dict):
         for key in all_Keys:
             keys_present = [key in cont for cont in containers]
             return_dict[key] =\
-                _ivy.Container.combine(*[cont[key] for cont, kp in zip(containers, keys_present) if kp], config=config)
-        return _ivy.Container(return_dict, **config)
+                ivy.Container.combine(*[cont[key] for cont, kp in zip(containers, keys_present) if kp], config=config)
+        return ivy.Container(return_dict, **config)
 
     @staticmethod
     def diff(*containers, mode='all', diff_keys='diff', detect_key_diffs=True, config=None):
@@ -348,16 +348,16 @@ class Container(dict):
         # if inputs are not dicts, then compare their values to determine the diff dict
         num_containers = len(containers)
         container0 = containers[0]
-        if not _ivy.exists(config):
+        if not ivy.exists(config):
             config = container0.config if isinstance(container0, Container) else {}
         if not isinstance(container0, dict):
-            equal_mat = _ivy.equal(*containers, equality_matrix=True)
-            if _ivy.reduce_min(_ivy.cast(equal_mat, 'int32')) == 1:
+            equal_mat = ivy.equal(*containers, equality_matrix=True)
+            if ivy.reduce_min(ivy.cast(equal_mat, 'int32')) == 1:
                 if mode == 'diff_only':
-                    return _ivy.Container(**config)
+                    return ivy.Container(**config)
                 return container0
             elif mode == 'same_only':
-                return _ivy.Container(**config)
+                return ivy.Container(**config)
             else:
                 cont_range = range(num_containers)
                 diff_dict = dict()
@@ -365,8 +365,8 @@ class Container(dict):
                 idxs_added = list()
                 for idx in cont_range:
                     if idx not in idxs_added:
-                        idxs_to_add = _ivy.indices_where(equal_mat[idx])
-                        idxs_to_add_list = sorted(_ivy.to_numpy(idxs_to_add).reshape(-1).tolist())
+                        idxs_to_add = ivy.indices_where(equal_mat[idx])
+                        idxs_to_add_list = sorted(ivy.to_numpy(idxs_to_add).reshape(-1).tolist())
                         if isinstance(diff_keys, str):
                             key = diff_keys + '_' + str(idxs_to_add_list)[1:-1]
                         elif isinstance(diff_keys, (list, tuple)):
@@ -376,7 +376,7 @@ class Container(dict):
                                             'but found {} of type {}'.format(diff_keys, type(diff_keys)))
                         diff_dict[key] = cont_dict[idx]
                         idxs_added += idxs_to_add_list
-                return _ivy.Container(diff_dict, **config)
+                return ivy.Container(diff_dict, **config)
 
         # otherwise, check that the keys are aligned between each container, and apply this method recursively
         return_dict = dict()
@@ -385,7 +385,7 @@ class Container(dict):
             keys_present = [key in cont for cont in containers]
             all_Keys_present = sum(keys_present) == num_containers
             if all_Keys_present:
-                res = _ivy.Container.diff(*[cont[key] for cont in containers],
+                res = ivy.Container.diff(*[cont[key] for cont in containers],
                                           mode=mode, diff_keys=diff_keys, detect_key_diffs=detect_key_diffs,
                                           config=config)
                 if not isinstance(res, dict) or res:
@@ -407,7 +407,7 @@ class Container(dict):
                                             'but found {} of type {}'.format(diff_keys, type(diff_keys)))
             if diff_dict:
                 return_dict[key] = diff_dict
-        return _ivy.Container(return_dict, **config)
+        return ivy.Container(return_dict, **config)
 
     @staticmethod
     def multi_map(func, containers, key_chains=None, to_apply=True, prune_unapplied=False, key_chain='', config=None):
@@ -433,7 +433,7 @@ class Container(dict):
         :return: Contaienr
         """
         container0 = containers[0]
-        if not _ivy.exists(config):
+        if not ivy.exists(config):
             config = container0.config if isinstance(container0, Container) else {}
         return_dict = dict()
         for key in sorted(container0.keys()):
@@ -441,7 +441,7 @@ class Container(dict):
             value0 = values[0]
             this_key_chain = key if key_chain == '' else (key_chain + '/' + key)
             if isinstance(value0, Container):
-                ret = _ivy.Container.multi_map(
+                ret = ivy.Container.multi_map(
                     func, values, key_chains, to_apply, prune_unapplied, this_key_chain, config)
                 if ret:
                     return_dict[key] = ret
@@ -489,14 +489,14 @@ class Container(dict):
             if not min([type_n is type_0 for type_n in types]):
                 if isinstance(value_0, Container) or check_types:
                     return False
-            if check_shapes and _ivy.is_array(value_0):
+            if check_shapes and ivy.is_array(value_0):
                 shape_0 = value_0.shape
                 shapes = [val.shape for val in values]
                 if not min([shape_n == shape_0 for shape_n in shapes]):
                     return False
             this_key_chain = key if key_chain == '' else (key_chain + '/' + key)
             if isinstance(value_0, Container):
-                ret = _ivy.Container.identical_structure(
+                ret = ivy.Container.identical_structure(
                     values, check_types, check_shapes, key_chains, to_apply, this_key_chain)
                 if not ret:
                     return False
@@ -525,7 +525,7 @@ class Container(dict):
             if isinstance(value, _h5py.Group):
                 container_dict[key] = Container.from_disk_as_hdf5(value, slice_obj, ivyh)
             elif isinstance(value, _h5py.Dataset):
-                container_dict[key] = _ivy.default(ivyh, _ivy).array(list(value[slice_obj]))
+                container_dict[key] = ivy.default(ivyh, ivy).array(list(value[slice_obj]))
             else:
                 raise Exception('Item found inside h5_obj which was neither a Group nor a Dataset.')
         return Container(container_dict, ivyh=ivyh)
@@ -541,7 +541,7 @@ class Container(dict):
         :type ivyh: handle to ivy module, optional
         :return: Container loaded from disk
         """
-        if _ivy.wrapped_mode():
+        if ivy.wrapped_mode():
             return Container(_pickle.load(open(pickle_filepath, 'rb')), ivyh=ivyh).to_ivy()
         return Container(_pickle.load(open(pickle_filepath, 'rb')), ivyh=ivyh)
 
@@ -631,7 +631,7 @@ class Container(dict):
         :return: reduced containers
         """
         container0 = containers[0]
-        if not _ivy.exists(config):
+        if not ivy.exists(config):
             config = container0.config if isinstance(container0, Container) else {}
 
         if isinstance(container0, Container):
@@ -651,12 +651,12 @@ class Container(dict):
 
     def _get_shape(self):
         if not len(self.keys()):
-            if _ivy.exists(self._queues):
+            if ivy.exists(self._queues):
                 return [self._queue_load_sizes_cum[-1]]
             return [0]
         sub_shapes =\
             [v for k, v in self.map(lambda x, kc: list(x.shape) if self._ivy.is_array(x)
-                else ([len(x)] if isinstance(x, (list, tuple, _ivy.MultiDev)) else None)).to_iterator() if v]
+                else ([len(x)] if isinstance(x, (list, tuple, ivy.MultiDev)) else None)).to_iterator() if v]
         if not sub_shapes:
             return sub_shapes
         min_num_dims = min([len(sub_shape) for sub_shape in sub_shapes])
@@ -682,7 +682,7 @@ class Container(dict):
         return_cont = Container(dict(), **self._config)
         for kc in key_chains:
             val = self.at_key_chain(kc, ignore_key_errors=ignore_key_errors)
-            if ignore_key_errors and not _ivy.exists(val):
+            if ignore_key_errors and not ivy.exists(val):
                 continue
             return_cont.set_at_key_chain(kc, val, inplace=True)
         return return_cont
@@ -699,7 +699,7 @@ class Container(dict):
                                                                    ignore_key_errors=ignore_key_errors)
             else:
                 val = self.at_key_chain(new_current_chain, ignore_key_errors=ignore_key_errors)
-                if ignore_key_errors and not _ivy.exists(val):
+                if ignore_key_errors and not ivy.exists(val):
                     continue
                 return_dict[k] = val
         return Container(return_dict, **self._config)
@@ -1549,7 +1549,7 @@ class Container(dict):
         :type axes_lengths: keyword parameter args
         :return: ivy.Container with each array having einops.rearrange applied.
         """
-        return self.map(lambda x, kc: _ivy.einops_rearrange(x, pattern, **axes_lengths) if self._ivy.is_array(x) else x,
+        return self.map(lambda x, kc: ivy.einops_rearrange(x, pattern, **axes_lengths) if self._ivy.is_array(x) else x,
                         key_chains, to_apply, prune_unapplied)
 
     def einops_reduce(self, pattern,  reduction, key_chains=None, to_apply=True, prune_unapplied=False, **axes_lengths):
@@ -1571,7 +1571,7 @@ class Container(dict):
         :type axes_lengths: keyword parameter args
         :return: ivy.Container with each array having einops.reduce applied.
         """
-        return self.map(lambda x, kc: _ivy.einops_reduce(x, pattern, reduction, **axes_lengths) if self._ivy.is_array(x)
+        return self.map(lambda x, kc: ivy.einops_reduce(x, pattern, reduction, **axes_lengths) if self._ivy.is_array(x)
                         else x, key_chains, to_apply, prune_unapplied)
 
     def einops_repeat(self, pattern, key_chains=None, to_apply=True, prune_unapplied=False, **axes_lengths):
@@ -1591,7 +1591,7 @@ class Container(dict):
         :type axes_lengths: keyword parameter args
         :return: ivy.Container with each array having einops.repeat applied.
         """
-        return self.map(lambda x, kc: _ivy.einops_repeat(x, pattern, **axes_lengths) if self._ivy.is_array(x) else x,
+        return self.map(lambda x, kc: ivy.einops_repeat(x, pattern, **axes_lengths) if self._ivy.is_array(x) else x,
                         key_chains, to_apply, prune_unapplied)
 
     def to_dev(self, dev_str, key_chains=None, to_apply=True, prune_unapplied=False):
@@ -1673,7 +1673,7 @@ class Container(dict):
                           rather than a variable or traced array.
         :type exclusive: bool, optional
         """
-        return sum(self.map(lambda x, kc: _ivy.is_array(x, exclusive)).to_iterator_values())
+        return sum(self.map(lambda x, kc: ivy.is_array(x, exclusive)).to_iterator_values())
 
     def to_numpy(self, key_chains=None, to_apply=True, prune_unapplied=False):
         """
@@ -1753,7 +1753,7 @@ class Container(dict):
         :param pickle_filepath: Filepath for where to save the container to disk.
         :type pickle_filepath: str
         """
-        if _ivy.wrapped_mode():
+        if ivy.wrapped_mode():
             _pickle.dump(self.to_native().to_dict(), open(pickle_filepath, 'wb'))
         else:
             _pickle.dump(self.to_dict(), open(pickle_filepath, 'wb'))
@@ -1944,7 +1944,7 @@ class Container(dict):
         :type leafwise: bool, optional
         :return: Whether the container has any nans, applied either leafwise or across the entire container.
         """
-        leafwise_res = self.map(lambda x, kc: _ivy.has_nans(x, include_infs))
+        leafwise_res = self.map(lambda x, kc: ivy.has_nans(x, include_infs))
         if leafwise:
             return leafwise_res
         return max([v for k, v in leafwise_res.to_iterator()])
@@ -2264,9 +2264,9 @@ class Container(dict):
         :param keychain_mapping: A dict with keys as old key-chains and values as new key-chains.
         :type keychain_mapping: dict
         """
-        new_cont = _ivy.Container()
+        new_cont = ivy.Container()
         for old_kc, new_kc in keychain_mapping.items():
-            new_cont = _ivy.Container.combine(new_cont, _ivy.Container({new_kc: self[old_kc]}))
+            new_cont = ivy.Container.combine(new_cont, ivy.Container({new_kc: self[old_kc]}))
         return new_cont
 
     def copy(self):
@@ -2283,7 +2283,7 @@ class Container(dict):
 
         :return: A deep copy of the container
         """
-        return self.map(lambda x, kc: _ivy.copy_array(x) if _ivy.is_array(x) else x)
+        return self.map(lambda x, kc: ivy.copy_array(x) if ivy.is_array(x) else x)
 
     def map(self, func, key_chains=None, to_apply=True, prune_unapplied=False, key_chain=''):
         """
@@ -2502,7 +2502,7 @@ class Container(dict):
                 # noinspection PyArgumentList
                 rep = v.__repr__(as_repr=False)
             else:
-                if self._ivy.is_array(v) and len(list(v.shape)) > 0 and _ivy.exists(self._print_limit) and \
+                if self._ivy.is_array(v) and len(list(v.shape)) > 0 and ivy.exists(self._print_limit) and \
                         _reduce(_mul, v.shape) > self._print_limit:
                     rep = (type(v), "shape=", list(v.shape))
                 elif isinstance(v, (list, tuple)) and v and self._ivy.is_array(v[0]):
@@ -2525,7 +2525,7 @@ class Container(dict):
 
             json_dumped_str = '":'.join([_add_newline(s) for s in json_dumped_str.split('":')])
             # improve tf formatting
-            if _ivy.framework_stack and _ivy.current_framework_str() == 'tensorflow':
+            if ivy.framework_stack and ivy.current_framework_str() == 'tensorflow':
                 json_dumped_str_split = json_dumped_str.split("\'Variable:")
                 json_dumped_str = json_dumped_str_split[0] + ', ' + ', '.join(["\'".join(ss.split("\'")[1:])
                                                                                for ss in json_dumped_str_split[1:]])
@@ -2572,9 +2572,9 @@ class Container(dict):
         if isinstance(query, int):
             queue_queries = [query]
         elif isinstance(query, slice):
-            queue_queries = list(range(query.start, query.stop, _ivy.default(query.step, 1)))
+            queue_queries = list(range(query.start, query.stop, ivy.default(query.step, 1)))
         elif isinstance(query, (list, tuple)):
-            queue_queries = list(range(query[0].start, query[0].stop, _ivy.default(query[0].step, 1)))
+            queue_queries = list(range(query[0].start, query[0].stop, ivy.default(query[0].step, 1)))
         else:
             raise Exception('Invalid slice type, must be one of integer, slice, or sequences of slices.')
         queue_idxs = set([_np.sum(q >= self._queue_load_sizes_cum).item() for q in queue_queries])
@@ -2582,7 +2582,7 @@ class Container(dict):
         for i in queue_idxs:
             if i not in self._loaded_containers_from_queues:
                 cont = Container(self._queues[i].get(timeout=self._queue_timeout), **self._config)
-                if _ivy.wrapped_mode():
+                if ivy.wrapped_mode():
                     cont = cont.to_ivy()
                 self._loaded_containers_from_queues[i] = cont
             else:
@@ -2612,7 +2612,7 @@ class Container(dict):
             if '/' in query or '.' in query:
                 return self.at_key_chain(query)
             return dict.__getitem__(self, query)
-        elif _ivy.exists(self._queues):
+        elif ivy.exists(self._queues):
             return self._get_queue_item(query)
         return_dict = dict()
         for key, value in sorted(self.items()):
@@ -2774,10 +2774,10 @@ class Container(dict):
 
     @property
     def _ivy(self):
-        return _ivy.default(self._local_ivy, _ivy)
+        return ivy.default(self._local_ivy, ivy)
 
     @_ivy.setter
-    def _ivy(self, local_ivy):
+    def ivy(self, local_ivy):
         self._local_ivy = local_ivy
 
     # public
@@ -2823,7 +2823,7 @@ class MultiDevContainer(Container):
         self._num_devs = len(dev_strs)
 
     def at_dev(self, dev_str):
-        return self.map(lambda x, kc: x[dev_str] if isinstance(x, _ivy.MultiDevItem) else x)
+        return self.map(lambda x, kc: x[dev_str] if isinstance(x, ivy.MultiDevItem) else x)
 
     def at_devs(self):
         return {ds: self.at_dev(ds) for ds in self._dev_strs}
