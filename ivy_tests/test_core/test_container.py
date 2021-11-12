@@ -1228,6 +1228,19 @@ def test_container_as_arrays(dev_str, call):
     assert ivy.is_array(container_as_arrays.b.d)
 
 
+def test_container_num_arrays(dev_str, call):
+    dict_in = {'a': ivy.array([[0., 1., 2., 3.]], dev_str=dev_str),
+               'b': {'c': ivy.array([[5., 10., 15., 20.]], dev_str=dev_str),
+                     'd': ivy.array([[10., 9., 8., 7.]], dev_str=dev_str)}}
+    container = Container(dict_in)
+    assert container.num_arrays() == 3
+    dict_in = {'a': ivy.array([[0., 1., 2., 3.]], dev_str=dev_str),
+               'b': {'c': ivy.variable(ivy.array([[5., 10., 15., 20.]], dev_str=dev_str)),
+                     'd': ivy.array([[10., 9., 8., 7.]], dev_str=dev_str)}}
+    container = Container(dict_in)
+    assert container.num_arrays() == 3 if call in [helpers.np_call, helpers.jnp_call] else 2
+
+
 def test_container_to_numpy(dev_str, call):
     dict_in = {'a': ivy.variable(ivy.array([[[1., 2.], [3., 4.]], [[5., 6.], [7., 8.]]], dev_str=dev_str)),
                'b': {'c': ivy.variable(ivy.array([[[8., 7.], [6., 5.]], [[4., 3.], [2., 1.]]], dev_str=dev_str)),
