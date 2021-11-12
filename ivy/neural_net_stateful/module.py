@@ -117,7 +117,7 @@ class Module(abc.ABC):
         if v.has_key_chain(orig_key_chain):
             ret_cont = v.at_key_chain(orig_key_chain)
         else:
-            ret_cont = ivy.Container({})
+            ret_cont = ivy.Container()
         for old_kc, new_kc in keychain_mappings.items():
             if orig_key_chain in old_kc:
                 ret_cont = ret_cont.set_at_key_chain('/'.join(new_kc.split('/')[1:]), v.at_key_chain(new_kc))
@@ -207,7 +207,7 @@ class Module(abc.ABC):
             v_orig = self.v
             if not with_grads:
                 v = v.stop_gradients()
-            self.v = Container(v)
+            self.v = Container(v, **v.config) if isinstance(v, Container) else Container(v)
             ret = self._forward(*args, **kwargs)
             self.v = v_orig
             return ret
@@ -310,8 +310,8 @@ class Module(abc.ABC):
         if not ivy.exists(v_from_constructor):
             vs = Container(dict(**self._find_variables(self), **self._create_variables(self._dev_str)))
             self.v = vs
-        else:
-            self.v = self.v if isinstance(self.v, Container) else Container(self.v)
+        elif not isinstance(self.v, Container):
+            self.v = Container(self.v)
 
         # remove duplicates
         self.v, keychain_mappings = self._remove_duplicate_variables(self.v)
