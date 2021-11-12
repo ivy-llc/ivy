@@ -495,23 +495,33 @@
 <span class="c1"># Default Device #</span>
 <span class="c1"># ---------------#</span>
 
-<div class="viewcode-block" id="default_device"><a class="viewcode-back" href="../../../core/device/default_device.html#ivy.core.device.default_device">[docs]</a><span class="k">def</span> <span class="nf">default_device</span><span class="p">():</span>
+<span class="c1"># noinspection PyShadowingNames</span>
+<span class="k">def</span> <span class="nf">_assert_dev_str_correct_formatting</span><span class="p">(</span><span class="n">dev_str</span><span class="p">):</span>
+    <span class="k">assert</span> <span class="n">dev_str</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">3</span><span class="p">]</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;gpu&#39;</span><span class="p">,</span> <span class="s1">&#39;tpu&#39;</span><span class="p">,</span> <span class="s1">&#39;cpu&#39;</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">dev_str</span> <span class="o">!=</span> <span class="s1">&#39;cpu&#39;</span><span class="p">:</span>
+        <span class="k">assert</span> <span class="n">dev_str</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;:&#39;</span>
+        <span class="k">assert</span> <span class="n">dev_str</span><span class="p">[</span><span class="mi">4</span><span class="p">:]</span><span class="o">.</span><span class="n">isnumeric</span><span class="p">()</span>
+
+
+<span class="c1"># noinspection PyShadowingNames</span>
+<div class="viewcode-block" id="default_device"><a class="viewcode-back" href="../../../core/device/default_device.html#ivy.core.device.default_device">[docs]</a><span class="k">def</span> <span class="nf">default_device</span><span class="p">(</span><span class="n">dev_str</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Return the default device.</span>
+<span class="sd">    Return the input dev_str if provided, otherwise return the global default device.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">dev_str</span><span class="p">):</span>
+        <span class="n">_assert_dev_str_correct_formatting</span><span class="p">(</span><span class="n">dev_str</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">dev_str</span>
     <span class="k">global</span> <span class="n">DEFAULT_DEVICE</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">DEFAULT_DEVICE</span><span class="p">):</span>
         <span class="n">DEFAULT_DEVICE</span> <span class="o">=</span> <span class="s1">&#39;gpu:0&#39;</span> <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">gpu_is_available</span><span class="p">()</span> <span class="k">else</span> <span class="s1">&#39;cpu&#39;</span>
     <span class="k">return</span> <span class="n">DEFAULT_DEVICE</span></div>
 
 
-<div class="viewcode-block" id="set_default_device"><a class="viewcode-back" href="../../../core/device/set_default_device.html#ivy.core.device.set_default_device">[docs]</a><span class="k">def</span> <span class="nf">set_default_device</span><span class="p">(</span><span class="n">device</span><span class="p">):</span>
-    <span class="k">assert</span> <span class="n">device</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">3</span><span class="p">]</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;gpu&#39;</span><span class="p">,</span> <span class="s1">&#39;tpu&#39;</span><span class="p">,</span> <span class="s1">&#39;cpu&#39;</span><span class="p">]</span>
-    <span class="k">if</span> <span class="n">device</span> <span class="o">!=</span> <span class="s1">&#39;cpu&#39;</span><span class="p">:</span>
-        <span class="k">assert</span> <span class="n">device</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;:&#39;</span>
-        <span class="k">assert</span> <span class="n">device</span><span class="p">[</span><span class="mi">4</span><span class="p">:]</span><span class="o">.</span><span class="n">isnumeric</span><span class="p">()</span>
+<span class="c1"># noinspection PyShadowingNames</span>
+<div class="viewcode-block" id="set_default_device"><a class="viewcode-back" href="../../../core/device/set_default_device.html#ivy.core.device.set_default_device">[docs]</a><span class="k">def</span> <span class="nf">set_default_device</span><span class="p">(</span><span class="n">dev_str</span><span class="p">):</span>
+    <span class="n">_assert_dev_str_correct_formatting</span><span class="p">(</span><span class="n">dev_str</span><span class="p">)</span>
     <span class="k">global</span> <span class="n">DEFAULT_DEVICE</span>
-    <span class="n">DEFAULT_DEVICE</span> <span class="o">=</span> <span class="n">device</span></div>
+    <span class="n">DEFAULT_DEVICE</span> <span class="o">=</span> <span class="n">dev_str</span></div>
 
 
 <span class="c1"># Device Allocation #</span>
