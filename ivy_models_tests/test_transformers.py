@@ -32,16 +32,16 @@ def test_prenorm(dev_str, f, call):
 # -------------#
 
 @pytest.mark.parametrize(
-    "batch_size", [1])
+    "batch_shape", [[1]])
 @pytest.mark.parametrize(
-    "img_dims", [[16, 16]])
+    "img_dims", [[224, 224]])
 @pytest.mark.parametrize(
-    "queries_dim", [32])
+    "queries_dim", [1024])
 @pytest.mark.parametrize(
     "learn_query", [True, False])
 @pytest.mark.parametrize(
     "load_weights", [True, False])
-def test_perceiver_io_img_classification(dev_str, f, call, batch_size, img_dims, queries_dim, learn_query,
+def test_perceiver_io_img_classification(dev_str, f, call, batch_shape, img_dims, queries_dim, learn_query,
                                          load_weights):
     # params
     input_dim = 3
@@ -49,8 +49,8 @@ def test_perceiver_io_img_classification(dev_str, f, call, batch_size, img_dims,
     output_dim = 10
 
     # inputs
-    img = ivy.random_uniform(shape=[batch_size] + img_dims + [3], dev_str=dev_str)
-    queries = None if learn_query else ivy.random_uniform(shape=[batch_size, 1, queries_dim], dev_str=dev_str)
+    img = ivy.random_uniform(shape=batch_shape + img_dims + [3], dev_str=dev_str)
+    queries = None if learn_query else ivy.random_uniform(shape=batch_shape + [1, queries_dim], dev_str=dev_str)
 
     model = PerceiverIO(PerceiverIOSpec(input_dim=input_dim,
                                         num_input_axes=num_input_axes,
@@ -92,26 +92,26 @@ def test_perceiver_io_img_classification(dev_str, f, call, batch_size, img_dims,
     output = model(img, queries=queries)
 
     # cardinality test
-    assert output.shape == (batch_size, 1, output_dim)
+    assert output.shape == tuple(batch_shape + [1, output_dim])
 
 
 @pytest.mark.parametrize(
-    "batch_size", [3])
+    "batch_shape", [[3]])
 @pytest.mark.parametrize(
     "img_dims", [[32, 32]])
 @pytest.mark.parametrize(
     "queries_dim", [32])
 @pytest.mark.parametrize(
     "learn_query", [True, False])
-def test_perceiver_io_flow_prediction(dev_str, f, call, batch_size, img_dims, queries_dim, learn_query):
+def test_perceiver_io_flow_prediction(dev_str, f, call, batch_shape, img_dims, queries_dim, learn_query):
     # params
     input_dim = 3
     num_input_axes = 3
     output_dim = 2
 
     # inputs
-    img = ivy.random_uniform(shape=[batch_size, 2] + img_dims + [3], dev_str=dev_str)
-    queries = ivy.random_uniform(shape=[batch_size] + img_dims + [32], dev_str=dev_str)
+    img = ivy.random_uniform(shape=batch_shape + [2] + img_dims + [3], dev_str=dev_str)
+    queries = ivy.random_uniform(shape=batch_shape + img_dims + [32], dev_str=dev_str)
 
     # model call
     model = PerceiverIO(PerceiverIOSpec(input_dim=input_dim,
@@ -127,4 +127,4 @@ def test_perceiver_io_flow_prediction(dev_str, f, call, batch_size, img_dims, qu
     output = model(img, queries=queries)
 
     # cardinality test
-    assert output.shape == tuple([batch_size] + img_dims + [output_dim])
+    assert output.shape == tuple(batch_shape + img_dims + [output_dim])

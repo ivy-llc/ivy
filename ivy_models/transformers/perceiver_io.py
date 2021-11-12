@@ -1,5 +1,7 @@
 # global
 import ivy
+import string
+import numpy as np
 
 # local
 from ivy_models.transformers.helpers import PreNorm, FeedForward
@@ -142,25 +144,39 @@ class PerceiverIO(ivy.Module):
             if self._spec.with_final_head else lambda x: x
 
     def _forward(self, data, mask=None, queries=None):
-        # noinspection PyTupleAssignmentBalance
-        b, *axis, _ = data.shape
-        assert len(axis) == self._spec.num_input_axes, 'input data must have the right number of axis'
 
+        # shapes
+        total_shape = data.shape
+        batch_shape = total_shape[0:-self._spec.num_input_axes-1]
+        data_shape = total_shape[-self._spec.num_input_axes-1:-1]
+
+        # maybe flatten batch shape
+        if batch_shape:
+            num_batch_dims = len(batch_shape)
+            batch_shape_keys = string.ascii_lowercase[0:num_batch_dims]
+            batch_shape_str = ' '.join(batch_shape_keys)
+            batch_shape_dict = dict(zip(batch_shape_keys, batch_shape))
+            flat_batch_size = int(np.prod(batch_shape))
+            data = ivy.einops_rearrange(
+                data, '{} ... -> ({}) ...'.format(batch_shape_str, batch_shape_str), **batch_shape_dict)
+        else:
+            flat_batch_size = 1
+            data = ivy.expand_dims(data, 0)
+
+        # maybe add fourier positional encoding
         if self._fourier_encode_input:
-            # calculate fourier encoded positions in the range of [-1, 1], for all axis
-            axis_pos = list(map(lambda size: ivy.linspace(-1., 1., size, dev_str=self._dev_str), axis))
+            axis_pos = list(map(lambda size: ivy.linspace(-1., 1., size, dev_str=self._dev_str), data_shape))
             pos = ivy.stack(ivy.meshgrid(*axis_pos), -1)
             enc_pos = ivy.fourier_encode(pos, self._spec.max_fourier_freq, self._spec.num_fourier_freq_bands)
             enc_pos = ivy.einops_rearrange(enc_pos, '... n d -> ... (n d)')
-            enc_pos = ivy.einops_repeat(enc_pos, '... -> b ...', b=b)
-
+            enc_pos = ivy.einops_repeat(enc_pos, '... -> b ...', b=flat_batch_size)
             data = ivy.concatenate([data, enc_pos], -1)
 
         # concat to channels of data and flatten axis
 
         data = ivy.einops_rearrange(data, 'b ... d -> b (...) d')
 
-        x = ivy.einops_repeat(self._latents, 'n d -> b n d', b=b)
+        x = ivy.einops_repeat(self._latents, 'n d -> b n d', b=flat_batch_size)
 
         # layers
 
@@ -175,7 +191,7 @@ class PerceiverIO(ivy.Module):
         # queries
         if not ivy.exists(queries):
             if ivy.exists(self._queries):
-                queries = ivy.einops_repeat(self._queries, '... -> b ...', b=b)
+                queries = ivy.einops_repeat(self._queries, '... -> b ...', b=flat_batch_size)
             else:
                 raise Exception('If learn_query is not set as True, the queries must be provided explicitly'
                                 'during the forward pass.')
@@ -195,7 +211,13 @@ class PerceiverIO(ivy.Module):
 
         # final linear out
 
-        ret = self._to_logits(latents)
+        ret_flat = self._to_logits(latents)
 
         # reshape to correct number of axes
-        return ivy.reshape(ret, queries_shape[:-1] + [self._spec.output_dim])
+        ret_flat = ivy.reshape(ret_flat, queries_shape[:-1] + [self._spec.output_dim])
+
+        # return with original batch shape
+        if batch_shape:
+            return ivy.einops_rearrange(
+                ret_flat, '({}) ... -> {} ...'.format(batch_shape_str, batch_shape_str), **batch_shape_dict)
+        return ret_flat[0]
