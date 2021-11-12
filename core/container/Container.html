@@ -1605,6 +1605,18 @@ Default is True.</p></li>
 </dd></dl>
 
 <dl class="py method">
+<dt id="ivy.core.container.Container.size_ordered_arrays">
+<code class="sig-name descname">size_ordered_arrays</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">exclusive</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/container.html#Container.size_ordered_arrays"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.size_ordered_arrays" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a container with keychains mapped to flat keys, and arrays given in order of smallest to largest.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>exclusive</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to check if the data type is exclusively an array,
+rather than a variable or traced array.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt id="ivy.core.container.Container.slice_via_key">
 <code class="sig-name descname">slice_via_key</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">slice_key</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/container.html#Container.slice_via_key"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.slice_via_key" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get slice of container, based on key.</p>
