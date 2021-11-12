@@ -8,7 +8,7 @@ from ivy.neural_net_stateful.module import Module
 
 class Sequential(Module):
 
-    def __init__(self, *sub_modules, dev_str='cpu', v=None):
+    def __init__(self, *sub_modules, dev_str=None, v=None):
         """
         A sequential container. Modules will be added to it in the order they are passed in the constructor.
 

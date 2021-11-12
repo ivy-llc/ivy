@@ -6,7 +6,7 @@ Collection of random Ivy functions
 from ivy.framework_handler import current_framework as _cur_framework
 
 
-def random_uniform(low=0.0, high=1.0, shape=None, dev_str='cpu', f=None):
+def random_uniform(low=0.0, high=1.0, shape=None, dev_str=None, f=None):
     """
     Draws samples from a uniform distribution.
     Samples are uniformly distributed over the half-open interval [low, high) (includes low, but excludes high).
@@ -30,7 +30,7 @@ def random_uniform(low=0.0, high=1.0, shape=None, dev_str='cpu', f=None):
     return _cur_framework(f=f).random_uniform(low, high, shape, dev_str)
 
 
-def random_normal(mean=0.0, std=1.0, shape=None, dev_str='cpu', f=None):
+def random_normal(mean=0.0, std=1.0, shape=None, dev_str=None, f=None):
     """
     Draws samples from a normal distribution.
 
@@ -49,7 +49,7 @@ def random_normal(mean=0.0, std=1.0, shape=None, dev_str='cpu', f=None):
     return _cur_framework(f=f).random_normal(mean, std, shape, dev_str)
 
 
-def multinomial(population_size, num_samples, batch_size, probs=None, replace=True, dev_str='cpu', f=None):
+def multinomial(population_size, num_samples, batch_size, probs=None, replace=True, dev_str=None, f=None):
     """
     Draws samples from a multinomial distribution. Specifcally, returns a tensor where each row contains num_samples
     indices sampled from the multinomial probability distribution located in the corresponding row of tensor input.
@@ -74,7 +74,7 @@ def multinomial(population_size, num_samples, batch_size, probs=None, replace=Tr
     return _cur_framework(f=f).multinomial(population_size, num_samples, batch_size, probs, replace, dev_str)
 
 
-def randint(low, high, shape, dev_str='cpu', f=None):
+def randint(low, high, shape, dev_str=None, f=None):
     """
     Returns a tensor filled with random integers generated uniformly between low (inclusive) and high (exclusive).
 
