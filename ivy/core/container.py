@@ -114,7 +114,8 @@ class Container(dict):
         elif kwargs:
             raise Exception('dict_in and **kwargs cannot both be specified for ivy.Container constructor,'
                             'please specify one or the other, not both.')
-        if isinstance(dict_in, dict):
+        dict_types = tuple([dict] + _ivy.container_types())
+        if isinstance(dict_in, dict_types):
             dict_in = dict_in
         elif isinstance(dict_in, tuple(self._types_to_iteratively_nest)):
             dict_in = dict(zip(['it_{}'.format(str(i).zfill(len(str(len(dict_in)))))
@@ -122,8 +123,7 @@ class Container(dict):
         else:
             raise Exception('invalid input {}'.format(dict_in))
         for key, value in sorted(dict_in.items()):
-            d = isinstance(value, tuple(self._types_to_iteratively_nest))
-            if (isinstance(value, dict) and (not isinstance(value, Container) or rebuild_child_containers)) or \
+            if (isinstance(value, dict_types) and (not isinstance(value, Container) or rebuild_child_containers)) or \
                     isinstance(value, tuple(self._types_to_iteratively_nest)):
                 self[key] = Container(value, **self._config)
             else:
