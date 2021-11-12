@@ -1685,6 +1685,19 @@ class Container(dict):
         """
         return sum(self.map(lambda x, kc: ivy.is_array(x, exclusive)).to_iterator_values())
 
+    def size_ordered_arrays(self, exclusive=False):
+        """
+        Return a container with keychains mapped to flat keys, and arrays given in order of smallest to largest.
+
+        :param exclusive: Whether to check if the data type is exclusively an array,
+                          rather than a variable or traced array.
+        :type exclusive: bool, optional
+        """
+        array_dict = {kc.replace('/', '_').replace('.', '_'): v
+                      for kc, v in self.to_iterator() if ivy.is_array(v, exclusive)}
+        return ivy.Container(dict(sorted(array_dict.items(), key=lambda item: _reduce(_mul, item[1].shape, 1))),
+                             alphabetical_keys=False)
+
     def to_numpy(self, key_chains=None, to_apply=True, prune_unapplied=False):
         """
         Converts all nested ivy arrays to numpy arrays.
