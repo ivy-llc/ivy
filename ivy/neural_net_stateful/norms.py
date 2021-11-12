@@ -10,7 +10,7 @@ from ivy.neural_net_stateful.initializers import Zeros, Ones
 
 class LayerNorm(Module):
 
-    def __init__(self, normalized_shape, epsilon=None, elementwise_affine=True, new_std=None, dev_str='cpu', v=None):
+    def __init__(self, normalized_shape, epsilon=None, elementwise_affine=True, new_std=None, dev_str=None, v=None):
         """
         Class for applying Layer Normalization over a mini-batch of inputs
 

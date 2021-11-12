@@ -15,6 +15,7 @@ import multiprocessing as _multiprocessing
 from tensorflow.python.types.core import Tensor
 
 # local
+from ivy.core.device import default_device
 from ivy.tensorflow.core.device import _dev_str_callable
 
 DTYPE_DICT = {_tf.bool: 'bool',
@@ -34,13 +35,8 @@ DTYPE_DICT = {_tf.bool: 'bool',
 # noinspection PyShadowingNames
 def array(object_in, dtype_str=None, dev_str=None):
     dtype = _tf.__dict__[dtype_str] if dtype_str else dtype_str
-    if dev_str:
-        with _tf.device('/' + dev_str.upper()):
-            tensor = _tf.convert_to_tensor(object_in)
-            if dtype is None:
-                return tensor
-            return _tf.cast(tensor, dtype)
-    else:
+    dev_str = default_device(dev_str)
+    with _tf.device('/' + dev_str.upper()):
         tensor = _tf.convert_to_tensor(object_in)
         if dtype is None:
             return tensor
@@ -103,25 +99,21 @@ def cast(x, dtype_str):
 # noinspection PyShadowingNames
 def arange(stop, start=0, step=1, dtype_str=None, dev_str=None):
     dtype = _tf.__dict__[dtype_str] if dtype_str else dtype_str
-    if dev_str:
-        with _tf.device('/' + dev_str.upper()):
-            return _tf.range(start, stop, delta=step, dtype=dtype)
-    else:
+    dev_str = default_device(dev_str)
+    with _tf.device('/' + dev_str.upper()):
         return _tf.range(start, stop, delta=step, dtype=dtype)
 
 
 def linspace(start, stop, num, axis=None, dev_str=None):
     if axis is None:
         axis = -1
-    if dev_str:
-        with _tf.device('/' + dev_str.upper()):
-            return _tf.linspace(start, stop, num, axis=axis)
-    else:
+    dev_str = default_device(dev_str)
+    with _tf.device('/' + dev_str.upper()):
         return _tf.linspace(start, stop, num, axis=axis)
 
 
 def logspace(start, stop, num, base=10., axis=None, dev_str=None):
-    power_seq = linspace(start, stop, num, axis, dev_str)
+    power_seq = linspace(start, stop, num, axis, default_device(dev_str))
     return base ** power_seq
 
 
@@ -234,44 +226,37 @@ def squeeze(x, axis=None):
 # noinspection PyShadowingNames
 def zeros(shape, dtype_str='float32', dev_str=None):
     dtype = _tf.__dict__[dtype_str]
-    if dev_str:
-        with _tf.device('/' + dev_str.upper()):
-            return _tf.zeros(shape, dtype)
-    else:
+    dev_str = default_device(dev_str)
+    with _tf.device('/' + dev_str.upper()):
         return _tf.zeros(shape, dtype)
 
 
 # noinspection PyShadowingNames
 def zeros_like(x, dtype_str=None, dev_str=None):
     dtype = _tf.__dict__[dtype_str] if dtype_str else dtype_str
-    if dev_str:
-        with _tf.device('/' + dev_str.upper()):
-            return _tf.zeros_like(x, dtype=dtype)
-    else:
+    dev_str = default_device(dev_str)
+    with _tf.device('/' + dev_str.upper()):
         return _tf.zeros_like(x, dtype=dtype)
 
 
 # noinspection PyShadowingNames
 def ones(shape, dtype_str='float32', dev_str=None):
     dtype = _tf.__dict__[dtype_str]
-    if dev_str:
-        with _tf.device('/' + dev_str.upper()):
-            return _tf.ones(shape, dtype)
-    else:
+    dev_str = default_device(dev_str)
+    with _tf.device('/' + dev_str.upper()):
         return _tf.ones(shape, dtype)
 
 
 # noinspection PyShadowingNames
 def ones_like(x, dtype_str=None, dev_str=None):
     dtype = _tf.__dict__[dtype_str] if dtype_str else dtype_str
-    if dev_str:
-        with _tf.device('/' + dev_str.upper()):
-            return _tf.ones_like(x, dtype=dtype)
-    else:
+    dev_str = default_device(dev_str)
+    with _tf.device('/' + dev_str.upper()):
         return _tf.ones_like(x, dtype=dtype)
 
 
 def one_hot(indices, depth, dev_str=None):
+    dev_str = default_device(dev_str)
     if dev_str is not None:
         with _tf.device('/' + dev_str.upper()):
             return _tf.one_hot(indices, depth)
@@ -300,10 +285,8 @@ cumprod = _tf.math.cumprod
 # noinspection PyShadowingNames
 def identity(n, dtype_str='float32', batch_shape=None, dev_str=None):
     dtype = _tf.__dict__[dtype_str]
-    if dev_str:
-        with _tf.device('/' + dev_str.upper()):
-            return _tf.eye(n, n, batch_shape=batch_shape, dtype=dtype)
-    else:
+    dev_str = default_device(dev_str)
+    with _tf.device('/' + dev_str.upper()):
         return _tf.eye(n, n, batch_shape=batch_shape, dtype=dtype)
 
 

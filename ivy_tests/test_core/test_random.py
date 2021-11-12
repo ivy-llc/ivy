@@ -44,7 +44,7 @@ def test_random_uniform(low, high, shape, dtype_str, tensor_fn, dev_str, call):
     assert np.min((ret_np < (high if high else 1.)).astype(np.int32)) == 1
     assert np.min((ret_np > (low if low else 0.)).astype(np.int32)) == 1
     # compilation test
-    if not ivy.wrapped_mode():
+    if not ivy.wrapped_mode() and call is not helpers.torch_call:
         helpers.assert_compilable(ivy.random_uniform)
 
 
@@ -81,7 +81,7 @@ def test_random_normal(mean, std, shape, dtype_str, tensor_fn, dev_str, call):
     assert np.min((ret_np > (ivy.default(mean, 0.) - 3*ivy.default(std, 1.))).astype(np.int32)) == 1
     assert np.min((ret_np < (ivy.default(mean, 0.) + 3*ivy.default(std, 1.))).astype(np.int32)) == 1
     # compilation test
-    if not ivy.wrapped_mode():
+    if not ivy.wrapped_mode() and call is not helpers.torch_call:
         helpers.assert_compilable(ivy.random_normal)
 
 
@@ -110,7 +110,7 @@ def test_multinomial(probs, num_samples, replace, dtype_str, tensor_fn, dev_str,
     # cardinality test
     assert ret.shape == tuple([batch_size] + [num_samples])
     # compilation test
-    if not ivy.wrapped_mode():
+    if not ivy.wrapped_mode() and call is not helpers.torch_call:
         helpers.assert_compilable(ivy.multinomial)
 
 
@@ -141,7 +141,7 @@ def test_randint(low, high, shape, dtype_str, tensor_fn, dev_str, call):
     assert np.min((ret_np < high).astype(np.int32)) == 1
     assert np.min((ret_np >= low).astype(np.int32)) == 1
     # compilation test
-    if not ivy.wrapped_mode():
+    if not ivy.wrapped_mode() and call is not helpers.torch_call:
         helpers.assert_compilable(ivy.randint)
 
 

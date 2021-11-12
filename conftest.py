@@ -1,6 +1,10 @@
+# global
 import pytest
 from typing import Dict
-from ivy_tests import helpers
+
+# local
+import ivy
+from ivqy_tests import helpers
 
 
 FW_STRS = ['numpy', 'jax', 'tensorflow', 'tensorflow_graph', 'torch', 'mxnet']
@@ -33,6 +37,7 @@ def run_around_tests(dev_str, f, wrapped_mode, compile_graph, call):
         pytest.skip()
     with f.use:
         f.set_wrapped_mode(wrapped_mode)
+        ivy.set_default_device(dev_str)
         yield
 
 
