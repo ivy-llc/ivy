@@ -2383,7 +2383,7 @@ class Container(dict):
                 if not inplace:
                     return_dict[key] = ret
             else:
-                if not inplace and key_chains is not None:
+                if key_chains is not None:
                     if (this_key_chain in key_chains and not to_apply) or (
                             this_key_chain not in key_chains and to_apply):
                         if prune_unapplied:
@@ -2426,14 +2426,13 @@ class Container(dict):
                     continue
                 if not inplace:
                     return_dict[key] = ret
-            elif not inplace:
-                if key_chains is not None:
-                    if (this_key_chain in key_chains and not to_apply) or (
-                            this_key_chain not in key_chains and to_apply):
-                        if prune_unapplied:
-                            continue
-                        return_dict[key] = value
+            elif key_chains is not None:
+                if (this_key_chain in key_chains and not to_apply) or (
+                        this_key_chain not in key_chains and to_apply):
+                    if prune_unapplied:
                         continue
+                    return_dict[key] = value
+                    continue
                 return_dict[key] = value
         ret = return_dict if inplace else Container(return_dict, **self._config)
         if key_chain != '' or include_self:
