@@ -173,7 +173,7 @@ class Conv1D(Module):
 
     def __init__(self, input_channels, output_channels, filter_size, strides, padding,
                  weight_initializer=GlorotUniform(), bias_initializer=Zeros(), data_format='NWC', dilations=1,
-                 dev_str='cpu', v=None):
+                 dev_str=None, v=None):
         """
         1D convolutional layer.
 
@@ -236,7 +236,7 @@ class Conv1DTranspose(Module):
 
     def __init__(self, input_channels, output_channels, filter_size, strides, padding,
                  weight_initializer=GlorotUniform(), bias_initializer=Zeros(), output_shape=None, data_format='NWC',
-                 dilations=1, dev_str='cpu', v=None):
+                 dilations=1, dev_str=None, v=None):
         """
         1D transpose convolutional layer.
 
@@ -303,7 +303,7 @@ class Conv2D(Module):
 
     def __init__(self, input_channels, output_channels, filter_shape, strides, padding,
                  weight_initializer=GlorotUniform(), bias_initializer=Zeros(), data_format='NHWC', dilations=1,
-                 dev_str='cpu', v=None):
+                 dev_str=None, v=None):
         """
         2D convolutional layer.
 
@@ -366,7 +366,7 @@ class Conv2DTranspose(Module):
 
     def __init__(self, input_channels, output_channels, filter_shape, strides, padding,
                  weight_initializer=GlorotUniform(), bias_initializer=Zeros(), output_shape=None, data_format='NHWC',
-                 dilations=1, dev_str='cpu', v=None):
+                 dilations=1, dev_str=None, v=None):
         """
         2D convolutional transpose layer.
 
@@ -432,7 +432,7 @@ class Conv2DTranspose(Module):
 class DepthwiseConv2D(Module):
 
     def __init__(self, num_channels, filter_shape, strides, padding, weight_initializer=GlorotUniform(),
-                 bias_initializer=Zeros(), data_format='NHWC', dilations=1, dev_str='cpu', v=None):
+                 bias_initializer=Zeros(), data_format='NHWC', dilations=1, dev_str=None, v=None):
         """
         depthwise 2D convolutional layer.
 
@@ -493,7 +493,7 @@ class Conv3D(Module):
 
     def __init__(self, input_channels, output_channels, filter_shape, strides, padding,
                  weight_initializer=GlorotUniform(), bias_initializer=Zeros(), data_format='NDHWC', dilations=1,
-                 dev_str='cpu', v=None):
+                 dev_str=None, v=None):
         """
         3D convolutional layer.
 
@@ -556,7 +556,7 @@ class Conv3DTranspose(Module):
 
     def __init__(self, input_channels, output_channels, filter_shape, strides, padding,
                  weight_initializer=GlorotUniform(), bias_initializer=Zeros(), output_shape=None, data_format='NDHWC',
-                 dilations=1, dev_str='cpu', v=None):
+                 dilations=1, dev_str=None, v=None):
         """
         3D convolutional transpose layer.
 
@@ -625,7 +625,7 @@ class Conv3DTranspose(Module):
 class LSTM(Module):
 
     def __init__(self, input_channels, output_channels, weight_initializer=GlorotUniform(), num_layers=1,
-                 return_sequence=True, return_state=True, dev_str='cpu', v=None):
+                 return_sequence=True, return_state=True, dev_str=None, v=None):
         """
         LSTM layer, which is a set of stacked lstm cells.
 

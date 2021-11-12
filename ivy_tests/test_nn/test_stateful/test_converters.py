@@ -25,7 +25,7 @@ class TorchLinearModule(torch.nn.Module):
 
 class TorchModule(torch.nn.Module):
 
-    def __init__(self, in_size, out_size, dev_str='cpu', hidden_size=64):
+    def __init__(self, in_size, out_size, dev_str=None, hidden_size=64):
         super(TorchModule, self).__init__()
         self._linear0 = TorchLinearModule(in_size, hidden_size)
         self._linear1 = TorchLinearModule(hidden_size, hidden_size)
@@ -50,7 +50,7 @@ class HaikuLinear(hk.Module):
 
 class HaikuModule(hk.Module):
 
-    def __init__(self, in_size, out_size, dev_str='cpu', hidden_size=64):
+    def __init__(self, in_size, out_size, dev_str=None, hidden_size=64):
         super(HaikuModule, self).__init__()
         self._linear0 = HaikuLinear(hidden_size)
         self._linear1 = HaikuLinear(hidden_size)
