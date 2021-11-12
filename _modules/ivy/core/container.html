@@ -1657,8 +1657,6 @@
 <span class="sd">        :type prune_unapplied: bool, optional</span>
 <span class="sd">        :return: A list of sub-arrays.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># ToDo: make this more efficient, without so many recursive container calls. For example the splits indices</span>
-        <span class="c1">#  can be calculated here, and then slices applied directly only once</span>
         <span class="n">dim_size</span> <span class="o">=</span> <span class="n">num_or_size_splits</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">num_or_size_splits</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="k">else</span> <span class="nb">len</span><span class="p">(</span><span class="n">num_or_size_splits</span><span class="p">)</span>
         <span class="c1"># noinspection PyTypeChecker</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">map</span><span class="p">(</span>
@@ -2559,7 +2557,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">kc</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">copy_array</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">is_array</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">else</span> <span class="n">x</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Container.map"><a class="viewcode-back" href="../../../core/container/Container.html#ivy.core.container.Container.map">[docs]</a>    <span class="k">def</span> <span class="nf">map</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">func</span><span class="p">,</span> <span class="n">key_chains</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">to_apply</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">prune_unapplied</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">key_chain</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
+<div class="viewcode-block" id="Container.map"><a class="viewcode-back" href="../../../core/container/Container.html#ivy.core.container.Container.map">[docs]</a>    <span class="k">def</span> <span class="nf">map</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">func</span><span class="p">,</span> <span class="n">key_chains</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">to_apply</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">prune_unapplied</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">key_chain</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Apply function to all array values of container</span>
 
@@ -2572,18 +2570,21 @@
 <span class="sd">        :type to_apply: bool, optional</span>
 <span class="sd">        :param prune_unapplied: Whether to prune key_chains for which the function was not applied. Default is False.</span>
 <span class="sd">        :type prune_unapplied: bool, optional</span>
+<span class="sd">        :param inplace: Whether to apply the mapping inplace, or return a new container. Default is False.</span>
+<span class="sd">        :type inplace: bool, optional</span>
 <span class="sd">        :param key_chain: Chain of keys for this dict entry</span>
 <span class="sd">        :type key_chain: str</span>
 <span class="sd">        :return: New container following the function mapped to each sub-array.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">return_dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+        <span class="n">return_dict</span> <span class="o">=</span> <span class="bp">self</span> <span class="k">if</span> <span class="n">inplace</span> <span class="k">else</span> <span class="nb">dict</span><span class="p">()</span>
         <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="n">this_key_chain</span> <span class="o">=</span> <span class="n">key</span> <span class="k">if</span> <span class="n">key_chain</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span> <span class="k">else</span> <span class="p">(</span><span class="n">key_chain</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span> <span class="o">+</span> <span class="n">key</span><span class="p">)</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">Container</span><span class="p">):</span>
-                <span class="n">ret</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">key_chains</span><span class="p">,</span> <span class="n">to_apply</span><span class="p">,</span> <span class="n">prune_unapplied</span><span class="p">,</span> <span class="n">this_key_chain</span><span class="p">)</span>
+                <span class="n">ret</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">key_chains</span><span class="p">,</span> <span class="n">to_apply</span><span class="p">,</span> <span class="n">prune_unapplied</span><span class="p">,</span> <span class="n">inplace</span><span class="p">,</span> <span class="n">this_key_chain</span><span class="p">)</span>
                 <span class="k">if</span> <span class="n">prune_unapplied</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">ret</span><span class="p">:</span>
                     <span class="k">continue</span>
-                <span class="n">return_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">ret</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">inplace</span><span class="p">:</span>
+                    <span class="n">return_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">ret</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">key_chains</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
                     <span class="k">if</span> <span class="p">(</span><span class="n">this_key_chain</span> <span class="ow">in</span> <span class="n">key_chains</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">to_apply</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span>
@@ -2593,7 +2594,8 @@
                         <span class="n">return_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
                         <span class="k">continue</span>
                 <span class="n">return_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">func</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">this_key_chain</span><span class="p">)</span>
-        <span class="c1"># ToDo: find an elegant way to pass ALL configs from the current container to the new container</span>
+        <span class="k">if</span> <span class="n">inplace</span><span class="p">:</span>
+            <span class="k">return</span>
         <span class="k">return</span> <span class="n">Container</span><span class="p">(</span><span class="n">return_dict</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_config</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Container.map_conts"><a class="viewcode-back" href="../../../core/container/Container.html#ivy.core.container.Container.map_conts">[docs]</a>    <span class="k">def</span> <span class="nf">map_conts</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">func</span><span class="p">,</span> <span class="n">key_chains</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">to_apply</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">prune_unapplied</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">include_self</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">key_chain</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
