@@ -4,7 +4,6 @@ Collection of PyTorch general functions, wrapped to fit Ivy syntax and signature
 
 # global
 import ivy
-import copy
 import torch
 import numpy as np
 torch_scatter = None
@@ -15,6 +14,7 @@ from functools import reduce as _reduce
 from typing import List, Dict, Optional, Union
 
 # local
+from ivy.core.device import default_device
 from ivy.torch.core.device import str_to_dev, _callable_dev_str
 
 # API #
@@ -23,6 +23,7 @@ from ivy.torch.core.device import str_to_dev, _callable_dev_str
 
 # noinspection PyShadowingNames
 def array(object_in, dtype_str: Optional[str] = None, dev_str: Optional[str] = None):
+    dev_str = default_device(dev_str)
     if isinstance(object_in, np.ndarray):
         return torch.Tensor(object_in).to(str_to_dev(dev_str))
     if dtype_str is not None:
@@ -153,6 +154,7 @@ def cast(x, dtype_str_in: str):
 # noinspection PyShadowingNames
 def arange(stop: Number, start: Number = 0, step: Number = 1, dtype_str: Optional[str] = None,
            dev_str: Optional[str] = None):
+    dev_str = default_device(dev_str)
     if dtype_str is not None:
         return torch.arange(start, stop, step=step, dtype=dtype_from_str(dtype_str), device=str_to_dev(dev_str))
     else:
@@ -176,20 +178,19 @@ def linspace(start, stop, num, axis=None, dev_str=None):
     start_is_array = isinstance(start, torch.Tensor)
     stop_is_array = isinstance(stop, torch.Tensor)
     linspace_method = torch.linspace
+    dev_str = default_device(dev_str)
     if start_is_array:
         start_shape = list(start.shape)
         if num == 1:
             return start.unsqueeze(axis).to(str_to_dev(dev_str))
         start = start.reshape((-1,))
         linspace_method = _differentiable_linspace if start.requires_grad else torch.linspace
-        dev_str = ivy.default(dev_str, _callable_dev_str(start))
     if stop_is_array:
         stop_shape = list(stop.shape)
         if num == 1:
             return torch.ones(stop_shape[:axis] + [1] + stop_shape[axis:], device=str_to_dev(dev_str)) * start
         stop = stop.reshape((-1,))
         linspace_method = _differentiable_linspace if stop.requires_grad else torch.linspace
-        dev_str = ivy.default(dev_str, _callable_dev_str(stop))
     if start_is_array and stop_is_array:
         if num < start.shape[0]:
             start = start.unsqueeze(-1)
@@ -231,7 +232,7 @@ def linspace(start, stop, num, axis=None, dev_str=None):
 
 
 def logspace(start, stop, num, base=10., axis=None, dev_str=None):
-    power_seq = linspace(start, stop, num, axis, dev_str)
+    power_seq = linspace(start, stop, num, axis, default_device(dev_str))
     return base ** power_seq
 
 
@@ -384,6 +385,7 @@ def zeros(shape: List[int], dtype_str: str = 'float32', dev_str: Optional[str] =
                                          'float32': torch.float32,
                                          'float64': torch.float64}
     dtype_val: torch.dtype = type_dict[dtype_str]
+    dev_str = default_device(dev_str)
     return torch.zeros(shape, dtype=dtype_val, device=str_to_dev(dev_str))
 
 
@@ -469,6 +471,7 @@ def cumprod(x, axis: int = 0, exclusive: bool = False):
 # noinspection PyShadowingNames
 def identity(n: int, dtype_str: str = 'float32', batch_shape: Optional[List[int]] = None,
              dev_str: Optional[str] = None):
+    dev_str = default_device(dev_str)
     type_dict: Dict[str, torch.dtype] = {'bool': torch.bool,
                                          'int8': torch.int8,
                                          'uint8': torch.uint8,
