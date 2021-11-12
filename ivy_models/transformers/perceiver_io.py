@@ -25,7 +25,7 @@ class PerceiverIOSpec(ivy.Container):
                  num_cross_att_heads=1,
                  num_self_att_heads=8,
                  cross_head_dim=64,
-                 self_head_dim=64,
+                 latent_head_dim=64,
                  weight_tie_layers=False,
                  learn_query=False,
                  query_shape=None,
@@ -58,7 +58,7 @@ class PerceiverIOSpec(ivy.Container):
                          num_cross_att_heads=num_cross_att_heads,
                          num_self_att_heads=num_self_att_heads,
                          cross_head_dim=cross_head_dim,
-                         self_head_dim=self_head_dim,
+                         latent_head_dim=latent_head_dim,
                          weight_tie_layers=weight_tie_layers,
                          learn_query=learn_query,
                          query_shape=query_shape,
@@ -80,7 +80,7 @@ class PerceiverIO(ivy.Module):
 
     def __init__(self, spec: PerceiverIOSpec, v: ivy.Container = None):
         self._spec = spec
-        super(PerceiverIO, self).__init__(v=v)
+        ivy.Module.__init__(self, v=v)
 
     # noinspection PyUnusedLocal
     def _build(self, *args, **kwargs):
@@ -106,7 +106,7 @@ class PerceiverIO(ivy.Module):
                                                dev_str=self._spec.device), dev_str=self._spec.device)
         get_latent_attn = lambda: PreNorm(
             self._spec.latent_dim, ivy.MultiHeadAttention(
-                self._spec.latent_dim, self._spec.num_self_att_heads, self._spec.self_head_dim, self._spec.attn_dropout,
+                self._spec.latent_dim, self._spec.num_self_att_heads, self._spec.latent_head_dim, self._spec.attn_dropout,
                 dev_str=self._spec.device), dev_str=self._spec.device)
         get_latent_fc = lambda: PreNorm(self._spec.latent_dim, FeedForward(
             self._spec.latent_dim, dropout=self._spec.fc_dropout, dev_str=self._spec.device), dev_str=self._spec.device)
