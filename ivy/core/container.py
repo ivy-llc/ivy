@@ -2534,15 +2534,23 @@ class Container(dict):
             return
         return ret
 
-    def start_logging_retrieval_times(self):
-        return Container(self, **{**self._config, **{'logging_retrieval_times': True,
-                                                     'rebuild_child_containers': True}})
+    def start_logging_retrieval_times(self, inplace=True):
+        def _flag_logging_retrieval(cont, _):
+            cont._logging_retrieval_times = True
+            return cont
+        ret = self.map_conts(_flag_logging_retrieval, inplace=inplace)
+        if inplace:
+            return
+        return ret
 
-    def stop_logging_retrieval_times(self):
-        cont = Container(self, **{**self._config, **{'logging_retrieval_times': False,
-                                                     'rebuild_child_containers': True}})
-        cont._retrieval_times = self._retrieval_times
-        return cont
+    def stop_logging_retrieval_times(self, inplace=True):
+        def _flag_logging_retrieval(cont, _):
+            cont._logging_retrieval_times = False
+            return cont
+        ret = self.map_conts(_flag_logging_retrieval, inplace=inplace)
+        if inplace:
+            return
+        return ret
 
     # Built-ins #
     # ----------#
