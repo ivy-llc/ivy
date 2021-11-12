@@ -1665,29 +1665,6 @@ def test_container_sort_by_key(dev_str, call):
         assert k == k_true
 
 
-def test_container_restructure_keys(dev_str, call):
-    container = Container({'a': ivy.array([1], dev_str=dev_str),
-                           'b': {'c': ivy.array([2], dev_str=dev_str), 'd': ivy.array([3], dev_str=dev_str)}})
-
-    # without base restructure
-    container_restructured = container.restructure_keys([('a', 'a/new'), ('b/c', 'B/C'), ('b/d', 'Bee/Dee')])
-    assert np.allclose(ivy.to_numpy(container_restructured['a']['new']), np.array([1]))
-    assert np.allclose(ivy.to_numpy(container_restructured.a.new), np.array([1]))
-    assert np.allclose(ivy.to_numpy(container_restructured['B']['C']), np.array([2]))
-    assert np.allclose(ivy.to_numpy(container_restructured.B.C), np.array([2]))
-    assert np.allclose(ivy.to_numpy(container_restructured['Bee']['Dee']), np.array([3]))
-    assert np.allclose(ivy.to_numpy(container_restructured.Bee.Dee), np.array([3]))
-
-    # with base restructure
-    container_restructured = container.restructure_keys([('', 'new_base')])
-    assert np.allclose(ivy.to_numpy(container_restructured['new_base']['a']), np.array([1]))
-    assert np.allclose(ivy.to_numpy(container_restructured.new_base.a), np.array([1]))
-    assert np.allclose(ivy.to_numpy(container_restructured['new_base']['b']['c']), np.array([2]))
-    assert np.allclose(ivy.to_numpy(container_restructured.new_base.b.c), np.array([2]))
-    assert np.allclose(ivy.to_numpy(container_restructured['new_base']['b']['d']), np.array([3]))
-    assert np.allclose(ivy.to_numpy(container_restructured.new_base.b.d), np.array([3]))
-
-
 def test_container_prune_empty(dev_str, call):
     dict_in = {'a': ivy.array([1], dev_str=dev_str),
                'b': {'c': {}, 'd': ivy.array([3], dev_str=dev_str)}}
@@ -1770,6 +1747,19 @@ def test_container_prune_keys_from_key_chains(dev_str, call):
     assert np.allclose(ivy.to_numpy(container_pruned.Fff), np.array([[4]]))
     assert ('Bee' not in container_pruned)
     assert ('Eee' not in container_pruned)
+
+
+def test_container_restructure_key_chains(dev_str, call):
+    container = Container({'a': ivy.array([1], dev_str=dev_str),
+                           'b': {'c': ivy.array([2], dev_str=dev_str), 'd': ivy.array([3], dev_str=dev_str)}})
+
+    container_restructured = container.restructure_key_chains({'a': 'A', 'b/c': 'B/C', 'b/d': 'B/D'})
+    assert np.allclose(ivy.to_numpy(container_restructured['A']), np.array([[1]]))
+    assert np.allclose(ivy.to_numpy(container_restructured.A), np.array([[1]]))
+    assert np.allclose(ivy.to_numpy(container_restructured['B/C']), np.array([[2]]))
+    assert np.allclose(ivy.to_numpy(container_restructured.B.C), np.array([[2]]))
+    assert np.allclose(ivy.to_numpy(container_restructured['B/D']), np.array([[3]]))
+    assert np.allclose(ivy.to_numpy(container_restructured.B.D), np.array([[3]]))
 
 
 def test_container_deep_copy(dev_str, call):
