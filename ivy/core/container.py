@@ -2503,24 +2503,33 @@ class Container(dict):
         except KeyError:
             return self
 
-    def with_print_limit(self, print_limit):
-        return Container(self,
-                         **{**self._config, **{'print_limit': print_limit,
-                                               'rebuild_child_containers': True}})
+    def with_print_limit(self, print_limit, inplace=False):
+        def _update_print_limit(cont):
+            cont._print_limit = print_limit
+        ret = self.map_conts(_update_print_limit, inplace=inplace)
+        if inplace:
+            return
+        return ret
 
     # noinspection PyTypeChecker
-    def remove_print_limit(self):
-        return self.with_print_limit(None)
+    def remove_print_limit(self, inplace=False):
+        return self.with_print_limit(None, inplace)
 
-    def with_print_indent(self, print_indent):
-        return Container(self,
-                         **{**self._config, **{'print_indent': print_indent,
-                                               'rebuild_child_containers': True}})
+    def with_print_indent(self, print_indent, inplace=False):
+        def _update_print_indent(cont):
+            cont._print_indent = print_indent
+        ret = self.map_conts(_update_print_indent, inplace=inplace)
+        if inplace:
+            return
+        return ret
 
-    def with_print_line_spacing(self, print_line_spacing):
-        return Container(self,
-                         **{**self._config, **{'print_line_spacing': print_line_spacing,
-                                               'rebuild_child_containers': True}})
+    def with_print_line_spacing(self, print_line_spacing, inplace=False):
+        def _update_print_line_spacing(cont):
+            cont._print_line_spacing = print_line_spacing
+        ret = self.map_conts(_update_print_line_spacing, inplace=inplace)
+        if inplace:
+            return
+        return ret
 
     def start_logging_retrieval_times(self):
         return Container(self, **{**self._config, **{'logging_retrieval_times': True,
