@@ -2175,26 +2175,6 @@ class Container(dict):
             new_dict[k] = v_back
         return Container(new_dict, **self._config)
 
-    def restructure_keys(self, key_chain_mapping):
-        """
-        Restructure the keys of the container.
-
-        :param key_chain_mapping: Sequence of lists/tuples of key chain mapping to apply, with original and new key
-                                  chains being the left and right terms respectively.
-        :type key_chain_mapping: sequence of len-2 sequences
-        :return: New contaienr with the key chains updated.
-        """
-        ret_cont = self.copy()
-        for orig_kc, new_kc in key_chain_mapping:
-            if orig_kc == '':
-                orig_kc_val = ret_cont
-                ret_cont = Container(**self._config)
-            else:
-                orig_kc_val = ret_cont[orig_kc]
-                ret_cont = ret_cont.prune_key_chain(orig_kc)
-            ret_cont[new_kc] = orig_kc_val
-        return ret_cont
-
     def prune_empty(self, keep_Nones=False, base=True):
         """
         Recursively prunes empty keys from the container dict structure.
@@ -2265,6 +2245,19 @@ class Container(dict):
             else:
                 out_cont[key] = value
         return out_cont
+
+    def restructure_key_chains(self, keychain_mapping):
+        """
+        Create a new container with the same contents, but a new key-chain structure. Given by the mapping with keys as
+        old key-chains and values as new key-chains.
+
+        :param keychain_mapping: A dict with keys as old key-chains and values as new key-chains.
+        :type keychain_mapping: dict
+        """
+        new_cont = _ivy.Container()
+        for old_kc, new_kc in keychain_mapping.items():
+            new_cont = _ivy.Container.combine(new_cont, _ivy.Container({new_kc: self[old_kc]}))
+        return new_cont
 
     def copy(self):
         """
