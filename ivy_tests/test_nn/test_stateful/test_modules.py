@@ -364,6 +364,6 @@ def test_top_variables(bs_ic_oc, dev_str, call):
     batch_shape, input_channels, output_channels = bs_ic_oc
     module = WithCustomVarStructure(input_channels, output_channels, dev_str=dev_str)
     for key in ['x', 'y', 'z']:
-        assert key in module._linear0.top_v
-        assert key in module._linear1.top_v
-        assert key in module._linear2.top_v
+        assert key in module._linear0.top_v()
+        assert key in module._linear1.top_v()
+        assert key in module._linear2.top_v()
