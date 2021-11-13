@@ -4,7 +4,6 @@ Base Container Object
 
 # global
 import re
-import copy
 import time
 import termcolor
 import numpy as _np
@@ -52,8 +51,8 @@ class Container(dict):
 
     def __init__(self, dict_in=None, queues=None, queue_load_sizes=None, container_combine_method='list_join',
                  queue_timeout=None, print_limit=10, print_indent=4, print_line_spacing=0, ivyh=None,
-                 keyword_color_dict=None, rebuild_child_containers=False, types_to_iteratively_nest=None,
-                 alphabetical_keys=True, logging_retrieval_times=False, **kwargs):
+                 default_key_color='green', keyword_color_dict=None, rebuild_child_containers=False,
+                 types_to_iteratively_nest=None, alphabetical_keys=True, logging_retrieval_times=False, **kwargs):
         """
         Initialize container object from input dict representation.
 
@@ -79,6 +78,8 @@ class Container(dict):
         :type print_line_spacing: int, optional
         :param ivyh: Handle to ivy module to use for the calculations. Default is None, which results in the global ivy.
         :type ivyh: handle to ivy module, optional
+        :param default_key_color: The default key color for printing the container to the terminal. Default is 'green'.
+        :type default_key_color: str, optional
         :param keyword_color_dict: A dict mapping keywords to their termcolor color codes for printing the container.
         :type keyword_color_dict: dict, optional
         :param rebuild_child_containers: Whether to rebuild container found in dict_in with these constructor params.
@@ -111,15 +112,16 @@ class Container(dict):
             self._queue_load_sizes_cum = _np.cumsum(queue_load_sizes)
             self._queue_timeout = ivy.default(queue_timeout, ivy.queue_timeout())
         self._local_ivy = ivyh
+        self._default_key_color = default_key_color
         self._keyword_color_dict = ivy.default(keyword_color_dict, {})
         self._rebuild_child_containers = rebuild_child_containers
         self._logging_retrieval_times = logging_retrieval_times
         self._retrieval_times = dict()
         self._config = dict(
             print_limit=print_limit, print_indent=print_indent, print_line_spacing=print_line_spacing, ivyh=ivyh,
-            keyword_color_dict=keyword_color_dict, rebuild_child_containers=rebuild_child_containers,
-            types_to_iteratively_nest=types_to_iteratively_nest, alphabetical_keys=alphabetical_keys,
-            logging_retrieval_times=logging_retrieval_times)
+            default_key_color=default_key_color, keyword_color_dict=keyword_color_dict,
+            rebuild_child_containers=rebuild_child_containers, types_to_iteratively_nest=types_to_iteratively_nest,
+            alphabetical_keys=alphabetical_keys, logging_retrieval_times=logging_retrieval_times)
         if dict_in is None:
             if kwargs:
                 dict_in = dict(**kwargs)
@@ -2639,11 +2641,12 @@ class Container(dict):
                                                                                for ss in json_dumped_str_split[1:]])
                 json_dumped_str = json_dumped_str.replace(':shape', ', shape').replace(')dtype=', '), dtype=').replace(
                     ', ),', ',),')
-            # make keys green
+            # color keys
             json_dumped_str_split = json_dumped_str.split('":')
             split_size = len(json_dumped_str_split)
             json_dumped_str =\
-                '":'.join([' "'.join(sub_str.split(' "')[:-1] + [termcolor.colored(sub_str.split(' "')[-1], 'green')])
+                '":'.join([' "'.join(sub_str.split(' "')[:-1] +
+                                     [termcolor.colored(sub_str.split(' "')[-1], self._default_key_color)])
                            if i < split_size - 1 else sub_str
                            for i, sub_str in enumerate(json_dumped_str_split)])
             # remove quotation marks, shape tuple, and color other elements of the dict
