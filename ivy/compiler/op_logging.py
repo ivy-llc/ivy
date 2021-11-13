@@ -95,7 +95,9 @@ def _wrap_method_for_op_logging(fn, graph, limit_attributes=True, stateful_class
         backend_fn = fn
 
         # compute the return
+        glob.wrapping_paused = True
         ret_raw = fn(*args, **kwargs)
+        glob.wrapping_paused = False
 
         # provide return value for __setattr__
         if fn.__name__ == '__setattr__':
