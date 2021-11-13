@@ -135,13 +135,13 @@ def test_multi_head_attention(x_n_s_n_m_n_c_n_gt, dtype_str, tensor_fn, dev_str,
     context = tensor_fn(context, dtype_str, dev_str)
     mask = tensor_fn(mask, dtype_str, dev_str)
     fn = lambda x_, v: ivy.tile(x_, (1, 2))
-    ret = ivy.multi_head_attention(x, fn, fn, fn, scale, 2, context, mask)
+    ret = ivy.multi_head_attention(x, scale, 2, context, mask, fn, fn, fn)
     # type test
     assert ivy.is_array(ret)
     # cardinality test
     assert list(ret.shape) == list(np.array(ground_truth).shape)
     # value test
-    assert np.allclose(call(ivy.multi_head_attention, x, fn, fn, fn, scale, 2, context, mask), np.array(ground_truth))
+    assert np.allclose(call(ivy.multi_head_attention, x, scale, 2, context, mask, fn, fn, fn), np.array(ground_truth))
     # compilation test
     if call in [helpers.torch_call]:
         # torch.jit compiled functions can't take variable number of arguments, which torch.einsum takes
