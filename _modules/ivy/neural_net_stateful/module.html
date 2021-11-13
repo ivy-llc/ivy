@@ -220,9 +220,9 @@
 
 <div class="viewcode-block" id="Module"><a class="viewcode-back" href="../../../neural_net_stateful/module/Module.html#ivy.neural_net_stateful.module.Module">[docs]</a><span class="k">class</span> <span class="nc">Module</span><span class="p">(</span><span class="n">abc</span><span class="o">.</span><span class="n">ABC</span><span class="p">):</span>
 
-<div class="viewcode-block" id="Module.__init__"><a class="viewcode-back" href="../../../neural_net_stateful/module/Module.html#ivy.neural_net_stateful.module.Module.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dev_str</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">v</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">build_mode</span><span class="o">=</span><span class="s1">&#39;on_init&#39;</span><span class="p">,</span> <span class="n">compile_on_next_step</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">store_vars</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-                 <span class="n">stateful</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">arg_stateful_idxs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">kwarg_stateful_idxs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">fallback_to_non_compiled</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-                 <span class="n">dev_strs</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="Module.__init__"><a class="viewcode-back" href="../../../neural_net_stateful/module/Module.html#ivy.neural_net_stateful.module.Module.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dev_str</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">v</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">top_v</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">build_mode</span><span class="o">=</span><span class="s1">&#39;on_init&#39;</span><span class="p">,</span> <span class="n">compile_on_next_step</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                 <span class="n">store_vars</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">stateful</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">arg_stateful_idxs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">kwarg_stateful_idxs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">fallback_to_non_compiled</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">dev_strs</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Initialze Ivy layer, which is a stateful object consisting of trainable variables.</span>
 
@@ -230,6 +230,8 @@
 <span class="sd">        :type dev_str: str, optional</span>
 <span class="sd">        :param v: Ivy container of trainable variables. Created internally by default.</span>
 <span class="sd">        :type v: ivy container, optional</span>
+<span class="sd">        :param top_v: Ivy container of trainable variables for the highest level Module in the stack.</span>
+<span class="sd">        :type top_v: ivy container, optional</span>
 <span class="sd">        :param build_mode: How the Module is built, either on initialization (now), explicitly by the user by calling</span>
 <span class="sd">                           build(), or the first time the __call__ method is run. Default is on initialization.</span>
 <span class="sd">        :type build_mode: str, optional</span>
@@ -271,6 +273,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_compile_on_next_step</span> <span class="o">=</span> <span class="n">compile_on_next_step</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_v_in</span> <span class="o">=</span> <span class="n">v</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">v</span> <span class="o">=</span> <span class="n">v</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">top_v</span> <span class="o">=</span> <span class="n">top_v</span>
         <span class="k">if</span> <span class="n">build_mode</span> <span class="o">!=</span> <span class="s1">&#39;on_init&#39;</span><span class="p">:</span>
             <span class="k">return</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">build</span><span class="p">()</span></div>
