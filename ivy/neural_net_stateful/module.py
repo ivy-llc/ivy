@@ -311,12 +311,12 @@ class Module(abc.ABC):
 
         # build variables based on locally built layers, if v not passed in constructor
         v_from_constructor = self._v_in
+        created = Container()
         if not ivy.exists(v_from_constructor):
             created = Container(self._create_variables(self._dev_str))
             vs = Container(dict(**self._find_variables(self), **created))
             self.v = vs
         elif not isinstance(self.v, Container):
-            created = Container()
             self.v = Container(self.v)
 
         # remove duplicates
