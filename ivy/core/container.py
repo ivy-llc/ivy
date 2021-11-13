@@ -2535,6 +2535,15 @@ class Container(dict):
             return
         return ret
 
+    def with_default_key_color(self, default_key_color, inplace=False):
+        def _update_default_key_color(cont, _):
+            cont._default_key_color = default_key_color
+            return cont
+        ret = self.map_conts(_update_default_key_color, inplace=inplace)
+        if inplace:
+            return
+        return ret
+
     def start_logging_retrieval_times(self, inplace=True):
         def _flag_logging_retrieval(cont, _):
             cont._logging_retrieval_times = True
