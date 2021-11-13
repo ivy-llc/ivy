@@ -104,8 +104,9 @@ class Dropout(Module):
 # ----------#
 
 class MultiHeadAttention(Module):
-    def __init__(self, query_dim, num_heads=8, head_dim=64, dropout_rate=0., context_dim=None, scale=None, dev_str=None,
-                 v=None, build_mode='on_init'):
+    def __init__(self, query_dim, num_heads=8, head_dim=64, dropout_rate=0., context_dim=None, scale=None,
+                 with_to_q_fn=True, with_to_kv_fn=True, with_to_out_fn=True, dev_str=None, v=None,
+                 build_mode='on_init'):
         """
         Multi Head Attention layer.
 
@@ -121,6 +122,14 @@ class MultiHeadAttention(Module):
         :type context_dim: int, optional.
         :param scale: The value by which to scale the query-key similarity measure. Default is head_dim^-0.5
         :type scale: float, optional
+        :param with_to_q_fn: Whether to include fully connected mapping from input x to queries. Default is True.
+        :type with_to_q_fn: bool, optional
+        :param with_to_kv_fn: Whether to include fully connected mapping from input context to keys and values.
+                              Default is True.
+        :type with_to_kv_fn: bool, optional
+        :param with_to_out_fn: Whether to include fully connected mapping from output scaled dot-product attention to
+                               final output. Default is True.
+        :type with_to_out_fn: bool, optional
         :param dev_str: device on which to create the layer's variables 'cuda:0', 'cuda:1', 'cpu' etc. Default is cpu.
         :type dev_str: str, optional
         :param v: the variables for the attention layer, as a container, constructed internally by default.
@@ -137,16 +146,21 @@ class MultiHeadAttention(Module):
         self._context_dim = ivy.default(context_dim, query_dim)
         self._scale = ivy.default(scale, head_dim ** -0.5)
         self._num_heads = num_heads
+        self._with_to_q_fn = with_to_q_fn
+        self._with_to_kv_fn = with_to_kv_fn
+        self._with_to_out_fn = with_to_out_fn
         ivy.Module.__init__(self, dev_str, v if v_exists else None, build_mode)
 
     # noinspection PyAttributeOutsideInit
     def _build(self, *agrs, **kwargs):
-        self._to_q = ivy.Linear(self._query_dim, self._inner_dim, with_bias=False, dev_str=self._dev_str)
-        self._to_kv = ivy.Linear(self._context_dim, self._inner_dim * 2, with_bias=False, dev_str=self._dev_str)
+        self._to_q = ivy.Linear(self._query_dim, self._inner_dim, with_bias=False, dev_str=self._dev_str) \
+            if self._with_to_q_fn else None
+        self._to_kv = ivy.Linear(self._context_dim, self._inner_dim * 2, with_bias=False, dev_str=self._dev_str) \
+            if self._with_to_kv_fn else None
         self._to_out = ivy.Sequential(
             ivy.Linear(self._inner_dim, self._query_dim, dev_str=self._dev_str),
             ivy.Dropout(self._dropout_rate), dev_str=self._dev_str
-        )
+        ) if self._with_to_out_fn else None
 
     def _forward(self, inputs, context=None, mask=None):
         """
@@ -162,8 +176,8 @@ class MultiHeadAttention(Module):
         :return The output following application of scaled dot-product attention. *[batch_shape,num_queries,out_feats]*
         """
         return ivy.multi_head_attention(
-            inputs, self._to_q, self._to_kv, self._to_out, self._scale, self._num_heads, context, mask,
-            self.v.to_q, self.v.to_kv, self.v.to_out)
+            inputs, self._scale, self._num_heads, context, mask, self._to_q, self._to_kv, self._to_out, self.v.to_q,
+            self.v.to_kv, self.v.to_out)
 
 
 # Convolutions #

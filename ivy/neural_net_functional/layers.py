@@ -107,20 +107,13 @@ def scaled_dot_product_attention(q, k, v, scale, mask=None):
     return ivy.einsum('... q k, ... k f -> ... q f', attn, v)
 
 
-def multi_head_attention(x, to_q_fn, to_kv_fn, to_out_fn, scale, num_heads, context=None, mask=None, to_q_v=None,
-                         to_kv_v=None, to_out_v=None):
+def multi_head_attention(x, scale, num_heads, context=None, mask=None, to_q_fn=None, to_kv_fn=None, to_out_fn=None,
+                         to_q_v=None, to_kv_v=None, to_out_v=None):
     """
     Applies multi-head attention to inputs x.
 
     :param x: The array to determine the queries from *[batch_shape,num_queries,x_feat_dim]*.
     :type x: array
-    :param to_q_fn: The function to compute queries from input x, returning queries
-                    *[batch_shape,num_queries,numheads×feat_dim]*.
-    :type to_q_fn: callable
-    :param to_kv_fn: The function to compute keys and values from the context.
-    :type to_kv_fn: callable
-    :param to_out_fn: The function to compute the output from the scaled dot-product attention.
-    :type to_out_fn: callable
     :param scale: The value by which to scale the query-key similarity measure before softmax.
     :type scale: float
     :param num_heads: The number of attention heads to use.
@@ -130,6 +123,13 @@ def multi_head_attention(x, to_q_fn, to_kv_fn, to_out_fn, scale, num_heads, cont
     :type context: array, optional
     :param mask: The mask to apply to the query-key values. Default is None. *[batch_shape,num_queries,num_keys]*
     :type mask: array, optional
+    :param to_q_fn: The function to compute queries from input x, returning queries
+                    *[batch_shape,num_queries,numheads×feat_dim]*.
+    :type to_q_fn: callable
+    :param to_kv_fn: The function to compute keys and values from the context.
+    :type to_kv_fn: callable
+    :param to_out_fn: The function to compute the output from the scaled dot-product attention.
+    :type to_out_fn: callable
     :param to_q_v: The variables for function to_q_fn. Default is None.
     :type to_q_v: variables array, optional
     :param to_kv_v: The variables for function to_kv_fn. Default is None.
@@ -140,13 +140,13 @@ def multi_head_attention(x, to_q_fn, to_kv_fn, to_out_fn, scale, num_heads, cont
     """
 
     # BS x Q x (HxF)
-    q = to_q_fn(x, v=to_q_v)
+    q = to_q_fn(x, v=to_q_v) if ivy.exists(to_q_fn) else x
 
     # BS x K x CF
     context = ivy.default(context, x)
 
     # BS x K x (HxFx2)
-    kv = to_kv_fn(context, v=to_kv_v)
+    kv = to_kv_fn(context, v=to_kv_v) if ivy.exists(to_kv_fn) else context
 
     # BS x K x (HxF),  BS x K x (HxF)
     k, v = ivy.split(kv, 2, -1)
@@ -165,7 +165,7 @@ def multi_head_attention(x, to_q_fn, to_kv_fn, to_out_fn, scale, num_heads, cont
     sdpa = ivy.einops_rearrange(sdpa, '... h q f -> ... q (h f)')
 
     # BS x Q x OF
-    return to_out_fn(sdpa, v=to_out_v)
+    return to_out_fn(sdpa, v=to_out_v) if ivy.exists(to_out_fn) else sdpa
 
 
 # Convolutions #
