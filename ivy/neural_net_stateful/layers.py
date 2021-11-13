@@ -155,12 +155,19 @@ class MultiHeadAttention(Module):
     def _build(self, *agrs, **kwargs):
         self._to_q = ivy.Linear(self._query_dim, self._inner_dim, with_bias=False, dev_str=self._dev_str) \
             if self._with_to_q_fn else None
-        self._to_kv = ivy.Linear(self._context_dim, self._inner_dim * 2, with_bias=False, dev_str=self._dev_str) \
+        self._to_k = ivy.Linear(self._context_dim, self._inner_dim, with_bias=False, dev_str=self._dev_str) \
             if self._with_to_kv_fn else None
+        self._to_v = ivy.Linear(self._context_dim, self._inner_dim, with_bias=False, dev_str=self._dev_str) \
+            if self._with_to_kv_fn else None
+        self._to_kv = lambda context, v=None:\
+            (self._to_k(context, v=v.k if v else None), self._to_v(context, v=v.v if v else None))
         self._to_out = ivy.Sequential(
             ivy.Linear(self._inner_dim, self._query_dim, dev_str=self._dev_str),
             ivy.Dropout(self._dropout_rate), dev_str=self._dev_str
         ) if self._with_to_out_fn else None
+
+    def _create_variables(self, dev_str):
+        return ivy.Container(to_kv={'k': self._to_k.v, 'v': self._to_v.v})
 
     def _forward(self, inputs, context=None, mask=None):
         """
