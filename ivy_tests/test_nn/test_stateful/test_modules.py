@@ -338,7 +338,7 @@ class WithCustomVarStructure(ivy.Module):
         pass
 
 
-# module training
+# with custom var structure
 @pytest.mark.parametrize(
     "bs_ic_oc", [([1, 2], 4, 5)])
 def test_with_custom_var_structure(bs_ic_oc, dev_str, call):
@@ -351,3 +351,19 @@ def test_with_custom_var_structure(bs_ic_oc, dev_str, call):
     assert 'x' in module.v
     assert 'y' in module.v
     assert 'z' in module.v
+
+
+# top variables
+@pytest.mark.parametrize(
+    "bs_ic_oc", [([1, 2], 4, 5)])
+def test_top_variables(bs_ic_oc, dev_str, call):
+    # smoke test
+    if call is helpers.np_call:
+        # NumPy does not support gradients
+        pytest.skip()
+    batch_shape, input_channels, output_channels = bs_ic_oc
+    module = WithCustomVarStructure(input_channels, output_channels, dev_str=dev_str)
+    for key in ['x', 'y', 'z']:
+        assert key in module._linear0.top_v
+        assert key in module._linear1.top_v
+        assert key in module._linear2.top_v
