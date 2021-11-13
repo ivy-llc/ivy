@@ -17,9 +17,9 @@ from ivy.core.container import Container
 
 class Module(abc.ABC):
 
-    def __init__(self, dev_str=None, v=None, build_mode='on_init', compile_on_next_step=False, store_vars=True,
-                 stateful=None, arg_stateful_idxs=None, kwarg_stateful_idxs=None, fallback_to_non_compiled=False,
-                 dev_strs=None):
+    def __init__(self, dev_str=None, v=None, top_v=None, build_mode='on_init', compile_on_next_step=False,
+                 store_vars=True, stateful=None, arg_stateful_idxs=None, kwarg_stateful_idxs=None,
+                 fallback_to_non_compiled=False, dev_strs=None):
         """
         Initialze Ivy layer, which is a stateful object consisting of trainable variables.
 
@@ -27,6 +27,8 @@ class Module(abc.ABC):
         :type dev_str: str, optional
         :param v: Ivy container of trainable variables. Created internally by default.
         :type v: ivy container, optional
+        :param top_v: Ivy container of trainable variables for the highest level Module in the stack.
+        :type top_v: ivy container, optional
         :param build_mode: How the Module is built, either on initialization (now), explicitly by the user by calling
                            build(), or the first time the __call__ method is run. Default is on initialization.
         :type build_mode: str, optional
@@ -68,6 +70,7 @@ class Module(abc.ABC):
         self._compile_on_next_step = compile_on_next_step
         self._v_in = v
         self.v = v
+        self.top_v = top_v
         if build_mode != 'on_init':
             return
         self.build()
