@@ -145,11 +145,14 @@ def multi_head_attention(x, scale, num_heads, context=None, mask=None, to_q_fn=N
     # BS x K x CF
     context = ivy.default(context, x)
 
-    # BS x K x (HxFx2)
-    kv = to_kv_fn(context, v=to_kv_v) if ivy.exists(to_kv_fn) else context
+    # BS x K x (2xHxF)    or    BS x K x (HxF),  BS x K x (HxF)
+    kv = to_kv_fn(context, v=to_kv_v) if ivy.exists(to_kv_fn) else ivy.split(context, 2, -1)
 
     # BS x K x (HxF),  BS x K x (HxF)
-    k, v = ivy.split(kv, 2, -1)
+    if isinstance(kv, tuple):
+        k, v = kv
+    else:
+        k, v = ivy.split(kv, 2, -1)
 
     # BS x H x Q x F,  BS x H x K x F,  BS x H x K x F
     q, k, v = map(lambda t: ivy.einops_rearrange(t, '... n (h f) -> ... h n f', h=num_heads), (q, k, v))
