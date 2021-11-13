@@ -27,8 +27,8 @@ class Module(abc.ABC):
         :type dev_str: str, optional
         :param v: Ivy container of trainable variables. Created internally by default.
         :type v: ivy container, optional
-        :param top_v: Ivy container of trainable variables for the highest level Module in the stack.
-        :type top_v: ivy container, optional
+        :param top_v: callable returning Ivy container of trainable variables for the highest level Module in the stack.
+        :type top_v: callable, optional
         :param build_mode: How the Module is built, either on initialization (now), explicitly by the user by calling
                            build(), or the first time the __call__ method is run. Default is on initialization.
         :type build_mode: str, optional
@@ -91,8 +91,9 @@ class Module(abc.ABC):
 
     def _find_variables(self, obj=None):
         vs = Container()
-        # ToDo: add support for finding local variables, when JAX supports uniquely flagging variables
+        # ToDo: add support for finding local variables, if/when JAX supports uniquely flagging variables
         if isinstance(obj, Module) and obj is not self:
+            obj.top_v = lambda: self.v
             return obj.v
         elif isinstance(obj, (list, tuple)):
             for i, v in enumerate(obj):
