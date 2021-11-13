@@ -353,7 +353,8 @@
         <span class="k">return</span>
 
     <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">_remove_duplicate_variables</span><span class="p">(</span><span class="n">vs</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_remove_duplicate_variables</span><span class="p">(</span><span class="n">vs</span><span class="p">,</span> <span class="n">created</span><span class="p">):</span>
+        <span class="n">created_ids</span> <span class="o">=</span> <span class="n">created</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">kc</span><span class="p">:</span> <span class="nb">id</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
         <span class="n">vs_ids</span> <span class="o">=</span> <span class="n">vs</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">kc</span><span class="p">:</span> <span class="nb">id</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
         <span class="n">ids</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
         <span class="n">duplicate_keychains</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
@@ -366,6 +367,7 @@
             <span class="n">duplicate_keychains</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">kc</span><span class="p">)</span>
             <span class="n">keychain_mappings</span><span class="p">[</span><span class="n">kc</span><span class="p">]</span> <span class="o">=</span> <span class="n">ids</span><span class="p">[</span><span class="n">x</span><span class="p">]</span>
 
+        <span class="n">created_ids</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">kc</span><span class="p">:</span> <span class="n">unique_callback</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">kc</span><span class="p">))</span>
         <span class="n">vs_ids</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">kc</span><span class="p">:</span> <span class="n">unique_callback</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">kc</span><span class="p">)</span> <span class="k">if</span> <span class="n">x</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">ids</span> <span class="k">else</span> <span class="n">found_dup_callback</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">kc</span><span class="p">))</span>
         <span class="k">for</span> <span class="n">dup_kc</span> <span class="ow">in</span> <span class="n">duplicate_keychains</span><span class="p">:</span>
             <span class="n">vs</span> <span class="o">=</span> <span class="n">vs</span><span class="o">.</span><span class="n">prune_key_chain</span><span class="p">(</span><span class="n">dup_kc</span><span class="p">)</span>
@@ -511,13 +513,15 @@
         <span class="c1"># build variables based on locally built layers, if v not passed in constructor</span>
         <span class="n">v_from_constructor</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_v_in</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">v_from_constructor</span><span class="p">):</span>
-            <span class="n">vs</span> <span class="o">=</span> <span class="n">Container</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_find_variables</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_create_variables</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dev_str</span><span class="p">)))</span>
+            <span class="n">created</span> <span class="o">=</span> <span class="n">Container</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_create_variables</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dev_str</span><span class="p">))</span>
+            <span class="n">vs</span> <span class="o">=</span> <span class="n">Container</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_find_variables</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span> <span class="o">**</span><span class="n">created</span><span class="p">))</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">v</span> <span class="o">=</span> <span class="n">vs</span>
         <span class="k">elif</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="p">,</span> <span class="n">Container</span><span class="p">):</span>
+            <span class="n">created</span> <span class="o">=</span> <span class="n">Container</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">v</span> <span class="o">=</span> <span class="n">Container</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="p">)</span>
 
         <span class="c1"># remove duplicates</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="p">,</span> <span class="n">keychain_mappings</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_remove_duplicate_variables</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="p">,</span> <span class="n">keychain_mappings</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_remove_duplicate_variables</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="p">,</span> <span class="n">created</span><span class="p">)</span>
 
         <span class="c1"># build any child &#39;on_call&#39; layers</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">built</span> <span class="ow">and</span> <span class="n">from_call</span><span class="p">:</span>
@@ -536,7 +540,7 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">v</span> <span class="o">=</span> <span class="n">vs</span>
 
             <span class="c1"># remove further duplicates with self.v</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="p">,</span> <span class="n">keychain_mappings</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_remove_duplicate_variables</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="p">,</span> <span class="n">keychain_mappings</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_remove_duplicate_variables</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="p">,</span> <span class="n">created</span><span class="p">)</span>
 
             <span class="c1"># set built flag</span>
             <span class="n">built</span> <span class="o">=</span> <span class="kc">True</span>
