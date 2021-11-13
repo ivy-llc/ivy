@@ -310,20 +310,13 @@
     <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">einsum</span><span class="p">(</span><span class="s1">&#39;... q k, ... k f -&gt; ... q f&#39;</span><span class="p">,</span> <span class="n">attn</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="multi_head_attention"><a class="viewcode-back" href="../../../neural_net_functional/layers/multi_head_attention.html#ivy.neural_net_functional.layers.multi_head_attention">[docs]</a><span class="k">def</span> <span class="nf">multi_head_attention</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">to_q_fn</span><span class="p">,</span> <span class="n">to_kv_fn</span><span class="p">,</span> <span class="n">to_out_fn</span><span class="p">,</span> <span class="n">scale</span><span class="p">,</span> <span class="n">num_heads</span><span class="p">,</span> <span class="n">context</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">to_q_v</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                         <span class="n">to_kv_v</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">to_out_v</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="multi_head_attention"><a class="viewcode-back" href="../../../neural_net_functional/layers/multi_head_attention.html#ivy.neural_net_functional.layers.multi_head_attention">[docs]</a><span class="k">def</span> <span class="nf">multi_head_attention</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">scale</span><span class="p">,</span> <span class="n">num_heads</span><span class="p">,</span> <span class="n">context</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">to_q_fn</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">to_kv_fn</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">to_out_fn</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                         <span class="n">to_q_v</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">to_kv_v</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">to_out_v</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Applies multi-head attention to inputs x.</span>
 
 <span class="sd">    :param x: The array to determine the queries from *[batch_shape,num_queries,x_feat_dim]*.</span>
 <span class="sd">    :type x: array</span>
-<span class="sd">    :param to_q_fn: The function to compute queries from input x, returning queries</span>
-<span class="sd">                    *[batch_shape,num_queries,numheads×feat_dim]*.</span>
-<span class="sd">    :type to_q_fn: callable</span>
-<span class="sd">    :param to_kv_fn: The function to compute keys and values from the context.</span>
-<span class="sd">    :type to_kv_fn: callable</span>
-<span class="sd">    :param to_out_fn: The function to compute the output from the scaled dot-product attention.</span>
-<span class="sd">    :type to_out_fn: callable</span>
 <span class="sd">    :param scale: The value by which to scale the query-key similarity measure before softmax.</span>
 <span class="sd">    :type scale: float</span>
 <span class="sd">    :param num_heads: The number of attention heads to use.</span>
@@ -333,6 +326,13 @@
 <span class="sd">    :type context: array, optional</span>
 <span class="sd">    :param mask: The mask to apply to the query-key values. Default is None. *[batch_shape,num_queries,num_keys]*</span>
 <span class="sd">    :type mask: array, optional</span>
+<span class="sd">    :param to_q_fn: The function to compute queries from input x, returning queries</span>
+<span class="sd">                    *[batch_shape,num_queries,numheads×feat_dim]*.</span>
+<span class="sd">    :type to_q_fn: callable</span>
+<span class="sd">    :param to_kv_fn: The function to compute keys and values from the context.</span>
+<span class="sd">    :type to_kv_fn: callable</span>
+<span class="sd">    :param to_out_fn: The function to compute the output from the scaled dot-product attention.</span>
+<span class="sd">    :type to_out_fn: callable</span>
 <span class="sd">    :param to_q_v: The variables for function to_q_fn. Default is None.</span>
 <span class="sd">    :type to_q_v: variables array, optional</span>
 <span class="sd">    :param to_kv_v: The variables for function to_kv_fn. Default is None.</span>
@@ -343,13 +343,13 @@
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="c1"># BS x Q x (HxF)</span>
-    <span class="n">q</span> <span class="o">=</span> <span class="n">to_q_fn</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">v</span><span class="o">=</span><span class="n">to_q_v</span><span class="p">)</span>
+    <span class="n">q</span> <span class="o">=</span> <span class="n">to_q_fn</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">v</span><span class="o">=</span><span class="n">to_q_v</span><span class="p">)</span> <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">to_q_fn</span><span class="p">)</span> <span class="k">else</span> <span class="n">x</span>
 
     <span class="c1"># BS x K x CF</span>
     <span class="n">context</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">default</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
 
     <span class="c1"># BS x K x (HxFx2)</span>
-    <span class="n">kv</span> <span class="o">=</span> <span class="n">to_kv_fn</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">v</span><span class="o">=</span><span class="n">to_kv_v</span><span class="p">)</span>
+    <span class="n">kv</span> <span class="o">=</span> <span class="n">to_kv_fn</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">v</span><span class="o">=</span><span class="n">to_kv_v</span><span class="p">)</span> <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">to_kv_fn</span><span class="p">)</span> <span class="k">else</span> <span class="n">context</span>
 
     <span class="c1"># BS x K x (HxF),  BS x K x (HxF)</span>
     <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">kv</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
@@ -368,7 +368,7 @@
     <span class="n">sdpa</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">einops_rearrange</span><span class="p">(</span><span class="n">sdpa</span><span class="p">,</span> <span class="s1">&#39;... h q f -&gt; ... q (h f)&#39;</span><span class="p">)</span>
 
     <span class="c1"># BS x Q x OF</span>
-    <span class="k">return</span> <span class="n">to_out_fn</span><span class="p">(</span><span class="n">sdpa</span><span class="p">,</span> <span class="n">v</span><span class="o">=</span><span class="n">to_out_v</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">to_out_fn</span><span class="p">(</span><span class="n">sdpa</span><span class="p">,</span> <span class="n">v</span><span class="o">=</span><span class="n">to_out_v</span><span class="p">)</span> <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">to_out_fn</span><span class="p">)</span> <span class="k">else</span> <span class="n">sdpa</span></div>
 
 
 <span class="c1"># Convolutions #</span>
