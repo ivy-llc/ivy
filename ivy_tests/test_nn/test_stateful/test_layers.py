@@ -124,14 +124,16 @@ def test_multi_head_attention_layer(x_n_s_n_m_n_c_n_gt, with_v, build_mode, dtyp
         w_to_q = ivy.variable(ivy.array(np.random.uniform(-wlim, wlim, (inner_dim, query_dim)),
                                         'float32', dev_str=dev_str))
         wlim = (6 / (inner_dim * 2 + context_dim)) ** 0.5
-        w_to_kv = ivy.variable(ivy.array(np.random.uniform(-wlim, wlim, (inner_dim * 2, context_dim)),
+        w_to_k = ivy.variable(ivy.array(np.random.uniform(-wlim, wlim, (inner_dim, context_dim)),
+                                         'float32', dev_str=dev_str))
+        w_to_v = ivy.variable(ivy.array(np.random.uniform(-wlim, wlim, (inner_dim, context_dim)),
                                          'float32', dev_str=dev_str))
         wlim = (6 / (query_dim + inner_dim)) ** 0.5
         w_to_out = ivy.variable(ivy.array(np.random.uniform(-wlim, wlim, (query_dim, inner_dim)),
                                           'float32', dev_str=dev_str))
         b_to_out = ivy.variable(ivy.zeros([query_dim], dev_str=dev_str))
         v = Container({'to_q': {'w': w_to_q},
-                       'to_kv': {'w': w_to_kv},
+                       'to_kv': {'k': {'w': w_to_k}, 'v': {'w': w_to_v}},
                        'to_out': {'submodules': {'v0': {'w': w_to_out,
                                                         'b': b_to_out}}}})
     else:
