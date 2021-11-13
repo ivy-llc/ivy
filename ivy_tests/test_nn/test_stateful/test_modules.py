@@ -321,3 +321,33 @@ def test_module_w_dict_training(bs_ic_oc, dev_str, compile_graph, call):
         return
     if not ivy.wrapped_mode():
         helpers.assert_compilable(loss_fn)
+
+
+class WithCustomVarStructure(ivy.Module):
+
+    def __init__(self, in_size, out_size, dev_str=None, hidden_size=64):
+        self._linear0 = ivy.Linear(in_size, hidden_size, dev_str=dev_str)
+        self._linear1 = ivy.Linear(hidden_size, hidden_size, dev_str=dev_str)
+        self._linear2 = ivy.Linear(hidden_size, out_size, dev_str=dev_str)
+        ivy.Module.__init__(self, dev_str)
+
+    def _create_variables(self, dev_str):
+        return ivy.Container(x=self._linear0.v, y=self._linear1.v, z=self._linear2.v)
+
+    def _forward(self, x):
+        pass
+
+
+# module training
+@pytest.mark.parametrize(
+    "bs_ic_oc", [([1, 2], 4, 5)])
+def test_with_custom_var_structure(bs_ic_oc, dev_str, call):
+    # smoke test
+    if call is helpers.np_call:
+        # NumPy does not support gradients
+        pytest.skip()
+    batch_shape, input_channels, output_channels = bs_ic_oc
+    module = WithCustomVarStructure(input_channels, output_channels, dev_str=dev_str)
+    assert 'x' in module.v
+    assert 'y' in module.v
+    assert 'z' in module.v
