@@ -150,7 +150,8 @@ class Module(abc.ABC):
         return
 
     @staticmethod
-    def _remove_duplicate_variables(vs):
+    def _remove_duplicate_variables(vs, created):
+        created_ids = created.map(lambda x, kc: id(x))
         vs_ids = vs.map(lambda x, kc: id(x))
         ids = dict()
         duplicate_keychains = list()
@@ -163,6 +164,7 @@ class Module(abc.ABC):
             duplicate_keychains.append(kc)
             keychain_mappings[kc] = ids[x]
 
+        created_ids.map(lambda x, kc: unique_callback(x, kc))
         vs_ids.map(lambda x, kc: unique_callback(x, kc) if x not in ids else found_dup_callback(x, kc))
         for dup_kc in duplicate_keychains:
             vs = vs.prune_key_chain(dup_kc)
@@ -308,13 +310,15 @@ class Module(abc.ABC):
         # build variables based on locally built layers, if v not passed in constructor
         v_from_constructor = self._v_in
         if not ivy.exists(v_from_constructor):
-            vs = Container(dict(**self._find_variables(self), **self._create_variables(self._dev_str)))
+            created = Container(self._create_variables(self._dev_str))
+            vs = Container(dict(**self._find_variables(self), **created))
             self.v = vs
         elif not isinstance(self.v, Container):
+            created = Container()
             self.v = Container(self.v)
 
         # remove duplicates
-        self.v, keychain_mappings = self._remove_duplicate_variables(self.v)
+        self.v, keychain_mappings = self._remove_duplicate_variables(self.v, created)
 
         # build any child 'on_call' layers
         if not built and from_call:
@@ -333,7 +337,7 @@ class Module(abc.ABC):
                 self.v = vs
 
             # remove further duplicates with self.v
-            self.v, keychain_mappings = self._remove_duplicate_variables(self.v)
+            self.v, keychain_mappings = self._remove_duplicate_variables(self.v, created)
 
             # set built flag
             built = True
