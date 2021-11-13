@@ -224,7 +224,7 @@
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>dev_str</strong> (<em>str</em><em>, </em><em>optional</em>) – device on which to create the module’s variables ‘cuda:0’, ‘cuda:1’, ‘cpu’ etc.</p></li>
 <li><p><strong>v</strong> (<em>ivy container</em><em>, </em><em>optional</em>) – Ivy container of trainable variables. Created internally by default.</p></li>
-<li><p><strong>top_v</strong> (<em>ivy container</em><em>, </em><em>optional</em>) – Ivy container of trainable variables for the highest level Module in the stack.</p></li>
+<li><p><strong>top_v</strong> (<em>callable</em><em>, </em><em>optional</em>) – callable returning Ivy container of trainable variables for the highest level Module in the stack.</p></li>
 <li><p><strong>build_mode</strong> (<em>str</em><em>, </em><em>optional</em>) – How the Module is built, either on initialization (now), explicitly by the user by calling
 build(), or the first time the __call__ method is run. Default is on initialization.</p></li>
 <li><p><strong>compile_on_next_step</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to compile the network on the next forward pass. Default is False.</p></li>
