@@ -161,6 +161,8 @@ class Module(abc.ABC):
             ids[x] = kc
 
         def found_dup_callback(x, kc):
+            if ids[x] == kc:
+                return
             duplicate_keychains.append(kc)
             keychain_mappings[kc] = ids[x]
 
