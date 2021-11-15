@@ -2559,6 +2559,9 @@ class Container(dict):
             return
         return ret
 
+    def show(self):
+        print(self)
+
     # Built-ins #
     # ----------#
 
