@@ -70,7 +70,7 @@ class Module(abc.ABC):
         self._compile_on_next_step = compile_on_next_step
         self._v_in = v
         self.v = v
-        self.top_v = ivy.default(top_v, lambda: None)
+        self.top_v = top_v
         if build_mode != 'on_init':
             return
         self.build()
@@ -93,7 +93,7 @@ class Module(abc.ABC):
         vs = Container()
         # ToDo: add support for finding local variables, if/when JAX supports uniquely flagging variables
         if isinstance(obj, Module) and obj is not self:
-            obj.top_v = lambda: ivy.default(self.top_v(), self.v)
+            obj.top_v = lambda: self.top_v() if ivy.exists(self.top_v) else self.v
             return obj.v
         elif isinstance(obj, (list, tuple)):
             for i, v in enumerate(obj):
