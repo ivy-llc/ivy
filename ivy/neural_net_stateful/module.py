@@ -232,6 +232,13 @@ class Module(abc.ABC):
     # Public #
     # -------#
 
+    def show_v_in_top_v(self):
+        if ivy.exists(self.top_v) and ivy.exists(self.v):
+            self.top_v.show_sub_container(self.v)
+        else:
+            print('both self.top_v and self.v must be initialized in order to show v in top_v,'
+                  'but found\n\ntop_v: {}\n\nv: {}.'.format(self.top_v, self.v))
+
     def compile_graph(self, *args, v=None, with_grads=True, stateful=None, arg_stateful_idxs=None,
                       kwarg_stateful_idxs=None, include_generators=True, **kwargs):
         logging.info('compiling forward pass for network {} ...'.format(self))
