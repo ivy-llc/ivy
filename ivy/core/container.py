@@ -476,8 +476,8 @@ class Container(dict):
         return Container(return_dict, **config)
 
     @staticmethod
-    def identical_structure(containers, check_types=True, check_shapes=True, key_chains=None, to_apply=True,
-                            key_chain=''):
+    def identical(containers, check_types=True, check_shapes=True, same_arrays=False, key_chains=None, to_apply=True,
+                  key_chain=''):
         """
         Returns a single boolean as to whether the input containers have identical key-chains and data types.
 
@@ -487,6 +487,8 @@ class Container(dict):
         :type check_types: bool, optional
         :param check_shapes: Whether to also check whether the shapes of the leaf nodes are the same. Default is True.
         :type check_shapes: bool, optional
+        :param same_arrays: Whether to also check whether the arrays are the exact same instances. Default is False.
+        :type same_arrays: bool, optional
         :param key_chains: The key-chains to apply or not apply the method to. Default is None.
         :type key_chains: list or dict of strs, optional
         :param to_apply: If True, the method will be applied to key_chains, otherwise key_chains will be skipped.
@@ -508,14 +510,20 @@ class Container(dict):
             if not min([type_n is type_0 for type_n in types]):
                 if isinstance(value_0, Container) or check_types:
                     return False
-            if check_shapes and ivy.is_array(value_0):
-                shape_0 = value_0.shape
-                shapes = [val.shape for val in values]
-                if not min([shape_n == shape_0 for shape_n in shapes]):
-                    return False
+            if ivy.is_array(value_0):
+                if check_shapes:
+                    shape_0 = value_0.shape
+                    shapes = [val.shape for val in values]
+                    if not min([shape_n == shape_0 for shape_n in shapes]):
+                        return False
+                if same_arrays:
+                    id_0 = id(value_0)
+                    ids = [id(val) for val in values]
+                    if not min([id_n == id_0 for id_n in ids]):
+                        return False
             this_key_chain = key if key_chain == '' else (key_chain + '/' + key)
             if isinstance(value_0, Container):
-                ret = ivy.Container.identical_structure(
+                ret = ivy.Container.identical(
                     values, check_types, check_shapes, key_chains, to_apply, this_key_chain)
                 if not ret:
                     return False
