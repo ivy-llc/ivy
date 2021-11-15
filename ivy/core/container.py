@@ -2624,7 +2624,7 @@ class Container(dict):
 
         # get the str reprs above and below
         this_repr_above = '\n'.join(this_repr.split('\n')[0:num_lines_above])
-        this_repr_below = '\n'.join(this_repr.split('\n')[-num_lines_below+1:])
+        this_repr_below = '\n'.join(this_repr.split('\n')[-num_lines_below:])
 
         # count the number of lines needed to be prepended to the sub-container repr
         cur_num_spaces = 0
