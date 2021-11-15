@@ -9,7 +9,8 @@ RUN apt-get update && \
     apt-get install -y rsync && \
     apt-get install -y libusb-1.0-0 && \
     apt-get install -y libglib2.0-0 && \
-    pip3 install --upgrade pip
+    pip3 install --upgrade pip && \
+    pip3 install --upgrade setuptools
 
 RUN pip3 install torch==1.10.0+cu111 -f https://download.pytorch.org/whl/torch_stable.html
 RUN pip3 install --upgrade torch-scatter -f https://pytorch-geometric.com/whl/torch-1.10.0+cu111.html
