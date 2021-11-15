@@ -246,6 +246,21 @@ def test_container_from_dict(dev_str, call):
     assert np.allclose(ivy.to_numpy(container.b.d), np.array([3]))
 
 
+def test_container_depth(dev_str, call):
+    cont_depth1 = Container({'a': ivy.array([1], dev_str=dev_str),
+                             'b': ivy.array([2], dev_str=dev_str)})
+    assert cont_depth1.depth == 1
+    cont_depth2 = Container({'a': ivy.array([1], dev_str=dev_str),
+                             'b': {'c': ivy.array([2], dev_str=dev_str), 'd': ivy.array([3], dev_str=dev_str)}})
+    assert cont_depth2.depth == 2
+    cont_depth3 = Container({'a': ivy.array([1], dev_str=dev_str),
+                             'b': {'c': {'d': ivy.array([2], dev_str=dev_str)}, 'e': ivy.array([3], dev_str=dev_str)}})
+    assert cont_depth3.depth == 3
+    cont_depth4 = Container({'a': ivy.array([1], dev_str=dev_str),
+                             'b': {'c': {'d': {'e': ivy.array([2], dev_str=dev_str)}}}})
+    assert cont_depth4.depth == 4
+
+
 def test_container_show(dev_str, call):
     if call is helpers.mx_call:
         # ToDo: get this working for mxnet again, recent version update caused errors.

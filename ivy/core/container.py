@@ -3005,7 +3005,7 @@ class Container(dict):
         return ivy.default(self._local_ivy, ivy)
 
     @_ivy.setter
-    def ivy(self, local_ivy):
+    def _ivy(self, local_ivy):
         self._local_ivy = local_ivy
 
     # public
@@ -3038,6 +3038,10 @@ class Container(dict):
     @property
     def config(self):
         return self._config
+
+    @property
+    def depth(self):
+        return max([len(kc.split('/')) for kc in self.to_iterator_keys()])
 
 
 class MultiDevContainer(Container):
