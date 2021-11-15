@@ -246,6 +246,17 @@ def test_container_from_dict(dev_str, call):
     assert np.allclose(ivy.to_numpy(container.b.d), np.array([3]))
 
 
+def test_container_show(dev_str, call):
+    if call is helpers.mx_call:
+        # ToDo: get this working for mxnet again, recent version update caused errors.
+        pytest.skip()
+    dict_in = {'a': ivy.array([1], dev_str=dev_str),
+               'b': {'c': ivy.array([2], dev_str=dev_str), 'd': ivy.array([3], dev_str=dev_str)}}
+    cont = Container(dict_in)
+    print(cont)
+    cont.show()
+
+
 def test_container_from_dict_w_cont_types(dev_str, call):
     # ToDo: add tests for backends other than jax
     if call is not helpers.jnp_call:
