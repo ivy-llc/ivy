@@ -2021,6 +2021,7 @@ class Container(dict):
             if ivy.Container.identical([sub_cont, sub_cont_to_find], same_arrays=True):
                 nonlocal key_chain_found
                 key_chain_found = kc
+            return sub_cont
 
         self.map_conts(_check_sub_cont)
 
@@ -2608,17 +2609,18 @@ class Container(dict):
 
         # get the formatted reprs
         this_repr = this_cont.with_default_key_color('green').__repr__()
+        this_repr_stripped = ansi_escape.sub('', this_repr)
         sub_repr = sub_cont.with_default_key_color('red').__repr__()
 
         # remove the outer brackets from the sub repr
         sub_repr = '\n' + '\n'.join(sub_repr.split('\n')[1:-1]) + '\n'
 
         # find the sub-container placeholder
-        idx = this_repr.find('SUB_CONT: null')
+        idx = this_repr_stripped.find('SUB_CONT: null')
 
         # count the lines above and below the sub-container
-        num_lines_above = this_repr[0:idx].count('\n')
-        num_lines_below = this_repr[0:idx].count('\n')
+        num_lines_above = this_repr_stripped[0:idx].count('\n')
+        num_lines_below = this_repr_stripped[idx:].count('\n')
 
         # get the str reprs above and below
         this_repr_above = '\n'.join(this_repr.split('\n')[0:num_lines_above])
