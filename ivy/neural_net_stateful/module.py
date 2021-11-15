@@ -284,6 +284,16 @@ class Module(abc.ABC):
             print('both self.top_v and self.v must be initialized in order to show v in top_v,'
                   'but found\n\ntop_v: {}\n\nv: {}.'.format(self.top_v, self.v))
 
+    def show_mod_in_top_mod(self, upper_depth=None, lower_depth=None):
+        if ivy.exists(self.top_mod):
+            upper_depth = ivy.default(upper_depth, self.mod_depth())
+            lower_depth = ivy.default(lower_depth, self.mod_height())
+            mid_depth = upper_depth + lower_depth
+            self.top_mod(upper_depth).sub_mods(mid_depth).show_sub_container(self.sub_mods(lower_depth))
+        else:
+            print('self.top_mod must be initialized in order to show mod in top_mod,'
+                  'but found\n\ntop_mod: {}'.format(self.top_mod))
+
     def compile_graph(self, *args, v=None, with_grads=True, stateful=None, arg_stateful_idxs=None,
                       kwarg_stateful_idxs=None, include_generators=True, **kwargs):
         logging.info('compiling forward pass for network {} ...'.format(self))
