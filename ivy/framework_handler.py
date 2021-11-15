@@ -27,6 +27,7 @@ class ContextManager:
 _array_types = dict()
 _array_types['numpy'] = 'ivy.numpy'
 _array_types['jax.interpreters.xla'] = 'ivy.jax'
+_array_types['jaxlib.xla_extension'] = 'ivy.jax'
 _array_types['tensorflow.python.framework.ops'] = 'ivy.tensorflow'
 _array_types['torch'] = 'ivy.torch'
 _array_types['mxnet.ndarray.ndarray'] = 'ivy.mxnet'
