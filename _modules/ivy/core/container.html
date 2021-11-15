@@ -2224,6 +2224,7 @@
             <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="o">.</span><span class="n">identical</span><span class="p">([</span><span class="n">sub_cont</span><span class="p">,</span> <span class="n">sub_cont_to_find</span><span class="p">],</span> <span class="n">same_arrays</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
                 <span class="k">nonlocal</span> <span class="n">key_chain_found</span>
                 <span class="n">key_chain_found</span> <span class="o">=</span> <span class="n">kc</span>
+            <span class="k">return</span> <span class="n">sub_cont</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">map_conts</span><span class="p">(</span><span class="n">_check_sub_cont</span><span class="p">)</span>
 
@@ -2811,17 +2812,18 @@
 
         <span class="c1"># get the formatted reprs</span>
         <span class="n">this_repr</span> <span class="o">=</span> <span class="n">this_cont</span><span class="o">.</span><span class="n">with_default_key_color</span><span class="p">(</span><span class="s1">&#39;green&#39;</span><span class="p">)</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">()</span>
+        <span class="n">this_repr_stripped</span> <span class="o">=</span> <span class="n">ansi_escape</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">this_repr</span><span class="p">)</span>
         <span class="n">sub_repr</span> <span class="o">=</span> <span class="n">sub_cont</span><span class="o">.</span><span class="n">with_default_key_color</span><span class="p">(</span><span class="s1">&#39;red&#39;</span><span class="p">)</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">()</span>
 
         <span class="c1"># remove the outer brackets from the sub repr</span>
         <span class="n">sub_repr</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">sub_repr</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span>
 
         <span class="c1"># find the sub-container placeholder</span>
-        <span class="n">idx</span> <span class="o">=</span> <span class="n">this_repr</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;SUB_CONT: null&#39;</span><span class="p">)</span>
+        <span class="n">idx</span> <span class="o">=</span> <span class="n">this_repr_stripped</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s1">&#39;SUB_CONT: null&#39;</span><span class="p">)</span>
 
         <span class="c1"># count the lines above and below the sub-container</span>
-        <span class="n">num_lines_above</span> <span class="o">=</span> <span class="n">this_repr</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="n">idx</span><span class="p">]</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
-        <span class="n">num_lines_below</span> <span class="o">=</span> <span class="n">this_repr</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="n">idx</span><span class="p">]</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="n">num_lines_above</span> <span class="o">=</span> <span class="n">this_repr_stripped</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="n">idx</span><span class="p">]</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="n">num_lines_below</span> <span class="o">=</span> <span class="n">this_repr_stripped</span><span class="p">[</span><span class="n">idx</span><span class="p">:]</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
 
         <span class="c1"># get the str reprs above and below</span>
         <span class="n">this_repr_above</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">this_repr</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">:</span><span class="n">num_lines_above</span><span class="p">])</span>
