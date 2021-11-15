@@ -103,6 +103,17 @@ class Module(abc.ABC):
             return self.top_mod()
         return self
 
+    def mod_depth(self):
+        depth = 0
+        mod_above = self
+        while True:
+            if ivy.exists(mod_above.top_mod):
+                mod_above = mod_above.top_mod(1)
+            else:
+                break
+            depth += 1
+        return depth
+
     def _find_variables(self, obj=None):
         vs = Container()
         # ToDo: add support for finding local variables, if/when JAX supports uniquely flagging variables
