@@ -28,6 +28,7 @@ from operator import floordiv as _floordiv
 # local
 import ivy
 
+ansi_escape = re.compile(r'\x1B(?:[@-Z\\-_]|\[[0-?]*[ -/]*[@-~])')
 retrieval_key_chain = list()
 base_cont = None
 
@@ -2561,6 +2562,38 @@ class Container(dict):
 
     def show(self):
         print(self)
+
+    def show_sub_container(self, sub_cont_or_keychain):
+        if isinstance(sub_cont_or_keychain, str):
+            sub_cont = self.at_key_chain(sub_cont_or_keychain)
+        else:
+            sub_cont = sub_cont_or_keychain
+        this_repr = self.with_default_key_color('green').__repr__()
+        sub_repr = sub_cont.with_default_key_color('red').__repr__()
+        sub_repr = '\n' + '\n'.join(sub_repr.split('\n')[1:-1]) + '\n'
+        this_repr_stripped = ansi_escape.sub('', this_repr).replace(' ', '')
+        sub_repr_stripped = ansi_escape.sub('', sub_repr).replace(' ', '')[2:-2]
+        if sub_repr_stripped not in this_repr_stripped:
+            print(this_repr)
+            return
+        idx = this_repr_stripped.find(sub_repr_stripped)
+        num_lines_above = this_repr_stripped[0:idx].count('\n')
+        this_repr_above = '\n'.join(this_repr.split('\n')[0:num_lines_above])
+        num_lines_below = this_repr_stripped[0:idx].count('\n')
+        this_repr_below = '\n'.join(this_repr.split('\n')[-num_lines_below+1:])
+        cur_num_spaces = 0
+        for i, s in enumerate(sub_repr[1:]):
+            if s != ' ':
+                break
+            cur_num_spaces += 1
+        exp_num_spaces = 0
+        for i, s in enumerate(this_repr.split('\n')[num_lines_above]):
+            if s != ' ':
+                break
+            exp_num_spaces += 1
+        num_spaces_to_add = exp_num_spaces - cur_num_spaces
+        sub_repr = '\n' + '\n'.join([' '*num_spaces_to_add + s for s in sub_repr[1:-1].split('\n')]) + '\n'
+        print(this_repr_above + sub_repr + this_repr_below)
 
     # Built-ins #
     # ----------#
