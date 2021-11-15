@@ -262,6 +262,7 @@ def test_container_find_sub_container(dev_str, call):
                'b': {'c': ivy.array([2], dev_str=dev_str), 'd': ivy.array([3], dev_str=dev_str)}}
     top_cont = Container(dict_in)
     sub_cont = Container(dict_in['b'])
+    assert sub_cont in top_cont
     found_kc = top_cont.find_sub_container(sub_cont)
     assert found_kc == 'b'
 
