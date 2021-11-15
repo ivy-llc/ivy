@@ -353,6 +353,32 @@ def test_with_custom_var_structure(bs_ic_oc, dev_str, call):
     assert 'z' in module.v
 
 
+class DoubleLinear(ivy.Module):
+
+    def __init__(self, in_size, out_size, dev_str=None, hidden_size=64):
+        self._l0 = ivy.Linear(in_size, hidden_size, dev_str=dev_str)
+        self._l1 = ivy.Linear(hidden_size, out_size, dev_str=dev_str)
+        ivy.Module.__init__(self, dev_str)
+
+    def _forward(self, x):
+        x = self._l0(x)
+        x = self._l1(x)
+        return x
+
+
+class WithNestedModules(ivy.Module):
+
+    def __init__(self, in_size, out_size, dev_str=None, hidden_size=64):
+        self._dl0 = DoubleLinear(in_size, hidden_size, dev_str=dev_str)
+        self._dl1 = DoubleLinear(hidden_size, hidden_size, dev_str=dev_str)
+        ivy.Module.__init__(self, dev_str)
+
+    def _forward(self, x):
+        x = self._dl0(x)
+        x = self._dl1(x)
+        return x
+
+
 # top variables
 @pytest.mark.parametrize(
     "bs_ic_oc", [([1, 2], 4, 5)])
@@ -362,8 +388,16 @@ def test_top_variables(bs_ic_oc, dev_str, call):
         # NumPy does not support gradients
         pytest.skip()
     batch_shape, input_channels, output_channels = bs_ic_oc
-    module = WithCustomVarStructure(input_channels, output_channels, dev_str=dev_str)
-    for key in ['x', 'y', 'z']:
-        assert key in module._linear0.top_v()
-        assert key in module._linear1.top_v()
-        assert key in module._linear2.top_v()
+    module = WithNestedModules(input_channels, output_channels, dev_str=dev_str)
+    for key_chain in ['dl0', 'dl0/l0', 'dl0/l1', 'dl0/l0/b', 'dl0/l0/w', 'dl0/l1/b', 'dl0/l1/w',
+                      'dl1', 'dl1/l0', 'dl1/l1', 'dl1/l0/b', 'dl1/l0/w', 'dl1/l1/b', 'dl1/l1/w']:
+
+        # depth 1
+        assert key_chain in module._dl0.top_v()
+        assert key_chain in module._dl1.top_v()
+
+        # depth 2
+        assert key_chain in module._dl0._l0.top_v()
+        assert key_chain in module._dl0._l1.top_v()
+        assert key_chain in module._dl1._l0.top_v()
+        assert key_chain in module._dl1._l1.top_v()
