@@ -2876,6 +2876,8 @@ class Container(dict):
     def __contains__(self, key):
         if isinstance(key, str) and ('/' in key or '.' in key):
             return self.has_key_chain(key)
+        elif isinstance(key, Container):
+            return bool(self.find_sub_container(key))
         else:
             return dict.__contains__(self, key)
 
