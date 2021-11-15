@@ -89,11 +89,18 @@ class Module(abc.ABC):
         new_fn.wrapped = True
         return new_fn
 
+    def _top_v_fn(self, depth=None):
+        if ivy.exists(self.top_v):
+            if ivy.exists(depth):
+                return self.top_v(depth - 1) if depth > 1 else self.v
+            return self.top_v()
+        return self.v
+
     def _find_variables(self, obj=None):
         vs = Container()
         # ToDo: add support for finding local variables, if/when JAX supports uniquely flagging variables
         if isinstance(obj, Module) and obj is not self:
-            obj.top_v = lambda: self.top_v() if ivy.exists(self.top_v) else self.v
+            obj.top_v = lambda depth=None: self._top_v_fn(depth)
             return obj.v
         elif isinstance(obj, (list, tuple)):
             for i, v in enumerate(obj):
