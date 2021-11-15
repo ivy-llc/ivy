@@ -2013,6 +2013,19 @@ class Container(dict):
                 return False
         return True
 
+    def find_sub_container(self, sub_cont_to_find):
+
+        key_chain_found = False
+
+        def _check_sub_cont(sub_cont, kc):
+            if ivy.Container.identical([sub_cont, sub_cont_to_find], same_arrays=True):
+                nonlocal key_chain_found
+                key_chain_found = kc
+
+        self.map_conts(_check_sub_cont)
+
+        return key_chain_found
+
     def has_nans(self, include_infs=True, leafwise=False):
         """
         Determine whether arrays in the container contain any nans, as well as infs or -infs if specified.
