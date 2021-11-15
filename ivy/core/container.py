@@ -2585,23 +2585,46 @@ class Container(dict):
         print(self)
 
     def show_sub_container(self, sub_cont_or_keychain):
+
+        # copy this container
+        this_cont = self.copy()
+
+        # get the sub-container
         if isinstance(sub_cont_or_keychain, str):
             sub_cont = self.at_key_chain(sub_cont_or_keychain)
         else:
             sub_cont = sub_cont_or_keychain
-        this_repr = self.with_default_key_color('green').__repr__()
-        sub_repr = sub_cont.with_default_key_color('red').__repr__()
-        sub_repr = '\n' + '\n'.join(sub_repr.split('\n')[1:-1]) + '\n'
-        this_repr_stripped = ansi_escape.sub('', this_repr).replace(' ', '')
-        sub_repr_stripped = ansi_escape.sub('', sub_repr).replace(' ', '')[2:-2]
-        if sub_repr_stripped not in this_repr_stripped:
-            print(this_repr)
+
+        # find the key chain of the sub-container
+        sub_cont_kc = self.find_sub_container(sub_cont)
+
+        # show this container if key-chain not found, and return
+        if not sub_cont_kc:
+            print(self)
             return
-        idx = this_repr_stripped.find(sub_repr_stripped)
-        num_lines_above = this_repr_stripped[0:idx].count('\n')
+
+        # otherwise, replace sub-container in this container with known key
+        this_cont[sub_cont_kc] = ivy.Container({'SUB_CONT': None})
+
+        # get the formatted reprs
+        this_repr = this_cont.with_default_key_color('green').__repr__()
+        sub_repr = sub_cont.with_default_key_color('red').__repr__()
+
+        # remove the outer brackets from the sub repr
+        sub_repr = '\n' + '\n'.join(sub_repr.split('\n')[1:-1]) + '\n'
+
+        # find the sub-container placeholder
+        idx = this_repr.find('SUB_CONT: null')
+
+        # count the lines above and below the sub-container
+        num_lines_above = this_repr[0:idx].count('\n')
+        num_lines_below = this_repr[0:idx].count('\n')
+
+        # get the str reprs above and below
         this_repr_above = '\n'.join(this_repr.split('\n')[0:num_lines_above])
-        num_lines_below = this_repr_stripped[0:idx].count('\n')
         this_repr_below = '\n'.join(this_repr.split('\n')[-num_lines_below+1:])
+
+        # count the number of lines needed to be prepended to the sub-container repr
         cur_num_spaces = 0
         for i, s in enumerate(sub_repr[1:]):
             if s != ' ':
@@ -2613,7 +2636,11 @@ class Container(dict):
                 break
             exp_num_spaces += 1
         num_spaces_to_add = exp_num_spaces - cur_num_spaces
+
+        # prepend these lines to the sub-container
         sub_repr = '\n' + '\n'.join([' '*num_spaces_to_add + s for s in sub_repr[1:-1].split('\n')]) + '\n'
+
+        # show
         print(this_repr_above + sub_repr + this_repr_below)
 
     # Built-ins #
