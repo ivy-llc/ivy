@@ -70,6 +70,7 @@ class Module(abc.ABC):
         self.v = v
         self.top_v = None
         self.top_mod = None
+        self._sub_mods = set()
         if build_mode != 'on_init':
             return
         self.build()
@@ -108,6 +109,7 @@ class Module(abc.ABC):
         if isinstance(obj, Module) and obj is not self:
             obj.top_v = lambda depth=None: self._top_v_fn(depth)
             obj.top_mod = lambda depth=None: self._top_mod_fn(depth)
+            self._sub_mods.add(obj)
             return obj.v
         elif isinstance(obj, (list, tuple)):
             for i, v in enumerate(obj):
@@ -391,3 +393,7 @@ class Module(abc.ABC):
     @property
     def built(self):
         return self._built
+
+    @property
+    def sub_mods(self):
+        return self._sub_mods
