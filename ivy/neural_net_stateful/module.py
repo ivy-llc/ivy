@@ -248,8 +248,20 @@ class Module(abc.ABC):
     # Public #
     # -------#
 
-    def show_sub_mods(self):
-        print(self.sub_mods_cont)
+    def sub_mods(self, depth=None):
+        if self._sub_mods:
+            if ivy.exists(depth):
+                if depth == 0:
+                    return self.v
+                next_depth = depth - 1
+            else:
+                next_depth = None
+            return ivy.Container(
+                {str(sm).replace('.', '_').replace('/', '_'): sm.sub_mods(next_depth) for sm in self._sub_mods})
+        return self.v
+
+    def show_sub_mods(self, depth=None):
+        print(self.sub_mods(depth))
 
     def show_v_in_top_v(self, depth=None):
         if ivy.exists(self.top_v) and ivy.exists(self.v):
@@ -396,15 +408,3 @@ class Module(abc.ABC):
     @property
     def built(self):
         return self._built
-
-    @property
-    def sub_mods(self):
-        return self._sub_mods
-
-    @property
-    def sub_mods_cont(self):
-        if self._sub_mods:
-            return ivy.Container(
-                {str(sm).replace('.', '_').replace('/', '_'): sm.sub_mods_cont for sm in self._sub_mods})
-        else:
-            return self.v
