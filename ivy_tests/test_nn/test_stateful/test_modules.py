@@ -428,3 +428,29 @@ def test_top_module(bs_ic_oc, dev_str, call):
     assert module._dl0._l1.top_mod(1) is module._dl0
     assert module._dl1._l0.top_mod(1) is module._dl1
     assert module._dl1._l1.top_mod(1) is module._dl1
+
+
+# sub modules
+@pytest.mark.parametrize(
+    "bs_ic_oc", [([1, 2], 4, 5)])
+def test_sub_modules(bs_ic_oc, dev_str, call):
+    # smoke test
+    if call is helpers.np_call:
+        # NumPy does not support gradients
+        pytest.skip()
+    batch_shape, input_channels, output_channels = bs_ic_oc
+    module = WithNestedModules(input_channels, output_channels, dev_str=dev_str)
+
+    # depth 0
+    sub_mods = module.sub_mods(0)
+    assert module.v is sub_mods
+
+    # depth 1
+    sub_mods = module.sub_mods(1)
+    for v in [module._dl0.v, module._dl1.v]:
+        assert v in sub_mods
+
+    # depth 2 (full)
+    sub_mods = module.sub_mods()
+    for v in [module._dl0._l0.v, module._dl0._l1.v, module._dl1._l0.v, module._dl1._l1.v]:
+        assert v in sub_mods
