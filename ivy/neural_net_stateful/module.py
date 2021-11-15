@@ -114,6 +114,9 @@ class Module(abc.ABC):
             depth += 1
         return depth
 
+    def mod_height(self):
+        return self.sub_mods().depth - 1
+
     def _find_variables(self, obj=None):
         vs = Container()
         # ToDo: add support for finding local variables, if/when JAX supports uniquely flagging variables

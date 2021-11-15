@@ -455,6 +455,31 @@ def test_module_depth(bs_ic_oc, dev_str, call):
     assert module._dl1._l1.mod_depth() == 2
 
 
+# module height
+@pytest.mark.parametrize(
+    "bs_ic_oc", [([1, 2], 4, 5)])
+def test_module_height(bs_ic_oc, dev_str, call):
+    # smoke test
+    if call is helpers.np_call:
+        # NumPy does not support gradients
+        pytest.skip()
+    batch_shape, input_channels, output_channels = bs_ic_oc
+    module = WithNestedModules(input_channels, output_channels, dev_str=dev_str)
+
+    # height 2
+    assert module.mod_height() == 2
+
+    # height 1
+    assert module._dl0.mod_height() == 1
+    assert module._dl1.mod_height() == 1
+
+    # height 0
+    assert module._dl0._l0.mod_height() == 0
+    assert module._dl0._l1.mod_height() == 0
+    assert module._dl1._l0.mod_height() == 0
+    assert module._dl1._l1.mod_height() == 0
+
+
 # sub modules
 @pytest.mark.parametrize(
     "bs_ic_oc", [([1, 2], 4, 5)])
