@@ -2367,6 +2367,12 @@ class Container(dict):
             new_cont = ivy.Container.combine(new_cont, ivy.Container({new_kc: self[old_kc]}))
         return new_cont
 
+    def flatten_key_chains(self):
+        """
+        Return a flat (depth-1) container, which all nested key-chains flattened.
+        """
+        return Container({Container.format_key(kc): v for kc, v in self.to_iterator()})
+
     def copy(self):
         """
         Create a copy of this container.
