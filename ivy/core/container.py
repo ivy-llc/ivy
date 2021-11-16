@@ -2619,6 +2619,7 @@ class Container(dict):
 
         # get the formatted reprs
         this_repr = this_cont.with_default_key_color('green').__repr__()
+        this_repr_red = this_cont.with_default_key_color('red').__repr__()
         this_repr_stripped = ansi_escape.sub('', this_repr)
         sub_repr = sub_cont.with_default_key_color('red').__repr__()
 
@@ -2633,8 +2634,10 @@ class Container(dict):
         num_lines_below = this_repr_stripped[idx:].count('\n')
 
         # get the str reprs above and below
-        this_repr_above = '\n'.join(this_repr.split('\n')[0:num_lines_above])
-        this_repr_below = '\n'.join(this_repr.split('\n')[-num_lines_below:])
+        this_repr_split = this_repr.split('\n')
+        this_repr_red_split = this_repr_red.split('\n')
+        this_repr_above = '\n'.join(this_repr_split[0:num_lines_above-1] + [this_repr_red_split[num_lines_above-1]])
+        this_repr_below = '\n'.join(this_repr_split[-num_lines_below:])
 
         # count the number of lines needed to be prepended to the sub-container repr
         cur_num_spaces = 0
