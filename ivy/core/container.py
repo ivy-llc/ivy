@@ -1925,7 +1925,7 @@ class Container(dict):
             else:
                 kc = key_chain + '/' + key if key_chain != '' else key
             if isinstance(value, Container) and (not include_empty or value):
-                yield from value.to_iterator(kc, leaf_keys_only)
+                yield from value.to_iterator(kc, leaf_keys_only, include_empty)
             else:
                 yield kc, value
 
@@ -1938,7 +1938,7 @@ class Container(dict):
         for key, value in self.items():
             if isinstance(value, Container) and (not include_empty or value):
                 # noinspection PyCompatibility
-                yield from value.to_iterator_values()
+                yield from value.to_iterator_values(include_empty)
             else:
                 yield value
 
@@ -1955,7 +1955,7 @@ class Container(dict):
                 kc = key_chain + '/' + key if key_chain != '' else key
             if isinstance(value, Container) and (not include_empty or value):
                 # noinspection PyCompatibility
-                yield from value.to_iterator_keys(kc, leaf_keys_only)
+                yield from value.to_iterator_keys(kc, leaf_keys_only, include_empty)
             else:
                 yield kc
 
