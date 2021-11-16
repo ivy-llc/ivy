@@ -517,6 +517,19 @@ def test_module_intermediate_rets(bs_ic_oc, dev_str, call):
     batch_shape, input_channels, output_channels = bs_ic_oc
     x = ivy.cast(ivy.linspace(ivy.zeros(batch_shape), ivy.ones(batch_shape), input_channels), 'float32')
     module = WithNestedModules(input_channels, output_channels, dev_str=dev_str)
+
+    # depth 1
+    ret = module(x, with_intermediate_rets=True, intermediate_ret_depth=1)
+    assert ret.shape == tuple(batch_shape + [64])
+    int_rets = module.intermediate_rets
+    for submod in [module._dl0, module._dl1]:
+        ret = int_rets[ivy.Container.format_key(submod.__repr__(False))]
+        assert ivy.is_array(ret)
+        assert ret.shape == tuple(batch_shape + [64])
+    for submod in [module._dl0._l0, module._dl0._l1, module._dl1._l0, module._dl1._l1]:
+        assert ivy.Container.format_key(submod.__repr__(False)) not in int_rets
+
+    # depth 2 (full)
     ret = module(x, with_intermediate_rets=True)
     assert ret.shape == tuple(batch_shape + [64])
     int_rets = module.intermediate_rets
