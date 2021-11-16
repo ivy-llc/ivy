@@ -2835,6 +2835,8 @@ class Container(dict):
         :return: Container object at desired query.
         """
         if isinstance(query, str):
+            if query == '':
+                return self
             if '/' in query or '.' in query:
                 ret = self.at_key_chain(query)
                 return ret
