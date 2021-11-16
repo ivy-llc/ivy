@@ -700,8 +700,8 @@ class Container(dict):
                 raise Exception(str(e) + '\nContainer reduce operation only valid for containers of arrays')
 
     @staticmethod
-    def format_key(key_chain):
-        return key_chain.replace('/', '_').replace('.', '_')
+    def format_key(key_chain, replacement='__'):
+        return key_chain.replace('/', replacement).replace('.', replacement)
 
     # Private Methods #
     # ----------------#
