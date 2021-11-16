@@ -643,13 +643,23 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="n">sr</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">ret</span><span class="p">]</span>
 
-    <span class="k">def</span> <span class="nf">_add_submod_enter</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_add_submod_enter_or_exit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">e_or_e</span><span class="p">):</span>
         <span class="n">sco</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">top_mod</span><span class="p">()</span><span class="o">.</span><span class="n">submod_call_order</span>
-        <span class="n">key</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">show_mod_in_top_mod</span><span class="p">()</span>
-        <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">sco</span><span class="p">:</span>
-            <span class="n">sco</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">sco</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">()</span>
+        <span class="n">key_chain</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mod_with_top_mod_key_chain</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">key_chain</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
+            <span class="c1"># ToDo: find the latest (highest number) version of this key</span>
+            <span class="n">max_key</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+            <span class="n">sco</span> <span class="o">=</span> <span class="n">sco</span><span class="p">[</span><span class="n">max_key</span><span class="p">]</span>
+        <span class="n">final_key</span> <span class="o">=</span> <span class="n">key_chain</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="c1"># ToDo: create new key one larger than the highest found</span>
+        <span class="n">new_key</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="n">sco</span><span class="p">[</span><span class="n">new_key</span><span class="p">]</span> <span class="o">=</span> <span class="n">e_or_e</span>
+
+    <span class="k">def</span> <span class="nf">_add_submod_enter</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_add_submod_enter_or_exit</span><span class="p">(</span><span class="s1">&#39;enter&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_add_submod_exit</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_add_submod_enter_or_exit</span><span class="p">(</span><span class="s1">&#39;exit&#39;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">v</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">with_grads</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">stateful</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">arg_stateful_idxs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">kwarg_stateful_idxs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">track_submod_rets</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">submod_depth</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">submods_to_track</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">track_submod_call_order</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
