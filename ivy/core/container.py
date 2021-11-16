@@ -1754,7 +1754,7 @@ class Container(dict):
                 continue
             rt = self._retrieval_times[k]
             for i in range(0, len(rt)):
-                key = k + '_' + str(i)
+                key = k + '__' + str(i)
                 retrieval_dict[key] = (v, rt.pop(0))
         retrieval_dict = {k: v[0] for k, v in sorted(retrieval_dict.items(), key=lambda knv: knv[1][1])}
         return ivy.Container(retrieval_dict, alphabetical_keys=False)
@@ -2780,7 +2780,7 @@ class Container(dict):
             retrieval_key_chain.append(item)
             if isinstance(ret, Container):
                 return ret
-            rkc = '_'.join(retrieval_key_chain)
+            rkc = '__'.join(retrieval_key_chain)
             retrieval_key_chain.clear()
             if rkc not in base_cont._retrieval_times:
                 base_cont._retrieval_times[rkc] = list()
