@@ -566,10 +566,10 @@ def test_sub_modules(bs_ic_oc, dev_str, call):
         assert v in sub_mods
 
 
-# module intermediate returns
+# with submod returns
 @pytest.mark.parametrize(
     "bs_ic_oc", [([1, 2], 4, 5)])
-def test_module_intermediate_rets(bs_ic_oc, dev_str, call):
+def test_module_track_submod_rets(bs_ic_oc, dev_str, call):
     # smoke test
     if call is helpers.np_call:
         # NumPy does not support gradients
@@ -579,32 +579,32 @@ def test_module_intermediate_rets(bs_ic_oc, dev_str, call):
     module = WithNestedModules(input_channels, output_channels, dev_str=dev_str)
 
     # depth 1
-    ret = module(x, with_intermediate_rets=True, intermediate_ret_depth=1)
+    ret = module(x, track_submod_rets=True, submod_depth=1)
     assert ret.shape == tuple(batch_shape + [64])
-    int_rets = module.intermediate_rets
+    sm_rets = module.submod_rets
     for submod in [module._dl0, module._dl1]:
-        for ret in int_rets[ivy.Container.format_key(submod.__repr__(False), '_')]:
+        for ret in sm_rets[ivy.Container.format_key(submod.__repr__(False), '_')]:
             assert ivy.is_array(ret)
             assert ret.shape == tuple(batch_shape + [64])
     for submod in [module._dl0._l0, module._dl0._l1, module._dl1._l0, module._dl1._l1]:
-        assert ivy.Container.format_key(submod.__repr__(False), '_') not in int_rets
+        assert ivy.Container.format_key(submod.__repr__(False), '_') not in sm_rets
 
     # depth 2 (full)
-    ret = module(x, with_intermediate_rets=True)
+    ret = module(x, track_submod_rets=True)
     assert ret.shape == tuple(batch_shape + [64])
-    int_rets = module.intermediate_rets
+    sm_rets = module.submod_rets
     for submod in [module._dl0, module._dl1, module._dl0._l0, module._dl0._l1, module._dl1._l0, module._dl1._l1]:
-        for ret in int_rets[ivy.Container.format_key(submod.__repr__(False), '_')]:
+        for ret in sm_rets[ivy.Container.format_key(submod.__repr__(False), '_')]:
             assert ivy.is_array(ret)
             assert ret.shape == tuple(batch_shape + [64])
 
     # partial submodules
-    ret = module(x, with_intermediate_rets=True, intermediate_ret_submods=[module._dl1, module._dl0._l0])
+    ret = module(x, track_submod_rets=True, submods_to_track=[module._dl1, module._dl0._l0])
     assert ret.shape == tuple(batch_shape + [64])
-    int_rets = module.intermediate_rets
+    sm_rets = module.submod_rets
     for submod in [module._dl1, module._dl0._l0]:
-        for ret in int_rets[ivy.Container.format_key(submod.__repr__(False), '_')]:
+        for ret in sm_rets[ivy.Container.format_key(submod.__repr__(False), '_')]:
             assert ivy.is_array(ret)
             assert ret.shape == tuple(batch_shape + [64])
     for submod in [module._dl0, module._dl0._l1, module._dl1._l0, module._dl1._l1]:
-        assert ivy.Container.format_key(submod.__repr__(False), '_') not in int_rets
+        assert ivy.Container.format_key(submod.__repr__(False), '_') not in sm_rets
