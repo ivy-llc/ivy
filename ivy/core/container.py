@@ -1913,7 +1913,7 @@ class Container(dict):
                 return_dict[key] = value
         return return_dict
 
-    def to_iterator(self, key_chain='', leaf_keys_only=False):
+    def to_iterator(self, key_chain='', leaf_keys_only=False, include_empty=False):
         """
         Return iterator for traversing through the nested elements of container object.
 
@@ -1924,26 +1924,25 @@ class Container(dict):
                 kc = key
             else:
                 kc = key_chain + '/' + key if key_chain != '' else key
-            if isinstance(value, Container):
-                # noinspection PyCompatibility
+            if isinstance(value, Container) and (not include_empty or value):
                 yield from value.to_iterator(kc, leaf_keys_only)
             else:
                 yield kc, value
 
-    def to_iterator_values(self):
+    def to_iterator_values(self, include_empty=False):
         """
         Return iterator for traversing through the nested values of container object.
 
         :return: Iterator for the container values.
         """
         for key, value in self.items():
-            if isinstance(value, Container):
+            if isinstance(value, Container) and (not include_empty or value):
                 # noinspection PyCompatibility
                 yield from value.to_iterator_values()
             else:
                 yield value
 
-    def to_iterator_keys(self, key_chain='', leaf_keys_only=False):
+    def to_iterator_keys(self, key_chain='', leaf_keys_only=False, include_empty=False):
         """
         Return iterator for traversing through the nested keys of container object.
 
@@ -1954,7 +1953,7 @@ class Container(dict):
                 kc = key
             else:
                 kc = key_chain + '/' + key if key_chain != '' else key
-            if isinstance(value, Container):
+            if isinstance(value, Container) and (not include_empty or value):
                 # noinspection PyCompatibility
                 yield from value.to_iterator_keys(kc, leaf_keys_only)
             else:
