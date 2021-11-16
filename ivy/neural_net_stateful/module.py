@@ -440,13 +440,23 @@ class Module(abc.ABC):
         else:
             sr[key] = [ret]
 
-    def _add_submod_enter(self):
+    def _add_submod_enter_or_exit(self, e_or_e):
         sco = self.top_mod().submod_call_order
-        key = self.show_mod_in_top_mod()
-        if key in sco:
-            sco[key]
-        else:
-            sco[key] = ivy.Container()
+        key_chain = self.mod_with_top_mod_key_chain()
+        for key in key_chain[:-1]:
+            # ToDo: find the latest (highest number) version of this key
+            max_key = ''
+            sco = sco[max_key]
+        final_key = key_chain[-1]
+        # ToDo: create new key one larger than the highest found
+        new_key = ''
+        sco[new_key] = e_or_e
+
+    def _add_submod_enter(self):
+        self._add_submod_enter_or_exit('enter')
+
+    def _add_submod_exit(self):
+        self._add_submod_enter_or_exit('exit')
 
     def __call__(self, *args, v=None, with_grads=True, stateful=None, arg_stateful_idxs=None, kwarg_stateful_idxs=None,
                  track_submod_rets=False, submod_depth=None, submods_to_track=None, track_submod_call_order=False,
