@@ -360,12 +360,12 @@ class Module(abc.ABC):
         max_depth = depth
         depth = 1
         top_mod = self
-        mods = [ivy.Container.format_key(top_mod.__repr__(False))]
+        mods = [ivy.Container.format_key(top_mod.__repr__(False), '_')]
         while True:
             if not ivy.exists(top_mod.top_mod):
                 break
             top_mod = top_mod.top_mod(1)
-            mods.append(ivy.Container.format_key(top_mod.__repr__(False)))
+            mods.append(ivy.Container.format_key(top_mod.__repr__(False), '_'))
             if depth == max_depth:
                 break
             depth += 1
@@ -466,10 +466,10 @@ class Module(abc.ABC):
         kcs = sco.key_chains_containing(final_key, include_empty=True)
         if kcs:
             max_key_idx = int(sorted(kcs, key=lambda kc: int(kc.split('_')[-1]))[-1].split('/')[-1].split('_')[-1])
-            max_key = final_key + '_{}'.format(max_key_idx)
+            new_key = final_key + '_{}'.format(max_key_idx + 1)
         else:
-            max_key = final_key + '_0'
-        sco[max_key] = ivy.Container(alphabetical_keys=False)
+            new_key = final_key + '_0'
+        sco[new_key] = ivy.Container(alphabetical_keys=False)
 
     def __call__(self, *args, v=None, with_grads=True, stateful=None, arg_stateful_idxs=None, kwarg_stateful_idxs=None,
                  track_submod_rets=False, submod_depth=None, submods_to_track=None, track_submod_call_order=False,
