@@ -94,12 +94,17 @@ class Module(abc.ABC):
         new_fn.wrapped = True
         return new_fn
 
-    def _top_v_fn(self, depth=None):
+    def _top_v_fn(self, depth=None, flatten_key_chains=False):
         if ivy.exists(self.top_v):
             if ivy.exists(depth):
-                return self.top_v(depth - 1) if depth > 1 else self.v
-            return self.top_v()
-        return self.v
+                ret = self.top_v(depth - 1) if depth > 1 else self.v
+            else:
+                ret = self.top_v()
+        else:
+            ret = self.v
+        if flatten_key_chains:
+            return ret.flatten_key_chains()
+        return ret
 
     def _top_mod_fn(self, depth=None):
         if ivy.exists(self.top_mod):
@@ -140,7 +145,7 @@ class Module(abc.ABC):
         vs = Container()
         # ToDo: add support for finding local variables, if/when JAX supports uniquely flagging variables
         if isinstance(obj, Module) and obj is not self:
-            obj.top_v = lambda depth=None: self._top_v_fn(depth)
+            obj.top_v = lambda depth=None, flatten_key_chains=False: self._top_v_fn(depth, flatten_key_chains)
             obj.top_mod = lambda depth=None: self._top_mod_fn(depth)
             self._sub_mods.add(obj)
             return obj.v
@@ -301,14 +306,9 @@ class Module(abc.ABC):
             return self.v
         return ''
 
-    def show_v_in_top_v(self, depth=None, flatten_key_chains=False):
+    def show_v_in_top_v(self, depth=None):
         if ivy.exists(self.top_v) and ivy.exists(self.v):
-            top_v = self.top_v(depth)
-            v = self.v
-            if flatten_key_chains:
-                top_v = top_v.flatten_key_chains()
-                v = self.v_with_top_v_key_chains(depth).flatten_key_chains()
-            top_v.show_sub_container(v)
+            self.top_v(depth).show_sub_container(self.v)
         else:
             print('both self.top_v and self.v must be initialized in order to show v in top_v,'
                   'but found\n\ntop_v: {}\n\nv: {}.'.format(self.top_v, self.v))
