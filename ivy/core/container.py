@@ -699,6 +699,10 @@ class Container(dict):
             except Exception as e:
                 raise Exception(str(e) + '\nContainer reduce operation only valid for containers of arrays')
 
+    @staticmethod
+    def key_chain_to_key(key_chain):
+        return key_chain.replace('/', '_').replace('.', '_')
+
     # Private Methods #
     # ----------------#
 
@@ -1734,7 +1738,7 @@ class Container(dict):
                           rather than a variable or traced array.
         :type exclusive: bool, optional
         """
-        array_dict = {kc.replace('/', '_').replace('.', '_'): v
+        array_dict = {Container.key_chain_to_key(kc): v
                       for kc, v in self.to_iterator() if ivy.is_array(v, exclusive)}
         return ivy.Container(dict(sorted(array_dict.items(), key=lambda item: _reduce(_mul, item[1].shape, 1))),
                              alphabetical_keys=False)
@@ -1743,7 +1747,7 @@ class Container(dict):
         """
         Return a container with keychains mapped to flat keys, and retrieved values given in order they were retrieved.
         """
-        ret_dict = {kc.replace('/', '_').replace('.', '_'): v for kc, v in self.to_iterator()}
+        ret_dict = {Container.key_chain_to_key(kc): v for kc, v in self.to_iterator()}
         retrieval_dict = dict()
         for k, v in ret_dict.items():
             if k not in self._retrieval_times:
