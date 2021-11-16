@@ -2113,6 +2113,12 @@ class Container(dict):
             raise Exception('Invalid type for input key_chains, must either be a list, tuple, dict, or ivy.Container,'
                             'but found type {}'.format(type(key_chains)))
 
+    def key_chains_containing(self, sub_str):
+        """
+        Return a list of all key-chains containing a given sub-string.
+        """
+        return [kc for kc, v in self.to_iterator() if sub_str in kc]
+
     def set_at_keys(self, target_dict):
         """
         Set values of container object at specified keys
