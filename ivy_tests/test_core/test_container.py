@@ -1978,57 +1978,63 @@ def test_container_shuffle(dev_str, call):
     assert 'b/d' not in container_shuffled
 
 
-def test_container_to_iterator(dev_str, call):
-    dict_in = {'a': ivy.array([1], dev_str=dev_str),
-               'b': {'c': ivy.array([2], dev_str=dev_str), 'd': ivy.array([3], dev_str=dev_str)}}
+@pytest.mark.parametrize(
+    "include_empty", [True, False])
+def test_container_to_iterator(include_empty, dev_str, call):
+    a_val = Container() if include_empty else ivy.array([1], dev_str=dev_str)
+    bc_val = Container() if include_empty else ivy.array([2], dev_str=dev_str)
+    bd_val = Container() if include_empty else ivy.array([3], dev_str=dev_str)
+    dict_in = {'a': a_val, 'b': {'c': bc_val, 'd': bd_val}}
     container = Container(dict_in)
 
     # with key chains
-    container_iterator = container.to_iterator()
-    for (key_chain, value), expected in zip(
-            container_iterator, [('a', ivy.array([1], dev_str=dev_str)), ('b/c', ivy.array([2], dev_str=dev_str)),
-                                 ('b/d', ivy.array([3], dev_str=dev_str))]):
+    container_iterator = container.to_iterator(include_empty=include_empty)
+    for (key_chain, value), expected in zip(container_iterator, [('a', a_val), ('b/c', bc_val), ('b/d', bd_val)]):
         expected_key_chain = expected[0]
         expected_value = expected[1]
         assert key_chain == expected_key_chain
-        assert value == expected_value
+        assert value is expected_value
 
     # with leaf keys
-    container_iterator = container.to_iterator(leaf_keys_only=True)
-    for (key_chain, value), expected in zip(
-            container_iterator, [('a', ivy.array([1], dev_str=dev_str)), ('c', ivy.array([2], dev_str=dev_str)),
-                                 ('d', ivy.array([3], dev_str=dev_str))]):
+    container_iterator = container.to_iterator(leaf_keys_only=True, include_empty=include_empty)
+    for (key_chain, value), expected in zip(container_iterator, [('a', a_val), ('c', bc_val), ('d', bd_val)]):
         expected_key_chain = expected[0]
         expected_value = expected[1]
         assert key_chain == expected_key_chain
-        assert value == expected_value
+        assert value is expected_value
 
 
-def test_container_to_iterator_values(dev_str, call):
-    dict_in = {'a': ivy.array([1], dev_str=dev_str),
-               'b': {'c': ivy.array([2], dev_str=dev_str), 'd': ivy.array([3], dev_str=dev_str)}}
+@pytest.mark.parametrize(
+    "include_empty", [True, False])
+def test_container_to_iterator_values(include_empty, dev_str, call):
+    a_val = Container() if include_empty else ivy.array([1], dev_str=dev_str)
+    bc_val = Container() if include_empty else ivy.array([2], dev_str=dev_str)
+    bd_val = Container() if include_empty else ivy.array([3], dev_str=dev_str)
+    dict_in = {'a': a_val, 'b': {'c': bc_val, 'd': bd_val}}
     container = Container(dict_in)
 
     # with key chains
-    container_iterator = container.to_iterator_values()
-    for value, expected_value in zip(
-            container_iterator, [ivy.array([1], dev_str=dev_str), ivy.array([2], dev_str=dev_str),
-                                 ivy.array([3], dev_str=dev_str)]):
-        assert value == expected_value
+    container_iterator = container.to_iterator_values(include_empty=include_empty)
+    for value, expected_value in zip(container_iterator, [a_val, bc_val, bd_val]):
+        assert value is expected_value
 
 
-def test_container_to_iterator_keys(dev_str, call):
-    dict_in = {'a': ivy.array([1], dev_str=dev_str),
-               'b': {'c': ivy.array([2], dev_str=dev_str), 'd': ivy.array([3], dev_str=dev_str)}}
+@pytest.mark.parametrize(
+    "include_empty", [True, False])
+def test_container_to_iterator_keys(include_empty, dev_str, call):
+    a_val = Container() if include_empty else ivy.array([1], dev_str=dev_str)
+    bc_val = Container() if include_empty else ivy.array([2], dev_str=dev_str)
+    bd_val = Container() if include_empty else ivy.array([3], dev_str=dev_str)
+    dict_in = {'a': a_val, 'b': {'c': bc_val, 'd': bd_val}}
     container = Container(dict_in)
 
     # with key chains
-    container_iterator = container.to_iterator_keys()
+    container_iterator = container.to_iterator_keys(include_empty=include_empty)
     for key_chain, expected_key_chain in zip(container_iterator, ['a', 'b/c', 'b/d']):
         assert key_chain == expected_key_chain
 
     # with leaf keys
-    container_iterator = container.to_iterator_keys(leaf_keys_only=True)
+    container_iterator = container.to_iterator_keys(leaf_keys_only=True, include_empty=include_empty)
     for key, expected_key in zip(container_iterator, ['a', 'c', 'd']):
         assert key == expected_key
 
