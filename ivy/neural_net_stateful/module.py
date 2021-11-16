@@ -290,7 +290,7 @@ class Module(abc.ABC):
             else:
                 next_depth = None
             return ivy.Container(
-                {ivy.Container.format_key(sm.__repr__(False)):
+                {ivy.Container.format_key(sm.__repr__(False), '_'):
                      sm.sub_mods(show_v, next_depth) for sm in self._sub_mods})
         if show_v:
             return self.v
@@ -391,7 +391,7 @@ class Module(abc.ABC):
                         with_intermediate_rets, intermediate_ret_depth, intermediate_ret_submods)
                     ret = self._call(*args, v=v, with_grads=with_grads, **kwargs)
                     if self.with_intermediate_rets():
-                        self.top_mod().intermediate_rets[ivy.Container.format_key(self.__repr__(False))] = ret
+                        self.top_mod().intermediate_rets[ivy.Container.format_key(self.__repr__(False), '_')] = ret
                     self._unset_intermediate_ret_flags()
                     return ret
                 raise e
@@ -404,7 +404,7 @@ class Module(abc.ABC):
             with_intermediate_rets, intermediate_ret_depth, intermediate_ret_submods)
         ret = self._call(*args, v=v, with_grads=with_grads, **kwargs)
         if self.with_intermediate_rets():
-            self.top_mod().intermediate_rets[ivy.Container.format_key(self.__repr__(False))] = ret
+            self.top_mod().intermediate_rets[ivy.Container.format_key(self.__repr__(False), '_')] = ret
         self._unset_intermediate_ret_flags()
         return ret
 
