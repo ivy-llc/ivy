@@ -263,7 +263,7 @@ class Module(abc.ABC):
     # Public #
     # -------#
 
-    def sub_mods(self, depth=None):
+    def sub_mods(self, show_v=True, depth=None):
         if self._sub_mods:
             if ivy.exists(depth):
                 if depth == 0:
@@ -273,8 +273,10 @@ class Module(abc.ABC):
                 next_depth = None
             return ivy.Container(
                 {sm.__repr__(False).replace('.', '_').replace('/', '_'):
-                     sm.sub_mods(next_depth) for sm in self._sub_mods})
-        return self.v
+                     sm.sub_mods(show_v, next_depth) for sm in self._sub_mods})
+        if show_v:
+            return self.v
+        return ''
 
     def show_sub_mods(self, depth=None):
         print(self.sub_mods(depth))
@@ -426,7 +428,7 @@ class Module(abc.ABC):
 
     def __repr__(self, full=True):
         if full:
-            return termcolor.colored(object.__repr__(self), 'green') + '\n' + self.sub_mods().__repr__()
+            return termcolor.colored(object.__repr__(self), 'green') + '\n' + self.sub_mods(False).__repr__()
         return object.__repr__(self)
 
     # Properties #
