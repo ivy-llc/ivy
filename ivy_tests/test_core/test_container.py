@@ -1526,6 +1526,15 @@ def test_container_at_key_chains(dev_str, call):
     assert 'd' not in new_container['b']
 
 
+def test_container_key_chains_containing(dev_str, call):
+    dict_in = {'a_sub': ivy.array([1], dev_str=dev_str),
+               'b': {'c': ivy.array([2], dev_str=dev_str), 'd_sub': ivy.array([3], dev_str=dev_str)}}
+    container = Container(dict_in)
+    kcs = container.key_chains_containing('sub')
+    assert kcs[0] == 'a_sub'
+    assert kcs[1] == 'b/d_sub'
+
+
 # noinspection PyUnresolvedReferences
 def test_container_set_at_keys(dev_str, call):
     dict_in = {'a': ivy.array([1], dev_str=dev_str),
