@@ -6,6 +6,7 @@ Base class for deriving trainable modules
 import os
 import abc
 import logging
+import termcolor
 
 # local
 import ivy
@@ -271,7 +272,8 @@ class Module(abc.ABC):
             else:
                 next_depth = None
             return ivy.Container(
-                {str(sm).replace('.', '_').replace('/', '_'): sm.sub_mods(next_depth) for sm in self._sub_mods})
+                {sm.__repr__(False).replace('.', '_').replace('/', '_'):
+                     sm.sub_mods(next_depth) for sm in self._sub_mods})
         return self.v
 
     def show_sub_mods(self, depth=None):
@@ -421,6 +423,11 @@ class Module(abc.ABC):
             # ToDo: verify variables in self.v are released once this method exits
             self.v = ivy.Container()
         return v_ret if bool(v_ret) or isinstance(built, bool) else built
+
+    def __repr__(self, full=True):
+        if full:
+            return termcolor.colored(object.__repr__(self), 'green') + '\n' + self.sub_mods().__repr__()
+        return object.__repr__(self)
 
     # Properties #
     # -----------#
