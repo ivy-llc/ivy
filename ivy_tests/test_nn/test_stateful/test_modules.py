@@ -582,18 +582,18 @@ def test_module_intermediate_rets(bs_ic_oc, dev_str, call):
     assert ret.shape == tuple(batch_shape + [64])
     int_rets = module.intermediate_rets
     for submod in [module._dl0, module._dl1]:
-        ret = int_rets[ivy.Container.format_key(submod.__repr__(False))]
+        ret = int_rets[ivy.Container.format_key(submod.__repr__(False), '_')]
         assert ivy.is_array(ret)
         assert ret.shape == tuple(batch_shape + [64])
     for submod in [module._dl0._l0, module._dl0._l1, module._dl1._l0, module._dl1._l1]:
-        assert ivy.Container.format_key(submod.__repr__(False)) not in int_rets
+        assert ivy.Container.format_key(submod.__repr__(False), '_') not in int_rets
 
     # depth 2 (full)
     ret = module(x, with_intermediate_rets=True)
     assert ret.shape == tuple(batch_shape + [64])
     int_rets = module.intermediate_rets
     for submod in [module._dl0, module._dl1, module._dl0._l0, module._dl0._l1, module._dl1._l0, module._dl1._l1]:
-        ret = int_rets[ivy.Container.format_key(submod.__repr__(False))]
+        ret = int_rets[ivy.Container.format_key(submod.__repr__(False), '_')]
         assert ivy.is_array(ret)
         assert ret.shape == tuple(batch_shape + [64])
 
@@ -602,8 +602,8 @@ def test_module_intermediate_rets(bs_ic_oc, dev_str, call):
     assert ret.shape == tuple(batch_shape + [64])
     int_rets = module.intermediate_rets
     for submod in [module._dl1, module._dl0._l0]:
-        ret = int_rets[ivy.Container.format_key(submod.__repr__(False))]
+        ret = int_rets[ivy.Container.format_key(submod.__repr__(False), '_')]
         assert ivy.is_array(ret)
         assert ret.shape == tuple(batch_shape + [64])
     for submod in [module._dl0, module._dl0._l1, module._dl1._l0, module._dl1._l1]:
-        assert ivy.Container.format_key(submod.__repr__(False)) not in int_rets
+        assert ivy.Container.format_key(submod.__repr__(False), '_') not in int_rets

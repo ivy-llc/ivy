@@ -1297,8 +1297,8 @@ def test_container_size_ordered_arrays(dev_str, call):
     container = Container(dict_in)
     size_ordered = container.size_ordered_arrays()
     assert np.allclose(ivy.to_numpy(size_ordered.a), np.array([[0., 1., 2., 3.]]))
-    assert np.allclose(ivy.to_numpy(size_ordered.b_c), np.array([[5., 10.]]))
-    assert np.allclose(ivy.to_numpy(size_ordered.b_d), np.array([[10., 9., 8.]]))
+    assert np.allclose(ivy.to_numpy(size_ordered.b__c), np.array([[5., 10.]]))
+    assert np.allclose(ivy.to_numpy(size_ordered.b__d), np.array([[10., 9., 8.]]))
     for v, arr in zip(size_ordered.values(), [np.array([[5., 10.]]),
                                               np.array([[10., 9., 8.]]),
                                               np.array([[0., 1., 2., 3.]])]):
@@ -1319,10 +1319,10 @@ def test_container_retrieval_time_ordered(dev_str, call):
     cont['b'].d
     cont.stop_logging_retrieval_times()
     cont_rto = cont.retrieval_time_ordered()
-    assert np.allclose(ivy.to_numpy(cont_rto.b_d_0), np.array([[10., 9., 8.]]))
-    assert np.allclose(ivy.to_numpy(cont_rto.a_0), np.array([[0., 1., 2., 3.]]))
-    assert np.allclose(ivy.to_numpy(cont_rto.b_c_0), np.array([[5., 10.]]))
-    assert np.allclose(ivy.to_numpy(cont_rto.b_d_1), np.array([[10., 9., 8.]]))
+    assert np.allclose(ivy.to_numpy(cont_rto.b__d__0), np.array([[10., 9., 8.]]))
+    assert np.allclose(ivy.to_numpy(cont_rto.a__0), np.array([[0., 1., 2., 3.]]))
+    assert np.allclose(ivy.to_numpy(cont_rto.b__c__0), np.array([[5., 10.]]))
+    assert np.allclose(ivy.to_numpy(cont_rto.b__d__1), np.array([[10., 9., 8.]]))
     for v, arr in zip(cont_rto.values(), [np.array([[10., 9., 8.]]),
                                           np.array([[0., 1., 2., 3.]]),
                                           np.array([[5., 10.]]),
@@ -1871,10 +1871,10 @@ def test_container_flatten_key_chains(dev_str, call):
     container_flat = container.flatten_key_chains()
     assert np.allclose(ivy.to_numpy(container_flat['a']), np.array([[1]]))
     assert np.allclose(ivy.to_numpy(container_flat.a), np.array([[1]]))
-    assert np.allclose(ivy.to_numpy(container_flat['b_c']), np.array([[2]]))
-    assert np.allclose(ivy.to_numpy(container_flat.b_c), np.array([[2]]))
-    assert np.allclose(ivy.to_numpy(container_flat['b_d']), np.array([[3]]))
-    assert np.allclose(ivy.to_numpy(container_flat.b_d), np.array([[3]]))
+    assert np.allclose(ivy.to_numpy(container_flat['b__c']), np.array([[2]]))
+    assert np.allclose(ivy.to_numpy(container_flat.b__c), np.array([[2]]))
+    assert np.allclose(ivy.to_numpy(container_flat['b__d']), np.array([[3]]))
+    assert np.allclose(ivy.to_numpy(container_flat.b__d), np.array([[3]]))
 
 
 def test_container_deep_copy(dev_str, call):
