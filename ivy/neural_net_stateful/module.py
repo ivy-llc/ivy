@@ -20,7 +20,7 @@ class Module(abc.ABC):
 
     def __init__(self, dev_str=None, v=None, build_mode='on_init', compile_on_next_step=False, store_vars=True,
                  stateful=None, arg_stateful_idxs=None, kwarg_stateful_idxs=None, fallback_to_non_compiled=False,
-                 dev_strs=None):
+                 with_intermediate_rets=False, dev_strs=None):
         """
         Initialze Ivy layer, which is a stateful object consisting of trainable variables.
 
@@ -47,6 +47,8 @@ class Module(abc.ABC):
         :param fallback_to_non_compiled: Whether to fall back to non-compiled forward call in the case that an error is
                                          raised during the compiled forward pass. Default is True.
         :type fallback_to_non_compiled: bool, optional
+        :param with_intermediate_rets: Whether to log intermediate return values between sub-modules. Default is False.
+        :type with_intermediate_rets: bool, optional
         :param dev_strs: devices on which to distribute the module's variables 'cuda:0', 'cuda:1', 'cpu' etc.
         :type dev_strs: sequence of str, optional
         :type build_mode: str, optional
@@ -71,6 +73,8 @@ class Module(abc.ABC):
         self.v = v
         self.top_v = None
         self.top_mod = None
+        self._with_intermediate_rets = with_intermediate_rets
+        self.intermediate_rets = ivy.Container()
         self._sub_mods = set()
         if build_mode != 'on_init':
             return
@@ -103,6 +107,12 @@ class Module(abc.ABC):
                 return self.top_mod(depth - 1) if depth > 1 else self
             return self.top_mod()
         return self
+
+    # noinspection PyProtectedMember
+    def with_intermediate_rets(self):
+        if ivy.exists(self.top_mod):
+            return self.top_mod()._with_intermediate_rets
+        return self._with_intermediate_rets
 
     def mod_depth(self):
         depth = 0
@@ -272,7 +282,7 @@ class Module(abc.ABC):
             else:
                 next_depth = None
             return ivy.Container(
-                {sm.__repr__(False).replace('.', '_').replace('/', '_'):
+                {ivy.Container.format_key(sm.__repr__(False)):
                      sm.sub_mods(show_v, next_depth) for sm in self._sub_mods})
         if show_v:
             return self.v
@@ -343,19 +353,26 @@ class Module(abc.ABC):
 
     def __call__(self, *args, v=None, with_grads=True, stateful=None, arg_stateful_idxs=None, kwarg_stateful_idxs=None,
                  **kwargs):
+        self.intermediate_rets.clear()
         if self._compiled and ivy.try_use_compiled:
             try:
                 return self._compiled_fn(*args, v=ivy.default(v, self.v), with_grads=with_grads, **kwargs)
             except Exception as e:
                 if self._fallback_to_non_compiled:
-                    return self._call(*args, v=v, with_grads=with_grads, **kwargs)
+                    ret = self._call(*args, v=v, with_grads=with_grads, **kwargs)
+                    if self.with_intermediate_rets() and ivy.exists(self.top_mod):
+                        self.top_mod().intermediate_rets[ivy.Container.format_key(self.__repr__(False))] = ret
+                    return ret
                 raise e
         elif self._compile_on_next_step and not self._compiled:
             self.compile_graph(*args, v=v, with_grads=with_grads, stateful=stateful,
                                arg_stateful_idxs=arg_stateful_idxs, kwarg_stateful_idxs=kwarg_stateful_idxs, **kwargs)
             self._compile_on_next_step = False
             return self._compiled_fn(*args, v=ivy.default(v, self.v), with_grads=with_grads, **kwargs)
-        return self._call(*args, v=v, with_grads=with_grads, **kwargs)
+        ret = self._call(*args, v=v, with_grads=with_grads, **kwargs)
+        if self.with_intermediate_rets() and ivy.exists(self.top_mod):
+            self.top_mod().intermediate_rets[ivy.Container.format_key(self.__repr__(False))] = ret
+        return ret
 
     def save_weights(self, weights_path):
         """

@@ -368,10 +368,10 @@ class DoubleLinear(ivy.Module):
 
 class WithNestedModules(ivy.Module):
 
-    def __init__(self, in_size, out_size, dev_str=None, hidden_size=64):
+    def __init__(self, in_size, out_size, with_intermediate_rets=False, dev_str=None, hidden_size=64):
         self._dl0 = DoubleLinear(in_size, hidden_size, dev_str=dev_str)
         self._dl1 = DoubleLinear(hidden_size, hidden_size, dev_str=dev_str)
-        ivy.Module.__init__(self, dev_str)
+        ivy.Module.__init__(self, with_intermediate_rets=with_intermediate_rets, dev_str=dev_str)
 
     def _forward(self, x):
         x = self._dl0(x)
@@ -504,3 +504,23 @@ def test_sub_modules(bs_ic_oc, dev_str, call):
     sub_mods = module.sub_mods()
     for v in [module._dl0._l0.v, module._dl0._l1.v, module._dl1._l0.v, module._dl1._l1.v]:
         assert v in sub_mods
+
+
+# module intermediate returns
+@pytest.mark.parametrize(
+    "bs_ic_oc", [([1, 2], 4, 5)])
+def test_module_intermediate_rets(bs_ic_oc, dev_str, call):
+    # smoke test
+    if call is helpers.np_call:
+        # NumPy does not support gradients
+        pytest.skip()
+    batch_shape, input_channels, output_channels = bs_ic_oc
+    x = ivy.cast(ivy.linspace(ivy.zeros(batch_shape), ivy.ones(batch_shape), input_channels), 'float32')
+    module = WithNestedModules(input_channels, output_channels, with_intermediate_rets=True, dev_str=dev_str)
+    ret = module(x)
+    assert ret.shape == tuple(batch_shape + [64])
+    int_rets = module.intermediate_rets
+    for submod in [module._dl0, module._dl1, module._dl0._l0, module._dl0._l1, module._dl1._l0, module._dl1._l1]:
+        ret = int_rets[ivy.Container.format_key(submod.__repr__(False))]
+        assert ivy.is_array(ret)
+        assert ret.shape == tuple(batch_shape + [64])
