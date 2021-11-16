@@ -73,6 +73,7 @@ class Module(abc.ABC):
         self.top_mod = None
         self._with_intermediate_rets = False
         self._intermediate_ret_depth = None
+        self._intermediate_ret_submods = None
         self.intermediate_rets = ivy.Container()
         self._sub_mods = set()
         if build_mode != 'on_init':
@@ -109,12 +110,17 @@ class Module(abc.ABC):
 
     # noinspection PyProtectedMember
     def with_intermediate_rets(self):
-        if ivy.exists(self.top_mod):
-            depth = self.top_mod()._intermediate_ret_depth
-            if ivy.exists(depth):
-                return self.top_mod(depth - 1)._with_intermediate_rets if depth > 0 else self._with_intermediate_rets
-            return self.top_mod()._with_intermediate_rets
-        return self._with_intermediate_rets
+        if not ivy.exists(self.top_mod):
+            return False
+        top_mod = self.top_mod()
+        submods = top_mod._intermediate_ret_submods
+        if ivy.exists(submods):
+            if self not in submods:
+                return False
+        depth = top_mod._intermediate_ret_depth
+        if ivy.exists(depth):
+            return self.top_mod(depth - 1)._with_intermediate_rets if depth > 0 else self._with_intermediate_rets
+        return top_mod._with_intermediate_rets
 
     def mod_depth(self):
         depth = 0
@@ -353,21 +359,30 @@ class Module(abc.ABC):
     def compile_on_next_step(self):
         self._compile_on_next_step = True
 
+    def _set_intermediate_ret_flags(self, with_intermediate_rets, intermediate_ret_depth, intermediate_ret_submods):
+        self._with_intermediate_rets = with_intermediate_rets
+        self._intermediate_ret_depth = intermediate_ret_depth
+        self._intermediate_ret_submods = intermediate_ret_submods
+
+    def _unset_intermediate_ret_flags(self):
+        self._with_intermediate_rets = False
+        self._intermediate_ret_depth = None
+        self._intermediate_ret_submods = None
+
     def __call__(self, *args, v=None, with_grads=True, stateful=None, arg_stateful_idxs=None, kwarg_stateful_idxs=None,
-                 with_intermediate_rets=False, intermediate_ret_depth=None, **kwargs):
+                 with_intermediate_rets=False, intermediate_ret_depth=None, intermediate_ret_submods=None, **kwargs):
         self.intermediate_rets.clear()
         if self._compiled and ivy.try_use_compiled:
             try:
                 return self._compiled_fn(*args, v=ivy.default(v, self.v), with_grads=with_grads, **kwargs)
             except Exception as e:
                 if self._fallback_to_non_compiled:
-                    self._with_intermediate_rets = with_intermediate_rets
-                    self._intermediate_ret_depth = intermediate_ret_depth
+                    self._set_intermediate_ret_flags(
+                        with_intermediate_rets, intermediate_ret_depth, intermediate_ret_submods)
                     ret = self._call(*args, v=v, with_grads=with_grads, **kwargs)
-                    if self.with_intermediate_rets() and ivy.exists(self.top_mod):
+                    if self.with_intermediate_rets():
                         self.top_mod().intermediate_rets[ivy.Container.format_key(self.__repr__(False))] = ret
-                    self._with_intermediate_rets = False
-                    self._intermediate_ret_depth = None
+                    self._unset_intermediate_ret_flags()
                     return ret
                 raise e
         elif self._compile_on_next_step and not self._compiled:
@@ -375,13 +390,12 @@ class Module(abc.ABC):
                                arg_stateful_idxs=arg_stateful_idxs, kwarg_stateful_idxs=kwarg_stateful_idxs, **kwargs)
             self._compile_on_next_step = False
             return self._compiled_fn(*args, v=ivy.default(v, self.v), with_grads=with_grads, **kwargs)
-        self._with_intermediate_rets = with_intermediate_rets
-        self._intermediate_ret_depth = intermediate_ret_depth
+        self._set_intermediate_ret_flags(
+            with_intermediate_rets, intermediate_ret_depth, intermediate_ret_submods)
         ret = self._call(*args, v=v, with_grads=with_grads, **kwargs)
-        if self.with_intermediate_rets() and ivy.exists(self.top_mod):
+        if self.with_intermediate_rets():
             self.top_mod().intermediate_rets[ivy.Container.format_key(self.__repr__(False))] = ret
-        self._with_intermediate_rets = False
-        self._intermediate_ret_depth = None
+        self._unset_intermediate_ret_flags()
         return ret
 
     def save_weights(self, weights_path):
