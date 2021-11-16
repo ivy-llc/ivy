@@ -1526,11 +1526,15 @@ def test_container_at_key_chains(dev_str, call):
     assert 'd' not in new_container['b']
 
 
-def test_container_key_chains_containing(dev_str, call):
-    dict_in = {'a_sub': ivy.array([1], dev_str=dev_str),
-               'b': {'c': ivy.array([2], dev_str=dev_str), 'd_sub': ivy.array([3], dev_str=dev_str)}}
+@pytest.mark.parametrize(
+    "include_empty", [True, False])
+def test_container_key_chains_containing(include_empty, dev_str, call):
+    a_val = Container() if include_empty else ivy.array([1], dev_str=dev_str)
+    bc_val = Container() if include_empty else ivy.array([2], dev_str=dev_str)
+    bd_val = Container() if include_empty else ivy.array([3], dev_str=dev_str)
+    dict_in = {'a_sub': a_val, 'b': {'c': bc_val, 'd_sub': bd_val}}
     container = Container(dict_in)
-    kcs = container.key_chains_containing('sub')
+    kcs = container.key_chains_containing('sub', include_empty)
     assert kcs[0] == 'a_sub'
     assert kcs[1] == 'b/d_sub'
 
