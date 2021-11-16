@@ -281,26 +281,25 @@ class Module(abc.ABC):
     # Public #
     # -------#
 
-    def sub_mods(self, show_v=True, depth=None):
+    def sub_mods(self, show_v=True, depth=None, flatten_key_chains=False):
         if self._sub_mods:
             if ivy.exists(depth):
                 if depth == 0:
-                    return self.v
+                    if show_v:
+                        return self.v
+                    return ''
                 next_depth = depth - 1
             else:
                 next_depth = None
-            return ivy.Container(
+            ret = ivy.Container(
                 {ivy.Container.format_key(sm.__repr__(False), '_'):
                      sm.sub_mods(show_v, next_depth) for sm in self._sub_mods})
+            if flatten_key_chains:
+                return ret.flatten_key_chains()
+            return ret
         if show_v:
             return self.v
         return ''
-
-    def show_sub_mods(self, depth=None, flatten_key_chains=False):
-        sub_mods = self.sub_mods(depth=depth)
-        if flatten_key_chains:
-            sub_mods = sub_mods.flatten_key_chains()
-        print(sub_mods)
 
     def show_v_in_top_v(self, depth=None, flatten_key_chains=False):
         if ivy.exists(self.top_v) and ivy.exists(self.v):
@@ -314,12 +313,16 @@ class Module(abc.ABC):
             print('both self.top_v and self.v must be initialized in order to show v in top_v,'
                   'but found\n\ntop_v: {}\n\nv: {}.'.format(self.top_v, self.v))
 
-    def v_with_top_v_key_chains(self, depth=None):
+    def v_with_top_v_key_chains(self, depth=None, flatten_key_chains=False):
         if ivy.exists(self.top_v) and ivy.exists(self.v):
             kc = self.top_v(depth).find_sub_container(self.v)
             if kc:
-                return self.v.restructure_key_chains({'': kc})
-            return self.v
+                ret = self.v.restructure_key_chains({'': kc})
+            else:
+                ret = self.v
+            if flatten_key_chains:
+                return ret.flatten_key_chains()
+            return ret
         else:
             print('both self.top_v and self.v must be initialized in order to show v in top_v,'
                   'but found\n\ntop_v: {}\n\nv: {}.'.format(self.top_v, self.v))
