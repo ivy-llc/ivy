@@ -296,12 +296,20 @@ class Module(abc.ABC):
             return self.v
         return ''
 
-    def show_sub_mods(self, depth=None):
-        print(self.sub_mods(depth))
+    def show_sub_mods(self, depth=None, flatten_key_chains=False):
+        sub_mods = self.sub_mods(depth=depth)
+        if flatten_key_chains:
+            sub_mods = sub_mods.flatten_key_chains()
+        print(sub_mods)
 
-    def show_v_in_top_v(self, depth=None):
+    def show_v_in_top_v(self, depth=None, flatten_key_chains=False):
         if ivy.exists(self.top_v) and ivy.exists(self.v):
-            self.top_v(depth).show_sub_container(self.v)
+            top_v = self.top_v(depth)
+            v = self.v
+            if flatten_key_chains:
+                top_v = top_v.flatten_key_chains()
+                v = self.v_with_top_v_key_chains(depth).flatten_key_chains()
+            top_v.show_sub_container(v)
         else:
             print('both self.top_v and self.v must be initialized in order to show v in top_v,'
                   'but found\n\ntop_v: {}\n\nv: {}.'.format(self.top_v, self.v))
@@ -316,12 +324,17 @@ class Module(abc.ABC):
             print('both self.top_v and self.v must be initialized in order to show v in top_v,'
                   'but found\n\ntop_v: {}\n\nv: {}.'.format(self.top_v, self.v))
 
-    def show_mod_in_top_mod(self, upper_depth=None, lower_depth=None):
+    def show_mod_in_top_mod(self, upper_depth=None, lower_depth=None, flatten_key_chains=False):
         if ivy.exists(self.top_mod):
             upper_depth = ivy.default(upper_depth, self.mod_depth())
             lower_depth = ivy.default(lower_depth, self.mod_height())
             mid_depth = upper_depth + lower_depth
-            self.top_mod(upper_depth).sub_mods(mid_depth).show_sub_container(self.sub_mods(lower_depth))
+            upper_sub_mods = self.top_mod(upper_depth).sub_mods(depth=mid_depth)
+            lower_sub_mods = self.sub_mods(depth=lower_depth)
+            if flatten_key_chains:
+                upper_sub_mods = upper_sub_mods.flatten_key_chains()
+                lower_sub_mods = lower_sub_mods.flatten_key_chains()
+            upper_sub_mods.show_sub_container(lower_sub_mods)
         else:
             print('self.top_mod must be initialized in order to show mod in top_mod,'
                   'but found\n\ntop_mod: {}'.format(self.top_mod))
