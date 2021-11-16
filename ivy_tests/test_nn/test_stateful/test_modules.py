@@ -492,11 +492,11 @@ def test_sub_modules(bs_ic_oc, dev_str, call):
     module = WithNestedModules(input_channels, output_channels, dev_str=dev_str)
 
     # depth 0
-    sub_mods = module.sub_mods(0)
+    sub_mods = module.sub_mods(depth=0)
     assert module.v is sub_mods
 
     # depth 1
-    sub_mods = module.sub_mods(1)
+    sub_mods = module.sub_mods(depth=1)
     for v in [module._dl0.v, module._dl1.v]:
         assert v in sub_mods
 
