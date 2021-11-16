@@ -306,6 +306,16 @@ class Module(abc.ABC):
             print('both self.top_v and self.v must be initialized in order to show v in top_v,'
                   'but found\n\ntop_v: {}\n\nv: {}.'.format(self.top_v, self.v))
 
+    def v_with_top_v_key_chains(self, depth=None):
+        if ivy.exists(self.top_v) and ivy.exists(self.v):
+            kc = self.top_v(depth).find_sub_container(self.v)
+            if kc:
+                return self.v.restructure_key_chains({'': kc})
+            return self.v
+        else:
+            print('both self.top_v and self.v must be initialized in order to show v in top_v,'
+                  'but found\n\ntop_v: {}\n\nv: {}.'.format(self.top_v, self.v))
+
     def show_mod_in_top_mod(self, upper_depth=None, lower_depth=None):
         if ivy.exists(self.top_mod):
             upper_depth = ivy.default(upper_depth, self.mod_depth())
