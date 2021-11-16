@@ -76,7 +76,7 @@ class Module(abc.ABC):
         self._submods_to_track = None
         self._track_submod_call_order = False
         self.submod_rets = ivy.Container()
-        self.submod_call_order = ivy.Container()
+        self.submod_call_order = ivy.Container(alphabetical_keys=False)
         self._sub_mods = set()
         if build_mode != 'on_init':
             return
@@ -275,6 +275,17 @@ class Module(abc.ABC):
         """
         raise NotImplementedError
 
+    def _forward_with_tracking(self, *args, **kwargs):
+        """
+        Forward pass while optionally tracking submodule returns and call order
+        """
+        if self.track_submod_call_order():
+            self._add_submod_enter()
+        ret = self._forward(*args, **kwargs)
+        if self.track_submod_rets():
+            self._add_intermediate_ret(ret)
+        return ret
+
     def _call(self, *args, v=None, with_grads=True, **kwargs):
         """
         the forward pass of the layer, treating layer instance as callable function.
@@ -286,7 +297,7 @@ class Module(abc.ABC):
             if not with_grads:
                 v = v.stop_gradients()
             self.v = Container(v, **v.config) if isinstance(v, Container) else Container(v)
-            ret = self._forward(*args, **kwargs)
+            ret = self._forward_with_tracking(*args, **kwargs)
             self.v = v_orig
             return ret
         elif hasattr(self.__call__, 'wrapped'):
@@ -294,10 +305,10 @@ class Module(abc.ABC):
         elif not with_grads:
             v_orig = self.v
             self.v = v_orig.stop_gradients()
-            ret = self._forward(*args, **kwargs)
+            ret = self._forward_with_tracking(*args, **kwargs)
             self.v = v_orig
             return ret
-        return self._forward(*args, **kwargs)
+        return self._forward_with_tracking(*args, **kwargs)
 
     # Public #
     # -------#
@@ -440,23 +451,25 @@ class Module(abc.ABC):
         else:
             sr[key] = [ret]
 
-    def _add_submod_enter_or_exit(self, e_or_e):
+    def _add_submod_enter(self):
         sco = self.top_mod().submod_call_order
         key_chain = self.mod_with_top_mod_key_chain()
         for key in key_chain[:-1]:
-            # ToDo: find the latest (highest number) version of this key
-            max_key = ''
+            kcs = sco.key_chains_containing(key, include_empty=True)
+            if kcs:
+                max_key = sorted(kcs, key=lambda kc: int(kc.split('_')[-1]))[-1].split('/')[0]
+            else:
+                max_key = key + '_0'
+                sco[max_key] = ivy.Container(alphabetical_keys=False)
             sco = sco[max_key]
         final_key = key_chain[-1]
-        # ToDo: create new key one larger than the highest found
-        new_key = ''
-        sco[new_key] = e_or_e
-
-    def _add_submod_enter(self):
-        self._add_submod_enter_or_exit('enter')
-
-    def _add_submod_exit(self):
-        self._add_submod_enter_or_exit('exit')
+        kcs = sco.key_chains_containing(final_key, include_empty=True)
+        if kcs:
+            max_key_idx = int(sorted(kcs, key=lambda kc: int(kc.split('_')[-1]))[-1].split('/')[-1].split('_')[-1])
+            max_key = final_key + '_{}'.format(max_key_idx)
+        else:
+            max_key = final_key + '_0'
+        sco[max_key] = ivy.Container(alphabetical_keys=False)
 
     def __call__(self, *args, v=None, with_grads=True, stateful=None, arg_stateful_idxs=None, kwarg_stateful_idxs=None,
                  track_submod_rets=False, submod_depth=None, submods_to_track=None, track_submod_call_order=False,
@@ -471,13 +484,7 @@ class Module(abc.ABC):
                     self._set_intermediate_ret_flags(
                         track_submod_rets, submod_depth, submods_to_track,
                         track_submod_call_order)
-                    if self.track_submod_call_order():
-                        self._add_submod_enter()
                     ret = self._call(*args, v=v, with_grads=with_grads, **kwargs)
-                    if self.track_submod_call_order():
-                        self._add_submod_exit()
-                    if self.track_submod_rets():
-                        self._add_intermediate_ret(ret)
                     self._unset_intermediate_ret_flags()
                     return ret
                 raise e
@@ -489,8 +496,6 @@ class Module(abc.ABC):
         self._set_intermediate_ret_flags(
             track_submod_rets, submod_depth, submods_to_track, track_submod_call_order)
         ret = self._call(*args, v=v, with_grads=with_grads, **kwargs)
-        if self.track_submod_rets():
-            self._add_intermediate_ret(ret)
         self._unset_intermediate_ret_flags()
         return ret
 

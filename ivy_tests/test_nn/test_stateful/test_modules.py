@@ -566,7 +566,7 @@ def test_sub_modules(bs_ic_oc, dev_str, call):
         assert v in sub_mods
 
 
-# with submod returns
+# track submod returns
 @pytest.mark.parametrize(
     "bs_ic_oc", [([1, 2], 4, 5)])
 def test_module_track_submod_rets(bs_ic_oc, dev_str, call):
