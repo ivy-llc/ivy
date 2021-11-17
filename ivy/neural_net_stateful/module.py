@@ -20,7 +20,7 @@ class Module(abc.ABC):
 
     def __init__(self, dev_str=None, v=None, build_mode='on_init', compile_on_next_step=False, store_vars=True,
                  stateful=None, arg_stateful_idxs=None, kwarg_stateful_idxs=None, fallback_to_non_compiled=False,
-                 dev_strs=None):
+                 with_partial_v=False, dev_strs=None):
         """
         Initialze Ivy layer, which is a stateful object consisting of trainable variables.
 
@@ -47,6 +47,8 @@ class Module(abc.ABC):
         :param fallback_to_non_compiled: Whether to fall back to non-compiled forward call in the case that an error is
                                          raised during the compiled forward pass. Default is True.
         :type fallback_to_non_compiled: bool, optional
+        :param with_partial_v: Whether to allow partial specification of variables. Default is False.
+        :type with_partial_v: bool, optional
         :param dev_strs: devices on which to distribute the module's variables 'cuda:0', 'cuda:1', 'cpu' etc.
         :type dev_strs: sequence of str, optional
         :type build_mode: str, optional
@@ -62,6 +64,7 @@ class Module(abc.ABC):
         self._arg_stateful_idxs = arg_stateful_idxs
         self._kwarg_stateful_idxs = kwarg_stateful_idxs
         self._fallback_to_non_compiled = fallback_to_non_compiled
+        self._with_partial_v = with_partial_v
         self._store_vars = store_vars
         self._built = False
         self._compiled = False
@@ -539,13 +542,16 @@ class Module(abc.ABC):
 
         # build variables based on locally built layers, if v not passed in constructor
         v_from_constructor = self._v_in
-        created = Container()
-        if not ivy.exists(v_from_constructor):
-            created = Container(self._create_variables(self._dev_str))
-            vs = Container(dict(**self._find_variables(self), **created))
-            self.v = vs
-        elif not isinstance(self.v, Container):
-            self.v = Container(self.v)
+        created = Container(self._create_variables(self._dev_str))
+        created_n_found = Container(dict(**self._find_variables(self), **created))
+        if ivy.exists(v_from_constructor):
+            if self._with_partial_v:
+                self.v = ivy.Container.combine(created_n_found, Container(v_from_constructor))
+            else:
+                assert ivy.Container.identical_structure([created_n_found, v_from_constructor])
+                self.v = Container(v_from_constructor)
+        else:
+            self.v = created_n_found
 
         # remove duplicates
         self.v, keychain_mappings = self._remove_duplicate_variables(self.v, created)
@@ -563,8 +569,8 @@ class Module(abc.ABC):
 
             # re-build variables based on additional child on-call layers, if v not passed in constructor
             if not ivy.exists(v_from_constructor):
-                vs = Container(dict(**self._find_variables(self), **self._create_variables(self._dev_str)))
-                self.v = vs
+                created_n_found = Container(dict(**self._find_variables(self), **self._create_variables(self._dev_str)))
+                self.v = created_n_found
 
             # remove further duplicates with self.v
             self.v, keychain_mappings = self._remove_duplicate_variables(self.v, created)
