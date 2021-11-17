@@ -2576,6 +2576,19 @@ class Container(dict):
             return
         return ret
 
+    def cutoff_at_height(self, height_cutoff, inplace=False):
+        copy = self.copy()
+        def _maybe_cutoff(cont, kc):
+            if copy[kc].depth > height_cutoff:
+                return cont
+            if inplace:
+                cont.clear()
+            return Container()
+        ret = self.map_conts(_maybe_cutoff, inplace=inplace)
+        if inplace:
+            return
+        return ret
+
     def _slice_keys(self, key_slice):
         keys = list(self.keys())
         if isinstance(key_slice, str):
