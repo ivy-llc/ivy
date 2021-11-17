@@ -2303,6 +2303,16 @@
 
         <span class="k">return</span> <span class="n">key_chain_found</span></div>
 
+<div class="viewcode-block" id="Container.contains_sub_structure"><a class="viewcode-back" href="../../../core/container/Container.html#ivy.core.container.Container.contains_sub_structure">[docs]</a>    <span class="k">def</span> <span class="nf">contains_sub_structure</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sub_cont</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Determine whether the current container contains the sub-container structure.</span>
+
+<span class="sd">        :param sub_cont: The sub-container to check.</span>
+<span class="sd">        :type sub_cont: ivy.Container</span>
+<span class="sd">        :return: Bool</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="kc">True</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">find_sub_structure</span><span class="p">(</span><span class="n">sub_cont</span><span class="p">),</span> <span class="nb">str</span><span class="p">)</span> <span class="k">else</span> <span class="kc">False</span></div>
+
 <div class="viewcode-block" id="Container.has_nans"><a class="viewcode-back" href="../../../core/container/Container.html#ivy.core.container.Container.has_nans">[docs]</a>    <span class="k">def</span> <span class="nf">has_nans</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">include_infs</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">leafwise</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Determine whether arrays in the container contain any nans, as well as infs or -infs if specified.</span>
