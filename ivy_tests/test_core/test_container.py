@@ -441,6 +441,16 @@ def test_container_find_sub_container(dev_str, call):
     assert found_kc == 'b'
 
 
+def test_container_find_sub_structure(dev_str, call):
+    dict_in = {'a': ivy.array([1], dev_str=dev_str),
+               'b': {'c': ivy.array([2], dev_str=dev_str), 'd': ivy.array([3], dev_str=dev_str)}}
+    top_cont = Container(dict_in)
+    sub_cont = Container({'c': ivy.array([4], dev_str=dev_str), 'd': ivy.array([5], dev_str=dev_str)})
+    assert not top_cont.find_sub_container(sub_cont)
+    found_kc = top_cont.find_sub_structure(sub_cont)
+    assert found_kc == 'b'
+
+
 def test_container_show_sub_container(dev_str, call):
     if call is helpers.mx_call:
         # ToDo: get this working for mxnet again, recent version update caused errors.
