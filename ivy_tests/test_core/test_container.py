@@ -360,6 +360,17 @@ def test_container_slice_keys(str_slice, dev_str, call):
     assert Container.identical([cont_sliced.d, sub_sub_cont])
     assert 'e' not in cont_sliced
 
+    # all depths
+    sub_cont = Container({'a': a_val, 'b': b_val, 'c': c_val, 'd': d_val, 'e': e_val})
+    sub_sub_cont = Container({'b': b_val, 'c': c_val, 'd': d_val})
+    cont = Container({'a': sub_cont, 'b': sub_cont, 'c': sub_cont, 'd': sub_cont, 'e': sub_cont})
+    cont_sliced = cont.slice_keys(slc, all_depths=True)
+    assert 'a' not in cont_sliced
+    assert Container.identical([cont_sliced.b, sub_sub_cont])
+    assert Container.identical([cont_sliced.c, sub_sub_cont])
+    assert Container.identical([cont_sliced.d, sub_sub_cont])
+    assert 'e' not in cont_sliced
+
 
 def test_container_show(dev_str, call):
     if call is helpers.mx_call:
