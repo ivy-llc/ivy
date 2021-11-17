@@ -2608,15 +2608,17 @@
                 <span class="n">out_cont</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
         <span class="k">return</span> <span class="n">out_cont</span></div>
 
-<div class="viewcode-block" id="Container.restructure_key_chains"><a class="viewcode-back" href="../../../core/container/Container.html#ivy.core.container.Container.restructure_key_chains">[docs]</a>    <span class="k">def</span> <span class="nf">restructure_key_chains</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">keychain_mapping</span><span class="p">):</span>
+<div class="viewcode-block" id="Container.restructure_key_chains"><a class="viewcode-back" href="../../../core/container/Container.html#ivy.core.container.Container.restructure_key_chains">[docs]</a>    <span class="k">def</span> <span class="nf">restructure_key_chains</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">keychain_mapping</span><span class="p">,</span> <span class="n">keep_orig</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Create a new container with the same contents, but a new key-chain structure. Given by the mapping with keys as</span>
 <span class="sd">        old key-chains and values as new key-chains.</span>
 
 <span class="sd">        :param keychain_mapping: A dict with keys as old key-chains and values as new key-chains.</span>
 <span class="sd">        :type keychain_mapping: dict</span>
+<span class="sd">        :param keep_orig: Whether to keep the original keys, are start from a new container. Default is True.</span>
+<span class="sd">        :type keep_orig: bool, optional</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">new_cont</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">()</span>
+        <span class="n">new_cont</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span> <span class="k">if</span> <span class="n">keep_orig</span> <span class="k">else</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">()</span>
         <span class="k">for</span> <span class="n">old_kc</span><span class="p">,</span> <span class="n">new_kc</span> <span class="ow">in</span> <span class="n">keychain_mapping</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="n">new_cont</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="o">.</span><span class="n">combine</span><span class="p">(</span><span class="n">new_cont</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">({</span><span class="n">new_kc</span><span class="p">:</span> <span class="bp">self</span><span class="p">[</span><span class="n">old_kc</span><span class="p">]}))</span>
         <span class="k">return</span> <span class="n">new_cont</span></div>
