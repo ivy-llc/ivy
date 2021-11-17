@@ -302,7 +302,9 @@ def test_container_cutoff_at_depth(inplace, dev_str, call):
     assert np.allclose(ivy.to_numpy(cont_cutoff.b.c.d.e), ivy.to_numpy(bcde_val))
 
 
-def test_container_slice_keys(dev_str, call):
+@pytest.mark.parametrize(
+    "str_slice", [True, False])
+def test_container_slice_keys(str_slice, dev_str, call):
 
     # values
     a_val = ivy.array([1], dev_str=dev_str)
@@ -311,9 +313,15 @@ def test_container_slice_keys(dev_str, call):
     d_val = ivy.array([4], dev_str=dev_str)
     e_val = ivy.array([5], dev_str=dev_str)
 
+    # slice
+    if str_slice:
+        slc = 'b:d'
+    else:
+        slc = slice(1, 4, 1)
+
     # test
     cont = Container({'a': a_val, 'b': b_val, 'c': c_val, 'd': d_val, 'e': e_val})
-    cont_sliced = cont.slice_keys(slice(1, 4, 1))
+    cont_sliced = cont.slice_keys(slc)
     assert 'a' not in cont_sliced
     assert np.allclose(ivy.to_numpy(cont_sliced.b), ivy.to_numpy(b_val))
     assert np.allclose(ivy.to_numpy(cont_sliced.c), ivy.to_numpy(c_val))
