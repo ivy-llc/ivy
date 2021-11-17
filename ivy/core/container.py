@@ -2591,7 +2591,16 @@ class Container(dict):
         # noinspection PyUnresolvedReferences
         return ret.at_key_chains(desired_keys)
 
-    def slice_keys(self, key_slice):
+    def slice_keys(self, key_slice, all_depths=False):
+        top_depth = self.depth
+        if all_depths:
+            if isinstance(key_slice, dict):
+                first_slice = list(key_slice.values())[0]
+                for d in range(0, top_depth+1):
+                    if d not in key_slice:
+                        key_slice[d] = first_slice
+            else:
+                key_slice = {d: key_slice for d in range(0, top_depth+1)}
         if isinstance(key_slice, dict):
             def _fn(cont, kc):
                 depth = 0 if kc == '' else len(kc.split('/'))
