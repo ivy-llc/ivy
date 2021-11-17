@@ -2756,6 +2756,13 @@
             <span class="k">return</span>
         <span class="k">return</span> <span class="n">ret</span></div>
 
+<div class="viewcode-block" id="Container.slice_keys"><a class="viewcode-back" href="../../../core/container/Container.html#ivy.core.container.Container.slice_keys">[docs]</a>    <span class="k">def</span> <span class="nf">slice_keys</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key_slice</span><span class="p">):</span>
+        <span class="n">ret</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">keys</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+        <span class="n">desired_keys</span> <span class="o">=</span> <span class="n">keys</span><span class="p">[</span><span class="n">key_slice</span><span class="p">]</span>
+        <span class="c1"># noinspection PyUnresolvedReferences</span>
+        <span class="k">return</span> <span class="n">ret</span><span class="o">.</span><span class="n">at_keys</span><span class="p">(</span><span class="n">desired_keys</span><span class="p">)</span></div>
+
 <div class="viewcode-block" id="Container.with_print_limit"><a class="viewcode-back" href="../../../core/container/Container.html#ivy.core.container.Container.with_print_limit">[docs]</a>    <span class="k">def</span> <span class="nf">with_print_limit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">print_limit</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="k">def</span> <span class="nf">_update_print_limit</span><span class="p">(</span><span class="n">cont</span><span class="p">,</span> <span class="n">_</span><span class="p">):</span>
             <span class="n">cont</span><span class="o">.</span><span class="n">_print_limit</span> <span class="o">=</span> <span class="n">print_limit</span>
