@@ -2557,6 +2557,7 @@ class Container(dict):
         keys = list(self.keys())
         if isinstance(key_slice, str):
             assert len(key_slice) == 3 and key_slice[1] == ':'
+            assert self._alphabetical_keys
             start_char = key_slice[0]
             end_char = key_slice[2]
             start_idx = min([i for i, k in enumerate(keys) if k[0] == start_char])
