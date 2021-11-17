@@ -3336,7 +3336,7 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">depth</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">kcs</span> <span class="o">=</span> <span class="p">[</span><span class="n">kc</span> <span class="k">for</span> <span class="n">kc</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">to_iterator_keys</span><span class="p">()]</span>
+        <span class="n">kcs</span> <span class="o">=</span> <span class="p">[</span><span class="n">kc</span> <span class="k">for</span> <span class="n">kc</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">to_iterator_keys</span><span class="p">(</span><span class="n">include_empty</span><span class="o">=</span><span class="kc">True</span><span class="p">)]</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">kcs</span><span class="p">:</span>
             <span class="k">return</span> <span class="mi">0</span>
         <span class="k">return</span> <span class="nb">max</span><span class="p">([</span><span class="nb">len</span><span class="p">(</span><span class="n">kc</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">))</span> <span class="k">for</span> <span class="n">kc</span> <span class="ow">in</span> <span class="n">kcs</span><span class="p">])</span></div>
