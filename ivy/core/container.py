@@ -2405,15 +2405,17 @@ class Container(dict):
                 out_cont[key] = value
         return out_cont
 
-    def restructure_key_chains(self, keychain_mapping):
+    def restructure_key_chains(self, keychain_mapping, keep_orig=True):
         """
         Create a new container with the same contents, but a new key-chain structure. Given by the mapping with keys as
         old key-chains and values as new key-chains.
 
         :param keychain_mapping: A dict with keys as old key-chains and values as new key-chains.
         :type keychain_mapping: dict
+        :param keep_orig: Whether to keep the original keys, are start from a new container. Default is True.
+        :type keep_orig: bool, optional
         """
-        new_cont = ivy.Container()
+        new_cont = self.copy() if keep_orig else ivy.Container()
         for old_kc, new_kc in keychain_mapping.items():
             new_cont = ivy.Container.combine(new_cont, ivy.Container({new_kc: self[old_kc]}))
         return new_cont
