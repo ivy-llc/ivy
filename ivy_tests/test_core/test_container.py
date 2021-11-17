@@ -303,6 +303,54 @@ def test_container_cutoff_at_depth(inplace, dev_str, call):
 
 
 @pytest.mark.parametrize(
+    "inplace", [True, False])
+def test_container_cutoff_at_height(inplace, dev_str, call):
+
+    # values
+    d_val = ivy.array([2], dev_str=dev_str)
+    e_val = ivy.array([3], dev_str=dev_str)
+
+    # height 0
+    cont = Container({'a': {'c': {'d': d_val}}, 'b': {'c': {'d': {'e': e_val}}}})
+    cont_cutoff = cont.cutoff_at_height(0, inplace=inplace)
+    if inplace:
+        cont_cutoff = cont
+    assert np.allclose(ivy.to_numpy(cont_cutoff.a.c.d), ivy.to_numpy(d_val))
+    assert np.allclose(ivy.to_numpy(cont_cutoff.b.c.d.e), ivy.to_numpy(e_val))
+
+    # height 1
+    cont = Container({'a': {'c': {'d': d_val}}, 'b': {'c': {'d': {'e': e_val}}}})
+    cont_cutoff = cont.cutoff_at_height(1, inplace=inplace)
+    if inplace:
+        cont_cutoff = cont
+    assert not cont_cutoff.a.c
+    assert not cont_cutoff.b.c.d
+
+    # height 2
+    cont = Container({'a': {'c': {'d': d_val}}, 'b': {'c': {'d': {'e': e_val}}}})
+    cont_cutoff = cont.cutoff_at_height(2, inplace=inplace)
+    if inplace:
+        cont_cutoff = cont
+    assert not cont_cutoff.a
+    assert not cont_cutoff.b.c
+
+    # height 3
+    cont = Container({'a': {'c': {'d': d_val}}, 'b': {'c': {'d': {'e': e_val}}}})
+    cont_cutoff = cont.cutoff_at_height(3, inplace=inplace)
+    if inplace:
+        cont_cutoff = cont
+    assert not cont_cutoff.a
+    assert not cont_cutoff.b
+
+    # height 4
+    cont = Container({'a': {'c': {'d': d_val}}, 'b': {'c': {'d': {'e': e_val}}}})
+    cont_cutoff = cont.cutoff_at_height(4, inplace=inplace)
+    if inplace:
+        cont_cutoff = cont
+    assert not cont_cutoff
+
+
+@pytest.mark.parametrize(
     "str_slice", [True, False])
 def test_container_slice_keys(str_slice, dev_str, call):
 
