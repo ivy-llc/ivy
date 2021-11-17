@@ -2553,6 +2553,13 @@ class Container(dict):
             return
         return ret
 
+    def slice_keys(self, key_slice):
+        ret = self.copy()
+        keys = list(self.keys())
+        desired_keys = keys[key_slice]
+        # noinspection PyUnresolvedReferences
+        return ret.at_keys(desired_keys)
+
     def with_print_limit(self, print_limit, inplace=False):
         def _update_print_limit(cont, _):
             cont._print_limit = print_limit
