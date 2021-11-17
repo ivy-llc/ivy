@@ -645,9 +645,12 @@ def test_module_track_submod_call_order(bs_ic_oc, dev_str, call):
     assert dl1_key_0 in sm_co[root_key_0]
     assert dl1_key_1 in sm_co[root_key_0]
 
-    assert not sm_co[root_key_0][dl0_key_0]
-    assert not sm_co[root_key_0][dl1_key_0]
-    assert not sm_co[root_key_0][dl1_key_1]
+    assert ivy.Container.identical(
+        [sm_co[root_key_0][dl0_key_0], module._dl0.v_with_top_v_key_chains(flatten_key_chains=True)])
+    assert ivy.Container.identical(
+        [sm_co[root_key_0][dl1_key_0], module._dl1.v_with_top_v_key_chains(flatten_key_chains=True)])
+    assert ivy.Container.identical(
+        [sm_co[root_key_0][dl1_key_1], module._dl1.v_with_top_v_key_chains(flatten_key_chains=True)])
 
     # depth 2 (full)
     ret = module(x, track_submod_call_order=True)
@@ -668,12 +671,18 @@ def test_module_track_submod_call_order(bs_ic_oc, dev_str, call):
     assert dl1_l0_key_0 in sm_co[root_key_0][dl1_key_1]
     assert dl1_l1_key_0 in sm_co[root_key_0][dl1_key_1]
 
-    assert not sm_co[root_key_0][dl0_key_0][dl0_l0_key_0]
-    assert not sm_co[root_key_0][dl0_key_0][dl0_l1_key_0]
-    assert not sm_co[root_key_0][dl1_key_0][dl1_l0_key_0]
-    assert not sm_co[root_key_0][dl1_key_0][dl1_l1_key_0]
-    assert not sm_co[root_key_0][dl1_key_1][dl1_l0_key_0]
-    assert not sm_co[root_key_0][dl1_key_1][dl1_l1_key_0]
+    assert ivy.Container.identical(
+        [sm_co[root_key_0][dl0_key_0][dl0_l0_key_0], module._dl0._l0.v_with_top_v_key_chains(flatten_key_chains=True)])
+    assert ivy.Container.identical(
+        [sm_co[root_key_0][dl0_key_0][dl0_l1_key_0], module._dl0._l1.v_with_top_v_key_chains(flatten_key_chains=True)])
+    assert ivy.Container.identical(
+        [sm_co[root_key_0][dl1_key_0][dl1_l0_key_0], module._dl1._l0.v_with_top_v_key_chains(flatten_key_chains=True)])
+    assert ivy.Container.identical(
+        [sm_co[root_key_0][dl1_key_0][dl1_l1_key_0], module._dl1._l1.v_with_top_v_key_chains(flatten_key_chains=True)])
+    assert ivy.Container.identical(
+        [sm_co[root_key_0][dl1_key_1][dl1_l0_key_0], module._dl1._l0.v_with_top_v_key_chains(flatten_key_chains=True)])
+    assert ivy.Container.identical(
+        [sm_co[root_key_0][dl1_key_1][dl1_l1_key_0], module._dl1._l1.v_with_top_v_key_chains(flatten_key_chains=True)])
 
     # partial submodules
     ret = module(x, track_submod_call_order=True, submods_to_track=[module._dl1, module._dl0._l0])
@@ -689,7 +698,10 @@ def test_module_track_submod_call_order(bs_ic_oc, dev_str, call):
 
     assert dl0_l0_key_0 in sm_co[root_key_0][dl0_key_0]
     assert dl0_l1_key_0 not in sm_co[root_key_0][dl0_key_0]
-    assert not sm_co[root_key_0][dl1_key_0]
-    assert not sm_co[root_key_0][dl1_key_1]
+    assert ivy.Container.identical(
+        [sm_co[root_key_0][dl1_key_0], module._dl1.v_with_top_v_key_chains(flatten_key_chains=True)])
+    assert ivy.Container.identical(
+        [sm_co[root_key_0][dl1_key_1], module._dl1.v_with_top_v_key_chains(flatten_key_chains=True)])
 
-    assert not sm_co[root_key_0][dl0_key_0][dl0_l0_key_0]
+    assert ivy.Container.identical(
+        [sm_co[root_key_0][dl0_key_0][dl0_l0_key_0], module._dl0._l0.v_with_top_v_key_chains(flatten_key_chains=True)])
