@@ -223,7 +223,7 @@
 
 <div class="viewcode-block" id="Module.__init__"><a class="viewcode-back" href="../../../neural_net_stateful/module/Module.html#ivy.neural_net_stateful.module.Module.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dev_str</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">v</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">build_mode</span><span class="o">=</span><span class="s1">&#39;on_init&#39;</span><span class="p">,</span> <span class="n">compile_on_next_step</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">store_vars</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
                  <span class="n">stateful</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">arg_stateful_idxs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">kwarg_stateful_idxs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">fallback_to_non_compiled</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-                 <span class="n">dev_strs</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+                 <span class="n">with_partial_v</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">dev_strs</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Initialze Ivy layer, which is a stateful object consisting of trainable variables.</span>
 
@@ -250,6 +250,8 @@
 <span class="sd">        :param fallback_to_non_compiled: Whether to fall back to non-compiled forward call in the case that an error is</span>
 <span class="sd">                                         raised during the compiled forward pass. Default is True.</span>
 <span class="sd">        :type fallback_to_non_compiled: bool, optional</span>
+<span class="sd">        :param with_partial_v: Whether to allow partial specification of variables. Default is False.</span>
+<span class="sd">        :type with_partial_v: bool, optional</span>
 <span class="sd">        :param dev_strs: devices on which to distribute the module&#39;s variables &#39;cuda:0&#39;, &#39;cuda:1&#39;, &#39;cpu&#39; etc.</span>
 <span class="sd">        :type dev_strs: sequence of str, optional</span>
 <span class="sd">        :type build_mode: str, optional</span>
@@ -265,6 +267,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_arg_stateful_idxs</span> <span class="o">=</span> <span class="n">arg_stateful_idxs</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_kwarg_stateful_idxs</span> <span class="o">=</span> <span class="n">kwarg_stateful_idxs</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_fallback_to_non_compiled</span> <span class="o">=</span> <span class="n">fallback_to_non_compiled</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_with_partial_v</span> <span class="o">=</span> <span class="n">with_partial_v</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_store_vars</span> <span class="o">=</span> <span class="n">store_vars</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_built</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_compiled</span> <span class="o">=</span> <span class="kc">False</span>
@@ -742,13 +745,16 @@
 
         <span class="c1"># build variables based on locally built layers, if v not passed in constructor</span>
         <span class="n">v_from_constructor</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_v_in</span>
-        <span class="n">created</span> <span class="o">=</span> <span class="n">Container</span><span class="p">()</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">v_from_constructor</span><span class="p">):</span>
-            <span class="n">created</span> <span class="o">=</span> <span class="n">Container</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_create_variables</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dev_str</span><span class="p">))</span>
-            <span class="n">vs</span> <span class="o">=</span> <span class="n">Container</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_find_variables</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span> <span class="o">**</span><span class="n">created</span><span class="p">))</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">v</span> <span class="o">=</span> <span class="n">vs</span>
-        <span class="k">elif</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="p">,</span> <span class="n">Container</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">v</span> <span class="o">=</span> <span class="n">Container</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="p">)</span>
+        <span class="n">created</span> <span class="o">=</span> <span class="n">Container</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_create_variables</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dev_str</span><span class="p">))</span>
+        <span class="n">created_n_found</span> <span class="o">=</span> <span class="n">Container</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_find_variables</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span> <span class="o">**</span><span class="n">created</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">v_from_constructor</span><span class="p">):</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_with_partial_v</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">v</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="o">.</span><span class="n">combine</span><span class="p">(</span><span class="n">created_n_found</span><span class="p">,</span> <span class="n">Container</span><span class="p">(</span><span class="n">v_from_constructor</span><span class="p">))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">assert</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="o">.</span><span class="n">identical_structure</span><span class="p">([</span><span class="n">created_n_found</span><span class="p">,</span> <span class="n">v_from_constructor</span><span class="p">])</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">v</span> <span class="o">=</span> <span class="n">Container</span><span class="p">(</span><span class="n">v_from_constructor</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">v</span> <span class="o">=</span> <span class="n">created_n_found</span>
 
         <span class="c1"># remove duplicates</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="p">,</span> <span class="n">keychain_mappings</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_remove_duplicate_variables</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="p">,</span> <span class="n">created</span><span class="p">)</span>
@@ -766,8 +772,8 @@
 
             <span class="c1"># re-build variables based on additional child on-call layers, if v not passed in constructor</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">v_from_constructor</span><span class="p">):</span>
-                <span class="n">vs</span> <span class="o">=</span> <span class="n">Container</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_find_variables</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_create_variables</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dev_str</span><span class="p">)))</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">v</span> <span class="o">=</span> <span class="n">vs</span>
+                <span class="n">created_n_found</span> <span class="o">=</span> <span class="n">Container</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_find_variables</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_create_variables</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dev_str</span><span class="p">)))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">v</span> <span class="o">=</span> <span class="n">created_n_found</span>
 
             <span class="c1"># remove further duplicates with self.v</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="p">,</span> <span class="n">keychain_mappings</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_remove_duplicate_variables</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="p">,</span> <span class="n">created</span><span class="p">)</span>
