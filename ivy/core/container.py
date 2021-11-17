@@ -2539,6 +2539,20 @@ class Container(dict):
         except KeyError:
             return self
 
+    def cutoff_at_depth(self, depth_cutoff, inplace=False):
+        total_depth = self.depth
+        copy = self.copy()
+        def _maybe_cutoff(cont, kc):
+            if total_depth - copy[kc].depth < depth_cutoff:
+                return cont
+            if inplace:
+                cont.clear()
+            return Container()
+        ret = self.map_conts(_maybe_cutoff, inplace=inplace)
+        if inplace:
+            return
+        return ret
+
     def with_print_limit(self, print_limit, inplace=False):
         def _update_print_limit(cont, _):
             cont._print_limit = print_limit
