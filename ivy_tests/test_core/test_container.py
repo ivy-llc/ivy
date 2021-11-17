@@ -261,6 +261,47 @@ def test_container_depth(dev_str, call):
     assert cont_depth4.depth == 4
 
 
+@pytest.mark.parametrize(
+    "inplace", [True, False])
+def test_container_cutoff_at_depth(inplace, dev_str, call):
+
+    # values
+    a_val = ivy.array([1], dev_str=dev_str)
+    bcde_val = ivy.array([2], dev_str=dev_str)
+
+    # depth 1
+    cont = Container({'a': a_val, 'b': {'c': {'d': {'e': bcde_val}}}})
+    cont_cutoff = cont.cutoff_at_depth(1, inplace=inplace)
+    if inplace:
+        cont_cutoff = cont
+    assert np.allclose(ivy.to_numpy(cont_cutoff.a), ivy.to_numpy(a_val))
+    assert not cont_cutoff.b
+
+    # depth 2
+    cont = Container({'a': a_val, 'b': {'c': {'d': {'e': bcde_val}}}})
+    cont_cutoff = cont.cutoff_at_depth(2, inplace=inplace)
+    if inplace:
+        cont_cutoff = cont
+    assert np.allclose(ivy.to_numpy(cont_cutoff.a), ivy.to_numpy(a_val))
+    assert not cont_cutoff.b.c
+
+    # depth 3
+    cont = Container({'a': a_val, 'b': {'c': {'d': {'e': bcde_val}}}})
+    cont_cutoff = cont.cutoff_at_depth(3, inplace=inplace)
+    if inplace:
+        cont_cutoff = cont
+    assert np.allclose(ivy.to_numpy(cont_cutoff.a), ivy.to_numpy(a_val))
+    assert not cont_cutoff.b.c.d
+
+    # depth 4
+    cont = Container({'a': a_val, 'b': {'c': {'d': {'e': bcde_val}}}})
+    cont_cutoff = cont.cutoff_at_depth(4, inplace=inplace)
+    if inplace:
+        cont_cutoff = cont
+    assert np.allclose(ivy.to_numpy(cont_cutoff.a), ivy.to_numpy(a_val))
+    assert np.allclose(ivy.to_numpy(cont_cutoff.b.c.d.e), ivy.to_numpy(bcde_val))
+
+
 def test_container_show(dev_str, call):
     if call is helpers.mx_call:
         # ToDo: get this working for mxnet again, recent version update caused errors.
