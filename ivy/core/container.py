@@ -3133,7 +3133,10 @@ class Container(dict):
 
     @property
     def depth(self):
-        return max([len(kc.split('/')) for kc in self.to_iterator_keys()])
+        kcs = [kc for kc in self.to_iterator_keys()]
+        if not kcs:
+            return 0
+        return max([len(kc.split('/')) for kc in kcs])
 
 
 class MultiDevContainer(Container):
