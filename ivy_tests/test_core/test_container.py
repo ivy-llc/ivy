@@ -2426,6 +2426,45 @@ def test_container_multi_map(dev_str, call):
     assert np.allclose(ivy.to_numpy(container_mapped.b.d), np.array([[8]]))
 
 
+def test_container_common_key_chains(dev_str, call):
+    arr1 = ivy.array([1], dev_str=dev_str)
+    arr2 = ivy.array([2], dev_str=dev_str)
+    arr3 = ivy.array([3], dev_str=dev_str)
+    cont0 = Container({'a': arr1, 'b': {'c': arr2, 'd': arr3}})
+    cont1 = Container({'b': {'c': arr2, 'd': arr3, 'e': arr1}})
+    cont2 = Container({'a': arr1, 'b': {'d': arr3, 'e': arr1}})
+
+    # 0
+    common_kcs = Container.common_key_chains([cont0])
+    assert len(common_kcs) == 3
+    assert 'a' in common_kcs
+    assert 'b/c' in common_kcs
+    assert 'b/d' in common_kcs
+
+    # 0-1
+    common_kcs = Container.common_key_chains([cont0, cont1])
+    assert len(common_kcs) == 2
+    assert 'b/c' in common_kcs
+    assert 'b/d' in common_kcs
+
+    # 0-2
+    common_kcs = Container.common_key_chains([cont0, cont2])
+    assert len(common_kcs) == 2
+    assert 'a' in common_kcs
+    assert 'b/d' in common_kcs
+
+    # 1-2
+    common_kcs = Container.common_key_chains([cont1, cont2])
+    assert len(common_kcs) == 2
+    assert 'b/d' in common_kcs
+    assert 'b/e' in common_kcs
+
+    # all
+    common_kcs = Container.common_key_chains([cont0, cont1, cont2])
+    assert len(common_kcs) == 1
+    assert 'b/d' in common_kcs
+
+
 def test_container_identical_structure(dev_str, call):
     # without key_chains specification
     container0 = Container({'a': ivy.array([1], dev_str=dev_str),
