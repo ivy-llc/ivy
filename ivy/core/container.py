@@ -2086,6 +2086,20 @@ class Container(dict):
         """
         return True if isinstance(self.find_sub_container(sub_cont), str) else False
 
+    def find_sub_structure(self, sub_struc_to_find):
+
+        key_chain_found = False
+
+        def _check_sub_cont(sub_cont, kc):
+            if ivy.Container.identical_structure([sub_cont, sub_struc_to_find]):
+                nonlocal key_chain_found
+                key_chain_found = kc
+            return sub_cont
+
+        self.map_conts(_check_sub_cont)
+
+        return key_chain_found
+
     def has_nans(self, include_infs=True, leafwise=False):
         """
         Determine whether arrays in the container contain any nans, as well as infs or -infs if specified.
