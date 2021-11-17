@@ -32,8 +32,8 @@ def test_layer_norm_layer(x_n_ns_n_target, with_v, dtype_str, tensor_fn, dev_str
     x = tensor_fn(x, dtype_str, dev_str)
     target = tensor_fn(target, dtype_str, dev_str)
     if with_v:
-        v = Container({'gamma': ivy.variable(ivy.ones_like(x)),
-                       'beta': ivy.variable(ivy.zeros_like(x))})
+        v = Container({'scale': ivy.variable(ivy.ones_like(x)),
+                       'offset': ivy.variable(ivy.zeros_like(x))})
     else:
         v = None
     norm_layer = ivy.LayerNorm(normalized_shape, dev_str=dev_str, v=v)
