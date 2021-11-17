@@ -2068,6 +2068,15 @@ def test_container_flatten_key_chains(dev_str, call):
     assert np.allclose(ivy.to_numpy(container_flat['b']['e__f__g']), np.array([[3]]))
     assert np.allclose(ivy.to_numpy(container_flat.b.e__f__g), np.array([[3]]))
 
+    # above height 1, below depth 1
+    container_flat = container.flatten_key_chains(above_height=1, below_depth=1)
+    assert np.allclose(ivy.to_numpy(container_flat['a']), np.array([[1]]))
+    assert np.allclose(ivy.to_numpy(container_flat.a), np.array([[1]]))
+    assert np.allclose(ivy.to_numpy(container_flat['b']['c']['d']), np.array([[2]]))
+    assert np.allclose(ivy.to_numpy(container_flat.b.c.d), np.array([[2]]))
+    assert np.allclose(ivy.to_numpy(container_flat['b']['e__f']['g']), np.array([[3]]))
+    assert np.allclose(ivy.to_numpy(container_flat.b.e__f.g), np.array([[3]]))
+
 
 def test_container_deep_copy(dev_str, call):
     dict_in = {'a': ivy.array([0.], dev_str=dev_str),
