@@ -2076,6 +2076,16 @@ class Container(dict):
 
         return key_chain_found
 
+    def contains_sub_container(self, sub_cont):
+        """
+        Determine whether the current container contains the sub-container, with matching structure and array values.
+
+        :param sub_cont: The sub-container to check.
+        :type sub_cont: ivy.Container
+        :return: Bool
+        """
+        return True if isinstance(self.find_sub_container(sub_cont), str) else False
+
     def has_nans(self, include_infs=True, leafwise=False):
         """
         Determine whether arrays in the container contain any nans, as well as infs or -infs if specified.
@@ -3022,7 +3032,7 @@ class Container(dict):
         if isinstance(key, str) and ('/' in key or '.' in key):
             return self.has_key_chain(key)
         elif isinstance(key, Container):
-            return True if isinstance(self.find_sub_container(key), str) else False
+            return self.contains_sub_container(key)
         else:
             return dict.__contains__(self, key)
 
