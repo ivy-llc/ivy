@@ -2038,15 +2038,35 @@ def test_container_restructure_key_chains(dev_str, call):
 
 def test_container_flatten_key_chains(dev_str, call):
     container = Container({'a': ivy.array([1], dev_str=dev_str),
-                           'b': {'c': ivy.array([2], dev_str=dev_str), 'd': ivy.array([3], dev_str=dev_str)}})
+                           'b': {'c': {'d': ivy.array([2], dev_str=dev_str)},
+                                 'e': {'f': {'g': ivy.array([3], dev_str=dev_str)}}}})
 
+    # full
     container_flat = container.flatten_key_chains()
     assert np.allclose(ivy.to_numpy(container_flat['a']), np.array([[1]]))
     assert np.allclose(ivy.to_numpy(container_flat.a), np.array([[1]]))
-    assert np.allclose(ivy.to_numpy(container_flat['b__c']), np.array([[2]]))
-    assert np.allclose(ivy.to_numpy(container_flat.b__c), np.array([[2]]))
-    assert np.allclose(ivy.to_numpy(container_flat['b__d']), np.array([[3]]))
-    assert np.allclose(ivy.to_numpy(container_flat.b__d), np.array([[3]]))
+    assert np.allclose(ivy.to_numpy(container_flat['b__c__d']), np.array([[2]]))
+    assert np.allclose(ivy.to_numpy(container_flat.b__c__d), np.array([[2]]))
+    assert np.allclose(ivy.to_numpy(container_flat['b__e__f__g']), np.array([[3]]))
+    assert np.allclose(ivy.to_numpy(container_flat.b__e__f__g), np.array([[3]]))
+
+    # above height 1
+    container_flat = container.flatten_key_chains(above_height=1)
+    assert np.allclose(ivy.to_numpy(container_flat['a']), np.array([[1]]))
+    assert np.allclose(ivy.to_numpy(container_flat.a), np.array([[1]]))
+    assert np.allclose(ivy.to_numpy(container_flat['b__c']['d']), np.array([[2]]))
+    assert np.allclose(ivy.to_numpy(container_flat.b__c.d), np.array([[2]]))
+    assert np.allclose(ivy.to_numpy(container_flat['b__e__f']['g']), np.array([[3]]))
+    assert np.allclose(ivy.to_numpy(container_flat.b__e__f.g), np.array([[3]]))
+
+    # below depth 1
+    container_flat = container.flatten_key_chains(below_depth=1)
+    assert np.allclose(ivy.to_numpy(container_flat['a']), np.array([[1]]))
+    assert np.allclose(ivy.to_numpy(container_flat.a), np.array([[1]]))
+    assert np.allclose(ivy.to_numpy(container_flat['b']['c__d']), np.array([[2]]))
+    assert np.allclose(ivy.to_numpy(container_flat.b.c__d), np.array([[2]]))
+    assert np.allclose(ivy.to_numpy(container_flat['b']['e__f__g']), np.array([[3]]))
+    assert np.allclose(ivy.to_numpy(container_flat.b.e__f__g), np.array([[3]]))
 
 
 def test_container_deep_copy(dev_str, call):

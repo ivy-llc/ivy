@@ -723,8 +723,16 @@ class Container(dict):
                 raise Exception(str(e) + '\nContainer reduce operation only valid for containers of arrays')
 
     @staticmethod
-    def format_key(key_chain, replacement='__'):
-        return key_chain.replace('/', replacement).replace('.', replacement)
+    def format_key(key_chain, replacement='__', above_height=None, below_depth=None):
+        # noinspection RegExpSingleCharAlternation
+        keys = re.split('/|\.', key_chain)
+        num_keys = len(keys)
+        assert not (above_height and below_depth), 'only one of above_height or below_depth can be selected at once.'
+        if above_height and num_keys > above_height:
+            return '/'.join([replacement.join(keys[0:-above_height])] + keys[-above_height:])
+        elif below_depth and num_keys > below_depth:
+            return '/'.join(keys[0:below_depth] + [replacement.join(keys[below_depth:])])
+        return replacement.join(keys)
 
     # Private Methods #
     # ----------------#
@@ -2395,11 +2403,12 @@ class Container(dict):
             new_cont = ivy.Container.combine(new_cont, ivy.Container({new_kc: self[old_kc]}))
         return new_cont
 
-    def flatten_key_chains(self, include_empty=False):
+    def flatten_key_chains(self, include_empty=False, above_height=None, below_depth=None):
         """
         Return a flat (depth-1) container, which all nested key-chains flattened.
         """
-        return Container({Container.format_key(kc): v for kc, v in self.to_iterator(include_empty=include_empty)})
+        return Container({Container.format_key(kc, above_height=above_height, below_depth=below_depth): v
+                          for kc, v in self.to_iterator(include_empty=include_empty)})
 
     def copy(self):
         """
