@@ -51,8 +51,8 @@ def _repr(x):
 class Container(dict):
 
     def __init__(self, dict_in=None, queues=None, queue_load_sizes=None, container_combine_method='list_join',
-                 queue_timeout=None, print_limit=10, print_indent=4, print_line_spacing=0, ivyh=None,
-                 default_key_color='green', keyword_color_dict=None, rebuild_child_containers=False,
+                 queue_timeout=None, print_limit=10, key_length_limit=20, print_indent=4, print_line_spacing=0,
+                 ivyh=None, default_key_color='green', keyword_color_dict=None, rebuild_child_containers=False,
                  types_to_iteratively_nest=None, alphabetical_keys=True, logging_retrieval_times=False, **kwargs):
         """
         Initialize container object from input dict representation.
@@ -72,6 +72,8 @@ class Container(dict):
         :type queue_timeout: float, optional
         :param print_limit: The total array size limit when printing the container. Default is 10.
         :type print_limit: int, optional
+        :param key_length_limit: The maximum key length when printing the container. Default is 20.
+        :type key_length_limit: int, optional
         :param print_indent: The number of whitespaces to use for indenting when printing the container. Default is 4.
         :type print_indent: int, optional
         :param print_line_spacing: The number of extra newlines to use between keys when printing the container.
@@ -99,6 +101,7 @@ class Container(dict):
         """
         self._queues = queues
         self._print_limit = print_limit
+        self._key_length_limit = key_length_limit
         self._print_indent = print_indent
         self._print_line_spacing = print_line_spacing
         self._container_combine_method = container_combine_method
@@ -2649,6 +2652,18 @@ class Container(dict):
     def remove_print_limit(self, inplace=False):
         return self.with_print_limit(None, inplace)
 
+    def with_key_length_limit(self, key_length_limit, inplace=False):
+        def _update_key_length_limit(cont, _):
+            cont._key_length_limit = key_length_limit
+            return cont
+        ret = self.map_conts(_update_key_length_limit, inplace=inplace)
+        if inplace:
+            return
+        return ret
+
+    def remove_key_length_limit(self, inplace=False):
+        return self.with_key_length_limit(None, inplace)
+
     def with_print_indent(self, print_indent, inplace=False):
         def _update_print_indent(cont, _):
             cont._print_indent = print_indent
@@ -2853,7 +2868,8 @@ class Container(dict):
             split_size = len(json_dumped_str_split)
             json_dumped_str =\
                 '":'.join([' "'.join(sub_str.split(' "')[:-1] +
-                                     [termcolor.colored(sub_str.split(' "')[-1], self._default_key_color)])
+                                     [termcolor.colored(sub_str.split(' "')[-1][0:self._key_length_limit],
+                                                        self._default_key_color)])
                            if i < split_size - 1 else sub_str
                            for i, sub_str in enumerate(json_dumped_str_split)])
             # remove quotation marks, shape tuple, and color other elements of the dict
