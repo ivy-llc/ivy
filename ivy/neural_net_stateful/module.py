@@ -451,13 +451,23 @@ class Module(abc.ABC):
         else:
             sr[key] = [ret]
 
+    # noinspection PyProtectedMember
+    def _is_submod_leaf(self):
+        submod_depth = self.top_mod()._submod_depth
+        submods_to_track = self.top_mod()._submods_to_track
+        return (ivy.exists(submod_depth) and self.mod_depth() == submod_depth) or \
+               self.mod_height() == 0 or \
+               (ivy.exists(submods_to_track) and self in submods_to_track)
+
     def _add_submod_enter(self):
         sco = self.top_mod().submod_call_order
         key_chain = self.mod_with_top_mod_key_chain()
         for key in key_chain[:-1]:
             kcs = sco.key_chains_containing(key, include_empty=True)
             if kcs:
-                max_key = sorted(kcs, key=lambda kc: int(kc.split('_')[-1]))[-1].split('/')[0]
+                max_key = sorted(
+                    kcs, key=lambda kc:
+                    int(kc.split('/')[-2 if ivy.is_array(sco[kc]) else -1].split('_')[-1]))[-1].split('/')[0]
             else:
                 max_key = key + '_0'
                 sco[max_key] = ivy.Container(alphabetical_keys=False)
@@ -465,11 +475,17 @@ class Module(abc.ABC):
         final_key = key_chain[-1]
         kcs = sco.key_chains_containing(final_key, include_empty=True)
         if kcs:
-            max_key_idx = int(sorted(kcs, key=lambda kc: int(kc.split('_')[-1]))[-1].split('/')[-1].split('_')[-1])
+            sorted_kcs =\
+                sorted(kcs, key=lambda kc: int(kc.split('/')[-2 if ivy.is_array(sco[kc]) else -1].split('_')[-1]))
+            chosen_kc = sorted_kcs[-1]
+            max_key_idx = int(chosen_kc.split('/')[-2 if ivy.is_array(sco[chosen_kc]) else -1].split('_')[-1])
             new_key = final_key + '_{}'.format(max_key_idx + 1)
         else:
             new_key = final_key + '_0'
-        sco[new_key] = ivy.Container(alphabetical_keys=False)
+        if self._is_submod_leaf():
+            sco[new_key] = self.v_with_top_v_key_chains(flatten_key_chains=True)
+        else:
+            sco[new_key] = ivy.Container(alphabetical_keys=False)
 
     def __call__(self, *args, v=None, with_grads=True, stateful=None, arg_stateful_idxs=None, kwarg_stateful_idxs=None,
                  track_submod_rets=False, submod_depth=None, submods_to_track=None, track_submod_call_order=False,
