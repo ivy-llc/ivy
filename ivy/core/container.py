@@ -476,7 +476,7 @@ class Container(dict):
         return Container(return_dict, **config)
 
     @staticmethod
-    def identical(containers, check_types=True, check_shapes=True, same_arrays=False, key_chains=None, to_apply=True,
+    def identical(containers, check_types=True, check_shapes=True, same_arrays=True, key_chains=None, to_apply=True,
                   key_chain=''):
         """
         Returns a single boolean as to whether the input containers have identical key-chains and data types.
@@ -487,7 +487,7 @@ class Container(dict):
         :type check_types: bool, optional
         :param check_shapes: Whether to also check whether the shapes of the leaf nodes are the same. Default is True.
         :type check_shapes: bool, optional
-        :param same_arrays: Whether to also check whether the arrays are the exact same instances. Default is False.
+        :param same_arrays: Whether to also check whether the arrays are the exact same instances. Default is True.
         :type same_arrays: bool, optional
         :param key_chains: The key-chains to apply or not apply the method to. Default is None.
         :type key_chains: list or dict of strs, optional
@@ -528,6 +528,29 @@ class Container(dict):
                 if not ret:
                     return False
         return True
+
+    @staticmethod
+    def identical_structure(containers, check_types=True, check_shapes=True, key_chains=None, to_apply=True,
+                            key_chain=''):
+        """
+        Returns a single boolean as to whether the input containers have identical structure.
+
+        :param containers: containers to map.
+        :type containers: sequence of Container objects
+        :param check_types: Whether to also check whether the datatypes of the leaf nodes are the same. Default is True.
+        :type check_types: bool, optional
+        :param check_shapes: Whether to also check whether the shapes of the leaf nodes are the same. Default is True.
+        :type check_shapes: bool, optional
+        :param key_chains: The key-chains to apply or not apply the method to. Default is None.
+        :type key_chains: list or dict of strs, optional
+        :param to_apply: If True, the method will be applied to key_chains, otherwise key_chains will be skipped.
+                         Default is True.
+        :type to_apply: bool, optional
+        :param key_chain: Chain of keys for this dict entry
+        :type key_chain: str
+        :return: Boolean
+        """
+        return Container.identical(containers, check_types, check_shapes, False, key_chains, to_apply, key_chain)
 
     @staticmethod
     def identical_array_shapes(containers, exclusive=False):
@@ -2021,7 +2044,7 @@ class Container(dict):
         key_chain_found = False
 
         def _check_sub_cont(sub_cont, kc):
-            if ivy.Container.identical([sub_cont, sub_cont_to_find], same_arrays=True):
+            if ivy.Container.identical([sub_cont, sub_cont_to_find]):
                 nonlocal key_chain_found
                 key_chain_found = kc
             return sub_cont
