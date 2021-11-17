@@ -12,11 +12,11 @@ import ivy_tests.helpers as helpers
 
 class TrainableModule(ivy.Module):
 
-    def __init__(self, in_size, out_size, dev_str=None, hidden_size=64):
+    def __init__(self, in_size, out_size, dev_str=None, hidden_size=64, v=None, with_partial_v=False):
         self._linear0 = ivy.Linear(in_size, hidden_size, dev_str=dev_str)
         self._linear1 = ivy.Linear(hidden_size, hidden_size, dev_str=dev_str)
         self._linear2 = ivy.Linear(hidden_size, out_size, dev_str=dev_str)
-        ivy.Module.__init__(self, dev_str)
+        ivy.Module.__init__(self, dev_str, v=v, with_partial_v=with_partial_v)
 
     def _forward(self, x):
         x = ivy.expand_dims(x, 0)
@@ -147,6 +147,40 @@ def test_module_w_list_training(bs_ic_oc, dev_str, compile_graph, call):
         return
     if not ivy.wrapped_mode():
         helpers.assert_compilable(loss_fn)
+
+
+# module with partial v
+@pytest.mark.parametrize(
+    "bs_ic_oc", [([1, 2], 4, 5)])
+def test_module_w_partial_v(bs_ic_oc, dev_str, compile_graph, call):
+    # smoke test
+    if call is helpers.np_call:
+        # NumPy does not support gradients
+        pytest.skip()
+    batch_shape, input_channels, output_channels = bs_ic_oc
+    x = ivy.cast(ivy.linspace(ivy.zeros(batch_shape), ivy.ones(batch_shape), input_channels), 'float32')
+    v = ivy.Container({
+        'linear0': {
+            'b': ivy.random_uniform(shape=[64])
+        },
+        'linear1': {
+            'w': ivy.random_uniform(shape=[64, 64])
+        },
+        'linear2': {
+            'b': ivy.random_uniform(shape=[5])
+        }
+    })
+    try:
+        module = TrainableModule(input_channels, output_channels, dev_str=dev_str, v=v)
+        raise Exception('TrainableModule did not raise exception desipite being passed with wrongly shaped variables.')
+    except AssertionError:
+        pass
+    module = TrainableModule(input_channels, output_channels, dev_str=dev_str, v=v, with_partial_v=True)
+    # compile if this mode is set
+    if compile_graph and call is helpers.torch_call:
+        # Currently only PyTorch is supported for ivy compilation
+        module.compile_graph(x)
+    module(x)
 
 
 class ModuleWithNoneAttribute(ivy.Module):
