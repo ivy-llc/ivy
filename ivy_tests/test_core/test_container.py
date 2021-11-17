@@ -2104,15 +2104,20 @@ def test_container_deep_copy(dev_str, call):
 
 
 def test_container_contains(dev_str, call):
-    dict_in = {'a': ivy.array([0.], dev_str=dev_str),
-               'b': {'c': ivy.array([1.], dev_str=dev_str), 'd': ivy.array([2.], dev_str=dev_str)}}
-    container = Container(dict_in)
+    sub_cont = Container({'c': ivy.array([1.], dev_str=dev_str), 'd': ivy.array([2.], dev_str=dev_str)})
+    container = Container({'a': ivy.array([0.], dev_str=dev_str), 'b': sub_cont})
+
+    # keys
     assert 'a' in container
     assert 'b' in container
     assert 'c' not in container
     assert 'b/c' in container
     assert 'd' not in container
     assert 'b/d' in container
+
+    # sub-container
+    assert container.contains_sub_container(sub_cont)
+    assert sub_cont in container
 
 
 def test_container_shuffle(dev_str, call):
