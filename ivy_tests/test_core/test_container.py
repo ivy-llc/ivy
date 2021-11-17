@@ -1701,6 +1701,20 @@ def test_container_at_key_chains(dev_str, call):
 
 @pytest.mark.parametrize(
     "include_empty", [True, False])
+def test_container_all_key_chains(include_empty, dev_str, call):
+    a_val = Container() if include_empty else ivy.array([1], dev_str=dev_str)
+    bc_val = Container() if include_empty else ivy.array([2], dev_str=dev_str)
+    bd_val = Container() if include_empty else ivy.array([3], dev_str=dev_str)
+    dict_in = {'a': a_val, 'b': {'c': bc_val, 'd': bd_val}}
+    container = Container(dict_in)
+    kcs = container.all_key_chains(include_empty)
+    assert kcs[0] == 'a'
+    assert kcs[1] == 'b/c'
+    assert kcs[2] == 'b/d'
+
+
+@pytest.mark.parametrize(
+    "include_empty", [True, False])
 def test_container_key_chains_containing(include_empty, dev_str, call):
     a_val = Container() if include_empty else ivy.array([1], dev_str=dev_str)
     bc_val = Container() if include_empty else ivy.array([2], dev_str=dev_str)
