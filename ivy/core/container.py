@@ -740,6 +740,15 @@ class Container(dict):
             del flat_keys[0:below_depth]
         return '/'.join([k for k in ['/'.join(pre_keys), replacement.join(flat_keys), '/'.join(post_keys)] if k])
 
+    @staticmethod
+    def trim_key(key, max_length):
+        key_len = len(key)
+        if key_len <= max_length:
+            return key
+        idxs =\
+            _np.round((key_len-1)/(max_length-1) * _np.linspace(0, max_length-1, max_length)).astype(_np.int32).tolist()
+        return ''.join([key[idx] for idx in idxs])
+
     # Private Methods #
     # ----------------#
 
@@ -2868,8 +2877,9 @@ class Container(dict):
             split_size = len(json_dumped_str_split)
             json_dumped_str =\
                 '":'.join([' "'.join(sub_str.split(' "')[:-1] +
-                                     [termcolor.colored(sub_str.split(' "')[-1][0:self._key_length_limit],
-                                                        self._default_key_color)])
+                                     [termcolor.colored(
+                                         Container.trim_key(sub_str.split(' "')[-1], self._key_length_limit),
+                                         self._default_key_color)])
                            if i < split_size - 1 else sub_str
                            for i, sub_str in enumerate(json_dumped_str_split)])
             # remove quotation marks, shape tuple, and color other elements of the dict
