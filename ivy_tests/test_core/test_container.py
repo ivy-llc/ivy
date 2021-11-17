@@ -319,13 +319,23 @@ def test_container_slice_keys(str_slice, dev_str, call):
     else:
         slc = slice(1, 4, 1)
 
-    # test
+    # without dict
     cont = Container({'a': a_val, 'b': b_val, 'c': c_val, 'd': d_val, 'e': e_val})
     cont_sliced = cont.slice_keys(slc)
     assert 'a' not in cont_sliced
     assert np.allclose(ivy.to_numpy(cont_sliced.b), ivy.to_numpy(b_val))
     assert np.allclose(ivy.to_numpy(cont_sliced.c), ivy.to_numpy(c_val))
     assert np.allclose(ivy.to_numpy(cont_sliced.d), ivy.to_numpy(d_val))
+    assert 'e' not in cont_sliced
+
+    # with dict, depth 0
+    sub_cont = Container({'a': a_val, 'b': b_val, 'c': c_val, 'd': d_val, 'e': e_val})
+    cont = Container({'a': sub_cont, 'b': sub_cont, 'c': sub_cont, 'd': sub_cont, 'e': sub_cont})
+    cont_sliced = cont.slice_keys({0: slc})
+    assert 'a' not in cont_sliced
+    assert Container.identical([cont_sliced.b, sub_cont])
+    assert Container.identical([cont_sliced.c, sub_cont])
+    assert Container.identical([cont_sliced.d, sub_cont])
     assert 'e' not in cont_sliced
 
 
