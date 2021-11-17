@@ -2115,6 +2115,7 @@ def test_container_deep_copy(dev_str, call):
 
 def test_container_contains(dev_str, call):
     sub_cont = Container({'c': ivy.array([1.], dev_str=dev_str), 'd': ivy.array([2.], dev_str=dev_str)})
+    sub_struc = Container({'c': ivy.array([3.], dev_str=dev_str), 'd': ivy.array([4.], dev_str=dev_str)})
     container = Container({'a': ivy.array([0.], dev_str=dev_str), 'b': sub_cont})
 
     # keys
@@ -2128,6 +2129,11 @@ def test_container_contains(dev_str, call):
     # sub-container
     assert container.contains_sub_container(sub_cont)
     assert sub_cont in container
+
+    # sub-structure
+    assert not container.contains_sub_container(sub_struc)
+    assert sub_struc not in container
+    assert container.contains_sub_structure(sub_struc)
 
 
 def test_container_shuffle(dev_str, call):
