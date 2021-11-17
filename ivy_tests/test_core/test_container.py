@@ -2465,6 +2465,32 @@ def test_container_common_key_chains(dev_str, call):
     assert 'b/d' in common_kcs
 
 
+def test_container_identical(dev_str, call):
+    # without key_chains specification
+    arr1 = ivy.array([1], dev_str=dev_str)
+    arr2 = ivy.array([2], dev_str=dev_str)
+    arr3 = ivy.array([3], dev_str=dev_str)
+    container0 = Container({'a': arr1, 'b': {'c': arr2, 'd': arr3}})
+    container1 = Container({'a': arr1, 'b': {'c': arr2, 'd': arr3}})
+    container2 = Container({'a': ivy.array([1], dev_str=dev_str),
+                            'b': {'c': ivy.array([2], dev_str=dev_str), 'd': ivy.array([3], dev_str=dev_str)}})
+    container3 = Container({'b': {'d': arr3}})
+
+    # the same
+    assert ivy.Container.identical([container0, container1])
+    assert ivy.Container.identical([container1, container0])
+
+    # not the same
+    assert not ivy.Container.identical([container0, container2])
+    assert not ivy.Container.identical([container2, container0])
+    assert not ivy.Container.identical([container1, container2])
+    assert not ivy.Container.identical([container2, container1])
+
+    # partial
+    assert ivy.Container.identical([container0, container3], partial=True)
+    assert ivy.Container.identical([container3, container0], partial=True)
+
+
 def test_container_identical_structure(dev_str, call):
     # without key_chains specification
     container0 = Container({'a': ivy.array([1], dev_str=dev_str),
@@ -2477,6 +2503,7 @@ def test_container_identical_structure(dev_str, call):
     container3 = Container({'a': ivy.array([3], dev_str=dev_str),
                             'b': {'c': ivy.array([4], dev_str=dev_str), 'd': ivy.array([5], dev_str=dev_str)},
                             'e': ivy.array([6], dev_str=dev_str)})
+    container4 = Container({'b': {'d': ivy.array([4], dev_str=dev_str)}})
 
     # with identical
     assert ivy.Container.identical_structure([container0, container1])
@@ -2489,26 +2516,12 @@ def test_container_identical_structure(dev_str, call):
     assert not ivy.Container.identical_structure([container1, container2])
     assert not ivy.Container.identical_structure([container1, container0, container2])
 
-
-def test_container_same_arrays(dev_str, call):
-    # without key_chains specification
-    arr1 = ivy.array([1], dev_str=dev_str)
-    arr2 = ivy.array([2], dev_str=dev_str)
-    arr3 = ivy.array([3], dev_str=dev_str)
-    container0 = Container({'a': arr1, 'b': {'c': arr2, 'd': arr3}})
-    container1 = Container({'a': arr1, 'b': {'c': arr2, 'd': arr3}})
-    container2 = Container({'a': ivy.array([1], dev_str=dev_str),
-                            'b': {'c': ivy.array([2], dev_str=dev_str), 'd': ivy.array([3], dev_str=dev_str)}})
-
-    # the same
-    assert ivy.Container.identical([container0, container1], same_arrays=True)
-    assert ivy.Container.identical([container1, container0], same_arrays=True)
-
-    # not the same
-    assert not ivy.Container.identical([container0, container2], same_arrays=True)
-    assert not ivy.Container.identical([container2, container0], same_arrays=True)
-    assert not ivy.Container.identical([container1, container2], same_arrays=True)
-    assert not ivy.Container.identical([container2, container1], same_arrays=True)
+    # partial
+    assert ivy.Container.identical_structure([container0, container4], partial=True)
+    assert ivy.Container.identical_structure([container1, container4], partial=True)
+    assert ivy.Container.identical_structure([container2, container4], partial=True)
+    assert ivy.Container.identical_structure([container3, container4], partial=True)
+    assert ivy.Container.identical_structure([container4, container4], partial=True)
 
 
 def test_container_identical_array_shapes(dev_str, call):
