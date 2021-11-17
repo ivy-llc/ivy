@@ -2554,8 +2554,15 @@ class Container(dict):
         return ret
 
     def slice_keys(self, key_slice):
-        ret = self.copy()
         keys = list(self.keys())
+        if isinstance(key_slice, str):
+            assert len(key_slice) == 3 and key_slice[1] == ':'
+            start_char = key_slice[0]
+            end_char = key_slice[2]
+            start_idx = min([i for i, k in enumerate(keys) if k[0] == start_char])
+            end_idx = max([i for i, k in enumerate(keys) if k[0] == end_char]) + 1
+            key_slice = slice(start_idx, end_idx, 1)
+        ret = self.copy()
         desired_keys = keys[key_slice]
         # noinspection PyUnresolvedReferences
         return ret.at_keys(desired_keys)
