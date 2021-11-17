@@ -439,6 +439,8 @@ def test_container_find_sub_container(dev_str, call):
     assert sub_cont in top_cont
     found_kc = top_cont.find_sub_container(sub_cont)
     assert found_kc == 'b'
+    found_kc = top_cont.find_sub_container(top_cont)
+    assert found_kc == ''
 
 
 def test_container_find_sub_structure(dev_str, call):
@@ -449,6 +451,8 @@ def test_container_find_sub_structure(dev_str, call):
     assert not top_cont.find_sub_container(sub_cont)
     found_kc = top_cont.find_sub_structure(sub_cont)
     assert found_kc == 'b'
+    found_kc = top_cont.find_sub_structure(top_cont)
+    assert found_kc == ''
 
 
 def test_container_show_sub_container(dev_str, call):
@@ -2127,6 +2131,7 @@ def test_container_contains(dev_str, call):
     assert 'b/d' in container
 
     # sub-container
+    assert container.contains_sub_container(container)
     assert container.contains_sub_container(sub_cont)
     assert sub_cont in container
 
@@ -2134,6 +2139,7 @@ def test_container_contains(dev_str, call):
     assert not container.contains_sub_container(sub_struc)
     assert sub_struc not in container
     assert container.contains_sub_structure(sub_struc)
+    assert container.contains_sub_structure(container)
 
 
 def test_container_shuffle(dev_str, call):
