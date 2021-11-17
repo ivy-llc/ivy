@@ -3133,7 +3133,7 @@ class Container(dict):
 
     @property
     def depth(self):
-        kcs = [kc for kc in self.to_iterator_keys()]
+        kcs = [kc for kc in self.to_iterator_keys(include_empty=True)]
         if not kcs:
             return 0
         return max([len(kc.split('/')) for kc in kcs])
