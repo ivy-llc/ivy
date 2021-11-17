@@ -494,7 +494,7 @@ class Container(dict):
 
     @staticmethod
     def identical(containers, check_types=True, check_shapes=True, same_arrays=True, key_chains=None, to_apply=True,
-                  key_chain=''):
+                  partial=False, key_chain=''):
         """
         Returns a single boolean as to whether the input containers have identical key-chains and data types.
 
@@ -511,10 +511,15 @@ class Container(dict):
         :param to_apply: If True, the method will be applied to key_chains, otherwise key_chains will be skipped.
                          Default is True.
         :type to_apply: bool, optional
+        :param partial: Whether to also check for partially complete sub-containers. Default is False.
+        :type partial: bool, optional
         :param key_chain: Chain of keys for this dict entry
         :type key_chain: str
         :return: Boolean
         """
+        if partial:
+            common_key_chains = Container.common_key_chains(containers)
+            containers = [cont.at_key_chains(common_key_chains) for cont in containers]
         keys = set([i for sl in [list(cont.keys()) for cont in containers] for i in sl])
         # noinspection PyProtectedMember
         for key in keys:
@@ -548,7 +553,7 @@ class Container(dict):
 
     @staticmethod
     def identical_structure(containers, check_types=True, check_shapes=True, key_chains=None, to_apply=True,
-                            key_chain=''):
+                            partial=False, key_chain=''):
         """
         Returns a single boolean as to whether the input containers have identical structure.
 
@@ -563,11 +568,14 @@ class Container(dict):
         :param to_apply: If True, the method will be applied to key_chains, otherwise key_chains will be skipped.
                          Default is True.
         :type to_apply: bool, optional
+        :param partial: Whether to also check for partially complete sub-containers. Default is False.
+        :type partial: bool, optional
         :param key_chain: Chain of keys for this dict entry
         :type key_chain: str
         :return: Boolean
         """
-        return Container.identical(containers, check_types, check_shapes, False, key_chains, to_apply, key_chain)
+        return Container.identical(containers, check_types, check_shapes, False, key_chains, to_apply, partial,
+                                   key_chain)
 
     @staticmethod
     def identical_array_shapes(containers, exclusive=False):
