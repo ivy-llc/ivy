@@ -31,10 +31,10 @@ class LayerNorm(Module):
         self._epsilon = epsilon
         self._elementwise_affine = elementwise_affine
         self._new_std = new_std
-        self._gamma_shape = normalized_shape
-        self._beta_shape = normalized_shape
-        self._gamma_init = Ones()
-        self._beta_init = Zeros()
+        self._scale_shape = normalized_shape
+        self._offset_shape = normalized_shape
+        self._scale_init = Ones()
+        self._offset_init = Zeros()
         Module.__init__(self, dev_str, v)
 
     def _create_variables(self, dev_str):
@@ -42,8 +42,8 @@ class LayerNorm(Module):
         Create internal variables for the layer
         """
         if self._elementwise_affine:
-            return {'gamma': self._gamma_init.create_variables(self._gamma_shape, dev_str),
-                    'beta': self._beta_init.create_variables(self._beta_shape, dev_str)}
+            return {'scale': self._scale_init.create_variables(self._scale_shape, dev_str),
+                    'offset': self._offset_init.create_variables(self._offset_shape, dev_str)}
         return {}
 
     def _forward(self, inputs):
@@ -55,6 +55,6 @@ class LayerNorm(Module):
         :return: The outputs following the layer normalization operation.
         """
         return ivy.layer_norm(inputs, self._normalized_idxs, epsilon=self._epsilon,
-                              gamma=self.v.gamma if self._elementwise_affine else None,
-                              beta=self.v.beta if self._elementwise_affine else None,
+                              scale=self.v.scale if self._elementwise_affine else None,
+                              offset=self.v.offset if self._elementwise_affine else None,
                               new_std=self._new_std)
