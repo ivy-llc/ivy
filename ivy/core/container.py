@@ -2423,7 +2423,7 @@ class Container(dict):
         Return a flat (depth-1) container, which all nested key-chains flattened.
         """
         return Container({Container.format_key(kc, above_height=above_height, below_depth=below_depth): v
-                          for kc, v in self.to_iterator(include_empty=include_empty)})
+                          for kc, v in self.to_iterator(include_empty=include_empty)}, **self._config)
 
     def copy(self):
         """
