@@ -2594,15 +2594,12 @@ class Container(dict):
     def slice_keys(self, key_slice):
         if isinstance(key_slice, dict):
             def _fn(cont, kc):
-                depth = len(kc.split('/'))
+                depth = 0 if kc == '' else len(kc.split('/'))
                 if depth in key_slice:
                     # noinspection PyProtectedMember
-                    return cont._slice_keys(key_slice)
+                    return cont._slice_keys(key_slice[depth])
                 return cont
-            ret = self.map_conts(_fn)
-            if 0 in key_slice:
-                return ret._slice_keys(key_slice[0])
-            return ret
+            return self.map_conts(_fn)
         return self._slice_keys(key_slice)
 
     def with_print_limit(self, print_limit, inplace=False):
