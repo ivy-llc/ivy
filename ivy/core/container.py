@@ -51,7 +51,7 @@ def _repr(x):
 class Container(dict):
 
     def __init__(self, dict_in=None, queues=None, queue_load_sizes=None, container_combine_method='list_join',
-                 queue_timeout=None, print_limit=10, key_length_limit=20, print_indent=4, print_line_spacing=0,
+                 queue_timeout=None, print_limit=10, key_length_limit=None, print_indent=4, print_line_spacing=0,
                  ivyh=None, default_key_color='green', keyword_color_dict=None, rebuild_child_containers=False,
                  types_to_iteratively_nest=None, alphabetical_keys=True, logging_retrieval_times=False, **kwargs):
         """
@@ -72,7 +72,7 @@ class Container(dict):
         :type queue_timeout: float, optional
         :param print_limit: The total array size limit when printing the container. Default is 10.
         :type print_limit: int, optional
-        :param key_length_limit: The maximum key length when printing the container. Default is 20.
+        :param key_length_limit: The maximum key length when printing the container. Default is None.
         :type key_length_limit: int, optional
         :param print_indent: The number of whitespaces to use for indenting when printing the container. Default is 4.
         :type print_indent: int, optional
@@ -743,7 +743,7 @@ class Container(dict):
     @staticmethod
     def trim_key(key, max_length):
         key_len = len(key)
-        if key_len <= max_length:
+        if not ivy.exists(max_length) or key_len <= max_length:
             return key
         idxs =\
             _np.round((key_len-1)/(max_length-1) * _np.linspace(0, max_length-1, max_length)).astype(_np.int32).tolist()

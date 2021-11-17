@@ -586,7 +586,11 @@ class Module(abc.ABC):
 
     def __repr__(self, full=True):
         if full:
-            return termcolor.colored(object.__repr__(self), 'green') + '\n' + self.sub_mods(False).__repr__()
+            this_repr = termcolor.colored(object.__repr__(self), 'green')
+            sub_mod_repr = self.sub_mods(False).__repr__()
+            if sub_mod_repr == "''":
+                return this_repr
+            return '\n'.join([this_repr, sub_mod_repr])
         return object.__repr__(self)
 
     # Properties #
