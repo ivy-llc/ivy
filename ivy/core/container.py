@@ -2553,7 +2553,7 @@ class Container(dict):
             return
         return ret
 
-    def slice_keys(self, key_slice):
+    def _slice_keys(self, key_slice):
         keys = list(self.keys())
         if isinstance(key_slice, str):
             assert len(key_slice) == 3 and key_slice[1] == ':'
@@ -2566,7 +2566,21 @@ class Container(dict):
         ret = self.copy()
         desired_keys = keys[key_slice]
         # noinspection PyUnresolvedReferences
-        return ret.at_keys(desired_keys)
+        return ret.at_key_chains(desired_keys)
+
+    def slice_keys(self, key_slice):
+        if isinstance(key_slice, dict):
+            def _fn(cont, kc):
+                depth = len(kc.split('/'))
+                if depth in key_slice:
+                    # noinspection PyProtectedMember
+                    return cont._slice_keys(key_slice)
+                return cont
+            ret = self.map_conts(_fn)
+            if 0 in key_slice:
+                return ret._slice_keys(key_slice[0])
+            return ret
+        return self._slice_keys(key_slice)
 
     def with_print_limit(self, print_limit, inplace=False):
         def _update_print_limit(cont, _):
