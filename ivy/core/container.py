@@ -725,14 +725,17 @@ class Container(dict):
     @staticmethod
     def format_key(key_chain, replacement='__', above_height=None, below_depth=None):
         # noinspection RegExpSingleCharAlternation
-        keys = re.split('/|\.', key_chain)
-        num_keys = len(keys)
-        assert not (above_height and below_depth), 'only one of above_height or below_depth can be selected at once.'
+        flat_keys = re.split('/|\.', key_chain)
+        num_keys = len(flat_keys)
+        pre_keys = list()
+        post_keys = list()
         if above_height and num_keys > above_height:
-            return '/'.join([replacement.join(keys[0:-above_height])] + keys[-above_height:])
-        elif below_depth and num_keys > below_depth:
-            return '/'.join(keys[0:below_depth] + [replacement.join(keys[below_depth:])])
-        return replacement.join(keys)
+            post_keys = flat_keys[-above_height:]
+            del flat_keys[-above_height:]
+        if below_depth and num_keys > below_depth:
+            pre_keys = flat_keys[0:below_depth]
+            del flat_keys[0:below_depth]
+        return '/'.join([k for k in ['/'.join(pre_keys), replacement.join(flat_keys), '/'.join(post_keys)] if k])
 
     # Private Methods #
     # ----------------#
