@@ -479,6 +479,20 @@ class Container(dict):
         return Container(return_dict, **config)
 
     @staticmethod
+    def common_key_chains(containers):
+        """
+        Return the key-chains common across all containers.
+
+        :param containers: Containers to check.
+        :type containers: list of containers
+        :return: list of key-chains.
+        """
+        if len(containers) == 1:
+            return containers[0].all_key_chains()
+        sets = [set(cont.all_key_chains()) for cont in containers]
+        return list(sets[0].intersection(*sets[1:]))
+
+    @staticmethod
     def identical(containers, check_types=True, check_shapes=True, same_arrays=True, key_chains=None, to_apply=True,
                   key_chain=''):
         """
