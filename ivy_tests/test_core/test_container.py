@@ -2024,9 +2024,21 @@ def test_container_prune_keys_from_key_chains(dev_str, call):
 
 
 def test_container_restructure_key_chains(dev_str, call):
+
+    # single
     container = Container({'a': ivy.array([1], dev_str=dev_str),
                            'b': {'c': ivy.array([2], dev_str=dev_str), 'd': ivy.array([3], dev_str=dev_str)}})
+    container_restructured = container.restructure_key_chains({'a': 'A'})
+    assert np.allclose(ivy.to_numpy(container_restructured['A']), np.array([[1]]))
+    assert np.allclose(ivy.to_numpy(container_restructured.A), np.array([[1]]))
+    assert np.allclose(ivy.to_numpy(container_restructured['b/c']), np.array([[2]]))
+    assert np.allclose(ivy.to_numpy(container_restructured.b.c), np.array([[2]]))
+    assert np.allclose(ivy.to_numpy(container_restructured['b/d']), np.array([[3]]))
+    assert np.allclose(ivy.to_numpy(container_restructured.b.d), np.array([[3]]))
 
+    # full
+    container = Container({'a': ivy.array([1], dev_str=dev_str),
+                           'b': {'c': ivy.array([2], dev_str=dev_str), 'd': ivy.array([3], dev_str=dev_str)}})
     container_restructured = container.restructure_key_chains({'a': 'A', 'b/c': 'B/C', 'b/d': 'B/D'})
     assert np.allclose(ivy.to_numpy(container_restructured['A']), np.array([[1]]))
     assert np.allclose(ivy.to_numpy(container_restructured.A), np.array([[1]]))
