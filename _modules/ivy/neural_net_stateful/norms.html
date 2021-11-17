@@ -234,10 +234,10 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_epsilon</span> <span class="o">=</span> <span class="n">epsilon</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_elementwise_affine</span> <span class="o">=</span> <span class="n">elementwise_affine</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_new_std</span> <span class="o">=</span> <span class="n">new_std</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_gamma_shape</span> <span class="o">=</span> <span class="n">normalized_shape</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_beta_shape</span> <span class="o">=</span> <span class="n">normalized_shape</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_gamma_init</span> <span class="o">=</span> <span class="n">Ones</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_beta_init</span> <span class="o">=</span> <span class="n">Zeros</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_scale_shape</span> <span class="o">=</span> <span class="n">normalized_shape</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_offset_shape</span> <span class="o">=</span> <span class="n">normalized_shape</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_scale_init</span> <span class="o">=</span> <span class="n">Ones</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_offset_init</span> <span class="o">=</span> <span class="n">Zeros</span><span class="p">()</span>
         <span class="n">Module</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dev_str</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span></div>
 
     <span class="k">def</span> <span class="nf">_create_variables</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dev_str</span><span class="p">):</span>
@@ -245,8 +245,8 @@
 <span class="sd">        Create internal variables for the layer</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_elementwise_affine</span><span class="p">:</span>
-            <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;gamma&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_gamma_init</span><span class="o">.</span><span class="n">create_variables</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_gamma_shape</span><span class="p">,</span> <span class="n">dev_str</span><span class="p">),</span>
-                    <span class="s1">&#39;beta&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_beta_init</span><span class="o">.</span><span class="n">create_variables</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_beta_shape</span><span class="p">,</span> <span class="n">dev_str</span><span class="p">)}</span>
+            <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;scale&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_scale_init</span><span class="o">.</span><span class="n">create_variables</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_scale_shape</span><span class="p">,</span> <span class="n">dev_str</span><span class="p">),</span>
+                    <span class="s1">&#39;offset&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_offset_init</span><span class="o">.</span><span class="n">create_variables</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_offset_shape</span><span class="p">,</span> <span class="n">dev_str</span><span class="p">)}</span>
         <span class="k">return</span> <span class="p">{}</span>
 
     <span class="k">def</span> <span class="nf">_forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">):</span>
@@ -258,8 +258,8 @@
 <span class="sd">        :return: The outputs following the layer normalization operation.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">layer_norm</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_normalized_idxs</span><span class="p">,</span> <span class="n">epsilon</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_epsilon</span><span class="p">,</span>
-                              <span class="n">gamma</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">gamma</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_elementwise_affine</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
-                              <span class="n">beta</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">beta</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_elementwise_affine</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
+                              <span class="n">scale</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">scale</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_elementwise_affine</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
+                              <span class="n">offset</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">offset</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_elementwise_affine</span> <span class="k">else</span> <span class="kc">None</span><span class="p">,</span>
                               <span class="n">new_std</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_new_std</span><span class="p">)</span></div>
 </pre></div>
 

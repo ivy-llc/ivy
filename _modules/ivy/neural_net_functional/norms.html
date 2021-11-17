@@ -210,7 +210,7 @@
 
 
 <span class="c1"># noinspection PyUnresolvedReferences</span>
-<div class="viewcode-block" id="layer_norm"><a class="viewcode-back" href="../../../neural_net_functional/norms/layer_norm.html#ivy.neural_net_functional.norms.layer_norm">[docs]</a><span class="k">def</span> <span class="nf">layer_norm</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">normalized_idxs</span><span class="p">,</span> <span class="n">epsilon</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">gamma</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">beta</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">new_std</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="layer_norm"><a class="viewcode-back" href="../../../neural_net_functional/norms/layer_norm.html#ivy.neural_net_functional.norms.layer_norm">[docs]</a><span class="k">def</span> <span class="nf">layer_norm</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">normalized_idxs</span><span class="p">,</span> <span class="n">epsilon</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">new_std</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Applies Layer Normalization over a mini-batch of inputs</span>
 
@@ -220,10 +220,10 @@
 <span class="sd">    :type normalized_idxs: int or sequence of ints</span>
 <span class="sd">    :param epsilon: small constant to add to the denominator, use global ivy._MIN_BASE by default.</span>
 <span class="sd">    :type epsilon: float, optional</span>
-<span class="sd">    :param gamma: Learnable gamma variables for post-multiplication, default is None.</span>
-<span class="sd">    :type gamma: array, optional</span>
-<span class="sd">    :param beta: Learnable beta variables for post-addition, default is None.</span>
-<span class="sd">    :type beta: array, optional</span>
+<span class="sd">    :param scale: Learnable gamma variables for post-multiplication, default is None.</span>
+<span class="sd">    :type scale: array, optional</span>
+<span class="sd">    :param offset: Learnable beta variables for post-addition, default is None.</span>
+<span class="sd">    :type offset: array, optional</span>
 <span class="sd">    :param new_std: The standard deviation of the new normalized values. Default is 1.</span>
 <span class="sd">    :type new_std: float, optional</span>
 <span class="sd">    :return: The layer after applying layer normalization.</span>
@@ -233,10 +233,10 @@
     <span class="n">x</span> <span class="o">=</span> <span class="p">((</span><span class="o">-</span><span class="n">mean</span> <span class="o">+</span> <span class="n">x</span><span class="p">)</span> <span class="o">/</span> <span class="n">ivy</span><span class="o">.</span><span class="n">stable_pow</span><span class="p">(</span><span class="n">var</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="n">epsilon</span><span class="p">))</span>
     <span class="k">if</span> <span class="n">new_std</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">x</span> <span class="o">=</span> <span class="n">x</span> <span class="o">*</span> <span class="n">new_std</span>
-    <span class="k">if</span> <span class="n">gamma</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">x</span> <span class="o">=</span> <span class="n">x</span> <span class="o">*</span> <span class="n">gamma</span>
-    <span class="k">if</span> <span class="n">beta</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">x</span> <span class="o">=</span> <span class="n">x</span> <span class="o">+</span> <span class="n">beta</span>
+    <span class="k">if</span> <span class="n">scale</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">x</span> <span class="o">*</span> <span class="n">scale</span>
+    <span class="k">if</span> <span class="n">offset</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">x</span> <span class="o">+</span> <span class="n">offset</span>
     <span class="k">return</span> <span class="n">x</span></div>
 </pre></div>
 
