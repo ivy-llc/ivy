@@ -149,7 +149,7 @@ class MultiHeadAttention(Module):
         self._with_to_q_fn = with_to_q_fn
         self._with_to_kv_fn = with_to_kv_fn
         self._with_to_out_fn = with_to_out_fn
-        ivy.Module.__init__(self, dev_str, v if v_exists else None, build_mode)
+        ivy.Module.__init__(self, dev_str, v if v_exists else None, build_mode, with_partial_v=True)
 
     # noinspection PyAttributeOutsideInit
     def _build(self, *agrs, **kwargs):
