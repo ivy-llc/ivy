@@ -21,19 +21,19 @@ class PerceiverIOSpec(ivy.Container):
 
                  # input-output agnostic
                  queries_dim=1024,
-                 network_depth=6,
+                 network_depth=1,
                  num_latents=512,
-                 latent_dim=512,
+                 latent_dim=1024,
                  num_cross_att_heads=1,
                  num_self_att_heads=8,
-                 cross_head_dim=64,
+                 cross_head_dim=261,
                  latent_head_dim=64,
                  weight_tie_layers=False,
                  learn_query=False,
                  query_shape=None,
                  attn_dropout=0.,
                  fc_dropout=0.,
-                 num_self_att_per_cross_attn=1,
+                 num_self_att_per_cross_attn=6,
                  with_decoder=True,
                  with_final_head=True,
                  fourier_encode_input=True,
@@ -80,9 +80,9 @@ class PerceiverIOSpec(ivy.Container):
 
 class PerceiverIO(ivy.Module):
 
-    def __init__(self, spec: PerceiverIOSpec, v: ivy.Container = None):
+    def __init__(self, spec: PerceiverIOSpec, v: ivy.Container = None, **kwargs):
         self._spec = spec
-        ivy.Module.__init__(self, v=v)
+        ivy.Module.__init__(self, v=v, **kwargs)
 
     # noinspection PyUnusedLocal
     def _build(self, *args, **kwargs):
@@ -128,11 +128,11 @@ class PerceiverIO(ivy.Module):
                     get_latent_fc_cached() if should_cache else get_latent_fc(),
                 ])
 
-            self._layers.append([
-                get_cross_attn_cached() if should_cache else get_cross_attn(),
-                get_cross_fc_cached() if should_cache else get_cross_fc(),
-                self_attns
-            ])
+            self._layers.append({
+                'cross_att': get_cross_attn_cached() if should_cache else get_cross_attn(),
+                'cross_fc': get_cross_fc_cached() if should_cache else get_cross_fc(),
+                'self_atts': self_attns
+            })
 
         self._decoder_cross_attn = PreNorm(self._spec.queries_dim, ivy.MultiHeadAttention(
             self._spec.queries_dim, self._spec.num_cross_att_heads, self._spec.cross_head_dim,
@@ -180,7 +180,8 @@ class PerceiverIO(ivy.Module):
 
         # layers
 
-        for cross_attn, cross_fc, self_attns in self._layers:
+        for layer_dict in self._layers:
+            cross_attn, cross_fc, self_attns = layer_dict.values()
             x = cross_attn(x, context=data, mask=mask) + x
             x = cross_fc(x) + x
 
