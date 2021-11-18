@@ -2356,11 +2356,11 @@ def test_container_map(inplace, dev_str, call):
                'b': {'c': ivy.array([2], dev_str=dev_str), 'd': ivy.array([3], dev_str=dev_str)}}
     container_orig = Container(dict_in)
     container = container_orig.deep_copy()
-    container_it = container.map(lambda x, _: x + 1, inplace=inplace)
+    container_mapped = container.map(lambda x, _: x + 1, inplace=inplace)
     if inplace:
         container_iterator = container.to_iterator()
     else:
-        container_iterator = container_it.to_iterator()
+        container_iterator = container_mapped.to_iterator()
     for (key, value), expected_value in zip(container_iterator,
                                             [ivy.array([2], dev_str=dev_str), ivy.array([3], dev_str=dev_str),
                                              ivy.array([4], dev_str=dev_str)]):
@@ -2415,6 +2415,17 @@ def test_container_map(inplace, dev_str, call):
     assert np.allclose(ivy.to_numpy(container_mapped.b.c), np.array([[3]]))
     if not inplace:
         assert 'b/d' not in container_mapped
+
+    # with sequences
+    container_orig = Container({'a': ivy.array([1], dev_str=dev_str),
+                                'b': [ivy.array([2], dev_str=dev_str), ivy.array([3], dev_str=dev_str)]})
+    container = container_orig.deep_copy()
+    container_mapped = container.map(lambda x, _: x + 1, inplace=inplace, map_sequences=True)
+    if inplace:
+        container_mapped = container
+    assert np.allclose(ivy.to_numpy(container_mapped['a']), np.array([2]))
+    assert np.allclose(ivy.to_numpy(container_mapped['b'][0]), np.array([3]))
+    assert np.allclose(ivy.to_numpy(container_mapped['b'][1]), np.array([4]))
 
 
 @pytest.mark.parametrize(
