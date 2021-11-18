@@ -282,6 +282,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_submods_to_track</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_track_submod_call_order</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">submod_rets</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">expected_submod_rets</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">submod_call_order</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">alphabetical_keys</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_sub_mods</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">build_mode</span> <span class="o">!=</span> <span class="s1">&#39;on_init&#39;</span><span class="p">:</span>
@@ -334,6 +335,13 @@
         <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">depth</span><span class="p">):</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">top_mod</span><span class="p">(</span><span class="n">depth</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">_track_submod_rets</span> <span class="k">if</span> <span class="n">depth</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">_track_submod_rets</span>
         <span class="k">return</span> <span class="n">top_mod</span><span class="o">.</span><span class="n">_track_submod_rets</span></div>
+
+<div class="viewcode-block" id="Module.check_submod_rets"><a class="viewcode-back" href="../../../neural_net_stateful/module/Module.html#ivy.neural_net_stateful.module.Module.check_submod_rets">[docs]</a>    <span class="k">def</span> <span class="nf">check_submod_rets</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">top_mod</span><span class="p">):</span>
+            <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">top_mod</span><span class="p">()</span><span class="o">.</span><span class="n">expected_submod_rets</span><span class="p">):</span>
+            <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">return</span> <span class="kc">False</span></div>
 
     <span class="c1"># noinspection PyProtectedMember</span>
 <div class="viewcode-block" id="Module.track_submod_call_order"><a class="viewcode-back" href="../../../neural_net_stateful/module/Module.html#ivy.neural_net_stateful.module.Module.track_submod_call_order">[docs]</a>    <span class="k">def</span> <span class="nf">track_submod_call_order</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -488,8 +496,12 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">track_submod_call_order</span><span class="p">():</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_add_submod_enter</span><span class="p">()</span>
         <span class="n">ret</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_forward</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">track_submod_rets</span><span class="p">():</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_add_intermediate_ret</span><span class="p">(</span><span class="n">ret</span><span class="p">)</span>
+        <span class="n">track_submod_rets</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">track_submod_rets</span><span class="p">()</span>
+        <span class="n">check_submod_rets</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">check_submod_rets</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">track_submod_rets</span> <span class="ow">or</span> <span class="n">check_submod_rets</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_add_submod_ret</span><span class="p">(</span><span class="n">ret</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">check_submod_rets</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_check_submod_ret</span><span class="p">()</span>
         <span class="k">return</span> <span class="n">ret</span>
 
     <span class="k">def</span> <span class="nf">_call</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">v</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">with_grads</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
@@ -637,25 +649,39 @@
 <div class="viewcode-block" id="Module.compile_on_next_step"><a class="viewcode-back" href="../../../neural_net_stateful/module/Module.html#ivy.neural_net_stateful.module.Module.compile_on_next_step">[docs]</a>    <span class="k">def</span> <span class="nf">compile_on_next_step</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_compile_on_next_step</span> <span class="o">=</span> <span class="kc">True</span></div>
 
-    <span class="k">def</span> <span class="nf">_set_intermediate_ret_flags</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">track_submod_rets</span><span class="p">,</span> <span class="n">submod_depth</span><span class="p">,</span> <span class="n">submods_to_track</span><span class="p">,</span> <span class="n">track_submod_call_order</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_set_intermediate_ret_flags</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">track_submod_rets</span><span class="p">,</span> <span class="n">submod_depth</span><span class="p">,</span> <span class="n">submods_to_track</span><span class="p">,</span> <span class="n">track_submod_call_order</span><span class="p">,</span>
+                                    <span class="n">expected_submod_rets</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_track_submod_rets</span> <span class="o">=</span> <span class="n">track_submod_rets</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_submod_depth</span> <span class="o">=</span> <span class="n">submod_depth</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_submods_to_track</span> <span class="o">=</span> <span class="n">submods_to_track</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_track_submod_call_order</span> <span class="o">=</span> <span class="n">track_submod_call_order</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">expected_submod_rets</span> <span class="o">=</span> <span class="n">expected_submod_rets</span>
 
     <span class="k">def</span> <span class="nf">_unset_intermediate_ret_flags</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_track_submod_rets</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_submod_depth</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_submods_to_track</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_track_submod_call_order</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">expected_submod_rets</span> <span class="o">=</span> <span class="kc">None</span>
 
-    <span class="k">def</span> <span class="nf">_add_intermediate_ret</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ret</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_add_submod_ret</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ret</span><span class="p">):</span>
         <span class="n">sr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">top_mod</span><span class="p">()</span><span class="o">.</span><span class="n">submod_rets</span>
         <span class="n">key</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="o">.</span><span class="n">format_key</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">(</span><span class="kc">False</span><span class="p">),</span> <span class="s1">&#39;_&#39;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">sr</span><span class="p">:</span>
             <span class="n">sr</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ret</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">sr</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">ret</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">_check_submod_ret</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">key</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="o">.</span><span class="n">format_key</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">(</span><span class="kc">False</span><span class="p">),</span> <span class="s1">&#39;_&#39;</span><span class="p">)</span>
+        <span class="n">esr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">top_mod</span><span class="p">()</span><span class="o">.</span><span class="n">expected_submod_rets</span>
+        <span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">esr</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="n">sr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">top_mod</span><span class="p">()</span><span class="o">.</span><span class="n">submod_rets</span>
+        <span class="n">rets</span> <span class="o">=</span> <span class="n">sr</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+        <span class="n">expected_rets</span> <span class="o">=</span> <span class="n">esr</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">ret</span><span class="p">,</span> <span class="n">expected_ret</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">rets</span><span class="p">,</span> <span class="n">expected_rets</span><span class="p">):</span>
+            <span class="k">assert</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array_equal</span><span class="p">(</span><span class="n">ret</span><span class="p">,</span> <span class="n">expected_ret</span><span class="p">)</span>
 
     <span class="c1"># noinspection PyProtectedMember</span>
     <span class="k">def</span> <span class="nf">_is_submod_leaf</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -695,17 +721,17 @@
 
     <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">v</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">with_grads</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">stateful</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">arg_stateful_idxs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">kwarg_stateful_idxs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">track_submod_rets</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">submod_depth</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">submods_to_track</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">track_submod_call_order</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-                 <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">submod_rets</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">submod_call_order</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+                 <span class="n">expected_submod_rets</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">submod_rets</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">submod_call_order</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">alphabetical_keys</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_compiled</span> <span class="ow">and</span> <span class="n">ivy</span><span class="o">.</span><span class="n">try_use_compiled</span><span class="p">:</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_compiled_fn</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">v</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">default</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="p">),</span> <span class="n">with_grads</span><span class="o">=</span><span class="n">with_grads</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
             <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
                 <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fallback_to_non_compiled</span><span class="p">:</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">_set_intermediate_ret_flags</span><span class="p">(</span>
-                        <span class="n">track_submod_rets</span><span class="p">,</span> <span class="n">submod_depth</span><span class="p">,</span> <span class="n">submods_to_track</span><span class="p">,</span>
-                        <span class="n">track_submod_call_order</span><span class="p">)</span>
+                        <span class="n">track_submod_rets</span><span class="p">,</span> <span class="n">submod_depth</span><span class="p">,</span> <span class="n">submods_to_track</span><span class="p">,</span> <span class="n">track_submod_call_order</span><span class="p">,</span>
+                        <span class="n">expected_submod_rets</span><span class="p">)</span>
                     <span class="n">ret</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_call</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">v</span><span class="o">=</span><span class="n">v</span><span class="p">,</span> <span class="n">with_grads</span><span class="o">=</span><span class="n">with_grads</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">_unset_intermediate_ret_flags</span><span class="p">()</span>
                     <span class="k">return</span> <span class="n">ret</span>
@@ -716,7 +742,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_compile_on_next_step</span> <span class="o">=</span> <span class="kc">False</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_compiled_fn</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">v</span><span class="o">=</span><span class="n">ivy</span><span class="o">.</span><span class="n">default</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="p">),</span> <span class="n">with_grads</span><span class="o">=</span><span class="n">with_grads</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_set_intermediate_ret_flags</span><span class="p">(</span>
-            <span class="n">track_submod_rets</span><span class="p">,</span> <span class="n">submod_depth</span><span class="p">,</span> <span class="n">submods_to_track</span><span class="p">,</span> <span class="n">track_submod_call_order</span><span class="p">)</span>
+            <span class="n">track_submod_rets</span><span class="p">,</span> <span class="n">submod_depth</span><span class="p">,</span> <span class="n">submods_to_track</span><span class="p">,</span> <span class="n">track_submod_call_order</span><span class="p">,</span> <span class="n">expected_submod_rets</span><span class="p">)</span>
         <span class="n">ret</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_call</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">v</span><span class="o">=</span><span class="n">v</span><span class="p">,</span> <span class="n">with_grads</span><span class="o">=</span><span class="n">with_grads</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_unset_intermediate_ret_flags</span><span class="p">()</span>
         <span class="k">return</span> <span class="n">ret</span>
