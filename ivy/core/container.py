@@ -2086,12 +2086,12 @@ class Container(dict):
                 return False
         return True
 
-    def find_sub_container(self, sub_cont_to_find):
+    def find_sub_container(self, sub_cont_to_find, partial=False):
 
         key_chain_found = False
 
         def _check_sub_cont(sub_cont, kc):
-            if ivy.Container.identical([sub_cont, sub_cont_to_find]):
+            if ivy.Container.identical([sub_cont, sub_cont_to_find], partial=partial):
                 nonlocal key_chain_found
                 key_chain_found = kc
             return sub_cont
@@ -2100,22 +2100,24 @@ class Container(dict):
 
         return key_chain_found
 
-    def contains_sub_container(self, sub_cont):
+    def contains_sub_container(self, sub_cont, partial=False):
         """
         Determine whether the current container contains the sub-container, with matching structure and array values.
 
         :param sub_cont: The sub-container to check.
         :type sub_cont: ivy.Container
+        :param partial: Whether to also check for partially complete sub-containers. Default is False.
+        :type partial: bool, optional
         :return: Bool
         """
-        return True if isinstance(self.find_sub_container(sub_cont), str) else False
+        return True if isinstance(self.find_sub_container(sub_cont, partial), str) else False
 
-    def find_sub_structure(self, sub_struc_to_find):
+    def find_sub_structure(self, sub_struc_to_find, partial=False):
 
         key_chain_found = False
 
         def _check_sub_cont(sub_cont, kc):
-            if ivy.Container.identical_structure([sub_cont, sub_struc_to_find]):
+            if ivy.Container.identical_structure([sub_cont, sub_struc_to_find], partial=partial):
                 nonlocal key_chain_found
                 key_chain_found = kc
             return sub_cont
@@ -2124,15 +2126,17 @@ class Container(dict):
 
         return key_chain_found
 
-    def contains_sub_structure(self, sub_cont):
+    def contains_sub_structure(self, sub_cont, partial=False):
         """
         Determine whether the current container contains the sub-container structure.
 
         :param sub_cont: The sub-container to check.
         :type sub_cont: ivy.Container
+        :param partial: Whether to also check for partially complete sub-containers. Default is False.
+        :type partial: bool, optional
         :return: Bool
         """
-        return True if isinstance(self.find_sub_structure(sub_cont), str) else False
+        return True if isinstance(self.find_sub_structure(sub_cont, partial), str) else False
 
     def has_nans(self, include_infs=True, leafwise=False):
         """

@@ -432,9 +432,13 @@ def test_container_show(dev_str, call):
 
 
 def test_container_find_sub_container(dev_str, call):
-    dict_in = {'a': ivy.array([1], dev_str=dev_str),
-               'b': {'c': ivy.array([2], dev_str=dev_str), 'd': ivy.array([3], dev_str=dev_str)}}
+    arr1 = ivy.array([1], dev_str=dev_str)
+    arr2 = ivy.array([2], dev_str=dev_str)
+    arr3 = ivy.array([3], dev_str=dev_str)
+    dict_in = {'a': arr1, 'b': {'c': arr2, 'd': arr3}}
     top_cont = Container(dict_in)
+
+    # full
     sub_cont = Container(dict_in['b'])
     assert sub_cont in top_cont
     found_kc = top_cont.find_sub_container(sub_cont)
@@ -442,16 +446,34 @@ def test_container_find_sub_container(dev_str, call):
     found_kc = top_cont.find_sub_container(top_cont)
     assert found_kc == ''
 
+    # partial
+    partial_sub_cont = Container({'d': arr3})
+    found_kc = top_cont.find_sub_container(partial_sub_cont, partial=True)
+    assert found_kc == 'b'
+    partial_sub_cont = Container({'b': {'d': arr3}})
+    found_kc = top_cont.find_sub_container(partial_sub_cont, partial=True)
+    assert found_kc == ''
+
 
 def test_container_find_sub_structure(dev_str, call):
     dict_in = {'a': ivy.array([1], dev_str=dev_str),
                'b': {'c': ivy.array([2], dev_str=dev_str), 'd': ivy.array([3], dev_str=dev_str)}}
     top_cont = Container(dict_in)
+
+    # full
     sub_cont = Container({'c': ivy.array([4], dev_str=dev_str), 'd': ivy.array([5], dev_str=dev_str)})
     assert not top_cont.find_sub_container(sub_cont)
     found_kc = top_cont.find_sub_structure(sub_cont)
     assert found_kc == 'b'
     found_kc = top_cont.find_sub_structure(top_cont)
+    assert found_kc == ''
+
+    # partial
+    partial_sub_cont = Container({'d': ivy.array([5], dev_str=dev_str)})
+    found_kc = top_cont.find_sub_structure(partial_sub_cont, partial=True)
+    assert found_kc == 'b'
+    partial_sub_cont = Container({'b': {'d': ivy.array([5], dev_str=dev_str)}})
+    found_kc = top_cont.find_sub_structure(partial_sub_cont, partial=True)
     assert found_kc == ''
 
 
@@ -2132,9 +2154,11 @@ def test_container_deep_copy(dev_str, call):
 
 
 def test_container_contains(dev_str, call):
-    sub_cont = Container({'c': ivy.array([1.], dev_str=dev_str), 'd': ivy.array([2.], dev_str=dev_str)})
-    sub_struc = Container({'c': ivy.array([3.], dev_str=dev_str), 'd': ivy.array([4.], dev_str=dev_str)})
-    container = Container({'a': ivy.array([0.], dev_str=dev_str), 'b': sub_cont})
+    arr0 = ivy.array([0.], dev_str=dev_str)
+    arr1 = ivy.array([1.], dev_str=dev_str)
+    arr2 = ivy.array([2.], dev_str=dev_str)
+    sub_cont = Container({'c': arr1, 'd': arr2})
+    container = Container({'a': arr0, 'b': sub_cont})
 
     # keys
     assert 'a' in container
@@ -2149,11 +2173,22 @@ def test_container_contains(dev_str, call):
     assert container.contains_sub_container(sub_cont)
     assert sub_cont in container
 
+    # partial sub-container
+    partial_sub_cont = Container({'b': {'d': arr2}})
+    assert container.contains_sub_container(container, partial=True)
+    assert container.contains_sub_container(partial_sub_cont, partial=True)
+
     # sub-structure
+    sub_struc = Container({'c': ivy.array([3.], dev_str=dev_str), 'd': ivy.array([4.], dev_str=dev_str)})
     assert not container.contains_sub_container(sub_struc)
     assert sub_struc not in container
     assert container.contains_sub_structure(sub_struc)
     assert container.contains_sub_structure(container)
+
+    # partial sub-structure
+    partial_sub_struc = Container({'b': {'d': ivy.array([4.], dev_str=dev_str)}})
+    assert container.contains_sub_structure(container, partial=True)
+    assert container.contains_sub_structure(partial_sub_struc, partial=True)
 
 
 def test_container_shuffle(dev_str, call):
