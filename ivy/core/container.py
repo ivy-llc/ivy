@@ -2517,7 +2517,8 @@ class Container(dict):
         """
         return self.map(lambda x, kc: ivy.copy_array(x) if ivy.is_array(x) else x)
 
-    def map(self, func, key_chains=None, to_apply=True, prune_unapplied=False, inplace=False, key_chain=''):
+    def map(self, func, key_chains=None, to_apply=True, prune_unapplied=False, inplace=False, map_sequences=False,
+            key_chain=''):
         """
         Apply function to all array values of container
 
@@ -2532,6 +2533,8 @@ class Container(dict):
         :type prune_unapplied: bool, optional
         :param inplace: Whether to apply the mapping inplace, or return a new container. Default is False.
         :type inplace: bool, optional
+        :param map_sequences: Whether to also map to sequences (lists and tuples). Default is False.
+        :type map_sequences: bool, optional
         :param key_chain: Chain of keys for this dict entry
         :type key_chain: str
         :return: New container following the function mapped to each sub-array.
@@ -2540,11 +2543,16 @@ class Container(dict):
         for key, value in self.items():
             this_key_chain = key if key_chain == '' else (key_chain + '/' + key)
             if isinstance(value, Container):
-                ret = value.map(func, key_chains, to_apply, prune_unapplied, inplace, this_key_chain)
+                ret = value.map(func, key_chains, to_apply, prune_unapplied, inplace, map_sequences, this_key_chain)
                 if prune_unapplied and not ret:
                     continue
                 if not inplace:
                     return_dict[key] = ret
+            elif isinstance(value, (list, tuple)) and map_sequences:
+                ret = ivy.nested_map(value, lambda x: func(x, None), True)
+                if prune_unapplied and not ret:
+                    continue
+                return_dict[key] = ret
             else:
                 if key_chains is not None:
                     if (this_key_chain in key_chains and not to_apply) or (
