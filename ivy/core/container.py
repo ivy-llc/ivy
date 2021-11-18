@@ -326,6 +326,7 @@ class Container(dict):
             return container_rightmost
 
         if not ivy.exists(config):
+            # noinspection PyUnresolvedReferences
             config = container_rightmost.config if isinstance(container_rightmost, Container) else {}
 
         # return if len==1
@@ -334,8 +335,8 @@ class Container(dict):
 
         # otherwise, check that the keys are aligned between each container, and apply this method recursively
         return_dict = dict()
-        all_Keys = set([item for sublist in [list(cont.keys()) for cont in containers] for item in sublist])
-        for key in all_Keys:
+        all_keys = set([item for sublist in [list(cont.keys()) for cont in containers] for item in sublist])
+        for key in all_keys:
             keys_present = [key in cont for cont in containers]
             return_dict[key] =\
                 ivy.Container.combine(*[cont[key] for cont, kp in zip(containers, keys_present) if kp], config=config)
@@ -373,6 +374,7 @@ class Container(dict):
             config = container0.config if isinstance(container0, Container) else {}
         if not isinstance(container0, dict):
             equal_mat = ivy.equal(*containers, equality_matrix=True)
+            # noinspection PyTypeChecker
             if ivy.reduce_min(ivy.cast(equal_mat, 'int32')) == 1:
                 if mode == 'diff_only':
                     return ivy.Container(**config)
@@ -401,11 +403,11 @@ class Container(dict):
 
         # otherwise, check that the keys are aligned between each container, and apply this method recursively
         return_dict = dict()
-        all_Keys = set([item for sublist in [list(cont.keys()) for cont in containers] for item in sublist])
-        for key in all_Keys:
+        all_keys = set([item for sublist in [list(cont.keys()) for cont in containers] for item in sublist])
+        for key in all_keys:
             keys_present = [key in cont for cont in containers]
-            all_Keys_present = sum(keys_present) == num_containers
-            if all_Keys_present:
+            all_keys_present = sum(keys_present) == num_containers
+            if all_keys_present:
                 res = ivy.Container.diff(*[cont[key] for cont in containers],
                                           mode=mode, diff_keys=diff_keys, detect_key_diffs=detect_key_diffs,
                                           config=config)
@@ -860,7 +862,8 @@ class Container(dict):
         self._config['ivyh'] = ivyh
         return self
 
-    def all_true(self, assert_is_bool=False, key_chains=None, to_apply=True, prune_unapplied=False):
+    def all_true(self, assert_is_bool=False, key_chains=None, to_apply=True, prune_unapplied=False,
+                 map_sequences=False):
         """
         Determine whether all the entries in the container boolean evaluate to True.
 
@@ -873,12 +876,15 @@ class Container(dict):
         :type to_apply: bool, optional
         :param prune_unapplied: Whether to prune key_chains for which the function was not applied. Default is False.
         :type prune_unapplied: bool, optional
+        :param map_sequences: Whether to also map method to sequences (lists, tuples). Default is False.
+        :type map_sequences: bool, optional
         :return: Boolean, whether all entries are boolean True.
         """
         return bool(_np.prod([v for k, v in self.as_bools(
-            assert_is_bool, key_chains, to_apply, prune_unapplied).to_iterator()]))
+            assert_is_bool, key_chains, to_apply, prune_unapplied, map_sequences).to_iterator()]))
 
-    def all_false(self, assert_is_bool=False, key_chains=None, to_apply=True, prune_unapplied=False):
+    def all_false(self, assert_is_bool=False, key_chains=None, to_apply=True, prune_unapplied=False,
+                  map_sequences=False):
         """
         Determine whether all the entries in the container boolean evaluate to False.
 
@@ -891,12 +897,15 @@ class Container(dict):
         :type to_apply: bool, optional
         :param prune_unapplied: Whether to prune key_chains for which the function was not applied. Default is False.
         :type prune_unapplied: bool, optional
+        :param map_sequences: Whether to also map method to sequences (lists, tuples). Default is False.
+        :type map_sequences: bool, optional
         :return: Boolean, whether all entries are boolean False.
         """
         return not bool(_np.sum([v for k, v in self.as_bools(
-            assert_is_bool, key_chains, to_apply, prune_unapplied).to_iterator()]))
+            assert_is_bool, key_chains, to_apply, prune_unapplied, map_sequences).to_iterator()]))
 
-    def reduce_sum(self, axis=None, keepdims=False, key_chains=None, to_apply=True, prune_unapplied=False):
+    def reduce_sum(self, axis=None, keepdims=False, key_chains=None, to_apply=True, prune_unapplied=False,
+                   map_sequences=False):
         """
         Computes sum of array elements along a given axis for all sub-arrays of container object.
 
@@ -915,12 +924,15 @@ class Container(dict):
         :type to_apply: bool, optional
         :param prune_unapplied: Whether to prune key_chains for which the function was not applied. Default is False.
         :type prune_unapplied: bool, optional
+        :param map_sequences: Whether to also map method to sequences (lists, tuples). Default is False.
+        :type map_sequences: bool, optional
         :return: Container object with all sub-array dimensions expanded along the axis.
         """
         return self.map(lambda x, kc: self._ivy.reduce_sum(x, axis, keepdims) if self._ivy.is_array(x) else x,
-                        key_chains, to_apply, prune_unapplied)
+                        key_chains, to_apply, prune_unapplied, map_sequences)
 
-    def reduce_prod(self, axis=None, keepdims=False, key_chains=None, to_apply=True, prune_unapplied=False):
+    def reduce_prod(self, axis=None, keepdims=False, key_chains=None, to_apply=True, prune_unapplied=False,
+                    map_sequences=False):
         """
         Computes product of array elements along a given axis for all sub-arrays of container object.
 
@@ -939,12 +951,15 @@ class Container(dict):
         :type to_apply: bool, optional
         :param prune_unapplied: Whether to prune key_chains for which the function was not applied. Default is False.
         :type prune_unapplied: bool, optional
+        :param map_sequences: Whether to also map method to sequences (lists, tuples). Default is False.
+        :type map_sequences: bool, optional
         :return: Container object with all sub-array dimensions expanded along the axis.
         """
         return self.map(lambda x, kc: self._ivy.reduce_prod(x, axis, keepdims) if self._ivy.is_array(x) else x,
-                        key_chains, to_apply, prune_unapplied)
+                        key_chains, to_apply, prune_unapplied, map_sequences)
 
-    def reduce_mean(self, axis=None, keepdims=False, key_chains=None, to_apply=True, prune_unapplied=False):
+    def reduce_mean(self, axis=None, keepdims=False, key_chains=None, to_apply=True, prune_unapplied=False,
+                    map_sequences=False):
         """
         Computes mean of array elements along a given axis for all sub-arrays of container object.
 
@@ -963,12 +978,15 @@ class Container(dict):
         :type to_apply: bool, optional
         :param prune_unapplied: Whether to prune key_chains for which the function was not applied. Default is False.
         :type prune_unapplied: bool, optional
+        :param map_sequences: Whether to also map method to sequences (lists, tuples). Default is False.
+        :type map_sequences: bool, optional
         :return: Container object with all sub-array dimensions expanded along the axis.
         """
         return self.map(lambda x, kc: self._ivy.reduce_mean(x, axis, keepdims) if self._ivy.is_array(x) else x,
-                        key_chains, to_apply, prune_unapplied)
+                        key_chains, to_apply, prune_unapplied, map_sequences)
 
-    def reduce_var(self, axis=None, keepdims=False, key_chains=None, to_apply=True, prune_unapplied=False):
+    def reduce_var(self, axis=None, keepdims=False, key_chains=None, to_apply=True, prune_unapplied=False,
+                   map_sequences=False):
         """
         Computes variance of array elements along a given axis for all sub-arrays of container object.
 
@@ -987,12 +1005,15 @@ class Container(dict):
         :type to_apply: bool, optional
         :param prune_unapplied: Whether to prune key_chains for which the function was not applied. Default is False.
         :type prune_unapplied: bool, optional
+        :param map_sequences: Whether to also map method to sequences (lists, tuples). Default is False.
+        :type map_sequences: bool, optional
         :return: Container object with the variance computed for all sub-arrays.
         """
         return self.map(lambda x, kc: self._ivy.reduce_var(x, axis, keepdims) if self._ivy.is_array(x) else x,
-                        key_chains, to_apply, prune_unapplied)
+                        key_chains, to_apply, prune_unapplied, map_sequences)
 
-    def reduce_std(self, axis=None, keepdims=False, key_chains=None, to_apply=True, prune_unapplied=False):
+    def reduce_std(self, axis=None, keepdims=False, key_chains=None, to_apply=True, prune_unapplied=False,
+                   map_sequences=False):
         """
         Computes standard deviation of array elements along a given axis for all sub-arrays of container object.
 
@@ -1011,12 +1032,15 @@ class Container(dict):
         :type to_apply: bool, optional
         :param prune_unapplied: Whether to prune key_chains for which the function was not applied. Default is False.
         :type prune_unapplied: bool, optional
+        :param map_sequences: Whether to also map method to sequences (lists, tuples). Default is False.
+        :type map_sequences: bool, optional
         :return: Container object with the standard deviation computed for all sub-arrays.
         """
         return self.map(lambda x, kc: self._ivy.reduce_std(x, axis, keepdims) if self._ivy.is_array(x) else x,
-                        key_chains, to_apply, prune_unapplied)
+                        key_chains, to_apply, prune_unapplied, map_sequences)
 
-    def reduce_min(self, axis=None, keepdims=False, key_chains=None, to_apply=True, prune_unapplied=False):
+    def reduce_min(self, axis=None, keepdims=False, key_chains=None, to_apply=True, prune_unapplied=False,
+                   map_sequences=False):
         """
         Computes min of array elements along a given axis for all sub-arrays of container object.
 
@@ -1035,12 +1059,15 @@ class Container(dict):
         :type to_apply: bool, optional
         :param prune_unapplied: Whether to prune key_chains for which the function was not applied. Default is False.
         :type prune_unapplied: bool, optional
+        :param map_sequences: Whether to also map method to sequences (lists, tuples). Default is False.
+        :type map_sequences: bool, optional
         :return: Container object with all sub-array dimensions expanded along the axis.
         """
         return self.map(lambda x, kc: self._ivy.reduce_min(x, axis, keepdims) if self._ivy.is_array(x) else x,
-                        key_chains, to_apply, prune_unapplied)
+                        key_chains, to_apply, prune_unapplied, map_sequences)
 
-    def reduce_max(self, axis=None, keepdims=False, key_chains=None, to_apply=True, prune_unapplied=False):
+    def reduce_max(self, axis=None, keepdims=False, key_chains=None, to_apply=True, prune_unapplied=False,
+                   map_sequences=False):
         """
         Computes max of array elements along a given axis for all sub-arrays of container object.
 
@@ -1059,12 +1086,15 @@ class Container(dict):
         :type to_apply: bool, optional
         :param prune_unapplied: Whether to prune key_chains for which the function was not applied. Default is False.
         :type prune_unapplied: bool, optional
+        :param map_sequences: Whether to also map method to sequences (lists, tuples). Default is False.
+        :type map_sequences: bool, optional
         :return: Container object with all sub-array dimensions expanded along the axis.
         """
         return self.map(lambda x, kc: self._ivy.reduce_max(x, axis, keepdims) if self._ivy.is_array(x) else x,
-                        key_chains, to_apply, prune_unapplied)
+                        key_chains, to_apply, prune_unapplied, map_sequences)
 
-    def minimum(self, other, key_chains=None, to_apply=True, prune_unapplied=False):
+    def minimum(self, other, key_chains=None, to_apply=True, prune_unapplied=False,
+                map_sequences=False):
         """
         Computes the elementwise minimum between this container and another container or number.
 
@@ -1077,14 +1107,16 @@ class Container(dict):
         :type to_apply: bool, optional
         :param prune_unapplied: Whether to prune key_chains for which the function was not applied. Default is False.
         :type prune_unapplied: bool, optional
+        :param map_sequences: Whether to also map method to sequences (lists, tuples). Default is False.
+        :type map_sequences: bool, optional
         :return: Container object with all sub-arrays having the minimum values computed.
         """
         is_container = isinstance(other, Container)
         return self.map(lambda x, kc:
                         self._ivy.minimum(x, other[kc] if is_container else other) if self._ivy.is_array(x) else x,
-                        key_chains, to_apply, prune_unapplied)
+                        key_chains, to_apply, prune_unapplied, map_sequences)
 
-    def maximum(self, other, key_chains=None, to_apply=True, prune_unapplied=False):
+    def maximum(self, other, key_chains=None, to_apply=True, prune_unapplied=False, map_sequences=False):
         """
         Computes the elementwise maximum between this container and another container or number.
 
@@ -1097,14 +1129,16 @@ class Container(dict):
         :type to_apply: bool, optional
         :param prune_unapplied: Whether to prune key_chains for which the function was not applied. Default is False.
         :type prune_unapplied: bool, optional
+        :param map_sequences: Whether to also map method to sequences (lists, tuples). Default is False.
+        :type map_sequences: bool, optional
         :return: Container object with all sub-arrays having the maximum values computed.
         """
         is_container = isinstance(other, Container)
         return self.map(lambda x, kc:
                         self._ivy.maximum(x, other[kc] if is_container else other) if self._ivy.is_array(x) else x,
-                        key_chains, to_apply, prune_unapplied)
+                        key_chains, to_apply, prune_unapplied, map_sequences)
 
-    def clip(self, clip_min, clip_max, key_chains=None, to_apply=True, prune_unapplied=False):
+    def clip(self, clip_min, clip_max, key_chains=None, to_apply=True, prune_unapplied=False, map_sequences=False):
         """
         Computes the elementwise clipped values between this container and clip_min and clip_max containers or numbers.
 
@@ -1119,6 +1153,8 @@ class Container(dict):
         :type to_apply: bool, optional
         :param prune_unapplied: Whether to prune key_chains for which the function was not applied. Default is False.
         :type prune_unapplied: bool, optional
+        :param map_sequences: Whether to also map method to sequences (lists, tuples). Default is False.
+        :type map_sequences: bool, optional
         :return: Container object with all sub-arrays having the clipped values returned.
         """
         min_is_container = isinstance(clip_min, Container)
@@ -1126,10 +1162,10 @@ class Container(dict):
         return self.map(lambda x, kc:
                         self._ivy.clip(x, clip_min[kc] if min_is_container else clip_min,
                                        clip_max[kc] if max_is_container else clip_max) if self._ivy.is_array(x) else x,
-                        key_chains, to_apply, prune_unapplied)
+                        key_chains, to_apply, prune_unapplied, map_sequences)
 
     def clip_vector_norm(self, max_norm, p, global_norm=False, key_chains=None, to_apply=True,
-                         prune_unapplied=False):
+                         prune_unapplied=False, map_sequences=False):
         """
         Computes the elementwise clipped values between this container and clip_min and clip_max containers or numbers.
 
@@ -1146,6 +1182,8 @@ class Container(dict):
         :type to_apply: bool, optional
         :param prune_unapplied: Whether to prune key_chains for which the function was not applied. Default is False.
         :type prune_unapplied: bool, optional
+        :param map_sequences: Whether to also map method to sequences (lists, tuples). Default is False.
+        :type map_sequences: bool, optional
         :return: Container object with all sub-arrays having the clipped norms returned.
         """
         max_norm_is_container = isinstance(max_norm, Container)
@@ -1165,9 +1203,9 @@ class Container(dict):
                         self._ivy.clip_vector_norm(
                             x, max_norm[kc] if max_norm_is_container else max_norm,
                             p[kc] if p_is_container else p) if self._ivy.is_array(x) else x,
-                        key_chains, to_apply, prune_unapplied)
+                        key_chains, to_apply, prune_unapplied, map_sequences)
 
-    def einsum(self, equation, key_chains=None, to_apply=True, prune_unapplied=False):
+    def einsum(self, equation, key_chains=None, to_apply=True, prune_unapplied=False, map_sequences=False):
         """
         Sums the product of the elements of the input operands along dimensions specified using a notation based on the
         Einstein summation convention, for each array in the container.
@@ -1181,13 +1219,15 @@ class Container(dict):
         :type to_apply: bool, optional
         :param prune_unapplied: Whether to prune key_chains for which the function was not applied. Default is False.
         :type prune_unapplied: bool, optional
+        :param map_sequences: Whether to also map method to sequences (lists, tuples). Default is False.
+        :type map_sequences: bool, optional
         :return: Container object with all sub-array dimensions expanded along the axis.
         """
         return self.map(lambda x, kc: self._ivy.einsum(equation, x) if self._ivy.is_array(x) else x,
-                        key_chains, to_apply, prune_unapplied)
+                        key_chains, to_apply, prune_unapplied, map_sequences)
 
     def vector_norm(self, p=2, axis=None, keepdims=False, global_norm=False, key_chains=None, to_apply=True,
-                    prune_unapplied=False):
+                    prune_unapplied=False, map_sequences=False):
         """
         Compute vector p-norm for each array in the container.
 
@@ -1209,6 +1249,8 @@ class Container(dict):
         :type to_apply: bool, optional
         :param prune_unapplied: Whether to prune key_chains for which the function was not applied. Default is False.
         :type prune_unapplied: bool, optional
+        :param map_sequences: Whether to also map method to sequences (lists, tuples). Default is False.
+        :type map_sequences: bool, optional
         :return: Container object with the vector norms for each sub-array returned.
         """
         p_is_container = isinstance(p, Container)
@@ -1220,9 +1262,10 @@ class Container(dict):
             return sum([v for k, v in
                         self.map(lambda x, kc: self._ivy.reduce_sum(x ** p)).to_iterator()]) ** (1/p)
         return self.map(lambda x, kc: self._ivy.vector_norm(x, p[kc] if p_is_container else p, axis, keepdims)
-                        if self._ivy.is_array(x) else x, key_chains, to_apply, prune_unapplied)
+                        if self._ivy.is_array(x) else x, key_chains, to_apply, prune_unapplied, map_sequences)
 
-    def matrix_norm(self, p=2, axis=None, keepdims=False, key_chains=None, to_apply=True, prune_unapplied=False):
+    def matrix_norm(self, p=2, axis=None, keepdims=False, key_chains=None, to_apply=True, prune_unapplied=False,
+                    map_sequences=False):
         """
         Compute matrix p-norm for each array in the container.
 
@@ -1242,12 +1285,14 @@ class Container(dict):
         :type to_apply: bool, optional
         :param prune_unapplied: Whether to prune key_chains for which the function was not applied. Default is False.
         :type prune_unapplied: bool, optional
+        :param map_sequences: Whether to also map method to sequences (lists, tuples). Default is False.
+        :type map_sequences: bool, optional
         :return: Container object with the matrix norms for each sub-array returned.
         """
         return self.map(lambda x, kc: self._ivy.matrix_norm(x, p, axis, keepdims) if self._ivy.is_array(x) else x,
-                        key_chains, to_apply, prune_unapplied)
+                        key_chains, to_apply, prune_unapplied, map_sequences)
 
-    def flip(self, axis=None, key_chains=None, to_apply=True, prune_unapplied=False):
+    def flip(self, axis=None, key_chains=None, to_apply=True, prune_unapplied=False, map_sequences=False):
         """
         Reverses the order of elements in for each array in the container, along the given axis.
         The shape of the array is preserved, but the elements are reordered.
@@ -1261,10 +1306,12 @@ class Container(dict):
         :type to_apply: bool, optional
         :param prune_unapplied: Whether to prune key_chains for which the function was not applied. Default is False.
         :type prune_unapplied: bool, optional
+        :param map_sequences: Whether to also map method to sequences (lists, tuples). Default is False.
+        :type map_sequences: bool, optional
         :return: Container object with all sub-array dimensions expanded along the axis.
         """
         return self.map(lambda x, kc: self._ivy.flip(x, axis) if self._ivy.is_array(x) else x,
-                        key_chains, to_apply, prune_unapplied)
+                        key_chains, to_apply, prune_unapplied, map_sequences)
 
     def shuffle(self, seed_value=None, key_chains=None, to_apply=True, prune_unapplied=False, key_chain=''):
         """
@@ -1321,7 +1368,7 @@ class Container(dict):
                 return_dict[key] = value
         return Container(return_dict, **self._config)
 
-    def as_ones(self, key_chains=None, to_apply=True, prune_unapplied=False):
+    def as_ones(self, key_chains=None, to_apply=True, prune_unapplied=False, map_sequences=False):
         """
         Return arrays of ones for all nested arrays in the container.
 
@@ -1332,12 +1379,14 @@ class Container(dict):
         :type to_apply: bool, optional
         :param prune_unapplied: Whether to prune key_chains for which the function was not applied. Default is False.
         :type prune_unapplied: bool, optional
+        :param map_sequences: Whether to also map method to sequences (lists, tuples). Default is False.
+        :type map_sequences: bool, optional
         :return: Container object with all sub-arrays filled with ones.
         """
         return self.map(lambda x, kc: self._ivy.ones_like(x) if self._ivy.is_array(x) else x, key_chains, to_apply,
-                        prune_unapplied)
+                        prune_unapplied, map_sequences)
 
-    def as_zeros(self, key_chains=None, to_apply=True, prune_unapplied=False):
+    def as_zeros(self, key_chains=None, to_apply=True, prune_unapplied=False, map_sequences=False):
         """
         Return arrays of zeros for all nested arrays in the container.
 
@@ -1348,12 +1397,15 @@ class Container(dict):
         :type to_apply: bool, optional
         :param prune_unapplied: Whether to prune key_chains for which the function was not applied. Default is False.
         :type prune_unapplied: bool, optional
+        :param map_sequences: Whether to also map method to sequences (lists, tuples). Default is False.
+        :type map_sequences: bool, optional
         :return: Container object with all sub-arrays filled with zeros.
         """
         return self.map(lambda x, kc: self._ivy.zeros_like(x) if self._ivy.is_array(x) else x, key_chains, to_apply,
-                        prune_unapplied)
+                        prune_unapplied, map_sequences)
 
-    def as_bools(self, assert_is_bool=False, key_chains=None, to_apply=True, prune_unapplied=False):
+    def as_bools(self, assert_is_bool=False, key_chains=None, to_apply=True, prune_unapplied=False,
+                 map_sequences=False):
         """
         Return boolean evaluation for all nested items in the container.
 
@@ -1366,6 +1418,8 @@ class Container(dict):
         :type to_apply: bool, optional
         :param prune_unapplied: Whether to prune key_chains for which the function was not applied. Default is False.
         :type prune_unapplied: bool, optional
+        :param map_sequences: Whether to also map method to sequences (lists, tuples). Default is False.
+        :type map_sequences: bool, optional
         :return: Container object with all entries boolean evaluated.
         """
 
@@ -1375,9 +1429,10 @@ class Container(dict):
                 return x
             return bool(x)
 
-        return self.map(lambda x, kc: _ret_bool(x), key_chains, to_apply, prune_unapplied)
+        return self.map(lambda x, kc: _ret_bool(x), key_chains, to_apply, prune_unapplied, map_sequences)
 
-    def as_random_uniform(self, low=0.0, high=1.0, key_chains=None, to_apply=True, prune_unapplied=False):
+    def as_random_uniform(self, low=0.0, high=1.0, key_chains=None, to_apply=True, prune_unapplied=False,
+                          map_sequences=False):
         """
         Return arrays of random uniform values for all nested arrays in the container.
 
@@ -1394,13 +1449,15 @@ class Container(dict):
         :type to_apply: bool, optional
         :param prune_unapplied: Whether to prune key_chains for which the function was not applied. Default is False.
         :type prune_unapplied: bool, optional
+        :param map_sequences: Whether to also map method to sequences (lists, tuples). Default is False.
+        :type map_sequences: bool, optional
         :return: Container object with all sub-arrays filled with random uniform values.
         """
         return self.map(lambda x, kc: self._ivy.random_uniform(
             low, high, x.shape, self._ivy.dev_str(x)) if self._ivy.is_array(x) else x,
-                        key_chains, to_apply, prune_unapplied)
+                        key_chains, to_apply, prune_unapplied, map_sequences)
 
-    def to_native(self, nested=False, key_chains=None, to_apply=True, prune_unapplied=False):
+    def to_native(self, nested=False, key_chains=None, to_apply=True, prune_unapplied=False, map_sequences=False):
         """
         Return native framework arrays for all nested arrays in the container.
 
@@ -1415,11 +1472,14 @@ class Container(dict):
         :type to_apply: bool, optional
         :param prune_unapplied: Whether to prune key_chains for which the function was not applied. Default is False.
         :type prune_unapplied: bool, optional
+        :param map_sequences: Whether to also map method to sequences (lists, tuples). Default is False.
+        :type map_sequences: bool, optional
         :return: Container object with all sub-arrays converted to their native format.
         """
-        return self.map(lambda x, kc: self._ivy.to_native(x, nested=nested), key_chains, to_apply, prune_unapplied)
+        return self.map(lambda x, kc: self._ivy.to_native(x, nested=nested), key_chains, to_apply, prune_unapplied,
+                        map_sequences)
 
-    def to_ivy(self, nested=False, key_chains=None, to_apply=True, prune_unapplied=False):
+    def to_ivy(self, nested=False, key_chains=None, to_apply=True, prune_unapplied=False, map_sequences=False):
         """
         Return ivy arrays for all nested native framework arrays in the container.
 
@@ -1434,11 +1494,14 @@ class Container(dict):
         :type to_apply: bool, optional
         :param prune_unapplied: Whether to prune key_chains for which the function was not applied. Default is False.
         :type prune_unapplied: bool, optional
+        :param map_sequences: Whether to also map method to sequences (lists, tuples). Default is False.
+        :type map_sequences: bool, optional
         :return: Container object with all native sub-arrays converted to their ivy.Array instances.
         """
-        return self.map(lambda x, kc: self._ivy.to_ivy(x, nested=nested), key_chains, to_apply, prune_unapplied)
+        return self.map(lambda x, kc: self._ivy.to_ivy(x, nested=nested), key_chains, to_apply, prune_unapplied,
+                        map_sequences)
 
-    def expand_dims(self, axis, key_chains=None, to_apply=True, prune_unapplied=False):
+    def expand_dims(self, axis, key_chains=None, to_apply=True, prune_unapplied=False, map_sequences=False):
         """
         Expand dims of all sub-arrays of container object.
 
@@ -1451,10 +1514,12 @@ class Container(dict):
         :type to_apply: bool, optional
         :param prune_unapplied: Whether to prune key_chains for which the function was not applied. Default is False.
         :type prune_unapplied: bool, optional
+        :param map_sequences: Whether to also map method to sequences (lists, tuples). Default is False.
+        :type map_sequences: bool, optional
         :return: Container object with all sub-array dimensions expanded along the axis.
         """
         return self.map(lambda x, kc: self._ivy.expand_dims(x, axis) if self._ivy.is_array(x) else x,
-                        key_chains, to_apply, prune_unapplied)
+                        key_chains, to_apply, prune_unapplied, map_sequences)
 
     def dev_clone(self, dev_strs):
         """
@@ -1517,7 +1582,7 @@ class Container(dict):
         return [self[i if axis == 0 else tuple([slice(None, None, None)] * axis + [i])] for i in range(dim_size)]
 
     def split(self, num_or_size_splits=None, axis=0, with_remainder=False, key_chains=None, to_apply=True,
-              prune_unapplied=False):
+              prune_unapplied=False, map_sequences=False):
         """
         Splits a container into multiple sub-containers, by splitting their constituent arrays.
 
@@ -1537,15 +1602,17 @@ class Container(dict):
         :type to_apply: bool, optional
         :param prune_unapplied: Whether to prune key_chains for which the function was not applied. Default is False.
         :type prune_unapplied: bool, optional
+        :param map_sequences: Whether to also map method to sequences (lists, tuples). Default is False.
+        :type map_sequences: bool, optional
         :return: A list of sub-arrays.
         """
         dim_size = num_or_size_splits if isinstance(num_or_size_splits, int) else len(num_or_size_splits)
         # noinspection PyTypeChecker
         return self.map(
             lambda x, kc: self._ivy.split(x, num_or_size_splits, axis, with_remainder) if self._ivy.is_array(x)
-            else x, key_chains, to_apply, prune_unapplied).unstack(0, dim_size=dim_size)
+            else x, key_chains, to_apply, prune_unapplied, map_sequences).unstack(0, dim_size=dim_size)
 
-    def gather(self, indices, axis=-1, key_chains=None, to_apply=True, prune_unapplied=False):
+    def gather(self, indices, axis=-1, key_chains=None, to_apply=True, prune_unapplied=False, map_sequences=False):
         """
         Gather slices from all container params at axis according to indices.
 
@@ -1560,12 +1627,14 @@ class Container(dict):
         :type to_apply: bool, optional
         :param prune_unapplied: Whether to prune key_chains for which the function was not applied. Default is False.
         :type prune_unapplied: bool, optional
+        :param map_sequences: Whether to also map method to sequences (lists, tuples). Default is False.
+        :type map_sequences: bool, optional
         :return: Container object with all sub-array dimensions gathered along the axis.
         """
         return self.map(lambda x, kc: self._ivy.gather(x, indices, axis) if self._ivy.is_array(x) else x,
-                        key_chains, to_apply, prune_unapplied)
+                        key_chains, to_apply, prune_unapplied, map_sequences)
 
-    def gather_nd(self, indices, key_chains=None, to_apply=True, prune_unapplied=False):
+    def gather_nd(self, indices, key_chains=None, to_apply=True, prune_unapplied=False, map_sequences=False):
         """
         Gather slices from all container params into a arrays with shape specified by indices.
 
@@ -1578,12 +1647,14 @@ class Container(dict):
         :type to_apply: bool, optional
         :param prune_unapplied: Whether to prune key_chains for which the function was not applied. Default is False.
         :type prune_unapplied: bool, optional
+        :param map_sequences: Whether to also map method to sequences (lists, tuples). Default is False.
+        :type map_sequences: bool, optional
         :return: Container object with all sub-array dimensions gathered.
         """
         return self.map(lambda x, kc: self._ivy.gather_nd(x, indices) if self._ivy.is_array(x) else x,
-                        key_chains, to_apply, prune_unapplied)
+                        key_chains, to_apply, prune_unapplied, map_sequences)
 
-    def repeat(self, repeats, axis=None, key_chains=None, to_apply=True, prune_unapplied=False):
+    def repeat(self, repeats, axis=None, key_chains=None, to_apply=True, prune_unapplied=False, map_sequences=False):
         """
         Repeat values along a given dimension for each array in the container.
 
@@ -1599,12 +1670,14 @@ class Container(dict):
         :type to_apply: bool, optional
         :param prune_unapplied: Whether to prune key_chains for which the function was not applied. Default is False.
         :type prune_unapplied: bool, optional
+        :param map_sequences: Whether to also map method to sequences (lists, tuples). Default is False.
+        :type map_sequences: bool, optional
         :return: container with each array being repeated along the specified dimension.
         """
         return self.map(lambda x, kc: self._ivy.repeat(x, repeats, axis) if self._ivy.is_array(x) else x,
-                        key_chains, to_apply, prune_unapplied)
+                        key_chains, to_apply, prune_unapplied, map_sequences)
 
-    def swapaxes(self, axis0, axis1, key_chains=None, to_apply=True, prune_unapplied=False):
+    def swapaxes(self, axis0, axis1, key_chains=None, to_apply=True, prune_unapplied=False, map_sequences=False):
         """
         Interchange two axes for each array in the container.
 
@@ -1619,13 +1692,15 @@ class Container(dict):
         :type to_apply: bool, optional
         :param prune_unapplied: Whether to prune key_chains for which the function was not applied. Default is False.
         :type prune_unapplied: bool, optional
+        :param map_sequences: Whether to also map method to sequences (lists, tuples). Default is False.
+        :type map_sequences: bool, optional
         :return: ivy.Container with each chosen array having the axes swapped.
         """
         return self.map(lambda x, kc: self._ivy.swapaxes(x, axis0, axis1) if self._ivy.is_array(x) else x,
-                        key_chains, to_apply, prune_unapplied)
+                        key_chains, to_apply, prune_unapplied, map_sequences)
 
     def reshape(self, pre_shape=None, shape_slice=None, post_shape=None, key_chains=None, to_apply=True,
-                prune_unapplied=False):
+                prune_unapplied=False, map_sequences=False):
         """
         Reshapes each array x in the container, to a new shape given by pre_shape + x.shape[shape_slice] + post_shape.
         If shape_slice or post_shape are not specified, then the term is ignored.
@@ -1643,6 +1718,8 @@ class Container(dict):
         :type to_apply: bool, optional
         :param prune_unapplied: Whether to prune key_chains for which the function was not applied. Default is False.
         :type prune_unapplied: bool, optional
+        :param map_sequences: Whether to also map method to sequences (lists, tuples). Default is False.
+        :type map_sequences: bool, optional
         :return: ivy.Container with each array reshaped as specified.
         """
         pre_shape = [] if pre_shape is None else\
@@ -1651,13 +1728,14 @@ class Container(dict):
             ([post_shape] if isinstance(post_shape, int) else list(post_shape))
         if shape_slice is None:
             return self.map(lambda x, kc: self._ivy.reshape(x, pre_shape + post_shape) if self._ivy.is_array(x) else x,
-                            key_chains, to_apply, prune_unapplied)
+                            key_chains, to_apply, prune_unapplied, map_sequences)
         shape_slice = slice(shape_slice, shape_slice+1) if isinstance(shape_slice, int) else shape_slice
         return self.map(lambda x, kc:
                         self._ivy.reshape(x, pre_shape + list(x.shape[shape_slice]) + post_shape)
-                        if self._ivy.is_array(x) else x, key_chains, to_apply, prune_unapplied)
+                        if self._ivy.is_array(x) else x, key_chains, to_apply, prune_unapplied, map_sequences)
 
-    def einops_rearrange(self, pattern,  key_chains=None, to_apply=True, prune_unapplied=False, **axes_lengths):
+    def einops_rearrange(self, pattern,  key_chains=None, to_apply=True, prune_unapplied=False, map_sequences=False,
+                         **axes_lengths):
         """
         Perform einops rearrange operation on each sub array in the container.
 
@@ -1670,14 +1748,17 @@ class Container(dict):
         :type to_apply: bool, optional
         :param prune_unapplied: Whether to prune key_chains for which the function was not applied. Default is False.
         :type prune_unapplied: bool, optional
+        :param map_sequences: Whether to also map method to sequences (lists, tuples). Default is False.
+        :type map_sequences: bool, optional
         :param axes_lengths: Any additional specifications for dimensions.
         :type axes_lengths: keyword parameter args
         :return: ivy.Container with each array having einops.rearrange applied.
         """
         return self.map(lambda x, kc: ivy.einops_rearrange(x, pattern, **axes_lengths) if self._ivy.is_array(x) else x,
-                        key_chains, to_apply, prune_unapplied)
+                        key_chains, to_apply, prune_unapplied, map_sequences)
 
-    def einops_reduce(self, pattern,  reduction, key_chains=None, to_apply=True, prune_unapplied=False, **axes_lengths):
+    def einops_reduce(self, pattern,  reduction, key_chains=None, to_apply=True, prune_unapplied=False,
+                      map_sequences=False, **axes_lengths):
         """
         Perform einops reduce operation on each sub array in the container.
 
@@ -1692,14 +1773,17 @@ class Container(dict):
         :type to_apply: bool, optional
         :param prune_unapplied: Whether to prune key_chains for which the function was not applied. Default is False.
         :type prune_unapplied: bool, optional
+        :param map_sequences: Whether to also map method to sequences (lists, tuples). Default is False.
+        :type map_sequences: bool, optional
         :param axes_lengths: Any additional specifications for dimensions.
         :type axes_lengths: keyword parameter args
         :return: ivy.Container with each array having einops.reduce applied.
         """
         return self.map(lambda x, kc: ivy.einops_reduce(x, pattern, reduction, **axes_lengths) if self._ivy.is_array(x)
-                        else x, key_chains, to_apply, prune_unapplied)
+                        else x, key_chains, to_apply, prune_unapplied, map_sequences)
 
-    def einops_repeat(self, pattern, key_chains=None, to_apply=True, prune_unapplied=False, **axes_lengths):
+    def einops_repeat(self, pattern, key_chains=None, to_apply=True, prune_unapplied=False,
+                      map_sequences=False, **axes_lengths):
         """
         Perform einops repeat operation on each sub array in the container.
 
@@ -1712,14 +1796,16 @@ class Container(dict):
         :type to_apply: bool, optional
         :param prune_unapplied: Whether to prune key_chains for which the function was not applied. Default is False.
         :type prune_unapplied: bool, optional
+        :param map_sequences: Whether to also map method to sequences (lists, tuples). Default is False.
+        :type map_sequences: bool, optional
         :param axes_lengths: Any additional specifications for dimensions.
         :type axes_lengths: keyword parameter args
         :return: ivy.Container with each array having einops.repeat applied.
         """
         return self.map(lambda x, kc: ivy.einops_repeat(x, pattern, **axes_lengths) if self._ivy.is_array(x) else x,
-                        key_chains, to_apply, prune_unapplied)
+                        key_chains, to_apply, prune_unapplied, map_sequences)
 
-    def to_dev(self, dev_str, key_chains=None, to_apply=True, prune_unapplied=False):
+    def to_dev(self, dev_str, key_chains=None, to_apply=True, prune_unapplied=False, map_sequences=False):
         """
         Move the container arrays to the desired device, specified by device string.
 
@@ -1732,12 +1818,15 @@ class Container(dict):
         :type to_apply: bool, optional
         :param prune_unapplied: Whether to prune key_chains for which the function was not applied. Default is False.
         :type prune_unapplied: bool, optional
+        :param map_sequences: Whether to also map method to sequences (lists, tuples). Default is False.
+        :type map_sequences: bool, optional
         :return: The container, but with each sub-array now placed on the target device.
         """
         return self.map(lambda x, kc: self._ivy.stop_gradient(self._ivy.to_dev(x, dev_str))
-            if self._ivy.is_array(x) else x, key_chains, to_apply, prune_unapplied)
+            if self._ivy.is_array(x) else x, key_chains, to_apply, prune_unapplied, map_sequences)
 
-    def stop_gradients(self, preserve_type=True, key_chains=None, to_apply=True, prune_unapplied=False):
+    def stop_gradients(self, preserve_type=True, key_chains=None, to_apply=True, prune_unapplied=False,
+                       map_sequences=False):
         """
         Stop gradients of all array entries in the container.
 
@@ -1751,13 +1840,16 @@ class Container(dict):
         :type to_apply: bool, optional
         :param prune_unapplied: Whether to prune key_chains for which the function was not applied. Default is False.
         :type prune_unapplied: bool, optional
+        :param map_sequences: Whether to also map method to sequences (lists, tuples). Default is False.
+        :type map_sequences: bool, optional
         :return: container with each array having their gradients stopped.
         """
         return self.map(
             lambda x, kc: self._ivy.stop_gradient(x, preserve_type) if self._ivy.is_variable(x)
-            else x, key_chains, to_apply, prune_unapplied)
+            else x, key_chains, to_apply, prune_unapplied, map_sequences)
 
-    def as_variables(self, key_chains=None, to_apply=True, prune_unapplied=False):
+    def as_variables(self, key_chains=None, to_apply=True, prune_unapplied=False,
+                     map_sequences=False):
         """
         Converts all nested arrays to variables, which support gradient computation.
 
@@ -1768,12 +1860,14 @@ class Container(dict):
         :type to_apply: bool, optional
         :param prune_unapplied: Whether to prune key_chains for which the function was not applied. Default is False.
         :type prune_unapplied: bool, optional
+        :param map_sequences: Whether to also map method to sequences (lists, tuples). Default is False.
+        :type map_sequences: bool, optional
         :return: container with each array converted to a variable.
         """
         return self.map(lambda x, kc: self._ivy.variable(x) if self._ivy.is_array(x) else x,
-                        key_chains, to_apply, prune_unapplied)
+                        key_chains, to_apply, prune_unapplied, map_sequences)
 
-    def as_arrays(self, key_chains=None, to_apply=True, prune_unapplied=False):
+    def as_arrays(self, key_chains=None, to_apply=True, prune_unapplied=False, map_sequences=False):
         """
         Converts all nested variables to arrays, which do not support gradient computation.
 
@@ -1784,11 +1878,14 @@ class Container(dict):
         :type to_apply: bool, optional
         :param prune_unapplied: Whether to prune key_chains for which the function was not applied. Default is False.
         :type prune_unapplied: bool, optional
+        :param map_sequences: Whether to also map method to sequences (lists, tuples). Default is False.
+        :type map_sequences: bool, optional
         :return: container with each variable converted to an array.
         """
         return self.map(
             lambda x, kc: self._ivy.stop_gradient(x, False) if self._ivy.is_variable(x)
-            else (x if self._ivy.is_array(x) else self._ivy.array(x)), key_chains, to_apply, prune_unapplied)
+            else (x if self._ivy.is_array(x) else self._ivy.array(x)), key_chains, to_apply, prune_unapplied,
+            map_sequences)
 
     def num_arrays(self, exclusive=False):
         """
@@ -1829,7 +1926,7 @@ class Container(dict):
         retrieval_dict = {k: v[0] for k, v in sorted(retrieval_dict.items(), key=lambda knv: knv[1][1])}
         return ivy.Container(retrieval_dict, alphabetical_keys=False)
 
-    def to_numpy(self, key_chains=None, to_apply=True, prune_unapplied=False):
+    def to_numpy(self, key_chains=None, to_apply=True, prune_unapplied=False, map_sequences=False):
         """
         Converts all nested ivy arrays to numpy arrays.
 
@@ -1840,12 +1937,15 @@ class Container(dict):
         :type to_apply: bool, optional
         :param prune_unapplied: Whether to prune key_chains for which the function was not applied. Default is False.
         :type prune_unapplied: bool, optional
+        :param map_sequences: Whether to also map method to sequences (lists, tuples). Default is False.
+        :type map_sequences: bool, optional
         :return: container with each ivy array converted to a numpy array.
         """
         return self.map(
-            lambda x, kc: self._ivy.to_numpy(x) if self._ivy.is_array(x) else x, key_chains, to_apply, prune_unapplied)
+            lambda x, kc: self._ivy.to_numpy(x) if self._ivy.is_array(x) else x, key_chains, to_apply, prune_unapplied,
+            map_sequences)
 
-    def arrays_as_lists(self, key_chains=None, to_apply=True, prune_unapplied=False):
+    def arrays_as_lists(self, key_chains=None, to_apply=True, prune_unapplied=False, map_sequences=False):
         """
         Converts all nested arrays to lists, a useful intermediate step for conversion to other framework array types.
 
@@ -1856,10 +1956,13 @@ class Container(dict):
         :type to_apply: bool, optional
         :param prune_unapplied: Whether to prune key_chains for which the function was not applied. Default is False.
         :type prune_unapplied: bool, optional
+        :param map_sequences: Whether to also map method to sequences (lists, tuples). Default is False.
+        :type map_sequences: bool, optional
         :return: container with each array converted to a list.
         """
         return self.map(
-            lambda x, kc: self._ivy.to_list(x) if self._ivy.is_array(x) else x, key_chains, to_apply, prune_unapplied)
+            lambda x, kc: self._ivy.to_list(x) if self._ivy.is_array(x) else x, key_chains, to_apply, prune_unapplied,
+            map_sequences)
 
     def to_disk_as_hdf5(self, h5_obj_or_filepath, starting_index=0, mode='a', max_batch_size=None):
         """
@@ -2408,7 +2511,7 @@ class Container(dict):
             new_dict[k] = v_back
         return Container(new_dict, **self._config)
 
-    def prune_empty(self, keep_Nones=False, base=True):
+    def prune_empty(self, keep_nones=False, base=True):
         """
         Recursively prunes empty keys from the container dict structure.
         Returns None if the entire container is empty.
@@ -2418,10 +2521,10 @@ class Container(dict):
         out_dict = dict()
         for key, value in self.items():
             if isinstance(value, Container):
-                new_value = value.prune_empty(keep_Nones, False)
+                new_value = value.prune_empty(keep_nones, False)
                 if new_value:
                     out_dict[key] = new_value
-            elif self._ivy.exists(value) or keep_Nones:
+            elif self._ivy.exists(value) or keep_nones:
                 out_dict[key] = value
         if len(out_dict):
             return Container(out_dict, **self._config)
@@ -2531,6 +2634,8 @@ class Container(dict):
         :type to_apply: bool, optional
         :param prune_unapplied: Whether to prune key_chains for which the function was not applied. Default is False.
         :type prune_unapplied: bool, optional
+        :param map_sequences: Whether to also map method to sequences (lists, tuples). Default is False.
+        :type map_sequences: bool, optional
         :param inplace: Whether to apply the mapping inplace, or return a new container. Default is False.
         :type inplace: bool, optional
         :param map_sequences: Whether to also map to sequences (lists and tuples). Default is False.
@@ -2805,6 +2910,7 @@ class Container(dict):
     def show(self):
         print(self)
 
+    # noinspection PyUnresolvedReferences
     def show_sub_container(self, sub_cont_or_keychain):
 
         # copy this container
