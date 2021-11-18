@@ -2294,7 +2294,10 @@
         <span class="n">key_chain_found</span> <span class="o">=</span> <span class="kc">False</span>
 
         <span class="k">def</span> <span class="nf">_check_sub_cont</span><span class="p">(</span><span class="n">sub_cont</span><span class="p">,</span> <span class="n">kc</span><span class="p">):</span>
-            <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="o">.</span><span class="n">identical</span><span class="p">([</span><span class="n">sub_cont</span><span class="p">,</span> <span class="n">sub_cont_to_find</span><span class="p">],</span> <span class="n">partial</span><span class="o">=</span><span class="n">partial</span><span class="p">):</span>
+            <span class="n">sub_cont_key_chains</span> <span class="o">=</span> <span class="n">sub_cont_to_find</span><span class="o">.</span><span class="n">all_key_chains</span><span class="p">()</span>
+            <span class="n">kcs_in_sub_cont</span> <span class="o">=</span> <span class="p">[</span><span class="n">kc</span> <span class="ow">in</span> <span class="n">sub_cont</span> <span class="k">for</span> <span class="n">kc</span> <span class="ow">in</span> <span class="n">sub_cont_key_chains</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">kcs_in_sub_cont</span> <span class="ow">and</span> <span class="nb">min</span><span class="p">(</span><span class="n">kcs_in_sub_cont</span><span class="p">)</span> <span class="ow">and</span> \
+                    <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="o">.</span><span class="n">identical</span><span class="p">([</span><span class="n">sub_cont</span><span class="p">,</span> <span class="n">sub_cont_to_find</span><span class="p">],</span> <span class="n">partial</span><span class="o">=</span><span class="n">partial</span><span class="p">):</span>
                 <span class="k">nonlocal</span> <span class="n">key_chain_found</span>
                 <span class="n">key_chain_found</span> <span class="o">=</span> <span class="n">kc</span>
             <span class="k">return</span> <span class="n">sub_cont</span>
@@ -2320,7 +2323,10 @@
         <span class="n">key_chain_found</span> <span class="o">=</span> <span class="kc">False</span>
 
         <span class="k">def</span> <span class="nf">_check_sub_cont</span><span class="p">(</span><span class="n">sub_cont</span><span class="p">,</span> <span class="n">kc</span><span class="p">):</span>
-            <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="o">.</span><span class="n">identical_structure</span><span class="p">([</span><span class="n">sub_cont</span><span class="p">,</span> <span class="n">sub_struc_to_find</span><span class="p">],</span> <span class="n">partial</span><span class="o">=</span><span class="n">partial</span><span class="p">):</span>
+            <span class="n">sub_struc_key_chains</span> <span class="o">=</span> <span class="n">sub_struc_to_find</span><span class="o">.</span><span class="n">all_key_chains</span><span class="p">()</span>
+            <span class="n">kcs_in_sub_cont</span> <span class="o">=</span> <span class="p">[</span><span class="n">kc</span> <span class="ow">in</span> <span class="n">sub_cont</span> <span class="k">for</span> <span class="n">kc</span> <span class="ow">in</span> <span class="n">sub_struc_key_chains</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">kcs_in_sub_cont</span> <span class="ow">and</span> <span class="nb">min</span><span class="p">(</span><span class="n">kcs_in_sub_cont</span><span class="p">)</span> <span class="ow">and</span> \
+                    <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="o">.</span><span class="n">identical_structure</span><span class="p">([</span><span class="n">sub_cont</span><span class="p">,</span> <span class="n">sub_struc_to_find</span><span class="p">],</span> <span class="n">partial</span><span class="o">=</span><span class="n">partial</span><span class="p">):</span>
                 <span class="k">nonlocal</span> <span class="n">key_chain_found</span>
                 <span class="n">key_chain_found</span> <span class="o">=</span> <span class="n">kc</span>
             <span class="k">return</span> <span class="n">sub_cont</span>
