@@ -161,17 +161,37 @@ def test_module_w_partial_v(bs_ic_oc, dev_str, compile_graph, call):
     x = ivy.cast(ivy.linspace(ivy.zeros(batch_shape), ivy.ones(batch_shape), input_channels), 'float32')
     v = ivy.Container({
         'linear0': {
-            'b': ivy.random_uniform(shape=[64])
+            'b': ivy.variable(ivy.random_uniform(shape=[64])),
+            'w': ivy.variable(ivy.random_uniform(shape=[64, 4]))
         },
         'linear1': {
-            'w': ivy.random_uniform(shape=[64, 64])
+            'b': ivy.variable(ivy.random_uniform(shape=[64])),
+            'w': ivy.variable(ivy.random_uniform(shape=[64, 64])),
+            'extra': ivy.variable(ivy.random_uniform(shape=[64, 64]))
         },
         'linear2': {
-            'b': ivy.random_uniform(shape=[5])
+            'b': ivy.variable(ivy.random_uniform(shape=[5])),
+            'w': ivy.variable(ivy.random_uniform(shape=[5, 64]))
         }
     })
     try:
-        module = TrainableModule(input_channels, output_channels, dev_str=dev_str, v=v)
+        TrainableModule(input_channels, output_channels, dev_str=dev_str, v=v, with_partial_v=True)
+        raise Exception('TrainableModule did not raise exception desipite being passed with wrongly shaped variables.')
+    except AssertionError:
+        pass
+    v = ivy.Container({
+        'linear0': {
+            'b': ivy.variable(ivy.random_uniform(shape=[64])),
+        },
+        'linear1': {
+            'w': ivy.variable(ivy.random_uniform(shape=[64, 64]))
+        },
+        'linear2': {
+            'b': ivy.variable(ivy.random_uniform(shape=[5]))
+        }
+    })
+    try:
+        TrainableModule(input_channels, output_channels, dev_str=dev_str, v=v)
         raise Exception('TrainableModule did not raise exception desipite being passed with wrongly shaped variables.')
     except AssertionError:
         pass
