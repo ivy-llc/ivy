@@ -2261,6 +2261,21 @@ def test_container_shuffle(dev_str, call):
     assert (ivy.to_numpy(container_shuffled.b.c) == shuffled_data).all()
     assert 'b/d' not in container_shuffled
 
+    # map sequences
+    dict_in = {'a': ivy.array([1, 2, 3], dev_str=dev_str),
+               'b': [ivy.array([1, 2, 3], dev_str=dev_str), ivy.array([1, 2, 3], dev_str=dev_str)]}
+    container = Container(dict_in)
+    container_shuffled = container.shuffle(0, map_sequences=True)
+    data = ivy.array([1, 2, 3], dev_str=dev_str)
+    ivy.core.random.seed()
+    shuffled_data = ivy.to_numpy(ivy.core.random.shuffle(data))
+    assert (ivy.to_numpy(container_shuffled['a']) == shuffled_data).all()
+    assert (ivy.to_numpy(container_shuffled.a) == shuffled_data).all()
+    assert (ivy.to_numpy(container_shuffled['b'][0]) == shuffled_data).all()
+    assert (ivy.to_numpy(container_shuffled.b[0]) == shuffled_data).all()
+    assert (ivy.to_numpy(container_shuffled['b'][1]) == shuffled_data).all()
+    assert (ivy.to_numpy(container_shuffled.b[1]) == shuffled_data).all()
+
 
 @pytest.mark.parametrize(
     "include_empty", [True, False])

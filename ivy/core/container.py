@@ -1313,7 +1313,8 @@ class Container(dict):
         return self.map(lambda x, kc: self._ivy.flip(x, axis) if self._ivy.is_array(x) else x,
                         key_chains, to_apply, prune_unapplied, map_sequences)
 
-    def shuffle(self, seed_value=None, key_chains=None, to_apply=True, prune_unapplied=False, key_chain=''):
+    def shuffle(self, seed_value=None, key_chains=None, to_apply=True, prune_unapplied=False, map_sequences=False,
+                key_chain=''):
         """
         Shuffle entries in all sub-arrays, such that they are still aligned along axis 0.
 
@@ -1326,6 +1327,8 @@ class Container(dict):
         :type to_apply: bool, optional
         :param prune_unapplied: Whether to prune key_chains for which the function was not applied. Default is False.
         :type prune_unapplied: bool, optional
+        :param map_sequences: Whether to also map method to sequences (lists, tuples). Default is False.
+        :type map_sequences: bool, optional
         :param key_chain: Chain of keys for this dict entry
         :type key_chain: str
         """
@@ -1335,7 +1338,14 @@ class Container(dict):
         for key, value in self.items():
             this_key_chain = key if key_chain == '' else (key_chain + '/' + key)
             if isinstance(value, Container):
-                ret = value.shuffle(seed_value, key_chains, to_apply, prune_unapplied, this_key_chain)
+                ret = value.shuffle(seed_value, key_chains, to_apply, prune_unapplied, map_sequences, this_key_chain)
+                if ret:
+                    return_dict[key] = ret
+            elif isinstance(value, (list, tuple)) and map_sequences:
+                def _shuffle(v):
+                    self._ivy.seed(seed_value)
+                    return self._ivy.shuffle(v)
+                ret = ivy.nested_map(value, _shuffle)
                 if ret:
                     return_dict[key] = ret
             else:
