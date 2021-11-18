@@ -2091,7 +2091,10 @@ class Container(dict):
         key_chain_found = False
 
         def _check_sub_cont(sub_cont, kc):
-            if ivy.Container.identical([sub_cont, sub_cont_to_find], partial=partial):
+            sub_cont_key_chains = sub_cont_to_find.all_key_chains()
+            kcs_in_sub_cont = [kc in sub_cont for kc in sub_cont_key_chains]
+            if kcs_in_sub_cont and min(kcs_in_sub_cont) and \
+                    ivy.Container.identical([sub_cont, sub_cont_to_find], partial=partial):
                 nonlocal key_chain_found
                 key_chain_found = kc
             return sub_cont
@@ -2117,7 +2120,10 @@ class Container(dict):
         key_chain_found = False
 
         def _check_sub_cont(sub_cont, kc):
-            if ivy.Container.identical_structure([sub_cont, sub_struc_to_find], partial=partial):
+            sub_struc_key_chains = sub_struc_to_find.all_key_chains()
+            kcs_in_sub_cont = [kc in sub_cont for kc in sub_struc_key_chains]
+            if kcs_in_sub_cont and min(kcs_in_sub_cont) and \
+                    ivy.Container.identical_structure([sub_cont, sub_struc_to_find], partial=partial):
                 nonlocal key_chain_found
                 key_chain_found = kc
             return sub_cont
