@@ -2475,6 +2475,7 @@ def test_container_identical(dev_str, call):
     container2 = Container({'a': ivy.array([1], dev_str=dev_str),
                             'b': {'c': ivy.array([2], dev_str=dev_str), 'd': ivy.array([3], dev_str=dev_str)}})
     container3 = Container({'b': {'d': arr3}})
+    container4 = Container({'d': arr3})
 
     # the same
     assert ivy.Container.identical([container0, container1])
@@ -2489,6 +2490,8 @@ def test_container_identical(dev_str, call):
     # partial
     assert ivy.Container.identical([container0, container3], partial=True)
     assert ivy.Container.identical([container3, container0], partial=True)
+    assert not ivy.Container.identical([container0, container4], partial=True)
+    assert not ivy.Container.identical([container4, container0], partial=True)
 
 
 def test_container_identical_structure(dev_str, call):
@@ -2504,6 +2507,7 @@ def test_container_identical_structure(dev_str, call):
                             'b': {'c': ivy.array([4], dev_str=dev_str), 'd': ivy.array([5], dev_str=dev_str)},
                             'e': ivy.array([6], dev_str=dev_str)})
     container4 = Container({'b': {'d': ivy.array([4], dev_str=dev_str)}})
+    container5 = Container({'d': ivy.array([4], dev_str=dev_str)})
 
     # with identical
     assert ivy.Container.identical_structure([container0, container1])
@@ -2522,6 +2526,11 @@ def test_container_identical_structure(dev_str, call):
     assert ivy.Container.identical_structure([container2, container4], partial=True)
     assert ivy.Container.identical_structure([container3, container4], partial=True)
     assert ivy.Container.identical_structure([container4, container4], partial=True)
+    assert not ivy.Container.identical_structure([container0, container5], partial=True)
+    assert not ivy.Container.identical_structure([container1, container5], partial=True)
+    assert not ivy.Container.identical_structure([container2, container5], partial=True)
+    assert not ivy.Container.identical_structure([container3, container5], partial=True)
+    assert not ivy.Container.identical_structure([container4, container5], partial=True)
 
 
 def test_container_identical_array_shapes(dev_str, call):
