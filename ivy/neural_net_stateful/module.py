@@ -7,6 +7,7 @@ import os
 import abc
 import logging
 import termcolor
+import numpy as np
 
 # local
 import ivy
@@ -446,15 +447,16 @@ class Module(abc.ABC):
     def compile_on_next_step(self):
         self._compile_on_next_step = True
 
-    def _set_intermediate_ret_flags(self, track_submod_rets, submod_depth, submods_to_track, track_submod_call_order,
-                                    expected_submod_rets):
+    def _set_submod_flags(self, track_submod_rets, submod_depth, submods_to_track, track_submod_call_order,
+                          expected_submod_rets):
         self._track_submod_rets = track_submod_rets
         self._submod_depth = submod_depth
         self._submods_to_track = submods_to_track
         self._track_submod_call_order = track_submod_call_order
-        self.expected_submod_rets = expected_submod_rets
+        self.expected_submod_rets = expected_submod_rets.to_numpy(map_sequences=True) \
+            if ivy.exists(expected_submod_rets) else expected_submod_rets
 
-    def _unset_intermediate_ret_flags(self):
+    def _unset_submod_flags(self):
         self._track_submod_rets = False
         self._submod_depth = None
         self._submods_to_track = None
@@ -478,7 +480,7 @@ class Module(abc.ABC):
         rets = sr[key]
         expected_rets = esr[key]
         for ret, expected_ret in zip(rets, expected_rets):
-            assert ivy.array_equal(ret, expected_ret)
+            assert np.allclose(ivy.to_numpy(ret), expected_ret)
 
     # noinspection PyProtectedMember
     def _is_submod_leaf(self):
@@ -526,11 +528,11 @@ class Module(abc.ABC):
                 return self._compiled_fn(*args, v=ivy.default(v, self.v), with_grads=with_grads, **kwargs)
             except Exception as e:
                 if self._fallback_to_non_compiled:
-                    self._set_intermediate_ret_flags(
+                    self._set_submod_flags(
                         track_submod_rets, submod_depth, submods_to_track, track_submod_call_order,
                         expected_submod_rets)
                     ret = self._call(*args, v=v, with_grads=with_grads, **kwargs)
-                    self._unset_intermediate_ret_flags()
+                    self._unset_submod_flags()
                     return ret
                 raise e
         elif self._compile_on_next_step and not self._compiled:
@@ -538,10 +540,10 @@ class Module(abc.ABC):
                                arg_stateful_idxs=arg_stateful_idxs, kwarg_stateful_idxs=kwarg_stateful_idxs, **kwargs)
             self._compile_on_next_step = False
             return self._compiled_fn(*args, v=ivy.default(v, self.v), with_grads=with_grads, **kwargs)
-        self._set_intermediate_ret_flags(
+        self._set_submod_flags(
             track_submod_rets, submod_depth, submods_to_track, track_submod_call_order, expected_submod_rets)
         ret = self._call(*args, v=v, with_grads=with_grads, **kwargs)
-        self._unset_intermediate_ret_flags()
+        self._unset_submod_flags()
         return ret
 
     def save_weights(self, weights_path):
