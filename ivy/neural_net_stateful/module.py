@@ -79,6 +79,7 @@ class Module(abc.ABC):
         self._submods_to_track = None
         self._track_submod_call_order = False
         self.submod_rets = ivy.Container()
+        self.expected_submod_rets = None
         self.submod_call_order = ivy.Container(alphabetical_keys=False)
         self._sub_mods = set()
         if build_mode != 'on_init':
@@ -131,6 +132,13 @@ class Module(abc.ABC):
         if ivy.exists(depth):
             return self.top_mod(depth - 1)._track_submod_rets if depth > 0 else self._track_submod_rets
         return top_mod._track_submod_rets
+
+    def check_submod_rets(self):
+        if not ivy.exists(self.top_mod):
+            return False
+        if ivy.exists(self.top_mod().expected_submod_rets):
+            return True
+        return False
 
     # noinspection PyProtectedMember
     def track_submod_call_order(self):
@@ -285,8 +293,12 @@ class Module(abc.ABC):
         if self.track_submod_call_order():
             self._add_submod_enter()
         ret = self._forward(*args, **kwargs)
-        if self.track_submod_rets():
-            self._add_intermediate_ret(ret)
+        track_submod_rets = self.track_submod_rets()
+        check_submod_rets = self.check_submod_rets()
+        if track_submod_rets or check_submod_rets:
+            self._add_submod_ret(ret)
+        if check_submod_rets:
+            self._check_submod_ret()
         return ret
 
     def _call(self, *args, v=None, with_grads=True, **kwargs):
@@ -434,25 +446,39 @@ class Module(abc.ABC):
     def compile_on_next_step(self):
         self._compile_on_next_step = True
 
-    def _set_intermediate_ret_flags(self, track_submod_rets, submod_depth, submods_to_track, track_submod_call_order):
+    def _set_intermediate_ret_flags(self, track_submod_rets, submod_depth, submods_to_track, track_submod_call_order,
+                                    expected_submod_rets):
         self._track_submod_rets = track_submod_rets
         self._submod_depth = submod_depth
         self._submods_to_track = submods_to_track
         self._track_submod_call_order = track_submod_call_order
+        self.expected_submod_rets = expected_submod_rets
 
     def _unset_intermediate_ret_flags(self):
         self._track_submod_rets = False
         self._submod_depth = None
         self._submods_to_track = None
         self._track_submod_call_order = False
+        self.expected_submod_rets = None
 
-    def _add_intermediate_ret(self, ret):
+    def _add_submod_ret(self, ret):
         sr = self.top_mod().submod_rets
         key = ivy.Container.format_key(self.__repr__(False), '_')
         if key in sr:
             sr[key].append(ret)
         else:
             sr[key] = [ret]
+
+    def _check_submod_ret(self):
+        key = ivy.Container.format_key(self.__repr__(False), '_')
+        esr = self.top_mod().expected_submod_rets
+        if key not in esr:
+            return
+        sr = self.top_mod().submod_rets
+        rets = sr[key]
+        expected_rets = esr[key]
+        for ret, expected_ret in zip(rets, expected_rets):
+            assert ivy.array_equal(ret, expected_ret)
 
     # noinspection PyProtectedMember
     def _is_submod_leaf(self):
@@ -492,17 +518,17 @@ class Module(abc.ABC):
 
     def __call__(self, *args, v=None, with_grads=True, stateful=None, arg_stateful_idxs=None, kwarg_stateful_idxs=None,
                  track_submod_rets=False, submod_depth=None, submods_to_track=None, track_submod_call_order=False,
-                 **kwargs):
-        self.submod_rets.clear()
-        self.submod_call_order.clear()
+                 expected_submod_rets=None, **kwargs):
+        self.submod_rets = ivy.Container()
+        self.submod_call_order = ivy.Container(alphabetical_keys=False)
         if self._compiled and ivy.try_use_compiled:
             try:
                 return self._compiled_fn(*args, v=ivy.default(v, self.v), with_grads=with_grads, **kwargs)
             except Exception as e:
                 if self._fallback_to_non_compiled:
                     self._set_intermediate_ret_flags(
-                        track_submod_rets, submod_depth, submods_to_track,
-                        track_submod_call_order)
+                        track_submod_rets, submod_depth, submods_to_track, track_submod_call_order,
+                        expected_submod_rets)
                     ret = self._call(*args, v=v, with_grads=with_grads, **kwargs)
                     self._unset_intermediate_ret_flags()
                     return ret
@@ -513,7 +539,7 @@ class Module(abc.ABC):
             self._compile_on_next_step = False
             return self._compiled_fn(*args, v=ivy.default(v, self.v), with_grads=with_grads, **kwargs)
         self._set_intermediate_ret_flags(
-            track_submod_rets, submod_depth, submods_to_track, track_submod_call_order)
+            track_submod_rets, submod_depth, submods_to_track, track_submod_call_order, expected_submod_rets)
         ret = self._call(*args, v=v, with_grads=with_grads, **kwargs)
         self._unset_intermediate_ret_flags()
         return ret
