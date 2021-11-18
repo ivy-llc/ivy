@@ -30,8 +30,8 @@ def test_layer_norm_layer_training(x_n_ns, with_v, dtype_str, tensor_fn, dev_str
     x, normalized_shape = x_n_ns
     x = tensor_fn(x, dtype_str, dev_str)
     if with_v:
-        v = Container({'scale': ivy.variable(ivy.ones_like(x)),
-                       'offset': ivy.variable(ivy.zeros_like(x))})
+        v = Container({'scale': ivy.variable(ivy.ones(normalized_shape)),
+                       'offset': ivy.variable(ivy.zeros(normalized_shape))})
     else:
         v = None
     norm_layer = ivy.LayerNorm(normalized_shape, dev_str=dev_str, v=v)
