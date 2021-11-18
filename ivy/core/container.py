@@ -2630,7 +2630,7 @@ class Container(dict):
         """
         return self.map(lambda x, kc: ivy.copy_array(x) if ivy.is_array(x) else x)
 
-    def map(self, func, key_chains=None, to_apply=True, prune_unapplied=False, inplace=False, map_sequences=False,
+    def map(self, func, key_chains=None, to_apply=True, prune_unapplied=False, map_sequences=False, inplace=False,
             key_chain=''):
         """
         Apply function to all array values of container
@@ -2658,7 +2658,7 @@ class Container(dict):
         for key, value in self.items():
             this_key_chain = key if key_chain == '' else (key_chain + '/' + key)
             if isinstance(value, Container):
-                ret = value.map(func, key_chains, to_apply, prune_unapplied, inplace, map_sequences, this_key_chain)
+                ret = value.map(func, key_chains, to_apply, prune_unapplied, map_sequences, inplace, this_key_chain)
                 if prune_unapplied and not ret:
                     continue
                 if not inplace:
