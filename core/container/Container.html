@@ -254,7 +254,7 @@ Default is True.</p></li>
 
 <dl class="py method">
 <dt id="ivy.core.container.Container.all_false">
-<code class="sig-name descname">all_false</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">assert_is_bool</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">key_chains</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">to_apply</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">prune_unapplied</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/container.html#Container.all_false"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.all_false" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">all_false</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">assert_is_bool</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">key_chains</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">to_apply</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">prune_unapplied</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">map_sequences</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/container.html#Container.all_false"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.all_false" title="Permalink to this definition">¶</a></dt>
 <dd><p>Determine whether all the entries in the container boolean evaluate to False.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -264,6 +264,7 @@ Default is True.</p></li>
 <li><p><strong>to_apply</strong> (<em>bool</em><em>, </em><em>optional</em>) – If True, the method will be applied to key_chains, otherwise key_chains will be skipped.
 Default is True.</p></li>
 <li><p><strong>prune_unapplied</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to prune key_chains for which the function was not applied. Default is False.</p></li>
+<li><p><strong>map_sequences</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to also map method to sequences (lists, tuples). Default is False.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -280,7 +281,7 @@ Default is True.</p></li>
 
 <dl class="py method">
 <dt id="ivy.core.container.Container.all_true">
-<code class="sig-name descname">all_true</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">assert_is_bool</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">key_chains</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">to_apply</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">prune_unapplied</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/container.html#Container.all_true"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.all_true" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">all_true</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">assert_is_bool</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">key_chains</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">to_apply</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">prune_unapplied</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">map_sequences</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/container.html#Container.all_true"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.all_true" title="Permalink to this definition">¶</a></dt>
 <dd><p>Determine whether all the entries in the container boolean evaluate to True.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -290,6 +291,7 @@ Default is True.</p></li>
 <li><p><strong>to_apply</strong> (<em>bool</em><em>, </em><em>optional</em>) – If True, the method will be applied to key_chains, otherwise key_chains will be skipped.
 Default is True.</p></li>
 <li><p><strong>prune_unapplied</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to prune key_chains for which the function was not applied. Default is False.</p></li>
+<li><p><strong>map_sequences</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to also map method to sequences (lists, tuples). Default is False.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -300,7 +302,7 @@ Default is True.</p></li>
 
 <dl class="py method">
 <dt id="ivy.core.container.Container.arrays_as_lists">
-<code class="sig-name descname">arrays_as_lists</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">key_chains</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">to_apply</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">prune_unapplied</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/container.html#Container.arrays_as_lists"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.arrays_as_lists" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">arrays_as_lists</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">key_chains</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">to_apply</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">prune_unapplied</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">map_sequences</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/container.html#Container.arrays_as_lists"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.arrays_as_lists" title="Permalink to this definition">¶</a></dt>
 <dd><p>Converts all nested arrays to lists, a useful intermediate step for conversion to other framework array types.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -309,6 +311,7 @@ Default is True.</p></li>
 <li><p><strong>to_apply</strong> (<em>bool</em><em>, </em><em>optional</em>) – If True, the method will be applied to key_chains, otherwise key_chains will be skipped.
 Default is True.</p></li>
 <li><p><strong>prune_unapplied</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to prune key_chains for which the function was not applied. Default is False.</p></li>
+<li><p><strong>map_sequences</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to also map method to sequences (lists, tuples). Default is False.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -319,7 +322,7 @@ Default is True.</p></li>
 
 <dl class="py method">
 <dt id="ivy.core.container.Container.as_arrays">
-<code class="sig-name descname">as_arrays</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">key_chains</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">to_apply</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">prune_unapplied</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/container.html#Container.as_arrays"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.as_arrays" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">as_arrays</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">key_chains</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">to_apply</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">prune_unapplied</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">map_sequences</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/container.html#Container.as_arrays"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.as_arrays" title="Permalink to this definition">¶</a></dt>
 <dd><p>Converts all nested variables to arrays, which do not support gradient computation.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -328,6 +331,7 @@ Default is True.</p></li>
 <li><p><strong>to_apply</strong> (<em>bool</em><em>, </em><em>optional</em>) – If True, the method will be applied to key_chains, otherwise key_chains will be skipped.
 Default is True.</p></li>
 <li><p><strong>prune_unapplied</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to prune key_chains for which the function was not applied. Default is False.</p></li>
+<li><p><strong>map_sequences</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to also map method to sequences (lists, tuples). Default is False.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -338,7 +342,7 @@ Default is True.</p></li>
 
 <dl class="py method">
 <dt id="ivy.core.container.Container.as_bools">
-<code class="sig-name descname">as_bools</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">assert_is_bool</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">key_chains</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">to_apply</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">prune_unapplied</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/container.html#Container.as_bools"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.as_bools" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">as_bools</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">assert_is_bool</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">key_chains</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">to_apply</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">prune_unapplied</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">map_sequences</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/container.html#Container.as_bools"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.as_bools" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return boolean evaluation for all nested items in the container.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -348,6 +352,7 @@ Default is True.</p></li>
 <li><p><strong>to_apply</strong> (<em>bool</em><em>, </em><em>optional</em>) – If True, the method will be applied to key_chains, otherwise key_chains will be skipped.
 Default is True.</p></li>
 <li><p><strong>prune_unapplied</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to prune key_chains for which the function was not applied. Default is False.</p></li>
+<li><p><strong>map_sequences</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to also map method to sequences (lists, tuples). Default is False.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -358,7 +363,7 @@ Default is True.</p></li>
 
 <dl class="py method">
 <dt id="ivy.core.container.Container.as_ones">
-<code class="sig-name descname">as_ones</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">key_chains</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">to_apply</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">prune_unapplied</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/container.html#Container.as_ones"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.as_ones" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">as_ones</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">key_chains</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">to_apply</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">prune_unapplied</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">map_sequences</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/container.html#Container.as_ones"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.as_ones" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return arrays of ones for all nested arrays in the container.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -367,6 +372,7 @@ Default is True.</p></li>
 <li><p><strong>to_apply</strong> (<em>bool</em><em>, </em><em>optional</em>) – If True, the method will be applied to key_chains, otherwise key_chains will be skipped.
 Default is True.</p></li>
 <li><p><strong>prune_unapplied</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to prune key_chains for which the function was not applied. Default is False.</p></li>
+<li><p><strong>map_sequences</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to also map method to sequences (lists, tuples). Default is False.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -377,7 +383,7 @@ Default is True.</p></li>
 
 <dl class="py method">
 <dt id="ivy.core.container.Container.as_random_uniform">
-<code class="sig-name descname">as_random_uniform</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">low</span><span class="o">=</span><span class="default_value">0.0</span></em>, <em class="sig-param"><span class="n">high</span><span class="o">=</span><span class="default_value">1.0</span></em>, <em class="sig-param"><span class="n">key_chains</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">to_apply</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">prune_unapplied</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/container.html#Container.as_random_uniform"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.as_random_uniform" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">as_random_uniform</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">low</span><span class="o">=</span><span class="default_value">0.0</span></em>, <em class="sig-param"><span class="n">high</span><span class="o">=</span><span class="default_value">1.0</span></em>, <em class="sig-param"><span class="n">key_chains</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">to_apply</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">prune_unapplied</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">map_sequences</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/container.html#Container.as_random_uniform"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.as_random_uniform" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return arrays of random uniform values for all nested arrays in the container.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -390,6 +396,7 @@ The default value is 1.0.</p></li>
 <li><p><strong>to_apply</strong> (<em>bool</em><em>, </em><em>optional</em>) – If True, the method will be applied to key_chains, otherwise key_chains will be skipped.
 Default is True.</p></li>
 <li><p><strong>prune_unapplied</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to prune key_chains for which the function was not applied. Default is False.</p></li>
+<li><p><strong>map_sequences</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to also map method to sequences (lists, tuples). Default is False.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -400,7 +407,7 @@ Default is True.</p></li>
 
 <dl class="py method">
 <dt id="ivy.core.container.Container.as_variables">
-<code class="sig-name descname">as_variables</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">key_chains</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">to_apply</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">prune_unapplied</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/container.html#Container.as_variables"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.as_variables" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">as_variables</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">key_chains</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">to_apply</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">prune_unapplied</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">map_sequences</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/container.html#Container.as_variables"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.as_variables" title="Permalink to this definition">¶</a></dt>
 <dd><p>Converts all nested arrays to variables, which support gradient computation.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -409,6 +416,7 @@ Default is True.</p></li>
 <li><p><strong>to_apply</strong> (<em>bool</em><em>, </em><em>optional</em>) – If True, the method will be applied to key_chains, otherwise key_chains will be skipped.
 Default is True.</p></li>
 <li><p><strong>prune_unapplied</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to prune key_chains for which the function was not applied. Default is False.</p></li>
+<li><p><strong>map_sequences</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to also map method to sequences (lists, tuples). Default is False.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -419,7 +427,7 @@ Default is True.</p></li>
 
 <dl class="py method">
 <dt id="ivy.core.container.Container.as_zeros">
-<code class="sig-name descname">as_zeros</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">key_chains</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">to_apply</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">prune_unapplied</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/container.html#Container.as_zeros"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.as_zeros" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">as_zeros</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">key_chains</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">to_apply</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">prune_unapplied</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">map_sequences</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/container.html#Container.as_zeros"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.as_zeros" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return arrays of zeros for all nested arrays in the container.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -428,6 +436,7 @@ Default is True.</p></li>
 <li><p><strong>to_apply</strong> (<em>bool</em><em>, </em><em>optional</em>) – If True, the method will be applied to key_chains, otherwise key_chains will be skipped.
 Default is True.</p></li>
 <li><p><strong>prune_unapplied</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to prune key_chains for which the function was not applied. Default is False.</p></li>
+<li><p><strong>map_sequences</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to also map method to sequences (lists, tuples). Default is False.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -479,7 +488,7 @@ Default is True.</p></li>
 
 <dl class="py method">
 <dt id="ivy.core.container.Container.clip">
-<code class="sig-name descname">clip</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">clip_min</span></em>, <em class="sig-param"><span class="n">clip_max</span></em>, <em class="sig-param"><span class="n">key_chains</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">to_apply</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">prune_unapplied</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/container.html#Container.clip"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.clip" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">clip</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">clip_min</span></em>, <em class="sig-param"><span class="n">clip_max</span></em>, <em class="sig-param"><span class="n">key_chains</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">to_apply</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">prune_unapplied</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">map_sequences</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/container.html#Container.clip"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.clip" title="Permalink to this definition">¶</a></dt>
 <dd><p>Computes the elementwise clipped values between this container and clip_min and clip_max containers or numbers.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -490,6 +499,7 @@ Default is True.</p></li>
 <li><p><strong>to_apply</strong> (<em>bool</em><em>, </em><em>optional</em>) – If True, the method will be applied to key_chains, otherwise key_chains will be skipped.
 Default is True.</p></li>
 <li><p><strong>prune_unapplied</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to prune key_chains for which the function was not applied. Default is False.</p></li>
+<li><p><strong>map_sequences</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to also map method to sequences (lists, tuples). Default is False.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -500,7 +510,7 @@ Default is True.</p></li>
 
 <dl class="py method">
 <dt id="ivy.core.container.Container.clip_vector_norm">
-<code class="sig-name descname">clip_vector_norm</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">max_norm</span></em>, <em class="sig-param"><span class="n">p</span></em>, <em class="sig-param"><span class="n">global_norm</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">key_chains</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">to_apply</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">prune_unapplied</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/container.html#Container.clip_vector_norm"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.clip_vector_norm" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">clip_vector_norm</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">max_norm</span></em>, <em class="sig-param"><span class="n">p</span></em>, <em class="sig-param"><span class="n">global_norm</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">key_chains</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">to_apply</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">prune_unapplied</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">map_sequences</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/container.html#Container.clip_vector_norm"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.clip_vector_norm" title="Permalink to this definition">¶</a></dt>
 <dd><p>Computes the elementwise clipped values between this container and clip_min and clip_max containers or numbers.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -512,6 +522,7 @@ Default is True.</p></li>
 <li><p><strong>to_apply</strong> (<em>bool</em><em>, </em><em>optional</em>) – If True, the method will be applied to key_chains, otherwise key_chains will be skipped.
 Default is True.</p></li>
 <li><p><strong>prune_unapplied</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to prune key_chains for which the function was not applied. Default is False.</p></li>
+<li><p><strong>map_sequences</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to also map method to sequences (lists, tuples). Default is False.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -726,7 +737,7 @@ differences. Default is True.</p></li>
 
 <dl class="py method">
 <dt id="ivy.core.container.Container.einops_rearrange">
-<code class="sig-name descname">einops_rearrange</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">pattern</span></em>, <em class="sig-param"><span class="n">key_chains</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">to_apply</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">prune_unapplied</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">axes_lengths</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/container.html#Container.einops_rearrange"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.einops_rearrange" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">einops_rearrange</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">pattern</span></em>, <em class="sig-param"><span class="n">key_chains</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">to_apply</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">prune_unapplied</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">map_sequences</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">axes_lengths</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/container.html#Container.einops_rearrange"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.einops_rearrange" title="Permalink to this definition">¶</a></dt>
 <dd><p>Perform einops rearrange operation on each sub array in the container.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -736,6 +747,7 @@ differences. Default is True.</p></li>
 <li><p><strong>to_apply</strong> (<em>bool</em><em>, </em><em>optional</em>) – If True, the method will be applied to key_chains, otherwise key_chains will be skipped.
 Default is True.</p></li>
 <li><p><strong>prune_unapplied</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to prune key_chains for which the function was not applied. Default is False.</p></li>
+<li><p><strong>map_sequences</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to also map method to sequences (lists, tuples). Default is False.</p></li>
 <li><p><strong>axes_lengths</strong> (<em>keyword parameter args</em>) – Any additional specifications for dimensions.</p></li>
 </ul>
 </dd>
@@ -747,7 +759,7 @@ Default is True.</p></li>
 
 <dl class="py method">
 <dt id="ivy.core.container.Container.einops_reduce">
-<code class="sig-name descname">einops_reduce</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">pattern</span></em>, <em class="sig-param"><span class="n">reduction</span></em>, <em class="sig-param"><span class="n">key_chains</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">to_apply</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">prune_unapplied</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">axes_lengths</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/container.html#Container.einops_reduce"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.einops_reduce" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">einops_reduce</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">pattern</span></em>, <em class="sig-param"><span class="n">reduction</span></em>, <em class="sig-param"><span class="n">key_chains</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">to_apply</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">prune_unapplied</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">map_sequences</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">axes_lengths</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/container.html#Container.einops_reduce"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.einops_reduce" title="Permalink to this definition">¶</a></dt>
 <dd><p>Perform einops reduce operation on each sub array in the container.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -758,6 +770,7 @@ Default is True.</p></li>
 <li><p><strong>to_apply</strong> (<em>bool</em><em>, </em><em>optional</em>) – If True, the method will be applied to key_chains, otherwise key_chains will be skipped.
 Default is True.</p></li>
 <li><p><strong>prune_unapplied</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to prune key_chains for which the function was not applied. Default is False.</p></li>
+<li><p><strong>map_sequences</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to also map method to sequences (lists, tuples). Default is False.</p></li>
 <li><p><strong>axes_lengths</strong> (<em>keyword parameter args</em>) – Any additional specifications for dimensions.</p></li>
 </ul>
 </dd>
@@ -769,7 +782,7 @@ Default is True.</p></li>
 
 <dl class="py method">
 <dt id="ivy.core.container.Container.einops_repeat">
-<code class="sig-name descname">einops_repeat</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">pattern</span></em>, <em class="sig-param"><span class="n">key_chains</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">to_apply</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">prune_unapplied</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">axes_lengths</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/container.html#Container.einops_repeat"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.einops_repeat" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">einops_repeat</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">pattern</span></em>, <em class="sig-param"><span class="n">key_chains</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">to_apply</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">prune_unapplied</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">map_sequences</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">axes_lengths</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/container.html#Container.einops_repeat"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.einops_repeat" title="Permalink to this definition">¶</a></dt>
 <dd><p>Perform einops repeat operation on each sub array in the container.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -779,6 +792,7 @@ Default is True.</p></li>
 <li><p><strong>to_apply</strong> (<em>bool</em><em>, </em><em>optional</em>) – If True, the method will be applied to key_chains, otherwise key_chains will be skipped.
 Default is True.</p></li>
 <li><p><strong>prune_unapplied</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to prune key_chains for which the function was not applied. Default is False.</p></li>
+<li><p><strong>map_sequences</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to also map method to sequences (lists, tuples). Default is False.</p></li>
 <li><p><strong>axes_lengths</strong> (<em>keyword parameter args</em>) – Any additional specifications for dimensions.</p></li>
 </ul>
 </dd>
@@ -790,7 +804,7 @@ Default is True.</p></li>
 
 <dl class="py method">
 <dt id="ivy.core.container.Container.einsum">
-<code class="sig-name descname">einsum</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">equation</span></em>, <em class="sig-param"><span class="n">key_chains</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">to_apply</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">prune_unapplied</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/container.html#Container.einsum"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.einsum" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">einsum</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">equation</span></em>, <em class="sig-param"><span class="n">key_chains</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">to_apply</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">prune_unapplied</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">map_sequences</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/container.html#Container.einsum"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.einsum" title="Permalink to this definition">¶</a></dt>
 <dd><p>Sums the product of the elements of the input operands along dimensions specified using a notation based on the
 Einstein summation convention, for each array in the container.</p>
 <dl class="field-list simple">
@@ -801,6 +815,7 @@ Einstein summation convention, for each array in the container.</p>
 <li><p><strong>to_apply</strong> (<em>bool</em><em>, </em><em>optional</em>) – If True, the method will be applied to key_chains, otherwise key_chains will be skipped.
 Default is True.</p></li>
 <li><p><strong>prune_unapplied</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to prune key_chains for which the function was not applied. Default is False.</p></li>
+<li><p><strong>map_sequences</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to also map method to sequences (lists, tuples). Default is False.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -811,7 +826,7 @@ Default is True.</p></li>
 
 <dl class="py method">
 <dt id="ivy.core.container.Container.expand_dims">
-<code class="sig-name descname">expand_dims</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">axis</span></em>, <em class="sig-param"><span class="n">key_chains</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">to_apply</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">prune_unapplied</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/container.html#Container.expand_dims"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.expand_dims" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">expand_dims</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">axis</span></em>, <em class="sig-param"><span class="n">key_chains</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">to_apply</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">prune_unapplied</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">map_sequences</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/container.html#Container.expand_dims"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.expand_dims" title="Permalink to this definition">¶</a></dt>
 <dd><p>Expand dims of all sub-arrays of container object.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -821,6 +836,7 @@ Default is True.</p></li>
 <li><p><strong>to_apply</strong> (<em>bool</em><em>, </em><em>optional</em>) – If True, the method will be applied to key_chains, otherwise key_chains will be skipped.
 Default is True.</p></li>
 <li><p><strong>prune_unapplied</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to prune key_chains for which the function was not applied. Default is False.</p></li>
+<li><p><strong>map_sequences</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to also map method to sequences (lists, tuples). Default is False.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -847,7 +863,7 @@ Default is True.</p></li>
 
 <dl class="py method">
 <dt id="ivy.core.container.Container.flip">
-<code class="sig-name descname">flip</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">key_chains</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">to_apply</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">prune_unapplied</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/container.html#Container.flip"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.flip" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">flip</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">key_chains</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">to_apply</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">prune_unapplied</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">map_sequences</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/container.html#Container.flip"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.flip" title="Permalink to this definition">¶</a></dt>
 <dd><p>Reverses the order of elements in for each array in the container, along the given axis.
 The shape of the array is preserved, but the elements are reordered.</p>
 <dl class="field-list simple">
@@ -858,6 +874,7 @@ The shape of the array is preserved, but the elements are reordered.</p>
 <li><p><strong>to_apply</strong> (<em>bool</em><em>, </em><em>optional</em>) – If True, the method will be applied to key_chains, otherwise key_chains will be skipped.
 Default is True.</p></li>
 <li><p><strong>prune_unapplied</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to prune key_chains for which the function was not applied. Default is False.</p></li>
+<li><p><strong>map_sequences</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to also map method to sequences (lists, tuples). Default is False.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -942,7 +959,7 @@ If some objects were not json-able during saving, then they will be loaded as st
 
 <dl class="py method">
 <dt id="ivy.core.container.Container.gather">
-<code class="sig-name descname">gather</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">indices</span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">- 1</span></em>, <em class="sig-param"><span class="n">key_chains</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">to_apply</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">prune_unapplied</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/container.html#Container.gather"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.gather" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">gather</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">indices</span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">- 1</span></em>, <em class="sig-param"><span class="n">key_chains</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">to_apply</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">prune_unapplied</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">map_sequences</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/container.html#Container.gather"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.gather" title="Permalink to this definition">¶</a></dt>
 <dd><p>Gather slices from all container params at axis according to indices.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -953,6 +970,7 @@ If some objects were not json-able during saving, then they will be loaded as st
 <li><p><strong>to_apply</strong> (<em>bool</em><em>, </em><em>optional</em>) – If True, the method will be applied to key_chains, otherwise key_chains will be skipped.
 Default is True.</p></li>
 <li><p><strong>prune_unapplied</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to prune key_chains for which the function was not applied. Default is False.</p></li>
+<li><p><strong>map_sequences</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to also map method to sequences (lists, tuples). Default is False.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -963,7 +981,7 @@ Default is True.</p></li>
 
 <dl class="py method">
 <dt id="ivy.core.container.Container.gather_nd">
-<code class="sig-name descname">gather_nd</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">indices</span></em>, <em class="sig-param"><span class="n">key_chains</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">to_apply</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">prune_unapplied</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/container.html#Container.gather_nd"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.gather_nd" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">gather_nd</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">indices</span></em>, <em class="sig-param"><span class="n">key_chains</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">to_apply</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">prune_unapplied</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">map_sequences</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/container.html#Container.gather_nd"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.gather_nd" title="Permalink to this definition">¶</a></dt>
 <dd><p>Gather slices from all container params into a arrays with shape specified by indices.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -973,6 +991,7 @@ Default is True.</p></li>
 <li><p><strong>to_apply</strong> (<em>bool</em><em>, </em><em>optional</em>) – If True, the method will be applied to key_chains, otherwise key_chains will be skipped.
 Default is True.</p></li>
 <li><p><strong>prune_unapplied</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to prune key_chains for which the function was not applied. Default is False.</p></li>
+<li><p><strong>map_sequences</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to also map method to sequences (lists, tuples). Default is False.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -1165,8 +1184,9 @@ Default is True.</p></li>
 <li><p><strong>to_apply</strong> (<em>bool</em><em>, </em><em>optional</em>) – If True, the method will be applied to key_chains, otherwise key_chains will be skipped.
 Default is True.</p></li>
 <li><p><strong>prune_unapplied</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to prune key_chains for which the function was not applied. Default is False.</p></li>
+<li><p><strong>map_sequences</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to also map method to sequences (lists, tuples). Default is False.</p></li>
 <li><p><strong>inplace</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to apply the mapping inplace, or return a new container. Default is False.</p></li>
-<li><p><strong>map_sequences</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to also map to sequences (lists and tuples). Default is False.</p></li>
+<li><p><strong>map_sequences</strong> – Whether to also map to sequences (lists and tuples). Default is False.</p></li>
 <li><p><strong>key_chain</strong> (<em>str</em>) – Chain of keys for this dict entry</p></li>
 </ul>
 </dd>
@@ -1201,7 +1221,7 @@ Default is True.</p></li>
 
 <dl class="py method">
 <dt id="ivy.core.container.Container.matrix_norm">
-<code class="sig-name descname">matrix_norm</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">p</span><span class="o">=</span><span class="default_value">2</span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">keepdims</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">key_chains</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">to_apply</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">prune_unapplied</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/container.html#Container.matrix_norm"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.matrix_norm" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">matrix_norm</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">p</span><span class="o">=</span><span class="default_value">2</span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">keepdims</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">key_chains</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">to_apply</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">prune_unapplied</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">map_sequences</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/container.html#Container.matrix_norm"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.matrix_norm" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute matrix p-norm for each array in the container.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1216,6 +1236,7 @@ Default is False.</p></li>
 <li><p><strong>to_apply</strong> (<em>bool</em><em>, </em><em>optional</em>) – If True, the method will be applied to key_chains, otherwise key_chains will be skipped.
 Default is True.</p></li>
 <li><p><strong>prune_unapplied</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to prune key_chains for which the function was not applied. Default is False.</p></li>
+<li><p><strong>map_sequences</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to also map method to sequences (lists, tuples). Default is False.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -1226,7 +1247,7 @@ Default is True.</p></li>
 
 <dl class="py method">
 <dt id="ivy.core.container.Container.maximum">
-<code class="sig-name descname">maximum</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">other</span></em>, <em class="sig-param"><span class="n">key_chains</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">to_apply</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">prune_unapplied</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/container.html#Container.maximum"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.maximum" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">maximum</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">other</span></em>, <em class="sig-param"><span class="n">key_chains</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">to_apply</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">prune_unapplied</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">map_sequences</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/container.html#Container.maximum"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.maximum" title="Permalink to this definition">¶</a></dt>
 <dd><p>Computes the elementwise maximum between this container and another container or number.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1236,6 +1257,7 @@ Default is True.</p></li>
 <li><p><strong>to_apply</strong> (<em>bool</em><em>, </em><em>optional</em>) – If True, the method will be applied to key_chains, otherwise key_chains will be skipped.
 Default is True.</p></li>
 <li><p><strong>prune_unapplied</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to prune key_chains for which the function was not applied. Default is False.</p></li>
+<li><p><strong>map_sequences</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to also map method to sequences (lists, tuples). Default is False.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -1246,7 +1268,7 @@ Default is True.</p></li>
 
 <dl class="py method">
 <dt id="ivy.core.container.Container.minimum">
-<code class="sig-name descname">minimum</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">other</span></em>, <em class="sig-param"><span class="n">key_chains</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">to_apply</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">prune_unapplied</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/container.html#Container.minimum"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.minimum" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">minimum</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">other</span></em>, <em class="sig-param"><span class="n">key_chains</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">to_apply</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">prune_unapplied</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">map_sequences</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/container.html#Container.minimum"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.minimum" title="Permalink to this definition">¶</a></dt>
 <dd><p>Computes the elementwise minimum between this container and another container or number.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1256,6 +1278,7 @@ Default is True.</p></li>
 <li><p><strong>to_apply</strong> (<em>bool</em><em>, </em><em>optional</em>) – If True, the method will be applied to key_chains, otherwise key_chains will be skipped.
 Default is True.</p></li>
 <li><p><strong>prune_unapplied</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to prune key_chains for which the function was not applied. Default is False.</p></li>
+<li><p><strong>map_sequences</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to also map method to sequences (lists, tuples). Default is False.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -1324,7 +1347,7 @@ rather than a variable or traced array.</p>
 
 <dl class="py method">
 <dt id="ivy.core.container.Container.prune_empty">
-<code class="sig-name descname">prune_empty</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">keep_Nones</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">base</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/container.html#Container.prune_empty"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.prune_empty" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">prune_empty</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">keep_nones</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">base</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/container.html#Container.prune_empty"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.prune_empty" title="Permalink to this definition">¶</a></dt>
 <dd><p>Recursively prunes empty keys from the container dict structure.
 Returns None if the entire container is empty.</p>
 <dl class="field-list simple">
@@ -1421,7 +1444,7 @@ Returns None if the entire container is empty.</p>
 
 <dl class="py method">
 <dt id="ivy.core.container.Container.reduce_max">
-<code class="sig-name descname">reduce_max</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">keepdims</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">key_chains</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">to_apply</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">prune_unapplied</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/container.html#Container.reduce_max"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.reduce_max" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">reduce_max</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">keepdims</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">key_chains</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">to_apply</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">prune_unapplied</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">map_sequences</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/container.html#Container.reduce_max"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.reduce_max" title="Permalink to this definition">¶</a></dt>
 <dd><p>Computes max of array elements along a given axis for all sub-arrays of container object.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1436,6 +1459,7 @@ size one. With this option, the result will broadcast correctly against the inpu
 <li><p><strong>to_apply</strong> (<em>bool</em><em>, </em><em>optional</em>) – If True, the method will be applied to key_chains, otherwise key_chains will be skipped.
 Default is True.</p></li>
 <li><p><strong>prune_unapplied</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to prune key_chains for which the function was not applied. Default is False.</p></li>
+<li><p><strong>map_sequences</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to also map method to sequences (lists, tuples). Default is False.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -1446,7 +1470,7 @@ Default is True.</p></li>
 
 <dl class="py method">
 <dt id="ivy.core.container.Container.reduce_mean">
-<code class="sig-name descname">reduce_mean</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">keepdims</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">key_chains</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">to_apply</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">prune_unapplied</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/container.html#Container.reduce_mean"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.reduce_mean" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">reduce_mean</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">keepdims</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">key_chains</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">to_apply</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">prune_unapplied</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">map_sequences</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/container.html#Container.reduce_mean"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.reduce_mean" title="Permalink to this definition">¶</a></dt>
 <dd><p>Computes mean of array elements along a given axis for all sub-arrays of container object.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1461,6 +1485,7 @@ size one. With this option, the result will broadcast correctly against the inpu
 <li><p><strong>to_apply</strong> (<em>bool</em><em>, </em><em>optional</em>) – If True, the method will be applied to key_chains, otherwise key_chains will be skipped.
 Default is True.</p></li>
 <li><p><strong>prune_unapplied</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to prune key_chains for which the function was not applied. Default is False.</p></li>
+<li><p><strong>map_sequences</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to also map method to sequences (lists, tuples). Default is False.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -1471,7 +1496,7 @@ Default is True.</p></li>
 
 <dl class="py method">
 <dt id="ivy.core.container.Container.reduce_min">
-<code class="sig-name descname">reduce_min</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">keepdims</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">key_chains</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">to_apply</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">prune_unapplied</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/container.html#Container.reduce_min"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.reduce_min" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">reduce_min</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">keepdims</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">key_chains</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">to_apply</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">prune_unapplied</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">map_sequences</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/container.html#Container.reduce_min"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.reduce_min" title="Permalink to this definition">¶</a></dt>
 <dd><p>Computes min of array elements along a given axis for all sub-arrays of container object.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1486,6 +1511,7 @@ size one. With this option, the result will broadcast correctly against the inpu
 <li><p><strong>to_apply</strong> (<em>bool</em><em>, </em><em>optional</em>) – If True, the method will be applied to key_chains, otherwise key_chains will be skipped.
 Default is True.</p></li>
 <li><p><strong>prune_unapplied</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to prune key_chains for which the function was not applied. Default is False.</p></li>
+<li><p><strong>map_sequences</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to also map method to sequences (lists, tuples). Default is False.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -1496,7 +1522,7 @@ Default is True.</p></li>
 
 <dl class="py method">
 <dt id="ivy.core.container.Container.reduce_prod">
-<code class="sig-name descname">reduce_prod</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">keepdims</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">key_chains</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">to_apply</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">prune_unapplied</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/container.html#Container.reduce_prod"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.reduce_prod" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">reduce_prod</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">keepdims</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">key_chains</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">to_apply</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">prune_unapplied</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">map_sequences</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/container.html#Container.reduce_prod"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.reduce_prod" title="Permalink to this definition">¶</a></dt>
 <dd><p>Computes product of array elements along a given axis for all sub-arrays of container object.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1511,6 +1537,7 @@ size one. With this option, the result will broadcast correctly against the inpu
 <li><p><strong>to_apply</strong> (<em>bool</em><em>, </em><em>optional</em>) – If True, the method will be applied to key_chains, otherwise key_chains will be skipped.
 Default is True.</p></li>
 <li><p><strong>prune_unapplied</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to prune key_chains for which the function was not applied. Default is False.</p></li>
+<li><p><strong>map_sequences</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to also map method to sequences (lists, tuples). Default is False.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -1521,7 +1548,7 @@ Default is True.</p></li>
 
 <dl class="py method">
 <dt id="ivy.core.container.Container.reduce_std">
-<code class="sig-name descname">reduce_std</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">keepdims</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">key_chains</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">to_apply</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">prune_unapplied</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/container.html#Container.reduce_std"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.reduce_std" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">reduce_std</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">keepdims</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">key_chains</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">to_apply</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">prune_unapplied</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">map_sequences</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/container.html#Container.reduce_std"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.reduce_std" title="Permalink to this definition">¶</a></dt>
 <dd><p>Computes standard deviation of array elements along a given axis for all sub-arrays of container object.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1536,6 +1563,7 @@ size one. With this option, the result will broadcast correctly against the inpu
 <li><p><strong>to_apply</strong> (<em>bool</em><em>, </em><em>optional</em>) – If True, the method will be applied to key_chains, otherwise key_chains will be skipped.
 Default is True.</p></li>
 <li><p><strong>prune_unapplied</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to prune key_chains for which the function was not applied. Default is False.</p></li>
+<li><p><strong>map_sequences</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to also map method to sequences (lists, tuples). Default is False.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -1546,7 +1574,7 @@ Default is True.</p></li>
 
 <dl class="py method">
 <dt id="ivy.core.container.Container.reduce_sum">
-<code class="sig-name descname">reduce_sum</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">keepdims</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">key_chains</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">to_apply</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">prune_unapplied</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/container.html#Container.reduce_sum"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.reduce_sum" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">reduce_sum</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">keepdims</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">key_chains</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">to_apply</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">prune_unapplied</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">map_sequences</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/container.html#Container.reduce_sum"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.reduce_sum" title="Permalink to this definition">¶</a></dt>
 <dd><p>Computes sum of array elements along a given axis for all sub-arrays of container object.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1561,6 +1589,7 @@ size one. With this option, the result will broadcast correctly against the inpu
 <li><p><strong>to_apply</strong> (<em>bool</em><em>, </em><em>optional</em>) – If True, the method will be applied to key_chains, otherwise key_chains will be skipped.
 Default is True.</p></li>
 <li><p><strong>prune_unapplied</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to prune key_chains for which the function was not applied. Default is False.</p></li>
+<li><p><strong>map_sequences</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to also map method to sequences (lists, tuples). Default is False.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -1571,7 +1600,7 @@ Default is True.</p></li>
 
 <dl class="py method">
 <dt id="ivy.core.container.Container.reduce_var">
-<code class="sig-name descname">reduce_var</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">keepdims</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">key_chains</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">to_apply</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">prune_unapplied</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/container.html#Container.reduce_var"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.reduce_var" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">reduce_var</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">keepdims</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">key_chains</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">to_apply</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">prune_unapplied</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">map_sequences</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/container.html#Container.reduce_var"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.reduce_var" title="Permalink to this definition">¶</a></dt>
 <dd><p>Computes variance of array elements along a given axis for all sub-arrays of container object.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1586,6 +1615,7 @@ size one. With this option, the result will broadcast correctly against the inpu
 <li><p><strong>to_apply</strong> (<em>bool</em><em>, </em><em>optional</em>) – If True, the method will be applied to key_chains, otherwise key_chains will be skipped.
 Default is True.</p></li>
 <li><p><strong>prune_unapplied</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to prune key_chains for which the function was not applied. Default is False.</p></li>
+<li><p><strong>map_sequences</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to also map method to sequences (lists, tuples). Default is False.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -1606,7 +1636,7 @@ Default is True.</p></li>
 
 <dl class="py method">
 <dt id="ivy.core.container.Container.repeat">
-<code class="sig-name descname">repeat</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">repeats</span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">key_chains</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">to_apply</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">prune_unapplied</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/container.html#Container.repeat"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.repeat" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">repeat</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">repeats</span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">key_chains</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">to_apply</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">prune_unapplied</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">map_sequences</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/container.html#Container.repeat"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.repeat" title="Permalink to this definition">¶</a></dt>
 <dd><p>Repeat values along a given dimension for each array in the container.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1618,6 +1648,7 @@ By default, use the flattened input array, and return a flat output array.</p></
 <li><p><strong>to_apply</strong> (<em>bool</em><em>, </em><em>optional</em>) – If True, the method will be applied to key_chains, otherwise key_chains will be skipped.
 Default is True.</p></li>
 <li><p><strong>prune_unapplied</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to prune key_chains for which the function was not applied. Default is False.</p></li>
+<li><p><strong>map_sequences</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to also map method to sequences (lists, tuples). Default is False.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -1628,7 +1659,7 @@ Default is True.</p></li>
 
 <dl class="py method">
 <dt id="ivy.core.container.Container.reshape">
-<code class="sig-name descname">reshape</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">pre_shape</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">shape_slice</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">post_shape</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">key_chains</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">to_apply</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">prune_unapplied</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/container.html#Container.reshape"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.reshape" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">reshape</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">pre_shape</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">shape_slice</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">post_shape</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">key_chains</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">to_apply</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">prune_unapplied</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">map_sequences</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/container.html#Container.reshape"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.reshape" title="Permalink to this definition">¶</a></dt>
 <dd><p>Reshapes each array x in the container, to a new shape given by pre_shape + x.shape[shape_slice] + post_shape.
 If shape_slice or post_shape are not specified, then the term is ignored.</p>
 <dl class="field-list simple">
@@ -1641,6 +1672,7 @@ If shape_slice or post_shape are not specified, then the term is ignored.</p>
 <li><p><strong>to_apply</strong> (<em>bool</em><em>, </em><em>optional</em>) – If True, the method will be applied to key_chains, otherwise key_chains will be skipped.
 Default is True.</p></li>
 <li><p><strong>prune_unapplied</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to prune key_chains for which the function was not applied. Default is False.</p></li>
+<li><p><strong>map_sequences</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to also map method to sequences (lists, tuples). Default is False.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -1812,7 +1844,7 @@ rather than a variable or traced array.</p>
 
 <dl class="py method">
 <dt id="ivy.core.container.Container.split">
-<code class="sig-name descname">split</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">num_or_size_splits</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">with_remainder</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">key_chains</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">to_apply</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">prune_unapplied</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/container.html#Container.split"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.split" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">split</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">num_or_size_splits</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">with_remainder</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">key_chains</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">to_apply</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">prune_unapplied</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">map_sequences</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/container.html#Container.split"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.split" title="Permalink to this definition">¶</a></dt>
 <dd><p>Splits a container into multiple sub-containers, by splitting their constituent arrays.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1827,6 +1859,7 @@ Default is False.</p></li>
 <li><p><strong>to_apply</strong> (<em>bool</em><em>, </em><em>optional</em>) – If True, the method will be applied to key_chains, otherwise key_chains will be skipped.
 Default is True.</p></li>
 <li><p><strong>prune_unapplied</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to prune key_chains for which the function was not applied. Default is False.</p></li>
+<li><p><strong>map_sequences</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to also map method to sequences (lists, tuples). Default is False.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -1860,7 +1893,7 @@ Default is True.</p></li>
 
 <dl class="py method">
 <dt id="ivy.core.container.Container.stop_gradients">
-<code class="sig-name descname">stop_gradients</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">preserve_type</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">key_chains</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">to_apply</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">prune_unapplied</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/container.html#Container.stop_gradients"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.stop_gradients" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">stop_gradients</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">preserve_type</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">key_chains</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">to_apply</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">prune_unapplied</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">map_sequences</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/container.html#Container.stop_gradients"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.stop_gradients" title="Permalink to this definition">¶</a></dt>
 <dd><p>Stop gradients of all array entries in the container.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1872,6 +1905,7 @@ otherwise an array is always returned. Default is True.</p></li>
 <li><p><strong>to_apply</strong> (<em>bool</em><em>, </em><em>optional</em>) – If True, the method will be applied to key_chains, otherwise key_chains will be skipped.
 Default is True.</p></li>
 <li><p><strong>prune_unapplied</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to prune key_chains for which the function was not applied. Default is False.</p></li>
+<li><p><strong>map_sequences</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to also map method to sequences (lists, tuples). Default is False.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -1887,7 +1921,7 @@ Default is True.</p></li>
 
 <dl class="py method">
 <dt id="ivy.core.container.Container.swapaxes">
-<code class="sig-name descname">swapaxes</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">axis0</span></em>, <em class="sig-param"><span class="n">axis1</span></em>, <em class="sig-param"><span class="n">key_chains</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">to_apply</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">prune_unapplied</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/container.html#Container.swapaxes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.swapaxes" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">swapaxes</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">axis0</span></em>, <em class="sig-param"><span class="n">axis1</span></em>, <em class="sig-param"><span class="n">key_chains</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">to_apply</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">prune_unapplied</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">map_sequences</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/container.html#Container.swapaxes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.swapaxes" title="Permalink to this definition">¶</a></dt>
 <dd><p>Interchange two axes for each array in the container.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1898,6 +1932,7 @@ Default is True.</p></li>
 <li><p><strong>to_apply</strong> (<em>bool</em><em>, </em><em>optional</em>) – If True, the method will be applied to key_chains, otherwise key_chains will be skipped.
 Default is True.</p></li>
 <li><p><strong>prune_unapplied</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to prune key_chains for which the function was not applied. Default is False.</p></li>
+<li><p><strong>map_sequences</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to also map method to sequences (lists, tuples). Default is False.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -1908,7 +1943,7 @@ Default is True.</p></li>
 
 <dl class="py method">
 <dt id="ivy.core.container.Container.to_dev">
-<code class="sig-name descname">to_dev</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dev_str</span></em>, <em class="sig-param"><span class="n">key_chains</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">to_apply</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">prune_unapplied</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/container.html#Container.to_dev"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.to_dev" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">to_dev</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dev_str</span></em>, <em class="sig-param"><span class="n">key_chains</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">to_apply</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">prune_unapplied</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">map_sequences</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/container.html#Container.to_dev"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.to_dev" title="Permalink to this definition">¶</a></dt>
 <dd><p>Move the container arrays to the desired device, specified by device string.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1918,6 +1953,7 @@ Default is True.</p></li>
 <li><p><strong>to_apply</strong> (<em>bool</em><em>, </em><em>optional</em>) – If True, the method will be applied to key_chains, otherwise key_chains will be skipped.
 Default is True.</p></li>
 <li><p><strong>prune_unapplied</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to prune key_chains for which the function was not applied. Default is False.</p></li>
+<li><p><strong>map_sequences</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to also map method to sequences (lists, tuples). Default is False.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -2021,7 +2057,7 @@ Default is True.</p></li>
 
 <dl class="py method">
 <dt id="ivy.core.container.Container.to_ivy">
-<code class="sig-name descname">to_ivy</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">nested</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">key_chains</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">to_apply</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">prune_unapplied</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/container.html#Container.to_ivy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.to_ivy" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">to_ivy</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">nested</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">key_chains</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">to_apply</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">prune_unapplied</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">map_sequences</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/container.html#Container.to_ivy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.to_ivy" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return ivy arrays for all nested native framework arrays in the container.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -2033,6 +2069,7 @@ instances. Default is False.</p></li>
 <li><p><strong>to_apply</strong> (<em>bool</em><em>, </em><em>optional</em>) – If True, the method will be applied to key_chains, otherwise key_chains will be skipped.
 Default is True.</p></li>
 <li><p><strong>prune_unapplied</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to prune key_chains for which the function was not applied. Default is False.</p></li>
+<li><p><strong>map_sequences</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to also map method to sequences (lists, tuples). Default is False.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -2078,7 +2115,7 @@ at the leaves with DistributedArray instances.</p>
 
 <dl class="py method">
 <dt id="ivy.core.container.Container.to_native">
-<code class="sig-name descname">to_native</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">nested</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">key_chains</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">to_apply</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">prune_unapplied</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/container.html#Container.to_native"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.to_native" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">to_native</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">nested</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">key_chains</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">to_apply</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">prune_unapplied</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">map_sequences</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/container.html#Container.to_native"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.to_native" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return native framework arrays for all nested arrays in the container.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -2090,6 +2127,7 @@ instances. Default is False.</p></li>
 <li><p><strong>to_apply</strong> (<em>bool</em><em>, </em><em>optional</em>) – If True, the method will be applied to key_chains, otherwise key_chains will be skipped.
 Default is True.</p></li>
 <li><p><strong>prune_unapplied</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to prune key_chains for which the function was not applied. Default is False.</p></li>
+<li><p><strong>map_sequences</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to also map method to sequences (lists, tuples). Default is False.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -2100,7 +2138,7 @@ Default is True.</p></li>
 
 <dl class="py method">
 <dt id="ivy.core.container.Container.to_numpy">
-<code class="sig-name descname">to_numpy</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">key_chains</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">to_apply</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">prune_unapplied</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/container.html#Container.to_numpy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.to_numpy" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">to_numpy</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">key_chains</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">to_apply</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">prune_unapplied</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">map_sequences</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/container.html#Container.to_numpy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.to_numpy" title="Permalink to this definition">¶</a></dt>
 <dd><p>Converts all nested ivy arrays to numpy arrays.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -2109,6 +2147,7 @@ Default is True.</p></li>
 <li><p><strong>to_apply</strong> (<em>bool</em><em>, </em><em>optional</em>) – If True, the method will be applied to key_chains, otherwise key_chains will be skipped.
 Default is True.</p></li>
 <li><p><strong>prune_unapplied</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to prune key_chains for which the function was not applied. Default is False.</p></li>
+<li><p><strong>map_sequences</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to also map method to sequences (lists, tuples). Default is False.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -2179,7 +2218,7 @@ constructor to their original form.</p>
 
 <dl class="py method">
 <dt id="ivy.core.container.Container.vector_norm">
-<code class="sig-name descname">vector_norm</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">p</span><span class="o">=</span><span class="default_value">2</span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">keepdims</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">global_norm</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">key_chains</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">to_apply</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">prune_unapplied</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/container.html#Container.vector_norm"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.vector_norm" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">vector_norm</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">p</span><span class="o">=</span><span class="default_value">2</span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">keepdims</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">global_norm</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">key_chains</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">to_apply</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">prune_unapplied</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">map_sequences</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/container.html#Container.vector_norm"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.vector_norm" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compute vector p-norm for each array in the container.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -2195,6 +2234,7 @@ Default is False.</p></li>
 <li><p><strong>to_apply</strong> (<em>bool</em><em>, </em><em>optional</em>) – If True, the method will be applied to key_chains, otherwise key_chains will be skipped.
 Default is True.</p></li>
 <li><p><strong>prune_unapplied</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to prune key_chains for which the function was not applied. Default is False.</p></li>
+<li><p><strong>map_sequences</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to also map method to sequences (lists, tuples). Default is False.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
