@@ -450,9 +450,11 @@ def test_container_find_sub_container(dev_str, call):
     partial_sub_cont = Container({'d': arr3})
     found_kc = top_cont.find_sub_container(partial_sub_cont, partial=True)
     assert found_kc == 'b'
+    assert partial_sub_cont.find_sub_container(top_cont, partial=True) is False
     partial_sub_cont = Container({'b': {'d': arr3}})
     found_kc = top_cont.find_sub_container(partial_sub_cont, partial=True)
     assert found_kc == ''
+    assert partial_sub_cont.find_sub_container(top_cont, partial=True) is False
 
 
 def test_container_find_sub_structure(dev_str, call):
@@ -2177,6 +2179,7 @@ def test_container_contains(dev_str, call):
     partial_sub_cont = Container({'b': {'d': arr2}})
     assert container.contains_sub_container(container, partial=True)
     assert container.contains_sub_container(partial_sub_cont, partial=True)
+    assert not partial_sub_cont.contains_sub_container(container, partial=True)
 
     # sub-structure
     sub_struc = Container({'c': ivy.array([3.], dev_str=dev_str), 'd': ivy.array([4.], dev_str=dev_str)})
@@ -2189,6 +2192,7 @@ def test_container_contains(dev_str, call):
     partial_sub_struc = Container({'b': {'d': ivy.array([4.], dev_str=dev_str)}})
     assert container.contains_sub_structure(container, partial=True)
     assert container.contains_sub_structure(partial_sub_struc, partial=True)
+    assert not partial_sub_struc.contains_sub_structure(container, partial=True)
 
 
 def test_container_shuffle(dev_str, call):
