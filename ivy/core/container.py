@@ -548,7 +548,7 @@ class Container(dict):
             this_key_chain = key if key_chain == '' else (key_chain + '/' + key)
             if isinstance(value_0, Container):
                 ret = ivy.Container.identical(
-                    values, check_types, check_shapes, key_chains, to_apply, this_key_chain)
+                    values, check_types, check_shapes, same_arrays, key_chains, to_apply, partial, this_key_chain)
                 if not ret:
                     return False
         return True
