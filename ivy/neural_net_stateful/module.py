@@ -70,7 +70,7 @@ class Module(abc.ABC):
         self._compiled = False
         self._compiled_fn = None
         self._compile_on_next_step = compile_on_next_step
-        self._v_in = v
+        self._v_in = v if (isinstance(v, Container) or v is None) else Container(v)
         self.v = v
         self.top_v = None
         self.top_mod = None
@@ -546,10 +546,11 @@ class Module(abc.ABC):
         created_n_found = Container(dict(**self._find_variables(self), **created))
         if ivy.exists(v_from_constructor):
             if self._with_partial_v:
-                self.v = ivy.Container.combine(created_n_found, Container(v_from_constructor))
+                assert created_n_found.contains_sub_structure(v_from_constructor, partial=True)
+                self.v = created_n_found.set_at_key_chains(v_from_constructor)
             else:
                 assert ivy.Container.identical_structure([created_n_found, v_from_constructor])
-                self.v = Container(v_from_constructor)
+                self.v = v_from_constructor
         else:
             self.v = created_n_found
 
