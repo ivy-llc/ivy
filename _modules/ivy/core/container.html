@@ -2289,12 +2289,12 @@
                 <span class="k">return</span> <span class="kc">False</span>
         <span class="k">return</span> <span class="kc">True</span></div>
 
-<div class="viewcode-block" id="Container.find_sub_container"><a class="viewcode-back" href="../../../core/container/Container.html#ivy.core.container.Container.find_sub_container">[docs]</a>    <span class="k">def</span> <span class="nf">find_sub_container</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sub_cont_to_find</span><span class="p">):</span>
+<div class="viewcode-block" id="Container.find_sub_container"><a class="viewcode-back" href="../../../core/container/Container.html#ivy.core.container.Container.find_sub_container">[docs]</a>    <span class="k">def</span> <span class="nf">find_sub_container</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sub_cont_to_find</span><span class="p">,</span> <span class="n">partial</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 
         <span class="n">key_chain_found</span> <span class="o">=</span> <span class="kc">False</span>
 
         <span class="k">def</span> <span class="nf">_check_sub_cont</span><span class="p">(</span><span class="n">sub_cont</span><span class="p">,</span> <span class="n">kc</span><span class="p">):</span>
-            <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="o">.</span><span class="n">identical</span><span class="p">([</span><span class="n">sub_cont</span><span class="p">,</span> <span class="n">sub_cont_to_find</span><span class="p">]):</span>
+            <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="o">.</span><span class="n">identical</span><span class="p">([</span><span class="n">sub_cont</span><span class="p">,</span> <span class="n">sub_cont_to_find</span><span class="p">],</span> <span class="n">partial</span><span class="o">=</span><span class="n">partial</span><span class="p">):</span>
                 <span class="k">nonlocal</span> <span class="n">key_chain_found</span>
                 <span class="n">key_chain_found</span> <span class="o">=</span> <span class="n">kc</span>
             <span class="k">return</span> <span class="n">sub_cont</span>
@@ -2303,22 +2303,24 @@
 
         <span class="k">return</span> <span class="n">key_chain_found</span></div>
 
-<div class="viewcode-block" id="Container.contains_sub_container"><a class="viewcode-back" href="../../../core/container/Container.html#ivy.core.container.Container.contains_sub_container">[docs]</a>    <span class="k">def</span> <span class="nf">contains_sub_container</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sub_cont</span><span class="p">):</span>
+<div class="viewcode-block" id="Container.contains_sub_container"><a class="viewcode-back" href="../../../core/container/Container.html#ivy.core.container.Container.contains_sub_container">[docs]</a>    <span class="k">def</span> <span class="nf">contains_sub_container</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sub_cont</span><span class="p">,</span> <span class="n">partial</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Determine whether the current container contains the sub-container, with matching structure and array values.</span>
 
 <span class="sd">        :param sub_cont: The sub-container to check.</span>
 <span class="sd">        :type sub_cont: ivy.Container</span>
+<span class="sd">        :param partial: Whether to also check for partially complete sub-containers. Default is False.</span>
+<span class="sd">        :type partial: bool, optional</span>
 <span class="sd">        :return: Bool</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="kc">True</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">find_sub_container</span><span class="p">(</span><span class="n">sub_cont</span><span class="p">),</span> <span class="nb">str</span><span class="p">)</span> <span class="k">else</span> <span class="kc">False</span></div>
+        <span class="k">return</span> <span class="kc">True</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">find_sub_container</span><span class="p">(</span><span class="n">sub_cont</span><span class="p">,</span> <span class="n">partial</span><span class="p">),</span> <span class="nb">str</span><span class="p">)</span> <span class="k">else</span> <span class="kc">False</span></div>
 
-<div class="viewcode-block" id="Container.find_sub_structure"><a class="viewcode-back" href="../../../core/container/Container.html#ivy.core.container.Container.find_sub_structure">[docs]</a>    <span class="k">def</span> <span class="nf">find_sub_structure</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sub_struc_to_find</span><span class="p">):</span>
+<div class="viewcode-block" id="Container.find_sub_structure"><a class="viewcode-back" href="../../../core/container/Container.html#ivy.core.container.Container.find_sub_structure">[docs]</a>    <span class="k">def</span> <span class="nf">find_sub_structure</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sub_struc_to_find</span><span class="p">,</span> <span class="n">partial</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 
         <span class="n">key_chain_found</span> <span class="o">=</span> <span class="kc">False</span>
 
         <span class="k">def</span> <span class="nf">_check_sub_cont</span><span class="p">(</span><span class="n">sub_cont</span><span class="p">,</span> <span class="n">kc</span><span class="p">):</span>
-            <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="o">.</span><span class="n">identical_structure</span><span class="p">([</span><span class="n">sub_cont</span><span class="p">,</span> <span class="n">sub_struc_to_find</span><span class="p">]):</span>
+            <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="o">.</span><span class="n">identical_structure</span><span class="p">([</span><span class="n">sub_cont</span><span class="p">,</span> <span class="n">sub_struc_to_find</span><span class="p">],</span> <span class="n">partial</span><span class="o">=</span><span class="n">partial</span><span class="p">):</span>
                 <span class="k">nonlocal</span> <span class="n">key_chain_found</span>
                 <span class="n">key_chain_found</span> <span class="o">=</span> <span class="n">kc</span>
             <span class="k">return</span> <span class="n">sub_cont</span>
@@ -2327,15 +2329,17 @@
 
         <span class="k">return</span> <span class="n">key_chain_found</span></div>
 
-<div class="viewcode-block" id="Container.contains_sub_structure"><a class="viewcode-back" href="../../../core/container/Container.html#ivy.core.container.Container.contains_sub_structure">[docs]</a>    <span class="k">def</span> <span class="nf">contains_sub_structure</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sub_cont</span><span class="p">):</span>
+<div class="viewcode-block" id="Container.contains_sub_structure"><a class="viewcode-back" href="../../../core/container/Container.html#ivy.core.container.Container.contains_sub_structure">[docs]</a>    <span class="k">def</span> <span class="nf">contains_sub_structure</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sub_cont</span><span class="p">,</span> <span class="n">partial</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Determine whether the current container contains the sub-container structure.</span>
 
 <span class="sd">        :param sub_cont: The sub-container to check.</span>
 <span class="sd">        :type sub_cont: ivy.Container</span>
+<span class="sd">        :param partial: Whether to also check for partially complete sub-containers. Default is False.</span>
+<span class="sd">        :type partial: bool, optional</span>
 <span class="sd">        :return: Bool</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="kc">True</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">find_sub_structure</span><span class="p">(</span><span class="n">sub_cont</span><span class="p">),</span> <span class="nb">str</span><span class="p">)</span> <span class="k">else</span> <span class="kc">False</span></div>
+        <span class="k">return</span> <span class="kc">True</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">find_sub_structure</span><span class="p">(</span><span class="n">sub_cont</span><span class="p">,</span> <span class="n">partial</span><span class="p">),</span> <span class="nb">str</span><span class="p">)</span> <span class="k">else</span> <span class="kc">False</span></div>
 
 <div class="viewcode-block" id="Container.has_nans"><a class="viewcode-back" href="../../../core/container/Container.html#ivy.core.container.Container.has_nans">[docs]</a>    <span class="k">def</span> <span class="nf">has_nans</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">include_infs</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">leafwise</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
