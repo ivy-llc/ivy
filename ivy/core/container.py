@@ -519,6 +519,8 @@ class Container(dict):
         """
         if partial:
             common_key_chains = Container.common_key_chains(containers)
+            if not common_key_chains:
+                return False
             containers = [cont.at_key_chains(common_key_chains) for cont in containers]
         keys = set([i for sl in [list(cont.keys()) for cont in containers] for i in sl])
         # noinspection PyProtectedMember
