@@ -50,7 +50,8 @@ def test_perceiver_io_img_classification(dev_str, f, call, batch_shape, img_dims
     output_dim = 10
 
     # inputs
-    img = ivy.array(np.load('img.npy')[None], dev_str=dev_str)
+    this_dir = os.path.dirname(os.path.realpath(__file__))
+    img = ivy.array(np.load(os.path.join(this_dir, 'img.npy'))[None], dtype_str='float32', dev_str=dev_str)
     queries = None if learn_query else ivy.random_uniform(shape=batch_shape + [1, queries_dim], dev_str=dev_str)
 
     model = PerceiverIO(PerceiverIOSpec(input_dim=input_dim,
