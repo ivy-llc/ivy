@@ -478,7 +478,7 @@ class Container(dict):
         """
         Returns a single boolean as to whether the input containers have identical key-chains and data types.
 
-        :param containers: containers to map.
+        :param containers: containers to check.
         :type containers: sequence of Container objects
         :param check_types: Whether to also check whether the datatypes of the leaf nodes are the same. Default is True.
         :type check_types: bool, optional
@@ -539,7 +539,7 @@ class Container(dict):
         """
         Returns a single boolean as to whether the input containers have identical structure.
 
-        :param containers: containers to map.
+        :param containers: containers to check.
         :type containers: sequence of Container objects
         :param check_types: Whether to also check whether the datatypes of the leaf nodes are the same. Default is True.
         :type check_types: bool, optional
@@ -558,6 +558,22 @@ class Container(dict):
         """
         return Container.identical(containers, check_types, check_shapes, False, key_chains, to_apply, partial,
                                    key_chain)
+
+    @staticmethod
+    def identical_configs(containers):
+        """
+        Returns a single boolean as to whether the input containers all have identical configs.
+
+        :param containers: containers to check.
+        :type containers: sequence of Container objects
+        """
+        assert len(containers) > 1
+        configs = [cont.config for cont in containers]
+        config0 = configs[0]
+        for k, v in config0.items():
+            if not min([config[k] == v for config in configs]):
+                return False
+        return True
 
     @staticmethod
     def identical_array_shapes(containers, exclusive=False):
