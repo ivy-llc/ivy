@@ -2817,6 +2817,22 @@ def test_container_to_disk_shuffle_and_from_disk_as_hdf5(dev_str, call):
     os.remove(save_filepath)
 
 
+def test_container_pickle(dev_str, call):
+    if call in [helpers.tf_graph_call]:
+        # container disk saving requires eager execution
+        pytest.skip()
+    dict_in = {'a': ivy.array([np.float32(1.)], dev_str=dev_str),
+               'b': {'c': ivy.array([np.float32(2.)], dev_str=dev_str),
+                     'd': ivy.array([np.float32(3.)], dev_str=dev_str)}}
+    cont = Container(dict_in)
+
+    # without module attribute
+    pickled = pickle.dumps(cont)
+    cont_again = pickle.loads(pickled)
+    ivy.Container.identical_structure([cont, cont_again])
+    ivy.Container.identical_configs([cont, cont_again])
+
+
 def test_container_to_and_from_disk_as_pickled(dev_str, call):
     if call in [helpers.tf_graph_call]:
         # container disk saving requires eager execution
