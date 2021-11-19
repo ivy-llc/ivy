@@ -203,8 +203,10 @@
   <h1>Source code for ivy.framework_handler</h1><div class="highlight"><pre>
 <span></span><span class="c1"># global</span>
 <span class="kn">import</span> <span class="nn">ivy</span>
+<span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">import</span> <span class="nn">importlib</span>
 <span class="kn">import</span> <span class="nn">collections</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">ivy</span> <span class="kn">import</span> <span class="n">verbosity</span>
 
 <span class="c1"># local</span>
@@ -361,6 +363,85 @@
         <span class="n">verbosity</span><span class="o">.</span><span class="n">cprint</span><span class="p">(</span>
             <span class="s1">&#39;framework stack: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">framework_stack</span><span class="p">))</span>
     <span class="k">return</span> <span class="n">fw</span></div>
+
+
+<span class="c1"># Framework Getters #</span>
+<span class="c1"># ------------------#</span>
+
+<div class="viewcode-block" id="try_import_ivy_jax"><a class="viewcode-back" href="../../framework_handler/try_import_ivy_jax.html#ivy.framework_handler.try_import_ivy_jax">[docs]</a><span class="k">def</span> <span class="nf">try_import_ivy_jax</span><span class="p">(</span><span class="n">warn</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="kn">import</span> <span class="nn">ivy.jax</span>
+        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">jax</span>
+    <span class="k">except</span> <span class="p">(</span><span class="ne">ImportError</span><span class="p">,</span> <span class="ne">ModuleNotFoundError</span><span class="p">)</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">warn</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="se">\n\n</span><span class="s1">Either jax or jaxlib appear to not be installed, &#39;</span>
+                        <span class="s1">&#39;ivy.jax can therefore not be imported.</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="try_import_ivy_tf"><a class="viewcode-back" href="../../framework_handler/try_import_ivy_tf.html#ivy.framework_handler.try_import_ivy_tf">[docs]</a><span class="k">def</span> <span class="nf">try_import_ivy_tf</span><span class="p">(</span><span class="n">warn</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="kn">import</span> <span class="nn">ivy.tensorflow</span>
+        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">tensorflow</span>
+    <span class="k">except</span> <span class="p">(</span><span class="ne">ImportError</span><span class="p">,</span> <span class="ne">ModuleNotFoundError</span><span class="p">)</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">warn</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="se">\n\n</span><span class="s1">tensorflow does not appear to be installed, &#39;</span>
+                        <span class="s1">&#39;ivy.tensorflow can therefore not be imported.</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="try_import_ivy_torch"><a class="viewcode-back" href="../../framework_handler/try_import_ivy_torch.html#ivy.framework_handler.try_import_ivy_torch">[docs]</a><span class="k">def</span> <span class="nf">try_import_ivy_torch</span><span class="p">(</span><span class="n">warn</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="kn">import</span> <span class="nn">ivy.torch</span>
+        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">torch</span>
+    <span class="k">except</span> <span class="p">(</span><span class="ne">ImportError</span><span class="p">,</span> <span class="ne">ModuleNotFoundError</span><span class="p">)</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">warn</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="se">\n\n</span><span class="s1">torch does not appear to be installed, &#39;</span>
+                        <span class="s1">&#39;ivy.torch can therefore not be imported.</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="try_import_ivy_mxnd"><a class="viewcode-back" href="../../framework_handler/try_import_ivy_mxnd.html#ivy.framework_handler.try_import_ivy_mxnd">[docs]</a><span class="k">def</span> <span class="nf">try_import_ivy_mxnd</span><span class="p">(</span><span class="n">warn</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="kn">import</span> <span class="nn">ivy.mxnet</span>
+        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">mxnet</span>
+    <span class="k">except</span> <span class="p">(</span><span class="ne">ImportError</span><span class="p">,</span> <span class="ne">ModuleNotFoundError</span><span class="p">)</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">warn</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="se">\n\n</span><span class="s1">mxnet does not appear to be installed, &#39;</span>
+                        <span class="s1">&#39;ivy.mxnd can therefore not be imported.</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="try_import_ivy_numpy"><a class="viewcode-back" href="../../framework_handler/try_import_ivy_numpy.html#ivy.framework_handler.try_import_ivy_numpy">[docs]</a><span class="k">def</span> <span class="nf">try_import_ivy_numpy</span><span class="p">(</span><span class="n">warn</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="kn">import</span> <span class="nn">ivy.numpy</span>
+        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">numpy</span>
+    <span class="k">except</span> <span class="p">(</span><span class="ne">ImportError</span><span class="p">,</span> <span class="ne">ModuleNotFoundError</span><span class="p">)</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">warn</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="se">\n\n</span><span class="s1">numpy does not appear to be installed, &#39;</span>
+                        <span class="s1">&#39;ivy.numpy can therefore not be imported.</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">))</span></div>
+
+
+<span class="n">FW_DICT</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;jax&#39;</span><span class="p">:</span> <span class="n">try_import_ivy_jax</span><span class="p">,</span>
+           <span class="s1">&#39;tensorflow&#39;</span><span class="p">:</span> <span class="n">try_import_ivy_tf</span><span class="p">,</span>
+           <span class="s1">&#39;torch&#39;</span><span class="p">:</span> <span class="n">try_import_ivy_torch</span><span class="p">,</span>
+           <span class="s1">&#39;mxnd&#39;</span><span class="p">:</span> <span class="n">try_import_ivy_mxnd</span><span class="p">,</span>
+           <span class="s1">&#39;numpy&#39;</span><span class="p">:</span> <span class="n">try_import_ivy_numpy</span><span class="p">}</span>
+
+
+<div class="viewcode-block" id="choose_random_framework"><a class="viewcode-back" href="../../framework_handler/choose_random_framework.html#ivy.framework_handler.choose_random_framework">[docs]</a><span class="k">def</span> <span class="nf">choose_random_framework</span><span class="p">(</span><span class="n">excluded</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="n">excluded</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span> <span class="k">if</span> <span class="n">excluded</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">excluded</span>
+    <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">excluded</span><span class="p">)</span> <span class="o">==</span> <span class="mi">5</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;Unable to select framework, all backends are either excluded or not installed.&#39;</span><span class="p">)</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">([</span><span class="n">f_srt</span> <span class="k">for</span> <span class="n">f_srt</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">FW_DICT</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="k">if</span> <span class="n">f_srt</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">excluded</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">f</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">excluded</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+            <span class="k">continue</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">selected framework: </span><span class="si">{}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">f</span><span class="p">))</span>
+            <span class="k">return</span> <span class="n">f</span></div>
 </pre></div>
 
            </div>
