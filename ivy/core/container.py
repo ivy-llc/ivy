@@ -4,6 +4,7 @@ Base Container Object
 
 # global
 import re
+import copy
 import time
 import termcolor
 import numpy as _np
@@ -3392,10 +3393,28 @@ class Container(dict):
         return self.map(lambda x, kc: other != x)
 
     def __getstate__(self):
-        return self.__dict__
+        state_dict = copy.copy(self.__dict__)
+        state_dict['_local_ivy'] = ivy.try_else_none(lambda: state_dict['_local_ivy'].current_framework_str())
+        config_in = copy.copy(state_dict['_config_in'])
+        config_in['ivyh'] = ivy.try_else_none(lambda: config_in['ivyh'].current_framework_str())
+        state_dict['_config_in'] = config_in
+        config = copy.copy(state_dict['_config'])
+        config['ivyh'] = ivy.try_else_none(lambda: config['ivyh'].current_framework_str())
+        state_dict['_config'] = config
+        return state_dict
 
-    def __setstate__(self, state):
-        self.__dict__.update(state)
+    def __setstate__(self, state_dict):
+        if ivy.exists(state_dict['_local_ivy']):
+            state_dict['_local_ivy'] = ivy.get_framework(state_dict['_local_ivy'])
+        config_in = copy.copy(state_dict['_config_in'])
+        if ivy.exists(config_in['ivyh']):
+            config_in['ivyh'] = ivy.get_framework(config_in['ivyh'])
+        state_dict['_config_in'] = config_in
+        config = copy.copy(state_dict['_config'])
+        if ivy.exists(config['ivyh']):
+            config['ivyh'] = ivy.get_framework(config['ivyh'])
+        state_dict['_config'] = config
+        self.__dict__.update(state_dict)
 
     # Getters and Setters #
     # --------------------#
