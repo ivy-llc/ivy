@@ -1279,6 +1279,16 @@ def default(x: Any, default_val: Any, catch_exceptions: bool = False, rev: bool 
     return x if exists(x) else default_val() if default_callable else default_val
 
 
+def try_else_none(fn):
+    """
+    Try and return the function, otherwise return None if an exception was raised during function execution.
+
+    :param fn: Function to try and call and return.
+    :type fn: callable
+    """
+    return default(fn, None, True)
+
+
 def dtype(x: Union[ivy.Array, ivy.NativeArray], f: ivy.Framework = None)\
         -> ivy.Dtype:
     """
