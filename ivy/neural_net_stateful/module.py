@@ -82,6 +82,7 @@ class Module(abc.ABC):
         self._track_submod_call_order = False
         self.submod_rets = ivy.Container(alphabetical_keys=False, ivyh=ivy.numpy)
         self.expected_submod_rets = None
+        self.submod_dict = dict()
         self.submod_call_order = ivy.Container(alphabetical_keys=False, ivyh=ivy.numpy)
         self._sub_mods = set()
         if build_mode != 'on_init':
@@ -464,18 +465,34 @@ class Module(abc.ABC):
         self._track_submod_call_order = False
         self.expected_submod_rets = None
 
+    def get_mod_key(self, top_mod=None):
+        if top_mod is None:
+            top_mod = self.top_mod()
+        submod_dict = top_mod.submod_dict
+        full_key = self.__repr__(False).split('.')[-1]
+        name_key = full_key.split(' ')[0]
+        if name_key not in submod_dict:
+            submod_dict[name_key] = dict()
+        id_str = full_key.split(' ')[-1][:-1]
+        if id_str not in submod_dict[name_key]:
+            submod_dict[name_key][id_str] = str(len(submod_dict[name_key]))
+        idx_key = submod_dict[name_key][id_str]
+        return '_'.join([name_key, idx_key])
+
     def _add_submod_ret(self, ret):
-        sr = self.top_mod().submod_rets
-        key = ivy.Container.format_key(self.__repr__(False), '_')
+        top_mod = self.top_mod()
+        sr = top_mod.submod_rets
         ret = ivy.to_numpy(ret)
+        key = self.get_mod_key(top_mod)
         if key in sr:
             sr[key].append(ret)
         else:
             sr[key] = [ret]
 
     def _check_submod_ret(self):
-        key = ivy.Container.format_key(self.__repr__(False), '_')
-        esr = self.top_mod().expected_submod_rets
+        top_mod = self.top_mod()
+        esr = top_mod.expected_submod_rets
+        key = self.get_mod_key(top_mod)
         if key not in esr:
             return
         sr = self.top_mod().submod_rets
