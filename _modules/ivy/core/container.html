@@ -681,7 +681,7 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns a single boolean as to whether the input containers have identical key-chains and data types.</span>
 
-<span class="sd">        :param containers: containers to map.</span>
+<span class="sd">        :param containers: containers to check.</span>
 <span class="sd">        :type containers: sequence of Container objects</span>
 <span class="sd">        :param check_types: Whether to also check whether the datatypes of the leaf nodes are the same. Default is True.</span>
 <span class="sd">        :type check_types: bool, optional</span>
@@ -742,7 +742,7 @@
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns a single boolean as to whether the input containers have identical structure.</span>
 
-<span class="sd">        :param containers: containers to map.</span>
+<span class="sd">        :param containers: containers to check.</span>
 <span class="sd">        :type containers: sequence of Container objects</span>
 <span class="sd">        :param check_types: Whether to also check whether the datatypes of the leaf nodes are the same. Default is True.</span>
 <span class="sd">        :type check_types: bool, optional</span>
@@ -761,6 +761,22 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">Container</span><span class="o">.</span><span class="n">identical</span><span class="p">(</span><span class="n">containers</span><span class="p">,</span> <span class="n">check_types</span><span class="p">,</span> <span class="n">check_shapes</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="n">key_chains</span><span class="p">,</span> <span class="n">to_apply</span><span class="p">,</span> <span class="n">partial</span><span class="p">,</span>
                                    <span class="n">key_chain</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Container.identical_configs"><a class="viewcode-back" href="../../../core/container/Container.html#ivy.core.container.Container.identical_configs">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">identical_configs</span><span class="p">(</span><span class="n">containers</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns a single boolean as to whether the input containers all have identical configs.</span>
+
+<span class="sd">        :param containers: containers to check.</span>
+<span class="sd">        :type containers: sequence of Container objects</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">containers</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span>
+        <span class="n">configs</span> <span class="o">=</span> <span class="p">[</span><span class="n">cont</span><span class="o">.</span><span class="n">config</span> <span class="k">for</span> <span class="n">cont</span> <span class="ow">in</span> <span class="n">containers</span><span class="p">]</span>
+        <span class="n">config0</span> <span class="o">=</span> <span class="n">configs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">config0</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">min</span><span class="p">([</span><span class="n">config</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">==</span> <span class="n">v</span> <span class="k">for</span> <span class="n">config</span> <span class="ow">in</span> <span class="n">configs</span><span class="p">]):</span>
+                <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">return</span> <span class="kc">True</span></div>
 
 <div class="viewcode-block" id="Container.identical_array_shapes"><a class="viewcode-back" href="../../../core/container/Container.html#ivy.core.container.Container.identical_array_shapes">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">identical_array_shapes</span><span class="p">(</span><span class="n">containers</span><span class="p">,</span> <span class="n">exclusive</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
