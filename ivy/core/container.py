@@ -2899,6 +2899,12 @@ class Container(dict):
             return
         return ret
 
+    def with_ivy_backend(self, ivy_backend):
+        return Container(self, ivyh=ivy_backend)
+
+    def set_ivy_backend(self, ivy_backend):
+        self._local_ivy = ivy_backend
+
     def start_logging_retrieval_times(self, inplace=True):
         def _flag_logging_retrieval(cont, _):
             cont._logging_retrieval_times = True
