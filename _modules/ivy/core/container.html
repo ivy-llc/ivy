@@ -3102,6 +3102,12 @@
             <span class="k">return</span>
         <span class="k">return</span> <span class="n">ret</span></div>
 
+<div class="viewcode-block" id="Container.with_ivy_backend"><a class="viewcode-back" href="../../../core/container/Container.html#ivy.core.container.Container.with_ivy_backend">[docs]</a>    <span class="k">def</span> <span class="nf">with_ivy_backend</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ivy_backend</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">Container</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ivyh</span><span class="o">=</span><span class="n">ivy_backend</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Container.set_ivy_backend"><a class="viewcode-back" href="../../../core/container/Container.html#ivy.core.container.Container.set_ivy_backend">[docs]</a>    <span class="k">def</span> <span class="nf">set_ivy_backend</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ivy_backend</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_local_ivy</span> <span class="o">=</span> <span class="n">ivy_backend</span></div>
+
 <div class="viewcode-block" id="Container.start_logging_retrieval_times"><a class="viewcode-back" href="../../../core/container/Container.html#ivy.core.container.Container.start_logging_retrieval_times">[docs]</a>    <span class="k">def</span> <span class="nf">start_logging_retrieval_times</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="k">def</span> <span class="nf">_flag_logging_retrieval</span><span class="p">(</span><span class="n">cont</span><span class="p">,</span> <span class="n">_</span><span class="p">):</span>
             <span class="n">cont</span><span class="o">.</span><span class="n">_logging_retrieval_times</span> <span class="o">=</span> <span class="kc">True</span>
