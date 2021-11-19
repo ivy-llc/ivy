@@ -2598,6 +2598,21 @@ def test_container_identical_structure(dev_str, call):
     assert not ivy.Container.identical_structure([container4, container5], partial=True)
 
 
+def test_container_identical_configs(dev_str, call):
+    container0 = Container({'a': ivy.array([1], dev_str=dev_str)}, print_limit=5)
+    container1 = Container({'a': ivy.array([1], dev_str=dev_str)}, print_limit=5)
+    container2 = Container({'a': ivy.array([1], dev_str=dev_str)}, print_limit=10)
+
+    # with identical
+    assert ivy.Container.identical_configs([container0, container1])
+    assert ivy.Container.identical_configs([container1, container0])
+    assert ivy.Container.identical_configs([container1, container0, container1])
+
+    # without identical
+    assert not ivy.Container.identical_configs([container1, container2])
+    assert not ivy.Container.identical_configs([container1, container0, container2])
+
+
 def test_container_identical_array_shapes(dev_str, call):
     # without key_chains specification
     container0 = Container({'a': ivy.array([1, 2], dev_str=dev_str),
