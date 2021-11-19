@@ -638,7 +638,7 @@ def test_module_track_submod_rets(bs_ic_oc, dev_str, call):
     assert ret.shape == tuple(batch_shape + [64])
     sm_rets = module.submod_rets
     for submod in [module._dl0, module._dl1]:
-        for ret in sm_rets[ivy.Container.format_key(submod.__repr__(False), '_')]:
+        for ret in sm_rets[submod.get_mod_key()]:
             assert isinstance(ret, np.ndarray)
             assert ret.shape == tuple(batch_shape + [64])
     for submod in [module._dl0._l0, module._dl0._l1, module._dl1._l0, module._dl1._l1]:
@@ -649,7 +649,7 @@ def test_module_track_submod_rets(bs_ic_oc, dev_str, call):
     assert ret.shape == tuple(batch_shape + [64])
     sm_rets = module.submod_rets
     for submod in [module._dl0, module._dl1, module._dl0._l0, module._dl0._l1, module._dl1._l0, module._dl1._l1]:
-        for ret in sm_rets[ivy.Container.format_key(submod.__repr__(False), '_')]:
+        for ret in sm_rets[submod.get_mod_key()]:
             assert isinstance(ret, np.ndarray)
             assert ret.shape == tuple(batch_shape + [64])
 
@@ -658,7 +658,7 @@ def test_module_track_submod_rets(bs_ic_oc, dev_str, call):
     assert ret.shape == tuple(batch_shape + [64])
     sm_rets = module.submod_rets
     for submod in [module._dl1, module._dl0._l0]:
-        for ret in sm_rets[ivy.Container.format_key(submod.__repr__(False), '_')]:
+        for ret in sm_rets[submod.get_mod_key()]:
             assert isinstance(ret, np.ndarray)
             assert ret.shape == tuple(batch_shape + [64])
     for submod in [module._dl0, module._dl0._l1, module._dl1._l0, module._dl1._l1]:
