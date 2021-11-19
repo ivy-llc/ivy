@@ -1060,7 +1060,7 @@ in which case the check is applied across the entire container, returning a sing
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>containers</strong> (<em>sequence of Container objects</em>) – containers to map.</p></li>
+<li><p><strong>containers</strong> (<em>sequence of Container objects</em>) – containers to check.</p></li>
 <li><p><strong>check_types</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to also check whether the datatypes of the leaf nodes are the same. Default is True.</p></li>
 <li><p><strong>check_shapes</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to also check whether the shapes of the leaf nodes are the same. Default is True.</p></li>
 <li><p><strong>same_arrays</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to also check whether the arrays are the exact same instances. Default is True.</p></li>
@@ -1097,13 +1097,24 @@ or traced array.</p></li>
 </dd></dl>
 
 <dl class="py method">
+<dt id="ivy.core.container.Container.identical_configs">
+<em class="property">static </em><code class="sig-name descname">identical_configs</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">containers</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/container.html#Container.identical_configs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.identical_configs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a single boolean as to whether the input containers all have identical configs.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>containers</strong> (<em>sequence of Container objects</em>) – containers to check.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt id="ivy.core.container.Container.identical_structure">
 <em class="property">static </em><code class="sig-name descname">identical_structure</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">containers</span></em>, <em class="sig-param"><span class="n">check_types</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">check_shapes</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">key_chains</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">to_apply</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">partial</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">key_chain</span><span class="o">=</span><span class="default_value">''</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/container.html#Container.identical_structure"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.identical_structure" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a single boolean as to whether the input containers have identical structure.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>containers</strong> (<em>sequence of Container objects</em>) – containers to map.</p></li>
+<li><p><strong>containers</strong> (<em>sequence of Container objects</em>) – containers to check.</p></li>
 <li><p><strong>check_types</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to also check whether the datatypes of the leaf nodes are the same. Default is True.</p></li>
 <li><p><strong>check_shapes</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to also check whether the shapes of the leaf nodes are the same. Default is True.</p></li>
 <li><p><strong>key_chains</strong> (<em>list</em><em> or </em><em>dict of strs</em><em>, </em><em>optional</em>) – The key-chains to apply or not apply the method to. Default is None.</p></li>
