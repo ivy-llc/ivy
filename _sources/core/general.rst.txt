@@ -79,6 +79,7 @@ General
    general/linear_resample.rst
    general/exists.rst
    general/default.rst
+   general/try_else_none.rst
    general/dtype.rst
    general/dtype_to_str.rst
    general/dtype_str.rst
