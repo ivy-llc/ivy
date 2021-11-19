@@ -101,13 +101,7 @@ class Container(dict):
         :type kwargs: keyword arguments.
         """
         self._queues = queues
-        self._print_limit = print_limit
-        self._key_length_limit = key_length_limit
-        self._print_indent = print_indent
-        self._print_line_spacing = print_line_spacing
         self._container_combine_method = container_combine_method
-        self._types_to_iteratively_nest = ivy.default(lambda: tuple(types_to_iteratively_nest), (),  True)
-        self._alphabetical_keys = alphabetical_keys
         if ivy.exists(self._queues):
             if isinstance(self._container_combine_method, str):
                 self._container_combine_method =\
@@ -116,17 +110,7 @@ class Container(dict):
             self._loaded_containers_from_queues = dict()
             self._queue_load_sizes_cum = _np.cumsum(queue_load_sizes)
             self._queue_timeout = ivy.default(queue_timeout, ivy.queue_timeout())
-        self._local_ivy = ivyh
-        self._default_key_color = default_key_color
-        self._keyword_color_dict = ivy.default(keyword_color_dict, {})
-        self._rebuild_child_containers = rebuild_child_containers
-        self._logging_retrieval_times = logging_retrieval_times
         self._retrieval_times = dict()
-        self._config = dict(
-            print_limit=print_limit, print_indent=print_indent, print_line_spacing=print_line_spacing, ivyh=ivyh,
-            default_key_color=default_key_color, keyword_color_dict=keyword_color_dict,
-            rebuild_child_containers=rebuild_child_containers, types_to_iteratively_nest=types_to_iteratively_nest,
-            alphabetical_keys=alphabetical_keys, logging_retrieval_times=logging_retrieval_times)
         if dict_in is None:
             if kwargs:
                 dict_in = dict(**kwargs)
@@ -135,21 +119,14 @@ class Container(dict):
         elif kwargs:
             raise Exception('dict_in and **kwargs cannot both be specified for ivy.Container constructor,'
                             'please specify one or the other, not both.')
-        dict_types = tuple([dict] + ivy.container_types())
-        if isinstance(dict_in, dict_types):
-            dict_in = dict_in
-        elif isinstance(dict_in, tuple(self._types_to_iteratively_nest)):
-            dict_in = dict(zip(['it_{}'.format(str(i).zfill(len(str(len(dict_in)))))
-                                for i in range(len(dict_in))], dict_in))
-        else:
-            raise Exception('invalid input {}'.format(dict_in))
-        items = sorted(dict_in.items()) if alphabetical_keys else dict_in.items()
-        for key, value in items:
-            if (isinstance(value, dict_types) and (not isinstance(value, Container) or rebuild_child_containers)) or \
-                    isinstance(value, tuple(self._types_to_iteratively_nest)):
-                self[key] = Container(value, **self._config)
-            else:
-                self[key] = value
+        self._config_in = dict(
+            print_limit=print_limit, print_indent=print_indent, key_length_limit=key_length_limit,
+            print_line_spacing=print_line_spacing, ivyh=ivyh, default_key_color=default_key_color,
+            keyword_color_dict=keyword_color_dict, rebuild_child_containers=rebuild_child_containers,
+            types_to_iteratively_nest=types_to_iteratively_nest, alphabetical_keys=alphabetical_keys,
+            logging_retrieval_times=logging_retrieval_times)
+        self._config = dict()
+        self.inplace_update(dict_in, **self._config_in)
 
     # Class Methods #
     # --------------#
@@ -854,6 +831,54 @@ class Container(dict):
 
     # Public Methods #
     # ---------------#
+
+    def update_config(self, **config):
+
+        new_config = dict()
+        for k, v in config.items():
+            att_name = '_' + k
+            if k in self._config_in:
+                if k == 'types_to_iteratively_nest':
+                    v = ivy.default(lambda: tuple(v), (), True)
+                elif k == 'keyword_color_dict':
+                    v = ivy.default(v, {})
+                elif k == 'ivyh':
+                    att_name = '_local_ivy'
+                new_config[k] = v
+                self.__setattr__(att_name, v)
+
+        self._config = new_config
+
+    def inplace_update(self, dict_in, **config):
+        """
+        Update the contents of this container inplace, using either a new dict or container.
+
+        :param dict_in: New dict or container to update the current container inplace with.
+        :type dict_in: container or dict
+        """
+
+        # update config
+        self.update_config(**config)
+
+        # update container values inplace
+        if dict_in is None:
+            return
+        dict_types = tuple([dict] + ivy.container_types())
+        if isinstance(dict_in, dict_types):
+            dict_in = dict_in
+        elif isinstance(dict_in, tuple(self._types_to_iteratively_nest)):
+            dict_in = dict(zip(['it_{}'.format(str(i).zfill(len(str(len(dict_in)))))
+                                for i in range(len(dict_in))], dict_in))
+        else:
+            raise Exception('invalid input {}'.format(dict_in))
+        items = sorted(dict_in.items()) if self._alphabetical_keys else dict_in.items()
+        for key, value in items:
+            if (isinstance(value, dict_types) and (not isinstance(value, Container) or
+                                                   self._rebuild_child_containers)) or \
+                    isinstance(value, tuple(self._types_to_iteratively_nest)):
+                self[key] = Container(value, **self._config)
+            else:
+                self[key] = value
 
     def set_framework(self, ivyh):
         """
