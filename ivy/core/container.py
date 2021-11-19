@@ -27,6 +27,7 @@ from operator import floordiv as _floordiv
 
 # local
 import ivy
+import ivy.numpy
 
 ansi_escape = re.compile(r'\x1B(?:[@-Z\\-_]|\[[0-?]*[ -/]*[@-~])')
 retrieval_key_chain = list()
@@ -1936,7 +1937,7 @@ class Container(dict):
         retrieval_dict = {k: v[0] for k, v in sorted(retrieval_dict.items(), key=lambda knv: knv[1][1])}
         return ivy.Container(retrieval_dict, alphabetical_keys=False)
 
-    def to_numpy(self, key_chains=None, to_apply=True, prune_unapplied=False, map_sequences=False):
+    def to_numpy(self, key_chains=None, to_apply=True, prune_unapplied=False, map_sequences=False, update_backend=True):
         """
         Converts all nested ivy arrays to numpy arrays.
 
@@ -1949,11 +1950,16 @@ class Container(dict):
         :type prune_unapplied: bool, optional
         :param map_sequences: Whether to also map method to sequences (lists, tuples). Default is False.
         :type map_sequences: bool, optional
+        :param update_backend: Whether to update the ivy backend of the returned container to numpy. Default is True.
+        :type update_backend: bool, optional
         :return: container with each ivy array converted to a numpy array.
         """
-        return self.map(
+        ret = self.map(
             lambda x, kc: self._ivy.to_numpy(x) if self._ivy.is_array(x) else x, key_chains, to_apply, prune_unapplied,
             map_sequences)
+        if update_backend:
+            ret.set_ivy_backend(ivy.numpy)
+        return ret
 
     def arrays_as_lists(self, key_chains=None, to_apply=True, prune_unapplied=False, map_sequences=False):
         """
