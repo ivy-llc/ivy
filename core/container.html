@@ -2143,7 +2143,7 @@ Default is True.</p></li>
 
 <dl class="py method">
 <dt id="ivy.core.container.Container.to_numpy">
-<code class="sig-name descname">to_numpy</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">key_chains</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">to_apply</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">prune_unapplied</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">map_sequences</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/container.html#Container.to_numpy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.to_numpy" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">to_numpy</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">key_chains</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">to_apply</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">prune_unapplied</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">map_sequences</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">update_backend</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/container.html#Container.to_numpy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.to_numpy" title="Permalink to this definition">¶</a></dt>
 <dd><p>Converts all nested ivy arrays to numpy arrays.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -2153,6 +2153,7 @@ Default is True.</p></li>
 Default is True.</p></li>
 <li><p><strong>prune_unapplied</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to prune key_chains for which the function was not applied. Default is False.</p></li>
 <li><p><strong>map_sequences</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to also map method to sequences (lists, tuples). Default is False.</p></li>
+<li><p><strong>update_backend</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to update the ivy backend of the returned container to numpy. Default is True.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>

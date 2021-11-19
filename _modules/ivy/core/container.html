@@ -230,6 +230,7 @@
 
 <span class="c1"># local</span>
 <span class="kn">import</span> <span class="nn">ivy</span>
+<span class="kn">import</span> <span class="nn">ivy.numpy</span>
 
 <span class="n">ansi_escape</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;\x1B(?:[@-Z</span><span class="se">\\</span><span class="s1">-_]|\[[0-?]*[ -/]*[@-~])&#39;</span><span class="p">)</span>
 <span class="n">retrieval_key_chain</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
@@ -2139,7 +2140,7 @@
         <span class="n">retrieval_dict</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">retrieval_dict</span><span class="o">.</span><span class="n">items</span><span class="p">(),</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">knv</span><span class="p">:</span> <span class="n">knv</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">])}</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">retrieval_dict</span><span class="p">,</span> <span class="n">alphabetical_keys</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Container.to_numpy"><a class="viewcode-back" href="../../../core/container/Container.html#ivy.core.container.Container.to_numpy">[docs]</a>    <span class="k">def</span> <span class="nf">to_numpy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key_chains</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">to_apply</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">prune_unapplied</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">map_sequences</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="Container.to_numpy"><a class="viewcode-back" href="../../../core/container/Container.html#ivy.core.container.Container.to_numpy">[docs]</a>    <span class="k">def</span> <span class="nf">to_numpy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key_chains</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">to_apply</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">prune_unapplied</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">map_sequences</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">update_backend</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Converts all nested ivy arrays to numpy arrays.</span>
 
@@ -2152,11 +2153,16 @@
 <span class="sd">        :type prune_unapplied: bool, optional</span>
 <span class="sd">        :param map_sequences: Whether to also map method to sequences (lists, tuples). Default is False.</span>
 <span class="sd">        :type map_sequences: bool, optional</span>
+<span class="sd">        :param update_backend: Whether to update the ivy backend of the returned container to numpy. Default is True.</span>
+<span class="sd">        :type update_backend: bool, optional</span>
 <span class="sd">        :return: container with each ivy array converted to a numpy array.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">map</span><span class="p">(</span>
+        <span class="n">ret</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">map</span><span class="p">(</span>
             <span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">kc</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ivy</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ivy</span><span class="o">.</span><span class="n">is_array</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">else</span> <span class="n">x</span><span class="p">,</span> <span class="n">key_chains</span><span class="p">,</span> <span class="n">to_apply</span><span class="p">,</span> <span class="n">prune_unapplied</span><span class="p">,</span>
-            <span class="n">map_sequences</span><span class="p">)</span></div>
+            <span class="n">map_sequences</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">update_backend</span><span class="p">:</span>
+            <span class="n">ret</span><span class="o">.</span><span class="n">set_ivy_backend</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">numpy</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">ret</span></div>
 
 <div class="viewcode-block" id="Container.arrays_as_lists"><a class="viewcode-back" href="../../../core/container/Container.html#ivy.core.container.Container.arrays_as_lists">[docs]</a>    <span class="k">def</span> <span class="nf">arrays_as_lists</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key_chains</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">to_apply</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">prune_unapplied</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">map_sequences</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
