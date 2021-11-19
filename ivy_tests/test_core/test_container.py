@@ -2824,11 +2824,23 @@ def test_container_pickle(dev_str, call):
     dict_in = {'a': ivy.array([np.float32(1.)], dev_str=dev_str),
                'b': {'c': ivy.array([np.float32(2.)], dev_str=dev_str),
                      'd': ivy.array([np.float32(3.)], dev_str=dev_str)}}
-    cont = Container(dict_in)
 
     # without module attribute
+    cont = Container(dict_in)
+    assert cont._local_ivy is None
     pickled = pickle.dumps(cont)
     cont_again = pickle.loads(pickled)
+    assert cont_again._local_ivy is None
+    ivy.Container.identical_structure([cont, cont_again])
+    ivy.Container.identical_configs([cont, cont_again])
+
+    # with module attribute
+    cont = Container(dict_in, ivyh=ivy)
+    assert cont._local_ivy is ivy
+    pickled = pickle.dumps(cont)
+    cont_again = pickle.loads(pickled)
+    # noinspection PyUnresolvedReferences
+    assert cont_again._local_ivy.current_framework_str() is ivy.current_framework_str()
     ivy.Container.identical_structure([cont, cont_again])
     ivy.Container.identical_configs([cont, cont_again])
 
