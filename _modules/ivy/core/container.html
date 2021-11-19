@@ -207,6 +207,7 @@
 
 <span class="c1"># global</span>
 <span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">import</span> <span class="nn">copy</span>
 <span class="kn">import</span> <span class="nn">time</span>
 <span class="kn">import</span> <span class="nn">termcolor</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">_np</span>
@@ -3595,10 +3596,28 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">kc</span><span class="p">:</span> <span class="n">other</span> <span class="o">!=</span> <span class="n">x</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">__getstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span>
+        <span class="n">state_dict</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">)</span>
+        <span class="n">state_dict</span><span class="p">[</span><span class="s1">&#39;_local_ivy&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">try_else_none</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="n">state_dict</span><span class="p">[</span><span class="s1">&#39;_local_ivy&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">current_framework_str</span><span class="p">())</span>
+        <span class="n">config_in</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">state_dict</span><span class="p">[</span><span class="s1">&#39;_config_in&#39;</span><span class="p">])</span>
+        <span class="n">config_in</span><span class="p">[</span><span class="s1">&#39;ivyh&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">try_else_none</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="n">config_in</span><span class="p">[</span><span class="s1">&#39;ivyh&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">current_framework_str</span><span class="p">())</span>
+        <span class="n">state_dict</span><span class="p">[</span><span class="s1">&#39;_config_in&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">config_in</span>
+        <span class="n">config</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">state_dict</span><span class="p">[</span><span class="s1">&#39;_config&#39;</span><span class="p">])</span>
+        <span class="n">config</span><span class="p">[</span><span class="s1">&#39;ivyh&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">try_else_none</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="n">config</span><span class="p">[</span><span class="s1">&#39;ivyh&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">current_framework_str</span><span class="p">())</span>
+        <span class="n">state_dict</span><span class="p">[</span><span class="s1">&#39;_config&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">config</span>
+        <span class="k">return</span> <span class="n">state_dict</span>
 
-    <span class="k">def</span> <span class="nf">__setstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">state</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">__setstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">state_dict</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">state_dict</span><span class="p">[</span><span class="s1">&#39;_local_ivy&#39;</span><span class="p">]):</span>
+            <span class="n">state_dict</span><span class="p">[</span><span class="s1">&#39;_local_ivy&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">get_framework</span><span class="p">(</span><span class="n">state_dict</span><span class="p">[</span><span class="s1">&#39;_local_ivy&#39;</span><span class="p">])</span>
+        <span class="n">config_in</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">state_dict</span><span class="p">[</span><span class="s1">&#39;_config_in&#39;</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">config_in</span><span class="p">[</span><span class="s1">&#39;ivyh&#39;</span><span class="p">]):</span>
+            <span class="n">config_in</span><span class="p">[</span><span class="s1">&#39;ivyh&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">get_framework</span><span class="p">(</span><span class="n">config_in</span><span class="p">[</span><span class="s1">&#39;ivyh&#39;</span><span class="p">])</span>
+        <span class="n">state_dict</span><span class="p">[</span><span class="s1">&#39;_config_in&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">config_in</span>
+        <span class="n">config</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">state_dict</span><span class="p">[</span><span class="s1">&#39;_config&#39;</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;ivyh&#39;</span><span class="p">]):</span>
+            <span class="n">config</span><span class="p">[</span><span class="s1">&#39;ivyh&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">get_framework</span><span class="p">(</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;ivyh&#39;</span><span class="p">])</span>
+        <span class="n">state_dict</span><span class="p">[</span><span class="s1">&#39;_config&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">config</span>
+        <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">state_dict</span><span class="p">)</span>
 
     <span class="c1"># Getters and Setters #</span>
     <span class="c1"># --------------------#</span>
