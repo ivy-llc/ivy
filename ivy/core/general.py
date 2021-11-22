@@ -709,7 +709,7 @@ def zero_pad(x: Union[ivy.Array, ivy.NativeArray], pad_width: Iterable[Tuple[int
 
 
 def fourier_encode(x: Union[ivy.Array, ivy.NativeArray], max_freq: float, num_bands: int = 4, linear: bool = False,
-                   concat: bool = True) -> Union[ivy.Array, ivy.NativeArray, Tuple]:
+                   concat: bool = True, flatten: bool = False) -> Union[ivy.Array, ivy.NativeArray, Tuple]:
     """
     Pads an array with fourier encodings.
 
@@ -723,8 +723,12 @@ def fourier_encode(x: Union[ivy.Array, ivy.NativeArray], max_freq: float, num_ba
     :type linear: bool, optional
     :param concat: Whether to concatenate the position, sin and cos values, or return seperately. Default is True.
     :type concat: bool, optional
+    :param flatten: Whether to flatten the position dimension into the batch dimension. Default is False.
+    :type flatten: bool, optional
     :return: New array with the final dimension expanded, and the encodings stored in this channel.
     """
+    x_in = x
+    dim = x.shape[-1]
     x = ivy.expand_dims(x, -1)
     orig_x = x
     if linear:
@@ -736,9 +740,13 @@ def fourier_encode(x: Union[ivy.Array, ivy.NativeArray], max_freq: float, num_ba
     x = x * scales * math.pi
     sin_x = ivy.sin(x)
     cos_x = ivy.cos(x)
+    if flatten:
+        orig_x = x_in
+        sin_x = ivy.reshape(sin_x, [-1, num_bands*dim])
+        cos_x = ivy.reshape(cos_x, [-1, num_bands*dim])
     if concat:
         return ivy.concatenate([orig_x, sin_x, cos_x], -1)
-    return orig_x, sin_x, cos_x
+    return sin_x, cos_x
 
 
 def swapaxes(x: Union[ivy.Array, ivy.NativeArray], axis0: int, axis1: int, f: ivy.Framework = None)\
