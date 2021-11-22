@@ -1491,8 +1491,6 @@ def stable_pow(base: Any, exponent: Any, min_base: float = None)\
     :type min_base: float, optional
     :return: The new item following the numerically stable division.
     """
-    if exponent < 1:
-        return base ** exponent
     # noinspection PyProtectedMember
     return (base + default(min_base, ivy._MIN_BASE)) ** exponent
 
