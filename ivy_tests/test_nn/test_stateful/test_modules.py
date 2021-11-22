@@ -713,8 +713,12 @@ def test_module_check_submod_rets(bs_ic_oc, dev_str, call):
     # with tolerances
     ret = module(x, track_submod_rets=True)
     assert ret.shape == tuple(batch_shape + [64])
-    sm_rets = module.submod_rets
-    sm_rets = ivy.Container({k: (v, [1e-8]*len(v), [1e-5]*len(v)) for k, v in sm_rets.items()}, **sm_rets.config)
+    sm_rets_orig = module.submod_rets
+    sm_rets = ivy.Container({k: {'val': v, 'atol': [1e-8]*len(v), 'rtol': [1e-5]*len(v)}
+                             for k, v in sm_rets_orig.items()}, **sm_rets_orig.config)
+    module(x, expected_submod_rets=sm_rets)
+    sm_rets = ivy.Container({k: {'val': v, 'atol': 1e-8, 'rtol': 1e-5}
+                             for k, v in sm_rets_orig.items()}, **sm_rets_orig.config)
     module(x, expected_submod_rets=sm_rets)
     try:
         module(x, expected_submod_rets=sm_rets.as_random_uniform(map_sequences=True))
