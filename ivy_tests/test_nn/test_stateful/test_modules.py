@@ -710,6 +710,18 @@ def test_module_check_submod_rets(bs_ic_oc, dev_str, call):
     except AssertionError:
         pass
 
+    # with tolerances
+    ret = module(x, track_submod_rets=True)
+    assert ret.shape == tuple(batch_shape + [64])
+    sm_rets = module.submod_rets
+    sm_rets = ivy.Container({k: (v, [1e-8]*len(v), [1e-5]*len(v)) for k, v in sm_rets.items()}, **sm_rets.config)
+    module(x, expected_submod_rets=sm_rets)
+    try:
+        module(x, expected_submod_rets=sm_rets.as_random_uniform(map_sequences=True))
+        raise Exception('forward pass succeeded despite passing random expected_submod_rets, assertion error expected.')
+    except AssertionError:
+        pass
+
 
 # track submod call order
 @pytest.mark.parametrize(
