@@ -516,7 +516,8 @@ class Module(abc.ABC):
                 kwargs['atol'] = atol
             if rtol:
                 kwargs['rtol'] = rtol
-            assert np.allclose(ret, expected_ret, **kwargs)
+            assert np.allclose(ret, expected_ret, **kwargs),\
+                'ret\n\n{}\n\nand expected_ret\n\n{}\n\nwere not close enough'.format(ret, expected_ret)
 
     # noinspection PyProtectedMember
     def _is_submod_leaf(self):
