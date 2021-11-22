@@ -1735,6 +1735,21 @@ Default is True.</p></li>
 </dd></dl>
 
 <dl class="py method">
+<dt id="ivy.core.container.Container.restructure">
+<code class="sig-name descname">restructure</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">mapping</span></em>, <em class="sig-param"><span class="n">keep_orig</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/container.html#Container.restructure"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.restructure" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a new container with the same contents, but a new key-chain structure, and transposes and/or reshaped
+arrays. Given by the mapping with keys as old key-chains and values as new key-chains.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>mapping</strong> (<em>dict</em>) – A dict with keys as old key-chains and values as new key-chains.</p></li>
+<li><p><strong>keep_orig</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to keep the original keys, are start from a new container. Default is True.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt id="ivy.core.container.Container.restructure_key_chains">
 <code class="sig-name descname">restructure_key_chains</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">keychain_mapping</span></em>, <em class="sig-param"><span class="n">keep_orig</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/container.html#Container.restructure_key_chains"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.restructure_key_chains" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a new container with the same contents, but a new key-chain structure. Given by the mapping with keys as
