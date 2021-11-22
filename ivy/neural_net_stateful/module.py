@@ -657,14 +657,15 @@ class Module(abc.ABC):
             self.v = ivy.Container()
         return v_ret if bool(v_ret) or isinstance(built, bool) else built
 
-    def __repr__(self, full=True):
-        if full:
-            this_repr = termcolor.colored(object.__repr__(self), 'green')
-            sub_mod_repr = self.sub_mods(False).__repr__()
-            if sub_mod_repr == "''":
-                return this_repr
-            return '\n'.join([this_repr, sub_mod_repr])
-        return object.__repr__(self)
+    def show_structure(self):
+        this_repr = termcolor.colored(object.__repr__(self), 'green')
+        sub_mod_repr = self.sub_mods(False).__repr__()
+        if sub_mod_repr == "''":
+            return this_repr
+        print('\n'.join([this_repr, sub_mod_repr]))
+
+    def __repr__(self):
+        return termcolor.colored(object.__repr__(self), 'green')
 
     # Properties #
     # -----------#
