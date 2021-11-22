@@ -1532,6 +1532,8 @@ def test_container_to_numpy(dev_str, call):
                'b': {'c': ivy.variable(ivy.array([[[8., 7.], [6., 5.]], [[4., 3.], [2., 1.]]], dev_str=dev_str)),
                      'd': ivy.variable(ivy.array([[[2., 4.], [6., 8.]], [[10., 12.], [14., 16.]]], dev_str=dev_str))}}
     container = Container(dict_in)
+
+    # before conversion
     assert ivy.is_array(container['a'])
     assert ivy.is_array(container.a)
     assert ivy.is_array(container['b']['c'])
@@ -1539,7 +1541,7 @@ def test_container_to_numpy(dev_str, call):
     assert ivy.is_array(container['b']['d'])
     assert ivy.is_array(container.b.d)
 
-    # without key_chains specification
+    # after conversion
     container_to_numpy = container.to_numpy()
     assert isinstance(container_to_numpy['a'], np.ndarray)
     assert isinstance(container_to_numpy.a, np.ndarray)
@@ -1547,6 +1549,30 @@ def test_container_to_numpy(dev_str, call):
     assert isinstance(container_to_numpy.b.c, np.ndarray)
     assert isinstance(container_to_numpy['b']['d'], np.ndarray)
     assert isinstance(container_to_numpy.b.d, np.ndarray)
+
+
+def test_container_from_numpy(dev_str, call):
+    dict_in = {'a': np.array([[[1., 2.], [3., 4.]], [[5., 6.], [7., 8.]]]),
+               'b': {'c': np.array([[[8., 7.], [6., 5.]], [[4., 3.], [2., 1.]]]),
+                     'd': np.array([[[2., 4.], [6., 8.]], [[10., 12.], [14., 16.]]])}}
+
+    # before conversion
+    container = Container(dict_in)
+    assert isinstance(container['a'], np.ndarray)
+    assert isinstance(container.a, np.ndarray)
+    assert isinstance(container['b']['c'], np.ndarray)
+    assert isinstance(container.b.c, np.ndarray)
+    assert isinstance(container['b']['d'], np.ndarray)
+    assert isinstance(container.b.d, np.ndarray)
+
+    # after conversion
+    container_from_numpy = container.from_numpy()
+    assert ivy.is_array(container_from_numpy['a'])
+    assert ivy.is_array(container_from_numpy.a)
+    assert ivy.is_array(container_from_numpy['b']['c'])
+    assert ivy.is_array(container_from_numpy.b.c)
+    assert ivy.is_array(container_from_numpy['b']['d'])
+    assert ivy.is_array(container_from_numpy.b.d)
 
 
 def test_container_arrays_as_lists(dev_str, call):
