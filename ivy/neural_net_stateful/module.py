@@ -498,8 +498,18 @@ class Module(abc.ABC):
         sr = self.top_mod().submod_rets
         rets = sr[key]
         expected_rets = esr[key]
-        for ret, expected_ret in zip(rets, expected_rets):
-            assert np.allclose(ret, expected_ret)
+        if isinstance(expected_rets, tuple) and len(expected_rets) == 3:
+            expected_rets, atols, rtols = expected_rets
+        else:
+            atols = [None] * len(expected_rets)
+            rtols = [None] * len(expected_rets)
+        for ret, expected_ret, atol, rtol in zip(rets, expected_rets, atols, rtols):
+            kwargs = {}
+            if atol:
+                kwargs['atol'] = atol
+            if rtol:
+                kwargs['rtol'] = rtol
+            assert np.allclose(ret, expected_ret, **kwargs)
 
     # noinspection PyProtectedMember
     def _is_submod_leaf(self):
