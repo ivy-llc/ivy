@@ -67,8 +67,8 @@ def test_perceiver_io_img_classification(dev_str, f, call, batch_shape, img_dims
     # maybe load weights
     if load_weights:
         this_dir = os.path.dirname(os.path.realpath(__file__))
-        weight_fpath = os.path.join(this_dir, '../ivy_models/transformers/pretrained_weights/perceiver_io.hdf5')
-        v = ivy.Container.from_disk_as_hdf5(weight_fpath)
+        weight_fpath = os.path.join(this_dir, '../ivy_models/transformers/pretrained_weights/perceiver_io.pickled')
+        v = ivy.Container.from_disk_as_pickled(weight_fpath).from_numpy()
 
         # try:
         #     assert model.v.num_arrays() == v.num_arrays()
@@ -80,12 +80,18 @@ def test_perceiver_io_img_classification(dev_str, f, call, batch_shape, img_dims
         #             model.v.size_ordered_arrays(), v.size_ordered_arrays()))
 
         # ToDo: incrementally update this restructuring, so that the loaded jax weights are converted
-        v = v.restructure_key_chains(
+        v = v.restructure(
             {'perceiver_encoder/~/trainable_position_encoding/pos_embs': 'latents',
+
              'perceiver_encoder/~/cross_attention/layer_norm/scale': 'layers/v0/cross_att/norm/scale',
              'perceiver_encoder/~/cross_attention/layer_norm/offset': 'layers/v0/cross_att/norm/offset',
+
              'perceiver_encoder/~/cross_attention/layer_norm_1/scale': 'layers/v0/cross_att/norm_context/scale',
-             'perceiver_encoder/~/cross_attention/layer_norm_1/offset': 'layers/v0/cross_att/norm_context/offset'},
+             'perceiver_encoder/~/cross_attention/layer_norm_1/offset': 'layers/v0/cross_att/norm_context/offset',
+
+             'perceiver_encoder/~/cross_attention/attention/linear/w': {'key_chain': 'layers/v0/cross_att/fn/to_q/w',
+                                                                        'pattern': 'a b -> b a'},
+             'perceiver_encoder/~/cross_attention/attention/linear/b': 'layers/v0/cross_att/fn/to_q/b'},
             keep_orig=False)
 
         # assert ivy.Container.identical_structure([model.v, v])
@@ -103,7 +109,8 @@ def test_perceiver_io_img_classification(dev_str, f, call, batch_shape, img_dims
         # expected submodule returns
         expected_submod_rets = ivy.Container()
         for dct in [{'val': 'LayerNorm_0', 'atol': 1e-6, 'rtol': 1e-6},
-                    {'val': 'LayerNorm_1', 'atol': 1e-3}]:
+                    {'val': 'LayerNorm_1', 'atol': 1e-3},
+                    {'val': 'Linear_0', 'atol': 1e-5}]:
             key = dct['val']
             dct['val'] = np.load(os.path.join(this_dir, key + '.npy'))
             expected_submod_rets[key] = dct
