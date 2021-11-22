@@ -342,7 +342,7 @@ class Module(abc.ABC):
             else:
                 next_depth = None
             ret = ivy.Container(
-                {ivy.Container.format_key(sm.__repr__(False), '_'):
+                {ivy.Container.format_key(sm.__repr__(), '_'):
                      sm.sub_mods(show_v, next_depth) for sm in self._sub_mods})
             if flatten_key_chains:
                 return ret.flatten_key_chains()
@@ -374,16 +374,16 @@ class Module(abc.ABC):
 
     def mod_with_top_mod_key_chain(self, depth=None, flatten_key_chain=False):
         if not ivy.exists(self.top_mod) or depth == 0:
-            return self.__repr__(False)
+            return self.__repr__()
         max_depth = depth
         depth = 1
         top_mod = self
-        mods = [ivy.Container.format_key(top_mod.__repr__(False), '_')]
+        mods = [ivy.Container.format_key(top_mod.__repr__(), '_')]
         while True:
             if not ivy.exists(top_mod.top_mod):
                 break
             top_mod = top_mod.top_mod(1)
-            mods.append(ivy.Container.format_key(top_mod.__repr__(False), '_'))
+            mods.append(ivy.Container.format_key(top_mod.__repr__(), '_'))
             if depth == max_depth:
                 break
             depth += 1
