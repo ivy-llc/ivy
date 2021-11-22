@@ -469,7 +469,7 @@ class Module(abc.ABC):
         if top_mod is None:
             top_mod = self.top_mod()
         submod_dict = top_mod.submod_dict
-        full_key = self.__repr__(False).split('.')[-1]
+        full_key = self.__repr__().split('.')[-1]
         name_key = full_key.split(' ')[0]
         if name_key not in submod_dict:
             submod_dict[name_key] = dict()
