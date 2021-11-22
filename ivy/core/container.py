@@ -2003,6 +2003,26 @@ class Container(dict):
             ret.set_ivy_backend(ivy.numpy)
         return ret
 
+    def from_numpy(self, key_chains=None, to_apply=True, prune_unapplied=False, map_sequences=False):
+        """
+        Converts all nested numpy arrays to native backend arrays.
+
+        :param key_chains: The key-chains to apply or not apply the method to. Default is None.
+        :type key_chains: list or dict of strs, optional
+        :param to_apply: If True, the method will be applied to key_chains, otherwise key_chains will be skipped.
+                         Default is True.
+        :type to_apply: bool, optional
+        :param prune_unapplied: Whether to prune key_chains for which the function was not applied. Default is False.
+        :type prune_unapplied: bool, optional
+        :param map_sequences: Whether to also map method to sequences (lists, tuples). Default is False.
+        :type map_sequences: bool, optional
+        :return: container with each ivy array converted to a numpy array.
+        """
+        ret = self.map(
+            lambda x, kc: self._ivy.array(x) if isinstance(x, _np.ndarray) else x, key_chains, to_apply,
+            prune_unapplied, map_sequences)
+        return ret
+
     def arrays_as_lists(self, key_chains=None, to_apply=True, prune_unapplied=False, map_sequences=False):
         """
         Converts all nested arrays to lists, a useful intermediate step for conversion to other framework array types.
