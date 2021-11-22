@@ -719,7 +719,8 @@
                 <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;atol&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">atol</span>
             <span class="k">if</span> <span class="n">rtol</span><span class="p">:</span>
                 <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;rtol&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">rtol</span>
-            <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">ret</span><span class="p">,</span> <span class="n">expected_ret</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">ret</span><span class="p">,</span> <span class="n">expected_ret</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">),</span>\
+                <span class="s1">&#39;ret</span><span class="se">\n\n</span><span class="si">{}</span><span class="se">\n\n</span><span class="s1">and expected_ret</span><span class="se">\n\n</span><span class="si">{}</span><span class="se">\n\n</span><span class="s1">were not close enough&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ret</span><span class="p">,</span> <span class="n">expected_ret</span><span class="p">)</span>
 
     <span class="c1"># noinspection PyProtectedMember</span>
     <span class="k">def</span> <span class="nf">_is_submod_leaf</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
