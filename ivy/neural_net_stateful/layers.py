@@ -153,11 +153,11 @@ class MultiHeadAttention(Module):
 
     # noinspection PyAttributeOutsideInit
     def _build(self, *agrs, **kwargs):
-        self._to_q = ivy.Linear(self._query_dim, self._inner_dim, with_bias=False, dev_str=self._dev_str) \
+        self._to_q = ivy.Linear(self._query_dim, self._inner_dim, dev_str=self._dev_str) \
             if self._with_to_q_fn else None
-        self._to_k = ivy.Linear(self._context_dim, self._inner_dim, with_bias=False, dev_str=self._dev_str) \
+        self._to_k = ivy.Linear(self._context_dim, self._inner_dim, dev_str=self._dev_str) \
             if self._with_to_kv_fn else None
-        self._to_v = ivy.Linear(self._context_dim, self._inner_dim, with_bias=False, dev_str=self._dev_str) \
+        self._to_v = ivy.Linear(self._context_dim, self._inner_dim, dev_str=self._dev_str) \
             if self._with_to_kv_fn else None
         self._to_kv = lambda context, v=None:\
             (self._to_k(context, v=v.k if v else None), self._to_v(context, v=v.v if v else None))
