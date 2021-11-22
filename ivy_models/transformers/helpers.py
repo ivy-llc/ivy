@@ -20,12 +20,12 @@ class PreNorm(ivy.Module):
 
 
 class FeedForward(ivy.Module):
-    def __init__(self, dim, mult=4, dropout=0., dev_str=None, v=None):
+    def __init__(self, dim, dropout=0., dev_str=None, v=None):
         self._net = ivy.Sequential(
-            ivy.Linear(dim, dim * mult * 2, dev_str=dev_str),
+            ivy.Linear(dim, dim, dev_str=dev_str),
             ivy.GEGLU(),
             ivy.Dropout(dropout),
-            ivy.Linear(dim * mult, dim, dev_str=dev_str),
+            ivy.Linear(int(dim/2), dim, dev_str=dev_str),
             dev_str=dev_str)
         ivy.Module.__init__(self, v=v, dev_str=dev_str)
 
