@@ -89,9 +89,13 @@ def test_perceiver_io_img_classification(dev_str, f, call, batch_shape, img_dims
              'perceiver_encoder/~/cross_attention/layer_norm_1/scale': 'layers/v0/cross_att/norm_context/scale',
              'perceiver_encoder/~/cross_attention/layer_norm_1/offset': 'layers/v0/cross_att/norm_context/offset',
 
-             'perceiver_encoder/~/cross_attention/attention/linear/w': {'key_chain': 'layers/v0/cross_att/fn/to_q/w',
-                                                                        'pattern': 'a b -> b a'},
-             'perceiver_encoder/~/cross_attention/attention/linear/b': 'layers/v0/cross_att/fn/to_q/b'},
+             'perceiver_encoder/~/cross_attention/attention/linear/w':
+                 {'key_chain': 'layers/v0/cross_att/fn/to_q/w', 'pattern': 'a b -> b a'},
+             'perceiver_encoder/~/cross_attention/attention/linear/b': 'layers/v0/cross_att/fn/to_q/b',
+
+             'perceiver_encoder/~/cross_attention/attention/linear_1/w':
+                 {'key_chain': 'layers/v0/cross_att/fn/to_kv/k/w', 'pattern': 'a b -> b a'},
+             'perceiver_encoder/~/cross_attention/attention/linear_1/b': 'layers/v0/cross_att/fn/to_kv/k/b'},
             keep_orig=False)
 
         # assert ivy.Container.identical_structure([model.v, v])
@@ -110,7 +114,8 @@ def test_perceiver_io_img_classification(dev_str, f, call, batch_shape, img_dims
         expected_submod_rets = ivy.Container()
         for dct in [{'val': 'LayerNorm_0', 'atol': 1e-6, 'rtol': 1e-6},
                     {'val': 'LayerNorm_1', 'atol': 1e-3},
-                    {'val': 'Linear_0', 'atol': 1e-5}]:
+                    {'val': 'Linear_0', 'atol': 1e-5},
+                    {'val': 'Linear_1', 'atol': 1e-3}]:
             key = dct['val']
             dct['val'] = np.load(os.path.join(this_dir, key + '.npy'))
             expected_submod_rets[key] = dct
