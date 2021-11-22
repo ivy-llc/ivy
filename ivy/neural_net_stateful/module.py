@@ -497,10 +497,17 @@ class Module(abc.ABC):
             return
         sr = self.top_mod().submod_rets
         rets = sr[key]
-        expected_rets = esr[key]
-        if isinstance(expected_rets, tuple) and len(expected_rets) == 3:
-            expected_rets, atols, rtols = expected_rets
+        esr_ret = esr[key]
+        if isinstance(esr_ret, dict):
+            expected_rets = esr_ret['val']
+            atols = esr_ret['atol'] if 'atol' in esr_ret else None
+            if not isinstance(atols, list):
+                atols = [atols] * len(expected_rets)
+            rtols = esr_ret['rtol'] if 'rtol' in esr_ret else None
+            if not isinstance(rtols, list):
+                rtols = [rtols] * len(expected_rets)
         else:
+            expected_rets = esr_ret
             atols = [None] * len(expected_rets)
             rtols = [None] * len(expected_rets)
         for ret, expected_ret, atol, rtol in zip(rets, expected_rets, atols, rtols):
