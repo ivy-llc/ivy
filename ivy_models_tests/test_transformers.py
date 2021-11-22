@@ -104,7 +104,10 @@ def test_perceiver_io_img_classification(dev_str, f, call, batch_shape, img_dims
              'perceiver_encoder/~/cross_attention/attention/linear_3/w':
                  {'key_chain': 'layers/v0/cross_att/fn/to_out/submodules/v0/w', 'pattern': 'a b -> b a'},
              'perceiver_encoder/~/cross_attention/attention/linear_3/b':
-                 'layers/v0/cross_att/fn/to_out/submodules/v0/b'},
+                 'layers/v0/cross_att/fn/to_out/submodules/v0/b',
+
+             'perceiver_encoder/~/cross_attention/layer_norm_2/scale': 'layers/v0/cross_fc/norm/scale',
+             'perceiver_encoder/~/cross_attention/layer_norm_2/offset': 'layers/v0/cross_fc/norm/offset'},
             keep_orig=False)
 
         # layers.v0.cross_att.fn.to_out.submodules.v0
@@ -128,7 +131,8 @@ def test_perceiver_io_img_classification(dev_str, f, call, batch_shape, img_dims
                     {'val': 'Linear_0', 'atol': 1e-5},
                     {'val': 'Linear_1', 'atol': 1e-3},
                     {'val': 'Linear_2', 'atol': 1e-3},
-                    {'val': 'Linear_3', 'atol': 1e-3}]:
+                    {'val': 'Linear_3', 'atol': 1e-3},
+                    {'val': 'LayerNorm_2', 'atol': 1e-2}]:
             key = dct['val']
             dct['val'] = np.load(os.path.join(this_dir, key + '.npy'))
             expected_submod_rets[key] = dct
