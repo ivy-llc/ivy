@@ -455,7 +455,7 @@ class Module(abc.ABC):
         self._submod_depth = submod_depth
         self._submods_to_track = submods_to_track
         self._track_submod_call_order = track_submod_call_order
-        self.expected_submod_rets = expected_submod_rets.to_numpy(map_sequences=True) \
+        self.expected_submod_rets = ivy.Container(expected_submod_rets).to_numpy(map_sequences=True) \
             if ivy.exists(expected_submod_rets) else expected_submod_rets
 
     def _unset_submod_flags(self):
