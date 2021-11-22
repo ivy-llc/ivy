@@ -642,7 +642,7 @@ def test_module_track_submod_rets(bs_ic_oc, dev_str, call):
             assert isinstance(ret, np.ndarray)
             assert ret.shape == tuple(batch_shape + [64])
     for submod in [module._dl0._l0, module._dl0._l1, module._dl1._l0, module._dl1._l1]:
-        assert ivy.Container.format_key(submod.__repr__(False), '_') not in sm_rets
+        assert ivy.Container.format_key(submod.__repr__(), '_') not in sm_rets
 
     # depth 2 (full)
     ret = module(x, track_submod_rets=True)
@@ -662,7 +662,7 @@ def test_module_track_submod_rets(bs_ic_oc, dev_str, call):
             assert isinstance(ret, np.ndarray)
             assert ret.shape == tuple(batch_shape + [64])
     for submod in [module._dl0, module._dl0._l1, module._dl1._l0, module._dl1._l1]:
-        assert ivy.Container.format_key(submod.__repr__(False), '_') not in sm_rets
+        assert ivy.Container.format_key(submod.__repr__(), '_') not in sm_rets
 
 
 # check submod returns
