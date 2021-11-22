@@ -2675,6 +2675,36 @@ class Container(dict):
             new_cont = ivy.Container.combine(new_cont, ivy.Container({new_kc: self[old_kc]}))
         return new_cont
 
+    def restructure(self, mapping, keep_orig=True):
+        """
+        Create a new container with the same contents, but a new key-chain structure, and transposes and/or reshaped
+        arrays. Given by the mapping with keys as old key-chains and values as new key-chains.
+
+        :param mapping: A dict with keys as old key-chains and values as new key-chains.
+        :type mapping: dict
+        :param keep_orig: Whether to keep the original keys, are start from a new container. Default is True.
+        :type keep_orig: bool, optional
+        """
+        new_cont = self.copy() if keep_orig else ivy.Container()
+        for old_kc, new in mapping.items():
+            val = self[old_kc]
+            if isinstance(new, dict):
+                new_kc = new['key_chain']
+                if 'pattern' in new:
+                    pattern = new['pattern']
+                    axes_lengths = new['axes_lengths'] if 'axes_lengths' in new else {}
+                    if isinstance(val, Container):
+                        val = val.einops_rearrange(pattern, **axes_lengths)
+                    else:
+                        try:
+                            val = ivy.einops_rearrange(val, pattern, **axes_lengths)
+                        except:
+                            d = 0
+            else:
+                new_kc = new
+            new_cont = ivy.Container.combine(new_cont, ivy.Container({new_kc: val}))
+        return new_cont
+
     def flatten_key_chains(self, include_empty=False, above_height=None, below_depth=None):
         """
         Return a flat (depth-1) container, which all nested key-chains flattened.
