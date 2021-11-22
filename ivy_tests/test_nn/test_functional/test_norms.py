@@ -19,13 +19,13 @@ import ivy_tests.helpers as helpers
          -1,
          [[1., 2., 3.], [4., 5., 6.]],
          [[1., 2., 3.], [4., 5., 6.]],
-         [[-0.2247448, 2., 6.6742344],
-          [-0.8989792, 5., 13.348469]]),
+         [[-0.22473562, 2., 6.6742067],
+          [-0.8989425, 5., 13.348413]]),
     ])
 @pytest.mark.parametrize(
     "dtype_str", ['float32'])
 @pytest.mark.parametrize(
-    "tensor_fn", [ivy.array, helpers.var_fn])
+    "tensor_fn", [ivy.array])
 def test_layer_norm(x_n_ni_n_s_n_o_n_res, dtype_str, tensor_fn, dev_str, call):
     # smoke test
     x, norm_idxs, scale, offset, true_res = x_n_ni_n_s_n_o_n_res
