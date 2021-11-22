@@ -91,9 +91,6 @@ class PerceiverIO(ivy.Module):
             if self._spec.fourier_encode_input else 0
         input_dim = fourier_channels + self._spec.input_dim
 
-        self._latents = ivy.variable(
-            ivy.random_uniform(shape=(self._spec.num_latents, self._spec.latent_dim), dev_str=self._spec.device))
-
         # ToDo: set the correct initializatin scheme for the query here
         self._queries = ivy.variable(ivy.random_uniform(shape=self._spec.query_shape + [self._spec.queries_dim]))\
             if self._spec.learn_query else None
@@ -101,17 +98,18 @@ class PerceiverIO(ivy.Module):
         get_cross_attn = lambda: PreNorm(
             self._spec.latent_dim, ivy.MultiHeadAttention(
                 self._spec.latent_dim, self._spec.num_cross_att_heads, self._spec.cross_head_dim,
-                self._spec.attn_dropout, input_dim, dev_str=self._spec.device), context_dim=input_dim,
+                self._spec.attn_dropout, input_dim, dev_str=self._spec.device), context_dim=input_dim, epsilon=1e-5,
             dev_str=self._spec.device)
         get_cross_fc = lambda: PreNorm(
             self._spec.latent_dim, FeedForward(self._spec.latent_dim, dropout=self._spec.fc_dropout,
-                                               dev_str=self._spec.device), dev_str=self._spec.device)
+                                               dev_str=self._spec.device), epsilon=1e-5, dev_str=self._spec.device)
         get_latent_attn = lambda: PreNorm(
             self._spec.latent_dim, ivy.MultiHeadAttention(
                 self._spec.latent_dim, self._spec.num_self_att_heads, self._spec.latent_head_dim, self._spec.attn_dropout,
-                dev_str=self._spec.device), dev_str=self._spec.device)
+                dev_str=self._spec.device), epsilon=1e-5, dev_str=self._spec.device)
         get_latent_fc = lambda: PreNorm(self._spec.latent_dim, FeedForward(
-            self._spec.latent_dim, dropout=self._spec.fc_dropout, dev_str=self._spec.device), dev_str=self._spec.device)
+            self._spec.latent_dim, dropout=self._spec.fc_dropout, dev_str=self._spec.device), epsilon=1e-5,
+                                        dev_str=self._spec.device)
 
         get_cross_attn_cached, get_cross_fc_cached, get_latent_attn_cached, get_latent_fc_cached =\
             map(ivy.cache_fn, (get_cross_attn, get_cross_fc, get_latent_attn, get_latent_fc))
@@ -136,12 +134,17 @@ class PerceiverIO(ivy.Module):
 
         self._decoder_cross_attn = PreNorm(self._spec.queries_dim, ivy.MultiHeadAttention(
             self._spec.queries_dim, self._spec.num_cross_att_heads, self._spec.cross_head_dim,
-            context_dim=self._spec.latent_dim), context_dim = self._spec.latent_dim)
-        self._decoder = PreNorm(self._spec.queries_dim, FeedForward(self._spec.queries_dim))\
+            context_dim=self._spec.latent_dim), context_dim=self._spec.latent_dim, epsilon=1e-5)
+        self._decoder = PreNorm(self._spec.queries_dim, FeedForward(self._spec.queries_dim), epsilon=1e-5)\
             if self._spec.with_decoder else None
 
         self._to_logits = ivy.Linear(self._spec.queries_dim, self._spec.output_dim, dev_str=self._spec.device)\
             if self._spec.with_final_head else lambda x: x
+
+    def _create_variables(self, dev_str):
+        latents = ivy.variable(
+            ivy.random_uniform(shape=(self._spec.num_latents, self._spec.latent_dim), dev_str=dev_str))
+        return {'latents': latents}
 
     def _forward(self, data, mask=None, queries=None):
 
@@ -176,7 +179,7 @@ class PerceiverIO(ivy.Module):
 
         data = ivy.einops_rearrange(data, 'b ... d -> b (...) d')
 
-        x = ivy.einops_repeat(self._latents, 'n d -> b n d', b=flat_batch_size)
+        x = ivy.einops_repeat(self.v.latents, 'n d -> b n d', b=flat_batch_size)
 
         # layers
 

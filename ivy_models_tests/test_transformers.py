@@ -39,7 +39,7 @@ def test_prenorm(dev_str, f, call):
 @pytest.mark.parametrize(
     "queries_dim", [1024])
 @pytest.mark.parametrize(
-    "learn_query", [True, False])
+    "learn_query", [True])
 @pytest.mark.parametrize(
     "load_weights", [True, False])
 def test_perceiver_io_img_classification(dev_str, f, call, batch_shape, img_dims, queries_dim, learn_query,
@@ -80,12 +80,11 @@ def test_perceiver_io_img_classification(dev_str, f, call, batch_shape, img_dims
         #             model.v.size_ordered_arrays(), v.size_ordered_arrays()))
 
         # ToDo: incrementally update this restructuring, so that the loaded jax weights are converted
-        # v = v.restructure_key_chains(
-        #     {'perceiver_encoder/~/cross_attention/layer_norm/scale': 'layers/v0/cross_att/norm/scale',
-        #      'perceiver_encoder/~/cross_attention/layer_norm/offset': 'layers/v0/cross_att/norm/offset'},
-        #     keep_orig=False)
-
-        v = v.restructure_key_chains({}, keep_orig=False)
+        v = v.restructure_key_chains(
+            {'perceiver_encoder/~/trainable_position_encoding/pos_embs': 'latents',
+             'perceiver_encoder/~/cross_attention/layer_norm/scale': 'layers/v0/cross_att/norm/scale',
+             'perceiver_encoder/~/cross_attention/layer_norm/offset': 'layers/v0/cross_att/norm/offset'},
+            keep_orig=False)
 
         # assert ivy.Container.identical_structure([model.v, v])
 
@@ -98,9 +97,19 @@ def test_perceiver_io_img_classification(dev_str, f, call, batch_shape, img_dims
                                             max_fourier_freq=img_dims[0],
                                             device=dev_str), v=v, with_partial_v=True)
 
-    # output
-    # ToDo: pass in expected submodule returns for each sub-module here, and verify they all return as expected
-    output = model(img, queries=queries, track_submod_call_order=True)
+        # expected submodule returns
+        expected_submod_rets = ivy.Container()
+        for key in ['LayerNorm_0']:
+            expected_submod_rets[key] = {'val': np.load(os.path.join(this_dir, key + '.npy')),
+                                         'atol': 1e-6, 'rtol': 1e-6}
+
+        # check submod returns
+        output = model(img, queries=queries, expected_submod_rets=expected_submod_rets)
+
+    else:
+
+        # output
+        output = model(img, queries=queries)
 
     # cardinality test
     assert output.shape == tuple(batch_shape + [1, output_dim])

@@ -3,12 +3,13 @@ import ivy
 
 
 class PreNorm(ivy.Module):
-    def __init__(self, dim, fn, context_dim=None, dev_str=None, v=None):
+    def __init__(self, dim, fn, context_dim=None, epsilon=None, dev_str=None, v=None):
         self._fn = fn
-        self._norm = ivy.LayerNorm([dim], dev_str=dev_str)
+        self._norm = ivy.LayerNorm([dim], epsilon=epsilon, dev_str=dev_str)
         if isinstance(context_dim, int):
             context_dim = [context_dim]
-        self._norm_context = ivy.LayerNorm(context_dim, dev_str=dev_str) if ivy.exists(context_dim) else None
+        self._norm_context = ivy.LayerNorm(context_dim, epsilon=epsilon, dev_str=dev_str) if \
+            ivy.exists(context_dim) else None
         ivy.Module.__init__(self, v=v, dev_str=dev_str)
 
     def _forward(self, x, **kwargs):
