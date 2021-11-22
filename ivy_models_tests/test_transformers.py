@@ -83,7 +83,9 @@ def test_perceiver_io_img_classification(dev_str, f, call, batch_shape, img_dims
         v = v.restructure_key_chains(
             {'perceiver_encoder/~/trainable_position_encoding/pos_embs': 'latents',
              'perceiver_encoder/~/cross_attention/layer_norm/scale': 'layers/v0/cross_att/norm/scale',
-             'perceiver_encoder/~/cross_attention/layer_norm/offset': 'layers/v0/cross_att/norm/offset'},
+             'perceiver_encoder/~/cross_attention/layer_norm/offset': 'layers/v0/cross_att/norm/offset',
+             'perceiver_encoder/~/cross_attention/layer_norm_1/scale': 'layers/v0/cross_att/norm_context/scale',
+             'perceiver_encoder/~/cross_attention/layer_norm_1/offset': 'layers/v0/cross_att/norm_context/offset'},
             keep_orig=False)
 
         # assert ivy.Container.identical_structure([model.v, v])
@@ -95,13 +97,16 @@ def test_perceiver_io_img_classification(dev_str, f, call, batch_shape, img_dims
                                             learn_query=learn_query,
                                             query_shape=[1],
                                             max_fourier_freq=img_dims[0],
+                                            num_fourier_freq_bands=64,
                                             device=dev_str), v=v, with_partial_v=True)
 
         # expected submodule returns
         expected_submod_rets = ivy.Container()
-        for key in ['LayerNorm_0']:
-            expected_submod_rets[key] = {'val': np.load(os.path.join(this_dir, key + '.npy')),
-                                         'atol': 1e-6, 'rtol': 1e-6}
+        for dct in [{'val': 'LayerNorm_0', 'atol': 1e-6, 'rtol': 1e-6},
+                    {'val': 'LayerNorm_1', 'atol': 1e-3}]:
+            key = dct['val']
+            dct['val'] = np.load(os.path.join(this_dir, key + '.npy'))
+            expected_submod_rets[key] = dct
 
         # check submod returns
         output = model(img, queries=queries, expected_submod_rets=expected_submod_rets)

@@ -166,23 +166,23 @@ class PerceiverIO(ivy.Module):
             flat_batch_size = 1
             data = ivy.expand_dims(data, 0)
 
+        # flatten the data channels
+        data = ivy.einops_rearrange(data, 'b ... d -> b (...) d')
+
         # maybe add fourier positional encoding
         if self._fourier_encode_input:
             axis_pos = list(map(lambda size: ivy.linspace(-1., 1., size, dev_str=self._dev_str), data_shape))
             pos = ivy.stack(ivy.meshgrid(*axis_pos), -1)
-            enc_pos = ivy.fourier_encode(pos, self._spec.max_fourier_freq, self._spec.num_fourier_freq_bands)
-            enc_pos = ivy.einops_rearrange(enc_pos, '... n d -> ... (n d)')
+            pos_flat = ivy.reshape(pos, [-1, 2])
+            enc_pos = ivy.fourier_encode(
+                pos_flat, self._spec.max_fourier_freq, self._spec.num_fourier_freq_bands, True, flatten=True)
             enc_pos = ivy.einops_repeat(enc_pos, '... -> b ...', b=flat_batch_size)
             data = ivy.concatenate([data, enc_pos], -1)
 
-        # concat to channels of data and flatten axis
-
-        data = ivy.einops_rearrange(data, 'b ... d -> b (...) d')
-
+        # batchify latents
         x = ivy.einops_repeat(self.v.latents, 'n d -> b n d', b=flat_batch_size)
 
         # layers
-
         for layer_dict in self._layers:
             cross_attn, cross_fc, self_attns = layer_dict.values()
             x = cross_attn(x, context=data, mask=mask) + x
