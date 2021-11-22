@@ -708,8 +708,8 @@ def zero_pad(x: Union[ivy.Array, ivy.NativeArray], pad_width: Iterable[Tuple[int
     return _cur_framework(x, f=f).zero_pad(x, pad_width)
 
 
-def fourier_encode(x: Union[ivy.Array, ivy.NativeArray], max_freq: float, num_bands: int = 4, linear: bool = False)\
-        -> Union[ivy.Array, ivy.NativeArray]:
+def fourier_encode(x: Union[ivy.Array, ivy.NativeArray], max_freq: float, num_bands: int = 4, linear: bool = False,
+                   concat: bool = True) -> Union[ivy.Array, ivy.NativeArray, Tuple]:
     """
     Pads an array with fourier encodings.
 
@@ -721,18 +721,24 @@ def fourier_encode(x: Union[ivy.Array, ivy.NativeArray], max_freq: float, num_ba
     :type num_bands: int, optional
     :param linear: Whether to space the frequency bands linearly as opposed to geometrically. Default is False.
     :type linear: bool, optional
+    :param concat: Whether to concatenate the position, sin and cos values, or return seperately. Default is True.
+    :type concat: bool, optional
     :return: New array with the final dimension expanded, and the encodings stored in this channel.
     """
     x = ivy.expand_dims(x, -1)
     orig_x = x
     if linear:
-        scales = ivy.linspace(0., max_freq / 2, num_bands, dev_str=dev_str(x))
+        scales = ivy.linspace(1., max_freq / 2, num_bands, dev_str=dev_str(x))
     else:
-        scales = ivy.logspace(0., math.log(max_freq / 2) / math.log(10), num_bands, base=10, dev_str=dev_str(x))
+        scales = ivy.logspace(1., math.log(max_freq / 2) / math.log(10), num_bands, base=10, dev_str=dev_str(x))
     scales = ivy.cast(scales, ivy.dtype_str(x))
     scales = scales[(*((None,) * (len(x.shape) - 1)), Ellipsis)]
     x = x * scales * math.pi
-    return ivy.concatenate([orig_x, ivy.sin(x), ivy.cos(x)], -1)
+    sin_x = ivy.sin(x)
+    cos_x = ivy.cos(x)
+    if concat:
+        return ivy.concatenate([orig_x, sin_x, cos_x], -1)
+    return orig_x, sin_x, cos_x
 
 
 def swapaxes(x: Union[ivy.Array, ivy.NativeArray], axis0: int, axis1: int, f: ivy.Framework = None)\
