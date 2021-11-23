@@ -2570,24 +2570,6 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="kc">True</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">find_sub_container</span><span class="p">(</span><span class="n">sub_cont</span><span class="p">,</span> <span class="n">partial</span><span class="p">),</span> <span class="nb">str</span><span class="p">)</span> <span class="k">else</span> <span class="kc">False</span></div>
 
-<div class="viewcode-block" id="Container.assert_contains_sub_container"><a class="viewcode-back" href="../../../core/container/Container.html#ivy.core.container.Container.assert_contains_sub_container">[docs]</a>    <span class="k">def</span> <span class="nf">assert_contains_sub_container</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sub_cont</span><span class="p">,</span> <span class="n">partial</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Asserts that the current container contains the sub-container, otherwise exception raised with the</span>
-<span class="sd">        diff printed to screen.</span>
-
-<span class="sd">        :param sub_cont: The sub-container to check.</span>
-<span class="sd">        :type sub_cont: ivy.Container</span>
-<span class="sd">        :param partial: Whether to also check for partially complete sub-containers. Default is False.</span>
-<span class="sd">        :type partial: bool, optional</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">contains_sub_container</span><span class="p">(</span><span class="n">sub_cont</span><span class="p">,</span> <span class="n">partial</span><span class="p">)</span>
-        <span class="k">except</span> <span class="ne">AssertionError</span><span class="p">:</span>
-            <span class="n">key_chain</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_sub_structure</span><span class="p">(</span><span class="n">sub_cont</span><span class="p">,</span> <span class="n">check_shapes</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">partial</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-            <span class="c1"># noinspection PyTypeChecker</span>
-            <span class="k">raise</span> <span class="ne">AssertionError</span><span class="p">(</span><span class="s1">&#39;Containers did not have identical structure and values:</span><span class="se">\n\n</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                <span class="n">Container</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="bp">self</span><span class="p">[</span><span class="n">key_chain</span><span class="p">],</span> <span class="n">sub_cont</span><span class="p">)))</span></div>
-
 <div class="viewcode-block" id="Container.find_sub_structure"><a class="viewcode-back" href="../../../core/container/Container.html#ivy.core.container.Container.find_sub_structure">[docs]</a>    <span class="k">def</span> <span class="nf">find_sub_structure</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sub_struc_to_find</span><span class="p">,</span> <span class="n">check_shapes</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">partial</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Find the sub-container structure in the current container if it exsits.</span>
