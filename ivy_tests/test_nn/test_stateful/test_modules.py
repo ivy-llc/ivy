@@ -158,6 +158,9 @@ def test_module_w_partial_v(bs_ic_oc, dev_str, compile_graph, call):
     if call is helpers.np_call:
         # NumPy does not support gradients
         pytest.skip()
+    if call is helpers.mx_call:
+        # MXNet ivy.Container repr currently does not work
+        pytest.skip()
     batch_shape, input_channels, output_channels = bs_ic_oc
     x = ivy.cast(ivy.linspace(ivy.zeros(batch_shape), ivy.ones(batch_shape), input_channels), 'float32')
     v = ivy.Container({
