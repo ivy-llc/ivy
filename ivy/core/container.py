@@ -406,7 +406,8 @@ class Container(dict):
                     return_dict[key] = res
                 continue
             elif sum(keys_present) == 1 and not detect_key_diffs:
-                return_dict[key] = containers[keys_present.index(True)][key]
+                if mode == 'all':
+                    return_dict[key] = containers[keys_present.index(True)][key]
                 continue
             diff_dict = dict()
             for i, (key_present, cont) in enumerate(zip(keys_present, containers)):
@@ -424,7 +425,8 @@ class Container(dict):
         return ivy.Container(return_dict, **config)
 
     @staticmethod
-    def structural_diff(*containers, mode='all', diff_keys='diff', config=None):
+    def structural_diff(*containers, mode='all', diff_keys='diff', detect_key_diffs=True, detect_shape_diffs=True,
+                        config=None):
         """
         Compare keys and shapes in a sequence of containers, returning the single shared values where they are the same,
         and new nested sub-dicts with all values where they are different.
@@ -436,12 +438,18 @@ class Container(dict):
         :type mode: str, optional
         :param diff_keys: The key/keys to add to the returned container when differences are found. Default is "diff".
         :type diff_keys: str or list of strs, optional
+        :param detect_key_diffs: Whether to treat different keys as detected differences.
+                                 If not, the keys among the input containers are simply combined without flagging
+                                 differences. Default is True.
+        :type detect_key_diffs: bool, optional
+        :param detect_shape_diffs: Whether to treat different array shapes as detected differences. Default is True.
+        :type detect_shape_diffs: bool, optional
         :param config: The configuration for the containers. Default is the same as container0.
         :type config: dict, optional
         :return: Compared containers
         """
-        return Container.diff(*containers, mode=mode, diff_keys=diff_keys, detect_key_diffs=True,
-                              detect_value_diffs=False, detect_shape_diffs=True, config=config)
+        return Container.diff(*containers, mode=mode, diff_keys=diff_keys, detect_key_diffs=detect_key_diffs,
+                              detect_value_diffs=False, detect_shape_diffs=detect_shape_diffs, config=config)
 
     @staticmethod
     def multi_map(func, containers, key_chains=None, to_apply=True, prune_unapplied=False, key_chain='', config=None):
@@ -2473,7 +2481,8 @@ class Container(dict):
             key_chain = self.find_sub_structure(sub_cont, check_shapes=False, partial=True)
             # noinspection PyTypeChecker
             raise AssertionError('Containers did not have identical structure:\n\n{}'.format(
-                Container.structural_diff(self[key_chain], sub_cont)))
+                Container.structural_diff(self[key_chain], sub_cont, detect_key_diffs=not partial,
+                                          detect_shape_diffs=check_shapes, mode='diff_only' if partial else 'all')))
 
     def has_nans(self, include_infs=True, leafwise=False):
         """
