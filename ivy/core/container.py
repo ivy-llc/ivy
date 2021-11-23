@@ -747,7 +747,7 @@ class Container(dict):
                 raise Exception(str(e) + '\nContainer reduce operation only valid for containers of arrays')
 
     @staticmethod
-    def format_key(key_chain, replacement='__', above_height=None, below_depth=None):
+    def flatten_key_chain(key_chain, replacement='__', above_height=None, below_depth=None):
         # noinspection RegExpSingleCharAlternation
         flat_keys = re.split('/|\.', key_chain)
         num_keys = len(flat_keys)
@@ -1958,7 +1958,7 @@ class Container(dict):
                           rather than a variable or traced array.
         :type exclusive: bool, optional
         """
-        array_dict = {Container.format_key(kc): v
+        array_dict = {Container.flatten_key_chain(kc): v
                       for kc, v in self.to_iterator() if ivy.is_array(v, exclusive)}
         return ivy.Container(dict(sorted(array_dict.items(), key=lambda item: _reduce(_mul, item[1].shape, 1))),
                              alphabetical_keys=False)
@@ -1967,7 +1967,7 @@ class Container(dict):
         """
         Return a container with keychains mapped to flat keys, and retrieved values given in order they were retrieved.
         """
-        ret_dict = {Container.format_key(kc): v for kc, v in self.to_iterator()}
+        ret_dict = {Container.flatten_key_chain(kc): v for kc, v in self.to_iterator()}
         retrieval_dict = dict()
         for k, v in ret_dict.items():
             if k not in self._retrieval_times:
@@ -2709,7 +2709,7 @@ class Container(dict):
         """
         Return a flat (depth-1) container, which all nested key-chains flattened.
         """
-        return Container({Container.format_key(kc, above_height=above_height, below_depth=below_depth): v
+        return Container({Container.flatten_key_chain(kc, above_height=above_height, below_depth=below_depth): v
                           for kc, v in self.to_iterator(include_empty=include_empty)}, **self._config)
 
     def copy(self):
