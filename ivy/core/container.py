@@ -2416,6 +2416,8 @@ class Container(dict):
             assert self.contains_sub_container(sub_cont, partial)
         except AssertionError:
             key_chain = self.find_sub_structure(sub_cont, check_shapes=False, partial=True)
+            if not key_chain:
+                key_chain = ''
             # noinspection PyTypeChecker
             raise AssertionError('Containers did not have identical structure and values:\n\n{}'.format(
                 Container.diff(self[key_chain], sub_cont)))
@@ -2479,6 +2481,8 @@ class Container(dict):
             assert self.contains_sub_structure(sub_cont, check_shapes, partial)
         except AssertionError:
             key_chain = self.find_sub_structure(sub_cont, check_shapes=False, partial=True)
+            if not key_chain:
+                key_chain = ''
             # noinspection PyTypeChecker
             raise AssertionError('Containers did not have identical structure:\n\n{}'.format(
                 Container.structural_diff(self[key_chain], sub_cont, detect_key_diffs=not partial,
