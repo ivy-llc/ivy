@@ -210,6 +210,25 @@
 <span class="kn">from</span> <span class="nn">ivy.neural_net_stateful.module</span> <span class="kn">import</span> <span class="n">Module</span>
 
 
+<div class="viewcode-block" id="GELU"><a class="viewcode-back" href="../../../neural_net_stateful/activations/GELU.html#ivy.neural_net_stateful.activations.GELU">[docs]</a><span class="k">class</span> <span class="nc">GELU</span><span class="p">(</span><span class="n">Module</span><span class="p">):</span>
+
+<div class="viewcode-block" id="GELU.__init__"><a class="viewcode-back" href="../../../neural_net_stateful/activations/GELU.html#ivy.neural_net_stateful.activations.GELU.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Applies the GELU activation function.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">Module</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">_forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Perform forward pass of the GELU activation.</span>
+
+<span class="sd">        :param inputs: Inputs to process *[batch_shape, d]*.</span>
+<span class="sd">        :type inputs: array</span>
+<span class="sd">        :return: The outputs following the GELU activation *[batch_shape, d]*</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">gelu</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span></div>
+
+
 <div class="viewcode-block" id="GEGLU"><a class="viewcode-back" href="../../../neural_net_stateful/activations/GEGLU.html#ivy.neural_net_stateful.activations.GEGLU">[docs]</a><span class="k">class</span> <span class="nc">GEGLU</span><span class="p">(</span><span class="n">Module</span><span class="p">):</span>
 
 <div class="viewcode-block" id="GEGLU.__init__"><a class="viewcode-back" href="../../../neural_net_stateful/activations/GEGLU.html#ivy.neural_net_stateful.activations.GEGLU.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
