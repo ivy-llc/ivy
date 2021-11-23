@@ -48,7 +48,7 @@ def test_perceiver_io_img_classification(dev_str, f, call, batch_shape, img_dims
     # params
     input_dim = 3
     num_input_axes = 2
-    output_dim = 10
+    output_dim = 1000
     network_depth = 8 if load_weights else 1
     num_lat_att_per_layer = 6 if load_weights else 1
 
@@ -73,10 +73,13 @@ def test_perceiver_io_img_classification(dev_str, f, call, batch_shape, img_dims
     if load_weights:
         this_dir = os.path.dirname(os.path.realpath(__file__))
         weight_fpath = os.path.join(this_dir, '../ivy_models/transformers/pretrained_weights/perceiver_io.pickled')
-        v = ivy.Container.from_disk_as_pickled(weight_fpath).from_numpy()
+        v = ivy.Container.from_disk_as_pickled(weight_fpath).from_numpy().as_variables()
         # assert ivy.Container.identical_structure([model.v, v])
 
-        v = v.at_key_chains(['decoder', 'decoder_cross_attn', 'decoder_queries', 'latents', 'layers'])
+        v = v.restructure({
+            'classification_decoder/~/basic_decoder/output/w': {'key_chain': 'to_logits/w', 'pattern': 'a b -> b a'},
+            'classification_decoder/~/basic_decoder/output/b': 'to_logits/b',
+        }).as_variables()
 
         model = PerceiverIO(PerceiverIOSpec(input_dim=input_dim,
                                             num_input_axes=num_input_axes,
@@ -90,23 +93,28 @@ def test_perceiver_io_img_classification(dev_str, f, call, batch_shape, img_dims
                                             num_lat_att_per_layer=num_lat_att_per_layer,
                                             device=dev_str), v=v, with_partial_v=True)
 
-        # expected submodule returns
-        expected_submod_rets = ivy.Container()
-        for dct in [{'val': 'PreNorm_15', 'atol': 1}]:
-            key = dct['val']
-            dct['val'] = np.load(os.path.join(this_dir, key + '.npy'))
-            expected_submod_rets[key] = dct
-
-        # check submod returns
-        output = model(img, queries=queries, expected_submod_rets=expected_submod_rets)
-
-    else:
-
-        # output
-        output = model(img, queries=queries)
+    # output
+    output = model(img, queries=queries)
 
     # cardinality test
     assert output.shape == tuple(batch_shape + [1, output_dim])
+
+    # value test
+    if load_weights:
+
+        true_logits = np.load('logits.npy')[0]
+        calc_logits = ivy.to_numpy(output[0, 0])
+
+        def np_softmax(x):
+            return np.exp(x) / np.sum(np.exp(x))
+
+        true_indices = np.argsort(true_logits)[-4:]
+        calc_indices = np.argsort(calc_logits)[-4:]
+        assert np.array_equal(true_indices, calc_indices)
+
+        true_probs = np.take(np_softmax(true_logits), true_indices)
+        calc_probs = np.take(np_softmax(calc_logits), calc_indices)
+        assert np.allclose(true_probs, calc_probs, rtol=0.5)
 
 
 @pytest.mark.parametrize(
