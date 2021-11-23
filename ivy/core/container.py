@@ -322,7 +322,8 @@ class Container(dict):
         return ivy.Container(return_dict, **config)
 
     @staticmethod
-    def diff(*containers, mode='all', diff_keys='diff', detect_key_diffs=True, detect_value_diffs=True, config=None):
+    def diff(*containers, mode='all', diff_keys='diff', detect_key_diffs=True, detect_value_diffs=True,
+             detect_shape_diffs=True, config=None):
         """
         Compare keys and values in a sequence of containers, returning the single shared values where they are the same,
         and new nested sub-dicts with all values where they are different.
@@ -340,6 +341,8 @@ class Container(dict):
         :type detect_key_diffs: bool, optional
         :param detect_value_diffs: Whether to treat different values as detected differences. Default is True.
         :type detect_value_diffs: bool, optional
+        :param detect_shape_diffs: Whether to treat different array shapes as detected differences. Default is True.
+        :type detect_shape_diffs: bool, optional
         :param config: The configuration for the containers. Default is the same as container0.
         :type config: dict, optional
         :return: Compared containers
@@ -357,6 +360,10 @@ class Container(dict):
             if not detect_value_diffs:
                 return container0
             equal_mat = ivy.equal(*containers, equality_matrix=True)
+            if detect_shape_diffs:
+                shape_equal_mat = ivy.equal(*[c.shape if ivy.is_array(c) else None for c in containers],
+                                            equality_matrix=True)
+                equal_mat = ivy.logical_and(equal_mat, shape_equal_mat)
             # noinspection PyTypeChecker
             if ivy.reduce_min(ivy.cast(equal_mat, 'int32')) == 1:
                 if mode == 'diff_only':
@@ -392,8 +399,9 @@ class Container(dict):
             all_keys_present = sum(keys_present) == num_containers
             if all_keys_present:
                 res = ivy.Container.diff(*[cont[key] for cont in containers],
-                                          mode=mode, diff_keys=diff_keys, detect_key_diffs=detect_key_diffs,
-                                          detect_value_diffs=detect_value_diffs, config=config)
+                                         mode=mode, diff_keys=diff_keys, detect_key_diffs=detect_key_diffs,
+                                         detect_value_diffs=detect_value_diffs, detect_shape_diffs=detect_shape_diffs,
+                                         config=config)
                 if not isinstance(res, dict) or res:
                     return_dict[key] = res
                 continue
