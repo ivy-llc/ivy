@@ -702,7 +702,7 @@ of duplicates.</p>
 
 <dl class="py method">
 <dt id="ivy.core.container.Container.diff">
-<em class="property">static </em><code class="sig-name descname">diff</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">containers</span></em>, <em class="sig-param"><span class="n">mode</span><span class="o">=</span><span class="default_value">'all'</span></em>, <em class="sig-param"><span class="n">diff_keys</span><span class="o">=</span><span class="default_value">'diff'</span></em>, <em class="sig-param"><span class="n">detect_key_diffs</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">detect_value_diffs</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">config</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/container.html#Container.diff"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.diff" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="sig-name descname">diff</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">containers</span></em>, <em class="sig-param"><span class="n">mode</span><span class="o">=</span><span class="default_value">'all'</span></em>, <em class="sig-param"><span class="n">diff_keys</span><span class="o">=</span><span class="default_value">'diff'</span></em>, <em class="sig-param"><span class="n">detect_key_diffs</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">config</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/container.html#Container.diff"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.diff" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compare keys and values in a sequence of containers, returning the single shared values where they are the same,
 and new nested sub-dicts with all values where they are different.</p>
 <dl class="field-list simple">
@@ -715,7 +715,6 @@ only those that are consist across the containers, or only the differences. Defa
 <li><p><strong>detect_key_diffs</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to treat different keys as detected differences.
 If not, the keys among the input containers are simply combined without flagging
 differences. Default is True.</p></li>
-<li><p><strong>detect_value_diffs</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to treat different values as detected differences. Default is True.</p></li>
 <li><p><strong>config</strong> (<em>dict</em><em>, </em><em>optional</em>) – The configuration for the containers. Default is the same as container0.</p></li>
 </ul>
 </dd>
