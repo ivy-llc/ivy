@@ -514,6 +514,8 @@ class Module(abc.ABC):
             atols = [None] * len(expected_rets)
             rtols = [None] * len(expected_rets)
         for ret, expected_ret, atol, rtol in zip(rets, expected_rets, atols, rtols):
+            if expected_ret is None:
+                continue
             kwargs = {}
             if atol:
                 kwargs['atol'] = atol
