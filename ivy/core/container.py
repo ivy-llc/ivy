@@ -2330,6 +2330,15 @@ class Container(dict):
         return True
 
     def find_sub_container(self, sub_cont_to_find, partial=False):
+        """
+        Find the sub-container in the current container if it exsits.
+
+        :param sub_cont_to_find: The sub-container to find.
+        :type sub_cont_to_find: ivy.Container
+        :param partial: Whether to also check for partially complete sub-containers. Default is False.
+        :type partial: bool, optional
+        :return: str
+        """
 
         key_chain_found = False
 
@@ -2400,6 +2409,26 @@ class Container(dict):
         :return: Bool
         """
         return True if isinstance(self.find_sub_structure(sub_cont, check_shapes, partial), str) else False
+
+    def assert_contains_sub_structure(self, sub_cont, check_shapes=True, partial=False):
+        """
+        Asserts that the current container contains the sub-container structure, otherwise exception raised with the
+        diff printed to screen.
+
+        :param sub_cont: The sub-container to check.
+        :type sub_cont: ivy.Container
+        :param check_shapes: Whether to check array shapes in the sub-structure. Default is True.
+        :type check_shapes: bool, optional
+        :param partial: Whether to also check for partially complete sub-containers. Default is False.
+        :type partial: bool, optional
+        """
+        try:
+            assert self.contains_sub_structure(sub_cont, check_shapes, partial)
+        except AssertionError:
+            key_chain = self.find_sub_structure(sub_cont, check_shapes=False, partial=True)
+            # noinspection PyTypeChecker
+            raise AssertionError('Containers did not have identical structure:\n\n{}'.format(
+                Container.structural_diff(self[key_chain], sub_cont)))
 
     def has_nans(self, include_infs=True, leafwise=False):
         """
