@@ -1999,6 +1999,27 @@ Default is True.</p></li>
 <dd></dd></dl>
 
 <dl class="py method">
+<dt id="ivy.core.container.Container.structural_diff">
+<em class="property">static </em><code class="sig-name descname">structural_diff</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">containers</span></em>, <em class="sig-param"><span class="n">mode</span><span class="o">=</span><span class="default_value">'all'</span></em>, <em class="sig-param"><span class="n">diff_keys</span><span class="o">=</span><span class="default_value">'diff'</span></em>, <em class="sig-param"><span class="n">config</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/container.html#Container.structural_diff"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.structural_diff" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compare keys and shapes in a sequence of containers, returning the single shared values where they are the same,
+and new nested sub-dicts with all values where they are different.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>containers</strong> (<em>sequence of Container objects</em>) – containers to compare</p></li>
+<li><p><strong>mode</strong> (<em>str</em><em>, </em><em>optional</em>) – The mode of the diff operation, returning either all keys and values,
+only those that are consist across the containers, or only the differences. Default is all.</p></li>
+<li><p><strong>diff_keys</strong> (<em>str</em><em> or </em><em>list of strs</em><em>, </em><em>optional</em>) – The key/keys to add to the returned container when differences are found. Default is “diff”.</p></li>
+<li><p><strong>config</strong> (<em>dict</em><em>, </em><em>optional</em>) – The configuration for the containers. Default is the same as container0.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Compared containers</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt id="ivy.core.container.Container.swapaxes">
 <code class="sig-name descname">swapaxes</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">axis0</span></em>, <em class="sig-param"><span class="n">axis1</span></em>, <em class="sig-param"><span class="n">key_chains</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">to_apply</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">prune_unapplied</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">map_sequences</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/container.html#Container.swapaxes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.swapaxes" title="Permalink to this definition">¶</a></dt>
 <dd><p>Interchange two axes for each array in the container.</p>

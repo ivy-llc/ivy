@@ -626,6 +626,25 @@
                 <span class="n">return_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">diff_dict</span>
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">return_dict</span><span class="p">,</span> <span class="o">**</span><span class="n">config</span><span class="p">)</span></div>
 
+<div class="viewcode-block" id="Container.structural_diff"><a class="viewcode-back" href="../../../core/container/Container.html#ivy.core.container.Container.structural_diff">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">structural_diff</span><span class="p">(</span><span class="o">*</span><span class="n">containers</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;all&#39;</span><span class="p">,</span> <span class="n">diff_keys</span><span class="o">=</span><span class="s1">&#39;diff&#39;</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Compare keys and shapes in a sequence of containers, returning the single shared values where they are the same,</span>
+<span class="sd">        and new nested sub-dicts with all values where they are different.</span>
+
+<span class="sd">        :param containers: containers to compare</span>
+<span class="sd">        :type containers: sequence of Container objects</span>
+<span class="sd">        :param mode: The mode of the diff operation, returning either all keys and values,</span>
+<span class="sd">                     only those that are consist across the containers, or only the differences. Default is all.</span>
+<span class="sd">        :type mode: str, optional</span>
+<span class="sd">        :param diff_keys: The key/keys to add to the returned container when differences are found. Default is &quot;diff&quot;.</span>
+<span class="sd">        :type diff_keys: str or list of strs, optional</span>
+<span class="sd">        :param config: The configuration for the containers. Default is the same as container0.</span>
+<span class="sd">        :type config: dict, optional</span>
+<span class="sd">        :return: Compared containers</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">Container</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="o">*</span><span class="n">containers</span><span class="p">,</span> <span class="n">mode</span><span class="p">,</span> <span class="n">diff_keys</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="n">config</span><span class="p">)</span></div>
+
 <div class="viewcode-block" id="Container.multi_map"><a class="viewcode-back" href="../../../core/container/Container.html#ivy.core.container.Container.multi_map">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">multi_map</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">containers</span><span class="p">,</span> <span class="n">key_chains</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">to_apply</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">prune_unapplied</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">key_chain</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
