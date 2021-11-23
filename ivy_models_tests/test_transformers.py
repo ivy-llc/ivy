@@ -97,17 +97,17 @@ def test_perceiver_io_img_classification(dev_str, f, call, batch_shape, img_dims
     # value test
     if load_weights:
 
-        true_logits = np.load('logits.npy')[0]
+        true_logits = np.array([2.3227594, 3.2260594, 4.682901, 9.067165])
         calc_logits = ivy.to_numpy(output[0, 0])
 
         def np_softmax(x):
             return np.exp(x) / np.sum(np.exp(x))
 
-        true_indices = np.argsort(true_logits)[-4:]
+        true_indices = np.array([676, 212, 246, 251])
         calc_indices = np.argsort(calc_logits)[-4:]
         assert np.array_equal(true_indices, calc_indices)
 
-        true_probs = np.take(np_softmax(true_logits), true_indices)
+        true_probs = np_softmax(true_logits)
         calc_probs = np.take(np_softmax(calc_logits), calc_indices)
         assert np.allclose(true_probs, calc_probs, rtol=0.5)
 
