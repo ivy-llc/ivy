@@ -71,27 +71,6 @@ def test_perceiver_io_img_classification(dev_str, f, call, batch_shape, img_dims
         v = ivy.Container.from_disk_as_pickled(weight_fpath).from_numpy()
         # assert ivy.Container.identical_structure([model.v, v])
 
-        v = v.restructure(
-            {'perceiver_encoder/~/self_attention/layer_norm/scale': 'layers/v0/self_atts/v0/v0/norm/scale',
-             'perceiver_encoder/~/self_attention/layer_norm/offset': 'layers/v0/self_atts/v0/v0/norm/offset',
-
-             'perceiver_encoder/~/self_attention/attention/linear/w':
-                 {'key_chain': 'layers/v0/self_atts/v0/v0/fn/to_q/w', 'pattern': 'a b -> b a'},
-             'perceiver_encoder/~/self_attention/attention/linear/b': 'layers/v0/self_atts/v0/v0/fn/to_q/b',
-
-             'perceiver_encoder/~/self_attention/attention/linear_1/w':
-                 {'key_chain': 'layers/v0/self_atts/v0/v0/fn/to_kv/k/w', 'pattern': 'a b -> b a'},
-             'perceiver_encoder/~/self_attention/attention/linear_1/b': 'layers/v0/self_atts/v0/v0/fn/to_kv/k/b',
-
-             'perceiver_encoder/~/self_attention/attention/linear_2/w':
-                 {'key_chain': 'layers/v0/self_atts/v0/v0/fn/to_kv/v/w', 'pattern': 'a b -> b a'},
-             'perceiver_encoder/~/self_attention/attention/linear_2/b': 'layers/v0/self_atts/v0/v0/fn/to_kv/v/b',
-
-             'perceiver_encoder/~/self_attention/attention/linear_3/w':
-                 {'key_chain': 'layers/v0/self_atts/v0/v0/fn/to_out/submodules/v0/w', 'pattern': 'a b -> b a'},
-             'perceiver_encoder/~/self_attention/attention/linear_3/b':
-                 'layers/v0/self_atts/v0/v0/fn/to_out/submodules/v0/b'})
-
         v = v.at_key_chains(['layers', 'latents'])
 
         model = PerceiverIO(PerceiverIOSpec(input_dim=input_dim,
