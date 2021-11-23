@@ -362,7 +362,7 @@ class Module(abc.ABC):
         if ivy.exists(self.top_v) and ivy.exists(self.v):
             kc = self.top_v(depth).find_sub_container(self.v)
             if kc:
-                ret = self.v.restructure_key_chains({'': kc})
+                ret = self.v.restructure_key_chains({'': kc}, keep_orig=False)
             else:
                 ret = self.v
             if flatten_key_chains:
@@ -669,7 +669,7 @@ class Module(abc.ABC):
         print('\n'.join([this_repr, sub_mod_repr]))
 
     def __repr__(self):
-        return termcolor.colored(object.__repr__(self), 'green')
+        return object.__repr__(self)
 
     # Properties #
     # -----------#
