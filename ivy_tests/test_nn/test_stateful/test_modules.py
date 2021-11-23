@@ -739,16 +739,16 @@ def test_module_track_submod_call_order(bs_ic_oc, dev_str, call):
     x = ivy.cast(ivy.linspace(ivy.zeros(batch_shape), ivy.ones(batch_shape), input_channels), 'float32')
     module = WithNestedModules(input_channels, output_channels, dev_str=dev_str)
 
-    root_key_0 = ivy.Container.flatten_key_chain(module.__repr__(False), '_') + '_0'
+    root_key_0 = ivy.Container.flatten_key_chain(module.__repr__(), '_') + '_0'
 
-    dl0_key_0 = ivy.Container.flatten_key_chain(module._dl0.__repr__(False), '_') + '_0'
-    dl1_key_0 = ivy.Container.flatten_key_chain(module._dl1.__repr__(False), '_') + '_0'
-    dl1_key_1 = ivy.Container.flatten_key_chain(module._dl1.__repr__(False), '_') + '_1'
+    dl0_key_0 = ivy.Container.flatten_key_chain(module._dl0.__repr__(), '_') + '_0'
+    dl1_key_0 = ivy.Container.flatten_key_chain(module._dl1.__repr__(), '_') + '_0'
+    dl1_key_1 = ivy.Container.flatten_key_chain(module._dl1.__repr__(), '_') + '_1'
 
-    dl0_l0_key_0 = ivy.Container.flatten_key_chain(module._dl0._l0.__repr__(False), '_') + '_0'
-    dl0_l1_key_0 = ivy.Container.flatten_key_chain(module._dl0._l1.__repr__(False), '_') + '_0'
-    dl1_l0_key_0 = ivy.Container.flatten_key_chain(module._dl1._l0.__repr__(False), '_') + '_0'
-    dl1_l1_key_0 = ivy.Container.flatten_key_chain(module._dl1._l1.__repr__(False), '_') + '_0'
+    dl0_l0_key_0 = ivy.Container.flatten_key_chain(module._dl0._l0.__repr__(), '_') + '_0'
+    dl0_l1_key_0 = ivy.Container.flatten_key_chain(module._dl0._l1.__repr__(), '_') + '_0'
+    dl1_l0_key_0 = ivy.Container.flatten_key_chain(module._dl1._l0.__repr__(), '_') + '_0'
+    dl1_l1_key_0 = ivy.Container.flatten_key_chain(module._dl1._l1.__repr__(), '_') + '_0'
 
     # depth 1
     ret = module(x, track_submod_call_order=True, submod_depth=1)
