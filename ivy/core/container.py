@@ -322,7 +322,7 @@ class Container(dict):
         return ivy.Container(return_dict, **config)
 
     @staticmethod
-    def diff(*containers, mode='all', diff_keys='diff', detect_key_diffs=True, config=None):
+    def diff(*containers, mode='all', diff_keys='diff', detect_key_diffs=True, detect_value_diffs=True, config=None):
         """
         Compare keys and values in a sequence of containers, returning the single shared values where they are the same,
         and new nested sub-dicts with all values where they are different.
@@ -338,6 +338,8 @@ class Container(dict):
                                  If not, the keys among the input containers are simply combined without flagging
                                  differences. Default is True.
         :type detect_key_diffs: bool, optional
+        :param detect_value_diffs: Whether to treat different values as detected differences. Default is True.
+        :type detect_value_diffs: bool, optional
         :param config: The configuration for the containers. Default is the same as container0.
         :type config: dict, optional
         :return: Compared containers
@@ -352,6 +354,8 @@ class Container(dict):
         if not ivy.exists(config):
             config = container0.config if isinstance(container0, Container) else {}
         if not isinstance(container0, dict):
+            if not detect_value_diffs:
+                return container0
             equal_mat = ivy.equal(*containers, equality_matrix=True)
             # noinspection PyTypeChecker
             if ivy.reduce_min(ivy.cast(equal_mat, 'int32')) == 1:
@@ -389,7 +393,7 @@ class Container(dict):
             if all_keys_present:
                 res = ivy.Container.diff(*[cont[key] for cont in containers],
                                           mode=mode, diff_keys=diff_keys, detect_key_diffs=detect_key_diffs,
-                                          config=config)
+                                          detect_value_diffs=detect_value_diffs, config=config)
                 if not isinstance(res, dict) or res:
                     return_dict[key] = res
                 continue
