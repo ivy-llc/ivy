@@ -85,7 +85,12 @@ def test_perceiver_io_img_classification(dev_str, f, call, batch_shape, img_dims
 
              'perceiver_encoder/~/self_attention/attention/linear_2/w':
                  {'key_chain': 'layers/v0/self_atts/v0/v0/fn/to_kv/v/w', 'pattern': 'a b -> b a'},
-             'perceiver_encoder/~/self_attention/attention/linear_2/b': 'layers/v0/self_atts/v0/v0/fn/to_kv/v/b'})
+             'perceiver_encoder/~/self_attention/attention/linear_2/b': 'layers/v0/self_atts/v0/v0/fn/to_kv/v/b',
+
+             'perceiver_encoder/~/self_attention/attention/linear_3/w':
+                 {'key_chain': 'layers/v0/self_atts/v0/v0/fn/to_out/submodules/v0/w', 'pattern': 'a b -> b a'},
+             'perceiver_encoder/~/self_attention/attention/linear_3/b':
+                 'layers/v0/self_atts/v0/v0/fn/to_out/submodules/v0/b'})
 
         v = v.at_key_chains(['layers', 'latents'])
 
@@ -101,11 +106,7 @@ def test_perceiver_io_img_classification(dev_str, f, call, batch_shape, img_dims
 
         # expected submodule returns
         expected_submod_rets = ivy.Container()
-        for dct in [{'val': 'PreNorm_1', 'atol': 1e-3},
-                    {'val': 'LayerNorm_3', 'atol': 1e-3},
-                    {'val': 'Linear_6', 'atol': 1e-3},
-                    {'val': 'Linear_7', 'atol': 1e-3},
-                    {'val': 'Linear_8', 'atol': 1e-3}]:
+        for dct in [{'val': 'MultiHeadAttention_1', 'atol': 1e-3}]:
             key = dct['val']
             dct['val'] = np.load(os.path.join(this_dir, key + '.npy'))
             expected_submod_rets[key] = dct
