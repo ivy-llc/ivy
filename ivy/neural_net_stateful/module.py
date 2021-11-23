@@ -621,6 +621,7 @@ class Module(abc.ABC):
                     created_n_found.assert_contains_sub_structure(v_from_constructor, partial=True)
                 self.v = created_n_found.set_at_key_chains(v_from_constructor)
             else:
+                created_n_found, _ = self._remove_duplicate_variables(created_n_found, created)
                 ivy.Container.assert_identical_structure([created_n_found, v_from_constructor])
                 self.v = v_from_constructor
         else:
