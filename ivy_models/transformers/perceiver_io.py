@@ -21,7 +21,7 @@ class PerceiverIOSpec(ivy.Container):
 
                  # input-output agnostic
                  queries_dim=1024,
-                 network_depth=1,
+                 network_depth=8,
                  num_latents=512,
                  latent_dim=1024,
                  num_cross_att_heads=1,
@@ -84,6 +84,11 @@ class PerceiverIO(ivy.Module):
         self._spec = spec
         ivy.Module.__init__(self, v=v, **kwargs)
 
+    def _create_layer(self):
+        lattent_attns =\
+            [[self._get_latent_attn(), self._get_fc()] for _ in range(self._spec.num_self_att_per_cross_attn)]
+        return {'cross_att': self._get_cross_attn(), 'cross_fc': self._get_fc(), 'self_atts': lattent_attns}
+
     # noinspection PyUnusedLocal
     def _build(self, *args, **kwargs):
         self._fourier_encode_input = self._spec.fourier_encode_input
@@ -95,39 +100,24 @@ class PerceiverIO(ivy.Module):
         self._queries = ivy.variable(ivy.random_uniform(shape=self._spec.query_shape + [self._spec.queries_dim]))\
             if self._spec.learn_query else None
 
-        get_cross_attn = lambda: PreNorm(
+        self._get_cross_attn = lambda: PreNorm(
             self._spec.latent_dim, ivy.MultiHeadAttention(
                 self._spec.latent_dim, self._spec.num_cross_att_heads, self._spec.cross_head_dim,
                 self._spec.attn_dropout, input_dim, dev_str=self._spec.device), context_dim=input_dim, epsilon=1e-5,
             dev_str=self._spec.device)
-        get_latent_attn = lambda: PreNorm(
+        self._get_latent_attn = lambda: PreNorm(
             self._spec.latent_dim, ivy.MultiHeadAttention(
                 self._spec.latent_dim, self._spec.num_self_att_heads, self._spec.latent_head_dim,
                 self._spec.attn_dropout, dev_str=self._spec.device), epsilon=1e-5, dev_str=self._spec.device)
-        get_fc = lambda: PreNorm(
+        self._get_fc = lambda: PreNorm(
             self._spec.latent_dim, FeedForward(self._spec.latent_dim, dropout=self._spec.fc_dropout,
                                                dev_str=self._spec.device), epsilon=1e-5, dev_str=self._spec.device)
 
-        get_cross_attn_cached, get_latent_attn_cached, get_fc_cached =\
-            map(ivy.cache_fn, (get_cross_attn, get_latent_attn, get_fc))
-
         self._layers = list()
+        if self._spec.weight_tie_layers:
+            self._create_layer = ivy.cache_fn(self._create_layer)
         for i in range(self._spec.network_depth):
-            should_cache = i > 0 and self._spec.weight_tie_layers
-
-            self_attns = list()
-
-            for _ in range(self._spec.num_self_att_per_cross_attn):
-                self_attns.append([
-                    get_latent_attn_cached() if should_cache else get_latent_attn(),
-                    get_fc_cached() if should_cache else get_fc(),
-                ])
-
-            self._layers.append({
-                'cross_att': get_cross_attn_cached() if should_cache else get_cross_attn(),
-                'cross_fc': get_fc_cached() if should_cache else get_fc(),
-                'self_atts': self_attns
-            })
+            self._layers.append(self._create_layer())
 
         self._decoder_cross_attn = PreNorm(self._spec.queries_dim, ivy.MultiHeadAttention(
             self._spec.queries_dim, self._spec.num_cross_att_heads, self._spec.cross_head_dim,
