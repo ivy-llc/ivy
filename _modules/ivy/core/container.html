@@ -677,19 +677,21 @@
         <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">sets</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="o">*</span><span class="n">sets</span><span class="p">[</span><span class="mi">1</span><span class="p">:]))</span></div>
 
 <div class="viewcode-block" id="Container.identical"><a class="viewcode-back" href="../../../core/container/Container.html#ivy.core.container.Container.identical">[docs]</a>    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">identical</span><span class="p">(</span><span class="n">containers</span><span class="p">,</span> <span class="n">check_types</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">check_shapes</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">same_arrays</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">key_chains</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">to_apply</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-                  <span class="n">partial</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">key_chain</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">identical</span><span class="p">(</span><span class="n">containers</span><span class="p">,</span> <span class="n">check_types</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">check_shapes</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">same_arrays</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">arrays_equal</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">key_chains</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                  <span class="n">to_apply</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">partial</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">key_chain</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Returns a single boolean as to whether the input containers have identical key-chains and data types.</span>
 
 <span class="sd">        :param containers: containers to check.</span>
 <span class="sd">        :type containers: sequence of Container objects</span>
-<span class="sd">        :param check_types: Whether to also check whether the datatypes of the leaf nodes are the same. Default is True.</span>
+<span class="sd">        :param check_types: Whether to check if the datatypes of the leaf nodes are the same. Default is True.</span>
 <span class="sd">        :type check_types: bool, optional</span>
-<span class="sd">        :param check_shapes: Whether to also check whether the shapes of the leaf nodes are the same. Default is True.</span>
+<span class="sd">        :param check_shapes: Whether to check if the shapes of the leaf nodes are the same. Default is True.</span>
 <span class="sd">        :type check_shapes: bool, optional</span>
-<span class="sd">        :param same_arrays: Whether to also check whether the arrays are the exact same instances. Default is True.</span>
+<span class="sd">        :param same_arrays: Whether to check if the arrays are the exact same instances. Default is True.</span>
 <span class="sd">        :type same_arrays: bool, optional</span>
+<span class="sd">        :param arrays_equal: Whether to check if the arrays have equal values. Default is True.</span>
+<span class="sd">        :type arrays_equal: bool, optional</span>
 <span class="sd">        :param key_chains: The key-chains to apply or not apply the method to. Default is None.</span>
 <span class="sd">        :type key_chains: list or dict of strs, optional</span>
 <span class="sd">        :param to_apply: If True, the method will be applied to key_chains, otherwise key_chains will be skipped.</span>
@@ -729,13 +731,14 @@
                     <span class="n">ids</span> <span class="o">=</span> <span class="p">[</span><span class="nb">id</span><span class="p">(</span><span class="n">val</span><span class="p">)</span> <span class="k">for</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">values</span><span class="p">]</span>
                     <span class="k">if</span> <span class="ow">not</span> <span class="nb">min</span><span class="p">([</span><span class="n">id_n</span> <span class="o">==</span> <span class="n">id_0</span> <span class="k">for</span> <span class="n">id_n</span> <span class="ow">in</span> <span class="n">ids</span><span class="p">]):</span>
                         <span class="k">return</span> <span class="kc">False</span>
-                <span class="k">else</span><span class="p">:</span>
+                <span class="k">elif</span> <span class="n">arrays_equal</span><span class="p">:</span>
                     <span class="k">if</span> <span class="ow">not</span> <span class="n">ivy</span><span class="o">.</span><span class="n">arrays_equal</span><span class="p">(</span><span class="n">values</span><span class="p">):</span>
                         <span class="k">return</span> <span class="kc">False</span>
             <span class="n">this_key_chain</span> <span class="o">=</span> <span class="n">key</span> <span class="k">if</span> <span class="n">key_chain</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span> <span class="k">else</span> <span class="p">(</span><span class="n">key_chain</span> <span class="o">+</span> <span class="s1">&#39;/&#39;</span> <span class="o">+</span> <span class="n">key</span><span class="p">)</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value_0</span><span class="p">,</span> <span class="n">Container</span><span class="p">):</span>
                 <span class="n">ret</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="o">.</span><span class="n">identical</span><span class="p">(</span>
-                    <span class="n">values</span><span class="p">,</span> <span class="n">check_types</span><span class="p">,</span> <span class="n">check_shapes</span><span class="p">,</span> <span class="n">same_arrays</span><span class="p">,</span> <span class="n">key_chains</span><span class="p">,</span> <span class="n">to_apply</span><span class="p">,</span> <span class="n">partial</span><span class="p">,</span> <span class="n">this_key_chain</span><span class="p">)</span>
+                    <span class="n">values</span><span class="p">,</span> <span class="n">check_types</span><span class="p">,</span> <span class="n">check_shapes</span><span class="p">,</span> <span class="n">same_arrays</span><span class="p">,</span> <span class="n">arrays_equal</span><span class="p">,</span> <span class="n">key_chains</span><span class="p">,</span> <span class="n">to_apply</span><span class="p">,</span> <span class="n">partial</span><span class="p">,</span>
+                    <span class="n">this_key_chain</span><span class="p">)</span>
                 <span class="k">if</span> <span class="ow">not</span> <span class="n">ret</span><span class="p">:</span>
                     <span class="k">return</span> <span class="kc">False</span>
         <span class="k">return</span> <span class="kc">True</span></div>
@@ -763,7 +766,7 @@
 <span class="sd">        :type key_chain: str</span>
 <span class="sd">        :return: Boolean</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">Container</span><span class="o">.</span><span class="n">identical</span><span class="p">(</span><span class="n">containers</span><span class="p">,</span> <span class="n">check_types</span><span class="p">,</span> <span class="n">check_shapes</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="n">key_chains</span><span class="p">,</span> <span class="n">to_apply</span><span class="p">,</span> <span class="n">partial</span><span class="p">,</span>
+        <span class="k">return</span> <span class="n">Container</span><span class="o">.</span><span class="n">identical</span><span class="p">(</span><span class="n">containers</span><span class="p">,</span> <span class="n">check_types</span><span class="p">,</span> <span class="n">check_shapes</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="n">key_chains</span><span class="p">,</span> <span class="n">to_apply</span><span class="p">,</span> <span class="n">partial</span><span class="p">,</span>
                                    <span class="n">key_chain</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Container.identical_configs"><a class="viewcode-back" href="../../../core/container/Container.html#ivy.core.container.Container.identical_configs">[docs]</a>    <span class="nd">@staticmethod</span>
