@@ -33,7 +33,8 @@ class PerceiverIOSpec(ivy.Container):
                  query_shape=None,
                  attn_dropout=0.,
                  fc_dropout=0.,
-                 num_self_att_per_cross_attn=6,
+                 num_lat_att_per_layer=6,
+                 cross_attend_in_every_layer=False,
                  with_decoder=True,
                  with_final_head=True,
                  fourier_encode_input=True,
@@ -66,7 +67,8 @@ class PerceiverIOSpec(ivy.Container):
                          query_shape=query_shape,
                          attn_dropout=attn_dropout,
                          fc_dropout=fc_dropout,
-                         num_self_att_per_cross_attn=num_self_att_per_cross_attn,
+                         num_lat_att_per_layer=num_lat_att_per_layer,
+                         cross_attend_in_every_layer=cross_attend_in_every_layer,
                          with_decoder=with_decoder,
                          with_final_head=with_final_head,
                          fourier_encode_input=fourier_encode_input,
@@ -84,10 +86,11 @@ class PerceiverIO(ivy.Module):
         self._spec = spec
         ivy.Module.__init__(self, v=v, **kwargs)
 
-    def _create_layer(self):
-        lattent_attns =\
-            [[self._get_latent_attn(), self._get_fc()] for _ in range(self._spec.num_self_att_per_cross_attn)]
-        return {'cross_att': self._get_cross_attn(), 'cross_fc': self._get_fc(), 'self_atts': lattent_attns}
+    def _create_latent_layer(self):
+        return [[self._get_latent_attn(), self._get_fc()] for _ in range(self._spec.num_lat_att_per_layer)]
+
+    def _create_cross_layer(self):
+        return {'cross_att': self._get_cross_attn(), 'cross_fc': self._get_fc()}
 
     # noinspection PyUnusedLocal
     def _build(self, *args, **kwargs):
@@ -115,9 +118,13 @@ class PerceiverIO(ivy.Module):
 
         self._layers = list()
         if self._spec.weight_tie_layers:
-            self._create_layer = ivy.cache_fn(self._create_layer)
+            self._create_latent_layer = ivy.cache_fn(self._create_latent_layer)
+            self._create_cross_layer = ivy.cache_fn(self._create_cross_layer)
         for i in range(self._spec.network_depth):
-            self._layers.append(self._create_layer())
+            layer = {'self_atts': self._create_latent_layer()}
+            if i == 0 or self._spec.cross_attend_in_every_layer:
+                layer = {**layer, **self._create_cross_layer()}
+            self._layers.append(layer)
 
         self._decoder_cross_attn = PreNorm(self._spec.queries_dim, ivy.MultiHeadAttention(
             self._spec.queries_dim, self._spec.num_cross_att_heads, self._spec.cross_head_dim,
@@ -171,11 +178,12 @@ class PerceiverIO(ivy.Module):
 
         # layers
         for layer_dict in self._layers:
-            cross_attn, cross_fc, self_attns = layer_dict.values()
-            x = cross_attn(x, context=data, mask=mask) + x
-            x = cross_fc(x) + x
+            if 'cross_att' in layer_dict:
+                x = layer_dict['cross_att'](x, context=data, mask=mask) + x
+            if 'cross_fc' in layer_dict:
+                x = layer_dict['cross_fc'](x) + x
 
-            for self_attn, self_fc in self_attns:
+            for self_attn, self_fc in layer_dict['self_atts']:
                 x = self_attn(x) + x
                 x = self_fc(x) + x
 
