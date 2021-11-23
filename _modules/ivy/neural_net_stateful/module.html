@@ -696,11 +696,14 @@
         <span class="n">top_mod</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">top_mod</span><span class="p">()</span>
         <span class="n">esr</span> <span class="o">=</span> <span class="n">top_mod</span><span class="o">.</span><span class="n">expected_submod_rets</span>
         <span class="n">key</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_mod_key</span><span class="p">(</span><span class="n">top_mod</span><span class="p">)</span>
+        <span class="n">esr_key</span> <span class="o">=</span> <span class="n">key</span>
         <span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">esr</span><span class="p">:</span>
-            <span class="k">return</span>
+            <span class="n">esr_key</span> <span class="o">=</span> <span class="n">key</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">esr_key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">esr</span><span class="p">:</span>
+                <span class="k">return</span>
         <span class="n">sr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">top_mod</span><span class="p">()</span><span class="o">.</span><span class="n">submod_rets</span>
         <span class="n">rets</span> <span class="o">=</span> <span class="n">sr</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
-        <span class="n">esr_ret</span> <span class="o">=</span> <span class="n">esr</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+        <span class="n">esr_ret</span> <span class="o">=</span> <span class="n">esr</span><span class="p">[</span><span class="n">esr_key</span><span class="p">]</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">esr_ret</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
             <span class="n">expected_rets</span> <span class="o">=</span> <span class="n">esr_ret</span><span class="p">[</span><span class="s1">&#39;val&#39;</span><span class="p">]</span>
             <span class="n">atols</span> <span class="o">=</span> <span class="n">esr_ret</span><span class="p">[</span><span class="s1">&#39;atol&#39;</span><span class="p">]</span> <span class="k">if</span> <span class="s1">&#39;atol&#39;</span> <span class="ow">in</span> <span class="n">esr_ret</span> <span class="k">else</span> <span class="kc">None</span>
