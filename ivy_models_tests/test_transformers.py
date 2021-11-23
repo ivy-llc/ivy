@@ -44,10 +44,17 @@ def test_prenorm(dev_str, f, call):
     "load_weights", [True, False])
 def test_perceiver_io_img_classification(dev_str, f, call, batch_shape, img_dims, queries_dim, learn_query,
                                          load_weights):
+
+    if load_weights and 'gpu' not in dev_str:
+        # This test takes a very long time without gpu, the network depth is 48 in total
+        pytest.skip()
+
     # params
     input_dim = 3
     num_input_axes = 2
     output_dim = 10
+    network_depth = 8 if load_weights else 1
+    num_lat_att_per_layer = 6 if load_weights else 1
 
     # inputs
     this_dir = os.path.dirname(os.path.realpath(__file__))
@@ -58,10 +65,12 @@ def test_perceiver_io_img_classification(dev_str, f, call, batch_shape, img_dims
                                         num_input_axes=num_input_axes,
                                         output_dim=output_dim,
                                         queries_dim=queries_dim,
+                                        network_depth=network_depth,
                                         learn_query=learn_query,
                                         query_shape=[1],
                                         max_fourier_freq=img_dims[0],
                                         num_fourier_freq_bands=64,
+                                        num_lat_att_per_layer=num_lat_att_per_layer,
                                         device=dev_str))
 
     # maybe load weights
@@ -77,10 +86,12 @@ def test_perceiver_io_img_classification(dev_str, f, call, batch_shape, img_dims
                                             num_input_axes=num_input_axes,
                                             output_dim=output_dim,
                                             queries_dim=queries_dim,
+                                            network_depth=network_depth,
                                             learn_query=learn_query,
                                             query_shape=[1],
                                             max_fourier_freq=img_dims[0],
                                             num_fourier_freq_bands=64,
+                                            num_lat_att_per_layer=num_lat_att_per_layer,
                                             device=dev_str), v=v, with_partial_v=True)
 
         # expected submodule returns
@@ -125,9 +136,11 @@ def test_perceiver_io_flow_prediction(dev_str, f, call, batch_shape, img_dims, q
                                         num_input_axes=num_input_axes,
                                         output_dim=output_dim,
                                         queries_dim=queries_dim,
+                                        network_depth=1,
                                         learn_query=learn_query,
                                         query_shape=img_dims,
                                         max_fourier_freq=img_dims[0],
+                                        num_lat_att_per_layer=1,
                                         device=dev_str))
 
     # output
