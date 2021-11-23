@@ -41,13 +41,9 @@ def test_prenorm(dev_str, f, call):
 @pytest.mark.parametrize(
     "learn_query", [True])
 @pytest.mark.parametrize(
-    "load_weights", [True, False])
+    "load_weights", [True])
 def test_perceiver_io_img_classification(dev_str, f, call, batch_shape, img_dims, queries_dim, learn_query,
                                          load_weights):
-
-    if load_weights and 'gpu' not in dev_str:
-        # This test takes a very long time without gpu, the network depth is 48 in total
-        pytest.skip()
 
     # params
     input_dim = 3
