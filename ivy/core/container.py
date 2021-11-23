@@ -2367,6 +2367,24 @@ class Container(dict):
         """
         return True if isinstance(self.find_sub_container(sub_cont, partial), str) else False
 
+    def assert_contains_sub_container(self, sub_cont, partial=False):
+        """
+        Asserts that the current container contains the sub-container, otherwise exception raised with the
+        diff printed to screen.
+
+        :param sub_cont: The sub-container to check.
+        :type sub_cont: ivy.Container
+        :param partial: Whether to also check for partially complete sub-containers. Default is False.
+        :type partial: bool, optional
+        """
+        try:
+            assert self.contains_sub_container(sub_cont, partial)
+        except AssertionError:
+            key_chain = self.find_sub_structure(sub_cont, check_shapes=False, partial=True)
+            # noinspection PyTypeChecker
+            raise AssertionError('Containers did not have identical structure and values:\n\n{}'.format(
+                Container.diff(self[key_chain], sub_cont)))
+
     def find_sub_structure(self, sub_struc_to_find, check_shapes=True, partial=False):
         """
         Find the sub-container structure in the current container if it exsits.
