@@ -69,55 +69,7 @@ def test_perceiver_io_img_classification(dev_str, f, call, batch_shape, img_dims
         this_dir = os.path.dirname(os.path.realpath(__file__))
         weight_fpath = os.path.join(this_dir, '../ivy_models/transformers/pretrained_weights/perceiver_io.pickled')
         v = ivy.Container.from_disk_as_pickled(weight_fpath).from_numpy()
-
-        # try:
-        #     assert model.v.num_arrays() == v.num_arrays()
-        #     assert ivy.Container.identical_array_shapes([model.v, v])
-        # except AssertionError:
-        #     raise Exception(
-        #         'model.v.size_ordered_arrays(): {}\n\n'
-        #         'v.size_ordered_arrays(): {}\n\n'.format(
-        #             model.v.size_ordered_arrays(), v.size_ordered_arrays()))
-
-        # ToDo: incrementally update this restructuring, so that the loaded jax weights are converted
-        v = v.restructure(
-            {'perceiver_encoder/~/trainable_position_encoding/pos_embs': 'latents',
-
-             'perceiver_encoder/~/cross_attention/layer_norm/scale': 'layers/v0/cross_att/norm/scale',
-             'perceiver_encoder/~/cross_attention/layer_norm/offset': 'layers/v0/cross_att/norm/offset',
-
-             'perceiver_encoder/~/cross_attention/layer_norm_1/scale': 'layers/v0/cross_att/norm_context/scale',
-             'perceiver_encoder/~/cross_attention/layer_norm_1/offset': 'layers/v0/cross_att/norm_context/offset',
-
-             'perceiver_encoder/~/cross_attention/attention/linear/w':
-                 {'key_chain': 'layers/v0/cross_att/fn/to_q/w', 'pattern': 'a b -> b a'},
-             'perceiver_encoder/~/cross_attention/attention/linear/b': 'layers/v0/cross_att/fn/to_q/b',
-
-             'perceiver_encoder/~/cross_attention/attention/linear_1/w':
-                 {'key_chain': 'layers/v0/cross_att/fn/to_kv/k/w', 'pattern': 'a b -> b a'},
-             'perceiver_encoder/~/cross_attention/attention/linear_1/b': 'layers/v0/cross_att/fn/to_kv/k/b',
-
-             'perceiver_encoder/~/cross_attention/attention/linear_2/w':
-                 {'key_chain': 'layers/v0/cross_att/fn/to_kv/v/w', 'pattern': 'a b -> b a'},
-             'perceiver_encoder/~/cross_attention/attention/linear_2/b': 'layers/v0/cross_att/fn/to_kv/v/b',
-
-             'perceiver_encoder/~/cross_attention/attention/linear_3/w':
-                 {'key_chain': 'layers/v0/cross_att/fn/to_out/submodules/v0/w', 'pattern': 'a b -> b a'},
-             'perceiver_encoder/~/cross_attention/attention/linear_3/b':
-                 'layers/v0/cross_att/fn/to_out/submodules/v0/b',
-
-             'perceiver_encoder/~/cross_attention/layer_norm_2/scale': 'layers/v0/cross_fc/norm/scale',
-             'perceiver_encoder/~/cross_attention/layer_norm_2/offset': 'layers/v0/cross_fc/norm/offset',
-
-             'perceiver_encoder/~/cross_attention/mlp/linear/w':
-                 {'key_chain': 'layers/v0/cross_fc/fn/net/submodules/v0/w', 'pattern': 'a b -> b a'},
-             'perceiver_encoder/~/cross_attention/mlp/linear/b': 'layers/v0/cross_fc/fn/net/submodules/v0/b',
-
-             'perceiver_encoder/~/cross_attention/mlp/linear_1/w':
-                 {'key_chain': 'layers/v0/cross_fc/fn/net/submodules/v2/w', 'pattern': 'a b -> b a'},
-             'perceiver_encoder/~/cross_attention/mlp/linear_1/b': 'layers/v0/cross_fc/fn/net/submodules/v2/b'},
-            keep_orig=False)
-
+        v = v.at_key_chains(['layers', 'latents'])
         # assert ivy.Container.identical_structure([model.v, v])
 
         model = PerceiverIO(PerceiverIOSpec(input_dim=input_dim,
