@@ -27,7 +27,7 @@ class PerceiverIOSpec(ivy.Container):
                  num_cross_att_heads=1,
                  num_self_att_heads=8,
                  cross_head_dim=261,
-                 latent_head_dim=64,
+                 latent_head_dim=128,
                  weight_tie_layers=False,
                  learn_query=False,
                  query_shape=None,
@@ -105,8 +105,8 @@ class PerceiverIO(ivy.Module):
                                                dev_str=self._spec.device), epsilon=1e-5, dev_str=self._spec.device)
         get_latent_attn = lambda: PreNorm(
             self._spec.latent_dim, ivy.MultiHeadAttention(
-                self._spec.latent_dim, self._spec.num_self_att_heads, self._spec.latent_head_dim, self._spec.attn_dropout,
-                dev_str=self._spec.device), epsilon=1e-5, dev_str=self._spec.device)
+                self._spec.latent_dim, self._spec.num_self_att_heads, self._spec.latent_head_dim,
+                self._spec.attn_dropout, dev_str=self._spec.device), epsilon=1e-5, dev_str=self._spec.device)
         get_latent_fc = lambda: PreNorm(self._spec.latent_dim, FeedForward(
             self._spec.latent_dim, dropout=self._spec.fc_dropout, dev_str=self._spec.device), epsilon=1e-5,
                                         dev_str=self._spec.device)
