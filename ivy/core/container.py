@@ -526,6 +526,9 @@ class Container(dict):
                     ids = [id(val) for val in values]
                     if not min([id_n == id_0 for id_n in ids]):
                         return False
+                else:
+                    if not ivy.arrays_equal(values):
+                        return False
             this_key_chain = key if key_chain == '' else (key_chain + '/' + key)
             if isinstance(value_0, Container):
                 ret = ivy.Container.identical(

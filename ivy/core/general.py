@@ -96,7 +96,7 @@ def array_equal(x0: Union[ivy.Array, ivy.NativeArray], x1: Union[ivy.Array, ivy.
 def arrays_equal(xs: List[Union[ivy.Array, ivy.NativeArray]])\
         -> bool:
     """
-    Determines whether two input arrays are equal across all elements.
+    Determines whether input arrays are equal across all elements.
 
     :param xs: Sequence of arrays to compare for equality
     :type xs: sequence of arrays
