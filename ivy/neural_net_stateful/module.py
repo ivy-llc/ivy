@@ -615,11 +615,11 @@ class Module(abc.ABC):
         created_n_found = Container(dict(**self._find_variables(self), **created))
         if ivy.exists(v_from_constructor):
             if self._with_partial_v:
-                assert not v_from_constructor or \
-                       created_n_found.contains_sub_structure(v_from_constructor, partial=True)
+                if v_from_constructor:
+                    created_n_found.assert_contains_sub_structure(v_from_constructor, partial=True)
                 self.v = created_n_found.set_at_key_chains(v_from_constructor)
             else:
-                assert ivy.Container.identical_structure([created_n_found, v_from_constructor])
+                ivy.Container.assert_identical_structure([created_n_found, v_from_constructor])
                 self.v = v_from_constructor
         else:
             self.v = created_n_found
