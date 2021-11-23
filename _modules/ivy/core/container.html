@@ -525,7 +525,7 @@
         <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">(</span><span class="n">return_dict</span><span class="p">,</span> <span class="o">**</span><span class="n">config</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Container.diff"><a class="viewcode-back" href="../../../core/container/Container.html#ivy.core.container.Container.diff">[docs]</a>    <span class="nd">@staticmethod</span>
-    <span class="k">def</span> <span class="nf">diff</span><span class="p">(</span><span class="o">*</span><span class="n">containers</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;all&#39;</span><span class="p">,</span> <span class="n">diff_keys</span><span class="o">=</span><span class="s1">&#39;diff&#39;</span><span class="p">,</span> <span class="n">detect_key_diffs</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">diff</span><span class="p">(</span><span class="o">*</span><span class="n">containers</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;all&#39;</span><span class="p">,</span> <span class="n">diff_keys</span><span class="o">=</span><span class="s1">&#39;diff&#39;</span><span class="p">,</span> <span class="n">detect_key_diffs</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">detect_value_diffs</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Compare keys and values in a sequence of containers, returning the single shared values where they are the same,</span>
 <span class="sd">        and new nested sub-dicts with all values where they are different.</span>
@@ -541,6 +541,8 @@
 <span class="sd">                                 If not, the keys among the input containers are simply combined without flagging</span>
 <span class="sd">                                 differences. Default is True.</span>
 <span class="sd">        :type detect_key_diffs: bool, optional</span>
+<span class="sd">        :param detect_value_diffs: Whether to treat different values as detected differences. Default is True.</span>
+<span class="sd">        :type detect_value_diffs: bool, optional</span>
 <span class="sd">        :param config: The configuration for the containers. Default is the same as container0.</span>
 <span class="sd">        :type config: dict, optional</span>
 <span class="sd">        :return: Compared containers</span>
@@ -555,6 +557,8 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">config</span><span class="p">):</span>
             <span class="n">config</span> <span class="o">=</span> <span class="n">container0</span><span class="o">.</span><span class="n">config</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">container0</span><span class="p">,</span> <span class="n">Container</span><span class="p">)</span> <span class="k">else</span> <span class="p">{}</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">container0</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">detect_value_diffs</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">container0</span>
             <span class="n">equal_mat</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">equal</span><span class="p">(</span><span class="o">*</span><span class="n">containers</span><span class="p">,</span> <span class="n">equality_matrix</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
             <span class="c1"># noinspection PyTypeChecker</span>
             <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">reduce_min</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">cast</span><span class="p">(</span><span class="n">equal_mat</span><span class="p">,</span> <span class="s1">&#39;int32&#39;</span><span class="p">))</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
@@ -592,7 +596,7 @@
             <span class="k">if</span> <span class="n">all_keys_present</span><span class="p">:</span>
                 <span class="n">res</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="o">*</span><span class="p">[</span><span class="n">cont</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="k">for</span> <span class="n">cont</span> <span class="ow">in</span> <span class="n">containers</span><span class="p">],</span>
                                           <span class="n">mode</span><span class="o">=</span><span class="n">mode</span><span class="p">,</span> <span class="n">diff_keys</span><span class="o">=</span><span class="n">diff_keys</span><span class="p">,</span> <span class="n">detect_key_diffs</span><span class="o">=</span><span class="n">detect_key_diffs</span><span class="p">,</span>
-                                          <span class="n">config</span><span class="o">=</span><span class="n">config</span><span class="p">)</span>
+                                          <span class="n">detect_value_diffs</span><span class="o">=</span><span class="n">detect_value_diffs</span><span class="p">,</span> <span class="n">config</span><span class="o">=</span><span class="n">config</span><span class="p">)</span>
                 <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">res</span><span class="p">,</span> <span class="nb">dict</span><span class="p">)</span> <span class="ow">or</span> <span class="n">res</span><span class="p">:</span>
                     <span class="n">return_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">res</span>
                 <span class="k">continue</span>
