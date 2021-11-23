@@ -599,6 +599,33 @@ class Container(dict):
                                    key_chain)
 
     @staticmethod
+    def assert_identical_structure(containers, check_types=True, check_shapes=True, key_chains=None, to_apply=True,
+                                   partial=False):
+        """
+        Assert whether the input containers have identical structure. Otherwise, the diff is shown in an exception.
+
+        :param containers: containers to check.
+        :type containers: sequence of Container objects
+        :param check_types: Whether to also check whether the datatypes of the leaf nodes are the same. Default is True.
+        :type check_types: bool, optional
+        :param check_shapes: Whether to also check whether the shapes of the leaf nodes are the same. Default is True.
+        :type check_shapes: bool, optional
+        :param key_chains: The key-chains to apply or not apply the method to. Default is None.
+        :type key_chains: list or dict of strs, optional
+        :param to_apply: If True, the method will be applied to key_chains, otherwise key_chains will be skipped.
+                         Default is True.
+        :type to_apply: bool, optional
+        :param partial: Whether to also check for partially complete sub-containers. Default is False.
+        :type partial: bool, optional
+        :return: Boolean
+        """
+        try:
+            assert Container.identical_structure(containers, check_types, check_shapes, key_chains, to_apply, partial)
+        except AssertionError:
+            raise AssertionError('Containers did not have identical structure:\n\n{}'.format(
+                Container.structural_diff(*containers)))
+
+    @staticmethod
     def identical_configs(containers):
         """
         Returns a single boolean as to whether the input containers all have identical configs.
