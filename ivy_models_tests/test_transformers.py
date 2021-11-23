@@ -41,7 +41,7 @@ def test_prenorm(dev_str, f, call):
 @pytest.mark.parametrize(
     "learn_query", [True])
 @pytest.mark.parametrize(
-    "load_weights", [True])
+    "load_weights", [True, False])
 def test_perceiver_io_img_classification(dev_str, f, call, batch_shape, img_dims, queries_dim, learn_query,
                                          load_weights):
 
@@ -92,7 +92,7 @@ def test_perceiver_io_img_classification(dev_str, f, call, batch_shape, img_dims
 
         # expected submodule returns
         expected_submod_rets = ivy.Container()
-        for dct in [{'val': 'PreNorm_13', 'atol': 1e-3}]:
+        for dct in [{'val': 'PreNorm_97', 'atol': 1e-3}]:
             key = dct['val']
             dct['val'] = np.load(os.path.join(this_dir, key + '.npy'))
             expected_submod_rets[key] = dct

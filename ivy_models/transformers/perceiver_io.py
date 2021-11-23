@@ -28,7 +28,7 @@ class PerceiverIOSpec(ivy.Container):
                  num_self_att_heads=8,
                  cross_head_dim=261,
                  latent_head_dim=128,
-                 weight_tie_layers=False,
+                 weight_tie_layers=True,
                  learn_query=False,
                  query_shape=None,
                  attn_dropout=0.,
