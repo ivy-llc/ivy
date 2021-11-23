@@ -619,11 +619,8 @@ class Container(dict):
         :type partial: bool, optional
         :return: Boolean
         """
-        try:
-            assert Container.identical_structure(containers, check_types, check_shapes, key_chains, to_apply, partial)
-        except AssertionError:
-            raise AssertionError('Containers did not have identical structure:\n\n{}'.format(
-                Container.structural_diff(*containers)))
+        assert Container.identical_structure(containers, check_types, check_shapes, key_chains, to_apply, partial),\
+            'Containers did not have identical structure:\n\n{}'.format(Container.structural_diff(*containers))
 
     @staticmethod
     def identical_configs(containers):
@@ -2361,7 +2358,18 @@ class Container(dict):
         """
         return True if isinstance(self.find_sub_container(sub_cont, partial), str) else False
 
-    def find_sub_structure(self, sub_struc_to_find, partial=False):
+    def find_sub_structure(self, sub_struc_to_find, check_shapes=True, partial=False):
+        """
+        Find the sub-container structure in the current container if it exsits.
+
+        :param sub_struc_to_find: The sub-container to find.
+        :type sub_struc_to_find: ivy.Container
+        :param check_shapes: Whether to check array shapes in the sub-structure. Default is True.
+        :type check_shapes: bool, optional
+        :param partial: Whether to also check for partially complete sub-containers. Default is False.
+        :type partial: bool, optional
+        :return: str
+        """
 
         key_chain_found = False
 
@@ -2369,7 +2377,8 @@ class Container(dict):
             sub_struc_key_chains = sub_struc_to_find.all_key_chains()
             kcs_in_sub_cont = [kc in sub_cont for kc in sub_struc_key_chains]
             if kcs_in_sub_cont and min(kcs_in_sub_cont) and \
-                    ivy.Container.identical_structure([sub_cont, sub_struc_to_find], partial=partial):
+                    ivy.Container.identical_structure(
+                        [sub_cont, sub_struc_to_find], check_shapes=check_shapes, partial=partial):
                 nonlocal key_chain_found
                 key_chain_found = kc
             return sub_cont
@@ -2378,17 +2387,19 @@ class Container(dict):
 
         return key_chain_found
 
-    def contains_sub_structure(self, sub_cont, partial=False):
+    def contains_sub_structure(self, sub_cont, check_shapes=True, partial=False):
         """
         Determine whether the current container contains the sub-container structure.
 
         :param sub_cont: The sub-container to check.
         :type sub_cont: ivy.Container
+        :param check_shapes: Whether to check array shapes in the sub-structure. Default is True.
+        :type check_shapes: bool, optional
         :param partial: Whether to also check for partially complete sub-containers. Default is False.
         :type partial: bool, optional
         :return: Bool
         """
-        return True if isinstance(self.find_sub_structure(sub_cont, partial), str) else False
+        return True if isinstance(self.find_sub_structure(sub_cont, check_shapes, partial), str) else False
 
     def has_nans(self, include_infs=True, leafwise=False):
         """
