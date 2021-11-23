@@ -71,6 +71,19 @@ def test_perceiver_io_img_classification(dev_str, f, call, batch_shape, img_dims
         v = ivy.Container.from_disk_as_pickled(weight_fpath).from_numpy()
         # assert ivy.Container.identical_structure([model.v, v])
 
+        v = v.restructure({
+            'perceiver_encoder/~/self_attention/layer_norm_1/scale': 'layers/v0/self_atts/v0/v1/norm/scale',
+            'perceiver_encoder/~/self_attention/layer_norm_1/offset': 'layers/v0/self_atts/v0/v1/norm/offset',
+
+            'perceiver_encoder/~/self_attention/mlp/linear/w':
+                {'key_chain': 'layers/v0/self_atts/v0/v1/fn/net/submodules/v0/w', 'pattern': 'a b -> b a'},
+            'perceiver_encoder/~/self_attention/mlp/linear/b': 'layers/v0/self_atts/v0/v1/fn/net/submodules/v0/b',
+
+            'perceiver_encoder/~/self_attention/mlp/linear_1/w':
+                {'key_chain': 'layers/v0/self_atts/v0/v1/fn/net/submodules/v2/w', 'pattern': 'a b -> b a'},
+            'perceiver_encoder/~/self_attention/mlp/linear_1/b': 'layers/v0/self_atts/v0/v1/fn/net/submodules/v2/b',
+        })
+
         v = v.at_key_chains(['layers', 'latents'])
 
         model = PerceiverIO(PerceiverIOSpec(input_dim=input_dim,
@@ -85,7 +98,8 @@ def test_perceiver_io_img_classification(dev_str, f, call, batch_shape, img_dims
 
         # expected submodule returns
         expected_submod_rets = ivy.Container()
-        for dct in [{'val': 'MultiHeadAttention_1', 'atol': 1e-3}]:
+        for dct in [{'val': 'PreNorm_2', 'atol': 1e-3},
+                    {'val': 'LayerNorm_4', 'atol': 1e-3}]:
             key = dct['val']
             dct['val'] = np.load(os.path.join(this_dir, key + '.npy'))
             expected_submod_rets[key] = dct
