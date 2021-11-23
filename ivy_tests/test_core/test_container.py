@@ -2006,6 +2006,19 @@ def test_container_prune_key_chains(dev_str, call):
     assert _test_bc_exception(container_pruned)
 
 
+def test_container_format_key_chains(dev_str, call):
+    dict_in = {'_a': ivy.array([1], dev_str=dev_str),
+               'b ': {'c': ivy.array([2], dev_str=dev_str), 'd-': ivy.array([3], dev_str=dev_str)}}
+    cont = Container(dict_in)
+    cont_formatted = cont.format_key_chains(lambda s: s.replace('_', '').replace(' ', '').replace('-', ''))
+    assert np.allclose(ivy.to_numpy(cont_formatted['a']), np.array([1]))
+    assert np.allclose(ivy.to_numpy(cont_formatted.a), np.array([1]))
+    assert np.allclose(ivy.to_numpy(cont_formatted['b']['c']), np.array([2]))
+    assert np.allclose(ivy.to_numpy(cont_formatted.b.c), np.array([2]))
+    assert np.allclose(ivy.to_numpy(cont_formatted['b']['d']), np.array([3]))
+    assert np.allclose(ivy.to_numpy(cont_formatted.b.d), np.array([3]))
+
+
 def test_container_sort_by_key(dev_str, call):
     dict_in = {'b': ivy.array([1], dev_str=dev_str),
                'a': {'d': ivy.array([2], dev_str=dev_str), 'c': ivy.array([3], dev_str=dev_str)}}
