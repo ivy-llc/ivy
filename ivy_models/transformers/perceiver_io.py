@@ -99,10 +99,6 @@ class PerceiverIO(ivy.Module):
             if self._spec.fourier_encode_input else 0
         input_dim = fourier_channels + self._spec.input_dim
 
-        # ToDo: set the correct initializatin scheme for the query here
-        self._queries = ivy.variable(ivy.random_uniform(shape=self._spec.query_shape + [self._spec.queries_dim]))\
-            if self._spec.learn_query else None
-
         self._get_cross_attn = lambda: PreNorm(
             self._spec.latent_dim, ivy.MultiHeadAttention(
                 self._spec.latent_dim, self._spec.num_cross_att_heads, self._spec.cross_head_dim,
@@ -127,7 +123,7 @@ class PerceiverIO(ivy.Module):
             self._layers.append(layer)
 
         self._decoder_cross_attn = PreNorm(self._spec.queries_dim, ivy.MultiHeadAttention(
-            self._spec.queries_dim, self._spec.num_cross_att_heads, self._spec.cross_head_dim,
+            self._spec.queries_dim, self._spec.num_cross_att_heads, self._spec.latent_dim,
             context_dim=self._spec.latent_dim), context_dim=self._spec.latent_dim, epsilon=1e-5)
         self._decoder = PreNorm(self._spec.queries_dim, FeedForward(self._spec.queries_dim), epsilon=1e-5)\
             if self._spec.with_decoder else None
@@ -138,7 +134,10 @@ class PerceiverIO(ivy.Module):
     def _create_variables(self, dev_str):
         latents = ivy.variable(
             ivy.random_uniform(shape=(self._spec.num_latents, self._spec.latent_dim), dev_str=dev_str))
-        return {'latents': latents}
+        # ToDo: set the correct initializatin scheme for the query here
+        decoder_queries = ivy.variable(ivy.random_uniform(shape=self._spec.query_shape + [self._spec.queries_dim]))\
+            if self._spec.learn_query else None
+        return {'latents': latents, 'decoder_queries': decoder_queries}
 
     def _forward(self, data, mask=None, queries=None):
 
@@ -189,8 +188,8 @@ class PerceiverIO(ivy.Module):
 
         # queries
         if not ivy.exists(queries):
-            if ivy.exists(self._queries):
-                queries = ivy.einops_repeat(self._queries, '... -> b ...', b=flat_batch_size)
+            if ivy.exists(self.v.decoder_queries):
+                queries = ivy.einops_repeat(self.v.decoder_queries, '... -> b ...', b=flat_batch_size)
             else:
                 raise Exception('If learn_query is not set as True, the queries must be provided explicitly'
                                 'during the forward pass.')

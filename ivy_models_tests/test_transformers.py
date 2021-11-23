@@ -76,7 +76,44 @@ def test_perceiver_io_img_classification(dev_str, f, call, batch_shape, img_dims
         v = ivy.Container.from_disk_as_pickled(weight_fpath).from_numpy()
         # assert ivy.Container.identical_structure([model.v, v])
 
-        v = v.at_key_chains(['layers', 'latents'])
+        v = v.restructure(
+            {'classification_decoder/~/basic_decoder/~/trainable_position_encoding/pos_embs': 'decoder_queries',
+
+             'classification_decoder/~/basic_decoder/cross_attention/layer_norm/scale': 'decoder_cross_attn/norm/scale',
+             'classification_decoder/~/basic_decoder/cross_attention/layer_norm/offset': 'decoder_cross_attn/norm/offset',
+
+             'classification_decoder/~/basic_decoder/cross_attention/layer_norm_1/scale': 'decoder_cross_attn/norm_context/scale',
+             'classification_decoder/~/basic_decoder/cross_attention/layer_norm_1/offset': 'decoder_cross_attn/norm_context/offset',
+
+             'classification_decoder/~/basic_decoder/cross_attention/attention/linear/w':
+                 {'key_chain': 'decoder_cross_attn/fn/to_q/w', 'pattern': 'a b -> b a'},
+             'classification_decoder/~/basic_decoder/cross_attention/attention/linear/b': 'decoder_cross_attn/fn/to_q/b',
+
+             'classification_decoder/~/basic_decoder/cross_attention/attention/linear_1/w':
+                 {'key_chain': 'decoder_cross_attn/fn/to_kv/k/w', 'pattern': 'a b -> b a'},
+             'classification_decoder/~/basic_decoder/cross_attention/attention/linear_1/b': 'decoder_cross_attn/fn/to_kv/k/b',
+
+             'classification_decoder/~/basic_decoder/cross_attention/attention/linear_2/w':
+                 {'key_chain': 'decoder_cross_attn/fn/to_kv/v/w', 'pattern': 'a b -> b a'},
+             'classification_decoder/~/basic_decoder/cross_attention/attention/linear_2/b': 'decoder_cross_attn/fn/to_kv/v/b',
+
+             'classification_decoder/~/basic_decoder/cross_attention/attention/linear_3/w':
+                 {'key_chain': 'decoder_cross_attn/fn/to_out/submodules/v0/w', 'pattern': 'a b -> b a'},
+             'classification_decoder/~/basic_decoder/cross_attention/attention/linear_3/b':
+                 'decoder_cross_attn/fn/to_out/submodules/v0/b',
+
+             'classification_decoder/~/basic_decoder/cross_attention/layer_norm_2/scale': 'decoder/norm/scale',
+             'classification_decoder/~/basic_decoder/cross_attention/layer_norm_2/offset': 'decoder/norm/offset',
+
+             'classification_decoder/~/basic_decoder/cross_attention/mlp/linear/w':
+                 {'key_chain': 'decoder/fn/net/submodules/v0/w', 'pattern': 'a b -> b a'},
+             'classification_decoder/~/basic_decoder/cross_attention/mlp/linear/b': 'decoder/fn/net/submodules/v0/b',
+
+             'classification_decoder/~/basic_decoder/cross_attention/mlp/linear_1/w':
+                 {'key_chain': 'decoder/fn/net/submodules/v2/w', 'pattern': 'a b -> b a'},
+             'classification_decoder/~/basic_decoder/cross_attention/mlp/linear_1/b': 'decoder/fn/net/submodules/v2/b'})
+
+        v = v.at_key_chains(['decoder', 'decoder_cross_attn', 'decoder_queries', 'latents', 'layers'])
 
         model = PerceiverIO(PerceiverIOSpec(input_dim=input_dim,
                                             num_input_axes=num_input_axes,
