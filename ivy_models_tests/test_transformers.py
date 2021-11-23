@@ -74,12 +74,7 @@ def test_perceiver_io_img_classification(dev_str, f, call, batch_shape, img_dims
         this_dir = os.path.dirname(os.path.realpath(__file__))
         weight_fpath = os.path.join(this_dir, '../ivy_models/transformers/pretrained_weights/perceiver_io.pickled')
         v = ivy.Container.from_disk_as_pickled(weight_fpath).from_numpy().as_variables()
-        # assert ivy.Container.identical_structure([model.v, v])
-
-        v = v.restructure({
-            'classification_decoder/~/basic_decoder/output/w': {'key_chain': 'to_logits/w', 'pattern': 'a b -> b a'},
-            'classification_decoder/~/basic_decoder/output/b': 'to_logits/b',
-        }).as_variables()
+        assert ivy.Container.identical_structure([model.v, v])
 
         model = PerceiverIO(PerceiverIOSpec(input_dim=input_dim,
                                             num_input_axes=num_input_axes,
@@ -91,7 +86,7 @@ def test_perceiver_io_img_classification(dev_str, f, call, batch_shape, img_dims
                                             max_fourier_freq=img_dims[0],
                                             num_fourier_freq_bands=64,
                                             num_lat_att_per_layer=num_lat_att_per_layer,
-                                            device=dev_str), v=v, with_partial_v=True)
+                                            device=dev_str), v=v)
 
     # output
     output = model(img, queries=queries)
