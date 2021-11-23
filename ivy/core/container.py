@@ -359,7 +359,7 @@ class Container(dict):
         if not isinstance(container0, dict):
             equal_mat = ivy.equal(*containers, equality_matrix=True)
             if not detect_value_diffs:
-                equal_mat = ivy.cast(ivy.ones_like(equal_mat), 'bool')
+                equal_mat = ivy.ones_like(equal_mat)
             if detect_shape_diffs:
                 shape_equal_mat = ivy.equal(*[c.shape if ivy.is_array(c) else None for c in containers],
                                             equality_matrix=True)
