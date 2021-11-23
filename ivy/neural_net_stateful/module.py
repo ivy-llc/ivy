@@ -493,11 +493,14 @@ class Module(abc.ABC):
         top_mod = self.top_mod()
         esr = top_mod.expected_submod_rets
         key = self.get_mod_key(top_mod)
+        esr_key = key
         if key not in esr:
-            return
+            esr_key = key.replace(' ', '')
+            if esr_key not in esr:
+                return
         sr = self.top_mod().submod_rets
         rets = sr[key]
-        esr_ret = esr[key]
+        esr_ret = esr[esr_key]
         if isinstance(esr_ret, dict):
             expected_rets = esr_ret['val']
             atols = esr_ret['atol'] if 'atol' in esr_ret else None
