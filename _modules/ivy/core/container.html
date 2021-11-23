@@ -2782,6 +2782,14 @@
             <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;Invalid type for input key_chains, must either be a list, tuple, dict, or ivy.Container,&#39;</span>
                             <span class="s1">&#39;but found type </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">key_chains</span><span class="p">)))</span></div>
 
+<div class="viewcode-block" id="Container.format_key_chains"><a class="viewcode-back" href="../../../core/container/Container.html#ivy.core.container.Container.format_key_chains">[docs]</a>    <span class="k">def</span> <span class="nf">format_key_chains</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">format_fn</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Format all key-chains, using the formatting function</span>
+
+<span class="sd">        :return: Container with the same key-chain structure, but the key strings formatted.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">({</span><span class="n">format_fn</span><span class="p">(</span><span class="n">k</span><span class="p">):</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">to_iterator</span><span class="p">()})</span></div>
+
 <div class="viewcode-block" id="Container.sort_by_key"><a class="viewcode-back" href="../../../core/container/Container.html#ivy.core.container.Container.sort_by_key">[docs]</a>    <span class="k">def</span> <span class="nf">sort_by_key</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">new_dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
         <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
