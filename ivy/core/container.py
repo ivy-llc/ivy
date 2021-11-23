@@ -2579,6 +2579,14 @@ class Container(dict):
             raise Exception('Invalid type for input key_chains, must either be a list, tuple, dict, or ivy.Container,'
                             'but found type {}'.format(type(key_chains)))
 
+    def format_key_chains(self, format_fn):
+        """
+        Format all key-chains, using the formatting function
+
+        :return: Container with the same key-chain structure, but the key strings formatted.
+        """
+        return ivy.Container({format_fn(k): v for k, v in self.to_iterator()})
+
     def sort_by_key(self):
         new_dict = dict()
         for k, v in self.items():
