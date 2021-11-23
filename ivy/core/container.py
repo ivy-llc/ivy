@@ -2668,22 +2668,26 @@ class Container(dict):
                 out_cont[key] = value
         return out_cont
 
-    def restructure_key_chains(self, keychain_mapping, keep_orig=True):
+    def restructure_key_chains(self, keychain_mapping, keep_orig=True, replace=True):
         """
         Create a new container with the same contents, but a new key-chain structure. Given by the mapping with keys as
         old key-chains and values as new key-chains.
 
         :param keychain_mapping: A dict with keys as old key-chains and values as new key-chains.
         :type keychain_mapping: dict
-        :param keep_orig: Whether to keep the original keys, are start from a new container. Default is True.
+        :param keep_orig: Whether to keep the original keys, or start from a new empty container. Default is True.
         :type keep_orig: bool, optional
+        :param replace: Whether to replace the old key-chains by the new ones. Default is True.
+        :type replace: bool, optional
         """
         new_cont = self.copy() if keep_orig else ivy.Container()
         for old_kc, new_kc in keychain_mapping.items():
+            if replace and old_kc in new_cont:
+                new_cont = new_cont.prune_key_chain(old_kc)
             new_cont = ivy.Container.combine(new_cont, ivy.Container({new_kc: self[old_kc]}))
         return new_cont
 
-    def restructure(self, mapping, keep_orig=True):
+    def restructure(self, mapping, keep_orig=True, replace=True):
         """
         Create a new container with the same contents, but a new key-chain structure, and transposes and/or reshaped
         arrays. Given by the mapping with keys as old key-chains and values as new key-chains.
@@ -2692,9 +2696,13 @@ class Container(dict):
         :type mapping: dict
         :param keep_orig: Whether to keep the original keys, are start from a new container. Default is True.
         :type keep_orig: bool, optional
+        :param replace: Whether to replace the old key-chains by the new ones. Default is True.
+        :type replace: bool, optional
         """
         new_cont = self.copy() if keep_orig else ivy.Container()
         for old_kc, new in mapping.items():
+            if replace and old_kc in new_cont:
+                new_cont = new_cont.prune_key_chain(old_kc)
             val = self[old_kc]
             if isinstance(new, dict):
                 new_kc = new['key_chain']
@@ -2704,10 +2712,7 @@ class Container(dict):
                     if isinstance(val, Container):
                         val = val.einops_rearrange(pattern, **axes_lengths)
                     else:
-                        try:
-                            val = ivy.einops_rearrange(val, pattern, **axes_lengths)
-                        except:
-                            d = 0
+                        val = ivy.einops_rearrange(val, pattern, **axes_lengths)
             else:
                 new_kc = new
             new_cont = ivy.Container.combine(new_cont, ivy.Container({new_kc: val}))
