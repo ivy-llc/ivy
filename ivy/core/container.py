@@ -474,19 +474,21 @@ class Container(dict):
         return list(sets[0].intersection(*sets[1:]))
 
     @staticmethod
-    def identical(containers, check_types=True, check_shapes=True, same_arrays=True, key_chains=None, to_apply=True,
-                  partial=False, key_chain=''):
+    def identical(containers, check_types=True, check_shapes=True, same_arrays=True, arrays_equal=True, key_chains=None,
+                  to_apply=True, partial=False, key_chain=''):
         """
         Returns a single boolean as to whether the input containers have identical key-chains and data types.
 
         :param containers: containers to check.
         :type containers: sequence of Container objects
-        :param check_types: Whether to also check whether the datatypes of the leaf nodes are the same. Default is True.
+        :param check_types: Whether to check if the datatypes of the leaf nodes are the same. Default is True.
         :type check_types: bool, optional
-        :param check_shapes: Whether to also check whether the shapes of the leaf nodes are the same. Default is True.
+        :param check_shapes: Whether to check if the shapes of the leaf nodes are the same. Default is True.
         :type check_shapes: bool, optional
-        :param same_arrays: Whether to also check whether the arrays are the exact same instances. Default is True.
+        :param same_arrays: Whether to check if the arrays are the exact same instances. Default is True.
         :type same_arrays: bool, optional
+        :param arrays_equal: Whether to check if the arrays have equal values. Default is True.
+        :type arrays_equal: bool, optional
         :param key_chains: The key-chains to apply or not apply the method to. Default is None.
         :type key_chains: list or dict of strs, optional
         :param to_apply: If True, the method will be applied to key_chains, otherwise key_chains will be skipped.
@@ -526,13 +528,14 @@ class Container(dict):
                     ids = [id(val) for val in values]
                     if not min([id_n == id_0 for id_n in ids]):
                         return False
-                else:
+                elif arrays_equal:
                     if not ivy.arrays_equal(values):
                         return False
             this_key_chain = key if key_chain == '' else (key_chain + '/' + key)
             if isinstance(value_0, Container):
                 ret = ivy.Container.identical(
-                    values, check_types, check_shapes, same_arrays, key_chains, to_apply, partial, this_key_chain)
+                    values, check_types, check_shapes, same_arrays, arrays_equal, key_chains, to_apply, partial,
+                    this_key_chain)
                 if not ret:
                     return False
         return True
@@ -560,7 +563,7 @@ class Container(dict):
         :type key_chain: str
         :return: Boolean
         """
-        return Container.identical(containers, check_types, check_shapes, False, key_chains, to_apply, partial,
+        return Container.identical(containers, check_types, check_shapes, False, False, key_chains, to_apply, partial,
                                    key_chain)
 
     @staticmethod
