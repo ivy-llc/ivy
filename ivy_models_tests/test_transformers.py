@@ -132,15 +132,7 @@ def test_perceiver_io_img_classification(dev_str, f, call, batch_shape, img_dims
 
         # expected submodule returns
         expected_submod_rets = ivy.Container()
-        for dct in [{'val': 'LayerNorm_0', 'atol': 1e-6, 'rtol': 1e-6},
-                    {'val': 'LayerNorm_1', 'atol': 1e-3},
-                    {'val': 'Linear_0', 'atol': 1e-5},
-                    {'val': 'Linear_1', 'atol': 1e-3},
-                    {'val': 'Linear_2', 'atol': 1e-3},
-                    {'val': 'Linear_3', 'atol': 1e-3},
-                    {'val': 'LayerNorm_2', 'atol': 1e-2},
-                    {'val': 'Linear_4', 'atol': 1e-2},
-                    {'val': 'Linear_5', 'atol': 1e-3}]:
+        for dct in [{'val': 'PreNorm_1', 'atol': 1e-3}]:
             key = dct['val']
             dct['val'] = np.load(os.path.join(this_dir, key + '.npy'))
             expected_submod_rets[key] = dct
