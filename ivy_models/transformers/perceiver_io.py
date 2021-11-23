@@ -100,19 +100,16 @@ class PerceiverIO(ivy.Module):
                 self._spec.latent_dim, self._spec.num_cross_att_heads, self._spec.cross_head_dim,
                 self._spec.attn_dropout, input_dim, dev_str=self._spec.device), context_dim=input_dim, epsilon=1e-5,
             dev_str=self._spec.device)
-        get_cross_fc = lambda: PreNorm(
-            self._spec.latent_dim, FeedForward(self._spec.latent_dim, dropout=self._spec.fc_dropout,
-                                               dev_str=self._spec.device), epsilon=1e-5, dev_str=self._spec.device)
         get_latent_attn = lambda: PreNorm(
             self._spec.latent_dim, ivy.MultiHeadAttention(
                 self._spec.latent_dim, self._spec.num_self_att_heads, self._spec.latent_head_dim,
                 self._spec.attn_dropout, dev_str=self._spec.device), epsilon=1e-5, dev_str=self._spec.device)
-        get_latent_fc = lambda: PreNorm(self._spec.latent_dim, FeedForward(
-            self._spec.latent_dim, dropout=self._spec.fc_dropout, dev_str=self._spec.device), epsilon=1e-5,
-                                        dev_str=self._spec.device)
+        get_fc = lambda: PreNorm(
+            self._spec.latent_dim, FeedForward(self._spec.latent_dim, dropout=self._spec.fc_dropout,
+                                               dev_str=self._spec.device), epsilon=1e-5, dev_str=self._spec.device)
 
-        get_cross_attn_cached, get_cross_fc_cached, get_latent_attn_cached, get_latent_fc_cached =\
-            map(ivy.cache_fn, (get_cross_attn, get_cross_fc, get_latent_attn, get_latent_fc))
+        get_cross_attn_cached, get_latent_attn_cached, get_fc_cached =\
+            map(ivy.cache_fn, (get_cross_attn, get_latent_attn, get_fc))
 
         self._layers = list()
         for i in range(self._spec.network_depth):
@@ -123,12 +120,12 @@ class PerceiverIO(ivy.Module):
             for _ in range(self._spec.num_self_att_per_cross_attn):
                 self_attns.append([
                     get_latent_attn_cached() if should_cache else get_latent_attn(),
-                    get_latent_fc_cached() if should_cache else get_latent_fc(),
+                    get_fc_cached() if should_cache else get_fc(),
                 ])
 
             self._layers.append({
                 'cross_att': get_cross_attn_cached() if should_cache else get_cross_attn(),
-                'cross_fc': get_cross_fc_cached() if should_cache else get_cross_fc(),
+                'cross_fc': get_fc_cached() if should_cache else get_fc(),
                 'self_atts': self_attns
             })
 
