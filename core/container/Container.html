@@ -627,12 +627,13 @@ of duplicates.</p>
 
 <dl class="py method">
 <dt id="ivy.core.container.Container.contains_sub_structure">
-<code class="sig-name descname">contains_sub_structure</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">sub_cont</span></em>, <em class="sig-param"><span class="n">partial</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/container.html#Container.contains_sub_structure"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.contains_sub_structure" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">contains_sub_structure</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">sub_cont</span></em>, <em class="sig-param"><span class="n">check_shapes</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">partial</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/container.html#Container.contains_sub_structure"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.contains_sub_structure" title="Permalink to this definition">¶</a></dt>
 <dd><p>Determine whether the current container contains the sub-container structure.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>sub_cont</strong> (<em>ivy.Container</em>) – The sub-container to check.</p></li>
+<li><p><strong>check_shapes</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to check array shapes in the sub-structure. Default is True.</p></li>
 <li><p><strong>partial</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to also check for partially complete sub-containers. Default is False.</p></li>
 </ul>
 </dd>
@@ -876,8 +877,21 @@ Default is True.</p></li>
 
 <dl class="py method">
 <dt id="ivy.core.container.Container.find_sub_structure">
-<code class="sig-name descname">find_sub_structure</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">sub_struc_to_find</span></em>, <em class="sig-param"><span class="n">partial</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/container.html#Container.find_sub_structure"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.find_sub_structure" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<code class="sig-name descname">find_sub_structure</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">sub_struc_to_find</span></em>, <em class="sig-param"><span class="n">check_shapes</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">partial</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/container.html#Container.find_sub_structure"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.find_sub_structure" title="Permalink to this definition">¶</a></dt>
+<dd><p>Find the sub-container structure in the current container if it exsits.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>sub_struc_to_find</strong> (<em>ivy.Container</em>) – The sub-container to find.</p></li>
+<li><p><strong>check_shapes</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to check array shapes in the sub-structure. Default is True.</p></li>
+<li><p><strong>partial</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to also check for partially complete sub-containers. Default is False.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py method">
 <dt id="ivy.core.container.Container.flatten_key_chain">
