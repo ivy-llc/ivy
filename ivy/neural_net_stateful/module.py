@@ -477,7 +477,7 @@ class Module(abc.ABC):
         if id_str not in submod_dict[name_key]:
             submod_dict[name_key][id_str] = str(len(submod_dict[name_key]))
         idx_key = submod_dict[name_key][id_str]
-        return '_'.join([name_key, idx_key])
+        return ' '*self.mod_depth() + '_'.join([name_key, idx_key])
 
     def _add_submod_ret(self, ret):
         top_mod = self.top_mod()
