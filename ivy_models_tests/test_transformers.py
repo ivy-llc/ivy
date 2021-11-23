@@ -69,8 +69,12 @@ def test_perceiver_io_img_classification(dev_str, f, call, batch_shape, img_dims
         this_dir = os.path.dirname(os.path.realpath(__file__))
         weight_fpath = os.path.join(this_dir, '../ivy_models/transformers/pretrained_weights/perceiver_io.pickled')
         v = ivy.Container.from_disk_as_pickled(weight_fpath).from_numpy()
-        v = v.at_key_chains(['layers', 'latents'])
         # assert ivy.Container.identical_structure([model.v, v])
+
+        v = v.restructure(
+            {'perceiver_encoder/~/self_attention/layer_norm/scale': 'layers/v0/self_atts/v0/v0/norm/scale',
+             'perceiver_encoder/~/self_attention/layer_norm/offset': 'layers/v0/self_atts/v0/v0/norm/offset'})
+        v = v.at_key_chains(['layers', 'latents'])
 
         model = PerceiverIO(PerceiverIOSpec(input_dim=input_dim,
                                             num_input_axes=num_input_axes,
@@ -84,7 +88,8 @@ def test_perceiver_io_img_classification(dev_str, f, call, batch_shape, img_dims
 
         # expected submodule returns
         expected_submod_rets = ivy.Container()
-        for dct in [{'val': 'PreNorm_1', 'atol': 1e-3}]:
+        for dct in [{'val': 'PreNorm_1', 'atol': 1e-3},
+                    {'val': 'LayerNorm_3', 'atol': 1e-3}]:
             key = dct['val']
             dct['val'] = np.load(os.path.join(this_dir, key + '.npy'))
             expected_submod_rets[key] = dct
