@@ -12,5 +12,6 @@ Activations
    :maxdepth: -1
    :caption: Activations
 
+   activations/GELU.rst
    activations/GEGLU.rst
 
