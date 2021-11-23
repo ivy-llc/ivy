@@ -573,6 +573,34 @@ class Container(dict):
         return True
 
     @staticmethod
+    def assert_identical(containers, check_types=True, check_shapes=True, same_arrays=True, arrays_equal=True,
+                         key_chains=None, to_apply=True, partial=False):
+        """
+        Assert whether the input containers are identical. Otherwise, the diff is shown in an exception.
+
+        :param containers: containers to check.
+        :type containers: sequence of Container objects
+        :param check_types: Whether to check if the datatypes of the leaf nodes are the same. Default is True.
+        :type check_types: bool, optional
+        :param check_shapes: Whether to check if the shapes of the leaf nodes are the same. Default is True.
+        :type check_shapes: bool, optional
+        :param same_arrays: Whether to check if the arrays are the exact same instances. Default is True.
+        :type same_arrays: bool, optional
+        :param arrays_equal: Whether to check if the arrays have equal values. Default is True.
+        :type arrays_equal: bool, optional
+        :param key_chains: The key-chains to apply or not apply the method to. Default is None.
+        :type key_chains: list or dict of strs, optional
+        :param to_apply: If True, the method will be applied to key_chains, otherwise key_chains will be skipped.
+                         Default is True.
+        :type to_apply: bool, optional
+        :param partial: Whether to also check for partially complete sub-containers. Default is False.
+        :type partial: bool, optional
+        """
+        assert Container.identical(
+            containers, check_types, check_shapes, same_arrays, arrays_equal, key_chains, to_apply, partial),\
+            'Containers were not identical:\n\n{}'.format(Container.diff(*containers))
+
+    @staticmethod
     def identical_structure(containers, check_types=True, check_shapes=True, key_chains=None, to_apply=True,
                             partial=False, key_chain=''):
         """
@@ -617,7 +645,6 @@ class Container(dict):
         :type to_apply: bool, optional
         :param partial: Whether to also check for partially complete sub-containers. Default is False.
         :type partial: bool, optional
-        :return: Boolean
         """
         assert Container.identical_structure(containers, check_types, check_shapes, key_chains, to_apply, partial),\
             'Containers did not have identical structure:\n\n{}'.format(Container.structural_diff(*containers))
