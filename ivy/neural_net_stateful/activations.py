@@ -7,6 +7,25 @@ import ivy
 from ivy.neural_net_stateful.module import Module
 
 
+class GELU(Module):
+
+    def __init__(self):
+        """
+        Applies the GELU activation function.
+        """
+        Module.__init__(self)
+
+    def _forward(self, inputs):
+        """
+        Perform forward pass of the GELU activation.
+
+        :param inputs: Inputs to process *[batch_shape, d]*.
+        :type inputs: array
+        :return: The outputs following the GELU activation *[batch_shape, d]*
+        """
+        return ivy.gelu(inputs)
+
+
 class GEGLU(Module):
 
     def __init__(self):
