@@ -357,9 +357,9 @@ class Container(dict):
         if not ivy.exists(config):
             config = container0.config if isinstance(container0, Container) else {}
         if not isinstance(container0, dict):
-            if not detect_value_diffs:
-                return container0
             equal_mat = ivy.equal(*containers, equality_matrix=True)
+            if not detect_value_diffs:
+                equal_mat = ivy.cast(ivy.ones_like(equal_mat), 'bool')
             if detect_shape_diffs:
                 shape_equal_mat = ivy.equal(*[c.shape if ivy.is_array(c) else None for c in containers],
                                             equality_matrix=True)
@@ -440,7 +440,8 @@ class Container(dict):
         :type config: dict, optional
         :return: Compared containers
         """
-        return Container.diff(*containers, mode, diff_keys, True, False, True, config=config)
+        return Container.diff(*containers, mode=mode, diff_keys=diff_keys, detect_key_diffs=True,
+                              detect_value_diffs=False, detect_shape_diffs=True, config=config)
 
     @staticmethod
     def multi_map(func, containers, key_chains=None, to_apply=True, prune_unapplied=False, key_chain='', config=None):
