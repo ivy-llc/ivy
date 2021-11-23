@@ -424,6 +424,25 @@ class Container(dict):
         return ivy.Container(return_dict, **config)
 
     @staticmethod
+    def structural_diff(*containers, mode='all', diff_keys='diff', config=None):
+        """
+        Compare keys and shapes in a sequence of containers, returning the single shared values where they are the same,
+        and new nested sub-dicts with all values where they are different.
+
+        :param containers: containers to compare
+        :type containers: sequence of Container objects
+        :param mode: The mode of the diff operation, returning either all keys and values,
+                     only those that are consist across the containers, or only the differences. Default is all.
+        :type mode: str, optional
+        :param diff_keys: The key/keys to add to the returned container when differences are found. Default is "diff".
+        :type diff_keys: str or list of strs, optional
+        :param config: The configuration for the containers. Default is the same as container0.
+        :type config: dict, optional
+        :return: Compared containers
+        """
+        return Container.diff(*containers, mode, diff_keys, True, False, True, config=config)
+
+    @staticmethod
     def multi_map(func, containers, key_chains=None, to_apply=True, prune_unapplied=False, key_chain='', config=None):
         """
         Apply function to all array values from a collection of identically structured containers.
