@@ -3630,16 +3630,21 @@ class Container(dict):
         return state_dict
 
     def __setstate__(self, state_dict):
-        if ivy.exists(state_dict['_local_ivy']):
-            state_dict['_local_ivy'] = ivy.get_framework(state_dict['_local_ivy'])
-        config_in = copy.copy(state_dict['_config_in'])
-        if ivy.exists(config_in['ivyh']):
-            config_in['ivyh'] = ivy.get_framework(config_in['ivyh'])
-        state_dict['_config_in'] = config_in
-        config = copy.copy(state_dict['_config'])
-        if ivy.exists(config['ivyh']):
-            config['ivyh'] = ivy.get_framework(config['ivyh'])
-        state_dict['_config'] = config
+        if '_local_ivy' in state_dict:
+            if ivy.exists(state_dict['_local_ivy']):
+                state_dict['_local_ivy'] = ivy.get_framework(state_dict['_local_ivy'])
+        if '_config_in' in state_dict:
+            config_in = copy.copy(state_dict['_config_in'])
+            if 'ivyh' in config_in:
+                if ivy.exists(config_in['ivyh']):
+                    config_in['ivyh'] = ivy.get_framework(config_in['ivyh'])
+            state_dict['_config_in'] = config_in
+        if '_config' in state_dict:
+            config = copy.copy(state_dict['_config'])
+            if 'ivyh' in config:
+                if ivy.exists(config['ivyh']):
+                    config['ivyh'] = ivy.get_framework(config['ivyh'])
+            state_dict['_config'] = config
         self.__dict__.update(state_dict)
 
     # Getters and Setters #
