@@ -73,6 +73,7 @@ def test_perceiver_io_img_classification(dev_str, f, call, batch_shape, img_dims
     if load_weights:
         this_dir = os.path.dirname(os.path.realpath(__file__))
         weight_fpath = os.path.join(this_dir, '../ivy_models/transformers/pretrained_weights/perceiver_io.pickled')
+        assert os.path.isfile(weight_fpath)
         v = ivy.Container.from_disk_as_pickled(weight_fpath).from_numpy().as_variables()
         assert ivy.Container.identical_structure([model.v, v])
 
