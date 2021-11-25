@@ -24,12 +24,12 @@ def test_training_demo(dev_str, call):
     class MyModel(ivy.Module):
         def __init__(self):
             self.linear0 = ivy.Linear(3, 64)
-            self.linear2 = ivy.Linear(64, 1)
+            self.linear1 = ivy.Linear(64, 1)
             ivy.Module.__init__(self)
 
         def _forward(self, x):
             x = ivy.relu(self.linear0(x))
-            return ivy.sigmoid(self.linear2(x))
+            return ivy.sigmoid(self.linear1(x))
 
     model = MyModel()
     optimizer = ivy.Adam(1e-4)
