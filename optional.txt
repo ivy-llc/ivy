@@ -1,9 +1,9 @@
-jax # 0.2.24
-jaxlib # 0.1.73
-tensorflow # 2.6.1
-tensorflow-addons # 0.14.0
-tensorflow-probability # 0.14.1
-torch # 1.10.0
-mxnet # 1.8.0
-scipy # 1.7.1
-dm-haiku # 0.0.5
+jax #==0.2.25
+jaxlib #==0.1.74
+tensorflow==2.6.2
+tensorflow-addons #==0.15.0 # mod_name=tensorflow_addons
+tensorflow-probability==0.14.1 # mod_name=tensorflow_probability
+torch #==1.10.0+cu111
+mxnet #==1.8.0
+scipy #==1.7.3
+dm-haiku #==0.0.5 # mod_name=haiku
