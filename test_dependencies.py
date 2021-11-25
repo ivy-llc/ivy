@@ -79,11 +79,10 @@ def assert_importable(fname, assert_version):
             WARN_MSG += msg
 
 
-def main(assert_matching_versions):
-    if os.path.isfile('optional.txt'):
-        assert_importable('optional.txt', assert_version=assert_matching_versions)
-    if os.path.isfile('requirements.txt'):
-        assert_importable('requirements.txt', assert_version=assert_matching_versions)
+def main(filepaths, assert_matching_versions):
+    for filepath in filepaths.replace(' ', '').split(','):
+        if os.path.isfile(filepath):
+            assert_importable(filepath, assert_version=assert_matching_versions)
     print(PRINT_MSG)
     if WARN:
         print(termcolor.colored('WARNING\n' + WARN_MSG, 'red'))
@@ -93,7 +92,10 @@ def main(assert_matching_versions):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
+    parser.add_argument('-fp', '--filepaths', type=str, required=True,
+                        help='Comma separated filepaths of all text files to check. Spaces are ignored.')
     parser.add_argument('-amv', '--assert_matching_versions', action='store_true',
                         help='Whether to assert that all module versions match those lists in the requirements.txt and'
                              'optional.txt files.')
-    main(parser.parse_args().assert_matching_versions)
+    parsed_args = parser.parse_args()
+    main(parsed_args.filepaths, parsed_args.assert_matching_versions)
