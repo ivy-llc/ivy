@@ -7,7 +7,7 @@ from collections import OrderedDict
 
 # local
 import ivy
-import torch.nn
+import torch as _torch
 
 
 class IvyModule(ivy.Module):
@@ -29,7 +29,7 @@ class IvyModule(ivy.Module):
             lambda: self._native_module_class(*self._args, **self._kwargs), with_callable=True)
         self._native_params = ivy.Container(OrderedDict(
             sorted([(k.replace('.', '/'), v) for k, v in dict(self._native_module.named_parameters()).items()]))).map(
-            lambda x, kc: torch.nn.Parameter(x))
+            lambda x, kc: _torch.nn.Parameter(x))
 
     @staticmethod
     def _inplace_update(p, v):
