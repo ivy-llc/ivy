@@ -8,6 +8,12 @@ RUN rm -rf ivy && \
     cat optional.txt | grep -v "ivy-" | pip3 install --no-cache-dir -r /dev/stdin && \
     python3 setup.py develop --no-deps
 
+# Install Ivy Models
+RUN git clone https://github.com/ivy-dl/models && \
+    cd models && \
+    cat requirements.txt | grep -v "ivy-" | pip3 install --no-cache-dir -r /dev/stdin && \
+    python3 setup.py develop --no-deps
+
 COPY requirements.txt /
 RUN cat requirements.txt | grep -v "ivy-" | pip3 install --no-cache-dir -r /dev/stdin
 
