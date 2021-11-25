@@ -19,7 +19,7 @@ Framework handler
    framework_handler/try_import_ivy_jax.rst
    framework_handler/try_import_ivy_tf.rst
    framework_handler/try_import_ivy_torch.rst
-   framework_handler/try_import_ivy_mxnd.rst
+   framework_handler/try_import_ivy_mxnet.rst
    framework_handler/try_import_ivy_numpy.rst
    framework_handler/choose_random_framework.rst
    framework_handler/ContextManager:

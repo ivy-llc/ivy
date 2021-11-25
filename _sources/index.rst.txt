@@ -119,12 +119,12 @@ You can immediately use Ivy to train a neural network, using your favourite fram
     class MyModel(ivy.Module):
         def __init__(self):
             self.linear0 = ivy.Linear(3, 64)
-            self.linear2 = ivy.Linear(64, 1)
+            self.linear1 = ivy.Linear(64, 1)
             ivy.Module.__init__(self)
 
         def _forward(self, x):
             x = ivy.relu(self.linear0(x))
-            return ivy.sigmoid(self.linear2(x))
+            return ivy.sigmoid(self.linear1(x))
 
     ivy.set_framework('torch')  # change to any framework!
     model = MyModel()
