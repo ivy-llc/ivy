@@ -1,6 +1,6 @@
 import sys
 import ivy
-import jax
+import jax as _jax
 # noinspection PyPackageRequirements
 import jaxlib
 import jax.numpy as jnp
@@ -25,9 +25,9 @@ from .nn import *
 use = ivy.framework_handler.ContextManager(sys.modules[__name__])
 
 # noinspection PyUnresolvedReferences,PyProtectedMember
-NativeArray = (jax.interpreters.xla._DeviceArray, jaxlib.xla_extension.DeviceArray, Buffer)
+NativeArray = (_jax.interpreters.xla._DeviceArray, jaxlib.xla_extension.DeviceArray, Buffer)
 # noinspection PyUnresolvedReferences,PyProtectedMember
-NativeVariable = jax.interpreters.xla._DeviceArray
+NativeVariable = _jax.interpreters.xla._DeviceArray
 # noinspection PyUnresolvedReferences
 Device = jaxlib.xla_extension.Device
 Dtype = jnp.dtype
