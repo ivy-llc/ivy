@@ -49,6 +49,25 @@ def test_set_framework(fw_str, dev_str, call):
     ivy.unset_framework()
 
 
+# use_framework
+def test_use_within_use_framework(dev_str, call):
+    import ivy.numpy
+    with ivy.numpy.use:
+        pass
+    import ivy.jax
+    with ivy.jax.use:
+        pass
+    import ivy.tensorflow
+    with ivy.tensorflow.use:
+        pass
+    import ivy.torch
+    with ivy.torch.use:
+        pass
+    import ivy.mxnet
+    with ivy.mxnet.use:
+        pass
+
+
 # array
 @pytest.mark.parametrize(
     "object_in", [[], [0.], [1], [True], [[1., 2.]]])

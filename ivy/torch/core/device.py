@@ -4,7 +4,7 @@ Collection of PyTorch general functions, wrapped to fit Ivy syntax and signature
 
 # global
 import os
-import torch
+import torch as _torch
 import importlib
 torch_scatter = None
 from typing import Optional
@@ -24,22 +24,22 @@ def dev(x):
 
 def to_dev(x, dev_str: Optional[str] = None):
     ret = x.to(str_to_dev(dev_str))
-    if isinstance(x, torch.nn.Parameter):
-        return torch.nn.Parameter(ret)
+    if isinstance(x, _torch.nn.Parameter):
+        return _torch.nn.Parameter(ret)
     return ret
 
 
-def dev_to_str(dev_in: torch.device):
+def dev_to_str(dev_in: _torch.device):
     dev_type, dev_idx = (dev_in.type, dev_in.index)
     if dev_type == 'cpu':
         return dev_type
     return dev_type.replace('cuda', 'gpu') + (':' + (str(dev_idx) if dev_idx is not None else '0'))
 
 
-def str_to_dev(dev_str: Optional[str] = None) -> Optional[torch.device]:
+def str_to_dev(dev_str: Optional[str] = None) -> Optional[_torch.device]:
     if dev_str is None:
         return dev_str
-    return torch.device(dev_str.replace('gpu', 'cuda'))
+    return _torch.device(dev_str.replace('gpu', 'cuda'))
 
 
 def dev_str(x):
@@ -47,8 +47,8 @@ def dev_str(x):
 
 
 _callable_dev_str = dev_str
-gpu_is_available = torch.cuda.is_available
-num_gpus = torch.cuda.device_count
+gpu_is_available = _torch.cuda.is_available
+num_gpus = _torch.cuda.device_count
 
 
 # noinspection PyUnresolvedReferences
