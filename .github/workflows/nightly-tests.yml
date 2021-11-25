@@ -9,6 +9,7 @@ jobs:
         with:
           path: ivy_models
           persist-credentials: false
+          lfs: true
 
       - name: Run Tests
         run: |
