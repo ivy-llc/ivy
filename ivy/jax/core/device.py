@@ -25,6 +25,8 @@ def _to_array(x):
 # ----#
 
 def dev(x):
+    if isinstance(x, _jax.interpreters.partial_eval.DynamicJaxprTracer):
+        return None
     return _to_array(x).device_buffer.device()
 
 
@@ -37,6 +39,8 @@ def to_dev(x, dev_str=None):
 
 
 def dev_to_str(dev_in):
+    if dev_in is None:
+        return None
     p, dev_id = (dev_in.platform, dev_in.id)
     if p == 'cpu':
         return p
