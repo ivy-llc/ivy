@@ -198,7 +198,7 @@ def try_import_ivy_torch(warn=False):
                         'ivy.torch can therefore not be imported.\n'.format(e))
 
 
-def try_import_ivy_mxnd(warn=False):
+def try_import_ivy_mxnet(warn=False):
     try:
         import ivy.mxnet
         return ivy.mxnet
@@ -206,7 +206,7 @@ def try_import_ivy_mxnd(warn=False):
         if not warn:
             return
         logging.warning('{}\n\nmxnet does not appear to be installed, '
-                        'ivy.mxnd can therefore not be imported.\n'.format(e))
+                        'ivy.mxnet can therefore not be imported.\n'.format(e))
 
 
 def try_import_ivy_numpy(warn=False):
@@ -223,7 +223,7 @@ def try_import_ivy_numpy(warn=False):
 FW_DICT = {'jax': try_import_ivy_jax,
            'tensorflow': try_import_ivy_tf,
            'torch': try_import_ivy_torch,
-           'mxnd': try_import_ivy_mxnd,
+           'mxnet': try_import_ivy_mxnet,
            'numpy': try_import_ivy_numpy}
 
 
