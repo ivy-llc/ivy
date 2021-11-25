@@ -8,12 +8,11 @@ RUN rm -rf ivy && \
     cat optional.txt | grep -v "ivy-" | pip3 install --no-cache-dir -r /dev/stdin && \
     python3 setup.py develop --no-deps
 
+COPY requirements.txt /
+RUN cat requirements.txt | grep -v "ivy-" | pip3 install --no-cache-dir -r /dev/stdin
+
+RUN python3 test_dependencies.py -fp requirements.txt && \
+    rm -rf requirements.txt
+
 RUN mkdir ivy_models
 WORKDIR /ivy_models
-
-COPY requirements.txt /ivy_models
-RUN cat requirements.txt | grep -v "ivy-" | pip3 install --no-cache-dir -r /dev/stdin && \
-    rm -rf requirements.txt
-COPY optional.txt /ivy_models
-RUN cat optional.txt | grep -v "ivy-" | pip3 install --no-cache-dir -r /dev/stdin && \
-    rm -rf optional.txt
