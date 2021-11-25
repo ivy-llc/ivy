@@ -26,10 +26,13 @@ RUN git clone https://github.com/ivy-dl/ivy && \
 
 # Install local requirements
 COPY requirements.txt /
-RUN pip3 install --no-cache-dir -r requirements.txt && \
-    rm -rf requirements.txt
+RUN pip3 install --no-cache-dir -r requirements.txt
 
 # Install local optional
 COPY optional.txt /
-RUN pip3 install --no-cache-dir -r optional.txt && \
-    rm -rf optional.txt
+RUN pip3 install --no-cache-dir -r optional.txt
+
+COPY test_dependencies.py /
+RUN python3 test_dependencies.py && \
+    rm -rf optional.txt && \
+    rm -rf requirements.txt
