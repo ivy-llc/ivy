@@ -241,7 +241,7 @@ class Container(dict):
             return Container(return_dict, **config)
         else:
             # noinspection PyProtectedMember
-            ivyh = ivy.default(config['ivyh'], ivy)
+            ivyh = ivy.default(lambda: config['ivyh'], ivy, True)
             # noinspection PyBroadException
             try:
                 if len(containers[0].shape) == 0:
@@ -276,7 +276,7 @@ class Container(dict):
             return Container(return_dict, **config)
         else:
             # noinspection PyProtectedMember
-            ivyh = ivy.default(config['ivyh'], ivy)
+            ivyh = ivy.default(lambda: config['ivyh'], ivy, True)
             # noinspection PyBroadException
             try:
                 if len(containers[0].shape) == 0:
