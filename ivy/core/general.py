@@ -734,7 +734,7 @@ def fourier_encode(x: Union[ivy.Array, ivy.NativeArray], max_freq: float, num_ba
     if linear:
         scales = ivy.linspace(1., max_freq / 2, num_bands, dev_str=dev_str(x))
     else:
-        scales = ivy.logspace(1., math.log(max_freq / 2) / math.log(10), num_bands, base=10, dev_str=dev_str(x))
+        scales = ivy.logspace(0., math.log(max_freq / 2) / math.log(10), num_bands, base=10, dev_str=dev_str(x))
     scales = ivy.cast(scales, ivy.dtype_str(x))
     scales = scales[(*((None,) * (len(x.shape) - 1)), Ellipsis)]
     x = x * scales * math.pi
