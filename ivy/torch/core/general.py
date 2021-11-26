@@ -418,6 +418,7 @@ def ones(shape: List[int], dtype_str: str = 'float32', dev_str: Optional[str] = 
                                          'float32': _torch.float32,
                                          'float64': _torch.float64}
     dtype_val: _torch.dtype = type_dict[dtype_str]
+    dev_str = default_device(dev_str)
     return _torch.ones(shape, dtype=dtype_val, device=str_to_dev(dev_str))
 
 
