@@ -13,4 +13,4 @@ git add -A
 git commit -m "version $2"
 git push
 git tag -a "v$2" -m "version $2"
-#git push origin "v$2"
+git push origin "v$2"
