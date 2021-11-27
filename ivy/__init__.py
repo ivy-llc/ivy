@@ -41,7 +41,6 @@ _MIN_DENOMINATOR = 1e-12
 _MIN_BASE = 1e-5
 
 # global
-import copy
 import functools
 
 # local
