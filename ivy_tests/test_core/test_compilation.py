@@ -6,6 +6,7 @@ Collection of tests for templated general functions
 import time
 import torch
 import pytest
+import urllib
 import numpy as np
 from numbers import Number
 
@@ -677,7 +678,10 @@ def test_resnet_18_imagenet(batch_size, image_dims, dev_str, compile_graph, call
     if call is not helpers.torch_call:
         # currently only supported by PyTorch
         pytest.skip()
-    model = torch.hub.load('pytorch/vision:v0.10.0', 'resnet18', pretrained=True)
+    try:
+        model = torch.hub.load('pytorch/vision:v0.10.0', 'resnet18', pretrained=True)
+    except urllib.error.URLError:
+        pytest.skip()
     net = ivy.to_ivy_module(model.to(ivy.str_to_dev(dev_str)))
     x0 = ivy.random_uniform(0, 1, [batch_size] + [3] + image_dims, dev_str=dev_str)
     x1 = ivy.random_uniform(0, 1, [batch_size] + [3] + image_dims, dev_str=dev_str)
