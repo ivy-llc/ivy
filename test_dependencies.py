@@ -94,8 +94,8 @@ def test_imports(fname, assert_version, update_versions):
 
 def main(filepaths, assert_matching_versions, update_versions):
     for filepath in filepaths.replace(' ', '').split(','):
-        if os.path.isfile(filepath):
-            test_imports(filepath, assert_version=assert_matching_versions, update_versions=update_versions)
+        assert os.path.isfile(filepath)
+        test_imports(filepath, assert_version=assert_matching_versions, update_versions=update_versions)
     print(PRINT_MSG)
     if WARN:
         print(termcolor.colored('WARNING\n' + WARN_MSG, 'red'))
