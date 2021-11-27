@@ -24,19 +24,21 @@ def parse(str_in):
         version = None
     return mod_name, version
 
-def assert_importable(fname, assert_version):
+def test_imports(fname, assert_version, update_versions):
     global ERROR
     global ERROR_MSG
     global WARN
     global WARN_MSG
     global PRINT_MSG
+    versions_to_update = dict()
     msg = '\nasserting imports work for: {}\n\n'.format(fname)
     PRINT_MSG += msg
     ERROR_MSG += msg
     WARN_MSG += msg
     with open(fname, 'r') as f:
-        mod_names_n_versions = [parse(req) for req in f.readlines()]
-    for mod_name, expected_version in mod_names_n_versions:
+        file_lines = f.readlines()
+    mod_names_n_versions = [parse(req) for req in file_lines]
+    for line_num, (mod_name, expected_version) in enumerate(mod_names_n_versions):
         # noinspection PyBroadException
         try:
             mod = importlib.import_module(mod_name)
@@ -63,6 +65,7 @@ def assert_importable(fname, assert_version):
             else:
                 msg = 'expected version {} for module {}, but detected version {}\n'.format(
                     expected_version, mod_name, detected_version)
+                versions_to_update[line_num] = {'expected': expected_version, 'detected': detected_version}
                 if assert_version:
                     ERROR = True
                     ERROR_MSG += msg
@@ -80,12 +83,19 @@ def assert_importable(fname, assert_version):
             WARN = True
             PRINT_MSG += msg
             WARN_MSG += msg
+    if not update_versions:
+        return
+    for line_num, versions in versions_to_update.items():
+        orig_str = file_lines[line_num]
+        new_str = orig_str.replace(versions['expected'], versions['detected'])
+        file_lines[line_num] = new_str
+    with open(fname, 'w') as f:
+        f.writelines(file_lines)
 
-
-def main(filepaths, assert_matching_versions):
+def main(filepaths, assert_matching_versions, update_versions):
     for filepath in filepaths.replace(' ', '').split(','):
         if os.path.isfile(filepath):
-            assert_importable(filepath, assert_version=assert_matching_versions)
+            test_imports(filepath, assert_version=assert_matching_versions, update_versions=update_versions)
     print(PRINT_MSG)
     if WARN:
         print(termcolor.colored('WARNING\n' + WARN_MSG, 'red'))
@@ -100,5 +110,7 @@ if __name__ == '__main__':
     parser.add_argument('-amv', '--assert_matching_versions', action='store_true',
                         help='Whether to assert that all module versions match those lists in the requirements.txt and'
                              'optional.txt files.')
+    parser.add_argument('-uv', '--update_versions', action='store_true',
+                        help='Whether to update the versions in the installation files.')
     parsed_args = parser.parse_args()
-    main(parsed_args.filepaths, parsed_args.assert_matching_versions)
+    main(parsed_args.filepaths, parsed_args.assert_matching_versions, parsed_args.update_versions)
