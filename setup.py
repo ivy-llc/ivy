@@ -22,7 +22,7 @@ def _strip(line):
 
 
 setup(name='ivy-core',
-      version='1.1.5',
+      version='1.1.6',
       author='Ivy Team',
       author_email='ivydl.team@gmail.com',
       description='The templated deep learning framework, enabling framework-agnostic functions, layers and libraries.',
