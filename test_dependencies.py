@@ -51,7 +51,10 @@ def assert_importable(fname, assert_version):
             # noinspection PyUnresolvedReferences
             detected_version = mod.__version__
         except AttributeError:
-            detected_version = '.'.join([str(n) for n in termcolor.VERSION])
+            try:
+                detected_version = '.'.join([str(n) for n in mod.VERSION])
+            except AttributeError:
+                continue
         except Exception:
             detected_version = None
         if detected_version and expected_version:
