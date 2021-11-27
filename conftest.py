@@ -35,6 +35,7 @@ def run_around_tests(dev_str, f, wrapped_mode, compile_graph, call):
     if 'gpu' in dev_str and call is helpers.np_call:
         # Numpy does not support GPU
         pytest.skip()
+    ivy.clear_framework_stack()
     with f.use:
         f.set_wrapped_mode(wrapped_mode)
         ivy.set_default_device(dev_str)

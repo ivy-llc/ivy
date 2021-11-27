@@ -162,6 +162,10 @@ def unset_framework():
     return fw
 
 
+def clear_framework_stack():
+    while framework_stack:
+        unset_framework()
+
 # Framework Getters #
 # ------------------#
 
