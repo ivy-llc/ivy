@@ -1,10 +1,10 @@
-h5py #==3.1.0
-numpy #==1.19.5
-einops #==0.3.2
-pytest #==6.2.5
-psutil #==5.8.0
-networkx #==2.6.3
-termcolor #==1.1.0
-matplotlib #==3.5.0
+h5py
+numpy
+einops
+pytest
+psutil
+networkx
+termcolor
+matplotlib
 nvidia-ml-py3 # mod_name=pynvml
-opencv-python #==4.5.4 # mod_name=cv2
+opencv-python # mod_name=cv2

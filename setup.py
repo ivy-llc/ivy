@@ -15,6 +15,12 @@
 # ==============================================================================
 from distutils.core import setup
 import setuptools
+
+
+def _strip(line):
+    return line.split(' ')[0].split('#')[0].split(',')[0]
+
+
 setup(name='ivy-core',
       version='1.1.5',
       author='Ivy Team',
@@ -31,7 +37,7 @@ setup(name='ivy-core',
             'Source': 'https://github.com/ivy-dl/ivy',
       },
       packages=setuptools.find_packages(),
-      install_requires=['h5py', 'numpy', 'termcolor'],
+      install_requires=[_strip(line) for line in open('requirements.txt', 'r')],
       classifiers=['License :: OSI Approved :: Apache Software License'],
       license='Apache 2.0'
       )
