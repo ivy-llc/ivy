@@ -17,6 +17,10 @@ import torch.multiprocessing as multiprocessing
 # local
 import ivy
 import ivy.numpy
+import ivy.jax
+import ivy.tensorflow
+import ivy.torch
+import ivy.mxnet
 import ivy_tests.helpers as helpers
 
 
@@ -51,19 +55,14 @@ def test_set_framework(fw_str, dev_str, call):
 
 # use_framework
 def test_use_within_use_framework(dev_str, call):
-    import ivy.numpy
     with ivy.numpy.use:
         pass
-    import ivy.jax
     with ivy.jax.use:
         pass
-    import ivy.tensorflow
     with ivy.tensorflow.use:
         pass
-    import ivy.torch
     with ivy.torch.use:
         pass
-    import ivy.mxnet
     with ivy.mxnet.use:
         pass
 
