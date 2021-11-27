@@ -49,7 +49,7 @@ from .wrapper import set_wrapped_mode, unset_wrapped_mode, wrapped_mode, wrapped
 from . import wrapper
 from .framework_handler import current_framework, get_framework, set_framework, unset_framework, framework_stack,\
     choose_random_framework, try_import_ivy_jax, try_import_ivy_tf, try_import_ivy_torch, try_import_ivy_mxnet,\
-    try_import_ivy_numpy
+    try_import_ivy_numpy, clear_framework_stack
 from . import framework_handler
 from .debugger import set_debug_mode, set_breakpoint_debug_mode, set_exception_debug_mode, unset_debug_mode,\
     debug_mode, debug_mode_val
