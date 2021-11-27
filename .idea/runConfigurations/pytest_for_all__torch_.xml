@@ -1,6 +1,6 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="pytest for all (torch)" type="tests" factoryName="py.test" folderName="torch">
-    <module name="ivy_models" />
+    <module name="models" />
     <option name="INTERPRETER_OPTIONS" value="" />
     <option name="PARENT_ENVS" value="true" />
     <option name="SDK_HOME" value="" />
