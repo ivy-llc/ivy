@@ -11,6 +11,8 @@ from ivy.core.device import Profiler as BaseProfiler
 
 
 def _same_device(dev_a, dev_b):
+    if dev_a is None or dev_b is None:
+        return False
     return '/' + ':'.join(dev_a[1:].split(':')[-2:]) == '/' + ':'.join(dev_b[1:].split(':')[-2:])
 
 
@@ -19,6 +21,8 @@ dev.__name__ = 'dev'
 
 
 def to_dev(x, dev_str=None):
+    if dev_str is None:
+        return x
     current_dev_str = _dev_str_callable(x)
     if not _same_device(current_dev_str, dev_str):
         with _tf.device('/' + dev_str.upper()):
