@@ -7,19 +7,17 @@ import ivy
 from ivy_tests import helpers
 
 
-FW_STRS = ['numpy', 'jax', 'tensorflow', 'tensorflow_graph', 'torch', 'mxnet']
+FW_STRS = ['numpy', 'jax', 'tensorflow', 'torch', 'mxnet']
 
 
 TEST_FRAMEWORKS: Dict[str, callable] = {'numpy': lambda: helpers.get_ivy_numpy(),
                                         'jax': lambda: helpers.get_ivy_jax(),
                                         'tensorflow': lambda: helpers.get_ivy_tensorflow(),
-                                        'tensorflow_graph': lambda: helpers.get_ivy_tensorflow(),
                                         'torch': lambda: helpers.get_ivy_torch(),
                                         'mxnet': lambda: helpers.get_ivy_mxnet()}
 TEST_CALL_METHODS: Dict[str, callable] = {'numpy': helpers.np_call,
                                           'jax': helpers.jnp_call,
                                           'tensorflow': helpers.tf_call,
-                                          'tensorflow_graph': helpers.tf_graph_call,
                                           'torch': helpers.torch_call,
                                           'mxnet': helpers.mx_call}
 
