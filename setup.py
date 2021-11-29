@@ -18,11 +18,18 @@ import setuptools
 
 setup(name='ivy-models',
       version='1.1.5',
-      description='Collection of pre-trained models, compatible with any backend framework',
       author='Ivy Team',
       author_email='ivydl.team@gmail.com',
+      description='Collection of pre-trained models, compatible with any backend framework',
+      long_description="""Collection of pre-trained models, compatible with any backend framework""",
+      long_description_content_type='text/markdown',
+      url='https://ivy-dl.org/models',
+      project_urls={
+            'Docs': 'https://ivy-dl.org/models/',
+            'Source': 'https://github.com/ivy-dl/models',
+      },
       packages=setuptools.find_packages(),
-      install_requires=['h5py', 'numpy', 'termcolor'],
+      install_requires=['ivy-core'],
       classifiers=['License :: OSI Approved :: Apache Software License'],
       license='Apache 2.0'
       )
