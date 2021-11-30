@@ -1,5 +1,5 @@
 """
-Collection of runtime tests for templated random functions
+Collection of runtime tests for unified random functions
 """
 
 DIM = int(1e4)

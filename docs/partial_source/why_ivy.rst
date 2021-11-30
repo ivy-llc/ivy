@@ -6,7 +6,7 @@ Portable Code
 
 Ivy's strength arises when we want to maximize the usability of our code.
 
-With deep learning and gradient-based optimization increasingly finding their way into all kinds of different fields,
+With machine learning and gradient-based optimization increasingly finding their way into all kinds of different fields,
 let's suppose you need to implement a set of functions in one of these fields for your own DL project.
 
 The topic could be anything, such as bayesian inference, medical imaging, fluid mechanics, particle physcis, economics etc.
@@ -46,11 +46,11 @@ But with every function in your library written in pure pytorch, this closes the
 In this simple case, manual reimplementation would be feasible,
 but for more complex libraries and codebases this becomes a significant time investment.
 
-Furthermore, the most popular deep learning framework in 2 years time may not even exist yet.
+Furthermore, the most popular machine learning framework in 2 years time may not even exist yet.
 Your pytorch library would then inevitably become outdated.
 
 Ivy solves this combination of problems. Firstly, if you had instead written your library in Ivy,
-your library would immediately be usable for developers in all current deep learning frameworks.
+your library would immediately be usable for developers in all current machine learning frameworks.
 Secondly, the Ivy team are commited to keeping Ivy compatible with any new frameworks introduced in future,
 meaning your library will not become outdated.
 
@@ -138,4 +138,4 @@ For a pytorch developer using your library, their network class might look somet
                 mean, var, zk_e, Rk_e, *self._get_kalman_params())
 
 The same drag-and-drop behaviour is possible for MXNet, Jax and Numpy,
-and we are commited to supporting future deep learning frameworks, yet to be created.
+and we are commited to supporting future machine learning frameworks, yet to be created.
