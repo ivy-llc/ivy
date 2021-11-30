@@ -1,10 +1,5 @@
-h5py
 numpy
 einops
-pytest
 psutil
-networkx
 termcolor
-matplotlib
 nvidia-ml-py3 # mod_name=pynvml
-opencv-python # mod_name=cv2
