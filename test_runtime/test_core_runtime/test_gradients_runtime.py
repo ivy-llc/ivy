@@ -1,5 +1,5 @@
 """
-Collection of runtime tests for templated gradients functions
+Collection of runtime tests for unified gradients functions
 """
 
 DIM = int(1e4)

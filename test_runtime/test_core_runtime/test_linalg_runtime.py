@@ -1,5 +1,5 @@
 """
-Collection of runtime tests for templated linalg functions
+Collection of runtime tests for unified linalg functions
 """
 
 DIM = int(1e4)

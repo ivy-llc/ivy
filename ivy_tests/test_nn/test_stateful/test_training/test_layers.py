@@ -1,5 +1,5 @@
 """
-Collection of tests for training templated neural network layers
+Collection of tests for training unified neural network layers
 """
 
 # global
