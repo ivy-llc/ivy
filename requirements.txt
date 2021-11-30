@@ -1,4 +1,1 @@
-numpy
-pytest
 ivy-core # mod_name=ivy
-nvidia-ml-py3 # mod_name=pynvml

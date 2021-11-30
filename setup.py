@@ -13,23 +13,50 @@
 # See the License for the specific language governing permissions and
 # limitations under the License..
 # ==============================================================================
-from distutils.core import setup
 import setuptools
+from pathlib import Path
+from distutils.core import setup
+
+
+def _strip(line):
+    return line.split(' ')[0].split('#')[0].split(',')[0]
+
+def is_html(line):
+    line_squashed = line.replace(' ', '')
+    if not line_squashed:
+        return False
+    if line_squashed[0] == '<' and line_squashed[-1] == '>':
+        return True
+    return False
+
+def is_raw_block(line):
+    line_squashed = line.replace(' ', '')
+    if len(line_squashed) < 11:
+        return False
+    if line_squashed[-11:] == '..raw::html':
+        return True
+    return False
+
+
+this_directory = Path(__file__).parent
+lines = (this_directory / "README.rst").read_text().split('\n')
+lines = [line for line in lines if not (is_html(line) or is_raw_block(line))]
+long_description = '\n'.join(lines)
 
 setup(name='ivy-models',
       version='1.1.6',
       author='Ivy Team',
       author_email='ivydl.team@gmail.com',
       description='Collection of pre-trained models, compatible with any backend framework',
-      long_description="""Collection of pre-trained models, compatible with any backend framework""",
-      long_description_content_type='text/markdown',
+      long_description=long_description,
+      long_description_content_type='text/x-rst',
       url='https://ivy-dl.org/models',
       project_urls={
             'Docs': 'https://ivy-dl.org/models/',
             'Source': 'https://github.com/ivy-dl/models',
       },
       packages=setuptools.find_packages(),
-      install_requires=['ivy-core'],
+      install_requires=[_strip(line) for line in open('requirements.txt', 'r')],
       classifiers=['License :: OSI Approved :: Apache Software License'],
       license='Apache 2.0'
       )
