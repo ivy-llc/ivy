@@ -9,7 +9,11 @@ import time
 import termcolor
 import numpy as _np
 import json as _json
-import h5py as _h5py
+try:
+    # noinspection PyPackageRequirements
+    import h5py as _h5py
+except ModuleNotFoundError:
+    _h5py = None
 import pickle as _pickle
 import random as _random
 from operator import lt as _lt
@@ -712,6 +716,9 @@ class Container(dict):
         :type ivyh: handle to ivy module, optional
         :return: Container loaded from disk
         """
+        if not ivy.exists(_h5py):
+            raise Exception(
+                'You must install python package h5py in order to load hdf5 files from disk into a container.')
         container_dict = dict()
         if type(h5_obj_or_filepath) is str:
             h5_obj = _h5py.File(h5_obj_or_filepath, 'r')
@@ -766,6 +773,8 @@ class Container(dict):
         :type h5_obj_or_filepath: str or h5 obj
         :return: Size of h5 file contents, and batch size.
         """
+        if not ivy.exists(_h5py):
+            raise Exception('You must install python package h5py in order to determine the size of hdf5 files.')
         if type(h5_obj_or_filepath) is str:
             h5_obj = _h5py.File(h5_obj_or_filepath, 'r')
         else:
@@ -795,6 +804,8 @@ class Container(dict):
         :param seed_value: random seed to use for array shuffling
         :type seed_value: int
         """
+        if not ivy.exists(_h5py):
+            raise Exception('You must install python package h5py in order to shuffle hdf5 files on disk.')
         if seed_value is None:
             seed_value = _random.randint(0, 1000)
         if type(h5_obj_or_filepath) is str:
@@ -2153,6 +2164,8 @@ class Container(dict):
         :type max_batch_size: int
         :type h5_obj_or_filepath: str or h5 object
         """
+        if not ivy.exists(_h5py):
+            raise Exception('You must install python package h5py in order to save containers to disk as hdf5 files.')
         if type(h5_obj_or_filepath) is str:
             h5_obj = _h5py.File(h5_obj_or_filepath, mode)
         else:
