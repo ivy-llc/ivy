@@ -1,5 +1,5 @@
 """
-Collection of runtime tests for templated reduction functions
+Collection of runtime tests for unified reduction functions
 """
 
 DIM = int(1e4)

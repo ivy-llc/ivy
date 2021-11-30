@@ -1,5 +1,5 @@
 """
-Collection of runtime tests for templated general functions
+Collection of runtime tests for unified general functions
 """
 
 DIM = int(1e4)

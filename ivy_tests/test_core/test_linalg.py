@@ -1,5 +1,5 @@
 """
-Collection of tests for templated linear algebra functions
+Collection of tests for unified linear algebra functions
 """
 
 # global

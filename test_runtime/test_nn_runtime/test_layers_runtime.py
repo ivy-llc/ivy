@@ -1,5 +1,5 @@
 """
-Collection of runtime tests for templated layers functions
+Collection of runtime tests for unified layers functions
 """
 
 DIM = int(1e4)

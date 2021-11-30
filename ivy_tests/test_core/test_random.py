@@ -1,5 +1,5 @@
 """
-Collection of tests for templated reduction functions
+Collection of tests for unified reduction functions
 """
 
 # global
