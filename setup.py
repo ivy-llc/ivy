@@ -45,7 +45,7 @@ long_description = '\n'.join(lines)
 
 
 setup(name='ivy-core',
-      version='1.1.6',
+      version='1.1.7',
       author='Ivy Team',
       author_email='ivydl.team@gmail.com',
       description='The templated deep learning framework, enabling framework-agnostic functions, layers and libraries.',
