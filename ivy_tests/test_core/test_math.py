@@ -1,5 +1,5 @@
 """
-Collection of tests for templated math functions
+Collection of tests for unified math functions
 """
 
 # global
