@@ -13,12 +13,35 @@
 # See the License for the specific language governing permissions and
 # limitations under the License..
 # ==============================================================================
-from distutils.core import setup
 import setuptools
+from pathlib import Path
+from distutils.core import setup
 
 
 def _strip(line):
     return line.split(' ')[0].split('#')[0].split(',')[0]
+
+def is_html(line):
+    line_squashed = line.replace(' ', '')
+    if not line_squashed:
+        return False
+    if line_squashed[0] == '<' and line_squashed[-1] == '>':
+        return True
+    return False
+
+def is_raw_block(line):
+    line_squashed = line.replace(' ', '')
+    if len(line_squashed) < 11:
+        return False
+    if line_squashed[-11:] == '..raw::html':
+        return True
+    return False
+
+
+this_directory = Path(__file__).parent
+lines = (this_directory / "README.rst").read_text().split('\n')
+lines = [line for line in lines if not (is_html(line) or is_raw_block(line))]
+long_description = '\n'.join(lines)
 
 
 setup(name='ivy-core',
@@ -26,11 +49,8 @@ setup(name='ivy-core',
       author='Ivy Team',
       author_email='ivydl.team@gmail.com',
       description='The templated deep learning framework, enabling framework-agnostic functions, layers and libraries.',
-      long_description="""# What is Ivy?\n\nIvy is a templated deep learning framework which maximizes the portability
-      of deep learning codebases. Ivy wraps the functional APIs of existing frameworks. Framework-agnostic functions,
-      libraries and layers can then be written using Ivy, with simultaneous support for all frameworks.
-      Ivy currently supports Jax, TensorFlow, PyTorch, MXNet and Numpy. Check out the [docs](https://ivy-dl.org/ivy) for more info!""",
-      long_description_content_type='text/markdown',
+      long_description=long_description,
+      long_description_content_type='text/x-rst',
       url='https://ivy-dl.org/ivy',
       project_urls={
             'Docs': 'https://ivy-dl.org/ivy/',
