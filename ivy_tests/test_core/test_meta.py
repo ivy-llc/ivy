@@ -1,5 +1,5 @@
 """
-Collection of tests for templated meta functions
+Collection of tests for unified meta functions
 """
 
 # global

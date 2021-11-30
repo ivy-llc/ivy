@@ -1,5 +1,5 @@
 """
-Collection of tests for templated device functions
+Collection of tests for unified device functions
 """
 
 # global

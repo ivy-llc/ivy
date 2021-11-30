@@ -13,7 +13,7 @@ Writing Ivy
 
 Writing Ivy code is simple.
 The :code:`ivy` namespace provides access to all of the Ivy functions,
-which can all be used directly with tensors from any of the supported deep learning frameworks.
+which can all be used directly with tensors from any of the supported machine learning frameworks.
 
 Let's assume the codebase that you wish to share with the community consists of a single simple function, outlined below.
 In reality, your code will likely be a little more complex than this!

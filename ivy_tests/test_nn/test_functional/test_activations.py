@@ -1,5 +1,5 @@
 """
-Collection of tests for templated neural network activation functions
+Collection of tests for unified neural network activation functions
 """
 
 # global

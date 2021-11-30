@@ -1,5 +1,5 @@
 """
-Collection of runtime tests for templated logic functions
+Collection of runtime tests for unified logic functions
 """
 
 DIM = int(1e4)
