@@ -204,11 +204,14 @@ def test_distributed_multiprocess_training(bs_ic_oc, dev_str, call):
     loss_tm1 = 1e12
     loss = None
     grads = None
+    orig_timeout = ivy.queue_timeout()
+    ivy.set_queue_timeout(30.)
     for i in range(10):
         loss, grads = dev_mapper.map(xn=x, vc=module.v.dev_clone(dev_strs))
         module.v = optim.step(module.v, grads)
         assert loss < loss_tm1
         loss_tm1 = loss
+    ivy.set_queue_timeout(orig_timeout)
 
     # type test
     assert ivy.is_array(loss)
