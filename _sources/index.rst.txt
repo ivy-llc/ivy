@@ -27,7 +27,7 @@
     </a>
     <br clear="all" />
 
-**The templated deep learning framework, enabling framework-agnostic functions, layers and libraries.**
+**The unified machine learning framework, enabling framework-agnostic functions, layers and libraries.**
 
 .. raw:: html
 
@@ -68,7 +68,7 @@ Overview
 
 **What is Ivy?**
 
-Ivy is a templated deep learning framework which maximizes the portability of deep learning codebases.
+Ivy is a unified machine learning framework which maximizes the portability of machine learning codebases.
 Ivy wraps the functional APIs of existing frameworks.
 Framework-agnostic functions, libraries and layers can then be written using Ivy,
 with simultaneous support for all frameworks.
@@ -278,21 +278,21 @@ Ivy's strength arises when we want to maximize the usability of our code.
 We can write a set of functions **once** in Ivy, and share these with the community so that **all** developers can use them,
 irrespective of their personal choice of framework. TensorFlow? PyTorch? Jax? With Ivy code it doesn't matter!
 
-This makes it very simple to create highly portable deep learning codebases.
+This makes it very simple to create highly portable machine learning codebases.
 The core idea behind Ivy is captured by the example of the :code:`ivy.clip` function below.
 
 .. raw:: html
 
     <p align="center">
-        <img width="75%" style="display: block;" src='_images/a_templated_framework.png'>
+        <img width="75%" style="display: block;" src='_images/a_unified_framework.png'>
     </p>
 
-On it's own this may not seem very exciting, there are more interesting things to do in deep learning than clip tensors.
+On it's own this may not seem very exciting, there are more interesting things to do in machine learning than clip tensors.
 Ivy is a building block for more interesting applications.
 
 For example, the Ivy libraries for mechanics, 3D vision, robotics, and differentiable environments are all written in pure Ivy.
 These libraries provide fully differentiable implementations of various applied functions,
-primed for integration in end-to-end networks, for users of any deep-learning framework.
+primed for integration in end-to-end networks, for users of any machine-learning framework.
 
 Another benefit of Ivy is user flexibility.
 By keeping the Ivy abstraction lightweight and fully functional, this keeps you in full control of your code.
@@ -333,7 +333,7 @@ Citation
 ::
 
     @article{lenton2021ivy,
-      title={Ivy: Templated Deep Learning for Inter-Framework Portability},
+      title={Ivy: Unified Machine Learning for Inter-Framework Portability},
       author={Lenton, Daniel and Pardo, Fabio and Falck, Fabian and James, Stephen and Clark, Ronald},
       journal={arXiv preprint arXiv:2102.02886},
       year={2021}
