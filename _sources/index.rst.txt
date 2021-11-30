@@ -171,9 +171,9 @@ the icons below to learn more!
         <a href="https://pypi.org/project/ivy-models">
             <img width="13%" style="float: left;" src="https://badge.fury.io/py/ivy-models.svg">
         </a>
-        <img width="9%" style="float: left;" src="https://raw.githubusercontent.com/ivy-dl/ivy-dl.github.io/master/img/externally_linked/logos/empty.png">
+        <img width="10%" style="float: left;" src="https://raw.githubusercontent.com/ivy-dl/ivy-dl.github.io/master/img/externally_linked/logos/empty.png">
         <a href="https://github.com/ivy-dl/ecosystem/actions?query=workflow%3Adocs">
-            <img width="13%" style="float: left; padding-right: 4px; padding-bottom: 4px;" src="https://img.shields.io/github/workflow/status/ivy-dl/ecosystem/docs?label=docs">
+            <img width="11%" style="float: left; padding-right: 4px; padding-bottom: 4px;" src="https://img.shields.io/github/workflow/status/ivy-dl/ecosystem/docs?label=docs">
         </a>
 
         <br clear="all" />
