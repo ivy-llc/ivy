@@ -2,17 +2,29 @@
 import os
 import ivy
 import sys
-import cv2
+try:
+    # noinspection PyPackageRequirements
+    import cv2
+except ModuleNotFoundError:
+    cv2 = None
 import time
 import copy
 import random
 import logging
 import inspect
 import numpy as np
-import networkx as nx
-import matplotlib
-matplotlib.use("Agg")
-import matplotlib.pyplot as plt
+try:
+    # noinspection PyPackageRequirements
+    import networkx as nx
+except ModuleNotFoundError:
+    nx = None
+try:
+    # noinspection PyPackageRequirements
+    import matplotlib
+    matplotlib.use("Agg")
+    import matplotlib.pyplot as plt
+except ModuleNotFoundError:
+    plt = None
 from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 
 # local
@@ -734,6 +746,15 @@ class Graph:
 
     def _show_for_functions(self, ax, functions, with_edge_labels, with_arg_labels, with_output_labels,
                             output_connected_only, randomness_factor, format_graph, cv2_labels=True, pos=None):
+
+        # assert that required visualization packages are installed
+        if not ivy.exists(nx):
+            raise Exception('networkx python package must be installed in order to visualize computation graphs.')
+        if not ivy.exists(nx):
+            raise Exception('matplotlib python package must be installed in order to visualize computation graphs.')
+        if cv2_labels and not ivy.exists(cv2):
+            raise Exception('opencv-python package must be installed in order to visualize computation graphs '
+                            'with cv2_labels mode set.')
 
         # create directed networkX graph
         g = nx.DiGraph()
