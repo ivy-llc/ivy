@@ -1,5 +1,5 @@
 """
-Collection of tests for templated gradient functions
+Collection of tests for unified gradient functions
 """
 
 # global

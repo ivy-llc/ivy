@@ -1,5 +1,5 @@
 """
-Collection of tests for templated logic functions
+Collection of tests for unified logic functions
 """
 
 # global

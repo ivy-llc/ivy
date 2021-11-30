@@ -1,5 +1,5 @@
 """
-Collection of tests for templated image-related functions
+Collection of tests for unified image-related functions
 """
 
 # global

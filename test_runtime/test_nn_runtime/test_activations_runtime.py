@@ -1,5 +1,5 @@
 """
-Collection of runtime tests for templated activation functions
+Collection of runtime tests for unified activation functions
 """
 
 DIM = int(1e4)
