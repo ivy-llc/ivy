@@ -1,4 +1,4 @@
-.. image:: https://github.com/ivy-dl/ivy/blob/master/docs/partial_source/logos/logo.png
+.. image:: https://github.com/ivy-dl/ivy/blob/master/docs/partial_source/logos/logo.png?raw=true
    :width: 100%
 
 .. raw:: html
@@ -250,7 +250,7 @@ This is the same for ALL Ivy functions. They can accept tensors from any framewo
 To see a list of all Ivy methods, type :code:`ivy.` into a python command prompt and press :code:`tab`.
 You should then see output like the following:
 
-.. image:: https://github.com/ivy-dl/ivy/blob/master/docs/partial_source/images/ivy_tab.png
+.. image:: https://github.com/ivy-dl/ivy/blob/master/docs/partial_source/images/ivy_tab.png?raw=true
    :width: 100%
 
 Based on this short code sample alone, you may wonder, why is this helpful?
@@ -270,7 +270,7 @@ irrespective of their personal choice of framework. TensorFlow? PyTorch? Jax? Wi
 This makes it very simple to create highly portable machine learning codebases.
 The core idea behind Ivy is captured by the example of the :code:`ivy.clip` function below.
 
-.. image:: https://github.com/ivy-dl/ivy/blob/master/docs/partial_source/images/a_unified_framework.png
+.. image:: https://github.com/ivy-dl/ivy/blob/master/docs/partial_source/images/a_unified_framework.png?raw=true
    :width: 100%
 
 On it's own this may not seem very exciting, there are more interesting things to do in machine learning than clip tensors.
@@ -284,7 +284,7 @@ Another benefit of Ivy is user flexibility.
 By keeping the Ivy abstraction lightweight and fully functional, this keeps you in full control of your code.
 The schematic below emphasizes that you can choose to develop at any abstraction level.
 
-.. image:: https://github.com/ivy-dl/ivy/blob/master/docs/partial_source/images/abstraction_hierarchy.png
+.. image:: https://github.com/ivy-dl/ivy/blob/master/docs/partial_source/images/abstraction_hierarchy.png?raw=true
    :width: 100%
 
 You can code entirely in Ivy, or mainly in their native DL framework, with a small amount of Ivy code.
