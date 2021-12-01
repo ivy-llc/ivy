@@ -21,7 +21,32 @@ from distutils.core import setup
 def _strip(line):
     return line.split(' ')[0].split('#')[0].split(',')[0]
 
-def is_html(line):
+def _replace_logos_html(txt):
+
+    # html-containing chunks
+    chunks = txt.split('.. raw:: html')
+
+    # backend logos
+    backends_chunk = chunks[2]
+    bc = backends_chunk.split('\n\n')
+    img_str = '.. image:: https://github.com/ivy-dl/ivy-dl.github.io/blob/master/img/externally_linked/logos/supported/frameworks.png?raw=true\n' \
+              '   :width: 100%'
+    backends_chunk = '\n\n'.join(bc[0:1] + [img_str] + bc[2:])
+
+    # library logos
+    libraries_chunk = chunks[3]
+    lc = libraries_chunk.split('\n\n')
+    img_str = '.. image:: https://github.com/ivy-dl/ivy-dl.github.io/blob/master/img/externally_linked/ivy_libraries.png?raw=true\n' \
+              '   :width: 100%'
+    libraries_chunk = '\n\n'.join(lc[0:1] + [img_str] + lc[2:])
+
+    # re-join
+    chunks[3] = libraries_chunk
+    return ''.join(
+        ['.. raw:: html'.join(chunks[0:2]), backends_chunk, '.. raw:: html'.join(chunks[3:])])
+
+
+def _is_html(line):
     line_squashed = line.replace(' ', '')
     if not line_squashed:
         return False
@@ -29,7 +54,7 @@ def is_html(line):
         return True
     return False
 
-def is_raw_block(line):
+def _is_raw_block(line):
     line_squashed = line.replace(' ', '')
     if len(line_squashed) < 11:
         return False
@@ -39,8 +64,9 @@ def is_raw_block(line):
 
 
 this_directory = Path(__file__).parent
-lines = (this_directory / "README.rst").read_text().split('\n')
-lines = [line for line in lines if not (is_html(line) or is_raw_block(line))]
+text = (this_directory / "README.rst").read_text()
+lines = _replace_logos_html(text).split('\n')
+lines = [line for line in lines if not (_is_html(line) or _is_raw_block(line))]
 long_description = '\n'.join(lines)
 
 
