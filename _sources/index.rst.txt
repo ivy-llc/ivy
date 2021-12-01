@@ -74,8 +74,7 @@ Ivy currently supports Jax, TensorFlow, PyTorch, MXNet and Numpy.
 **Ivy Libraries**
 
 There are a host of derived libraries written in Ivy, in the areas of mechanics, 3D vision, robotics, gym environments,
-neural memory, pre-trained models + implementations, and builder tools with trainers, data loaders and more. Click on
-the icons below to learn more!
+neural memory, pre-trained models + implementations, and builder tools with trainers, data loaders and more. Click on the icons below to learn more!
 
 .. raw:: html
 
