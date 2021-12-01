@@ -71,7 +71,7 @@ long_description = '\n'.join(lines)
 
 
 setup(name='ivy-core',
-      version='1.1.8',
+      version='1.1.9',
       author='Ivy Team',
       author_email='ivydl.team@gmail.com',
       description='The unified machine learning framework, enabling framework-agnostic functions, layers and libraries.',
