@@ -253,7 +253,7 @@ This is the same for ALL Ivy functions. They can accept tensors from any framewo
 To see a list of all Ivy methods, type :code:`ivy.` into a python command prompt and press :code:`tab`.
 You should then see output like the following:
 
-.. image:: docs/partial_source/images/ivy_tab.png
+.. image:: https://github.com/ivy-dl/ivy/blob/master/docs/partial_source/images/ivy_tab.png
    :width: 100%
 
 Based on this short code sample alone, you may wonder, why is this helpful?
