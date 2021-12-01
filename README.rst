@@ -273,11 +273,8 @@ irrespective of their personal choice of framework. TensorFlow? PyTorch? Jax? Wi
 This makes it very simple to create highly portable machine learning codebases.
 The core idea behind Ivy is captured by the example of the :code:`ivy.clip` function below.
 
-.. raw:: html
-
-    <p align="center">
-        <img width="75%" style="display: block;" src='docs/partial_source/images/a_unified_framework.png'>
-    </p>
+.. image:: https://github.com/ivy-dl/ivy/blob/master/docs/partial_source/images/a_unified_framework.png
+   :width: 100%
 
 On it's own this may not seem very exciting, there are more interesting things to do in machine learning than clip tensors.
 Ivy is a building block for more interesting applications.
@@ -290,11 +287,8 @@ Another benefit of Ivy is user flexibility.
 By keeping the Ivy abstraction lightweight and fully functional, this keeps you in full control of your code.
 The schematic below emphasizes that you can choose to develop at any abstraction level.
 
-.. raw:: html
-
-    <p align="center">
-        <img width="50%" style="display: block;" src='docs/partial_source/images/abstraction_hierarchy.png'>
-    </p>
+.. image:: https://github.com/ivy-dl/ivy/blob/master/docs/partial_source/images/abstraction_hierarchy.png
+   :width: 100%
 
 You can code entirely in Ivy, or mainly in their native DL framework, with a small amount of Ivy code.
 This is entirely up to you, depending on how many Ivy functions you need from existing Ivy libraries,
