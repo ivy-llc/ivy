@@ -1,4 +1,4 @@
-.. image:: https://github.com/ivy-dl/models/blob/master/docs/partial_source/logos/logo.png
+.. image:: https://github.com/ivy-dl/models/blob/master/docs/partial_source/logos/logo.png?raw=true
    :width: 100%
 
 .. raw:: html
