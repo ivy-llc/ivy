@@ -65,7 +65,7 @@ def _is_raw_block(line):
 
 this_directory = Path(__file__).parent
 text = (this_directory / "README.rst").read_text()
-lines = _replace_logos_html(text).split('\n')
+lines = _replace_logos_html(text).replace('. Click on the icons below to learn more!', '!').split('\n')
 lines = [line for line in lines if not (_is_html(line) or _is_raw_block(line))]
 long_description = '\n'.join(lines)
 
