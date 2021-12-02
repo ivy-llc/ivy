@@ -194,6 +194,8 @@ def test_distributed_multiprocess_training(bs_ic_oc, dev_str, call):
     ret_fn = lambda ret: ivy.dev_unify_iter(ret, dev_str0, 'mean', transpose=True)
 
     # device mapper
+    orig_timeout = ivy.queue_timeout()
+    ivy.set_queue_timeout(30.)
     dev_mapper = ivy.DevMapperMultiProc(map_fn, ret_fn, dev_strs, constant={'module': module})
 
     # local module
@@ -204,8 +206,6 @@ def test_distributed_multiprocess_training(bs_ic_oc, dev_str, call):
     loss_tm1 = 1e12
     loss = None
     grads = None
-    orig_timeout = ivy.queue_timeout()
-    ivy.set_queue_timeout(30.)
     for i in range(10):
         loss, grads = dev_mapper.map(xn=x, vc=module.v.dev_clone(dev_strs))
         module.v = optim.step(module.v, grads)
