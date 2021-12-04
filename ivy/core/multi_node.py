@@ -16,7 +16,7 @@ from ivy.framework_handler import current_framework as _cur_framework
 
 DEFAULT_NODE = None
 NODE_HANDLES = dict()
-SPLIT_FACTORS = dict()
+split_factors = dict()
 
 '''
 # Node Queries #
