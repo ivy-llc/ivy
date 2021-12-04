@@ -143,24 +143,24 @@ def test_memory_on_dev(dev_str_to_check, dev_str, call):
 def test_default_device(dev_str, call):
 
     # setting and unsetting
-    assert len(ivy.default_device_stack) == 1
+    orig_len = len(ivy.default_device_stack)
     ivy.set_default_device('cpu')
-    assert len(ivy.default_device_stack) == 2
+    assert len(ivy.default_device_stack) == orig_len + 1
     ivy.set_default_device('cpu')
-    assert len(ivy.default_device_stack) == 3
+    assert len(ivy.default_device_stack) == orig_len + 2
     ivy.unset_default_device()
-    assert len(ivy.default_device_stack) == 2
+    assert len(ivy.default_device_stack) == orig_len + 1
     ivy.unset_default_device()
-    assert len(ivy.default_device_stack) == 1
+    assert len(ivy.default_device_stack) == orig_len
 
     # with
-    assert len(ivy.default_device_stack) == 1
+    assert len(ivy.default_device_stack) == orig_len
     with ivy.DefaultDevice('cpu'):
-        assert len(ivy.default_device_stack) == 2
+        assert len(ivy.default_device_stack) == orig_len + 1
         with ivy.DefaultDevice('cpu'):
-            assert len(ivy.default_device_stack) == 3
-        assert len(ivy.default_device_stack) == 2
-    assert len(ivy.default_device_stack) == 1
+            assert len(ivy.default_device_stack) == orig_len + 2
+        assert len(ivy.default_device_stack) == orig_len + 1
+    assert len(ivy.default_device_stack) == orig_len
 
 
 # to_dev
