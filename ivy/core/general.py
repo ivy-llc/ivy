@@ -709,8 +709,9 @@ def zero_pad(x: Union[ivy.Array, ivy.NativeArray], pad_width: Iterable[Tuple[int
     return _cur_framework(x, f=f).zero_pad(x, pad_width)
 
 
-def fourier_encode(x: Union[ivy.Array, ivy.NativeArray], max_freq: float, num_bands: int = 4, linear: bool = False,
-                   concat: bool = True, flatten: bool = False) -> Union[ivy.Array, ivy.NativeArray, Tuple]:
+def fourier_encode(x: Union[ivy.Array, ivy.NativeArray], max_freq: Union[float, Union[ivy.Array, ivy.NativeArray]],
+                   num_bands: int = 4, linear: bool = False, concat: bool = True, flatten: bool = False)\
+        -> Union[ivy.Array, ivy.NativeArray, Tuple]:
     """
     Pads an array with fourier encodings.
 
@@ -735,9 +736,9 @@ def fourier_encode(x: Union[ivy.Array, ivy.NativeArray], max_freq: float, num_ba
     if linear:
         scales = ivy.linspace(1., max_freq / 2, num_bands, dev_str=dev_str(x))
     else:
-        scales = ivy.logspace(0., math.log(max_freq / 2) / math.log(10), num_bands, base=10, dev_str=dev_str(x))
+        scales = ivy.logspace(0., ivy.log(max_freq / 2) / math.log(10), num_bands, base=10, dev_str=dev_str(x))
     scales = ivy.cast(scales, ivy.dtype_str(x))
-    scales = scales[(*((None,) * (len(x.shape) - 1)), Ellipsis)]
+    scales = scales[(*((None,) * (len(x.shape) - len(scales.shape))), Ellipsis)]
     x = x * scales * math.pi
     sin_x = ivy.sin(x)
     cos_x = ivy.cos(x)
