@@ -139,6 +139,30 @@ def test_memory_on_dev(dev_str_to_check, dev_str, call):
 
 # Device Allocation #
 
+# default_device
+def test_default_device(dev_str, call):
+
+    # setting and unsetting
+    assert len(ivy.default_device_stack) == 1
+    ivy.set_default_device('cpu')
+    assert len(ivy.default_device_stack) == 2
+    ivy.set_default_device('cpu')
+    assert len(ivy.default_device_stack) == 3
+    ivy.unset_default_device()
+    assert len(ivy.default_device_stack) == 2
+    ivy.unset_default_device()
+    assert len(ivy.default_device_stack) == 1
+
+    # with
+    assert len(ivy.default_device_stack) == 1
+    with ivy.DefaultDevice('cpu'):
+        assert len(ivy.default_device_stack) == 2
+        with ivy.DefaultDevice('cpu'):
+            assert len(ivy.default_device_stack) == 3
+        assert len(ivy.default_device_stack) == 2
+    assert len(ivy.default_device_stack) == 1
+
+
 # to_dev
 @pytest.mark.parametrize(
     "x", [1, [], [1], [[0.0, 1.0], [2.0, 3.0]]])

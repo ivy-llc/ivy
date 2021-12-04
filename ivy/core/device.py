@@ -24,22 +24,34 @@ from typing import Union, Type, Callable, Iterable, Dict, Any
 import ivy
 from ivy.framework_handler import current_framework as _cur_framework
 
-DEFAULT_DEVICE = None
-DEV_HANDLES = dict()
-SPLIT_FACTORS = dict()
+default_device_stack = list()
+dev_handles = dict()
+split_factors = dict()
 
+class DefaultDevice:
+    # noinspection PyShadowingNames
+    def __init__(self, dev_str):
+        self._dev_str = dev_str
+
+    def __enter__(self):
+        set_default_device(self._dev_str)
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        unset_default_device()
+        return self
 
 # Helpers #
 # --------#
 
 # noinspection PyShadowingNames
 def _get_nvml_gpu_handle(dev_str):
-    global DEV_HANDLES
-    if dev_str in DEV_HANDLES:
-        return DEV_HANDLES[dev_str]
+    global dev_handles
+    if dev_str in dev_handles:
+        return dev_handles[dev_str]
     gpu_idx = int(dev_str.split(':')[-1])
     handle = nvidia_smi.nvmlDeviceGetHandleByIndex(gpu_idx)
-    DEV_HANDLES[dev_str] = handle
+    dev_handles[dev_str] = handle
     return handle
 
 
@@ -308,17 +320,22 @@ def default_device(dev_str=None):
     if ivy.exists(dev_str):
         _assert_dev_str_correct_formatting(dev_str)
         return dev_str
-    global DEFAULT_DEVICE
-    if not ivy.exists(DEFAULT_DEVICE):
-        DEFAULT_DEVICE = 'gpu:0' if ivy.gpu_is_available() else 'cpu'
-    return DEFAULT_DEVICE
+    global default_device_stack
+    if not default_device_stack:
+        default_device_stack = ['gpu:0'] if ivy.gpu_is_available() else ['cpu']
+    return default_device_stack[-1]
 
 
 # noinspection PyShadowingNames
 def set_default_device(dev_str):
     _assert_dev_str_correct_formatting(dev_str)
-    global DEFAULT_DEVICE
-    DEFAULT_DEVICE = dev_str
+    global default_device_stack
+    default_device_stack.append(dev_str)
+
+def unset_default_device():
+    global default_device_stack
+    if default_device_stack:
+        default_device_stack.pop(-1)
 
 
 # Device Allocation #
@@ -354,12 +371,12 @@ def split_factor(dev_str=None):
     :type dev_str: str, optional
     :return: The split factor for the specified device.
     """
-    global SPLIT_FACTORS
+    global split_factors
     dev_str = ivy.default(dev_str, default_device())
-    if dev_str in SPLIT_FACTORS:
-        return SPLIT_FACTORS[dev_str]
-    SPLIT_FACTORS[dev_str] = 0.
-    return SPLIT_FACTORS[dev_str]
+    if dev_str in split_factors:
+        return split_factors[dev_str]
+    split_factors[dev_str] = 0.
+    return split_factors[dev_str]
 
 
 # noinspection PyShadowingNames
@@ -374,9 +391,9 @@ def set_split_factor(factor, dev_str=None):
     :type dev_str: str, optional
     """
     assert 0 <= factor
-    global SPLIT_FACTORS
+    global split_factors
     dev_str = ivy.default(dev_str, default_device())
-    SPLIT_FACTORS[dev_str] = factor
+    split_factors[dev_str] = factor
 
 
 def split_func_call(func: Callable, inputs: Iterable[Union[Union[ivy.Array, ivy.NativeArray], ivy.Container]],
