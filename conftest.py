@@ -36,8 +36,8 @@ def run_around_tests(dev_str, f, wrapped_mode, compile_graph, call):
     ivy.clear_framework_stack()
     with f.use:
         f.set_wrapped_mode(wrapped_mode)
-        ivy.set_default_device(dev_str)
-        yield
+        with ivy.DefaultDevice(dev_str):
+            yield
 
 
 def pytest_generate_tests(metafunc):
