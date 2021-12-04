@@ -6,6 +6,7 @@ Collection of general Ivy functions.
 import gc
 import math
 import einops
+import inspect
 import numpy as np
 from numbers import Number
 from typing import Callable, Any, Union, List, Tuple, Dict, Iterable
@@ -1301,6 +1302,13 @@ def try_else_none(fn):
     :type fn: callable
     """
     return default(fn, None, True)
+
+
+def arg_names(receiver):
+    """
+    Get the expected keyword arguments for a function or class constructor.
+    """
+    return list(inspect.signature(receiver).parameters.keys())
 
 
 def dtype(x: Union[ivy.Array, ivy.NativeArray], f: ivy.Framework = None)\
