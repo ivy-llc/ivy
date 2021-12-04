@@ -167,7 +167,7 @@ def _differentiable_linspace(start, stop, num, device):
     increment = (stop - start) / n_m_1
     increment_tiled = increment.repeat(n_m_1)
     increments = increment_tiled * _torch.linspace(1, n_m_1, n_m_1, device=device)
-    res = _torch.cat((_torch.unsqueeze(start, 0), start + increments), 0)
+    res = _torch.cat((_torch.unsqueeze(_torch.tensor(start), 0), start + increments), 0)
     return res
 
 
