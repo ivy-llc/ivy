@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>get_all_arrays_in_memory &mdash; Ivy 1.0 documentation</title>
+  <title>match_kwargs &mdash; Ivy 1.0 documentation</title>
   
 
   
@@ -36,8 +36,8 @@
   <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="num_arrays_in_memory" href="num_arrays_in_memory.html" />
-    <link rel="prev" title="set_tmp_dir" href="set_tmp_dir.html" /> 
+    <link rel="next" title="dtype" href="dtype.html" />
+    <link rel="prev" title="arg_names" href="arg_names.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -171,7 +171,7 @@
 <li class="toctree-l2"><a class="reference internal" href="default.html">default</a></li>
 <li class="toctree-l2"><a class="reference internal" href="try_else_none.html">try_else_none</a></li>
 <li class="toctree-l2"><a class="reference internal" href="arg_names.html">arg_names</a></li>
-<li class="toctree-l2"><a class="reference internal" href="match_kwargs.html">match_kwargs</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">match_kwargs</a></li>
 <li class="toctree-l2"><a class="reference internal" href="dtype.html">dtype</a></li>
 <li class="toctree-l2"><a class="reference internal" href="dtype_to_str.html">dtype_to_str</a></li>
 <li class="toctree-l2"><a class="reference internal" href="dtype_str.html">dtype_str</a></li>
@@ -191,7 +191,7 @@
 <li class="toctree-l2"><a class="reference internal" href="queue_timeout.html">queue_timeout</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tmp_dir.html">tmp_dir</a></li>
 <li class="toctree-l2"><a class="reference internal" href="set_tmp_dir.html">set_tmp_dir</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">get_all_arrays_in_memory</a></li>
+<li class="toctree-l2"><a class="reference internal" href="get_all_arrays_in_memory.html">get_all_arrays_in_memory</a></li>
 <li class="toctree-l2"><a class="reference internal" href="num_arrays_in_memory.html">num_arrays_in_memory</a></li>
 <li class="toctree-l2"><a class="reference internal" href="print_all_arrays_in_memory.html">print_all_arrays_in_memory</a></li>
 <li class="toctree-l2"><a class="reference internal" href="container_types.html">container_types</a></li>
@@ -285,13 +285,13 @@
         
           <li><a href="../general.html">General</a> &raquo;</li>
         
-      <li>get_all_arrays_in_memory</li>
+      <li>match_kwargs</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="../../_sources/core/general/get_all_arrays_in_memory.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../_sources/core/general/match_kwargs.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -304,12 +304,24 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="get-all-arrays-in-memory">
-<h1>get_all_arrays_in_memory<a class="headerlink" href="#get-all-arrays-in-memory" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="match-kwargs">
+<h1>match_kwargs<a class="headerlink" href="#match-kwargs" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
-<dt id="ivy.core.general.get_all_arrays_in_memory">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">get_all_arrays_in_memory</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/general.html#get_all_arrays_in_memory"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.get_all_arrays_in_memory" title="Permalink to this definition">¶</a></dt>
-<dd><p>Gets all arrays which are currently alive.</p>
+<dt id="ivy.core.general.match_kwargs">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">match_kwargs</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">kwargs</span></em>, <em class="sig-param"><span class="o">*</span><span class="n">receivers</span></em>, <em class="sig-param"><span class="n">allow_duplicates</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/general.html#match_kwargs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.match_kwargs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Match keyword arguments to either class or function receivers.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>kwargs</strong> (<em>dict of any</em>) – Keyword arguments to match.</p></li>
+<li><p><strong>receivers</strong> (<em>callables and/or classes</em>) – Functions and/or classes to match the keyword arguments to.</p></li>
+<li><p><strong>allow_duplicates</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to allow one keyword argument to be used for multiple receivers. Default is False.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Sequence of keyword arguments split as best as possible.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <div class="line-block">
@@ -327,10 +339,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="num_arrays_in_memory.html" class="btn btn-neutral float-right" title="num_arrays_in_memory" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="dtype.html" class="btn btn-neutral float-right" title="dtype" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="set_tmp_dir.html" class="btn btn-neutral float-left" title="set_tmp_dir" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="arg_names.html" class="btn btn-neutral float-left" title="arg_names" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
