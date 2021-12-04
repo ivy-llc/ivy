@@ -2165,7 +2165,7 @@ def test_framework_setting_with_threading(dev_str, call):
     def thread_fn():
         ivy.set_framework('numpy')
         x_ = np.array([0., 1., 2.])
-        for _ in range(1000):
+        for _ in range(2000):
             try:
                 ivy.reduce_mean(x_)
             except TypeError:
@@ -2183,7 +2183,7 @@ def test_framework_setting_with_threading(dev_str, call):
 
     # start local original framework loop
     ivy.set_framework(fws)
-    for _ in range(1000):
+    for _ in range(2000):
         ivy.reduce_mean(x)
     ivy.unset_framework()
 
