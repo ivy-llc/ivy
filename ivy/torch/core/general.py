@@ -178,14 +178,17 @@ def linspace(start, stop, num, axis=None, dev_str=None):
     stop_is_array = isinstance(stop, _torch.Tensor)
     linspace_method = _torch.linspace
     dev_str = default_device(dev_str)
+    sos_shape = []
     if start_is_array:
         start_shape = list(start.shape)
+        sos_shape = start_shape
         if num == 1:
             return start.unsqueeze(axis).to(str_to_dev(dev_str))
         start = start.reshape((-1,))
         linspace_method = _differentiable_linspace if start.requires_grad else _torch.linspace
     if stop_is_array:
         stop_shape = list(stop.shape)
+        sos_shape = stop_shape
         if num == 1:
             return _torch.ones(stop_shape[:axis] + [1] + stop_shape[axis:], device=str_to_dev(dev_str)) * start
         stop = stop.reshape((-1,))
@@ -224,7 +227,7 @@ def linspace(start, stop, num, axis=None, dev_str=None):
             res = [linspace_method(start, stp, num, device=str_to_dev(dev_str)) for stp in stop]
     else:
         return linspace_method(start, stop, num, device=str_to_dev(dev_str))
-    res = _torch.cat(res, -1).reshape(start_shape + [num])
+    res = _torch.cat(res, -1).reshape(sos_shape + [num])
     if axis is not None:
         res = _torch.transpose(res, axis, -1)
     return res.to(str_to_dev(dev_str))
