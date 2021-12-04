@@ -1517,6 +1517,31 @@
     <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">inspect</span><span class="o">.</span><span class="n">signature</span><span class="p">(</span><span class="n">receiver</span><span class="p">)</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span></div>
 
 
+<div class="viewcode-block" id="match_kwargs"><a class="viewcode-back" href="../../../core/general/match_kwargs.html#ivy.core.general.match_kwargs">[docs]</a><span class="k">def</span> <span class="nf">match_kwargs</span><span class="p">(</span><span class="n">kwargs</span><span class="p">,</span> <span class="o">*</span><span class="n">receivers</span><span class="p">,</span> <span class="n">allow_duplicates</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Match keyword arguments to either class or function receivers.</span>
+
+<span class="sd">    :param kwargs: Keyword arguments to match.</span>
+<span class="sd">    :type kwargs: dict of any</span>
+<span class="sd">    :param receivers: Functions and/or classes to match the keyword arguments to.</span>
+<span class="sd">    :type receivers: callables and/or classes</span>
+<span class="sd">    :param allow_duplicates: Whether to allow one keyword argument to be used for multiple receivers. Default is False.</span>
+<span class="sd">    :type allow_duplicates: bool, optional</span>
+<span class="sd">    :return: Sequence of keyword arguments split as best as possible.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">split_kwargs</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">receiver</span> <span class="ow">in</span> <span class="n">receivers</span><span class="p">:</span>
+        <span class="n">expected_kwargs</span> <span class="o">=</span> <span class="n">arg_names</span><span class="p">(</span><span class="n">receiver</span><span class="p">)</span>
+        <span class="n">found_kwargs</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">expected_kwargs</span><span class="p">}</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">allow_duplicates</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">found_kwargs</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                <span class="k">del</span> <span class="n">kwargs</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
+        <span class="n">split_kwargs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">found_kwargs</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">split_kwargs</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">split_kwargs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">split_kwargs</span></div>
+
+
 <div class="viewcode-block" id="dtype"><a class="viewcode-back" href="../../../core/general/dtype.html#ivy.core.general.dtype">[docs]</a><span class="k">def</span> <span class="nf">dtype</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span> <span class="n">f</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Framework</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span>\
         <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
