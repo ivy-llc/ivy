@@ -311,6 +311,8 @@
         <span class="n">f</span> <span class="o">=</span> <span class="n">importlib</span><span class="o">.</span><span class="n">import_module</span><span class="p">(</span><span class="n">_framework_dict</span><span class="p">[</span><span class="n">f</span><span class="p">])</span>
         <span class="k">for</span> <span class="n">fw</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="n">temp_stack</span><span class="p">):</span>
             <span class="n">framework_stack</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">fw</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">current_framework_str</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;numpy&#39;</span><span class="p">:</span>
+        <span class="n">ivy</span><span class="o">.</span><span class="n">set_default_device</span><span class="p">(</span><span class="s1">&#39;cpu&#39;</span><span class="p">)</span>
     <span class="n">framework_stack</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
     <span class="n">ivy_original_fn_dict</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
     <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">ivy_original_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
@@ -357,6 +359,8 @@
     <span class="n">fw</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="k">if</span> <span class="n">framework_stack</span><span class="p">:</span>
         <span class="n">fw</span> <span class="o">=</span> <span class="n">framework_stack</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">fw</span><span class="o">.</span><span class="n">current_framework_str</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;numpy&#39;</span><span class="p">:</span>
+            <span class="n">ivy</span><span class="o">.</span><span class="n">unset_default_device</span><span class="p">()</span>
         <span class="n">f_dict</span> <span class="o">=</span> <span class="n">framework_stack</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="vm">__dict__</span> <span class="k">if</span> <span class="n">framework_stack</span> <span class="k">else</span> <span class="n">ivy_original_dict</span>
         <span class="n">wrapped</span> <span class="o">=</span> <span class="n">f_dict</span><span class="p">[</span><span class="s1">&#39;wrapped&#39;</span><span class="p">]</span> <span class="k">if</span> <span class="s1">&#39;wrapped&#39;</span> <span class="ow">in</span> <span class="n">f_dict</span> <span class="k">else</span> <span class="kc">False</span>
         <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">f_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
