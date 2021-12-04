@@ -20,5 +20,4 @@ RUN cat requirements.txt | grep -v "ivy-" | pip3 install --no-cache-dir -r /dev/
 RUN python3 test_dependencies.py -fp requirements.txt && \
     rm -rf requirements.txt
 
-RUN mkdir ivy_models
-WORKDIR /ivy_models
+WORKDIR /models
