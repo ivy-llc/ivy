@@ -118,6 +118,7 @@
 <li class="toctree-l2"><a class="reference internal" href="device/tpu_is_available.html">tpu_is_available</a></li>
 <li class="toctree-l2"><a class="reference internal" href="device/default_device.html">default_device</a></li>
 <li class="toctree-l2"><a class="reference internal" href="device/set_default_device.html">set_default_device</a></li>
+<li class="toctree-l2"><a class="reference internal" href="device/unset_default_device.html">unset_default_device</a></li>
 <li class="toctree-l2"><a class="reference internal" href="device/to_dev.html">to_dev</a></li>
 <li class="toctree-l2"><a class="reference internal" href="device/split_factor.html">split_factor</a></li>
 <li class="toctree-l2"><a class="reference internal" href="device/set_split_factor.html">set_split_factor</a></li>
@@ -257,6 +258,18 @@
   <div class="section" id="module-ivy.core.device">
 <span id="device"></span><h1>Device<a class="headerlink" href="#module-ivy.core.device" title="Permalink to this headline">¶</a></h1>
 <p>Collection of device Ivy functions.</p>
+<dl class="py class">
+<dt id="ivy.core.device.DefaultDevice">
+<em class="property">class </em><code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">DefaultDevice</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dev_str</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/device.html#DefaultDevice"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.device.DefaultDevice" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt id="ivy.core.device.DefaultDevice.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dev_str</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/device.html#DefaultDevice.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.device.DefaultDevice.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
+</dd></dl>
+
+</dd></dl>
+
 <dl class="py class">
 <dt id="ivy.core.device.DevClonedItem">
 <em class="property">class </em><code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">DevClonedItem</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span><span class="p">:</span> <span class="n">Dict<span class="p">[</span>ivy.Device<span class="p">, </span>Any<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">0</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/device.html#DevClonedItem"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.device.DevClonedItem" title="Permalink to this definition">¶</a></dt>
@@ -1046,6 +1059,11 @@ the entire input array at once. This can be useful to reduce memory usage of the
 </dd></dl>
 
 <dl class="py function">
+<dt id="ivy.core.device.unset_default_device">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">unset_default_device</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/device.html#unset_default_device"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.device.unset_default_device" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
 <dt id="ivy.core.device.used_mem_on_dev">
 <code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">used_mem_on_dev</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dev_str</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">process_specific</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span> &#x2192; float<a class="reference internal" href="../_modules/ivy/core/device.html#used_mem_on_dev"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.device.used_mem_on_dev" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the used memory (in GB) for a given device string. In case of CPU, the used RAM is returned.</p>
@@ -1082,6 +1100,7 @@ the entire input array at once. This can be useful to reduce memory usage of the
 <li class="toctree-l1"><a class="reference internal" href="device/tpu_is_available.html">tpu_is_available</a></li>
 <li class="toctree-l1"><a class="reference internal" href="device/default_device.html">default_device</a></li>
 <li class="toctree-l1"><a class="reference internal" href="device/set_default_device.html">set_default_device</a></li>
+<li class="toctree-l1"><a class="reference internal" href="device/unset_default_device.html">unset_default_device</a></li>
 <li class="toctree-l1"><a class="reference internal" href="device/to_dev.html">to_dev</a></li>
 <li class="toctree-l1"><a class="reference internal" href="device/split_factor.html">split_factor</a></li>
 <li class="toctree-l1"><a class="reference internal" href="device/set_split_factor.html">set_split_factor</a></li>

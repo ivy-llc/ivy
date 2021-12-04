@@ -29,6 +29,7 @@ Device
    device/tpu_is_available.rst
    device/default_device.rst
    device/set_default_device.rst
+   device/unset_default_device.rst
    device/to_dev.rst
    device/split_factor.rst
    device/set_split_factor.rst
@@ -45,6 +46,9 @@ Device
    device/dev_unify.rst
    device/dev_unify_iter.rst
    device/dev_unify_nest.rst
+   device/DefaultDevice:
+    # noinspection PyShadowingNames
+    def __init__.rst
    device/MultiDev:
 
     def __init__.rst

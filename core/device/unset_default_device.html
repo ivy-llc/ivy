@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>dev_clone_nest &mdash; Ivy 1.0 documentation</title>
+  <title>unset_default_device &mdash; Ivy 1.0 documentation</title>
   
 
   
@@ -36,8 +36,8 @@
   <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="dev_unify_array" href="dev_unify_array.html" />
-    <link rel="prev" title="dev_clone_iter" href="dev_clone_iter.html" /> 
+    <link rel="next" title="to_dev" href="to_dev.html" />
+    <link rel="prev" title="set_default_device" href="set_default_device.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -118,7 +118,7 @@
 <li class="toctree-l2"><a class="reference internal" href="tpu_is_available.html">tpu_is_available</a></li>
 <li class="toctree-l2"><a class="reference internal" href="default_device.html">default_device</a></li>
 <li class="toctree-l2"><a class="reference internal" href="set_default_device.html">set_default_device</a></li>
-<li class="toctree-l2"><a class="reference internal" href="unset_default_device.html">unset_default_device</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">unset_default_device</a></li>
 <li class="toctree-l2"><a class="reference internal" href="to_dev.html">to_dev</a></li>
 <li class="toctree-l2"><a class="reference internal" href="split_factor.html">split_factor</a></li>
 <li class="toctree-l2"><a class="reference internal" href="set_split_factor.html">set_split_factor</a></li>
@@ -130,7 +130,7 @@
 <li class="toctree-l2"><a class="reference internal" href="dev_clone_array.html">dev_clone_array</a></li>
 <li class="toctree-l2"><a class="reference internal" href="dev_clone.html">dev_clone</a></li>
 <li class="toctree-l2"><a class="reference internal" href="dev_clone_iter.html">dev_clone_iter</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">dev_clone_nest</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dev_clone_nest.html">dev_clone_nest</a></li>
 <li class="toctree-l2"><a class="reference internal" href="dev_unify_array.html">dev_unify_array</a></li>
 <li class="toctree-l2"><a class="reference internal" href="dev_unify.html">dev_unify</a></li>
 <li class="toctree-l2"><a class="reference internal" href="dev_unify_iter.html">dev_unify_iter</a></li>
@@ -238,13 +238,13 @@
         
           <li><a href="../device.html">Device</a> &raquo;</li>
         
-      <li>dev_clone_nest</li>
+      <li>unset_default_device</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="../../_sources/core/device/dev_clone_nest.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../_sources/core/device/unset_default_device.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -257,26 +257,12 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="dev-clone-nest">
-<h1>dev_clone_nest<a class="headerlink" href="#dev-clone-nest" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="unset-default-device">
+<h1>unset_default_device<a class="headerlink" href="#unset-default-device" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
-<dt id="ivy.core.device.dev_clone_nest">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">dev_clone_nest</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">args</span></em>, <em class="sig-param"><span class="n">kwargs</span></em>, <em class="sig-param"><span class="n">dev_strs</span></em>, <em class="sig-param"><span class="n">max_depth</span><span class="o">=</span><span class="default_value">1</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/device.html#dev_clone_nest"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.device.dev_clone_nest" title="Permalink to this definition">¶</a></dt>
-<dd><p>Clone the input arguments across the specified devices.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>args</strong> (<em>list of any</em>) – The positional arguments to clone.</p></li>
-<li><p><strong>kwargs</strong> (<em>dict of any</em>) – The keyword arguments to clone.</p></li>
-<li><p><strong>dev_strs</strong> (<em>sequence of strs</em>) – The devices to clone the arguments to.</p></li>
-<li><p><strong>max_depth</strong> (<em>int</em><em>, </em><em>optional</em>) – The maximum nested depth to reach. Default is 1. Increase this if the nest is deeper.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>arguments cloned to each of the target devices</p>
-</dd>
-</dl>
-</dd></dl>
+<dt id="ivy.core.device.unset_default_device">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">unset_default_device</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/device.html#unset_default_device"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.device.unset_default_device" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 <div class="line-block">
 <div class="line"><br /></div>
@@ -293,10 +279,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="dev_unify_array.html" class="btn btn-neutral float-right" title="dev_unify_array" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="to_dev.html" class="btn btn-neutral float-right" title="to_dev" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="dev_clone_iter.html" class="btn btn-neutral float-left" title="dev_clone_iter" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="set_default_device.html" class="btn btn-neutral float-left" title="set_default_device" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
