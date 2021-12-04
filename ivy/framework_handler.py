@@ -105,6 +105,8 @@ def set_framework(f):
         f = importlib.import_module(_framework_dict[f])
         for fw in reversed(temp_stack):
             framework_stack.append(fw)
+    if f.current_framework_str() == 'numpy':
+        ivy.set_default_device('cpu')
     framework_stack.append(f)
     ivy_original_fn_dict.clear()
     for k, v in ivy_original_dict.items():
@@ -151,6 +153,8 @@ def unset_framework():
     fw = None
     if framework_stack:
         fw = framework_stack.pop(-1)
+        if fw.current_framework_str() == 'numpy':
+            ivy.unset_default_device()
         f_dict = framework_stack[-1].__dict__ if framework_stack else ivy_original_dict
         wrapped = f_dict['wrapped'] if 'wrapped' in f_dict else False
         for k, v in f_dict.items():
