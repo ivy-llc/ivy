@@ -29,7 +29,7 @@ class PerceiverIOSpec(ivy.Container):
                  cross_head_dim=261,
                  latent_head_dim=128,
                  weight_tie_layers=True,
-                 learn_query=False,
+                 learn_query=True,
                  query_shape=None,
                  attn_dropout=0.,
                  fc_dropout=0.,
@@ -191,7 +191,7 @@ class PerceiverIO(ivy.Module):
             if ivy.exists(self.v.decoder_queries):
                 queries = ivy.einops_repeat(self.v.decoder_queries, '... -> b ...', b=flat_batch_size)
             else:
-                raise Exception('If learn_query is not set as True, the queries must be provided explicitly'
+                raise Exception('If learn_query is not set as True, the queries must be provided explicitly '
                                 'during the forward pass.')
 
         queries_shape = list(queries.shape)
