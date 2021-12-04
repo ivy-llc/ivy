@@ -67,6 +67,31 @@ def test_use_within_use_framework(dev_str, call):
         pass
 
 
+@pytest.mark.parametrize(
+    "allow_duplicates", [True, False])
+def test_match_kwargs(allow_duplicates):
+
+    def func_a(a, b, c=2):
+        pass
+
+    func_b = lambda a, d, e=5: None
+
+    class ClassA:
+        def __init__(self, c, f, g=3):
+            pass
+
+    kwargs = {'a': 0, 'b': 1, 'c': 2, 'd': 3, 'e': 4, 'f': 5, 'g': 6}
+    kwfa, kwfb, kwca = ivy.match_kwargs(kwargs, func_a, func_b, ClassA, allow_duplicates=allow_duplicates)
+    if allow_duplicates:
+        assert kwfa == {'a': 0, 'b': 1, 'c': 2}
+        assert kwfb == {'a': 0, 'd': 3, 'e': 4}
+        assert kwca == {'c': 2, 'f': 5, 'g': 6}
+    else:
+        assert kwfa == {'a': 0, 'b': 1, 'c': 2}
+        assert kwfb == {'d': 3, 'e': 4}
+        assert kwca == {'f': 5, 'g': 6}
+
+
 # array
 @pytest.mark.parametrize(
     "object_in", [[], [0.], [1], [True], [[1., 2.]]])

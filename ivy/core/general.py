@@ -1311,6 +1311,31 @@ def arg_names(receiver):
     return list(inspect.signature(receiver).parameters.keys())
 
 
+def match_kwargs(kwargs, *receivers, allow_duplicates=False):
+    """
+    Match keyword arguments to either class or function receivers.
+
+    :param kwargs: Keyword arguments to match.
+    :type kwargs: dict of any
+    :param receivers: Functions and/or classes to match the keyword arguments to.
+    :type receivers: callables and/or classes
+    :param allow_duplicates: Whether to allow one keyword argument to be used for multiple receivers. Default is False.
+    :type allow_duplicates: bool, optional
+    :return: Sequence of keyword arguments split as best as possible.
+    """
+    split_kwargs = list()
+    for receiver in receivers:
+        expected_kwargs = arg_names(receiver)
+        found_kwargs = {k: v for k, v in kwargs.items() if k in expected_kwargs}
+        if not allow_duplicates:
+            for k in found_kwargs.keys():
+                del kwargs[k]
+        split_kwargs.append(found_kwargs)
+    if len(split_kwargs) == 1:
+        return split_kwargs[0]
+    return split_kwargs
+
+
 def dtype(x: Union[ivy.Array, ivy.NativeArray], f: ivy.Framework = None)\
         -> ivy.Dtype:
     """
