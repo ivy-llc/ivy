@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>cumprod &mdash; Ivy 1.0 documentation</title>
+  <title>arg_names &mdash; Ivy 1.0 documentation</title>
   
 
   
@@ -36,8 +36,8 @@
   <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="identity" href="identity.html" />
-    <link rel="prev" title="cumsum" href="cumsum.html" /> 
+    <link rel="next" title="dtype" href="dtype.html" />
+    <link rel="prev" title="try_else_none" href="try_else_none.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -159,7 +159,7 @@
 <li class="toctree-l2"><a class="reference internal" href="cross.html">cross</a></li>
 <li class="toctree-l2"><a class="reference internal" href="matmul.html">matmul</a></li>
 <li class="toctree-l2"><a class="reference internal" href="cumsum.html">cumsum</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">cumprod</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cumprod.html">cumprod</a></li>
 <li class="toctree-l2"><a class="reference internal" href="identity.html">identity</a></li>
 <li class="toctree-l2"><a class="reference internal" href="meshgrid.html">meshgrid</a></li>
 <li class="toctree-l2"><a class="reference internal" href="scatter_flat.html">scatter_flat</a></li>
@@ -170,7 +170,7 @@
 <li class="toctree-l2"><a class="reference internal" href="exists.html">exists</a></li>
 <li class="toctree-l2"><a class="reference internal" href="default.html">default</a></li>
 <li class="toctree-l2"><a class="reference internal" href="try_else_none.html">try_else_none</a></li>
-<li class="toctree-l2"><a class="reference internal" href="arg_names.html">arg_names</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">arg_names</a></li>
 <li class="toctree-l2"><a class="reference internal" href="dtype.html">dtype</a></li>
 <li class="toctree-l2"><a class="reference internal" href="dtype_to_str.html">dtype_to_str</a></li>
 <li class="toctree-l2"><a class="reference internal" href="dtype_str.html">dtype_str</a></li>
@@ -284,13 +284,13 @@
         
           <li><a href="../general.html">General</a> &raquo;</li>
         
-      <li>cumprod</li>
+      <li>arg_names</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="../../_sources/core/general/cumprod.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../_sources/core/general/arg_names.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -303,25 +303,12 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="cumprod">
-<h1>cumprod<a class="headerlink" href="#cumprod" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="arg-names">
+<h1>arg_names<a class="headerlink" href="#arg-names" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
-<dt id="ivy.core.general.cumprod">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">cumprod</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">axis</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">0</span></em>, <em class="sig-param"><span class="n">exclusive</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em>, <em class="sig-param"><span class="n">f</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>ivy.Framework<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; Union<span class="p">[</span>ivy.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span><a class="reference internal" href="../../_modules/ivy/core/general.html#cumprod"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.cumprod" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns the cumulative product of the elements along a given axis.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<em>array</em>) – Input array.</p></li>
-<li><p><strong>axis</strong> (<em>int</em>) – Axis along which the cumulative product is computed. By default 0.</p></li>
-<li><p><strong>exclusive</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to perform the cumprod exclusively. Defaults is False.</p></li>
-<li><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning framework. Inferred from inputs if None.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Input array with cumulatively multiplied elements along axis.</p>
-</dd>
-</dl>
+<dt id="ivy.core.general.arg_names">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">arg_names</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">receiver</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/general.html#arg_names"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.arg_names" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the expected keyword arguments for a function or class constructor.</p>
 </dd></dl>
 
 <div class="line-block">
@@ -339,10 +326,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="identity.html" class="btn btn-neutral float-right" title="identity" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="dtype.html" class="btn btn-neutral float-right" title="dtype" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="cumsum.html" class="btn btn-neutral float-left" title="cumsum" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="try_else_none.html" class="btn btn-neutral float-left" title="try_else_none" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

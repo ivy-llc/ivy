@@ -212,6 +212,7 @@
 <span class="kn">import</span> <span class="nn">gc</span>
 <span class="kn">import</span> <span class="nn">math</span>
 <span class="kn">import</span> <span class="nn">einops</span>
+<span class="kn">import</span> <span class="nn">inspect</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">numbers</span> <span class="kn">import</span> <span class="n">Number</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Iterable</span>
@@ -1507,6 +1508,13 @@
 <span class="sd">    :type fn: callable</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">default</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="arg_names"><a class="viewcode-back" href="../../../core/general/arg_names.html#ivy.core.general.arg_names">[docs]</a><span class="k">def</span> <span class="nf">arg_names</span><span class="p">(</span><span class="n">receiver</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Get the expected keyword arguments for a function or class constructor.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">inspect</span><span class="o">.</span><span class="n">signature</span><span class="p">(</span><span class="n">receiver</span><span class="p">)</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span></div>
 
 
 <div class="viewcode-block" id="dtype"><a class="viewcode-back" href="../../../core/general/dtype.html#ivy.core.general.dtype">[docs]</a><span class="k">def</span> <span class="nf">dtype</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span> <span class="n">f</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Framework</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span>\
