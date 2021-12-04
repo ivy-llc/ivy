@@ -43,9 +43,6 @@ class PerceiverIOSpec(ivy.Container):
                  device=None
                  ):
 
-        if fourier_encode_input and not ivy.exists(max_fourier_freq):
-            raise Exception('The input-dependent max_fourier_freq must be specified when fourier_encode_input is set.')
-
         if learn_query and not ivy.exists(query_shape):
             raise Exception('if learn_query is set, then query_shape must be specified.')
 
@@ -167,6 +164,8 @@ class PerceiverIO(ivy.Module):
             axis_pos = list(map(lambda size: ivy.linspace(-1., 1., size, dev_str=self._dev_str), data_shape))
             pos = ivy.stack(ivy.meshgrid(*axis_pos), -1)
             pos_flat = ivy.reshape(pos, [-1, len(axis_pos)])
+            if not ivy.exists(self._spec.max_fourier_freq):
+                self._spec.max_fourier_freq = ivy.array(data_shape)
             enc_pos = ivy.fourier_encode(
                 pos_flat, self._spec.max_fourier_freq, self._spec.num_fourier_freq_bands, True, flatten=True)
             enc_pos = ivy.einops_repeat(enc_pos, '... -> b ...', b=flat_batch_size)

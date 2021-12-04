@@ -64,7 +64,6 @@ def test_perceiver_io_img_classification(dev_str, f, call, batch_shape, img_dims
                                         network_depth=network_depth,
                                         learn_query=learn_query,
                                         query_shape=[1],
-                                        max_fourier_freq=img_dims[0],
                                         num_fourier_freq_bands=64,
                                         num_lat_att_per_layer=num_lat_att_per_layer,
                                         device=dev_str))
