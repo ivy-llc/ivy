@@ -947,8 +947,9 @@
 <span class="sd">        :return: Container loaded from disk</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">wrapped_mode</span><span class="p">():</span>
-            <span class="k">return</span> <span class="n">Container</span><span class="p">(</span><span class="n">_pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="n">pickle_filepath</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)),</span> <span class="n">ivyh</span><span class="o">=</span><span class="n">ivyh</span><span class="p">)</span><span class="o">.</span><span class="n">to_ivy</span><span class="p">()</span>
-        <span class="k">return</span> <span class="n">Container</span><span class="p">(</span><span class="n">_pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="n">pickle_filepath</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)),</span> <span class="n">ivyh</span><span class="o">=</span><span class="n">ivyh</span><span class="p">)</span></div>
+            <span class="k">return</span> <span class="n">Container</span><span class="p">(</span><span class="n">_pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="n">pickle_filepath</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)),</span>
+                             <span class="n">rebuild_child_containers</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ivyh</span><span class="o">=</span><span class="n">ivyh</span><span class="p">)</span><span class="o">.</span><span class="n">to_ivy</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">Container</span><span class="p">(</span><span class="n">_pickle</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="n">pickle_filepath</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)),</span> <span class="n">rebuild_child_containers</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ivyh</span><span class="o">=</span><span class="n">ivyh</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Container.from_disk_as_json"><a class="viewcode-back" href="../../../core/container/Container.html#ivy.core.container.Container.from_disk_as_json">[docs]</a>    <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">from_disk_as_json</span><span class="p">(</span><span class="n">json_filepath</span><span class="p">,</span> <span class="n">ivyh</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -3258,10 +3259,10 @@
             <span class="k">return</span> <span class="bp">self</span></div>
 
 <div class="viewcode-block" id="Container.cutoff_at_depth"><a class="viewcode-back" href="../../../core/container/Container.html#ivy.core.container.Container.cutoff_at_depth">[docs]</a>    <span class="k">def</span> <span class="nf">cutoff_at_depth</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">depth_cutoff</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-        <span class="n">total_depth</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">depth</span>
+        <span class="n">total_depth</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_depth</span>
         <span class="n">copy</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
         <span class="k">def</span> <span class="nf">_maybe_cutoff</span><span class="p">(</span><span class="n">cont</span><span class="p">,</span> <span class="n">kc</span><span class="p">):</span>
-            <span class="k">if</span> <span class="n">total_depth</span> <span class="o">-</span> <span class="n">copy</span><span class="p">[</span><span class="n">kc</span><span class="p">]</span><span class="o">.</span><span class="n">depth</span> <span class="o">&lt;</span> <span class="n">depth_cutoff</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">total_depth</span> <span class="o">-</span> <span class="n">copy</span><span class="p">[</span><span class="n">kc</span><span class="p">]</span><span class="o">.</span><span class="n">max_depth</span> <span class="o">&lt;</span> <span class="n">depth_cutoff</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">cont</span>
             <span class="k">if</span> <span class="n">inplace</span><span class="p">:</span>
                 <span class="n">cont</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
@@ -3274,7 +3275,7 @@
 <div class="viewcode-block" id="Container.cutoff_at_height"><a class="viewcode-back" href="../../../core/container/Container.html#ivy.core.container.Container.cutoff_at_height">[docs]</a>    <span class="k">def</span> <span class="nf">cutoff_at_height</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">height_cutoff</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="n">copy</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
         <span class="k">def</span> <span class="nf">_maybe_cutoff</span><span class="p">(</span><span class="n">cont</span><span class="p">,</span> <span class="n">kc</span><span class="p">):</span>
-            <span class="k">if</span> <span class="n">copy</span><span class="p">[</span><span class="n">kc</span><span class="p">]</span><span class="o">.</span><span class="n">depth</span> <span class="o">&gt;</span> <span class="n">height_cutoff</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">copy</span><span class="p">[</span><span class="n">kc</span><span class="p">]</span><span class="o">.</span><span class="n">max_depth</span> <span class="o">&gt;</span> <span class="n">height_cutoff</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">cont</span>
             <span class="k">if</span> <span class="n">inplace</span><span class="p">:</span>
                 <span class="n">cont</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
@@ -3300,7 +3301,7 @@
         <span class="k">return</span> <span class="n">ret</span><span class="o">.</span><span class="n">at_key_chains</span><span class="p">(</span><span class="n">desired_keys</span><span class="p">)</span>
 
 <div class="viewcode-block" id="Container.slice_keys"><a class="viewcode-back" href="../../../core/container/Container.html#ivy.core.container.Container.slice_keys">[docs]</a>    <span class="k">def</span> <span class="nf">slice_keys</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key_slice</span><span class="p">,</span> <span class="n">all_depths</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-        <span class="n">top_depth</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">depth</span>
+        <span class="n">top_depth</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_depth</span>
         <span class="k">if</span> <span class="n">all_depths</span><span class="p">:</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">key_slice</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
                 <span class="n">first_slice</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">key_slice</span><span class="o">.</span><span class="n">values</span><span class="p">())[</span><span class="mi">0</span><span class="p">]</span>
@@ -3854,7 +3855,7 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_config</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">depth</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">max_depth</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="n">kcs</span> <span class="o">=</span> <span class="p">[</span><span class="n">kc</span> <span class="k">for</span> <span class="n">kc</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">to_iterator_keys</span><span class="p">(</span><span class="n">include_empty</span><span class="o">=</span><span class="kc">True</span><span class="p">)]</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">kcs</span><span class="p">:</span>
             <span class="k">return</span> <span class="mi">0</span>
