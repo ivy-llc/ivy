@@ -741,8 +741,9 @@ class Container(dict):
         :return: Container loaded from disk
         """
         if ivy.wrapped_mode():
-            return Container(_pickle.load(open(pickle_filepath, 'rb')), ivyh=ivyh).to_ivy()
-        return Container(_pickle.load(open(pickle_filepath, 'rb')), ivyh=ivyh)
+            return Container(_pickle.load(open(pickle_filepath, 'rb')),
+                             rebuild_child_containers=True, ivyh=ivyh).to_ivy()
+        return Container(_pickle.load(open(pickle_filepath, 'rb')), rebuild_child_containers=True, ivyh=ivyh)
 
     @staticmethod
     def from_disk_as_json(json_filepath, ivyh=None):
@@ -3052,10 +3053,10 @@ class Container(dict):
             return self
 
     def cutoff_at_depth(self, depth_cutoff, inplace=False):
-        total_depth = self.depth
+        total_depth = self.max_depth
         copy = self.copy()
         def _maybe_cutoff(cont, kc):
-            if total_depth - copy[kc].depth < depth_cutoff:
+            if total_depth - copy[kc].max_depth < depth_cutoff:
                 return cont
             if inplace:
                 cont.clear()
@@ -3068,7 +3069,7 @@ class Container(dict):
     def cutoff_at_height(self, height_cutoff, inplace=False):
         copy = self.copy()
         def _maybe_cutoff(cont, kc):
-            if copy[kc].depth > height_cutoff:
+            if copy[kc].max_depth > height_cutoff:
                 return cont
             if inplace:
                 cont.clear()
@@ -3094,7 +3095,7 @@ class Container(dict):
         return ret.at_key_chains(desired_keys)
 
     def slice_keys(self, key_slice, all_depths=False):
-        top_depth = self.depth
+        top_depth = self.max_depth
         if all_depths:
             if isinstance(key_slice, dict):
                 first_slice = list(key_slice.values())[0]
@@ -3648,7 +3649,7 @@ class Container(dict):
         return self._config
 
     @property
-    def depth(self):
+    def max_depth(self):
         kcs = [kc for kc in self.to_iterator_keys(include_empty=True)]
         if not kcs:
             return 0
