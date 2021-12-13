@@ -343,16 +343,16 @@ def test_container_from_dict(dev_str, call):
 def test_container_depth(dev_str, call):
     cont_depth1 = Container({'a': ivy.array([1], dev_str=dev_str),
                              'b': ivy.array([2], dev_str=dev_str)})
-    assert cont_depth1.depth == 1
+    assert cont_depth1.max_depth == 1
     cont_depth2 = Container({'a': ivy.array([1], dev_str=dev_str),
                              'b': {'c': ivy.array([2], dev_str=dev_str), 'd': ivy.array([3], dev_str=dev_str)}})
-    assert cont_depth2.depth == 2
+    assert cont_depth2.max_depth == 2
     cont_depth3 = Container({'a': ivy.array([1], dev_str=dev_str),
                              'b': {'c': {'d': ivy.array([2], dev_str=dev_str)}, 'e': ivy.array([3], dev_str=dev_str)}})
-    assert cont_depth3.depth == 3
+    assert cont_depth3.max_depth == 3
     cont_depth4 = Container({'a': ivy.array([1], dev_str=dev_str),
                              'b': {'c': {'d': {'e': ivy.array([2], dev_str=dev_str)}}}})
-    assert cont_depth4.depth == 4
+    assert cont_depth4.max_depth == 4
 
 
 @pytest.mark.parametrize(
