@@ -461,9 +461,9 @@ def split_func_call(func: Callable, inputs: Iterable[Union[Union[ivy.Array, ivy.
                 ret = func(*inps)
                 if isinstance(ret, tuple):
                     for i, r in enumerate(ret):
-                        sums[i] += r
+                        sums[i] = sums[i] + r
                 else:
-                    sums[0] += ret
+                    sums[0] = sums[0] + ret
         sums_or_means = [s/num_chunks_ceiled for s in sums] if is_mean else sums
         return sums_or_means[0] if len(sums_or_means) == 1 else sums_or_means
     rets = [func(*i) for i in zip(*inputs_split)]
@@ -1165,15 +1165,18 @@ class DevManager:
     def _compute_dev_da_ratios(self):
         self._dev_str_da_ratios = {k: v / self._dim_size for k, v in self._dev_strs_da.items()}
 
-    def da_tune_step(self):
+    def da_tune_step(self, oom=False):
         if self._tuned:
             return
         new_dev_utils = dict(sorted({k: dev_util(k) for k in self._dev_strs_keys}.items(), key=lambda item: item[1]))
         new_dev_utils_keys = list(new_dev_utils.keys())
         highest_util_dev = new_dev_utils_keys[-1]
         highest_util = new_dev_utils[highest_util_dev]
-        new_dev_percent_mems = dict(sorted({k: percent_used_mem_on_dev(k) for k in self._dev_strs_keys}.items(),
-                                           key=lambda item: item[1]))
+        if oom:
+            new_dev_percent_mems = {k: 100 for k in self._dev_strs_keys}
+        else:
+            new_dev_percent_mems = dict(sorted({k: percent_used_mem_on_dev(k) for k in self._dev_strs_keys}.items(),
+                                               key=lambda item: item[1]))
 
         # first step
         if self._first_da_tune_step:
@@ -1269,7 +1272,8 @@ class DevManager:
         self._da_time = now
         if self._tuned:
             return
-        logging.info('new allocation sizes {}, still tuning...'.format(str(self._dev_strs_da.values())))
+        logging.info('new allocation sizes {}, still tuning...'.format(
+            str(['{:.2f}'.format(v) for v in self._dev_strs_da.values()])))
 
     # Device Splitting #
 
@@ -1281,11 +1285,14 @@ class DevManager:
             if not self._with_dev_mappig:
                 ivy.set_split_factor(min(self._dev_strs_ds[ds] + clipped_delta, 1), ds)
 
-    def ds_tune_step(self):
+    def ds_tune_step(self, oom=False):
         if self._tuned:
             return
-        new_dev_percent_mems = dict(sorted({k: percent_used_mem_on_dev(k) for k in self._dev_strs_keys}.items(),
-                                           key=lambda item: item[1]))
+        if oom:
+            new_dev_percent_mems = {k: 100 for k in self._dev_strs_keys}
+        else:
+            new_dev_percent_mems = dict(sorted({k: percent_used_mem_on_dev(k) for k in self._dev_strs_keys}.items(),
+                                               key=lambda item: item[1]))
 
         # first step
         if self._first_ds_tune_step:
@@ -1350,7 +1357,7 @@ class DevManager:
         if self._tuned:
             return
         logging.info('new split factors {}, still tuning...'.format(
-            str([ivy.split_factor(k) for k in self._dev_strs_keys])))
+            str(['{:.2f}'.format(ivy.split_factor(k)) for k in self._dev_strs_keys])))
 
     # Repeated Config Checking #
 
