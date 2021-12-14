@@ -27,6 +27,7 @@ from ivy.framework_handler import current_framework as _cur_framework
 default_device_stack = list()
 dev_handles = dict()
 split_factors = dict()
+max_chunk_sizes = dict()
 
 class DefaultDevice:
     # noinspection PyShadowingNames
@@ -420,10 +421,18 @@ def split_func_call(func: Callable, inputs: Iterable[Union[Union[ivy.Array, ivy.
     :type output_axes: int or sequence of ints, optional
     :return: The return from the function, following input splitting and re-concattenation.
     """
-    if not ivy.exists(max_chunk_size) and not ivy.exists(chunk_size):
-        raise Exception('Either max_chunk_size or chunk_size must be specified, but neither were provided.')
     if isinstance(input_axes, int):
         input_axes = [input_axes]*len(inputs)
+    if not ivy.exists(max_chunk_size) and not ivy.exists(chunk_size):
+        shape_key = '_'.join([str(inp.shape) for inp in inputs])
+        if shape_key in max_chunk_sizes:
+            max_chunk_size = max_chunk_sizes[shape_key]
+        else:
+            max_chunk_size = 0
+        max_dim = max([inp.shape[inp_ax] for inp, inp_ax in zip(inputs, input_axes)])
+        if max_dim > max_chunk_size:
+            max_chunk_sizes[shape_key] = max_dim
+            max_chunk_size = max_dim
     chunk_size = ivy.default(
         chunk_size, lambda: max(int(round(max_chunk_size * ivy.split_factor(ivy.default_device()))), 1), True)
     dim_size = inputs[0].shape[input_axes[0]]
