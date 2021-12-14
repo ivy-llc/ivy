@@ -11,6 +11,7 @@ import time
 import queue
 import psutil
 import inspect
+import logging
 import nvidia_smi
 
 # noinspection PyUnresolvedReferences
@@ -1172,6 +1173,9 @@ class DevManager:
         # first step
         if self._first_da_tune_step:
 
+            # log
+            logging.info('tuning device allocation...')
+
             # shift the device splits by 1
             self._shift_da_splits(new_dev_utils_keys, {k: 1 for k in self._dev_strs_keys})
 
@@ -1249,6 +1253,7 @@ class DevManager:
                 self._percent_mem_inc_per_unit_da_dim.clear()
                 self._delta_da_dim_sizes.clear()
                 self._dev_percent_mems.clear()
+                logging.info('device allocation tuning complete!')
                 self._tuned = True
 
             self._unit_da_tune_count += 1
@@ -1257,6 +1262,9 @@ class DevManager:
         now = time.perf_counter()
         self._da_step_time = now - self._da_time
         self._da_time = now
+        if self._tuned:
+            return
+        logging.info('new allocation sizes {}, still tuning...'.format(str(self._dev_strs_da.values())))
 
     # Device Splitting #
 
@@ -1276,6 +1284,9 @@ class DevManager:
 
         # first step
         if self._first_ds_tune_step:
+
+            # log
+            logging.info('tuning device splitting...')
 
             # shift the device splits by 1%
             self._shift_ds({k: 0.01 for k in self._dev_strs_keys})
@@ -1324,12 +1335,17 @@ class DevManager:
             self._observed_configs.clear()
             self._percent_mem_inc_per_sf.clear()
             self._dev_percent_mems.clear()
+            logging.info('device splitting tuning complete!')
             self._tuned = True
 
         # log time
         now = time.perf_counter()
         self._ds_step_time = now - self._ds_time
         self._ds_time = now
+        if self._tuned:
+            return
+        logging.info('new split factors {}, still tuning...'.format(
+            str([ivy.split_factor(k) for k in self._dev_strs_keys])))
 
     # Repeated Config Checking #
 
