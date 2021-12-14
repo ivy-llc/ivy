@@ -1005,10 +1005,6 @@ def test_split(x_n_noss_n_axis_n_wr, dtype_str, tensor_fn, dev_str, call):
     if isinstance(x, Number) and tensor_fn == helpers.var_fn and call is helpers.mx_call:
         # mxnet does not support 0-dimensional variables
         pytest.skip()
-    if (isinstance(num_or_size_splits, list) or with_remainder) and call is helpers.mx_call:
-        # mxnet does not support split method with section sizes, only num_sections is supported.
-        # This only explains why remainders aren't supported, as this uses the same underlying mechanism.
-        pytest.skip()
     x = tensor_fn(x, dtype_str, dev_str)
     ret = ivy.split(x, num_or_size_splits, axis, with_remainder)
     # type test
