@@ -400,8 +400,8 @@ def set_split_factor(factor, dev_str=None):
 
 def split_func_call(func: Callable, inputs: Iterable[Union[Union[ivy.Array, ivy.NativeArray], ivy.Container]],
                     mode: str, max_chunk_size: int = None, chunk_size: int = None,
-                    input_axes: Union[int, Iterable[int]] = 0, output_axes: Union[int, Iterable[int]] = None)\
-        -> Iterable[Union[Union[ivy.Array, ivy.NativeArray], ivy.Container]]:
+                    input_axes: Union[int, Iterable[int]] = 0, output_axes: Union[int, Iterable[int]] = None,
+                    dev_str=None) -> Iterable[Union[Union[ivy.Array, ivy.NativeArray], ivy.Container]]:
     """
     Call a function by splitting its inputs along a given axis, and calling the function in chunks, rather than feeding
     the entire input array at once. This can be useful to reduce memory usage of the device the arrays are on.
@@ -420,6 +420,8 @@ def split_func_call(func: Callable, inputs: Iterable[Union[Union[ivy.Array, ivy.
     :type input_axes: int or sequence of ints, optional
     :param output_axes: The axes along which to concat each of the returned outputs. Default is same as fist input axis.
     :type output_axes: int or sequence of ints, optional
+    :param dev_str: The device to set the split factor for. Sets the default device by default.
+    :type dev_str: str, optional
     :return: The return from the function, following input splitting and re-concattenation.
     """
     if isinstance(input_axes, int):
@@ -435,7 +437,7 @@ def split_func_call(func: Callable, inputs: Iterable[Union[Union[ivy.Array, ivy.
             max_chunk_sizes[shape_key] = max_dim
             max_chunk_size = max_dim
     chunk_size = ivy.default(
-        chunk_size, lambda: max(int(round(max_chunk_size * ivy.split_factor(ivy.default_device()))), 1), True)
+        chunk_size, lambda: 1 + int(round((max_chunk_size-1) * ivy.split_factor(ivy.default_device(dev_str)))), True)
     dim_size = inputs[0].shape[input_axes[0]]
     if chunk_size >= dim_size:
         return func(*inputs)
