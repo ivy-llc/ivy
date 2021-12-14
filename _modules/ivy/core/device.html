@@ -217,6 +217,7 @@
 <span class="kn">import</span> <span class="nn">queue</span>
 <span class="kn">import</span> <span class="nn">psutil</span>
 <span class="kn">import</span> <span class="nn">inspect</span>
+<span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">import</span> <span class="nn">nvidia_smi</span>
 
 <span class="c1"># noinspection PyUnresolvedReferences</span>
@@ -1378,6 +1379,9 @@
         <span class="c1"># first step</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_first_da_tune_step</span><span class="p">:</span>
 
+            <span class="c1"># log</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;tuning device allocation...&#39;</span><span class="p">)</span>
+
             <span class="c1"># shift the device splits by 1</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_shift_da_splits</span><span class="p">(</span><span class="n">new_dev_utils_keys</span><span class="p">,</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="mi">1</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dev_strs_keys</span><span class="p">})</span>
 
@@ -1455,6 +1459,7 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">_percent_mem_inc_per_unit_da_dim</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_delta_da_dim_sizes</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_dev_percent_mems</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;device allocation tuning complete!&#39;</span><span class="p">)</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_tuned</span> <span class="o">=</span> <span class="kc">True</span>
 
             <span class="bp">self</span><span class="o">.</span><span class="n">_unit_da_tune_count</span> <span class="o">+=</span> <span class="mi">1</span>
@@ -1462,7 +1467,10 @@
         <span class="c1"># log time</span>
         <span class="n">now</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">perf_counter</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_da_step_time</span> <span class="o">=</span> <span class="n">now</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_da_time</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_da_time</span> <span class="o">=</span> <span class="n">now</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_da_time</span> <span class="o">=</span> <span class="n">now</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tuned</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;new allocation sizes </span><span class="si">{}</span><span class="s1">, still tuning...&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dev_strs_da</span><span class="o">.</span><span class="n">values</span><span class="p">())))</span></div>
 
     <span class="c1"># Device Splitting #</span>
 
@@ -1482,6 +1490,9 @@
 
         <span class="c1"># first step</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_first_ds_tune_step</span><span class="p">:</span>
+
+            <span class="c1"># log</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;tuning device splitting...&#39;</span><span class="p">)</span>
 
             <span class="c1"># shift the device splits by 1%</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_shift_ds</span><span class="p">({</span><span class="n">k</span><span class="p">:</span> <span class="mf">0.01</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dev_strs_keys</span><span class="p">})</span>
@@ -1530,12 +1541,17 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_observed_configs</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_percent_mem_inc_per_sf</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_dev_percent_mems</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;device splitting tuning complete!&#39;</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_tuned</span> <span class="o">=</span> <span class="kc">True</span>
 
         <span class="c1"># log time</span>
         <span class="n">now</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">perf_counter</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_ds_step_time</span> <span class="o">=</span> <span class="n">now</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ds_time</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_ds_time</span> <span class="o">=</span> <span class="n">now</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ds_time</span> <span class="o">=</span> <span class="n">now</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_tuned</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s1">&#39;new split factors </span><span class="si">{}</span><span class="s1">, still tuning...&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="nb">str</span><span class="p">([</span><span class="n">ivy</span><span class="o">.</span><span class="n">split_factor</span><span class="p">(</span><span class="n">k</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dev_strs_keys</span><span class="p">])))</span></div>
 
     <span class="c1"># Repeated Config Checking #</span>
 
