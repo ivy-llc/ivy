@@ -442,12 +442,30 @@ def split_func_call(func: Callable, inputs: Iterable[Union[Union[ivy.Array, ivy.
     if chunk_size >= dim_size:
         return func(*inputs)
     num_chunks = dim_size / chunk_size
-    num_chunks_floored = math.floor(dim_size / chunk_size)
+    num_chunks_floored = math.floor(num_chunks)
+    num_chunks_ceiled = math.ceil(num_chunks)
     chunk_sizes = [chunk_size] * num_chunks_floored
     if num_chunks != num_chunks_floored:
         chunk_sizes.append(dim_size - chunk_size * num_chunks_floored)
     inputs_split = [ivy.split(inp, chunk_sizes, input_axes[i], True) if ivy.is_array(inp)
                     else inp.split(chunk_sizes, input_axes[i], True) for i, inp in enumerate(inputs)]
+    is_mean = mode == 'mean'
+    is_sum = mode == 'sum'
+    if is_mean or is_sum:
+        sums = None
+        for inps in zip(*inputs_split):
+            if not sums:
+                sums = func(*inps)
+                sums = list(sums) if isinstance(sums, tuple) else [sums]
+            else:
+                ret = func(*inps)
+                if isinstance(ret, tuple):
+                    for i, r in enumerate(ret):
+                        sums[i] += r
+                else:
+                    sums[0] += ret
+        sums_or_means = [s/num_chunks_ceiled for s in sums] if is_mean else sums
+        return sums_or_means[0] if len(sums_or_means) == 1 else sums_or_means
     rets = [func(*i) for i in zip(*inputs_split)]
     rets = [ret if isinstance(ret, tuple) else (ret,) for ret in rets]
     num_outputs = len(rets[0])
@@ -455,23 +473,8 @@ def split_func_call(func: Callable, inputs: Iterable[Union[Union[ivy.Array, ivy.
         output_axes = [input_axes[0]] * num_outputs
     elif isinstance(output_axes, int):
         output_axes = [output_axes] * num_outputs
-    is_mean = mode == 'mean'
-    is_sum = mode == 'sum'
-    if is_mean or is_sum:
-        rets = [[(r.expand_dims(output_axis) if isinstance(r, ivy.Container) else ivy.expand_dims(r, output_axis)) * cs
-                 for output_axis, r in zip(output_axes, ret)] for ret, cs in zip(rets, chunk_sizes)]
-    concatted = [ivy.concatenate([r[i] for r in rets], output_axes[i]) if ivy.is_array(rets[0][i])
-                 else ivy.Container.concat([r[i] for r in rets], output_axes[i])
-                 for i in range(num_outputs)]
-    if is_mean:
-        ret = [(item.reduce_sum(output_axis) if isinstance(item, ivy.Container)
-                else ivy.reduce_sum(item, output_axis))/sum(chunk_sizes)
-               for item, output_axis in zip(concatted, output_axes)]
-    elif is_sum:
-        ret = [(item.reduce_sum(output_axis) if isinstance(item, ivy.Container)
-                else ivy.reduce_sum(item, output_axis)) for item, output_axis in zip(concatted, output_axes)]
-    else:
-        ret = concatted
+    ret = [ivy.concatenate([r[i] for r in rets], output_axes[i]) if ivy.is_array(rets[0][i])
+           else ivy.Container.concat([r[i] for r in rets], output_axes[i]) for i in range(num_outputs)]
     return ret[0] if len(ret) == 1 else ret
 
 
