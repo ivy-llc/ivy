@@ -375,7 +375,7 @@
         <span class="k">return</span> <span class="n">depth</span></div>
 
 <div class="viewcode-block" id="Module.mod_height"><a class="viewcode-back" href="../../../neural_net_stateful/module/Module.html#ivy.neural_net_stateful.module.Module.mod_height">[docs]</a>    <span class="k">def</span> <span class="nf">mod_height</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">sub_mods</span><span class="p">()</span><span class="o">.</span><span class="n">depth</span> <span class="o">-</span> <span class="mi">1</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">sub_mods</span><span class="p">()</span><span class="o">.</span><span class="n">max_depth</span> <span class="o">-</span> <span class="mi">1</span></div>
 
     <span class="k">def</span> <span class="nf">_find_variables</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="n">vs</span> <span class="o">=</span> <span class="n">Container</span><span class="p">()</span>
