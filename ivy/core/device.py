@@ -159,6 +159,20 @@ def str_to_dev(dev_str: str, f: ivy.Framework = None)\
 # Memory #
 
 # noinspection PyShadowingNames
+def clear_mem_on_dev(dev_str: str, f: ivy.Framework = None)\
+        -> None:
+    """
+    Clear memory cache on target device.
+
+    :param dev_str: The device string to conver to native device handle.
+    :type dev_str: str
+    :param f: Machine learning framework. Inferred from inputs if None.
+    :type f: ml_framework, optional
+    """
+    return _cur_framework(None, f=f).clear_mem_on_dev(dev_str)
+
+
+# noinspection PyShadowingNames
 def total_mem_on_dev(dev_str: str)\
         -> float:
     """
@@ -191,6 +205,7 @@ def used_mem_on_dev(dev_str: str, process_specific=False)\
     :type process_specific: bool, optional
     :return: The used memory on the device in GB.
     """
+    ivy.clear_mem_on_dev(dev_str)
     if 'gpu' in dev_str:
         if process_specific:
             raise Exception('process-specific GPU queries are currently not supported')
@@ -219,6 +234,7 @@ def percent_used_mem_on_dev(dev_str: str, process_specific=False)\
     :type process_specific: bool, optional
     :return: The percentage used memory on the device.
     """
+    ivy.clear_mem_on_dev(dev_str)
     if 'gpu' in dev_str:
         if process_specific:
             raise Exception('process-specific GPU queries are currently not supported')
