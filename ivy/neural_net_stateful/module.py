@@ -93,7 +93,8 @@ class Module(abc.ABC):
     # --------#
 
     def _fn_with_var_arg(self, fn, v_fn):
-        def new_fn(*a, with_grads=True, **kw):
+        def new_fn(*a, with_grads=None, **kw):
+            with_grads = ivy.with_grads(with_grads)
             if 'v' in kw.keys():
                 del kw['v']
             v = v_fn(self.v)
@@ -304,10 +305,11 @@ class Module(abc.ABC):
             self._check_submod_ret()
         return ret
 
-    def _call(self, *args, v=None, with_grads=True, **kwargs):
+    def _call(self, *args, v=None, with_grads=None, **kwargs):
         """
         the forward pass of the layer, treating layer instance as callable function.
         """
+        with_grads = ivy.with_grads(with_grads)
         if not self._built:
             self.build(*args, **kwargs, from_call=True)
         if v is not None:
@@ -406,8 +408,9 @@ class Module(abc.ABC):
             print('self.top_mod must be initialized in order to show mod in top_mod,'
                   'but found\n\ntop_mod: {}'.format(self.top_mod))
 
-    def compile_graph(self, *args, v=None, with_grads=True, stateful=None, arg_stateful_idxs=None,
+    def compile_graph(self, *args, v=None, with_grads=None, stateful=None, arg_stateful_idxs=None,
                       kwarg_stateful_idxs=None, include_generators=True, **kwargs):
+        with_grads = ivy.with_grads(with_grads)
         logging.info('compiling forward pass for network {} ...'.format(self))
         stateful = ivy.default(stateful, self._stateful)
         arg_stateful_idxs = ivy.default(arg_stateful_idxs, self._arg_stateful_idxs)
@@ -431,10 +434,11 @@ class Module(abc.ABC):
         logging.info('{} forward pass compiled!'.format(self))
         self._compiled = True
 
-    def show_graph(self, *args, v=None, with_grads=True, stateful=None, arg_stateful_idxs=None,
+    def show_graph(self, *args, v=None, with_grads=None, stateful=None, arg_stateful_idxs=None,
                    kwarg_stateful_idxs=None, randomness_factor=0., save_to_disk=False, with_edge_labels=True,
                    with_arg_labels=True, with_output_labels=True, output_connected_only=True, include_generators=True,
                    fname=None, **kwargs):
+        with_grads = ivy.with_grads(with_grads)
         self(*args, v=v, with_grads=with_grads, **kwargs)  # for on call build modes
         if not self._built:
             self.build(*args, from_call=False, **kwargs)  # for explicit build modes
@@ -561,9 +565,10 @@ class Module(abc.ABC):
         else:
             sco[new_key] = ivy.Container(alphabetical_keys=False, ivyh=ivy.numpy)
 
-    def __call__(self, *args, v=None, with_grads=True, stateful=None, arg_stateful_idxs=None, kwarg_stateful_idxs=None,
+    def __call__(self, *args, v=None, with_grads=None, stateful=None, arg_stateful_idxs=None, kwarg_stateful_idxs=None,
                  track_submod_rets=False, submod_depth=None, submods_to_track=None, track_submod_call_order=False,
                  expected_submod_rets=None, **kwargs):
+        with_grads = ivy.with_grads(with_grads)
         self.submod_rets = ivy.Container(alphabetical_keys=False, ivyh=ivy.numpy)
         self.submod_call_order = ivy.Container(alphabetical_keys=False, ivyh=ivy.numpy)
         if self._compiled and ivy.try_use_compiled:
