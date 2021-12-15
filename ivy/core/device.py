@@ -398,10 +398,12 @@ def set_split_factor(factor, dev_str=None):
     split_factors[dev_str] = factor
 
 
+# noinspection PyShadowingNames
 def split_func_call(func: Callable, inputs: Iterable[Union[Union[ivy.Array, ivy.NativeArray], ivy.Container]],
                     mode: str, max_chunk_size: int = None, chunk_size: int = None,
                     input_axes: Union[int, Iterable[int]] = 0, output_axes: Union[int, Iterable[int]] = None,
-                    dev_str=None) -> Iterable[Union[Union[ivy.Array, ivy.NativeArray], ivy.Container]]:
+                    stop_gradients: bool = False, dev_str=None)\
+        -> Iterable[Union[Union[ivy.Array, ivy.NativeArray], ivy.Container]]:
     """
     Call a function by splitting its inputs along a given axis, and calling the function in chunks, rather than feeding
     the entire input array at once. This can be useful to reduce memory usage of the device the arrays are on.
@@ -420,6 +422,8 @@ def split_func_call(func: Callable, inputs: Iterable[Union[Union[ivy.Array, ivy.
     :type input_axes: int or sequence of ints, optional
     :param output_axes: The axes along which to concat each of the returned outputs. Default is same as fist input axis.
     :type output_axes: int or sequence of ints, optional
+    :param stop_gradients: Whether to stop the gradients for each computed return. Default is False.
+    :type stop_gradients: bool, optional
     :param dev_str: The device to set the split factor for. Sets the default device by default.
     :type dev_str: str, optional
     :return: The return from the function, following input splitting and re-concattenation.
@@ -451,23 +455,24 @@ def split_func_call(func: Callable, inputs: Iterable[Union[Union[ivy.Array, ivy.
                     else inp.split(chunk_sizes, input_axes[i], True) for i, inp in enumerate(inputs)]
     is_mean = mode == 'mean'
     is_sum = mode == 'sum'
+    post_fn = ivy.stop_gradient if stop_gradients else lambda x: x
     if is_mean or is_sum:
         sums = None
         for inps in zip(*inputs_split):
             if not sums:
                 sums = func(*inps)
-                sums = list(sums) if isinstance(sums, tuple) else [sums]
+                sums = [post_fn(s) for s in sums] if isinstance(sums, tuple) else [post_fn(sums)]
             else:
                 ret = func(*inps)
                 if isinstance(ret, tuple):
                     for i, r in enumerate(ret):
-                        sums[i] = sums[i] + r
+                        sums[i] = sums[i] + post_fn(r)
                 else:
-                    sums[0] = sums[0] + ret
+                    sums[0] = sums[0] + post_fn(ret)
         sums_or_means = [s/num_chunks_ceiled for s in sums] if is_mean else sums
-        return sums_or_means[0] if len(sums_or_means) == 1 else sums_or_means
+        return sums_or_means[0] if len(sums_or_means) == 1 else tuple(sums_or_means)
     rets = [func(*i) for i in zip(*inputs_split)]
-    rets = [ret if isinstance(ret, tuple) else (ret,) for ret in rets]
+    rets = [tuple([post_fn(r) for r in ret]) if isinstance(ret, tuple) else (post_fn(ret),) for ret in rets]
     num_outputs = len(rets[0])
     if output_axes is None:
         output_axes = [input_axes[0]] * num_outputs
