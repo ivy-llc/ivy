@@ -169,7 +169,7 @@ class Module(abc.ABC):
         return depth
 
     def mod_height(self):
-        return self.sub_mods().depth - 1
+        return self.sub_mods().max_depth - 1
 
     def _find_variables(self, obj=None):
         vs = Container()
