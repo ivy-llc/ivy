@@ -451,6 +451,8 @@ class Module(abc.ABC):
                        include_generators=include_generators, fname=fname, name=str(self))
 
     def compile_on_next_step(self):
+        if self._compiled:
+            raise Exception('This network is already compiled, cannot compile on next step.')
         self._compile_on_next_step = True
 
     def _set_submod_flags(self, track_submod_rets, submod_depth, submods_to_track, track_submod_call_order,

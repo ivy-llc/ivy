@@ -42,6 +42,11 @@ def str_to_dev(dev_str: Optional[str] = None) -> Optional[_torch.device]:
     return _torch.device(dev_str.replace('gpu', 'cuda'))
 
 
+def clear_mem_on_dev(dev_str):
+    if 'gpu' in dev_str:
+        _torch.cuda.empty_cache()
+
+
 def dev_str(x):
     return dev_to_str(dev(x))
 
