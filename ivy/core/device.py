@@ -75,7 +75,7 @@ def get_all_arrays_on_dev(dev_str):
                 all_arrays.append(obj)
         except Exception:
             pass
-    return all_arrays
+    return ivy.Container(dict(zip([str(id(a)) for a in all_arrays], all_arrays)))
 
 
 # noinspection PyShadowingNames
