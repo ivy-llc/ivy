@@ -657,6 +657,8 @@
                        <span class="n">include_generators</span><span class="o">=</span><span class="n">include_generators</span><span class="p">,</span> <span class="n">fname</span><span class="o">=</span><span class="n">fname</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span></div>
 
 <div class="viewcode-block" id="Module.compile_on_next_step"><a class="viewcode-back" href="../../../neural_net_stateful/module/Module.html#ivy.neural_net_stateful.module.Module.compile_on_next_step">[docs]</a>    <span class="k">def</span> <span class="nf">compile_on_next_step</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_compiled</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;This network is already compiled, cannot compile on next step.&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_compile_on_next_step</span> <span class="o">=</span> <span class="kc">True</span></div>
 
     <span class="k">def</span> <span class="nf">_set_submod_flags</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">track_submod_rets</span><span class="p">,</span> <span class="n">submod_depth</span><span class="p">,</span> <span class="n">submods_to_track</span><span class="p">,</span> <span class="n">track_submod_call_order</span><span class="p">,</span>

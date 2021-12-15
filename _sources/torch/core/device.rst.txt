@@ -16,6 +16,7 @@ Device
    device/to_dev.rst
    device/dev_to_str.rst
    device/str_to_dev.rst
+   device/clear_mem_on_dev.rst
    device/dev_str.rst
    device/tpu_is_available.rst
    device/Profiler.rst

@@ -19,6 +19,7 @@ Device
    device/dev_str.rst
    device/dev_to_str.rst
    device/str_to_dev.rst
+   device/clear_mem_on_dev.rst
    device/total_mem_on_dev.rst
    device/used_mem_on_dev.rst
    device/percent_used_mem_on_dev.rst
