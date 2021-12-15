@@ -12,6 +12,9 @@ Gradients
    :maxdepth: -1
    :caption: Gradients
 
+   gradients/with_grads.rst
+   gradients/set_with_grads.rst
+   gradients/unset_with_grads.rst
    gradients/variable.rst
    gradients/is_variable.rst
    gradients/variable_data.rst
@@ -26,4 +29,7 @@ Gradients
    gradients/lars_update.rst
    gradients/adam_update.rst
    gradients/lamb_update.rst
+   gradients/GradientTracking:
+    # noinspection PyShadowingNames
+    def __init__.rst
 
