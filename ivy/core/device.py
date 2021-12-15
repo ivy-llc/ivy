@@ -334,6 +334,7 @@ def set_default_device(dev_str):
     global default_device_stack
     default_device_stack.append(dev_str)
 
+
 def unset_default_device():
     global default_device_stack
     if default_device_stack:
