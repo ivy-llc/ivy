@@ -36,7 +36,7 @@
   <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="variable" href="gradients/variable.html" />
+    <link rel="next" title="with_grads" href="gradients/with_grads.html" />
     <link rel="prev" title="container_types" href="general/container_types.html" /> 
 </head>
 
@@ -103,6 +103,9 @@
 <li class="toctree-l1"><a class="reference internal" href="device.html">Device</a></li>
 <li class="toctree-l1"><a class="reference internal" href="general.html">General</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Gradients</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="gradients/with_grads.html">with_grads</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gradients/set_with_grads.html">set_with_grads</a></li>
+<li class="toctree-l2"><a class="reference internal" href="gradients/unset_with_grads.html">unset_with_grads</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gradients/variable.html">variable</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gradients/is_variable.html">is_variable</a></li>
 <li class="toctree-l2"><a class="reference internal" href="gradients/variable_data.html">variable_data</a></li>
@@ -226,6 +229,18 @@
   <div class="section" id="module-ivy.core.gradients">
 <span id="gradients"></span><h1>Gradients<a class="headerlink" href="#module-ivy.core.gradients" title="Permalink to this headline">¶</a></h1>
 <p>Collection of gradient Ivy functions.</p>
+<dl class="py class">
+<dt id="ivy.core.gradients.GradientTracking">
+<em class="property">class </em><code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">GradientTracking</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">with_grads</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/gradients.html#GradientTracking"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.gradients.GradientTracking" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt id="ivy.core.gradients.GradientTracking.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">with_grads</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/gradients.html#GradientTracking.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.gradients.GradientTracking.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize self.  See help(type(self)) for accurate signature.</p>
+</dd></dl>
+
+</dd></dl>
+
 <dl class="py function">
 <dt id="ivy.core.gradients.adam_step">
 <code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">adam_step</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dcdws</span></em>, <em class="sig-param"><span class="n">mw</span></em>, <em class="sig-param"><span class="n">vw</span></em>, <em class="sig-param"><span class="n">step</span></em>, <em class="sig-param"><span class="n">beta1</span><span class="o">=</span><span class="default_value">0.9</span></em>, <em class="sig-param"><span class="n">beta2</span><span class="o">=</span><span class="default_value">0.999</span></em>, <em class="sig-param"><span class="n">epsilon</span><span class="o">=</span><span class="default_value">1e-07</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/gradients.html#adam_step"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.gradients.adam_step" title="Permalink to this definition">¶</a></dt>
@@ -478,6 +493,11 @@ Default is True.</p></li>
 </dd></dl>
 
 <dl class="py function">
+<dt id="ivy.core.gradients.set_with_grads">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">set_with_grads</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">with_grads</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/gradients.html#set_with_grads"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.gradients.set_with_grads" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
 <dt id="ivy.core.gradients.stop_gradient">
 <code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">stop_gradient</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">preserve_type</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">f</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/gradients.html#stop_gradient"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.gradients.stop_gradient" title="Permalink to this definition">¶</a></dt>
 <dd><p>Stops gradient computation.</p>
@@ -496,6 +516,11 @@ otherwise an array is always returned. Default is True.</p></li>
 </dd>
 </dl>
 </dd></dl>
+
+<dl class="py function">
+<dt id="ivy.core.gradients.unset_with_grads">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">unset_with_grads</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/gradients.html#unset_with_grads"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.gradients.unset_with_grads" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 <dl class="py function">
 <dt id="ivy.core.gradients.variable">
@@ -532,9 +557,18 @@ array. For frameworks which do not have a dedicated variable class, the function
 </dl>
 </dd></dl>
 
+<dl class="py function">
+<dt id="ivy.core.gradients.with_grads">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">with_grads</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">with_grads</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/gradients.html#with_grads"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.gradients.with_grads" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the input dev_str if provided, otherwise return the global default device.</p>
+</dd></dl>
+
 <div class="toctree-wrapper compound">
 <p class="caption"><span class="caption-text">Gradients</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="gradients/with_grads.html">with_grads</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gradients/set_with_grads.html">set_with_grads</a></li>
+<li class="toctree-l1"><a class="reference internal" href="gradients/unset_with_grads.html">unset_with_grads</a></li>
 <li class="toctree-l1"><a class="reference internal" href="gradients/variable.html">variable</a></li>
 <li class="toctree-l1"><a class="reference internal" href="gradients/is_variable.html">is_variable</a></li>
 <li class="toctree-l1"><a class="reference internal" href="gradients/variable_data.html">variable_data</a></li>
@@ -561,7 +595,7 @@ array. For frameworks which do not have a dedicated variable class, the function
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="gradients/variable.html" class="btn btn-neutral float-right" title="variable" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="gradients/with_grads.html" class="btn btn-neutral float-right" title="with_grads" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="general/container_types.html" class="btn btn-neutral float-left" title="container_types" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>

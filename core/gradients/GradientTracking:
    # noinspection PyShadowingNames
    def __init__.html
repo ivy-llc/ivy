@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>variable &mdash; Ivy 1.0 documentation</title>
+  <title>&lt;no title&gt; &mdash; Ivy 1.0 documentation</title>
   
 
   
@@ -35,9 +35,7 @@
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/css/custom.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
-    <link rel="search" title="Search" href="../../search.html" />
-    <link rel="next" title="is_variable" href="is_variable.html" />
-    <link rel="prev" title="unset_with_grads" href="unset_with_grads.html" /> 
+    <link rel="search" title="Search" href="../../search.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -97,31 +95,12 @@
 <li class="toctree-l1"><a class="reference internal" href="../../compiler/param.html">Param</a></li>
 </ul>
 <p class="caption"><span class="caption-text">Core</span></p>
-<ul class="current">
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="../compilation.html">Compilation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../container.html">Container</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../device.html">Device</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../general.html">General</a></li>
-<li class="toctree-l1 current"><a class="reference internal" href="../gradients.html">Gradients</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="with_grads.html">with_grads</a></li>
-<li class="toctree-l2"><a class="reference internal" href="set_with_grads.html">set_with_grads</a></li>
-<li class="toctree-l2"><a class="reference internal" href="unset_with_grads.html">unset_with_grads</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">variable</a></li>
-<li class="toctree-l2"><a class="reference internal" href="is_variable.html">is_variable</a></li>
-<li class="toctree-l2"><a class="reference internal" href="variable_data.html">variable_data</a></li>
-<li class="toctree-l2"><a class="reference internal" href="inplace_update.html">inplace_update</a></li>
-<li class="toctree-l2"><a class="reference internal" href="inplace_decrement.html">inplace_decrement</a></li>
-<li class="toctree-l2"><a class="reference internal" href="inplace_increment.html">inplace_increment</a></li>
-<li class="toctree-l2"><a class="reference internal" href="stop_gradient.html">stop_gradient</a></li>
-<li class="toctree-l2"><a class="reference internal" href="execute_with_gradients.html">execute_with_gradients</a></li>
-<li class="toctree-l2"><a class="reference internal" href="adam_step.html">adam_step</a></li>
-<li class="toctree-l2"><a class="reference internal" href="optimizer_update.html">optimizer_update</a></li>
-<li class="toctree-l2"><a class="reference internal" href="gradient_descent_update.html">gradient_descent_update</a></li>
-<li class="toctree-l2"><a class="reference internal" href="lars_update.html">lars_update</a></li>
-<li class="toctree-l2"><a class="reference internal" href="adam_update.html">adam_update</a></li>
-<li class="toctree-l2"><a class="reference internal" href="lamb_update.html">lamb_update</a></li>
-</ul>
-</li>
+<li class="toctree-l1"><a class="reference internal" href="../gradients.html">Gradients</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../image.html">Image</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../linalg.html">Linalg</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../logic.html">Logic</a></li>
@@ -207,15 +186,14 @@
     
       <li><a href="../../index.html">Docs</a> &raquo;</li>
         
-          <li><a href="../gradients.html">Gradients</a> &raquo;</li>
-        
-      <li>variable</li>
+      <li>&lt;no title&gt;</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="../../_sources/core/gradients/variable.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../../_sources/core/gradients/GradientTracking:
+    " rel="nofollow"> View page source</a>
           
         
       </li>
@@ -228,46 +206,23 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="variable">
-<h1>variable<a class="headerlink" href="#variable" title="Permalink to this headline">¶</a></h1>
-<dl class="py function">
-<dt id="ivy.core.gradients.variable">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">variable</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">f</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/gradients.html#variable"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.gradients.variable" title="Permalink to this definition">¶</a></dt>
-<dd><p>Creates a variable, which supports gradient computation.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<em>array</em>) – An ivy array.</p></li>
-<li><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning framework. Inferred from inputs if None.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>An ivy variable, supporting gradient computation.</p>
+  <dl class="simple">
+<dt>GradientTracking:</dt><dd><p># noinspection PyShadowingNames
+def __init__</p>
 </dd>
 </dl>
-</dd></dl>
-
+<hr class="docutils" />
 <div class="line-block">
 <div class="line"><br /></div>
 <div class="line"><strong>Supported Frameworks:</strong></div>
 </div>
 <p><a class="reference internal" href="../../_images/empty.png"><img alt="empty" src="../../_images/empty.png" style="width: 4%;" /></a> <a class="reference external" href="https://jax.readthedocs.io"><img alt="jax_logo" src="../../_images/jax_logo.png" style="width: 14%;" /></a> <a class="reference internal" href="../../_images/empty.png"><img alt="empty" src="../../_images/empty.png" style="width: 4%;" /></a> <a class="reference external" href="https://www.tensorflow.org"><img alt="tf_logo" src="../../_images/tensorflow_logo.png" style="width: 14%;" /></a> <a class="reference internal" href="../../_images/empty.png"><img alt="empty" src="../../_images/empty.png" style="width: 4%;" /></a> <a class="reference external" href="https://pytorch.org"><img alt="pytorch_logo" src="../../_images/pytorch_logo.png" style="width: 14%;" /></a> <a class="reference internal" href="../../_images/empty.png"><img alt="empty" src="../../_images/empty.png" style="width: 4%;" /></a> <a class="reference external" href="https://mxnet.apache.org"><img alt="mxnet_logo" src="../../_images/mxnet_logo.png" style="width: 14%;" /></a> <a class="reference internal" href="../../_images/empty.png"><img alt="empty" src="../../_images/empty.png" style="width: 4%;" /></a> <a class="reference external" href="https://numpy.org"><img alt="numpy_logo" src="../../_images/numpy_logo.png" style="width: 14%;" /></a> <a class="reference internal" href="../../_images/empty.png"><img alt="empty" src="../../_images/empty.png" style="width: 4%;" /></a></p>
-</div>
 
 
            </div>
            
           </div>
           <footer>
-  
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-      
-        <a href="is_variable.html" class="btn btn-neutral float-right" title="is_variable" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
-      
-      
-        <a href="unset_with_grads.html" class="btn btn-neutral float-left" title="unset_with_grads" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
-      
-    </div>
   
 
   <hr/>
