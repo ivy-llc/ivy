@@ -6,6 +6,50 @@ Collection of gradient Ivy functions.
 import ivy as _ivy
 from ivy.framework_handler import current_framework as _cur_framework
 
+with_grads_stack = list()
+
+class GradientTracking:
+    # noinspection PyShadowingNames
+    def __init__(self, with_grads):
+        self._with_grads = with_grads
+
+    def __enter__(self):
+        set_with_grads(self._with_grads)
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        unset_with_grads()
+        return self
+
+# Gradient Mode #
+# --------------#
+
+# noinspection PyShadowingNames
+def with_grads(with_grads=None):
+    """
+    Return the input dev_str if provided, otherwise return the global default device.
+    """
+    if _ivy.exists(with_grads):
+        assert with_grads in [True, False]
+        return with_grads
+    global with_grads_stack
+    if not with_grads_stack:
+        with_grads_stack = [True]
+    return with_grads_stack[-1]
+
+
+# noinspection PyShadowingNames
+def set_with_grads(with_grads):
+    assert with_grads in [True, False]
+    global with_grads_stack
+    with_grads_stack.append(with_grads)
+
+
+def unset_with_grads():
+    global with_grads_stack
+    if with_grads_stack:
+        with_grads_stack.pop(-1)
+
 
 # Variables #
 # ----------#
