@@ -57,6 +57,7 @@ def str_to_dev(dev_str):
     return _jax.devices(dev_str)[idx]
 
 
+clear_mem_on_dev = lambda dev_str: None
 dev_str = lambda x: dev_to_str(dev(x))
 dev_str.__name__ = 'dev_str'
 

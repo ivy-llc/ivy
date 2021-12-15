@@ -48,6 +48,7 @@ def str_to_dev(dev_str):
     return ret
 
 
+clear_mem_on_dev = lambda dev_str: None
 dev_str = lambda x: dev_to_str(dev(x))
 dev_str.__name__ = 'dev_str'
 _dev_str_callable = dev_str

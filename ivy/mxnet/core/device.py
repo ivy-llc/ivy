@@ -39,6 +39,7 @@ def str_to_dev(dev_str):
     return _mx.context.Context(dev_str, idx)
 
 
+clear_mem_on_dev = lambda dev_str: None
 dev_str = lambda x: dev_to_str(dev(x))
 dev_str.__name__ = 'dev_str'
 _callable_dev_str = dev_str
