@@ -12,6 +12,7 @@ General
    :maxdepth: -1
    :caption: General
 
+   general/get_referrers_recursive.rst
    general/array.rst
    general/is_array.rst
    general/copy_array.rst
