@@ -22,6 +22,35 @@ TIMEOUT = 15.0
 TMP_DIR = '/tmp'
 
 
+def get_referrers_recursive(item, depth=0, max_depth=None, seen_set=None, local_set=None):
+    seen_set = ivy.default(seen_set, set())
+    local_set = ivy.default(local_set, set())
+    ret_cont = ivy.Container(
+        repr=str(item).replace(' ', ''), alphabetical_keys=False, keyword_color_dict={'repr': 'magenta'})
+    referrers = [ref for ref in gc.get_referrers(item) if
+                 not (isinstance(ref, dict) and
+                      min([k in ref for k in ['depth', 'max_depth', 'seen_set', 'local_set']]))]
+    local_set.add(str(id(referrers)))
+    for ref in referrers:
+        ref_id = str(id(ref))
+        if ref_id in local_set or hasattr(ref, 'cell_contents'):
+            continue
+        seen = ref_id in seen_set
+        seen_set.add(ref_id)
+        refs_rec = lambda: get_referrers_recursive(ref, depth + 1, max_depth, seen_set, local_set)
+        this_repr = 'tracked' if seen else str(ref).replace(' ', '')
+        if not seen and (not max_depth or depth < max_depth):
+            val = ivy.Container(
+                repr=this_repr, alphabetical_keys=False, keyword_color_dict={'repr': 'magenta'})
+            refs = refs_rec()
+            for k, v in refs.items():
+                val[k] = v
+        else:
+            val = this_repr
+        ret_cont[str(ref_id)] = val
+    return ret_cont
+
+
 # noinspection PyShadowingNames
 def array(object_in: Union[List, np.ndarray, ivy.Array, ivy.NativeArray], dtype_str: str = None,
           dev_str: str = None, f: ivy.Framework = None) -> Union[ivy.Array, ivy.NativeArray]:
