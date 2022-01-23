@@ -84,7 +84,7 @@ we show the same kalman filter function written in Ivy below.
         return xkk, Pkk
 
 The backend framework can be selected before calling the function like so ``ivy.set_framework('torch')``.
-Further details on how to write efficient Ivy code are given in the short guide `Using Ivy <https://ivy-dl.org/ivy/using_ivy.html>`_.
+Further details on how to write efficient Ivy code are given in the short guide `Using Ivy <https://lets-unify.ai/ivy/using_ivy.html>`_.
 
 We now consider the use of your new library by some hypothetical users,
 with this particular application inspired by `Backprop Kalman Filter <https://arxiv.org/abs/1605.07148>`_.

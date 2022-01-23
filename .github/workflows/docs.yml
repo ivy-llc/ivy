@@ -13,7 +13,7 @@ jobs:
       - name: Checkout 🛎️Ivy Doc Builder
         uses: actions/checkout@v2
         with:
-          repository: ivy-dl/doc-builder
+          repository: unifyai/doc-builder
           path: ivy_doc_builder
           persist-credentials: false
 
