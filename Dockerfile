@@ -18,7 +18,7 @@ RUN pip3 install --upgrade torch-scatter -f https://pytorch-geometric.com/whl/to
 RUN pip3 install pytest
 
 # Install Ivy Upstream
-RUN git clone https://github.com/ivy-dl/ivy && \
+RUN git clone https://github.com/unifyai/ivy && \
     cd ivy && \
     cat requirements.txt | grep -v "ivy-" | pip3 install --no-cache-dir -r /dev/stdin && \
     cat optional.txt | grep -v "ivy-" | pip3 install --no-cache-dir -r /dev/stdin && \
