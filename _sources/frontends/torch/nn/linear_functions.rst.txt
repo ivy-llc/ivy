@@ -1,0 +1,15 @@
+Linear functions
+================
+
+.. automodule:: ivy.frontends.torch.nn.linear_functions
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :show-inheritance:
+
+
+.. toctree::
+   :maxdepth: -1
+   :caption: Linear functions
+
+

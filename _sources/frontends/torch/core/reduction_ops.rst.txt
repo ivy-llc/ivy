@@ -1,0 +1,15 @@
+Reduction ops
+=============
+
+.. automodule:: ivy.frontends.torch.core.reduction_ops
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :show-inheritance:
+
+
+.. toctree::
+   :maxdepth: -1
+   :caption: Reduction ops
+
+

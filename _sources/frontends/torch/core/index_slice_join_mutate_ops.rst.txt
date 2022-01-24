@@ -1,0 +1,15 @@
+Index slice join mutate ops
+===========================
+
+.. automodule:: ivy.frontends.torch.core.index_slice_join_mutate_ops
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :show-inheritance:
+
+
+.. toctree::
+   :maxdepth: -1
+   :caption: Index slice join mutate ops
+
+

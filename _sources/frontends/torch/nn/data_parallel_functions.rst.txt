@@ -1,0 +1,15 @@
+Data parallel functions
+=======================
+
+.. automodule:: ivy.frontends.torch.nn.data_parallel_functions
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :show-inheritance:
+
+
+.. toctree::
+   :maxdepth: -1
+   :caption: Data parallel functions
+
+

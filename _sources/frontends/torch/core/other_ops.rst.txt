@@ -1,0 +1,15 @@
+Other ops
+=========
+
+.. automodule:: ivy.frontends.torch.core.other_ops
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :show-inheritance:
+
+
+.. toctree::
+   :maxdepth: -1
+   :caption: Other ops
+
+
