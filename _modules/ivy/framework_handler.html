@@ -233,26 +233,26 @@
 
 
 <span class="n">_array_types</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
-<span class="n">_array_types</span><span class="p">[</span><span class="s1">&#39;numpy&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;ivy.numpy&#39;</span>
-<span class="n">_array_types</span><span class="p">[</span><span class="s1">&#39;jax.interpreters.xla&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;ivy.jax&#39;</span>
-<span class="n">_array_types</span><span class="p">[</span><span class="s1">&#39;jaxlib.xla_extension&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;ivy.jax&#39;</span>
-<span class="n">_array_types</span><span class="p">[</span><span class="s1">&#39;tensorflow.python.framework.ops&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;ivy.tensorflow&#39;</span>
-<span class="n">_array_types</span><span class="p">[</span><span class="s1">&#39;torch&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;ivy.torch&#39;</span>
-<span class="n">_array_types</span><span class="p">[</span><span class="s1">&#39;mxnet.ndarray.ndarray&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;ivy.mxnet&#39;</span>
+<span class="n">_array_types</span><span class="p">[</span><span class="s1">&#39;numpy&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;ivy.backends.numpy&#39;</span>
+<span class="n">_array_types</span><span class="p">[</span><span class="s1">&#39;jax.interpreters.xla&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;ivy.backends.jax&#39;</span>
+<span class="n">_array_types</span><span class="p">[</span><span class="s1">&#39;jaxlib.xla_extension&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;ivy.backends.jax&#39;</span>
+<span class="n">_array_types</span><span class="p">[</span><span class="s1">&#39;tensorflow.python.framework.ops&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;ivy.backends.tensorflow&#39;</span>
+<span class="n">_array_types</span><span class="p">[</span><span class="s1">&#39;torch&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;ivy.backends.torch&#39;</span>
+<span class="n">_array_types</span><span class="p">[</span><span class="s1">&#39;mxnet.ndarray.ndarray&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;ivy.backends.mxnet&#39;</span>
 
 <span class="n">_framework_dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
-<span class="n">_framework_dict</span><span class="p">[</span><span class="s1">&#39;numpy&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;ivy.numpy&#39;</span>
-<span class="n">_framework_dict</span><span class="p">[</span><span class="s1">&#39;jax&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;ivy.jax&#39;</span>
-<span class="n">_framework_dict</span><span class="p">[</span><span class="s1">&#39;tensorflow&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;ivy.tensorflow&#39;</span>
-<span class="n">_framework_dict</span><span class="p">[</span><span class="s1">&#39;torch&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;ivy.torch&#39;</span>
-<span class="n">_framework_dict</span><span class="p">[</span><span class="s1">&#39;mxnet&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;ivy.mxnet&#39;</span>
+<span class="n">_framework_dict</span><span class="p">[</span><span class="s1">&#39;numpy&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;ivy.backends.numpy&#39;</span>
+<span class="n">_framework_dict</span><span class="p">[</span><span class="s1">&#39;jax&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;ivy.backends.jax&#39;</span>
+<span class="n">_framework_dict</span><span class="p">[</span><span class="s1">&#39;tensorflow&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;ivy.backends.tensorflow&#39;</span>
+<span class="n">_framework_dict</span><span class="p">[</span><span class="s1">&#39;torch&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;ivy.backends.torch&#39;</span>
+<span class="n">_framework_dict</span><span class="p">[</span><span class="s1">&#39;mxnet&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;ivy.backends.mxnet&#39;</span>
 
 <span class="n">_framework_reverse_dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
-<span class="n">_framework_reverse_dict</span><span class="p">[</span><span class="s1">&#39;ivy.numpy&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;numpy&#39;</span>
-<span class="n">_framework_reverse_dict</span><span class="p">[</span><span class="s1">&#39;ivy.jax&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;jax&#39;</span>
-<span class="n">_framework_reverse_dict</span><span class="p">[</span><span class="s1">&#39;ivy.tensorflow&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;tensorflow&#39;</span>
-<span class="n">_framework_reverse_dict</span><span class="p">[</span><span class="s1">&#39;ivy.torch&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;torch&#39;</span>
-<span class="n">_framework_reverse_dict</span><span class="p">[</span><span class="s1">&#39;ivy.mxnet&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;mxnet&#39;</span>
+<span class="n">_framework_reverse_dict</span><span class="p">[</span><span class="s1">&#39;ivy.backends.numpy&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;numpy&#39;</span>
+<span class="n">_framework_reverse_dict</span><span class="p">[</span><span class="s1">&#39;ivy.backends.jax&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;jax&#39;</span>
+<span class="n">_framework_reverse_dict</span><span class="p">[</span><span class="s1">&#39;ivy.backends.tensorflow&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;tensorflow&#39;</span>
+<span class="n">_framework_reverse_dict</span><span class="p">[</span><span class="s1">&#39;ivy.backends.torch&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;torch&#39;</span>
+<span class="n">_framework_reverse_dict</span><span class="p">[</span><span class="s1">&#39;ivy.backends.mxnet&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;mxnet&#39;</span>
 
 
 <span class="c1"># Framework Getting/Setting #</span>
@@ -381,57 +381,57 @@
 
 <div class="viewcode-block" id="try_import_ivy_jax"><a class="viewcode-back" href="../../framework_handler/try_import_ivy_jax.html#ivy.framework_handler.try_import_ivy_jax">[docs]</a><span class="k">def</span> <span class="nf">try_import_ivy_jax</span><span class="p">(</span><span class="n">warn</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
     <span class="k">try</span><span class="p">:</span>
-        <span class="kn">import</span> <span class="nn">ivy.jax</span>
-        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">jax</span>
+        <span class="kn">import</span> <span class="nn">ivy.backends.jax</span>
+        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">backends</span><span class="o">.</span><span class="n">jax</span>
     <span class="k">except</span> <span class="p">(</span><span class="ne">ImportError</span><span class="p">,</span> <span class="ne">ModuleNotFoundError</span><span class="p">)</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">warn</span><span class="p">:</span>
             <span class="k">return</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="se">\n\n</span><span class="s1">Either jax or jaxlib appear to not be installed, &#39;</span>
-                        <span class="s1">&#39;ivy.jax can therefore not be imported.</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">))</span></div>
+                        <span class="s1">&#39;ivy.backends.jax can therefore not be imported.</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">))</span></div>
 
 
 <div class="viewcode-block" id="try_import_ivy_tf"><a class="viewcode-back" href="../../framework_handler/try_import_ivy_tf.html#ivy.framework_handler.try_import_ivy_tf">[docs]</a><span class="k">def</span> <span class="nf">try_import_ivy_tf</span><span class="p">(</span><span class="n">warn</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
     <span class="k">try</span><span class="p">:</span>
-        <span class="kn">import</span> <span class="nn">ivy.tensorflow</span>
-        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">tensorflow</span>
+        <span class="kn">import</span> <span class="nn">ivy.backends.tensorflow</span>
+        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">backends</span><span class="o">.</span><span class="n">tensorflow</span>
     <span class="k">except</span> <span class="p">(</span><span class="ne">ImportError</span><span class="p">,</span> <span class="ne">ModuleNotFoundError</span><span class="p">)</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">warn</span><span class="p">:</span>
             <span class="k">return</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="se">\n\n</span><span class="s1">tensorflow does not appear to be installed, &#39;</span>
-                        <span class="s1">&#39;ivy.tensorflow can therefore not be imported.</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">))</span></div>
+                        <span class="s1">&#39;ivy.backends.tensorflow can therefore not be imported.</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">))</span></div>
 
 
 <div class="viewcode-block" id="try_import_ivy_torch"><a class="viewcode-back" href="../../framework_handler/try_import_ivy_torch.html#ivy.framework_handler.try_import_ivy_torch">[docs]</a><span class="k">def</span> <span class="nf">try_import_ivy_torch</span><span class="p">(</span><span class="n">warn</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
     <span class="k">try</span><span class="p">:</span>
-        <span class="kn">import</span> <span class="nn">ivy.torch</span>
-        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">torch</span>
+        <span class="kn">import</span> <span class="nn">ivy.backends.torch</span>
+        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">backends</span><span class="o">.</span><span class="n">torch</span>
     <span class="k">except</span> <span class="p">(</span><span class="ne">ImportError</span><span class="p">,</span> <span class="ne">ModuleNotFoundError</span><span class="p">)</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">warn</span><span class="p">:</span>
             <span class="k">return</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="se">\n\n</span><span class="s1">torch does not appear to be installed, &#39;</span>
-                        <span class="s1">&#39;ivy.torch can therefore not be imported.</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">))</span></div>
+                        <span class="s1">&#39;ivy.backends.torch can therefore not be imported.</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">))</span></div>
 
 
 <div class="viewcode-block" id="try_import_ivy_mxnet"><a class="viewcode-back" href="../../framework_handler/try_import_ivy_mxnet.html#ivy.framework_handler.try_import_ivy_mxnet">[docs]</a><span class="k">def</span> <span class="nf">try_import_ivy_mxnet</span><span class="p">(</span><span class="n">warn</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
     <span class="k">try</span><span class="p">:</span>
-        <span class="kn">import</span> <span class="nn">ivy.mxnet</span>
-        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">mxnet</span>
+        <span class="kn">import</span> <span class="nn">ivy.backends.mxnet</span>
+        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">backends</span><span class="o">.</span><span class="n">mxnet</span>
     <span class="k">except</span> <span class="p">(</span><span class="ne">ImportError</span><span class="p">,</span> <span class="ne">ModuleNotFoundError</span><span class="p">)</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">warn</span><span class="p">:</span>
             <span class="k">return</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="se">\n\n</span><span class="s1">mxnet does not appear to be installed, &#39;</span>
-                        <span class="s1">&#39;ivy.mxnet can therefore not be imported.</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">))</span></div>
+                        <span class="s1">&#39;ivy.backends.mxnet can therefore not be imported.</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">))</span></div>
 
 
 <div class="viewcode-block" id="try_import_ivy_numpy"><a class="viewcode-back" href="../../framework_handler/try_import_ivy_numpy.html#ivy.framework_handler.try_import_ivy_numpy">[docs]</a><span class="k">def</span> <span class="nf">try_import_ivy_numpy</span><span class="p">(</span><span class="n">warn</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
     <span class="k">try</span><span class="p">:</span>
-        <span class="kn">import</span> <span class="nn">ivy.numpy</span>
-        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">numpy</span>
+        <span class="kn">import</span> <span class="nn">ivy.backends.numpy</span>
+        <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">backends</span><span class="o">.</span><span class="n">numpy</span>
     <span class="k">except</span> <span class="p">(</span><span class="ne">ImportError</span><span class="p">,</span> <span class="ne">ModuleNotFoundError</span><span class="p">)</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">warn</span><span class="p">:</span>
             <span class="k">return</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="se">\n\n</span><span class="s1">numpy does not appear to be installed, &#39;</span>
-                        <span class="s1">&#39;ivy.numpy can therefore not be imported.</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">))</span></div>
+                        <span class="s1">&#39;ivy.backends.numpy can therefore not be imported.</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">e</span><span class="p">))</span></div>
 
 
 <span class="n">FW_DICT</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;jax&#39;</span><span class="p">:</span> <span class="n">try_import_ivy_jax</span><span class="p">,</span>

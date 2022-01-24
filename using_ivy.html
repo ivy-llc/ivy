@@ -264,7 +264,7 @@ which we may wish to avoid.</p>
 <p><strong>Framework Setting</strong></p>
 <p>To avoid the small type-checking overhead, the framework can be set explicitly, by calling <code class="code docutils literal notranslate"><span class="pre">ivy.set_framework(&quot;torch&quot;)</span></code> for example.
 This updates the <code class="code docutils literal notranslate"><span class="pre">__dict__</span></code> of the <code class="code docutils literal notranslate"><span class="pre">ivy</span></code> namespace with the <code class="code docutils literal notranslate"><span class="pre">__dict__</span></code> of a framework-specific namespace,
-such as <code class="code docutils literal notranslate"><span class="pre">ivy.torch</span></code>. The framework-specific namespace bypasses type-checking of the inputs.
+such as <code class="code docutils literal notranslate"><span class="pre">ivy.backends.torch</span></code>. The framework-specific namespace bypasses type-checking of the inputs.
 The end user would use your codebase like so:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">ivy</span>
 <span class="kn">import</span> <span class="nn">torch</span>
@@ -291,13 +291,13 @@ then the <code class="code docutils literal notranslate"><span class="pre">with<
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">your_awesome_project</span> <span class="kn">import</span> <span class="n">sincos</span>
 
-<span class="k">with</span> <span class="n">ivy</span><span class="o">.</span><span class="n">numpy</span><span class="o">.</span><span class="n">use</span><span class="p">:</span>
+<span class="k">with</span> <span class="n">ivy</span><span class="o">.</span><span class="n">backends</span><span class="o">.</span><span class="n">numpy</span><span class="o">.</span><span class="n">use</span><span class="p">:</span>
     <span class="c1"># some exciting np code</span>
     <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">])</span>
     <span class="n">y</span> <span class="o">=</span> <span class="n">sincos</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>  <span class="c1"># no type checking</span>
     <span class="c1"># more exciting np code</span>
 
-<span class="k">with</span> <span class="n">ivy</span><span class="o">.</span><span class="n">torch</span><span class="o">.</span><span class="n">use</span><span class="p">:</span>
+<span class="k">with</span> <span class="n">ivy</span><span class="o">.</span><span class="n">backends</span><span class="o">.</span><span class="n">torch</span><span class="o">.</span><span class="n">use</span><span class="p">:</span>
     <span class="c1"># some exciting torch code</span>
     <span class="n">x</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">([</span><span class="mf">0.</span><span class="p">])</span>
     <span class="n">y</span> <span class="o">=</span> <span class="n">sincos</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>  <span class="c1"># no type checking</span>

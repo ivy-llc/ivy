@@ -211,7 +211,6 @@
 <span class="c1"># global</span>
 <span class="kn">import</span> <span class="nn">re</span>
 <span class="kn">import</span> <span class="nn">copy</span>
-<span class="kn">import</span> <span class="nn">time</span>
 <span class="kn">import</span> <span class="nn">termcolor</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">_np</span>
 <span class="kn">import</span> <span class="nn">json</span> <span class="k">as</span> <span class="nn">_json</span>
@@ -238,7 +237,7 @@
 
 <span class="c1"># local</span>
 <span class="kn">import</span> <span class="nn">ivy</span>
-<span class="kn">import</span> <span class="nn">ivy.numpy</span>
+<span class="kn">import</span> <span class="nn">ivy.backends.numpy</span>
 
 <span class="n">ansi_escape</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;\x1B(?:[@-Z</span><span class="se">\\</span><span class="s1">-_]|\[[0-?]*[ -/]*[@-~])&#39;</span><span class="p">)</span>
 <span class="n">base_cont</span> <span class="o">=</span> <span class="kc">None</span>
@@ -2294,7 +2293,7 @@
             <span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">kc</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ivy</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ivy</span><span class="o">.</span><span class="n">is_array</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">else</span> <span class="n">x</span><span class="p">,</span> <span class="n">key_chains</span><span class="p">,</span> <span class="n">to_apply</span><span class="p">,</span> <span class="n">prune_unapplied</span><span class="p">,</span>
             <span class="n">map_sequences</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">update_backend</span><span class="p">:</span>
-            <span class="n">ret</span><span class="o">.</span><span class="n">set_ivy_backend</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">numpy</span><span class="p">)</span>
+            <span class="n">ret</span><span class="o">.</span><span class="n">set_ivy_backend</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">backends</span><span class="o">.</span><span class="n">numpy</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">ret</span></div>
 
 <div class="viewcode-block" id="Container.from_numpy"><a class="viewcode-back" href="../../../core/container/Container.html#ivy.core.container.Container.from_numpy">[docs]</a>    <span class="k">def</span> <span class="nf">from_numpy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key_chains</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">to_apply</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">prune_unapplied</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">map_sequences</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>

@@ -1,0 +1,22 @@
+Gradients
+=========
+
+.. automodule:: ivy.backends.tensorflow.core.gradients
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :show-inheritance:
+
+
+.. toctree::
+   :maxdepth: -1
+   :caption: Gradients
+
+   gradients/variable.rst
+   gradients/is_variable.rst
+   gradients/inplace_update.rst
+   gradients/inplace_decrement.rst
+   gradients/inplace_increment.rst
+   gradients/execute_with_gradients.rst
+   gradients/stop_gradient.rst
+
