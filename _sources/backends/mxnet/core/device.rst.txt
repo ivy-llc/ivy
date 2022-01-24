@@ -1,0 +1,19 @@
+Device
+======
+
+.. automodule:: ivy.backends.mxnet.core.device
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :show-inheritance:
+
+
+.. toctree::
+   :maxdepth: -1
+   :caption: Device
+
+   device/to_dev.rst
+   device/dev_to_str.rst
+   device/str_to_dev.rst
+   device/Profiler.rst
+

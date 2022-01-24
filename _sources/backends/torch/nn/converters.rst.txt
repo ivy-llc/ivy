@@ -1,0 +1,17 @@
+Converters
+==========
+
+.. automodule:: ivy.backends.torch.nn.converters
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :show-inheritance:
+
+
+.. toctree::
+   :maxdepth: -1
+   :caption: Converters
+
+   converters/to_ivy_module.rst
+   converters/IvyModule.rst
+

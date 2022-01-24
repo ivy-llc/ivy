@@ -343,6 +343,17 @@ Documentation Tree
 
 .. toctree::
    :maxdepth: -1
+   :caption: Backends
+
+   backends/jax.rst
+   backends/mxnet.rst
+   backends/numpy.rst
+   backends/tensorflow.rst
+   backends/torch.rst
+
+
+.. toctree::
+   :maxdepth: -1
    :caption: Compiler
 
    compiler/compiler.rst
@@ -377,22 +388,6 @@ Documentation Tree
 
 .. toctree::
    :maxdepth: -1
-   :caption: Jax
-
-   jax/core.rst
-   jax/nn.rst
-
-
-.. toctree::
-   :maxdepth: -1
-   :caption: Mxnet
-
-   mxnet/core.rst
-   mxnet/nn.rst
-
-
-.. toctree::
-   :maxdepth: -1
    :caption: Neural net functional
 
    neural_net_functional/activations.rst
@@ -413,30 +408,6 @@ Documentation Tree
    neural_net_stateful/norms.rst
    neural_net_stateful/optimizers.rst
    neural_net_stateful/sequential.rst
-
-
-.. toctree::
-   :maxdepth: -1
-   :caption: Numpy
-
-   numpy/core.rst
-   numpy/nn.rst
-
-
-.. toctree::
-   :maxdepth: -1
-   :caption: Tensorflow
-
-   tensorflow/core.rst
-   tensorflow/nn.rst
-
-
-.. toctree::
-   :maxdepth: -1
-   :caption: Torch
-
-   torch/core.rst
-   torch/nn.rst
 
 
 .. toctree::
