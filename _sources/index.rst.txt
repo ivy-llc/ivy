@@ -388,6 +388,13 @@ Documentation Tree
 
 .. toctree::
    :maxdepth: -1
+   :caption: Frontends
+
+   frontends/torch.rst
+
+
+.. toctree::
+   :maxdepth: -1
    :caption: Neural net functional
 
    neural_net_functional/activations.rst

@@ -1,0 +1,15 @@
+Creation ops
+============
+
+.. automodule:: ivy.frontends.torch.core.creation_ops
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :show-inheritance:
+
+
+.. toctree::
+   :maxdepth: -1
+   :caption: Creation ops
+
+

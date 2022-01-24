@@ -1,0 +1,15 @@
+Comparison ops
+==============
+
+.. automodule:: ivy.frontends.torch.core.comparison_ops
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :show-inheritance:
+
+
+.. toctree::
+   :maxdepth: -1
+   :caption: Comparison ops
+
+
