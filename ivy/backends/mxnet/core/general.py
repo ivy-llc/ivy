@@ -15,7 +15,7 @@ import multiprocessing as _multiprocessing
 
 # local
 from ivy.core.device import default_device
-from ivy.mxnet.core.device import _callable_dev_str
+from ivy.backends.mxnet.core.device import _callable_dev_str
 
 
 DTYPE_DICT = {_np.bool_: 'bool',

@@ -14,7 +14,7 @@ from typing import List, Dict, Optional, Union
 
 # local
 from ivy.core.device import default_device
-from ivy.torch.core.device import str_to_dev, _callable_dev_str
+from ivy.backends.torch.core.device import str_to_dev, _callable_dev_str
 
 # API #
 # ----#

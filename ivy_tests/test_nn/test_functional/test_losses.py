@@ -5,7 +5,7 @@ import numpy as np
 
 # local
 import ivy
-import ivy.numpy
+import ivy.backends.numpy
 import ivy_tests.helpers as helpers
 
 

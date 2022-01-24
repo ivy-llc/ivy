@@ -10,7 +10,7 @@ _tfa = None
 import tensorflow as _tf
 
 # local
-from ivy import tensorflow as _ivy
+from ivy.backends import tensorflow as _ivy
 
 
 def stack_images(images, desired_aspect_ratio=(1, 1)):

@@ -16,7 +16,7 @@ from haiku._src.data_structures import FlatMapping
 
 # local
 from ivy.core.device import default_device
-from ivy.jax.core.device import to_dev, dev_str as callable_dev_str
+from ivy.backends.jax.core.device import to_dev, dev_str as callable_dev_str
 
 DTYPE_DICT = {_jnp.dtype('bool'): 'bool',
               _jnp.dtype('int8'): 'int8',

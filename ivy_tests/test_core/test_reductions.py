@@ -8,7 +8,7 @@ import numpy as np
 
 # local
 import ivy
-import ivy.numpy
+import ivy.backends.numpy
 import ivy_tests.helpers as helpers
 
 
@@ -43,7 +43,7 @@ def test_reduce_sum(x, axis, kd, dtype_str, tensor_fn, dev_str, call):
     expected_shape = [1] if expected_shape == [] else expected_shape
     assert ret.shape == tuple(expected_shape)
     # value test
-    assert np.allclose(call(ivy.reduce_sum, x), ivy.numpy.reduce_sum(ivy.to_numpy(x)))
+    assert np.allclose(call(ivy.reduce_sum, x), ivy.backends.numpy.reduce_sum(ivy.to_numpy(x)))
     # compilation test
     if not ivy.wrapped_mode():
         helpers.assert_compilable(ivy.reduce_sum)
@@ -80,7 +80,7 @@ def test_reduce_prod(x, axis, kd, dtype_str, tensor_fn, dev_str, call):
     expected_shape = [1] if expected_shape == [] else expected_shape
     assert ret.shape == tuple(expected_shape)
     # value test
-    assert np.allclose(call(ivy.reduce_prod, x), ivy.numpy.reduce_prod(ivy.to_numpy(x)))
+    assert np.allclose(call(ivy.reduce_prod, x), ivy.backends.numpy.reduce_prod(ivy.to_numpy(x)))
     # compilation test
     if not ivy.wrapped_mode():
         helpers.assert_compilable(ivy.reduce_prod)
@@ -117,7 +117,7 @@ def test_reduce_mean(x, axis, kd, dtype_str, tensor_fn, dev_str, call):
     expected_shape = [1] if expected_shape == [] else expected_shape
     assert ret.shape == tuple(expected_shape)
     # value test
-    assert np.allclose(call(ivy.reduce_mean, x), ivy.numpy.reduce_mean(ivy.to_numpy(x)))
+    assert np.allclose(call(ivy.reduce_mean, x), ivy.backends.numpy.reduce_mean(ivy.to_numpy(x)))
     # compilation test
     if not ivy.wrapped_mode():
         helpers.assert_compilable(ivy.reduce_mean)
@@ -154,7 +154,7 @@ def test_reduce_var(x, axis, kd, dtype_str, tensor_fn, dev_str, call):
     expected_shape = [1] if expected_shape == [] else expected_shape
     assert ret.shape == tuple(expected_shape)
     # value test
-    assert np.allclose(call(ivy.reduce_var, x), ivy.numpy.reduce_var(ivy.to_numpy(x)))
+    assert np.allclose(call(ivy.reduce_var, x), ivy.backends.numpy.reduce_var(ivy.to_numpy(x)))
     # compilation test
     if not ivy.wrapped_mode():
         helpers.assert_compilable(ivy.reduce_var)
@@ -191,7 +191,7 @@ def test_reduce_std(x, axis, kd, dtype_str, tensor_fn, dev_str, call):
     expected_shape = [1] if expected_shape == [] else expected_shape
     assert ret.shape == tuple(expected_shape)
     # value test
-    assert np.allclose(call(ivy.reduce_std, x), ivy.numpy.reduce_var(ivy.to_numpy(x)) ** 0.5)
+    assert np.allclose(call(ivy.reduce_std, x), ivy.backends.numpy.reduce_var(ivy.to_numpy(x)) ** 0.5)
     # compilation test
     if call is helpers.torch_call:
         # PyTorch cannot yet compile ivy.core only functions, without a direct backend implementation
@@ -231,7 +231,7 @@ def test_reduce_min(x, axis, kd, dtype_str, tensor_fn, dev_str, call):
     expected_shape = [1] if expected_shape == [] else expected_shape
     assert ret.shape == tuple(expected_shape)
     # value test
-    assert np.allclose(call(ivy.reduce_min, x), ivy.numpy.reduce_min(ivy.to_numpy(x)))
+    assert np.allclose(call(ivy.reduce_min, x), ivy.backends.numpy.reduce_min(ivy.to_numpy(x)))
     # compilation test
     if not ivy.wrapped_mode():
         helpers.assert_compilable(ivy.reduce_min)
@@ -268,7 +268,7 @@ def test_reduce_max(x, axis, kd, dtype_str, tensor_fn, dev_str, call):
     expected_shape = [1] if expected_shape == [] else expected_shape
     assert ret.shape == tuple(expected_shape)
     # value test
-    assert np.allclose(call(ivy.reduce_max, x), ivy.numpy.reduce_max(ivy.to_numpy(x)))
+    assert np.allclose(call(ivy.reduce_max, x), ivy.backends.numpy.reduce_max(ivy.to_numpy(x)))
     # compilation test
     if not ivy.wrapped_mode():
         helpers.assert_compilable(ivy.reduce_max)
@@ -294,7 +294,7 @@ def test_einsum(eq_n_op_n_shp, dtype_str, tensor_fn, dev_str, call):
     assert ret.shape == true_shape
     # value test
     assert np.allclose(call(ivy.einsum, eq, *operands),
-                       ivy.numpy.einsum(eq, *[ivy.to_numpy(op) for op in operands]))
+                       ivy.backends.numpy.einsum(eq, *[ivy.to_numpy(op) for op in operands]))
     # compilation test
     if call is helpers.torch_call:
         # torch.jit functions can't take variable number of arguments
