@@ -41,42 +41,42 @@ except ImportError:
 
 def get_ivy_numpy():
     try:
-        import ivy.numpy
+        import ivy.backends.numpy
     except ImportError:
         return None
-    return ivy.numpy
+    return ivy.backends.numpy
 
 
 def get_ivy_jax():
     try:
-        import ivy.jax
+        import ivy.backends.jax
     except ImportError:
         return None
-    return ivy.jax
+    return ivy.backends.jax
 
 
 def get_ivy_tensorflow():
     try:
-        import ivy.tensorflow
+        import ivy.backends.tensorflow
     except ImportError:
         return None
-    return ivy.tensorflow
+    return ivy.backends.tensorflow
 
 
 def get_ivy_torch():
     try:
-        import ivy.torch
+        import ivy.backends.torch
     except ImportError:
         return None
-    return ivy.torch
+    return ivy.backends.torch
 
 
 def get_ivy_mxnet():
     try:
-        import ivy.mxnet
+        import ivy.backends.mxnet
     except ImportError:
         return None
-    return ivy.mxnet
+    return ivy.backends.mxnet
 
 
 _ivy_fws_dict = {'numpy': lambda: get_ivy_numpy(),

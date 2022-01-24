@@ -8,7 +8,7 @@ import numpy as np
 
 # local
 import ivy
-import ivy.numpy
+import ivy.backends.numpy
 import ivy_tests.helpers as helpers
 
 
@@ -36,7 +36,7 @@ def test_svd(x, dtype_str, tensor_fn, dev_str, call):
     assert vh.shape == x.shape
     # value test
     pred_u, pred_s, pred_vh = call(ivy.svd, x)
-    true_u, true_s, true_vh = ivy.numpy.svd(ivy.to_numpy(x))
+    true_u, true_s, true_vh = ivy.backends.numpy.svd(ivy.to_numpy(x))
     assert np.allclose(pred_u, true_u)
     assert np.allclose(pred_s, true_s)
     assert np.allclose(pred_vh, true_vh)
@@ -163,7 +163,7 @@ def test_inv(x, dtype_str, tensor_fn, dev_str, call):
     # cardinality test
     assert ret.shape == x.shape
     # value test
-    assert np.allclose(call(ivy.inv, x), ivy.numpy.inv(ivy.to_numpy(x)))
+    assert np.allclose(call(ivy.inv, x), ivy.backends.numpy.inv(ivy.to_numpy(x)))
     # compilation test
     if not ivy.wrapped_mode():
         helpers.assert_compilable(ivy.inv)
@@ -188,7 +188,7 @@ def test_pinv(x, dtype_str, tensor_fn, dev_str, call):
     # cardinality test
     assert ret.shape == x.shape[:-2] + (x.shape[-1], x.shape[-2])
     # value test
-    assert np.allclose(call(ivy.pinv, x), ivy.numpy.pinv(ivy.to_numpy(x)))
+    assert np.allclose(call(ivy.pinv, x), ivy.backends.numpy.pinv(ivy.to_numpy(x)))
     # compilation test
     if not ivy.wrapped_mode():
         helpers.assert_compilable(ivy.pinv)
@@ -211,7 +211,7 @@ def test_vector_to_skew_symmetric_matrix(x, dtype_str, tensor_fn, dev_str, call)
     assert ret.shape == x.shape + (x.shape[-1],)
     # value test
     assert np.allclose(call(ivy.vector_to_skew_symmetric_matrix, x),
-                       ivy.numpy.vector_to_skew_symmetric_matrix(ivy.to_numpy(x)))
+                       ivy.backends.numpy.vector_to_skew_symmetric_matrix(ivy.to_numpy(x)))
     # compilation test
     if not ivy.wrapped_mode():
         helpers.assert_compilable(ivy.vector_to_skew_symmetric_matrix)

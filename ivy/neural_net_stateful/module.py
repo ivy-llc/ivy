@@ -6,7 +6,7 @@ Base class for deriving trainable modules
 import os
 import abc
 import logging
-import ivy.numpy
+import ivy.backends.numpy
 import termcolor
 import numpy as np
 
@@ -80,10 +80,10 @@ class Module(abc.ABC):
         self._submod_depth = None
         self._submods_to_track = None
         self._track_submod_call_order = False
-        self.submod_rets = ivy.Container(alphabetical_keys=False, ivyh=ivy.numpy)
+        self.submod_rets = ivy.Container(alphabetical_keys=False, ivyh=ivy.backends.numpy)
         self.expected_submod_rets = None
         self.submod_dict = dict()
-        self.submod_call_order = ivy.Container(alphabetical_keys=False, ivyh=ivy.numpy)
+        self.submod_call_order = ivy.Container(alphabetical_keys=False, ivyh=ivy.backends.numpy)
         self._sub_mods = set()
         if build_mode != 'on_init':
             return
@@ -549,7 +549,7 @@ class Module(abc.ABC):
                     int(kc.split('/')[-2 if isinstance(sco[kc], np.ndarray) else -1].split('_')[-1]))[-1].split('/')[0]
             else:
                 max_key = key + '_0'
-                sco[max_key] = ivy.Container(alphabetical_keys=False, ivyh=ivy.numpy)
+                sco[max_key] = ivy.Container(alphabetical_keys=False, ivyh=ivy.backends.numpy)
             sco = sco[max_key]
         final_key = key_chain[-1]
         kcs = sco.key_chains_containing(final_key, include_empty=True)
@@ -565,14 +565,14 @@ class Module(abc.ABC):
         if self._is_submod_leaf():
             sco[new_key] = self.v_with_top_v_key_chains(flatten_key_chains=True).to_numpy()
         else:
-            sco[new_key] = ivy.Container(alphabetical_keys=False, ivyh=ivy.numpy)
+            sco[new_key] = ivy.Container(alphabetical_keys=False, ivyh=ivy.backends.numpy)
 
     def __call__(self, *args, v=None, with_grads=None, stateful=None, arg_stateful_idxs=None, kwarg_stateful_idxs=None,
                  track_submod_rets=False, submod_depth=None, submods_to_track=None, track_submod_call_order=False,
                  expected_submod_rets=None, **kwargs):
         with_grads = ivy.with_grads(with_grads)
-        self.submod_rets = ivy.Container(alphabetical_keys=False, ivyh=ivy.numpy)
-        self.submod_call_order = ivy.Container(alphabetical_keys=False, ivyh=ivy.numpy)
+        self.submod_rets = ivy.Container(alphabetical_keys=False, ivyh=ivy.backends.numpy)
+        self.submod_call_order = ivy.Container(alphabetical_keys=False, ivyh=ivy.backends.numpy)
         if self._compiled and ivy.try_use_compiled:
             try:
                 return self._compiled_fn(*args, v=ivy.default(v, self.v), with_grads=with_grads, **kwargs)
