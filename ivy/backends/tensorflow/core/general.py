@@ -16,7 +16,7 @@ from tensorflow.python.types.core import Tensor
 
 # local
 from ivy.core.device import default_device
-from ivy.tensorflow.core.device import _dev_str_callable
+from ivy.backends.tensorflow.core.device import _dev_str_callable
 
 DTYPE_DICT = {_tf.bool: 'bool',
               _tf.int8: 'int8',

@@ -9,7 +9,7 @@ from numbers import Number
 
 # local
 import ivy
-import ivy.numpy
+import ivy.backends.numpy
 import ivy_tests.helpers as helpers
 from ivy.core.container import Container
 
@@ -137,7 +137,7 @@ def test_stop_gradient(x_raw, dtype_str, tensor_fn, dev_str, call):
     # value test
     if call is not helpers.tf_graph_call:
         # Tf graph mode cannot create variables as part of the computation graph
-        assert np.array_equal(call(ivy.stop_gradient, x), ivy.numpy.array(x_raw, dtype_str))
+        assert np.array_equal(call(ivy.stop_gradient, x), ivy.backends.numpy.array(x_raw, dtype_str))
     # compilation test
     if call in [helpers.torch_call]:
         # pytorch scripting does not support attribute setting
