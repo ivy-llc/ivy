@@ -10,7 +10,7 @@ from numbers import Number
 
 # local
 import ivy
-import ivy.numpy
+import ivy.backends.numpy
 import ivy_tests.helpers as helpers
 
 

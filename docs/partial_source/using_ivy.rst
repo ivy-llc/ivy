@@ -69,7 +69,7 @@ which we may wish to avoid.
 
 To avoid the small type-checking overhead, the framework can be set explicitly, by calling :code:`ivy.set_framework("torch")` for example.
 This updates the :code:`__dict__` of the :code:`ivy` namespace with the :code:`__dict__` of a framework-specific namespace,
-such as :code:`ivy.torch`. The framework-specific namespace bypasses type-checking of the inputs.
+such as :code:`ivy.backends.torch`. The framework-specific namespace bypasses type-checking of the inputs.
 The end user would use your codebase like so:
 
 .. code-block:: python
@@ -103,13 +103,13 @@ then the :code:`with` statement can be used like so:
     import numpy as np
     from your_awesome_project import sincos
 
-    with ivy.numpy.use:
+    with ivy.backends.numpy.use:
         # some exciting np code
         x = np.array([0.])
         y = sincos(x)  # no type checking
         # more exciting np code
 
-    with ivy.torch.use:
+    with ivy.backends.torch.use:
         # some exciting torch code
         x = torch.tensor([0.])
         y = sincos(x)  # no type checking

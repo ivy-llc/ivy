@@ -27,26 +27,26 @@ class ContextManager:
 
 
 _array_types = dict()
-_array_types['numpy'] = 'ivy.numpy'
-_array_types['jax.interpreters.xla'] = 'ivy.jax'
-_array_types['jaxlib.xla_extension'] = 'ivy.jax'
-_array_types['tensorflow.python.framework.ops'] = 'ivy.tensorflow'
-_array_types['torch'] = 'ivy.torch'
-_array_types['mxnet.ndarray.ndarray'] = 'ivy.mxnet'
+_array_types['numpy'] = 'ivy.backends.numpy'
+_array_types['jax.interpreters.xla'] = 'ivy.backends.jax'
+_array_types['jaxlib.xla_extension'] = 'ivy.backends.jax'
+_array_types['tensorflow.python.framework.ops'] = 'ivy.backends.tensorflow'
+_array_types['torch'] = 'ivy.backends.torch'
+_array_types['mxnet.ndarray.ndarray'] = 'ivy.backends.mxnet'
 
 _framework_dict = dict()
-_framework_dict['numpy'] = 'ivy.numpy'
-_framework_dict['jax'] = 'ivy.jax'
-_framework_dict['tensorflow'] = 'ivy.tensorflow'
-_framework_dict['torch'] = 'ivy.torch'
-_framework_dict['mxnet'] = 'ivy.mxnet'
+_framework_dict['numpy'] = 'ivy.backends.numpy'
+_framework_dict['jax'] = 'ivy.backends.jax'
+_framework_dict['tensorflow'] = 'ivy.backends.tensorflow'
+_framework_dict['torch'] = 'ivy.backends.torch'
+_framework_dict['mxnet'] = 'ivy.backends.mxnet'
 
 _framework_reverse_dict = dict()
-_framework_reverse_dict['ivy.numpy'] = 'numpy'
-_framework_reverse_dict['ivy.jax'] = 'jax'
-_framework_reverse_dict['ivy.tensorflow'] = 'tensorflow'
-_framework_reverse_dict['ivy.torch'] = 'torch'
-_framework_reverse_dict['ivy.mxnet'] = 'mxnet'
+_framework_reverse_dict['ivy.backends.numpy'] = 'numpy'
+_framework_reverse_dict['ivy.backends.jax'] = 'jax'
+_framework_reverse_dict['ivy.backends.tensorflow'] = 'tensorflow'
+_framework_reverse_dict['ivy.backends.torch'] = 'torch'
+_framework_reverse_dict['ivy.backends.mxnet'] = 'mxnet'
 
 
 # Framework Getting/Setting #
@@ -175,57 +175,57 @@ def clear_framework_stack():
 
 def try_import_ivy_jax(warn=False):
     try:
-        import ivy.jax
-        return ivy.jax
+        import ivy.backends.jax
+        return ivy.backends.jax
     except (ImportError, ModuleNotFoundError) as e:
         if not warn:
             return
         logging.warning('{}\n\nEither jax or jaxlib appear to not be installed, '
-                        'ivy.jax can therefore not be imported.\n'.format(e))
+                        'ivy.backends.jax can therefore not be imported.\n'.format(e))
 
 
 def try_import_ivy_tf(warn=False):
     try:
-        import ivy.tensorflow
-        return ivy.tensorflow
+        import ivy.backends.tensorflow
+        return ivy.backends.tensorflow
     except (ImportError, ModuleNotFoundError) as e:
         if not warn:
             return
         logging.warning('{}\n\ntensorflow does not appear to be installed, '
-                        'ivy.tensorflow can therefore not be imported.\n'.format(e))
+                        'ivy.backends.tensorflow can therefore not be imported.\n'.format(e))
 
 
 def try_import_ivy_torch(warn=False):
     try:
-        import ivy.torch
-        return ivy.torch
+        import ivy.backends.torch
+        return ivy.backends.torch
     except (ImportError, ModuleNotFoundError) as e:
         if not warn:
             return
         logging.warning('{}\n\ntorch does not appear to be installed, '
-                        'ivy.torch can therefore not be imported.\n'.format(e))
+                        'ivy.backends.torch can therefore not be imported.\n'.format(e))
 
 
 def try_import_ivy_mxnet(warn=False):
     try:
-        import ivy.mxnet
-        return ivy.mxnet
+        import ivy.backends.mxnet
+        return ivy.backends.mxnet
     except (ImportError, ModuleNotFoundError) as e:
         if not warn:
             return
         logging.warning('{}\n\nmxnet does not appear to be installed, '
-                        'ivy.mxnet can therefore not be imported.\n'.format(e))
+                        'ivy.backends.mxnet can therefore not be imported.\n'.format(e))
 
 
 def try_import_ivy_numpy(warn=False):
     try:
-        import ivy.numpy
-        return ivy.numpy
+        import ivy.backends.numpy
+        return ivy.backends.numpy
     except (ImportError, ModuleNotFoundError) as e:
         if not warn:
             return
         logging.warning('{}\n\nnumpy does not appear to be installed, '
-                        'ivy.numpy can therefore not be imported.\n'.format(e))
+                        'ivy.backends.numpy can therefore not be imported.\n'.format(e))
 
 
 FW_DICT = {'jax': try_import_ivy_jax,

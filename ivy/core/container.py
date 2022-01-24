@@ -5,7 +5,6 @@ Base Container Object
 # global
 import re
 import copy
-import time
 import termcolor
 import numpy as _np
 import json as _json
@@ -32,7 +31,7 @@ from operator import floordiv as _floordiv
 
 # local
 import ivy
-import ivy.numpy
+import ivy.backends.numpy
 
 ansi_escape = re.compile(r'\x1B(?:[@-Z\\-_]|\[[0-?]*[ -/]*[@-~])')
 base_cont = None
@@ -2088,7 +2087,7 @@ class Container(dict):
             lambda x, kc: self._ivy.to_numpy(x) if self._ivy.is_array(x) else x, key_chains, to_apply, prune_unapplied,
             map_sequences)
         if update_backend:
-            ret.set_ivy_backend(ivy.numpy)
+            ret.set_ivy_backend(ivy.backends.numpy)
         return ret
 
     def from_numpy(self, key_chains=None, to_apply=True, prune_unapplied=False, map_sequences=False):
