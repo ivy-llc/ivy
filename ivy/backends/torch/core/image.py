@@ -10,7 +10,7 @@ from functools import reduce
 from typing import List, Optional
 
 # local
-from ivy import torch as _ivy
+from ivy.backends import torch as _ivy
 
 
 def stack_images(images: List[_torch.Tensor], desired_aspect_ratio: List[int] = (1, 1)):

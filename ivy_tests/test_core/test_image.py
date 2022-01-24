@@ -11,7 +11,7 @@ from functools import reduce
 
 # local
 import ivy
-import ivy.numpy
+import ivy.backends.numpy
 import ivy_tests.helpers as helpers
 
 
@@ -55,7 +55,7 @@ def test_bilinear_resample(x_n_warp, dtype_str, tensor_fn, dev_str, call):
     assert ret.shape == warp.shape[:-1] + x.shape[-1:]
     # value test
     assert np.allclose(call(ivy.bilinear_resample, x, warp),
-                       ivy.numpy.bilinear_resample(ivy.to_numpy(x), ivy.to_numpy(warp)))
+                       ivy.backends.numpy.bilinear_resample(ivy.to_numpy(x), ivy.to_numpy(warp)))
     # compilation test
     if call in [helpers.torch_call]:
         # torch scripting does not support builtins
@@ -85,8 +85,8 @@ def test_gradient_image(x_n_dy_n_dx, dtype_str, tensor_fn, dev_str, call):
     assert dx.shape == x.shape
     # value test
     dy_np, dx_np = call(ivy.gradient_image, x)
-    dy_true = ivy.numpy.array(dy_true, dtype_str)
-    dx_true = ivy.numpy.array(dx_true, dtype_str)
+    dy_true = ivy.backends.numpy.array(dy_true, dtype_str)
+    dx_true = ivy.backends.numpy.array(dx_true, dtype_str)
     assert np.allclose(dy_np, dy_true)
     assert np.allclose(dx_np, dx_true)
     # compilation test

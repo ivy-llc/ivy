@@ -12,7 +12,7 @@ import multiprocessing as _multiprocessing
 
 # local
 from ivy.core.device import default_device
-from ivy.numpy.core.device import _dev_str_callable
+from ivy.backends.numpy.core.device import _dev_str_callable
 
 
 DTYPE_DICT = {_np.dtype('bool_'): 'bool',

@@ -15,11 +15,8 @@ import ivy.core.logic as ivy_logic
 this_file_dir = os.path.dirname(os.path.realpath(__file__))
 import with_time_logs.ivy.core.logic as ivy_logic_w_time
 
-from ivy import torch as _ivy_torch
-from ivy import tensorflow as _ivy_tf
-from ivy import mxnet as _ivy_mxnet
-from ivy import jax as _ivy_jnp
-from ivy import numpy as _ivy_np
+from ivy.backends import jax as _ivy_jnp, torch as _ivy_torch, mxnet as _ivy_mxnet, numpy as _ivy_np, \
+    tensorflow as _ivy_tf
 
 from with_time_logs.ivy import torch as _ivy_torch_w_time
 from with_time_logs.ivy import tensorflow as _ivy_tf_w_time
