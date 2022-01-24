@@ -7,7 +7,7 @@ import mxnet as _mx
 
 # local
 import ivy as _ivy
-from ivy.mxnet.core.general import matmul as _matmul
+from ivy.backends.mxnet.core.general import matmul as _matmul
 
 
 # noinspection PyPep8Naming
