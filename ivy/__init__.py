@@ -56,6 +56,7 @@ from . import debugger
 from .compiler import *
 from . import compiler
 from .core import *
+from . import frontends
 from . import neural_net_functional
 from .neural_net_functional import *
 from . import neural_net_stateful
