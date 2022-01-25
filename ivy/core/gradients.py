@@ -172,7 +172,7 @@ def adam_step(dcdws, mw, vw, step, beta1=0.9, beta2=0.999, epsilon=1e-7):
 # Optimizer Updates #
 # ------------------#
 
-def optimizer_update(ws, effective_grads, lr, inplace=True, stop_gradients=True):
+def optimizer_update(ws, effective_grads, lr, inplace=None, stop_gradients=True):
     """
     Update weights ws of some function, given the true or effective derivatives of some cost c with respect to ws,
     [dc/dw for w in ws].
@@ -186,12 +186,13 @@ def optimizer_update(ws, effective_grads, lr, inplace=True, stop_gradients=True)
     :param inplace: Whether to perform the operation inplace, for backends which support inplace variable updates,
                     and handle gradients behind the scenes such as PyTorch. If the update step should form part of a
                     computation graph (i.e. higher order optimization), then this should be set to False.
-                    Default is True.
+                    Default is True, provided the backend framework supports it.
     :type inplace: bool, optional
     :param stop_gradients: Whether to stop the gradients of the variables after each gradient step. Default is True.
     :type stop_gradients: bool, optional
     :return: The new function weights ws_new, following the optimizer updates.
     """
+    inplace = _ivy.default(inplace, _ivy.inplace_variables_supported())
     layerwise_lr = isinstance(lr, _ivy.Container)
     deltas = effective_grads.map(lambda eff_grad, kc: ((lr[kc] if layerwise_lr else lr) * eff_grad))
     if inplace:
@@ -203,7 +204,7 @@ def optimizer_update(ws, effective_grads, lr, inplace=True, stop_gradients=True)
     return ws
 
 
-def gradient_descent_update(ws, dcdws, lr, inplace=True, stop_gradients=True):
+def gradient_descent_update(ws, dcdws, lr, inplace=None, stop_gradients=True):
     """
     Update weights ws of some function, given the derivatives of some cost c with respect to ws, [dc/dw for w in ws].
 
@@ -216,7 +217,7 @@ def gradient_descent_update(ws, dcdws, lr, inplace=True, stop_gradients=True):
     :param inplace: Whether to perform the operation inplace, for backends which support inplace variable updates,
                     and handle gradients behind the scenes such as PyTorch. If the update step should form part of a
                     computation graph (i.e. higher order optimization), then this should be set to False.
-                    Default is True.
+                    Default is True, provided the backend framework supports it.
     :type inplace: bool, optional
     :param stop_gradients: Whether to stop the gradients of the variables after each gradient step. Default is True.
     :type stop_gradients: bool, optional
@@ -225,7 +226,7 @@ def gradient_descent_update(ws, dcdws, lr, inplace=True, stop_gradients=True):
     return optimizer_update(ws, dcdws, lr, inplace, stop_gradients)
 
 
-def lars_update(ws, dcdws, lr, decay_lambda=0, inplace=True, stop_gradients=True):
+def lars_update(ws, dcdws, lr, decay_lambda=0, inplace=None, stop_gradients=True):
     """
     Update weights ws of some function, given the derivatives of some cost c with respect to ws, [dc/dw for w in ws],
     by applying Layerwise Adaptive Rate Scaling (LARS) method.
@@ -241,7 +242,7 @@ def lars_update(ws, dcdws, lr, decay_lambda=0, inplace=True, stop_gradients=True
     :param inplace: Whether to perform the operation inplace, for backends which support inplace variable updates,
                     and handle gradients behind the scenes such as PyTorch. If the update step should form part of a
                     computation graph (i.e. higher order optimization), then this should be set to False.
-                    Default is True.
+                    Default is True, provided the backend framework supports it.
     :type inplace: bool, optional
     :param stop_gradients: Whether to stop the gradients of the variables after each gradient step. Default is True.
     :type stop_gradients: bool, optional
@@ -254,7 +255,7 @@ def lars_update(ws, dcdws, lr, decay_lambda=0, inplace=True, stop_gradients=True
     return gradient_descent_update(ws, dcdws, lr, inplace, stop_gradients)
 
 
-def adam_update(ws, dcdws, lr, mw_tm1, vw_tm1, step, beta1=0.9, beta2=0.999, epsilon=1e-7, inplace=True,
+def adam_update(ws, dcdws, lr, mw_tm1, vw_tm1, step, beta1=0.9, beta2=0.999, epsilon=1e-7, inplace=None,
                 stop_gradients=True):
     """
     Update weights ws of some function, given the derivatives of some cost c with respect to ws, using ADAM update.
@@ -281,7 +282,7 @@ def adam_update(ws, dcdws, lr, mw_tm1, vw_tm1, step, beta1=0.9, beta2=0.999, eps
     :param inplace: Whether to perform the operation inplace, for backends which support inplace variable updates,
                     and handle gradients behind the scenes such as PyTorch. If the update step should form part of a
                     computation graph (i.e. higher order optimization), then this should be set to False.
-                    Default is True.
+                    Default is True, provided the backend framework supports it.
     :type inplace: bool, optional
     :param stop_gradients: Whether to stop the gradients of the variables after each gradient step. Default is True.
     :type stop_gradients: bool, optional
@@ -292,7 +293,7 @@ def adam_update(ws, dcdws, lr, mw_tm1, vw_tm1, step, beta1=0.9, beta2=0.999, eps
 
 
 def lamb_update(ws, dcdws, lr, mw_tm1, vw_tm1, step, beta1=0.9, beta2=0.999, epsilon=1e-7, max_trust_ratio=10,
-                decay_lambda=0, inplace=True, stop_gradients=True):
+                decay_lambda=0, inplace=None, stop_gradients=True):
     """
     Update weights ws of some function, given the derivatives of some cost c with respect to ws, [dc/dw for w in ws],
     by applying LAMB method.
@@ -322,7 +323,7 @@ def lamb_update(ws, dcdws, lr, mw_tm1, vw_tm1, step, beta1=0.9, beta2=0.999, eps
     :param inplace: Whether to perform the operation inplace, for backends which support inplace variable updates,
                     and handle gradients behind the scenes such as PyTorch. If the update step should form part of a
                     computation graph (i.e. higher order optimization), then this should be set to False.
-                    Default is True.
+                    Default is True, provided the backend framework supports it.
     :type inplace: bool, optional
     :param stop_gradients: Whether to stop the gradients of the variables after each gradient step. Default is True.
     :type stop_gradients: bool, optional
