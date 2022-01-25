@@ -560,3 +560,17 @@ current_framework_str = lambda: 'mxnet'
 current_framework_str.__name__ = 'current_framework_str'
 multiprocessing = lambda context=None: _multiprocessing if context is None else _multiprocessing.get_context(context)
 container_types = lambda: []
+
+
+def inplace_update(x, val):
+    return val
+
+
+def inplace_decrement(x, val):
+    x -= val
+    return x
+
+
+def inplace_increment(x, val):
+    x += val
+    return x
