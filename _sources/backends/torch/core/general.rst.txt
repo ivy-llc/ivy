@@ -78,4 +78,7 @@ General
    general/current_framework_str.rst
    general/multiprocessing.rst
    general/container_types.rst
+   general/inplace_update.rst
+   general/inplace_decrement.rst
+   general/inplace_increment.rst
 

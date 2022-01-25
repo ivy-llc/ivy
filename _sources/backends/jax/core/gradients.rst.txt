@@ -13,8 +13,5 @@ Gradients
    :caption: Gradients
 
    gradients/is_variable.rst
-   gradients/inplace_update.rst
-   gradients/inplace_decrement.rst
-   gradients/inplace_increment.rst
    gradients/execute_with_gradients.rst
 
