@@ -26,20 +26,6 @@ def is_variable(x, exclusive=False):
 variable_data = lambda x: x
 
 
-def inplace_update(x, val):
-    return val
-
-
-def inplace_decrement(x, val):
-    x -= val
-    return x
-
-
-def inplace_increment(x, val):
-    x += val
-    return x
-
-
 def execute_with_gradients(func, xs, retain_grads=False):
     wrapped_mode = False
     if ivy.wrapped_mode():
