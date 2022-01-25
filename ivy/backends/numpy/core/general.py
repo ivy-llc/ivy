@@ -412,7 +412,7 @@ container_types = lambda: []
 
 
 def inplace_update(x, val):
-    x[:] = val
+    x.data = val
     return x
 
 
