@@ -198,6 +198,8 @@
 <li class="toctree-l2"><a class="reference internal" href="general/container_types.html">container_types</a></li>
 <li class="toctree-l2"><a class="reference internal" href="general/inplace_arrays_supported.html">inplace_arrays_supported</a></li>
 <li class="toctree-l2"><a class="reference internal" href="general/inplace_variables_supported.html">inplace_variables_supported</a></li>
+<li class="toctree-l2"><a class="reference internal" href="general/supports_inplace.html">supports_inplace</a></li>
+<li class="toctree-l2"><a class="reference internal" href="general/assert_supports_inplace.html">assert_supports_inplace</a></li>
 <li class="toctree-l2"><a class="reference internal" href="general/inplace_update.html">inplace_update</a></li>
 <li class="toctree-l2"><a class="reference internal" href="general/inplace_decrement.html">inplace_decrement</a></li>
 <li class="toctree-l2"><a class="reference internal" href="general/inplace_increment.html">inplace_increment</a></li>
@@ -471,6 +473,20 @@ sequence.</p></li>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>Boolean, whether or not all of the input arrays are equal across all elements.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.core.general.assert_supports_inplace">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">assert_supports_inplace</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#assert_supports_inplace"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.assert_supports_inplace" title="Permalink to this definition">¶</a></dt>
+<dd><p>Asserts that inplace operations are supported for x, else raises exception.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>x</strong> (<em>variable</em><em> or </em><em>array</em>) – Input variable or array to check for inplace support for.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>True if support, raises exception otherwise</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1742,6 +1758,20 @@ For example, if axis: int = 0, it will be the first dimension and if axis: int =
 </dd></dl>
 
 <dl class="py function">
+<dt id="ivy.core.general.supports_inplace">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">supports_inplace</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#supports_inplace"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.supports_inplace" title="Permalink to this definition">¶</a></dt>
+<dd><p>Determine whether inplace operations are supported for the data type of x.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>x</strong> (<em>variable</em><em> or </em><em>array</em>) – Input variable or array to check for inplace support for.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Boolean, whether or not inplace operations are supported for x.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt id="ivy.core.general.swapaxes">
 <code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">swapaxes</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">axis0</span><span class="p">:</span> <span class="n">int</span></em>, <em class="sig-param"><span class="n">axis1</span><span class="p">:</span> <span class="n">int</span></em>, <em class="sig-param"><span class="n">f</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>ivy.Framework<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; Union<span class="p">[</span>ivy.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span><a class="reference internal" href="../_modules/ivy/core/general.html#swapaxes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.swapaxes" title="Permalink to this definition">¶</a></dt>
 <dd><p>Interchange two axes of an array.</p>
@@ -2076,6 +2106,8 @@ If not given, then the type of the original array is used.</p></li>
 <li class="toctree-l1"><a class="reference internal" href="general/container_types.html">container_types</a></li>
 <li class="toctree-l1"><a class="reference internal" href="general/inplace_arrays_supported.html">inplace_arrays_supported</a></li>
 <li class="toctree-l1"><a class="reference internal" href="general/inplace_variables_supported.html">inplace_variables_supported</a></li>
+<li class="toctree-l1"><a class="reference internal" href="general/supports_inplace.html">supports_inplace</a></li>
+<li class="toctree-l1"><a class="reference internal" href="general/assert_supports_inplace.html">assert_supports_inplace</a></li>
 <li class="toctree-l1"><a class="reference internal" href="general/inplace_update.html">inplace_update</a></li>
 <li class="toctree-l1"><a class="reference internal" href="general/inplace_decrement.html">inplace_decrement</a></li>
 <li class="toctree-l1"><a class="reference internal" href="general/inplace_increment.html">inplace_increment</a></li>
