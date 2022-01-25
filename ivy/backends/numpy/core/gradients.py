@@ -20,21 +20,6 @@ def is_variable(x, exclusive=False):
 variable_data = lambda x: x
 
 
-def inplace_update(x, val):
-    x = val
-    return x
-
-
-def inplace_decrement(x, val):
-    x -= val
-    return x
-
-
-def inplace_increment(x, val):
-    x += val
-    return x
-
-
 def execute_with_gradients(func, xs, retain_grads=False):
     logging.warning('NumPy does not support autograd, '
                     '"execute_with_gradients" returns None in place of function gradients.')
