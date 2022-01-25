@@ -1659,3 +1659,48 @@ def container_types(f: ivy.Framework = None):
         return _cur_framework(f=f).container_types()
     except ValueError:
         return []
+
+
+def inplace_update(x, val, f=None):
+    """
+    Perform in-place update for the input variable.
+
+    :param x: The variable to update.
+    :type x: variable
+    :param val: The array to update the variable with.
+    :type val: array
+    :param f: Machine learning framework. Inferred from inputs if None.
+    :type f: ml_framework, optional
+    :return: The variable following the in-place update.
+    """
+    return _cur_framework(x, f=f).inplace_update(x, val)
+
+
+def inplace_decrement(x, val, f=None):
+    """
+    Perform in-place decrement for the input variable.
+
+    :param x: The variable to decrement.
+    :type x: variable
+    :param val: The array to decrement the variable with.
+    :type val: array
+    :param f: Machine learning framework. Inferred from inputs if None.
+    :type f: ml_framework, optional
+    :return: The variable following the in-place decrement.
+    """
+    return _cur_framework(x, f=f).inplace_decrement(x, val)
+
+
+def inplace_increment(x, val, f=None):
+    """
+    Perform in-place increment for the input variable.
+
+    :param x: The variable to increment.
+    :type x: variable
+    :param val: The array to increment the variable with.
+    :type val: array
+    :param f: Machine learning framework. Inferred from inputs if None.
+    :type f: ml_framework, optional
+    :return: The variable following the in-place increment.
+    """
+    return _cur_framework(x, f=f).inplace_increment(x, val)
