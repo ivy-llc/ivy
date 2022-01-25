@@ -3,6 +3,7 @@ Collection of TensorFlow general functions, wrapped to fit Ivy syntax and signat
 """
 
 # global
+import ivy
 _round = round
 import numpy as _np
 import math as _math
@@ -406,15 +407,25 @@ container_types = lambda: []
 
 
 def inplace_update(x, val):
-    x.assign(val)
-    return x
+    if ivy.is_variable(x):
+        x.assign(val)
+        return x
+    raise Exception('TensorFlow does not support inplace operations on non-Variable tensors')
 
 
 def inplace_decrement(x, val):
-    x.assign(x - val)
-    return x
+    if ivy.is_variable(x):
+        x.assign(x - val)
+        return x
+    raise Exception('TensorFlow does not support inplace operations on non-Variable tensors')
 
 
 def inplace_increment(x, val):
-    x.assign(x + val)
-    return x
+    if ivy.is_variable(x):
+        x.assign(x + val)
+        return x
+    raise Exception('TensorFlow does not support inplace operations on non-Variable tensors')
+
+
+inplace_arrays_supported = lambda: False
+inplace_variables_supported = lambda: True

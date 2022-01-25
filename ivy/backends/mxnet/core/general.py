@@ -563,7 +563,8 @@ container_types = lambda: []
 
 
 def inplace_update(x, val):
-    return val
+    x[:] = val
+    return x
 
 
 def inplace_decrement(x, val):
@@ -574,3 +575,7 @@ def inplace_decrement(x, val):
 def inplace_increment(x, val):
     x += val
     return x
+
+
+inplace_arrays_supported = lambda: True
+inplace_variables_supported = lambda: True

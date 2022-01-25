@@ -399,14 +399,16 @@ container_types = lambda: [FlatMapping]
 
 
 def inplace_update(x, val):
-    return val
+    raise Exception('Jax does not support inplace operations')
 
 
 def inplace_decrement(x, val):
-    x -= val
-    return x
+    raise Exception('Jax does not support inplace operations')
 
 
 def inplace_increment(x, val):
-    x += val
-    return x
+    raise Exception('Jax does not support inplace operations')
+
+
+inplace_arrays_supported = lambda: False
+inplace_variables_supported = lambda: False

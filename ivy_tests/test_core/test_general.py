@@ -2433,3 +2433,67 @@ def test_container_types(dev_str, call):
         assert hasattr(cont_type, 'keys')
         assert hasattr(cont_type, 'values')
         assert hasattr(cont_type, 'items')
+
+
+def test_inplace_arrays_supported(dev_str, call):
+    cur_fw = ivy.current_framework_str()
+    if cur_fw in ['numpy', 'mxnet', 'torch']:
+        assert ivy.inplace_arrays_supported()
+    elif cur_fw in ['jax', 'tensorflow']:
+        assert not ivy.inplace_arrays_supported()
+    else:
+        raise Exception('Unrecognized framework')
+
+
+def test_inplace_variables_supported(dev_str, call):
+    cur_fw = ivy.current_framework_str()
+    if cur_fw in ['numpy', 'mxnet', 'torch', 'tensorflow']:
+        assert ivy.inplace_variables_supported()
+    elif cur_fw in ['jax']:
+        assert not ivy.inplace_variables_supported()
+    else:
+        raise Exception('Unrecognized framework')
+
+
+@pytest.mark.parametrize(
+    "tensor_fn", [ivy.array, helpers.var_fn])
+def test_inplace_update(tensor_fn, dev_str, call):
+    x_orig = tensor_fn([0., 1., 2.], 'float32', dev_str)
+    new_val = tensor_fn([2., 1., 0.], 'float32', dev_str)
+    if (tensor_fn is not helpers.var_fn and ivy.inplace_arrays_supported()) or\
+            (tensor_fn is helpers.var_fn and ivy.inplace_variables_supported()):
+        x = ivy.inplace_update(x_orig, new_val)
+        assert id(x) == id(x_orig)
+        assert np.allclose(ivy.to_numpy(x), ivy.to_numpy(new_val))
+        return
+    pytest.skip()
+
+
+@pytest.mark.parametrize(
+    "tensor_fn", [ivy.array, helpers.var_fn])
+def test_inplace_decrement(tensor_fn, dev_str, call):
+    x_orig = tensor_fn([0., 1., 2.], 'float32', dev_str)
+    dec = tensor_fn([2., 1., 0.], 'float32', dev_str)
+    new_val = x_orig - dec
+    if (tensor_fn is not helpers.var_fn and ivy.inplace_arrays_supported()) or\
+            (tensor_fn is helpers.var_fn and ivy.inplace_variables_supported()):
+        x = ivy.inplace_decrement(x_orig, dec)
+        assert id(x) == id(x_orig)
+        assert np.allclose(ivy.to_numpy(new_val), ivy.to_numpy(x))
+        return
+    pytest.skip()
+
+
+@pytest.mark.parametrize(
+    "tensor_fn", [ivy.array, helpers.var_fn])
+def test_inplace_increment(tensor_fn, dev_str, call):
+    x_orig = tensor_fn([0., 1., 2.], 'float32', dev_str)
+    inc = tensor_fn([2., 1., 0.], 'float32', dev_str)
+    new_val = x_orig + inc
+    if (tensor_fn is not helpers.var_fn and ivy.inplace_arrays_supported()) or\
+            (tensor_fn is helpers.var_fn and ivy.inplace_variables_supported()):
+        x = ivy.inplace_increment(x_orig, inc)
+        assert id(x) == id(x_orig)
+        assert np.allclose(ivy.to_numpy(new_val), ivy.to_numpy(x))
+        return
+    pytest.skip()
