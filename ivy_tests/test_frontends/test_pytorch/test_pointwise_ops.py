@@ -28,8 +28,7 @@ def test_abs(x_n_x_absed, dtype_str, tensor_fn, inplace, dev_str, call):
         # mxnet does not support 0-dimensional variables
         pytest.skip()
     x = tensor_fn(x_n_x_absed[0], dtype_str, dev_str)
-    if inplace and (tensor_fn is not helpers.var_fn and ivy.inplace_arrays_supported()) or\
-            (tensor_fn is helpers.var_fn and ivy.inplace_variables_supported()):
+    if inplace and ivy.supports_inplace(x):
         ret = ivy_torch.abs(x, out=x)
         assert id(x) == id(ret)
     else:
