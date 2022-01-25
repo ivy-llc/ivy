@@ -196,6 +196,8 @@
 <li class="toctree-l2"><a class="reference internal" href="general/num_arrays_in_memory.html">num_arrays_in_memory</a></li>
 <li class="toctree-l2"><a class="reference internal" href="general/print_all_arrays_in_memory.html">print_all_arrays_in_memory</a></li>
 <li class="toctree-l2"><a class="reference internal" href="general/container_types.html">container_types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="general/inplace_arrays_supported.html">inplace_arrays_supported</a></li>
+<li class="toctree-l2"><a class="reference internal" href="general/inplace_variables_supported.html">inplace_variables_supported</a></li>
 <li class="toctree-l2"><a class="reference internal" href="general/inplace_update.html">inplace_update</a></li>
 <li class="toctree-l2"><a class="reference internal" href="general/inplace_decrement.html">inplace_decrement</a></li>
 <li class="toctree-l2"><a class="reference internal" href="general/inplace_increment.html">inplace_increment</a></li>
@@ -1126,6 +1128,20 @@ Default is ‘float32’.</p></li>
 </dd></dl>
 
 <dl class="py function">
+<dt id="ivy.core.general.inplace_arrays_supported">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">inplace_arrays_supported</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">f</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#inplace_arrays_supported"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.inplace_arrays_supported" title="Permalink to this definition">¶</a></dt>
+<dd><p>Determine whether inplace arrays are supported for the current backend framework.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning framework. Inferred from inputs if None.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Boolean, whether or not inplace arrays are supported.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt id="ivy.core.general.inplace_decrement">
 <code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">inplace_decrement</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">val</span></em>, <em class="sig-param"><span class="n">f</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#inplace_decrement"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.inplace_decrement" title="Permalink to this definition">¶</a></dt>
 <dd><p>Perform in-place decrement for the input variable.</p>
@@ -1175,6 +1191,20 @@ Default is ‘float32’.</p></li>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>The variable following the in-place update.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.core.general.inplace_variables_supported">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">inplace_variables_supported</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">f</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/general.html#inplace_variables_supported"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.inplace_variables_supported" title="Permalink to this definition">¶</a></dt>
+<dd><p>Determine whether inplace variables are supported for the current backend framework.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning framework. Inferred from inputs if None.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Boolean, whether or not inplace variables are supported.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -2044,6 +2074,8 @@ If not given, then the type of the original array is used.</p></li>
 <li class="toctree-l1"><a class="reference internal" href="general/num_arrays_in_memory.html">num_arrays_in_memory</a></li>
 <li class="toctree-l1"><a class="reference internal" href="general/print_all_arrays_in_memory.html">print_all_arrays_in_memory</a></li>
 <li class="toctree-l1"><a class="reference internal" href="general/container_types.html">container_types</a></li>
+<li class="toctree-l1"><a class="reference internal" href="general/inplace_arrays_supported.html">inplace_arrays_supported</a></li>
+<li class="toctree-l1"><a class="reference internal" href="general/inplace_variables_supported.html">inplace_variables_supported</a></li>
 <li class="toctree-l1"><a class="reference internal" href="general/inplace_update.html">inplace_update</a></li>
 <li class="toctree-l1"><a class="reference internal" href="general/inplace_decrement.html">inplace_decrement</a></li>
 <li class="toctree-l1"><a class="reference internal" href="general/inplace_increment.html">inplace_increment</a></li>
