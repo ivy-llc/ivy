@@ -40,4 +40,7 @@ General
    general/gather_nd.rst
    general/linear_resample.rst
    general/compile.rst
+   general/inplace_update.rst
+   general/inplace_decrement.rst
+   general/inplace_increment.rst
 

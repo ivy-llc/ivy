@@ -106,4 +106,7 @@ General
    general/num_arrays_in_memory.rst
    general/print_all_arrays_in_memory.rst
    general/container_types.rst
+   general/inplace_update.rst
+   general/inplace_decrement.rst
+   general/inplace_increment.rst
 
