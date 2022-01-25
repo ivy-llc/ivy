@@ -1661,6 +1661,28 @@ def container_types(f: ivy.Framework = None):
         return []
 
 
+def inplace_arrays_supported(f=None):
+    """
+    Determine whether inplace arrays are supported for the current backend framework.
+
+    :param f: Machine learning framework. Inferred from inputs if None.
+    :type f: ml_framework, optional
+    :return: Boolean, whether or not inplace arrays are supported.
+    """
+    return _cur_framework(f=f).inplace_arrays_supported()
+
+
+def inplace_variables_supported(f=None):
+    """
+    Determine whether inplace variables are supported for the current backend framework.
+
+    :param f: Machine learning framework. Inferred from inputs if None.
+    :type f: ml_framework, optional
+    :return: Boolean, whether or not inplace variables are supported.
+    """
+    return _cur_framework(f=f).inplace_variables_supported()
+
+
 def inplace_update(x, val, f=None):
     """
     Perform in-place update for the input variable.
