@@ -378,7 +378,7 @@
 <span class="c1"># Optimizer Updates #</span>
 <span class="c1"># ------------------#</span>
 
-<div class="viewcode-block" id="optimizer_update"><a class="viewcode-back" href="../../../core/gradients/optimizer_update.html#ivy.core.gradients.optimizer_update">[docs]</a><span class="k">def</span> <span class="nf">optimizer_update</span><span class="p">(</span><span class="n">ws</span><span class="p">,</span> <span class="n">effective_grads</span><span class="p">,</span> <span class="n">lr</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">stop_gradients</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="optimizer_update"><a class="viewcode-back" href="../../../core/gradients/optimizer_update.html#ivy.core.gradients.optimizer_update">[docs]</a><span class="k">def</span> <span class="nf">optimizer_update</span><span class="p">(</span><span class="n">ws</span><span class="p">,</span> <span class="n">effective_grads</span><span class="p">,</span> <span class="n">lr</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">stop_gradients</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Update weights ws of some function, given the true or effective derivatives of some cost c with respect to ws,</span>
 <span class="sd">    [dc/dw for w in ws].</span>
@@ -392,12 +392,13 @@
 <span class="sd">    :param inplace: Whether to perform the operation inplace, for backends which support inplace variable updates,</span>
 <span class="sd">                    and handle gradients behind the scenes such as PyTorch. If the update step should form part of a</span>
 <span class="sd">                    computation graph (i.e. higher order optimization), then this should be set to False.</span>
-<span class="sd">                    Default is True.</span>
+<span class="sd">                    Default is True, provided the backend framework supports it.</span>
 <span class="sd">    :type inplace: bool, optional</span>
 <span class="sd">    :param stop_gradients: Whether to stop the gradients of the variables after each gradient step. Default is True.</span>
 <span class="sd">    :type stop_gradients: bool, optional</span>
 <span class="sd">    :return: The new function weights ws_new, following the optimizer updates.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">inplace</span> <span class="o">=</span> <span class="n">_ivy</span><span class="o">.</span><span class="n">default</span><span class="p">(</span><span class="n">inplace</span><span class="p">,</span> <span class="n">_ivy</span><span class="o">.</span><span class="n">inplace_variables_supported</span><span class="p">())</span>
     <span class="n">layerwise_lr</span> <span class="o">=</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">lr</span><span class="p">,</span> <span class="n">_ivy</span><span class="o">.</span><span class="n">Container</span><span class="p">)</span>
     <span class="n">deltas</span> <span class="o">=</span> <span class="n">effective_grads</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">eff_grad</span><span class="p">,</span> <span class="n">kc</span><span class="p">:</span> <span class="p">((</span><span class="n">lr</span><span class="p">[</span><span class="n">kc</span><span class="p">]</span> <span class="k">if</span> <span class="n">layerwise_lr</span> <span class="k">else</span> <span class="n">lr</span><span class="p">)</span> <span class="o">*</span> <span class="n">eff_grad</span><span class="p">))</span>
     <span class="k">if</span> <span class="n">inplace</span><span class="p">:</span>
@@ -409,7 +410,7 @@
     <span class="k">return</span> <span class="n">ws</span></div>
 
 
-<div class="viewcode-block" id="gradient_descent_update"><a class="viewcode-back" href="../../../core/gradients/gradient_descent_update.html#ivy.core.gradients.gradient_descent_update">[docs]</a><span class="k">def</span> <span class="nf">gradient_descent_update</span><span class="p">(</span><span class="n">ws</span><span class="p">,</span> <span class="n">dcdws</span><span class="p">,</span> <span class="n">lr</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">stop_gradients</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="gradient_descent_update"><a class="viewcode-back" href="../../../core/gradients/gradient_descent_update.html#ivy.core.gradients.gradient_descent_update">[docs]</a><span class="k">def</span> <span class="nf">gradient_descent_update</span><span class="p">(</span><span class="n">ws</span><span class="p">,</span> <span class="n">dcdws</span><span class="p">,</span> <span class="n">lr</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">stop_gradients</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Update weights ws of some function, given the derivatives of some cost c with respect to ws, [dc/dw for w in ws].</span>
 
@@ -422,7 +423,7 @@
 <span class="sd">    :param inplace: Whether to perform the operation inplace, for backends which support inplace variable updates,</span>
 <span class="sd">                    and handle gradients behind the scenes such as PyTorch. If the update step should form part of a</span>
 <span class="sd">                    computation graph (i.e. higher order optimization), then this should be set to False.</span>
-<span class="sd">                    Default is True.</span>
+<span class="sd">                    Default is True, provided the backend framework supports it.</span>
 <span class="sd">    :type inplace: bool, optional</span>
 <span class="sd">    :param stop_gradients: Whether to stop the gradients of the variables after each gradient step. Default is True.</span>
 <span class="sd">    :type stop_gradients: bool, optional</span>
@@ -431,7 +432,7 @@
     <span class="k">return</span> <span class="n">optimizer_update</span><span class="p">(</span><span class="n">ws</span><span class="p">,</span> <span class="n">dcdws</span><span class="p">,</span> <span class="n">lr</span><span class="p">,</span> <span class="n">inplace</span><span class="p">,</span> <span class="n">stop_gradients</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="lars_update"><a class="viewcode-back" href="../../../core/gradients/lars_update.html#ivy.core.gradients.lars_update">[docs]</a><span class="k">def</span> <span class="nf">lars_update</span><span class="p">(</span><span class="n">ws</span><span class="p">,</span> <span class="n">dcdws</span><span class="p">,</span> <span class="n">lr</span><span class="p">,</span> <span class="n">decay_lambda</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">stop_gradients</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="lars_update"><a class="viewcode-back" href="../../../core/gradients/lars_update.html#ivy.core.gradients.lars_update">[docs]</a><span class="k">def</span> <span class="nf">lars_update</span><span class="p">(</span><span class="n">ws</span><span class="p">,</span> <span class="n">dcdws</span><span class="p">,</span> <span class="n">lr</span><span class="p">,</span> <span class="n">decay_lambda</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">stop_gradients</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Update weights ws of some function, given the derivatives of some cost c with respect to ws, [dc/dw for w in ws],</span>
 <span class="sd">    by applying Layerwise Adaptive Rate Scaling (LARS) method.</span>
@@ -447,7 +448,7 @@
 <span class="sd">    :param inplace: Whether to perform the operation inplace, for backends which support inplace variable updates,</span>
 <span class="sd">                    and handle gradients behind the scenes such as PyTorch. If the update step should form part of a</span>
 <span class="sd">                    computation graph (i.e. higher order optimization), then this should be set to False.</span>
-<span class="sd">                    Default is True.</span>
+<span class="sd">                    Default is True, provided the backend framework supports it.</span>
 <span class="sd">    :type inplace: bool, optional</span>
 <span class="sd">    :param stop_gradients: Whether to stop the gradients of the variables after each gradient step. Default is True.</span>
 <span class="sd">    :type stop_gradients: bool, optional</span>
@@ -460,7 +461,7 @@
     <span class="k">return</span> <span class="n">gradient_descent_update</span><span class="p">(</span><span class="n">ws</span><span class="p">,</span> <span class="n">dcdws</span><span class="p">,</span> <span class="n">lr</span><span class="p">,</span> <span class="n">inplace</span><span class="p">,</span> <span class="n">stop_gradients</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="adam_update"><a class="viewcode-back" href="../../../core/gradients/adam_update.html#ivy.core.gradients.adam_update">[docs]</a><span class="k">def</span> <span class="nf">adam_update</span><span class="p">(</span><span class="n">ws</span><span class="p">,</span> <span class="n">dcdws</span><span class="p">,</span> <span class="n">lr</span><span class="p">,</span> <span class="n">mw_tm1</span><span class="p">,</span> <span class="n">vw_tm1</span><span class="p">,</span> <span class="n">step</span><span class="p">,</span> <span class="n">beta1</span><span class="o">=</span><span class="mf">0.9</span><span class="p">,</span> <span class="n">beta2</span><span class="o">=</span><span class="mf">0.999</span><span class="p">,</span> <span class="n">epsilon</span><span class="o">=</span><span class="mf">1e-7</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<div class="viewcode-block" id="adam_update"><a class="viewcode-back" href="../../../core/gradients/adam_update.html#ivy.core.gradients.adam_update">[docs]</a><span class="k">def</span> <span class="nf">adam_update</span><span class="p">(</span><span class="n">ws</span><span class="p">,</span> <span class="n">dcdws</span><span class="p">,</span> <span class="n">lr</span><span class="p">,</span> <span class="n">mw_tm1</span><span class="p">,</span> <span class="n">vw_tm1</span><span class="p">,</span> <span class="n">step</span><span class="p">,</span> <span class="n">beta1</span><span class="o">=</span><span class="mf">0.9</span><span class="p">,</span> <span class="n">beta2</span><span class="o">=</span><span class="mf">0.999</span><span class="p">,</span> <span class="n">epsilon</span><span class="o">=</span><span class="mf">1e-7</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                 <span class="n">stop_gradients</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Update weights ws of some function, given the derivatives of some cost c with respect to ws, using ADAM update.</span>
@@ -487,7 +488,7 @@
 <span class="sd">    :param inplace: Whether to perform the operation inplace, for backends which support inplace variable updates,</span>
 <span class="sd">                    and handle gradients behind the scenes such as PyTorch. If the update step should form part of a</span>
 <span class="sd">                    computation graph (i.e. higher order optimization), then this should be set to False.</span>
-<span class="sd">                    Default is True.</span>
+<span class="sd">                    Default is True, provided the backend framework supports it.</span>
 <span class="sd">    :type inplace: bool, optional</span>
 <span class="sd">    :param stop_gradients: Whether to stop the gradients of the variables after each gradient step. Default is True.</span>
 <span class="sd">    :type stop_gradients: bool, optional</span>
@@ -498,7 +499,7 @@
 
 
 <div class="viewcode-block" id="lamb_update"><a class="viewcode-back" href="../../../core/gradients/lamb_update.html#ivy.core.gradients.lamb_update">[docs]</a><span class="k">def</span> <span class="nf">lamb_update</span><span class="p">(</span><span class="n">ws</span><span class="p">,</span> <span class="n">dcdws</span><span class="p">,</span> <span class="n">lr</span><span class="p">,</span> <span class="n">mw_tm1</span><span class="p">,</span> <span class="n">vw_tm1</span><span class="p">,</span> <span class="n">step</span><span class="p">,</span> <span class="n">beta1</span><span class="o">=</span><span class="mf">0.9</span><span class="p">,</span> <span class="n">beta2</span><span class="o">=</span><span class="mf">0.999</span><span class="p">,</span> <span class="n">epsilon</span><span class="o">=</span><span class="mf">1e-7</span><span class="p">,</span> <span class="n">max_trust_ratio</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
-                <span class="n">decay_lambda</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">stop_gradients</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+                <span class="n">decay_lambda</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">stop_gradients</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Update weights ws of some function, given the derivatives of some cost c with respect to ws, [dc/dw for w in ws],</span>
 <span class="sd">    by applying LAMB method.</span>
@@ -528,7 +529,7 @@
 <span class="sd">    :param inplace: Whether to perform the operation inplace, for backends which support inplace variable updates,</span>
 <span class="sd">                    and handle gradients behind the scenes such as PyTorch. If the update step should form part of a</span>
 <span class="sd">                    computation graph (i.e. higher order optimization), then this should be set to False.</span>
-<span class="sd">                    Default is True.</span>
+<span class="sd">                    Default is True, provided the backend framework supports it.</span>
 <span class="sd">    :type inplace: bool, optional</span>
 <span class="sd">    :param stop_gradients: Whether to stop the gradients of the variables after each gradient step. Default is True.</span>
 <span class="sd">    :type stop_gradients: bool, optional</span>
