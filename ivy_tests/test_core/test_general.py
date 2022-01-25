@@ -2456,10 +2456,16 @@ def test_inplace_variables_supported(dev_str, call):
 
 
 @pytest.mark.parametrize(
+    "x_n_new", [([0., 1., 2.], [2., 1., 0.]), (0., 1.)])
+@pytest.mark.parametrize(
     "tensor_fn", [ivy.array, helpers.var_fn])
-def test_inplace_update(tensor_fn, dev_str, call):
-    x_orig = tensor_fn([0., 1., 2.], 'float32', dev_str)
-    new_val = tensor_fn([2., 1., 0.], 'float32', dev_str)
+def test_inplace_update(x_n_new, tensor_fn, dev_str, call):
+    x_orig, new_val = x_n_new
+    if call is helpers.mx_call and isinstance(x_orig, Number):
+        # MxNet supports neither 0-dim variables nor 0-dim inplace updates
+        pytest.skip()
+    x_orig = tensor_fn(x_orig, 'float32', dev_str)
+    new_val = tensor_fn(new_val, 'float32', dev_str)
     if (tensor_fn is not helpers.var_fn and ivy.inplace_arrays_supported()) or\
             (tensor_fn is helpers.var_fn and ivy.inplace_variables_supported()):
         x = ivy.inplace_update(x_orig, new_val)
@@ -2470,10 +2476,16 @@ def test_inplace_update(tensor_fn, dev_str, call):
 
 
 @pytest.mark.parametrize(
+    "x_n_dec", [([0., 1., 2.], [2., 1., 0.]), (0., 1.)])
+@pytest.mark.parametrize(
     "tensor_fn", [ivy.array, helpers.var_fn])
-def test_inplace_decrement(tensor_fn, dev_str, call):
-    x_orig = tensor_fn([0., 1., 2.], 'float32', dev_str)
-    dec = tensor_fn([2., 1., 0.], 'float32', dev_str)
+def test_inplace_decrement(x_n_dec, tensor_fn, dev_str, call):
+    x_orig, dec = x_n_dec
+    if call is helpers.mx_call and isinstance(x_orig, Number):
+        # MxNet supports neither 0-dim variables nor 0-dim inplace updates
+        pytest.skip()
+    x_orig = tensor_fn(x_orig, 'float32', dev_str)
+    dec = tensor_fn(dec, 'float32', dev_str)
     new_val = x_orig - dec
     if (tensor_fn is not helpers.var_fn and ivy.inplace_arrays_supported()) or\
             (tensor_fn is helpers.var_fn and ivy.inplace_variables_supported()):
@@ -2485,10 +2497,16 @@ def test_inplace_decrement(tensor_fn, dev_str, call):
 
 
 @pytest.mark.parametrize(
+    "x_n_inc", [([0., 1., 2.], [2., 1., 0.]), (0., 1.)])
+@pytest.mark.parametrize(
     "tensor_fn", [ivy.array, helpers.var_fn])
-def test_inplace_increment(tensor_fn, dev_str, call):
-    x_orig = tensor_fn([0., 1., 2.], 'float32', dev_str)
-    inc = tensor_fn([2., 1., 0.], 'float32', dev_str)
+def test_inplace_increment(x_n_inc, tensor_fn, dev_str, call):
+    x_orig, inc = x_n_inc
+    if call is helpers.mx_call and isinstance(x_orig, Number):
+        # MxNet supports neither 0-dim variables nor 0-dim inplace updates
+        pytest.skip()
+    x_orig = tensor_fn(x_orig, 'float32', dev_str)
+    inc = tensor_fn(inc, 'float32', dev_str)
     new_val = x_orig + inc
     if (tensor_fn is not helpers.var_fn and ivy.inplace_arrays_supported()) or\
             (tensor_fn is helpers.var_fn and ivy.inplace_variables_supported()):

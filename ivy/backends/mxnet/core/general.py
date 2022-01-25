@@ -563,16 +563,22 @@ container_types = lambda: []
 
 
 def inplace_update(x, val):
+    if x.shape == ():
+        raise Exception('MXNet does not support inplace updates of 0-dimensional arrays')
     x[:] = val
     return x
 
 
 def inplace_decrement(x, val):
+    if x.shape == ():
+        raise Exception('MXNet does not support inplace updates of 0-dimensional arrays')
     x -= val
     return x
 
 
 def inplace_increment(x, val):
+    if x.shape == ():
+        raise Exception('MXNet does not support inplace updates of 0-dimensional arrays')
     x += val
     return x
 
