@@ -19,14 +19,21 @@ import ivy.frontends.torch as ivy_torch
     "dtype_str", ['float32'])
 @pytest.mark.parametrize(
     "tensor_fn", [ivy.array, helpers.var_fn])
-def test_abs(x_n_x_absed, dtype_str, tensor_fn, dev_str, call):
+@pytest.mark.parametrize(
+    "inplace", [True, False])
+def test_abs(x_n_x_absed, dtype_str, tensor_fn, inplace, dev_str, call):
     # smoke test
     if (isinstance(x_n_x_absed[0], Number) or isinstance(x_n_x_absed[1], Number))\
-            and tensor_fn == helpers.var_fn and call is helpers.mx_call:
+            and (tensor_fn == helpers.var_fn or inplace) and call is helpers.mx_call:
         # mxnet does not support 0-dimensional variables
         pytest.skip()
     x = tensor_fn(x_n_x_absed[0], dtype_str, dev_str)
-    ret = ivy_torch.abs(x)
+    if inplace and (tensor_fn is not helpers.var_fn and ivy.inplace_arrays_supported()) or\
+            (tensor_fn is helpers.var_fn and ivy.inplace_variables_supported()):
+        ret = ivy_torch.abs(x, out=x)
+        assert id(x) == id(ret)
+    else:
+        ret = ivy_torch.abs(x)
     # type test
     assert ivy.is_array(ret)
     # cardinality test
