@@ -12,7 +12,7 @@ import multiprocessing as _multiprocessing
 
 # local
 from ivy.core.device import default_device
-from ivy.backends.numpy.core.device import _dev_str_callable
+from ivy.backends.numpy.core.device import _dev_callable
 
 
 DTYPE_DICT = {_np.dtype('bool_'): 'bool',
@@ -30,15 +30,15 @@ DTYPE_DICT = {_np.dtype('bool_'): 'bool',
 # Helpers #
 # --------#
 
-def _to_dev(x, dev_str):
-    if dev_str is not None:
-        if 'gpu' in dev_str:
+def _to_dev(x, dev):
+    if dev is not None:
+        if 'gpu' in dev:
             raise Exception('Native Numpy does not support GPU placement, consider using Jax instead')
-        elif 'cpu' in dev_str:
+        elif 'cpu' in dev:
             pass
         else:
             raise Exception('Invalid device specified, must be in the form [ "cpu:idx" | "gpu:idx" ],'
-                            'but found {}'.format(dev_str))
+                            'but found {}'.format(dev))
     return x
 
 
@@ -50,13 +50,13 @@ def _flat_array_to_1_dim_array(x):
 # ----#
 
 # noinspection PyShadowingNames
-def array(object_in, dtype=None, dev_str=None):
+def array(object_in, dtype=None, dev=None):
     if dtype:
         dtype = 'bool_' if dtype == 'bool' else dtype
         dtype = _np.__dict__[dtype]
     else:
         dtype = None
-    return _to_dev(_np.array(object_in, dtype=dtype), default_device(dev_str))
+    return _to_dev(_np.array(object_in, dtype=dtype), default_device(dev))
 
 
 def is_array(x, exclusive=False):
@@ -110,13 +110,13 @@ def cast(x, dtype):
 
 
 # noinspection PyShadowingNames
-def arange(stop, start=0, step=1, dtype=None, dev_str=None):
+def arange(stop, start=0, step=1, dtype=None, dev=None):
     if dtype:
         dtype = 'bool_' if dtype == 'bool' else dtype
         dtype = _np.__dict__[dtype]
     else:
         dtype = None
-    res = _to_dev(_np.arange(start, stop, step=step, dtype=dtype), default_device(dev_str))
+    res = _to_dev(_np.arange(start, stop, step=step, dtype=dtype), default_device(dev))
     if not dtype:
         if res.dtype == _np.dtype('float64'):
             return res.astype(_np.float32)
@@ -125,16 +125,16 @@ def arange(stop, start=0, step=1, dtype=None, dev_str=None):
     return res
 
 
-def linspace(start, stop, num, axis=None, dev_str=None):
+def linspace(start, stop, num, axis=None, dev=None):
     if axis is None:
         axis = -1
-    return _to_dev(_np.linspace(start, stop, num, axis=axis), default_device(dev_str))
+    return _to_dev(_np.linspace(start, stop, num, axis=axis), default_device(dev))
 
 
-def logspace(start, stop, num, base=10., axis=None, dev_str=None):
+def logspace(start, stop, num, base=10., axis=None, dev=None):
     if axis is None:
         axis = -1
-    return _to_dev(_np.logspace(start, stop, num, base=base, axis=axis), default_device(dev_str))
+    return _to_dev(_np.logspace(start, stop, num, base=base, axis=axis), default_device(dev))
 
 
 def concatenate(xs, axis=-1):
@@ -226,41 +226,41 @@ def squeeze(x, axis=None):
 
 
 # noinspection PyShadowingNames
-def zeros(shape, dtype='float32', dev_str=None):
+def zeros(shape, dtype='float32', dev=None):
     dtype = 'bool_' if dtype == 'bool' else dtype
     dtype = _np.__dict__[dtype]
-    return _to_dev(_np.zeros(shape, dtype), default_device(dev_str))
+    return _to_dev(_np.zeros(shape, dtype), default_device(dev))
 
 
 # noinspection PyShadowingNames
-def zeros_like(x, dtype=None, dev_str=None):
+def zeros_like(x, dtype=None, dev=None):
     if dtype:
         dtype = 'bool_' if dtype == 'bool' else dtype
         dtype = _np.__dict__[dtype]
     else:
         dtype = x.dtype
-    return _to_dev(_np.zeros_like(x, dtype=dtype), default_device(dev_str))
+    return _to_dev(_np.zeros_like(x, dtype=dtype), default_device(dev))
 
 
 # noinspection PyShadowingNames
-def ones(shape, dtype='float32', dev_str=None):
+def ones(shape, dtype='float32', dev=None):
     dtype = 'bool_' if dtype == 'bool' else dtype
     dtype = _np.__dict__[dtype]
-    return _to_dev(_np.ones(shape, dtype), default_device(dev_str))
+    return _to_dev(_np.ones(shape, dtype), default_device(dev))
 
 
 # noinspection PyShadowingNames
-def ones_like(x, dtype=None, dev_str=None):
+def ones_like(x, dtype=None, dev=None):
     if dtype:
         dtype = 'bool_' if dtype == 'bool' else dtype
         dtype = _np.__dict__[dtype]
     else:
         dtype = x.dtype
-    return _to_dev(_np.ones_like(x, dtype=dtype), default_device(dev_str))
+    return _to_dev(_np.ones_like(x, dtype=dtype), default_device(dev))
 
 
 # noinspection PyUnusedLocal
-def one_hot(indices, depth, dev_str=None):
+def one_hot(indices, depth, dev=None):
     # from https://stackoverflow.com/questions/38592324/one-hot-encoding-using-numpy
     res = _np.eye(depth)[_np.array(indices).reshape(-1)]
     return res.reshape(list(indices.shape) + [depth])
@@ -281,7 +281,7 @@ def cumprod(x, axis=0, exclusive=False):
 
 
 # noinspection PyShadowingNames
-def identity(n, dtype='float32', batch_shape=None, dev_str=None):
+def identity(n, dtype='float32', batch_shape=None, dev=None):
     dtype = 'bool_' if dtype == 'bool' else dtype
     dtype = _np.__dict__[dtype]
     mat = _np.identity(n, dtype=dtype)
@@ -291,15 +291,15 @@ def identity(n, dtype='float32', batch_shape=None, dev_str=None):
         reshape_dims = [1] * len(batch_shape) + [n, n]
         tile_dims = list(batch_shape) + [1, 1]
         return_mat = _np.tile(_np.reshape(mat, reshape_dims), tile_dims)
-    return _to_dev(return_mat, default_device(dev_str))
+    return _to_dev(return_mat, default_device(dev))
 
 
 meshgrid = lambda *xs, indexing='ij': _np.meshgrid(*xs, indexing=indexing)
 
 
-def scatter_flat(indices, updates, size, reduction='sum', dev_str=None):
-    if dev_str is None:
-        dev_str = _dev_str_callable(updates)
+def scatter_flat(indices, updates, size, reduction='sum', dev=None):
+    if dev is None:
+        dev = _dev_callable(updates)
     if reduction == 'sum':
         target = _np.zeros([size], dtype=updates.dtype)
         _np.add.at(target, indices, updates)
@@ -313,13 +313,13 @@ def scatter_flat(indices, updates, size, reduction='sum', dev_str=None):
         target = _np.where(target == -1e12, 0., target)
     else:
         raise Exception('reduction is {}, but it must be one of "sum", "min" or "max"'.format(reduction))
-    return _to_dev(target, dev_str)
+    return _to_dev(target, dev)
 
 
 # noinspection PyShadowingNames
-def scatter_nd(indices, updates, shape, reduction='sum', dev_str=None):
-    if dev_str is None:
-        dev_str = _dev_str_callable(updates)
+def scatter_nd(indices, updates, shape, reduction='sum', dev=None):
+    if dev is None:
+        dev = _dev_callable(updates)
     shape = list(shape)
     indices_flat = indices.reshape(-1, indices.shape[-1]).T
     indices_tuple = tuple(indices_flat) + (Ellipsis,)
@@ -336,18 +336,18 @@ def scatter_nd(indices, updates, shape, reduction='sum', dev_str=None):
         target = _np.where(target == -1e12, 0., target)
     else:
         raise Exception('reduction is {}, but it must be one of "sum", "min" or "max"'.format(reduction))
-    return _to_dev(target, dev_str)
+    return _to_dev(target, dev)
 
 
-def gather(params, indices, axis=-1, dev_str=None):
-    if dev_str is None:
-        dev_str = _dev_str_callable(params)
-    return _to_dev(_np.take_along_axis(params, indices, axis), dev_str)
+def gather(params, indices, axis=-1, dev=None):
+    if dev is None:
+        dev = _dev_callable(params)
+    return _to_dev(_np.take_along_axis(params, indices, axis), dev)
 
 
-def gather_nd(params, indices, dev_str=None):
-    if dev_str is None:
-        dev_str = _dev_str_callable(params)
+def gather_nd(params, indices, dev=None):
+    if dev is None:
+        dev = _dev_callable(params)
     indices_shape = indices.shape
     params_shape = params.shape
     num_index_dims = indices_shape[-1]
@@ -364,7 +364,7 @@ def gather_nd(params, indices, dev_str=None):
     flat_gather = _np.take(flat_params, flat_indices_for_flat, 0)
     new_shape = list(indices_shape[:-1]) + list(params_shape[num_index_dims:])
     res = _np.reshape(flat_gather, new_shape)
-    return _to_dev(res, dev_str)
+    return _to_dev(res, dev)
 
 
 def linear_resample(x, num_samples, axis=-1):

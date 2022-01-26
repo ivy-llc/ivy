@@ -20,14 +20,14 @@ from ivy.core.container import Container
 
 class Module(abc.ABC):
 
-    def __init__(self, dev_str=None, v=None, build_mode='on_init', compile_on_next_step=False, store_vars=True,
+    def __init__(self, dev=None, v=None, build_mode='on_init', compile_on_next_step=False, store_vars=True,
                  stateful=None, arg_stateful_idxs=None, kwarg_stateful_idxs=None, fallback_to_non_compiled=False,
-                 with_partial_v=False, dev_strs=None):
+                 with_partial_v=False, devs=None):
         """
         Initialze Ivy layer, which is a stateful object consisting of trainable variables.
 
-        :param dev_str: device on which to create the module's variables 'cuda:0', 'cuda:1', 'cpu' etc.
-        :type dev_str: str, optional
+        :param dev: device on which to create the module's variables 'cuda:0', 'cuda:1', 'cpu' etc.
+        :type dev: str, optional
         :param v: Ivy container of trainable variables. Created internally by default.
         :type v: ivy container, optional
         :param build_mode: How the Module is built, either on initialization (now), explicitly by the user by calling
@@ -51,16 +51,16 @@ class Module(abc.ABC):
         :type fallback_to_non_compiled: bool, optional
         :param with_partial_v: Whether to allow partial specification of variables. Default is False.
         :type with_partial_v: bool, optional
-        :param dev_strs: devices on which to distribute the module's variables 'cuda:0', 'cuda:1', 'cpu' etc.
-        :type dev_strs: sequence of str, optional
+        :param devs: devices on which to distribute the module's variables 'cuda:0', 'cuda:1', 'cpu' etc.
+        :type devs: sequence of str, optional
         :type build_mode: str, optional
         """
         valid_build_modes = ['on_init', 'explicit', 'on_call']
         if build_mode not in valid_build_modes:
             raise Exception('build_mode must be one of {} of type str, but found {} of type{}'.format(
                 valid_build_modes, build_mode, type(build_mode)))
-        self._dev_str = ivy.default(dev_str, ivy.default(lambda: dev_strs[0], ivy.default_device(), True))
-        self._dev_strs = ivy.default(dev_strs, [self._dev_str])
+        self._dev = ivy.default(dev, ivy.default(lambda: devs[0], ivy.default_device(), True))
+        self._devs = ivy.default(devs, [self._dev])
         self._build_mode = build_mode
         self._stateful = stateful
         self._arg_stateful_idxs = arg_stateful_idxs
@@ -264,12 +264,12 @@ class Module(abc.ABC):
     # Overridable #
 
     # noinspection PyMethodMayBeStatic,PyUnusedLocal
-    def _create_variables(self, dev_str):
+    def _create_variables(self, dev):
         """
         create internal trainable variables, and return as arbitrary nested dict. Overridable.
 
-        :param dev_str: The device string, specifying the device on which to create the variables.
-        :type dev_str: string
+        :param dev: The device string, specifying the device on which to create the variables.
+        :type dev: string
         """
         return {}
 
@@ -605,11 +605,11 @@ class Module(abc.ABC):
         os.makedirs('/'.join(weights_path.split('/')[:-1]), exist_ok=True)
         self.v.to_disk_as_hdf5(weights_path)
 
-    def build(self, *args, from_call=False, dev_str=None, **kwargs):
+    def build(self, *args, from_call=False, dev=None, **kwargs):
         """
         Build the internal layers and variables for this module.
         """
-        self._dev_str = ivy.default(dev_str, self._dev_str)
+        self._dev = ivy.default(dev, self._dev)
 
         # return False if not from_call but build_mode is on_call
         if not from_call and self._build_mode == 'on_call':
@@ -620,7 +620,7 @@ class Module(abc.ABC):
 
         # build variables based on locally built layers, if v not passed in constructor
         v_from_constructor = self._v_in
-        created = Container(self._create_variables(self._dev_str))
+        created = Container(self._create_variables(self._dev))
         created_n_found = Container(dict(**self._find_variables(self), **created))
         if ivy.exists(v_from_constructor):
             if self._with_partial_v:
@@ -643,14 +643,14 @@ class Module(abc.ABC):
             # update child modules to share the same device
             for k, v in self.__dict__.items():
                 if isinstance(v, ivy.Module):
-                    v._dev_str = self._dev_str
+                    v._dev = self._dev
 
             # build during forward pass
             self._forward(*args, **kwargs)
 
             # re-build variables based on additional child on-call layers, if v not passed in constructor
             if not ivy.exists(v_from_constructor):
-                created_n_found = Container(dict(**self._find_variables(self), **self._create_variables(self._dev_str)))
+                created_n_found = Container(dict(**self._find_variables(self), **self._create_variables(self._dev)))
                 self.v = created_n_found
 
             # remove further duplicates with self.v

@@ -19,12 +19,12 @@ import ivy_tests.helpers as helpers
     "dtype", ['float32'])
 @pytest.mark.parametrize(
     "tensor_fn", [ivy.array, helpers.var_fn])
-def test_svd(x, dtype, tensor_fn, dev_str, call):
-    if call in [helpers.tf_call, helpers.tf_graph_call] and 'cpu' in dev_str:
+def test_svd(x, dtype, tensor_fn, dev, call):
+    if call in [helpers.tf_call, helpers.tf_graph_call] and 'cpu' in dev:
         # tf.linalg.svd segfaults when CUDA is installed, but array is on CPU
         pytest.skip()
     # smoke test
-    x = tensor_fn(x, dtype, dev_str)
+    x = tensor_fn(x, dtype, dev)
     u, s, vh = ivy.svd(x)
     # type test
     assert ivy.is_array(u)
@@ -58,10 +58,10 @@ def test_svd(x, dtype, tensor_fn, dev_str, call):
     "dtype", ['float32'])
 @pytest.mark.parametrize(
     "tensor_fn", [ivy.array, helpers.var_fn])
-def test_vector_norm(x_n_p_n_ax_n_kd_n_tn, dtype, tensor_fn, dev_str, call):
+def test_vector_norm(x_n_p_n_ax_n_kd_n_tn, dtype, tensor_fn, dev, call):
     # smoke test
     x, p, ax, kd, true_norm = x_n_p_n_ax_n_kd_n_tn
-    x = tensor_fn(x, dtype, dev_str)
+    x = tensor_fn(x, dtype, dev)
     kwargs = {k: v for k, v in zip(['x', 'p', 'axis', 'keepdims'], [x, p, ax, kd]) if v is not None}
     ret = ivy.vector_norm(**kwargs)
     # type test
@@ -98,7 +98,7 @@ def test_vector_norm(x_n_p_n_ax_n_kd_n_tn, dtype, tensor_fn, dev_str, call):
     "dtype", ['float32'])
 @pytest.mark.parametrize(
     "tensor_fn", [ivy.array, helpers.var_fn])
-def test_matrix_norm(x_n_p_n_ax_n_kd, dtype, tensor_fn, dev_str, call):
+def test_matrix_norm(x_n_p_n_ax_n_kd, dtype, tensor_fn, dev, call):
     # smoke test
     x_raw, p, ax, kd = x_n_p_n_ax_n_kd
     if p == -2 and call in [helpers.tf_call, helpers.tf_graph_call]:
@@ -107,7 +107,7 @@ def test_matrix_norm(x_n_p_n_ax_n_kd, dtype, tensor_fn, dev_str, call):
     if call is helpers.mx_call:
         # MXNet does not support matrix norms
         pytest.skip()
-    x = tensor_fn(x_raw, dtype, dev_str)
+    x = tensor_fn(x_raw, dtype, dev)
     kwargs = {k: v for k, v in zip(['x', 'p', 'axes', 'keepdims'], [x, p, ax, kd]) if v is not None}
     ret = ivy.matrix_norm(**kwargs)
     # type test
@@ -151,12 +151,12 @@ def test_matrix_norm(x_n_p_n_ax_n_kd, dtype, tensor_fn, dev_str, call):
     "dtype", ['float32'])
 @pytest.mark.parametrize(
     "tensor_fn", [ivy.array, helpers.var_fn])
-def test_inv(x, dtype, tensor_fn, dev_str, call):
-    if call in [helpers.tf_call, helpers.tf_graph_call] and 'cpu' in dev_str:
+def test_inv(x, dtype, tensor_fn, dev, call):
+    if call in [helpers.tf_call, helpers.tf_graph_call] and 'cpu' in dev:
         # tf.linalg.inv segfaults when CUDA is installed, but array is on CPU
         pytest.skip()
     # smoke test
-    x = tensor_fn(x, dtype, dev_str)
+    x = tensor_fn(x, dtype, dev)
     ret = ivy.inv(x)
     # type test
     assert ivy.is_array(ret)
@@ -176,12 +176,12 @@ def test_inv(x, dtype, tensor_fn, dev_str, call):
     "dtype", ['float32'])
 @pytest.mark.parametrize(
     "tensor_fn", [ivy.array, helpers.var_fn])
-def test_pinv(x, dtype, tensor_fn, dev_str, call):
-    if call in [helpers.tf_call, helpers.tf_graph_call] and 'cpu' in dev_str:
+def test_pinv(x, dtype, tensor_fn, dev, call):
+    if call in [helpers.tf_call, helpers.tf_graph_call] and 'cpu' in dev:
         # tf.linalg.pinv segfaults when CUDA is installed, but array is on CPU
         pytest.skip()
     # smoke test
-    x = tensor_fn(x, dtype, dev_str)
+    x = tensor_fn(x, dtype, dev)
     ret = ivy.pinv(x)
     # type test
     assert ivy.is_array(ret)
@@ -201,9 +201,9 @@ def test_pinv(x, dtype, tensor_fn, dev_str, call):
     "dtype", ['float32'])
 @pytest.mark.parametrize(
     "tensor_fn", [ivy.array, helpers.var_fn])
-def test_vector_to_skew_symmetric_matrix(x, dtype, tensor_fn, dev_str, call):
+def test_vector_to_skew_symmetric_matrix(x, dtype, tensor_fn, dev, call):
     # smoke test
-    x = tensor_fn(x, dtype, dev_str)
+    x = tensor_fn(x, dtype, dev)
     ret = ivy.vector_to_skew_symmetric_matrix(x)
     # type test
     assert ivy.is_array(ret)
