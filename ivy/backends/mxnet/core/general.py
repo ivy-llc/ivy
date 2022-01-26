@@ -542,8 +542,13 @@ def linear_resample(x, num_samples, axis=-1):
     return _mx.nd.reshape(ret, x_pre_shape + [num_samples] + x_post_shape)
 
 
-dtype = lambda x: x.dtype
-dtype.__name__ = 'dtype'
+def dtype(x, as_str=False):
+    dt = x.dtype
+    if as_str:
+        return dtype_to_str(dt)
+    return x.dtype
+
+
 dtype = lambda x: DTYPE_DICT[x.dtype]
 dtype_to_str = lambda dtype_in: DTYPE_DICT[dtype_in]
 
