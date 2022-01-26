@@ -16,7 +16,7 @@ import ivy
 class Optimizer(abc.ABC):
 
     def __init__(self, lr, inplace=None, stop_gradients=True, init_on_first_step=False, compile_on_next_step=False,
-                 fallback_to_non_compiled=False, dev_str=None):
+                 fallback_to_non_compiled=False, dev=None):
         """
         Construct an general Optimizer. This is an abstract class, and must be derived.
 
@@ -35,8 +35,8 @@ class Optimizer(abc.ABC):
         :param fallback_to_non_compiled: Whether to fall back to non-compiled forward call in the case that an error is
                                          raised during the compiled forward pass. Default is True.
         :type fallback_to_non_compiled: bool, optional
-        :param dev_str: device on which to create the layer's variables 'cuda:0', 'cuda:1', 'cpu' etc.
-        :type dev_str: str, optional
+        :param dev: device on which to create the layer's variables 'cuda:0', 'cuda:1', 'cpu' etc.
+        :type dev: str, optional
         """
         self._lr = lr
         self._inplace = inplace
@@ -45,8 +45,8 @@ class Optimizer(abc.ABC):
         self._initialized = not init_on_first_step
         self._compile_on_next_step = compile_on_next_step
         self._fallback_to_non_compiled = fallback_to_non_compiled
-        self._dev_str = ivy.default(dev_str, ivy.default_device())
-        self._count = ivy.array([0], dev_str=self._dev_str)
+        self._dev = ivy.default(dev, ivy.default_device())
+        self._count = ivy.array([0], dev=self._dev)
         self._compiled_step_fn = None
         self._compiled = False
 
@@ -246,7 +246,7 @@ class LARS(Optimizer):
 class Adam(Optimizer):
 
     def __init__(self, lr=1e-4, beta1=0.9, beta2=0.999, epsilon=1e-07, inplace=None, stop_gradients=True,
-                 compile_on_next_step=False, dev_str=None):
+                 compile_on_next_step=False, dev=None):
         """
         Construct an ADAM optimizer.
 
@@ -266,10 +266,10 @@ class Adam(Optimizer):
         :type stop_gradients: bool, optional
         :param compile_on_next_step: Whether to compile the optimizer on the next step. Default is False.
         :type compile_on_next_step: bool, optional
-        :param dev_str: device on which to create the layer's variables 'cuda:0', 'cuda:1', 'cpu' etc.
-        :type dev_str: str, optional
+        :param dev: device on which to create the layer's variables 'cuda:0', 'cuda:1', 'cpu' etc.
+        :type dev: str, optional
         """
-        Optimizer.__init__(self, lr, inplace, stop_gradients, True, compile_on_next_step, dev_str)
+        Optimizer.__init__(self, lr, inplace, stop_gradients, True, compile_on_next_step, dev)
         self._beta1 = beta1
         self._beta2 = beta2
         self._epsilon = epsilon
@@ -317,7 +317,7 @@ class Adam(Optimizer):
 class LAMB(Optimizer):
 
     def __init__(self, lr=1e-4, beta1=0.9, beta2=0.999, epsilon=1e-07, max_trust_ratio=10, decay_lambda=0, inplace=None,
-                 stop_gradients=True, compile_on_next_step=False, dev_str=None):
+                 stop_gradients=True, compile_on_next_step=False, dev=None):
         """
         Construct an LAMB optimizer.
 
@@ -342,10 +342,10 @@ class LAMB(Optimizer):
         :type stop_gradients: bool, optional
         :param compile_on_next_step: Whether to compile the optimizer on the next step. Default is False.
         :type compile_on_next_step: bool, optional
-        :param dev_str: device on which to create the layer's variables 'cuda:0', 'cuda:1', 'cpu' etc.
-        :type dev_str: str, optional
+        :param dev: device on which to create the layer's variables 'cuda:0', 'cuda:1', 'cpu' etc.
+        :type dev: str, optional
         """
-        Optimizer.__init__(self, lr, inplace, stop_gradients, True, compile_on_next_step, dev_str)
+        Optimizer.__init__(self, lr, inplace, stop_gradients, True, compile_on_next_step, dev)
         self._beta1 = beta1
         self._beta2 = beta2
         self._epsilon = epsilon

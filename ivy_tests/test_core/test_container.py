@@ -14,11 +14,11 @@ import ivy_tests.helpers as helpers
 from ivy.core.container import Container
 
 
-def test_container_list_join(dev_str, call):
-    container_0 = Container({'a': [ivy.array([1], dev_str=dev_str)],
-                             'b': {'c': [ivy.array([2], dev_str=dev_str)], 'd': [ivy.array([3], dev_str=dev_str)]}})
-    container_1 = Container({'a': [ivy.array([4], dev_str=dev_str)],
-                             'b': {'c': [ivy.array([5], dev_str=dev_str)], 'd': [ivy.array([6], dev_str=dev_str)]}})
+def test_container_list_join(dev, call):
+    container_0 = Container({'a': [ivy.array([1], dev=dev)],
+                             'b': {'c': [ivy.array([2], dev=dev)], 'd': [ivy.array([3], dev=dev)]}})
+    container_1 = Container({'a': [ivy.array([4], dev=dev)],
+                             'b': {'c': [ivy.array([5], dev=dev)], 'd': [ivy.array([6], dev=dev)]}})
     container_list_joined = ivy.Container.list_join([container_0, container_1])
     assert np.allclose(ivy.to_numpy(container_list_joined['a'][0]), np.array([1]))
     assert np.allclose(ivy.to_numpy(container_list_joined.a[0]), np.array([1]))
@@ -34,11 +34,11 @@ def test_container_list_join(dev_str, call):
     assert np.allclose(ivy.to_numpy(container_list_joined.b.d[1]), np.array([6]))
 
 
-def test_container_list_stack(dev_str, call):
-    container_0 = Container({'a': ivy.array([1], dev_str=dev_str),
-                             'b': {'c': ivy.array([2], dev_str=dev_str), 'd': ivy.array([3], dev_str=dev_str)}})
-    container_1 = Container({'a': ivy.array([4], dev_str=dev_str),
-                             'b': {'c': ivy.array([5], dev_str=dev_str), 'd': ivy.array([6], dev_str=dev_str)}})
+def test_container_list_stack(dev, call):
+    container_0 = Container({'a': ivy.array([1], dev=dev),
+                             'b': {'c': ivy.array([2], dev=dev), 'd': ivy.array([3], dev=dev)}})
+    container_1 = Container({'a': ivy.array([4], dev=dev),
+                             'b': {'c': ivy.array([5], dev=dev), 'd': ivy.array([6], dev=dev)}})
     container_list_stacked = ivy.Container.list_stack([container_0, container_1], 0)
     assert np.allclose(ivy.to_numpy(container_list_stacked['a'][0]), np.array([1]))
     assert np.allclose(ivy.to_numpy(container_list_stacked.a[0]), np.array([1]))
@@ -54,40 +54,40 @@ def test_container_list_stack(dev_str, call):
     assert np.allclose(ivy.to_numpy(container_list_stacked.b.d[1]), np.array([6]))
 
 
-def test_container_unify(dev_str, call):
+def test_container_unify(dev, call):
 
     # devices and containers
-    dev_strs = list()
-    dev_str0 = dev_str
-    dev_strs.append(dev_str0)
+    devs = list()
+    dev0 = dev
+    devs.append(dev0)
     conts = dict()
-    conts[dev_str0] = Container(
-        {'a': ivy.array([1], dev_str=dev_str0),
-         'b': {'c': ivy.array([2], dev_str=dev_str0), 'd': ivy.array([3], dev_str=dev_str0)}})
-    if 'gpu' in dev_str and ivy.num_gpus() > 1:
+    conts[dev0] = Container(
+        {'a': ivy.array([1], dev=dev0),
+         'b': {'c': ivy.array([2], dev=dev0), 'd': ivy.array([3], dev=dev0)}})
+    if 'gpu' in dev and ivy.num_gpus() > 1:
         idx = ivy.num_gpus() - 1
-        dev_str1 = dev_str[:-1] + str(idx)
-        dev_strs.append(dev_str1)
-        conts[dev_str1] = Container(
-            {'a': ivy.array([4], dev_str=dev_str1),
-             'b': {'c': ivy.array([5], dev_str=dev_str1), 'd': ivy.array([6], dev_str=dev_str1)}})
+        dev1 = dev[:-1] + str(idx)
+        devs.append(dev1)
+        conts[dev1] = Container(
+            {'a': ivy.array([4], dev=dev1),
+             'b': {'c': ivy.array([5], dev=dev1), 'd': ivy.array([6], dev=dev1)}})
 
     # test
-    container_unified = ivy.Container.unify(ivy.MultiDevItem(conts), dev_str0, 'concat', 0)
+    container_unified = ivy.Container.unify(ivy.MultiDevItem(conts), dev0, 'concat', 0)
     assert np.allclose(ivy.to_numpy(container_unified.a[0]), np.array([1]))
     assert np.allclose(ivy.to_numpy(container_unified.b.c[0]), np.array([2]))
     assert np.allclose(ivy.to_numpy(container_unified.b.d[0]), np.array([3]))
-    if len(dev_strs) > 1:
+    if len(devs) > 1:
         assert np.allclose(ivy.to_numpy(container_unified.a[1]), np.array([4]))
         assert np.allclose(ivy.to_numpy(container_unified.b.c[1]), np.array([5]))
         assert np.allclose(ivy.to_numpy(container_unified.b.d[1]), np.array([6]))
 
 
-def test_container_concat(dev_str, call):
-    container_0 = Container({'a': ivy.array([1], dev_str=dev_str),
-                             'b': {'c': ivy.array([2], dev_str=dev_str), 'd': ivy.array([3], dev_str=dev_str)}})
-    container_1 = Container({'a': ivy.array([4], dev_str=dev_str),
-                             'b': {'c': ivy.array([5], dev_str=dev_str), 'd': ivy.array([6], dev_str=dev_str)}})
+def test_container_concat(dev, call):
+    container_0 = Container({'a': ivy.array([1], dev=dev),
+                             'b': {'c': ivy.array([2], dev=dev), 'd': ivy.array([3], dev=dev)}})
+    container_1 = Container({'a': ivy.array([4], dev=dev),
+                             'b': {'c': ivy.array([5], dev=dev), 'd': ivy.array([6], dev=dev)}})
     container_concatenated = ivy.Container.concat([container_0, container_1], 0)
     assert np.allclose(ivy.to_numpy(container_concatenated['a']), np.array([1, 4]))
     assert np.allclose(ivy.to_numpy(container_concatenated.a), np.array([1, 4]))
@@ -97,11 +97,11 @@ def test_container_concat(dev_str, call):
     assert np.allclose(ivy.to_numpy(container_concatenated.b.d), np.array([3, 6]))
 
 
-def test_container_stack(dev_str, call):
-    container_0 = Container({'a': ivy.array([1], dev_str=dev_str),
-                             'b': {'c': ivy.array([2], dev_str=dev_str), 'd': ivy.array([3], dev_str=dev_str)}})
-    container_1 = Container({'a': ivy.array([4], dev_str=dev_str),
-                             'b': {'c': ivy.array([5], dev_str=dev_str), 'd': ivy.array([6], dev_str=dev_str)}})
+def test_container_stack(dev, call):
+    container_0 = Container({'a': ivy.array([1], dev=dev),
+                             'b': {'c': ivy.array([2], dev=dev), 'd': ivy.array([3], dev=dev)}})
+    container_1 = Container({'a': ivy.array([4], dev=dev),
+                             'b': {'c': ivy.array([5], dev=dev), 'd': ivy.array([6], dev=dev)}})
     container_stacked = ivy.Container.stack([container_0, container_1], 0)
     assert np.allclose(ivy.to_numpy(container_stacked['a']), np.array([[1], [4]]))
     assert np.allclose(ivy.to_numpy(container_stacked.a), np.array([[1], [4]]))
@@ -111,11 +111,11 @@ def test_container_stack(dev_str, call):
     assert np.allclose(ivy.to_numpy(container_stacked.b.d), np.array([[3], [6]]))
 
 
-def test_container_combine(dev_str, call):
-    container_0 = Container({'a': ivy.array([1], dev_str=dev_str),
-                             'b': {'c': ivy.array([2], dev_str=dev_str), 'd': ivy.array([3], dev_str=dev_str)}})
-    container_1 = Container({'a': ivy.array([4], dev_str=dev_str),
-                             'b': {'c': ivy.array([5], dev_str=dev_str), 'e': ivy.array([6], dev_str=dev_str)}})
+def test_container_combine(dev, call):
+    container_0 = Container({'a': ivy.array([1], dev=dev),
+                             'b': {'c': ivy.array([2], dev=dev), 'd': ivy.array([3], dev=dev)}})
+    container_1 = Container({'a': ivy.array([4], dev=dev),
+                             'b': {'c': ivy.array([5], dev=dev), 'e': ivy.array([6], dev=dev)}})
     container_comb = ivy.Container.combine(container_0, container_1)
     assert np.equal(ivy.to_numpy(container_comb.a), np.array([4]))
     assert np.equal(ivy.to_numpy(container_comb.b.c), np.array([5]))
@@ -123,12 +123,12 @@ def test_container_combine(dev_str, call):
     assert np.equal(ivy.to_numpy(container_comb.b.e), np.array([6]))
 
 
-def test_container_diff(dev_str, call):
+def test_container_diff(dev, call):
     # all different arrays
-    container_0 = Container({'a': ivy.array([1], dev_str=dev_str),
-                             'b': {'c': ivy.array([2], dev_str=dev_str), 'd': ivy.array([3], dev_str=dev_str)}})
-    container_1 = Container({'a': ivy.array([4], dev_str=dev_str),
-                             'b': {'c': ivy.array([5], dev_str=dev_str), 'd': ivy.array([6], dev_str=dev_str)}})
+    container_0 = Container({'a': ivy.array([1], dev=dev),
+                             'b': {'c': ivy.array([2], dev=dev), 'd': ivy.array([3], dev=dev)}})
+    container_1 = Container({'a': ivy.array([4], dev=dev),
+                             'b': {'c': ivy.array([5], dev=dev), 'd': ivy.array([6], dev=dev)}})
     container_diff = ivy.Container.diff(container_0, container_1)
     assert np.equal(ivy.to_numpy(container_diff.a.diff_0), np.array([1]))
     assert np.equal(ivy.to_numpy(container_diff.a.diff_1), np.array([4]))
@@ -142,10 +142,10 @@ def test_container_diff(dev_str, call):
     assert container_diff_same_only.to_dict() == {}
 
     # some different arrays
-    container_0 = Container({'a': ivy.array([1], dev_str=dev_str),
-                             'b': {'c': ivy.array([2], dev_str=dev_str), 'd': ivy.array([3], dev_str=dev_str)}})
-    container_1 = Container({'a': ivy.array([1], dev_str=dev_str),
-                             'b': {'c': ivy.array([5], dev_str=dev_str), 'd': ivy.array([3], dev_str=dev_str)}})
+    container_0 = Container({'a': ivy.array([1], dev=dev),
+                             'b': {'c': ivy.array([2], dev=dev), 'd': ivy.array([3], dev=dev)}})
+    container_1 = Container({'a': ivy.array([1], dev=dev),
+                             'b': {'c': ivy.array([5], dev=dev), 'd': ivy.array([3], dev=dev)}})
     container_diff = ivy.Container.diff(container_0, container_1)
     assert np.equal(ivy.to_numpy(container_diff.a), np.array([1]))
     assert np.equal(ivy.to_numpy(container_diff.b.c.diff_0), np.array([2]))
@@ -163,10 +163,10 @@ def test_container_diff(dev_str, call):
     assert 'd' in container_diff_same_only['b']
 
     # all different keys
-    container_0 = Container({'a': ivy.array([1], dev_str=dev_str),
-                             'b': {'c': ivy.array([2], dev_str=dev_str), 'd': ivy.array([3], dev_str=dev_str)}})
-    container_1 = Container({'e': ivy.array([1], dev_str=dev_str),
-                             'f': {'g': ivy.array([2], dev_str=dev_str), 'h': ivy.array([3], dev_str=dev_str)}})
+    container_0 = Container({'a': ivy.array([1], dev=dev),
+                             'b': {'c': ivy.array([2], dev=dev), 'd': ivy.array([3], dev=dev)}})
+    container_1 = Container({'e': ivy.array([1], dev=dev),
+                             'f': {'g': ivy.array([2], dev=dev), 'h': ivy.array([3], dev=dev)}})
     container_diff = ivy.Container.diff(container_0, container_1)
     assert np.equal(ivy.to_numpy(container_diff.a.diff_0), np.array([1]))
     assert np.equal(ivy.to_numpy(container_diff.b.diff_0.c), np.array([2]))
@@ -180,10 +180,10 @@ def test_container_diff(dev_str, call):
     assert container_diff_same_only.to_dict() == {}
 
     # some different keys
-    container_0 = Container({'a': ivy.array([1], dev_str=dev_str),
-                             'b': {'c': ivy.array([2], dev_str=dev_str), 'd': ivy.array([3], dev_str=dev_str)}})
-    container_1 = Container({'a': ivy.array([1], dev_str=dev_str),
-                             'b': {'c': ivy.array([2], dev_str=dev_str), 'e': ivy.array([3], dev_str=dev_str)}})
+    container_0 = Container({'a': ivy.array([1], dev=dev),
+                             'b': {'c': ivy.array([2], dev=dev), 'd': ivy.array([3], dev=dev)}})
+    container_1 = Container({'a': ivy.array([1], dev=dev),
+                             'b': {'c': ivy.array([2], dev=dev), 'e': ivy.array([3], dev=dev)}})
     container_diff = ivy.Container.diff(container_0, container_1)
     assert np.equal(ivy.to_numpy(container_diff.a), np.array([1]))
     assert np.equal(ivy.to_numpy(container_diff.b.c), np.array([2]))
@@ -203,10 +203,10 @@ def test_container_diff(dev_str, call):
     assert 'e' not in container_diff_same_only['b']
 
     # same containers
-    container_0 = Container({'a': ivy.array([1], dev_str=dev_str),
-                             'b': {'c': ivy.array([2], dev_str=dev_str), 'd': ivy.array([3], dev_str=dev_str)}})
-    container_1 = Container({'a': ivy.array([1], dev_str=dev_str),
-                             'b': {'c': ivy.array([2], dev_str=dev_str), 'd': ivy.array([3], dev_str=dev_str)}})
+    container_0 = Container({'a': ivy.array([1], dev=dev),
+                             'b': {'c': ivy.array([2], dev=dev), 'd': ivy.array([3], dev=dev)}})
+    container_1 = Container({'a': ivy.array([1], dev=dev),
+                             'b': {'c': ivy.array([2], dev=dev), 'd': ivy.array([3], dev=dev)}})
     container_diff = ivy.Container.diff(container_0, container_1)
     assert np.equal(ivy.to_numpy(container_diff.a), np.array([1]))
     assert np.equal(ivy.to_numpy(container_diff.b.c), np.array([2]))
@@ -234,12 +234,12 @@ def test_container_diff(dev_str, call):
     assert container_diff_same_only.to_dict() == {}
 
 
-def test_container_structural_diff(dev_str, call):
+def test_container_structural_diff(dev, call):
     # all different keys or shapes
-    container_0 = Container({'a': ivy.array([1], dev_str=dev_str),
-                             'b': {'c': ivy.array([2], dev_str=dev_str), 'd': ivy.array([3], dev_str=dev_str)}})
-    container_1 = Container({'a': ivy.array([[4]], dev_str=dev_str),
-                             'b': {'c': ivy.array([[[5]]], dev_str=dev_str), 'e': ivy.array([3], dev_str=dev_str)}})
+    container_0 = Container({'a': ivy.array([1], dev=dev),
+                             'b': {'c': ivy.array([2], dev=dev), 'd': ivy.array([3], dev=dev)}})
+    container_1 = Container({'a': ivy.array([[4]], dev=dev),
+                             'b': {'c': ivy.array([[[5]]], dev=dev), 'e': ivy.array([3], dev=dev)}})
     container_diff = ivy.Container.structural_diff(container_0, container_1)
     assert np.equal(ivy.to_numpy(container_diff.a.diff_0), np.array([1]))
     assert np.equal(ivy.to_numpy(container_diff.a.diff_1), np.array([[4]]))
@@ -253,10 +253,10 @@ def test_container_structural_diff(dev_str, call):
     assert container_diff_same_only.to_dict() == {}
 
     # some different shapes
-    container_0 = Container({'a': ivy.array([1], dev_str=dev_str),
-                             'b': {'c': ivy.array([2], dev_str=dev_str), 'd': ivy.array([3], dev_str=dev_str)}})
-    container_1 = Container({'a': ivy.array([4], dev_str=dev_str),
-                             'b': {'c': ivy.array([[5]], dev_str=dev_str), 'd': ivy.array([6], dev_str=dev_str)}})
+    container_0 = Container({'a': ivy.array([1], dev=dev),
+                             'b': {'c': ivy.array([2], dev=dev), 'd': ivy.array([3], dev=dev)}})
+    container_1 = Container({'a': ivy.array([4], dev=dev),
+                             'b': {'c': ivy.array([[5]], dev=dev), 'd': ivy.array([6], dev=dev)}})
     container_diff = ivy.Container.structural_diff(container_0, container_1)
     assert np.equal(ivy.to_numpy(container_diff.a), np.array([1]))
     assert np.equal(ivy.to_numpy(container_diff.b.c.diff_0), np.array([2]))
@@ -274,10 +274,10 @@ def test_container_structural_diff(dev_str, call):
     assert 'd' in container_diff_same_only['b']
 
     # all different keys
-    container_0 = Container({'a': ivy.array([1], dev_str=dev_str),
-                             'b': {'c': ivy.array([2], dev_str=dev_str), 'd': ivy.array([3], dev_str=dev_str)}})
-    container_1 = Container({'e': ivy.array([4], dev_str=dev_str),
-                             'f': {'g': ivy.array([5], dev_str=dev_str), 'h': ivy.array([6], dev_str=dev_str)}})
+    container_0 = Container({'a': ivy.array([1], dev=dev),
+                             'b': {'c': ivy.array([2], dev=dev), 'd': ivy.array([3], dev=dev)}})
+    container_1 = Container({'e': ivy.array([4], dev=dev),
+                             'f': {'g': ivy.array([5], dev=dev), 'h': ivy.array([6], dev=dev)}})
     container_diff = ivy.Container.structural_diff(container_0, container_1)
     assert np.equal(ivy.to_numpy(container_diff.a.diff_0), np.array([1]))
     assert np.equal(ivy.to_numpy(container_diff.b.diff_0.c), np.array([2]))
@@ -291,10 +291,10 @@ def test_container_structural_diff(dev_str, call):
     assert container_diff_same_only.to_dict() == {}
 
     # some different keys
-    container_0 = Container({'a': ivy.array([1], dev_str=dev_str),
-                             'b': {'c': ivy.array([2], dev_str=dev_str), 'd': ivy.array([3], dev_str=dev_str)}})
-    container_1 = Container({'a': ivy.array([4], dev_str=dev_str),
-                             'b': {'c': ivy.array([5], dev_str=dev_str), 'e': ivy.array([6], dev_str=dev_str)}})
+    container_0 = Container({'a': ivy.array([1], dev=dev),
+                             'b': {'c': ivy.array([2], dev=dev), 'd': ivy.array([3], dev=dev)}})
+    container_1 = Container({'a': ivy.array([4], dev=dev),
+                             'b': {'c': ivy.array([5], dev=dev), 'e': ivy.array([6], dev=dev)}})
     container_diff = ivy.Container.structural_diff(container_0, container_1)
     assert np.equal(ivy.to_numpy(container_diff.a), np.array([1]))
     assert np.equal(ivy.to_numpy(container_diff.b.c), np.array([2]))
@@ -314,10 +314,10 @@ def test_container_structural_diff(dev_str, call):
     assert 'e' not in container_diff_same_only['b']
 
     # all same
-    container_0 = Container({'a': ivy.array([1], dev_str=dev_str),
-                             'b': {'c': ivy.array([2], dev_str=dev_str), 'd': ivy.array([3], dev_str=dev_str)}})
-    container_1 = Container({'a': ivy.array([4], dev_str=dev_str),
-                             'b': {'c': ivy.array([5], dev_str=dev_str), 'd': ivy.array([6], dev_str=dev_str)}})
+    container_0 = Container({'a': ivy.array([1], dev=dev),
+                             'b': {'c': ivy.array([2], dev=dev), 'd': ivy.array([3], dev=dev)}})
+    container_1 = Container({'a': ivy.array([4], dev=dev),
+                             'b': {'c': ivy.array([5], dev=dev), 'd': ivy.array([6], dev=dev)}})
     container_diff = ivy.Container.structural_diff(container_0, container_1)
     assert np.equal(ivy.to_numpy(container_diff.a), np.array([1]))
     assert np.equal(ivy.to_numpy(container_diff.b.c), np.array([2]))
@@ -328,9 +328,9 @@ def test_container_structural_diff(dev_str, call):
     assert container_diff_same_only.to_dict() == container_diff.to_dict()
 
 
-def test_container_from_dict(dev_str, call):
-    dict_in = {'a': ivy.array([1], dev_str=dev_str),
-               'b': {'c': ivy.array([2], dev_str=dev_str), 'd': ivy.array([3], dev_str=dev_str)}}
+def test_container_from_dict(dev, call):
+    dict_in = {'a': ivy.array([1], dev=dev),
+               'b': {'c': ivy.array([2], dev=dev), 'd': ivy.array([3], dev=dev)}}
     container = Container(dict_in)
     assert np.allclose(ivy.to_numpy(container['a']), np.array([1]))
     assert np.allclose(ivy.to_numpy(container.a), np.array([1]))
@@ -340,28 +340,28 @@ def test_container_from_dict(dev_str, call):
     assert np.allclose(ivy.to_numpy(container.b.d), np.array([3]))
 
 
-def test_container_depth(dev_str, call):
-    cont_depth1 = Container({'a': ivy.array([1], dev_str=dev_str),
-                             'b': ivy.array([2], dev_str=dev_str)})
+def test_container_depth(dev, call):
+    cont_depth1 = Container({'a': ivy.array([1], dev=dev),
+                             'b': ivy.array([2], dev=dev)})
     assert cont_depth1.max_depth == 1
-    cont_depth2 = Container({'a': ivy.array([1], dev_str=dev_str),
-                             'b': {'c': ivy.array([2], dev_str=dev_str), 'd': ivy.array([3], dev_str=dev_str)}})
+    cont_depth2 = Container({'a': ivy.array([1], dev=dev),
+                             'b': {'c': ivy.array([2], dev=dev), 'd': ivy.array([3], dev=dev)}})
     assert cont_depth2.max_depth == 2
-    cont_depth3 = Container({'a': ivy.array([1], dev_str=dev_str),
-                             'b': {'c': {'d': ivy.array([2], dev_str=dev_str)}, 'e': ivy.array([3], dev_str=dev_str)}})
+    cont_depth3 = Container({'a': ivy.array([1], dev=dev),
+                             'b': {'c': {'d': ivy.array([2], dev=dev)}, 'e': ivy.array([3], dev=dev)}})
     assert cont_depth3.max_depth == 3
-    cont_depth4 = Container({'a': ivy.array([1], dev_str=dev_str),
-                             'b': {'c': {'d': {'e': ivy.array([2], dev_str=dev_str)}}}})
+    cont_depth4 = Container({'a': ivy.array([1], dev=dev),
+                             'b': {'c': {'d': {'e': ivy.array([2], dev=dev)}}}})
     assert cont_depth4.max_depth == 4
 
 
 @pytest.mark.parametrize(
     "inplace", [True, False])
-def test_container_cutoff_at_depth(inplace, dev_str, call):
+def test_container_cutoff_at_depth(inplace, dev, call):
 
     # values
-    a_val = ivy.array([1], dev_str=dev_str)
-    bcde_val = ivy.array([2], dev_str=dev_str)
+    a_val = ivy.array([1], dev=dev)
+    bcde_val = ivy.array([2], dev=dev)
 
     # depth 1
     cont = Container({'a': a_val, 'b': {'c': {'d': {'e': bcde_val}}}})
@@ -398,11 +398,11 @@ def test_container_cutoff_at_depth(inplace, dev_str, call):
 
 @pytest.mark.parametrize(
     "inplace", [True, False])
-def test_container_cutoff_at_height(inplace, dev_str, call):
+def test_container_cutoff_at_height(inplace, dev, call):
 
     # values
-    d_val = ivy.array([2], dev_str=dev_str)
-    e_val = ivy.array([3], dev_str=dev_str)
+    d_val = ivy.array([2], dev=dev)
+    e_val = ivy.array([3], dev=dev)
 
     # height 0
     cont = Container({'a': {'c': {'d': d_val}}, 'b': {'c': {'d': {'e': e_val}}}})
@@ -446,14 +446,14 @@ def test_container_cutoff_at_height(inplace, dev_str, call):
 
 @pytest.mark.parametrize(
     "str_slice", [True, False])
-def test_container_slice_keys(str_slice, dev_str, call):
+def test_container_slice_keys(str_slice, dev, call):
 
     # values
-    a_val = ivy.array([1], dev_str=dev_str)
-    b_val = ivy.array([2], dev_str=dev_str)
-    c_val = ivy.array([3], dev_str=dev_str)
-    d_val = ivy.array([4], dev_str=dev_str)
-    e_val = ivy.array([5], dev_str=dev_str)
+    a_val = ivy.array([1], dev=dev)
+    b_val = ivy.array([2], dev=dev)
+    c_val = ivy.array([3], dev=dev)
+    d_val = ivy.array([4], dev=dev)
+    e_val = ivy.array([5], dev=dev)
 
     # slice
     if str_slice:
@@ -514,21 +514,21 @@ def test_container_slice_keys(str_slice, dev_str, call):
     assert 'e' not in cont_sliced
 
 
-def test_container_show(dev_str, call):
+def test_container_show(dev, call):
     if call is helpers.mx_call:
         # ToDo: get this working for mxnet again, recent version update caused errors.
         pytest.skip()
-    dict_in = {'a': ivy.array([1], dev_str=dev_str),
-               'b': {'c': ivy.array([2], dev_str=dev_str), 'd': ivy.array([3], dev_str=dev_str)}}
+    dict_in = {'a': ivy.array([1], dev=dev),
+               'b': {'c': ivy.array([2], dev=dev), 'd': ivy.array([3], dev=dev)}}
     cont = Container(dict_in)
     print(cont)
     cont.show()
 
 
-def test_container_find_sub_container(dev_str, call):
-    arr1 = ivy.array([1], dev_str=dev_str)
-    arr2 = ivy.array([2], dev_str=dev_str)
-    arr3 = ivy.array([3], dev_str=dev_str)
+def test_container_find_sub_container(dev, call):
+    arr1 = ivy.array([1], dev=dev)
+    arr2 = ivy.array([2], dev=dev)
+    arr3 = ivy.array([3], dev=dev)
     dict_in = {'a': arr1, 'b': {'c': arr2, 'd': arr3}}
     top_cont = Container(dict_in)
 
@@ -551,13 +551,13 @@ def test_container_find_sub_container(dev_str, call):
     assert partial_sub_cont.find_sub_container(top_cont, partial=True) is False
 
 
-def test_container_find_sub_structure(dev_str, call):
-    dict_in = {'a': ivy.array([1], dev_str=dev_str),
-               'b': {'c': ivy.array([2], dev_str=dev_str), 'd': ivy.array([3], dev_str=dev_str)}}
+def test_container_find_sub_structure(dev, call):
+    dict_in = {'a': ivy.array([1], dev=dev),
+               'b': {'c': ivy.array([2], dev=dev), 'd': ivy.array([3], dev=dev)}}
     top_cont = Container(dict_in)
 
     # full
-    sub_cont = Container({'c': ivy.array([4], dev_str=dev_str), 'd': ivy.array([5], dev_str=dev_str)})
+    sub_cont = Container({'c': ivy.array([4], dev=dev), 'd': ivy.array([5], dev=dev)})
     assert not top_cont.find_sub_container(sub_cont)
     found_kc = top_cont.find_sub_structure(sub_cont)
     assert found_kc == 'b'
@@ -565,33 +565,33 @@ def test_container_find_sub_structure(dev_str, call):
     assert found_kc == ''
 
     # partial
-    partial_sub_cont = Container({'d': ivy.array([5], dev_str=dev_str)})
+    partial_sub_cont = Container({'d': ivy.array([5], dev=dev)})
     found_kc = top_cont.find_sub_structure(partial_sub_cont, partial=True)
     assert found_kc == 'b'
-    partial_sub_cont = Container({'b': {'d': ivy.array([5], dev_str=dev_str)}})
+    partial_sub_cont = Container({'b': {'d': ivy.array([5], dev=dev)}})
     found_kc = top_cont.find_sub_structure(partial_sub_cont, partial=True)
     assert found_kc == ''
 
 
-def test_container_show_sub_container(dev_str, call):
+def test_container_show_sub_container(dev, call):
     if call is helpers.mx_call:
         # ToDo: get this working for mxnet again, recent version update caused errors.
         pytest.skip()
-    dict_in = {'a': ivy.array([1], dev_str=dev_str),
-               'b': {'c': ivy.array([2], dev_str=dev_str), 'd': ivy.array([3], dev_str=dev_str)}}
+    dict_in = {'a': ivy.array([1], dev=dev),
+               'b': {'c': ivy.array([2], dev=dev), 'd': ivy.array([3], dev=dev)}}
     top_cont = Container(dict_in)
     sub_cont = Container(dict_in['b'])
     top_cont.show_sub_container('b')
     top_cont.show_sub_container(sub_cont)
 
 
-def test_container_from_dict_w_cont_types(dev_str, call):
+def test_container_from_dict_w_cont_types(dev, call):
     # ToDo: add tests for backends other than jax
     if call is not helpers.jnp_call:
         pytest.skip()
     from haiku._src.data_structures import FlatMapping
-    dict_in = {'a': ivy.array([1], dev_str=dev_str),
-               'b': FlatMapping({'c': ivy.array([2], dev_str=dev_str), 'd': ivy.array([3], dev_str=dev_str)})}
+    dict_in = {'a': ivy.array([1], dev=dev),
+               'b': FlatMapping({'c': ivy.array([2], dev=dev), 'd': ivy.array([3], dev=dev)})}
     container = Container(dict_in)
     assert np.allclose(ivy.to_numpy(container['a']), np.array([1]))
     assert np.allclose(ivy.to_numpy(container.a), np.array([1]))
@@ -601,9 +601,9 @@ def test_container_from_dict_w_cont_types(dev_str, call):
     assert np.allclose(ivy.to_numpy(container.b.d), np.array([3]))
 
 
-def test_container_from_kwargs(dev_str, call):
-    container = Container(a=ivy.array([1], dev_str=dev_str),
-                          b={'c': ivy.array([2], dev_str=dev_str), 'd': ivy.array([3], dev_str=dev_str)})
+def test_container_from_kwargs(dev, call):
+    container = Container(a=ivy.array([1], dev=dev),
+                          b={'c': ivy.array([2], dev=dev), 'd': ivy.array([3], dev=dev)})
     assert np.allclose(ivy.to_numpy(container['a']), np.array([1]))
     assert np.allclose(ivy.to_numpy(container.a), np.array([1]))
     assert np.allclose(ivy.to_numpy(container['b']['c']), np.array([2]))
@@ -612,9 +612,9 @@ def test_container_from_kwargs(dev_str, call):
     assert np.allclose(ivy.to_numpy(container.b.d), np.array([3]))
 
 
-def test_container_from_list(dev_str, call):
-    list_in = [ivy.array([1], dev_str=dev_str),
-               [ivy.array([2], dev_str=dev_str), ivy.array([3], dev_str=dev_str)]]
+def test_container_from_list(dev, call):
+    list_in = [ivy.array([1], dev=dev),
+               [ivy.array([2], dev=dev), ivy.array([3], dev=dev)]]
     container = Container(list_in, types_to_iteratively_nest=[list])
     assert np.allclose(ivy.to_numpy(container['it_0']), np.array([1]))
     assert np.allclose(ivy.to_numpy(container.it_0), np.array([1]))
@@ -624,9 +624,9 @@ def test_container_from_list(dev_str, call):
     assert np.allclose(ivy.to_numpy(container.it_1.it_1), np.array([3]))
 
 
-def test_container_from_tuple(dev_str, call):
-    tuple_in = (ivy.array([1], dev_str=dev_str),
-               (ivy.array([2], dev_str=dev_str), ivy.array([3], dev_str=dev_str)))
+def test_container_from_tuple(dev, call):
+    tuple_in = (ivy.array([1], dev=dev),
+               (ivy.array([2], dev=dev), ivy.array([3], dev=dev)))
     container = Container(tuple_in, types_to_iteratively_nest=[tuple])
     assert np.allclose(ivy.to_numpy(container['it_0']), np.array([1]))
     assert np.allclose(ivy.to_numpy(container.it_0), np.array([1]))
@@ -636,9 +636,9 @@ def test_container_from_tuple(dev_str, call):
     assert np.allclose(ivy.to_numpy(container.it_1.it_1), np.array([3]))
 
 
-def test_container_to_raw(dev_str, call):
-    tuple_in = (ivy.array([1], dev_str=dev_str),
-               (ivy.array([2], dev_str=dev_str), ivy.array([3], dev_str=dev_str)))
+def test_container_to_raw(dev, call):
+    tuple_in = (ivy.array([1], dev=dev),
+               (ivy.array([2], dev=dev), ivy.array([3], dev=dev)))
     container = Container(tuple_in, types_to_iteratively_nest=[tuple])
     raw = container.to_raw()
     assert np.allclose(ivy.to_numpy(raw[0]), np.array([1]))
@@ -646,9 +646,9 @@ def test_container_to_raw(dev_str, call):
     assert np.allclose(ivy.to_numpy(raw[1][1]), np.array([3]))
 
 
-def test_container_reduce_sum(dev_str, call):
-    dict_in = {'a': ivy.array([1., 2., 3.], dev_str=dev_str),
-               'b': {'c': ivy.array([2., 4., 6.], dev_str=dev_str), 'd': ivy.array([3., 6., 9.], dev_str=dev_str)}}
+def test_container_reduce_sum(dev, call):
+    dict_in = {'a': ivy.array([1., 2., 3.], dev=dev),
+               'b': {'c': ivy.array([2., 4., 6.], dev=dev), 'd': ivy.array([3., 6., 9.], dev=dev)}}
     container = Container(dict_in)
     container_reduced_sum = container.reduce_sum()
     assert np.allclose(ivy.to_numpy(container_reduced_sum['a']), np.array([6.]))
@@ -659,9 +659,9 @@ def test_container_reduce_sum(dev_str, call):
     assert np.allclose(ivy.to_numpy(container_reduced_sum.b.d), np.array([18.]))
 
 
-def test_container_reduce_prod(dev_str, call):
-    dict_in = {'a': ivy.array([1., 2., 3.], dev_str=dev_str),
-               'b': {'c': ivy.array([2., 4., 6.], dev_str=dev_str), 'd': ivy.array([3., 6., 9.], dev_str=dev_str)}}
+def test_container_reduce_prod(dev, call):
+    dict_in = {'a': ivy.array([1., 2., 3.], dev=dev),
+               'b': {'c': ivy.array([2., 4., 6.], dev=dev), 'd': ivy.array([3., 6., 9.], dev=dev)}}
     container = Container(dict_in)
     container_reduced_prod = container.reduce_prod()
     assert np.allclose(ivy.to_numpy(container_reduced_prod['a']), np.array([6.]))
@@ -672,9 +672,9 @@ def test_container_reduce_prod(dev_str, call):
     assert np.allclose(ivy.to_numpy(container_reduced_prod.b.d), np.array([162.]))
 
 
-def test_container_reduce_mean(dev_str, call):
-    dict_in = {'a': ivy.array([1., 2., 3.], dev_str=dev_str),
-               'b': {'c': ivy.array([2., 4., 6.], dev_str=dev_str), 'd': ivy.array([3., 6., 9.], dev_str=dev_str)}}
+def test_container_reduce_mean(dev, call):
+    dict_in = {'a': ivy.array([1., 2., 3.], dev=dev),
+               'b': {'c': ivy.array([2., 4., 6.], dev=dev), 'd': ivy.array([3., 6., 9.], dev=dev)}}
     container = Container(dict_in)
     container_reduced_mean = container.reduce_mean()
     assert np.allclose(ivy.to_numpy(container_reduced_mean['a']), np.array([2.]))
@@ -685,9 +685,9 @@ def test_container_reduce_mean(dev_str, call):
     assert np.allclose(ivy.to_numpy(container_reduced_mean.b.d), np.array([6.]))
 
 
-def test_container_reduce_var(dev_str, call):
-    dict_in = {'a': ivy.array([1., 2., 3.], dev_str=dev_str),
-               'b': {'c': ivy.array([2., 4., 6.], dev_str=dev_str), 'd': ivy.array([3., 6., 9.], dev_str=dev_str)}}
+def test_container_reduce_var(dev, call):
+    dict_in = {'a': ivy.array([1., 2., 3.], dev=dev),
+               'b': {'c': ivy.array([2., 4., 6.], dev=dev), 'd': ivy.array([3., 6., 9.], dev=dev)}}
     container = Container(dict_in)
     container_reduced_var = container.reduce_var()
     assert np.allclose(ivy.to_numpy(container_reduced_var['a']), np.array([2 / 3]))
@@ -698,9 +698,9 @@ def test_container_reduce_var(dev_str, call):
     assert np.allclose(ivy.to_numpy(container_reduced_var.b.d), np.array([6.]))
 
 
-def test_container_reduce_std(dev_str, call):
-    dict_in = {'a': ivy.array([1., 2., 3.], dev_str=dev_str),
-               'b': {'c': ivy.array([2., 4., 6.], dev_str=dev_str), 'd': ivy.array([3., 6., 9.], dev_str=dev_str)}}
+def test_container_reduce_std(dev, call):
+    dict_in = {'a': ivy.array([1., 2., 3.], dev=dev),
+               'b': {'c': ivy.array([2., 4., 6.], dev=dev), 'd': ivy.array([3., 6., 9.], dev=dev)}}
     container = Container(dict_in)
     container_reduced_std = container.reduce_std()
     assert np.allclose(ivy.to_numpy(container_reduced_std['a']), np.array([2 / 3]) ** 0.5)
@@ -711,9 +711,9 @@ def test_container_reduce_std(dev_str, call):
     assert np.allclose(ivy.to_numpy(container_reduced_std.b.d), np.array([6.]) ** 0.5)
 
 
-def test_container_reduce_min(dev_str, call):
-    dict_in = {'a': ivy.array([1., 2., 3.], dev_str=dev_str),
-               'b': {'c': ivy.array([2., 4., 6.], dev_str=dev_str), 'd': ivy.array([3., 6., 9.], dev_str=dev_str)}}
+def test_container_reduce_min(dev, call):
+    dict_in = {'a': ivy.array([1., 2., 3.], dev=dev),
+               'b': {'c': ivy.array([2., 4., 6.], dev=dev), 'd': ivy.array([3., 6., 9.], dev=dev)}}
     container = Container(dict_in)
     container_reduced_min = container.reduce_min()
     assert np.allclose(ivy.to_numpy(container_reduced_min['a']), np.array([1.]))
@@ -724,9 +724,9 @@ def test_container_reduce_min(dev_str, call):
     assert np.allclose(ivy.to_numpy(container_reduced_min.b.d), np.array([3.]))
 
 
-def test_container_reduce_max(dev_str, call):
-    dict_in = {'a': ivy.array([1., 2., 3.], dev_str=dev_str),
-               'b': {'c': ivy.array([2., 4., 6.], dev_str=dev_str), 'd': ivy.array([3., 6., 9.], dev_str=dev_str)}}
+def test_container_reduce_max(dev, call):
+    dict_in = {'a': ivy.array([1., 2., 3.], dev=dev),
+               'b': {'c': ivy.array([2., 4., 6.], dev=dev), 'd': ivy.array([3., 6., 9.], dev=dev)}}
     container = Container(dict_in)
     container_reduced_max = container.reduce_max()
     assert np.allclose(ivy.to_numpy(container_reduced_max['a']), np.array([3.]))
@@ -737,13 +737,13 @@ def test_container_reduce_max(dev_str, call):
     assert np.allclose(ivy.to_numpy(container_reduced_max.b.d), np.array([9.]))
 
 
-def test_container_minimum(dev_str, call):
-    container = Container({'a': ivy.array([1., 2., 3.], dev_str=dev_str),
-                           'b': {'c': ivy.array([2., 4., 6.], dev_str=dev_str),
-                                 'd': ivy.array([3., 6., 9.], dev_str=dev_str)}})
-    other = Container({'a': ivy.array([2., 3., 2.], dev_str=dev_str),
-                       'b': {'c': ivy.array([1., 5., 4.], dev_str=dev_str),
-                             'd': ivy.array([4., 7., 8.], dev_str=dev_str)}})
+def test_container_minimum(dev, call):
+    container = Container({'a': ivy.array([1., 2., 3.], dev=dev),
+                           'b': {'c': ivy.array([2., 4., 6.], dev=dev),
+                                 'd': ivy.array([3., 6., 9.], dev=dev)}})
+    other = Container({'a': ivy.array([2., 3., 2.], dev=dev),
+                       'b': {'c': ivy.array([1., 5., 4.], dev=dev),
+                             'd': ivy.array([4., 7., 8.], dev=dev)}})
 
     # against number
     container_minimum = container.minimum(5.)
@@ -764,13 +764,13 @@ def test_container_minimum(dev_str, call):
     assert np.allclose(ivy.to_numpy(container_minimum.b.d), np.array([3., 6., 8.]))
 
 
-def test_container_maximum(dev_str, call):
-    container = Container({'a': ivy.array([1., 2., 3.], dev_str=dev_str),
-                           'b': {'c': ivy.array([2., 4., 6.], dev_str=dev_str),
-                                 'd': ivy.array([3., 6., 9.], dev_str=dev_str)}})
-    other = Container({'a': ivy.array([2., 3., 2.], dev_str=dev_str),
-                       'b': {'c': ivy.array([1., 5., 4.], dev_str=dev_str),
-                             'd': ivy.array([4., 7., 8.], dev_str=dev_str)}})
+def test_container_maximum(dev, call):
+    container = Container({'a': ivy.array([1., 2., 3.], dev=dev),
+                           'b': {'c': ivy.array([2., 4., 6.], dev=dev),
+                                 'd': ivy.array([3., 6., 9.], dev=dev)}})
+    other = Container({'a': ivy.array([2., 3., 2.], dev=dev),
+                       'b': {'c': ivy.array([1., 5., 4.], dev=dev),
+                             'd': ivy.array([4., 7., 8.], dev=dev)}})
 
     # against number
     container_maximum = container.maximum(4.)
@@ -791,16 +791,16 @@ def test_container_maximum(dev_str, call):
     assert np.allclose(ivy.to_numpy(container_maximum.b.d), np.array([4., 7., 9.]))
 
 
-def test_container_clip(dev_str, call):
-    container = Container({'a': ivy.array([1., 2., 3.], dev_str=dev_str),
-                           'b': {'c': ivy.array([2., 4., 6.], dev_str=dev_str),
-                                 'd': ivy.array([3., 6., 9.], dev_str=dev_str)}})
-    container_min = Container({'a': ivy.array([2., 0., 0.], dev_str=dev_str),
-                               'b': {'c': ivy.array([0., 5., 0.], dev_str=dev_str),
-                                     'd': ivy.array([4., 7., 0.], dev_str=dev_str)}})
-    container_max = Container({'a': ivy.array([3., 1., 2.], dev_str=dev_str),
-                               'b': {'c': ivy.array([1., 7., 5.], dev_str=dev_str),
-                                     'd': ivy.array([5., 8., 8.], dev_str=dev_str)}})
+def test_container_clip(dev, call):
+    container = Container({'a': ivy.array([1., 2., 3.], dev=dev),
+                           'b': {'c': ivy.array([2., 4., 6.], dev=dev),
+                                 'd': ivy.array([3., 6., 9.], dev=dev)}})
+    container_min = Container({'a': ivy.array([2., 0., 0.], dev=dev),
+                               'b': {'c': ivy.array([0., 5., 0.], dev=dev),
+                                     'd': ivy.array([4., 7., 0.], dev=dev)}})
+    container_max = Container({'a': ivy.array([3., 1., 2.], dev=dev),
+                               'b': {'c': ivy.array([1., 7., 5.], dev=dev),
+                                     'd': ivy.array([5., 8., 8.], dev=dev)}})
 
     # against number
     container_clipped = container.clip(2., 6.)
@@ -825,8 +825,8 @@ def test_container_clip(dev_str, call):
     assert np.allclose(ivy.to_numpy(container_clipped.b.d), np.array([4., 7., 8.]))
 
 
-def test_container_clip_vector_norm(dev_str, call):
-    container = Container({'a': ivy.array([[0.8, 2.2], [1.5, 0.2]], dev_str=dev_str)})
+def test_container_clip_vector_norm(dev, call):
+    container = Container({'a': ivy.array([[0.8, 2.2], [1.5, 0.2]], dev=dev)})
     container_clipped = container.clip_vector_norm(2.5, 2.)
     assert np.allclose(ivy.to_numpy(container_clipped['a']),
                        np.array([[0.71749604, 1.9731141], [1.345305, 0.17937401]]))
@@ -834,10 +834,10 @@ def test_container_clip_vector_norm(dev_str, call):
                        np.array([[0.71749604, 1.9731141], [1.345305, 0.17937401]]))
 
 
-def test_container_einsum(dev_str, call):
-    dict_in = {'a': ivy.array([[1., 2.], [3., 4.], [5., 6.]], dev_str=dev_str),
-               'b': {'c': ivy.array([[2., 4.], [6., 8.], [10., 12.]], dev_str=dev_str),
-                     'd': ivy.array([[-2., -4.], [-6., -8.], [-10., -12.]], dev_str=dev_str)}}
+def test_container_einsum(dev, call):
+    dict_in = {'a': ivy.array([[1., 2.], [3., 4.], [5., 6.]], dev=dev),
+               'b': {'c': ivy.array([[2., 4.], [6., 8.], [10., 12.]], dev=dev),
+                     'd': ivy.array([[-2., -4.], [-6., -8.], [-10., -12.]], dev=dev)}}
     container = Container(dict_in)
     container_einsummed = container.einsum('ij->i')
     assert np.allclose(ivy.to_numpy(container_einsummed['a']), np.array([3., 7., 11.]))
@@ -848,10 +848,10 @@ def test_container_einsum(dev_str, call):
     assert np.allclose(ivy.to_numpy(container_einsummed.b.d), np.array([-6., -14., -22.]))
 
 
-def test_container_vector_norm(dev_str, call):
-    dict_in = {'a': ivy.array([[1., 2.], [3., 4.], [5., 6.]], dev_str=dev_str),
-               'b': {'c': ivy.array([[2., 4.], [6., 8.], [10., 12.]], dev_str=dev_str),
-                     'd': ivy.array([[3., 6.], [9., 12.], [15., 18.]], dev_str=dev_str)}}
+def test_container_vector_norm(dev, call):
+    dict_in = {'a': ivy.array([[1., 2.], [3., 4.], [5., 6.]], dev=dev),
+               'b': {'c': ivy.array([[2., 4.], [6., 8.], [10., 12.]], dev=dev),
+                     'd': ivy.array([[3., 6.], [9., 12.], [15., 18.]], dev=dev)}}
     container = Container(dict_in)
     container_normed = container.vector_norm(axis=(-1, -2))
     assert np.allclose(ivy.to_numpy(container_normed['a']), 9.5394)
@@ -862,13 +862,13 @@ def test_container_vector_norm(dev_str, call):
     assert np.allclose(ivy.to_numpy(container_normed.b.d), 28.6182)
 
 
-def test_container_matrix_norm(dev_str, call):
+def test_container_matrix_norm(dev, call):
     if call is helpers.mx_call:
         # MXNet does not support matrix norm
         pytest.skip()
-    dict_in = {'a': ivy.array([[1., 2.], [3., 4.], [5., 6.]], dev_str=dev_str),
-               'b': {'c': ivy.array([[2., 4.], [6., 8.], [10., 12.]], dev_str=dev_str),
-                     'd': ivy.array([[3., 6.], [9., 12.], [15., 18.]], dev_str=dev_str)}}
+    dict_in = {'a': ivy.array([[1., 2.], [3., 4.], [5., 6.]], dev=dev),
+               'b': {'c': ivy.array([[2., 4.], [6., 8.], [10., 12.]], dev=dev),
+                     'd': ivy.array([[3., 6.], [9., 12.], [15., 18.]], dev=dev)}}
     container = Container(dict_in)
     container_normed = container.matrix_norm(axis=(-1, -2))
     assert np.allclose(ivy.to_numpy(container_normed['a']), 9.52551809)
@@ -879,10 +879,10 @@ def test_container_matrix_norm(dev_str, call):
     assert np.allclose(ivy.to_numpy(container_normed.b.d), 28.57655427)
 
 
-def test_container_flip(dev_str, call):
-    dict_in = {'a': ivy.array([[1., 2.], [3., 4.], [5., 6.]], dev_str=dev_str),
-               'b': {'c': ivy.array([[2., 4.], [6., 8.], [10., 12.]], dev_str=dev_str),
-                     'd': ivy.array([[-2., -4.], [-6., -8.], [-10., -12.]], dev_str=dev_str)}}
+def test_container_flip(dev, call):
+    dict_in = {'a': ivy.array([[1., 2.], [3., 4.], [5., 6.]], dev=dev),
+               'b': {'c': ivy.array([[2., 4.], [6., 8.], [10., 12.]], dev=dev),
+                     'd': ivy.array([[-2., -4.], [-6., -8.], [-10., -12.]], dev=dev)}}
     container = Container(dict_in)
     container_flipped = container.flip(-1)
     assert np.allclose(ivy.to_numpy(container_flipped['a']), np.array([[2., 1.], [4., 3.], [6., 5.]]))
@@ -893,9 +893,9 @@ def test_container_flip(dev_str, call):
     assert np.allclose(ivy.to_numpy(container_flipped.b.d), np.array([[-4., -2.], [-8., -6.], [-12., -10.]]))
 
 
-def test_container_as_ones(dev_str, call):
-    dict_in = {'a': ivy.array([1], dev_str=dev_str),
-               'b': {'c': ivy.array([2], dev_str=dev_str), 'd': ivy.array([3], dev_str=dev_str)}}
+def test_container_as_ones(dev, call):
+    dict_in = {'a': ivy.array([1], dev=dev),
+               'b': {'c': ivy.array([2], dev=dev), 'd': ivy.array([3], dev=dev)}}
     container = Container(dict_in)
 
     container_ones = container.as_ones()
@@ -907,9 +907,9 @@ def test_container_as_ones(dev_str, call):
     assert np.allclose(ivy.to_numpy(container_ones.b.d), np.array([1]))
 
 
-def test_container_as_zeros(dev_str, call):
-    dict_in = {'a': ivy.array([1], dev_str=dev_str),
-               'b': {'c': ivy.array([2], dev_str=dev_str), 'd': ivy.array([3], dev_str=dev_str)}}
+def test_container_as_zeros(dev, call):
+    dict_in = {'a': ivy.array([1], dev=dev),
+               'b': {'c': ivy.array([2], dev=dev), 'd': ivy.array([3], dev=dev)}}
     container = Container(dict_in)
 
     container_zeros = container.as_zeros()
@@ -921,8 +921,8 @@ def test_container_as_zeros(dev_str, call):
     assert np.allclose(ivy.to_numpy(container_zeros.b.d), np.array([0]))
 
 
-def test_container_as_bools(dev_str, call):
-    dict_in = {'a': ivy.array([1], dev_str=dev_str),
+def test_container_as_bools(dev, call):
+    dict_in = {'a': ivy.array([1], dev=dev),
                'b': {'c': [], 'd': True}}
     container = Container(dict_in)
 
@@ -935,12 +935,12 @@ def test_container_as_bools(dev_str, call):
     assert container_bools.b.d is True
 
 
-def test_container_all_true(dev_str, call):
-    assert not Container({'a': ivy.array([1], dev_str=dev_str), 'b': {'c': [], 'd': True}}).all_true()
-    assert Container({'a': ivy.array([1], dev_str=dev_str), 'b': {'c': [1], 'd': True}}).all_true()
+def test_container_all_true(dev, call):
+    assert not Container({'a': ivy.array([1], dev=dev), 'b': {'c': [], 'd': True}}).all_true()
+    assert Container({'a': ivy.array([1], dev=dev), 'b': {'c': [1], 'd': True}}).all_true()
     # noinspection PyBroadException
     try:
-        assert Container({'a': ivy.array([1], dev_str=dev_str), 'b': {'c': [1], 'd': True}}).all_true(
+        assert Container({'a': ivy.array([1], dev=dev), 'b': {'c': [1], 'd': True}}).all_true(
             assert_is_bool=True)
         error_raised = False
     except AssertionError:
@@ -948,12 +948,12 @@ def test_container_all_true(dev_str, call):
     assert error_raised
 
 
-def test_container_all_false(dev_str, call):
+def test_container_all_false(dev, call):
     assert Container({'a': False, 'b': {'c': [], 'd': 0}}).all_false()
     assert not Container({'a': False, 'b': {'c': [1], 'd': 0}}).all_false()
     # noinspection PyBroadException
     try:
-        assert Container({'a': ivy.array([1], dev_str=dev_str), 'b': {'c': [1], 'd': True}}).all_false(
+        assert Container({'a': ivy.array([1], dev=dev), 'b': {'c': [1], 'd': True}}).all_false(
             assert_is_bool=True)
         error_raised = False
     except AssertionError:
@@ -961,9 +961,9 @@ def test_container_all_false(dev_str, call):
     assert error_raised
 
 
-def test_container_as_random_uniform(dev_str, call):
-    dict_in = {'a': ivy.array([1.], dev_str=dev_str),
-               'b': {'c': ivy.array([2.], dev_str=dev_str), 'd': ivy.array([3.], dev_str=dev_str)}}
+def test_container_as_random_uniform(dev, call):
+    dict_in = {'a': ivy.array([1.], dev=dev),
+               'b': {'c': ivy.array([2.], dev=dev), 'd': ivy.array([3.], dev=dev)}}
     container = Container(dict_in)
 
     container_random = container.as_random_uniform()
@@ -975,9 +975,9 @@ def test_container_as_random_uniform(dev_str, call):
     assert (ivy.to_numpy(container_random.b.d) != np.array([3.]))[0]
 
 
-def test_container_expand_dims(dev_str, call):
-    dict_in = {'a': ivy.array([1], dev_str=dev_str),
-               'b': {'c': ivy.array([2], dev_str=dev_str), 'd': ivy.array([3], dev_str=dev_str)}}
+def test_container_expand_dims(dev, call):
+    dict_in = {'a': ivy.array([1], dev=dev),
+               'b': {'c': ivy.array([2], dev=dev), 'd': ivy.array([3], dev=dev)}}
     container = Container(dict_in)
 
     # without key_chains specification
@@ -1024,35 +1024,35 @@ def test_container_expand_dims(dev_str, call):
     assert 'b/d' not in container_expanded_dims
 
 
-def test_container_clone(dev_str, call):
-    dict_in = {'a': ivy.array([[1], [2], [3]], dev_str=dev_str),
-               'b': {'c': ivy.array([[2], [3], [4]], dev_str=dev_str),
-                     'd': ivy.array([[3], [4], [5]], dev_str=dev_str)}}
+def test_container_clone(dev, call):
+    dict_in = {'a': ivy.array([[1], [2], [3]], dev=dev),
+               'b': {'c': ivy.array([[2], [3], [4]], dev=dev),
+                     'd': ivy.array([[3], [4], [5]], dev=dev)}}
     container = Container(dict_in)
 
     # devices
-    dev_strs = list()
-    dev_str0 = dev_str
-    dev_strs.append(dev_str0)
-    if 'gpu' in dev_str and ivy.num_gpus() > 1:
+    devs = list()
+    dev0 = dev
+    devs.append(dev0)
+    if 'gpu' in dev and ivy.num_gpus() > 1:
         idx = ivy.num_gpus() - 1
-        dev_str1 = dev_str[:-1] + str(idx)
-        dev_strs.append(dev_str1)
+        dev1 = dev[:-1] + str(idx)
+        devs.append(dev1)
 
     # without key_chains specification
-    container_cloned = container.dev_clone(dev_strs)
+    container_cloned = container.dev_clone(devs)
     assert isinstance(container_cloned, ivy.DevClonedItem)
-    assert min([cont.dev_str == ds for ds, cont in container_cloned.items()])
+    assert min([cont.dev == ds for ds, cont in container_cloned.items()])
     assert ivy.Container.multi_map(
         lambda xs, _: ivy.arrays_equal(xs), [c for c in container_cloned.values()]).all_true()
 
 
 @pytest.mark.parametrize(
-    "dev_strs_as_dict", [True, False])
-def test_container_distribute(dev_strs_as_dict, dev_str, call):
-    array_a = ivy.array([[1], [2], [3], [4]], dev_str=dev_str)
-    array_bc = ivy.array([[2], [3], [4], [5]], dev_str=dev_str)
-    array_bd = ivy.array([[3], [4], [5], [6]], dev_str=dev_str)
+    "devs_as_dict", [True, False])
+def test_container_distribute(devs_as_dict, dev, call):
+    array_a = ivy.array([[1], [2], [3], [4]], dev=dev)
+    array_bc = ivy.array([[2], [3], [4], [5]], dev=dev)
+    array_bd = ivy.array([[3], [4], [5], [6]], dev=dev)
     dict_in = {'a': array_a, 'b': {'c': array_bc, 'd': array_bd}}
     container = Container(dict_in)
     batch_size = array_a.shape[0]
@@ -1062,31 +1062,31 @@ def test_container_distribute(dev_strs_as_dict, dev_str, call):
         pytest.skip()
 
     # devices
-    dev_str0 = dev_str
-    dev_strs = [dev_str0]
-    if 'gpu' in dev_str and ivy.num_gpus() > 1:
+    dev0 = dev
+    devs = [dev0]
+    if 'gpu' in dev and ivy.num_gpus() > 1:
         idx = ivy.num_gpus() - 1
-        dev_str1 = dev_str[:-1] + str(idx)
-        dev_strs.append(dev_str1)
-    if dev_strs_as_dict:
-        dev_strs = dict(zip(dev_strs, [int((1/len(dev_strs))*4)]*len(dev_strs)))
-    num_devs = len(dev_strs)
+        dev1 = dev[:-1] + str(idx)
+        devs.append(dev1)
+    if devs_as_dict:
+        devs = dict(zip(devs, [int((1/len(devs))*4)]*len(devs)))
+    num_devs = len(devs)
     sub_size = int(batch_size/num_devs)
 
     # without key_chains specification
-    container_dist = container.dev_dist(dev_strs)
+    container_dist = container.dev_dist(devs)
     assert isinstance(container_dist, ivy.DevDistItem)
-    assert min([cont.dev_str == ds for ds, cont in container_dist.items()])
+    assert min([cont.dev == ds for ds, cont in container_dist.items()])
     for i, sub_cont in enumerate(container_dist.values()):
         assert np.array_equal(ivy.to_numpy(sub_cont.a), ivy.to_numpy(array_a)[i*sub_size:i*sub_size+sub_size])
         assert np.array_equal(ivy.to_numpy(sub_cont.b.c), ivy.to_numpy(array_bc)[i*sub_size:i*sub_size+sub_size])
         assert np.array_equal(ivy.to_numpy(sub_cont.b.d), ivy.to_numpy(array_bd)[i*sub_size:i*sub_size+sub_size])
 
 
-def test_container_unstack(dev_str, call):
-    dict_in = {'a': ivy.array([[1], [2], [3]], dev_str=dev_str),
-               'b': {'c': ivy.array([[2], [3], [4]], dev_str=dev_str),
-                     'd': ivy.array([[3], [4], [5]], dev_str=dev_str)}}
+def test_container_unstack(dev, call):
+    dict_in = {'a': ivy.array([[1], [2], [3]], dev=dev),
+               'b': {'c': ivy.array([[2], [3], [4]], dev=dev),
+                     'd': ivy.array([[3], [4], [5]], dev=dev)}}
     container = Container(dict_in)
 
     # without key_chains specification
@@ -1100,10 +1100,10 @@ def test_container_unstack(dev_str, call):
         assert np.array_equal(ivy.to_numpy(cont.b.d), np.array([bd]))
 
 
-def test_container_split(dev_str, call):
-    dict_in = {'a': ivy.array([[1], [2], [3]], dev_str=dev_str),
-               'b': {'c': ivy.array([[2], [3], [4]], dev_str=dev_str),
-                     'd': ivy.array([[3], [4], [5]], dev_str=dev_str)}}
+def test_container_split(dev, call):
+    dict_in = {'a': ivy.array([[1], [2], [3]], dev=dev),
+               'b': {'c': ivy.array([[2], [3], [4]], dev=dev),
+                     'd': ivy.array([[3], [4], [5]], dev=dev)}}
     container = Container(dict_in)
 
     # without key_chains specification
@@ -1117,13 +1117,13 @@ def test_container_split(dev_str, call):
         assert np.array_equal(ivy.to_numpy(cont.b.d)[0], np.array([bd]))
 
 
-def test_container_gather(dev_str, call):
-    dict_in = {'a': ivy.array([1, 2, 3, 4, 5, 6], dev_str=dev_str),
-               'b': {'c': ivy.array([2, 3, 4, 5], dev_str=dev_str), 'd': ivy.array([10, 9, 8, 7, 6], dev_str=dev_str)}}
+def test_container_gather(dev, call):
+    dict_in = {'a': ivy.array([1, 2, 3, 4, 5, 6], dev=dev),
+               'b': {'c': ivy.array([2, 3, 4, 5], dev=dev), 'd': ivy.array([10, 9, 8, 7, 6], dev=dev)}}
     container = Container(dict_in)
 
     # without key_chains specification
-    container_gathered = container.gather(ivy.array([1, 3], dev_str=dev_str))
+    container_gathered = container.gather(ivy.array([1, 3], dev=dev))
     assert np.allclose(ivy.to_numpy(container_gathered['a']), np.array([2, 4]))
     assert np.allclose(ivy.to_numpy(container_gathered.a), np.array([2, 4]))
     assert np.allclose(ivy.to_numpy(container_gathered['b']['c']), np.array([3, 5]))
@@ -1132,7 +1132,7 @@ def test_container_gather(dev_str, call):
     assert np.allclose(ivy.to_numpy(container_gathered.b.d), np.array([9, 7]))
 
     # with key_chains to apply
-    container_gathered = container.gather(ivy.array([1, 3], dev_str=dev_str), -1, ['a', 'b/c'])
+    container_gathered = container.gather(ivy.array([1, 3], dev=dev), -1, ['a', 'b/c'])
     assert np.allclose(ivy.to_numpy(container_gathered['a']), np.array([2, 4]))
     assert np.allclose(ivy.to_numpy(container_gathered.a), np.array([2, 4]))
     assert np.allclose(ivy.to_numpy(container_gathered['b']['c']), np.array([3, 5]))
@@ -1141,7 +1141,7 @@ def test_container_gather(dev_str, call):
     assert np.allclose(ivy.to_numpy(container_gathered.b.d), np.array([10, 9, 8, 7, 6]))
 
     # with key_chains to apply pruned
-    container_gathered = container.gather(ivy.array([1, 3], dev_str=dev_str), -1, ['a', 'b/c'], prune_unapplied=True)
+    container_gathered = container.gather(ivy.array([1, 3], dev=dev), -1, ['a', 'b/c'], prune_unapplied=True)
     assert np.allclose(ivy.to_numpy(container_gathered['a']), np.array([2, 4]))
     assert np.allclose(ivy.to_numpy(container_gathered.a), np.array([2, 4]))
     assert np.allclose(ivy.to_numpy(container_gathered['b']['c']), np.array([3, 5]))
@@ -1149,7 +1149,7 @@ def test_container_gather(dev_str, call):
     assert 'b/d' not in container_gathered
 
     # with key_chains to not apply
-    container_gathered = container.gather(ivy.array([1, 3], dev_str=dev_str), -1,
+    container_gathered = container.gather(ivy.array([1, 3], dev=dev), -1,
                                           Container({'a': None, 'b': {'d': None}}),
                                           to_apply=False)
     assert np.allclose(ivy.to_numpy(container_gathered['a']), np.array([1, 2, 3, 4, 5, 6]))
@@ -1160,7 +1160,7 @@ def test_container_gather(dev_str, call):
     assert np.allclose(ivy.to_numpy(container_gathered.b.d), np.array([10, 9, 8, 7, 6]))
 
     # with key_chains to not apply pruned
-    container_gathered = container.gather(ivy.array([1, 3], dev_str=dev_str), -1,
+    container_gathered = container.gather(ivy.array([1, 3], dev=dev), -1,
                                           Container({'a': None, 'b': {'d': None}}),
                                           to_apply=False, prune_unapplied=True)
     assert 'a' not in container_gathered
@@ -1169,17 +1169,17 @@ def test_container_gather(dev_str, call):
     assert 'b/d' not in container_gathered
 
 
-def test_container_gather_nd(dev_str, call):
+def test_container_gather_nd(dev, call):
     dict_in = {'a': ivy.array([[[1, 2], [3, 4]],
-                               [[5, 6], [7, 8]]], dev_str=dev_str),
+                               [[5, 6], [7, 8]]], dev=dev),
                'b': {'c': ivy.array([[[8, 7], [6, 5]],
-                                     [[4, 3], [2, 1]]], dev_str=dev_str),
+                                     [[4, 3], [2, 1]]], dev=dev),
                      'd': ivy.array([[[2, 4], [6, 8]],
-                                     [[10, 12], [14, 16]]], dev_str=dev_str)}}
+                                     [[10, 12], [14, 16]]], dev=dev)}}
     container = Container(dict_in)
 
     # without key_chains specification
-    container_gathered = container.gather_nd(ivy.array([[0, 1], [1, 0]], dev_str=dev_str))
+    container_gathered = container.gather_nd(ivy.array([[0, 1], [1, 0]], dev=dev))
     assert np.allclose(ivy.to_numpy(container_gathered['a']), np.array([[3, 4], [5, 6]]))
     assert np.allclose(ivy.to_numpy(container_gathered.a), np.array([[3, 4], [5, 6]]))
     assert np.allclose(ivy.to_numpy(container_gathered['b']['c']), np.array([[6, 5], [4, 3]]))
@@ -1188,7 +1188,7 @@ def test_container_gather_nd(dev_str, call):
     assert np.allclose(ivy.to_numpy(container_gathered.b.d), np.array([[6, 8], [10, 12]]))
 
     # with key_chains to apply
-    container_gathered = container.gather_nd(ivy.array([[0, 1], [1, 0]], dev_str=dev_str), ['a', 'b/c'])
+    container_gathered = container.gather_nd(ivy.array([[0, 1], [1, 0]], dev=dev), ['a', 'b/c'])
     assert np.allclose(ivy.to_numpy(container_gathered['a']), np.array([[3, 4], [5, 6]]))
     assert np.allclose(ivy.to_numpy(container_gathered.a), np.array([[3, 4], [5, 6]]))
     assert np.allclose(ivy.to_numpy(container_gathered['b']['c']), np.array([[6, 5], [4, 3]]))
@@ -1199,7 +1199,7 @@ def test_container_gather_nd(dev_str, call):
                                                                        [[10, 12], [14, 16]]]))
 
     # with key_chains to apply pruned
-    container_gathered = container.gather_nd(ivy.array([[0, 1], [1, 0]], dev_str=dev_str), ['a', 'b/c'],
+    container_gathered = container.gather_nd(ivy.array([[0, 1], [1, 0]], dev=dev), ['a', 'b/c'],
                                              prune_unapplied=True)
     assert np.allclose(ivy.to_numpy(container_gathered['a']), np.array([[3, 4], [5, 6]]))
     assert np.allclose(ivy.to_numpy(container_gathered.a), np.array([[3, 4], [5, 6]]))
@@ -1208,7 +1208,7 @@ def test_container_gather_nd(dev_str, call):
     assert 'b/d' not in container_gathered
 
     # with key_chains to not apply
-    container_gathered = container.gather_nd(ivy.array([[0, 1], [1, 0]], dev_str=dev_str),
+    container_gathered = container.gather_nd(ivy.array([[0, 1], [1, 0]], dev=dev),
                                              Container({'a': None, 'b': {'d': None}}),
                                              to_apply=False)
     assert np.allclose(ivy.to_numpy(container_gathered['a']), np.array([[[1, 2], [3, 4]],
@@ -1223,7 +1223,7 @@ def test_container_gather_nd(dev_str, call):
                                                                        [[10, 12], [14, 16]]]))
 
     # with key_chains to not apply pruned
-    container_gathered = container.gather_nd(ivy.array([[0, 1], [1, 0]], dev_str=dev_str),
+    container_gathered = container.gather_nd(ivy.array([[0, 1], [1, 0]], dev=dev),
                                              Container({'a': None, 'b': {'d': None}}),
                                              to_apply=False, prune_unapplied=True)
     assert 'a' not in container_gathered
@@ -1232,17 +1232,17 @@ def test_container_gather_nd(dev_str, call):
     assert 'b/d' not in container_gathered
 
 
-def test_container_repeat(dev_str, call):
+def test_container_repeat(dev, call):
     if call is helpers.mx_call:
         # MXNet does not support repeats specified as array
         pytest.skip()
-    dict_in = {'a': ivy.array([[0., 1., 2., 3.]], dev_str=dev_str),
-               'b': {'c': ivy.array([[5., 10., 15., 20.]], dev_str=dev_str),
-                     'd': ivy.array([[10., 9., 8., 7.]], dev_str=dev_str)}}
+    dict_in = {'a': ivy.array([[0., 1., 2., 3.]], dev=dev),
+               'b': {'c': ivy.array([[5., 10., 15., 20.]], dev=dev),
+                     'd': ivy.array([[10., 9., 8., 7.]], dev=dev)}}
     container = Container(dict_in)
 
     # without key_chains specification
-    container_repeated = container.repeat(ivy.array([2, 1, 0, 3], dev_str=dev_str), -1)
+    container_repeated = container.repeat(ivy.array([2, 1, 0, 3], dev=dev), -1)
     assert np.allclose(ivy.to_numpy(container_repeated['a']), np.array([[0., 0., 1., 3., 3., 3.]]))
     assert np.allclose(ivy.to_numpy(container_repeated.a), np.array([[0., 0., 1., 3., 3., 3.]]))
     assert np.allclose(ivy.to_numpy(container_repeated['b']['c']), np.array([[5., 5., 10., 20., 20., 20.]]))
@@ -1251,7 +1251,7 @@ def test_container_repeat(dev_str, call):
     assert np.allclose(ivy.to_numpy(container_repeated.b.d), np.array([[10., 10., 9., 7., 7., 7.]]))
 
     # with key_chains to apply
-    container_repeated = container.repeat(ivy.array([2, 1, 0, 3], dev_str=dev_str), -1, ['a', 'b/c'])
+    container_repeated = container.repeat(ivy.array([2, 1, 0, 3], dev=dev), -1, ['a', 'b/c'])
     assert np.allclose(ivy.to_numpy(container_repeated['a']), np.array([[0., 0., 1., 3., 3., 3.]]))
     assert np.allclose(ivy.to_numpy(container_repeated.a), np.array([[0., 0., 1., 3., 3., 3.]]))
     assert np.allclose(ivy.to_numpy(container_repeated['b']['c']), np.array([[5., 5., 10., 20., 20., 20.]]))
@@ -1260,7 +1260,7 @@ def test_container_repeat(dev_str, call):
     assert np.allclose(ivy.to_numpy(container_repeated.b.d), np.array([[10., 9., 8., 7.]]))
 
     # with key_chains to apply pruned
-    container_repeated = container.repeat(ivy.array([2, 1, 0, 3], dev_str=dev_str), -1, ['a', 'b/c'],
+    container_repeated = container.repeat(ivy.array([2, 1, 0, 3], dev=dev), -1, ['a', 'b/c'],
                                           prune_unapplied=True)
     assert np.allclose(ivy.to_numpy(container_repeated['a']), np.array([[0., 0., 1., 3., 3., 3.]]))
     assert np.allclose(ivy.to_numpy(container_repeated.a), np.array([[0., 0., 1., 3., 3., 3.]]))
@@ -1269,7 +1269,7 @@ def test_container_repeat(dev_str, call):
     assert 'b/d' not in container_repeated
 
     # with key_chains to not apply
-    container_repeated = container.repeat(ivy.array([2, 1, 0, 3], dev_str=dev_str), -1,
+    container_repeated = container.repeat(ivy.array([2, 1, 0, 3], dev=dev), -1,
                                           Container({'a': None, 'b': {'d': None}}),
                                           to_apply=False)
     assert np.allclose(ivy.to_numpy(container_repeated['a']), np.array([[0., 1., 2., 3.]]))
@@ -1280,7 +1280,7 @@ def test_container_repeat(dev_str, call):
     assert np.allclose(ivy.to_numpy(container_repeated.b.d), np.array([[10., 9., 8., 7.]]))
 
     # with key_chains to not apply pruned
-    container_repeated = container.repeat(ivy.array([2, 1, 0, 3], dev_str=dev_str), -1,
+    container_repeated = container.repeat(ivy.array([2, 1, 0, 3], dev=dev), -1,
                                           Container({'a': None, 'b': {'d': None}}),
                                           to_apply=False, prune_unapplied=True)
     assert 'a' not in container_repeated
@@ -1289,13 +1289,13 @@ def test_container_repeat(dev_str, call):
     assert 'b/d' not in container_repeated
 
 
-def test_container_swapaxes(dev_str, call):
+def test_container_swapaxes(dev, call):
     if call is helpers.mx_call:
         # MXNet does not support repeats specified as array
         pytest.skip()
-    dict_in = {'a': ivy.array([[0., 1., 2., 3.]], dev_str=dev_str),
-               'b': {'c': ivy.array([[5., 10., 15., 20.]], dev_str=dev_str),
-                     'd': ivy.array([[10., 9., 8., 7.]], dev_str=dev_str)}}
+    dict_in = {'a': ivy.array([[0., 1., 2., 3.]], dev=dev),
+               'b': {'c': ivy.array([[5., 10., 15., 20.]], dev=dev),
+                     'd': ivy.array([[10., 9., 8., 7.]], dev=dev)}}
     container = Container(dict_in)
 
     # without key_chains specification
@@ -1342,10 +1342,10 @@ def test_container_swapaxes(dev_str, call):
     assert 'b/d' not in container_swapped
 
 
-def test_container_reshape(dev_str, call):
-    dict_in = {'a': ivy.array([[0., 1., 2., 3.]], dev_str=dev_str),
-               'b': {'c': ivy.array([[5., 10., 15., 20.]], dev_str=dev_str),
-                     'd': ivy.array([[10., 9., 8., 7.]], dev_str=dev_str)}}
+def test_container_reshape(dev, call):
+    dict_in = {'a': ivy.array([[0., 1., 2., 3.]], dev=dev),
+               'b': {'c': ivy.array([[5., 10., 15., 20.]], dev=dev),
+                     'd': ivy.array([[10., 9., 8., 7.]], dev=dev)}}
     container = Container(dict_in)
 
     # pre_shape only
@@ -1358,9 +1358,9 @@ def test_container_reshape(dev_str, call):
     assert np.allclose(ivy.to_numpy(container_reshaped.b.d), np.array([[10., 9.], [8., 7.]]))
 
     # pre_shape and slice
-    dict_in = {'a': ivy.array([[[0., 1., 2., 3.], [0., 1., 2., 3.]]], dev_str=dev_str),
-               'b': {'c': ivy.array([[[5., 10., 15.], [20., 25., 30.]]], dev_str=dev_str),
-                     'd': ivy.array([[[10.], [9.]]], dev_str=dev_str)}}
+    dict_in = {'a': ivy.array([[[0., 1., 2., 3.], [0., 1., 2., 3.]]], dev=dev),
+               'b': {'c': ivy.array([[[5., 10., 15.], [20., 25., 30.]]], dev=dev),
+                     'd': ivy.array([[[10.], [9.]]], dev=dev)}}
     container = Container(dict_in)
     container_reshaped = container.reshape((-1,), slice(2, None))
     assert np.allclose(ivy.to_numpy(container_reshaped['a']), np.array([[0., 1., 2., 3.], [0., 1., 2., 3.]]))
@@ -1371,9 +1371,9 @@ def test_container_reshape(dev_str, call):
     assert np.allclose(ivy.to_numpy(container_reshaped.b.d), np.array([[10.], [9.]]))
 
     # pre_shape, slice and post_shape
-    dict_in = {'a': ivy.array([[[0., 1., 2., 3.], [0., 1., 2., 3.]]], dev_str=dev_str),
-               'b': {'c': ivy.array([[[5., 10., 15.], [20., 25., 30.]]], dev_str=dev_str),
-                     'd': ivy.array([[[10.], [9.]]], dev_str=dev_str)}}
+    dict_in = {'a': ivy.array([[[0., 1., 2., 3.], [0., 1., 2., 3.]]], dev=dev),
+               'b': {'c': ivy.array([[[5., 10., 15.], [20., 25., 30.]]], dev=dev),
+                     'd': ivy.array([[[10.], [9.]]], dev=dev)}}
     container = Container(dict_in)
     container_reshaped = container.reshape((-1,), slice(2, None), (1,))
     assert np.allclose(ivy.to_numpy(container_reshaped['a']), np.array([[[0.], [1.], [2.], [3.]],
@@ -1388,10 +1388,10 @@ def test_container_reshape(dev_str, call):
     assert np.allclose(ivy.to_numpy(container_reshaped.b.d), np.array([[[10.]], [[9.]]]))
 
 
-def test_container_einops_rearrange(dev_str, call):
-    dict_in = {'a': ivy.array([[0., 1., 2., 3.]], dev_str=dev_str),
-               'b': {'c': ivy.array([[5., 10., 15., 20.]], dev_str=dev_str),
-                     'd': ivy.array([[10., 9., 8., 7.]], dev_str=dev_str)}}
+def test_container_einops_rearrange(dev, call):
+    dict_in = {'a': ivy.array([[0., 1., 2., 3.]], dev=dev),
+               'b': {'c': ivy.array([[5., 10., 15., 20.]], dev=dev),
+                     'd': ivy.array([[10., 9., 8., 7.]], dev=dev)}}
     container = Container(dict_in)
 
     container_rearranged = container.einops_rearrange('b n -> n b')
@@ -1403,10 +1403,10 @@ def test_container_einops_rearrange(dev_str, call):
     assert np.allclose(ivy.to_numpy(container_rearranged.b.d), np.array([[10.], [9.], [8.], [7.]]))
 
 
-def test_container_einops_reduce(dev_str, call):
-    dict_in = {'a': ivy.array([[0., 1., 2., 3.]], dev_str=dev_str),
-               'b': {'c': ivy.array([[5., 10., 15., 20.]], dev_str=dev_str),
-                     'd': ivy.array([[10., 9., 8., 7.]], dev_str=dev_str)}}
+def test_container_einops_reduce(dev, call):
+    dict_in = {'a': ivy.array([[0., 1., 2., 3.]], dev=dev),
+               'b': {'c': ivy.array([[5., 10., 15., 20.]], dev=dev),
+                     'd': ivy.array([[10., 9., 8., 7.]], dev=dev)}}
     container = Container(dict_in)
 
     container_reduced = container.einops_reduce('b n -> b', 'mean')
@@ -1418,10 +1418,10 @@ def test_container_einops_reduce(dev_str, call):
     assert np.allclose(ivy.to_numpy(container_reduced.b.d), np.array([8.5]))
 
 
-def test_container_einops_repeat(dev_str, call):
-    dict_in = {'a': ivy.array([[0., 1., 2., 3.]], dev_str=dev_str),
-               'b': {'c': ivy.array([[5., 10., 15., 20.]], dev_str=dev_str),
-                     'd': ivy.array([[10., 9., 8., 7.]], dev_str=dev_str)}}
+def test_container_einops_repeat(dev, call):
+    dict_in = {'a': ivy.array([[0., 1., 2., 3.]], dev=dev),
+               'b': {'c': ivy.array([[5., 10., 15., 20.]], dev=dev),
+                     'd': ivy.array([[10., 9., 8., 7.]], dev=dev)}}
     container = Container(dict_in)
 
     container_repeated = container.einops_repeat('b n -> b n c', c=2)
@@ -1439,25 +1439,25 @@ def test_container_einops_repeat(dev_str, call):
                        np.array([[[10., 10.], [9., 9.], [8., 8.], [7., 7.]]]))
 
 
-def test_container_to_dev(dev_str, call):
-    dict_in = {'a': ivy.array([[0., 1., 2., 3.]], dev_str=dev_str),
-               'b': {'c': ivy.array([[5., 10., 15., 20.]], dev_str=dev_str),
-                     'd': ivy.array([[10., 9., 8., 7.]], dev_str=dev_str)}}
+def test_container_to_dev(dev, call):
+    dict_in = {'a': ivy.array([[0., 1., 2., 3.]], dev=dev),
+               'b': {'c': ivy.array([[5., 10., 15., 20.]], dev=dev),
+                     'd': ivy.array([[10., 9., 8., 7.]], dev=dev)}}
     container = Container(dict_in)
 
-    container_to_cpu = container.to_dev(dev_str)
-    assert ivy.dev_str(container_to_cpu['a']) == dev_str
-    assert ivy.dev_str(container_to_cpu.a) == dev_str
-    assert ivy.dev_str(container_to_cpu['b']['c']) == dev_str
-    assert ivy.dev_str(container_to_cpu.b.c) == dev_str
-    assert ivy.dev_str(container_to_cpu['b']['d']) == dev_str
-    assert ivy.dev_str(container_to_cpu.b.d) == dev_str
+    container_to_cpu = container.to_dev(dev)
+    assert ivy.dev(container_to_cpu['a']) == dev
+    assert ivy.dev(container_to_cpu.a) == dev
+    assert ivy.dev(container_to_cpu['b']['c']) == dev
+    assert ivy.dev(container_to_cpu.b.c) == dev
+    assert ivy.dev(container_to_cpu['b']['d']) == dev
+    assert ivy.dev(container_to_cpu.b.d) == dev
 
 
-def test_container_stop_gradients(dev_str, call):
-    dict_in = {'a': ivy.variable(ivy.array([[[1., 2.], [3., 4.]], [[5., 6.], [7., 8.]]], dev_str=dev_str)),
-               'b': {'c': ivy.variable(ivy.array([[[8., 7.], [6., 5.]], [[4., 3.], [2., 1.]]], dev_str=dev_str)),
-                     'd': ivy.variable(ivy.array([[[2., 4.], [6., 8.]], [[10., 12.], [14., 16.]]], dev_str=dev_str))}}
+def test_container_stop_gradients(dev, call):
+    dict_in = {'a': ivy.variable(ivy.array([[[1., 2.], [3., 4.]], [[5., 6.], [7., 8.]]], dev=dev)),
+               'b': {'c': ivy.variable(ivy.array([[[8., 7.], [6., 5.]], [[4., 3.], [2., 1.]]], dev=dev)),
+                     'd': ivy.variable(ivy.array([[[2., 4.], [6., 8.]], [[10., 12.], [14., 16.]]], dev=dev))}}
     container = Container(dict_in)
     if call is not helpers.np_call:
         # Numpy does not support variables or gradients
@@ -1519,10 +1519,10 @@ def test_container_stop_gradients(dev_str, call):
     assert 'b/d' not in container_stopped_grads
 
 
-def test_container_as_variables(dev_str, call):
-    dict_in = {'a': ivy.array([[[1., 2.], [3., 4.]], [[5., 6.], [7., 8.]]], dev_str=dev_str),
-               'b': {'c': ivy.array([[[8., 7.], [6., 5.]], [[4., 3.], [2., 1.]]], dev_str=dev_str),
-                     'd': ivy.array([[[2., 4.], [6., 8.]], [[10., 12.], [14., 16.]]], dev_str=dev_str)}}
+def test_container_as_variables(dev, call):
+    dict_in = {'a': ivy.array([[[1., 2.], [3., 4.]], [[5., 6.], [7., 8.]]], dev=dev),
+               'b': {'c': ivy.array([[[8., 7.], [6., 5.]], [[4., 3.], [2., 1.]]], dev=dev),
+                     'd': ivy.array([[[2., 4.], [6., 8.]], [[10., 12.], [14., 16.]]], dev=dev)}}
     container = Container(dict_in)
 
     assert ivy.is_array(container['a'])
@@ -1544,10 +1544,10 @@ def test_container_as_variables(dev_str, call):
         assert ivy.is_variable(variable_cont.b.d)
 
 
-def test_container_as_arrays(dev_str, call):
-    dict_in = {'a': ivy.variable(ivy.array([[[1., 2.], [3., 4.]], [[5., 6.], [7., 8.]]], dev_str=dev_str)),
-               'b': {'c': ivy.variable(ivy.array([[[8., 7.], [6., 5.]], [[4., 3.], [2., 1.]]], dev_str=dev_str)),
-                     'd': ivy.variable(ivy.array([[[2., 4.], [6., 8.]], [[10., 12.], [14., 16.]]], dev_str=dev_str))}}
+def test_container_as_arrays(dev, call):
+    dict_in = {'a': ivy.variable(ivy.array([[[1., 2.], [3., 4.]], [[5., 6.], [7., 8.]]], dev=dev)),
+               'b': {'c': ivy.variable(ivy.array([[[8., 7.], [6., 5.]], [[4., 3.], [2., 1.]]], dev=dev)),
+                     'd': ivy.variable(ivy.array([[[2., 4.], [6., 8.]], [[10., 12.], [14., 16.]]], dev=dev))}}
     container = Container(dict_in)
     if call is not helpers.np_call:
         # Numpy does not support variables or gradients
@@ -1568,23 +1568,23 @@ def test_container_as_arrays(dev_str, call):
     assert ivy.is_array(container_as_arrays.b.d)
 
 
-def test_container_num_arrays(dev_str, call):
-    dict_in = {'a': ivy.array([[0., 1., 2., 3.]], dev_str=dev_str),
-               'b': {'c': ivy.array([[5., 10., 15., 20.]], dev_str=dev_str),
-                     'd': ivy.array([[10., 9., 8., 7.]], dev_str=dev_str)}}
+def test_container_num_arrays(dev, call):
+    dict_in = {'a': ivy.array([[0., 1., 2., 3.]], dev=dev),
+               'b': {'c': ivy.array([[5., 10., 15., 20.]], dev=dev),
+                     'd': ivy.array([[10., 9., 8., 7.]], dev=dev)}}
     container = Container(dict_in)
     assert container.num_arrays() == 3
-    dict_in = {'a': ivy.array([[0., 1., 2., 3.]], dev_str=dev_str),
-               'b': {'c': ivy.variable(ivy.array([[5., 10., 15., 20.]], dev_str=dev_str)),
-                     'd': ivy.array([[10., 9., 8., 7.]], dev_str=dev_str)}}
+    dict_in = {'a': ivy.array([[0., 1., 2., 3.]], dev=dev),
+               'b': {'c': ivy.variable(ivy.array([[5., 10., 15., 20.]], dev=dev)),
+                     'd': ivy.array([[10., 9., 8., 7.]], dev=dev)}}
     container = Container(dict_in)
     assert container.num_arrays() == 3 if call in [helpers.np_call, helpers.jnp_call] else 2
 
 
-def test_container_size_ordered_arrays(dev_str, call):
-    dict_in = {'a': ivy.array([[0., 1., 2., 3.]], dev_str=dev_str),
-               'b': {'c': ivy.array([[5., 10.]], dev_str=dev_str),
-                     'd': ivy.array([[10., 9., 8.]], dev_str=dev_str)}}
+def test_container_size_ordered_arrays(dev, call):
+    dict_in = {'a': ivy.array([[0., 1., 2., 3.]], dev=dev),
+               'b': {'c': ivy.array([[5., 10.]], dev=dev),
+                     'd': ivy.array([[10., 9., 8.]], dev=dev)}}
     container = Container(dict_in)
     size_ordered = container.size_ordered_arrays()
     assert np.allclose(ivy.to_numpy(size_ordered.a), np.array([[0., 1., 2., 3.]]))
@@ -1596,10 +1596,10 @@ def test_container_size_ordered_arrays(dev_str, call):
         assert np.allclose(ivy.to_numpy(v), arr)
 
 
-def test_container_to_numpy(dev_str, call):
-    dict_in = {'a': ivy.variable(ivy.array([[[1., 2.], [3., 4.]], [[5., 6.], [7., 8.]]], dev_str=dev_str)),
-               'b': {'c': ivy.variable(ivy.array([[[8., 7.], [6., 5.]], [[4., 3.], [2., 1.]]], dev_str=dev_str)),
-                     'd': ivy.variable(ivy.array([[[2., 4.], [6., 8.]], [[10., 12.], [14., 16.]]], dev_str=dev_str))}}
+def test_container_to_numpy(dev, call):
+    dict_in = {'a': ivy.variable(ivy.array([[[1., 2.], [3., 4.]], [[5., 6.], [7., 8.]]], dev=dev)),
+               'b': {'c': ivy.variable(ivy.array([[[8., 7.], [6., 5.]], [[4., 3.], [2., 1.]]], dev=dev)),
+                     'd': ivy.variable(ivy.array([[[2., 4.], [6., 8.]], [[10., 12.], [14., 16.]]], dev=dev))}}
     container = Container(dict_in)
 
     # before conversion
@@ -1620,7 +1620,7 @@ def test_container_to_numpy(dev_str, call):
     assert isinstance(container_to_numpy.b.d, np.ndarray)
 
 
-def test_container_from_numpy(dev_str, call):
+def test_container_from_numpy(dev, call):
     dict_in = {'a': np.array([[[1., 2.], [3., 4.]], [[5., 6.], [7., 8.]]]),
                'b': {'c': np.array([[[8., 7.], [6., 5.]], [[4., 3.], [2., 1.]]]),
                      'd': np.array([[[2., 4.], [6., 8.]], [[10., 12.], [14., 16.]]])}}
@@ -1644,10 +1644,10 @@ def test_container_from_numpy(dev_str, call):
     assert ivy.is_array(container_from_numpy.b.d)
 
 
-def test_container_arrays_as_lists(dev_str, call):
-    dict_in = {'a': ivy.array([[[1., 2.], [3., 4.]], [[5., 6.], [7., 8.]]], dev_str=dev_str),
-               'b': {'c': ivy.array([[[8., 7.], [6., 5.]], [[4., 3.], [2., 1.]]], dev_str=dev_str),
-                     'd': ivy.array([[[2., 4.], [6., 8.]], [[10., 12.], [14., 16.]]], dev_str=dev_str)}}
+def test_container_arrays_as_lists(dev, call):
+    dict_in = {'a': ivy.array([[[1., 2.], [3., 4.]], [[5., 6.], [7., 8.]]], dev=dev),
+               'b': {'c': ivy.array([[[8., 7.], [6., 5.]], [[4., 3.], [2., 1.]]], dev=dev),
+                     'd': ivy.array([[[2., 4.], [6., 8.]], [[10., 12.], [14., 16.]]], dev=dev)}}
     container = Container(dict_in)
 
     assert ivy.is_array(container['a'])
@@ -1667,9 +1667,9 @@ def test_container_arrays_as_lists(dev_str, call):
     assert isinstance(container_arrays_as_lists.b.d, list)
 
 
-def test_container_has_key(dev_str, call):
-    dict_in = {'a': ivy.array([1], dev_str=dev_str),
-               'b': {'c': ivy.array([2], dev_str=dev_str), 'd': ivy.array([3], dev_str=dev_str)}}
+def test_container_has_key(dev, call):
+    dict_in = {'a': ivy.array([1], dev=dev),
+               'b': {'c': ivy.array([2], dev=dev), 'd': ivy.array([3], dev=dev)}}
     container = Container(dict_in)
     assert container.has_key('a')
     assert container.has_key('b')
@@ -1679,9 +1679,9 @@ def test_container_has_key(dev_str, call):
     assert not container.has_key('f')
 
 
-def test_container_has_key_chain(dev_str, call):
-    dict_in = {'a': ivy.array([1], dev_str=dev_str),
-               'b': {'c': ivy.array([2], dev_str=dev_str), 'd': ivy.array([3], dev_str=dev_str)}}
+def test_container_has_key_chain(dev, call):
+    dict_in = {'a': ivy.array([1], dev=dev),
+               'b': {'c': ivy.array([2], dev=dev), 'd': ivy.array([3], dev=dev)}}
     container = Container(dict_in)
     assert container.has_key_chain('a')
     assert container.has_key_chain('b')
@@ -1691,18 +1691,18 @@ def test_container_has_key_chain(dev_str, call):
     assert not container.has_key_chain('c')
 
 
-def test_container_has_nans(dev_str, call):
-    container = Container({'a': ivy.array([1., 2.], dev_str=dev_str),
-                           'b': {'c': ivy.array([2., 3.], dev_str=dev_str), 'd': ivy.array([3., 4.], dev_str=dev_str)}})
-    container_nan = Container({'a': ivy.array([1., 2.], dev_str=dev_str),
-                               'b': {'c': ivy.array([float('nan'), 3.], dev_str=dev_str),
-                                     'd': ivy.array([3., 4.], dev_str=dev_str)}})
-    container_inf = Container({'a': ivy.array([1., 2.], dev_str=dev_str),
-                               'b': {'c': ivy.array([2., 3.], dev_str=dev_str),
-                                     'd': ivy.array([3., float('inf')], dev_str=dev_str)}})
-    container_nan_n_inf = Container({'a': ivy.array([1., 2.], dev_str=dev_str),
-                                     'b': {'c': ivy.array([float('nan'), 3.], dev_str=dev_str),
-                                           'd': ivy.array([3., float('inf')], dev_str=dev_str)}})
+def test_container_has_nans(dev, call):
+    container = Container({'a': ivy.array([1., 2.], dev=dev),
+                           'b': {'c': ivy.array([2., 3.], dev=dev), 'd': ivy.array([3., 4.], dev=dev)}})
+    container_nan = Container({'a': ivy.array([1., 2.], dev=dev),
+                               'b': {'c': ivy.array([float('nan'), 3.], dev=dev),
+                                     'd': ivy.array([3., 4.], dev=dev)}})
+    container_inf = Container({'a': ivy.array([1., 2.], dev=dev),
+                               'b': {'c': ivy.array([2., 3.], dev=dev),
+                                     'd': ivy.array([3., float('inf')], dev=dev)}})
+    container_nan_n_inf = Container({'a': ivy.array([1., 2.], dev=dev),
+                                     'b': {'c': ivy.array([float('nan'), 3.], dev=dev),
+                                           'd': ivy.array([3., float('inf')], dev=dev)}})
 
     # global
 
@@ -1763,9 +1763,9 @@ def test_container_has_nans(dev_str, call):
     assert container_nan_n_inf_hn.b.d is False
 
 
-def test_container_at_keys(dev_str, call):
-    dict_in = {'a': ivy.array([1], dev_str=dev_str),
-               'b': {'c': ivy.array([2], dev_str=dev_str), 'd': ivy.array([3], dev_str=dev_str)}}
+def test_container_at_keys(dev, call):
+    dict_in = {'a': ivy.array([1], dev=dev),
+               'b': {'c': ivy.array([2], dev=dev), 'd': ivy.array([3], dev=dev)}}
     container = Container(dict_in)
     new_container = container.at_keys(['a', 'c'])
     assert np.allclose(ivy.to_numpy(new_container['a']), np.array([1]))
@@ -1781,9 +1781,9 @@ def test_container_at_keys(dev_str, call):
     assert np.allclose(ivy.to_numpy(new_container['b']['d']), np.array([3]))
 
 
-def test_container_at_key_chain(dev_str, call):
-    dict_in = {'a': ivy.array([1], dev_str=dev_str),
-               'b': {'c': ivy.array([2], dev_str=dev_str), 'd': ivy.array([3], dev_str=dev_str)}}
+def test_container_at_key_chain(dev, call):
+    dict_in = {'a': ivy.array([1], dev=dev),
+               'b': {'c': ivy.array([2], dev=dev), 'd': ivy.array([3], dev=dev)}}
     container = Container(dict_in)
 
     # explicit function call
@@ -1799,9 +1799,9 @@ def test_container_at_key_chain(dev_str, call):
     assert np.allclose(ivy.to_numpy(sub_container), np.array([2]))
 
 
-def test_container_at_key_chains(dev_str, call):
-    dict_in = {'a': ivy.array([1], dev_str=dev_str),
-               'b': {'c': ivy.array([2], dev_str=dev_str), 'd': ivy.array([3], dev_str=dev_str)}}
+def test_container_at_key_chains(dev, call):
+    dict_in = {'a': ivy.array([1], dev=dev),
+               'b': {'c': ivy.array([2], dev=dev), 'd': ivy.array([3], dev=dev)}}
     container = Container(dict_in)
     target_cont = Container({'a': True, 'b': {'c': True}})
     new_container = container.at_key_chains(target_cont)
@@ -1820,10 +1820,10 @@ def test_container_at_key_chains(dev_str, call):
 
 @pytest.mark.parametrize(
     "include_empty", [True, False])
-def test_container_all_key_chains(include_empty, dev_str, call):
-    a_val = Container() if include_empty else ivy.array([1], dev_str=dev_str)
-    bc_val = Container() if include_empty else ivy.array([2], dev_str=dev_str)
-    bd_val = Container() if include_empty else ivy.array([3], dev_str=dev_str)
+def test_container_all_key_chains(include_empty, dev, call):
+    a_val = Container() if include_empty else ivy.array([1], dev=dev)
+    bc_val = Container() if include_empty else ivy.array([2], dev=dev)
+    bd_val = Container() if include_empty else ivy.array([3], dev=dev)
     dict_in = {'a': a_val, 'b': {'c': bc_val, 'd': bd_val}}
     container = Container(dict_in)
     kcs = container.all_key_chains(include_empty)
@@ -1834,10 +1834,10 @@ def test_container_all_key_chains(include_empty, dev_str, call):
 
 @pytest.mark.parametrize(
     "include_empty", [True, False])
-def test_container_key_chains_containing(include_empty, dev_str, call):
-    a_val = Container() if include_empty else ivy.array([1], dev_str=dev_str)
-    bc_val = Container() if include_empty else ivy.array([2], dev_str=dev_str)
-    bd_val = Container() if include_empty else ivy.array([3], dev_str=dev_str)
+def test_container_key_chains_containing(include_empty, dev, call):
+    a_val = Container() if include_empty else ivy.array([1], dev=dev)
+    bc_val = Container() if include_empty else ivy.array([2], dev=dev)
+    bd_val = Container() if include_empty else ivy.array([3], dev=dev)
     dict_in = {'a_sub': a_val, 'b': {'c': bc_val, 'd_sub': bd_val}}
     container = Container(dict_in)
     kcs = container.key_chains_containing('sub', include_empty)
@@ -1846,38 +1846,38 @@ def test_container_key_chains_containing(include_empty, dev_str, call):
 
 
 # noinspection PyUnresolvedReferences
-def test_container_set_at_keys(dev_str, call):
-    dict_in = {'a': ivy.array([1], dev_str=dev_str),
-               'b': {'c': ivy.array([2], dev_str=dev_str), 'd': ivy.array([3], dev_str=dev_str)}}
+def test_container_set_at_keys(dev, call):
+    dict_in = {'a': ivy.array([1], dev=dev),
+               'b': {'c': ivy.array([2], dev=dev), 'd': ivy.array([3], dev=dev)}}
     container_orig = Container(dict_in)
 
     # explicit function call
     orig_container = container_orig.copy()
-    container = orig_container.set_at_keys({'b': ivy.array([4], dev_str=dev_str)})
+    container = orig_container.set_at_keys({'b': ivy.array([4], dev=dev)})
     assert np.allclose(ivy.to_numpy(container['a']), np.array([1]))
     assert np.allclose(ivy.to_numpy(container['b']), np.array([4]))
     assert not container.has_key('c')
     assert not container.has_key('d')
-    container = orig_container.set_at_keys({'a': ivy.array([5], dev_str=dev_str), 'c': ivy.array([6], dev_str=dev_str)})
+    container = orig_container.set_at_keys({'a': ivy.array([5], dev=dev), 'c': ivy.array([6], dev=dev)})
     assert np.allclose(ivy.to_numpy(container['a']), np.array([5]))
     assert np.allclose(ivy.to_numpy(container['b']['c']), np.array([6]))
     assert np.allclose(ivy.to_numpy(container['b']['d']), np.array([3]))
 
 
 # noinspection PyUnresolvedReferences
-def test_container_set_at_key_chain(dev_str, call):
-    dict_in = {'a': ivy.array([1], dev_str=dev_str),
-               'b': {'c': ivy.array([2], dev_str=dev_str), 'd': ivy.array([3], dev_str=dev_str)}}
+def test_container_set_at_key_chain(dev, call):
+    dict_in = {'a': ivy.array([1], dev=dev),
+               'b': {'c': ivy.array([2], dev=dev), 'd': ivy.array([3], dev=dev)}}
     container_orig = Container(dict_in)
 
     # explicit function call
     container = container_orig.copy()
-    container = container.set_at_key_chain('b/e', ivy.array([4], dev_str=dev_str))
+    container = container.set_at_key_chain('b/e', ivy.array([4], dev=dev))
     assert np.allclose(ivy.to_numpy(container['a']), np.array([1]))
     assert np.allclose(ivy.to_numpy(container['b']['c']), np.array([2]))
     assert np.allclose(ivy.to_numpy(container['b']['d']), np.array([3]))
     assert np.allclose(ivy.to_numpy(container['b']['e']), np.array([4]))
-    container = container.set_at_key_chain('f', ivy.array([5], dev_str=dev_str))
+    container = container.set_at_key_chain('f', ivy.array([5], dev=dev))
     assert np.allclose(ivy.to_numpy(container['a']), np.array([1]))
     assert np.allclose(ivy.to_numpy(container['b']['c']), np.array([2]))
     assert np.allclose(ivy.to_numpy(container['b']['d']), np.array([3]))
@@ -1887,13 +1887,13 @@ def test_container_set_at_key_chain(dev_str, call):
     # overridden built-in function call
     container = container_orig.copy()
     assert 'b/e' not in container
-    container['b/e'] = ivy.array([4], dev_str=dev_str)
+    container['b/e'] = ivy.array([4], dev=dev)
     assert np.allclose(ivy.to_numpy(container['a']), np.array([1]))
     assert np.allclose(ivy.to_numpy(container['b']['c']), np.array([2]))
     assert np.allclose(ivy.to_numpy(container['b']['d']), np.array([3]))
     assert np.allclose(ivy.to_numpy(container['b']['e']), np.array([4]))
     assert 'f' not in container
-    container['f'] = ivy.array([5], dev_str=dev_str)
+    container['f'] = ivy.array([5], dev=dev)
     assert np.allclose(ivy.to_numpy(container['a']), np.array([1]))
     assert np.allclose(ivy.to_numpy(container['b']['c']), np.array([2]))
     assert np.allclose(ivy.to_numpy(container['b']['d']), np.array([3]))
@@ -1902,68 +1902,68 @@ def test_container_set_at_key_chain(dev_str, call):
 
 
 # noinspection PyUnresolvedReferences
-def test_container_overwrite_at_key_chain(dev_str, call):
-    dict_in = {'a': ivy.array([1], dev_str=dev_str),
-               'b': {'c': ivy.array([2], dev_str=dev_str), 'd': ivy.array([3], dev_str=dev_str)}}
+def test_container_overwrite_at_key_chain(dev, call):
+    dict_in = {'a': ivy.array([1], dev=dev),
+               'b': {'c': ivy.array([2], dev=dev), 'd': ivy.array([3], dev=dev)}}
     container_orig = Container(dict_in)
 
     # explicit function call
     container = container_orig.copy()
     # noinspection PyBroadException
     try:
-        container.overwrite_at_key_chain('b/e', ivy.array([4], dev_str=dev_str))
+        container.overwrite_at_key_chain('b/e', ivy.array([4], dev=dev))
         exception_raised = False
     except Exception:
         exception_raised = True
     assert exception_raised
-    container = container.overwrite_at_key_chain('b/d', ivy.array([4], dev_str=dev_str))
+    container = container.overwrite_at_key_chain('b/d', ivy.array([4], dev=dev))
     assert np.allclose(ivy.to_numpy(container['a']), np.array([1]))
     assert np.allclose(ivy.to_numpy(container['b']['c']), np.array([2]))
     assert np.allclose(ivy.to_numpy(container['b']['d']), np.array([4]))
 
 
-def test_container_set_at_key_chains(dev_str, call):
-    container = Container({'a': ivy.array([1], dev_str=dev_str),
-                           'b': {'c': ivy.array([2], dev_str=dev_str), 'd': ivy.array([3], dev_str=dev_str)}})
-    target_container = Container({'a': ivy.array([4], dev_str=dev_str),
-                                  'b': {'d': ivy.array([5], dev_str=dev_str)}})
+def test_container_set_at_key_chains(dev, call):
+    container = Container({'a': ivy.array([1], dev=dev),
+                           'b': {'c': ivy.array([2], dev=dev), 'd': ivy.array([3], dev=dev)}})
+    target_container = Container({'a': ivy.array([4], dev=dev),
+                                  'b': {'d': ivy.array([5], dev=dev)}})
     new_container = container.set_at_key_chains(target_container, inplace=False)
     assert np.allclose(ivy.to_numpy(new_container['a']), np.array([4]))
     assert np.allclose(ivy.to_numpy(new_container['b']['c']), np.array([2]))
     assert np.allclose(ivy.to_numpy(new_container['b']['d']), np.array([5]))
-    target_container = Container({'b': {'c': ivy.array([7], dev_str=dev_str)}})
+    target_container = Container({'b': {'c': ivy.array([7], dev=dev)}})
     new_container = container.set_at_key_chains(target_container, inplace=False)
     assert np.allclose(ivy.to_numpy(new_container['a']), np.array([1]))
     assert np.allclose(ivy.to_numpy(new_container['b']['c']), np.array([7]))
     assert np.allclose(ivy.to_numpy(new_container['b']['d']), np.array([3]))
 
 
-def test_container_overwrite_at_key_chains(dev_str, call):
-    container = Container({'a': ivy.array([1], dev_str=dev_str),
-                           'b': {'c': ivy.array([2], dev_str=dev_str), 'd': ivy.array([3], dev_str=dev_str)}})
-    target_container = Container({'a': ivy.array([4], dev_str=dev_str),
-                                  'b': {'d': ivy.array([5], dev_str=dev_str)}})
+def test_container_overwrite_at_key_chains(dev, call):
+    container = Container({'a': ivy.array([1], dev=dev),
+                           'b': {'c': ivy.array([2], dev=dev), 'd': ivy.array([3], dev=dev)}})
+    target_container = Container({'a': ivy.array([4], dev=dev),
+                                  'b': {'d': ivy.array([5], dev=dev)}})
     new_container = container.overwrite_at_key_chains(target_container, inplace=False)
     assert np.allclose(ivy.to_numpy(new_container['a']), np.array([4]))
     assert np.allclose(ivy.to_numpy(new_container['b']['c']), np.array([2]))
     assert np.allclose(ivy.to_numpy(new_container['b']['d']), np.array([5]))
-    target_container = Container({'b': {'c': ivy.array([7], dev_str=dev_str)}})
+    target_container = Container({'b': {'c': ivy.array([7], dev=dev)}})
     new_container = container.overwrite_at_key_chains(target_container, inplace=False)
     assert np.allclose(ivy.to_numpy(new_container['a']), np.array([1]))
     assert np.allclose(ivy.to_numpy(new_container['b']['c']), np.array([7]))
     assert np.allclose(ivy.to_numpy(new_container['b']['d']), np.array([3]))
     # noinspection PyBroadException
     try:
-        container.overwrite_at_key_chains(Container({'b': {'e': ivy.array([5], dev_str=dev_str)}}))
+        container.overwrite_at_key_chains(Container({'b': {'e': ivy.array([5], dev=dev)}}))
         exception_raised = False
     except Exception:
         exception_raised = True
     assert exception_raised
 
 
-def test_container_prune_keys(dev_str, call):
-    dict_in = {'a': ivy.array([1], dev_str=dev_str),
-               'b': {'c': ivy.array([2], dev_str=dev_str), 'd': ivy.array([3], dev_str=dev_str)}}
+def test_container_prune_keys(dev, call):
+    dict_in = {'a': ivy.array([1], dev=dev),
+               'b': {'c': ivy.array([2], dev=dev), 'd': ivy.array([3], dev=dev)}}
     container = Container(dict_in)
     container_pruned = container.prune_keys(['a', 'c'])
     assert 'a' not in container_pruned
@@ -2004,9 +2004,9 @@ def test_container_prune_keys(dev_str, call):
     assert _test_bd_exception(container_pruned)
 
 
-def test_container_prune_key_chain(dev_str, call):
-    dict_in = {'a': ivy.array([1], dev_str=dev_str),
-               'b': {'c': ivy.array([2], dev_str=dev_str), 'd': None}}
+def test_container_prune_key_chain(dev, call):
+    dict_in = {'a': ivy.array([1], dev=dev),
+               'b': {'c': ivy.array([2], dev=dev), 'd': None}}
     container = Container(dict_in)
     container_pruned = container.prune_key_chain('b/c')
     assert np.allclose(ivy.to_numpy(container_pruned['a']), np.array([[1]]))
@@ -2039,9 +2039,9 @@ def test_container_prune_key_chain(dev_str, call):
     assert _test_exception(container_pruned)
 
 
-def test_container_prune_key_chains(dev_str, call):
-    dict_in = {'a': ivy.array([1], dev_str=dev_str),
-               'b': {'c': ivy.array([2], dev_str=dev_str), 'd': ivy.array([3], dev_str=dev_str)}}
+def test_container_prune_key_chains(dev, call):
+    dict_in = {'a': ivy.array([1], dev=dev),
+               'b': {'c': ivy.array([2], dev=dev), 'd': ivy.array([3], dev=dev)}}
     container = Container(dict_in)
     container_pruned = container.prune_key_chains(['a', 'b/c'])
     assert 'a' not in container_pruned
@@ -2075,9 +2075,9 @@ def test_container_prune_key_chains(dev_str, call):
     assert _test_bc_exception(container_pruned)
 
 
-def test_container_format_key_chains(dev_str, call):
-    dict_in = {'_a': ivy.array([1], dev_str=dev_str),
-               'b ': {'c': ivy.array([2], dev_str=dev_str), 'd-': ivy.array([3], dev_str=dev_str)}}
+def test_container_format_key_chains(dev, call):
+    dict_in = {'_a': ivy.array([1], dev=dev),
+               'b ': {'c': ivy.array([2], dev=dev), 'd-': ivy.array([3], dev=dev)}}
     cont = Container(dict_in)
     cont_formatted = cont.format_key_chains(lambda s: s.replace('_', '').replace(' ', '').replace('-', ''))
     assert np.allclose(ivy.to_numpy(cont_formatted['a']), np.array([1]))
@@ -2088,9 +2088,9 @@ def test_container_format_key_chains(dev_str, call):
     assert np.allclose(ivy.to_numpy(cont_formatted.b.d), np.array([3]))
 
 
-def test_container_sort_by_key(dev_str, call):
-    dict_in = {'b': ivy.array([1], dev_str=dev_str),
-               'a': {'d': ivy.array([2], dev_str=dev_str), 'c': ivy.array([3], dev_str=dev_str)}}
+def test_container_sort_by_key(dev, call):
+    dict_in = {'b': ivy.array([1], dev=dev),
+               'a': {'d': ivy.array([2], dev=dev), 'c': ivy.array([3], dev=dev)}}
     container = Container(dict_in)
     container_sorted = container.sort_by_key()
     for k, k_true in zip(container_sorted.keys(), ['a', 'b']):
@@ -2099,9 +2099,9 @@ def test_container_sort_by_key(dev_str, call):
         assert k == k_true
 
 
-def test_container_prune_empty(dev_str, call):
-    dict_in = {'a': ivy.array([1], dev_str=dev_str),
-               'b': {'c': {}, 'd': ivy.array([3], dev_str=dev_str)}}
+def test_container_prune_empty(dev, call):
+    dict_in = {'a': ivy.array([1], dev=dev),
+               'b': {'c': {}, 'd': ivy.array([3], dev=dev)}}
     container = Container(dict_in)
     container_pruned = container.prune_empty()
     assert np.allclose(ivy.to_numpy(container_pruned['a']), np.array([[1]]))
@@ -2120,10 +2120,10 @@ def test_container_prune_empty(dev_str, call):
     assert _test_exception(container_pruned)
 
 
-def test_container_prune_key_from_key_chains(dev_str, call):
-    container = Container({'Ayy': ivy.array([1], dev_str=dev_str),
-                           'Bee': {'Cee': ivy.array([2], dev_str=dev_str), 'Dee': ivy.array([3], dev_str=dev_str)},
-                           'Beh': {'Ceh': ivy.array([4], dev_str=dev_str), 'Deh': ivy.array([5], dev_str=dev_str)}})
+def test_container_prune_key_from_key_chains(dev, call):
+    container = Container({'Ayy': ivy.array([1], dev=dev),
+                           'Bee': {'Cee': ivy.array([2], dev=dev), 'Dee': ivy.array([3], dev=dev)},
+                           'Beh': {'Ceh': ivy.array([4], dev=dev), 'Deh': ivy.array([5], dev=dev)}})
 
     # absolute
     container_pruned = container.prune_key_from_key_chains('Bee')
@@ -2151,10 +2151,10 @@ def test_container_prune_key_from_key_chains(dev_str, call):
     assert ('Beh' not in container_pruned)
 
 
-def test_container_prune_keys_from_key_chains(dev_str, call):
-    container = Container({'Ayy': ivy.array([1], dev_str=dev_str),
-                           'Bee': {'Cee': ivy.array([2], dev_str=dev_str), 'Dee': ivy.array([3], dev_str=dev_str)},
-                           'Eee': {'Fff': ivy.array([4], dev_str=dev_str)}})
+def test_container_prune_keys_from_key_chains(dev, call):
+    container = Container({'Ayy': ivy.array([1], dev=dev),
+                           'Bee': {'Cee': ivy.array([2], dev=dev), 'Dee': ivy.array([3], dev=dev)},
+                           'Eee': {'Fff': ivy.array([4], dev=dev)}})
 
     # absolute
     container_pruned = container.prune_keys_from_key_chains(['Bee', 'Eee'])
@@ -2183,11 +2183,11 @@ def test_container_prune_keys_from_key_chains(dev_str, call):
     assert ('Eee' not in container_pruned)
 
 
-def test_container_restructure_key_chains(dev_str, call):
+def test_container_restructure_key_chains(dev, call):
 
     # single
-    container = Container({'a': ivy.array([1], dev_str=dev_str),
-                           'b': {'c': ivy.array([2], dev_str=dev_str), 'd': ivy.array([3], dev_str=dev_str)}})
+    container = Container({'a': ivy.array([1], dev=dev),
+                           'b': {'c': ivy.array([2], dev=dev), 'd': ivy.array([3], dev=dev)}})
     container_restructured = container.restructure_key_chains({'a': 'A'})
     assert np.allclose(ivy.to_numpy(container_restructured['A']), np.array([[1]]))
     assert np.allclose(ivy.to_numpy(container_restructured.A), np.array([[1]]))
@@ -2197,8 +2197,8 @@ def test_container_restructure_key_chains(dev_str, call):
     assert np.allclose(ivy.to_numpy(container_restructured.b.d), np.array([[3]]))
 
     # full
-    container = Container({'a': ivy.array([1], dev_str=dev_str),
-                           'b': {'c': ivy.array([2], dev_str=dev_str), 'd': ivy.array([3], dev_str=dev_str)}})
+    container = Container({'a': ivy.array([1], dev=dev),
+                           'b': {'c': ivy.array([2], dev=dev), 'd': ivy.array([3], dev=dev)}})
     container_restructured = container.restructure_key_chains({'a': 'A', 'b/c': 'B/C', 'b/d': 'B/D'})
     assert np.allclose(ivy.to_numpy(container_restructured['A']), np.array([[1]]))
     assert np.allclose(ivy.to_numpy(container_restructured.A), np.array([[1]]))
@@ -2208,10 +2208,10 @@ def test_container_restructure_key_chains(dev_str, call):
     assert np.allclose(ivy.to_numpy(container_restructured.B.D), np.array([[3]]))
 
 
-def test_container_restructure(dev_str, call):
-    container = Container({'a': ivy.array([[1, 2], [3, 4]], dev_str=dev_str),
-                           'b': {'c': ivy.array([[2, 4], [6, 8]], dev_str=dev_str),
-                                 'd': ivy.array([3, 6, 9, 12], dev_str=dev_str)}})
+def test_container_restructure(dev, call):
+    container = Container({'a': ivy.array([[1, 2], [3, 4]], dev=dev),
+                           'b': {'c': ivy.array([[2, 4], [6, 8]], dev=dev),
+                                 'd': ivy.array([3, 6, 9, 12], dev=dev)}})
     container_restructured = container.restructure({'a': {'key_chain': 'A', 'pattern': 'a b -> b a'},
                                                     'b/c': {'key_chain': 'B/C', 'pattern': 'a b -> (a b)'},
                                                     'b/d': {'key_chain': 'B/D', 'pattern': '(a b) -> a b',
@@ -2224,10 +2224,10 @@ def test_container_restructure(dev_str, call):
     assert np.allclose(ivy.to_numpy(container_restructured.B.D), np.array([[ 3,  6], [ 9, 12]]))
 
 
-def test_container_flatten_key_chains(dev_str, call):
-    container = Container({'a': ivy.array([1], dev_str=dev_str),
-                           'b': {'c': {'d': ivy.array([2], dev_str=dev_str)},
-                                 'e': {'f': {'g': ivy.array([3], dev_str=dev_str)}}}})
+def test_container_flatten_key_chains(dev, call):
+    container = Container({'a': ivy.array([1], dev=dev),
+                           'b': {'c': {'d': ivy.array([2], dev=dev)},
+                                 'e': {'f': {'g': ivy.array([3], dev=dev)}}}})
 
     # full
     container_flat = container.flatten_key_chains()
@@ -2266,9 +2266,9 @@ def test_container_flatten_key_chains(dev_str, call):
     assert np.allclose(ivy.to_numpy(container_flat.b.e__f.g), np.array([[3]]))
 
 
-def test_container_deep_copy(dev_str, call):
-    dict_in = {'a': ivy.array([0.], dev_str=dev_str),
-               'b': {'c': ivy.array([1.], dev_str=dev_str), 'd': ivy.array([2.], dev_str=dev_str)}}
+def test_container_deep_copy(dev, call):
+    dict_in = {'a': ivy.array([0.], dev=dev),
+               'b': {'c': ivy.array([1.], dev=dev), 'd': ivy.array([2.], dev=dev)}}
     cont = Container(dict_in)
     cont_deepcopy = cont.deep_copy()
     assert np.allclose(ivy.to_numpy(cont.a), ivy.to_numpy(cont_deepcopy.a))
@@ -2279,10 +2279,10 @@ def test_container_deep_copy(dev_str, call):
     assert id(cont.b.d) != id(cont_deepcopy.b.d)
 
 
-def test_container_contains(dev_str, call):
-    arr0 = ivy.array([0.], dev_str=dev_str)
-    arr1 = ivy.array([1.], dev_str=dev_str)
-    arr2 = ivy.array([2.], dev_str=dev_str)
+def test_container_contains(dev, call):
+    arr0 = ivy.array([0.], dev=dev)
+    arr1 = ivy.array([1.], dev=dev)
+    arr2 = ivy.array([2.], dev=dev)
     sub_cont = Container({'c': arr1, 'd': arr2})
     container = Container({'a': arr0, 'b': sub_cont})
 
@@ -2306,30 +2306,30 @@ def test_container_contains(dev_str, call):
     assert not partial_sub_cont.contains_sub_container(container, partial=True)
 
     # sub-structure
-    sub_struc = Container({'c': ivy.array([3.], dev_str=dev_str), 'd': ivy.array([4.], dev_str=dev_str)})
+    sub_struc = Container({'c': ivy.array([3.], dev=dev), 'd': ivy.array([4.], dev=dev)})
     assert not container.contains_sub_container(sub_struc)
     assert sub_struc not in container
     assert container.contains_sub_structure(sub_struc)
     assert container.contains_sub_structure(container)
 
     # partial sub-structure
-    partial_sub_struc = Container({'b': {'d': ivy.array([4.], dev_str=dev_str)}})
+    partial_sub_struc = Container({'b': {'d': ivy.array([4.], dev=dev)}})
     assert container.contains_sub_structure(container, partial=True)
     assert container.contains_sub_structure(partial_sub_struc, partial=True)
     assert not partial_sub_struc.contains_sub_structure(container, partial=True)
 
 
-def test_container_shuffle(dev_str, call):
+def test_container_shuffle(dev, call):
     if call is helpers.tf_graph_call:
         # tf.random.set_seed is not compiled. The shuffle is then not aligned between container items.
         pytest.skip()
-    dict_in = {'a': ivy.array([1, 2, 3], dev_str=dev_str),
-               'b': {'c': ivy.array([1, 2, 3], dev_str=dev_str), 'd': ivy.array([1, 2, 3], dev_str=dev_str)}}
+    dict_in = {'a': ivy.array([1, 2, 3], dev=dev),
+               'b': {'c': ivy.array([1, 2, 3], dev=dev), 'd': ivy.array([1, 2, 3], dev=dev)}}
     container = Container(dict_in)
 
     # without key_chains specification
     container_shuffled = container.shuffle(0)
-    data = ivy.array([1, 2, 3], dev_str=dev_str)
+    data = ivy.array([1, 2, 3], dev=dev)
     ivy.core.random.seed()
     shuffled_data = ivy.to_numpy(ivy.core.random.shuffle(data))
     assert (ivy.to_numpy(container_shuffled['a']) == shuffled_data).all()
@@ -2341,7 +2341,7 @@ def test_container_shuffle(dev_str, call):
 
     # with key_chains to apply
     container_shuffled = container.shuffle(0, ['a', 'b/c'])
-    data = ivy.array([1, 2, 3], dev_str=dev_str)
+    data = ivy.array([1, 2, 3], dev=dev)
     ivy.core.random.seed()
     shuffled_data = ivy.to_numpy(ivy.core.random.shuffle(data))
     assert (ivy.to_numpy(container_shuffled['a']) == shuffled_data).all()
@@ -2353,7 +2353,7 @@ def test_container_shuffle(dev_str, call):
 
     # with key_chains to apply pruned
     container_shuffled = container.shuffle(0, ['a', 'b/c'], prune_unapplied=True)
-    data = ivy.array([1, 2, 3], dev_str=dev_str)
+    data = ivy.array([1, 2, 3], dev=dev)
     ivy.core.random.seed()
     shuffled_data = ivy.to_numpy(ivy.core.random.shuffle(data))
     assert (ivy.to_numpy(container_shuffled['a']) == shuffled_data).all()
@@ -2364,7 +2364,7 @@ def test_container_shuffle(dev_str, call):
 
     # with key_chains to not apply pruned
     container_shuffled = container.shuffle(0, Container({'a': None, 'b': {'d': None}}), to_apply=False)
-    data = ivy.array([1, 2, 3], dev_str=dev_str)
+    data = ivy.array([1, 2, 3], dev=dev)
     ivy.core.random.seed()
     shuffled_data = ivy.to_numpy(ivy.core.random.shuffle(data))
     assert (ivy.to_numpy(container_shuffled['a']) == ivy.to_numpy(data)).all()
@@ -2377,7 +2377,7 @@ def test_container_shuffle(dev_str, call):
     # with key_chains to not apply pruned
     container_shuffled = container.shuffle(0, Container({'a': None, 'b': {'d': None}}), to_apply=False,
                                            prune_unapplied=True)
-    data = ivy.array([1, 2, 3], dev_str=dev_str)
+    data = ivy.array([1, 2, 3], dev=dev)
     ivy.core.random.seed()
     shuffled_data = ivy.to_numpy(ivy.core.random.shuffle(data))
     assert 'a' not in container_shuffled
@@ -2386,11 +2386,11 @@ def test_container_shuffle(dev_str, call):
     assert 'b/d' not in container_shuffled
 
     # map sequences
-    dict_in = {'a': ivy.array([1, 2, 3], dev_str=dev_str),
-               'b': [ivy.array([1, 2, 3], dev_str=dev_str), ivy.array([1, 2, 3], dev_str=dev_str)]}
+    dict_in = {'a': ivy.array([1, 2, 3], dev=dev),
+               'b': [ivy.array([1, 2, 3], dev=dev), ivy.array([1, 2, 3], dev=dev)]}
     container = Container(dict_in)
     container_shuffled = container.shuffle(0, map_sequences=True)
-    data = ivy.array([1, 2, 3], dev_str=dev_str)
+    data = ivy.array([1, 2, 3], dev=dev)
     ivy.core.random.seed()
     shuffled_data = ivy.to_numpy(ivy.core.random.shuffle(data))
     assert (ivy.to_numpy(container_shuffled['a']) == shuffled_data).all()
@@ -2403,10 +2403,10 @@ def test_container_shuffle(dev_str, call):
 
 @pytest.mark.parametrize(
     "include_empty", [True, False])
-def test_container_to_iterator(include_empty, dev_str, call):
-    a_val = Container() if include_empty else ivy.array([1], dev_str=dev_str)
-    bc_val = Container() if include_empty else ivy.array([2], dev_str=dev_str)
-    bd_val = Container() if include_empty else ivy.array([3], dev_str=dev_str)
+def test_container_to_iterator(include_empty, dev, call):
+    a_val = Container() if include_empty else ivy.array([1], dev=dev)
+    bc_val = Container() if include_empty else ivy.array([2], dev=dev)
+    bd_val = Container() if include_empty else ivy.array([3], dev=dev)
     dict_in = {'a': a_val, 'b': {'c': bc_val, 'd': bd_val}}
     container = Container(dict_in)
 
@@ -2429,10 +2429,10 @@ def test_container_to_iterator(include_empty, dev_str, call):
 
 @pytest.mark.parametrize(
     "include_empty", [True, False])
-def test_container_to_iterator_values(include_empty, dev_str, call):
-    a_val = Container() if include_empty else ivy.array([1], dev_str=dev_str)
-    bc_val = Container() if include_empty else ivy.array([2], dev_str=dev_str)
-    bd_val = Container() if include_empty else ivy.array([3], dev_str=dev_str)
+def test_container_to_iterator_values(include_empty, dev, call):
+    a_val = Container() if include_empty else ivy.array([1], dev=dev)
+    bc_val = Container() if include_empty else ivy.array([2], dev=dev)
+    bd_val = Container() if include_empty else ivy.array([3], dev=dev)
     dict_in = {'a': a_val, 'b': {'c': bc_val, 'd': bd_val}}
     container = Container(dict_in)
 
@@ -2444,10 +2444,10 @@ def test_container_to_iterator_values(include_empty, dev_str, call):
 
 @pytest.mark.parametrize(
     "include_empty", [True, False])
-def test_container_to_iterator_keys(include_empty, dev_str, call):
-    a_val = Container() if include_empty else ivy.array([1], dev_str=dev_str)
-    bc_val = Container() if include_empty else ivy.array([2], dev_str=dev_str)
-    bd_val = Container() if include_empty else ivy.array([3], dev_str=dev_str)
+def test_container_to_iterator_keys(include_empty, dev, call):
+    a_val = Container() if include_empty else ivy.array([1], dev=dev)
+    bc_val = Container() if include_empty else ivy.array([2], dev=dev)
+    bd_val = Container() if include_empty else ivy.array([3], dev=dev)
     dict_in = {'a': a_val, 'b': {'c': bc_val, 'd': bd_val}}
     container = Container(dict_in)
 
@@ -2462,20 +2462,20 @@ def test_container_to_iterator_keys(include_empty, dev_str, call):
         assert key == expected_key
 
 
-def test_container_to_flat_list(dev_str, call):
-    dict_in = {'a': ivy.array([1], dev_str=dev_str),
-               'b': {'c': ivy.array([2], dev_str=dev_str), 'd': ivy.array([3], dev_str=dev_str)}}
+def test_container_to_flat_list(dev, call):
+    dict_in = {'a': ivy.array([1], dev=dev),
+               'b': {'c': ivy.array([2], dev=dev), 'd': ivy.array([3], dev=dev)}}
     container = Container(dict_in)
     container_flat_list = container.to_flat_list()
     for value, expected_value in zip(container_flat_list,
-                                     [ivy.array([1], dev_str=dev_str), ivy.array([2], dev_str=dev_str),
-                                      ivy.array([3], dev_str=dev_str)]):
+                                     [ivy.array([1], dev=dev), ivy.array([2], dev=dev),
+                                      ivy.array([3], dev=dev)]):
         assert value == expected_value
 
 
-def test_container_from_flat_list(dev_str, call):
-    dict_in = {'a': ivy.array([1], dev_str=dev_str),
-               'b': {'c': ivy.array([2], dev_str=dev_str), 'd': ivy.array([3], dev_str=dev_str)}}
+def test_container_from_flat_list(dev, call):
+    dict_in = {'a': ivy.array([1], dev=dev),
+               'b': {'c': ivy.array([2], dev=dev), 'd': ivy.array([3], dev=dev)}}
     container = Container(dict_in)
     flat_list = [4, 5, 6]
     container = container.from_flat_list(flat_list)
@@ -2489,10 +2489,10 @@ def test_container_from_flat_list(dev_str, call):
 
 @pytest.mark.parametrize(
     "inplace", [True, False])
-def test_container_map(inplace, dev_str, call):
+def test_container_map(inplace, dev, call):
     # without key_chains specification
-    dict_in = {'a': ivy.array([1], dev_str=dev_str),
-               'b': {'c': ivy.array([2], dev_str=dev_str), 'd': ivy.array([3], dev_str=dev_str)}}
+    dict_in = {'a': ivy.array([1], dev=dev),
+               'b': {'c': ivy.array([2], dev=dev), 'd': ivy.array([3], dev=dev)}}
     container_orig = Container(dict_in)
     container = container_orig.deep_copy()
     container_mapped = container.map(lambda x, _: x + 1, inplace=inplace)
@@ -2501,8 +2501,8 @@ def test_container_map(inplace, dev_str, call):
     else:
         container_iterator = container_mapped.to_iterator()
     for (key, value), expected_value in zip(container_iterator,
-                                            [ivy.array([2], dev_str=dev_str), ivy.array([3], dev_str=dev_str),
-                                             ivy.array([4], dev_str=dev_str)]):
+                                            [ivy.array([2], dev=dev), ivy.array([3], dev=dev),
+                                             ivy.array([4], dev=dev)]):
         assert call(lambda x: x, value) == call(lambda x: x, expected_value)
 
     # with key_chains to apply
@@ -2556,8 +2556,8 @@ def test_container_map(inplace, dev_str, call):
         assert 'b/d' not in container_mapped
 
     # with sequences
-    container_orig = Container({'a': ivy.array([1], dev_str=dev_str),
-                                'b': [ivy.array([2], dev_str=dev_str), ivy.array([3], dev_str=dev_str)]})
+    container_orig = Container({'a': ivy.array([1], dev=dev),
+                                'b': [ivy.array([2], dev=dev), ivy.array([3], dev=dev)]})
     container = container_orig.deep_copy()
     container_mapped = container.map(lambda x, _: x + 1, inplace=inplace, map_sequences=True)
     if inplace:
@@ -2569,13 +2569,13 @@ def test_container_map(inplace, dev_str, call):
 
 @pytest.mark.parametrize(
     "inplace", [True, False])
-def test_container_map_conts(inplace, dev_str, call):
+def test_container_map_conts(inplace, dev, call):
     # without key_chains specification
-    container_orig = Container({'a': ivy.array([1], dev_str=dev_str),
-                                'b': {'c': ivy.array([2], dev_str=dev_str), 'd': ivy.array([3], dev_str=dev_str)}})
+    container_orig = Container({'a': ivy.array([1], dev=dev),
+                                'b': {'c': ivy.array([2], dev=dev), 'd': ivy.array([3], dev=dev)}})
 
     def _add_e_attr(cont_in):
-        cont_in.e = ivy.array([4], dev_str=dev_str)
+        cont_in.e = ivy.array([4], dev=dev)
         return cont_in
 
     # with self
@@ -2598,12 +2598,12 @@ def test_container_map_conts(inplace, dev_str, call):
     assert np.array_equal(ivy.to_numpy(container_mapped.b.e), np.array([4]))
 
 
-def test_container_multi_map(dev_str, call):
+def test_container_multi_map(dev, call):
     # without key_chains specification
-    container0 = Container({'a': ivy.array([1], dev_str=dev_str),
-                            'b': {'c': ivy.array([2], dev_str=dev_str), 'd': ivy.array([3], dev_str=dev_str)}})
-    container1 = Container({'a': ivy.array([3], dev_str=dev_str),
-                            'b': {'c': ivy.array([4], dev_str=dev_str), 'd': ivy.array([5], dev_str=dev_str)}})
+    container0 = Container({'a': ivy.array([1], dev=dev),
+                            'b': {'c': ivy.array([2], dev=dev), 'd': ivy.array([3], dev=dev)}})
+    container1 = Container({'a': ivy.array([3], dev=dev),
+                            'b': {'c': ivy.array([4], dev=dev), 'd': ivy.array([5], dev=dev)}})
 
     # with key_chains to apply
     container_mapped = ivy.Container.multi_map(lambda x, _: x[0] + x[1], [container0, container1])
@@ -2615,10 +2615,10 @@ def test_container_multi_map(dev_str, call):
     assert np.allclose(ivy.to_numpy(container_mapped.b.d), np.array([[8]]))
 
 
-def test_container_common_key_chains(dev_str, call):
-    arr1 = ivy.array([1], dev_str=dev_str)
-    arr2 = ivy.array([2], dev_str=dev_str)
-    arr3 = ivy.array([3], dev_str=dev_str)
+def test_container_common_key_chains(dev, call):
+    arr1 = ivy.array([1], dev=dev)
+    arr2 = ivy.array([2], dev=dev)
+    arr3 = ivy.array([3], dev=dev)
     cont0 = Container({'a': arr1, 'b': {'c': arr2, 'd': arr3}})
     cont1 = Container({'b': {'c': arr2, 'd': arr3, 'e': arr1}})
     cont2 = Container({'a': arr1, 'b': {'d': arr3, 'e': arr1}})
@@ -2654,15 +2654,15 @@ def test_container_common_key_chains(dev_str, call):
     assert 'b/d' in common_kcs
 
 
-def test_container_identical(dev_str, call):
+def test_container_identical(dev, call):
     # without key_chains specification
-    arr1 = ivy.array([1], dev_str=dev_str)
-    arr2 = ivy.array([2], dev_str=dev_str)
-    arr3 = ivy.array([3], dev_str=dev_str)
+    arr1 = ivy.array([1], dev=dev)
+    arr2 = ivy.array([2], dev=dev)
+    arr3 = ivy.array([3], dev=dev)
     container0 = Container({'a': arr1, 'b': {'c': arr2, 'd': arr3}})
     container1 = Container({'a': arr1, 'b': {'c': arr2, 'd': arr3}})
-    container2 = Container({'a': ivy.array([1], dev_str=dev_str),
-                            'b': {'c': ivy.array([2], dev_str=dev_str), 'd': ivy.array([3], dev_str=dev_str)}})
+    container2 = Container({'a': ivy.array([1], dev=dev),
+                            'b': {'c': ivy.array([2], dev=dev), 'd': ivy.array([3], dev=dev)}})
     container3 = Container({'b': {'d': arr3}})
     container4 = Container({'d': arr3})
 
@@ -2683,20 +2683,20 @@ def test_container_identical(dev_str, call):
     assert not ivy.Container.identical([container4, container0], partial=True)
 
 
-def test_container_identical_structure(dev_str, call):
+def test_container_identical_structure(dev, call):
     # without key_chains specification
-    container0 = Container({'a': ivy.array([1], dev_str=dev_str),
-                            'b': {'c': ivy.array([2], dev_str=dev_str), 'd': ivy.array([3], dev_str=dev_str)}})
-    container1 = Container({'a': ivy.array([3], dev_str=dev_str),
-                            'b': {'c': ivy.array([4], dev_str=dev_str), 'd': ivy.array([5], dev_str=dev_str)}})
-    container2 = Container({'a': ivy.array([3], dev_str=dev_str),
-                            'b': {'c': ivy.array([4], dev_str=dev_str), 'd': ivy.array([5], dev_str=dev_str),
-                                  'e': ivy.array([6], dev_str=dev_str)}})
-    container3 = Container({'a': ivy.array([3], dev_str=dev_str),
-                            'b': {'c': ivy.array([4], dev_str=dev_str), 'd': ivy.array([5], dev_str=dev_str)},
-                            'e': ivy.array([6], dev_str=dev_str)})
-    container4 = Container({'b': {'d': ivy.array([4], dev_str=dev_str)}})
-    container5 = Container({'d': ivy.array([4], dev_str=dev_str)})
+    container0 = Container({'a': ivy.array([1], dev=dev),
+                            'b': {'c': ivy.array([2], dev=dev), 'd': ivy.array([3], dev=dev)}})
+    container1 = Container({'a': ivy.array([3], dev=dev),
+                            'b': {'c': ivy.array([4], dev=dev), 'd': ivy.array([5], dev=dev)}})
+    container2 = Container({'a': ivy.array([3], dev=dev),
+                            'b': {'c': ivy.array([4], dev=dev), 'd': ivy.array([5], dev=dev),
+                                  'e': ivy.array([6], dev=dev)}})
+    container3 = Container({'a': ivy.array([3], dev=dev),
+                            'b': {'c': ivy.array([4], dev=dev), 'd': ivy.array([5], dev=dev)},
+                            'e': ivy.array([6], dev=dev)})
+    container4 = Container({'b': {'d': ivy.array([4], dev=dev)}})
+    container5 = Container({'d': ivy.array([4], dev=dev)})
 
     # with identical
     assert ivy.Container.identical_structure([container0, container1])
@@ -2722,10 +2722,10 @@ def test_container_identical_structure(dev_str, call):
     assert not ivy.Container.identical_structure([container4, container5], partial=True)
 
 
-def test_container_identical_configs(dev_str, call):
-    container0 = Container({'a': ivy.array([1], dev_str=dev_str)}, print_limit=5)
-    container1 = Container({'a': ivy.array([1], dev_str=dev_str)}, print_limit=5)
-    container2 = Container({'a': ivy.array([1], dev_str=dev_str)}, print_limit=10)
+def test_container_identical_configs(dev, call):
+    container0 = Container({'a': ivy.array([1], dev=dev)}, print_limit=5)
+    container1 = Container({'a': ivy.array([1], dev=dev)}, print_limit=5)
+    container2 = Container({'a': ivy.array([1], dev=dev)}, print_limit=10)
 
     # with identical
     assert ivy.Container.identical_configs([container0, container1])
@@ -2737,17 +2737,17 @@ def test_container_identical_configs(dev_str, call):
     assert not ivy.Container.identical_configs([container1, container0, container2])
 
 
-def test_container_identical_array_shapes(dev_str, call):
+def test_container_identical_array_shapes(dev, call):
     # without key_chains specification
-    container0 = Container({'a': ivy.array([1, 2], dev_str=dev_str),
-                            'b': {'c': ivy.array([2, 3, 4], dev_str=dev_str),
-                                  'd': ivy.array([3, 4, 5, 6], dev_str=dev_str)}})
-    container1 = Container({'a': ivy.array([1, 2, 3, 4], dev_str=dev_str),
-                            'b': {'c': ivy.array([3, 4], dev_str=dev_str),
-                                  'd': ivy.array([3, 4, 5], dev_str=dev_str)}})
-    container2 = Container({'a': ivy.array([1, 2, 3, 4], dev_str=dev_str),
-                            'b': {'c': ivy.array([3, 4], dev_str=dev_str),
-                                  'd': ivy.array([3, 4, 5, 6], dev_str=dev_str)}})
+    container0 = Container({'a': ivy.array([1, 2], dev=dev),
+                            'b': {'c': ivy.array([2, 3, 4], dev=dev),
+                                  'd': ivy.array([3, 4, 5, 6], dev=dev)}})
+    container1 = Container({'a': ivy.array([1, 2, 3, 4], dev=dev),
+                            'b': {'c': ivy.array([3, 4], dev=dev),
+                                  'd': ivy.array([3, 4, 5], dev=dev)}})
+    container2 = Container({'a': ivy.array([1, 2, 3, 4], dev=dev),
+                            'b': {'c': ivy.array([3, 4], dev=dev),
+                                  'd': ivy.array([3, 4, 5, 6], dev=dev)}})
 
     # with identical
     assert ivy.Container.identical_array_shapes([container0, container1])
@@ -2758,24 +2758,24 @@ def test_container_identical_array_shapes(dev_str, call):
     assert not ivy.Container.identical([container0, container1, container2])
 
 
-def test_container_dtype(dev_str, call):
-    dict_in = {'a': ivy.array([1], dev_str=dev_str),
-               'b': {'c': ivy.array([2.], dev_str=dev_str), 'd': ivy.array([3], dev_str=dev_str)}}
+def test_container_dtype(dev, call):
+    dict_in = {'a': ivy.array([1], dev=dev),
+               'b': {'c': ivy.array([2.], dev=dev), 'd': ivy.array([3], dev=dev)}}
     container = Container(dict_in)
     dtype_container = container.dtype()
     for (key, value), expected_value in zip(dtype_container.to_iterator(),
-                                            [ivy.array([1], dev_str=dev_str).dtype,
-                                             ivy.array([2.], dev_str=dev_str).dtype,
-                                             ivy.array([3], dev_str=dev_str).dtype]):
+                                            [ivy.array([1], dev=dev).dtype,
+                                             ivy.array([2.], dev=dev).dtype,
+                                             ivy.array([3], dev=dev).dtype]):
         assert value == expected_value
 
 
-def test_container_with_entries_as_lists(dev_str, call):
+def test_container_with_entries_as_lists(dev, call):
     if call in [helpers.tf_graph_call]:
         # to_list() requires eager execution
         pytest.skip()
-    dict_in = {'a': ivy.array([1], dev_str=dev_str),
-               'b': {'c': ivy.array([2.], dev_str=dev_str), 'd': 'some string'}}
+    dict_in = {'a': ivy.array([1], dev=dev),
+               'b': {'c': ivy.array([2.], dev=dev), 'd': 'some string'}}
     container = Container(dict_in)
     container_w_list_entries = container.with_entries_as_lists()
     for (key, value), expected_value in zip(container_w_list_entries.to_iterator(),
@@ -2785,10 +2785,10 @@ def test_container_with_entries_as_lists(dev_str, call):
         assert value == expected_value
 
 
-def test_container_reshape_like(dev_str, call):
-    container = Container({'a': ivy.array([[1.]], dev_str=dev_str),
-                           'b': {'c': ivy.array([[3.], [4.]], dev_str=dev_str),
-                                 'd': ivy.array([[5.], [6.], [7.]], dev_str=dev_str)}})
+def test_container_reshape_like(dev, call):
+    container = Container({'a': ivy.array([[1.]], dev=dev),
+                           'b': {'c': ivy.array([[3.], [4.]], dev=dev),
+                                 'd': ivy.array([[5.], [6.], [7.]], dev=dev)}})
     new_shapes = Container({'a': (1,),
                             'b': {'c': (1, 2, 1), 'd': (3, 1, 1)}})
 
@@ -2802,10 +2802,10 @@ def test_container_reshape_like(dev_str, call):
     assert list(container_reshaped.b.d.shape) == [3, 1, 1]
 
     # with leading shape
-    container = Container({'a': ivy.array([[[1.]], [[1.]], [[1.]]], dev_str=dev_str),
-                           'b': {'c': ivy.array([[[3.], [4.]], [[3.], [4.]], [[3.], [4.]]], dev_str=dev_str),
+    container = Container({'a': ivy.array([[[1.]], [[1.]], [[1.]]], dev=dev),
+                           'b': {'c': ivy.array([[[3.], [4.]], [[3.], [4.]], [[3.], [4.]]], dev=dev),
                                  'd': ivy.array([[[5.], [6.], [7.]], [[5.], [6.], [7.]], [[5.], [6.], [7.]]],
-                                                dev_str=dev_str)}})
+                                                dev=dev)}})
     container_reshaped = container.reshape_like(new_shapes, leading_shape=[3])
     assert list(container_reshaped['a'].shape) == [3, 1]
     assert list(container_reshaped.a.shape) == [3, 1]
@@ -2815,9 +2815,9 @@ def test_container_reshape_like(dev_str, call):
     assert list(container_reshaped.b.d.shape) == [3, 3, 1, 1]
 
 
-def test_container_slice(dev_str, call):
-    dict_in = {'a': ivy.array([[0.], [1.]], dev_str=dev_str),
-               'b': {'c': ivy.array([[1.], [2.]], dev_str=dev_str), 'd': ivy.array([[2.], [3.]], dev_str=dev_str)}}
+def test_container_slice(dev, call):
+    dict_in = {'a': ivy.array([[0.], [1.]], dev=dev),
+               'b': {'c': ivy.array([[1.], [2.]], dev=dev), 'd': ivy.array([[2.], [3.]], dev=dev)}}
     container = Container(dict_in)
     container0 = container[0]
     container1 = container[1]
@@ -2835,13 +2835,13 @@ def test_container_slice(dev_str, call):
     assert np.array_equal(ivy.to_numpy(container1.b.d), np.array([3.]))
 
 
-def test_container_slice_via_key(dev_str, call):
-    dict_in = {'a': {'x': ivy.array([0.], dev_str=dev_str),
-                     'y': ivy.array([1.], dev_str=dev_str)},
-               'b': {'c': {'x': ivy.array([1.], dev_str=dev_str),
-                           'y': ivy.array([2.], dev_str=dev_str)},
-                     'd': {'x': ivy.array([2.], dev_str=dev_str),
-                           'y': ivy.array([3.], dev_str=dev_str)}}}
+def test_container_slice_via_key(dev, call):
+    dict_in = {'a': {'x': ivy.array([0.], dev=dev),
+                     'y': ivy.array([1.], dev=dev)},
+               'b': {'c': {'x': ivy.array([1.], dev=dev),
+                           'y': ivy.array([2.], dev=dev)},
+                     'd': {'x': ivy.array([2.], dev=dev),
+                           'y': ivy.array([3.], dev=dev)}}}
     container = Container(dict_in)
     containerx = container.slice_via_key('x')
     containery = container.slice_via_key('y')
@@ -2859,18 +2859,18 @@ def test_container_slice_via_key(dev_str, call):
     assert np.array_equal(ivy.to_numpy(containery.b.d), np.array([3.]))
 
 
-def test_container_to_and_from_disk_as_hdf5(dev_str, call):
+def test_container_to_and_from_disk_as_hdf5(dev, call):
     if call in [helpers.tf_graph_call]:
         # container disk saving requires eager execution
         pytest.skip()
     save_filepath = 'container_on_disk.hdf5'
-    dict_in_1 = {'a': ivy.array([np.float32(1.)], dev_str=dev_str),
-                 'b': {'c': ivy.array([np.float32(2.)], dev_str=dev_str),
-                       'd': ivy.array([np.float32(3.)], dev_str=dev_str)}}
+    dict_in_1 = {'a': ivy.array([np.float32(1.)], dev=dev),
+                 'b': {'c': ivy.array([np.float32(2.)], dev=dev),
+                       'd': ivy.array([np.float32(3.)], dev=dev)}}
     container1 = Container(dict_in_1)
-    dict_in_2 = {'a': ivy.array([np.float32(1.), np.float32(1.)], dev_str=dev_str),
-                 'b': {'c': ivy.array([np.float32(2.), np.float32(2.)], dev_str=dev_str),
-                       'd': ivy.array([np.float32(3.), np.float32(3.)], dev_str=dev_str)}}
+    dict_in_2 = {'a': ivy.array([np.float32(1.), np.float32(1.)], dev=dev),
+                 'b': {'c': ivy.array([np.float32(2.), np.float32(2.)], dev=dev),
+                       'd': ivy.array([np.float32(3.), np.float32(3.)], dev=dev)}}
     container2 = Container(dict_in_2)
 
     # saving
@@ -2907,13 +2907,13 @@ def test_container_to_and_from_disk_as_hdf5(dev_str, call):
     os.remove(save_filepath)
 
 
-def test_container_to_disk_shuffle_and_from_disk_as_hdf5(dev_str, call):
+def test_container_to_disk_shuffle_and_from_disk_as_hdf5(dev, call):
     if call in [helpers.tf_graph_call]:
         # container disk saving requires eager execution
         pytest.skip()
     save_filepath = 'container_on_disk.hdf5'
-    dict_in = {'a': ivy.array([1, 2, 3], dev_str=dev_str),
-               'b': {'c': ivy.array([1, 2, 3], dev_str=dev_str), 'd': ivy.array([1, 2, 3], dev_str=dev_str)}}
+    dict_in = {'a': ivy.array([1, 2, 3], dev=dev),
+               'b': {'c': ivy.array([1, 2, 3], dev=dev), 'd': ivy.array([1, 2, 3], dev=dev)}}
     container = Container(dict_in)
 
     # saving
@@ -2941,13 +2941,13 @@ def test_container_to_disk_shuffle_and_from_disk_as_hdf5(dev_str, call):
     os.remove(save_filepath)
 
 
-def test_container_pickle(dev_str, call):
+def test_container_pickle(dev, call):
     if call in [helpers.tf_graph_call]:
         # container disk saving requires eager execution
         pytest.skip()
-    dict_in = {'a': ivy.array([np.float32(1.)], dev_str=dev_str),
-               'b': {'c': ivy.array([np.float32(2.)], dev_str=dev_str),
-                     'd': ivy.array([np.float32(3.)], dev_str=dev_str)}}
+    dict_in = {'a': ivy.array([np.float32(1.)], dev=dev),
+               'b': {'c': ivy.array([np.float32(2.)], dev=dev),
+                     'd': ivy.array([np.float32(3.)], dev=dev)}}
 
     # without module attribute
     cont = Container(dict_in)
@@ -2969,14 +2969,14 @@ def test_container_pickle(dev_str, call):
     ivy.Container.identical_configs([cont, cont_again])
 
 
-def test_container_to_and_from_disk_as_pickled(dev_str, call):
+def test_container_to_and_from_disk_as_pickled(dev, call):
     if call in [helpers.tf_graph_call]:
         # container disk saving requires eager execution
         pytest.skip()
     save_filepath = 'container_on_disk.pickled'
-    dict_in = {'a': ivy.array([np.float32(1.)], dev_str=dev_str),
-               'b': {'c': ivy.array([np.float32(2.)], dev_str=dev_str),
-                     'd': ivy.array([np.float32(3.)], dev_str=dev_str)}}
+    dict_in = {'a': ivy.array([np.float32(1.)], dev=dev),
+               'b': {'c': ivy.array([np.float32(2.)], dev=dev),
+                     'd': ivy.array([np.float32(3.)], dev=dev)}}
     container = Container(dict_in)
 
     # saving
@@ -2992,12 +2992,12 @@ def test_container_to_and_from_disk_as_pickled(dev_str, call):
     os.remove(save_filepath)
 
 
-def test_container_to_and_from_disk_as_json(dev_str, call):
+def test_container_to_and_from_disk_as_json(dev, call):
     if call in [helpers.tf_graph_call]:
         # container disk saving requires eager execution
         pytest.skip()
     save_filepath = 'container_on_disk.json'
-    dict_in = {'a': 1.274e-7, 'b': {'c': True, 'd': ivy.array([np.float32(3.)], dev_str=dev_str)}}
+    dict_in = {'a': 1.274e-7, 'b': {'c': True, 'd': ivy.array([np.float32(3.)], dev=dev)}}
     container = Container(dict_in)
 
     # saving
@@ -3013,9 +3013,9 @@ def test_container_to_and_from_disk_as_json(dev_str, call):
     os.remove(save_filepath)
 
 
-def test_container_positive(dev_str, call):
-    container = +Container({'a': ivy.array([1], dev_str=dev_str),
-                            'b': {'c': ivy.array([-2], dev_str=dev_str), 'd': ivy.array([3], dev_str=dev_str)}})
+def test_container_positive(dev, call):
+    container = +Container({'a': ivy.array([1], dev=dev),
+                            'b': {'c': ivy.array([-2], dev=dev), 'd': ivy.array([3], dev=dev)}})
     assert np.allclose(ivy.to_numpy(container['a']), np.array([1]))
     assert np.allclose(ivy.to_numpy(container.a), np.array([1]))
     assert np.allclose(ivy.to_numpy(container['b']['c']), np.array([-2]))
@@ -3024,9 +3024,9 @@ def test_container_positive(dev_str, call):
     assert np.allclose(ivy.to_numpy(container.b.d), np.array([3]))
 
 
-def test_container_negative(dev_str, call):
-    container = -Container({'a': ivy.array([1], dev_str=dev_str),
-                            'b': {'c': ivy.array([-2], dev_str=dev_str), 'd': ivy.array([3], dev_str=dev_str)}})
+def test_container_negative(dev, call):
+    container = -Container({'a': ivy.array([1], dev=dev),
+                            'b': {'c': ivy.array([-2], dev=dev), 'd': ivy.array([3], dev=dev)}})
     assert np.allclose(ivy.to_numpy(container['a']), np.array([-1]))
     assert np.allclose(ivy.to_numpy(container.a), np.array([-1]))
     assert np.allclose(ivy.to_numpy(container['b']['c']), np.array([2]))
@@ -3035,11 +3035,11 @@ def test_container_negative(dev_str, call):
     assert np.allclose(ivy.to_numpy(container.b.d), np.array([-3]))
 
 
-def test_container_pow(dev_str, call):
-    container_a = Container({'a': ivy.array([1], dev_str=dev_str),
-                             'b': {'c': ivy.array([2], dev_str=dev_str), 'd': ivy.array([3], dev_str=dev_str)}})
-    container_b = Container({'a': ivy.array([2], dev_str=dev_str),
-                             'b': {'c': ivy.array([4], dev_str=dev_str), 'd': ivy.array([6], dev_str=dev_str)}})
+def test_container_pow(dev, call):
+    container_a = Container({'a': ivy.array([1], dev=dev),
+                             'b': {'c': ivy.array([2], dev=dev), 'd': ivy.array([3], dev=dev)}})
+    container_b = Container({'a': ivy.array([2], dev=dev),
+                             'b': {'c': ivy.array([4], dev=dev), 'd': ivy.array([6], dev=dev)}})
     container = container_a ** container_b
     assert np.allclose(ivy.to_numpy(container['a']), np.array([1]))
     assert np.allclose(ivy.to_numpy(container.a), np.array([1]))
@@ -3049,9 +3049,9 @@ def test_container_pow(dev_str, call):
     assert np.allclose(ivy.to_numpy(container.b.d), np.array([729]))
 
 
-def test_container_scalar_pow(dev_str, call):
-    container_a = Container({'a': ivy.array([1], dev_str=dev_str),
-                             'b': {'c': ivy.array([2], dev_str=dev_str), 'd': ivy.array([3], dev_str=dev_str)}})
+def test_container_scalar_pow(dev, call):
+    container_a = Container({'a': ivy.array([1], dev=dev),
+                             'b': {'c': ivy.array([2], dev=dev), 'd': ivy.array([3], dev=dev)}})
     container = container_a ** 2
     assert np.allclose(ivy.to_numpy(container['a']), np.array([1]))
     assert np.allclose(ivy.to_numpy(container.a), np.array([1]))
@@ -3061,9 +3061,9 @@ def test_container_scalar_pow(dev_str, call):
     assert np.allclose(ivy.to_numpy(container.b.d), np.array([9]))
 
 
-def test_container_reverse_scalar_pow(dev_str, call):
-    container = Container({'a': ivy.array([1], dev_str=dev_str),
-                           'b': {'c': ivy.array([2], dev_str=dev_str), 'd': ivy.array([3], dev_str=dev_str)}})
+def test_container_reverse_scalar_pow(dev, call):
+    container = Container({'a': ivy.array([1], dev=dev),
+                           'b': {'c': ivy.array([2], dev=dev), 'd': ivy.array([3], dev=dev)}})
     container = 2 ** container
     assert np.allclose(ivy.to_numpy(container['a']), np.array([2]))
     assert np.allclose(ivy.to_numpy(container.a), np.array([2]))
@@ -3073,9 +3073,9 @@ def test_container_reverse_scalar_pow(dev_str, call):
     assert np.allclose(ivy.to_numpy(container.b.d), np.array([8]))
 
 
-def test_container_scalar_addition(dev_str, call):
-    container = Container({'a': ivy.array([1], dev_str=dev_str),
-                           'b': {'c': ivy.array([2], dev_str=dev_str), 'd': ivy.array([3], dev_str=dev_str)}})
+def test_container_scalar_addition(dev, call):
+    container = Container({'a': ivy.array([1], dev=dev),
+                           'b': {'c': ivy.array([2], dev=dev), 'd': ivy.array([3], dev=dev)}})
     container += 3
     assert np.allclose(ivy.to_numpy(container['a']), np.array([4]))
     assert np.allclose(ivy.to_numpy(container.a), np.array([4]))
@@ -3085,9 +3085,9 @@ def test_container_scalar_addition(dev_str, call):
     assert np.allclose(ivy.to_numpy(container.b.d), np.array([6]))
 
 
-def test_container_reverse_scalar_addition(dev_str, call):
-    container = Container({'a': ivy.array([1], dev_str=dev_str),
-                           'b': {'c': ivy.array([2], dev_str=dev_str), 'd': ivy.array([3], dev_str=dev_str)}})
+def test_container_reverse_scalar_addition(dev, call):
+    container = Container({'a': ivy.array([1], dev=dev),
+                           'b': {'c': ivy.array([2], dev=dev), 'd': ivy.array([3], dev=dev)}})
     container = 3 + container
     assert np.allclose(ivy.to_numpy(container['a']), np.array([4]))
     assert np.allclose(ivy.to_numpy(container.a), np.array([4]))
@@ -3097,11 +3097,11 @@ def test_container_reverse_scalar_addition(dev_str, call):
     assert np.allclose(ivy.to_numpy(container.b.d), np.array([6]))
 
 
-def test_container_addition(dev_str, call):
-    container_a = Container({'a': ivy.array([1], dev_str=dev_str),
-                             'b': {'c': ivy.array([2], dev_str=dev_str), 'd': ivy.array([3], dev_str=dev_str)}})
-    container_b = Container({'a': ivy.array([2], dev_str=dev_str),
-                             'b': {'c': ivy.array([4], dev_str=dev_str), 'd': ivy.array([6], dev_str=dev_str)}})
+def test_container_addition(dev, call):
+    container_a = Container({'a': ivy.array([1], dev=dev),
+                             'b': {'c': ivy.array([2], dev=dev), 'd': ivy.array([3], dev=dev)}})
+    container_b = Container({'a': ivy.array([2], dev=dev),
+                             'b': {'c': ivy.array([4], dev=dev), 'd': ivy.array([6], dev=dev)}})
     container = container_a + container_b
     assert np.allclose(ivy.to_numpy(container['a']), np.array([3]))
     assert np.allclose(ivy.to_numpy(container.a), np.array([3]))
@@ -3111,9 +3111,9 @@ def test_container_addition(dev_str, call):
     assert np.allclose(ivy.to_numpy(container.b.d), np.array([9]))
 
 
-def test_container_scalar_subtraction(dev_str, call):
-    container = Container({'a': ivy.array([1], dev_str=dev_str),
-                           'b': {'c': ivy.array([2], dev_str=dev_str), 'd': ivy.array([3], dev_str=dev_str)}})
+def test_container_scalar_subtraction(dev, call):
+    container = Container({'a': ivy.array([1], dev=dev),
+                           'b': {'c': ivy.array([2], dev=dev), 'd': ivy.array([3], dev=dev)}})
     container -= 1
     assert np.allclose(ivy.to_numpy(container['a']), np.array([0]))
     assert np.allclose(ivy.to_numpy(container.a), np.array([0]))
@@ -3123,9 +3123,9 @@ def test_container_scalar_subtraction(dev_str, call):
     assert np.allclose(ivy.to_numpy(container.b.d), np.array([2]))
 
 
-def test_container_reverse_scalar_subtraction(dev_str, call):
-    container = Container({'a': ivy.array([1], dev_str=dev_str),
-                           'b': {'c': ivy.array([2], dev_str=dev_str), 'd': ivy.array([3], dev_str=dev_str)}})
+def test_container_reverse_scalar_subtraction(dev, call):
+    container = Container({'a': ivy.array([1], dev=dev),
+                           'b': {'c': ivy.array([2], dev=dev), 'd': ivy.array([3], dev=dev)}})
     container = 1 - container
     assert np.allclose(ivy.to_numpy(container['a']), np.array([0]))
     assert np.allclose(ivy.to_numpy(container.a), np.array([0]))
@@ -3135,11 +3135,11 @@ def test_container_reverse_scalar_subtraction(dev_str, call):
     assert np.allclose(ivy.to_numpy(container.b.d), np.array([-2]))
 
 
-def test_container_subtraction(dev_str, call):
-    container_a = Container({'a': ivy.array([2], dev_str=dev_str),
-                             'b': {'c': ivy.array([4], dev_str=dev_str), 'd': ivy.array([6], dev_str=dev_str)}})
-    container_b = Container({'a': ivy.array([1], dev_str=dev_str),
-                             'b': {'c': ivy.array([1], dev_str=dev_str), 'd': ivy.array([4], dev_str=dev_str)}})
+def test_container_subtraction(dev, call):
+    container_a = Container({'a': ivy.array([2], dev=dev),
+                             'b': {'c': ivy.array([4], dev=dev), 'd': ivy.array([6], dev=dev)}})
+    container_b = Container({'a': ivy.array([1], dev=dev),
+                             'b': {'c': ivy.array([1], dev=dev), 'd': ivy.array([4], dev=dev)}})
     container = container_a - container_b
     assert np.allclose(ivy.to_numpy(container['a']), np.array([1]))
     assert np.allclose(ivy.to_numpy(container.a), np.array([1]))
@@ -3149,11 +3149,11 @@ def test_container_subtraction(dev_str, call):
     assert np.allclose(ivy.to_numpy(container.b.d), np.array([2]))
 
 
-def test_container_sum(dev_str, call):
-    container_a = Container({'a': ivy.array([1], dev_str=dev_str),
-                             'b': {'c': ivy.array([2], dev_str=dev_str), 'd': ivy.array([3], dev_str=dev_str)}})
-    container_b = Container({'a': ivy.array([2], dev_str=dev_str),
-                             'b': {'c': ivy.array([4], dev_str=dev_str), 'd': ivy.array([6], dev_str=dev_str)}})
+def test_container_sum(dev, call):
+    container_a = Container({'a': ivy.array([1], dev=dev),
+                             'b': {'c': ivy.array([2], dev=dev), 'd': ivy.array([3], dev=dev)}})
+    container_b = Container({'a': ivy.array([2], dev=dev),
+                             'b': {'c': ivy.array([4], dev=dev), 'd': ivy.array([6], dev=dev)}})
     container = sum([container_a, container_b])
     assert np.allclose(ivy.to_numpy(container['a']), np.array([3]))
     assert np.allclose(ivy.to_numpy(container.a), np.array([3]))
@@ -3163,9 +3163,9 @@ def test_container_sum(dev_str, call):
     assert np.allclose(ivy.to_numpy(container.b.d), np.array([9]))
 
 
-def test_container_scalar_multiplication(dev_str, call):
-    container = Container({'a': ivy.array([1.], dev_str=dev_str),
-                           'b': {'c': ivy.array([2.], dev_str=dev_str), 'd': ivy.array([3.], dev_str=dev_str)}})
+def test_container_scalar_multiplication(dev, call):
+    container = Container({'a': ivy.array([1.], dev=dev),
+                           'b': {'c': ivy.array([2.], dev=dev), 'd': ivy.array([3.], dev=dev)}})
     container *= 2.5
     assert np.allclose(ivy.to_numpy(container['a']), np.array([2.5]))
     assert np.allclose(ivy.to_numpy(container.a), np.array([2.5]))
@@ -3175,9 +3175,9 @@ def test_container_scalar_multiplication(dev_str, call):
     assert np.allclose(ivy.to_numpy(container.b.d), np.array([7.5]))
 
 
-def test_container_reverse_scalar_multiplication(dev_str, call):
-    container = Container({'a': ivy.array([1.], dev_str=dev_str),
-                           'b': {'c': ivy.array([2.], dev_str=dev_str), 'd': ivy.array([3.], dev_str=dev_str)}})
+def test_container_reverse_scalar_multiplication(dev, call):
+    container = Container({'a': ivy.array([1.], dev=dev),
+                           'b': {'c': ivy.array([2.], dev=dev), 'd': ivy.array([3.], dev=dev)}})
     container = 2.5 * container
     assert np.allclose(ivy.to_numpy(container['a']), np.array([2.5]))
     assert np.allclose(ivy.to_numpy(container.a), np.array([2.5]))
@@ -3187,11 +3187,11 @@ def test_container_reverse_scalar_multiplication(dev_str, call):
     assert np.allclose(ivy.to_numpy(container.b.d), np.array([7.5]))
 
 
-def test_container_multiplication(dev_str, call):
-    container_a = Container({'a': ivy.array([1], dev_str=dev_str),
-                             'b': {'c': ivy.array([2], dev_str=dev_str), 'd': ivy.array([3], dev_str=dev_str)}})
-    container_b = Container({'a': ivy.array([2], dev_str=dev_str),
-                             'b': {'c': ivy.array([4], dev_str=dev_str), 'd': ivy.array([6], dev_str=dev_str)}})
+def test_container_multiplication(dev, call):
+    container_a = Container({'a': ivy.array([1], dev=dev),
+                             'b': {'c': ivy.array([2], dev=dev), 'd': ivy.array([3], dev=dev)}})
+    container_b = Container({'a': ivy.array([2], dev=dev),
+                             'b': {'c': ivy.array([4], dev=dev), 'd': ivy.array([6], dev=dev)}})
     container = container_a * container_b
     assert np.allclose(ivy.to_numpy(container['a']), np.array([2]))
     assert np.allclose(ivy.to_numpy(container.a), np.array([2]))
@@ -3201,9 +3201,9 @@ def test_container_multiplication(dev_str, call):
     assert np.allclose(ivy.to_numpy(container.b.d), np.array([18]))
 
 
-def test_container_scalar_truediv(dev_str, call):
-    container = Container({'a': ivy.array([1.], dev_str=dev_str),
-                           'b': {'c': ivy.array([5.], dev_str=dev_str), 'd': ivy.array([5.], dev_str=dev_str)}})
+def test_container_scalar_truediv(dev, call):
+    container = Container({'a': ivy.array([1.], dev=dev),
+                           'b': {'c': ivy.array([5.], dev=dev), 'd': ivy.array([5.], dev=dev)}})
     container /= 2
     assert np.allclose(ivy.to_numpy(container['a']), np.array([0.5]))
     assert np.allclose(ivy.to_numpy(container.a), np.array([0.5]))
@@ -3213,9 +3213,9 @@ def test_container_scalar_truediv(dev_str, call):
     assert np.allclose(ivy.to_numpy(container.b.d), np.array([2.5]))
 
 
-def test_container_reverse_scalar_truediv(dev_str, call):
-    container = Container({'a': ivy.array([1.], dev_str=dev_str),
-                           'b': {'c': ivy.array([5.], dev_str=dev_str), 'd': ivy.array([5.], dev_str=dev_str)}})
+def test_container_reverse_scalar_truediv(dev, call):
+    container = Container({'a': ivy.array([1.], dev=dev),
+                           'b': {'c': ivy.array([5.], dev=dev), 'd': ivy.array([5.], dev=dev)}})
     container = 2 / container
     assert np.allclose(ivy.to_numpy(container['a']), np.array([2.]))
     assert np.allclose(ivy.to_numpy(container.a), np.array([2.]))
@@ -3225,11 +3225,11 @@ def test_container_reverse_scalar_truediv(dev_str, call):
     assert np.allclose(ivy.to_numpy(container.b.d), np.array([0.4]))
 
 
-def test_container_truediv(dev_str, call):
-    container_a = Container({'a': ivy.array([1.], dev_str=dev_str),
-                             'b': {'c': ivy.array([5.], dev_str=dev_str), 'd': ivy.array([5.], dev_str=dev_str)}})
-    container_b = Container({'a': ivy.array([2.], dev_str=dev_str),
-                             'b': {'c': ivy.array([2.], dev_str=dev_str), 'd': ivy.array([4.], dev_str=dev_str)}})
+def test_container_truediv(dev, call):
+    container_a = Container({'a': ivy.array([1.], dev=dev),
+                             'b': {'c': ivy.array([5.], dev=dev), 'd': ivy.array([5.], dev=dev)}})
+    container_b = Container({'a': ivy.array([2.], dev=dev),
+                             'b': {'c': ivy.array([2.], dev=dev), 'd': ivy.array([4.], dev=dev)}})
     container = container_a / container_b
     assert np.allclose(ivy.to_numpy(container['a']), np.array([0.5]))
     assert np.allclose(ivy.to_numpy(container.a), np.array([0.5]))
@@ -3239,12 +3239,12 @@ def test_container_truediv(dev_str, call):
     assert np.allclose(ivy.to_numpy(container.b.d), np.array([1.25]))
 
 
-def test_container_scalar_floordiv(dev_str, call):
+def test_container_scalar_floordiv(dev, call):
     if call is helpers.mx_call:
         # MXnet arrays do not overload the // operator, can add if explicit ivy.floordiv is implemented at some point
         pytest.skip()
-    container = Container({'a': ivy.array([1], dev_str=dev_str),
-                           'b': {'c': ivy.array([5], dev_str=dev_str), 'd': ivy.array([5], dev_str=dev_str)}})
+    container = Container({'a': ivy.array([1], dev=dev),
+                           'b': {'c': ivy.array([5], dev=dev), 'd': ivy.array([5], dev=dev)}})
     container //= 2
     assert np.allclose(ivy.to_numpy(container['a']), np.array([0]))
     assert np.allclose(ivy.to_numpy(container.a), np.array([0]))
@@ -3254,12 +3254,12 @@ def test_container_scalar_floordiv(dev_str, call):
     assert np.allclose(ivy.to_numpy(container.b.d), np.array([2]))
 
 
-def test_container_reverse_scalar_floordiv(dev_str, call):
+def test_container_reverse_scalar_floordiv(dev, call):
     if call is helpers.mx_call:
         # MXnet arrays do not overload the // operator, can add if explicit ivy.floordiv is implemented at some point
         pytest.skip()
-    container = Container({'a': ivy.array([2], dev_str=dev_str),
-                           'b': {'c': ivy.array([1], dev_str=dev_str), 'd': ivy.array([7], dev_str=dev_str)}})
+    container = Container({'a': ivy.array([2], dev=dev),
+                           'b': {'c': ivy.array([1], dev=dev), 'd': ivy.array([7], dev=dev)}})
     container = 5 // container
     assert np.allclose(ivy.to_numpy(container['a']), np.array([2]))
     assert np.allclose(ivy.to_numpy(container.a), np.array([2]))
@@ -3269,14 +3269,14 @@ def test_container_reverse_scalar_floordiv(dev_str, call):
     assert np.allclose(ivy.to_numpy(container.b.d), np.array([0]))
 
 
-def test_container_floordiv(dev_str, call):
+def test_container_floordiv(dev, call):
     if call is helpers.mx_call:
         # MXnet arrays do not overload the // operator, can add if explicit ivy.floordiv is implemented at some point
         pytest.skip()
-    container_a = Container({'a': ivy.array([1], dev_str=dev_str),
-                             'b': {'c': ivy.array([5], dev_str=dev_str), 'd': ivy.array([5], dev_str=dev_str)}})
-    container_b = Container({'a': ivy.array([2], dev_str=dev_str),
-                             'b': {'c': ivy.array([2], dev_str=dev_str), 'd': ivy.array([4], dev_str=dev_str)}})
+    container_a = Container({'a': ivy.array([1], dev=dev),
+                             'b': {'c': ivy.array([5], dev=dev), 'd': ivy.array([5], dev=dev)}})
+    container_b = Container({'a': ivy.array([2], dev=dev),
+                             'b': {'c': ivy.array([2], dev=dev), 'd': ivy.array([4], dev=dev)}})
     container = container_a // container_b
     assert np.allclose(ivy.to_numpy(container['a']), np.array([0]))
     assert np.allclose(ivy.to_numpy(container.a), np.array([0]))
@@ -3286,9 +3286,9 @@ def test_container_floordiv(dev_str, call):
     assert np.allclose(ivy.to_numpy(container.b.d), np.array([1]))
 
 
-def test_container_abs(dev_str, call):
-    container = abs(Container({'a': ivy.array([1], dev_str=dev_str),
-                               'b': {'c': ivy.array([-2], dev_str=dev_str), 'd': ivy.array([3], dev_str=dev_str)}}))
+def test_container_abs(dev, call):
+    container = abs(Container({'a': ivy.array([1], dev=dev),
+                               'b': {'c': ivy.array([-2], dev=dev), 'd': ivy.array([3], dev=dev)}}))
     assert np.allclose(ivy.to_numpy(container['a']), np.array([1]))
     assert np.allclose(ivy.to_numpy(container.a), np.array([1]))
     assert np.allclose(ivy.to_numpy(container['b']['c']), np.array([2]))
@@ -3297,9 +3297,9 @@ def test_container_abs(dev_str, call):
     assert np.allclose(ivy.to_numpy(container.b.d), np.array([3]))
 
 
-def test_container_scalar_less_than(dev_str, call):
-    container = Container({'a': ivy.array([1], dev_str=dev_str),
-                           'b': {'c': ivy.array([2], dev_str=dev_str), 'd': ivy.array([3], dev_str=dev_str)}})
+def test_container_scalar_less_than(dev, call):
+    container = Container({'a': ivy.array([1], dev=dev),
+                           'b': {'c': ivy.array([2], dev=dev), 'd': ivy.array([3], dev=dev)}})
     container = container < 2
     assert np.allclose(ivy.to_numpy(container['a']), np.array([True]))
     assert np.allclose(ivy.to_numpy(container.a), np.array([True]))
@@ -3309,9 +3309,9 @@ def test_container_scalar_less_than(dev_str, call):
     assert np.allclose(ivy.to_numpy(container.b.d), np.array([False]))
 
 
-def test_container_reverse_scalar_less_than(dev_str, call):
-    container = Container({'a': ivy.array([1], dev_str=dev_str),
-                           'b': {'c': ivy.array([2], dev_str=dev_str), 'd': ivy.array([3], dev_str=dev_str)}})
+def test_container_reverse_scalar_less_than(dev, call):
+    container = Container({'a': ivy.array([1], dev=dev),
+                           'b': {'c': ivy.array([2], dev=dev), 'd': ivy.array([3], dev=dev)}})
     container = 2 < container
     assert np.allclose(ivy.to_numpy(container['a']), np.array([False]))
     assert np.allclose(ivy.to_numpy(container.a), np.array([False]))
@@ -3321,11 +3321,11 @@ def test_container_reverse_scalar_less_than(dev_str, call):
     assert np.allclose(ivy.to_numpy(container.b.d), np.array([True]))
 
 
-def test_container_less_than(dev_str, call):
-    container_a = Container({'a': ivy.array([1], dev_str=dev_str),
-                             'b': {'c': ivy.array([5], dev_str=dev_str), 'd': ivy.array([5], dev_str=dev_str)}})
-    container_b = Container({'a': ivy.array([2], dev_str=dev_str),
-                             'b': {'c': ivy.array([2], dev_str=dev_str), 'd': ivy.array([5], dev_str=dev_str)}})
+def test_container_less_than(dev, call):
+    container_a = Container({'a': ivy.array([1], dev=dev),
+                             'b': {'c': ivy.array([5], dev=dev), 'd': ivy.array([5], dev=dev)}})
+    container_b = Container({'a': ivy.array([2], dev=dev),
+                             'b': {'c': ivy.array([2], dev=dev), 'd': ivy.array([5], dev=dev)}})
     container = container_a < container_b
     assert np.allclose(ivy.to_numpy(container['a']), np.array([True]))
     assert np.allclose(ivy.to_numpy(container.a), np.array([True]))
@@ -3335,9 +3335,9 @@ def test_container_less_than(dev_str, call):
     assert np.allclose(ivy.to_numpy(container.b.d), np.array([False]))
 
 
-def test_container_scalar_less_than_or_equal_to(dev_str, call):
-    container = Container({'a': ivy.array([1], dev_str=dev_str),
-                           'b': {'c': ivy.array([2], dev_str=dev_str), 'd': ivy.array([3], dev_str=dev_str)}})
+def test_container_scalar_less_than_or_equal_to(dev, call):
+    container = Container({'a': ivy.array([1], dev=dev),
+                           'b': {'c': ivy.array([2], dev=dev), 'd': ivy.array([3], dev=dev)}})
     container = container <= 2
     assert np.allclose(ivy.to_numpy(container['a']), np.array([True]))
     assert np.allclose(ivy.to_numpy(container.a), np.array([True]))
@@ -3347,9 +3347,9 @@ def test_container_scalar_less_than_or_equal_to(dev_str, call):
     assert np.allclose(ivy.to_numpy(container.b.d), np.array([False]))
 
 
-def test_container_reverse_scalar_less_than_or_equal_to(dev_str, call):
-    container = Container({'a': ivy.array([1], dev_str=dev_str),
-                           'b': {'c': ivy.array([2], dev_str=dev_str), 'd': ivy.array([3], dev_str=dev_str)}})
+def test_container_reverse_scalar_less_than_or_equal_to(dev, call):
+    container = Container({'a': ivy.array([1], dev=dev),
+                           'b': {'c': ivy.array([2], dev=dev), 'd': ivy.array([3], dev=dev)}})
     container = 2 <= container
     assert np.allclose(ivy.to_numpy(container['a']), np.array([False]))
     assert np.allclose(ivy.to_numpy(container.a), np.array([False]))
@@ -3359,11 +3359,11 @@ def test_container_reverse_scalar_less_than_or_equal_to(dev_str, call):
     assert np.allclose(ivy.to_numpy(container.b.d), np.array([True]))
 
 
-def test_container_less_than_or_equal_to(dev_str, call):
-    container_a = Container({'a': ivy.array([1], dev_str=dev_str),
-                             'b': {'c': ivy.array([5], dev_str=dev_str), 'd': ivy.array([5], dev_str=dev_str)}})
-    container_b = Container({'a': ivy.array([2], dev_str=dev_str),
-                             'b': {'c': ivy.array([2], dev_str=dev_str), 'd': ivy.array([5], dev_str=dev_str)}})
+def test_container_less_than_or_equal_to(dev, call):
+    container_a = Container({'a': ivy.array([1], dev=dev),
+                             'b': {'c': ivy.array([5], dev=dev), 'd': ivy.array([5], dev=dev)}})
+    container_b = Container({'a': ivy.array([2], dev=dev),
+                             'b': {'c': ivy.array([2], dev=dev), 'd': ivy.array([5], dev=dev)}})
     container = container_a <= container_b
     assert np.allclose(ivy.to_numpy(container['a']), np.array([True]))
     assert np.allclose(ivy.to_numpy(container.a), np.array([True]))
@@ -3373,9 +3373,9 @@ def test_container_less_than_or_equal_to(dev_str, call):
     assert np.allclose(ivy.to_numpy(container.b.d), np.array([True]))
 
 
-def test_container_scalar_equal_to(dev_str, call):
-    container = Container({'a': ivy.array([1], dev_str=dev_str),
-                           'b': {'c': ivy.array([2], dev_str=dev_str), 'd': ivy.array([3], dev_str=dev_str)}})
+def test_container_scalar_equal_to(dev, call):
+    container = Container({'a': ivy.array([1], dev=dev),
+                           'b': {'c': ivy.array([2], dev=dev), 'd': ivy.array([3], dev=dev)}})
     container = container == 2
     assert np.allclose(ivy.to_numpy(container['a']), np.array([False]))
     assert np.allclose(ivy.to_numpy(container.a), np.array([False]))
@@ -3385,9 +3385,9 @@ def test_container_scalar_equal_to(dev_str, call):
     assert np.allclose(ivy.to_numpy(container.b.d), np.array([False]))
 
 
-def test_container_reverse_scalar_equal_to(dev_str, call):
-    container = Container({'a': ivy.array([1], dev_str=dev_str),
-                           'b': {'c': ivy.array([2], dev_str=dev_str), 'd': ivy.array([3], dev_str=dev_str)}})
+def test_container_reverse_scalar_equal_to(dev, call):
+    container = Container({'a': ivy.array([1], dev=dev),
+                           'b': {'c': ivy.array([2], dev=dev), 'd': ivy.array([3], dev=dev)}})
     container = 2 == container
     assert np.allclose(ivy.to_numpy(container['a']), np.array([False]))
     assert np.allclose(ivy.to_numpy(container.a), np.array([False]))
@@ -3397,11 +3397,11 @@ def test_container_reverse_scalar_equal_to(dev_str, call):
     assert np.allclose(ivy.to_numpy(container.b.d), np.array([False]))
 
 
-def test_container_equal_to(dev_str, call):
-    container_a = Container({'a': ivy.array([1], dev_str=dev_str),
-                             'b': {'c': ivy.array([5], dev_str=dev_str), 'd': ivy.array([5], dev_str=dev_str)}})
-    container_b = Container({'a': ivy.array([2], dev_str=dev_str),
-                             'b': {'c': ivy.array([2], dev_str=dev_str), 'd': ivy.array([5], dev_str=dev_str)}})
+def test_container_equal_to(dev, call):
+    container_a = Container({'a': ivy.array([1], dev=dev),
+                             'b': {'c': ivy.array([5], dev=dev), 'd': ivy.array([5], dev=dev)}})
+    container_b = Container({'a': ivy.array([2], dev=dev),
+                             'b': {'c': ivy.array([2], dev=dev), 'd': ivy.array([5], dev=dev)}})
     container = container_a == container_b
     assert np.allclose(ivy.to_numpy(container['a']), np.array([False]))
     assert np.allclose(ivy.to_numpy(container.a), np.array([False]))
@@ -3411,9 +3411,9 @@ def test_container_equal_to(dev_str, call):
     assert np.allclose(ivy.to_numpy(container.b.d), np.array([True]))
 
 
-def test_container_scalar_not_equal_to(dev_str, call):
-    container = Container({'a': ivy.array([1], dev_str=dev_str),
-                           'b': {'c': ivy.array([2], dev_str=dev_str), 'd': ivy.array([3], dev_str=dev_str)}})
+def test_container_scalar_not_equal_to(dev, call):
+    container = Container({'a': ivy.array([1], dev=dev),
+                           'b': {'c': ivy.array([2], dev=dev), 'd': ivy.array([3], dev=dev)}})
     container = container != 2
     assert np.allclose(ivy.to_numpy(container['a']), np.array([True]))
     assert np.allclose(ivy.to_numpy(container.a), np.array([True]))
@@ -3423,9 +3423,9 @@ def test_container_scalar_not_equal_to(dev_str, call):
     assert np.allclose(ivy.to_numpy(container.b.d), np.array([True]))
 
 
-def test_container_reverse_scalar_not_equal_to(dev_str, call):
-    container = Container({'a': ivy.array([1], dev_str=dev_str),
-                           'b': {'c': ivy.array([2], dev_str=dev_str), 'd': ivy.array([3], dev_str=dev_str)}})
+def test_container_reverse_scalar_not_equal_to(dev, call):
+    container = Container({'a': ivy.array([1], dev=dev),
+                           'b': {'c': ivy.array([2], dev=dev), 'd': ivy.array([3], dev=dev)}})
     container = 2 != container
     assert np.allclose(ivy.to_numpy(container['a']), np.array([True]))
     assert np.allclose(ivy.to_numpy(container.a), np.array([True]))
@@ -3435,11 +3435,11 @@ def test_container_reverse_scalar_not_equal_to(dev_str, call):
     assert np.allclose(ivy.to_numpy(container.b.d), np.array([True]))
 
 
-def test_container_not_equal_to(dev_str, call):
-    container_a = Container({'a': ivy.array([1], dev_str=dev_str),
-                             'b': {'c': ivy.array([5], dev_str=dev_str), 'd': ivy.array([5], dev_str=dev_str)}})
-    container_b = Container({'a': ivy.array([2], dev_str=dev_str),
-                             'b': {'c': ivy.array([2], dev_str=dev_str), 'd': ivy.array([5], dev_str=dev_str)}})
+def test_container_not_equal_to(dev, call):
+    container_a = Container({'a': ivy.array([1], dev=dev),
+                             'b': {'c': ivy.array([5], dev=dev), 'd': ivy.array([5], dev=dev)}})
+    container_b = Container({'a': ivy.array([2], dev=dev),
+                             'b': {'c': ivy.array([2], dev=dev), 'd': ivy.array([5], dev=dev)}})
     container = container_a != container_b
     assert np.allclose(ivy.to_numpy(container['a']), np.array([True]))
     assert np.allclose(ivy.to_numpy(container.a), np.array([True]))
@@ -3449,9 +3449,9 @@ def test_container_not_equal_to(dev_str, call):
     assert np.allclose(ivy.to_numpy(container.b.d), np.array([False]))
 
 
-def test_container_scalar_greater_than(dev_str, call):
-    container = Container({'a': ivy.array([1], dev_str=dev_str),
-                           'b': {'c': ivy.array([2], dev_str=dev_str), 'd': ivy.array([3], dev_str=dev_str)}})
+def test_container_scalar_greater_than(dev, call):
+    container = Container({'a': ivy.array([1], dev=dev),
+                           'b': {'c': ivy.array([2], dev=dev), 'd': ivy.array([3], dev=dev)}})
     container = container > 2
     assert np.allclose(ivy.to_numpy(container['a']), np.array([False]))
     assert np.allclose(ivy.to_numpy(container.a), np.array([False]))
@@ -3461,9 +3461,9 @@ def test_container_scalar_greater_than(dev_str, call):
     assert np.allclose(ivy.to_numpy(container.b.d), np.array([True]))
 
 
-def test_container_reverse_scalar_greater_than(dev_str, call):
-    container = Container({'a': ivy.array([1], dev_str=dev_str),
-                           'b': {'c': ivy.array([2], dev_str=dev_str), 'd': ivy.array([3], dev_str=dev_str)}})
+def test_container_reverse_scalar_greater_than(dev, call):
+    container = Container({'a': ivy.array([1], dev=dev),
+                           'b': {'c': ivy.array([2], dev=dev), 'd': ivy.array([3], dev=dev)}})
     container = 2 > container
     assert np.allclose(ivy.to_numpy(container['a']), np.array([True]))
     assert np.allclose(ivy.to_numpy(container.a), np.array([True]))
@@ -3473,11 +3473,11 @@ def test_container_reverse_scalar_greater_than(dev_str, call):
     assert np.allclose(ivy.to_numpy(container.b.d), np.array([False]))
 
 
-def test_container_greater_than(dev_str, call):
-    container_a = Container({'a': ivy.array([1], dev_str=dev_str),
-                             'b': {'c': ivy.array([5], dev_str=dev_str), 'd': ivy.array([5], dev_str=dev_str)}})
-    container_b = Container({'a': ivy.array([2], dev_str=dev_str),
-                             'b': {'c': ivy.array([2], dev_str=dev_str), 'd': ivy.array([5], dev_str=dev_str)}})
+def test_container_greater_than(dev, call):
+    container_a = Container({'a': ivy.array([1], dev=dev),
+                             'b': {'c': ivy.array([5], dev=dev), 'd': ivy.array([5], dev=dev)}})
+    container_b = Container({'a': ivy.array([2], dev=dev),
+                             'b': {'c': ivy.array([2], dev=dev), 'd': ivy.array([5], dev=dev)}})
     container = container_a > container_b
     assert np.allclose(ivy.to_numpy(container['a']), np.array([False]))
     assert np.allclose(ivy.to_numpy(container.a), np.array([False]))
@@ -3487,9 +3487,9 @@ def test_container_greater_than(dev_str, call):
     assert np.allclose(ivy.to_numpy(container.b.d), np.array([False]))
 
 
-def test_container_scalar_greater_than_or_equal_to(dev_str, call):
-    container = Container({'a': ivy.array([1], dev_str=dev_str),
-                           'b': {'c': ivy.array([2], dev_str=dev_str), 'd': ivy.array([3], dev_str=dev_str)}})
+def test_container_scalar_greater_than_or_equal_to(dev, call):
+    container = Container({'a': ivy.array([1], dev=dev),
+                           'b': {'c': ivy.array([2], dev=dev), 'd': ivy.array([3], dev=dev)}})
     container = container >= 2
     assert np.allclose(ivy.to_numpy(container['a']), np.array([False]))
     assert np.allclose(ivy.to_numpy(container.a), np.array([False]))
@@ -3499,9 +3499,9 @@ def test_container_scalar_greater_than_or_equal_to(dev_str, call):
     assert np.allclose(ivy.to_numpy(container.b.d), np.array([True]))
 
 
-def test_container_reverse_scalar_greater_than_or_equal_to(dev_str, call):
-    container = Container({'a': ivy.array([1], dev_str=dev_str),
-                           'b': {'c': ivy.array([2], dev_str=dev_str), 'd': ivy.array([3], dev_str=dev_str)}})
+def test_container_reverse_scalar_greater_than_or_equal_to(dev, call):
+    container = Container({'a': ivy.array([1], dev=dev),
+                           'b': {'c': ivy.array([2], dev=dev), 'd': ivy.array([3], dev=dev)}})
     container = 2 >= container
     assert np.allclose(ivy.to_numpy(container['a']), np.array([True]))
     assert np.allclose(ivy.to_numpy(container.a), np.array([True]))
@@ -3511,11 +3511,11 @@ def test_container_reverse_scalar_greater_than_or_equal_to(dev_str, call):
     assert np.allclose(ivy.to_numpy(container.b.d), np.array([False]))
 
 
-def test_container_greater_than_or_equal_to(dev_str, call):
-    container_a = Container({'a': ivy.array([1], dev_str=dev_str),
-                             'b': {'c': ivy.array([5], dev_str=dev_str), 'd': ivy.array([5], dev_str=dev_str)}})
-    container_b = Container({'a': ivy.array([2], dev_str=dev_str),
-                             'b': {'c': ivy.array([2], dev_str=dev_str), 'd': ivy.array([5], dev_str=dev_str)}})
+def test_container_greater_than_or_equal_to(dev, call):
+    container_a = Container({'a': ivy.array([1], dev=dev),
+                             'b': {'c': ivy.array([5], dev=dev), 'd': ivy.array([5], dev=dev)}})
+    container_b = Container({'a': ivy.array([2], dev=dev),
+                             'b': {'c': ivy.array([2], dev=dev), 'd': ivy.array([5], dev=dev)}})
     container = container_a >= container_b
     assert np.allclose(ivy.to_numpy(container['a']), np.array([False]))
     assert np.allclose(ivy.to_numpy(container.a), np.array([False]))
@@ -3525,9 +3525,9 @@ def test_container_greater_than_or_equal_to(dev_str, call):
     assert np.allclose(ivy.to_numpy(container.b.d), np.array([True]))
 
 
-def test_container_scalar_and(dev_str, call):
-    container = Container({'a': ivy.array([True], dev_str=dev_str),
-                           'b': {'c': ivy.array([True], dev_str=dev_str), 'd': ivy.array([False], dev_str=dev_str)}})
+def test_container_scalar_and(dev, call):
+    container = Container({'a': ivy.array([True], dev=dev),
+                           'b': {'c': ivy.array([True], dev=dev), 'd': ivy.array([False], dev=dev)}})
     container = container & True
     # ToDo: work out why "container and True" does not work. Perhaps bool(container) is called first implicitly?
     assert np.allclose(ivy.to_numpy(container['a']), np.array([True]))
@@ -3538,9 +3538,9 @@ def test_container_scalar_and(dev_str, call):
     assert np.allclose(ivy.to_numpy(container.b.d), np.array([False]))
 
 
-def test_container_reverse_scalar_and(dev_str, call):
-    container = Container({'a': ivy.array([True], dev_str=dev_str),
-                           'b': {'c': ivy.array([True], dev_str=dev_str), 'd': ivy.array([False], dev_str=dev_str)}})
+def test_container_reverse_scalar_and(dev, call):
+    container = Container({'a': ivy.array([True], dev=dev),
+                           'b': {'c': ivy.array([True], dev=dev), 'd': ivy.array([False], dev=dev)}})
     container = True and container
     assert np.allclose(ivy.to_numpy(container['a']), np.array([True]))
     assert np.allclose(ivy.to_numpy(container.a), np.array([True]))
@@ -3550,11 +3550,11 @@ def test_container_reverse_scalar_and(dev_str, call):
     assert np.allclose(ivy.to_numpy(container.b.d), np.array([False]))
 
 
-def test_container_and(dev_str, call):
-    container_a = Container({'a': ivy.array([True], dev_str=dev_str),
-                             'b': {'c': ivy.array([True], dev_str=dev_str), 'd': ivy.array([False], dev_str=dev_str)}})
-    container_b = Container({'a': ivy.array([False], dev_str=dev_str),
-                             'b': {'c': ivy.array([True], dev_str=dev_str), 'd': ivy.array([False], dev_str=dev_str)}})
+def test_container_and(dev, call):
+    container_a = Container({'a': ivy.array([True], dev=dev),
+                             'b': {'c': ivy.array([True], dev=dev), 'd': ivy.array([False], dev=dev)}})
+    container_b = Container({'a': ivy.array([False], dev=dev),
+                             'b': {'c': ivy.array([True], dev=dev), 'd': ivy.array([False], dev=dev)}})
     container = container_a and container_b
     assert np.allclose(ivy.to_numpy(container['a']), np.array([False]))
     assert np.allclose(ivy.to_numpy(container.a), np.array([False]))
@@ -3564,9 +3564,9 @@ def test_container_and(dev_str, call):
     assert np.allclose(ivy.to_numpy(container.b.d), np.array([False]))
 
 
-def test_container_scalar_or(dev_str, call):
-    container = Container({'a': ivy.array([True], dev_str=dev_str),
-                           'b': {'c': ivy.array([True], dev_str=dev_str), 'd': ivy.array([False], dev_str=dev_str)}})
+def test_container_scalar_or(dev, call):
+    container = Container({'a': ivy.array([True], dev=dev),
+                           'b': {'c': ivy.array([True], dev=dev), 'd': ivy.array([False], dev=dev)}})
     container = container or False
     assert np.allclose(ivy.to_numpy(container['a']), np.array([True]))
     assert np.allclose(ivy.to_numpy(container.a), np.array([True]))
@@ -3576,9 +3576,9 @@ def test_container_scalar_or(dev_str, call):
     assert np.allclose(ivy.to_numpy(container.b.d), np.array([False]))
 
 
-def test_container_reverse_scalar_or(dev_str, call):
-    container = Container({'a': ivy.array([True], dev_str=dev_str),
-                           'b': {'c': ivy.array([True], dev_str=dev_str), 'd': ivy.array([False], dev_str=dev_str)}})
+def test_container_reverse_scalar_or(dev, call):
+    container = Container({'a': ivy.array([True], dev=dev),
+                           'b': {'c': ivy.array([True], dev=dev), 'd': ivy.array([False], dev=dev)}})
     container = container or False
     assert np.allclose(ivy.to_numpy(container['a']), np.array([True]))
     assert np.allclose(ivy.to_numpy(container.a), np.array([True]))
@@ -3588,11 +3588,11 @@ def test_container_reverse_scalar_or(dev_str, call):
     assert np.allclose(ivy.to_numpy(container.b.d), np.array([False]))
 
 
-def test_container_or(dev_str, call):
-    container_a = Container({'a': ivy.array([True], dev_str=dev_str),
-                             'b': {'c': ivy.array([True], dev_str=dev_str), 'd': ivy.array([False], dev_str=dev_str)}})
-    container_b = Container({'a': ivy.array([False], dev_str=dev_str),
-                             'b': {'c': ivy.array([True], dev_str=dev_str), 'd': ivy.array([False], dev_str=dev_str)}})
+def test_container_or(dev, call):
+    container_a = Container({'a': ivy.array([True], dev=dev),
+                             'b': {'c': ivy.array([True], dev=dev), 'd': ivy.array([False], dev=dev)}})
+    container_b = Container({'a': ivy.array([False], dev=dev),
+                             'b': {'c': ivy.array([True], dev=dev), 'd': ivy.array([False], dev=dev)}})
     container = container_a or container_b
     assert np.allclose(ivy.to_numpy(container['a']), np.array([True]))
     assert np.allclose(ivy.to_numpy(container.a), np.array([True]))
@@ -3602,9 +3602,9 @@ def test_container_or(dev_str, call):
     assert np.allclose(ivy.to_numpy(container.b.d), np.array([False]))
 
 
-def test_container_not(dev_str, call):
-    container = ~Container({'a': ivy.array([True], dev_str=dev_str),
-                            'b': {'c': ivy.array([True], dev_str=dev_str), 'd': ivy.array([False], dev_str=dev_str)}})
+def test_container_not(dev, call):
+    container = ~Container({'a': ivy.array([True], dev=dev),
+                            'b': {'c': ivy.array([True], dev=dev), 'd': ivy.array([False], dev=dev)}})
     assert np.allclose(ivy.to_numpy(container['a']), np.array([False]))
     assert np.allclose(ivy.to_numpy(container.a), np.array([False]))
     assert np.allclose(ivy.to_numpy(container['b']['c']), np.array([False]))
@@ -3613,12 +3613,12 @@ def test_container_not(dev_str, call):
     assert np.allclose(ivy.to_numpy(container.b.d), np.array([True]))
 
 
-def test_container_scalar_xor(dev_str, call):
+def test_container_scalar_xor(dev, call):
     if call is helpers.mx_call:
         # MXnet arrays do not overload the ^ operator, can add if explicit ivy.logical_xor is implemented at some point
         pytest.skip()
-    container = Container({'a': ivy.array([True], dev_str=dev_str),
-                           'b': {'c': ivy.array([True], dev_str=dev_str), 'd': ivy.array([False], dev_str=dev_str)}})
+    container = Container({'a': ivy.array([True], dev=dev),
+                           'b': {'c': ivy.array([True], dev=dev), 'd': ivy.array([False], dev=dev)}})
     container = container != True
     assert np.allclose(ivy.to_numpy(container['a']), np.array([False]))
     assert np.allclose(ivy.to_numpy(container.a), np.array([False]))
@@ -3628,12 +3628,12 @@ def test_container_scalar_xor(dev_str, call):
     assert np.allclose(ivy.to_numpy(container.b.d), np.array([True]))
 
 
-def test_container_reverse_scalar_xor(dev_str, call):
+def test_container_reverse_scalar_xor(dev, call):
     if call is helpers.mx_call:
         # MXnet arrays do not overload the ^ operator, can add if explicit ivy.logical_xor is implemented at some point
         pytest.skip()
-    container = Container({'a': ivy.array([True], dev_str=dev_str),
-                           'b': {'c': ivy.array([True], dev_str=dev_str), 'd': ivy.array([False], dev_str=dev_str)}})
+    container = Container({'a': ivy.array([True], dev=dev),
+                           'b': {'c': ivy.array([True], dev=dev), 'd': ivy.array([False], dev=dev)}})
     container = False != container
     assert np.allclose(ivy.to_numpy(container['a']), np.array([True]))
     assert np.allclose(ivy.to_numpy(container.a), np.array([True]))
@@ -3643,14 +3643,14 @@ def test_container_reverse_scalar_xor(dev_str, call):
     assert np.allclose(ivy.to_numpy(container.b.d), np.array([False]))
 
 
-def test_container_xor(dev_str, call):
+def test_container_xor(dev, call):
     if call is helpers.mx_call:
         # MXnet arrays do not overload the ^ operator, can add if explicit ivy.logical_xor is implemented at some point
         pytest.skip()
-    container_a = Container({'a': ivy.array([True], dev_str=dev_str),
-                             'b': {'c': ivy.array([True], dev_str=dev_str), 'd': ivy.array([False], dev_str=dev_str)}})
-    container_b = Container({'a': ivy.array([False], dev_str=dev_str),
-                             'b': {'c': ivy.array([True], dev_str=dev_str), 'd': ivy.array([False], dev_str=dev_str)}})
+    container_a = Container({'a': ivy.array([True], dev=dev),
+                             'b': {'c': ivy.array([True], dev=dev), 'd': ivy.array([False], dev=dev)}})
+    container_b = Container({'a': ivy.array([False], dev=dev),
+                             'b': {'c': ivy.array([True], dev=dev), 'd': ivy.array([False], dev=dev)}})
     container = container_a != container_b
     assert np.allclose(ivy.to_numpy(container['a']), np.array([True]))
     assert np.allclose(ivy.to_numpy(container.a), np.array([True]))
@@ -3660,27 +3660,27 @@ def test_container_xor(dev_str, call):
     assert np.allclose(ivy.to_numpy(container.b.d), np.array([False]))
 
 
-def test_container_shape(dev_str, call):
-    dict_in = {'a': ivy.array([[[1.], [2.], [3.]]], dev_str=dev_str),
-               'b': {'c': ivy.array([[[2.], [4.], [6.]]], dev_str=dev_str),
-                     'd': ivy.array([[[3.], [6.], [9.]]], dev_str=dev_str)}}
+def test_container_shape(dev, call):
+    dict_in = {'a': ivy.array([[[1.], [2.], [3.]]], dev=dev),
+               'b': {'c': ivy.array([[[2.], [4.], [6.]]], dev=dev),
+                     'd': ivy.array([[[3.], [6.], [9.]]], dev=dev)}}
     container = Container(dict_in)
     assert container.shape == [1, 3, 1]
-    dict_in = {'a': ivy.array([[[1.], [2.], [3.]]], dev_str=dev_str),
-               'b': {'c': ivy.array([[[2., 3.], [4., 5.], [6., 7.]]], dev_str=dev_str),
-                     'd': ivy.array([[[3.], [6.], [9.]]], dev_str=dev_str)}}
+    dict_in = {'a': ivy.array([[[1.], [2.], [3.]]], dev=dev),
+               'b': {'c': ivy.array([[[2., 3.], [4., 5.], [6., 7.]]], dev=dev),
+                     'd': ivy.array([[[3.], [6.], [9.]]], dev=dev)}}
     container = Container(dict_in)
     assert container.shape == [1, 3, None]
-    dict_in = {'a': ivy.array([[[1., 2.], [2., 3.], [3., 4.]]], dev_str=dev_str),
-               'b': {'c': ivy.array([[[2., 3.], [4., 5.], [6., 7.]]], dev_str=dev_str),
-                     'd': ivy.array([[[3., 4.], [6., 7.], [9., 10.]]], dev_str=dev_str)}}
+    dict_in = {'a': ivy.array([[[1., 2.], [2., 3.], [3., 4.]]], dev=dev),
+               'b': {'c': ivy.array([[[2., 3.], [4., 5.], [6., 7.]]], dev=dev),
+                     'd': ivy.array([[[3., 4.], [6., 7.], [9., 10.]]], dev=dev)}}
     container = Container(dict_in)
     assert container.shape == [1, 3, 2]
 
 
-def test_container_shapes(dev_str, call):
-    dict_in = {'a': ivy.array([[[1.], [2.], [3.]]], dev_str=dev_str),
-               'b': {'c': ivy.array([[[2.], [4.]]], dev_str=dev_str), 'd': ivy.array([[9.]], dev_str=dev_str)}}
+def test_container_shapes(dev, call):
+    dict_in = {'a': ivy.array([[[1.], [2.], [3.]]], dev=dev),
+               'b': {'c': ivy.array([[[2.], [4.]]], dev=dev), 'd': ivy.array([[9.]], dev=dev)}}
     container_shapes = Container(dict_in).shapes
     assert list(container_shapes['a']) == [1, 3, 1]
     assert list(container_shapes.a) == [1, 3, 1]
@@ -3690,18 +3690,18 @@ def test_container_shapes(dev_str, call):
     assert list(container_shapes.b.d) == [1, 1]
 
 
-def test_container_dev_str(dev_str, call):
-    dict_in = {'a': ivy.array([[[1.], [2.], [3.]]], dev_str=dev_str),
-               'b': {'c': ivy.array([[[2.], [4.], [6.]]], dev_str=dev_str),
-                     'd': ivy.array([[[3.], [6.], [9.]]], dev_str=dev_str)}}
+def test_container_dev(dev, call):
+    dict_in = {'a': ivy.array([[[1.], [2.], [3.]]], dev=dev),
+               'b': {'c': ivy.array([[[2.], [4.], [6.]]], dev=dev),
+                     'd': ivy.array([[[3.], [6.], [9.]]], dev=dev)}}
     container = Container(dict_in)
-    assert container.dev_str == dev_str
+    assert container.dev == dev
 
 
-def test_container_create_if_absent(dev_str, call):
-    dict_in = {'a': ivy.array([[[1.], [2.], [3.]]], dev_str=dev_str),
-               'b': {'c': ivy.array([[[2.], [4.], [6.]]], dev_str=dev_str),
-                     'd': ivy.array([[[3.], [6.], [9.]]], dev_str=dev_str)}}
+def test_container_create_if_absent(dev, call):
+    dict_in = {'a': ivy.array([[[1.], [2.], [3.]]], dev=dev),
+               'b': {'c': ivy.array([[[2.], [4.], [6.]]], dev=dev),
+                     'd': ivy.array([[[3.], [6.], [9.]]], dev=dev)}}
 
     # depth 1
     container = Container(dict_in)
@@ -3715,22 +3715,22 @@ def test_container_create_if_absent(dev_str, call):
     assert np.allclose(ivy.to_numpy(container.f.g), np.array([[[5.], [10.], [15.]]]))
 
 
-def test_container_if_exists(dev_str, call):
-    dict_in = {'a': ivy.array([[[1.], [2.], [3.]]], dev_str=dev_str),
-               'b': {'c': ivy.array([[[2.], [4.], [6.]]], dev_str=dev_str),
-                     'd': ivy.array([[[3.], [6.], [9.]]], dev_str=dev_str)}}
+def test_container_if_exists(dev, call):
+    dict_in = {'a': ivy.array([[[1.], [2.], [3.]]], dev=dev),
+               'b': {'c': ivy.array([[[2.], [4.], [6.]]], dev=dev),
+                     'd': ivy.array([[[3.], [6.], [9.]]], dev=dev)}}
     container = Container(dict_in)
     assert np.allclose(ivy.to_numpy(container.if_exists('a')), np.array([[[1.], [2.], [3.]]]))
     assert 'c' not in container
     assert container.if_exists('c') is None
-    container['c'] = ivy.array([[[1.], [2.], [3.]]], dev_str=dev_str)
+    container['c'] = ivy.array([[[1.], [2.], [3.]]], dev=dev)
     assert np.allclose(ivy.to_numpy(container.if_exists('c')), np.array([[[1.], [2.], [3.]]]))
     assert container.if_exists('d') is None
-    container.d = ivy.array([[[1.], [2.], [3.]]], dev_str=dev_str)
+    container.d = ivy.array([[[1.], [2.], [3.]]], dev=dev)
     assert np.allclose(ivy.to_numpy(container.if_exists('d')), np.array([[[1.], [2.], [3.]]]))
 
 
-def test_jax_pytree_compatibility(dev_str, call):
+def test_jax_pytree_compatibility(dev, call):
 
     if call is not helpers.jnp_call:
         pytest.skip()
@@ -3739,8 +3739,8 @@ def test_jax_pytree_compatibility(dev_str, call):
     from jax.tree_util import tree_flatten
 
     # dict in
-    dict_in = {'a': ivy.array([1], dev_str=dev_str),
-               'b': {'c': ivy.array([2], dev_str=dev_str), 'd': ivy.array([3], dev_str=dev_str)}}
+    dict_in = {'a': ivy.array([1], dev=dev),
+               'b': {'c': ivy.array([2], dev=dev), 'd': ivy.array([3], dev=dev)}}
 
     # container
     container = Container(dict_in)
@@ -3756,15 +3756,15 @@ def test_jax_pytree_compatibility(dev_str, call):
         assert np.array_equal(ivy.to_numpy(cont_values[i]), ivy.to_numpy(true_val))
 
 
-def test_container_from_queues(dev_str, call):
+def test_container_from_queues(dev, call):
 
-    if 'gpu' in dev_str:
+    if 'gpu' in dev:
         # Cannot re-initialize CUDA in forked subprocess. 'spawn' start method must be used.
         pytest.skip()
 
     if ivy.gpu_is_available() and call is helpers.jnp_call:
         # Not found a way to set default device for JAX, and this causes issues with multiprocessing and CUDA,
-        # even when dev_str=cpu
+        # even when dev=cpu
         # ToDo: find a fix for this problem ^^
         pytest.skip()
 
@@ -3775,7 +3775,7 @@ def test_container_from_queues(dev_str, call):
                 keep_going = in_queue.get(timeout=0.1)
             except queue.Empty:
                 continue
-            out_queue.put({'a': [ivy.to_native(ivy.array([1., 2., 3.], dev_str=dev_str)) * worker_id] * load_size})
+            out_queue.put({'a': [ivy.to_native(ivy.array([1., 2., 3.], dev=dev)) * worker_id] * load_size})
 
     workers = list()
     in_queues = list()

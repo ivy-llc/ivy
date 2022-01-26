@@ -16,9 +16,9 @@ dev = lambda x: x.context
 dev.__name__ = 'dev'
 
 
-def to_dev(x, dev_str=None):
-    if dev_str is not None:
-        return x.as_in_context(str_to_dev(dev_str))
+def to_dev(x, dev=None):
+    if dev is not None:
+        return x.as_in_context(str_to_dev(dev))
     return x
 
 
@@ -29,20 +29,20 @@ def dev_to_str(dev_in):
     return device_type + (':' + (str(dev_in.device_id) if dev_in.device_id is not None else '0'))
 
 
-def str_to_dev(dev_str):
-    dev_split = dev_str.split(':')
-    dev_str = dev_split[0]
+def str_to_dev(dev):
+    dev_split = dev.split(':')
+    dev = dev_split[0]
     if len(dev_split) > 1:
         idx = int(dev_split[1])
     else:
         idx = 0
-    return _mx.context.Context(dev_str, idx)
+    return _mx.context.Context(dev, idx)
 
 
-clear_mem_on_dev = lambda dev_str: None
-dev_str = lambda x: dev_to_str(dev(x))
-dev_str.__name__ = 'dev_str'
-_callable_dev_str = dev_str
+clear_mem_on_dev = lambda dev: None
+dev = lambda x: dev_to_str(dev(x))
+dev.__name__ = 'dev'
+_callable_dev = dev
 gpu_is_available = lambda: _mx.context.num_gpus() > 0
 num_gpus = lambda: _mx.context.num_gpus()
 tpu_is_available = lambda: False

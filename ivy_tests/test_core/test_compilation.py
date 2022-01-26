@@ -46,7 +46,7 @@ def _fn_2(x, with_non_compiled: bool = False):
     "tensor_fn", [ivy.array, helpers.var_fn])
 @pytest.mark.parametrize(
     "with_array_caching", [True, False])
-def test_compile(x, dtype, tensor_fn, with_array_caching, dev_str, call):
+def test_compile(x, dtype, tensor_fn, with_array_caching, dev, call):
     if ivy.wrapped_mode():
         # Wrapped mode does not yet support function compilation
         pytest.skip()
@@ -60,9 +60,9 @@ def test_compile(x, dtype, tensor_fn, with_array_caching, dev_str, call):
     # type test
     assert callable(comp_fn)
     # value test
-    x = tensor_fn(x, dtype, dev_str)
+    x = tensor_fn(x, dtype, dev)
     non_compiled_return = _fn_1(x)
-    x = tensor_fn(x, dtype, dev_str)
+    x = tensor_fn(x, dtype, dev)
     compiled_return = comp_fn(x)
     assert np.allclose(ivy.to_numpy(non_compiled_return), ivy.to_numpy(compiled_return))
 
@@ -71,9 +71,9 @@ def test_compile(x, dtype, tensor_fn, with_array_caching, dev_str, call):
     # type test
     assert callable(comp_fn)
     # value test
-    x = tensor_fn(x, dtype, dev_str)
+    x = tensor_fn(x, dtype, dev)
     non_compiled_return = _fn_2(x)
-    x = tensor_fn(x, dtype, dev_str)
+    x = tensor_fn(x, dtype, dev)
     compiled_return = comp_fn(x)
     assert np.allclose(ivy.to_numpy(non_compiled_return), ivy.to_numpy(compiled_return))
 
@@ -89,7 +89,7 @@ def test_compile(x, dtype, tensor_fn, with_array_caching, dev_str, call):
     "with_non_compiled", [True, False])
 @pytest.mark.parametrize(
     "with_array_caching", [True, False])
-def test_compile_graph_inplace(x_raw, dtype, tensor_fn, with_non_compiled, with_array_caching, dev_str,
+def test_compile_graph_inplace(x_raw, dtype, tensor_fn, with_non_compiled, with_array_caching, dev,
                                compile_graph, call):
     if ivy.wrapped_mode() or not compile_graph:
         # Wrapped mode does not yet support function compilation
@@ -103,7 +103,7 @@ def test_compile_graph_inplace(x_raw, dtype, tensor_fn, with_non_compiled, with_
         pytest.skip()
 
     # function 1
-    x = tensor_fn(x_raw, dtype, dev_str)
+    x = tensor_fn(x_raw, dtype, dev)
     fname = 'fn1_inplace_{}_{}'.format(with_non_compiled, with_array_caching)
     ivy.show_graph(_fn_1, x, with_non_compiled, output_connected_only=False, with_array_caching=with_array_caching,
                    fname=fname + '.png')
@@ -113,14 +113,14 @@ def test_compile_graph_inplace(x_raw, dtype, tensor_fn, with_non_compiled, with_
     assert callable(comp_fn)
     # value test
     start_time = time.perf_counter()
-    x = tensor_fn(x_raw, dtype, dev_str)
+    x = tensor_fn(x_raw, dtype, dev)
     non_compiled_return = _fn_1(x, with_non_compiled)
     non_comp_time_taken = time.perf_counter() - start_time
     assert len(comp_fn.__self__._all_param_dict) == 2
     assert comp_fn.__self__.params_all_empty()
     assert len(list(comp_fn.__self__._all_functions)) == 1
     start_time = time.perf_counter()
-    x = tensor_fn(x_raw, dtype, dev_str)
+    x = tensor_fn(x_raw, dtype, dev)
     compiled_return = comp_fn(x, with_non_compiled)
     comp_time_taken = time.perf_counter() - start_time
     assert len(comp_fn.__self__._all_param_dict) == 2
@@ -130,7 +130,7 @@ def test_compile_graph_inplace(x_raw, dtype, tensor_fn, with_non_compiled, with_
     assert comp_time_taken < non_comp_time_taken
 
     # function 2
-    x = tensor_fn(x_raw, dtype, dev_str)
+    x = tensor_fn(x_raw, dtype, dev)
     fname = 'fn2_inplace_{}_{}.png'.format(with_non_compiled, with_array_caching)
     ivy.show_graph(_fn_2, x, with_non_compiled, output_connected_only=False, with_array_caching=with_array_caching,
                    fname=fname + '.png')
@@ -140,14 +140,14 @@ def test_compile_graph_inplace(x_raw, dtype, tensor_fn, with_non_compiled, with_
     assert callable(comp_fn)
     # value test
     start_time = time.perf_counter()
-    x = tensor_fn(x_raw, dtype, dev_str)
+    x = tensor_fn(x_raw, dtype, dev)
     non_compiled_return = _fn_2(x, with_non_compiled)
     non_comp_time_taken = time.perf_counter() - start_time
     assert len(comp_fn.__self__._all_param_dict) == 4
     assert comp_fn.__self__.params_all_empty()
     assert len(list(comp_fn.__self__._all_functions)) == 3
     start_time = time.perf_counter()
-    x = tensor_fn(x_raw, dtype, dev_str)
+    x = tensor_fn(x_raw, dtype, dev)
     compiled_return = comp_fn(x, with_non_compiled)
     comp_time_taken = time.perf_counter() - start_time
     assert len(comp_fn.__self__._all_param_dict) == 4
@@ -196,7 +196,7 @@ def _fn_4(x, with_non_compiled: bool = False, with_internal_gen: bool = False):
     "with_internal_gen", [True, False])
 @pytest.mark.parametrize(
     "with_array_caching", [True, False])
-def test_compile_graph(x_raw, dtype, tensor_fn, with_non_compiled, with_internal_gen, with_array_caching, dev_str,
+def test_compile_graph(x_raw, dtype, tensor_fn, with_non_compiled, with_internal_gen, with_array_caching, dev,
                        compile_graph, call):
     if ivy.wrapped_mode() or not compile_graph:
         # Wrapped mode does not yet support function compilation
@@ -210,7 +210,7 @@ def test_compile_graph(x_raw, dtype, tensor_fn, with_non_compiled, with_internal
         pytest.skip()
 
     # function 3
-    x = tensor_fn(x_raw, dtype, dev_str)
+    x = tensor_fn(x_raw, dtype, dev)
     fname = 'fn3_{}_{}_{}'.format(with_non_compiled, with_internal_gen, with_array_caching)
     ivy.show_graph(_fn_3, x, with_non_compiled, with_internal_gen, output_connected_only=False,
                    with_array_caching=with_array_caching, fname=fname + '.png')
@@ -220,7 +220,7 @@ def test_compile_graph(x_raw, dtype, tensor_fn, with_non_compiled, with_internal
     assert callable(comp_fn)
     # value test
     start_time = time.perf_counter()
-    x = tensor_fn(x_raw, dtype, dev_str)
+    x = tensor_fn(x_raw, dtype, dev)
     non_compiled_return = _fn_3(x, with_non_compiled, with_internal_gen)
     non_comp_time_taken = time.perf_counter() - start_time
     assert len(comp_fn.__self__._all_param_dict) ==\
@@ -229,7 +229,7 @@ def test_compile_graph(x_raw, dtype, tensor_fn, with_non_compiled, with_internal
     assert len(list(comp_fn.__self__._all_functions)) ==\
            2 + (1 if with_internal_gen else 0) + (0 if with_array_caching else (1 if with_internal_gen else 0))
     start_time = time.perf_counter()
-    x = tensor_fn(x_raw, dtype, dev_str)
+    x = tensor_fn(x_raw, dtype, dev)
     compiled_return = comp_fn(x, with_non_compiled, with_internal_gen)
     comp_time_taken = time.perf_counter() - start_time
     assert len(comp_fn.__self__._all_param_dict) ==\
@@ -241,7 +241,7 @@ def test_compile_graph(x_raw, dtype, tensor_fn, with_non_compiled, with_internal
     assert comp_time_taken < non_comp_time_taken
 
     # function 4
-    x = tensor_fn(x_raw, dtype, dev_str)
+    x = tensor_fn(x_raw, dtype, dev)
     fname = 'fn4_{}_{}_{}'.format(with_non_compiled, with_internal_gen, with_array_caching)
     ivy.show_graph(_fn_4, x, with_non_compiled, with_internal_gen, output_connected_only=False,
                    with_array_caching=with_array_caching, fname=fname + '.png')
@@ -251,7 +251,7 @@ def test_compile_graph(x_raw, dtype, tensor_fn, with_non_compiled, with_internal
     assert callable(comp_fn)
     # value test
     start_time = time.perf_counter()
-    x = tensor_fn(x_raw, dtype, dev_str)
+    x = tensor_fn(x_raw, dtype, dev)
     non_compiled_return = _fn_4(x, with_non_compiled, with_internal_gen)
     non_comp_time_taken = time.perf_counter() - start_time
     assert len(comp_fn.__self__._all_param_dict) ==\
@@ -260,7 +260,7 @@ def test_compile_graph(x_raw, dtype, tensor_fn, with_non_compiled, with_internal
     assert len(list(comp_fn.__self__._all_functions)) ==\
            10 + (1 if with_internal_gen else 0) + (0 if with_array_caching else (1 if with_internal_gen else 0))
     start_time = time.perf_counter()
-    x = tensor_fn(x_raw, dtype, dev_str)
+    x = tensor_fn(x_raw, dtype, dev)
     compiled_return = comp_fn(x, with_non_compiled, with_internal_gen)
     comp_time_taken = time.perf_counter() - start_time
     assert len(comp_fn.__self__._all_param_dict) ==\
@@ -294,7 +294,7 @@ def _rand_fn(x, with_non_compiled: bool = False):
 @pytest.mark.parametrize(
     "with_array_caching", [True, False])
 def test_compile_graph_w_random(x_raw, dtype, tensor_fn, with_non_compiled, include_generators, with_array_caching,
-                                dev_str, compile_graph, call):
+                                dev, compile_graph, call):
     if ivy.wrapped_mode() or not compile_graph:
         # Wrapped mode does not yet support function compilation
         pytest.skip()
@@ -307,7 +307,7 @@ def test_compile_graph_w_random(x_raw, dtype, tensor_fn, with_non_compiled, incl
         pytest.skip()
 
     # random function
-    x = tensor_fn(x_raw, dtype, dev_str)
+    x = tensor_fn(x_raw, dtype, dev)
     fname = 'w_random_{}_{}_{}'.format(with_non_compiled, include_generators, with_array_caching)
     ivy.show_graph(_rand_fn, x, with_non_compiled, output_connected_only=False, include_generators=include_generators,
                    with_array_caching=with_array_caching, fname=fname + '.png')
@@ -317,14 +317,14 @@ def test_compile_graph_w_random(x_raw, dtype, tensor_fn, with_non_compiled, incl
     # type test
     assert callable(comp_fn)
     # value test
-    x = tensor_fn(x_raw, dtype, dev_str)
+    x = tensor_fn(x_raw, dtype, dev)
     nc_return0 = _rand_fn(x, with_non_compiled)
     nc_return1 = _rand_fn(x, with_non_compiled)
     assert nc_return0 != nc_return1
     assert len(comp_fn.__self__._all_param_dict) == 5 if include_generators else 2
     assert comp_fn.__self__.params_all_empty()
     assert len(list(comp_fn.__self__._all_functions)) == 4 if include_generators else 2
-    x = tensor_fn(x_raw, dtype, dev_str)
+    x = tensor_fn(x_raw, dtype, dev)
     c_return0 = comp_fn(x, with_non_compiled)
     assert ivy.is_array(c_return0)
     c_return1 = comp_fn(x, with_non_compiled)
@@ -351,7 +351,7 @@ def _detach_div_fn(x):
     "tensor_fn", [ivy.array])
 @pytest.mark.parametrize(
     "with_array_caching", [True, False])
-def test_compile_graph_w_detached_divide(x_raw, dtype, tensor_fn, with_array_caching, dev_str, compile_graph, call):
+def test_compile_graph_w_detached_divide(x_raw, dtype, tensor_fn, with_array_caching, dev, compile_graph, call):
     if ivy.wrapped_mode() or not compile_graph:
         # Wrapped mode does not yet support function compilation
         pytest.skip()
@@ -364,7 +364,7 @@ def test_compile_graph_w_detached_divide(x_raw, dtype, tensor_fn, with_array_cac
         pytest.skip()
 
     # detached divide function
-    x = tensor_fn(x_raw, dtype, dev_str)
+    x = tensor_fn(x_raw, dtype, dev)
     fname = 'w_detached_divide_{}'.format(with_array_caching)
     ivy.show_graph(_detach_div_fn, x, output_connected_only=False, with_array_caching=with_array_caching,
                    fname=fname + '.png')
@@ -373,9 +373,9 @@ def test_compile_graph_w_detached_divide(x_raw, dtype, tensor_fn, with_array_cac
     # type test
     assert callable(comp_fn)
     # value test
-    x = tensor_fn(x_raw, dtype, dev_str)
+    x = tensor_fn(x_raw, dtype, dev)
     nc_return = _detach_div_fn(x)
-    x = tensor_fn(x_raw, dtype, dev_str)
+    x = tensor_fn(x_raw, dtype, dev)
     c_return = comp_fn(x)
     assert np.allclose(ivy.to_numpy(nc_return), ivy.to_numpy(c_return))
 
@@ -395,7 +395,7 @@ def _input_in_output(x, y):
     "tensor_fn", [ivy.array])
 @pytest.mark.parametrize(
     "with_array_caching", [True, False])
-def test_compile_graph_input_in_output(x_raw, dtype, tensor_fn, with_array_caching, dev_str, compile_graph, call):
+def test_compile_graph_input_in_output(x_raw, dtype, tensor_fn, with_array_caching, dev, compile_graph, call):
     if ivy.wrapped_mode() or not compile_graph:
         # Wrapped mode does not yet support function compilation
         pytest.skip()
@@ -408,8 +408,8 @@ def test_compile_graph_input_in_output(x_raw, dtype, tensor_fn, with_array_cachi
         pytest.skip()
 
     # detached divide function
-    x = tensor_fn(x_raw, dtype, dev_str)
-    y = tensor_fn(x_raw, dtype, dev_str)
+    x = tensor_fn(x_raw, dtype, dev)
+    y = tensor_fn(x_raw, dtype, dev)
     fname = 'input_in_output_{}'.format(with_array_caching)
     ivy.show_graph(_input_in_output, x, y, output_connected_only=False, with_array_caching=with_array_caching,
                    fname=fname + '.png')
@@ -418,9 +418,9 @@ def test_compile_graph_input_in_output(x_raw, dtype, tensor_fn, with_array_cachi
     # type test
     assert callable(comp_fn)
     # value test
-    x = tensor_fn(x_raw, dtype, dev_str)
+    x = tensor_fn(x_raw, dtype, dev)
     nc_ret_a, nc_ret_b = _input_in_output(x, y)
-    x = tensor_fn(x_raw, dtype, dev_str)
+    x = tensor_fn(x_raw, dtype, dev)
     c_ret_a, c_ret_b = comp_fn(x, y)
     assert np.allclose(ivy.to_numpy(nc_ret_a), ivy.to_numpy(c_ret_a))
     assert np.allclose(ivy.to_numpy(nc_ret_b), ivy.to_numpy(c_ret_b))
@@ -440,7 +440,7 @@ def _inplace_var_update(weight, grad):
     "dtype", ['float32'])
 @pytest.mark.parametrize(
     "with_array_caching", [True, False])
-def test_compile_graph_inplace_var_update(weight_n_grad, dtype, with_array_caching, dev_str, compile_graph, call):
+def test_compile_graph_inplace_var_update(weight_n_grad, dtype, with_array_caching, dev, compile_graph, call):
     if ivy.wrapped_mode() or not compile_graph:
         # Wrapped mode does not yet support function compilation
         pytest.skip()
@@ -450,7 +450,7 @@ def test_compile_graph_inplace_var_update(weight_n_grad, dtype, with_array_cachi
     # raw values
     weight_raw, grad_raw = weight_n_grad
     # as tensors
-    weight = ivy.variable(ivy.array(weight_raw, dtype, dev_str))
+    weight = ivy.variable(ivy.array(weight_raw, dtype, dev))
     # compile
     fname = 'inplace_var_update_{}'.format(with_array_caching)
     ivy.show_graph(_inplace_var_update, weight, ivy.copy_array(weight), output_connected_only=False,
@@ -461,11 +461,11 @@ def test_compile_graph_inplace_var_update(weight_n_grad, dtype, with_array_cachi
     # type test
     assert callable(comp_fn)
     # value test
-    nc_weight = ivy.variable(ivy.array(weight_raw, dtype, dev_str))
-    grad = ivy.array(grad_raw, dtype, dev_str)
+    nc_weight = ivy.variable(ivy.array(weight_raw, dtype, dev))
+    grad = ivy.array(grad_raw, dtype, dev)
     nc_new_weight = _inplace_var_update(nc_weight, grad)
-    c_weight = ivy.variable(ivy.array(weight_raw, dtype, dev_str))
-    grad = ivy.array(grad_raw, dtype, dev_str)
+    c_weight = ivy.variable(ivy.array(weight_raw, dtype, dev))
+    grad = ivy.array(grad_raw, dtype, dev)
     c_new_weight = comp_fn(c_weight, grad)
     assert not np.allclose(np.asarray(weight_raw), ivy.to_numpy(nc_new_weight))
     assert not np.allclose(np.asarray(weight_raw), ivy.to_numpy(c_new_weight))
@@ -505,7 +505,7 @@ class Stateful:
     "dtype", ['float32'])
 @pytest.mark.parametrize(
     "with_array_caching", [True, False])
-def test_compile_graph_w_stateful(x_raw, dtype, with_array_caching, dev_str, compile_graph, call):
+def test_compile_graph_w_stateful(x_raw, dtype, with_array_caching, dev, compile_graph, call):
     if ivy.wrapped_mode() or not compile_graph:
         # Wrapped mode does not yet support function compilation
         pytest.skip()
@@ -513,7 +513,7 @@ def test_compile_graph_w_stateful(x_raw, dtype, with_array_caching, dev_str, com
         # currently only supported by PyTorch
         pytest.skip()
     # as tensors
-    x = ivy.array(x_raw, dtype, dev_str)
+    x = ivy.array(x_raw, dtype, dev)
 
     # non-compiled
     stateful = Stateful(with_array_caching)
@@ -550,7 +550,7 @@ def _update_container(cont, x):
     "dtype", ['float32'])
 @pytest.mark.parametrize(
     "with_array_caching", [True, False])
-def test_compile_graph_w_stateful_cont(x_raw, dtype, with_array_caching, dev_str, compile_graph, call):
+def test_compile_graph_w_stateful_cont(x_raw, dtype, with_array_caching, dev, compile_graph, call):
     if ivy.wrapped_mode() or not compile_graph:
         # Wrapped mode does not yet support function compilation
         pytest.skip()
@@ -558,7 +558,7 @@ def test_compile_graph_w_stateful_cont(x_raw, dtype, with_array_caching, dev_str
         # currently only supported by PyTorch
         pytest.skip()
     # as tensors
-    x = ivy.array(x_raw, dtype, dev_str)
+    x = ivy.array(x_raw, dtype, dev)
 
     # non-compiled
     cont = ivy.Container(x=x)
@@ -609,7 +609,7 @@ def _stateful_in_arg_method(x, sia):
     "dtype", ['float32'])
 @pytest.mark.parametrize(
     "with_array_caching", [True, False])
-def test_compile_graph_w_stateful_in_args(x_raw, dtype, with_array_caching, dev_str, compile_graph, call):
+def test_compile_graph_w_stateful_in_args(x_raw, dtype, with_array_caching, dev, compile_graph, call):
     if ivy.wrapped_mode() or not compile_graph:
         # Wrapped mode does not yet support function compilation
         pytest.skip()
@@ -617,7 +617,7 @@ def test_compile_graph_w_stateful_in_args(x_raw, dtype, with_array_caching, dev_
         # currently only supported by PyTorch
         pytest.skip()
     # as tensors
-    x = ivy.array(x_raw, dtype, dev_str)
+    x = ivy.array(x_raw, dtype, dev)
     sia = StatefulInArg()
     # compile
     fname = 'w_stateful_in_args_{}'.format(with_array_caching)
@@ -642,7 +642,7 @@ def _rev_builtin(x):
 
 @pytest.mark.parametrize(
     "with_array_caching", [True, False])
-def test_compile_graph_reverse_builtin(with_array_caching, dev_str, compile_graph, call):
+def test_compile_graph_reverse_builtin(with_array_caching, dev, compile_graph, call):
     if ivy.wrapped_mode() or not compile_graph:
         # Wrapped mode does not yet support function compilation
         pytest.skip()
@@ -671,7 +671,7 @@ def test_compile_graph_reverse_builtin(with_array_caching, dev_str, compile_grap
     "batch_size", [1])
 @pytest.mark.parametrize(
     "image_dims", [[224, 224]])
-def test_resnet_18_imagenet(batch_size, image_dims, dev_str, compile_graph, call):
+def test_resnet_18_imagenet(batch_size, image_dims, dev, compile_graph, call):
     if ivy.wrapped_mode() or not compile_graph:
         # Wrapped mode does not yet support function compilation
         pytest.skip()
@@ -682,9 +682,9 @@ def test_resnet_18_imagenet(batch_size, image_dims, dev_str, compile_graph, call
         model = torch.hub.load('pytorch/vision:v0.10.0', 'resnet18', pretrained=True)
     except urllib.error.URLError:
         pytest.skip()
-    net = ivy.to_ivy_module(model.to(ivy.str_to_dev(dev_str)))
-    x0 = ivy.random_uniform(0, 1, [batch_size] + [3] + image_dims, dev_str=dev_str)
-    x1 = ivy.random_uniform(0, 1, [batch_size] + [3] + image_dims, dev_str=dev_str)
+    net = ivy.to_ivy_module(model.to(ivy.str_to_dev(dev)))
+    x0 = ivy.random_uniform(0, 1, [batch_size] + [3] + image_dims, dev=dev)
+    x1 = ivy.random_uniform(0, 1, [batch_size] + [3] + image_dims, dev=dev)
     ret0_nc = net(x0)
     ret1_nc = net(x1)
     assert not np.allclose(ivy.to_numpy(ret0_nc), ivy.to_numpy(ret1_nc))
