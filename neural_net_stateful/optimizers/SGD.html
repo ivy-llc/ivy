@@ -220,18 +220,19 @@
 <h1>SGD<a class="headerlink" href="#sgd" title="Permalink to this headline">¶</a></h1>
 <dl class="py class">
 <dt id="ivy.neural_net_stateful.optimizers.SGD">
-<em class="property">class </em><code class="sig-prename descclassname">ivy.neural_net_stateful.optimizers.</code><code class="sig-name descname">SGD</code><span class="sig-paren">(</span><em class="sig-param">lr=&lt;function SGD.&lt;lambda&gt;&gt;</em>, <em class="sig-param">inplace=True</em>, <em class="sig-param">stop_gradients=True</em>, <em class="sig-param">compile_on_next_step=False</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/neural_net_stateful/optimizers.html#SGD"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.neural_net_stateful.optimizers.SGD" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">ivy.neural_net_stateful.optimizers.</code><code class="sig-name descname">SGD</code><span class="sig-paren">(</span><em class="sig-param">lr=&lt;function SGD.&lt;lambda&gt;&gt;</em>, <em class="sig-param">inplace=None</em>, <em class="sig-param">stop_gradients=True</em>, <em class="sig-param">compile_on_next_step=False</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/neural_net_stateful/optimizers.html#SGD"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.neural_net_stateful.optimizers.SGD" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="Optimizer.html#ivy.neural_net_stateful.optimizers.Optimizer" title="ivy.neural_net_stateful.optimizers.Optimizer"><code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.neural_net_stateful.optimizers.Optimizer</span></code></a></p>
 <dl class="py method">
 <dt id="ivy.neural_net_stateful.optimizers.SGD.__init__">
-<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param">lr=&lt;function SGD.&lt;lambda&gt;&gt;</em>, <em class="sig-param">inplace=True</em>, <em class="sig-param">stop_gradients=True</em>, <em class="sig-param">compile_on_next_step=False</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/neural_net_stateful/optimizers.html#SGD.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.neural_net_stateful.optimizers.SGD.__init__" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param">lr=&lt;function SGD.&lt;lambda&gt;&gt;</em>, <em class="sig-param">inplace=None</em>, <em class="sig-param">stop_gradients=True</em>, <em class="sig-param">compile_on_next_step=False</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/neural_net_stateful/optimizers.html#SGD.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.neural_net_stateful.optimizers.SGD.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Construct a Stochastic-Gradient-Descent (SGD) optimizer.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>lr</strong> (<em>float</em><em>, </em><em>optional</em>) – Learning rate, default is 1e-4.</p></li>
 <li><p><strong>inplace</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to update the variables in-place, or to create new variable handles.
-This is only relevant for frameworks with stateful variables such as PyTorch. Default is True.</p></li>
+This is only relevant for frameworks with stateful variables such as PyTorch.
+Default is True, provided the backend framework supports it.</p></li>
 <li><p><strong>stop_gradients</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to stop the gradients of the variables after each gradient step. Default is True.</p></li>
 <li><p><strong>compile_on_next_step</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to compile the optimizer on the next step. Default is False.</p></li>
 </ul>
