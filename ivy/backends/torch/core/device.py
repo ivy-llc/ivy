@@ -18,8 +18,11 @@ from ivy.core.device import Profiler as BaseProfiler
 # API #
 # ----#
 
-def dev(x):
-    return x.device
+def dev(x, as_str=False):
+    dv = x.device
+    if as_str:
+        return dev_to_str(dv)
+    return dv
 
 
 def to_dev(x, dev: Optional[str] = None):
@@ -45,10 +48,6 @@ def str_to_dev(dev: Optional[str] = None) -> Optional[_torch.device]:
 def clear_mem_on_dev(dev):
     if 'gpu' in dev:
         _torch.cuda.empty_cache()
-
-
-def dev(x):
-    return dev_to_str(dev(x))
 
 
 _callable_dev = dev
