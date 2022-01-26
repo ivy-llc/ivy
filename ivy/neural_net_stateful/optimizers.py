@@ -36,7 +36,7 @@ class Optimizer(abc.ABC):
                                          raised during the compiled forward pass. Default is True.
         :type fallback_to_non_compiled: bool, optional
         :param dev: device on which to create the layer's variables 'cuda:0', 'cuda:1', 'cpu' etc.
-        :type dev: str, optional
+        :type dev: ivy.Device, optional
         """
         self._lr = lr
         self._inplace = inplace
@@ -267,7 +267,7 @@ class Adam(Optimizer):
         :param compile_on_next_step: Whether to compile the optimizer on the next step. Default is False.
         :type compile_on_next_step: bool, optional
         :param dev: device on which to create the layer's variables 'cuda:0', 'cuda:1', 'cpu' etc.
-        :type dev: str, optional
+        :type dev: ivy.Device, optional
         """
         Optimizer.__init__(self, lr, inplace, stop_gradients, True, compile_on_next_step, dev)
         self._beta1 = beta1
@@ -343,7 +343,7 @@ class LAMB(Optimizer):
         :param compile_on_next_step: Whether to compile the optimizer on the next step. Default is False.
         :type compile_on_next_step: bool, optional
         :param dev: device on which to create the layer's variables 'cuda:0', 'cuda:1', 'cpu' etc.
-        :type dev: str, optional
+        :type dev: ivy.Device, optional
         """
         Optimizer.__init__(self, lr, inplace, stop_gradients, True, compile_on_next_step, dev)
         self._beta1 = beta1

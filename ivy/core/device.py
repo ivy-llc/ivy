@@ -142,13 +142,13 @@ def dev_to_str(dev_in: ivy.Device, f: ivy.Framework = None)\
 
 
 # noinspection PyShadowingNames
-def str_to_dev(dev: str, f: ivy.Framework = None)\
+def str_to_dev(dev: ivy.Device, f: ivy.Framework = None)\
         -> ivy.Device:
     """
     Convert device string representation to native device type.
 
     :param dev: The device string to conver to native device handle.
-    :type dev: str
+    :type dev: ivy.Device
     :param f: Machine learning framework. Inferred from inputs if None.
     :type f: ml_framework, optional
     :return: Native device handle.
@@ -159,13 +159,13 @@ def str_to_dev(dev: str, f: ivy.Framework = None)\
 # Memory #
 
 # noinspection PyShadowingNames
-def clear_mem_on_dev(dev: str, f: ivy.Framework = None)\
+def clear_mem_on_dev(dev: ivy.Device, f: ivy.Framework = None)\
         -> None:
     """
     Clear memory cache on target device.
 
     :param dev: The device string to conver to native device handle.
-    :type dev: str
+    :type dev: ivy.Device
     :param f: Machine learning framework. Inferred from inputs if None.
     :type f: ml_framework, optional
     """
@@ -173,13 +173,13 @@ def clear_mem_on_dev(dev: str, f: ivy.Framework = None)\
 
 
 # noinspection PyShadowingNames
-def total_mem_on_dev(dev: str)\
+def total_mem_on_dev(dev: ivy.Device)\
         -> float:
     """
     Get the total amount of memory (in GB) for a given device string. In case of CPU, the total RAM is returned.
 
     :param dev: The device string to conver to native device handle.
-    :type dev: str
+    :type dev: ivy.Device
     :return: The total memory on the device in GB.
     """
     if 'gpu' in dev:
@@ -194,13 +194,13 @@ def total_mem_on_dev(dev: str)\
 
 
 # noinspection PyShadowingNames
-def used_mem_on_dev(dev: str, process_specific=False)\
+def used_mem_on_dev(dev: ivy.Device, process_specific=False)\
         -> float:
     """
     Get the used memory (in GB) for a given device string. In case of CPU, the used RAM is returned.
 
     :param dev: The device string to conver to native device handle.
-    :type dev: str
+    :type dev: ivy.Device
     :param process_specific: Whether the check the memory used by this python process alone. Default is False.
     :type process_specific: bool, optional
     :return: The used memory on the device in GB.
@@ -223,13 +223,13 @@ def used_mem_on_dev(dev: str, process_specific=False)\
 
 
 # noinspection PyShadowingNames
-def percent_used_mem_on_dev(dev: str, process_specific=False)\
+def percent_used_mem_on_dev(dev: ivy.Device, process_specific=False)\
         -> float:
     """
     Get the percentage used memory for a given device string. In case of CPU, the used RAM is returned.
 
     :param dev: The device string to conver to native device handle.
-    :type dev: str
+    :type dev: ivy.Device
     :param process_specific: Whether the check the memory used by this python process alone. Default is False.
     :type process_specific: bool, optional
     :return: The percentage used memory on the device.
@@ -254,13 +254,13 @@ def percent_used_mem_on_dev(dev: str, process_specific=False)\
 # Utilization #
 
 # noinspection PyShadowingNames
-def dev_util(dev: str)\
+def dev_util(dev: ivy.Device)\
         -> float:
     """
     Get the current utilization (%) for a given device.
 
     :param dev: The device string of the device to query utilization for.
-    :type dev: str
+    :type dev: ivy.Device
     :return: The device utilization (%)
     """
     if dev == 'cpu':
@@ -361,7 +361,7 @@ def unset_default_device():
 # ------------------#
 
 # noinspection PyShadowingNames
-def to_dev(x: Union[ivy.Array, ivy.NativeArray], dev: str = None, f: ivy.Framework = None)\
+def to_dev(x: Union[ivy.Array, ivy.NativeArray], dev: ivy.Device = None, f: ivy.Framework = None)\
         -> Union[ivy.Array, ivy.NativeArray]:
     """
     Move the input array x to the desired device, specified by device string.
@@ -369,7 +369,7 @@ def to_dev(x: Union[ivy.Array, ivy.NativeArray], dev: str = None, f: ivy.Framewo
     :param x: Array to move onto the device.
     :type x: array
     :param dev: device to move the array to 'cuda:0', 'cuda:1', 'cpu' etc. Keep same device if None.
-    :type dev: str, optional
+    :type dev: ivy.Device, optional
     :param f: Machine learning framework. Inferred from inputs if None.
     :type f: ml_framework, optional
     :return: The array x, but now placed on the target device.
@@ -387,7 +387,7 @@ def split_factor(dev=None):
     device across the codebase. Default global value for each device is 1.
 
     :param dev: The device to query the split factor for. Sets the default device by default.
-    :type dev: str, optional
+    :type dev: ivy.Device, optional
     :return: The split factor for the specified device.
     """
     global split_factors
@@ -407,7 +407,7 @@ def set_split_factor(factor, dev=None):
     :param factor: The factor to set the device-specific split factor to.
     :type factor: float
     :param dev: The device to set the split factor for. Sets the default device by default.
-    :type dev: str, optional
+    :type dev: ivy.Device, optional
     """
     assert 0 <= factor
     global split_factors
@@ -442,7 +442,7 @@ def split_func_call(func: Callable, inputs: Iterable[Union[Union[ivy.Array, ivy.
     :param stop_gradients: Whether to stop the gradients for each computed return. Default is False.
     :type stop_gradients: bool, optional
     :param dev: The device to set the split factor for. Sets the default device by default.
-    :type dev: str, optional
+    :type dev: ivy.Device, optional
     :return: The return from the function, following input splitting and re-concattenation.
     """
     if isinstance(input_axes, int):
@@ -831,7 +831,7 @@ def dev_unify_array(xs, dev, mode, axis=0):
     :param xs: The list of arrays to unify onto the specified device.
     :type xs: sequence of arrays
     :param dev: The device to unify the arrays to.
-    :type dev: str
+    :type dev: ivy.Device
     :param mode: The mode by which to unify, must be one of [ concat | mean | sum ]
     :type mode: str
     :param axis: The axis along which to concattenate the array, if concat mode is set. Default is 0.
@@ -851,7 +851,7 @@ def dev_unify(xs, dev, mode, axis=0):
     :param xs: The list of sub-arrays to unify onto the specified device.
     :type xs: sequence of arrays
     :param dev: The device to unify the sub-arrays to.
-    :type dev: str
+    :type dev: ivy.Device
     :param mode: The mode by which to unify, must be one of [ concat | mean | sum ]
     :type mode: str
     :param axis: The axis along which to concattenate the array, if concat mode is set. Default is 0.
@@ -879,7 +879,7 @@ def dev_unify_iter(xs, dev, mode, axis=0, transpose=False):
     :param xs: The iterable of items to unify.
     :type xs: iterable of any
     :param dev: The device to unify the elements of the iterable to.
-    :type dev: str
+    :type dev: ivy.Device
     :param mode: The mode by which to unify, must be one of [ concat | mean | sum ]
     :type mode: str
     :param axis: The axis along which to concattenate the sub-arrays. Default is 0.
@@ -909,7 +909,7 @@ def dev_unify_nest(args: Type[MultiDev], kwargs: Type[MultiDev], dev, mode, axis
     :param kwargs: The nested keyword arguments to unify.
     :type kwargs: MultiDev
     :param dev: The device to unify the nested arguments to.
-    :type dev: str
+    :type dev: ivy.Device
     :param mode: The mode by which to unify, must be one of [ concat | mean | sum ]
     :type mode: str
     :param axis: The axis along which to concattenate the sub-arrays. Default is 0.

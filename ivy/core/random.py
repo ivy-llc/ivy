@@ -22,7 +22,7 @@ def random_uniform(low=0.0, high=1.0, shape=None, dev=None, f=None):
                     If size is None (default), a single value is returned.
     :type shape: sequence of ints
     :param dev: device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc.
-    :type dev: str
+    :type dev: ivy.Device
     :param f: Machine learning framework. Inferred from inputs if None.
     :type f: ml_framework, optional
     :return: Drawn samples from the parameterized uniform distribution.
@@ -41,7 +41,7 @@ def random_normal(mean=0.0, std=1.0, shape=None, dev=None, f=None):
     :param shape: Output shape. If the given shape is, e.g., (m, n, k), then m * n * k samples are drawn.
                     If size is None (default), a single value is returned.
     :param dev: device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc.
-    :type dev: str
+    :type dev: ivy.Device
     :param f: Machine learning framework. Inferred from inputs if None.
     :type f: ml_framework, optional
     :return: Drawn samples from the parameterized uniform distribution.
@@ -66,7 +66,7 @@ def multinomial(population_size, num_samples, batch_size, probs=None, replace=Tr
     :param replace: Whether to replace samples once they've been drawn. Default is True.
     :type replace: bool, optional
     :param dev: device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc.
-    :type dev: str
+    :type dev: ivy.Device
     :param f: Machine learning framework. Inferred from inputs if None.
     :type f: ml_framework, optional
     :return: Drawn samples indices from the multinomial distribution.
@@ -85,7 +85,7 @@ def randint(low, high, shape, dev=None, f=None):
     :param shape: a tuple defining the shape of the output tensor.
     :type shape: sequence of ints
     :param dev: device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc.
-    :type dev: str
+    :type dev: ivy.Device
     :param f: Machine learning framework. Inferred from inputs if None.
     :type f: ml_framework, optional
     :return:
