@@ -46,7 +46,7 @@ def test_sgd_optimizer(bs_ic_oc_target, with_v, inplace, dtype_str, dev_str, com
         return ivy.reduce_mean(out)[0]
 
     # optimizer
-    optimizer = ivy.SGD(inplace=inplace)
+    optimizer = ivy.SGD(inplace=ivy.inplace_variables_supported() if inplace else False)
 
     # compile if this mode is set
     if compile_graph and call is helpers.torch_call:
@@ -117,7 +117,7 @@ def test_lars_optimizer(bs_ic_oc_target, with_v, inplace, dtype_str, dev_str, co
         return ivy.reduce_mean(out)[0]
 
     # optimizer
-    optimizer = ivy.LARS(inplace=inplace)
+    optimizer = ivy.LARS(inplace=ivy.inplace_variables_supported() if inplace else False)
 
     # compile if this mode is set
     if compile_graph and call is helpers.torch_call:
@@ -188,7 +188,7 @@ def test_adam_optimizer(bs_ic_oc_target, with_v, inplace, dtype_str, dev_str, co
         return ivy.reduce_mean(out)[0]
 
     # optimizer
-    optimizer = ivy.Adam(dev_str=dev_str, inplace=inplace)
+    optimizer = ivy.Adam(dev_str=dev_str, inplace=ivy.inplace_variables_supported() if inplace else False)
 
     # compile if this mode is set
     if compile_graph and call is helpers.torch_call:
@@ -261,7 +261,7 @@ def test_lamb_optimizer(bs_ic_oc_target, with_v, inplace, dtype_str, dev_str, co
         return ivy.reduce_mean(out)[0]
 
     # optimizer
-    optimizer = ivy.LAMB(dev_str=dev_str, inplace=inplace)
+    optimizer = ivy.LAMB(dev_str=dev_str, inplace=ivy.inplace_variables_supported() if inplace else False)
 
     # compile if this mode is set
     if compile_graph and call is helpers.torch_call:
