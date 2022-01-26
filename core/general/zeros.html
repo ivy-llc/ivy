@@ -175,7 +175,7 @@
 <li class="toctree-l2"><a class="reference internal" href="match_kwargs.html">match_kwargs</a></li>
 <li class="toctree-l2"><a class="reference internal" href="dtype.html">dtype</a></li>
 <li class="toctree-l2"><a class="reference internal" href="dtype_to_str.html">dtype_to_str</a></li>
-<li class="toctree-l2"><a class="reference internal" href="dtype_str.html">dtype_str</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dtype.html">dtype</a></li>
 <li class="toctree-l2"><a class="reference internal" href="cache_fn.html">cache_fn</a></li>
 <li class="toctree-l2"><a class="reference internal" href="current_framework_str.html">current_framework_str</a></li>
 <li class="toctree-l2"><a class="reference internal" href="einops_rearrange.html">einops_rearrange</a></li>
@@ -316,23 +316,23 @@
 <h1>zeros<a class="headerlink" href="#zeros" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
 <dt id="ivy.core.general.zeros">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">zeros</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">shape</span><span class="p">:</span> <span class="n">Iterable<span class="p">[</span>int<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">dtype_str</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">'float32'</span></em>, <em class="sig-param"><span class="n">dev_str</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>str<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">f</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>ivy.Framework<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; Union<span class="p">[</span>ivy.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span><a class="reference internal" href="../../_modules/ivy/core/general.html#zeros"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.zeros" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">zeros</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">shape</span><span class="p">:</span> <span class="n">Iterable<span class="p">[</span>int<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">dtype</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">'float32'</span></em>, <em class="sig-param"><span class="n">dev_str</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>str<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">f</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>ivy.Framework<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; Union<span class="p">[</span>ivy.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span><a class="reference internal" href="../../_modules/ivy/core/general.html#zeros"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.zeros" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a new array of given shape and type, filled with zeros.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>shape</strong> (<em>sequence of ints</em>) – Shape of the new array, e.g. (2, 3).</p></li>
-<li><p><strong>dtype_str</strong> – The desired data-type for the array in string format, i.e. ‘float32’ or ‘int64’.</p></li>
+<li><p><strong>dtype</strong> – The desired data-type for the array in string format, i.e. ‘float32’ or ‘int64’.</p></li>
 </ul>
 </dd>
 </dl>
 <p>Default is ‘float32’.
-:type dtype_str: data-type string, optional
+:type dtype: data-type string, optional
 :param dev_str: device on which to create the array ‘cuda:0’, ‘cuda:1’, ‘cpu’ etc..
 :type dev_str: str
 :param f: Machine learning framework. Inferred from inputs if None.
 :type f: ml_framework, optional
-:return: Tensor of zeros with the given shape and dtype_str.</p>
+:return: Tensor of zeros with the given shape and dtype.</p>
 </dd></dl>
 
 <div class="line-block">
