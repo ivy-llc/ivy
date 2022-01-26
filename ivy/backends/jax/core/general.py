@@ -48,11 +48,11 @@ def _to_array(x):
 # ----#
 
 # noinspection PyShadowingNames
-def array(object_in, dtype_str=None, dev_str=None):
-    if dtype_str:
-        if dtype_str == 'bool':
-            dtype_str += '_'
-        dtype = _jnp.__dict__[dtype_str]
+def array(object_in, dtype=None, dev_str=None):
+    if dtype:
+        if dtype == 'bool':
+            dtype += '_'
+        dtype = _jnp.__dict__[dtype]
     else:
         dtype = None
     return to_dev(_jnp.array(object_in, dtype=dtype), default_device(dev_str))
@@ -110,15 +110,15 @@ def argmin(x, axis=0):
 argsort = lambda x, axis=-1: _jnp.argsort(x, axis)
 
 
-def cast(x, dtype_str):
-    dtype_val = _jnp.__dict__[dtype_str if dtype_str != 'bool' else 'bool_']
+def cast(x, dtype):
+    dtype_val = _jnp.__dict__[dtype if dtype != 'bool' else 'bool_']
     return x.astype(dtype_val)
 
 
 # noinspection PyShadowingNames
-def arange(stop, start=0, step=1, dtype_str=None, dev_str=None):
-    if dtype_str:
-        dtype = _jnp.__dict__[dtype_str]
+def arange(stop, start=0, step=1, dtype=None, dev_str=None):
+    if dtype:
+        dtype = _jnp.__dict__[dtype]
     else:
         dtype = None
     return to_dev(_jnp.arange(start, stop, step=step, dtype=dtype), default_device(dev_str))
@@ -225,30 +225,30 @@ def squeeze(x, axis=None):
 
 
 # noinspection PyShadowingNames
-def zeros(shape, dtype_str='float32', dev_str=None):
-    dtype = _jnp.__dict__[dtype_str]
+def zeros(shape, dtype='float32', dev_str=None):
+    dtype = _jnp.__dict__[dtype]
     return to_dev(_jnp.zeros(shape, dtype), default_device(dev_str))
 
 
 # noinspection PyShadowingNames
-def zeros_like(x, dtype_str=None, dev_str=None):
-    if dtype_str:
-        dtype = _jnp.__dict__[dtype_str]
+def zeros_like(x, dtype=None, dev_str=None):
+    if dtype:
+        dtype = _jnp.__dict__[dtype]
     else:
         dtype = x.dtype
     return to_dev(_jnp.zeros_like(x, dtype=dtype), default_device(dev_str))
 
 
 # noinspection PyShadowingNames
-def ones(shape, dtype_str='float32', dev_str=None):
-    dtype = _jnp.__dict__[dtype_str]
+def ones(shape, dtype='float32', dev_str=None):
+    dtype = _jnp.__dict__[dtype]
     return to_dev(_jnp.ones(shape, dtype), default_device(dev_str))
 
 
 # noinspection PyShadowingNames
-def ones_like(x, dtype_str=None, dev_str=None):
-    if dtype_str:
-        dtype = _jnp.__dict__[dtype_str]
+def ones_like(x, dtype=None, dev_str=None):
+    if dtype:
+        dtype = _jnp.__dict__[dtype]
     else:
         dtype = x.dtype
     return to_dev(_jnp.ones_like(x, dtype=dtype), default_device(dev_str))
@@ -276,8 +276,8 @@ def cumprod(x, axis=0, exclusive=False):
 
 
 # noinspection PyShadowingNames
-def identity(n, dtype_str='float32', batch_shape=None, dev_str=None):
-    dtype = _jnp.__dict__[dtype_str]
+def identity(n, dtype='float32', batch_shape=None, dev_str=None):
+    dtype = _jnp.__dict__[dtype]
     mat = _jnp.identity(n, dtype=dtype)
     if batch_shape is None:
         return_mat = mat
@@ -389,7 +389,7 @@ def linear_resample(x, num_samples, axis=-1):
 dtype = lambda x: x.dtype
 dtype.__name__ = 'dtype'
 dtype_to_str = lambda dtype_in: DTYPE_DICT[dtype_in]
-dtype_str = lambda x: dtype_to_str(dtype(x))
+dtype = lambda x: dtype_to_str(dtype(x))
 compile = lambda fn, dynamic=True, example_inputs=None, static_argnums=None, static_argnames=None:\
     _jax.jit(fn, static_argnums=static_argnums, static_argnames=static_argnames)
 current_framework_str = lambda: 'jax'

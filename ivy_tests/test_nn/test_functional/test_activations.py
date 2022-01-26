@@ -16,12 +16,12 @@ import ivy_tests.helpers as helpers
 @pytest.mark.parametrize(
     "x", [[[-1., 1., 2.]]])
 @pytest.mark.parametrize(
-    "dtype_str", ['float32'])
+    "dtype", ['float32'])
 @pytest.mark.parametrize(
     "tensor_fn", [ivy.array, helpers.var_fn])
-def test_relu(x, dtype_str, tensor_fn, dev_str, call):
+def test_relu(x, dtype, tensor_fn, dev_str, call):
     # smoke test
-    x = tensor_fn(x, dtype_str, dev_str)
+    x = tensor_fn(x, dtype, dev_str)
     ret = ivy.relu(x)
     # type test
     assert ivy.is_array(ret)
@@ -38,12 +38,12 @@ def test_relu(x, dtype_str, tensor_fn, dev_str, call):
 @pytest.mark.parametrize(
     "x", [[[-1., 1., 2.]]])
 @pytest.mark.parametrize(
-    "dtype_str", ['float32'])
+    "dtype", ['float32'])
 @pytest.mark.parametrize(
     "tensor_fn", [ivy.array, helpers.var_fn])
-def test_leaky_relu(x, dtype_str, tensor_fn, dev_str, call):
+def test_leaky_relu(x, dtype, tensor_fn, dev_str, call):
     # smoke test
-    x = tensor_fn(x, dtype_str, dev_str)
+    x = tensor_fn(x, dtype, dev_str)
     ret = ivy.leaky_relu(x)
     # type test
     assert ivy.is_array(ret)
@@ -62,12 +62,12 @@ def test_leaky_relu(x, dtype_str, tensor_fn, dev_str, call):
 @pytest.mark.parametrize(
     "approx", [True, False])
 @pytest.mark.parametrize(
-    "dtype_str", ['float32'])
+    "dtype", ['float32'])
 @pytest.mark.parametrize(
     "tensor_fn", [ivy.array, helpers.var_fn])
-def test_gelu(x, approx, dtype_str, tensor_fn, dev_str, call):
+def test_gelu(x, approx, dtype, tensor_fn, dev_str, call):
     # smoke test
-    x = tensor_fn(x, dtype_str, dev_str)
+    x = tensor_fn(x, dtype, dev_str)
     ret = ivy.gelu(x, approx)
     # type test
     assert ivy.is_array(ret)
@@ -84,12 +84,12 @@ def test_gelu(x, approx, dtype_str, tensor_fn, dev_str, call):
 @pytest.mark.parametrize(
     "x", [[[-1., 1., 2.]]])
 @pytest.mark.parametrize(
-    "dtype_str", ['float32'])
+    "dtype", ['float32'])
 @pytest.mark.parametrize(
     "tensor_fn", [ivy.array, helpers.var_fn])
-def test_tanh(x, dtype_str, tensor_fn, dev_str, call):
+def test_tanh(x, dtype, tensor_fn, dev_str, call):
     # smoke test
-    x = tensor_fn(x, dtype_str, dev_str)
+    x = tensor_fn(x, dtype, dev_str)
     ret = ivy.tanh(x)
     # type test
     assert ivy.is_array(ret)
@@ -106,12 +106,12 @@ def test_tanh(x, dtype_str, tensor_fn, dev_str, call):
 @pytest.mark.parametrize(
     "x", [[[-1., 1., 2.]]])
 @pytest.mark.parametrize(
-    "dtype_str", ['float32'])
+    "dtype", ['float32'])
 @pytest.mark.parametrize(
     "tensor_fn", [ivy.array, helpers.var_fn])
-def test_sigmoid(x, dtype_str, tensor_fn, dev_str, call):
+def test_sigmoid(x, dtype, tensor_fn, dev_str, call):
     # smoke test
-    x = tensor_fn(x, dtype_str, dev_str)
+    x = tensor_fn(x, dtype, dev_str)
     ret = ivy.sigmoid(x)
     # type test
     assert ivy.is_array(ret)
@@ -128,12 +128,12 @@ def test_sigmoid(x, dtype_str, tensor_fn, dev_str, call):
 @pytest.mark.parametrize(
     "x", [[[-1., 1., 2.]]])
 @pytest.mark.parametrize(
-    "dtype_str", ['float32'])
+    "dtype", ['float32'])
 @pytest.mark.parametrize(
     "tensor_fn", [ivy.array, helpers.var_fn])
-def test_softmax(x, dtype_str, tensor_fn, dev_str, call):
+def test_softmax(x, dtype, tensor_fn, dev_str, call):
     # smoke test
-    x = tensor_fn(x, dtype_str, dev_str)
+    x = tensor_fn(x, dtype, dev_str)
     ret = ivy.softmax(x)
     # type test
     assert ivy.is_array(ret)
@@ -150,12 +150,12 @@ def test_softmax(x, dtype_str, tensor_fn, dev_str, call):
 @pytest.mark.parametrize(
     "x", [[[-1., 1., 2.]]])
 @pytest.mark.parametrize(
-    "dtype_str", ['float32'])
+    "dtype", ['float32'])
 @pytest.mark.parametrize(
     "tensor_fn", [ivy.array, helpers.var_fn])
-def test_softplus(x, dtype_str, tensor_fn, dev_str, call):
+def test_softplus(x, dtype, tensor_fn, dev_str, call):
     # smoke test
-    x = tensor_fn(x, dtype_str, dev_str)
+    x = tensor_fn(x, dtype, dev_str)
     ret = ivy.softplus(x)
     # type test
     assert ivy.is_array(ret)
