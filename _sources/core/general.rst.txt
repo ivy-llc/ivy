@@ -85,7 +85,6 @@ General
    general/match_kwargs.rst
    general/dtype.rst
    general/dtype_to_str.rst
-   general/dtype.rst
    general/cache_fn.rst
    general/current_framework_str.rst
    general/einops_rearrange.rst
