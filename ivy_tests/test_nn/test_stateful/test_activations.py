@@ -20,10 +20,10 @@ import ivy_tests.helpers as helpers
                        [0., 0.0604706, 0.13065024, 0.21018247, 0.2984952,
                         0.39483193, 0.49829122, 0.6078729, 0.7225253, 0.841192]]])])
 @pytest.mark.parametrize(
-    "dtype_str", ['float32'])
+    "dtype", ['float32'])
 @pytest.mark.parametrize(
     "tensor_fn", [ivy.array])
-def test_gelu(bs_oc_target, dtype_str, tensor_fn, dev_str, compile_graph, call):
+def test_gelu(bs_oc_target, dtype, tensor_fn, dev_str, compile_graph, call):
     # smoke test
     batch_shape, output_channels, target = bs_oc_target
     x = ivy.cast(ivy.linspace(ivy.zeros(batch_shape), ivy.ones(batch_shape), output_channels), 'float32')
@@ -59,10 +59,10 @@ def test_gelu(bs_oc_target, dtype_str, tensor_fn, dev_str, compile_graph, call):
                        [0., 0.02189754, 0.04893785, 0.08134944, 0.11933776,
                         0.16308454, 0.21274757, 0.26846102, 0.3303356, 0.39845937]]])])
 @pytest.mark.parametrize(
-    "dtype_str", ['float32'])
+    "dtype", ['float32'])
 @pytest.mark.parametrize(
     "tensor_fn", [ivy.array])
-def test_geglu(bs_oc_target, dtype_str, tensor_fn, dev_str, compile_graph, call):
+def test_geglu(bs_oc_target, dtype, tensor_fn, dev_str, compile_graph, call):
     # smoke test
     batch_shape, output_channels, target = bs_oc_target
     x = ivy.cast(ivy.linspace(ivy.zeros(batch_shape), ivy.ones(batch_shape), output_channels*2), 'float32')

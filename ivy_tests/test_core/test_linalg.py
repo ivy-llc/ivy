@@ -16,15 +16,15 @@ import ivy_tests.helpers as helpers
 @pytest.mark.parametrize(
     "x", [[[[1., 0.], [0., 1.]]], [[[[1., 0.], [0., 1.]]]]])
 @pytest.mark.parametrize(
-    "dtype_str", ['float32'])
+    "dtype", ['float32'])
 @pytest.mark.parametrize(
     "tensor_fn", [ivy.array, helpers.var_fn])
-def test_svd(x, dtype_str, tensor_fn, dev_str, call):
+def test_svd(x, dtype, tensor_fn, dev_str, call):
     if call in [helpers.tf_call, helpers.tf_graph_call] and 'cpu' in dev_str:
         # tf.linalg.svd segfaults when CUDA is installed, but array is on CPU
         pytest.skip()
     # smoke test
-    x = tensor_fn(x, dtype_str, dev_str)
+    x = tensor_fn(x, dtype, dev_str)
     u, s, vh = ivy.svd(x)
     # type test
     assert ivy.is_array(u)
@@ -55,13 +55,13 @@ def test_svd(x, dtype_str, tensor_fn, dev_str, call):
                              ([[1., 2.], [3., 4.]], 0.5, 0, True, [[7.464102, 11.656854]]),
                              ([[[1., 2.], [3., 4.]]], 1, None, None, 10.)])
 @pytest.mark.parametrize(
-    "dtype_str", ['float32'])
+    "dtype", ['float32'])
 @pytest.mark.parametrize(
     "tensor_fn", [ivy.array, helpers.var_fn])
-def test_vector_norm(x_n_p_n_ax_n_kd_n_tn, dtype_str, tensor_fn, dev_str, call):
+def test_vector_norm(x_n_p_n_ax_n_kd_n_tn, dtype, tensor_fn, dev_str, call):
     # smoke test
     x, p, ax, kd, true_norm = x_n_p_n_ax_n_kd_n_tn
-    x = tensor_fn(x, dtype_str, dev_str)
+    x = tensor_fn(x, dtype, dev_str)
     kwargs = {k: v for k, v in zip(['x', 'p', 'axis', 'keepdims'], [x, p, ax, kd]) if v is not None}
     ret = ivy.vector_norm(**kwargs)
     # type test
@@ -95,10 +95,10 @@ def test_vector_norm(x_n_p_n_ax_n_kd_n_tn, dtype_str, tensor_fn, dev_str, call):
                         ([[[1.], [2.]], [[3.], [4.]]], 1, (0, 1), True),
                         ([[[1., 2.], [3., 4.]]], -1, None, None)])
 @pytest.mark.parametrize(
-    "dtype_str", ['float32'])
+    "dtype", ['float32'])
 @pytest.mark.parametrize(
     "tensor_fn", [ivy.array, helpers.var_fn])
-def test_matrix_norm(x_n_p_n_ax_n_kd, dtype_str, tensor_fn, dev_str, call):
+def test_matrix_norm(x_n_p_n_ax_n_kd, dtype, tensor_fn, dev_str, call):
     # smoke test
     x_raw, p, ax, kd = x_n_p_n_ax_n_kd
     if p == -2 and call in [helpers.tf_call, helpers.tf_graph_call]:
@@ -107,7 +107,7 @@ def test_matrix_norm(x_n_p_n_ax_n_kd, dtype_str, tensor_fn, dev_str, call):
     if call is helpers.mx_call:
         # MXNet does not support matrix norms
         pytest.skip()
-    x = tensor_fn(x_raw, dtype_str, dev_str)
+    x = tensor_fn(x_raw, dtype, dev_str)
     kwargs = {k: v for k, v in zip(['x', 'p', 'axes', 'keepdims'], [x, p, ax, kd]) if v is not None}
     ret = ivy.matrix_norm(**kwargs)
     # type test
@@ -148,15 +148,15 @@ def test_matrix_norm(x_n_p_n_ax_n_kd, dtype_str, tensor_fn, dev_str, call):
 @pytest.mark.parametrize(
     "x", [[[1., 0.], [0., 1.]], [[[1., 0.], [0., 1.]]]])
 @pytest.mark.parametrize(
-    "dtype_str", ['float32'])
+    "dtype", ['float32'])
 @pytest.mark.parametrize(
     "tensor_fn", [ivy.array, helpers.var_fn])
-def test_inv(x, dtype_str, tensor_fn, dev_str, call):
+def test_inv(x, dtype, tensor_fn, dev_str, call):
     if call in [helpers.tf_call, helpers.tf_graph_call] and 'cpu' in dev_str:
         # tf.linalg.inv segfaults when CUDA is installed, but array is on CPU
         pytest.skip()
     # smoke test
-    x = tensor_fn(x, dtype_str, dev_str)
+    x = tensor_fn(x, dtype, dev_str)
     ret = ivy.inv(x)
     # type test
     assert ivy.is_array(ret)
@@ -173,15 +173,15 @@ def test_inv(x, dtype_str, tensor_fn, dev_str, call):
 @pytest.mark.parametrize(
     "x", [[[1., 0.], [0., 1.], [1., 0.]], [[[1., 0.], [0., 1.], [1., 0.]]]])
 @pytest.mark.parametrize(
-    "dtype_str", ['float32'])
+    "dtype", ['float32'])
 @pytest.mark.parametrize(
     "tensor_fn", [ivy.array, helpers.var_fn])
-def test_pinv(x, dtype_str, tensor_fn, dev_str, call):
+def test_pinv(x, dtype, tensor_fn, dev_str, call):
     if call in [helpers.tf_call, helpers.tf_graph_call] and 'cpu' in dev_str:
         # tf.linalg.pinv segfaults when CUDA is installed, but array is on CPU
         pytest.skip()
     # smoke test
-    x = tensor_fn(x, dtype_str, dev_str)
+    x = tensor_fn(x, dtype, dev_str)
     ret = ivy.pinv(x)
     # type test
     assert ivy.is_array(ret)
@@ -198,12 +198,12 @@ def test_pinv(x, dtype_str, tensor_fn, dev_str, call):
 @pytest.mark.parametrize(
     "x", [[[[1., 2., 3.]], [[4., 5., 6.]], [[1., 2., 3.]], [[4., 5., 6.]], [[1., 2., 3.]]], [[1., 2., 3.]]])
 @pytest.mark.parametrize(
-    "dtype_str", ['float32'])
+    "dtype", ['float32'])
 @pytest.mark.parametrize(
     "tensor_fn", [ivy.array, helpers.var_fn])
-def test_vector_to_skew_symmetric_matrix(x, dtype_str, tensor_fn, dev_str, call):
+def test_vector_to_skew_symmetric_matrix(x, dtype, tensor_fn, dev_str, call):
     # smoke test
-    x = tensor_fn(x, dtype_str, dev_str)
+    x = tensor_fn(x, dtype, dev_str)
     ret = ivy.vector_to_skew_symmetric_matrix(x)
     # type test
     assert ivy.is_array(ret)

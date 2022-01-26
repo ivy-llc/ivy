@@ -34,19 +34,19 @@ def test_dtype_instances(dev_str, call):
 @pytest.mark.parametrize(
     "object_in", [[1], [True], [[1., 2.]]])
 @pytest.mark.parametrize(
-    "starting_dtype_str", ['float32', 'int32', 'bool'])
+    "starting_dtype", ['float32', 'int32', 'bool'])
 @pytest.mark.parametrize(
-    "target_dtype_str", ['float32', 'int32', 'bool'])
-def test_cast(object_in, starting_dtype_str, target_dtype_str, dev_str, call):
+    "target_dtype", ['float32', 'int32', 'bool'])
+def test_cast(object_in, starting_dtype, target_dtype, dev_str, call):
     # smoke test
-    x = ivy.array(object_in, starting_dtype_str, dev_str)
-    ret = ivy.cast(x, target_dtype_str)
+    x = ivy.array(object_in, starting_dtype, dev_str)
+    ret = ivy.cast(x, target_dtype)
     # type test
     assert ivy.is_array(ret)
     # cardinality test
     assert ret.shape == x.shape
     # value test
-    assert ivy.dtype_str(ret) == target_dtype_str
+    assert ivy.dtype(ret) == target_dtype
     # compilation test
     if call in [helpers.torch_call]:
         # pytorch scripting does not support .type() method
