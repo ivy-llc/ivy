@@ -732,12 +732,18 @@ of duplicates.</p>
 </dd></dl>
 
 <dl class="py method">
+<dt id="ivy.core.container.Container.dev">
+<em class="property">property </em><code class="sig-name descname">dev</code><a class="headerlink" href="#ivy.core.container.Container.dev" title="Permalink to this definition">¶</a></dt>
+<dd><p>The device to which the arrays in the container belong, with None returned if the devices are not consistent</p>
+</dd></dl>
+
+<dl class="py method">
 <dt id="ivy.core.container.Container.dev_clone">
-<code class="sig-name descname">dev_clone</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dev_strs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/container.html#Container.dev_clone"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.dev_clone" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">dev_clone</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">devs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/container.html#Container.dev_clone"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.dev_clone" title="Permalink to this definition">¶</a></dt>
 <dd><p>Clone the current container across multiple devices.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>dev_strs</strong> (<em>sequence of str</em>) – The devices on which to clone the container.</p>
+<dd class="field-odd"><p><strong>devs</strong> (<em>sequence of str</em>) – The devices on which to clone the container.</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>a set of cloned containers across the specified devices.</p>
@@ -747,12 +753,12 @@ of duplicates.</p>
 
 <dl class="py method">
 <dt id="ivy.core.container.Container.dev_dist">
-<code class="sig-name descname">dev_dist</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dev_strs</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>Iterable<span class="p">[</span>str<span class="p">]</span><span class="p">, </span>Dict<span class="p">[</span>str<span class="p">, </span>int<span class="p">]</span><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">0</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/container.html#Container.dev_dist"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.dev_dist" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">dev_dist</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">devs</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>Iterable<span class="p">[</span>str<span class="p">]</span><span class="p">, </span>Dict<span class="p">[</span>str<span class="p">, </span>int<span class="p">]</span><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">0</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/container.html#Container.dev_dist"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.dev_dist" title="Permalink to this definition">¶</a></dt>
 <dd><p>Distribute the current container across multiple devices.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>dev_strs</strong> (<em>sequence of strs</em><em> or </em><em>dict of split sizes</em>) – The devices along which to distribute the container.</p></li>
+<li><p><strong>devs</strong> (<em>sequence of strs</em><em> or </em><em>dict of split sizes</em>) – The devices along which to distribute the container.</p></li>
 <li><p><strong>axis</strong> (<em>int</em><em>, </em><em>optional</em>) – The axis along which to split the arrays at the container leaves. Default is 0.</p></li>
 </ul>
 </dd>
@@ -760,12 +766,6 @@ of duplicates.</p>
 <dd class="field-even"><p>a set of distributed sub-containers across the specified devices.</p>
 </dd>
 </dl>
-</dd></dl>
-
-<dl class="py method">
-<dt id="ivy.core.container.Container.dev_str">
-<em class="property">property </em><code class="sig-name descname">dev_str</code><a class="headerlink" href="#ivy.core.container.Container.dev_str" title="Permalink to this definition">¶</a></dt>
-<dd><p>The device to which the arrays in the container belong, with None returned if the devices are not consistent</p>
 </dd></dl>
 
 <dl class="py method">
@@ -2129,12 +2129,12 @@ Default is True.</p></li>
 
 <dl class="py method">
 <dt id="ivy.core.container.Container.to_dev">
-<code class="sig-name descname">to_dev</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dev_str</span></em>, <em class="sig-param"><span class="n">key_chains</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">to_apply</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">prune_unapplied</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">map_sequences</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/container.html#Container.to_dev"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.to_dev" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">to_dev</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dev</span></em>, <em class="sig-param"><span class="n">key_chains</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">to_apply</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">prune_unapplied</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">map_sequences</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/container.html#Container.to_dev"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.to_dev" title="Permalink to this definition">¶</a></dt>
 <dd><p>Move the container arrays to the desired device, specified by device string.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>dev_str</strong> (<em>str</em><em>, </em><em>optional</em>) – device to move the array to ‘cuda:0’, ‘cuda:1’, ‘cpu’ etc. Keep same device if None.</p></li>
+<li><p><strong>dev</strong> (<em>ivy.Device</em><em>, </em><em>optional</em>) – device to move the array to ‘cuda:0’, ‘cuda:1’, ‘cpu’ etc. Keep same device if None.</p></li>
 <li><p><strong>key_chains</strong> (<em>list</em><em> or </em><em>dict of strs</em><em>, </em><em>optional</em>) – The key-chains to apply or not apply the method to. Default is None.</p></li>
 <li><p><strong>to_apply</strong> (<em>bool</em><em>, </em><em>optional</em>) – If True, the method will be applied to key_chains, otherwise key_chains will be skipped.
 Default is True.</p></li>
@@ -2283,13 +2283,13 @@ Default is True.</p></li>
 
 <dl class="py method">
 <dt id="ivy.core.container.Container.to_multi_dev">
-<code class="sig-name descname">to_multi_dev</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dev_strs</span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">0</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/container.html#Container.to_multi_dev"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.to_multi_dev" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">to_multi_dev</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">devs</span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">0</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/container.html#Container.to_multi_dev"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.to_multi_dev" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a single MultiDevContainer, which shares the same structure as the current container, but replaces arrays
 at the leaves with DistributedArray instances.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>dev_strs</strong> (<em>sequence of str</em>) – The devices along which to distribute each array in the container.</p></li>
+<li><p><strong>devs</strong> (<em>sequence of str</em>) – The devices along which to distribute each array in the container.</p></li>
 <li><p><strong>axis</strong> (<em>int</em><em>, </em><em>optional</em>) – The axis along which to split the arrays at the container leaves. Default is 0.</p></li>
 </ul>
 </dd>
@@ -2368,13 +2368,13 @@ constructor to their original form.</p>
 
 <dl class="py method">
 <dt id="ivy.core.container.Container.unify">
-<em class="property">static </em><code class="sig-name descname">unify</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">containers</span></em>, <em class="sig-param"><span class="n">dev_str</span></em>, <em class="sig-param"><span class="n">mode</span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">0</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/container.html#Container.unify"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.unify" title="Permalink to this definition">¶</a></dt>
+<em class="property">static </em><code class="sig-name descname">unify</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">containers</span></em>, <em class="sig-param"><span class="n">dev</span></em>, <em class="sig-param"><span class="n">mode</span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">0</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/container.html#Container.unify"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.unify" title="Permalink to this definition">¶</a></dt>
 <dd><p>Unify a list of containers, on arbitrary devices, to a single container on the specified device.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>containers</strong> (<em>sequence of Container objects</em>) – containers to unify</p></li>
-<li><p><strong>dev_str</strong> (<em>str</em>) – The device to unify the containers to.</p></li>
+<li><p><strong>dev</strong> (<em>ivy.Device</em>) – The device to unify the containers to.</p></li>
 <li><p><strong>mode</strong> (<em>str</em>) – The mode by which to unify, must be one of [ concat | mean | sum ]</p></li>
 <li><p><strong>axis</strong> (<em>int</em><em>, </em><em>optional</em>) – The axis along which to concattenate the container, if concat mode is set. Default is 0.</p></li>
 </ul>
@@ -2475,11 +2475,11 @@ Default is True.</p></li>
 
 <dl class="py class">
 <dt id="ivy.core.container.MultiDevContainer">
-<em class="property">class </em><code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">MultiDevContainer</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dict_in</span></em>, <em class="sig-param"><span class="n">dev_strs</span></em>, <em class="sig-param"><span class="n">queues</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">queue_load_sizes</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">container_combine_method</span><span class="o">=</span><span class="default_value">'list_join'</span></em>, <em class="sig-param"><span class="n">queue_timeout</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">print_limit</span><span class="o">=</span><span class="default_value">10</span></em>, <em class="sig-param"><span class="n">print_indent</span><span class="o">=</span><span class="default_value">4</span></em>, <em class="sig-param"><span class="n">print_line_spacing</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">ivyh</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">keyword_color_dict</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">rebuild_child_containers</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/container.html#MultiDevContainer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.MultiDevContainer" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">MultiDevContainer</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dict_in</span></em>, <em class="sig-param"><span class="n">devs</span></em>, <em class="sig-param"><span class="n">queues</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">queue_load_sizes</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">container_combine_method</span><span class="o">=</span><span class="default_value">'list_join'</span></em>, <em class="sig-param"><span class="n">queue_timeout</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">print_limit</span><span class="o">=</span><span class="default_value">10</span></em>, <em class="sig-param"><span class="n">print_indent</span><span class="o">=</span><span class="default_value">4</span></em>, <em class="sig-param"><span class="n">print_line_spacing</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">ivyh</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">keyword_color_dict</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">rebuild_child_containers</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/container.html#MultiDevContainer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.MultiDevContainer" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="container/Container.html#ivy.core.container.Container" title="ivy.core.container.Container"><code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.core.container.Container</span></code></a></p>
 <dl class="py method">
 <dt id="ivy.core.container.MultiDevContainer.__init__">
-<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dict_in</span></em>, <em class="sig-param"><span class="n">dev_strs</span></em>, <em class="sig-param"><span class="n">queues</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">queue_load_sizes</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">container_combine_method</span><span class="o">=</span><span class="default_value">'list_join'</span></em>, <em class="sig-param"><span class="n">queue_timeout</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">print_limit</span><span class="o">=</span><span class="default_value">10</span></em>, <em class="sig-param"><span class="n">print_indent</span><span class="o">=</span><span class="default_value">4</span></em>, <em class="sig-param"><span class="n">print_line_spacing</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">ivyh</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">keyword_color_dict</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">rebuild_child_containers</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/container.html#MultiDevContainer.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.MultiDevContainer.__init__" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dict_in</span></em>, <em class="sig-param"><span class="n">devs</span></em>, <em class="sig-param"><span class="n">queues</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">queue_load_sizes</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">container_combine_method</span><span class="o">=</span><span class="default_value">'list_join'</span></em>, <em class="sig-param"><span class="n">queue_timeout</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">print_limit</span><span class="o">=</span><span class="default_value">10</span></em>, <em class="sig-param"><span class="n">print_indent</span><span class="o">=</span><span class="default_value">4</span></em>, <em class="sig-param"><span class="n">print_line_spacing</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">ivyh</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">keyword_color_dict</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">rebuild_child_containers</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/container.html#MultiDevContainer.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.MultiDevContainer.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initialize container object from input dict representation.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -2514,7 +2514,7 @@ Default is True.</p></li>
 
 <dl class="py method">
 <dt id="ivy.core.container.MultiDevContainer.at_dev">
-<code class="sig-name descname">at_dev</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dev_str</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/container.html#MultiDevContainer.at_dev"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.MultiDevContainer.at_dev" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">at_dev</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dev</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/core/container.html#MultiDevContainer.at_dev"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.MultiDevContainer.at_dev" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">

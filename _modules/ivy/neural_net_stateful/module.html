@@ -226,14 +226,14 @@
 
 <div class="viewcode-block" id="Module"><a class="viewcode-back" href="../../../neural_net_stateful/module/Module.html#ivy.neural_net_stateful.module.Module">[docs]</a><span class="k">class</span> <span class="nc">Module</span><span class="p">(</span><span class="n">abc</span><span class="o">.</span><span class="n">ABC</span><span class="p">):</span>
 
-<div class="viewcode-block" id="Module.__init__"><a class="viewcode-back" href="../../../neural_net_stateful/module/Module.html#ivy.neural_net_stateful.module.Module.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dev_str</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">v</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">build_mode</span><span class="o">=</span><span class="s1">&#39;on_init&#39;</span><span class="p">,</span> <span class="n">compile_on_next_step</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">store_vars</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<div class="viewcode-block" id="Module.__init__"><a class="viewcode-back" href="../../../neural_net_stateful/module/Module.html#ivy.neural_net_stateful.module.Module.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dev</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">v</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">build_mode</span><span class="o">=</span><span class="s1">&#39;on_init&#39;</span><span class="p">,</span> <span class="n">compile_on_next_step</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">store_vars</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
                  <span class="n">stateful</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">arg_stateful_idxs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">kwarg_stateful_idxs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">fallback_to_non_compiled</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-                 <span class="n">with_partial_v</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">dev_strs</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+                 <span class="n">with_partial_v</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">devs</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Initialze Ivy layer, which is a stateful object consisting of trainable variables.</span>
 
-<span class="sd">        :param dev_str: device on which to create the module&#39;s variables &#39;cuda:0&#39;, &#39;cuda:1&#39;, &#39;cpu&#39; etc.</span>
-<span class="sd">        :type dev_str: str, optional</span>
+<span class="sd">        :param dev: device on which to create the module&#39;s variables &#39;cuda:0&#39;, &#39;cuda:1&#39;, &#39;cpu&#39; etc.</span>
+<span class="sd">        :type dev: ivy.Device, optional</span>
 <span class="sd">        :param v: Ivy container of trainable variables. Created internally by default.</span>
 <span class="sd">        :type v: ivy container, optional</span>
 <span class="sd">        :param build_mode: How the Module is built, either on initialization (now), explicitly by the user by calling</span>
@@ -257,16 +257,16 @@
 <span class="sd">        :type fallback_to_non_compiled: bool, optional</span>
 <span class="sd">        :param with_partial_v: Whether to allow partial specification of variables. Default is False.</span>
 <span class="sd">        :type with_partial_v: bool, optional</span>
-<span class="sd">        :param dev_strs: devices on which to distribute the module&#39;s variables &#39;cuda:0&#39;, &#39;cuda:1&#39;, &#39;cpu&#39; etc.</span>
-<span class="sd">        :type dev_strs: sequence of str, optional</span>
+<span class="sd">        :param devs: devices on which to distribute the module&#39;s variables &#39;cuda:0&#39;, &#39;cuda:1&#39;, &#39;cpu&#39; etc.</span>
+<span class="sd">        :type devs: sequence of str, optional</span>
 <span class="sd">        :type build_mode: str, optional</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">valid_build_modes</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;on_init&#39;</span><span class="p">,</span> <span class="s1">&#39;explicit&#39;</span><span class="p">,</span> <span class="s1">&#39;on_call&#39;</span><span class="p">]</span>
         <span class="k">if</span> <span class="n">build_mode</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">valid_build_modes</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;build_mode must be one of </span><span class="si">{}</span><span class="s1"> of type str, but found </span><span class="si">{}</span><span class="s1"> of type</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
                 <span class="n">valid_build_modes</span><span class="p">,</span> <span class="n">build_mode</span><span class="p">,</span> <span class="nb">type</span><span class="p">(</span><span class="n">build_mode</span><span class="p">)))</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_dev_str</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">default</span><span class="p">(</span><span class="n">dev_str</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">default</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="n">dev_strs</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">ivy</span><span class="o">.</span><span class="n">default_device</span><span class="p">(),</span> <span class="kc">True</span><span class="p">))</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_dev_strs</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">default</span><span class="p">(</span><span class="n">dev_strs</span><span class="p">,</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_dev_str</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_dev</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">default</span><span class="p">(</span><span class="n">dev</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">default</span><span class="p">(</span><span class="k">lambda</span><span class="p">:</span> <span class="n">devs</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">ivy</span><span class="o">.</span><span class="n">default_device</span><span class="p">(),</span> <span class="kc">True</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_devs</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">default</span><span class="p">(</span><span class="n">devs</span><span class="p">,</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_dev</span><span class="p">])</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_build_mode</span> <span class="o">=</span> <span class="n">build_mode</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_stateful</span> <span class="o">=</span> <span class="n">stateful</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_arg_stateful_idxs</span> <span class="o">=</span> <span class="n">arg_stateful_idxs</span>
@@ -470,12 +470,12 @@
     <span class="c1"># Overridable #</span>
 
     <span class="c1"># noinspection PyMethodMayBeStatic,PyUnusedLocal</span>
-    <span class="k">def</span> <span class="nf">_create_variables</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dev_str</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_create_variables</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dev</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        create internal trainable variables, and return as arbitrary nested dict. Overridable.</span>
 
-<span class="sd">        :param dev_str: The device string, specifying the device on which to create the variables.</span>
-<span class="sd">        :type dev_str: string</span>
+<span class="sd">        :param dev: The device string, specifying the device on which to create the variables.</span>
+<span class="sd">        :type dev: ivy.Deviceing</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">{}</span>
 
@@ -811,11 +811,11 @@
         <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">weights_path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]),</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">v</span><span class="o">.</span><span class="n">to_disk_as_hdf5</span><span class="p">(</span><span class="n">weights_path</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="Module.build"><a class="viewcode-back" href="../../../neural_net_stateful/module/Module.html#ivy.neural_net_stateful.module.Module.build">[docs]</a>    <span class="k">def</span> <span class="nf">build</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">from_call</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">dev_str</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="Module.build"><a class="viewcode-back" href="../../../neural_net_stateful/module/Module.html#ivy.neural_net_stateful.module.Module.build">[docs]</a>    <span class="k">def</span> <span class="nf">build</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">from_call</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">dev</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Build the internal layers and variables for this module.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_dev_str</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">default</span><span class="p">(</span><span class="n">dev_str</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dev_str</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_dev</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">default</span><span class="p">(</span><span class="n">dev</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dev</span><span class="p">)</span>
 
         <span class="c1"># return False if not from_call but build_mode is on_call</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">from_call</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_build_mode</span> <span class="o">==</span> <span class="s1">&#39;on_call&#39;</span><span class="p">:</span>
@@ -826,7 +826,7 @@
 
         <span class="c1"># build variables based on locally built layers, if v not passed in constructor</span>
         <span class="n">v_from_constructor</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_v_in</span>
-        <span class="n">created</span> <span class="o">=</span> <span class="n">Container</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_create_variables</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dev_str</span><span class="p">))</span>
+        <span class="n">created</span> <span class="o">=</span> <span class="n">Container</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_create_variables</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dev</span><span class="p">))</span>
         <span class="n">created_n_found</span> <span class="o">=</span> <span class="n">Container</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_find_variables</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span> <span class="o">**</span><span class="n">created</span><span class="p">))</span>
         <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">v_from_constructor</span><span class="p">):</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_with_partial_v</span><span class="p">:</span>
@@ -849,14 +849,14 @@
             <span class="c1"># update child modules to share the same device</span>
             <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
                 <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
-                    <span class="n">v</span><span class="o">.</span><span class="n">_dev_str</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dev_str</span>
+                    <span class="n">v</span><span class="o">.</span><span class="n">_dev</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dev</span>
 
             <span class="c1"># build during forward pass</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_forward</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
             <span class="c1"># re-build variables based on additional child on-call layers, if v not passed in constructor</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">v_from_constructor</span><span class="p">):</span>
-                <span class="n">created_n_found</span> <span class="o">=</span> <span class="n">Container</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_find_variables</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_create_variables</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dev_str</span><span class="p">)))</span>
+                <span class="n">created_n_found</span> <span class="o">=</span> <span class="n">Container</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span><span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_find_variables</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_create_variables</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dev</span><span class="p">)))</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">v</span> <span class="o">=</span> <span class="n">created_n_found</span>
 
             <span class="c1"># remove further duplicates with self.v</span>

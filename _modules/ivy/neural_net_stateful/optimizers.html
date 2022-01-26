@@ -222,7 +222,7 @@
 <div class="viewcode-block" id="Optimizer"><a class="viewcode-back" href="../../../neural_net_stateful/optimizers/Optimizer.html#ivy.neural_net_stateful.optimizers.Optimizer">[docs]</a><span class="k">class</span> <span class="nc">Optimizer</span><span class="p">(</span><span class="n">abc</span><span class="o">.</span><span class="n">ABC</span><span class="p">):</span>
 
 <div class="viewcode-block" id="Optimizer.__init__"><a class="viewcode-back" href="../../../neural_net_stateful/optimizers/Optimizer.html#ivy.neural_net_stateful.optimizers.Optimizer.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lr</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">stop_gradients</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">init_on_first_step</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">compile_on_next_step</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-                 <span class="n">fallback_to_non_compiled</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">dev_str</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+                 <span class="n">fallback_to_non_compiled</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">dev</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Construct an general Optimizer. This is an abstract class, and must be derived.</span>
 
@@ -241,8 +241,8 @@
 <span class="sd">        :param fallback_to_non_compiled: Whether to fall back to non-compiled forward call in the case that an error is</span>
 <span class="sd">                                         raised during the compiled forward pass. Default is True.</span>
 <span class="sd">        :type fallback_to_non_compiled: bool, optional</span>
-<span class="sd">        :param dev_str: device on which to create the layer&#39;s variables &#39;cuda:0&#39;, &#39;cuda:1&#39;, &#39;cpu&#39; etc.</span>
-<span class="sd">        :type dev_str: str, optional</span>
+<span class="sd">        :param dev: device on which to create the layer&#39;s variables &#39;cuda:0&#39;, &#39;cuda:1&#39;, &#39;cpu&#39; etc.</span>
+<span class="sd">        :type dev: ivy.Device, optional</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_lr</span> <span class="o">=</span> <span class="n">lr</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_inplace</span> <span class="o">=</span> <span class="n">inplace</span>
@@ -251,8 +251,8 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_initialized</span> <span class="o">=</span> <span class="ow">not</span> <span class="n">init_on_first_step</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_compile_on_next_step</span> <span class="o">=</span> <span class="n">compile_on_next_step</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_fallback_to_non_compiled</span> <span class="o">=</span> <span class="n">fallback_to_non_compiled</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_dev_str</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">default</span><span class="p">(</span><span class="n">dev_str</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">default_device</span><span class="p">())</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_count</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">],</span> <span class="n">dev_str</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_dev_str</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_dev</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">default</span><span class="p">(</span><span class="n">dev</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">default_device</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_count</span> <span class="o">=</span> <span class="n">ivy</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">],</span> <span class="n">dev</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_dev</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_compiled_step_fn</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_compiled</span> <span class="o">=</span> <span class="kc">False</span></div>
 
@@ -452,7 +452,7 @@
 <div class="viewcode-block" id="Adam"><a class="viewcode-back" href="../../../neural_net_stateful/optimizers/Adam.html#ivy.neural_net_stateful.optimizers.Adam">[docs]</a><span class="k">class</span> <span class="nc">Adam</span><span class="p">(</span><span class="n">Optimizer</span><span class="p">):</span>
 
 <div class="viewcode-block" id="Adam.__init__"><a class="viewcode-back" href="../../../neural_net_stateful/optimizers/Adam.html#ivy.neural_net_stateful.optimizers.Adam.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lr</span><span class="o">=</span><span class="mf">1e-4</span><span class="p">,</span> <span class="n">beta1</span><span class="o">=</span><span class="mf">0.9</span><span class="p">,</span> <span class="n">beta2</span><span class="o">=</span><span class="mf">0.999</span><span class="p">,</span> <span class="n">epsilon</span><span class="o">=</span><span class="mf">1e-07</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">stop_gradients</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-                 <span class="n">compile_on_next_step</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">dev_str</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+                 <span class="n">compile_on_next_step</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">dev</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Construct an ADAM optimizer.</span>
 
@@ -472,10 +472,10 @@
 <span class="sd">        :type stop_gradients: bool, optional</span>
 <span class="sd">        :param compile_on_next_step: Whether to compile the optimizer on the next step. Default is False.</span>
 <span class="sd">        :type compile_on_next_step: bool, optional</span>
-<span class="sd">        :param dev_str: device on which to create the layer&#39;s variables &#39;cuda:0&#39;, &#39;cuda:1&#39;, &#39;cpu&#39; etc.</span>
-<span class="sd">        :type dev_str: str, optional</span>
+<span class="sd">        :param dev: device on which to create the layer&#39;s variables &#39;cuda:0&#39;, &#39;cuda:1&#39;, &#39;cpu&#39; etc.</span>
+<span class="sd">        :type dev: ivy.Device, optional</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">Optimizer</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lr</span><span class="p">,</span> <span class="n">inplace</span><span class="p">,</span> <span class="n">stop_gradients</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="n">compile_on_next_step</span><span class="p">,</span> <span class="n">dev_str</span><span class="p">)</span>
+        <span class="n">Optimizer</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lr</span><span class="p">,</span> <span class="n">inplace</span><span class="p">,</span> <span class="n">stop_gradients</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="n">compile_on_next_step</span><span class="p">,</span> <span class="n">dev</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_beta1</span> <span class="o">=</span> <span class="n">beta1</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_beta2</span> <span class="o">=</span> <span class="n">beta2</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_epsilon</span> <span class="o">=</span> <span class="n">epsilon</span>
@@ -523,7 +523,7 @@
 <div class="viewcode-block" id="LAMB"><a class="viewcode-back" href="../../../neural_net_stateful/optimizers/LAMB.html#ivy.neural_net_stateful.optimizers.LAMB">[docs]</a><span class="k">class</span> <span class="nc">LAMB</span><span class="p">(</span><span class="n">Optimizer</span><span class="p">):</span>
 
 <div class="viewcode-block" id="LAMB.__init__"><a class="viewcode-back" href="../../../neural_net_stateful/optimizers/LAMB.html#ivy.neural_net_stateful.optimizers.LAMB.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lr</span><span class="o">=</span><span class="mf">1e-4</span><span class="p">,</span> <span class="n">beta1</span><span class="o">=</span><span class="mf">0.9</span><span class="p">,</span> <span class="n">beta2</span><span class="o">=</span><span class="mf">0.999</span><span class="p">,</span> <span class="n">epsilon</span><span class="o">=</span><span class="mf">1e-07</span><span class="p">,</span> <span class="n">max_trust_ratio</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">decay_lambda</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                 <span class="n">stop_gradients</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">compile_on_next_step</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">dev_str</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+                 <span class="n">stop_gradients</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">compile_on_next_step</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">dev</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Construct an LAMB optimizer.</span>
 
@@ -548,10 +548,10 @@
 <span class="sd">        :type stop_gradients: bool, optional</span>
 <span class="sd">        :param compile_on_next_step: Whether to compile the optimizer on the next step. Default is False.</span>
 <span class="sd">        :type compile_on_next_step: bool, optional</span>
-<span class="sd">        :param dev_str: device on which to create the layer&#39;s variables &#39;cuda:0&#39;, &#39;cuda:1&#39;, &#39;cpu&#39; etc.</span>
-<span class="sd">        :type dev_str: str, optional</span>
+<span class="sd">        :param dev: device on which to create the layer&#39;s variables &#39;cuda:0&#39;, &#39;cuda:1&#39;, &#39;cpu&#39; etc.</span>
+<span class="sd">        :type dev: ivy.Device, optional</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">Optimizer</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lr</span><span class="p">,</span> <span class="n">inplace</span><span class="p">,</span> <span class="n">stop_gradients</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="n">compile_on_next_step</span><span class="p">,</span> <span class="n">dev_str</span><span class="p">)</span>
+        <span class="n">Optimizer</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lr</span><span class="p">,</span> <span class="n">inplace</span><span class="p">,</span> <span class="n">stop_gradients</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="n">compile_on_next_step</span><span class="p">,</span> <span class="n">dev</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_beta1</span> <span class="o">=</span> <span class="n">beta1</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_beta2</span> <span class="o">=</span> <span class="n">beta2</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_epsilon</span> <span class="o">=</span> <span class="n">epsilon</span>

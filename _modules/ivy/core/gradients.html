@@ -233,7 +233,7 @@
 <span class="c1"># noinspection PyShadowingNames</span>
 <div class="viewcode-block" id="with_grads"><a class="viewcode-back" href="../../../core/gradients/with_grads.html#ivy.core.gradients.with_grads">[docs]</a><span class="k">def</span> <span class="nf">with_grads</span><span class="p">(</span><span class="n">with_grads</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Return the input dev_str if provided, otherwise return the global default device.</span>
+<span class="sd">    Return the input dev if provided, otherwise return the global default device.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">_ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">with_grads</span><span class="p">):</span>
         <span class="k">assert</span> <span class="n">with_grads</span> <span class="ow">in</span> <span class="p">[</span><span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">]</span>

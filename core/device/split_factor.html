@@ -105,7 +105,7 @@
 <li class="toctree-l2"><a class="reference internal" href="num_arrays_on_dev.html">num_arrays_on_dev</a></li>
 <li class="toctree-l2"><a class="reference internal" href="print_all_arrays_on_dev.html">print_all_arrays_on_dev</a></li>
 <li class="toctree-l2"><a class="reference internal" href="dev.html">dev</a></li>
-<li class="toctree-l2"><a class="reference internal" href="dev_str.html">dev_str</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dev.html">dev</a></li>
 <li class="toctree-l2"><a class="reference internal" href="dev_to_str.html">dev_to_str</a></li>
 <li class="toctree-l2"><a class="reference internal" href="str_to_dev.html">str_to_dev</a></li>
 <li class="toctree-l2"><a class="reference internal" href="clear_mem_on_dev.html">clear_mem_on_dev</a></li>
@@ -262,12 +262,12 @@
 <h1>split_factor<a class="headerlink" href="#split-factor" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
 <dt id="ivy.core.device.split_factor">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">split_factor</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dev_str</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/device.html#split_factor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.device.split_factor" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">split_factor</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dev</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/device.html#split_factor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.device.split_factor" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the global split factor for a given device, which can be used to scale batch splitting chunk sizes for the
 device across the codebase. Default global value for each device is 1.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>dev_str</strong> (<em>str</em><em>, </em><em>optional</em>) – The device to query the split factor for. Sets the default device by default.</p>
+<dd class="field-odd"><p><strong>dev</strong> (<em>ivy.Device</em><em>, </em><em>optional</em>) – The device to query the split factor for. Sets the default device by default.</p>
 </dd>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>The split factor for the specified device.</p>

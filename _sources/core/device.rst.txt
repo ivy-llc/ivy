@@ -16,7 +16,7 @@ Device
    device/num_arrays_on_dev.rst
    device/print_all_arrays_on_dev.rst
    device/dev.rst
-   device/dev_str.rst
+   device/dev.rst
    device/dev_to_str.rst
    device/str_to_dev.rst
    device/clear_mem_on_dev.rst
