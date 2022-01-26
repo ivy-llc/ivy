@@ -27,7 +27,7 @@ class Module(abc.ABC):
         Initialze Ivy layer, which is a stateful object consisting of trainable variables.
 
         :param dev: device on which to create the module's variables 'cuda:0', 'cuda:1', 'cpu' etc.
-        :type dev: str, optional
+        :type dev: ivy.Device, optional
         :param v: Ivy container of trainable variables. Created internally by default.
         :type v: ivy container, optional
         :param build_mode: How the Module is built, either on initialization (now), explicitly by the user by calling
@@ -269,7 +269,7 @@ class Module(abc.ABC):
         create internal trainable variables, and return as arbitrary nested dict. Overridable.
 
         :param dev: The device string, specifying the device on which to create the variables.
-        :type dev: string
+        :type dev: ivy.Deviceing
         """
         return {}
 
