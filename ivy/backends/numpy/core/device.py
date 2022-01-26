@@ -12,13 +12,13 @@ from ivy.core.device import Profiler as BaseProfiler
 
 dev = lambda x: 'cpu'
 dev.__name__ = 'dev'
-to_dev = lambda x, dev_str=None: x
-dev_str = lambda x: 'cpu'
-dev_str.__name__ = 'dev_str'
-_dev_str_callable = dev_str
+to_dev = lambda x, dev=None: x
+dev = lambda x: 'cpu'
+dev.__name__ = 'dev'
+_dev_callable = dev
 dev_to_str = lambda dev_in: 'cpu'
-str_to_dev = lambda dev_str: 'cpu'
-clear_mem_on_dev = lambda dev_str: None
+str_to_dev = lambda dev: 'cpu'
+clear_mem_on_dev = lambda dev: None
 gpu_is_available = lambda: False
 num_gpus = lambda: 0
 tpu_is_available = lambda: False

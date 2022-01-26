@@ -11,7 +11,7 @@ from ivy.core.container import Container
 
 
 def variable(x):
-    with _tf.device('/' + ivy.dev_str(x).upper()):
+    with _tf.device('/' + ivy.dev(x).upper()):
         return _tf.Variable(x, trainable=True)
 
 

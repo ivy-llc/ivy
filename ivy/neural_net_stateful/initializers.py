@@ -10,11 +10,11 @@ class Constant:
     def __init__(self, constant):
         self._constant = constant
 
-    def create_variables(self, var_shape, dev_str, fan_out=None, fan_in=None):
+    def create_variables(self, var_shape, dev, fan_out=None, fan_in=None):
         """
         Create internal variables for the layer
         """
-        return ivy.variable(ivy.ones(var_shape, dev_str=dev_str) * self._constant)
+        return ivy.variable(ivy.ones(var_shape, dev=dev) * self._constant)
 
 
 class Zeros(Constant):
@@ -42,7 +42,7 @@ class Uniform:
         self._power = power
         self._gain = gain
 
-    def create_variables(self, var_shape, dev_str, fan_out=None, fan_in=None):
+    def create_variables(self, var_shape, dev, fan_out=None, fan_in=None):
         """
         Create internal variables for the layer
         """
@@ -67,7 +67,7 @@ class Uniform:
         else:
             raise Exception('Invalid denominator mode, must be one of [ fan_in | fan_out | fan_sum | fan_avg ]')
         wlim = ((self._numerator / fan) ** self._power) * self._gain
-        return ivy.variable(ivy.random_uniform(-wlim, wlim, var_shape, dev_str=dev_str))
+        return ivy.variable(ivy.random_uniform(-wlim, wlim, var_shape, dev=dev))
 
 
 class GlorotUniform(Uniform):
@@ -99,7 +99,7 @@ class KaimingNormal:
         self._mean = mean
         self._fan_mode = fan_mode
 
-    def create_variables(self, var_shape, dev_str, fan_out=None, fan_in=None, negative_slope=0.):
+    def create_variables(self, var_shape, dev, fan_out=None, fan_in=None, negative_slope=0.):
         """
         Create internal variables for the layer
         """
@@ -124,4 +124,4 @@ class KaimingNormal:
         else:
             raise Exception('Invalid denominator mode, must be one of [ fan_in | fan_out | fan_sum | fan_avg ]')
         std = (2/((1+negative_slope**2)*fan)) ** 0.5
-        return ivy.variable(ivy.random_normal(self._mean, std, var_shape, dev_str=dev_str))
+        return ivy.variable(ivy.random_normal(self._mean, std, var_shape, dev=dev))

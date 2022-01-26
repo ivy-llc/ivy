@@ -16,7 +16,7 @@ import ivy_tests.helpers as helpers
 
 
 # dtype objects
-def test_dtype_instances(dev_str, call):
+def test_dtype_instances(dev, call):
     assert ivy.exists(ivy.int8)
     assert ivy.exists(ivy.int16)
     assert ivy.exists(ivy.int32)
@@ -37,9 +37,9 @@ def test_dtype_instances(dev_str, call):
     "starting_dtype", ['float32', 'int32', 'bool'])
 @pytest.mark.parametrize(
     "target_dtype", ['float32', 'int32', 'bool'])
-def test_cast(object_in, starting_dtype, target_dtype, dev_str, call):
+def test_cast(object_in, starting_dtype, target_dtype, dev, call):
     # smoke test
-    x = ivy.array(object_in, starting_dtype, dev_str)
+    x = ivy.array(object_in, starting_dtype, dev)
     ret = ivy.cast(x, target_dtype)
     # type test
     assert ivy.is_array(ret)

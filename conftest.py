@@ -23,31 +23,31 @@ TEST_CALL_METHODS: Dict[str, callable] = {'numpy': helpers.np_call,
 
 
 @pytest.fixture(autouse=True)
-def run_around_tests(dev_str, f, wrapped_mode, compile_graph, call):
+def run_around_tests(dev, f, wrapped_mode, compile_graph, call):
     if wrapped_mode and call is helpers.tf_graph_call:
         # ToDo: add support for wrapped_mode and tensorflow compilation
         pytest.skip()
     if wrapped_mode and call is helpers.jnp_call:
         # ToDo: add support for wrapped_mode with jax, presumably some errenously wrapped jax methods
         pytest.skip()
-    if 'gpu' in dev_str and call is helpers.np_call:
+    if 'gpu' in dev and call is helpers.np_call:
         # Numpy does not support GPU
         pytest.skip()
     ivy.clear_framework_stack()
     with f.use:
         f.set_wrapped_mode(wrapped_mode)
-        with ivy.DefaultDevice(dev_str):
+        with ivy.DefaultDevice(dev):
             yield
 
 
 def pytest_generate_tests(metafunc):
 
-    # dev_str
-    raw_value = metafunc.config.getoption('--dev_str')
+    # dev
+    raw_value = metafunc.config.getoption('--dev')
     if raw_value == 'all':
-        dev_strs = ['cpu', 'gpu:0', 'tpu:0']
+        devs = ['cpu', 'gpu:0', 'tpu:0']
     else:
-        dev_strs = raw_value.split(',')
+        devs = raw_value.split(',')
 
     # framework
     raw_value = metafunc.config.getoption('--framework')
@@ -77,16 +77,16 @@ def pytest_generate_tests(metafunc):
     # create test configs
     configs = list()
     for f_str in f_strs:
-        for dev_str in dev_strs:
+        for dev in devs:
             for wrapped_mode in wrapped_modes:
                 for compile_graph in compile_modes:
                     configs.append(
-                        (dev_str, TEST_FRAMEWORKS[f_str](), wrapped_mode, compile_graph, TEST_CALL_METHODS[f_str]))
-    metafunc.parametrize('dev_str,f,wrapped_mode,compile_graph,call', configs)
+                        (dev, TEST_FRAMEWORKS[f_str](), wrapped_mode, compile_graph, TEST_CALL_METHODS[f_str]))
+    metafunc.parametrize('dev,f,wrapped_mode,compile_graph,call', configs)
 
 
 def pytest_addoption(parser):
-    parser.addoption('--dev_str', action="store", default="cpu")
+    parser.addoption('--dev', action="store", default="cpu")
     parser.addoption('--framework', action="store", default="numpy,jax,tensorflow,torch,mxnet")
     parser.addoption('--wrapped_mode', action="store", default="false")
     parser.addoption('--compile_graph', action="store", default="true")

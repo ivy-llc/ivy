@@ -23,7 +23,7 @@ import ivy_tests.helpers as helpers
     "dtype", ['float32'])
 @pytest.mark.parametrize(
     "tensor_fn", [ivy.array, helpers.var_fn, lambda x: x])
-def test_random_uniform(low, high, shape, dtype, tensor_fn, dev_str, call):
+def test_random_uniform(low, high, shape, dtype, tensor_fn, dev, call):
     # smoke test
     if tensor_fn == helpers.var_fn and call is helpers.mx_call:
         # mxnet does not support 0-dimensional variables
@@ -31,7 +31,7 @@ def test_random_uniform(low, high, shape, dtype, tensor_fn, dev_str, call):
     kwargs = {k: tensor_fn(v) for k, v in zip(['low', 'high'], [low, high]) if v is not None}
     if shape is not None:
         kwargs['shape'] = shape
-    ret = ivy.random_uniform(**kwargs, dev_str=dev_str)
+    ret = ivy.random_uniform(**kwargs, dev=dev)
     # type test
     assert ivy.is_array(ret)
     # cardinality test
@@ -40,7 +40,7 @@ def test_random_uniform(low, high, shape, dtype, tensor_fn, dev_str, call):
     else:
         assert ret.shape == shape
     # value test
-    ret_np = call(ivy.random_uniform, **kwargs, dev_str=dev_str)
+    ret_np = call(ivy.random_uniform, **kwargs, dev=dev)
     assert np.min((ret_np < (high if high else 1.)).astype(np.int32)) == 1
     assert np.min((ret_np > (low if low else 0.)).astype(np.int32)) == 1
     # compilation test
@@ -59,7 +59,7 @@ def test_random_uniform(low, high, shape, dtype, tensor_fn, dev_str, call):
     "dtype", ['float32'])
 @pytest.mark.parametrize(
     "tensor_fn", [ivy.array, helpers.var_fn, lambda x: x])
-def test_random_normal(mean, std, shape, dtype, tensor_fn, dev_str, call):
+def test_random_normal(mean, std, shape, dtype, tensor_fn, dev, call):
     # smoke test
     ivy.seed(0)
     if tensor_fn == helpers.var_fn and call is helpers.mx_call:
@@ -68,7 +68,7 @@ def test_random_normal(mean, std, shape, dtype, tensor_fn, dev_str, call):
     kwargs = {k: tensor_fn(v) for k, v in zip(['mean', 'std'], [mean, std]) if v is not None}
     if shape is not None:
         kwargs['shape'] = shape
-    ret = ivy.random_normal(**kwargs, dev_str=dev_str)
+    ret = ivy.random_normal(**kwargs, dev=dev)
     # type test
     assert ivy.is_array(ret)
     # cardinality test
@@ -77,7 +77,7 @@ def test_random_normal(mean, std, shape, dtype, tensor_fn, dev_str, call):
     else:
         assert ret.shape == shape
     # value test
-    ret_np = call(ivy.random_normal, **kwargs, dev_str=dev_str)
+    ret_np = call(ivy.random_normal, **kwargs, dev=dev)
     assert np.min((ret_np > (ivy.default(mean, 0.) - 3*ivy.default(std, 1.))).astype(np.int32)) == 1
     assert np.min((ret_np < (ivy.default(mean, 0.) + 3*ivy.default(std, 1.))).astype(np.int32)) == 1
     # compilation test
@@ -96,13 +96,13 @@ def test_random_normal(mean, std, shape, dtype, tensor_fn, dev_str, call):
     "dtype", ['float32'])
 @pytest.mark.parametrize(
     "tensor_fn", [ivy.array, helpers.var_fn])
-def test_multinomial(probs, num_samples, replace, dtype, tensor_fn, dev_str, call):
+def test_multinomial(probs, num_samples, replace, dtype, tensor_fn, dev, call):
     population_size = 2
     if call in [helpers.mx_call, helpers.tf_call, helpers.tf_graph_call] and not replace:
         # mxnet and tenosorflow do not support multinomial without replacement
         pytest.skip()
     # smoke test
-    probs = tensor_fn(probs, dtype, dev_str) if probs is not None else probs
+    probs = tensor_fn(probs, dtype, dev) if probs is not None else probs
     batch_size = probs.shape[0] if probs is not None else 2
     ret = ivy.multinomial(population_size, num_samples, batch_size, probs, replace)
     # type test
@@ -125,19 +125,19 @@ def test_multinomial(probs, num_samples, replace, dtype, tensor_fn, dev_str, cal
     "dtype", ['float32'])
 @pytest.mark.parametrize(
     "tensor_fn", [ivy.array, helpers.var_fn, lambda x: x])
-def test_randint(low, high, shape, dtype, tensor_fn, dev_str, call):
+def test_randint(low, high, shape, dtype, tensor_fn, dev, call):
     # smoke test
     if call in [helpers.mx_call, helpers.torch_call] and tensor_fn is helpers.var_fn:
         # PyTorch and MXNet do not support non-float variables
         pytest.skip()
     low_tnsr, high_tnsr = tensor_fn(low), tensor_fn(high)
-    ret = ivy.randint(low_tnsr, high_tnsr, shape, dev_str=dev_str)
+    ret = ivy.randint(low_tnsr, high_tnsr, shape, dev=dev)
     # type test
     assert ivy.is_array(ret)
     # cardinality test
     assert ret.shape == shape
     # value test
-    ret_np = call(ivy.randint, low_tnsr, high_tnsr, shape, dev_str=dev_str)
+    ret_np = call(ivy.randint, low_tnsr, high_tnsr, shape, dev=dev)
     assert np.min((ret_np < high).astype(np.int32)) == 1
     assert np.min((ret_np >= low).astype(np.int32)) == 1
     # compilation test
@@ -152,7 +152,7 @@ def test_randint(low, high, shape, dtype, tensor_fn, dev_str, call):
     "dtype", ['float32'])
 @pytest.mark.parametrize(
     "tensor_fn", [ivy.array, helpers.var_fn])
-def test_seed(seed_val, dtype, tensor_fn, dev_str, call):
+def test_seed(seed_val, dtype, tensor_fn, dev, call):
     # smoke test
     ivy.seed(seed_val)
     # compilation test
@@ -170,9 +170,9 @@ def test_seed(seed_val, dtype, tensor_fn, dev_str, call):
     "dtype", ['float32'])
 @pytest.mark.parametrize(
     "tensor_fn", [ivy.array, helpers.var_fn])
-def test_shuffle(x, dtype, tensor_fn, dev_str, call):
+def test_shuffle(x, dtype, tensor_fn, dev, call):
     # smoke test
-    x = tensor_fn(x, dtype, dev_str)
+    x = tensor_fn(x, dtype, dev)
     ret = ivy.shuffle(x)
     # type test
     assert ivy.is_array(ret)

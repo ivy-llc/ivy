@@ -16,7 +16,7 @@ from haiku._src.data_structures import FlatMapping
 
 # local
 from ivy.core.device import default_device
-from ivy.backends.jax.core.device import to_dev, dev_str as callable_dev_str
+from ivy.backends.jax.core.device import to_dev, dev as callable_dev
 
 DTYPE_DICT = {_jnp.dtype('bool'): 'bool',
               _jnp.dtype('int8'): 'int8',
@@ -48,14 +48,14 @@ def _to_array(x):
 # ----#
 
 # noinspection PyShadowingNames
-def array(object_in, dtype=None, dev_str=None):
+def array(object_in, dtype=None, dev=None):
     if dtype:
         if dtype == 'bool':
             dtype += '_'
         dtype = _jnp.__dict__[dtype]
     else:
         dtype = None
-    return to_dev(_jnp.array(object_in, dtype=dtype), default_device(dev_str))
+    return to_dev(_jnp.array(object_in, dtype=dtype), default_device(dev))
 
 
 # noinspection PyUnresolvedReferences,PyProtectedMember
@@ -116,24 +116,24 @@ def cast(x, dtype):
 
 
 # noinspection PyShadowingNames
-def arange(stop, start=0, step=1, dtype=None, dev_str=None):
+def arange(stop, start=0, step=1, dtype=None, dev=None):
     if dtype:
         dtype = _jnp.__dict__[dtype]
     else:
         dtype = None
-    return to_dev(_jnp.arange(start, stop, step=step, dtype=dtype), default_device(dev_str))
+    return to_dev(_jnp.arange(start, stop, step=step, dtype=dtype), default_device(dev))
 
 
-def linspace(start, stop, num, axis=None, dev_str=None):
+def linspace(start, stop, num, axis=None, dev=None):
     if axis is None:
         axis = -1
-    return to_dev(_jnp.linspace(start, stop, num, axis=axis), default_device(dev_str))
+    return to_dev(_jnp.linspace(start, stop, num, axis=axis), default_device(dev))
 
 
-def logspace(start, stop, num, base=10., axis=None, dev_str=None):
+def logspace(start, stop, num, base=10., axis=None, dev=None):
     if axis is None:
         axis = -1
-    return to_dev(_jnp.logspace(start, stop, num, base=base, axis=axis), default_device(dev_str))
+    return to_dev(_jnp.logspace(start, stop, num, base=base, axis=axis), default_device(dev))
 
 
 def concatenate(xs, axis=-1):
@@ -225,40 +225,40 @@ def squeeze(x, axis=None):
 
 
 # noinspection PyShadowingNames
-def zeros(shape, dtype='float32', dev_str=None):
+def zeros(shape, dtype='float32', dev=None):
     dtype = _jnp.__dict__[dtype]
-    return to_dev(_jnp.zeros(shape, dtype), default_device(dev_str))
+    return to_dev(_jnp.zeros(shape, dtype), default_device(dev))
 
 
 # noinspection PyShadowingNames
-def zeros_like(x, dtype=None, dev_str=None):
+def zeros_like(x, dtype=None, dev=None):
     if dtype:
         dtype = _jnp.__dict__[dtype]
     else:
         dtype = x.dtype
-    return to_dev(_jnp.zeros_like(x, dtype=dtype), default_device(dev_str))
+    return to_dev(_jnp.zeros_like(x, dtype=dtype), default_device(dev))
 
 
 # noinspection PyShadowingNames
-def ones(shape, dtype='float32', dev_str=None):
+def ones(shape, dtype='float32', dev=None):
     dtype = _jnp.__dict__[dtype]
-    return to_dev(_jnp.ones(shape, dtype), default_device(dev_str))
+    return to_dev(_jnp.ones(shape, dtype), default_device(dev))
 
 
 # noinspection PyShadowingNames
-def ones_like(x, dtype=None, dev_str=None):
+def ones_like(x, dtype=None, dev=None):
     if dtype:
         dtype = _jnp.__dict__[dtype]
     else:
         dtype = x.dtype
-    return to_dev(_jnp.ones_like(x, dtype=dtype), default_device(dev_str))
+    return to_dev(_jnp.ones_like(x, dtype=dtype), default_device(dev))
 
 
 # noinspection PyUnusedLocal
-def one_hot(indices, depth, dev_str=None):
+def one_hot(indices, depth, dev=None):
     # from https://stackoverflow.com/questions/38592324/one-hot-encoding-using-numpy
     res = _jnp.eye(depth)[_jnp.array(indices).reshape(-1)]
-    return to_dev(res.reshape(list(indices.shape) + [depth]), default_device(dev_str))
+    return to_dev(res.reshape(list(indices.shape) + [depth]), default_device(dev))
 
 
 cross = _jnp.cross
@@ -276,7 +276,7 @@ def cumprod(x, axis=0, exclusive=False):
 
 
 # noinspection PyShadowingNames
-def identity(n, dtype='float32', batch_shape=None, dev_str=None):
+def identity(n, dtype='float32', batch_shape=None, dev=None):
     dtype = _jnp.__dict__[dtype]
     mat = _jnp.identity(n, dtype=dtype)
     if batch_shape is None:
@@ -285,15 +285,15 @@ def identity(n, dtype='float32', batch_shape=None, dev_str=None):
         reshape_dims = [1]*len(batch_shape) + [n, n]
         tile_dims = list(batch_shape) + [1, 1]
         return_mat = _jnp.tile(_jnp.reshape(mat, reshape_dims), tile_dims)
-    return to_dev(return_mat, default_device(dev_str))
+    return to_dev(return_mat, default_device(dev))
 
 
 meshgrid = lambda *xs, indexing='ij': _jnp.meshgrid(*xs, indexing=indexing)
 
 
-def scatter_flat(indices, updates, size, reduction='sum', dev_str=None):
-    if dev_str is None:
-        dev_str = callable_dev_str(updates)
+def scatter_flat(indices, updates, size, reduction='sum', dev=None):
+    if dev is None:
+        dev = callable_dev(updates)
     if reduction == 'sum':
         target = _jnp.zeros([size], dtype=updates.dtype)
         target = target.at[indices].add(updates)
@@ -307,13 +307,13 @@ def scatter_flat(indices, updates, size, reduction='sum', dev_str=None):
         target = _jnp.where(target == -1e12, 0., target)
     else:
         raise Exception('reduction is {}, but it must be one of "sum", "min" or "max"'.format(reduction))
-    return to_dev(target, dev_str)
+    return to_dev(target, dev)
 
 
 # noinspection PyShadowingNames
-def scatter_nd(indices, updates, shape, reduction='sum', dev_str=None):
-    if dev_str is None:
-        dev_str = callable_dev_str(updates)
+def scatter_nd(indices, updates, shape, reduction='sum', dev=None):
+    if dev is None:
+        dev = callable_dev(updates)
     shape = list(shape)
     indices_flat = indices.reshape(-1, indices.shape[-1]).T
     indices_tuple = tuple(indices_flat) + (Ellipsis,)
@@ -330,18 +330,18 @@ def scatter_nd(indices, updates, shape, reduction='sum', dev_str=None):
         target = _jnp.where(target == -1e12, 0., target)
     else:
         raise Exception('reduction is {}, but it must be one of "sum", "min" or "max"'.format(reduction))
-    return to_dev(target, dev_str)
+    return to_dev(target, dev)
 
 
-def gather(params, indices, axis=-1, dev_str=None):
-    if dev_str is None:
-        dev_str = callable_dev_str(params)
-    return to_dev(_jnp.take_along_axis(params, indices, axis), dev_str)
+def gather(params, indices, axis=-1, dev=None):
+    if dev is None:
+        dev = callable_dev(params)
+    return to_dev(_jnp.take_along_axis(params, indices, axis), dev)
 
 
-def gather_nd(params, indices, dev_str=None):
-    if dev_str is None:
-        dev_str = callable_dev_str(params)
+def gather_nd(params, indices, dev=None):
+    if dev is None:
+        dev = callable_dev(params)
     indices_shape = indices.shape
     params_shape = params.shape
     num_index_dims = indices_shape[-1]
@@ -358,7 +358,7 @@ def gather_nd(params, indices, dev_str=None):
     flat_gather = _jnp.take(flat_params, flat_indices_for_flat, 0)
     new_shape = list(indices_shape[:-1]) + list(params_shape[num_index_dims:])
     ret = _jnp.reshape(flat_gather, new_shape)
-    return to_dev(ret, dev_str)
+    return to_dev(ret, dev)
 
 
 def linear_resample(x, num_samples, axis=-1):

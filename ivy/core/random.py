@@ -6,7 +6,7 @@ Collection of random Ivy functions
 from ivy.framework_handler import current_framework as _cur_framework
 
 
-def random_uniform(low=0.0, high=1.0, shape=None, dev_str=None, f=None):
+def random_uniform(low=0.0, high=1.0, shape=None, dev=None, f=None):
     """
     Draws samples from a uniform distribution.
     Samples are uniformly distributed over the half-open interval [low, high) (includes low, but excludes high).
@@ -21,16 +21,16 @@ def random_uniform(low=0.0, high=1.0, shape=None, dev_str=None, f=None):
     :param shape: Output shape. If the given shape is, e.g., (m, n, k), then m * n * k samples are drawn.
                     If size is None (default), a single value is returned.
     :type shape: sequence of ints
-    :param dev_str: device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc.
-    :type dev_str: str
+    :param dev: device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc.
+    :type dev: str
     :param f: Machine learning framework. Inferred from inputs if None.
     :type f: ml_framework, optional
     :return: Drawn samples from the parameterized uniform distribution.
     """
-    return _cur_framework(f=f).random_uniform(low, high, shape, dev_str)
+    return _cur_framework(f=f).random_uniform(low, high, shape, dev)
 
 
-def random_normal(mean=0.0, std=1.0, shape=None, dev_str=None, f=None):
+def random_normal(mean=0.0, std=1.0, shape=None, dev=None, f=None):
     """
     Draws samples from a normal distribution.
 
@@ -40,16 +40,16 @@ def random_normal(mean=0.0, std=1.0, shape=None, dev_str=None, f=None):
     :type std: float
     :param shape: Output shape. If the given shape is, e.g., (m, n, k), then m * n * k samples are drawn.
                     If size is None (default), a single value is returned.
-    :param dev_str: device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc.
-    :type dev_str: str
+    :param dev: device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc.
+    :type dev: str
     :param f: Machine learning framework. Inferred from inputs if None.
     :type f: ml_framework, optional
     :return: Drawn samples from the parameterized uniform distribution.
     """
-    return _cur_framework(f=f).random_normal(mean, std, shape, dev_str)
+    return _cur_framework(f=f).random_normal(mean, std, shape, dev)
 
 
-def multinomial(population_size, num_samples, batch_size, probs=None, replace=True, dev_str=None, f=None):
+def multinomial(population_size, num_samples, batch_size, probs=None, replace=True, dev=None, f=None):
     """
     Draws samples from a multinomial distribution. Specifcally, returns a tensor where each row contains num_samples
     indices sampled from the multinomial probability distribution located in the corresponding row of tensor input.
@@ -65,16 +65,16 @@ def multinomial(population_size, num_samples, batch_size, probs=None, replace=Tr
     :type probs: array, optional
     :param replace: Whether to replace samples once they've been drawn. Default is True.
     :type replace: bool, optional
-    :param dev_str: device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc.
-    :type dev_str: str
+    :param dev: device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc.
+    :type dev: str
     :param f: Machine learning framework. Inferred from inputs if None.
     :type f: ml_framework, optional
     :return: Drawn samples indices from the multinomial distribution.
     """
-    return _cur_framework(f=f).multinomial(population_size, num_samples, batch_size, probs, replace, dev_str)
+    return _cur_framework(f=f).multinomial(population_size, num_samples, batch_size, probs, replace, dev)
 
 
-def randint(low, high, shape, dev_str=None, f=None):
+def randint(low, high, shape, dev=None, f=None):
     """
     Returns a tensor filled with random integers generated uniformly between low (inclusive) and high (exclusive).
 
@@ -84,13 +84,13 @@ def randint(low, high, shape, dev_str=None, f=None):
     :type high: int
     :param shape: a tuple defining the shape of the output tensor.
     :type shape: sequence of ints
-    :param dev_str: device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc.
-    :type dev_str: str
+    :param dev: device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc.
+    :type dev: str
     :param f: Machine learning framework. Inferred from inputs if None.
     :type f: ml_framework, optional
     :return:
     """
-    return _cur_framework(f=f).randint(low, high, shape, dev_str)
+    return _cur_framework(f=f).randint(low, high, shape, dev)
 
 
 def seed(seed_value=0, f=None):

@@ -30,11 +30,11 @@ def dev(x):
     return _to_array(x).device_buffer.device()
 
 
-def to_dev(x, dev_str=None):
-    if dev_str is not None:
-        cur_dev_str = dev_to_str(dev(x))
-        if cur_dev_str != dev_str:
-            x = _jax.device_put(x, str_to_dev(dev_str))
+def to_dev(x, dev=None):
+    if dev is not None:
+        cur_dev = dev_to_str(dev(x))
+        if cur_dev != dev:
+            x = _jax.device_put(x, str_to_dev(dev))
     return x
 
 
@@ -47,24 +47,24 @@ def dev_to_str(dev_in):
     return p + ':' + str(dev_id)
 
 
-def str_to_dev(dev_str):
-    dev_split = dev_str.split(':')
-    dev_str = dev_split[0]
+def str_to_dev(dev):
+    dev_split = dev.split(':')
+    dev = dev_split[0]
     if len(dev_split) > 1:
         idx = int(dev_split[1])
     else:
         idx = 0
-    return _jax.devices(dev_str)[idx]
+    return _jax.devices(dev)[idx]
 
 
-clear_mem_on_dev = lambda dev_str: None
-dev_str = lambda x: dev_to_str(dev(x))
-dev_str.__name__ = 'dev_str'
+clear_mem_on_dev = lambda dev: None
+dev = lambda x: dev_to_str(dev(x))
+dev.__name__ = 'dev'
 
 
-def _dev_is_available(base_dev_str):
+def _dev_is_available(base_dev):
     try:
-        _jax.devices(base_dev_str)
+        _jax.devices(base_dev)
         return True
     except RuntimeError:
         return False
