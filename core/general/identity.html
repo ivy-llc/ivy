@@ -175,7 +175,7 @@
 <li class="toctree-l2"><a class="reference internal" href="match_kwargs.html">match_kwargs</a></li>
 <li class="toctree-l2"><a class="reference internal" href="dtype.html">dtype</a></li>
 <li class="toctree-l2"><a class="reference internal" href="dtype_to_str.html">dtype_to_str</a></li>
-<li class="toctree-l2"><a class="reference internal" href="dtype_str.html">dtype_str</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dtype.html">dtype</a></li>
 <li class="toctree-l2"><a class="reference internal" href="cache_fn.html">cache_fn</a></li>
 <li class="toctree-l2"><a class="reference internal" href="current_framework_str.html">current_framework_str</a></li>
 <li class="toctree-l2"><a class="reference internal" href="einops_rearrange.html">einops_rearrange</a></li>
@@ -316,14 +316,14 @@
 <h1>identity<a class="headerlink" href="#identity" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
 <dt id="ivy.core.general.identity">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">identity</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">n</span><span class="p">:</span> <span class="n">int</span></em>, <em class="sig-param"><span class="n">dtype_str</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">'float32'</span></em>, <em class="sig-param"><span class="n">batch_shape</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Iterable<span class="p">[</span>int<span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">dev_str</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>str<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">f</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>ivy.Framework<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; Union<span class="p">[</span>ivy.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span><a class="reference internal" href="../../_modules/ivy/core/general.html#identity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.identity" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">identity</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">n</span><span class="p">:</span> <span class="n">int</span></em>, <em class="sig-param"><span class="n">dtype</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">'float32'</span></em>, <em class="sig-param"><span class="n">batch_shape</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Iterable<span class="p">[</span>int<span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">dev_str</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>str<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">f</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>ivy.Framework<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; Union<span class="p">[</span>ivy.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span><a class="reference internal" href="../../_modules/ivy/core/general.html#identity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.identity" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the identity array.
 The identity array is a square array with ones on the main diagonal.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>n</strong> (<em>int</em>) – Number of rows (and columns) in n x n output.</p></li>
-<li><p><strong>dtype_str</strong> (<em>data-type string</em><em>, </em><em>optional</em>) – The desired data-type for the array in string format, i.e. ‘float32’ or ‘int64’.
+<li><p><strong>dtype</strong> (<em>data-type string</em><em>, </em><em>optional</em>) – The desired data-type for the array in string format, i.e. ‘float32’ or ‘int64’.
 Default is ‘float32’.</p></li>
 <li><p><strong>batch_shape</strong> (<em>sequence of ints</em><em>, </em><em>optional</em>) – Shape of batch. Inferred from inputs if None.</p></li>
 <li><p><strong>dev_str</strong> (<em>str</em>) – device on which to create the array ‘cuda:0’, ‘cuda:1’, ‘cpu’ etc..</p></li>
@@ -331,7 +331,7 @@ Default is ‘float32’.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>n x n array of type dtype_str, with its main diagonal set to one, and all other elements 0.</p>
+<dd class="field-even"><p>n x n array of type dtype, with its main diagonal set to one, and all other elements 0.</p>
 </dd>
 </dl>
 </dd></dl>

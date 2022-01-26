@@ -175,7 +175,7 @@
 <li class="toctree-l2"><a class="reference internal" href="general/match_kwargs.html">match_kwargs</a></li>
 <li class="toctree-l2"><a class="reference internal" href="general/dtype.html">dtype</a></li>
 <li class="toctree-l2"><a class="reference internal" href="general/dtype_to_str.html">dtype_to_str</a></li>
-<li class="toctree-l2"><a class="reference internal" href="general/dtype_str.html">dtype_str</a></li>
+<li class="toctree-l2"><a class="reference internal" href="general/dtype.html">dtype</a></li>
 <li class="toctree-l2"><a class="reference internal" href="general/cache_fn.html">cache_fn</a></li>
 <li class="toctree-l2"><a class="reference internal" href="general/current_framework_str.html">current_framework_str</a></li>
 <li class="toctree-l2"><a class="reference internal" href="general/einops_rearrange.html">einops_rearrange</a></li>
@@ -332,7 +332,7 @@
 
 <dl class="py function">
 <dt id="ivy.core.general.arange">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">arange</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">stop</span><span class="p">:</span> <span class="n">numbers.Number</span></em>, <em class="sig-param"><span class="n">start</span><span class="p">:</span> <span class="n">numbers.Number</span> <span class="o">=</span> <span class="default_value">0</span></em>, <em class="sig-param"><span class="n">step</span><span class="p">:</span> <span class="n">numbers.Number</span> <span class="o">=</span> <span class="default_value">1</span></em>, <em class="sig-param"><span class="n">dtype_str</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>str<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">dev_str</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>str<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">f</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>ivy.Framework<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; Union<span class="p">[</span>ivy.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span><a class="reference internal" href="../_modules/ivy/core/general.html#arange"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.arange" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">arange</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">stop</span><span class="p">:</span> <span class="n">numbers.Number</span></em>, <em class="sig-param"><span class="n">start</span><span class="p">:</span> <span class="n">numbers.Number</span> <span class="o">=</span> <span class="default_value">0</span></em>, <em class="sig-param"><span class="n">step</span><span class="p">:</span> <span class="n">numbers.Number</span> <span class="o">=</span> <span class="default_value">1</span></em>, <em class="sig-param"><span class="n">dtype</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>str<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">dev_str</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>str<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">f</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>ivy.Framework<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; Union<span class="p">[</span>ivy.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span><a class="reference internal" href="../_modules/ivy/core/general.html#arange"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.arange" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns evenly spaced values within a given interval, with the spacing being specified.</p>
 <p>Values are generated within the half-open interval [start, stop) (in other words, the interval including start but
 excluding stop). For integer arguments the function is equivalent to the Python built-in range function,
@@ -347,7 +347,7 @@ integer and floating point round-off affects the length of out.</p></li>
 <li><p><strong>step</strong> (<em>number</em><em>, </em><em>optional</em>) – Spacing between values. For any output out, this is the distance between two adjacent values,
 out[i+1] - out[i]. The default step size is 1. If step is specified as a position argument,
 start must also be given.</p></li>
-<li><p><strong>dtype_str</strong> (<em>data-type string</em><em>, </em><em>optional</em>) – The desired data-type for the array in string format, i.e. ‘float32’ or ‘int64’.
+<li><p><strong>dtype</strong> (<em>data-type string</em><em>, </em><em>optional</em>) – The desired data-type for the array in string format, i.e. ‘float32’ or ‘int64’.
 If not given, then the type will be determined as the minimum type required to hold the objects in the
 sequence.</p></li>
 <li><p><strong>dev_str</strong> (<em>str</em>) – device on which to create the array ‘cuda:0’, ‘cuda:1’, ‘cpu’ etc.</p></li>
@@ -425,14 +425,14 @@ Because of floating point overflow, this rule may result in the last element of 
 
 <dl class="py function">
 <dt id="ivy.core.general.array">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">array</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">object_in</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>List<span class="p">, </span>numpy.ndarray<span class="p">, </span>ivy.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">dtype_str</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>str<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">dev_str</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>str<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">f</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>ivy.Framework<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; Union<span class="p">[</span>ivy.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span><a class="reference internal" href="../_modules/ivy/core/general.html#array"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.array" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">array</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">object_in</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>List<span class="p">, </span>numpy.ndarray<span class="p">, </span>ivy.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">dtype</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>str<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">dev_str</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>str<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">f</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>ivy.Framework<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; Union<span class="p">[</span>ivy.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span><a class="reference internal" href="../_modules/ivy/core/general.html#array"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.array" title="Permalink to this definition">¶</a></dt>
 <dd><p>Creates an array.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>object_in</strong> (<em>array</em>) – An array_like object, which exposes the array interface,
 an object whose __array__ method returns an array, or any (nested) sequence.</p></li>
-<li><p><strong>dtype_str</strong> (<em>data-type string</em><em>, </em><em>optional</em>) – The desired data-type for the array in string format, i.e. ‘float32’ or ‘int64’.
+<li><p><strong>dtype</strong> (<em>data-type string</em><em>, </em><em>optional</em>) – The desired data-type for the array in string format, i.e. ‘float32’ or ‘int64’.
 If not given, then the type will be determined as the minimum type required to hold the objects in the
 sequence.</p></li>
 <li><p><strong>dev_str</strong> (<em>str</em>) – device string on which to create the array ‘cuda:0’, ‘cuda:1’, ‘cpu’ etc..</p></li>
@@ -525,20 +525,20 @@ sequence.</p></li>
 
 <dl class="py function">
 <dt id="ivy.core.general.cast">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">cast</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">dtype_str</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">f</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>ivy.Framework<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; Union<span class="p">[</span>ivy.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span><a class="reference internal" href="../_modules/ivy/core/general.html#cast"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.cast" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">cast</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">dtype</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">f</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>ivy.Framework<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; Union<span class="p">[</span>ivy.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span><a class="reference internal" href="../_modules/ivy/core/general.html#cast"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.cast" title="Permalink to this definition">¶</a></dt>
 <dd><p>Casts an array to a specified type.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>x</strong> (<em>array</em>) – Input array containing elements to cast.</p></li>
-<li><p><strong>dtype_str</strong> (<em>data-type string</em>) – The desired data-type for the array in string format, i.e. ‘float32’ or ‘int64’.
+<li><p><strong>dtype</strong> (<em>data-type string</em>) – The desired data-type for the array in string format, i.e. ‘float32’ or ‘int64’.
 If not given, then the type will be determined as the minimum type required to hold the objects in the
 sequence.</p></li>
 <li><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning framework. Inferred from inputs if None.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>A new array of the same shape as input array a, with data type given by dtype_str.</p>
+<dd class="field-even"><p>A new array of the same shape as input array a, with data type given by dtype.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -776,24 +776,7 @@ dimension 3.</p>
 
 <dl class="py function">
 <dt id="ivy.core.general.dtype">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">dtype</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">f</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>ivy.Framework<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; ivy.Dtype<a class="reference internal" href="../_modules/ivy/core/general.html#dtype"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.dtype" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the data type for input array x.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>x</strong> (<em>array</em>) – Tensor for which to get the data type.</p></li>
-<li><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning framework. Inferred from inputs if None.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Data type of the array</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt id="ivy.core.general.dtype_str">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">dtype_str</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">f</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>ivy.Framework<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; str<a class="reference internal" href="../_modules/ivy/core/general.html#dtype_str"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.dtype_str" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">dtype</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">f</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>ivy.Framework<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; str<a class="reference internal" href="../_modules/ivy/core/general.html#dtype"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.dtype" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the data type string for input array x.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1106,14 +1089,14 @@ The shape of the array is preserved, but the elements are reordered.</p>
 
 <dl class="py function">
 <dt id="ivy.core.general.identity">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">identity</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">n</span><span class="p">:</span> <span class="n">int</span></em>, <em class="sig-param"><span class="n">dtype_str</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">'float32'</span></em>, <em class="sig-param"><span class="n">batch_shape</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Iterable<span class="p">[</span>int<span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">dev_str</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>str<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">f</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>ivy.Framework<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; Union<span class="p">[</span>ivy.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span><a class="reference internal" href="../_modules/ivy/core/general.html#identity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.identity" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">identity</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">n</span><span class="p">:</span> <span class="n">int</span></em>, <em class="sig-param"><span class="n">dtype</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">'float32'</span></em>, <em class="sig-param"><span class="n">batch_shape</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Iterable<span class="p">[</span>int<span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">dev_str</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>str<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">f</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>ivy.Framework<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; Union<span class="p">[</span>ivy.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span><a class="reference internal" href="../_modules/ivy/core/general.html#identity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.identity" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the identity array.
 The identity array is a square array with ones on the main diagonal.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>n</strong> (<em>int</em>) – Number of rows (and columns) in n x n output.</p></li>
-<li><p><strong>dtype_str</strong> (<em>data-type string</em><em>, </em><em>optional</em>) – The desired data-type for the array in string format, i.e. ‘float32’ or ‘int64’.
+<li><p><strong>dtype</strong> (<em>data-type string</em><em>, </em><em>optional</em>) – The desired data-type for the array in string format, i.e. ‘float32’ or ‘int64’.
 Default is ‘float32’.</p></li>
 <li><p><strong>batch_shape</strong> (<em>sequence of ints</em><em>, </em><em>optional</em>) – Shape of batch. Inferred from inputs if None.</p></li>
 <li><p><strong>dev_str</strong> (<em>str</em>) – device on which to create the array ‘cuda:0’, ‘cuda:1’, ‘cpu’ etc..</p></li>
@@ -1121,7 +1104,7 @@ Default is ‘float32’.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>n x n array of type dtype_str, with its main diagonal set to one, and all other elements 0.</p>
+<dd class="field-even"><p>n x n array of type dtype, with its main diagonal set to one, and all other elements 0.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1454,41 +1437,41 @@ Default is ‘float32’.</p></li>
 
 <dl class="py function">
 <dt id="ivy.core.general.ones">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">ones</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">shape</span><span class="p">:</span> <span class="n">Iterable<span class="p">[</span>int<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">dtype_str</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">'float32'</span></em>, <em class="sig-param"><span class="n">dev_str</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>str<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">f</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>ivy.Framework<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; Union<span class="p">[</span>ivy.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span><a class="reference internal" href="../_modules/ivy/core/general.html#ones"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.ones" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">ones</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">shape</span><span class="p">:</span> <span class="n">Iterable<span class="p">[</span>int<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">dtype</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">'float32'</span></em>, <em class="sig-param"><span class="n">dev_str</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>str<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">f</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>ivy.Framework<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; Union<span class="p">[</span>ivy.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span><a class="reference internal" href="../_modules/ivy/core/general.html#ones"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.ones" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns a new array of given shape and type, filled with ones.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>shape</strong> (<em>sequence of ints</em>) – Shape of the new array, e.g. (2, 3).</p></li>
-<li><p><strong>dtype_str</strong> – The desired data-type for the array in string format, i.e. ‘float32’ or ‘int64’.</p></li>
+<li><p><strong>dtype</strong> – The desired data-type for the array in string format, i.e. ‘float32’ or ‘int64’.</p></li>
 </ul>
 </dd>
 </dl>
 <p>Default is ‘float32’.
-:type dtype_str: data-type string, optional
+:type dtype: data-type string, optional
 :param dev_str: device on which to create the array ‘cuda:0’, ‘cuda:1’, ‘cpu’ etc..
 :type dev_str: str
 :param f: Machine learning framework. Inferred from inputs if None.
 :type f: ml_framework, optional
-:return: Tensor of ones with the given shape and dtype_str.</p>
+:return: Tensor of ones with the given shape and dtype.</p>
 </dd></dl>
 
 <dl class="py function">
 <dt id="ivy.core.general.ones_like">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">ones_like</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">dtype_str</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>str<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">dev_str</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>str<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">f</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>ivy.Framework<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; Union<span class="p">[</span>ivy.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span><a class="reference internal" href="../_modules/ivy/core/general.html#ones_like"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.ones_like" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns an array of ones with the same shape and type as x, unless dtype_str provided which overrides.</p>
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">ones_like</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">dtype</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>str<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">dev_str</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>str<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">f</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>ivy.Framework<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; Union<span class="p">[</span>ivy.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span><a class="reference internal" href="../_modules/ivy/core/general.html#ones_like"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.ones_like" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns an array of ones with the same shape and type as x, unless dtype provided which overrides.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>x</strong> (<em>array</em>) – The shape and data-type of a define these same attributes of the returned array.</p></li>
-<li><p><strong>dtype_str</strong> (<em>data-type string</em><em>, </em><em>optional</em>) – The desired data-type for the array in string format, i.e. ‘float32’ or ‘int64’.
+<li><p><strong>dtype</strong> (<em>data-type string</em><em>, </em><em>optional</em>) – The desired data-type for the array in string format, i.e. ‘float32’ or ‘int64’.
 If not given, then the type of the original array is used.</p></li>
 <li><p><strong>dev_str</strong> (<em>str</em><em>, </em><em>optional</em>) – device on which to create the array ‘cuda:0’, ‘cuda:1’, ‘cpu’ etc. Same as x if None.</p></li>
 <li><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning framework. Inferred from inputs if None.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Tensor of zeros with the same shape and type as a, unless dtype_str provided which overrides.</p>
+<dd class="field-even"><p>Tensor of zeros with the same shape and type as a, unless dtype provided which overrides.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -1968,41 +1951,41 @@ Specified as ((before_1, after_1), … (before_N, after_N)), where N is number o
 
 <dl class="py function">
 <dt id="ivy.core.general.zeros">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">zeros</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">shape</span><span class="p">:</span> <span class="n">Iterable<span class="p">[</span>int<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">dtype_str</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">'float32'</span></em>, <em class="sig-param"><span class="n">dev_str</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>str<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">f</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>ivy.Framework<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; Union<span class="p">[</span>ivy.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span><a class="reference internal" href="../_modules/ivy/core/general.html#zeros"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.zeros" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">zeros</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">shape</span><span class="p">:</span> <span class="n">Iterable<span class="p">[</span>int<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">dtype</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">'float32'</span></em>, <em class="sig-param"><span class="n">dev_str</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>str<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">f</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>ivy.Framework<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; Union<span class="p">[</span>ivy.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span><a class="reference internal" href="../_modules/ivy/core/general.html#zeros"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.zeros" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a new array of given shape and type, filled with zeros.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>shape</strong> (<em>sequence of ints</em>) – Shape of the new array, e.g. (2, 3).</p></li>
-<li><p><strong>dtype_str</strong> – The desired data-type for the array in string format, i.e. ‘float32’ or ‘int64’.</p></li>
+<li><p><strong>dtype</strong> – The desired data-type for the array in string format, i.e. ‘float32’ or ‘int64’.</p></li>
 </ul>
 </dd>
 </dl>
 <p>Default is ‘float32’.
-:type dtype_str: data-type string, optional
+:type dtype: data-type string, optional
 :param dev_str: device on which to create the array ‘cuda:0’, ‘cuda:1’, ‘cpu’ etc..
 :type dev_str: str
 :param f: Machine learning framework. Inferred from inputs if None.
 :type f: ml_framework, optional
-:return: Tensor of zeros with the given shape and dtype_str.</p>
+:return: Tensor of zeros with the given shape and dtype.</p>
 </dd></dl>
 
 <dl class="py function">
 <dt id="ivy.core.general.zeros_like">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">zeros_like</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">dtype_str</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>str<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">dev_str</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>str<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">f</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>ivy.Framework<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; Union<span class="p">[</span>ivy.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span><a class="reference internal" href="../_modules/ivy/core/general.html#zeros_like"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.zeros_like" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns an array of zeros with the same shape and type as x, unless dtype_str provided which overrides.</p>
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">zeros_like</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">dtype</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>str<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">dev_str</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>str<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">f</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>ivy.Framework<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; Union<span class="p">[</span>ivy.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span><a class="reference internal" href="../_modules/ivy/core/general.html#zeros_like"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.general.zeros_like" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns an array of zeros with the same shape and type as x, unless dtype provided which overrides.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>x</strong> (<em>array</em>) – The shape and data-type of x define these same attributes of the returned array.</p></li>
-<li><p><strong>dtype_str</strong> (<em>data-type string</em><em>, </em><em>optional</em>) – The desired data-type for the array in string format, i.e. ‘float32’ or ‘int64’.
+<li><p><strong>dtype</strong> (<em>data-type string</em><em>, </em><em>optional</em>) – The desired data-type for the array in string format, i.e. ‘float32’ or ‘int64’.
 If not given, then the type of the original array is used.</p></li>
 <li><p><strong>dev_str</strong> (<em>str</em><em>, </em><em>optional</em>) – device on which to create the array ‘cuda:0’, ‘cuda:1’, ‘cpu’ etc. Same as x if None.</p></li>
 <li><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning framework. Inferred from inputs if None.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Tensor of zeros with the same shape and type as a, unless dtype_str provided which overrides.</p>
+<dd class="field-even"><p>Tensor of zeros with the same shape and type as a, unless dtype provided which overrides.</p>
 </dd>
 </dl>
 </dd></dl>
@@ -2083,7 +2066,7 @@ If not given, then the type of the original array is used.</p></li>
 <li class="toctree-l1"><a class="reference internal" href="general/match_kwargs.html">match_kwargs</a></li>
 <li class="toctree-l1"><a class="reference internal" href="general/dtype.html">dtype</a></li>
 <li class="toctree-l1"><a class="reference internal" href="general/dtype_to_str.html">dtype_to_str</a></li>
-<li class="toctree-l1"><a class="reference internal" href="general/dtype_str.html">dtype_str</a></li>
+<li class="toctree-l1"><a class="reference internal" href="general/dtype.html">dtype</a></li>
 <li class="toctree-l1"><a class="reference internal" href="general/cache_fn.html">cache_fn</a></li>
 <li class="toctree-l1"><a class="reference internal" href="general/current_framework_str.html">current_framework_str</a></li>
 <li class="toctree-l1"><a class="reference internal" href="general/einops_rearrange.html">einops_rearrange</a></li>
