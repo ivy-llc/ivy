@@ -203,7 +203,7 @@ class Container(dict):
         :param containers: containers to unify
         :type containers: sequence of Container objects
         :param dev: The device to unify the containers to.
-        :type dev: str
+        :type dev: ivy.Device
         :param mode: The mode by which to unify, must be one of [ concat | mean | sum ]
         :type mode: str
         :param axis: The axis along which to concattenate the container, if concat mode is set. Default is 0.
@@ -1966,7 +1966,7 @@ class Container(dict):
         Move the container arrays to the desired device, specified by device string.
 
         :param dev: device to move the array to 'cuda:0', 'cuda:1', 'cpu' etc. Keep same device if None.
-        :type dev: str, optional
+        :type dev: ivy.Device, optional
         :param key_chains: The key-chains to apply or not apply the method to. Default is None.
         :type key_chains: list or dict of strs, optional
         :param to_apply: If True, the method will be applied to key_chains, otherwise key_chains will be skipped.

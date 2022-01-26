@@ -21,7 +21,7 @@ def to_ivy_module(native_module=None, native_module_class=None, args=None, kwarg
     :param kwargs: Key-word arguments to pass to the native module class. Default is None.
     :type kwargs: dict of any
     :param dev: The device on which to create module variables. Default is None.
-    :type dev: str, optional
+    :type dev: ivy.Device, optional
     :param devs: The devices on which to create module variables. Default is None.
     :type devs: sequence of str, optional
     :param inplace_update: For backends with dedicated variable classes, whether to update these inplace.
