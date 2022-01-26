@@ -31,7 +31,7 @@ class Linear(Module):
         :param with_bias: Whether or not to include a bias term, default is True.
         :type with_bias: bool, optional
         :param dev: device on which to create the layer's variables 'cuda:0', 'cuda:1', 'cpu' etc. Default is cpu.
-        :type dev: str, optional
+        :type dev: ivy.Device, optional
         :param v: the variables for the linear layer, as a container, constructed internally by default.
         :type v: ivy container of variables, optional
         """
@@ -131,7 +131,7 @@ class MultiHeadAttention(Module):
                                final output. Default is True.
         :type with_to_out_fn: bool, optional
         :param dev: device on which to create the layer's variables 'cuda:0', 'cuda:1', 'cpu' etc. Default is cpu.
-        :type dev: str, optional
+        :type dev: ivy.Device, optional
         :param v: the variables for the attention layer, as a container, constructed internally by default.
         :type v: ivy container of variables, optional
         :param build_mode: How the Module is built, either on initialization (now), explicitly by the user by calling
@@ -217,7 +217,7 @@ class Conv1D(Module):
         :param dilations: The dilation factor for each dimension of input.
         :type dilations: int or sequence of ints
         :param dev: device on which to create the layer's variables 'cuda:0', 'cuda:1', 'cpu' etc. Default is cpu.
-        :type dev: str, optional
+        :type dev: ivy.Device, optional
         :param v: the variables for each of the linear layer, as a container, constructed internally by default.
         :type v: ivy container of variables, optional
         """
@@ -282,7 +282,7 @@ class Conv1DTranspose(Module):
         :param dilations: The dilation factor for each dimension of input.
         :type dilations: int or sequence of ints
         :param dev: device on which to create the layer's variables 'cuda:0', 'cuda:1', 'cpu' etc. Default is cpu.
-        :type dev: str, optional
+        :type dev: ivy.Device, optional
         :param v: the variables for each of the linear layer, as a container, constructed internally by default.
         :type v: ivy container of variables, optional
         """
@@ -347,7 +347,7 @@ class Conv2D(Module):
         :param dilations: The dilation factor for each dimension of input.
         :type dilations: int or sequence of ints
         :param dev: device on which to create the layer's variables 'cuda:0', 'cuda:1', 'cpu' etc. Default is cpu.
-        :type dev: str, optional
+        :type dev: ivy.Device, optional
         :param v: the variables for each of the linear layer, as a container, constructed internally by default.
         :type v: ivy container of variables, optional
         """
@@ -412,7 +412,7 @@ class Conv2DTranspose(Module):
         :param dilations: The dilation factor for each dimension of input.
         :type dilations: int or sequence of ints
         :param dev: device on which to create the layer's variables 'cuda:0', 'cuda:1', 'cpu' etc. Default is cpu.
-        :type dev: str, optional
+        :type dev: ivy.Device, optional
         :param v: the variables for each of the linear layer, as a container, constructed internally by default.
         :type v: ivy container of variables, optional
         """
@@ -474,7 +474,7 @@ class DepthwiseConv2D(Module):
         :param dilations: The dilation factor for each dimension of input.
         :type dilations: int or sequence of ints
         :param dev: device on which to create the layer's variables 'cuda:0', 'cuda:1', 'cpu' etc. Default is cpu.
-        :type dev: str, optional
+        :type dev: ivy.Device, optional
         :param v: the variables for each of the linear layer, as a container, constructed internally by default.
         :type v: ivy container of variables, optional
         """
@@ -537,7 +537,7 @@ class Conv3D(Module):
         :param dilations: The dilation factor for each dimension of input.
         :type dilations: int or sequence of ints
         :param dev: device on which to create the layer's variables 'cuda:0', 'cuda:1', 'cpu' etc. Default is cpu.
-        :type dev: str, optional
+        :type dev: ivy.Device, optional
         :param v: the variables for each of the linear layer, as a container, constructed internally by default.
         :type v: ivy container of variables, optional
         """
@@ -602,7 +602,7 @@ class Conv3DTranspose(Module):
         :param dilations: The dilation factor for each dimension of input.
         :type dilations: int or sequence of ints
         :param dev: device on which to create the layer's variables 'cuda:0', 'cuda:1', 'cpu' etc. Default is cpu.
-        :type dev: str, optional
+        :type dev: ivy.Device, optional
         :param v: the variables for each of the linear layer, as a container, constructed internally by default.
         :type v: ivy container of variables, optional
         """
@@ -664,7 +664,7 @@ class LSTM(Module):
         :param return_state: Whether or not to return the latest hidden and cell states. Default is True.
         :type return_state: bool, optional
         :param dev: device on which to create the layer's variables 'cuda:0', 'cuda:1', 'cpu' etc. Default is cpu.
-        :type dev: str, optional
+        :type dev: ivy.Device, optional
         :param v: the variables for each of the lstm cells, as a container, constructed internally by default.
         :type v: ivy container of parameter arrays, optional
         """
