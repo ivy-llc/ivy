@@ -34,8 +34,8 @@ DTYPE_DICT = {_tf.bool: 'bool',
 # ----#
 
 # noinspection PyShadowingNames
-def array(object_in, dtype_str=None, dev_str=None):
-    dtype = _tf.__dict__[dtype_str] if dtype_str else dtype_str
+def array(object_in, dtype=None, dev_str=None):
+    dtype = _tf.__dict__[dtype] if dtype else dtype
     dev_str = default_device(dev_str)
     with _tf.device('/' + dev_str.upper()):
         tensor = _tf.convert_to_tensor(object_in)
@@ -92,14 +92,14 @@ def argmin(x, axis=0):
 argsort = lambda x, axis=-1: _tf.argsort(x, axis)
 
 
-def cast(x, dtype_str):
-    dtype_val = _tf.__dict__[dtype_str]
+def cast(x, dtype):
+    dtype_val = _tf.__dict__[dtype]
     return _tf.cast(x, dtype_val)
 
 
 # noinspection PyShadowingNames
-def arange(stop, start=0, step=1, dtype_str=None, dev_str=None):
-    dtype = _tf.__dict__[dtype_str] if dtype_str else dtype_str
+def arange(stop, start=0, step=1, dtype=None, dev_str=None):
+    dtype = _tf.__dict__[dtype] if dtype else dtype
     dev_str = default_device(dev_str)
     with _tf.device('/' + dev_str.upper()):
         return _tf.range(start, stop, delta=step, dtype=dtype)
@@ -225,32 +225,32 @@ def squeeze(x, axis=None):
 
 
 # noinspection PyShadowingNames
-def zeros(shape, dtype_str='float32', dev_str=None):
-    dtype = _tf.__dict__[dtype_str]
+def zeros(shape, dtype='float32', dev_str=None):
+    dtype = _tf.__dict__[dtype]
     dev_str = default_device(dev_str)
     with _tf.device('/' + dev_str.upper()):
         return _tf.zeros(shape, dtype)
 
 
 # noinspection PyShadowingNames
-def zeros_like(x, dtype_str=None, dev_str=None):
-    dtype = _tf.__dict__[dtype_str] if dtype_str else dtype_str
+def zeros_like(x, dtype=None, dev_str=None):
+    dtype = _tf.__dict__[dtype] if dtype else dtype
     dev_str = default_device(dev_str)
     with _tf.device('/' + dev_str.upper()):
         return _tf.zeros_like(x, dtype=dtype)
 
 
 # noinspection PyShadowingNames
-def ones(shape, dtype_str='float32', dev_str=None):
-    dtype = _tf.__dict__[dtype_str]
+def ones(shape, dtype='float32', dev_str=None):
+    dtype = _tf.__dict__[dtype]
     dev_str = default_device(dev_str)
     with _tf.device('/' + dev_str.upper()):
         return _tf.ones(shape, dtype)
 
 
 # noinspection PyShadowingNames
-def ones_like(x, dtype_str=None, dev_str=None):
-    dtype = _tf.__dict__[dtype_str] if dtype_str else dtype_str
+def ones_like(x, dtype=None, dev_str=None):
+    dtype = _tf.__dict__[dtype] if dtype else dtype
     dev_str = default_device(dev_str)
     with _tf.device('/' + dev_str.upper()):
         return _tf.ones_like(x, dtype=dtype)
@@ -284,8 +284,8 @@ cumprod = _tf.math.cumprod
 
 
 # noinspection PyShadowingNames
-def identity(n, dtype_str='float32', batch_shape=None, dev_str=None):
-    dtype = _tf.__dict__[dtype_str]
+def identity(n, dtype='float32', batch_shape=None, dev_str=None):
+    dtype = _tf.__dict__[dtype]
     dev_str = default_device(dev_str)
     with _tf.device('/' + dev_str.upper()):
         return _tf.eye(n, n, batch_shape=batch_shape, dtype=dtype)
@@ -397,7 +397,7 @@ def linear_resample(x, num_samples, axis=-1):
 
 dtype = lambda x: x.dtype
 dtype.__name__ = 'dtype'
-dtype_str = lambda x: DTYPE_DICT[x.dtype]
+dtype = lambda x: DTYPE_DICT[x.dtype]
 dtype_to_str = lambda dtype_in: DTYPE_DICT[dtype_in]
 compile = lambda fn, dynamic=True, example_inputs=None, static_argnums=None, static_argnames=None: _tf.function(fn)
 current_framework_str = lambda: 'tensorflow'

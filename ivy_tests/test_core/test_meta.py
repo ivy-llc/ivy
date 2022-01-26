@@ -56,7 +56,7 @@ def test_fomaml_step_unique_vars(dev_str, call, inner_grad_steps, with_outer_cos
                                    'weight': ivy.variable(ivy.array([1.], dev_str=dev_str))})
 
     # batch
-    batch = ivy.Container({'x': ivy.arange(num_tasks + 1, 1, dtype_str='float32')})
+    batch = ivy.Container({'x': ivy.arange(num_tasks + 1, 1, dtype='float32')})
 
     # inner cost function
     def inner_cost_fn(batch_in, v):
@@ -159,7 +159,7 @@ def test_fomaml_step_shared_vars(dev_str, call, inner_grad_steps, with_outer_cos
         variables = ivy.Container({'latent': ivy.variable(ivy.array([1.], dev_str=dev_str))})
 
     # batch
-    batch = ivy.Container({'x': ivy.arange(num_tasks + 1, 1, dtype_str='float32')})
+    batch = ivy.Container({'x': ivy.arange(num_tasks + 1, 1, dtype='float32')})
 
     # inner cost function
     def inner_cost_fn(batch_in, v):
@@ -282,7 +282,7 @@ def test_fomaml_step_overlapping_vars(dev_str, call, inner_grad_steps, with_oute
                                    'weight': ivy.variable(ivy.array([1.], dev_str=dev_str))})
 
     # batch
-    batch = ivy.Container({'x': ivy.arange(num_tasks + 1, 1, dtype_str='float32')})
+    batch = ivy.Container({'x': ivy.arange(num_tasks + 1, 1, dtype='float32')})
 
     # inner cost function
     def inner_cost_fn(batch_in, v):
@@ -383,7 +383,7 @@ def test_reptile_step(dev_str, call, inner_grad_steps, batched, stop_gradients, 
         variables = ivy.Container({'latent': ivy.variable(ivy.array([1.], dev_str=dev_str))})
 
     # batch
-    batch = ivy.Container({'x': ivy.arange(num_tasks + 1, 1, dtype_str='float32')})
+    batch = ivy.Container({'x': ivy.arange(num_tasks + 1, 1, dtype='float32')})
 
     # inner cost function
     def inner_cost_fn(batch_in, v):
@@ -491,7 +491,7 @@ def test_maml_step_unique_vars(dev_str, call, inner_grad_steps, with_outer_cost_
                                    'weight': ivy.variable(ivy.array([1.], dev_str=dev_str))})
 
     # batch
-    batch = ivy.Container({'x': ivy.arange(num_tasks + 1, 1, dtype_str='float32')})
+    batch = ivy.Container({'x': ivy.arange(num_tasks + 1, 1, dtype='float32')})
 
     # inner cost function
     def inner_cost_fn(batch_in, v):
@@ -597,7 +597,7 @@ def test_maml_step_shared_vars(dev_str, call, inner_grad_steps, with_outer_cost_
         variables = ivy.Container({'latent': ivy.variable(ivy.array([1.], dev_str=dev_str))})
 
     # batch
-    batch = ivy.Container({'x': ivy.arange(num_tasks + 1, 1, dtype_str='float32')})
+    batch = ivy.Container({'x': ivy.arange(num_tasks + 1, 1, dtype='float32')})
 
     # inner cost function
     def inner_cost_fn(batch_in, v):
@@ -741,7 +741,7 @@ def test_maml_step_overlapping_vars(dev_str, call, inner_grad_steps, with_outer_
                                    'weight': ivy.variable(ivy.array([1.], dev_str=dev_str))})
 
     # batch
-    batch = ivy.Container({'x': ivy.arange(num_tasks + 1, 1, dtype_str='float32')})
+    batch = ivy.Container({'x': ivy.arange(num_tasks + 1, 1, dtype='float32')})
 
     # inner cost function
     def inner_cost_fn(batch_in, v):

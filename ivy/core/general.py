@@ -52,7 +52,7 @@ def get_referrers_recursive(item, depth=0, max_depth=None, seen_set=None, local_
 
 
 # noinspection PyShadowingNames
-def array(object_in: Union[List, np.ndarray, ivy.Array, ivy.NativeArray], dtype_str: str = None,
+def array(object_in: Union[List, np.ndarray, ivy.Array, ivy.NativeArray], dtype: str = None,
           dev_str: str = None, f: ivy.Framework = None) -> Union[ivy.Array, ivy.NativeArray]:
     """
     Creates an array.
@@ -60,17 +60,17 @@ def array(object_in: Union[List, np.ndarray, ivy.Array, ivy.NativeArray], dtype_
     :param object_in: An array_like object, which exposes the array interface,
             an object whose __array__ method returns an array, or any (nested) sequence.
     :type object_in: array
-    :param dtype_str: The desired data-type for the array in string format, i.e. 'float32' or 'int64'.
+    :param dtype: The desired data-type for the array in string format, i.e. 'float32' or 'int64'.
         If not given, then the type will be determined as the minimum type required to hold the objects in the
         sequence.
-    :type dtype_str: data-type string, optional
+    :type dtype: data-type string, optional
     :param dev_str: device string on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc..
     :type dev_str: str
     :param f: Machine learning framework. Inferred from inputs if None.
     :type f: ml_framework, optional
     :return: An array object satisfying the specified requirements, in the form of the selected framework.
     """
-    return _cur_framework(object_in, f=f).array(object_in, dtype_str, dev_str)
+    return _cur_framework(object_in, f=f).array(object_in, dtype, dev_str)
 
 
 def is_array(x: Any, exclusive: bool = False, f: ivy.Framework = None)\
@@ -464,26 +464,26 @@ def argsort(x: Union[ivy.Array, ivy.NativeArray], axis: int = -1, f: ivy.Framewo
 
 
 # noinspection PyShadowingNames
-def cast(x: Union[ivy.Array, ivy.NativeArray], dtype_str: str, f: ivy.Framework = None)\
+def cast(x: Union[ivy.Array, ivy.NativeArray], dtype: str, f: ivy.Framework = None)\
         -> Union[ivy.Array, ivy.NativeArray]:
     """
     Casts an array to a specified type.
 
     :param x: Input array containing elements to cast.
     :type x: array
-    :param dtype_str: The desired data-type for the array in string format, i.e. 'float32' or 'int64'.
+    :param dtype: The desired data-type for the array in string format, i.e. 'float32' or 'int64'.
             If not given, then the type will be determined as the minimum type required to hold the objects in the
             sequence.
-    :type dtype_str: data-type string
+    :type dtype: data-type string
     :param f: Machine learning framework. Inferred from inputs if None.
     :type f: ml_framework, optional
-    :return: A new array of the same shape as input array a, with data type given by dtype_str.
+    :return: A new array of the same shape as input array a, with data type given by dtype.
     """
-    return _cur_framework(x, f=f).cast(x, dtype_str)
+    return _cur_framework(x, f=f).cast(x, dtype)
 
 
 # noinspection PyShadowingNames
-def arange(stop: Number, start: Number = 0, step: Number = 1, dtype_str: str = None, dev_str: str = None,
+def arange(stop: Number, start: Number = 0, step: Number = 1, dtype: str = None, dev_str: str = None,
            f: ivy.Framework = None) -> Union[ivy.Array, ivy.NativeArray]:
     """
     Returns evenly spaced values within a given interval, with the spacing being specified.
@@ -503,10 +503,10 @@ def arange(stop: Number, start: Number = 0, step: Number = 1, dtype_str: str = N
                     out[i+1] - out[i]. The default step size is 1. If step is specified as a position argument,
                     start must also be given.
     :type step: number, optional
-    :param dtype_str: The desired data-type for the array in string format, i.e. 'float32' or 'int64'.
+    :param dtype: The desired data-type for the array in string format, i.e. 'float32' or 'int64'.
         If not given, then the type will be determined as the minimum type required to hold the objects in the
         sequence.
-    :type dtype_str: data-type string, optional
+    :type dtype: data-type string, optional
     :param dev_str: device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc.
     :type dev_str: str
     :param f: Machine learning framework. Inferred from inputs if None.
@@ -516,7 +516,7 @@ def arange(stop: Number, start: Number = 0, step: Number = 1, dtype_str: str = N
             For floating point arguments, the length of the result is ceil((stop - start)/step).
             Because of floating point overflow, this rule may result in the last element of out being greater than stop.
     """
-    return _cur_framework(f=f).arange(stop, start, step, dtype_str, dev_str)
+    return _cur_framework(f=f).arange(stop, start, step, dtype, dev_str)
 
 
 # noinspection PyShadowingNames
@@ -766,7 +766,7 @@ def fourier_encode(x: Union[ivy.Array, ivy.NativeArray], max_freq: Union[float, 
         scales = ivy.linspace(1., max_freq / 2, num_bands, dev_str=dev_str(x))
     else:
         scales = ivy.logspace(0., ivy.log(max_freq / 2) / math.log(10), num_bands, base=10, dev_str=dev_str(x))
-    scales = ivy.cast(scales, ivy.dtype_str(x))
+    scales = ivy.cast(scales, ivy.dtype(x))
     scales = scales[(*((None,) * (len(x.shape) - len(scales.shape))), Ellipsis)]
     x = x * scales * math.pi
     sin_x = ivy.sin(x)
@@ -962,83 +962,83 @@ def squeeze(x: Union[ivy.Array, ivy.NativeArray], axis: int = None, f: ivy.Frame
 
 
 # noinspection PyShadowingNames
-def zeros(shape: Iterable[int], dtype_str: str = 'float32', dev_str: str = None, f: ivy.Framework = None)\
+def zeros(shape: Iterable[int], dtype: str = 'float32', dev_str: str = None, f: ivy.Framework = None)\
         -> Union[ivy.Array, ivy.NativeArray]:
     """
     Return a new array of given shape and type, filled with zeros.
 
     :param shape: Shape of the new array, e.g. (2, 3).
     :type shape: sequence of ints
-    :param dtype_str: The desired data-type for the array in string format, i.e. 'float32' or 'int64'.
+    :param dtype: The desired data-type for the array in string format, i.e. 'float32' or 'int64'.
     Default is 'float32'.
-    :type dtype_str: data-type string, optional
+    :type dtype: data-type string, optional
     :param dev_str: device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc..
     :type dev_str: str
     :param f: Machine learning framework. Inferred from inputs if None.
     :type f: ml_framework, optional
-    :return: Tensor of zeros with the given shape and dtype_str.
+    :return: Tensor of zeros with the given shape and dtype.
     """
-    return _cur_framework(f=f).zeros(shape, dtype_str, dev_str)
+    return _cur_framework(f=f).zeros(shape, dtype, dev_str)
 
 
 # noinspection PyShadowingNames
-def zeros_like(x: Union[ivy.Array, ivy.NativeArray], dtype_str: str = None, dev_str: str = None,
+def zeros_like(x: Union[ivy.Array, ivy.NativeArray], dtype: str = None, dev_str: str = None,
                f: ivy.Framework = None) -> Union[ivy.Array, ivy.NativeArray]:
     """
-    Returns an array of zeros with the same shape and type as x, unless dtype_str provided which overrides.
+    Returns an array of zeros with the same shape and type as x, unless dtype provided which overrides.
 
     :param x: The shape and data-type of x define these same attributes of the returned array.
     :type x: array
-    :param dtype_str: The desired data-type for the array in string format, i.e. 'float32' or 'int64'.
+    :param dtype: The desired data-type for the array in string format, i.e. 'float32' or 'int64'.
                     If not given, then the type of the original array is used.
-    :type dtype_str: data-type string, optional
+    :type dtype: data-type string, optional
     :param dev_str: device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc. Same as x if None.
     :type dev_str: str, optional
     :param f: Machine learning framework. Inferred from inputs if None.
     :type f: ml_framework, optional
-    :return: Tensor of zeros with the same shape and type as a, unless dtype_str provided which overrides.
+    :return: Tensor of zeros with the same shape and type as a, unless dtype provided which overrides.
     """
-    return _cur_framework(x, f=f).zeros_like(x, dtype_str, dev_str)
+    return _cur_framework(x, f=f).zeros_like(x, dtype, dev_str)
 
 
 # noinspection PyShadowingNames
-def ones(shape: Iterable[int], dtype_str: str = 'float32', dev_str: str = None, f: ivy.Framework = None)\
+def ones(shape: Iterable[int], dtype: str = 'float32', dev_str: str = None, f: ivy.Framework = None)\
         -> Union[ivy.Array, ivy.NativeArray]:
     """
     Returns a new array of given shape and type, filled with ones.
 
     :param shape: Shape of the new array, e.g. (2, 3).
     :type shape: sequence of ints
-    :param dtype_str: The desired data-type for the array in string format, i.e. 'float32' or 'int64'.
+    :param dtype: The desired data-type for the array in string format, i.e. 'float32' or 'int64'.
     Default is 'float32'.
-    :type dtype_str: data-type string, optional
+    :type dtype: data-type string, optional
     :param dev_str: device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc..
     :type dev_str: str
     :param f: Machine learning framework. Inferred from inputs if None.
     :type f: ml_framework, optional
-    :return: Tensor of ones with the given shape and dtype_str.
+    :return: Tensor of ones with the given shape and dtype.
     """
-    return _cur_framework(f=f).ones(shape, dtype_str, dev_str)
+    return _cur_framework(f=f).ones(shape, dtype, dev_str)
 
 
 # noinspection PyShadowingNames
-def ones_like(x: Union[ivy.Array, ivy.NativeArray], dtype_str: str = None, dev_str: str = None,
+def ones_like(x: Union[ivy.Array, ivy.NativeArray], dtype: str = None, dev_str: str = None,
               f: ivy.Framework = None) -> Union[ivy.Array, ivy.NativeArray]:
     """
-    Returns an array of ones with the same shape and type as x, unless dtype_str provided which overrides.
+    Returns an array of ones with the same shape and type as x, unless dtype provided which overrides.
 
     :param x: The shape and data-type of a define these same attributes of the returned array.
     :type x: array
-    :param dtype_str: The desired data-type for the array in string format, i.e. 'float32' or 'int64'.
+    :param dtype: The desired data-type for the array in string format, i.e. 'float32' or 'int64'.
                     If not given, then the type of the original array is used.
-    :type dtype_str: data-type string, optional
+    :type dtype: data-type string, optional
     :param dev_str: device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc. Same as x if None.
     :type dev_str: str, optional
     :param f: Machine learning framework. Inferred from inputs if None.
     :type f: ml_framework, optional
-    :return: Tensor of zeros with the same shape and type as a, unless dtype_str provided which overrides.
+    :return: Tensor of zeros with the same shape and type as a, unless dtype provided which overrides.
     """
-    return _cur_framework(x, f=f).ones_like(x, dtype_str, dev_str)
+    return _cur_framework(x, f=f).ones_like(x, dtype, dev_str)
 
 
 # noinspection PyShadowingNames
@@ -1129,7 +1129,7 @@ def cumprod(x: Union[ivy.Array, ivy.NativeArray], axis: int = 0, exclusive: bool
 
 
 # noinspection PyShadowingNames
-def identity(n: int, dtype_str: str = 'float32', batch_shape: Iterable[int] = None, dev_str: str = None,
+def identity(n: int, dtype: str = 'float32', batch_shape: Iterable[int] = None, dev_str: str = None,
              f: ivy.Framework = None) -> Union[ivy.Array, ivy.NativeArray]:
     """
     Returns the identity array.
@@ -1137,18 +1137,18 @@ def identity(n: int, dtype_str: str = 'float32', batch_shape: Iterable[int] = No
 
     :param n: Number of rows (and columns) in n x n output.
     :type n: int
-    :param dtype_str: The desired data-type for the array in string format, i.e. 'float32' or 'int64'.
+    :param dtype: The desired data-type for the array in string format, i.e. 'float32' or 'int64'.
                       Default is 'float32'.
-    :type dtype_str: data-type string, optional
+    :type dtype: data-type string, optional
     :param batch_shape: Shape of batch. Inferred from inputs if None.
     :type batch_shape: sequence of ints, optional
     :param dev_str: device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc..
     :type dev_str: str
     :param f: Machine learning framework. Inferred from inputs if None.
     :type f: ml_framework, optional
-    :return: n x n array of type dtype_str, with its main diagonal set to one, and all other elements 0.
+    :return: n x n array of type dtype, with its main diagonal set to one, and all other elements 0.
     """
-    return _cur_framework(f=f).identity(n, dtype_str, batch_shape, dev_str)
+    return _cur_framework(f=f).identity(n, dtype, batch_shape, dev_str)
 
 
 def meshgrid(*xs: Iterable[Union[ivy.Array, ivy.NativeArray]], indexing: str = 'ij', f: ivy.Framework = None)\
@@ -1394,7 +1394,7 @@ def dtype_to_str(dtype_in: ivy.Dtype, f: ivy.Framework = None)\
     return _cur_framework(None, f=f).dtype_to_str(dtype_in)
 
 
-def dtype_str(x: Union[ivy.Array, ivy.NativeArray], f: ivy.Framework = None)\
+def dtype(x: Union[ivy.Array, ivy.NativeArray], f: ivy.Framework = None)\
         -> str:
     """
     Get the data type string for input array x.
@@ -1405,7 +1405,7 @@ def dtype_str(x: Union[ivy.Array, ivy.NativeArray], f: ivy.Framework = None)\
     :type f: ml_framework, optional
     :return: Device string e.g. 'float32'.
     """
-    return _cur_framework(None, f=f).dtype_str(x)
+    return _cur_framework(None, f=f).dtype(x)
 
 
 def cache_fn(func: Callable)\
