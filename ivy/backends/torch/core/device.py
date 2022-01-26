@@ -40,7 +40,7 @@ def dev_to_str(dev_in: _torch.device):
 
 
 def str_to_dev(dev: Optional[str] = None) -> Optional[_torch.device]:
-    if dev is None:
+    if not isinstance(dev, str):
         return dev
     return _torch.device(dev.replace('gpu', 'cuda'))
 
