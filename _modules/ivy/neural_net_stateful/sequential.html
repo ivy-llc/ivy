@@ -214,14 +214,14 @@
 
 <div class="viewcode-block" id="Sequential"><a class="viewcode-back" href="../../../neural_net_stateful/sequential/Sequential.html#ivy.neural_net_stateful.sequential.Sequential">[docs]</a><span class="k">class</span> <span class="nc">Sequential</span><span class="p">(</span><span class="n">Module</span><span class="p">):</span>
 
-<div class="viewcode-block" id="Sequential.__init__"><a class="viewcode-back" href="../../../neural_net_stateful/sequential/Sequential.html#ivy.neural_net_stateful.sequential.Sequential.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">sub_modules</span><span class="p">,</span> <span class="n">dev_str</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">v</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="Sequential.__init__"><a class="viewcode-back" href="../../../neural_net_stateful/sequential/Sequential.html#ivy.neural_net_stateful.sequential.Sequential.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">sub_modules</span><span class="p">,</span> <span class="n">dev</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">v</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        A sequential container. Modules will be added to it in the order they are passed in the constructor.</span>
 
 <span class="sd">        :param submodules: Submodules to chain together into a sequence.</span>
 <span class="sd">        :type submodules: sequence of ivy.Module instances</span>
-<span class="sd">        :param dev_str: device on which to create the layer&#39;s variables &#39;cuda:0&#39;, &#39;cuda:1&#39;, &#39;cpu&#39; etc.</span>
-<span class="sd">        :type dev_str: str, optional</span>
+<span class="sd">        :param dev: device on which to create the layer&#39;s variables &#39;cuda:0&#39;, &#39;cuda:1&#39;, &#39;cpu&#39; etc.</span>
+<span class="sd">        :type dev: ivy.Device, optional</span>
 <span class="sd">        :param v: the variables for each submodule in the sequence, constructed internally by default.</span>
 <span class="sd">        :type v: ivy container of variables, optional</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -234,7 +234,7 @@
                         <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;variables v passed to Sequential class must have key chains in the form of&#39;</span>
                                         <span class="s1">&#39;&quot;submodules/v</span><span class="si">{}</span><span class="s1">&quot;, where </span><span class="si">{}</span><span class="s1"> is an idx&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_submodules</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">sub_modules</span><span class="p">)</span>
-        <span class="n">Module</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dev_str</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span></div>
+        <span class="n">Module</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dev</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span></div>
 
     <span class="k">def</span> <span class="nf">_forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
