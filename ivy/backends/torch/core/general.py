@@ -3,6 +3,7 @@ Collection of PyTorch general functions, wrapped to fit Ivy syntax and signature
 """
 
 # global
+import ivy
 import numpy as np
 torch_scatter = None
 import math as _math
@@ -376,7 +377,7 @@ def squeeze(x, axis: Optional[int] = None):
 
 
 # noinspection PyShadowingNames
-def zeros(shape: List[int], dtype: str = 'float32', dev: Optional[str] = None):
+def zeros(shape: List[int], dtype: ivy.Dtype = 'float32', dev: Optional[str] = None):
     type_dict: Dict[str, _torch.dtype] = {'bool': _torch.bool,
                                          'int8': _torch.int8,
                                          'uint8': _torch.uint8,
@@ -410,7 +411,7 @@ def zeros_like(x, dtype: Optional[str] = None, dev: Optional[str] = None):
 
 
 # noinspection PyShadowingNames
-def ones(shape: List[int], dtype: str = 'float32', dev: Optional[str] = None):
+def ones(shape: List[int], dtype: ivy.Dtype = 'float32', dev: Optional[str] = None):
     type_dict: Dict[str, _torch.dtype] = {'bool': _torch.bool,
                                          'int8': _torch.int8,
                                          'uint8': _torch.uint8,
@@ -472,7 +473,7 @@ def cumprod(x, axis: int = 0, exclusive: bool = False):
 
 
 # noinspection PyShadowingNames
-def identity(n: int, dtype: str = 'float32', batch_shape: Optional[List[int]] = None,
+def identity(n: int, dtype: ivy.Dtype = 'float32', batch_shape: Optional[List[int]] = None,
              dev: Optional[str] = None):
     dev = default_device(dev)
     type_dict: Dict[str, _torch.dtype] = {'bool': _torch.bool,
