@@ -1373,7 +1373,7 @@ def dtype(x: Union[ivy.Array, ivy.NativeArray], as_str: bool = False, f: ivy.Fra
 
     :param x: Tensor for which to get the data type.
     :type x: array
-    :param as_str: Whether or not to return the dtype is string format. Default is False.
+    :param as_str: Whether or not to return the dtype in string format. Default is False.
     :type as_str: bool, optional
     :param f: Machine learning framework. Inferred from inputs if None.
     :type f: ml_framework, optional

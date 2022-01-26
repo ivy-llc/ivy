@@ -24,10 +24,13 @@ def _to_array(x):
 # API #
 # ----#
 
-def dev(x):
+def dev(x, as_str=False):
     if isinstance(x, _jax.interpreters.partial_eval.DynamicJaxprTracer):
         return None
-    return _to_array(x).device_buffer.device()
+    dv = _to_array(x).device_buffer.device()
+    if as_str:
+        return dev_to_str(dv)
+    return dv
 
 
 def to_dev(x, dev=None):
@@ -58,8 +61,6 @@ def str_to_dev(dev):
 
 
 clear_mem_on_dev = lambda dev: None
-dev = lambda x: dev_to_str(dev(x))
-dev.__name__ = 'dev'
 
 
 def _dev_is_available(base_dev):
