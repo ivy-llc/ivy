@@ -15,7 +15,7 @@ class Sequential(Module):
         :param submodules: Submodules to chain together into a sequence.
         :type submodules: sequence of ivy.Module instances
         :param dev: device on which to create the layer's variables 'cuda:0', 'cuda:1', 'cpu' etc.
-        :type dev: str, optional
+        :type dev: ivy.Device, optional
         :param v: the variables for each submodule in the sequence, constructed internally by default.
         :type v: ivy container of variables, optional
         """
