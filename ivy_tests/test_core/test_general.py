@@ -748,31 +748,6 @@ def test_argsort(x_n_axis_x_argsort, dtype_str, tensor_fn, dev_str, call):
         helpers.assert_compilable(ivy.argsort)
 
 
-# cast
-@pytest.mark.parametrize(
-    "object_in", [[1], [True], [[1., 2.]]])
-@pytest.mark.parametrize(
-    "starting_dtype_str", ['float32', 'int32', 'bool'])
-@pytest.mark.parametrize(
-    "target_dtype_str", ['float32', 'int32', 'bool'])
-def test_cast(object_in, starting_dtype_str, target_dtype_str, dev_str, call):
-    # smoke test
-    x = ivy.array(object_in, starting_dtype_str, dev_str)
-    ret = ivy.cast(x, target_dtype_str)
-    # type test
-    assert ivy.is_array(ret)
-    # cardinality test
-    assert ret.shape == x.shape
-    # value test
-    assert ivy.dtype_str(ret) == target_dtype_str
-    # compilation test
-    if call in [helpers.torch_call]:
-        # pytorch scripting does not support .type() method
-        return
-    if not ivy.wrapped_mode():
-        helpers.assert_compilable(ivy.cast)
-
-
 # arange
 @pytest.mark.parametrize(
     "stop_n_start_n_step", [[10, None, None], [10, 2, None], [10, 2, 2]])
