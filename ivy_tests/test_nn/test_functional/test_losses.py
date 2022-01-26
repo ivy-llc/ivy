@@ -16,11 +16,11 @@ import ivy_tests.helpers as helpers
     "dtype", ['float32'])
 @pytest.mark.parametrize(
     "tensor_fn", [ivy.array, helpers.var_fn])
-def test_cross_entropy(t_n_p_n_res, dtype, tensor_fn, dev_str, call):
+def test_cross_entropy(t_n_p_n_res, dtype, tensor_fn, dev, call):
     # smoke test
     true, pred, true_target = t_n_p_n_res
-    pred = tensor_fn(pred, dtype, dev_str)
-    true = tensor_fn(true, dtype, dev_str)
+    pred = tensor_fn(pred, dtype, dev)
+    true = tensor_fn(true, dtype, dev)
     ret = ivy.cross_entropy(true, pred)
     # type test
     assert ivy.is_array(ret)
@@ -44,11 +44,11 @@ def test_cross_entropy(t_n_p_n_res, dtype, tensor_fn, dev_str, call):
     "dtype", ['float32'])
 @pytest.mark.parametrize(
     "tensor_fn", [ivy.array, helpers.var_fn])
-def test_binary_cross_entropy(t_n_p_n_res, dtype, tensor_fn, dev_str, call):
+def test_binary_cross_entropy(t_n_p_n_res, dtype, tensor_fn, dev, call):
     # smoke test
     true, pred, true_target = t_n_p_n_res
-    pred = tensor_fn(pred, dtype, dev_str)
-    true = tensor_fn(true, dtype, dev_str)
+    pred = tensor_fn(pred, dtype, dev)
+    true = tensor_fn(true, dtype, dev)
     ret = ivy.binary_cross_entropy(true, pred)
     # type test
     assert ivy.is_array(ret)
@@ -72,11 +72,11 @@ def test_binary_cross_entropy(t_n_p_n_res, dtype, tensor_fn, dev_str, call):
     "dtype", ['float32'])
 @pytest.mark.parametrize(
     "tensor_fn", [ivy.array, helpers.var_fn])
-def test_sparse_cross_entropy(t_n_p_n_res, dtype, tensor_fn, dev_str, call):
+def test_sparse_cross_entropy(t_n_p_n_res, dtype, tensor_fn, dev, call):
     # smoke test
     true, pred, true_target = t_n_p_n_res
-    pred = tensor_fn(pred, dtype, dev_str)
-    true = ivy.array(true, 'int32', dev_str)
+    pred = tensor_fn(pred, dtype, dev)
+    true = ivy.array(true, 'int32', dev)
     ret = ivy.sparse_cross_entropy(true, pred)
     # type test
     assert ivy.is_array(ret)

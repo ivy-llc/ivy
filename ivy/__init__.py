@@ -90,7 +90,7 @@ class Array(ArrayWithDevice, ArrayWithGeneral, ArrayWithGradients, ArrayWithImag
         self._data = data
         self._shape = data.shape
         self._dtype = dtype(self._data)
-        self._device = dev_str(data)
+        self._device = dev(data)
         self._pre_repr = 'ivy.'
         if 'gpu' in self._device:
             self._post_repr = ', dev={})'.format(self._device)

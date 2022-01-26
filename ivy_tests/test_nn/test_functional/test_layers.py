@@ -37,13 +37,13 @@ import ivy_tests.helpers as helpers
     "dtype", ['float32'])
 @pytest.mark.parametrize(
     "tensor_fn", [ivy.array, helpers.var_fn])
-def test_linear(x_n_w_n_b_n_res, dtype, tensor_fn, dev_str, call):
+def test_linear(x_n_w_n_b_n_res, dtype, tensor_fn, dev, call):
     # smoke test
     x, weight, bias, true_res = x_n_w_n_b_n_res
-    x = tensor_fn(x, dtype, dev_str)
-    weight = tensor_fn(weight, dtype, dev_str)
-    bias = tensor_fn(bias, dtype, dev_str)
-    true_res = tensor_fn(true_res, dtype, dev_str)
+    x = tensor_fn(x, dtype, dev)
+    weight = tensor_fn(weight, dtype, dev)
+    bias = tensor_fn(bias, dtype, dev)
+    true_res = tensor_fn(true_res, dtype, dev)
     ret = ivy.linear(x, weight, bias)
     # type test
     assert ivy.is_array(ret)
@@ -70,9 +70,9 @@ def test_linear(x_n_w_n_b_n_res, dtype, tensor_fn, dev_str, call):
     "dtype", ['float32'])
 @pytest.mark.parametrize(
     "tensor_fn", [ivy.array, helpers.var_fn])
-def test_dropout(x, dtype, tensor_fn, dev_str, call):
+def test_dropout(x, dtype, tensor_fn, dev, call):
     # smoke test
-    x = tensor_fn(x, dtype, dev_str)
+    x = tensor_fn(x, dtype, dev)
     ret = ivy.dropout(x, 0.9)
     # type test
     assert ivy.is_array(ret)
@@ -99,13 +99,13 @@ def test_dropout(x, dtype, tensor_fn, dev_str, call):
     "dtype", ['float32'])
 @pytest.mark.parametrize(
     "tensor_fn", [ivy.array, helpers.var_fn])
-def test_scaled_dot_product_attention(q_n_k_n_v_n_s_n_m_n_gt, dtype, tensor_fn, dev_str, call):
+def test_scaled_dot_product_attention(q_n_k_n_v_n_s_n_m_n_gt, dtype, tensor_fn, dev, call):
     q, k, v, scale, mask, ground_truth = q_n_k_n_v_n_s_n_m_n_gt
     # smoke test
-    q = tensor_fn(q, dtype, dev_str)
-    k = tensor_fn(k, dtype, dev_str)
-    v = tensor_fn(v, dtype, dev_str)
-    mask = tensor_fn(mask, dtype, dev_str)
+    q = tensor_fn(q, dtype, dev)
+    k = tensor_fn(k, dtype, dev)
+    v = tensor_fn(v, dtype, dev)
+    mask = tensor_fn(mask, dtype, dev)
     ret = ivy.scaled_dot_product_attention(q, k, v, scale, mask)
     # type test
     assert ivy.is_array(ret)
@@ -128,12 +128,12 @@ def test_scaled_dot_product_attention(q_n_k_n_v_n_s_n_m_n_gt, dtype, tensor_fn, 
     "dtype", ['float32'])
 @pytest.mark.parametrize(
     "tensor_fn", [ivy.array, helpers.var_fn])
-def test_multi_head_attention(x_n_s_n_m_n_c_n_gt, dtype, tensor_fn, dev_str, call):
+def test_multi_head_attention(x_n_s_n_m_n_c_n_gt, dtype, tensor_fn, dev, call):
     x, scale, mask, context, ground_truth = x_n_s_n_m_n_c_n_gt
     # smoke test
-    x = tensor_fn(x, dtype, dev_str)
-    context = tensor_fn(context, dtype, dev_str)
-    mask = tensor_fn(mask, dtype, dev_str)
+    x = tensor_fn(x, dtype, dev)
+    context = tensor_fn(context, dtype, dev)
+    mask = tensor_fn(mask, dtype, dev)
     fn = lambda x_, v: ivy.tile(x_, (1, 2))
     ret = ivy.multi_head_attention(x, scale, 2, context, mask, fn, fn, fn)
     # type test
@@ -174,8 +174,8 @@ def test_multi_head_attention(x_n_s_n_m_n_c_n_gt, dtype, tensor_fn, dev_str, cal
     "dtype", ['float32'])
 @pytest.mark.parametrize(
     "tensor_fn", [ivy.array, helpers.var_fn])
-def test_conv1d(x_n_filters_n_pad_n_res, dtype, tensor_fn, dev_str, call):
-    if call in [helpers.tf_call, helpers.tf_graph_call] and 'cpu' in dev_str:
+def test_conv1d(x_n_filters_n_pad_n_res, dtype, tensor_fn, dev, call):
+    if call in [helpers.tf_call, helpers.tf_graph_call] and 'cpu' in dev:
         # tf conv1d does not work when CUDA is installed, but array is on CPU
         pytest.skip()
     if call in [helpers.np_call, helpers.jnp_call]:
@@ -183,9 +183,9 @@ def test_conv1d(x_n_filters_n_pad_n_res, dtype, tensor_fn, dev_str, call):
         pytest.skip()
     # smoke test
     x, filters, padding, true_res = x_n_filters_n_pad_n_res
-    x = tensor_fn(x, dtype, dev_str)
-    filters = tensor_fn(filters, dtype, dev_str)
-    true_res = tensor_fn(true_res, dtype, dev_str)
+    x = tensor_fn(x, dtype, dev)
+    filters = tensor_fn(filters, dtype, dev)
+    true_res = tensor_fn(true_res, dtype, dev)
     ret = ivy.conv1d(x, filters, 1, padding)
     # type test
     assert ivy.is_array(ret)
@@ -223,8 +223,8 @@ def test_conv1d(x_n_filters_n_pad_n_res, dtype, tensor_fn, dev_str, call):
     "dtype", ['float32'])
 @pytest.mark.parametrize(
     "tensor_fn", [ivy.array, helpers.var_fn])
-def test_conv1d_transpose(x_n_filters_n_pad_n_outshp_n_res, dtype, tensor_fn, dev_str, call):
-    if call in [helpers.tf_call, helpers.tf_graph_call] and 'cpu' in dev_str:
+def test_conv1d_transpose(x_n_filters_n_pad_n_outshp_n_res, dtype, tensor_fn, dev, call):
+    if call in [helpers.tf_call, helpers.tf_graph_call] and 'cpu' in dev:
         # tf conv1d transpose does not work when CUDA is installed, but array is on CPU
         pytest.skip()
     # smoke test
@@ -232,9 +232,9 @@ def test_conv1d_transpose(x_n_filters_n_pad_n_outshp_n_res, dtype, tensor_fn, de
         # numpy and jax do not yet support conv1d_transpose
         pytest.skip()
     x, filters, padding, output_shape, true_res = x_n_filters_n_pad_n_outshp_n_res
-    x = tensor_fn(x, dtype, dev_str)
-    filters = tensor_fn(filters, dtype, dev_str)
-    true_res = tensor_fn(true_res, dtype, dev_str)
+    x = tensor_fn(x, dtype, dev)
+    filters = tensor_fn(filters, dtype, dev)
+    true_res = tensor_fn(true_res, dtype, dev)
     ret = ivy.conv1d_transpose(x, filters, 1, padding, output_shape)
     # type test
     assert ivy.is_array(ret)
@@ -295,15 +295,15 @@ def test_conv1d_transpose(x_n_filters_n_pad_n_outshp_n_res, dtype, tensor_fn, de
     "dtype", ['float32'])
 @pytest.mark.parametrize(
     "tensor_fn", [ivy.array, helpers.var_fn])
-def test_conv2d(x_n_filters_n_pad_n_res, dtype, tensor_fn, dev_str, call):
-    if call in [helpers.tf_call, helpers.tf_graph_call] and 'cpu' in dev_str:
+def test_conv2d(x_n_filters_n_pad_n_res, dtype, tensor_fn, dev, call):
+    if call in [helpers.tf_call, helpers.tf_graph_call] and 'cpu' in dev:
         # tf conv2d does not work when CUDA is installed, but array is on CPU
         pytest.skip()
     # smoke test
     x, filters, padding, true_res = x_n_filters_n_pad_n_res
-    x = tensor_fn(x, dtype, dev_str)
-    filters = tensor_fn(filters, dtype, dev_str)
-    true_res = tensor_fn(true_res, dtype, dev_str)
+    x = tensor_fn(x, dtype, dev)
+    filters = tensor_fn(filters, dtype, dev)
+    true_res = tensor_fn(true_res, dtype, dev)
     ret = ivy.conv2d(x, filters, 1, padding)
     # type test
     assert ivy.is_array(ret)
@@ -360,8 +360,8 @@ def test_conv2d(x_n_filters_n_pad_n_res, dtype, tensor_fn, dev_str, call):
     "dtype", ['float32'])
 @pytest.mark.parametrize(
     "tensor_fn", [ivy.array, helpers.var_fn])
-def test_conv2d_transpose(x_n_filters_n_pad_n_outshp_n_res, dtype, tensor_fn, dev_str, call):
-    if call in [helpers.tf_call, helpers.tf_graph_call] and 'cpu' in dev_str:
+def test_conv2d_transpose(x_n_filters_n_pad_n_outshp_n_res, dtype, tensor_fn, dev, call):
+    if call in [helpers.tf_call, helpers.tf_graph_call] and 'cpu' in dev:
         # tf conv2d transpose does not work when CUDA is installed, but array is on CPU
         pytest.skip()
     # smoke test
@@ -369,9 +369,9 @@ def test_conv2d_transpose(x_n_filters_n_pad_n_outshp_n_res, dtype, tensor_fn, de
         # numpy and jax do not yet support conv2d_transpose
         pytest.skip()
     x, filters, padding, output_shape, true_res = x_n_filters_n_pad_n_outshp_n_res
-    x = tensor_fn(x, dtype, dev_str)
-    filters = tensor_fn(filters, dtype, dev_str)
-    true_res = tensor_fn(true_res, dtype, dev_str)
+    x = tensor_fn(x, dtype, dev)
+    filters = tensor_fn(filters, dtype, dev)
+    true_res = tensor_fn(true_res, dtype, dev)
     ret = ivy.conv2d_transpose(x, filters, 1, padding, output_shape)
     # type test
     assert ivy.is_array(ret)
@@ -420,8 +420,8 @@ def test_conv2d_transpose(x_n_filters_n_pad_n_outshp_n_res, dtype, tensor_fn, de
     "dtype", ['float32'])
 @pytest.mark.parametrize(
     "tensor_fn", [ivy.array, helpers.var_fn])
-def test_depthwise_conv2d(x_n_filters_n_pad_n_res, dtype, tensor_fn, dev_str, call):
-    if call in [helpers.tf_call, helpers.tf_graph_call] and 'cpu' in dev_str:
+def test_depthwise_conv2d(x_n_filters_n_pad_n_res, dtype, tensor_fn, dev, call):
+    if call in [helpers.tf_call, helpers.tf_graph_call] and 'cpu' in dev:
         # tf depthwise conv2d does not work when CUDA is installed, but array is on CPU
         pytest.skip()
     # smoke test
@@ -429,9 +429,9 @@ def test_depthwise_conv2d(x_n_filters_n_pad_n_res, dtype, tensor_fn, dev_str, ca
         # numpy and jax do not yet support depthwise 2d convolutions
         pytest.skip()
     x, filters, padding, true_res = x_n_filters_n_pad_n_res
-    x = tensor_fn(x, dtype, dev_str)
-    filters = tensor_fn(filters, dtype, dev_str)
-    true_res = tensor_fn(true_res, dtype, dev_str)
+    x = tensor_fn(x, dtype, dev)
+    filters = tensor_fn(filters, dtype, dev)
+    true_res = tensor_fn(true_res, dtype, dev)
     ret = ivy.depthwise_conv2d(x, filters, 1, padding)
     # type test
     assert ivy.is_array(ret)
@@ -480,8 +480,8 @@ def test_depthwise_conv2d(x_n_filters_n_pad_n_res, dtype, tensor_fn, dev_str, ca
     "dtype", ['float32'])
 @pytest.mark.parametrize(
     "tensor_fn", [ivy.array, helpers.var_fn])
-def test_conv3d(x_n_filters_n_pad_n_res, dtype, tensor_fn, dev_str, call):
-    if call in [helpers.tf_call, helpers.tf_graph_call] and 'cpu' in dev_str:
+def test_conv3d(x_n_filters_n_pad_n_res, dtype, tensor_fn, dev, call):
+    if call in [helpers.tf_call, helpers.tf_graph_call] and 'cpu' in dev:
         # tf conv3d does not work when CUDA is installed, but array is on CPU
         pytest.skip()
     # smoke test
@@ -489,9 +489,9 @@ def test_conv3d(x_n_filters_n_pad_n_res, dtype, tensor_fn, dev_str, call):
         # numpy and jax do not yet support 3d convolutions
         pytest.skip()
     x, filters, padding, true_res = x_n_filters_n_pad_n_res
-    x = tensor_fn(x, dtype, dev_str)
-    filters = tensor_fn(filters, dtype, dev_str)
-    true_res = tensor_fn(true_res, dtype, dev_str)
+    x = tensor_fn(x, dtype, dev)
+    filters = tensor_fn(filters, dtype, dev)
+    true_res = tensor_fn(true_res, dtype, dev)
     ret = ivy.conv3d(x, filters, 1, padding)
     # type test
     assert ivy.is_array(ret)
@@ -553,21 +553,21 @@ def test_conv3d(x_n_filters_n_pad_n_res, dtype, tensor_fn, dev_str, call):
     "dtype", ['float32'])
 @pytest.mark.parametrize(
     "tensor_fn", [ivy.array, helpers.var_fn])
-def test_conv3d_transpose(x_n_filters_n_pad_n_outshp_n_res, dtype, tensor_fn, dev_str, call):
-    if call in [helpers.tf_call, helpers.tf_graph_call] and 'cpu' in dev_str:
+def test_conv3d_transpose(x_n_filters_n_pad_n_outshp_n_res, dtype, tensor_fn, dev, call):
+    if call in [helpers.tf_call, helpers.tf_graph_call] and 'cpu' in dev:
         # tf conv3d transpose does not work when CUDA is installed, but array is on CPU
         pytest.skip()
     # smoke test
     if call in [helpers.np_call, helpers.jnp_call, helpers.mx_call]:
         # numpy and jax do not yet support 3d transpose convolutions, and mxnet only supports with CUDNN
         pytest.skip()
-    if call in [helpers.mx_call] and 'cpu' in dev_str:
+    if call in [helpers.mx_call] and 'cpu' in dev:
         # mxnet only supports 3d transpose convolutions with CUDNN
         pytest.skip()
     x, filters, padding, output_shape, true_res = x_n_filters_n_pad_n_outshp_n_res
-    x = tensor_fn(x, dtype, dev_str)
-    filters = tensor_fn(filters, dtype, dev_str)
-    true_res = tensor_fn(true_res, dtype, dev_str)
+    x = tensor_fn(x, dtype, dev)
+    filters = tensor_fn(filters, dtype, dev)
+    true_res = tensor_fn(true_res, dtype, dev)
     ret = ivy.conv3d_transpose(x, filters, 1, padding, output_shape)
     # type test
     assert ivy.is_array(ret)
@@ -592,7 +592,7 @@ def test_conv3d_transpose(x_n_filters_n_pad_n_outshp_n_res, dtype, tensor_fn, de
     "dtype", ['float32'])
 @pytest.mark.parametrize(
     "tensor_fn", [ivy.array, helpers.var_fn])
-def test_lstm(b_t_ic_hc_otf_sctv, dtype, tensor_fn, dev_str, call):
+def test_lstm(b_t_ic_hc_otf_sctv, dtype, tensor_fn, dev, call):
     # smoke test
     b, t, input_channels, hidden_channels, output_true_flat, state_c_true_val = b_t_ic_hc_otf_sctv
     x = ivy.cast(ivy.linspace(ivy.zeros([b, t]), ivy.ones([b, t]), input_channels), 'float32')

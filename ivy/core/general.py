@@ -13,7 +13,7 @@ from typing import Callable, Any, Union, List, Tuple, Dict, Iterable
 
 # local
 import ivy
-from ivy.core.device import dev_str
+from ivy.core.device import dev
 from ivy.framework_handler import current_framework as _cur_framework
 
 FN_CACHE = dict()
@@ -53,7 +53,7 @@ def get_referrers_recursive(item, depth=0, max_depth=None, seen_set=None, local_
 
 # noinspection PyShadowingNames
 def array(object_in: Union[List, np.ndarray, ivy.Array, ivy.NativeArray], dtype: str = None,
-          dev_str: str = None, f: ivy.Framework = None) -> Union[ivy.Array, ivy.NativeArray]:
+          dev: str = None, f: ivy.Framework = None) -> Union[ivy.Array, ivy.NativeArray]:
     """
     Creates an array.
 
@@ -64,13 +64,13 @@ def array(object_in: Union[List, np.ndarray, ivy.Array, ivy.NativeArray], dtype:
         If not given, then the type will be determined as the minimum type required to hold the objects in the
         sequence.
     :type dtype: data-type string, optional
-    :param dev_str: device string on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc..
-    :type dev_str: str
+    :param dev: device string on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc..
+    :type dev: str
     :param f: Machine learning framework. Inferred from inputs if None.
     :type f: ml_framework, optional
     :return: An array object satisfying the specified requirements, in the form of the selected framework.
     """
-    return _cur_framework(object_in, f=f).array(object_in, dtype, dev_str)
+    return _cur_framework(object_in, f=f).array(object_in, dtype, dev)
 
 
 def is_array(x: Any, exclusive: bool = False, f: ivy.Framework = None)\
@@ -483,7 +483,7 @@ def cast(x: Union[ivy.Array, ivy.NativeArray], dtype: str, f: ivy.Framework = No
 
 
 # noinspection PyShadowingNames
-def arange(stop: Number, start: Number = 0, step: Number = 1, dtype: str = None, dev_str: str = None,
+def arange(stop: Number, start: Number = 0, step: Number = 1, dtype: str = None, dev: str = None,
            f: ivy.Framework = None) -> Union[ivy.Array, ivy.NativeArray]:
     """
     Returns evenly spaced values within a given interval, with the spacing being specified.
@@ -507,8 +507,8 @@ def arange(stop: Number, start: Number = 0, step: Number = 1, dtype: str = None,
         If not given, then the type will be determined as the minimum type required to hold the objects in the
         sequence.
     :type dtype: data-type string, optional
-    :param dev_str: device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc.
-    :type dev_str: str
+    :param dev: device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc.
+    :type dev: str
     :param f: Machine learning framework. Inferred from inputs if None.
     :type f: ml_framework, optional
     :return: Tensor of evenly spaced values.
@@ -516,12 +516,12 @@ def arange(stop: Number, start: Number = 0, step: Number = 1, dtype: str = None,
             For floating point arguments, the length of the result is ceil((stop - start)/step).
             Because of floating point overflow, this rule may result in the last element of out being greater than stop.
     """
-    return _cur_framework(f=f).arange(stop, start, step, dtype, dev_str)
+    return _cur_framework(f=f).arange(stop, start, step, dtype, dev)
 
 
 # noinspection PyShadowingNames
 def linspace(start: Union[ivy.Array, ivy.NativeArray, Number], stop: Union[ivy.Array, ivy.NativeArray, Number],
-             num: int, axis: int = None, dev_str: str = None, f: ivy.Framework = None)\
+             num: int, axis: int = None, dev: str = None, f: ivy.Framework = None)\
         -> Union[ivy.Array, ivy.NativeArray]:
     """
     Generates a certain number of evenly-spaced values in an interval along a given axis.
@@ -536,18 +536,18 @@ def linspace(start: Union[ivy.Array, ivy.NativeArray, Number], stop: Union[ivy.A
     :type num: int
     :param axis: Axis along which the operation is performed.
     :type axis: int
-    :param dev_str: device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc.
-    :type dev_str: str
+    :param dev: device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc.
+    :type dev: str
     :param f: Machine learning framework. Inferred from inputs if None.
     :type f: ml_framework, optional
     :return: Tensor of evenly-spaced values.
     """
-    return _cur_framework(start, f=f).linspace(start, stop, num, axis, dev_str)
+    return _cur_framework(start, f=f).linspace(start, stop, num, axis, dev)
 
 
 # noinspection PyShadowingNames
 def logspace(start: Union[ivy.Array, ivy.NativeArray, Number], stop: Union[ivy.Array, ivy.NativeArray, Number],
-             num: int, base: float = 10., axis: int = None, dev_str: str = None, f: ivy.Framework = None)\
+             num: int, base: float = 10., axis: int = None, dev: str = None, f: ivy.Framework = None)\
         -> Union[ivy.Array, ivy.NativeArray]:
     """
     Generates a certain number of evenly-spaced values in log space, in an interval along a given axis.
@@ -564,13 +564,13 @@ def logspace(start: Union[ivy.Array, ivy.NativeArray, Number], stop: Union[ivy.A
     :type base: float, optional
     :param axis: Axis along which the operation is performed.
     :type axis: int
-    :param dev_str: device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc.
-    :type dev_str: str
+    :param dev: device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc.
+    :type dev: str
     :param f: Machine learning framework. Inferred from inputs if None.
     :type f: ml_framework, optional
     :return: Tensor of evenly-spaced values.
     """
-    return _cur_framework(start, f=f).logspace(start, stop, num, base, axis, dev_str)
+    return _cur_framework(start, f=f).logspace(start, stop, num, base, axis, dev)
 
 
 def concatenate(xs: Iterable[Union[ivy.Array, ivy.NativeArray]], axis: int = -1, f: ivy.Framework = None)\
@@ -763,9 +763,9 @@ def fourier_encode(x: Union[ivy.Array, ivy.NativeArray], max_freq: Union[float, 
     x = ivy.expand_dims(x, -1)
     orig_x = x
     if linear:
-        scales = ivy.linspace(1., max_freq / 2, num_bands, dev_str=dev_str(x))
+        scales = ivy.linspace(1., max_freq / 2, num_bands, dev=dev(x))
     else:
-        scales = ivy.logspace(0., ivy.log(max_freq / 2) / math.log(10), num_bands, base=10, dev_str=dev_str(x))
+        scales = ivy.logspace(0., ivy.log(max_freq / 2) / math.log(10), num_bands, base=10, dev=dev(x))
     scales = ivy.cast(scales, ivy.dtype(x))
     scales = scales[(*((None,) * (len(x.shape) - len(scales.shape))), Ellipsis)]
     x = x * scales * math.pi
@@ -962,7 +962,7 @@ def squeeze(x: Union[ivy.Array, ivy.NativeArray], axis: int = None, f: ivy.Frame
 
 
 # noinspection PyShadowingNames
-def zeros(shape: Iterable[int], dtype: str = 'float32', dev_str: str = None, f: ivy.Framework = None)\
+def zeros(shape: Iterable[int], dtype: str = 'float32', dev: str = None, f: ivy.Framework = None)\
         -> Union[ivy.Array, ivy.NativeArray]:
     """
     Return a new array of given shape and type, filled with zeros.
@@ -972,17 +972,17 @@ def zeros(shape: Iterable[int], dtype: str = 'float32', dev_str: str = None, f: 
     :param dtype: The desired data-type for the array in string format, i.e. 'float32' or 'int64'.
     Default is 'float32'.
     :type dtype: data-type string, optional
-    :param dev_str: device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc..
-    :type dev_str: str
+    :param dev: device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc..
+    :type dev: str
     :param f: Machine learning framework. Inferred from inputs if None.
     :type f: ml_framework, optional
     :return: Tensor of zeros with the given shape and dtype.
     """
-    return _cur_framework(f=f).zeros(shape, dtype, dev_str)
+    return _cur_framework(f=f).zeros(shape, dtype, dev)
 
 
 # noinspection PyShadowingNames
-def zeros_like(x: Union[ivy.Array, ivy.NativeArray], dtype: str = None, dev_str: str = None,
+def zeros_like(x: Union[ivy.Array, ivy.NativeArray], dtype: str = None, dev: str = None,
                f: ivy.Framework = None) -> Union[ivy.Array, ivy.NativeArray]:
     """
     Returns an array of zeros with the same shape and type as x, unless dtype provided which overrides.
@@ -992,17 +992,17 @@ def zeros_like(x: Union[ivy.Array, ivy.NativeArray], dtype: str = None, dev_str:
     :param dtype: The desired data-type for the array in string format, i.e. 'float32' or 'int64'.
                     If not given, then the type of the original array is used.
     :type dtype: data-type string, optional
-    :param dev_str: device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc. Same as x if None.
-    :type dev_str: str, optional
+    :param dev: device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc. Same as x if None.
+    :type dev: str, optional
     :param f: Machine learning framework. Inferred from inputs if None.
     :type f: ml_framework, optional
     :return: Tensor of zeros with the same shape and type as a, unless dtype provided which overrides.
     """
-    return _cur_framework(x, f=f).zeros_like(x, dtype, dev_str)
+    return _cur_framework(x, f=f).zeros_like(x, dtype, dev)
 
 
 # noinspection PyShadowingNames
-def ones(shape: Iterable[int], dtype: str = 'float32', dev_str: str = None, f: ivy.Framework = None)\
+def ones(shape: Iterable[int], dtype: str = 'float32', dev: str = None, f: ivy.Framework = None)\
         -> Union[ivy.Array, ivy.NativeArray]:
     """
     Returns a new array of given shape and type, filled with ones.
@@ -1012,17 +1012,17 @@ def ones(shape: Iterable[int], dtype: str = 'float32', dev_str: str = None, f: i
     :param dtype: The desired data-type for the array in string format, i.e. 'float32' or 'int64'.
     Default is 'float32'.
     :type dtype: data-type string, optional
-    :param dev_str: device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc..
-    :type dev_str: str
+    :param dev: device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc..
+    :type dev: str
     :param f: Machine learning framework. Inferred from inputs if None.
     :type f: ml_framework, optional
     :return: Tensor of ones with the given shape and dtype.
     """
-    return _cur_framework(f=f).ones(shape, dtype, dev_str)
+    return _cur_framework(f=f).ones(shape, dtype, dev)
 
 
 # noinspection PyShadowingNames
-def ones_like(x: Union[ivy.Array, ivy.NativeArray], dtype: str = None, dev_str: str = None,
+def ones_like(x: Union[ivy.Array, ivy.NativeArray], dtype: str = None, dev: str = None,
               f: ivy.Framework = None) -> Union[ivy.Array, ivy.NativeArray]:
     """
     Returns an array of ones with the same shape and type as x, unless dtype provided which overrides.
@@ -1032,17 +1032,17 @@ def ones_like(x: Union[ivy.Array, ivy.NativeArray], dtype: str = None, dev_str: 
     :param dtype: The desired data-type for the array in string format, i.e. 'float32' or 'int64'.
                     If not given, then the type of the original array is used.
     :type dtype: data-type string, optional
-    :param dev_str: device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc. Same as x if None.
-    :type dev_str: str, optional
+    :param dev: device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc. Same as x if None.
+    :type dev: str, optional
     :param f: Machine learning framework. Inferred from inputs if None.
     :type f: ml_framework, optional
     :return: Tensor of zeros with the same shape and type as a, unless dtype provided which overrides.
     """
-    return _cur_framework(x, f=f).ones_like(x, dtype, dev_str)
+    return _cur_framework(x, f=f).ones_like(x, dtype, dev)
 
 
 # noinspection PyShadowingNames
-def one_hot(indices: Union[ivy.Array, ivy.NativeArray], depth: int, dev_str: str = None, f: ivy.Framework = None)\
+def one_hot(indices: Union[ivy.Array, ivy.NativeArray], depth: int, dev: str = None, f: ivy.Framework = None)\
         -> Union[ivy.Array, ivy.NativeArray]:
     """
     Returns a one-hot array
@@ -1050,13 +1050,13 @@ def one_hot(indices: Union[ivy.Array, ivy.NativeArray], depth: int, dev_str: str
     :type indices: array
     :param depth: Scalar defining the depth of the one-hot dimension.
     :type depth: int
-    :param dev_str: device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc. Same as x if None.
-    :type dev_str: str, optional
+    :param dev: device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc. Same as x if None.
+    :type dev: str, optional
     :param f: Machine learning framework. Inferred from inputs if None.
     :type f: ml_framework, optional
     :return: Tensor of zeros with the same shape and type as a, unless dtype provided which overrides.
     """
-    return _cur_framework(indices, f=f).one_hot(indices, depth, dev_str)
+    return _cur_framework(indices, f=f).one_hot(indices, depth, dev)
 
 
 def cross(x1: Union[ivy.Array, ivy.NativeArray], x2: Union[ivy.Array, ivy.NativeArray], f: ivy.Framework = None)\
@@ -1129,7 +1129,7 @@ def cumprod(x: Union[ivy.Array, ivy.NativeArray], axis: int = 0, exclusive: bool
 
 
 # noinspection PyShadowingNames
-def identity(n: int, dtype: str = 'float32', batch_shape: Iterable[int] = None, dev_str: str = None,
+def identity(n: int, dtype: str = 'float32', batch_shape: Iterable[int] = None, dev: str = None,
              f: ivy.Framework = None) -> Union[ivy.Array, ivy.NativeArray]:
     """
     Returns the identity array.
@@ -1142,13 +1142,13 @@ def identity(n: int, dtype: str = 'float32', batch_shape: Iterable[int] = None, 
     :type dtype: data-type string, optional
     :param batch_shape: Shape of batch. Inferred from inputs if None.
     :type batch_shape: sequence of ints, optional
-    :param dev_str: device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc..
-    :type dev_str: str
+    :param dev: device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc..
+    :type dev: str
     :param f: Machine learning framework. Inferred from inputs if None.
     :type f: ml_framework, optional
     :return: n x n array of type dtype, with its main diagonal set to one, and all other elements 0.
     """
-    return _cur_framework(f=f).identity(n, dtype, batch_shape, dev_str)
+    return _cur_framework(f=f).identity(n, dtype, batch_shape, dev)
 
 
 def meshgrid(*xs: Iterable[Union[ivy.Array, ivy.NativeArray]], indexing: str = 'ij', f: ivy.Framework = None)\
@@ -1169,7 +1169,7 @@ def meshgrid(*xs: Iterable[Union[ivy.Array, ivy.NativeArray]], indexing: str = '
 
 # noinspection PyShadowingNames
 def scatter_flat(indices: Union[ivy.Array, ivy.NativeArray], updates: Union[ivy.Array, ivy.NativeArray], size: int,
-                 reduction: str = 'sum', dev_str: str = None, f: ivy.Framework = None)\
+                 reduction: str = 'sum', dev: str = None, f: ivy.Framework = None)\
         -> Union[ivy.Array, ivy.NativeArray]:
     """
     Scatter flat updates into a new flat array according to flat indices.
@@ -1182,18 +1182,18 @@ def scatter_flat(indices: Union[ivy.Array, ivy.NativeArray], updates: Union[ivy.
     :type size: int
     :param reduction: The reduction method for the scatter, one of 'sum', 'min', 'max' or 'replace'
     :type reduction: str
-    :param dev_str: device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc. Same as updates if None.
-    :type dev_str: str, optional
+    :param dev: device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc. Same as updates if None.
+    :type dev: str, optional
     :param f: Machine learning framework. Inferred from inputs if None.
     :type f: ml_framework, optional
     :return: New array of given shape, with the values scattered at the indices.
     """
-    return _cur_framework(indices, f=f).scatter_flat(indices, updates, size, reduction, dev_str)
+    return _cur_framework(indices, f=f).scatter_flat(indices, updates, size, reduction, dev)
 
 
 # noinspection PyShadowingNames
 def scatter_nd(indices: Union[ivy.Array, ivy.NativeArray], updates: Union[ivy.Array, ivy.NativeArray],
-               shape: Iterable[int], reduction: str = 'sum', dev_str: str = None, f: ivy.Framework = None)\
+               shape: Iterable[int], reduction: str = 'sum', dev: str = None, f: ivy.Framework = None)\
         -> Union[ivy.Array, ivy.NativeArray]:
     """
     Scatter updates into a new array according to indices.
@@ -1206,18 +1206,18 @@ def scatter_nd(indices: Union[ivy.Array, ivy.NativeArray], updates: Union[ivy.Ar
     :type shape: sequence of ints
     :param reduction: The reduction method for the scatter, one of 'sum', 'min' or 'max'
     :type reduction: str
-    :param dev_str: device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc. Same as updates if None.
-    :type dev_str: str, optional
+    :param dev: device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc. Same as updates if None.
+    :type dev: str, optional
     :param f: Machine learning framework. Inferred from inputs if None.
     :type f: ml_framework, optional
     :return: New array of given shape, with the values scattered at the indices.
     """
-    return _cur_framework(indices, f=f).scatter_nd(indices, updates, shape, reduction, dev_str)
+    return _cur_framework(indices, f=f).scatter_nd(indices, updates, shape, reduction, dev)
 
 
 # noinspection PyShadowingNames
 def gather(params: Union[ivy.Array, ivy.NativeArray], indices: Union[ivy.Array, ivy.NativeArray], axis: int = -1,
-           dev_str: str = None, f: ivy.Framework = None) -> Union[ivy.Array, ivy.NativeArray]:
+           dev: str = None, f: ivy.Framework = None) -> Union[ivy.Array, ivy.NativeArray]:
     """
     Gather slices from params at axis according to indices.
 
@@ -1227,18 +1227,18 @@ def gather(params: Union[ivy.Array, ivy.NativeArray], indices: Union[ivy.Array, 
     :type indices: array
     :param axis: The axis from which to gather from. Default is -1.
     :type axis: int, optional
-    :param dev_str: device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc. Same as x if None.
-    :type dev_str: str, optional
+    :param dev: device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc. Same as x if None.
+    :type dev: str, optional
     :param f: Machine learning framework. Inferred from inputs if None.
     :type f: ml_framework, optional
     :return: New array with the values gathered at the specified indices along the specified axis.
     """
-    return _cur_framework(params, f=f).gather(params, indices, axis, dev_str)
+    return _cur_framework(params, f=f).gather(params, indices, axis, dev)
 
 
 # noinspection PyShadowingNames
 def gather_nd(params: Union[ivy.Array, ivy.NativeArray], indices: Union[ivy.Array, ivy.NativeArray],
-              dev_str: str = None, f: ivy.Framework = None) -> Union[ivy.Array, ivy.NativeArray]:
+              dev: str = None, f: ivy.Framework = None) -> Union[ivy.Array, ivy.NativeArray]:
     """
     Gather slices from params into a array with shape specified by indices.
 
@@ -1246,13 +1246,13 @@ def gather_nd(params: Union[ivy.Array, ivy.NativeArray], indices: Union[ivy.Arra
     :type params: array
     :param indices: Index array.
     :type indices: array
-    :param dev_str: device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc. Same as x if None.
-    :type dev_str: str, optional
+    :param dev: device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc. Same as x if None.
+    :type dev: str, optional
     :param f: Machine learning framework. Inferred from inputs if None.
     :type f: ml_framework, optional
     :return: New array of given shape, with the values gathered at the indices.
     """
-    return _cur_framework(params, f=f).gather_nd(params, indices, dev_str)
+    return _cur_framework(params, f=f).gather_nd(params, indices, dev)
 
 
 def linear_resample(x: Union[ivy.Array, ivy.NativeArray], num_samples: int, axis: int = -1, f: ivy.Framework = None)\

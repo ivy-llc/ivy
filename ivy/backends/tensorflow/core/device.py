@@ -20,12 +20,12 @@ dev = lambda x: x.device
 dev.__name__ = 'dev'
 
 
-def to_dev(x, dev_str=None):
-    if dev_str is None:
+def to_dev(x, dev=None):
+    if dev is None:
         return x
-    current_dev_str = _dev_str_callable(x)
-    if not _same_device(current_dev_str, dev_str):
-        with _tf.device('/' + dev_str.upper()):
+    current_dev = _dev_callable(x)
+    if not _same_device(current_dev, dev):
+        with _tf.device('/' + dev.upper()):
             return _tf.identity(x)
     return x
 
@@ -41,17 +41,17 @@ def dev_to_str(dev_in):
     return ':'.join([dev_type, dev_idx])
 
 
-def str_to_dev(dev_str):
-    ret = '/' + dev_str.upper()
+def str_to_dev(dev):
+    ret = '/' + dev.upper()
     if not ret[-1].isnumeric():
         ret = ret + ':0'
     return ret
 
 
-clear_mem_on_dev = lambda dev_str: None
-dev_str = lambda x: dev_to_str(dev(x))
-dev_str.__name__ = 'dev_str'
-_dev_str_callable = dev_str
+clear_mem_on_dev = lambda dev: None
+dev = lambda x: dev_to_str(dev(x))
+dev.__name__ = 'dev'
+_dev_callable = dev
 gpu_is_available = lambda: len(_tf.config.list_physical_devices('GPU')) > 0
 num_gpus = lambda: len(_tf.config.list_physical_devices('GPU'))
 
