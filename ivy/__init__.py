@@ -415,4 +415,18 @@ class Variable(Array):
         super().__init__(data)
 
 
+# data types
+int8 = 'int8'
+int16 = 'int16'
+int32 = 'int32'
+int64 = 'int64'
+uint8 = 'uint8'
+uint16 = 'uint16'
+uint32 = 'uint32'
+uint64 = 'uint64'
+float32 = 'float32'
+float64 = 'float64'
+# noinspection PyShadowingBuiltins
+bool = 'bool'
+
 backend = 'none'
