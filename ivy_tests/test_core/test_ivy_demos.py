@@ -15,7 +15,7 @@ import ivy_tests.helpers as helpers
 # ------#
 
 # training
-def test_training_demo(dev_str, call):
+def test_training_demo(dev, call):
 
     if call is helpers.np_call:
         # numpy does not support gradients
@@ -46,7 +46,7 @@ def test_training_demo(dev_str, call):
 
 
 # functional api
-def test_array(dev_str, call):
+def test_array(dev, call):
     ivy.unset_framework()
     import jax.numpy as jnp
     assert ivy.concatenate((jnp.ones((1,)), jnp.ones((1,))), -1).shape == (2,)

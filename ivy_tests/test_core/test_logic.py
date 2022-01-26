@@ -19,11 +19,11 @@ import ivy_tests.helpers as helpers
     "dtype", ['float32'])
 @pytest.mark.parametrize(
     "tensor_fn", [ivy.array, helpers.var_fn])
-def test_logical_and(x1_n_x2, dtype, tensor_fn, dev_str, call):
+def test_logical_and(x1_n_x2, dtype, tensor_fn, dev, call):
     # smoke test
     x1, x2 = x1_n_x2
-    x1 = tensor_fn(x1, dtype, dev_str)
-    x2 = tensor_fn(x2, dtype, dev_str)
+    x1 = tensor_fn(x1, dtype, dev)
+    x2 = tensor_fn(x2, dtype, dev)
     ret = ivy.logical_and(x1, x2)
     # type test
     assert ivy.is_array(ret)
@@ -46,11 +46,11 @@ def test_logical_and(x1_n_x2, dtype, tensor_fn, dev_str, call):
     "dtype", ['float32'])
 @pytest.mark.parametrize(
     "tensor_fn", [ivy.array, helpers.var_fn])
-def test_logical_or(x1_n_x2, dtype, tensor_fn, dev_str, call):
+def test_logical_or(x1_n_x2, dtype, tensor_fn, dev, call):
     # smoke test
     x1, x2 = x1_n_x2
-    x1 = tensor_fn(x1, dtype, dev_str)
-    x2 = tensor_fn(x2, dtype, dev_str)
+    x1 = tensor_fn(x1, dtype, dev)
+    x2 = tensor_fn(x2, dtype, dev)
     ret = ivy.logical_or(x1, x2)
     # type test
     assert ivy.is_array(ret)
@@ -73,9 +73,9 @@ def test_logical_or(x1_n_x2, dtype, tensor_fn, dev_str, call):
     "dtype", ['float32'])
 @pytest.mark.parametrize(
     "tensor_fn", [ivy.array, helpers.var_fn])
-def test_logical_not(x, dtype, tensor_fn, dev_str, call):
+def test_logical_not(x, dtype, tensor_fn, dev, call):
     # smoke test
-    x = tensor_fn(x, dtype, dev_str)
+    x = tensor_fn(x, dtype, dev)
     ret = ivy.logical_not(x)
     # type test
     assert ivy.is_array(ret)

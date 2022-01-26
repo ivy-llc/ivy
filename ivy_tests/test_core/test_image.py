@@ -21,7 +21,7 @@ import ivy_tests.helpers as helpers
                                 ((8, 8, 3), 9, (1, 1), (24, 24, 3)),
                                 ((3, 16, 12, 4), 10, (2, 5), (3, 80, 36, 4)),
                                 ((5, 20, 9, 5), 10, (5, 2), (5, 40, 72, 5))])
-def test_stack_images(shp_n_num_n_ar_n_newshp, dev_str, call):
+def test_stack_images(shp_n_num_n_ar_n_newshp, dev, call):
     # smoke test
     shape, num, ar, new_shape = shp_n_num_n_ar_n_newshp
     xs = [ivy.ones(shape)] * num
@@ -43,11 +43,11 @@ def test_stack_images(shp_n_num_n_ar_n_newshp, dev_str, call):
     "dtype", ['float32'])
 @pytest.mark.parametrize(
     "tensor_fn", [ivy.array, helpers.var_fn])
-def test_bilinear_resample(x_n_warp, dtype, tensor_fn, dev_str, call):
+def test_bilinear_resample(x_n_warp, dtype, tensor_fn, dev, call):
     # smoke test
     x, warp = x_n_warp
-    x = tensor_fn(x, dtype, dev_str)
-    warp = tensor_fn(warp, dtype, dev_str)
+    x = tensor_fn(x, dtype, dev)
+    warp = tensor_fn(warp, dtype, dev)
     ret = ivy.bilinear_resample(x, warp)
     # type test
     assert ivy.is_array(ret)
@@ -72,10 +72,10 @@ def test_bilinear_resample(x_n_warp, dtype, tensor_fn, dev_str, call):
     "dtype", ['float32'])
 @pytest.mark.parametrize(
     "tensor_fn", [ivy.array, helpers.var_fn])
-def test_gradient_image(x_n_dy_n_dx, dtype, tensor_fn, dev_str, call):
+def test_gradient_image(x_n_dy_n_dx, dtype, tensor_fn, dev, call):
     # smoke test
     x, dy_true, dx_true = x_n_dy_n_dx
-    x = tensor_fn(x, dtype, dev_str)
+    x = tensor_fn(x, dtype, dev)
     dy, dx = ivy.gradient_image(x)
     # type test
     assert ivy.is_array(dy)
@@ -103,13 +103,13 @@ def test_gradient_image(x_n_dy_n_dx, dtype, tensor_fn, dev_str, call):
                [[[0, 0, 0, 0], [0, 0, 128, 63]], [[0, 0, 0, 64], [0, 0, 64, 64]]])])
 @pytest.mark.parametrize(
     "tensor_fn", [ivy.array, helpers.var_fn])
-def test_float_img_to_uint8_img(fi_tui, tensor_fn, dev_str, call):
+def test_float_img_to_uint8_img(fi_tui, tensor_fn, dev, call):
     # smoke test
     if call is helpers.tf_graph_call:
         # tensorflow tensors cannot be cast to numpy arrays in graph mode
         pytest.skip()
     float_img, true_uint8_img = fi_tui
-    float_img = tensor_fn(float_img, 'float32', dev_str)
+    float_img = tensor_fn(float_img, 'float32', dev)
     true_uint8_img = np.array(true_uint8_img)
     uint8_img = ivy.float_img_to_uint8_img(float_img)
     # type test
@@ -131,13 +131,13 @@ def test_float_img_to_uint8_img(fi_tui, tensor_fn, dev_str, call):
 @pytest.mark.parametrize(
     "ui_tfi", [([[[0, 0, 0, 0], [0, 0, 128, 63]], [[0, 0, 0, 64], [0, 0, 64, 64]]],
                 [[0., 1.], [2., 3.]])])
-def test_uint8_img_to_float_img(ui_tfi, dev_str, call):
+def test_uint8_img_to_float_img(ui_tfi, dev, call):
     # smoke test
     if call is helpers.tf_graph_call:
         # tensorflow tensors cannot be cast to numpy arrays in graph mode
         pytest.skip()
     uint8_img, true_float_img = ui_tfi
-    uint8_img = ivy.array(uint8_img, 'uint8', dev_str)
+    uint8_img = ivy.array(uint8_img, 'uint8', dev)
     true_float_img = np.array(true_float_img)
     float_img = ivy.uint8_img_to_float_img(uint8_img)
     # type test
@@ -158,7 +158,7 @@ def test_uint8_img_to_float_img(ui_tfi, dev_str, call):
 # random_crop
 @pytest.mark.parametrize(
     "xshp_n_cs", [([2, 5, 6, 3], [2, 2])])
-def test_random_crop(xshp_n_cs, dev_str, call):
+def test_random_crop(xshp_n_cs, dev, call):
     # seed
     ivy.seed(0)
     np.random.seed(0)

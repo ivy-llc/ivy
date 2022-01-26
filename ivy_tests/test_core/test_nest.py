@@ -36,7 +36,7 @@ def _mnai(n, idx, fn):
     "nest", [{'a': [[0], [1]], 'b': {'c': (((2,), (4,)), ((6,), (8,)))}}])
 @pytest.mark.parametrize(
     "index", [('a', 0, 0), ('a', 1, 0), ('b', 'c', 0), ('b', 'c', 1, 0)])
-def test_index_nest(nest, index, dev_str, call):
+def test_index_nest(nest, index, dev, call):
     ret = ivy.index_nest(nest, index)
     true_ret = nest
     for i in index:
@@ -51,7 +51,7 @@ def test_index_nest(nest, index, dev_str, call):
     "index", [('a', 0, 0), ('a', 1, 0), ('b', 'c', 0), ('b', 'c', 1, 0)])
 @pytest.mark.parametrize(
     "value", [1])
-def test_set_nest_at_index(nest, index, value, dev_str, call):
+def test_set_nest_at_index(nest, index, value, dev, call):
     nest_copy = copy.deepcopy(nest)
     ivy.set_nest_at_index(nest, index, value)
     _snai(nest_copy, index, value)
@@ -65,7 +65,7 @@ def test_set_nest_at_index(nest, index, value, dev_str, call):
     "index", [('a', 0, 0), ('a', 1, 0), ('b', 'c', 0, 0, 0), ('b', 'c', 1, 0, 0)])
 @pytest.mark.parametrize(
     "fn", [lambda x: x + 2, lambda x: x**2])
-def test_map_nest_at_index(nest, index, fn, dev_str, call):
+def test_map_nest_at_index(nest, index, fn, dev, call):
     nest_copy = copy.deepcopy(nest)
     ivy.map_nest_at_index(nest, index, fn)
     _mnai(nest_copy, index, fn)
@@ -77,7 +77,7 @@ def test_map_nest_at_index(nest, index, fn, dev_str, call):
     "nest", [{'a': [[0], [1]], 'b': {'c': (((2,), (4,)), ((6,), (8,)))}}])
 @pytest.mark.parametrize(
     "multi_indices", [(('a', 0, 0), ('a', 1, 0)), (('b', 'c', 0), ('b', 'c', 1, 0))])
-def test_multi_index_nest(nest, multi_indices, dev_str, call):
+def test_multi_index_nest(nest, multi_indices, dev, call):
     rets = ivy.multi_index_nest(nest, multi_indices)
     true_rets = list()
     for indices in multi_indices:
@@ -95,7 +95,7 @@ def test_multi_index_nest(nest, multi_indices, dev_str, call):
     "indices", [(('a', 0, 0), ('a', 1, 0)), (('b', 'c', 0), ('b', 'c', 1, 0))])
 @pytest.mark.parametrize(
     "values", [(1, 2)])
-def test_set_nest_at_indices(nest, indices, values, dev_str, call):
+def test_set_nest_at_indices(nest, indices, values, dev, call):
     nest_copy = copy.deepcopy(nest)
     ivy.set_nest_at_indices(nest, indices, values)
 
@@ -114,7 +114,7 @@ def test_set_nest_at_indices(nest, indices, values, dev_str, call):
     "indices", [(('a', 0, 0), ('a', 1, 0)), (('b', 'c', 0, 0, 0), ('b', 'c', 1, 0, 0))])
 @pytest.mark.parametrize(
     "fn", [lambda x: x + 2, lambda x: x**2])
-def test_map_nest_at_indices(nest, indices, fn, dev_str, call):
+def test_map_nest_at_indices(nest, indices, fn, dev, call):
     nest_copy = copy.deepcopy(nest)
     ivy.map_nest_at_indices(nest, indices, fn)
 
@@ -129,7 +129,7 @@ def test_map_nest_at_indices(nest, indices, fn, dev_str, call):
 # nested_indices_where
 @pytest.mark.parametrize(
     "nest", [{'a': [[0], [1]], 'b': {'c': [[[2], [4]], [[6], [8]]]}}])
-def test_nested_indices_where(nest, dev_str, call):
+def test_nested_indices_where(nest, dev, call):
     indices = ivy.nested_indices_where(nest, lambda x: x < 5)
     assert indices[0] == ['a', 0, 0]
     assert indices[1] == ['a', 1, 0]
@@ -140,7 +140,7 @@ def test_nested_indices_where(nest, dev_str, call):
 # nested_indices_where_w_nest_checks
 @pytest.mark.parametrize(
     "nest", [{'a': [[0], [1]], 'b': {'c': [[[2], [4]], [[6], [8]]]}}])
-def test_nested_indices_where_w_nest_checks(nest, dev_str, call):
+def test_nested_indices_where_w_nest_checks(nest, dev, call):
     indices = ivy.nested_indices_where(nest, lambda x: isinstance(x, list) or (isinstance(x, int) and x < 5), True)
     assert indices[0] == ['a', 0, 0]
     assert indices[1] == ['a', 0]
@@ -161,7 +161,7 @@ def test_nested_indices_where_w_nest_checks(nest, dev_str, call):
 # all_nested_indices
 @pytest.mark.parametrize(
     "nest", [{'a': [[0], [1]], 'b': {'c': [[[2], [4]], [[6], [8]]]}}])
-def test_all_nested_indices(nest, dev_str, call):
+def test_all_nested_indices(nest, dev, call):
     indices = ivy.all_nested_indices(nest)
     assert indices[0] == ['a', 0, 0]
     assert indices[1] == ['a', 1, 0]
@@ -174,7 +174,7 @@ def test_all_nested_indices(nest, dev_str, call):
 # all_nested_indices_w_nest_checks
 @pytest.mark.parametrize(
     "nest", [{'a': [[0], [1]], 'b': {'c': [[[2], [4]], [[6], [8]]]}}])
-def test_all_nested_indices_w_nest_checks(nest, dev_str, call):
+def test_all_nested_indices_w_nest_checks(nest, dev, call):
     indices = ivy.all_nested_indices(nest, True)
     assert indices[0] == ['a', 0, 0]
     assert indices[1] == ['a', 0]
@@ -196,7 +196,7 @@ def test_all_nested_indices_w_nest_checks(nest, dev_str, call):
 
 
 # copy_nest
-def test_copy_nest(dev_str, call):
+def test_copy_nest(dev, call):
     nest = {'a': [ivy.array([0]), ivy.array([1])], 'b': {'c': [ivy.array([[2], [4]]), ivy.array([[6], [8]])]}}
     nest_copy = ivy.copy_nest(nest)
 

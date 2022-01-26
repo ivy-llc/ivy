@@ -26,17 +26,17 @@ from ivy.core.container import Container
     "dtype", ['float32'])
 @pytest.mark.parametrize(
     "tensor_fn", [ivy.array, helpers.var_fn])
-def test_layer_norm_layer(x_n_ns_n_target, with_v, dtype, tensor_fn, dev_str, compile_graph, call):
+def test_layer_norm_layer(x_n_ns_n_target, with_v, dtype, tensor_fn, dev, compile_graph, call):
     # smoke test
     x, normalized_shape, target = x_n_ns_n_target
-    x = tensor_fn(x, dtype, dev_str)
-    target = tensor_fn(target, dtype, dev_str)
+    x = tensor_fn(x, dtype, dev)
+    target = tensor_fn(target, dtype, dev)
     if with_v:
         v = Container({'scale': ivy.variable(ivy.ones(normalized_shape)),
                        'offset': ivy.variable(ivy.zeros(normalized_shape))})
     else:
         v = None
-    norm_layer = ivy.LayerNorm(normalized_shape, dev_str=dev_str, v=v)
+    norm_layer = ivy.LayerNorm(normalized_shape, dev=dev, v=v)
     # compile if this mode is set
     if compile_graph and call is helpers.torch_call:
         # Currently only PyTorch is supported for ivy compilation

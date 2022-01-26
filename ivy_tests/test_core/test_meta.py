@@ -33,7 +33,7 @@ import ivy_tests.helpers as helpers
     "num_tasks", [1, 2])
 @pytest.mark.parametrize(
     "return_inner_v", ['first', 'all', False])
-def test_fomaml_step_unique_vars(dev_str, call, inner_grad_steps, with_outer_cost_fn, average_across_steps, batched,
+def test_fomaml_step_unique_vars(dev, call, inner_grad_steps, with_outer_cost_fn, average_across_steps, batched,
                                  stop_gradients, num_tasks, return_inner_v):
     if call is helpers.np_call:
         # Numpy does not support gradients, and jax does not support gradients on custom nested classes
@@ -48,12 +48,12 @@ def test_fomaml_step_unique_vars(dev_str, call, inner_grad_steps, with_outer_cos
 
     # create variables
     if batched:
-        variables = ivy.Container({'latent': ivy.variable(ivy.repeat(ivy.array([[0.]], dev_str=dev_str), num_tasks, 0)),
+        variables = ivy.Container({'latent': ivy.variable(ivy.repeat(ivy.array([[0.]], dev=dev), num_tasks, 0)),
                                    'weight': ivy.variable(
-                                       ivy.repeat(ivy.array([[1.]], dev_str=dev_str), num_tasks, 0))})
+                                       ivy.repeat(ivy.array([[1.]], dev=dev), num_tasks, 0))})
     else:
-        variables = ivy.Container({'latent': ivy.variable(ivy.array([0.], dev_str=dev_str)),
-                                   'weight': ivy.variable(ivy.array([1.], dev_str=dev_str))})
+        variables = ivy.Container({'latent': ivy.variable(ivy.array([0.], dev=dev)),
+                                   'weight': ivy.variable(ivy.array([1.], dev=dev))})
 
     # batch
     batch = ivy.Container({'x': ivy.arange(num_tasks + 1, 1, dtype='float32')})
@@ -137,7 +137,7 @@ def test_fomaml_step_unique_vars(dev_str, call, inner_grad_steps, with_outer_cos
     "num_tasks", [1, 2])
 @pytest.mark.parametrize(
     "return_inner_v", ['first', 'all', False])
-def test_fomaml_step_shared_vars(dev_str, call, inner_grad_steps, with_outer_cost_fn, average_across_steps, batched,
+def test_fomaml_step_shared_vars(dev, call, inner_grad_steps, with_outer_cost_fn, average_across_steps, batched,
                                  stop_gradients, num_tasks, return_inner_v):
     if call in [helpers.np_call, helpers.mx_call]:
         # Numpy does not support gradients, jax does not support gradients on custom nested classes,
@@ -154,9 +154,9 @@ def test_fomaml_step_shared_vars(dev_str, call, inner_grad_steps, with_outer_cos
     # create variable
     if batched:
         variables = ivy.Container(
-            {'latent': ivy.variable(ivy.repeat(ivy.array([[1.]], dev_str=dev_str), num_tasks, 0))})
+            {'latent': ivy.variable(ivy.repeat(ivy.array([[1.]], dev=dev), num_tasks, 0))})
     else:
-        variables = ivy.Container({'latent': ivy.variable(ivy.array([1.], dev_str=dev_str))})
+        variables = ivy.Container({'latent': ivy.variable(ivy.array([1.], dev=dev))})
 
     # batch
     batch = ivy.Container({'x': ivy.arange(num_tasks + 1, 1, dtype='float32')})
@@ -258,7 +258,7 @@ def test_fomaml_step_shared_vars(dev_str, call, inner_grad_steps, with_outer_cos
     "num_tasks", [1, 2])
 @pytest.mark.parametrize(
     "return_inner_v", ['first', 'all', False])
-def test_fomaml_step_overlapping_vars(dev_str, call, inner_grad_steps, with_outer_cost_fn, average_across_steps,
+def test_fomaml_step_overlapping_vars(dev, call, inner_grad_steps, with_outer_cost_fn, average_across_steps,
                                       batched, stop_gradients, num_tasks, return_inner_v):
     if call in [helpers.np_call, helpers.mx_call]:
         # Numpy does not support gradients, jax does not support gradients on custom nested classes,
@@ -274,12 +274,12 @@ def test_fomaml_step_overlapping_vars(dev_str, call, inner_grad_steps, with_oute
 
     # create variables
     if batched:
-        variables = ivy.Container({'latent': ivy.variable(ivy.repeat(ivy.array([[0.]], dev_str=dev_str), num_tasks, 0)),
+        variables = ivy.Container({'latent': ivy.variable(ivy.repeat(ivy.array([[0.]], dev=dev), num_tasks, 0)),
                                    'weight': ivy.variable(
-                                       ivy.repeat(ivy.array([[1.]], dev_str=dev_str), num_tasks, 0))})
+                                       ivy.repeat(ivy.array([[1.]], dev=dev), num_tasks, 0))})
     else:
-        variables = ivy.Container({'latent': ivy.variable(ivy.array([0.], dev_str=dev_str)),
-                                   'weight': ivy.variable(ivy.array([1.], dev_str=dev_str))})
+        variables = ivy.Container({'latent': ivy.variable(ivy.array([0.], dev=dev)),
+                                   'weight': ivy.variable(ivy.array([1.], dev=dev))})
 
     # batch
     batch = ivy.Container({'x': ivy.arange(num_tasks + 1, 1, dtype='float32')})
@@ -362,7 +362,7 @@ def test_fomaml_step_overlapping_vars(dev_str, call, inner_grad_steps, with_oute
     "num_tasks", [1, 2])
 @pytest.mark.parametrize(
     "return_inner_v", ['first', 'all', False])
-def test_reptile_step(dev_str, call, inner_grad_steps, batched, stop_gradients, num_tasks, return_inner_v):
+def test_reptile_step(dev, call, inner_grad_steps, batched, stop_gradients, num_tasks, return_inner_v):
     if call in [helpers.np_call, helpers.mx_call]:
         # Numpy does not support gradients, jax does not support gradients on custom nested classes,
         # and mxnet does not support only_inputs argument to mx.autograd.grad
@@ -378,9 +378,9 @@ def test_reptile_step(dev_str, call, inner_grad_steps, batched, stop_gradients, 
     # create variable
     if batched:
         variables = ivy.Container(
-            {'latent': ivy.variable(ivy.repeat(ivy.array([[1.]], dev_str=dev_str), num_tasks, 0))})
+            {'latent': ivy.variable(ivy.repeat(ivy.array([[1.]], dev=dev), num_tasks, 0))})
     else:
-        variables = ivy.Container({'latent': ivy.variable(ivy.array([1.], dev_str=dev_str))})
+        variables = ivy.Container({'latent': ivy.variable(ivy.array([1.], dev=dev))})
 
     # batch
     batch = ivy.Container({'x': ivy.arange(num_tasks + 1, 1, dtype='float32')})
@@ -463,7 +463,7 @@ def test_reptile_step(dev_str, call, inner_grad_steps, batched, stop_gradients, 
     "num_tasks", [1, 2])
 @pytest.mark.parametrize(
     "return_inner_v", ['first', 'all', False])
-def test_maml_step_unique_vars(dev_str, call, inner_grad_steps, with_outer_cost_fn, average_across_steps, batched,
+def test_maml_step_unique_vars(dev, call, inner_grad_steps, with_outer_cost_fn, average_across_steps, batched,
                                stop_gradients, num_tasks, return_inner_v):
     if call in [helpers.np_call, helpers.mx_call]:
         # Numpy does not support gradients, jax does not support gradients on custom nested classes,
@@ -483,12 +483,12 @@ def test_maml_step_unique_vars(dev_str, call, inner_grad_steps, with_outer_cost_
 
     # create variables
     if batched:
-        variables = ivy.Container({'latent': ivy.variable(ivy.repeat(ivy.array([[0.]], dev_str=dev_str), num_tasks, 0)),
+        variables = ivy.Container({'latent': ivy.variable(ivy.repeat(ivy.array([[0.]], dev=dev), num_tasks, 0)),
                                    'weight': ivy.variable(
-                                       ivy.repeat(ivy.array([[1.]], dev_str=dev_str), num_tasks, 0))})
+                                       ivy.repeat(ivy.array([[1.]], dev=dev), num_tasks, 0))})
     else:
-        variables = ivy.Container({'latent': ivy.variable(ivy.array([0.], dev_str=dev_str)),
-                                   'weight': ivy.variable(ivy.array([1.], dev_str=dev_str))})
+        variables = ivy.Container({'latent': ivy.variable(ivy.array([0.], dev=dev)),
+                                   'weight': ivy.variable(ivy.array([1.], dev=dev))})
 
     # batch
     batch = ivy.Container({'x': ivy.arange(num_tasks + 1, 1, dtype='float32')})
@@ -571,7 +571,7 @@ def test_maml_step_unique_vars(dev_str, call, inner_grad_steps, with_outer_cost_
     "num_tasks", [1, 2])
 @pytest.mark.parametrize(
     "return_inner_v", ['first', 'all', False])
-def test_maml_step_shared_vars(dev_str, call, inner_grad_steps, with_outer_cost_fn, average_across_steps, batched,
+def test_maml_step_shared_vars(dev, call, inner_grad_steps, with_outer_cost_fn, average_across_steps, batched,
                                stop_gradients, num_tasks, return_inner_v):
     if call in [helpers.np_call, helpers.mx_call]:
         # Numpy does not support gradients, jax does not support gradients on custom nested classes,
@@ -592,9 +592,9 @@ def test_maml_step_shared_vars(dev_str, call, inner_grad_steps, with_outer_cost_
     # create variable
     if batched:
         variables = ivy.Container(
-            {'latent': ivy.variable(ivy.repeat(ivy.array([[1.]], dev_str=dev_str), num_tasks, 0))})
+            {'latent': ivy.variable(ivy.repeat(ivy.array([[1.]], dev=dev), num_tasks, 0))})
     else:
-        variables = ivy.Container({'latent': ivy.variable(ivy.array([1.], dev_str=dev_str))})
+        variables = ivy.Container({'latent': ivy.variable(ivy.array([1.], dev=dev))})
 
     # batch
     batch = ivy.Container({'x': ivy.arange(num_tasks + 1, 1, dtype='float32')})
@@ -713,7 +713,7 @@ def test_maml_step_shared_vars(dev_str, call, inner_grad_steps, with_outer_cost_
     "num_tasks", [1, 2])
 @pytest.mark.parametrize(
     "return_inner_v", ['first', 'all', False])
-def test_maml_step_overlapping_vars(dev_str, call, inner_grad_steps, with_outer_cost_fn, average_across_steps, batched,
+def test_maml_step_overlapping_vars(dev, call, inner_grad_steps, with_outer_cost_fn, average_across_steps, batched,
                                     stop_gradients, num_tasks, return_inner_v):
     if call in [helpers.np_call, helpers.mx_call]:
         # Numpy does not support gradients, jax does not support gradients on custom nested classes,
@@ -733,12 +733,12 @@ def test_maml_step_overlapping_vars(dev_str, call, inner_grad_steps, with_outer_
 
     # create variables
     if batched:
-        variables = ivy.Container({'latent': ivy.variable(ivy.repeat(ivy.array([[0.]], dev_str=dev_str), num_tasks, 0)),
+        variables = ivy.Container({'latent': ivy.variable(ivy.repeat(ivy.array([[0.]], dev=dev), num_tasks, 0)),
                                    'weight': ivy.variable(
-                                       ivy.repeat(ivy.array([[1.]], dev_str=dev_str), num_tasks, 0))})
+                                       ivy.repeat(ivy.array([[1.]], dev=dev), num_tasks, 0))})
     else:
-        variables = ivy.Container({'latent': ivy.variable(ivy.array([0.], dev_str=dev_str)),
-                                   'weight': ivy.variable(ivy.array([1.], dev_str=dev_str))})
+        variables = ivy.Container({'latent': ivy.variable(ivy.array([0.], dev=dev)),
+                                   'weight': ivy.variable(ivy.array([1.], dev=dev))})
 
     # batch
     batch = ivy.Container({'x': ivy.arange(num_tasks + 1, 1, dtype='float32')})
