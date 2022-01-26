@@ -16,8 +16,11 @@ def _same_device(dev_a, dev_b):
     return '/' + ':'.join(dev_a[1:].split(':')[-2:]) == '/' + ':'.join(dev_b[1:].split(':')[-2:])
 
 
-dev = lambda x: x.device
-dev.__name__ = 'dev'
+def dev(x, as_str=False):
+    dv = x.device
+    if as_str:
+        return dev_to_str(dv)
+    return dv
 
 
 def to_dev(x, dev=None):
@@ -49,8 +52,6 @@ def str_to_dev(dev):
 
 
 clear_mem_on_dev = lambda dev: None
-dev = lambda x: dev_to_str(dev(x))
-dev.__name__ = 'dev'
 _dev_callable = dev
 gpu_is_available = lambda: len(_tf.config.list_physical_devices('GPU')) > 0
 num_gpus = lambda: len(_tf.config.list_physical_devices('GPU'))

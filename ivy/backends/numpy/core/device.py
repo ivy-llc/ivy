@@ -10,11 +10,9 @@ import time
 from ivy.core.device import Profiler as BaseProfiler
 
 
-dev = lambda x: 'cpu'
+dev = lambda x, as_str=False: 'cpu'
 dev.__name__ = 'dev'
 to_dev = lambda x, dev=None: x
-dev = lambda x: 'cpu'
-dev.__name__ = 'dev'
 _dev_callable = dev
 dev_to_str = lambda dev_in: 'cpu'
 str_to_dev = lambda dev: 'cpu'
