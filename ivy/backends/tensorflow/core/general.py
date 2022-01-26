@@ -395,9 +395,13 @@ def linear_resample(x, num_samples, axis=-1):
     return _tfp.math.interp_regular_1d_grid(x_coords, 0, num_vals-1, x, axis=axis)
 
 
-dtype = lambda x: x.dtype
-dtype.__name__ = 'dtype'
-dtype = lambda x: DTYPE_DICT[x.dtype]
+def dtype(x, as_str=False):
+    dt = x.dtype
+    if as_str:
+        return dtype_to_str(dt)
+    return dt
+
+
 dtype_to_str = lambda dtype_in: DTYPE_DICT[dtype_in]
 compile = lambda fn, dynamic=True, example_inputs=None, static_argnums=None, static_argnames=None: _tf.function(fn)
 current_framework_str = lambda: 'tensorflow'
