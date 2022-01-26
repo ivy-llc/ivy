@@ -97,32 +97,20 @@ def print_all_arrays_on_dev(dev):
 
 # Retreival #
 
-def dev(x: Union[ivy.Array, ivy.NativeArray], f: ivy.Framework = None)\
+def dev(x: Union[ivy.Array, ivy.NativeArray], as_str: bool = False, f: ivy.Framework = None)\
         -> ivy.Device:
     """
     Get the native device handle for input array x.
 
     :param x: Tensor for which to get the device handle.
     :type x: array
+    :param as_str: Whether or not to return the dev in string format. Default is False.
+    :type as_str: bool, optional
     :param f: Machine learning framework. Inferred from inputs if None.
     :type f: ml_framework, optional
     :return: Device handle for the array, in native framework format.
     """
-    return _cur_framework(x, f=f).dev(x)
-
-
-def dev(x: Union[ivy.Array, ivy.NativeArray], f: ivy.Framework = None)\
-        -> str:
-    """
-    Get the device string for input array x.
-
-    :param x: Tensor for which to get the device string.
-    :type x: array
-    :param f: Machine learning framework. Inferred from inputs if None.
-    :type f: ml_framework, optional
-    :return: Device string for the array, e.g. 'cuda:0', 'cuda:1', 'cpu' etc..
-    """
-    return _cur_framework(x, f=f).dev(x)
+    return _cur_framework(x, f=f).dev(x, as_str)
 
 
 # Conversions #

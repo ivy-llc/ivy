@@ -12,8 +12,11 @@ from mxnet import profiler as _profiler
 from ivy.core.device import Profiler as BaseProfiler
 
 
-dev = lambda x: x.context
-dev.__name__ = 'dev'
+def dev(x, as_str=False):
+    dv = x.context
+    if as_str:
+        return dev_to_str(dv)
+    return dv
 
 
 def to_dev(x, dev=None):
@@ -40,8 +43,6 @@ def str_to_dev(dev):
 
 
 clear_mem_on_dev = lambda dev: None
-dev = lambda x: dev_to_str(dev(x))
-dev.__name__ = 'dev'
 _callable_dev = dev
 gpu_is_available = lambda: _mx.context.num_gpus() > 0
 num_gpus = lambda: _mx.context.num_gpus()
