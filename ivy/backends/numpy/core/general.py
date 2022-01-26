@@ -50,10 +50,10 @@ def _flat_array_to_1_dim_array(x):
 # ----#
 
 # noinspection PyShadowingNames
-def array(object_in, dtype_str=None, dev_str=None):
-    if dtype_str:
-        dtype_str = 'bool_' if dtype_str == 'bool' else dtype_str
-        dtype = _np.__dict__[dtype_str]
+def array(object_in, dtype=None, dev_str=None):
+    if dtype:
+        dtype = 'bool_' if dtype == 'bool' else dtype
+        dtype = _np.__dict__[dtype]
     else:
         dtype = None
     return _to_dev(_np.array(object_in, dtype=dtype), default_device(dev_str))
@@ -103,17 +103,17 @@ def argmin(x, axis=0):
 argsort = lambda x, axis=-1: _np.asarray(_np.argsort(x, axis))
 
 
-def cast(x, dtype_str):
-    dtype_str = 'bool_' if dtype_str == 'bool' else dtype_str
-    dtype_val = _np.__dict__[dtype_str]
+def cast(x, dtype):
+    dtype = 'bool_' if dtype == 'bool' else dtype
+    dtype_val = _np.__dict__[dtype]
     return x.astype(dtype_val)
 
 
 # noinspection PyShadowingNames
-def arange(stop, start=0, step=1, dtype_str=None, dev_str=None):
-    if dtype_str:
-        dtype_str = 'bool_' if dtype_str == 'bool' else dtype_str
-        dtype = _np.__dict__[dtype_str]
+def arange(stop, start=0, step=1, dtype=None, dev_str=None):
+    if dtype:
+        dtype = 'bool_' if dtype == 'bool' else dtype
+        dtype = _np.__dict__[dtype]
     else:
         dtype = None
     res = _to_dev(_np.arange(start, stop, step=step, dtype=dtype), default_device(dev_str))
@@ -226,34 +226,34 @@ def squeeze(x, axis=None):
 
 
 # noinspection PyShadowingNames
-def zeros(shape, dtype_str='float32', dev_str=None):
-    dtype_str = 'bool_' if dtype_str == 'bool' else dtype_str
-    dtype = _np.__dict__[dtype_str]
+def zeros(shape, dtype='float32', dev_str=None):
+    dtype = 'bool_' if dtype == 'bool' else dtype
+    dtype = _np.__dict__[dtype]
     return _to_dev(_np.zeros(shape, dtype), default_device(dev_str))
 
 
 # noinspection PyShadowingNames
-def zeros_like(x, dtype_str=None, dev_str=None):
-    if dtype_str:
-        dtype_str = 'bool_' if dtype_str == 'bool' else dtype_str
-        dtype = _np.__dict__[dtype_str]
+def zeros_like(x, dtype=None, dev_str=None):
+    if dtype:
+        dtype = 'bool_' if dtype == 'bool' else dtype
+        dtype = _np.__dict__[dtype]
     else:
         dtype = x.dtype
     return _to_dev(_np.zeros_like(x, dtype=dtype), default_device(dev_str))
 
 
 # noinspection PyShadowingNames
-def ones(shape, dtype_str='float32', dev_str=None):
-    dtype_str = 'bool_' if dtype_str == 'bool' else dtype_str
-    dtype = _np.__dict__[dtype_str]
+def ones(shape, dtype='float32', dev_str=None):
+    dtype = 'bool_' if dtype == 'bool' else dtype
+    dtype = _np.__dict__[dtype]
     return _to_dev(_np.ones(shape, dtype), default_device(dev_str))
 
 
 # noinspection PyShadowingNames
-def ones_like(x, dtype_str=None, dev_str=None):
-    if dtype_str:
-        dtype_str = 'bool_' if dtype_str == 'bool' else dtype_str
-        dtype = _np.__dict__[dtype_str]
+def ones_like(x, dtype=None, dev_str=None):
+    if dtype:
+        dtype = 'bool_' if dtype == 'bool' else dtype
+        dtype = _np.__dict__[dtype]
     else:
         dtype = x.dtype
     return _to_dev(_np.ones_like(x, dtype=dtype), default_device(dev_str))
@@ -281,9 +281,9 @@ def cumprod(x, axis=0, exclusive=False):
 
 
 # noinspection PyShadowingNames
-def identity(n, dtype_str='float32', batch_shape=None, dev_str=None):
-    dtype_str = 'bool_' if dtype_str == 'bool' else dtype_str
-    dtype = _np.__dict__[dtype_str]
+def identity(n, dtype='float32', batch_shape=None, dev_str=None):
+    dtype = 'bool_' if dtype == 'bool' else dtype
+    dtype = _np.__dict__[dtype]
     mat = _np.identity(n, dtype=dtype)
     if batch_shape is None:
         return_mat = mat
@@ -394,7 +394,7 @@ def linear_resample(x, num_samples, axis=-1):
 
 dtype = lambda x: x.dtype
 dtype.__name__ = 'dtype'
-dtype_str = lambda x: DTYPE_DICT[x.dtype]
+dtype = lambda x: DTYPE_DICT[x.dtype]
 dtype_to_str = lambda dtype_in: DTYPE_DICT[dtype_in]
 
 

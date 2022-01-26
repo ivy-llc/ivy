@@ -40,14 +40,14 @@ def test_stack_images(shp_n_num_n_ar_n_newshp, dev_str, call):
                  ([[[[0.], [1.]], [[2.], [3.]]]], [[[0., 1.], [0.5, 0.5], [0.5, 1.], [1., 0.5]]]),
                  ([[[[[0.], [1.]], [[2.], [3.]]]]], [[[[0., 1.], [0.5, 0.5], [0.5, 1.], [1., 0.5]]]])])
 @pytest.mark.parametrize(
-    "dtype_str", ['float32'])
+    "dtype", ['float32'])
 @pytest.mark.parametrize(
     "tensor_fn", [ivy.array, helpers.var_fn])
-def test_bilinear_resample(x_n_warp, dtype_str, tensor_fn, dev_str, call):
+def test_bilinear_resample(x_n_warp, dtype, tensor_fn, dev_str, call):
     # smoke test
     x, warp = x_n_warp
-    x = tensor_fn(x, dtype_str, dev_str)
-    warp = tensor_fn(warp, dtype_str, dev_str)
+    x = tensor_fn(x, dtype, dev_str)
+    warp = tensor_fn(warp, dtype, dev_str)
     ret = ivy.bilinear_resample(x, warp)
     # type test
     assert ivy.is_array(ret)
@@ -69,13 +69,13 @@ def test_bilinear_resample(x_n_warp, dtype_str, tensor_fn, dev_str, call):
                      [[[[5.], [3.], [1.]], [[1.], [4.], [4.]], [[0.], [0.], [0.]]]],
                      [[[[1.], [1.], [0.]], [[-1.], [-1.], [0.]], [[2.], [-1.], [0.]]]])])
 @pytest.mark.parametrize(
-    "dtype_str", ['float32'])
+    "dtype", ['float32'])
 @pytest.mark.parametrize(
     "tensor_fn", [ivy.array, helpers.var_fn])
-def test_gradient_image(x_n_dy_n_dx, dtype_str, tensor_fn, dev_str, call):
+def test_gradient_image(x_n_dy_n_dx, dtype, tensor_fn, dev_str, call):
     # smoke test
     x, dy_true, dx_true = x_n_dy_n_dx
-    x = tensor_fn(x, dtype_str, dev_str)
+    x = tensor_fn(x, dtype, dev_str)
     dy, dx = ivy.gradient_image(x)
     # type test
     assert ivy.is_array(dy)
@@ -85,8 +85,8 @@ def test_gradient_image(x_n_dy_n_dx, dtype_str, tensor_fn, dev_str, call):
     assert dx.shape == x.shape
     # value test
     dy_np, dx_np = call(ivy.gradient_image, x)
-    dy_true = ivy.backends.numpy.array(dy_true, dtype_str)
-    dx_true = ivy.backends.numpy.array(dx_true, dtype_str)
+    dy_true = ivy.backends.numpy.array(dy_true, dtype)
+    dx_true = ivy.backends.numpy.array(dx_true, dtype)
     assert np.allclose(dy_np, dy_true)
     assert np.allclose(dx_np, dx_true)
     # compilation test

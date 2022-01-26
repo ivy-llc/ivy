@@ -22,8 +22,8 @@ from ivy.core.container import Container
 @pytest.mark.parametrize(
     "inplace", [True, False])
 @pytest.mark.parametrize(
-    "dtype_str", ['float32'])
-def test_sgd_optimizer(bs_ic_oc_target, with_v, inplace, dtype_str, dev_str, compile_graph, call):
+    "dtype", ['float32'])
+def test_sgd_optimizer(bs_ic_oc_target, with_v, inplace, dtype, dev_str, compile_graph, call):
     # smoke test
     if call is helpers.np_call:
         # NumPy does not support gradients
@@ -93,8 +93,8 @@ def test_sgd_optimizer(bs_ic_oc_target, with_v, inplace, dtype_str, dev_str, com
 @pytest.mark.parametrize(
     "inplace", [True, False])
 @pytest.mark.parametrize(
-    "dtype_str", ['float32'])
-def test_lars_optimizer(bs_ic_oc_target, with_v, inplace, dtype_str, dev_str, compile_graph, call):
+    "dtype", ['float32'])
+def test_lars_optimizer(bs_ic_oc_target, with_v, inplace, dtype, dev_str, compile_graph, call):
     # smoke test
     if call is helpers.np_call:
         # NumPy does not support gradients
@@ -164,8 +164,8 @@ def test_lars_optimizer(bs_ic_oc_target, with_v, inplace, dtype_str, dev_str, co
 @pytest.mark.parametrize(
     "inplace", [True, False])
 @pytest.mark.parametrize(
-    "dtype_str", ['float32'])
-def test_adam_optimizer(bs_ic_oc_target, with_v, inplace, dtype_str, dev_str, compile_graph, call):
+    "dtype", ['float32'])
+def test_adam_optimizer(bs_ic_oc_target, with_v, inplace, dtype, dev_str, compile_graph, call):
     # smoke test
     if call is helpers.np_call:
         # NumPy does not support gradients
@@ -237,8 +237,8 @@ def test_adam_optimizer(bs_ic_oc_target, with_v, inplace, dtype_str, dev_str, co
 @pytest.mark.parametrize(
     "inplace", [True, False])
 @pytest.mark.parametrize(
-    "dtype_str", ['float32'])
-def test_lamb_optimizer(bs_ic_oc_target, with_v, inplace, dtype_str, dev_str, compile_graph, call):
+    "dtype", ['float32'])
+def test_lamb_optimizer(bs_ic_oc_target, with_v, inplace, dtype, dev_str, compile_graph, call):
     # smoke test
     if call is helpers.np_call:
         # NumPy does not support gradients

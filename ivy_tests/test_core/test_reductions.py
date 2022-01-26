@@ -20,12 +20,12 @@ import ivy_tests.helpers as helpers
 @pytest.mark.parametrize(
     "kd", [True, False])
 @pytest.mark.parametrize(
-    "dtype_str", ['float32'])
+    "dtype", ['float32'])
 @pytest.mark.parametrize(
     "tensor_fn", [ivy.array, helpers.var_fn])
-def test_reduce_sum(x, axis, kd, dtype_str, tensor_fn, dev_str, call):
+def test_reduce_sum(x, axis, kd, dtype, tensor_fn, dev_str, call):
     # smoke test
-    x = tensor_fn(x, dtype_str, dev_str)
+    x = tensor_fn(x, dtype, dev_str)
     ret = ivy.reduce_sum(x, axis, kd)
     # type test
     assert ivy.is_array(ret)
@@ -57,12 +57,12 @@ def test_reduce_sum(x, axis, kd, dtype_str, tensor_fn, dev_str, call):
 @pytest.mark.parametrize(
     "kd", [True, False])
 @pytest.mark.parametrize(
-    "dtype_str", ['float32'])
+    "dtype", ['float32'])
 @pytest.mark.parametrize(
     "tensor_fn", [ivy.array, helpers.var_fn])
-def test_reduce_prod(x, axis, kd, dtype_str, tensor_fn, dev_str, call):
+def test_reduce_prod(x, axis, kd, dtype, tensor_fn, dev_str, call):
     # smoke test
-    x = tensor_fn(x, dtype_str, dev_str)
+    x = tensor_fn(x, dtype, dev_str)
     ret = ivy.reduce_prod(x, axis, kd)
     # type test
     assert ivy.is_array(ret)
@@ -94,12 +94,12 @@ def test_reduce_prod(x, axis, kd, dtype_str, tensor_fn, dev_str, call):
 @pytest.mark.parametrize(
     "kd", [True, False])
 @pytest.mark.parametrize(
-    "dtype_str", ['float32'])
+    "dtype", ['float32'])
 @pytest.mark.parametrize(
     "tensor_fn", [ivy.array, helpers.var_fn])
-def test_reduce_mean(x, axis, kd, dtype_str, tensor_fn, dev_str, call):
+def test_reduce_mean(x, axis, kd, dtype, tensor_fn, dev_str, call):
     # smoke test
-    x = tensor_fn(x, dtype_str, dev_str)
+    x = tensor_fn(x, dtype, dev_str)
     ret = ivy.reduce_mean(x, axis, kd)
     # type test
     assert ivy.is_array(ret)
@@ -131,12 +131,12 @@ def test_reduce_mean(x, axis, kd, dtype_str, tensor_fn, dev_str, call):
 @pytest.mark.parametrize(
     "kd", [True, False])
 @pytest.mark.parametrize(
-    "dtype_str", ['float32'])
+    "dtype", ['float32'])
 @pytest.mark.parametrize(
     "tensor_fn", [ivy.array, helpers.var_fn])
-def test_reduce_var(x, axis, kd, dtype_str, tensor_fn, dev_str, call):
+def test_reduce_var(x, axis, kd, dtype, tensor_fn, dev_str, call):
     # smoke test
-    x = tensor_fn(x, dtype_str, dev_str)
+    x = tensor_fn(x, dtype, dev_str)
     ret = ivy.reduce_var(x, axis, kd)
     # type test
     assert ivy.is_array(ret)
@@ -168,12 +168,12 @@ def test_reduce_var(x, axis, kd, dtype_str, tensor_fn, dev_str, call):
 @pytest.mark.parametrize(
     "kd", [True, False])
 @pytest.mark.parametrize(
-    "dtype_str", ['float32'])
+    "dtype", ['float32'])
 @pytest.mark.parametrize(
     "tensor_fn", [ivy.array, helpers.var_fn])
-def test_reduce_std(x, axis, kd, dtype_str, tensor_fn, dev_str, call):
+def test_reduce_std(x, axis, kd, dtype, tensor_fn, dev_str, call):
     # smoke test
-    x = tensor_fn(x, dtype_str, dev_str)
+    x = tensor_fn(x, dtype, dev_str)
     ret = ivy.reduce_std(x, axis, kd)
     # type test
     assert ivy.is_array(ret)
@@ -208,12 +208,12 @@ def test_reduce_std(x, axis, kd, dtype_str, tensor_fn, dev_str, call):
 @pytest.mark.parametrize(
     "kd", [True, False])
 @pytest.mark.parametrize(
-    "dtype_str", ['float32'])
+    "dtype", ['float32'])
 @pytest.mark.parametrize(
     "tensor_fn", [ivy.array, helpers.var_fn])
-def test_reduce_min(x, axis, kd, dtype_str, tensor_fn, dev_str, call):
+def test_reduce_min(x, axis, kd, dtype, tensor_fn, dev_str, call):
     # smoke test
-    x = tensor_fn(x, dtype_str, dev_str)
+    x = tensor_fn(x, dtype, dev_str)
     ret = ivy.reduce_min(x, axis, kd)
     # type test
     assert ivy.is_array(ret)
@@ -245,12 +245,12 @@ def test_reduce_min(x, axis, kd, dtype_str, tensor_fn, dev_str, call):
 @pytest.mark.parametrize(
     "kd", [True, False])
 @pytest.mark.parametrize(
-    "dtype_str", ['float32'])
+    "dtype", ['float32'])
 @pytest.mark.parametrize(
     "tensor_fn", [ivy.array, helpers.var_fn])
-def test_reduce_max(x, axis, kd, dtype_str, tensor_fn, dev_str, call):
+def test_reduce_max(x, axis, kd, dtype, tensor_fn, dev_str, call):
     # smoke test
-    x = tensor_fn(x, dtype_str, dev_str)
+    x = tensor_fn(x, dtype, dev_str)
     ret = ivy.reduce_max(x, axis, kd)
     # type test
     assert ivy.is_array(ret)
@@ -280,13 +280,13 @@ def test_reduce_max(x, axis, kd, dtype_str, tensor_fn, dev_str, call):
                       ("ii->i", (np.arange(25).reshape(5, 5),), (5,)),
                       ("ij,j", (np.arange(25).reshape(5, 5), np.arange(5)), (5,))])
 @pytest.mark.parametrize(
-    "dtype_str", ['float32'])
+    "dtype", ['float32'])
 @pytest.mark.parametrize(
     "tensor_fn", [ivy.array, helpers.var_fn])
-def test_einsum(eq_n_op_n_shp, dtype_str, tensor_fn, dev_str, call):
+def test_einsum(eq_n_op_n_shp, dtype, tensor_fn, dev_str, call):
     # smoke test
     eq, operands, true_shape = eq_n_op_n_shp
-    operands = [tensor_fn(op, dtype_str, dev_str) for op in operands]
+    operands = [tensor_fn(op, dtype, dev_str) for op in operands]
     ret = ivy.einsum(eq, *operands)
     # type test
     assert ivy.is_array(ret)
