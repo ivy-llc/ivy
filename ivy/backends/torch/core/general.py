@@ -622,20 +622,11 @@ def linear_resample(x, num_samples: int, axis: int = -1):
     return ret
 
 
-def dtype(x):
-    return x.dtype
-
-
-def dtype(x):
-    return {_torch.bool: 'bool',
-            _torch.int8: 'int8',
-            _torch.uint8: 'uint8',
-            _torch.int16: 'int16',
-            _torch.int32: 'int32',
-            _torch.int64: 'int64',
-            _torch.float16: 'float16',
-            _torch.float32: 'float32',
-            _torch.float64: 'float64'}[x.dtype]
+def dtype(x, as_str=False):
+    dt = x.dtype
+    if as_str:
+        return dtype_to_str(dt)
+    return dt
 
 
 def dtype_to_str(dtype_in):

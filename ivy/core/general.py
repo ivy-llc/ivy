@@ -1366,18 +1366,20 @@ def match_kwargs(kwargs, *receivers, allow_duplicates=False):
     return split_kwargs
 
 
-def dtype(x: Union[ivy.Array, ivy.NativeArray], f: ivy.Framework = None)\
+def dtype(x: Union[ivy.Array, ivy.NativeArray], as_str: bool = False, f: ivy.Framework = None)\
         -> ivy.Dtype:
     """
     Get the data type for input array x.
 
     :param x: Tensor for which to get the data type.
     :type x: array
+    :param as_str: Whether or not to return the dtype is string format. Default is False.
+    :type as_str: bool, optional
     :param f: Machine learning framework. Inferred from inputs if None.
     :type f: ml_framework, optional
     :return: Data type of the array
     """
-    return _cur_framework(x, f=f).dtype(x)
+    return _cur_framework(x, f=f).dtype(x, as_str)
 
 
 def dtype_to_str(dtype_in: ivy.Dtype, f: ivy.Framework = None)\
@@ -1392,20 +1394,6 @@ def dtype_to_str(dtype_in: ivy.Dtype, f: ivy.Framework = None)\
     :return: Device string e.g. 'float32'.
     """
     return _cur_framework(None, f=f).dtype_to_str(dtype_in)
-
-
-def dtype(x: Union[ivy.Array, ivy.NativeArray], f: ivy.Framework = None)\
-        -> str:
-    """
-    Get the data type string for input array x.
-
-    :param x: Tensor for which to get the data type string.
-    :type x: array
-    :param f: Machine learning framework. Inferred from inputs if None.
-    :type f: ml_framework, optional
-    :return: Device string e.g. 'float32'.
-    """
-    return _cur_framework(None, f=f).dtype(x)
 
 
 def cache_fn(func: Callable)\

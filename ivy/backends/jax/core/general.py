@@ -386,10 +386,14 @@ def linear_resample(x, num_samples, axis=-1):
     return _jnp.reshape(ret, x_pre_shape + [num_samples] + x_post_shape)
 
 
-dtype = lambda x: x.dtype
-dtype.__name__ = 'dtype'
+def dtype(x, as_str=False):
+    dt = x.dtype
+    if as_str:
+        return dtype_to_str(dt)
+    return dt
+
+
 dtype_to_str = lambda dtype_in: DTYPE_DICT[dtype_in]
-dtype = lambda x: dtype_to_str(dtype(x))
 compile = lambda fn, dynamic=True, example_inputs=None, static_argnums=None, static_argnames=None:\
     _jax.jit(fn, static_argnums=static_argnums, static_argnames=static_argnames)
 current_framework_str = lambda: 'jax'
