@@ -66,7 +66,7 @@ def dropout(x, prob, scale=True):
     :return: Result array of the linear transformation. *[N,∗,out_features]*
     """
     # noinspection PyUnresolvedReferences
-    x = ivy.where(ivy.random_uniform(shape=x.shape, dev_str=ivy.dev_str(x)) < prob, ivy.zeros_like(x), x)
+    x = ivy.where(ivy.random_uniform(shape=x.shape, dev=ivy.dev(x)) < prob, ivy.zeros_like(x), x)
     if scale:
         x *= (1 / (1 - prob))
     return x

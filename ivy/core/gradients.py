@@ -27,7 +27,7 @@ class GradientTracking:
 # noinspection PyShadowingNames
 def with_grads(with_grads=None):
     """
-    Return the input dev_str if provided, otherwise return the global default device.
+    Return the input dev if provided, otherwise return the global default device.
     """
     if _ivy.exists(with_grads):
         assert with_grads in [True, False]

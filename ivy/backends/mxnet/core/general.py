@@ -15,7 +15,7 @@ import multiprocessing as _multiprocessing
 
 # local
 from ivy.core.device import default_device
-from ivy.backends.mxnet.core.device import _callable_dev_str
+from ivy.backends.mxnet.core.device import _callable_dev
 
 
 DTYPE_DICT = {_np.bool_: 'bool',
@@ -65,8 +65,8 @@ def _1_dim_array_to_flat_array(x):
 # API #
 # ----#
 
-def array(object_in, dtype=None, dev_str=None):
-    cont = _mxnet_init_context(default_device(dev_str))
+def array(object_in, dtype=None, dev=None):
+    cont = _mxnet_init_context(default_device(dev))
     return _mx.nd.array(object_in, cont, dtype=dtype)
 
 
@@ -141,8 +141,8 @@ cast = lambda x, dtype: x.astype(dtype)
 
 
 # noinspection PyUnresolvedReferences
-def arange(stop, start=0, step=1, dtype=None, dev_str=None):
-    cont = _mxnet_init_context(default_device(dev_str))
+def arange(stop, start=0, step=1, dtype=None, dev=None):
+    cont = _mxnet_init_context(default_device(dev))
     stop = stop if isinstance(stop, Number) else stop.asscalar()
     start = start if isinstance(start, Number) else start.asscalar()
     step = step if isinstance(step, Number) else step.asscalar()
@@ -162,8 +162,8 @@ def _linspace(start, stop, num, cont):
     return ret
 
 
-def linspace(start, stop, num, axis=None, dev_str=None):
-    cont = _mxnet_init_context(default_device(dev_str))
+def linspace(start, stop, num, axis=None, dev=None):
+    cont = _mxnet_init_context(default_device(dev))
     num = num.asnumpy()[0] if isinstance(num, _mx.nd.NDArray) else num
     start_is_array = isinstance(start, _mx.nd.NDArray)
     stop_is_array = isinstance(stop, _mx.nd.NDArray)
@@ -189,8 +189,8 @@ def linspace(start, stop, num, axis=None, dev_str=None):
     return res
 
 
-def logspace(start, stop, num, base=10., axis=None, dev_str=None):
-    power_seq = linspace(start, stop, num, axis, default_device(dev_str))
+def logspace(start, stop, num, base=10., axis=None, dev=None):
+    power_seq = linspace(start, stop, num, axis, default_device(dev))
     return base ** power_seq
 
 
@@ -371,37 +371,37 @@ def squeeze(x, axis=None):
 
 
 # noinspection PyShadowingNames
-def zeros(shape, dtype='float32', dev_str=None):
-    cont = _mxnet_init_context(default_device(dev_str))
+def zeros(shape, dtype='float32', dev=None):
+    cont = _mxnet_init_context(default_device(dev))
     if len(shape) == 0:
         return _1_dim_array_to_flat_array(_mx.nd.zeros((1,), ctx=cont).astype(dtype))
     return _mx.nd.zeros(shape, ctx=cont).astype(dtype)
 
 
-def zeros_like(x, dtype=None, dev_str=None):
+def zeros_like(x, dtype=None, dev=None):
     if x.shape == ():
-        return _mx.nd.array(0., ctx=_mxnet_init_context(default_device(dev_str)))
-    mx_zeros = _mx.nd.zeros_like(x, ctx=_mxnet_init_context(default_device(dev_str)))
+        return _mx.nd.array(0., ctx=_mxnet_init_context(default_device(dev)))
+    mx_zeros = _mx.nd.zeros_like(x, ctx=_mxnet_init_context(default_device(dev)))
     return mx_zeros if not dtype else mx_zeros.astype(dtype)
 
 
 # noinspection PyShadowingNames
-def ones(shape, dtype='float32', dev_str=None):
-    cont = _mxnet_init_context(default_device(dev_str))
+def ones(shape, dtype='float32', dev=None):
+    cont = _mxnet_init_context(default_device(dev))
     if len(shape) == 0:
         return _1_dim_array_to_flat_array(_mx.nd.ones((1,), ctx=cont).astype(dtype))
     return _mx.nd.ones(shape, ctx=cont).astype(dtype)
 
 
-def ones_like(x, dtype=None, dev_str=None):
+def ones_like(x, dtype=None, dev=None):
     if x.shape == ():
-        return _mx.nd.array(1., ctx=_mxnet_init_context(default_device(dev_str)))
-    mx_ones = _mx.nd.ones_like(x, ctx=_mxnet_init_context(default_device(dev_str)))
+        return _mx.nd.array(1., ctx=_mxnet_init_context(default_device(dev)))
+    mx_ones = _mx.nd.ones_like(x, ctx=_mxnet_init_context(default_device(dev)))
     return mx_ones if dtype is None else mx_ones.astype(dtype)
 
 
 # noinspection PyUnusedLocal
-one_hot = lambda indices, depth, dev_str=None: _mx.nd.one_hot(indices, depth)
+one_hot = lambda indices, depth, dev=None: _mx.nd.one_hot(indices, depth)
 
 
 def cross(x1, x2):
@@ -455,8 +455,8 @@ def cumprod(x, axis=0, exclusive=False):
     return _mx.nd.concat(*new_array_list, dim=axis)
 
 
-def identity(n, dtype='float32', batch_shape=None, dev_str=None):
-    mat = _mx.nd.eye(n, dtype=dtype).copyto(_mxnet_init_context(default_device(dev_str)))
+def identity(n, dtype='float32', batch_shape=None, dev=None):
+    mat = _mx.nd.eye(n, dtype=dtype).copyto(_mxnet_init_context(default_device(dev)))
     if batch_shape is None:
         return mat
     else:
@@ -473,48 +473,48 @@ def meshgrid(*xs, indexing='ij'):
 
 
 # noinspection PyShadowingNames
-def scatter_flat(indices, updates, size, reduction='sum', dev_str=None):
+def scatter_flat(indices, updates, size, reduction='sum', dev=None):
     if reduction == 'replace':
-        return _mx.nd.scatter_nd(updates, _mx.nd.expand_dims(indices, 0), [size]).copyto(_mxnet_init_context(default_device(dev_str)))
+        return _mx.nd.scatter_nd(updates, _mx.nd.expand_dims(indices, 0), [size]).copyto(_mxnet_init_context(default_device(dev)))
     else:
         raise Exception('MXNet scatter_flat currently only supports reduction mode "replace", but {} selected.'.
                         format(reduction))
 
 
 # noinspection PyShadowingNames
-def scatter_nd(indices, updates, shape, reduction='sum', dev_str=None):
-    if dev_str is None:
-        dev_str = _callable_dev_str(indices)
+def scatter_nd(indices, updates, shape, reduction='sum', dev=None):
+    if dev is None:
+        dev = _callable_dev(indices)
     shape = list(shape)
     num_idx_dims = len(indices.shape)
     transpose_order = [num_idx_dims-1] + list(range(num_idx_dims-1))
     indices = _mx.nd.transpose(indices, transpose_order)
     shape = shape if type(shape) is list else shape.asnumpy().astype(_np.int32).tolist()
     if reduction == 'replace':
-        return _mx.nd.scatter_nd(updates, indices, shape).copyto(_mxnet_init_context(dev_str))
+        return _mx.nd.scatter_nd(updates, indices, shape).copyto(_mxnet_init_context(dev))
     else:
         raise Exception('MXNet scatter_nd currently only supports reduction mode "replace", but {} selected.'.
                         format(reduction))
 
 
-def gather(params, indices, axis=-1, dev_str=None):
-    if dev_str is None:
-        dev_str = _callable_dev_str(params)
+def gather(params, indices, axis=-1, dev=None):
+    if dev is None:
+        dev = _callable_dev(params)
     index_slices = unstack(indices, -1)
     res = _mx.nd.concat(
         *[_mx.nd.expand_dims(_mx.nd.pick(params, idx_slice, axis), -1) for idx_slice in index_slices], dim=-1)
     res = _mx.nd.reshape(res, indices.shape)
-    return res.copyto(_mxnet_init_context(dev_str))
+    return res.copyto(_mxnet_init_context(dev))
 
 
-def gather_nd(params, indices, dev_str=None):
-    if dev_str is None:
-        dev_str = _callable_dev_str(params)
+def gather_nd(params, indices, dev=None):
+    if dev is None:
+        dev = _callable_dev(params)
     indices_shape = indices.shape
     num_idx_dims = len(indices_shape)
     transpose_order = [num_idx_dims-1] + list(range(num_idx_dims-1))
     indices = _mx.nd.transpose(indices, transpose_order)
-    return _mx.nd.gather_nd(params, indices).copyto(_mxnet_init_context(dev_str))
+    return _mx.nd.gather_nd(params, indices).copyto(_mxnet_init_context(dev))
 
 
 def linear_resample(x, num_samples, axis=-1):

@@ -25,24 +25,24 @@ from ivy.core.container import Container
     "dtype", ['float32'])
 @pytest.mark.parametrize(
     "tensor_fn", [ivy.array, helpers.var_fn])
-def test_linear_layer_training(bs_ic_oc, with_v, dtype, tensor_fn, dev_str, compile_graph, call):
+def test_linear_layer_training(bs_ic_oc, with_v, dtype, tensor_fn, dev, compile_graph, call):
     # smoke test
     if call is helpers.np_call:
         # NumPy does not support gradients
         pytest.skip()
     batch_shape, input_channels, output_channels = bs_ic_oc
-    x = ivy.cast(ivy.linspace(ivy.zeros(batch_shape, dev_str=dev_str),
-                              ivy.ones(batch_shape, dev_str=dev_str), input_channels), 'float32')
+    x = ivy.cast(ivy.linspace(ivy.zeros(batch_shape, dev=dev),
+                              ivy.ones(batch_shape, dev=dev), input_channels), 'float32')
     if with_v:
         np.random.seed(0)
         wlim = (6 / (output_channels + input_channels)) ** 0.5
         w = ivy.variable(ivy.array(np.random.uniform(-wlim, wlim, (output_channels, input_channels)),
-                                   'float32', dev_str=dev_str))
-        b = ivy.variable(ivy.zeros([output_channels], dev_str=dev_str))
+                                   'float32', dev=dev))
+        b = ivy.variable(ivy.zeros([output_channels], dev=dev))
         v = Container({'w': w, 'b': b})
     else:
         v = None
-    linear_layer = ivy.Linear(input_channels, output_channels, dev_str=dev_str, v=v)
+    linear_layer = ivy.Linear(input_channels, output_channels, dev=dev, v=v)
 
     def loss_fn(x_, v_):
         out = linear_layer(x_, v=v_)
@@ -113,8 +113,8 @@ def test_linear_layer_training(bs_ic_oc, with_v, dtype, tensor_fn, dev_str, comp
     "dtype", ['float32'])
 @pytest.mark.parametrize(
     "tensor_fn", [ivy.array, helpers.var_fn])
-def test_conv1d_layer_training(x_n_fs_n_pad_n_oc, with_v, dtype, tensor_fn, dev_str, compile_graph, call):
-    if call in [helpers.tf_call, helpers.tf_graph_call] and 'cpu' in dev_str:
+def test_conv1d_layer_training(x_n_fs_n_pad_n_oc, with_v, dtype, tensor_fn, dev, compile_graph, call):
+    if call in [helpers.tf_call, helpers.tf_graph_call] and 'cpu' in dev:
         # tf conv1d does not work when CUDA is installed, but array is on CPU
         pytest.skip()
     if call in [helpers.np_call, helpers.jnp_call]:
@@ -122,18 +122,18 @@ def test_conv1d_layer_training(x_n_fs_n_pad_n_oc, with_v, dtype, tensor_fn, dev_
         pytest.skip()
     # smoke test
     x, filter_size, padding, output_channels = x_n_fs_n_pad_n_oc
-    x = tensor_fn(x, dtype, dev_str)
+    x = tensor_fn(x, dtype, dev)
     input_channels = x.shape[-1]
     if with_v:
         np.random.seed(0)
         wlim = (6 / (output_channels + input_channels)) ** 0.5
         w = ivy.variable(ivy.array(np.random.uniform(
-            -wlim, wlim, (filter_size, output_channels, input_channels)), 'float32', dev_str=dev_str))
-        b = ivy.variable(ivy.zeros([1, 1, output_channels], dev_str=dev_str))
+            -wlim, wlim, (filter_size, output_channels, input_channels)), 'float32', dev=dev))
+        b = ivy.variable(ivy.zeros([1, 1, output_channels], dev=dev))
         v = Container({'w': w, 'b': b})
     else:
         v = None
-    conv1d_layer = ivy.Conv1D(input_channels, output_channels, filter_size, 1, padding, dev_str=dev_str, v=v)
+    conv1d_layer = ivy.Conv1D(input_channels, output_channels, filter_size, 1, padding, dev=dev, v=v)
 
     def loss_fn(x_, v_):
         out = conv1d_layer(x_, v=v_)
@@ -203,9 +203,9 @@ def test_conv1d_layer_training(x_n_fs_n_pad_n_oc, with_v, dtype, tensor_fn, dev_
     "dtype", ['float32'])
 @pytest.mark.parametrize(
     "tensor_fn", [ivy.array, helpers.var_fn])
-def test_conv1d_transpose_layer_training(x_n_fs_n_pad_n_outshp_n_oc, with_v, dtype, tensor_fn, dev_str,
+def test_conv1d_transpose_layer_training(x_n_fs_n_pad_n_outshp_n_oc, with_v, dtype, tensor_fn, dev,
                                          compile_graph, call):
-    if call in [helpers.tf_call, helpers.tf_graph_call] and 'cpu' in dev_str:
+    if call in [helpers.tf_call, helpers.tf_graph_call] and 'cpu' in dev:
         # tf conv1d does not work when CUDA is installed, but array is on CPU
         pytest.skip()
     if call in [helpers.np_call, helpers.jnp_call]:
@@ -213,19 +213,19 @@ def test_conv1d_transpose_layer_training(x_n_fs_n_pad_n_outshp_n_oc, with_v, dty
         pytest.skip()
     # smoke test
     x, filter_size, padding, out_shape, output_channels = x_n_fs_n_pad_n_outshp_n_oc
-    x = tensor_fn(x, dtype, dev_str)
+    x = tensor_fn(x, dtype, dev)
     input_channels = x.shape[-1]
     if with_v:
         np.random.seed(0)
         wlim = (6 / (output_channels + input_channels)) ** 0.5
         w = ivy.variable(ivy.array(np.random.uniform(
-            -wlim, wlim, (filter_size, output_channels, input_channels)), 'float32', dev_str=dev_str))
-        b = ivy.variable(ivy.zeros([1, 1, output_channels], dev_str=dev_str))
+            -wlim, wlim, (filter_size, output_channels, input_channels)), 'float32', dev=dev))
+        b = ivy.variable(ivy.zeros([1, 1, output_channels], dev=dev))
         v = Container({'w': w, 'b': b})
     else:
         v = None
     conv1d_trans_layer = ivy.Conv1DTranspose(input_channels, output_channels, filter_size, 1, padding,
-                                             output_shape=out_shape, dev_str=dev_str, v=v)
+                                             output_shape=out_shape, dev=dev, v=v)
 
     def loss_fn(x_, v_):
         out = conv1d_trans_layer(x_, v=v_)
@@ -303,8 +303,8 @@ def test_conv1d_transpose_layer_training(x_n_fs_n_pad_n_outshp_n_oc, with_v, dty
     "dtype", ['float32'])
 @pytest.mark.parametrize(
     "tensor_fn", [ivy.array, helpers.var_fn])
-def test_conv2d_layer_training(x_n_fs_n_pad_n_oc, with_v, dtype, tensor_fn, dev_str, compile_graph, call):
-    if call in [helpers.tf_call, helpers.tf_graph_call] and 'cpu' in dev_str:
+def test_conv2d_layer_training(x_n_fs_n_pad_n_oc, with_v, dtype, tensor_fn, dev, compile_graph, call):
+    if call in [helpers.tf_call, helpers.tf_graph_call] and 'cpu' in dev:
         # tf conv1d does not work when CUDA is installed, but array is on CPU
         pytest.skip()
     if call in [helpers.np_call, helpers.jnp_call]:
@@ -312,18 +312,18 @@ def test_conv2d_layer_training(x_n_fs_n_pad_n_oc, with_v, dtype, tensor_fn, dev_
         pytest.skip()
     # smoke test
     x, filter_shape, padding, output_channels = x_n_fs_n_pad_n_oc
-    x = tensor_fn(x, dtype, dev_str)
+    x = tensor_fn(x, dtype, dev)
     input_channels = x.shape[-1]
     if with_v:
         np.random.seed(0)
         wlim = (6 / (output_channels + input_channels)) ** 0.5
         w = ivy.variable(ivy.array(np.random.uniform(
-            -wlim, wlim, tuple(filter_shape + [output_channels, input_channels])), 'float32', dev_str=dev_str))
-        b = ivy.variable(ivy.zeros([1, 1, 1, output_channels], dev_str=dev_str))
+            -wlim, wlim, tuple(filter_shape + [output_channels, input_channels])), 'float32', dev=dev))
+        b = ivy.variable(ivy.zeros([1, 1, 1, output_channels], dev=dev))
         v = Container({'w': w, 'b': b})
     else:
         v = None
-    conv2d_layer = ivy.Conv2D(input_channels, output_channels, filter_shape, 1, padding, dev_str=dev_str, v=v)
+    conv2d_layer = ivy.Conv2D(input_channels, output_channels, filter_shape, 1, padding, dev=dev, v=v)
 
     def loss_fn(x_, v_):
         out = conv2d_layer(x_, v=v_)
@@ -399,9 +399,9 @@ def test_conv2d_layer_training(x_n_fs_n_pad_n_oc, with_v, dtype, tensor_fn, dev_
     "dtype", ['float32'])
 @pytest.mark.parametrize(
     "tensor_fn", [ivy.array, helpers.var_fn])
-def test_conv2d_transpose_layer_training(x_n_fs_n_pad_n_outshp_n_oc, with_v, dtype, tensor_fn, dev_str,
+def test_conv2d_transpose_layer_training(x_n_fs_n_pad_n_outshp_n_oc, with_v, dtype, tensor_fn, dev,
                                          compile_graph, call):
-    if call in [helpers.tf_call, helpers.tf_graph_call] and 'cpu' in dev_str:
+    if call in [helpers.tf_call, helpers.tf_graph_call] and 'cpu' in dev:
         # tf conv1d does not work when CUDA is installed, but array is on CPU
         pytest.skip()
     if call in [helpers.np_call, helpers.jnp_call]:
@@ -409,19 +409,19 @@ def test_conv2d_transpose_layer_training(x_n_fs_n_pad_n_outshp_n_oc, with_v, dty
         pytest.skip()
     # smoke test
     x, filter_shape, padding, out_shape, output_channels = x_n_fs_n_pad_n_outshp_n_oc
-    x = tensor_fn(x, dtype, dev_str)
+    x = tensor_fn(x, dtype, dev)
     input_channels = x.shape[-1]
     if with_v:
         np.random.seed(0)
         wlim = (6 / (output_channels + input_channels)) ** 0.5
         w = ivy.variable(ivy.array(np.random.uniform(
-            -wlim, wlim, tuple(filter_shape + [output_channels, input_channels])), 'float32', dev_str=dev_str))
-        b = ivy.variable(ivy.zeros([1, 1, 1, output_channels], dev_str=dev_str))
+            -wlim, wlim, tuple(filter_shape + [output_channels, input_channels])), 'float32', dev=dev))
+        b = ivy.variable(ivy.zeros([1, 1, 1, output_channels], dev=dev))
         v = Container({'w': w, 'b': b})
     else:
         v = None
     conv2d_transpose_layer = ivy.Conv2DTranspose(
-        input_channels, output_channels, filter_shape, 1, padding, output_shape=out_shape, dev_str=dev_str, v=v)
+        input_channels, output_channels, filter_shape, 1, padding, output_shape=out_shape, dev=dev, v=v)
 
     def loss_fn(x_, v_):
         out = conv2d_transpose_layer(x_, v=v_)
@@ -491,8 +491,8 @@ def test_conv2d_transpose_layer_training(x_n_fs_n_pad_n_outshp_n_oc, with_v, dty
     "dtype", ['float32'])
 @pytest.mark.parametrize(
     "tensor_fn", [ivy.array, helpers.var_fn])
-def test_depthwise_conv2d_layer_training(x_n_fs_n_pad, with_v, dtype, tensor_fn, dev_str, compile_graph, call):
-    if call in [helpers.tf_call, helpers.tf_graph_call] and 'cpu' in dev_str:
+def test_depthwise_conv2d_layer_training(x_n_fs_n_pad, with_v, dtype, tensor_fn, dev, compile_graph, call):
+    if call in [helpers.tf_call, helpers.tf_graph_call] and 'cpu' in dev:
         # tf conv1d does not work when CUDA is installed, but array is on CPU
         pytest.skip()
     if call in [helpers.np_call, helpers.jnp_call]:
@@ -500,18 +500,18 @@ def test_depthwise_conv2d_layer_training(x_n_fs_n_pad, with_v, dtype, tensor_fn,
         pytest.skip()
     # smoke test
     x, filter_shape, padding = x_n_fs_n_pad
-    x = tensor_fn(x, dtype, dev_str)
+    x = tensor_fn(x, dtype, dev)
     num_channels = x.shape[-1]
     if with_v:
         np.random.seed(0)
         wlim = (6 / (num_channels*2)) ** 0.5
         w = ivy.variable(ivy.array(np.random.uniform(
-            -wlim, wlim, tuple(filter_shape + [num_channels])), 'float32', dev_str=dev_str))
-        b = ivy.variable(ivy.zeros([1, 1, num_channels], dev_str=dev_str))
+            -wlim, wlim, tuple(filter_shape + [num_channels])), 'float32', dev=dev))
+        b = ivy.variable(ivy.zeros([1, 1, num_channels], dev=dev))
         v = Container({'w': w, 'b': b})
     else:
         v = None
-    depthwise_conv2d_layer = ivy.DepthwiseConv2D(num_channels, filter_shape, 1, padding, dev_str=dev_str, v=v)
+    depthwise_conv2d_layer = ivy.DepthwiseConv2D(num_channels, filter_shape, 1, padding, dev=dev, v=v)
 
     def loss_fn(x_, v_):
         out = depthwise_conv2d_layer(x_, v=v_)
@@ -584,8 +584,8 @@ def test_depthwise_conv2d_layer_training(x_n_fs_n_pad, with_v, dtype, tensor_fn,
     "dtype", ['float32'])
 @pytest.mark.parametrize(
     "tensor_fn", [ivy.array, helpers.var_fn])
-def test_conv3d_layer_training(x_n_fs_n_pad_n_oc, with_v, dtype, tensor_fn, dev_str, compile_graph, call):
-    if call in [helpers.tf_call, helpers.tf_graph_call] and 'cpu' in dev_str:
+def test_conv3d_layer_training(x_n_fs_n_pad_n_oc, with_v, dtype, tensor_fn, dev, compile_graph, call):
+    if call in [helpers.tf_call, helpers.tf_graph_call] and 'cpu' in dev:
         # tf conv1d does not work when CUDA is installed, but array is on CPU
         pytest.skip()
     if call in [helpers.np_call, helpers.jnp_call]:
@@ -593,18 +593,18 @@ def test_conv3d_layer_training(x_n_fs_n_pad_n_oc, with_v, dtype, tensor_fn, dev_
         pytest.skip()
     # smoke test
     x, filter_shape, padding, output_channels = x_n_fs_n_pad_n_oc
-    x = tensor_fn(x, dtype, dev_str)
+    x = tensor_fn(x, dtype, dev)
     input_channels = x.shape[-1]
     if with_v:
         np.random.seed(0)
         wlim = (6 / (output_channels + input_channels)) ** 0.5
         w = ivy.variable(ivy.array(np.random.uniform(
-            -wlim, wlim, tuple(filter_shape + [output_channels, input_channels])), 'float32', dev_str=dev_str))
-        b = ivy.variable(ivy.zeros([1, 1, 1, 1, output_channels], dev_str=dev_str))
+            -wlim, wlim, tuple(filter_shape + [output_channels, input_channels])), 'float32', dev=dev))
+        b = ivy.variable(ivy.zeros([1, 1, 1, 1, output_channels], dev=dev))
         v = Container({'w': w, 'b': b})
     else:
         v = None
-    conv3d_layer = ivy.Conv3D(input_channels, output_channels, filter_shape, 1, padding, dev_str=dev_str, v=v)
+    conv3d_layer = ivy.Conv3D(input_channels, output_channels, filter_shape, 1, padding, dev=dev, v=v)
 
     def loss_fn(x_, v_):
         out = conv3d_layer(x_, v=v_)
@@ -680,32 +680,32 @@ def test_conv3d_layer_training(x_n_fs_n_pad_n_oc, with_v, dtype, tensor_fn, dev_
     "dtype", ['float32'])
 @pytest.mark.parametrize(
     "tensor_fn", [ivy.array, helpers.var_fn])
-def test_conv3d_transpose_layer_training(x_n_fs_n_pad_n_outshp_n_oc, with_v, dtype, tensor_fn, dev_str,
+def test_conv3d_transpose_layer_training(x_n_fs_n_pad_n_outshp_n_oc, with_v, dtype, tensor_fn, dev,
                                          compile_graph, call):
-    if call in [helpers.tf_call, helpers.tf_graph_call] and 'cpu' in dev_str:
+    if call in [helpers.tf_call, helpers.tf_graph_call] and 'cpu' in dev:
         # tf conv1d does not work when CUDA is installed, but array is on CPU
         pytest.skip()
     if call in [helpers.np_call, helpers.jnp_call]:
         # numpy and jax do not yet support conv1d
         pytest.skip()
-    if call in [helpers.mx_call] and 'cpu' in dev_str:
+    if call in [helpers.mx_call] and 'cpu' in dev:
         # mxnet only supports 3d transpose convolutions with CUDNN
         pytest.skip()
     # smoke test
     x, filter_shape, padding, out_shape, output_channels = x_n_fs_n_pad_n_outshp_n_oc
-    x = tensor_fn(x, dtype, dev_str)
+    x = tensor_fn(x, dtype, dev)
     input_channels = x.shape[-1]
     if with_v:
         np.random.seed(0)
         wlim = (6 / (output_channels + input_channels)) ** 0.5
         w = ivy.variable(ivy.array(np.random.uniform(
-            -wlim, wlim, tuple(filter_shape + [output_channels, input_channels])), 'float32', dev_str=dev_str))
-        b = ivy.variable(ivy.zeros([1, 1, 1, 1, output_channels], dev_str=dev_str))
+            -wlim, wlim, tuple(filter_shape + [output_channels, input_channels])), 'float32', dev=dev))
+        b = ivy.variable(ivy.zeros([1, 1, 1, 1, output_channels], dev=dev))
         v = Container({'w': w, 'b': b})
     else:
         v = None
     conv3d_transpose_layer = ivy.Conv3DTranspose(
-        input_channels, output_channels, filter_shape, 1, padding, output_shape=out_shape, dev_str=dev_str, v=v)
+        input_channels, output_channels, filter_shape, 1, padding, output_shape=out_shape, dev=dev, v=v)
 
     def loss_fn(x_, v_):
         out = conv3d_transpose_layer(x_, v=v_)
@@ -762,23 +762,23 @@ def test_conv3d_transpose_layer_training(x_n_fs_n_pad_n_outshp_n_oc, with_v, dty
     "dtype", ['float32'])
 @pytest.mark.parametrize(
     "tensor_fn", [ivy.array])
-def test_lstm_layer_training(b_t_ic_hc_otf_sctv, with_v, dtype, tensor_fn, dev_str, compile_graph, call):
+def test_lstm_layer_training(b_t_ic_hc_otf_sctv, with_v, dtype, tensor_fn, dev, compile_graph, call):
     # smoke test
     if call is helpers.np_call:
         # NumPy does not support gradients
         pytest.skip()
     # smoke test
     b, t, input_channels, hidden_channels, output_true_flat, state_c_true_val = b_t_ic_hc_otf_sctv
-    x = ivy.cast(ivy.linspace(ivy.zeros([b, t], dev_str=dev_str), ivy.ones([b, t], dev_str=dev_str), input_channels),
+    x = ivy.cast(ivy.linspace(ivy.zeros([b, t], dev=dev), ivy.ones([b, t], dev=dev), input_channels),
                  'float32')
     if with_v:
-        kernel = ivy.variable(ivy.ones([input_channels, 4*hidden_channels], dev_str=dev_str)*0.5)
-        recurrent_kernel = ivy.variable(ivy.ones([hidden_channels, 4*hidden_channels], dev_str=dev_str)*0.5)
+        kernel = ivy.variable(ivy.ones([input_channels, 4*hidden_channels], dev=dev)*0.5)
+        recurrent_kernel = ivy.variable(ivy.ones([hidden_channels, 4*hidden_channels], dev=dev)*0.5)
         v = Container({'input': {'layer_0': {'w': kernel}},
                        'recurrent': {'layer_0': {'w': recurrent_kernel}}})
     else:
         v = None
-    lstm_layer = ivy.LSTM(input_channels, hidden_channels, dev_str=dev_str, v=v)
+    lstm_layer = ivy.LSTM(input_channels, hidden_channels, dev=dev, v=v)
 
     def loss_fn(x_, v_):
         out, (state_h, state_c) = lstm_layer(x_, v=v_)
@@ -837,7 +837,7 @@ def test_lstm_layer_training(b_t_ic_hc_otf_sctv, with_v, dtype, tensor_fn, dev_s
     "dtype", ['float32'])
 @pytest.mark.parametrize(
     "tensor_fn", [ivy.array, helpers.var_fn])
-def test_sequential_layer_training(bs_c, with_v, seq_v, dtype, tensor_fn, dev_str, compile_graph, call):
+def test_sequential_layer_training(bs_c, with_v, seq_v, dtype, tensor_fn, dev, compile_graph, call):
     # smoke test
     if call is helpers.np_call:
         # NumPy does not support gradients
@@ -851,30 +851,30 @@ def test_sequential_layer_training(bs_c, with_v, seq_v, dtype, tensor_fn, dev_st
             {'submodules':
                       {'v0':
                            {'w': ivy.variable(ivy.array(np.random.uniform(
-                               -wlim, wlim, (channels, channels)), 'float32', dev_str=dev_str)),
-                               'b': ivy.variable(ivy.zeros([channels], dev_str=dev_str))},
+                               -wlim, wlim, (channels, channels)), 'float32', dev=dev)),
+                               'b': ivy.variable(ivy.zeros([channels], dev=dev))},
                        'v1':
                            {'w': ivy.variable(ivy.array(np.random.uniform(
-                               -wlim, wlim, (channels, channels)), 'float32', dev_str=dev_str)),
-                               'b': ivy.variable(ivy.zeros([channels], dev_str=dev_str))},
+                               -wlim, wlim, (channels, channels)), 'float32', dev=dev)),
+                               'b': ivy.variable(ivy.zeros([channels], dev=dev))},
                        'v2':
                            {'w': ivy.variable(ivy.array(np.random.uniform(
-                               -wlim, wlim, (channels, channels)), 'float32', dev_str=dev_str)),
-                               'b': ivy.variable(ivy.zeros([channels], dev_str=dev_str))}}})
+                               -wlim, wlim, (channels, channels)), 'float32', dev=dev)),
+                               'b': ivy.variable(ivy.zeros([channels], dev=dev))}}})
     else:
         v = None
     if seq_v:
-        seq = ivy.Sequential(ivy.Linear(channels, channels, dev_str=dev_str),
-                             ivy.Linear(channels, channels, dev_str=dev_str),
-                             ivy.Linear(channels, channels, dev_str=dev_str),
-                             v=v if with_v else None, dev_str=dev_str)
+        seq = ivy.Sequential(ivy.Linear(channels, channels, dev=dev),
+                             ivy.Linear(channels, channels, dev=dev),
+                             ivy.Linear(channels, channels, dev=dev),
+                             v=v if with_v else None, dev=dev)
     else:
-        seq = ivy.Sequential(ivy.Linear(channels, channels, dev_str=dev_str,
+        seq = ivy.Sequential(ivy.Linear(channels, channels, dev=dev,
                                         v=v['submodules']['v0'] if with_v else None),
-                             ivy.Linear(channels, channels, dev_str=dev_str,
+                             ivy.Linear(channels, channels, dev=dev,
                                         v=v['submodules']['v1'] if with_v else None),
-                             ivy.Linear(channels, channels, dev_str=dev_str,
-                                        v=v['submodules']['v2'] if with_v else None), dev_str=dev_str)
+                             ivy.Linear(channels, channels, dev=dev,
+                                        v=v['submodules']['v2'] if with_v else None), dev=dev)
 
     def loss_fn(x_, v_):
         out = seq(x_, v=v_)

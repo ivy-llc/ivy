@@ -12,15 +12,15 @@ import torch as _torch
 
 class IvyModule(ivy.Module):
 
-    def __init__(self, native_module_class, native_module, dev_str, dev_strs, inplace_update, *args, **kwargs):
+    def __init__(self, native_module_class, native_module, dev, devs, inplace_update, *args, **kwargs):
         self._native_module_class = native_module_class
         self._native_module = native_module
         self._args = args
         self._kwargs = kwargs
         self._update_v = self._inplace_update_v if inplace_update else self._replace_update_v
-        ivy.Module.__init__(self, dev_str=dev_str, dev_strs=dev_strs)
+        ivy.Module.__init__(self, dev=dev, devs=devs)
 
-    def _create_variables(self, dev_str):
+    def _create_variables(self, dev):
         return self._native_params
 
     def _build(self):
@@ -65,7 +65,7 @@ class IvyModule(ivy.Module):
         return ret
 
 
-def to_ivy_module(native_module=None, native_module_class=None, args=None, kwargs=None, dev_str=None, dev_strs=None,
+def to_ivy_module(native_module=None, native_module_class=None, args=None, kwargs=None, dev=None, devs=None,
                   inplace_update=False):
 
     args = ivy.default(args, [])
@@ -75,4 +75,4 @@ def to_ivy_module(native_module=None, native_module_class=None, args=None, kwarg
         if not ivy.exists(native_module_class):
             raise Exception('native_module_class must be specified if native_module is not given')
 
-    return IvyModule(native_module_class, native_module, dev_str, dev_strs, inplace_update, *args, **kwargs)
+    return IvyModule(native_module_class, native_module, dev, devs, inplace_update, *args, **kwargs)
