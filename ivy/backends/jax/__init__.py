@@ -32,4 +32,18 @@ NativeVariable = _jax.interpreters.xla._DeviceArray
 Device = jaxlib.xla_extension.Device
 Dtype = jnp.dtype
 
+# data types
+int8 = jnp.int8
+int16 = jnp.int16
+int32 = jnp.int32
+int64 = jnp.int64
+uint8 = jnp.uint8
+uint16 = jnp.uint16
+uint32 = jnp.uint32
+uint64 = jnp.uint64
+float32 = jnp.float32
+float64 = jnp.float64
+# noinspection PyShadowingBuiltins
+bool = jnp.bool_
+
 backend = 'jax'
