@@ -216,11 +216,9 @@
 <span class="kn">from</span> <span class="nn">ivy.core.device</span> <span class="kn">import</span> <span class="n">Profiler</span> <span class="k">as</span> <span class="n">BaseProfiler</span>
 
 
-<span class="n">dev</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="s1">&#39;cpu&#39;</span>
+<span class="n">dev</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">as_str</span><span class="o">=</span><span class="kc">False</span><span class="p">:</span> <span class="s1">&#39;cpu&#39;</span>
 <span class="n">dev</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">=</span> <span class="s1">&#39;dev&#39;</span>
 <span class="n">to_dev</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">dev</span><span class="o">=</span><span class="kc">None</span><span class="p">:</span> <span class="n">x</span>
-<span class="n">dev</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="s1">&#39;cpu&#39;</span>
-<span class="n">dev</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">=</span> <span class="s1">&#39;dev&#39;</span>
 <span class="n">_dev_callable</span> <span class="o">=</span> <span class="n">dev</span>
 <span class="n">dev_to_str</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">dev_in</span><span class="p">:</span> <span class="s1">&#39;cpu&#39;</span>
 <span class="n">str_to_dev</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">dev</span><span class="p">:</span> <span class="s1">&#39;cpu&#39;</span>
