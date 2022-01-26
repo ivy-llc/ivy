@@ -33,6 +33,8 @@ def dev_to_str(dev_in):
 
 
 def str_to_dev(dev):
+    if not isinstance(dev, str):
+        return dev
     dev_split = dev.split(':')
     dev = dev_split[0]
     if len(dev_split) > 1:
