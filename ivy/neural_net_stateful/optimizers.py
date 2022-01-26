@@ -15,7 +15,7 @@ import ivy
 
 class Optimizer(abc.ABC):
 
-    def __init__(self, lr, inplace=True, stop_gradients=True, init_on_first_step=False, compile_on_next_step=False,
+    def __init__(self, lr, inplace=None, stop_gradients=True, init_on_first_step=False, compile_on_next_step=False,
                  fallback_to_non_compiled=False, dev_str=None):
         """
         Construct an general Optimizer. This is an abstract class, and must be derived.
@@ -23,7 +23,8 @@ class Optimizer(abc.ABC):
         :param lr: Learning rate.
         :type lr: function or float.
         :param inplace: Whether to update the variables in-place, or to create new variable handles.
-                        This is only relevant for frameworks with stateful variables such as PyTorch. Default is True.
+                        This is only relevant for frameworks with stateful variables such as PyTorch.
+                        Default is True, provided the backend framework supports it.
         :type inplace: bool, optional
         :param stop_gradients: Whether to stop the gradients of the variables after each gradient step. Default is True.
         :type stop_gradients: bool, optional
@@ -145,14 +146,15 @@ class Optimizer(abc.ABC):
 
 class SGD(Optimizer):
 
-    def __init__(self, lr=lambda: 1e-4, inplace=True, stop_gradients=True, compile_on_next_step=False):
+    def __init__(self, lr=lambda: 1e-4, inplace=None, stop_gradients=True, compile_on_next_step=False):
         """
         Construct a Stochastic-Gradient-Descent (SGD) optimizer.
 
         :param lr: Learning rate, default is 1e-4.
         :type lr: float, optional
         :param inplace: Whether to update the variables in-place, or to create new variable handles.
-                        This is only relevant for frameworks with stateful variables such as PyTorch. Default is True.
+                        This is only relevant for frameworks with stateful variables such as PyTorch.
+                        Default is True, provided the backend framework supports it.
         :type inplace: bool, optional
         :param stop_gradients: Whether to stop the gradients of the variables after each gradient step. Default is True.
         :type stop_gradients: bool, optional
@@ -192,7 +194,7 @@ class SGD(Optimizer):
 
 class LARS(Optimizer):
 
-    def __init__(self, lr=lambda: 1e-4, decay_lambda=0, inplace=True, stop_gradients=True, compile_on_next_step=False):
+    def __init__(self, lr=lambda: 1e-4, decay_lambda=0, inplace=None, stop_gradients=True, compile_on_next_step=False):
         """
         Construct a Layerwise Adaptive Rate Scaling (LARS) optimizer.
 
@@ -201,7 +203,8 @@ class LARS(Optimizer):
         :param decay_lambda: The factor used for weight decay. Default is zero.
         :type decay_lambda: float, optional
         :param inplace: Whether to update the variables in-place, or to create new variable handles.
-                        This is only relevant for frameworks with stateful variables such as PyTorch. Default is True.
+                        This is only relevant for frameworks with stateful variables such as PyTorch.
+                        Default is True, provided the backend framework supports it.
         :type inplace: bool, optional
         :param stop_gradients: Whether to stop the gradients of the variables after each gradient step. Default is True.
         :type stop_gradients: bool, optional
@@ -242,8 +245,8 @@ class LARS(Optimizer):
 
 class Adam(Optimizer):
 
-    def __init__(self, lr=1e-4, beta1=0.9, beta2=0.999, epsilon=1e-07, inplace=True,
-                 stop_gradients=True, compile_on_next_step=False, dev_str=None):
+    def __init__(self, lr=1e-4, beta1=0.9, beta2=0.999, epsilon=1e-07, inplace=None, stop_gradients=True,
+                 compile_on_next_step=False, dev_str=None):
         """
         Construct an ADAM optimizer.
 
@@ -256,7 +259,8 @@ class Adam(Optimizer):
         :param epsilon: divisor during adam update, preventing division by zero, default is 1e-07
         :type epsilon: float, optional
         :param inplace: Whether to update the variables in-place, or to create new variable handles.
-                        This is only relevant for frameworks with stateful variables such as PyTorch. Default is True.
+                        This is only relevant for frameworks with stateful variables such as PyTorch.
+                        Default is True, provided the backend framework supports it.
         :type inplace: bool, optional
         :param stop_gradients: Whether to stop the gradients of the variables after each gradient step. Default is True.
         :type stop_gradients: bool, optional
@@ -312,7 +316,7 @@ class Adam(Optimizer):
 
 class LAMB(Optimizer):
 
-    def __init__(self, lr=1e-4, beta1=0.9, beta2=0.999, epsilon=1e-07, max_trust_ratio=10, decay_lambda=0, inplace=True,
+    def __init__(self, lr=1e-4, beta1=0.9, beta2=0.999, epsilon=1e-07, max_trust_ratio=10, decay_lambda=0, inplace=None,
                  stop_gradients=True, compile_on_next_step=False, dev_str=None):
         """
         Construct an LAMB optimizer.
@@ -331,7 +335,8 @@ class LAMB(Optimizer):
         :param decay_lambda: The factor used for weight decay. Default is zero.
         :type decay_lambda: float, optional
         :param inplace: Whether to update the variables in-place, or to create new variable handles.
-                        This is only relevant for frameworks with stateful variables such as PyTorch. Default is True.
+                        This is only relevant for frameworks with stateful variables such as PyTorch.
+                        Default is True, provided the backend framework supports it.
         :type inplace: bool, optional
         :param stop_gradients: Whether to stop the gradients of the variables after each gradient step. Default is True.
         :type stop_gradients: bool, optional
