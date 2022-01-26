@@ -16,12 +16,12 @@ import ivy_tests.helpers as helpers
 @pytest.mark.parametrize(
     "x", [[0.], [[0.]]])
 @pytest.mark.parametrize(
-    "dtype_str", ['float32'])
+    "dtype", ['float32'])
 @pytest.mark.parametrize(
     "tensor_fn", [ivy.array, helpers.var_fn])
-def test_sin(x, dtype_str, tensor_fn, dev_str, call):
+def test_sin(x, dtype, tensor_fn, dev_str, call):
     # smoke test
-    x = tensor_fn(x, dtype_str, dev_str)
+    x = tensor_fn(x, dtype, dev_str)
     ret = ivy.sin(x)
     # type test
     assert ivy.is_array(ret)
@@ -38,12 +38,12 @@ def test_sin(x, dtype_str, tensor_fn, dev_str, call):
 @pytest.mark.parametrize(
     "x", [[0.], [[0.]]])
 @pytest.mark.parametrize(
-    "dtype_str", ['float32'])
+    "dtype", ['float32'])
 @pytest.mark.parametrize(
     "tensor_fn", [ivy.array, helpers.var_fn])
-def test_cos(x, dtype_str, tensor_fn, dev_str, call):
+def test_cos(x, dtype, tensor_fn, dev_str, call):
     # smoke test
-    x = tensor_fn(x, dtype_str, dev_str)
+    x = tensor_fn(x, dtype, dev_str)
     ret = ivy.cos(x)
     # type test
     assert ivy.is_array(ret)
@@ -60,12 +60,12 @@ def test_cos(x, dtype_str, tensor_fn, dev_str, call):
 @pytest.mark.parametrize(
     "x", [[0.], [[0.]]])
 @pytest.mark.parametrize(
-    "dtype_str", ['float32'])
+    "dtype", ['float32'])
 @pytest.mark.parametrize(
     "tensor_fn", [ivy.array, helpers.var_fn])
-def test_tan(x, dtype_str, tensor_fn, dev_str, call):
+def test_tan(x, dtype, tensor_fn, dev_str, call):
     # smoke test
-    x = tensor_fn(x, dtype_str, dev_str)
+    x = tensor_fn(x, dtype, dev_str)
     ret = ivy.tan(x)
     # type test
     assert ivy.is_array(ret)
@@ -82,12 +82,12 @@ def test_tan(x, dtype_str, tensor_fn, dev_str, call):
 @pytest.mark.parametrize(
     "x", [[0.], [[0.]]])
 @pytest.mark.parametrize(
-    "dtype_str", ['float32'])
+    "dtype", ['float32'])
 @pytest.mark.parametrize(
     "tensor_fn", [ivy.array, helpers.var_fn])
-def test_asin(x, dtype_str, tensor_fn, dev_str, call):
+def test_asin(x, dtype, tensor_fn, dev_str, call):
     # smoke test
-    x = tensor_fn(x, dtype_str, dev_str)
+    x = tensor_fn(x, dtype, dev_str)
     ret = ivy.asin(x)
     # type test
     assert ivy.is_array(ret)
@@ -104,12 +104,12 @@ def test_asin(x, dtype_str, tensor_fn, dev_str, call):
 @pytest.mark.parametrize(
     "x", [[0.], [[0.]]])
 @pytest.mark.parametrize(
-    "dtype_str", ['float32'])
+    "dtype", ['float32'])
 @pytest.mark.parametrize(
     "tensor_fn", [ivy.array, helpers.var_fn])
-def test_acos(x, dtype_str, tensor_fn, dev_str, call):
+def test_acos(x, dtype, tensor_fn, dev_str, call):
     # smoke test
-    x = tensor_fn(x, dtype_str, dev_str)
+    x = tensor_fn(x, dtype, dev_str)
     ret = ivy.acos(x)
     # type test
     assert ivy.is_array(ret)
@@ -126,12 +126,12 @@ def test_acos(x, dtype_str, tensor_fn, dev_str, call):
 @pytest.mark.parametrize(
     "x", [[0.], [[0.]]])
 @pytest.mark.parametrize(
-    "dtype_str", ['float32'])
+    "dtype", ['float32'])
 @pytest.mark.parametrize(
     "tensor_fn", [ivy.array, helpers.var_fn])
-def test_atan(x, dtype_str, tensor_fn, dev_str, call):
+def test_atan(x, dtype, tensor_fn, dev_str, call):
     # smoke test
-    x = tensor_fn(x, dtype_str, dev_str)
+    x = tensor_fn(x, dtype, dev_str)
     ret = ivy.atan(x)
     # type test
     assert ivy.is_array(ret)
@@ -148,14 +148,14 @@ def test_atan(x, dtype_str, tensor_fn, dev_str, call):
 @pytest.mark.parametrize(
     "x1_n_x2", [([0.], [0.]), ([[0.]], [[0.]])])
 @pytest.mark.parametrize(
-    "dtype_str", ['float32'])
+    "dtype", ['float32'])
 @pytest.mark.parametrize(
     "tensor_fn", [ivy.array, helpers.var_fn])
-def test_atan2(x1_n_x2, dtype_str, tensor_fn, dev_str, call):
+def test_atan2(x1_n_x2, dtype, tensor_fn, dev_str, call):
     # smoke test
     x1, x2 = x1_n_x2
-    x1 = tensor_fn(x1, dtype_str, dev_str)
-    x2 = tensor_fn(x2, dtype_str, dev_str)
+    x1 = tensor_fn(x1, dtype, dev_str)
+    x2 = tensor_fn(x2, dtype, dev_str)
     ret = ivy.atan2(x1, x2)
     # type test
     assert ivy.is_array(ret)
@@ -172,12 +172,12 @@ def test_atan2(x1_n_x2, dtype_str, tensor_fn, dev_str, call):
 @pytest.mark.parametrize(
     "x", [[[.1, .2, .3]]])
 @pytest.mark.parametrize(
-    "dtype_str", ['float32'])
+    "dtype", ['float32'])
 @pytest.mark.parametrize(
     "tensor_fn", [ivy.array, helpers.var_fn])
-def test_sinh(x, dtype_str, tensor_fn, dev_str, call):
+def test_sinh(x, dtype, tensor_fn, dev_str, call):
     # smoke test
-    x = tensor_fn(x, dtype_str, dev_str)
+    x = tensor_fn(x, dtype, dev_str)
     ret = ivy.sinh(x)
     # type test
     assert ivy.is_array(ret)
@@ -194,12 +194,12 @@ def test_sinh(x, dtype_str, tensor_fn, dev_str, call):
 @pytest.mark.parametrize(
     "x", [[[.1, .2, .3]]])
 @pytest.mark.parametrize(
-    "dtype_str", ['float32'])
+    "dtype", ['float32'])
 @pytest.mark.parametrize(
     "tensor_fn", [ivy.array, helpers.var_fn])
-def test_cosh(x, dtype_str, tensor_fn, dev_str, call):
+def test_cosh(x, dtype, tensor_fn, dev_str, call):
     # smoke test
-    x = tensor_fn(x, dtype_str, dev_str)
+    x = tensor_fn(x, dtype, dev_str)
     ret = ivy.cosh(x)
     # type test
     assert ivy.is_array(ret)
@@ -216,12 +216,12 @@ def test_cosh(x, dtype_str, tensor_fn, dev_str, call):
 @pytest.mark.parametrize(
     "x", [[[.1, .2, .3]]])
 @pytest.mark.parametrize(
-    "dtype_str", ['float32'])
+    "dtype", ['float32'])
 @pytest.mark.parametrize(
     "tensor_fn", [ivy.array, helpers.var_fn])
-def test_tanh(x, dtype_str, tensor_fn, dev_str, call):
+def test_tanh(x, dtype, tensor_fn, dev_str, call):
     # smoke test
-    x = tensor_fn(x, dtype_str, dev_str)
+    x = tensor_fn(x, dtype, dev_str)
     ret = ivy.tanh(x)
     # type test
     assert ivy.is_array(ret)
@@ -238,12 +238,12 @@ def test_tanh(x, dtype_str, tensor_fn, dev_str, call):
 @pytest.mark.parametrize(
     "x", [[[.1, .2, .3]]])
 @pytest.mark.parametrize(
-    "dtype_str", ['float32'])
+    "dtype", ['float32'])
 @pytest.mark.parametrize(
     "tensor_fn", [ivy.array, helpers.var_fn])
-def test_asinh(x, dtype_str, tensor_fn, dev_str, call):
+def test_asinh(x, dtype, tensor_fn, dev_str, call):
     # smoke test
-    x = tensor_fn(x, dtype_str, dev_str)
+    x = tensor_fn(x, dtype, dev_str)
     ret = ivy.asinh(x)
     # type test
     assert ivy.is_array(ret)
@@ -260,12 +260,12 @@ def test_asinh(x, dtype_str, tensor_fn, dev_str, call):
 @pytest.mark.parametrize(
     "x", [[[1, 1.2, 200, 10000]]])
 @pytest.mark.parametrize(
-    "dtype_str", ['float32'])
+    "dtype", ['float32'])
 @pytest.mark.parametrize(
     "tensor_fn", [ivy.array, helpers.var_fn])
-def test_acosh(x, dtype_str, tensor_fn, dev_str, call):
+def test_acosh(x, dtype, tensor_fn, dev_str, call):
     # smoke test
-    x = tensor_fn(x, dtype_str, dev_str)
+    x = tensor_fn(x, dtype, dev_str)
     ret = ivy.acosh(x)
     # type test
     assert ivy.is_array(ret)
@@ -282,12 +282,12 @@ def test_acosh(x, dtype_str, tensor_fn, dev_str, call):
 @pytest.mark.parametrize(
     "x", [[[-0.5, 0.5]]])
 @pytest.mark.parametrize(
-    "dtype_str", ['float32'])
+    "dtype", ['float32'])
 @pytest.mark.parametrize(
     "tensor_fn", [ivy.array, helpers.var_fn])
-def test_atanh(x, dtype_str, tensor_fn, dev_str, call):
+def test_atanh(x, dtype, tensor_fn, dev_str, call):
     # smoke test
-    x = tensor_fn(x, dtype_str, dev_str)
+    x = tensor_fn(x, dtype, dev_str)
     ret = ivy.atanh(x)
     # type test
     assert ivy.is_array(ret)
@@ -304,12 +304,12 @@ def test_atanh(x, dtype_str, tensor_fn, dev_str, call):
 @pytest.mark.parametrize(
     "x", [[1.], [[1.]]])
 @pytest.mark.parametrize(
-    "dtype_str", ['float32'])
+    "dtype", ['float32'])
 @pytest.mark.parametrize(
     "tensor_fn", [ivy.array, helpers.var_fn])
-def test_log(x, dtype_str, tensor_fn, dev_str, call):
+def test_log(x, dtype, tensor_fn, dev_str, call):
     # smoke test
-    x = tensor_fn(x, dtype_str, dev_str)
+    x = tensor_fn(x, dtype, dev_str)
     ret = ivy.log(x)
     # type test
     assert ivy.is_array(ret)
@@ -326,12 +326,12 @@ def test_log(x, dtype_str, tensor_fn, dev_str, call):
 @pytest.mark.parametrize(
     "x", [[0.], [[0.]]])
 @pytest.mark.parametrize(
-    "dtype_str", ['float32'])
+    "dtype", ['float32'])
 @pytest.mark.parametrize(
     "tensor_fn", [ivy.array, helpers.var_fn])
-def test_exp(x, dtype_str, tensor_fn, dev_str, call):
+def test_exp(x, dtype, tensor_fn, dev_str, call):
     # smoke test
-    x = tensor_fn(x, dtype_str, dev_str)
+    x = tensor_fn(x, dtype, dev_str)
     ret = ivy.exp(x)
     # type test
     assert ivy.is_array(ret)
@@ -348,12 +348,12 @@ def test_exp(x, dtype_str, tensor_fn, dev_str, call):
 @pytest.mark.parametrize(
     "x", [[0.], [[1.]]])
 @pytest.mark.parametrize(
-    "dtype_str", ['float32'])
+    "dtype", ['float32'])
 @pytest.mark.parametrize(
     "tensor_fn", [ivy.array, helpers.var_fn])
-def test_erf(x, dtype_str, tensor_fn, dev_str, call):
+def test_erf(x, dtype, tensor_fn, dev_str, call):
     # smoke test
-    x = tensor_fn(x, dtype_str, dev_str)
+    x = tensor_fn(x, dtype, dev_str)
     ret = ivy.erf(x)
     # type test
     assert ivy.is_array(ret)
