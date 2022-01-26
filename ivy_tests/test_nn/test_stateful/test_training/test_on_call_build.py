@@ -89,10 +89,10 @@ class WeConFC(ivy.Module):
 @pytest.mark.parametrize(
     "batch_shape", [[1, 2]])
 @pytest.mark.parametrize(
-    "dtype_str", ['float32'])
+    "dtype", ['float32'])
 @pytest.mark.parametrize(
     "tensor_fn", [ivy.array, helpers.var_fn])
-def test_weight_conditioned_network_training(batch_shape, dtype_str, tensor_fn, dev_str, call):
+def test_weight_conditioned_network_training(batch_shape, dtype, tensor_fn, dev_str, call):
 
     # smoke test
     if call is helpers.np_call:
@@ -216,10 +216,10 @@ class HyperHypoNet(ivy.Module):
 @pytest.mark.parametrize(
     "batch_shape", [[1, 2]])
 @pytest.mark.parametrize(
-    "dtype_str", ['float32'])
+    "dtype", ['float32'])
 @pytest.mark.parametrize(
     "tensor_fn", [ivy.array, helpers.var_fn])
-def test_hyper_hypo_network_training(batch_shape, dtype_str, tensor_fn, dev_str, call):
+def test_hyper_hypo_network_training(batch_shape, dtype, tensor_fn, dev_str, call):
 
     # smoke test
     if call is helpers.np_call:

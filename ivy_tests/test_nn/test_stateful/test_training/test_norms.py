@@ -19,16 +19,16 @@ from ivy.core.container import Container
 @pytest.mark.parametrize(
     "with_v", [True, False])
 @pytest.mark.parametrize(
-    "dtype_str", ['float32'])
+    "dtype", ['float32'])
 @pytest.mark.parametrize(
     "tensor_fn", [ivy.array, helpers.var_fn])
-def test_layer_norm_layer_training(x_n_ns, with_v, dtype_str, tensor_fn, dev_str, call):
+def test_layer_norm_layer_training(x_n_ns, with_v, dtype, tensor_fn, dev_str, call):
     # smoke test
     if call is helpers.np_call:
         # NumPy does not support gradients
         pytest.skip()
     x, normalized_shape = x_n_ns
-    x = tensor_fn(x, dtype_str, dev_str)
+    x = tensor_fn(x, dtype, dev_str)
     if with_v:
         v = Container({'scale': ivy.variable(ivy.ones(normalized_shape)),
                        'offset': ivy.variable(ivy.zeros(normalized_shape))})

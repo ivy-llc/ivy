@@ -65,9 +65,9 @@ def _1_dim_array_to_flat_array(x):
 # API #
 # ----#
 
-def array(object_in, dtype_str=None, dev_str=None):
+def array(object_in, dtype=None, dev_str=None):
     cont = _mxnet_init_context(default_device(dev_str))
-    return _mx.nd.array(object_in, cont, dtype=dtype_str)
+    return _mx.nd.array(object_in, cont, dtype=dtype)
 
 
 def is_array(x, exclusive=False):
@@ -137,16 +137,16 @@ def abs(x):
 argmax = lambda x, axis=0: _mx.nd.argmax(x, axis)
 argmin = lambda x, axis=0: _mx.nd.argmin(x, axis)
 argsort = lambda x, axis=-1: _mx.nd.argsort(x, axis)
-cast = lambda x, dtype_str: x.astype(dtype_str)
+cast = lambda x, dtype: x.astype(dtype)
 
 
 # noinspection PyUnresolvedReferences
-def arange(stop, start=0, step=1, dtype_str=None, dev_str=None):
+def arange(stop, start=0, step=1, dtype=None, dev_str=None):
     cont = _mxnet_init_context(default_device(dev_str))
     stop = stop if isinstance(stop, Number) else stop.asscalar()
     start = start if isinstance(start, Number) else start.asscalar()
     step = step if isinstance(step, Number) else step.asscalar()
-    return _mx.nd.arange(start, stop, ctx=cont, step=step, dtype=dtype_str)
+    return _mx.nd.arange(start, stop, ctx=cont, step=step, dtype=dtype)
 
 
 def _linspace(start, stop, num, cont):
@@ -371,33 +371,33 @@ def squeeze(x, axis=None):
 
 
 # noinspection PyShadowingNames
-def zeros(shape, dtype_str='float32', dev_str=None):
+def zeros(shape, dtype='float32', dev_str=None):
     cont = _mxnet_init_context(default_device(dev_str))
     if len(shape) == 0:
-        return _1_dim_array_to_flat_array(_mx.nd.zeros((1,), ctx=cont).astype(dtype_str))
-    return _mx.nd.zeros(shape, ctx=cont).astype(dtype_str)
+        return _1_dim_array_to_flat_array(_mx.nd.zeros((1,), ctx=cont).astype(dtype))
+    return _mx.nd.zeros(shape, ctx=cont).astype(dtype)
 
 
-def zeros_like(x, dtype_str=None, dev_str=None):
+def zeros_like(x, dtype=None, dev_str=None):
     if x.shape == ():
         return _mx.nd.array(0., ctx=_mxnet_init_context(default_device(dev_str)))
     mx_zeros = _mx.nd.zeros_like(x, ctx=_mxnet_init_context(default_device(dev_str)))
-    return mx_zeros if not dtype_str else mx_zeros.astype(dtype_str)
+    return mx_zeros if not dtype else mx_zeros.astype(dtype)
 
 
 # noinspection PyShadowingNames
-def ones(shape, dtype_str='float32', dev_str=None):
+def ones(shape, dtype='float32', dev_str=None):
     cont = _mxnet_init_context(default_device(dev_str))
     if len(shape) == 0:
-        return _1_dim_array_to_flat_array(_mx.nd.ones((1,), ctx=cont).astype(dtype_str))
-    return _mx.nd.ones(shape, ctx=cont).astype(dtype_str)
+        return _1_dim_array_to_flat_array(_mx.nd.ones((1,), ctx=cont).astype(dtype))
+    return _mx.nd.ones(shape, ctx=cont).astype(dtype)
 
 
-def ones_like(x, dtype_str=None, dev_str=None):
+def ones_like(x, dtype=None, dev_str=None):
     if x.shape == ():
         return _mx.nd.array(1., ctx=_mxnet_init_context(default_device(dev_str)))
     mx_ones = _mx.nd.ones_like(x, ctx=_mxnet_init_context(default_device(dev_str)))
-    return mx_ones if dtype_str is None else mx_ones.astype(dtype_str)
+    return mx_ones if dtype is None else mx_ones.astype(dtype)
 
 
 # noinspection PyUnusedLocal
@@ -455,8 +455,8 @@ def cumprod(x, axis=0, exclusive=False):
     return _mx.nd.concat(*new_array_list, dim=axis)
 
 
-def identity(n, dtype_str='float32', batch_shape=None, dev_str=None):
-    mat = _mx.nd.eye(n, dtype=dtype_str).copyto(_mxnet_init_context(default_device(dev_str)))
+def identity(n, dtype='float32', batch_shape=None, dev_str=None):
+    mat = _mx.nd.eye(n, dtype=dtype).copyto(_mxnet_init_context(default_device(dev_str)))
     if batch_shape is None:
         return mat
     else:
@@ -544,7 +544,7 @@ def linear_resample(x, num_samples, axis=-1):
 
 dtype = lambda x: x.dtype
 dtype.__name__ = 'dtype'
-dtype_str = lambda x: DTYPE_DICT[x.dtype]
+dtype = lambda x: DTYPE_DICT[x.dtype]
 dtype_to_str = lambda dtype_in: DTYPE_DICT[dtype_in]
 
 

@@ -22,10 +22,10 @@ from ivy.core.container import Container
 @pytest.mark.parametrize(
     "with_v", [True, False])
 @pytest.mark.parametrize(
-    "dtype_str", ['float32'])
+    "dtype", ['float32'])
 @pytest.mark.parametrize(
     "tensor_fn", [ivy.array, helpers.var_fn])
-def test_linear_layer_training(bs_ic_oc, with_v, dtype_str, tensor_fn, dev_str, compile_graph, call):
+def test_linear_layer_training(bs_ic_oc, with_v, dtype, tensor_fn, dev_str, compile_graph, call):
     # smoke test
     if call is helpers.np_call:
         # NumPy does not support gradients
@@ -110,10 +110,10 @@ def test_linear_layer_training(bs_ic_oc, with_v, dtype_str, tensor_fn, dev_str, 
 @pytest.mark.parametrize(
     "with_v", [True, False])
 @pytest.mark.parametrize(
-    "dtype_str", ['float32'])
+    "dtype", ['float32'])
 @pytest.mark.parametrize(
     "tensor_fn", [ivy.array, helpers.var_fn])
-def test_conv1d_layer_training(x_n_fs_n_pad_n_oc, with_v, dtype_str, tensor_fn, dev_str, compile_graph, call):
+def test_conv1d_layer_training(x_n_fs_n_pad_n_oc, with_v, dtype, tensor_fn, dev_str, compile_graph, call):
     if call in [helpers.tf_call, helpers.tf_graph_call] and 'cpu' in dev_str:
         # tf conv1d does not work when CUDA is installed, but array is on CPU
         pytest.skip()
@@ -122,7 +122,7 @@ def test_conv1d_layer_training(x_n_fs_n_pad_n_oc, with_v, dtype_str, tensor_fn, 
         pytest.skip()
     # smoke test
     x, filter_size, padding, output_channels = x_n_fs_n_pad_n_oc
-    x = tensor_fn(x, dtype_str, dev_str)
+    x = tensor_fn(x, dtype, dev_str)
     input_channels = x.shape[-1]
     if with_v:
         np.random.seed(0)
@@ -200,10 +200,10 @@ def test_conv1d_layer_training(x_n_fs_n_pad_n_oc, with_v, dtype_str, tensor_fn, 
 @pytest.mark.parametrize(
     "with_v", [True, False])
 @pytest.mark.parametrize(
-    "dtype_str", ['float32'])
+    "dtype", ['float32'])
 @pytest.mark.parametrize(
     "tensor_fn", [ivy.array, helpers.var_fn])
-def test_conv1d_transpose_layer_training(x_n_fs_n_pad_n_outshp_n_oc, with_v, dtype_str, tensor_fn, dev_str,
+def test_conv1d_transpose_layer_training(x_n_fs_n_pad_n_outshp_n_oc, with_v, dtype, tensor_fn, dev_str,
                                          compile_graph, call):
     if call in [helpers.tf_call, helpers.tf_graph_call] and 'cpu' in dev_str:
         # tf conv1d does not work when CUDA is installed, but array is on CPU
@@ -213,7 +213,7 @@ def test_conv1d_transpose_layer_training(x_n_fs_n_pad_n_outshp_n_oc, with_v, dty
         pytest.skip()
     # smoke test
     x, filter_size, padding, out_shape, output_channels = x_n_fs_n_pad_n_outshp_n_oc
-    x = tensor_fn(x, dtype_str, dev_str)
+    x = tensor_fn(x, dtype, dev_str)
     input_channels = x.shape[-1]
     if with_v:
         np.random.seed(0)
@@ -300,10 +300,10 @@ def test_conv1d_transpose_layer_training(x_n_fs_n_pad_n_outshp_n_oc, with_v, dty
 @pytest.mark.parametrize(
     "with_v", [True, False])
 @pytest.mark.parametrize(
-    "dtype_str", ['float32'])
+    "dtype", ['float32'])
 @pytest.mark.parametrize(
     "tensor_fn", [ivy.array, helpers.var_fn])
-def test_conv2d_layer_training(x_n_fs_n_pad_n_oc, with_v, dtype_str, tensor_fn, dev_str, compile_graph, call):
+def test_conv2d_layer_training(x_n_fs_n_pad_n_oc, with_v, dtype, tensor_fn, dev_str, compile_graph, call):
     if call in [helpers.tf_call, helpers.tf_graph_call] and 'cpu' in dev_str:
         # tf conv1d does not work when CUDA is installed, but array is on CPU
         pytest.skip()
@@ -312,7 +312,7 @@ def test_conv2d_layer_training(x_n_fs_n_pad_n_oc, with_v, dtype_str, tensor_fn, 
         pytest.skip()
     # smoke test
     x, filter_shape, padding, output_channels = x_n_fs_n_pad_n_oc
-    x = tensor_fn(x, dtype_str, dev_str)
+    x = tensor_fn(x, dtype, dev_str)
     input_channels = x.shape[-1]
     if with_v:
         np.random.seed(0)
@@ -396,10 +396,10 @@ def test_conv2d_layer_training(x_n_fs_n_pad_n_oc, with_v, dtype_str, tensor_fn, 
 @pytest.mark.parametrize(
     "with_v", [True, False])
 @pytest.mark.parametrize(
-    "dtype_str", ['float32'])
+    "dtype", ['float32'])
 @pytest.mark.parametrize(
     "tensor_fn", [ivy.array, helpers.var_fn])
-def test_conv2d_transpose_layer_training(x_n_fs_n_pad_n_outshp_n_oc, with_v, dtype_str, tensor_fn, dev_str,
+def test_conv2d_transpose_layer_training(x_n_fs_n_pad_n_outshp_n_oc, with_v, dtype, tensor_fn, dev_str,
                                          compile_graph, call):
     if call in [helpers.tf_call, helpers.tf_graph_call] and 'cpu' in dev_str:
         # tf conv1d does not work when CUDA is installed, but array is on CPU
@@ -409,7 +409,7 @@ def test_conv2d_transpose_layer_training(x_n_fs_n_pad_n_outshp_n_oc, with_v, dty
         pytest.skip()
     # smoke test
     x, filter_shape, padding, out_shape, output_channels = x_n_fs_n_pad_n_outshp_n_oc
-    x = tensor_fn(x, dtype_str, dev_str)
+    x = tensor_fn(x, dtype, dev_str)
     input_channels = x.shape[-1]
     if with_v:
         np.random.seed(0)
@@ -488,10 +488,10 @@ def test_conv2d_transpose_layer_training(x_n_fs_n_pad_n_outshp_n_oc, with_v, dty
 @pytest.mark.parametrize(
     "with_v", [True, False])
 @pytest.mark.parametrize(
-    "dtype_str", ['float32'])
+    "dtype", ['float32'])
 @pytest.mark.parametrize(
     "tensor_fn", [ivy.array, helpers.var_fn])
-def test_depthwise_conv2d_layer_training(x_n_fs_n_pad, with_v, dtype_str, tensor_fn, dev_str, compile_graph, call):
+def test_depthwise_conv2d_layer_training(x_n_fs_n_pad, with_v, dtype, tensor_fn, dev_str, compile_graph, call):
     if call in [helpers.tf_call, helpers.tf_graph_call] and 'cpu' in dev_str:
         # tf conv1d does not work when CUDA is installed, but array is on CPU
         pytest.skip()
@@ -500,7 +500,7 @@ def test_depthwise_conv2d_layer_training(x_n_fs_n_pad, with_v, dtype_str, tensor
         pytest.skip()
     # smoke test
     x, filter_shape, padding = x_n_fs_n_pad
-    x = tensor_fn(x, dtype_str, dev_str)
+    x = tensor_fn(x, dtype, dev_str)
     num_channels = x.shape[-1]
     if with_v:
         np.random.seed(0)
@@ -581,10 +581,10 @@ def test_depthwise_conv2d_layer_training(x_n_fs_n_pad, with_v, dtype_str, tensor
 @pytest.mark.parametrize(
     "with_v", [True, False])
 @pytest.mark.parametrize(
-    "dtype_str", ['float32'])
+    "dtype", ['float32'])
 @pytest.mark.parametrize(
     "tensor_fn", [ivy.array, helpers.var_fn])
-def test_conv3d_layer_training(x_n_fs_n_pad_n_oc, with_v, dtype_str, tensor_fn, dev_str, compile_graph, call):
+def test_conv3d_layer_training(x_n_fs_n_pad_n_oc, with_v, dtype, tensor_fn, dev_str, compile_graph, call):
     if call in [helpers.tf_call, helpers.tf_graph_call] and 'cpu' in dev_str:
         # tf conv1d does not work when CUDA is installed, but array is on CPU
         pytest.skip()
@@ -593,7 +593,7 @@ def test_conv3d_layer_training(x_n_fs_n_pad_n_oc, with_v, dtype_str, tensor_fn, 
         pytest.skip()
     # smoke test
     x, filter_shape, padding, output_channels = x_n_fs_n_pad_n_oc
-    x = tensor_fn(x, dtype_str, dev_str)
+    x = tensor_fn(x, dtype, dev_str)
     input_channels = x.shape[-1]
     if with_v:
         np.random.seed(0)
@@ -677,10 +677,10 @@ def test_conv3d_layer_training(x_n_fs_n_pad_n_oc, with_v, dtype_str, tensor_fn, 
 @pytest.mark.parametrize(
     "with_v", [True, False])
 @pytest.mark.parametrize(
-    "dtype_str", ['float32'])
+    "dtype", ['float32'])
 @pytest.mark.parametrize(
     "tensor_fn", [ivy.array, helpers.var_fn])
-def test_conv3d_transpose_layer_training(x_n_fs_n_pad_n_outshp_n_oc, with_v, dtype_str, tensor_fn, dev_str,
+def test_conv3d_transpose_layer_training(x_n_fs_n_pad_n_outshp_n_oc, with_v, dtype, tensor_fn, dev_str,
                                          compile_graph, call):
     if call in [helpers.tf_call, helpers.tf_graph_call] and 'cpu' in dev_str:
         # tf conv1d does not work when CUDA is installed, but array is on CPU
@@ -693,7 +693,7 @@ def test_conv3d_transpose_layer_training(x_n_fs_n_pad_n_outshp_n_oc, with_v, dty
         pytest.skip()
     # smoke test
     x, filter_shape, padding, out_shape, output_channels = x_n_fs_n_pad_n_outshp_n_oc
-    x = tensor_fn(x, dtype_str, dev_str)
+    x = tensor_fn(x, dtype, dev_str)
     input_channels = x.shape[-1]
     if with_v:
         np.random.seed(0)
@@ -759,10 +759,10 @@ def test_conv3d_transpose_layer_training(x_n_fs_n_pad_n_outshp_n_oc, with_v, dty
 @pytest.mark.parametrize(
     "with_v", [False])
 @pytest.mark.parametrize(
-    "dtype_str", ['float32'])
+    "dtype", ['float32'])
 @pytest.mark.parametrize(
     "tensor_fn", [ivy.array])
-def test_lstm_layer_training(b_t_ic_hc_otf_sctv, with_v, dtype_str, tensor_fn, dev_str, compile_graph, call):
+def test_lstm_layer_training(b_t_ic_hc_otf_sctv, with_v, dtype, tensor_fn, dev_str, compile_graph, call):
     # smoke test
     if call is helpers.np_call:
         # NumPy does not support gradients
@@ -834,10 +834,10 @@ def test_lstm_layer_training(b_t_ic_hc_otf_sctv, with_v, dtype_str, tensor_fn, d
 @pytest.mark.parametrize(
     "seq_v", [True, False])
 @pytest.mark.parametrize(
-    "dtype_str", ['float32'])
+    "dtype", ['float32'])
 @pytest.mark.parametrize(
     "tensor_fn", [ivy.array, helpers.var_fn])
-def test_sequential_layer_training(bs_c, with_v, seq_v, dtype_str, tensor_fn, dev_str, compile_graph, call):
+def test_sequential_layer_training(bs_c, with_v, seq_v, dtype, tensor_fn, dev_str, compile_graph, call):
     # smoke test
     if call is helpers.np_call:
         # NumPy does not support gradients
