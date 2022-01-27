@@ -10,8 +10,7 @@ from ivy.core.device import default_device
 
 
 def random_uniform(low=0., high=1., shape=None, dev=None):
-    dev = default_device(dev)
-    with _tf.device('/' + dev.upper()):
+    with _tf.device(default_device(dev)):
         return _tf.random.uniform(shape if shape else (), low, high)
 
 

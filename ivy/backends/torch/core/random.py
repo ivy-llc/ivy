@@ -17,7 +17,7 @@ def random_uniform(low: float = 0.0, high: float = 1.0, shape: Optional[List[int
         true_shape: List[int] = []
     else:
         true_shape: List[int] = shape
-    return _torch.rand(true_shape, device=default_device(dev).replace('gpu', 'cuda')) * rand_range + low
+    return _torch.rand(true_shape, device=default_device(dev)) * rand_range + low
 
 
 def random_normal(mean: float = 0.0, std: float = 1.0, shape: Optional[List[int]] = None, dev: ivy.Device = None):

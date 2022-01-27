@@ -330,7 +330,7 @@ def default_device(dev=None):
     global default_device_stack
     if not default_device_stack:
         default_device_stack = ['gpu:0'] if ivy.gpu_is_available() else ['cpu']
-    return default_device_stack[-1]
+    return ivy.dev_from_str(default_device_stack[-1])
 
 
 # noinspection PyShadowingNames
