@@ -90,6 +90,9 @@ def array(object_in, dtype=None, dev=None):
     return to_dev(_jnp.array(object_in, dtype=dtype), default_device(dev))
 
 
+asarray = array
+
+
 # noinspection PyUnresolvedReferences,PyProtectedMember
 def is_array(x, exclusive=False):
     if exclusive:
