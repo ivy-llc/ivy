@@ -143,16 +143,12 @@ argsort = lambda x, axis=-1: _jnp.argsort(x, axis)
 
 
 def cast(x, dtype):
-    dtype_val = _jnp.__dict__[dtype if dtype != 'bool' else 'bool_']
-    return x.astype(dtype_val)
+    return x.astype(dtype_from_str(dtype))
 
 
 # noinspection PyShadowingNames
 def arange(stop, start=0, step=1, dtype=None, dev=None):
-    if dtype:
-        dtype = _jnp.__dict__[dtype]
-    else:
-        dtype = None
+    dtype = dtype_from_str(dtype)
     return to_dev(_jnp.arange(start, stop, step=step, dtype=dtype), default_device(dev))
 
 

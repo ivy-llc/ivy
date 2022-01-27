@@ -2056,15 +2056,13 @@ def test_dtype_to_str(x, dtype, tensor_fn, dev, call):
         # mxnet does not support 0-dimensional variables
         pytest.skip()
     x = tensor_fn(x, dtype, dev)
-    dtype = ivy.dtype(x)
-    ret = ivy.dtype_to_str(dtype)
+    dtype_as_str = ivy.dtype(x, as_str=True)
+    dtype_to_str = ivy.dtype_to_str(ivy.dtype(x))
     # type test
-    assert isinstance(ret, str)
+    assert isinstance(dtype_as_str, str)
+    assert isinstance(dtype_to_str, str)
     # value test
-    assert ret == dtype
-    # compilation test
-    if not ivy.wrapped_mode():
-        helpers.assert_compilable(ivy.dtype_to_str)
+    assert dtype_to_str == dtype_as_str
 
 
 # dtype_from_str
