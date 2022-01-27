@@ -15,6 +15,6 @@ Device
    device/dev.rst
    device/to_dev.rst
    device/dev_to_str.rst
-   device/str_to_dev.rst
+   device/dev_from_str.rst
    device/Profiler.rst
 
