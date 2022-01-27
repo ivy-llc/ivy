@@ -15,16 +15,33 @@ from ivy.core.device import default_device
 from ivy.backends.numpy.core.device import _dev_callable
 
 
-DTYPE_DICT = {_np.dtype('bool_'): 'bool',
-              _np.dtype('bool8'): 'bool',
-              _np.dtype('int8'): 'int8',
-              _np.dtype('uint8'): 'uint8',
-              _np.dtype('int16'): 'int16',
-              _np.dtype('int32'): 'int32',
-              _np.dtype('int64'): 'int64',
-              _np.dtype('float16'): 'float16',
-              _np.dtype('float32'): 'float32',
-              _np.dtype('float64'): 'float64'}
+DTYPE_TO_STR = {_np.int8: 'int8',
+                _np.int16: 'int16',
+                _np.int32: 'int32',
+                _np.int64: 'int64',
+                _np.uint8: 'uint8',
+                _np.uint16: 'uint16',
+                _np.uint32: 'uint32',
+                _np.uint64: 'uint64',
+                _np.bfloat16: 'bfloat16',
+                _np.float16: 'float16',
+                _np.float32: 'float32',
+                _np.float64: 'float64',
+                _np.bool: 'bool'}
+
+STR_TO_DTYPE = {'int8': _np.int8,
+                'int16': _np.int16,
+                'int32': _np.int32,
+                'int64': _np.int64,
+                'uint8': _np.uint8,
+                'uint16': _np.uint16,
+                'uint32': _np.uint32,
+                'uint64': _np.uint64,
+                'bfloat16': _np.bfloat16,
+                'float16': _np.float16,
+                'float32': _np.float32,
+                'float64': _np.float64,
+                'bool': _np.bool}
 
 
 # Helpers #
@@ -118,9 +135,9 @@ def arange(stop, start=0, step=1, dtype=None, dev=None):
         dtype = None
     res = _to_dev(_np.arange(start, stop, step=step, dtype=dtype), default_device(dev))
     if not dtype:
-        if res.dtype == _np.dtype('float64'):
+        if res.dtype == _np.float64:
             return res.astype(_np.float32)
-        elif res.dtype == _np.dtype('int64'):
+        elif res.dtype == _np.int64:
             return res.astype(_np.int32)
     return res
 

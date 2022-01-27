@@ -19,15 +19,33 @@ from tensorflow.python.types.core import Tensor
 from ivy.core.device import default_device
 from ivy.backends.tensorflow.core.device import _dev_callable
 
-DTYPE_DICT = {_tf.bool: 'bool',
-              _tf.int8: 'int8',
-              _tf.uint8: 'uint8',
-              _tf.int16: 'int16',
-              _tf.int32: 'int32',
-              _tf.int64: 'int64',
-              _tf.float16: 'float16',
-              _tf.float32: 'float32',
-              _tf.float64: 'float64'}
+DTYPE_TO_STR = {_tf.int8: 'int8',
+                _tf.int16: 'int16',
+                _tf.int32: 'int32',
+                _tf.int64: 'int64',
+                _tf.uint8: 'uint8',
+                _tf.uint16: 'uint16',
+                _tf.uint32: 'uint32',
+                _tf.uint64: 'uint64',
+                _tf.bfloat16: 'bfloat16',
+                _tf.float16: 'float16',
+                _tf.float32: 'float32',
+                _tf.float64: 'float64',
+                _tf.bool: 'bool'}
+
+STR_TO_DTYPE = {'int8': _tf.int8,
+                'int16': _tf.int16,
+                'int32': _tf.int32,
+                'int64': _tf.int64,
+                'uint8': _tf.uint8,
+                'uint16': _tf.uint16,
+                'uint32': _tf.uint32,
+                'uint64': _tf.uint64,
+                'bfloat16': _tf.bfloat16,
+                'float16': _tf.float16,
+                'float32': _tf.float32,
+                'float64': _tf.float64,
+                'bool': _tf.bool}
 
 
 # API #
