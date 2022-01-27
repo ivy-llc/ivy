@@ -21,7 +21,7 @@ def dev(x, as_str=False):
 
 def to_dev(x, dev=None):
     if dev is not None:
-        return x.as_in_context(str_to_dev(dev))
+        return x.as_in_context(dev_from_str(dev))
     return x
 
 
@@ -32,7 +32,7 @@ def dev_to_str(dev_in):
     return device_type + (':' + (str(dev_in.device_id) if dev_in.device_id is not None else '0'))
 
 
-def str_to_dev(dev):
+def dev_from_str(dev):
     if not isinstance(dev, str):
         return dev
     dev_split = dev.split(':')

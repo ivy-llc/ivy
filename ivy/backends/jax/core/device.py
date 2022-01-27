@@ -40,7 +40,7 @@ def to_dev(x, dev=None):
     if dev is not None:
         cur_dev = dev_to_str(_callable_dev(x))
         if cur_dev != dev:
-            x = _jax.device_put(x, str_to_dev(dev))
+            x = _jax.device_put(x, dev_from_str(dev))
     return x
 
 
@@ -53,7 +53,7 @@ def dev_to_str(dev_in):
     return p + ':' + str(dev_id)
 
 
-def str_to_dev(dev):
+def dev_from_str(dev):
     if not isinstance(dev, str):
         return dev
     dev_split = dev.split(':')
