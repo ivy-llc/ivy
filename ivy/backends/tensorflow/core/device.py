@@ -34,7 +34,7 @@ def to_dev(x, dev=None):
 
 
 def dev_to_str(dev):
-    if isinstance(dev, str):
+    if isinstance(dev, str) and '/' not in dev:
         return dev
     dev_in_split = dev[1:].split(':')[-2:]
     if len(dev_in_split) == 1:
@@ -47,7 +47,7 @@ def dev_to_str(dev):
 
 
 def dev_from_str(dev):
-    if not isinstance(dev, str):
+    if isinstance(dev, str) and '/' in dev:
         return dev
     ret = '/' + dev.upper()
     if not ret[-1].isnumeric():

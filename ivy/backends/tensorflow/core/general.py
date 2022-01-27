@@ -111,8 +111,7 @@ argsort = lambda x, axis=-1: _tf.argsort(x, axis)
 
 
 def cast(x, dtype):
-    dtype_val = _tf.__dict__[dtype]
-    return _tf.cast(x, dtype_val)
+    return _tf.cast(x, dtype_from_str(dtype))
 
 
 # noinspection PyShadowingNames
@@ -127,7 +126,7 @@ def linspace(start, stop, num, axis=None, dev=None):
     if axis is None:
         axis = -1
     dev = default_device(dev)
-    with _tf.device('/' + dev.upper()):
+    with _tf.device(ivy.dev_from_str(dev)):
         return _tf.linspace(start, stop, num, axis=axis)
 
 
