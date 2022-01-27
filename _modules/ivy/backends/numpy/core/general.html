@@ -605,7 +605,10 @@
     <span class="k">return</span> <span class="n">dt</span></div>
 
 
-<span class="n">dtype_to_str</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">dtype_in</span><span class="p">:</span> <span class="n">DTYPE_DICT</span><span class="p">[</span><span class="n">dtype_in</span><span class="p">]</span>
+<div class="viewcode-block" id="dtype_to_str"><a class="viewcode-back" href="../../../../../backends/numpy/core/general/dtype_to_str.html#ivy.backends.numpy.core.general.dtype_to_str">[docs]</a><span class="k">def</span> <span class="nf">dtype_to_str</span><span class="p">(</span><span class="n">dtype_in</span><span class="p">):</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">dtype_in</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">dtype_in</span>
+    <span class="k">return</span> <span class="n">DTYPE_DICT</span><span class="p">[</span><span class="n">dtype_in</span><span class="p">]</span></div>
 
 
 <span class="c1"># noinspection PyUnusedLocal</span>
