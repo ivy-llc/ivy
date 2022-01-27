@@ -30,4 +30,7 @@ float64 = tf.float64
 # noinspection PyShadowingBuiltins
 bool = tf.bool
 
+iinfo = tf.experimental.numpy.iinfo
+finfo = tf.experimental.numpy.finfo
+
 backend = 'tensorflow'
