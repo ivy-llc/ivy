@@ -4,9 +4,9 @@ Collection of PyTorch general functions, wrapped to fit Ivy syntax and signature
 
 # global
 import os
-import torch as _torch
 import importlib
 torch_scatter = None
+import torch as _torch
 from typing import Optional
 from torch.profiler import ProfilerActivity
 from torch.profiler import profile as _profile
