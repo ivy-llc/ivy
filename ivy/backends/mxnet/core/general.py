@@ -14,8 +14,8 @@ from functools import reduce as _reduce
 import multiprocessing as _multiprocessing
 
 # local
-from ivy.core.device import default_device, dev_to_str
-from ivy.backends.mxnet.core.device import _callable_dev
+from ivy.core.device import default_device
+from ivy.backends.mxnet.core.device import _callable_dev, dev_to_str
 
 
 DTYPE_TO_STR = {_np.dtype('int8'): 'int8',
