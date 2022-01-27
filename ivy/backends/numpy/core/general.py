@@ -89,6 +89,9 @@ def array(object_in, dtype=None, dev=None):
     return _to_dev(_np.array(object_in, dtype=dtype), dev)
 
 
+asarray = array
+
+
 def is_array(x, exclusive=False):
     if isinstance(x, _np.ndarray):
         return True
