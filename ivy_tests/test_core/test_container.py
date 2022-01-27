@@ -1042,7 +1042,7 @@ def test_container_clone(dev, call):
     # without key_chains specification
     container_cloned = container.dev_clone(devs)
     assert isinstance(container_cloned, ivy.DevClonedItem)
-    assert min([cont.dev == ds for ds, cont in container_cloned.items()])
+    assert min([cont.dev_str == ds for ds, cont in container_cloned.items()])
     assert ivy.Container.multi_map(
         lambda xs, _: ivy.arrays_equal(xs), [c for c in container_cloned.values()]).all_true()
 
@@ -1076,7 +1076,7 @@ def test_container_distribute(devs_as_dict, dev, call):
     # without key_chains specification
     container_dist = container.dev_dist(devs)
     assert isinstance(container_dist, ivy.DevDistItem)
-    assert min([cont.dev == ds for ds, cont in container_dist.items()])
+    assert min([cont.dev_str == ds for ds, cont in container_dist.items()])
     for i, sub_cont in enumerate(container_dist.values()):
         assert np.array_equal(ivy.to_numpy(sub_cont.a), ivy.to_numpy(array_a)[i*sub_size:i*sub_size+sub_size])
         assert np.array_equal(ivy.to_numpy(sub_cont.b.c), ivy.to_numpy(array_bc)[i*sub_size:i*sub_size+sub_size])
@@ -1446,12 +1446,12 @@ def test_container_to_dev(dev, call):
     container = Container(dict_in)
 
     container_to_cpu = container.to_dev(dev)
-    assert ivy.dev(container_to_cpu['a']) == dev
-    assert ivy.dev(container_to_cpu.a) == dev
-    assert ivy.dev(container_to_cpu['b']['c']) == dev
-    assert ivy.dev(container_to_cpu.b.c) == dev
-    assert ivy.dev(container_to_cpu['b']['d']) == dev
-    assert ivy.dev(container_to_cpu.b.d) == dev
+    assert ivy.dev(container_to_cpu['a'], as_str=True) == dev
+    assert ivy.dev(container_to_cpu.a, as_str=True) == dev
+    assert ivy.dev(container_to_cpu['b']['c'], as_str=True) == dev
+    assert ivy.dev(container_to_cpu.b.c, as_str=True) == dev
+    assert ivy.dev(container_to_cpu['b']['d'], as_str=True) == dev
+    assert ivy.dev(container_to_cpu.b.d, as_str=True) == dev
 
 
 def test_container_stop_gradients(dev, call):
@@ -3690,12 +3690,12 @@ def test_container_shapes(dev, call):
     assert list(container_shapes.b.d) == [1, 1]
 
 
-def test_container_dev(dev, call):
+def test_container_dev_str(dev, call):
     dict_in = {'a': ivy.array([[[1.], [2.], [3.]]], dev=dev),
                'b': {'c': ivy.array([[[2.], [4.], [6.]]], dev=dev),
                      'd': ivy.array([[[3.], [6.], [9.]]], dev=dev)}}
     container = Container(dict_in)
-    assert container.dev == dev
+    assert container.dev_str == dev
 
 
 def test_container_create_if_absent(dev, call):
