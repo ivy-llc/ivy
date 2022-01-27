@@ -304,7 +304,7 @@
 <span class="c1"># Retreival #</span>
 
 <div class="viewcode-block" id="dev"><a class="viewcode-back" href="../../../core/device/dev.html#ivy.core.device.dev">[docs]</a><span class="k">def</span> <span class="nf">dev</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span> <span class="n">as_str</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">f</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Framework</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span>\
-        <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Device</span><span class="p">:</span>
+        <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Device</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Get the native device handle for input array x.</span>
 
@@ -321,22 +321,22 @@
 
 <span class="c1"># Conversions #</span>
 
-<div class="viewcode-block" id="dev_to_str"><a class="viewcode-back" href="../../../core/device/dev_to_str.html#ivy.core.device.dev_to_str">[docs]</a><span class="k">def</span> <span class="nf">dev_to_str</span><span class="p">(</span><span class="n">dev_in</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Device</span><span class="p">,</span> <span class="n">f</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Framework</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span>\
+<div class="viewcode-block" id="dev_to_str"><a class="viewcode-back" href="../../../core/device/dev_to_str.html#ivy.core.device.dev_to_str">[docs]</a><span class="k">def</span> <span class="nf">dev_to_str</span><span class="p">(</span><span class="n">dev</span><span class="p">:</span> <span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Device</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span> <span class="n">f</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Framework</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span>\
         <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Convert native data type to string representation.</span>
 
-<span class="sd">    :param dev_in: The device handle to convert to string.</span>
-<span class="sd">    :type dev_in: device handle</span>
+<span class="sd">    :param dev: The device handle to convert to string.</span>
+<span class="sd">    :type dev: device handle</span>
 <span class="sd">    :param f: Machine learning framework. Inferred from inputs if None.</span>
 <span class="sd">    :type f: ml_framework, optional</span>
 <span class="sd">    :return: Device string e.g. &#39;cuda:0&#39;.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">dev_to_str</span><span class="p">(</span><span class="n">dev_in</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">dev_to_str</span><span class="p">(</span><span class="n">dev</span><span class="p">)</span></div>
 
 
 <span class="c1"># noinspection PyShadowingNames</span>
-<div class="viewcode-block" id="dev_from_str"><a class="viewcode-back" href="../../../core/device/dev_from_str.html#ivy.core.device.dev_from_str">[docs]</a><span class="k">def</span> <span class="nf">dev_from_str</span><span class="p">(</span><span class="n">dev</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Device</span><span class="p">,</span> <span class="n">f</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Framework</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span>\
+<div class="viewcode-block" id="dev_from_str"><a class="viewcode-back" href="../../../core/device/dev_from_str.html#ivy.core.device.dev_from_str">[docs]</a><span class="k">def</span> <span class="nf">dev_from_str</span><span class="p">(</span><span class="n">dev</span><span class="p">:</span> <span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Device</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span> <span class="n">f</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Framework</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span>\
         <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Device</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Convert device string representation to native device type.</span>
@@ -530,7 +530,7 @@
 <span class="sd">    Return the input dev if provided, otherwise return the global default device.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">dev</span><span class="p">):</span>
-        <span class="n">_assert_dev_correct_formatting</span><span class="p">(</span><span class="n">dev</span><span class="p">)</span>
+        <span class="n">_assert_dev_correct_formatting</span><span class="p">(</span><span class="n">ivy</span><span class="o">.</span><span class="n">dev_to_str</span><span class="p">(</span><span class="n">dev</span><span class="p">))</span>
         <span class="k">return</span> <span class="n">dev</span>
     <span class="k">global</span> <span class="n">default_device_stack</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">default_device_stack</span><span class="p">:</span>
