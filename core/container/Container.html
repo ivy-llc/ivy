@@ -770,6 +770,12 @@ of duplicates.</p>
 </dd></dl>
 
 <dl class="py method">
+<dt id="ivy.core.container.Container.dev_str">
+<em class="property">property </em><code class="sig-name descname">dev_str</code><a class="headerlink" href="#ivy.core.container.Container.dev_str" title="Permalink to this definition">¶</a></dt>
+<dd><p>The device to which the arrays in the container belong, with None returned if the devices are not consistent</p>
+</dd></dl>
+
+<dl class="py method">
 <dt id="ivy.core.container.Container.diff">
 <em class="property">static </em><code class="sig-name descname">diff</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">containers</span></em>, <em class="sig-param"><span class="n">mode</span><span class="o">=</span><span class="default_value">'all'</span></em>, <em class="sig-param"><span class="n">diff_keys</span><span class="o">=</span><span class="default_value">'diff'</span></em>, <em class="sig-param"><span class="n">detect_key_diffs</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">detect_value_diffs</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">detect_shape_diffs</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">config</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/core/container.html#Container.diff"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.core.container.Container.diff" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compare keys and values in a sequence of containers, returning the single shared values where they are the same,
