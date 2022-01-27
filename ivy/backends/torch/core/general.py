@@ -630,6 +630,8 @@ def dtype(x, as_str=False):
 
 
 def dtype_to_str(dtype_in):
+    if isinstance(dtype_in, str):
+        return dtype_in
     return {_torch.bool: 'bool',
             _torch.int8: 'int8',
             _torch.uint8: 'uint8',
