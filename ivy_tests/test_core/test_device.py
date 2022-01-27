@@ -62,21 +62,21 @@ def test_dev_to_str(x, dtype, tensor_fn, dev, call):
         helpers.assert_compilable(ivy.dev_to_str)
 
 
-# str_to_dev
+# dev_from_str
 @pytest.mark.parametrize(
     "x", [1, [], [1], [[0.0, 1.0], [2.0, 3.0]]])
 @pytest.mark.parametrize(
     "dtype", ['float32'])
 @pytest.mark.parametrize(
     "tensor_fn", [ivy.array, helpers.var_fn])
-def test_str_to_dev(x, dtype, tensor_fn, dev, call):
+def test_dev_from_str(x, dtype, tensor_fn, dev, call):
     # smoke test
     if (isinstance(x, Number) or len(x) == 0) and tensor_fn == helpers.var_fn and call is helpers.mx_call:
         # mxnet does not support 0-dimensional variables
         pytest.skip()
     x = tensor_fn(x, dtype, dev)
     dev_str = ivy.dev(x, as_str=True)
-    ret = ivy.str_to_dev(dev)
+    ret = ivy.dev_from_str(dev)
     # value test
     if call in [helpers.tf_call, helpers.tf_graph_call]:
         assert '/' + ':'.join(ret[1:].split(':')[-2:]) == '/' + ':'.join(dev[1:].split(':')[-2:])
@@ -89,7 +89,7 @@ def test_str_to_dev(x, dtype, tensor_fn, dev, call):
         # pytorch scripting does not handle converting string to device
         return
     if not ivy.wrapped_mode():
-        helpers.assert_compilable(ivy.str_to_dev)
+        helpers.assert_compilable(ivy.dev_from_str)
 
 
 # dev

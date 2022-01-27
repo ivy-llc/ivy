@@ -26,7 +26,7 @@ def dev(x, as_str=False):
 
 
 def to_dev(x, dev: Optional[str] = None):
-    ret = x.to(str_to_dev(dev))
+    ret = x.to(dev_from_str(dev))
     if isinstance(x, _torch.nn.Parameter):
         return _torch.nn.Parameter(ret)
     return ret
@@ -39,7 +39,7 @@ def dev_to_str(dev_in: _torch.device):
     return dev_type.replace('cuda', 'gpu') + (':' + (str(dev_idx) if dev_idx is not None else '0'))
 
 
-def str_to_dev(dev: Optional[str] = None) -> Optional[_torch.device]:
+def dev_from_str(dev: Optional[str] = None) -> Optional[_torch.device]:
     if not isinstance(dev, str):
         return dev
     return _torch.device(dev.replace('gpu', 'cuda'))
