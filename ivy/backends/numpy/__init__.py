@@ -30,4 +30,7 @@ float64 = np.dtype('float64')
 # noinspection PyShadowingBuiltins
 bool = np.dtype('bool')
 
+iinfo = np.iinfo
+finfo = np.finfo
+
 backend = 'numpy'
