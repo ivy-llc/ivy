@@ -98,7 +98,8 @@ def scaled_dot_product_attention(q, k, v, scale, mask=None):
     if ivy.exists(mask):
 
         # BS x Q x K
-        sim = ivy.where(ivy.logical_not(mask), -ivy.ones_like(sim)*np.finfo(np.dtype(ivy.dtype(sim))).max, sim)
+        sim = ivy.where(
+            ivy.logical_not(mask), -ivy.ones_like(sim)*np.finfo(np.dtype(ivy.dtype(sim, as_str=True))).max, sim)
 
     # BS x Q x K
     attn = ivy.softmax(sim, -1)
