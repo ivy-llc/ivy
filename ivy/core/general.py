@@ -73,6 +73,9 @@ def array(object_in: Union[List, ivy.Array, ivy.NativeArray], dtype: ivy.Dtype =
     return _cur_framework(object_in, f=f).array(object_in, dtype, dev)
 
 
+asarray = array
+
+
 def is_array(x: Any, exclusive: bool = False, f: ivy.Framework = None)\
         -> bool:
     """
