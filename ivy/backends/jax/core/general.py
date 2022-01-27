@@ -393,7 +393,12 @@ def dtype(x, as_str=False):
     return dt
 
 
-dtype_to_str = lambda dtype_in: DTYPE_DICT[dtype_in]
+def dtype_to_str(dtype_in):
+    if isinstance(dtype_in, str):
+        return dtype_in
+    return DTYPE_DICT[dtype_in]
+
+
 compile = lambda fn, dynamic=True, example_inputs=None, static_argnums=None, static_argnames=None:\
     _jax.jit(fn, static_argnums=static_argnums, static_argnames=static_argnames)
 current_framework_str = lambda: 'jax'
