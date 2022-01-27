@@ -9,6 +9,7 @@ jobs:
         with:
           path: ivy
           persist-credentials: false
+          submodules: 'recursive'
 
       - name: Run Tests
         run: |
