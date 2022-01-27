@@ -34,6 +34,9 @@ def array(object_in, dtype: Optional[str] = None, dev: Optional[str] = None):
         return _torch.tensor(object_in, device=dev_from_str(dev))
 
 
+asarray = array
+
+
 def is_array(x, exclusive=False):
     if isinstance(x, _torch.Tensor):
         if exclusive and x.requires_grad:
