@@ -16,7 +16,6 @@ General
    general/is_array.rst
    general/copy_array.rst
    general/array_equal.rst
-   general/dtype_from_str.rst
    general/to_numpy.rst
    general/to_scalar.rst
    general/to_list.rst
@@ -73,6 +72,7 @@ General
    general/linear_resample.rst
    general/dtype.rst
    general/dtype_to_str.rst
+   general/dtype_from_str.rst
    general/compile.rst
    general/current_framework_str.rst
    general/multiprocessing.rst

@@ -1602,6 +1602,20 @@
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">dtype_to_str</span><span class="p">(</span><span class="n">dtype_in</span><span class="p">)</span></div>
 
 
+<div class="viewcode-block" id="dtype_from_str"><a class="viewcode-back" href="../../../core/general/dtype_from_str.html#ivy.core.general.dtype_from_str">[docs]</a><span class="k">def</span> <span class="nf">dtype_from_str</span><span class="p">(</span><span class="n">dtype_in</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span> <span class="n">f</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Framework</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span>\
+        <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Convert data type string representation to native data type.</span>
+
+<span class="sd">    :param dtype_in: The data type string to convert to native data type.</span>
+<span class="sd">    :type dtype_in: str</span>
+<span class="sd">    :param f: Machine learning framework. Inferred from inputs if None.</span>
+<span class="sd">    :type f: ml_framework, optional</span>
+<span class="sd">    :return: data type e.g. ivy.float32.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">dtype_from_str</span><span class="p">(</span><span class="n">dtype_in</span><span class="p">)</span></div>
+
+
 <div class="viewcode-block" id="cache_fn"><a class="viewcode-back" href="../../../core/general/cache_fn.html#ivy.core.general.cache_fn">[docs]</a><span class="k">def</span> <span class="nf">cache_fn</span><span class="p">(</span><span class="n">func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">)</span>\
         <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
