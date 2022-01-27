@@ -897,9 +897,9 @@ class Container(dict):
     def _get_shapes(self):
         return self.map(lambda x, kc: x.shape if hasattr(x, 'shape') else None)
 
-    def _get_dev(self):
+    def _get_dev(self, as_str=False):
         sub_devs =\
-            [v for k, v in self.map(lambda x, kc: self._ivy.dev(x)
+            [v for k, v in self.map(lambda x, kc: self._ivy.dev(x, as_str=as_str)
             if self._ivy.is_array(x) else None).to_iterator() if v]
         if len(set(sub_devs)) <= 1:
             return sub_devs[0]
@@ -3638,6 +3638,13 @@ class Container(dict):
         The device to which the arrays in the container belong, with None returned if the devices are not consistent
         """
         return self._get_dev()
+
+    @property
+    def dev_str(self):
+        """
+        The device to which the arrays in the container belong, with None returned if the devices are not consistent
+        """
+        return self._get_dev(as_str=True)
 
     @property
     def ivy(self):
