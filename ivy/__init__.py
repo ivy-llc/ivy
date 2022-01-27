@@ -424,6 +424,8 @@ uint8 = 'uint8'
 uint16 = 'uint16'
 uint32 = 'uint32'
 uint64 = 'uint64'
+bfloat16 = 'bfloat16'
+float16 = 'float16'
 float32 = 'float32'
 float64 = 'float64'
 # noinspection PyShadowingBuiltins
