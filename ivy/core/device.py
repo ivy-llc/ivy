@@ -98,7 +98,7 @@ def print_all_arrays_on_dev(dev):
 # Retreival #
 
 def dev(x: Union[ivy.Array, ivy.NativeArray], as_str: bool = False, f: ivy.Framework = None)\
-        -> ivy.Device:
+        -> Union[ivy.Device, str]:
     """
     Get the native device handle for input array x.
 
@@ -115,22 +115,22 @@ def dev(x: Union[ivy.Array, ivy.NativeArray], as_str: bool = False, f: ivy.Frame
 
 # Conversions #
 
-def dev_to_str(dev_in: ivy.Device, f: ivy.Framework = None)\
+def dev_to_str(dev: [ivy.Device, str], f: ivy.Framework = None)\
         -> str:
     """
     Convert native data type to string representation.
 
-    :param dev_in: The device handle to convert to string.
-    :type dev_in: device handle
+    :param dev: The device handle to convert to string.
+    :type dev: device handle
     :param f: Machine learning framework. Inferred from inputs if None.
     :type f: ml_framework, optional
     :return: Device string e.g. 'cuda:0'.
     """
-    return _cur_framework(None, f=f).dev_to_str(dev_in)
+    return _cur_framework(None, f=f).dev_to_str(dev)
 
 
 # noinspection PyShadowingNames
-def dev_from_str(dev: ivy.Device, f: ivy.Framework = None)\
+def dev_from_str(dev: [ivy.Device, str], f: ivy.Framework = None)\
         -> ivy.Device:
     """
     Convert device string representation to native device type.
@@ -324,7 +324,7 @@ def default_device(dev=None):
     Return the input dev if provided, otherwise return the global default device.
     """
     if ivy.exists(dev):
-        _assert_dev_correct_formatting(dev)
+        _assert_dev_correct_formatting(ivy.dev_to_str(dev))
         return dev
     global default_device_stack
     if not default_device_stack:
