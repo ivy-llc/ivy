@@ -57,8 +57,6 @@ def test_dev_to_str(x, dtype, tensor_fn, dev, call):
     ret = ivy.dev_to_str(dev)
     # type test
     assert isinstance(ret, str)
-    # value test
-    assert ret == dev
     # compilation test
     if not ivy.wrapped_mode():
         helpers.assert_compilable(ivy.dev_to_str)
@@ -77,7 +75,7 @@ def test_str_to_dev(x, dtype, tensor_fn, dev, call):
         # mxnet does not support 0-dimensional variables
         pytest.skip()
     x = tensor_fn(x, dtype, dev)
-    dev = ivy.dev(x)
+    dev_str = ivy.dev(x, as_str=True)
     ret = ivy.str_to_dev(dev)
     # value test
     if call in [helpers.tf_call, helpers.tf_graph_call]:
