@@ -18,11 +18,13 @@ RUN pip3 install --upgrade torch-scatter -f https://pytorch-geometric.com/whl/to
 RUN pip3 install pytest
 
 # Install Ivy Upstream
-RUN git clone https://github.com/unifyai/ivy && \
+RUN git clone --recurse-submodules https://github.com/unifyai/ivy && \
     cd ivy && \
     cat requirements.txt | grep -v "ivy-" | pip3 install --no-cache-dir -r /dev/stdin && \
     cat optional.txt | grep -v "ivy-" | pip3 install --no-cache-dir -r /dev/stdin && \
-    python3 setup.py develop --no-deps
+    python3 setup.py develop --no-deps && \
+    cd ivy_tests/test_array_api && \
+    pip3 install --no-cache-dir -r requirements.txt
 
 # Install local requirements
 COPY requirements.txt /
