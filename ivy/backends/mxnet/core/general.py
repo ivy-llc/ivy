@@ -549,8 +549,10 @@ def dtype(x, as_str=False):
     return x.dtype
 
 
-dtype = lambda x: DTYPE_DICT[x.dtype]
-dtype_to_str = lambda dtype_in: DTYPE_DICT[dtype_in]
+def dtype_to_str(dtype_in):
+    if isinstance(dtype_in, str):
+        return dtype_in
+    return DTYPE_DICT[dtype_in]
 
 
 # noinspection PyUnusedLocal
