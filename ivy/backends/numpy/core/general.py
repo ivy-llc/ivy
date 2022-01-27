@@ -86,7 +86,7 @@ def array(object_in, dtype=None, dev=None):
         dtype = _np.__dict__[dtype]
     else:
         dtype = None
-    return _to_dev(_np.array(object_in, dtype=dtype), default_device(dev))
+    return _to_dev(_np.array(object_in, dtype=dtype), dev)
 
 
 def is_array(x, exclusive=False):
@@ -141,7 +141,7 @@ def cast(x, dtype):
 def arange(stop, start=0, step=1, dtype=None, dev=None):
     if dtype:
         dtype = dtype_from_str(dtype)
-    res = _to_dev(_np.arange(start, stop, step=step, dtype=dtype), default_device(dev))
+    res = _to_dev(_np.arange(start, stop, step=step, dtype=dtype), dev)
     if not dtype:
         if res.dtype == _np.float64:
             return res.astype(_np.float32)
@@ -153,13 +153,13 @@ def arange(stop, start=0, step=1, dtype=None, dev=None):
 def linspace(start, stop, num, axis=None, dev=None):
     if axis is None:
         axis = -1
-    return _to_dev(_np.linspace(start, stop, num, axis=axis), default_device(dev))
+    return _to_dev(_np.linspace(start, stop, num, axis=axis), dev)
 
 
 def logspace(start, stop, num, base=10., axis=None, dev=None):
     if axis is None:
         axis = -1
-    return _to_dev(_np.logspace(start, stop, num, base=base, axis=axis), default_device(dev))
+    return _to_dev(_np.logspace(start, stop, num, base=base, axis=axis), dev)
 
 
 def concatenate(xs, axis=-1):
@@ -254,7 +254,7 @@ def squeeze(x, axis=None):
 def zeros(shape, dtype='float32', dev=None):
     dtype = 'bool_' if dtype == 'bool' else dtype
     dtype = _np.__dict__[dtype]
-    return _to_dev(_np.zeros(shape, dtype), default_device(dev))
+    return _to_dev(_np.zeros(shape, dtype), dev)
 
 
 # noinspection PyShadowingNames
@@ -264,14 +264,14 @@ def zeros_like(x, dtype=None, dev=None):
         dtype = _np.__dict__[dtype]
     else:
         dtype = x.dtype
-    return _to_dev(_np.zeros_like(x, dtype=dtype), default_device(dev))
+    return _to_dev(_np.zeros_like(x, dtype=dtype), dev)
 
 
 # noinspection PyShadowingNames
 def ones(shape, dtype='float32', dev=None):
     dtype = 'bool_' if dtype == 'bool' else dtype
     dtype = _np.__dict__[dtype]
-    return _to_dev(_np.ones(shape, dtype), default_device(dev))
+    return _to_dev(_np.ones(shape, dtype), dev)
 
 
 # noinspection PyShadowingNames
@@ -281,7 +281,7 @@ def ones_like(x, dtype=None, dev=None):
         dtype = _np.__dict__[dtype]
     else:
         dtype = x.dtype
-    return _to_dev(_np.ones_like(x, dtype=dtype), default_device(dev))
+    return _to_dev(_np.ones_like(x, dtype=dtype), dev)
 
 
 # noinspection PyUnusedLocal
@@ -316,7 +316,7 @@ def identity(n, dtype='float32', batch_shape=None, dev=None):
         reshape_dims = [1] * len(batch_shape) + [n, n]
         tile_dims = list(batch_shape) + [1, 1]
         return_mat = _np.tile(_np.reshape(mat, reshape_dims), tile_dims)
-    return _to_dev(return_mat, default_device(dev))
+    return _to_dev(return_mat, dev)
 
 
 meshgrid = lambda *xs, indexing='ij': _np.meshgrid(*xs, indexing=indexing)
