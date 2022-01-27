@@ -33,9 +33,12 @@ def dev(x, as_str=False):
     return dv
 
 
+_callable_dev = dev
+
+
 def to_dev(x, dev=None):
     if dev is not None:
-        cur_dev = dev_to_str(dev(x))
+        cur_dev = dev_to_str(_callable_dev(x))
         if cur_dev != dev:
             x = _jax.device_put(x, str_to_dev(dev))
     return x
