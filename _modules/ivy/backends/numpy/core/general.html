@@ -221,16 +221,46 @@
 <span class="kn">from</span> <span class="nn">ivy.backends.numpy.core.device</span> <span class="kn">import</span> <span class="n">_dev_callable</span>
 
 
-<span class="n">DTYPE_DICT</span> <span class="o">=</span> <span class="p">{</span><span class="n">_np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="s1">&#39;bool_&#39;</span><span class="p">):</span> <span class="s1">&#39;bool&#39;</span><span class="p">,</span>
-              <span class="n">_np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="s1">&#39;bool8&#39;</span><span class="p">):</span> <span class="s1">&#39;bool&#39;</span><span class="p">,</span>
-              <span class="n">_np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="s1">&#39;int8&#39;</span><span class="p">):</span> <span class="s1">&#39;int8&#39;</span><span class="p">,</span>
-              <span class="n">_np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="s1">&#39;uint8&#39;</span><span class="p">):</span> <span class="s1">&#39;uint8&#39;</span><span class="p">,</span>
-              <span class="n">_np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="s1">&#39;int16&#39;</span><span class="p">):</span> <span class="s1">&#39;int16&#39;</span><span class="p">,</span>
-              <span class="n">_np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="s1">&#39;int32&#39;</span><span class="p">):</span> <span class="s1">&#39;int32&#39;</span><span class="p">,</span>
-              <span class="n">_np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="s1">&#39;int64&#39;</span><span class="p">):</span> <span class="s1">&#39;int64&#39;</span><span class="p">,</span>
-              <span class="n">_np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="s1">&#39;float16&#39;</span><span class="p">):</span> <span class="s1">&#39;float16&#39;</span><span class="p">,</span>
-              <span class="n">_np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="s1">&#39;float32&#39;</span><span class="p">):</span> <span class="s1">&#39;float32&#39;</span><span class="p">,</span>
-              <span class="n">_np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="s1">&#39;float64&#39;</span><span class="p">):</span> <span class="s1">&#39;float64&#39;</span><span class="p">}</span>
+<span class="n">DTYPE_TO_STR</span> <span class="o">=</span> <span class="p">{</span><span class="n">_np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="s1">&#39;int8&#39;</span><span class="p">):</span> <span class="s1">&#39;int8&#39;</span><span class="p">,</span>
+                <span class="n">_np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="s1">&#39;int16&#39;</span><span class="p">):</span> <span class="s1">&#39;int16&#39;</span><span class="p">,</span>
+                <span class="n">_np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="s1">&#39;int32&#39;</span><span class="p">):</span> <span class="s1">&#39;int32&#39;</span><span class="p">,</span>
+                <span class="n">_np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="s1">&#39;int64&#39;</span><span class="p">):</span> <span class="s1">&#39;int64&#39;</span><span class="p">,</span>
+                <span class="n">_np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="s1">&#39;uint8&#39;</span><span class="p">):</span> <span class="s1">&#39;uint8&#39;</span><span class="p">,</span>
+                <span class="n">_np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="s1">&#39;uint16&#39;</span><span class="p">):</span> <span class="s1">&#39;uint16&#39;</span><span class="p">,</span>
+                <span class="n">_np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="s1">&#39;uint32&#39;</span><span class="p">):</span> <span class="s1">&#39;uint32&#39;</span><span class="p">,</span>
+                <span class="n">_np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="s1">&#39;uint64&#39;</span><span class="p">):</span> <span class="s1">&#39;uint64&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;bfloat16&#39;</span><span class="p">:</span> <span class="s1">&#39;bfloat16&#39;</span><span class="p">,</span>
+                <span class="n">_np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="s1">&#39;float16&#39;</span><span class="p">):</span> <span class="s1">&#39;float16&#39;</span><span class="p">,</span>
+                <span class="n">_np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="s1">&#39;float32&#39;</span><span class="p">):</span> <span class="s1">&#39;float32&#39;</span><span class="p">,</span>
+                <span class="n">_np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="s1">&#39;float64&#39;</span><span class="p">):</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span>
+                <span class="n">_np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="s1">&#39;bool&#39;</span><span class="p">):</span> <span class="s1">&#39;bool&#39;</span><span class="p">,</span>
+
+                <span class="n">_np</span><span class="o">.</span><span class="n">int8</span><span class="p">:</span> <span class="s1">&#39;int8&#39;</span><span class="p">,</span>
+                <span class="n">_np</span><span class="o">.</span><span class="n">int16</span><span class="p">:</span> <span class="s1">&#39;int16&#39;</span><span class="p">,</span>
+                <span class="n">_np</span><span class="o">.</span><span class="n">int32</span><span class="p">:</span> <span class="s1">&#39;int32&#39;</span><span class="p">,</span>
+                <span class="n">_np</span><span class="o">.</span><span class="n">int64</span><span class="p">:</span> <span class="s1">&#39;int64&#39;</span><span class="p">,</span>
+                <span class="n">_np</span><span class="o">.</span><span class="n">uint8</span><span class="p">:</span> <span class="s1">&#39;uint8&#39;</span><span class="p">,</span>
+                <span class="n">_np</span><span class="o">.</span><span class="n">uint16</span><span class="p">:</span> <span class="s1">&#39;uint16&#39;</span><span class="p">,</span>
+                <span class="n">_np</span><span class="o">.</span><span class="n">uint32</span><span class="p">:</span> <span class="s1">&#39;uint32&#39;</span><span class="p">,</span>
+                <span class="n">_np</span><span class="o">.</span><span class="n">uint64</span><span class="p">:</span> <span class="s1">&#39;uint64&#39;</span><span class="p">,</span>
+                <span class="n">_np</span><span class="o">.</span><span class="n">float16</span><span class="p">:</span> <span class="s1">&#39;float16&#39;</span><span class="p">,</span>
+                <span class="n">_np</span><span class="o">.</span><span class="n">float32</span><span class="p">:</span> <span class="s1">&#39;float32&#39;</span><span class="p">,</span>
+                <span class="n">_np</span><span class="o">.</span><span class="n">float64</span><span class="p">:</span> <span class="s1">&#39;float64&#39;</span><span class="p">,</span>
+                <span class="n">_np</span><span class="o">.</span><span class="n">bool_</span><span class="p">:</span> <span class="s1">&#39;bool&#39;</span><span class="p">}</span>
+
+<span class="n">DTYPE_FROM_STR</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;int8&#39;</span><span class="p">:</span> <span class="n">_np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="s1">&#39;int8&#39;</span><span class="p">),</span>
+                <span class="s1">&#39;int16&#39;</span><span class="p">:</span> <span class="n">_np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="s1">&#39;int16&#39;</span><span class="p">),</span>
+                <span class="s1">&#39;int32&#39;</span><span class="p">:</span> <span class="n">_np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="s1">&#39;int32&#39;</span><span class="p">),</span>
+                <span class="s1">&#39;int64&#39;</span><span class="p">:</span> <span class="n">_np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="s1">&#39;int64&#39;</span><span class="p">),</span>
+                <span class="s1">&#39;uint8&#39;</span><span class="p">:</span> <span class="n">_np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="s1">&#39;uint8&#39;</span><span class="p">),</span>
+                <span class="s1">&#39;uint16&#39;</span><span class="p">:</span> <span class="n">_np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="s1">&#39;uint16&#39;</span><span class="p">),</span>
+                <span class="s1">&#39;uint32&#39;</span><span class="p">:</span> <span class="n">_np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="s1">&#39;uint32&#39;</span><span class="p">),</span>
+                <span class="s1">&#39;uint64&#39;</span><span class="p">:</span> <span class="n">_np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="s1">&#39;uint64&#39;</span><span class="p">),</span>
+                <span class="s1">&#39;bfloat16&#39;</span><span class="p">:</span> <span class="s1">&#39;bfloat16&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;float16&#39;</span><span class="p">:</span> <span class="n">_np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="s1">&#39;float16&#39;</span><span class="p">),</span>
+                <span class="s1">&#39;float32&#39;</span><span class="p">:</span> <span class="n">_np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="s1">&#39;float32&#39;</span><span class="p">),</span>
+                <span class="s1">&#39;float64&#39;</span><span class="p">:</span> <span class="n">_np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="s1">&#39;float64&#39;</span><span class="p">),</span>
+                <span class="s1">&#39;bool&#39;</span><span class="p">:</span> <span class="n">_np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="s1">&#39;bool&#39;</span><span class="p">)}</span>
 
 
 <span class="c1"># Helpers #</span>
@@ -324,9 +354,9 @@
         <span class="n">dtype</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">res</span> <span class="o">=</span> <span class="n">_to_dev</span><span class="p">(</span><span class="n">_np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">,</span> <span class="n">step</span><span class="o">=</span><span class="n">step</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">),</span> <span class="n">default_device</span><span class="p">(</span><span class="n">dev</span><span class="p">))</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">dtype</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">res</span><span class="o">.</span><span class="n">dtype</span> <span class="o">==</span> <span class="n">_np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="s1">&#39;float64&#39;</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">res</span><span class="o">.</span><span class="n">dtype</span> <span class="o">==</span> <span class="n">_np</span><span class="o">.</span><span class="n">float64</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">res</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">_np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="n">res</span><span class="o">.</span><span class="n">dtype</span> <span class="o">==</span> <span class="n">_np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="s1">&#39;int64&#39;</span><span class="p">):</span>
+        <span class="k">elif</span> <span class="n">res</span><span class="o">.</span><span class="n">dtype</span> <span class="o">==</span> <span class="n">_np</span><span class="o">.</span><span class="n">int64</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">res</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">_np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">res</span></div>
 
@@ -608,7 +638,13 @@
 <div class="viewcode-block" id="dtype_to_str"><a class="viewcode-back" href="../../../../../backends/numpy/core/general/dtype_to_str.html#ivy.backends.numpy.core.general.dtype_to_str">[docs]</a><span class="k">def</span> <span class="nf">dtype_to_str</span><span class="p">(</span><span class="n">dtype_in</span><span class="p">):</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">dtype_in</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">dtype_in</span>
-    <span class="k">return</span> <span class="n">DTYPE_DICT</span><span class="p">[</span><span class="n">dtype_in</span><span class="p">]</span></div>
+    <span class="k">return</span> <span class="n">DTYPE_TO_STR</span><span class="p">[</span><span class="n">dtype_in</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="dtype_from_str"><a class="viewcode-back" href="../../../../../backends/numpy/core/general/dtype_from_str.html#ivy.backends.numpy.core.general.dtype_from_str">[docs]</a><span class="k">def</span> <span class="nf">dtype_from_str</span><span class="p">(</span><span class="n">dtype_in</span><span class="p">):</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">dtype_in</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">dtype_in</span>
+    <span class="k">return</span> <span class="n">DTYPE_FROM_STR</span><span class="p">[</span><span class="n">dtype_in</span><span class="p">]</span></div>
 
 
 <span class="c1"># noinspection PyUnusedLocal</span>
