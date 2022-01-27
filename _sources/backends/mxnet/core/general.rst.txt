@@ -52,6 +52,7 @@ General
    general/gather_nd.rst
    general/linear_resample.rst
    general/dtype.rst
+   general/dtype_to_str.rst
    general/compile.rst
    general/inplace_update.rst
    general/inplace_decrement.rst
