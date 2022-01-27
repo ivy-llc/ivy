@@ -18,15 +18,33 @@ from ivy.core.device import default_device
 from ivy.backends.mxnet.core.device import _callable_dev
 
 
-DTYPE_DICT = {_np.bool_: 'bool',
-              _np.int8: 'int8',
-              _np.uint8: 'uint8',
-              _np.int16: 'int16',
-              _np.int32: 'int32',
-              _np.int64: 'int64',
-              _np.float16: 'float16',
-              _np.float32: 'float32',
-              _np.float64: 'float64'}
+DTYPE_TO_STR = {_np.int8: 'int8',
+                _np.int16: 'int16',
+                _np.int32: 'int32',
+                _np.int64: 'int64',
+                _np.uint8: 'uint8',
+                _np.uint16: 'uint16',
+                _np.uint32: 'uint32',
+                _np.uint64: 'uint64',
+                _np.bfloat16: 'bfloat16',
+                _np.float16: 'float16',
+                _np.float32: 'float32',
+                _np.float64: 'float64',
+                _np.bool: 'bool'}
+
+STR_TO_DTYPE = {'int8': _np.int8,
+                'int16': _np.int16,
+                'int32': _np.int32,
+                'int64': _np.int64,
+                'uint8': _np.uint8,
+                'uint16': _np.uint16,
+                'uint32': _np.uint32,
+                'uint64': _np.uint64,
+                'bfloat16': _np.bfloat16,
+                'float16': _np.float16,
+                'float32': _np.float32,
+                'float64': _np.float64,
+                'bool': _np.bool}
 
 
 # Helpers #

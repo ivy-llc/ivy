@@ -41,6 +41,8 @@ uint8 = jnp.uint8
 uint16 = jnp.uint16
 uint32 = jnp.uint32
 uint64 = jnp.uint64
+bfloat16 = jnp.bfloat16
+float16 = jnp.float16
 float32 = jnp.float32
 float64 = jnp.float64
 # noinspection PyShadowingBuiltins
