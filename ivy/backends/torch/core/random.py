@@ -34,11 +34,11 @@ def multinomial(population_size: int, num_samples: int, batch_size: int, probs: 
                 replace: bool = True, dev: ivy.Device = None):
     if probs is None:
         probs = _torch.ones((batch_size, population_size,)) / population_size
-    return _torch.multinomial(probs, num_samples, replace).to(default_device(dev).replace('gpu', 'cuda'))
+    return _torch.multinomial(probs, num_samples, replace).to(default_device(dev))
 
 
 def randint(low: int, high: int, shape: List[int], dev: ivy.Device = None):
-    return _torch.randint(low, high, shape, device=default_device(dev).replace('gpu', 'cuda'))
+    return _torch.randint(low, high, shape, device=default_device(dev))
 
 
 def seed(seed_value: int = 0) -> None:
