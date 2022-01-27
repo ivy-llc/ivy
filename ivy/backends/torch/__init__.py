@@ -22,6 +22,8 @@ uint8 = _torch.uint8
 uint16 = 'uint16'
 uint32 = 'uint32'
 uint64 = 'uint64'
+bfloat16 = _torch.bfloat16
+float16 = _torch.float16
 float32 = _torch.float32
 float64 = _torch.float64
 # noinspection PyShadowingBuiltins

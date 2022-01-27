@@ -18,15 +18,33 @@ from haiku._src.data_structures import FlatMapping
 from ivy.core.device import default_device
 from ivy.backends.jax.core.device import to_dev, dev as callable_dev
 
-DTYPE_DICT = {_jnp.dtype('bool'): 'bool',
-              _jnp.dtype('int8'): 'int8',
-              _jnp.dtype('uint8'): 'uint8',
-              _jnp.dtype('int16'): 'int16',
-              _jnp.dtype('int32'): 'int32',
-              _jnp.dtype('int64'): 'int64',
-              _jnp.dtype('float16'): 'float16',
-              _jnp.dtype('float32'): 'float32',
-              _jnp.dtype('float64'): 'float64'}
+DTYPE_TO_STR = {_jnp.int8: 'int8',
+                _jnp.int16: 'int16',
+                _jnp.int32: 'int32',
+                _jnp.int64: 'int64',
+                _jnp.uint8: 'uint8',
+                _jnp.uint16: 'uint16',
+                _jnp.uint32: 'uint32',
+                _jnp.uint64: 'uint64',
+                _jnp.bfloat16: 'bfloat16',
+                _jnp.float16: 'float16',
+                _jnp.float32: 'float32',
+                _jnp.float64: 'float64',
+                _jnp.bool_: 'bool'}
+
+STR_TO_DTYPE = {'int8': _jnp.int8,
+                'int16': _jnp.int16,
+                'int32': _jnp.int32,
+                'int64': _jnp.int64,
+                'uint8': _jnp.uint8,
+                'uint16': _jnp.uint16,
+                'uint32': _jnp.uint32,
+                'uint64': _jnp.uint64,
+                'bfloat16': _jnp.bfloat16,
+                'float16': _jnp.float16,
+                'float32': _jnp.float32,
+                'float64': _jnp.float64,
+                'bool': _jnp.bool_}
 
 
 # Helpers #
@@ -396,7 +414,7 @@ def dtype(x, as_str=False):
 def dtype_to_str(dtype_in):
     if isinstance(dtype_in, str):
         return dtype_in
-    return DTYPE_DICT[dtype_in]
+    return DTYPE_TO_STR[dtype_in]
 
 
 compile = lambda fn, dynamic=True, example_inputs=None, static_argnums=None, static_argnames=None:\

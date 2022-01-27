@@ -51,15 +51,21 @@ def array_equal(x0, x1):
 
 
 def dtype_from_str(dtype_in: str) -> _torch.dtype:
-    return {'bool': _torch.bool,
-            'int8': _torch.int8,
-            'uint8': _torch.uint8,
+    if not isinstance(dtype_in, str):
+        return dtype_in
+    return {'int8': _torch.int8,
             'int16': _torch.int16,
             'int32': _torch.int32,
             'int64': _torch.int64,
+            'uint8': _torch.uint8,
+            'uint16': 'uint16',
+            'uint32': 'uint32',
+            'uint64': 'uint64',
+            'bfloat16': _torch.bfloat16,
             'float16': _torch.float16,
             'float32': _torch.float32,
-            'float64': _torch.float64}[dtype_in]
+            'float64': _torch.float64,
+            'bool': _torch.bool}[dtype_in]
 
 
 def to_numpy(x) -> np.ndarray:
@@ -378,15 +384,20 @@ def squeeze(x, axis: Optional[int] = None):
 
 # noinspection PyShadowingNames
 def zeros(shape: List[int], dtype: ivy.Dtype = 'float32', dev: Optional[str] = None):
-    type_dict: Dict[str, _torch.dtype] = {'bool': _torch.bool,
-                                         'int8': _torch.int8,
-                                         'uint8': _torch.uint8,
-                                         'int16': _torch.int16,
-                                         'int32': _torch.int32,
-                                         'int64': _torch.int64,
-                                         'float16': _torch.float16,
-                                         'float32': _torch.float32,
-                                         'float64': _torch.float64}
+    type_dict: Dict[str, _torch.dtype] = \
+        {'int8': _torch.int8,
+         'int16': _torch.int16,
+         'int32': _torch.int32,
+         'int64': _torch.int64,
+         'uint8': _torch.uint8,
+         'uint16': 'uint16',
+         'uint32': 'uint32',
+         'uint64': 'uint64',
+         'bfloat16': _torch.bfloat16,
+         'float16': _torch.float16,
+         'float32': _torch.float32,
+         'float64': _torch.float64,
+         'bool': _torch.bool}
     dtype_val: _torch.dtype = type_dict[dtype]
     dev = default_device(dev)
     return _torch.zeros(shape, dtype=dtype_val, device=str_to_dev(dev))
@@ -397,30 +408,38 @@ def zeros_like(x, dtype: Optional[str] = None, dev: Optional[str] = None):
     if dev is None:
         dev = _callable_dev(x)
     if dtype is not None:
-        type_dict: Dict[str, _torch.dtype] = {'bool': _torch.bool,
-                                             'int8': _torch.int8,
-                                             'uint8': _torch.uint8,
-                                             'int16': _torch.int16,
-                                             'int32': _torch.int32,
-                                             'int64': _torch.int64,
-                                             'float16': _torch.float16,
-                                             'float32': _torch.float32,
-                                             'float64': _torch.float64}
+        type_dict: Dict[str, _torch.dtype] = {'int8': _torch.int8,
+            'int16': _torch.int16,
+            'int32': _torch.int32,
+            'int64': _torch.int64,
+            'uint8': _torch.uint8,
+            'uint16': 'uint16',
+            'uint32': 'uint32',
+            'uint64': 'uint64',
+            'bfloat16': _torch.bfloat16,
+            'float16': _torch.float16,
+            'float32': _torch.float32,
+            'float64': _torch.float64,
+            'bool': _torch.bool}
         return _torch.zeros_like(x, dtype=type_dict[dtype], device=str_to_dev(dev))
     return _torch.zeros_like(x, device=str_to_dev(dev))
 
 
 # noinspection PyShadowingNames
 def ones(shape: List[int], dtype: ivy.Dtype = 'float32', dev: Optional[str] = None):
-    type_dict: Dict[str, _torch.dtype] = {'bool': _torch.bool,
-                                         'int8': _torch.int8,
-                                         'uint8': _torch.uint8,
-                                         'int16': _torch.int16,
-                                         'int32': _torch.int32,
-                                         'int64': _torch.int64,
-                                         'float16': _torch.float16,
-                                         'float32': _torch.float32,
-                                         'float64': _torch.float64}
+    type_dict: Dict[str, _torch.dtype] = {'int8': _torch.int8,
+            'int16': _torch.int16,
+            'int32': _torch.int32,
+            'int64': _torch.int64,
+            'uint8': _torch.uint8,
+            'uint16': 'uint16',
+            'uint32': 'uint32',
+            'uint64': 'uint64',
+            'bfloat16': _torch.bfloat16,
+            'float16': _torch.float16,
+            'float32': _torch.float32,
+            'float64': _torch.float64,
+            'bool': _torch.bool}
     dtype_val: _torch.dtype = type_dict[dtype]
     dev = default_device(dev)
     return _torch.ones(shape, dtype=dtype_val, device=str_to_dev(dev))
@@ -431,15 +450,19 @@ def ones_like(x, dtype: Optional[str] = None, dev: Optional[str] = None):
     if dev is None:
         dev = _callable_dev(x)
     if dtype is not None:
-        type_dict: Dict[str, _torch.dtype] = {'bool': _torch.bool,
-                                             'int8': _torch.int8,
-                                             'uint8': _torch.uint8,
-                                             'int16': _torch.int16,
-                                             'int32': _torch.int32,
-                                             'int64': _torch.int64,
-                                             'float16': _torch.float16,
-                                             'float32': _torch.float32,
-                                             'float64': _torch.float64}
+        type_dict: Dict[str, _torch.dtype] = {'int8': _torch.int8,
+            'int16': _torch.int16,
+            'int32': _torch.int32,
+            'int64': _torch.int64,
+            'uint8': _torch.uint8,
+            'uint16': 'uint16',
+            'uint32': 'uint32',
+            'uint64': 'uint64',
+            'bfloat16': _torch.bfloat16,
+            'float16': _torch.float16,
+            'float32': _torch.float32,
+            'float64': _torch.float64,
+            'bool': _torch.bool}
         return _torch.ones_like(x, dtype=type_dict[dtype], device=str_to_dev(dev))
     return _torch.ones_like(x, device=str_to_dev(dev))
 
@@ -476,15 +499,19 @@ def cumprod(x, axis: int = 0, exclusive: bool = False):
 def identity(n: int, dtype: ivy.Dtype = 'float32', batch_shape: Optional[List[int]] = None,
              dev: Optional[str] = None):
     dev = default_device(dev)
-    type_dict: Dict[str, _torch.dtype] = {'bool': _torch.bool,
-                                         'int8': _torch.int8,
-                                         'uint8': _torch.uint8,
-                                         'int16': _torch.int16,
-                                         'int32': _torch.int32,
-                                         'int64': _torch.int64,
-                                         'float16': _torch.float16,
-                                         'float32': _torch.float32,
-                                         'float64': _torch.float64}
+    type_dict: Dict[str, _torch.dtype] = {'int8': _torch.int8,
+            'int16': _torch.int16,
+            'int32': _torch.int32,
+            'int64': _torch.int64,
+            'uint8': _torch.uint8,
+            'uint16': 'uint16',
+            'uint32': 'uint32',
+            'uint64': 'uint64',
+            'bfloat16': _torch.bfloat16,
+            'float16': _torch.float16,
+            'float32': _torch.float32,
+            'float64': _torch.float64,
+            'bool': _torch.bool}
     dtype_val: _torch.dtype = type_dict[dtype]
     mat = _torch.eye(n, n, dtype=dtype_val, device=str_to_dev(dev))
     if batch_shape is None:
@@ -632,15 +659,19 @@ def dtype(x, as_str=False):
 def dtype_to_str(dtype_in):
     if isinstance(dtype_in, str):
         return dtype_in
-    return {_torch.bool: 'bool',
-            _torch.int8: 'int8',
-            _torch.uint8: 'uint8',
+    return {_torch.int8: 'int8',
             _torch.int16: 'int16',
             _torch.int32: 'int32',
             _torch.int64: 'int64',
+            _torch.uint8: 'uint8',
+            'uint16': 'uint16',
+            'uint32': 'uint32',
+            'uint64': 'uint64',
+            _torch.bfloat16: 'bfloat16',
             _torch.float16: 'float16',
             _torch.float32: 'float32',
-            _torch.float64: 'float64'}[dtype_in]
+            _torch.float64: 'float64',
+            _torch.bool: 'bool'}[dtype_in]
 
 
 def compile(fn, dynamic=True, example_inputs=None, static_argnums=None, static_argnames=None):
