@@ -15,7 +15,7 @@ dev.__name__ = 'dev'
 to_dev = lambda x, dev=None: x
 _dev_callable = dev
 dev_to_str = lambda dev_in: 'cpu'
-str_to_dev = lambda dev: 'cpu'
+dev_from_str = lambda dev: 'cpu'
 clear_mem_on_dev = lambda dev: None
 gpu_is_available = lambda: False
 num_gpus = lambda: 0
