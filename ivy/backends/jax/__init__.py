@@ -48,4 +48,7 @@ float64 = jnp.dtype('float64')
 # noinspection PyShadowingBuiltins
 bool = jnp.dtype('bool')
 
+iinfo = jnp.iinfo
+finfo = jnp.finfo
+
 backend = 'jax'

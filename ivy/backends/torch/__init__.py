@@ -29,4 +29,7 @@ float64 = _torch.float64
 # noinspection PyShadowingBuiltins
 bool = _torch.bool
 
+iinfo = _torch.iinfo
+finfo = _torch.finfo
+
 backend = 'torch'
