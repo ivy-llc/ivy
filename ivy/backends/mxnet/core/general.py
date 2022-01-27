@@ -14,7 +14,7 @@ from functools import reduce as _reduce
 import multiprocessing as _multiprocessing
 
 # local
-from ivy.core.device import default_device
+from ivy.core.device import default_device, dev_to_str
 from ivy.backends.mxnet.core.device import _callable_dev
 
 
@@ -68,6 +68,7 @@ def _raise(ex):
 
 
 def _mxnet_init_context(dev):
+    dev = dev_to_str(dev)
     if dev is None or dev.find("cpu") != -1:
         mx_dev = "cpu"
     elif dev.find("gpu") != -1:

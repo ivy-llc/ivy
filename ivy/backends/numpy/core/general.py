@@ -134,18 +134,13 @@ argsort = lambda x, axis=-1: _np.asarray(_np.argsort(x, axis))
 
 
 def cast(x, dtype):
-    dtype = 'bool_' if dtype == 'bool' else dtype
-    dtype_val = _np.__dict__[dtype]
-    return x.astype(dtype_val)
+    return x.astype(dtype_from_str(dtype))
 
 
 # noinspection PyShadowingNames
 def arange(stop, start=0, step=1, dtype=None, dev=None):
     if dtype:
-        dtype = 'bool_' if dtype == 'bool' else dtype
-        dtype = _np.__dict__[dtype]
-    else:
-        dtype = None
+        dtype = dtype_from_str(dtype)
     res = _to_dev(_np.arange(start, stop, step=step, dtype=dtype), default_device(dev))
     if not dtype:
         if res.dtype == _np.float64:
