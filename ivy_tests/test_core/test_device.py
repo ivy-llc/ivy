@@ -75,8 +75,8 @@ def test_dev_from_str(x, dtype, tensor_fn, dev, call):
         # mxnet does not support 0-dimensional variables
         pytest.skip()
     x = tensor_fn(x, dtype, dev)
-    dev_str = ivy.dev(x, as_str=True)
-    ret = ivy.dev_from_str(dev)
+    dev = ivy.dev_from_str(dev)
+    ret = ivy.dev_from_str(ivy.dev(x, as_str=True))
     # value test
     if call in [helpers.tf_call, helpers.tf_graph_call]:
         assert '/' + ':'.join(ret[1:].split(':')[-2:]) == '/' + ':'.join(dev[1:].split(':')[-2:])
@@ -105,14 +105,11 @@ def test_dev(x, dtype, tensor_fn, dev, call):
         # mxnet does not support 0-dimensional variables
         pytest.skip()
     x = tensor_fn(x, dtype, dev)
-    ret = ivy.dev(x)
+    ret = ivy.dev(x, as_str=True)
     # type test
     assert isinstance(ret, str)
     # value test
     assert ret == dev
-    # compilation test
-    if not ivy.wrapped_mode():
-        helpers.assert_compilable(ivy.dev)
 
 
 # memory_on_dev
@@ -293,7 +290,7 @@ def test_distribute_array(x, axis, tensor_fn, devs_as_dict, dev, call):
     assert x_split[dev0].shape[axis] == math.floor(x.shape[axis] / len(devs))
 
     # value test
-    assert min([ivy.dev(x_sub) == ds for ds, x_sub in x_split.items()])
+    assert min([ivy.dev(x_sub, as_str=True) == ds for ds, x_sub in x_split.items()])
 
 
 @pytest.mark.parametrize(
@@ -323,7 +320,7 @@ def test_clone_array(x, axis, tensor_fn, dev, call):
     assert x_split[dev0].shape[0] == math.floor(x.shape[axis] / len(devs))
 
     # value test
-    assert min([ivy.dev(x_sub) == ds for ds, x_sub in x_split.items()])
+    assert min([ivy.dev(x_sub, as_str=True) == ds for ds, x_sub in x_split.items()])
 
 
 @pytest.mark.parametrize(
@@ -355,7 +352,7 @@ def test_unify_array(xs, axis, tensor_fn, dev, call):
     assert x_unified.shape[axis] == expected_size
 
     # value test
-    assert ivy.dev(x_unified) == dev0
+    assert ivy.dev(x_unified, as_str=True) == dev0
 
 
 @pytest.mark.parametrize(
@@ -390,9 +387,9 @@ def test_distribute_args(args, kwargs, axis, tensor_fn, dev, call):
         assert dist_kwargs.at_dev(ds)
 
     # value test
-    assert min([ivy.dev(dist_args_ds[0]) == ds
+    assert min([ivy.dev(dist_args_ds[0], as_str=True) == ds
                 for ds, dist_args_ds in dist_args.at_devs().items()])
-    assert min([ivy.dev(dist_kwargs_ds['a']) == ds
+    assert min([ivy.dev(dist_kwargs_ds['a'], as_str=True) == ds
                 for ds, dist_kwargs_ds in dist_kwargs.at_devs().items()])
 
 
@@ -428,9 +425,9 @@ def test_clone_args(args, kwargs, axis, tensor_fn, dev, call):
         assert cloned_kwargs.at_dev(ds)
 
     # value test
-    assert min([ivy.dev(dist_args_ds[0]) == ds
+    assert min([ivy.dev(dist_args_ds[0], as_str=True) == ds
                 for ds, dist_args_ds in cloned_args.at_devs().items()])
-    assert min([ivy.dev(dist_kwargs_ds['a']) == ds
+    assert min([ivy.dev(dist_kwargs_ds['a'], as_str=True) == ds
                 for ds, dist_kwargs_ds in cloned_kwargs.at_devs().items()])
 
 
@@ -476,5 +473,5 @@ def test_unify_args(args, kwargs, axis, tensor_fn, dev, call):
     assert kwargs_uni['a'].shape[axis] == expected_size_kwarg
 
     # value test
-    assert ivy.dev(args_uni[0]) == dev0
-    assert ivy.dev(kwargs_uni['a']) == dev0
+    assert ivy.dev(args_uni[0], as_str=True) == dev0
+    assert ivy.dev(kwargs_uni['a'], as_str=True) == dev0
