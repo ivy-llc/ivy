@@ -50,24 +50,6 @@ def array_equal(x0, x1):
     return _torch.equal(x0, x1)
 
 
-def dtype_from_str(dtype_in: str) -> _torch.dtype:
-    if not isinstance(dtype_in, str):
-        return dtype_in
-    return {'int8': _torch.int8,
-            'int16': _torch.int16,
-            'int32': _torch.int32,
-            'int64': _torch.int64,
-            'uint8': _torch.uint8,
-            'uint16': 'uint16',
-            'uint32': 'uint32',
-            'uint64': 'uint64',
-            'bfloat16': _torch.bfloat16,
-            'float16': _torch.float16,
-            'float32': _torch.float32,
-            'float64': _torch.float64,
-            'bool': _torch.bool}[dtype_in]
-
-
 def to_numpy(x) -> np.ndarray:
     if isinstance(x, np.ndarray) or isinstance(x, (float, int, bool)):
         return x
@@ -672,6 +654,24 @@ def dtype_to_str(dtype_in):
             _torch.float32: 'float32',
             _torch.float64: 'float64',
             _torch.bool: 'bool'}[dtype_in]
+
+
+def dtype_from_str(dtype_in: str) -> _torch.dtype:
+    if not isinstance(dtype_in, str):
+        return dtype_in
+    return {'int8': _torch.int8,
+            'int16': _torch.int16,
+            'int32': _torch.int32,
+            'int64': _torch.int64,
+            'uint8': _torch.uint8,
+            'uint16': 'uint16',
+            'uint32': 'uint32',
+            'uint64': 'uint64',
+            'bfloat16': _torch.bfloat16,
+            'float16': _torch.float16,
+            'float32': _torch.float32,
+            'float64': _torch.float64,
+            'bool': _torch.bool}[dtype_in]
 
 
 def compile(fn, dynamic=True, example_inputs=None, static_argnums=None, static_argnames=None):
