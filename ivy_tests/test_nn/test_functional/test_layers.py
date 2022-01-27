@@ -83,7 +83,7 @@ def test_dropout(x, dtype, tensor_fn, dev, call):
     assert np.min(call(ivy.dropout, x, 0.9)) == 0.
     # compilation test
     if call in [helpers.torch_call]:
-        # str_to_dev not supported by torch.jit due to Device and Str not seen as the same
+        # dev_from_str not supported by torch.jit due to Device and Str not seen as the same
         return
     if not ivy.wrapped_mode():
         helpers.assert_compilable(ivy.dropout)

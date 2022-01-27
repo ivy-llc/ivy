@@ -130,7 +130,7 @@ def dev_to_str(dev_in: ivy.Device, f: ivy.Framework = None)\
 
 
 # noinspection PyShadowingNames
-def str_to_dev(dev: ivy.Device, f: ivy.Framework = None)\
+def dev_from_str(dev: ivy.Device, f: ivy.Framework = None)\
         -> ivy.Device:
     """
     Convert device string representation to native device type.
@@ -141,7 +141,7 @@ def str_to_dev(dev: ivy.Device, f: ivy.Framework = None)\
     :type f: ml_framework, optional
     :return: Native device handle.
     """
-    return _cur_framework(None, f=f).str_to_dev(dev)
+    return _cur_framework(None, f=f).dev_from_str(dev)
 
 
 # Memory #

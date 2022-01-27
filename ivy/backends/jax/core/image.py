@@ -109,7 +109,7 @@ def gradient_image(x):
     # BS x H x W-1 x D
     dx = x[..., :, 1:, :] - x[..., :, :-1, :]
     # BS x H x W x D
-    # _jax.device_put(x, str_to_dev(dev))
+    # _jax.device_put(x, dev_from_str(dev))
     dy = _ivy.concatenate((dy, _jax.device_put(_jnp.zeros(batch_shape + [1, image_dims[1], num_dims]), dev)), -3)
     dx = _ivy.concatenate((dx, _jax.device_put(_jnp.zeros(batch_shape + [image_dims[0], 1, num_dims]), dev)), -2)
     # BS x H x W x D,    BS x H x W x D
