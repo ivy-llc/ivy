@@ -53,3 +53,13 @@ def test_cast(object_in, starting_dtype, target_dtype, dev, call):
         return
     if not ivy.wrapped_mode():
         helpers.assert_compilable(ivy.cast)
+
+
+# iinfo
+def test_iinfo(dev, call):
+    assert ivy.exists(ivy.iinfo)
+
+
+# finfo
+def test_finfo(dev, call):
+    assert ivy.exists(ivy.finfo)
