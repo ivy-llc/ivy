@@ -1382,7 +1382,7 @@ def dtype(x: Union[ivy.Array, ivy.NativeArray], as_str: bool = False, f: ivy.Fra
     return _cur_framework(x, f=f).dtype(x, as_str)
 
 
-def dtype_to_str(dtype_in: ivy.Dtype, f: ivy.Framework = None)\
+def dtype_to_str(dtype_in: Union[ivy.Dtype, str], f: ivy.Framework = None)\
         -> str:
     """
     Convert native data type to string representation.
@@ -1391,7 +1391,7 @@ def dtype_to_str(dtype_in: ivy.Dtype, f: ivy.Framework = None)\
     :type dtype_in: data type
     :param f: Machine learning framework. Inferred from inputs if None.
     :type f: ml_framework, optional
-    :return: Device string e.g. 'float32'.
+    :return: data type string 'float32'
     """
     return _cur_framework(None, f=f).dtype_to_str(dtype_in)
 
