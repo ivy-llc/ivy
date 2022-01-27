@@ -431,4 +431,7 @@ float64 = 'float64'
 # noinspection PyShadowingBuiltins
 bool = 'bool'
 
+iinfo = None
+finfo = None
+
 backend = 'none'
