@@ -23,6 +23,8 @@ uint8 = tf.uint8
 uint16 = tf.uint16
 uint32 = tf.uint32
 uint64 = tf.uint64
+bfloat16 = tf.bfloat16
+float16 = tf.float16
 float32 = tf.float32
 float64 = tf.float64
 # noinspection PyShadowingBuiltins

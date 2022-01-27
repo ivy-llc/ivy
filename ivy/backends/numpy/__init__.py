@@ -23,6 +23,8 @@ uint8 = np.uint8
 uint16 = np.uint16
 uint32 = np.uint32
 uint64 = np.uint64
+bfloat16 = np.bfloat16
+float16 = np.float16
 float32 = np.float32
 float64 = np.float64
 # noinspection PyShadowingBuiltins
