@@ -115,6 +115,7 @@ def dev(x: Union[ivy.Array, ivy.NativeArray], as_str: bool = False, f: ivy.Frame
 
 # Conversions #
 
+# noinspection PyShadowingNames
 def dev_to_str(dev: [ivy.Device, str], f: ivy.Framework = None)\
         -> str:
     """
@@ -126,7 +127,7 @@ def dev_to_str(dev: [ivy.Device, str], f: ivy.Framework = None)\
     :type f: ml_framework, optional
     :return: Device string e.g. 'cuda:0'.
     """
-    return _cur_framework(None, f=f).dev_to_str(dev)
+    return _cur_framework(f=f).dev_to_str(dev)
 
 
 # noinspection PyShadowingNames
@@ -141,7 +142,7 @@ def dev_from_str(dev: [ivy.Device, str], f: ivy.Framework = None)\
     :type f: ml_framework, optional
     :return: Native device handle.
     """
-    return _cur_framework(None, f=f).dev_from_str(dev)
+    return _cur_framework(f=f).dev_from_str(dev)
 
 
 # Memory #

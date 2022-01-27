@@ -46,7 +46,7 @@ def test_cast(object_in, starting_dtype, target_dtype, dev, call):
     # cardinality test
     assert ret.shape == x.shape
     # value test
-    assert ivy.dtype(ret) == target_dtype
+    assert ivy.dtype(ret, as_str=True) == target_dtype
     # compilation test
     if call in [helpers.torch_call]:
         # pytorch scripting does not support .type() method
