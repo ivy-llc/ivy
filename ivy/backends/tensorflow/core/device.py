@@ -44,7 +44,7 @@ def dev_to_str(dev_in):
     return ':'.join([dev_type, dev_idx])
 
 
-def str_to_dev(dev):
+def dev_from_str(dev):
     if not isinstance(dev, str):
         return dev
     ret = '/' + dev.upper()
