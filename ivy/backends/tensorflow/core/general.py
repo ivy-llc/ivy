@@ -17,7 +17,7 @@ from tensorflow.python.types.core import Tensor
 
 # local
 from ivy.core.device import default_device
-from ivy.backends.tensorflow.core.device import _dev_callable
+from ivy.backends.tensorflow.core.device import _dev_callable, dev_from_str
 
 DTYPE_TO_STR = {_tf.int8: 'int8',
                 _tf.int16: 'int16',
@@ -389,14 +389,14 @@ def gather(params, indices, axis=-1, dev=None):
     axis = axis % len(indices.shape)
     if dev is None:
         dev = _dev_callable(params)
-    with _tf.device('/' + dev.upper()):
+    with _tf.device(dev_from_str(dev)):
         return _tf.gather(params, indices, axis=axis, batch_dims=axis)
 
 
 def gather_nd(params, indices, dev=None):
     if dev is None:
         dev = _dev_callable(params)
-    with _tf.device('/' + dev.upper()):
+    with _tf.device(dev_from_str(dev)):
         return _tf.gather_nd(params, indices)
 
 
