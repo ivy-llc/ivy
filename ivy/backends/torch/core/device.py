@@ -32,8 +32,10 @@ def to_dev(x, dev: Optional[str] = None):
     return ret
 
 
-def dev_to_str(dev_in: _torch.device):
-    dev_type, dev_idx = (dev_in.type, dev_in.index)
+def dev_to_str(dev: _torch.device):
+    if isinstance(dev, str):
+        return dev
+    dev_type, dev_idx = (dev.type, dev.index)
     if dev_type == 'cpu':
         return dev_type
     return dev_type.replace('cuda', 'gpu') + (':' + (str(dev_idx) if dev_idx is not None else '0'))
