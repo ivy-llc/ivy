@@ -2035,9 +2035,6 @@ def test_dtype(x, dtype, tensor_fn, dev, call):
     ret = ivy.dtype(x)
     # type test
     assert isinstance(ret, ivy.Dtype)
-    # compilation test
-    if not ivy.wrapped_mode():
-        helpers.assert_compilable(ivy.dtype)
 
 
 # dtype_to_str
