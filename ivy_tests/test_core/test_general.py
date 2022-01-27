@@ -2070,14 +2070,14 @@ def test_dtype_to_str(x, dtype, tensor_fn, dev, call):
         helpers.assert_compilable(ivy.dtype_to_str)
 
 
-# dtype
+# dtype_from_str
 @pytest.mark.parametrize(
     "x", [1, [], [1], [[0.0, 1.0], [2.0, 3.0]]])
 @pytest.mark.parametrize(
     "dtype", ['float16', 'float32', 'float64', 'int8', 'int16', 'int32', 'int64', 'bool'])
 @pytest.mark.parametrize(
     "tensor_fn", [ivy.array])
-def test_dtype(x, dtype, tensor_fn, dev, call):
+def test_dtype_from_str(x, dtype, tensor_fn, dev, call):
     # smoke test
     if call is helpers.mx_call and dtype == 'int16':
         # mxnet does not support int16
@@ -2089,14 +2089,10 @@ def test_dtype(x, dtype, tensor_fn, dev, call):
         # mxnet does not support 0-dimensional variables
         pytest.skip()
     x = tensor_fn(x, dtype, dev)
-    ret = ivy.dtype(x)
-    # type test
-    assert isinstance(ret, str)
+    dt0 = ivy.dtype_from_str(ivy.dtype(x, as_str=True))
+    dt1 = ivy.dtype(x)
     # value test
-    assert ret == dtype
-    # compilation test
-    if not ivy.wrapped_mode():
-        helpers.assert_compilable(ivy.dtype)
+    assert dt0 is dt1
 
 
 def test_cache_fn(dev, call):
