@@ -18,7 +18,21 @@ from ivy.core.device import default_device
 from ivy.backends.mxnet.core.device import _callable_dev
 
 
-DTYPE_TO_STR = {_np.int8: 'int8',
+DTYPE_TO_STR = {_np.dtype('int8'): 'int8',
+                _np.dtype('int16'): 'int16',
+                _np.dtype('int32'): 'int32',
+                _np.dtype('int64'): 'int64',
+                _np.dtype('uint8'): 'uint8',
+                _np.dtype('uint16'): 'uint16',
+                _np.dtype('uint32'): 'uint32',
+                _np.dtype('uint64'): 'uint64',
+                'bfloat16': 'bfloat16',
+                _np.dtype('float16'): 'float16',
+                _np.dtype('float32'): 'float32',
+                _np.dtype('float64'): 'float64',
+                _np.dtype('bool'): 'bool',
+
+                _np.int8: 'int8',
                 _np.int16: 'int16',
                 _np.int32: 'int32',
                 _np.int64: 'int64',
@@ -26,13 +40,12 @@ DTYPE_TO_STR = {_np.int8: 'int8',
                 _np.uint16: 'uint16',
                 _np.uint32: 'uint32',
                 _np.uint64: 'uint64',
-                _np.bfloat16: 'bfloat16',
                 _np.float16: 'float16',
                 _np.float32: 'float32',
                 _np.float64: 'float64',
-                _np.bool: 'bool'}
+                _np.bool_: 'bool'}
 
-STR_TO_DTYPE = {'int8': _np.int8,
+DTYPE_FROM_STR = {'int8': _np.int8,
                 'int16': _np.int16,
                 'int32': _np.int32,
                 'int64': _np.int64,
@@ -40,11 +53,11 @@ STR_TO_DTYPE = {'int8': _np.int8,
                 'uint16': _np.uint16,
                 'uint32': _np.uint32,
                 'uint64': _np.uint64,
-                'bfloat16': _np.bfloat16,
+                'bfloat16': 'bfloat16',
                 'float16': _np.float16,
                 'float32': _np.float32,
                 'float64': _np.float64,
-                'bool': _np.bool}
+                'bool': _np.bool_}
 
 
 # Helpers #
@@ -570,7 +583,13 @@ def dtype(x, as_str=False):
 def dtype_to_str(dtype_in):
     if isinstance(dtype_in, str):
         return dtype_in
-    return DTYPE_DICT[dtype_in]
+    return DTYPE_TO_STR[dtype_in]
+
+
+def dtype_from_str(dtype_in):
+    if not isinstance(dtype_in, str):
+        return dtype_in
+    return DTYPE_FROM_STR[dtype_in]
 
 
 # noinspection PyUnusedLocal

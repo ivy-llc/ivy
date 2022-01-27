@@ -1396,6 +1396,20 @@ def dtype_to_str(dtype_in: Union[ivy.Dtype, str], f: ivy.Framework = None)\
     return _cur_framework(None, f=f).dtype_to_str(dtype_in)
 
 
+def dtype_from_str(dtype_in: Union[ivy.Dtype, str], f: ivy.Framework = None)\
+        -> ivy.Dtype:
+    """
+    Convert data type string representation to native data type.
+
+    :param dtype_in: The data type string to convert to native data type.
+    :type dtype_in: str
+    :param f: Machine learning framework. Inferred from inputs if None.
+    :type f: ml_framework, optional
+    :return: data type e.g. ivy.float32.
+    """
+    return _cur_framework(None, f=f).dtype_from_str(dtype_in)
+
+
 def cache_fn(func: Callable)\
         -> Callable:
     """

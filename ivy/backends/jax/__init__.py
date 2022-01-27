@@ -33,19 +33,19 @@ Device = jaxlib.xla_extension.Device
 Dtype = jnp.dtype
 
 # data types
-int8 = jnp.int8
-int16 = jnp.int16
-int32 = jnp.int32
-int64 = jnp.int64
-uint8 = jnp.uint8
-uint16 = jnp.uint16
-uint32 = jnp.uint32
-uint64 = jnp.uint64
-bfloat16 = jnp.bfloat16
-float16 = jnp.float16
-float32 = jnp.float32
-float64 = jnp.float64
+int8 = jnp.dtype('int8')
+int16 = jnp.dtype('int16')
+int32 = jnp.dtype('int32')
+int64 = jnp.dtype('int64')
+uint8 = jnp.dtype('uint8')
+uint16 = jnp.dtype('uint16')
+uint32 = jnp.dtype('uint32')
+uint64 = jnp.dtype('uint64')
+bfloat16 = jnp.dtype('bfloat16')
+float16 = jnp.dtype('float16')
+float32 = jnp.dtype('float32')
+float64 = jnp.dtype('float64')
 # noinspection PyShadowingBuiltins
-bool = jnp.bool_
+bool = jnp.dtype('bool')
 
 backend = 'jax'
