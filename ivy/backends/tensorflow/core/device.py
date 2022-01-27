@@ -33,8 +33,10 @@ def to_dev(x, dev=None):
     return x
 
 
-def dev_to_str(dev_in):
-    dev_in_split = dev_in[1:].split(':')[-2:]
+def dev_to_str(dev):
+    if isinstance(dev, str):
+        return dev
+    dev_in_split = dev[1:].split(':')[-2:]
     if len(dev_in_split) == 1:
         return dev_in_split[0]
     dev_type, dev_idx = dev_in_split
