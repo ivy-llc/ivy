@@ -33,7 +33,7 @@ DTYPE_TO_STR = {_tf.int8: 'int8',
                 _tf.float64: 'float64',
                 _tf.bool: 'bool'}
 
-STR_TO_DTYPE = {'int8': _tf.int8,
+DTYPE_FROM_STR = {'int8': _tf.int8,
                 'int16': _tf.int16,
                 'int32': _tf.int32,
                 'int64': _tf.int64,
@@ -423,7 +423,13 @@ def dtype(x, as_str=False):
 def dtype_to_str(dtype_in):
     if isinstance(dtype_in, str):
         return dtype_in
-    return DTYPE_DICT[dtype_in]
+    return DTYPE_TO_STR[dtype_in]
+
+
+def dtype_from_str(dtype_in):
+    if not isinstance(dtype_in, str):
+        return dtype_in
+    return DTYPE_FROM_STR[dtype_in]
 
 
 compile = lambda fn, dynamic=True, example_inputs=None, static_argnums=None, static_argnames=None: _tf.function(fn)
