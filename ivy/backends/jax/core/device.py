@@ -44,10 +44,12 @@ def to_dev(x, dev=None):
     return x
 
 
-def dev_to_str(dev_in):
-    if dev_in is None:
+def dev_to_str(dev):
+    if isinstance(dev, str):
+        return dev
+    if dev is None:
         return None
-    p, dev_id = (dev_in.platform, dev_in.id)
+    p, dev_id = (dev.platform, dev.id)
     if p == 'cpu':
         return p
     return p + ':' + str(dev_id)

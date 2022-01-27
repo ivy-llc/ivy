@@ -25,11 +25,13 @@ def to_dev(x, dev=None):
     return x
 
 
-def dev_to_str(dev_in):
-    device_type = dev_in.device_type
+def dev_to_str(dev):
+    if isinstance(dev, str):
+        return dev
+    device_type = dev.device_type
     if device_type == 'cpu':
         return device_type
-    return device_type + (':' + (str(dev_in.device_id) if dev_in.device_id is not None else '0'))
+    return device_type + (':' + (str(dev.device_id) if dev.device_id is not None else '0'))
 
 
 def dev_from_str(dev):
