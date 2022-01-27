@@ -55,7 +55,7 @@ DTYPE_FROM_STR = {'int8': _tf.int8,
 def array(object_in, dtype=None, dev=None):
     dtype = _tf.__dict__[dtype] if dtype else dtype
     dev = default_device(dev)
-    with _tf.device('/' + dev.upper()):
+    with _tf.device(dev_from_str(dev)):
         tensor = _tf.convert_to_tensor(object_in)
         if dtype is None:
             return tensor
@@ -118,7 +118,7 @@ def cast(x, dtype):
 def arange(stop, start=0, step=1, dtype=None, dev=None):
     dtype = _tf.__dict__[dtype] if dtype else dtype
     dev = default_device(dev)
-    with _tf.device('/' + dev.upper()):
+    with _tf.device(dev_from_str(dev)):
         return _tf.range(start, stop, delta=step, dtype=dtype)
 
 
@@ -245,7 +245,7 @@ def squeeze(x, axis=None):
 def zeros(shape, dtype='float32', dev=None):
     dtype = _tf.__dict__[dtype]
     dev = default_device(dev)
-    with _tf.device('/' + dev.upper()):
+    with _tf.device(dev_from_str(dev)):
         return _tf.zeros(shape, dtype)
 
 
@@ -253,7 +253,7 @@ def zeros(shape, dtype='float32', dev=None):
 def zeros_like(x, dtype=None, dev=None):
     dtype = _tf.__dict__[dtype] if dtype else dtype
     dev = default_device(dev)
-    with _tf.device('/' + dev.upper()):
+    with _tf.device(dev_from_str(dev)):
         return _tf.zeros_like(x, dtype=dtype)
 
 
@@ -261,7 +261,7 @@ def zeros_like(x, dtype=None, dev=None):
 def ones(shape, dtype='float32', dev=None):
     dtype = _tf.__dict__[dtype]
     dev = default_device(dev)
-    with _tf.device('/' + dev.upper()):
+    with _tf.device(dev_from_str(dev)):
         return _tf.ones(shape, dtype)
 
 
@@ -269,14 +269,14 @@ def ones(shape, dtype='float32', dev=None):
 def ones_like(x, dtype=None, dev=None):
     dtype = _tf.__dict__[dtype] if dtype else dtype
     dev = default_device(dev)
-    with _tf.device('/' + dev.upper()):
+    with _tf.device(dev_from_str(dev)):
         return _tf.ones_like(x, dtype=dtype)
 
 
 def one_hot(indices, depth, dev=None):
     dev = default_device(dev)
     if dev is not None:
-        with _tf.device('/' + dev.upper()):
+        with _tf.device(dev_from_str(dev)):
             return _tf.one_hot(indices, depth)
     return _tf.one_hot(indices, depth)
 
@@ -304,7 +304,7 @@ cumprod = _tf.math.cumprod
 def identity(n, dtype='float32', batch_shape=None, dev=None):
     dtype = _tf.__dict__[dtype]
     dev = default_device(dev)
-    with _tf.device('/' + dev.upper()):
+    with _tf.device(dev_from_str(dev)):
         return _tf.eye(n, n, batch_shape=batch_shape, dtype=dtype)
 
 
@@ -338,7 +338,7 @@ def scatter_flat(indices, updates, size, reduction='sum', dev=None):
         TF_SCATTER_VAR[size][dtype].assign(_tf.ones(size, dtype=dtype) * initial_val)
     res = _tf.convert_to_tensor(func(TF_SCATTER_VAR[size][dtype], indices, updates))
     res = _tf.where(res == initial_val, _tf.zeros(size, dtype=updates.dtype), res)
-    with _tf.device('/' + dev.upper()):
+    with _tf.device(dev_from_str(dev)):
         return res
 
 
@@ -380,7 +380,7 @@ def scatter_nd(indices, updates, shape, reduction='sum', dev=None):
     flat_indices_for_flat = _tf.reshape(indices_for_flat, (-1,))
     flat_scatter = _tf.convert_to_tensor(func(TF_SCATTER_VAR[flat_result_size][dtype], flat_indices_for_flat, flat_updates))
     flat_scatter = _tf.where(flat_scatter == initial_val, _tf.zeros(flat_result_size, dtype=updates.dtype), flat_scatter)
-    with _tf.device('/' + dev.upper()):
+    with _tf.device(dev_from_str(dev)):
         res = _tf.reshape(flat_scatter, list(shape))
         return res
 
