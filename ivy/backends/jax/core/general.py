@@ -8,6 +8,7 @@ import math as _math
 import numpy as _onp
 import jax.numpy as _jnp
 import jaxlib as _jaxlib
+from numbers import Number
 from operator import mul as _mul
 from functools import reduce as _reduce
 from jaxlib.xla_extension import Buffer
@@ -109,7 +110,7 @@ copy_array = _jnp.array
 array_equal = _jnp.array_equal
 to_numpy = lambda x: _onp.asarray(_to_array(x))
 to_numpy.__name__ = 'to_numpy'
-to_scalar = lambda x: _to_array(x).item()
+to_scalar = lambda x: x if isinstance(x, Number) else _to_array(x).item()
 to_scalar.__name__ = 'to_scalar'
 to_list = lambda x: _to_array(x).tolist()
 to_list.__name__ = 'to_list'
