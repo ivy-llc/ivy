@@ -12,6 +12,7 @@ from numbers import Number
 
 # local
 import ivy
+ivy.unset_framework()
 import ivy.backends.numpy
 import ivy_tests.helpers as helpers
 
