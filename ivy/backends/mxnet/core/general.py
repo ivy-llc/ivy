@@ -117,9 +117,9 @@ copy_array = lambda x: x.copy()
 array_equal = lambda x0, x1: _mx.nd.min(_mx.nd.broadcast_equal(x0, x1)) == 1
 to_numpy = lambda x: x if isinstance(x, _np.ndarray) else (_np.array(x) if isinstance(x, (int, float)) else x.asnumpy())
 to_numpy.__name__ = 'to_numpy'
-to_scalar = lambda x: x.asscalar().item()
+to_scalar = lambda x: x if isinstance(x, Number) else x.asscalar().item()
 to_scalar.__name__ = 'to_scalar'
-to_list = lambda x: x.asnumpy().tolist()
+to_list = lambda x: to_numpy(x).tolist()
 to_list.__name__ = 'to_list'
 shape = lambda x, as_tensor=False: _mx.nd.shape_array(x) if as_tensor else x.shape
 shape.__name__ = 'shape'
