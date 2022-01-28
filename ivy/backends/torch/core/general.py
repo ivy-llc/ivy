@@ -62,6 +62,8 @@ def to_numpy(x) -> np.ndarray:
 
 
 def to_scalar(x) -> Union[float, int, bool]:
+    if isinstance(x, (float, int)):
+        return x
     return x.item()
 
 
