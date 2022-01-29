@@ -26,7 +26,7 @@ from ivy.core.container import Container
     "dtype", ['float32'])
 @pytest.mark.parametrize(
     "tensor_fn", [ivy.array, helpers.var_fn])
-def test_layer_norm_layer(x_n_ns_n_target, with_v, dtype, tensor_fn, dev, compile_graph, call):
+def test_layer_norm_layer(x_n_ns_n_target, with_v, dtype, tensor_fn, dev, wrapped_mode, compile_graph, call):
     # smoke test
     x, normalized_shape, target = x_n_ns_n_target
     x = tensor_fn(x, dtype, dev)
@@ -38,7 +38,7 @@ def test_layer_norm_layer(x_n_ns_n_target, with_v, dtype, tensor_fn, dev, compil
         v = None
     norm_layer = ivy.LayerNorm(normalized_shape, dev=dev, v=v)
     # compile if this mode is set
-    if compile_graph and call is helpers.torch_call:
+    if compile_graph and not wrapped_mode and call is helpers.torch_call:
         # Currently only PyTorch is supported for ivy compilation
         norm_layer.compile_graph(x)
     ret = norm_layer(x)

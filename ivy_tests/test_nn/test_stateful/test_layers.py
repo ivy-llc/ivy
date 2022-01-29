@@ -26,7 +26,7 @@ from ivy.core.container import Container
     "dtype", ['float32'])
 @pytest.mark.parametrize(
     "tensor_fn", [ivy.array, helpers.var_fn])
-def test_linear_layer(bs_ic_oc_target, with_v, dtype, tensor_fn, dev, compile_graph, call):
+def test_linear_layer(bs_ic_oc_target, with_v, dtype, tensor_fn, dev, wrapped_mode, compile_graph, call):
     # smoke test
     batch_shape, input_channels, output_channels, target = bs_ic_oc_target
     x = ivy.cast(ivy.linspace(ivy.zeros(batch_shape), ivy.ones(batch_shape), input_channels), 'float32')
@@ -41,7 +41,7 @@ def test_linear_layer(bs_ic_oc_target, with_v, dtype, tensor_fn, dev, compile_gr
         v = None
     linear_layer = ivy.Linear(input_channels, output_channels, dev=dev, v=v)
     # compile if this mode is set
-    if compile_graph and call is helpers.torch_call:
+    if compile_graph and not wrapped_mode and call is helpers.torch_call:
         # Currently only PyTorch is supported for ivy compilation
         linear_layer.compile_graph(x)
     ret = linear_layer(x)
@@ -71,11 +71,11 @@ def test_linear_layer(bs_ic_oc_target, with_v, dtype, tensor_fn, dev, compile_gr
     "dtype", ['float32'])
 @pytest.mark.parametrize(
     "tensor_fn", [ivy.array, helpers.var_fn])
-def test_dropout_layer(x_shape, dtype, tensor_fn, dev, compile_graph, call):
+def test_dropout_layer(x_shape, dtype, tensor_fn, dev, wrapped_mode, compile_graph, call):
     # smoke test
     x = ivy.random_uniform(shape=x_shape)
     dropout_layer = ivy.Dropout(0.9)
-    if compile_graph and call is helpers.torch_call:
+    if compile_graph and not wrapped_mode and call is helpers.torch_call:
         # Currently only PyTorch is supported for ivy compilation
         dropout_layer.compile_graph(x)
     ret = dropout_layer(x)
@@ -108,7 +108,7 @@ def test_dropout_layer(x_shape, dtype, tensor_fn, dev, compile_graph, call):
     "dtype", ['float32'])
 @pytest.mark.parametrize(
     "tensor_fn", [ivy.array, helpers.var_fn])
-def test_multi_head_attention_layer(x_n_s_n_m_n_c_n_gt, with_v, build_mode, dtype, tensor_fn, dev,
+def test_multi_head_attention_layer(x_n_s_n_m_n_c_n_gt, with_v, build_mode, dtype, tensor_fn, dev, wrapped_mode,
                                     compile_graph, call):
     x, scale, mask, context, ground_truth = x_n_s_n_m_n_c_n_gt
     # smoke test
@@ -140,7 +140,7 @@ def test_multi_head_attention_layer(x_n_s_n_m_n_c_n_gt, with_v, build_mode, dtyp
         v = None
     multi_head_attention_layer = ivy.MultiHeadAttention(
         query_dim, context_dim=context_dim, scale=scale, dev=dev, v=v, build_mode=build_mode)
-    if compile_graph and call is helpers.torch_call:
+    if compile_graph and not wrapped_mode and call is helpers.torch_call:
         # Currently only PyTorch is supported for ivy compilation
         multi_head_attention_layer.compile_graph(x, context, mask)
     if build_mode == 'explicit':
@@ -190,7 +190,7 @@ def test_multi_head_attention_layer(x_n_s_n_m_n_c_n_gt, with_v, build_mode, dtyp
     "dtype", ['float32'])
 @pytest.mark.parametrize(
     "tensor_fn", [ivy.array, helpers.var_fn])
-def test_conv1d_layer(x_n_fs_n_pad_n_res, with_v, dtype, tensor_fn, dev, compile_graph, call):
+def test_conv1d_layer(x_n_fs_n_pad_n_res, with_v, dtype, tensor_fn, dev, wrapped_mode, compile_graph, call):
     if call in [helpers.tf_call, helpers.tf_graph_call] and 'cpu' in dev:
         # tf conv1d does not work when CUDA is installed, but array is on CPU
         pytest.skip()
@@ -215,7 +215,7 @@ def test_conv1d_layer(x_n_fs_n_pad_n_res, with_v, dtype, tensor_fn, dev, compile
     else:
         v = None
     conv1d_layer = ivy.Conv1D(input_channels, output_channels, filter_size, 1, padding, dev=dev, v=v)
-    if compile_graph and call is helpers.torch_call:
+    if compile_graph and not wrapped_mode and call is helpers.torch_call:
         # Currently only PyTorch is supported for ivy compilation
         conv1d_layer.compile_graph(x)
     ret = conv1d_layer(x)
@@ -262,7 +262,7 @@ def test_conv1d_layer(x_n_fs_n_pad_n_res, with_v, dtype, tensor_fn, dev, compile
     "dtype", ['float32'])
 @pytest.mark.parametrize(
     "tensor_fn", [ivy.array, helpers.var_fn])
-def test_conv1d_transpose_layer(x_n_fs_n_pad_n_outshp_n_res, with_v, dtype, tensor_fn, dev, compile_graph,
+def test_conv1d_transpose_layer(x_n_fs_n_pad_n_outshp_n_res, with_v, dtype, tensor_fn, dev, wrapped_mode, compile_graph,
                                 call):
     if call in [helpers.tf_call, helpers.tf_graph_call] and 'cpu' in dev:
         # tf conv1d does not work when CUDA is installed, but array is on CPU
@@ -289,7 +289,7 @@ def test_conv1d_transpose_layer(x_n_fs_n_pad_n_outshp_n_res, with_v, dtype, tens
         v = None
     conv1d_trans_layer = ivy.Conv1DTranspose(input_channels, output_channels, filter_size, 1, padding,
                                              output_shape=out_shape, dev=dev, v=v)
-    if compile_graph and call is helpers.torch_call:
+    if compile_graph and not wrapped_mode and call is helpers.torch_call:
         # Currently only PyTorch is supported for ivy compilation
         conv1d_trans_layer.compile_graph(x)
     ret = conv1d_trans_layer(x)
@@ -354,7 +354,7 @@ def test_conv1d_transpose_layer(x_n_fs_n_pad_n_outshp_n_res, with_v, dtype, tens
     "dtype", ['float32'])
 @pytest.mark.parametrize(
     "tensor_fn", [ivy.array, helpers.var_fn])
-def test_conv2d_layer(x_n_fs_n_pad_n_res, with_v, dtype, tensor_fn, dev, compile_graph, call):
+def test_conv2d_layer(x_n_fs_n_pad_n_res, with_v, dtype, tensor_fn, dev, wrapped_mode, compile_graph, call):
     if call in [helpers.tf_call, helpers.tf_graph_call] and 'cpu' in dev:
         # tf conv1d does not work when CUDA is installed, but array is on CPU
         pytest.skip()
@@ -379,7 +379,7 @@ def test_conv2d_layer(x_n_fs_n_pad_n_res, with_v, dtype, tensor_fn, dev, compile
     else:
         v = None
     conv2d_layer = ivy.Conv2D(input_channels, output_channels, filter_shape, 1, padding, dev=dev, v=v)
-    if compile_graph and call is helpers.torch_call:
+    if compile_graph and not wrapped_mode and call is helpers.torch_call:
         # Currently only PyTorch is supported for ivy compilation
         conv2d_layer.compile_graph(x)
     ret = conv2d_layer(x)
@@ -440,7 +440,7 @@ def test_conv2d_layer(x_n_fs_n_pad_n_res, with_v, dtype, tensor_fn, dev, compile
     "dtype", ['float32'])
 @pytest.mark.parametrize(
     "tensor_fn", [ivy.array, helpers.var_fn])
-def test_conv2d_transpose_layer(x_n_fs_n_pad_n_outshp_n_res, with_v, dtype, tensor_fn, dev, compile_graph,
+def test_conv2d_transpose_layer(x_n_fs_n_pad_n_outshp_n_res, with_v, dtype, tensor_fn, dev, wrapped_mode, compile_graph,
                                 call):
     if call in [helpers.tf_call, helpers.tf_graph_call] and 'cpu' in dev:
         # tf conv1d does not work when CUDA is installed, but array is on CPU
@@ -467,7 +467,7 @@ def test_conv2d_transpose_layer(x_n_fs_n_pad_n_outshp_n_res, with_v, dtype, tens
         v = None
     conv2d_transpose_layer = ivy.Conv2DTranspose(input_channels, output_channels, filter_shape, 1, padding,
                                                  output_shape=out_shape, dev=dev, v=v)
-    if compile_graph and call is helpers.torch_call:
+    if compile_graph and not wrapped_mode and call is helpers.torch_call:
         # Currently only PyTorch is supported for ivy compilation
         conv2d_transpose_layer.compile_graph(x)
     ret = conv2d_transpose_layer(x)
@@ -521,7 +521,7 @@ def test_conv2d_transpose_layer(x_n_fs_n_pad_n_outshp_n_res, with_v, dtype, tens
     "dtype", ['float32'])
 @pytest.mark.parametrize(
     "tensor_fn", [ivy.array, helpers.var_fn])
-def test_depthwise_conv2d_layer(x_n_fs_n_pad_n_res, with_v, dtype, tensor_fn, dev, compile_graph, call):
+def test_depthwise_conv2d_layer(x_n_fs_n_pad_n_res, with_v, dtype, tensor_fn, dev, wrapped_mode, compile_graph, call):
     if call in [helpers.tf_call, helpers.tf_graph_call] and 'cpu' in dev:
         # tf conv1d does not work when CUDA is installed, but array is on CPU
         pytest.skip()
@@ -545,7 +545,7 @@ def test_depthwise_conv2d_layer(x_n_fs_n_pad_n_res, with_v, dtype, tensor_fn, de
     else:
         v = None
     depthwise_conv2d_layer = ivy.DepthwiseConv2D(num_channels, filter_shape, 1, padding, dev=dev, v=v)
-    if compile_graph and call is helpers.torch_call:
+    if compile_graph and not wrapped_mode and call is helpers.torch_call:
         # Currently only PyTorch is supported for ivy compilation
         depthwise_conv2d_layer.compile_graph(x)
     ret = depthwise_conv2d_layer(x)
@@ -600,7 +600,7 @@ def test_depthwise_conv2d_layer(x_n_fs_n_pad_n_res, with_v, dtype, tensor_fn, de
     "dtype", ['float32'])
 @pytest.mark.parametrize(
     "tensor_fn", [ivy.array, helpers.var_fn])
-def test_conv3d_layer(x_n_fs_n_pad_n_res, with_v, dtype, tensor_fn, dev, compile_graph, call):
+def test_conv3d_layer(x_n_fs_n_pad_n_res, with_v, dtype, tensor_fn, dev, wrapped_mode, compile_graph, call):
     if call in [helpers.tf_call, helpers.tf_graph_call] and 'cpu' in dev:
         # tf conv1d does not work when CUDA is installed, but array is on CPU
         pytest.skip()
@@ -625,7 +625,7 @@ def test_conv3d_layer(x_n_fs_n_pad_n_res, with_v, dtype, tensor_fn, dev, compile
     else:
         v = None
     conv3d_layer = ivy.Conv3D(input_channels, output_channels, filter_shape, 1, padding, dev=dev, v=v)
-    if compile_graph and call is helpers.torch_call:
+    if compile_graph and not wrapped_mode and call is helpers.torch_call:
         # Currently only PyTorch is supported for ivy compilation
         conv3d_layer.compile_graph(x)
     ret = conv3d_layer(x)
@@ -691,7 +691,7 @@ def test_conv3d_layer(x_n_fs_n_pad_n_res, with_v, dtype, tensor_fn, dev, compile
     "dtype", ['float32'])
 @pytest.mark.parametrize(
     "tensor_fn", [ivy.array, helpers.var_fn])
-def test_conv3d_transpose_layer(x_n_fs_n_pad_n_outshp_n_res, with_v, dtype, tensor_fn, dev, compile_graph,
+def test_conv3d_transpose_layer(x_n_fs_n_pad_n_outshp_n_res, with_v, dtype, tensor_fn, dev, wrapped_mode, compile_graph,
                                 call):
     if call in [helpers.tf_call, helpers.tf_graph_call] and 'cpu' in dev:
         # tf conv1d does not work when CUDA is installed, but array is on CPU
@@ -721,7 +721,7 @@ def test_conv3d_transpose_layer(x_n_fs_n_pad_n_outshp_n_res, with_v, dtype, tens
         v = None
     conv3d_transpose_layer = ivy.Conv3DTranspose(
         input_channels, output_channels, filter_shape, 1, padding, output_shape=out_shape, dev=dev, v=v)
-    if compile_graph and call is helpers.torch_call:
+    if compile_graph and not wrapped_mode and call is helpers.torch_call:
         # Currently only PyTorch is supported for ivy compilation
         conv3d_transpose_layer.compile_graph(x)
     ret = conv3d_transpose_layer(x)
@@ -757,7 +757,8 @@ def test_conv3d_transpose_layer(x_n_fs_n_pad_n_outshp_n_res, with_v, dtype, tens
     "dtype", ['float32'])
 @pytest.mark.parametrize(
     "tensor_fn", [ivy.array, helpers.var_fn])
-def test_lstm_layer(b_t_ic_hc_otf_sctv, with_v, with_initial_state, dtype, tensor_fn, dev, compile_graph, call):
+def test_lstm_layer(b_t_ic_hc_otf_sctv, with_v, with_initial_state, dtype, tensor_fn, dev, wrapped_mode, compile_graph,
+                    call):
     # smoke test
     b, t, input_channels, hidden_channels, output_true_flat, state_c_true_val = b_t_ic_hc_otf_sctv
     x = ivy.cast(ivy.linspace(ivy.zeros([b, t]), ivy.ones([b, t]), input_channels), 'float32')
@@ -775,7 +776,7 @@ def test_lstm_layer(b_t_ic_hc_otf_sctv, with_v, with_initial_state, dtype, tenso
     else:
         v = None
     lstm_layer = ivy.LSTM(input_channels, hidden_channels, dev=dev, v=v)
-    if compile_graph and call is helpers.torch_call:
+    if compile_graph and not wrapped_mode and call is helpers.torch_call:
         # Currently only PyTorch is supported for ivy compilation
         lstm_layer.compile_graph(x, initial_state=initial_state)
     output, (state_h, state_c) = lstm_layer(x, initial_state=initial_state)
@@ -819,7 +820,7 @@ def test_lstm_layer(b_t_ic_hc_otf_sctv, with_v, with_initial_state, dtype, tenso
     "dtype", ['float32'])
 @pytest.mark.parametrize(
     "tensor_fn", [ivy.array, helpers.var_fn])
-def test_sequential_layer(bs_c_target, with_v, seq_v, dtype, tensor_fn, dev, compile_graph, call):
+def test_sequential_layer(bs_c_target, with_v, seq_v, dtype, tensor_fn, dev, wrapped_mode, compile_graph, call):
     # smoke test
     batch_shape, channels, target = bs_c_target
     x = ivy.cast(ivy.linspace(ivy.zeros(batch_shape), ivy.ones(batch_shape), channels), 'float32')
@@ -849,7 +850,7 @@ def test_sequential_layer(bs_c_target, with_v, seq_v, dtype, tensor_fn, dev, com
                              ivy.Dropout(0.),
                              ivy.Linear(channels, channels, dev=dev,
                                         v=v['submodules']['v2'] if with_v else None), dev=dev)
-    if compile_graph and call is helpers.torch_call:
+    if compile_graph and not wrapped_mode and call is helpers.torch_call:
         # Currently only PyTorch is supported for ivy compilation
         seq.compile_graph(x)
     ret = seq(x)
