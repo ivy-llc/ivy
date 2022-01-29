@@ -41,6 +41,7 @@ _MIN_DENOMINATOR = 1e-12
 _MIN_BASE = 1e-5
 
 # global
+import ivy
 import functools
 
 # local
@@ -91,9 +92,10 @@ class Array(ArrayWithDevice, ArrayWithGeneral, ArrayWithGradients, ArrayWithImag
         self._shape = data.shape
         self._dtype = dtype(self._data)
         self._device = dev(data)
+        self._dev_str = ivy.dev_to_str(self._device)
         self._pre_repr = 'ivy.'
-        if 'gpu' in self._device:
-            self._post_repr = ', dev={})'.format(self._device)
+        if 'gpu' in self._dev_str:
+            self._post_repr = ', dev={})'.format(self._dev_str)
         else:
             self._post_repr = ')'
 
