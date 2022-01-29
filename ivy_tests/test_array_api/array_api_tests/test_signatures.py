@@ -146,144 +146,144 @@ def example_argument(arg, func_name, dtype):
         return known_args[arg]
     else:
         raise RuntimeError(f"Don't know how to test argument {arg}. Please update test_signatures.py")
-#
-# @pytest.mark.parametrize('name', params)
-# def test_has_names(name):
-#     if extension_module(name):
-#         assert hasattr(mod, name), f'{mod_name} is missing the {name} extension'
-#     elif '.' in name:
-#         extension_mod, name = name.split('.')
-#         assert hasattr(getattr(mod, extension_mod), name), f"{mod_name} is missing the {function_category(name)} extension function {name}()"
-#     elif array_method(name):
-#         arr = ones((1, 1))
-#         if getattr(function_stubs.array_object, name) is None:
-#             assert hasattr(arr, name), f"The array object is missing the attribute {name}"
-#         else:
-#             assert hasattr(arr, name), f"The array object is missing the method {name}()"
-#     else:
-#         assert hasattr(mod, name), f"{mod_name} is missing the {function_category(name)} function {name}()"
-#
-# @pytest.mark.parametrize('name', params)
-# def test_function_positional_args(name):
-#     # Note: We can't actually test that positional arguments are
-#     # positional-only, as that would require knowing the argument name and
-#     # checking that it can't be used as a keyword argument. But argument name
-#     # inspection does not work for most array library functions that are not
-#     # written in pure Python (e.g., it won't work for numpy ufuncs).
-#
-#     if extension_module(name):
-#         return
-#
-#     dtype = None
-#     if (name.startswith('__i') and name not in ['__int__', '__invert__', '__index__']
-#         or name.startswith('__r') and name != '__rshift__'):
-#         n = f'__{name[3:]}'
-#     else:
-#         n = name
-#     in_dtypes = dh.func_in_dtypes.get(n, dh.float_dtypes)
-#     if bool in in_dtypes:
-#         dtype = bool
-#     elif all(d in in_dtypes for d in dh.all_int_dtypes):
-#         dtype = int64
-#
-#     if array_method(name):
-#         if name == '__bool__':
-#             _mod = ones((), dtype=bool)
-#         elif name in ['__int__', '__index__']:
-#             _mod = ones((), dtype=int64)
-#         elif name == '__float__':
-#             _mod = ones((), dtype=float64)
-#         else:
-#             _mod = example_argument('self', name, dtype)
-#         stub_func = getattr(function_stubs, name)
-#     elif '.' in name:
-#         extension_module_name, name = name.split('.')
-#         _mod = getattr(mod, extension_module_name)
-#         stub_func = getattr(getattr(function_stubs, extension_module_name), name)
-#     else:
-#         _mod = mod
-#         stub_func = getattr(function_stubs, name)
-#
-#     if not hasattr(_mod, name):
-#         pytest.skip(f"{mod_name} does not have {name}(), skipping.")
-#     if stub_func is None:
-#         # TODO: Can we make this skip the parameterization entirely?
-#         pytest.skip(f"{name} is not a function, skipping.")
-#     mod_func = getattr(_mod, name)
-#     argspec = inspect.getfullargspec(stub_func)
-#     func_args = argspec.args
-#     if func_args[:1] == ['self']:
-#         func_args = func_args[1:]
-#     nargs = [len(func_args)]
-#     if argspec.defaults:
-#         # The actual default values are checked in the specific tests
-#         nargs.extend([len(func_args) - i for i in range(1, len(argspec.defaults) + 1)])
-#
-#     args = [example_argument(arg, name, dtype) for arg in func_args]
-#     if not args:
-#         args = [example_argument('x', name, dtype)]
-#     else:
-#         # Duplicate the last positional argument for the n+1 test.
-#         args = args + [args[-1]]
-#
-#     kwonlydefaults = argspec.kwonlydefaults or {}
-#     required_kwargs = {arg: example_argument(arg, name, dtype) for arg in argspec.kwonlyargs if arg not in kwonlydefaults}
-#
-#     for n in range(nargs[0]+2):
-#         if name == 'result_type' and n == 0:
-#             # This case is not encoded in the signature, but isn't allowed.
-#             continue
-#         if n in nargs:
-#             doesnt_raise(lambda: mod_func(*args[:n], **required_kwargs))
-#         elif argspec.varargs:
-#             pass
-#         else:
-#             # NumPy ufuncs raise ValueError instead of TypeError
-#             raises((TypeError, ValueError), lambda: mod_func(*args[:n]), f"{name}() should not accept {n} positional arguments")
-#
-# @pytest.mark.parametrize('name', params)
-# def test_function_keyword_only_args(name):
-#     if extension_module(name):
-#         return
-#
-#     if array_method(name):
-#         _mod = ones((1, 1))
-#         stub_func = getattr(function_stubs, name)
-#     elif '.' in name:
-#         extension_module_name, name = name.split('.')
-#         _mod = getattr(mod, extension_module_name)
-#         stub_func = getattr(getattr(function_stubs, extension_module_name), name)
-#     else:
-#         _mod = mod
-#         stub_func = getattr(function_stubs, name)
-#
-#     if not hasattr(_mod, name):
-#         pytest.skip(f"{mod_name} does not have {name}(), skipping.")
-#     if stub_func is None:
-#         # TODO: Can we make this skip the parameterization entirely?
-#         pytest.skip(f"{name} is not a function, skipping.")
-#     mod_func = getattr(_mod, name)
-#     argspec = inspect.getfullargspec(stub_func)
-#     args = argspec.args
-#     if args[:1] == ['self']:
-#         args = args[1:]
-#     kwonlyargs = argspec.kwonlyargs
-#     kwonlydefaults = argspec.kwonlydefaults or {}
-#     dtype = None
-#
-#     args = [example_argument(arg, name, dtype) for arg in args]
-#
-#     for arg in kwonlyargs:
-#         value = example_argument(arg, name, dtype)
-#         # The "only" part of keyword-only is tested by the positional test above.
-#         doesnt_raise(lambda: mod_func(*args, **{arg: value}),
-#                      f"{name}() should accept the keyword-only argument {arg!r}")
-#
-#         # Make sure the default is accepted. These tests are not granular
-#         # enough to test that the default is actually the default, i.e., gives
-#         # the same value if the keyword isn't passed. That is tested in the
-#         # specific function tests.
-#         if arg in kwonlydefaults:
-#             default_value = kwonlydefaults[arg]
-#             doesnt_raise(lambda: mod_func(*args, **{arg: default_value}),
-#                          f"{name}() should accept the default value {default_value!r} for the keyword-only argument {arg!r}")
+
+@pytest.mark.parametrize('name', params)
+def test_has_names(name):
+    if extension_module(name):
+        assert hasattr(mod, name), f'{mod_name} is missing the {name} extension'
+    elif '.' in name:
+        extension_mod, name = name.split('.')
+        assert hasattr(getattr(mod, extension_mod), name), f"{mod_name} is missing the {function_category(name)} extension function {name}()"
+    elif array_method(name):
+        arr = ones((1, 1))
+        if getattr(function_stubs.array_object, name) is None:
+            assert hasattr(arr, name), f"The array object is missing the attribute {name}"
+        else:
+            assert hasattr(arr, name), f"The array object is missing the method {name}()"
+    else:
+        assert hasattr(mod, name), f"{mod_name} is missing the {function_category(name)} function {name}()"
+
+@pytest.mark.parametrize('name', params)
+def test_function_positional_args(name):
+    # Note: We can't actually test that positional arguments are
+    # positional-only, as that would require knowing the argument name and
+    # checking that it can't be used as a keyword argument. But argument name
+    # inspection does not work for most array library functions that are not
+    # written in pure Python (e.g., it won't work for numpy ufuncs).
+
+    if extension_module(name):
+        return
+
+    dtype = None
+    if (name.startswith('__i') and name not in ['__int__', '__invert__', '__index__']
+        or name.startswith('__r') and name != '__rshift__'):
+        n = f'__{name[3:]}'
+    else:
+        n = name
+    in_dtypes = dh.func_in_dtypes.get(n, dh.float_dtypes)
+    if bool in in_dtypes:
+        dtype = bool
+    elif all(d in in_dtypes for d in dh.all_int_dtypes):
+        dtype = int64
+
+    if array_method(name):
+        if name == '__bool__':
+            _mod = ones((), dtype=bool)
+        elif name in ['__int__', '__index__']:
+            _mod = ones((), dtype=int64)
+        elif name == '__float__':
+            _mod = ones((), dtype=float64)
+        else:
+            _mod = example_argument('self', name, dtype)
+        stub_func = getattr(function_stubs, name)
+    elif '.' in name:
+        extension_module_name, name = name.split('.')
+        _mod = getattr(mod, extension_module_name)
+        stub_func = getattr(getattr(function_stubs, extension_module_name), name)
+    else:
+        _mod = mod
+        stub_func = getattr(function_stubs, name)
+
+    if not hasattr(_mod, name):
+        pytest.skip(f"{mod_name} does not have {name}(), skipping.")
+    if stub_func is None:
+        # TODO: Can we make this skip the parameterization entirely?
+        pytest.skip(f"{name} is not a function, skipping.")
+    mod_func = getattr(_mod, name)
+    argspec = inspect.getfullargspec(stub_func)
+    func_args = argspec.args
+    if func_args[:1] == ['self']:
+        func_args = func_args[1:]
+    nargs = [len(func_args)]
+    if argspec.defaults:
+        # The actual default values are checked in the specific tests
+        nargs.extend([len(func_args) - i for i in range(1, len(argspec.defaults) + 1)])
+
+    args = [example_argument(arg, name, dtype) for arg in func_args]
+    if not args:
+        args = [example_argument('x', name, dtype)]
+    else:
+        # Duplicate the last positional argument for the n+1 test.
+        args = args + [args[-1]]
+
+    kwonlydefaults = argspec.kwonlydefaults or {}
+    required_kwargs = {arg: example_argument(arg, name, dtype) for arg in argspec.kwonlyargs if arg not in kwonlydefaults}
+
+    for n in range(nargs[0]+2):
+        if name == 'result_type' and n == 0:
+            # This case is not encoded in the signature, but isn't allowed.
+            continue
+        if n in nargs:
+            doesnt_raise(lambda: mod_func(*args[:n], **required_kwargs))
+        elif argspec.varargs:
+            pass
+        else:
+            # NumPy ufuncs raise ValueError instead of TypeError
+            raises((TypeError, ValueError), lambda: mod_func(*args[:n]), f"{name}() should not accept {n} positional arguments")
+
+@pytest.mark.parametrize('name', params)
+def test_function_keyword_only_args(name):
+    if extension_module(name):
+        return
+
+    if array_method(name):
+        _mod = ones((1, 1))
+        stub_func = getattr(function_stubs, name)
+    elif '.' in name:
+        extension_module_name, name = name.split('.')
+        _mod = getattr(mod, extension_module_name)
+        stub_func = getattr(getattr(function_stubs, extension_module_name), name)
+    else:
+        _mod = mod
+        stub_func = getattr(function_stubs, name)
+
+    if not hasattr(_mod, name):
+        pytest.skip(f"{mod_name} does not have {name}(), skipping.")
+    if stub_func is None:
+        # TODO: Can we make this skip the parameterization entirely?
+        pytest.skip(f"{name} is not a function, skipping.")
+    mod_func = getattr(_mod, name)
+    argspec = inspect.getfullargspec(stub_func)
+    args = argspec.args
+    if args[:1] == ['self']:
+        args = args[1:]
+    kwonlyargs = argspec.kwonlyargs
+    kwonlydefaults = argspec.kwonlydefaults or {}
+    dtype = None
+
+    args = [example_argument(arg, name, dtype) for arg in args]
+
+    for arg in kwonlyargs:
+        value = example_argument(arg, name, dtype)
+        # The "only" part of keyword-only is tested by the positional test above.
+        doesnt_raise(lambda: mod_func(*args, **{arg: value}),
+                     f"{name}() should accept the keyword-only argument {arg!r}")
+
+        # Make sure the default is accepted. These tests are not granular
+        # enough to test that the default is actually the default, i.e., gives
+        # the same value if the keyword isn't passed. That is tested in the
+        # specific function tests.
+        if arg in kwonlydefaults:
+            default_value = kwonlydefaults[arg]
+            doesnt_raise(lambda: mod_func(*args, **{arg: default_value}),
+                         f"{name}() should accept the default value {default_value!r} for the keyword-only argument {arg!r}")
