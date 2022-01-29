@@ -1,4 +1,4 @@
-FROM ivydl/ivy:latest
+FROM unifyai/ivy:latest
 
 # CoppeliaSim #
 # ------------#
