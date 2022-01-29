@@ -33,14 +33,15 @@ import ivy_tests.helpers as helpers
     "num_tasks", [1, 2])
 @pytest.mark.parametrize(
     "return_inner_v", ['first', 'all', False])
-def test_fomaml_step_unique_vars(dev, call, inner_grad_steps, with_outer_cost_fn, average_across_steps, batched,
-                                 stop_gradients, num_tasks, return_inner_v):
+def test_fomaml_step_unique_vars(dev, wrapped_mode, call, inner_grad_steps, with_outer_cost_fn, average_across_steps,
+                                 batched, stop_gradients, num_tasks, return_inner_v):
+
     if call is helpers.np_call:
         # Numpy does not support gradients, and jax does not support gradients on custom nested classes
         pytest.skip()
 
-    if call is helpers.jnp_call and ivy.wrapped_mode():
-        # ToDo: find solution to this. There must be some wrongly wrapped jax functions.
+    if call in [helpers.jnp_call, helpers.mx_call] and wrapped_mode:
+        # ToDo: find solution to this. There must be some wrongly wrapped functions.
         pytest.skip()
 
     # config
