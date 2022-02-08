@@ -9,7 +9,7 @@ import numpy as np
 # local
 import ivy
 import ivy_tests.helpers as helpers
-from ivy.core.container import Container
+from ivy.container import Container
 
 
 # Linear #
@@ -82,7 +82,7 @@ def test_linear_layer_training(bs_ic_oc, with_v, dtype, tensor_fn, dev, wrapped_
     if call is helpers.torch_call:
         # pytest scripting does not **kwargs
         return
-    if not ivy.wrapped_mode():
+    if not ivy.array_mode():
         helpers.assert_compilable(loss_fn)
 
 
@@ -173,7 +173,7 @@ def test_conv1d_layer_training(x_n_fs_n_pad_n_oc, with_v, dtype, tensor_fn, dev,
     if call is helpers.torch_call:
         # pytest scripting does not **kwargs
         return
-    if not ivy.wrapped_mode():
+    if not ivy.array_mode():
         helpers.assert_compilable(loss_fn)
 
 
@@ -268,7 +268,7 @@ def test_conv1d_transpose_layer_training(x_n_fs_n_pad_n_outshp_n_oc, with_v, dty
     if call is helpers.torch_call:
         # pytest scripting does not **kwargs
         return
-    if not ivy.wrapped_mode():
+    if not ivy.array_mode():
         helpers.assert_compilable(loss_fn)
 
 
@@ -366,7 +366,7 @@ def test_conv2d_layer_training(x_n_fs_n_pad_n_oc, with_v, dtype, tensor_fn, dev,
     if call is helpers.torch_call:
         # pytest scripting does not **kwargs
         return
-    if not ivy.wrapped_mode():
+    if not ivy.array_mode():
         helpers.assert_compilable(loss_fn)
 
 
@@ -467,7 +467,7 @@ def test_conv2d_transpose_layer_training(x_n_fs_n_pad_n_outshp_n_oc, with_v, dty
     if call is helpers.torch_call:
         # pytest scripting does not **kwargs
         return
-    if not ivy.wrapped_mode():
+    if not ivy.array_mode():
         helpers.assert_compilable(loss_fn)
 
 
@@ -561,7 +561,7 @@ def test_depthwise_conv2d_layer_training(x_n_fs_n_pad, with_v, dtype, tensor_fn,
     if call is helpers.torch_call:
         # pytest scripting does not **kwargs
         return
-    if not ivy.wrapped_mode():
+    if not ivy.array_mode():
         helpers.assert_compilable(loss_fn)
 
 
@@ -657,7 +657,7 @@ def test_conv3d_layer_training(x_n_fs_n_pad_n_oc, with_v, dtype, tensor_fn, dev,
     if call is helpers.torch_call:
         # pytest scripting does not **kwargs
         return
-    if not ivy.wrapped_mode():
+    if not ivy.array_mode():
         helpers.assert_compilable(loss_fn)
 
 
@@ -758,7 +758,7 @@ def test_conv3d_transpose_layer_training(x_n_fs_n_pad_n_outshp_n_oc, with_v, dty
     if call is helpers.torch_call:
         # pytest scripting does not **kwargs
         return
-    if not ivy.wrapped_mode():
+    if not ivy.array_mode():
         helpers.assert_compilable(loss_fn)
 
 
@@ -834,7 +834,7 @@ def test_lstm_layer_training(b_t_ic_hc_otf_sctv, with_v, dtype, tensor_fn, dev, 
     if call is helpers.torch_call:
         # pytest scripting does not **kwargs
         return
-    if not ivy.wrapped_mode():
+    if not ivy.array_mode():
         helpers.assert_compilable(loss_fn)
 
 
@@ -930,5 +930,5 @@ def test_sequential_layer_training(bs_c, with_v, seq_v, dtype, tensor_fn, dev, w
     if call is helpers.torch_call:
         # pytest scripting does not **kwargs
         return
-    if not ivy.wrapped_mode():
+    if not ivy.array_mode():
         helpers.assert_compilable(loss_fn)

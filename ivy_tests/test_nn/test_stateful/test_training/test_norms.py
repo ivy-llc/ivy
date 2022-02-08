@@ -8,7 +8,7 @@ import pytest
 # local
 import ivy
 import ivy_tests.helpers as helpers
-from ivy.core.container import Container
+from ivy.container import Container
 
 
 # layer norm
@@ -65,5 +65,5 @@ def test_layer_norm_layer_training(x_n_ns, with_v, dtype, tensor_fn, dev, call):
     if call is helpers.torch_call:
         # pytest scripting does not **kwargs
         return
-    if not ivy.wrapped_mode():
+    if not ivy.array_mode():
         helpers.assert_compilable(loss_fn)

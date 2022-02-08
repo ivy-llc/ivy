@@ -8,7 +8,7 @@ import numpy as np
 
 # local
 import ivy
-import ivy.backends.numpy
+import ivy.functional.backends.numpy
 import ivy_tests.helpers as helpers
 
 
@@ -28,9 +28,9 @@ def test_sin(x, dtype, tensor_fn, dev, call):
     # cardinality test
     assert ret.shape == x.shape
     # value test
-    assert np.allclose(call(ivy.sin, x), ivy.backends.numpy.sin(ivy.to_numpy(x)))
+    assert np.allclose(call(ivy.sin, x), ivy.functional.backends.numpy.sin(ivy.to_numpy(x)))
     # compilation test
-    if not ivy.wrapped_mode():
+    if not ivy.array_mode():
         helpers.assert_compilable(ivy.sin)
 
 
@@ -50,9 +50,9 @@ def test_cos(x, dtype, tensor_fn, dev, call):
     # cardinality test
     assert ret.shape == x.shape
     # value test
-    assert np.allclose(call(ivy.cos, x), ivy.backends.numpy.cos(ivy.to_numpy(x)))
+    assert np.allclose(call(ivy.cos, x), ivy.functional.backends.numpy.cos(ivy.to_numpy(x)))
     # compilation test
-    if not ivy.wrapped_mode():
+    if not ivy.array_mode():
         helpers.assert_compilable(ivy.cos)
 
 
@@ -72,9 +72,9 @@ def test_tan(x, dtype, tensor_fn, dev, call):
     # cardinality test
     assert ret.shape == x.shape
     # value test
-    assert np.allclose(call(ivy.tan, x), ivy.backends.numpy.tan(ivy.to_numpy(x)))
+    assert np.allclose(call(ivy.tan, x), ivy.functional.backends.numpy.tan(ivy.to_numpy(x)))
     # compilation test
-    if not ivy.wrapped_mode():
+    if not ivy.array_mode():
         helpers.assert_compilable(ivy.tan)
 
 
@@ -94,9 +94,9 @@ def test_asin(x, dtype, tensor_fn, dev, call):
     # cardinality test
     assert ret.shape == x.shape
     # value test
-    assert np.allclose(call(ivy.asin, x), ivy.backends.numpy.asin(ivy.to_numpy(x)))
+    assert np.allclose(call(ivy.asin, x), ivy.functional.backends.numpy.asin(ivy.to_numpy(x)))
     # compilation test
-    if not ivy.wrapped_mode():
+    if not ivy.array_mode():
         helpers.assert_compilable(ivy.asin)
 
 
@@ -116,9 +116,9 @@ def test_acos(x, dtype, tensor_fn, dev, call):
     # cardinality test
     assert ret.shape == x.shape
     # value test
-    assert np.allclose(call(ivy.acos, x), ivy.backends.numpy.acos(ivy.to_numpy(x)))
+    assert np.allclose(call(ivy.acos, x), ivy.functional.backends.numpy.acos(ivy.to_numpy(x)))
     # compilation test
-    if not ivy.wrapped_mode():
+    if not ivy.array_mode():
         helpers.assert_compilable(ivy.acos)
 
 
@@ -138,9 +138,9 @@ def test_atan(x, dtype, tensor_fn, dev, call):
     # cardinality test
     assert ret.shape == x.shape
     # value test
-    assert np.allclose(call(ivy.atan, x), ivy.backends.numpy.atan(ivy.to_numpy(x)))
+    assert np.allclose(call(ivy.atan, x), ivy.functional.backends.numpy.atan(ivy.to_numpy(x)))
     # compilation test
-    if not ivy.wrapped_mode():
+    if not ivy.array_mode():
         helpers.assert_compilable(ivy.atan)
 
 
@@ -162,9 +162,9 @@ def test_atan2(x1_n_x2, dtype, tensor_fn, dev, call):
     # cardinality test
     assert ret.shape == x1.shape
     # value test
-    assert np.allclose(call(ivy.atan2, x1, x2), ivy.backends.numpy.atan2(ivy.to_numpy(x1), ivy.to_numpy(x2)))
+    assert np.allclose(call(ivy.atan2, x1, x2), ivy.functional.backends.numpy.atan2(ivy.to_numpy(x1), ivy.to_numpy(x2)))
     # compilation test
-    if not ivy.wrapped_mode():
+    if not ivy.array_mode():
         helpers.assert_compilable(ivy.atan2)
 
 
@@ -184,9 +184,9 @@ def test_sinh(x, dtype, tensor_fn, dev, call):
     # cardinality test
     assert ret.shape == x.shape
     # value test
-    assert np.allclose(call(ivy.sinh, x), ivy.backends.numpy.sinh(ivy.to_numpy(x)))
+    assert np.allclose(call(ivy.sinh, x), ivy.functional.backends.numpy.sinh(ivy.to_numpy(x)))
     # compilation test
-    if not ivy.wrapped_mode():
+    if not ivy.array_mode():
         helpers.assert_compilable(ivy.sinh)
 
 
@@ -206,9 +206,9 @@ def test_cosh(x, dtype, tensor_fn, dev, call):
     # cardinality test
     assert ret.shape == x.shape
     # value test
-    assert np.allclose(call(ivy.cosh, x), ivy.backends.numpy.cosh(ivy.to_numpy(x)))
+    assert np.allclose(call(ivy.cosh, x), ivy.functional.backends.numpy.cosh(ivy.to_numpy(x)))
     # compilation test
-    if not ivy.wrapped_mode():
+    if not ivy.array_mode():
         helpers.assert_compilable(ivy.cosh)
 
 
@@ -228,9 +228,9 @@ def test_tanh(x, dtype, tensor_fn, dev, call):
     # cardinality test
     assert ret.shape == x.shape
     # value test
-    assert np.allclose(call(ivy.tanh, x), ivy.backends.numpy.tanh(ivy.to_numpy(x)))
+    assert np.allclose(call(ivy.tanh, x), ivy.functional.backends.numpy.tanh(ivy.to_numpy(x)))
     # compilation test
-    if not ivy.wrapped_mode():
+    if not ivy.array_mode():
         helpers.assert_compilable(ivy.tanh)
 
 
@@ -250,9 +250,9 @@ def test_asinh(x, dtype, tensor_fn, dev, call):
     # cardinality test
     assert ret.shape == x.shape
     # value test
-    assert np.allclose(call(ivy.asinh, x), ivy.backends.numpy.asinh(ivy.to_numpy(x)))
+    assert np.allclose(call(ivy.asinh, x), ivy.functional.backends.numpy.asinh(ivy.to_numpy(x)))
     # compilation test
-    if not ivy.wrapped_mode():
+    if not ivy.array_mode():
         helpers.assert_compilable(ivy.asinh)
 
 
@@ -272,9 +272,9 @@ def test_acosh(x, dtype, tensor_fn, dev, call):
     # cardinality test
     assert ret.shape == x.shape
     # value test
-    assert np.allclose(call(ivy.acosh, x), ivy.backends.numpy.acosh(ivy.to_numpy(x)))
+    assert np.allclose(call(ivy.acosh, x), ivy.functional.backends.numpy.acosh(ivy.to_numpy(x)))
     # compilation test
-    if not ivy.wrapped_mode():
+    if not ivy.array_mode():
         helpers.assert_compilable(ivy.acosh)
 
 
@@ -294,9 +294,9 @@ def test_atanh(x, dtype, tensor_fn, dev, call):
     # cardinality test
     assert ret.shape == x.shape
     # value test
-    assert np.allclose(call(ivy.atanh, x), ivy.backends.numpy.atanh(ivy.to_numpy(x)))
+    assert np.allclose(call(ivy.atanh, x), ivy.functional.backends.numpy.atanh(ivy.to_numpy(x)))
     # compilation test
-    if not ivy.wrapped_mode():
+    if not ivy.array_mode():
         helpers.assert_compilable(ivy.atanh)
 
 
@@ -316,9 +316,9 @@ def test_log(x, dtype, tensor_fn, dev, call):
     # cardinality test
     assert ret.shape == x.shape
     # value test
-    assert np.allclose(call(ivy.log, x), ivy.backends.numpy.log(ivy.to_numpy(x)))
+    assert np.allclose(call(ivy.log, x), ivy.functional.backends.numpy.log(ivy.to_numpy(x)))
     # compilation test
-    if not ivy.wrapped_mode():
+    if not ivy.array_mode():
         helpers.assert_compilable(ivy.log)
 
 
@@ -338,9 +338,9 @@ def test_exp(x, dtype, tensor_fn, dev, call):
     # cardinality test
     assert ret.shape == x.shape
     # value test
-    assert np.allclose(call(ivy.exp, x), ivy.backends.numpy.exp(ivy.to_numpy(x)))
+    assert np.allclose(call(ivy.exp, x), ivy.functional.backends.numpy.exp(ivy.to_numpy(x)))
     # compilation test
-    if not ivy.wrapped_mode():
+    if not ivy.array_mode():
         helpers.assert_compilable(ivy.exp)
 
 
@@ -360,7 +360,7 @@ def test_erf(x, dtype, tensor_fn, dev, call):
     # cardinality test
     assert ret.shape == x.shape
     # value test
-    assert np.allclose(call(ivy.erf, x), ivy.backends.numpy.erf(ivy.to_numpy(x)))
+    assert np.allclose(call(ivy.erf, x), ivy.functional.backends.numpy.erf(ivy.to_numpy(x)))
     # compilation test
-    if not ivy.wrapped_mode():
+    if not ivy.array_mode():
         helpers.assert_compilable(ivy.erf)
