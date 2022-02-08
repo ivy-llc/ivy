@@ -7,7 +7,9 @@ import numpy as np
 from ivy import verbosity
 
 # local
-from ivy.wrapper import _wrap_methods, wrapped_mode_val
+# noinspection PyProtectedMember
+from ivy.func_wrapper import _wrap_methods
+from ivy.array.array_mode_handler import array_mode_val
 
 
 framework_stack = []
@@ -27,26 +29,26 @@ class ContextManager:
 
 
 _array_types = dict()
-_array_types['numpy'] = 'ivy.backends.numpy'
-_array_types['jax.interpreters.xla'] = 'ivy.backends.jax'
-_array_types['jaxlib.xla_extension'] = 'ivy.backends.jax'
-_array_types['tensorflow.python.framework.ops'] = 'ivy.backends.tensorflow'
-_array_types['torch'] = 'ivy.backends.torch'
-_array_types['mxnet.ndarray.ndarray'] = 'ivy.backends.mxnet'
+_array_types['numpy'] = 'ivy.functional.backends.numpy'
+_array_types['jax.interpreters.xla'] = 'ivy.functional.backends.jax'
+_array_types['jaxlib.xla_extension'] = 'ivy.functional.backends.jax'
+_array_types['tensorflow.python.framework.ops'] = 'ivy.functional.backends.tensorflow'
+_array_types['torch'] = 'ivy.functional.backends.torch'
+_array_types['mxnet.ndarray.ndarray'] = 'ivy.functional.backends.mxnet'
 
 _framework_dict = dict()
-_framework_dict['numpy'] = 'ivy.backends.numpy'
-_framework_dict['jax'] = 'ivy.backends.jax'
-_framework_dict['tensorflow'] = 'ivy.backends.tensorflow'
-_framework_dict['torch'] = 'ivy.backends.torch'
-_framework_dict['mxnet'] = 'ivy.backends.mxnet'
+_framework_dict['numpy'] = 'ivy.functional.backends.numpy'
+_framework_dict['jax'] = 'ivy.functional.backends.jax'
+_framework_dict['tensorflow'] = 'ivy.functional.backends.tensorflow'
+_framework_dict['torch'] = 'ivy.functional.backends.torch'
+_framework_dict['mxnet'] = 'ivy.functional.backends.mxnet'
 
 _framework_reverse_dict = dict()
-_framework_reverse_dict['ivy.backends.numpy'] = 'numpy'
-_framework_reverse_dict['ivy.backends.jax'] = 'jax'
-_framework_reverse_dict['ivy.backends.tensorflow'] = 'tensorflow'
-_framework_reverse_dict['ivy.backends.torch'] = 'torch'
-_framework_reverse_dict['ivy.backends.mxnet'] = 'mxnet'
+_framework_reverse_dict['ivy.functional.backends.numpy'] = 'numpy'
+_framework_reverse_dict['ivy.functional.backends.jax'] = 'jax'
+_framework_reverse_dict['ivy.functional.backends.tensorflow'] = 'tensorflow'
+_framework_reverse_dict['ivy.functional.backends.torch'] = 'torch'
+_framework_reverse_dict['ivy.functional.backends.mxnet'] = 'mxnet'
 
 
 # Framework Getting/Setting #
@@ -120,7 +122,7 @@ def set_framework(f):
             except TypeError:
                 pass
     # noinspection PyUnresolvedReferences
-    if wrapped_mode_val and (not hasattr(ivy, 'wrapped') or not ivy.wrapped):
+    if array_mode_val and (not hasattr(ivy, 'wrapped') or not ivy.functional.core.wrapped):
         _wrap_methods()
         ivy.wrapped = True
         f.wrapped = True
@@ -175,57 +177,57 @@ def clear_framework_stack():
 
 def try_import_ivy_jax(warn=False):
     try:
-        import ivy.backends.jax
-        return ivy.backends.jax
+        import ivy.functional.backends.jax
+        return ivy.functional.backends.jax
     except (ImportError, ModuleNotFoundError) as e:
         if not warn:
             return
         logging.warning('{}\n\nEither jax or jaxlib appear to not be installed, '
-                        'ivy.backends.jax can therefore not be imported.\n'.format(e))
+                        'ivy.functional.backends.jax can therefore not be imported.\n'.format(e))
 
 
 def try_import_ivy_tf(warn=False):
     try:
-        import ivy.backends.tensorflow
-        return ivy.backends.tensorflow
+        import ivy.functional.backends.tensorflow
+        return ivy.functional.backends.tensorflow
     except (ImportError, ModuleNotFoundError) as e:
         if not warn:
             return
         logging.warning('{}\n\ntensorflow does not appear to be installed, '
-                        'ivy.backends.tensorflow can therefore not be imported.\n'.format(e))
+                        'ivy.functional.backends.tensorflow can therefore not be imported.\n'.format(e))
 
 
 def try_import_ivy_torch(warn=False):
     try:
-        import ivy.backends.torch
-        return ivy.backends.torch
+        import ivy.functional.backends.torch
+        return ivy.functional.backends.torch
     except (ImportError, ModuleNotFoundError) as e:
         if not warn:
             return
         logging.warning('{}\n\ntorch does not appear to be installed, '
-                        'ivy.backends.torch can therefore not be imported.\n'.format(e))
+                        'ivy.functional.backends.torch can therefore not be imported.\n'.format(e))
 
 
 def try_import_ivy_mxnet(warn=False):
     try:
-        import ivy.backends.mxnet
-        return ivy.backends.mxnet
+        import ivy.functional.backends.mxnet
+        return ivy.functional.backends.mxnet
     except (ImportError, ModuleNotFoundError) as e:
         if not warn:
             return
         logging.warning('{}\n\nmxnet does not appear to be installed, '
-                        'ivy.backends.mxnet can therefore not be imported.\n'.format(e))
+                        'ivy.functional.backends.mxnet can therefore not be imported.\n'.format(e))
 
 
 def try_import_ivy_numpy(warn=False):
     try:
-        import ivy.backends.numpy
-        return ivy.backends.numpy
+        import ivy.functional.backends.numpy
+        return ivy.functional.backends.numpy
     except (ImportError, ModuleNotFoundError) as e:
         if not warn:
             return
         logging.warning('{}\n\nnumpy does not appear to be installed, '
-                        'ivy.backends.numpy can therefore not be imported.\n'.format(e))
+                        'ivy.functional.backends.numpy can therefore not be imported.\n'.format(e))
 
 
 FW_DICT = {'jax': try_import_ivy_jax,

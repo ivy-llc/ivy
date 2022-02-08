@@ -10,7 +10,7 @@ from numbers import Number
 
 # local
 import ivy
-import ivy.backends.numpy
+import ivy.functional.backends.numpy
 import ivy_tests.helpers as helpers
 
 
@@ -36,7 +36,7 @@ def test_dev(x, dtype, tensor_fn, dev, call):
     # type test
     assert isinstance(ret, ivy.Device)
     # compilation test
-    if not ivy.wrapped_mode():
+    if not ivy.array_mode():
         helpers.assert_compilable(ivy.dev)
 
 
@@ -58,7 +58,7 @@ def test_dev_to_str(x, dtype, tensor_fn, dev, call):
     # type test
     assert isinstance(ret, str)
     # compilation test
-    if not ivy.wrapped_mode():
+    if not ivy.array_mode():
         helpers.assert_compilable(ivy.dev_to_str)
 
 
@@ -88,7 +88,7 @@ def test_dev_from_str(x, dtype, tensor_fn, dev, call):
     if call is helpers.torch_call:
         # pytorch scripting does not handle converting string to device
         return
-    if not ivy.wrapped_mode():
+    if not ivy.array_mode():
         helpers.assert_compilable(ivy.dev_from_str)
 
 
@@ -128,7 +128,7 @@ def test_memory_on_dev(dev_to_check, dev, call):
     if call is helpers.torch_call:
         # global variables aren't supported for pytorch scripting
         pytest.skip()
-    if not ivy.wrapped_mode():
+    if not ivy.array_mode():
         helpers.assert_compilable(ivy.total_mem_on_dev)
 
 
@@ -185,7 +185,7 @@ def test_to_dev(x, dtype, tensor_fn, dev, call):
     if call is helpers.torch_call:
         # pytorch scripting does not handle converting string to device
         return
-    if not ivy.wrapped_mode():
+    if not ivy.array_mode():
         helpers.assert_compilable(ivy.to_dev)
 
 

@@ -8,7 +8,7 @@ import numpy as np
 
 # local
 import ivy
-import ivy.backends.numpy
+import ivy.functional.backends.numpy
 import ivy_tests.helpers as helpers
 
 
@@ -44,7 +44,7 @@ def test_random_uniform(low, high, shape, dtype, tensor_fn, dev, call):
     assert np.min((ret_np < (high if high else 1.)).astype(np.int32)) == 1
     assert np.min((ret_np > (low if low else 0.)).astype(np.int32)) == 1
     # compilation test
-    if not ivy.wrapped_mode() and call is not helpers.torch_call:
+    if not ivy.array_mode() and call is not helpers.torch_call:
         helpers.assert_compilable(ivy.random_uniform)
 
 
@@ -81,7 +81,7 @@ def test_random_normal(mean, std, shape, dtype, tensor_fn, dev, call):
     assert np.min((ret_np > (ivy.default(mean, 0.) - 3*ivy.default(std, 1.))).astype(np.int32)) == 1
     assert np.min((ret_np < (ivy.default(mean, 0.) + 3*ivy.default(std, 1.))).astype(np.int32)) == 1
     # compilation test
-    if not ivy.wrapped_mode() and call is not helpers.torch_call:
+    if not ivy.array_mode() and call is not helpers.torch_call:
         helpers.assert_compilable(ivy.random_normal)
 
 
@@ -110,7 +110,7 @@ def test_multinomial(probs, num_samples, replace, dtype, tensor_fn, dev, call):
     # cardinality test
     assert ret.shape == tuple([batch_size] + [num_samples])
     # compilation test
-    if not ivy.wrapped_mode() and call is not helpers.torch_call:
+    if not ivy.array_mode() and call is not helpers.torch_call:
         helpers.assert_compilable(ivy.multinomial)
 
 
@@ -141,7 +141,7 @@ def test_randint(low, high, shape, dtype, tensor_fn, dev, call):
     assert np.min((ret_np < high).astype(np.int32)) == 1
     assert np.min((ret_np >= low).astype(np.int32)) == 1
     # compilation test
-    if not ivy.wrapped_mode() and call is not helpers.torch_call:
+    if not ivy.array_mode() and call is not helpers.torch_call:
         helpers.assert_compilable(ivy.randint)
 
 
@@ -159,7 +159,7 @@ def test_seed(seed_val, dtype, tensor_fn, dev, call):
     if call in [helpers.torch_call]:
         # pytorch scripting does not support functions with None return
         return
-    if not ivy.wrapped_mode():
+    if not ivy.array_mode():
         helpers.assert_compilable(ivy.seed)
 
 
@@ -185,5 +185,5 @@ def test_shuffle(x, dtype, tensor_fn, dev, call):
     second_shuffle = call(ivy.shuffle, x)
     assert np.array_equal(first_shuffle, second_shuffle)
     # compilation test
-    if not ivy.wrapped_mode():
+    if not ivy.array_mode():
         helpers.assert_compilable(ivy.shuffle)

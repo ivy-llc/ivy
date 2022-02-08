@@ -32,10 +32,6 @@ class Dtype:
     pass
 
 
-class Container:
-    pass
-
-
 # global constants
 _MIN_DENOMINATOR = 1e-12
 _MIN_BASE = 1e-5
@@ -45,25 +41,26 @@ import ivy
 import functools
 
 # local
-from .wrapper import set_wrapped_mode, unset_wrapped_mode, wrapped_mode, wrapped_mode_val
-from . import wrapper
+from .container import Container, MultiDevContainer
+from ivy.array.array_mode_handler import set_array_mode, unset_array_mode, array_mode, array_mode_val
 from .framework_handler import current_framework, get_framework, set_framework, unset_framework, framework_stack,\
     choose_random_framework, try_import_ivy_jax, try_import_ivy_tf, try_import_ivy_torch, try_import_ivy_mxnet,\
     try_import_ivy_numpy, clear_framework_stack
-from . import framework_handler
+from . import framework_handler, func_wrapper
 from .debugger import set_debug_mode, set_breakpoint_debug_mode, set_exception_debug_mode, unset_debug_mode,\
     debug_mode, debug_mode_val
 from . import debugger
-from .compiler import *
-from . import compiler
-from .core import *
-from . import frontends
-from . import neural_net_functional
-from .neural_net_functional import *
-from . import neural_net_stateful
-from .neural_net_stateful import *
+from .graph_compiler import *
+from . import graph_compiler
+from ivy.functional.ivy.core import *
+from .functional import frontends
+from .functional.ivy import nn
+from ivy.functional.ivy.nn import *
+from . import stateful
+from .stateful import *
 from . import verbosity
-from ivy.core.array import ArrayWithDevice, ArrayWithGeneral, ArrayWithGradients, ArrayWithImage, ArrayWithLinalg,\
+from .array import *
+from ivy.array import ArrayWithDevice, ArrayWithGeneral, ArrayWithGradients, ArrayWithImage, ArrayWithLinalg,\
     ArrayWithLogic, ArrayWithMath, ArrayWithMeta, ArrayWithRandom, ArrayWithReductions
 
 

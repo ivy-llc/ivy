@@ -140,7 +140,7 @@ def test_distributed_training(bs_ic_oc, dev, call):
     if call is helpers.torch_call:
         # pytest scripting does not support **kwargs
         return
-    if not ivy.wrapped_mode():
+    if not ivy.array_mode():
         helpers.assert_compilable(loss_fn)
 
 
@@ -239,7 +239,7 @@ def test_distributed_multiprocess_training(bs_ic_oc, dev, wrapped_mode, call):
     if call is helpers.torch_call:
         # pytest scripting does not support **kwargs
         return
-    if not ivy.wrapped_mode():
+    if not ivy.array_mode():
         helpers.assert_compilable(loss_fn)
 
 
@@ -537,7 +537,7 @@ def test_device_manager_wrapped_tuning(bs_ic_oc, tune_dev_alloc, tune_dev_splits
     if call is helpers.torch_call:
         # pytest scripting does not support **kwargs
         return
-    if not ivy.wrapped_mode():
+    if not ivy.array_mode():
         helpers.assert_compilable(loss_fn)
 
 
@@ -606,5 +606,5 @@ def test_device_manager_unwrapped_tuning(bs_ic_oc, dev, call):
     if call is helpers.torch_call:
         # pytest scripting does not support **kwargs
         return
-    if not ivy.wrapped_mode():
+    if not ivy.array_mode():
         helpers.assert_compilable(loss_fn)

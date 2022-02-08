@@ -9,7 +9,7 @@ import numpy as np
 # local
 import ivy
 import ivy_tests.helpers as helpers
-from ivy.core.container import Container
+from ivy.container import Container
 
 
 # sgd
@@ -79,7 +79,7 @@ def test_sgd_optimizer(bs_ic_oc_target, with_v, inplace, dtype, dev, wrapped_mod
     if call is helpers.torch_call:
         # pytest scripting does not **kwargs
         return
-    if not ivy.wrapped_mode():
+    if not ivy.array_mode():
         helpers.assert_compilable(loss_fn)
 
 
@@ -150,7 +150,7 @@ def test_lars_optimizer(bs_ic_oc_target, with_v, inplace, dtype, dev, wrapped_mo
     if call is helpers.torch_call:
         # pytest scripting does not **kwargs
         return
-    if not ivy.wrapped_mode():
+    if not ivy.array_mode():
         helpers.assert_compilable(loss_fn)
 
 
@@ -223,7 +223,7 @@ def test_adam_optimizer(bs_ic_oc_target, with_v, inplace, dtype, dev, wrapped_mo
     if call is helpers.torch_call:
         # pytest scripting does not **kwargs
         return
-    if not ivy.wrapped_mode():
+    if not ivy.array_mode():
         helpers.assert_compilable(loss_fn)
 
 
@@ -296,5 +296,5 @@ def test_lamb_optimizer(bs_ic_oc_target, with_v, inplace, dtype, dev, wrapped_mo
     if call is helpers.torch_call:
         # pytest scripting does not **kwargs
         return
-    if not ivy.wrapped_mode():
+    if not ivy.array_mode():
         helpers.assert_compilable(loss_fn)

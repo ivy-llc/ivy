@@ -8,7 +8,7 @@ import numpy as np
 
 # local
 import ivy
-import ivy.backends.numpy
+import ivy.functional.backends.numpy
 import ivy_tests.helpers as helpers
 
 
@@ -145,7 +145,7 @@ def test_fomaml_step_shared_vars(dev, call, inner_grad_steps, with_outer_cost_fn
         # and mxnet does not support only_inputs argument to mx.autograd.grad
         pytest.skip()
 
-    if call is helpers.jnp_call and ivy.wrapped_mode():
+    if call is helpers.jnp_call and ivy.array_mode():
         # ToDo: find solution to this. There must be some wrongly wrapped jax functions.
         pytest.skip()
 
@@ -266,7 +266,7 @@ def test_fomaml_step_overlapping_vars(dev, call, inner_grad_steps, with_outer_co
         # and mxnet does not support only_inputs argument to mx.autograd.grad
         pytest.skip()
 
-    if call is helpers.jnp_call and ivy.wrapped_mode():
+    if call is helpers.jnp_call and ivy.array_mode():
         # ToDo: find solution to this. There must be some wrongly wrapped jax functions.
         pytest.skip()
 
@@ -369,7 +369,7 @@ def test_reptile_step(dev, call, inner_grad_steps, batched, stop_gradients, num_
         # and mxnet does not support only_inputs argument to mx.autograd.grad
         pytest.skip()
 
-    if call is helpers.jnp_call and ivy.wrapped_mode():
+    if call is helpers.jnp_call and ivy.array_mode():
         # ToDo: find solution to this. There must be some wrongly wrapped jax functions.
         pytest.skip()
 
@@ -471,11 +471,11 @@ def test_maml_step_unique_vars(dev, call, inner_grad_steps, with_outer_cost_fn, 
         # and mxnet does not support only_inputs argument to mx.autograd.grad
         pytest.skip()
 
-    if call in [helpers.tf_call, helpers.tf_graph_call] and ivy.wrapped_mode():
+    if call in [helpers.tf_call, helpers.tf_graph_call] and ivy.array_mode():
         # ToDo: work out why MAML does not work for tensorflow in wrapped mode
         pytest.skip()
 
-    if call is helpers.jnp_call and ivy.wrapped_mode():
+    if call is helpers.jnp_call and ivy.array_mode():
         # ToDo: find solution to this. There must be some wrongly wrapped jax functions.
         pytest.skip()
 
@@ -579,11 +579,11 @@ def test_maml_step_shared_vars(dev, call, inner_grad_steps, with_outer_cost_fn, 
         # and mxnet does not support only_inputs argument to mx.autograd.grad
         pytest.skip()
 
-    if call in [helpers.tf_call, helpers.tf_graph_call] and ivy.wrapped_mode():
+    if call in [helpers.tf_call, helpers.tf_graph_call] and ivy.array_mode():
         # ToDo: work out why MAML does not work for tensorflow in wrapped mode
         pytest.skip()
 
-    if call is helpers.jnp_call and ivy.wrapped_mode():
+    if call is helpers.jnp_call and ivy.array_mode():
         # ToDo: find solution to this. There must be some wrongly wrapped jax functions.
         pytest.skip()
 
@@ -721,11 +721,11 @@ def test_maml_step_overlapping_vars(dev, call, inner_grad_steps, with_outer_cost
         # and mxnet does not support only_inputs argument to mx.autograd.grad
         pytest.skip()
 
-    if call in [helpers.tf_call, helpers.tf_graph_call] and ivy.wrapped_mode():
+    if call in [helpers.tf_call, helpers.tf_graph_call] and ivy.array_mode():
         # ToDo: work out why MAML does not work for tensorflow in wrapped mode
         pytest.skip()
 
-    if call is helpers.jnp_call and ivy.wrapped_mode():
+    if call is helpers.jnp_call and ivy.array_mode():
         # ToDo: find solution to this. There must be some wrongly wrapped jax functions.
         pytest.skip()
 
