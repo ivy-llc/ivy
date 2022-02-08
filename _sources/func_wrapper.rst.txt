@@ -1,0 +1,15 @@
+Func wrapper
+============
+
+.. automodule:: ivy.func_wrapper
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :show-inheritance:
+
+
+.. toctree::
+   :maxdepth: -1
+   :caption: Func wrapper
+
+

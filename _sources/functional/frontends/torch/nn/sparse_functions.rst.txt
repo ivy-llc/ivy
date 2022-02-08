@@ -1,0 +1,15 @@
+Sparse functions
+================
+
+.. automodule:: ivy.functional.frontends.torch.nn.sparse_functions
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :show-inheritance:
+
+
+.. toctree::
+   :maxdepth: -1
+   :caption: Sparse functions
+
+

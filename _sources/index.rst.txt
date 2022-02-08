@@ -343,78 +343,55 @@ Documentation Tree
 
 .. toctree::
    :maxdepth: -1
-   :caption: Backends
+   :caption: Array
 
-   backends/jax.rst
-   backends/mxnet.rst
-   backends/numpy.rst
-   backends/tensorflow.rst
-   backends/torch.rst
-
-
-.. toctree::
-   :maxdepth: -1
-   :caption: Compiler
-
-   compiler/compiler.rst
-   compiler/globals.rst
-   compiler/graph.rst
-   compiler/helpers.rst
-   compiler/op_logging.rst
-   compiler/param.rst
+   array/array_mode_handler.rst
+   array/conversions.rst
+   array/device.rst
+   array/general.rst
+   array/gradients.rst
+   array/image.rst
+   array/linalg.rst
+   array/logic.rst
+   array/math.rst
+   array/meta.rst
+   array/random.rst
+   array/reductions.rst
 
 
 .. toctree::
    :maxdepth: -1
-   :caption: Core
+   :caption: Functional
 
-   core/array.rst
-   core/compilation.rst
-   core/container.rst
-   core/device.rst
-   core/general.rst
-   core/gradients.rst
-   core/image.rst
-   core/linalg.rst
-   core/logic.rst
-   core/math.rst
-   core/meta.rst
-   core/multi_node.rst
-   core/nest.rst
-   core/random.rst
-   core/reductions.rst
-   core/wrapped.rst
+   functional/backends.rst
+   functional/frontends.rst
+   functional/ivy.rst
 
 
 .. toctree::
    :maxdepth: -1
-   :caption: Frontends
+   :caption: Graph compiler
 
-   frontends/torch.rst
-
-
-.. toctree::
-   :maxdepth: -1
-   :caption: Neural net functional
-
-   neural_net_functional/activations.rst
-   neural_net_functional/layers.rst
-   neural_net_functional/losses.rst
-   neural_net_functional/norms.rst
+   graph_compiler/compiler.rst
+   graph_compiler/globals.rst
+   graph_compiler/graph.rst
+   graph_compiler/helpers.rst
+   graph_compiler/op_logging.rst
+   graph_compiler/param.rst
 
 
 .. toctree::
    :maxdepth: -1
-   :caption: Neural net stateful
+   :caption: Stateful
 
-   neural_net_stateful/activations.rst
-   neural_net_stateful/converters.rst
-   neural_net_stateful/initializers.rst
-   neural_net_stateful/layers.rst
-   neural_net_stateful/module.rst
-   neural_net_stateful/norms.rst
-   neural_net_stateful/optimizers.rst
-   neural_net_stateful/sequential.rst
+   stateful/activations.rst
+   stateful/converters.rst
+   stateful/initializers.rst
+   stateful/layers.rst
+   stateful/module.rst
+   stateful/norms.rst
+   stateful/optimizers.rst
+   stateful/sequential.rst
 
 
 .. toctree::

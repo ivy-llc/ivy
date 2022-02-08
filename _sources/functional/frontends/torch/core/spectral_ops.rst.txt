@@ -1,0 +1,15 @@
+Spectral ops
+============
+
+.. automodule:: ivy.functional.frontends.torch.core.spectral_ops
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :show-inheritance:
+
+
+.. toctree::
+   :maxdepth: -1
+   :caption: Spectral ops
+
+

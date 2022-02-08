@@ -1,0 +1,17 @@
+Linalg
+======
+
+.. automodule:: ivy.functional.backends.jax.core.linalg
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :show-inheritance:
+
+
+.. toctree::
+   :maxdepth: -1
+   :caption: Linalg
+
+   linalg/matrix_norm.rst
+   linalg/vector_to_skew_symmetric_matrix.rst
+
