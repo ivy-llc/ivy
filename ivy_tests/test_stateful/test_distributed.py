@@ -8,7 +8,7 @@ import pytest
 # local
 import ivy
 import ivy_tests.helpers as helpers
-from ivy_tests.test_nn.test_stateful.test_converters import NATIVE_MODULES
+from ivy_tests.test_stateful.test_converters import NATIVE_MODULES
 
 
 class TrainableModule(ivy.Module):

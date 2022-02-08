@@ -39,46 +39,6 @@ def _fn_2(x, with_non_compiled: bool = False):
     return (x + 10)**0.5 - 5
 
 
-@pytest.mark.parametrize(
-    "x", [[1], [[0.0, 1.0], [2.0, 3.0]]])
-@pytest.mark.parametrize(
-    "dtype", ['float32'])
-@pytest.mark.parametrize(
-    "tensor_fn", [ivy.array, helpers.var_fn])
-@pytest.mark.parametrize(
-    "with_array_caching", [True, False])
-def test_compile(x, dtype, tensor_fn, with_array_caching, dev, call):
-    if ivy.array_mode():
-        # Wrapped mode does not yet support function compilation
-        pytest.skip()
-    # smoke test
-    if (isinstance(x, Number) or len(x) == 0) and tensor_fn == helpers.var_fn and call is helpers.mx_call:
-        # mxnet does not support 0-dimensional variables
-        pytest.skip()
-
-    # function 1
-    comp_fn = ivy.compile(_fn_1)
-    # type test
-    assert callable(comp_fn)
-    # value test
-    x = tensor_fn(x, dtype, dev)
-    non_compiled_return = _fn_1(x)
-    x = tensor_fn(x, dtype, dev)
-    compiled_return = comp_fn(x)
-    assert np.allclose(ivy.to_numpy(non_compiled_return), ivy.to_numpy(compiled_return))
-
-    # function 2
-    comp_fn = ivy.compile(_fn_2)
-    # type test
-    assert callable(comp_fn)
-    # value test
-    x = tensor_fn(x, dtype, dev)
-    non_compiled_return = _fn_2(x)
-    x = tensor_fn(x, dtype, dev)
-    compiled_return = comp_fn(x)
-    assert np.allclose(ivy.to_numpy(non_compiled_return), ivy.to_numpy(compiled_return))
-
-
 # noinspection PyUnresolvedReferences
 @pytest.mark.parametrize(
     "x_raw", [[1]])
