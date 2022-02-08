@@ -10,7 +10,7 @@ from numbers import Number
 # local
 import ivy
 import ivy_tests.helpers as helpers
-import ivy.frontends.torch as ivy_torch
+import ivy.functional.frontends.torch as ivy_torch
 
 # abs
 @pytest.mark.parametrize(
@@ -43,5 +43,5 @@ def test_abs(x_n_x_absed, dtype, tensor_fn, inplace, dev, wrapped_mode, call):
     # value test
     assert np.allclose(call(ivy.abs, x), np.array(x_n_x_absed[1]))
     # compilation test
-    if not ivy.wrapped_mode():
+    if not ivy.array_mode():
         helpers.assert_compilable(ivy.abs)

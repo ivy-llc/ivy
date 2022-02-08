@@ -3,8 +3,8 @@ import pytest
 from typing import Dict
 
 # local
-import ivy
 from ivy_tests import helpers
+from ivy import clear_framework_stack, DefaultDevice
 
 
 FW_STRS = ['numpy', 'jax', 'tensorflow', 'torch', 'mxnet']
@@ -33,10 +33,10 @@ def run_around_tests(dev, f, wrapped_mode, compile_graph, call):
     if 'gpu' in dev and call is helpers.np_call:
         # Numpy does not support GPU
         pytest.skip()
-    ivy.clear_framework_stack()
+    clear_framework_stack()
     with f.use:
-        f.set_wrapped_mode(wrapped_mode)
-        with ivy.DefaultDevice(dev):
+        f.set_array_mode(wrapped_mode)
+        with DefaultDevice(dev):
             yield
 
 

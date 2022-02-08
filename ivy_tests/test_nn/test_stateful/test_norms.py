@@ -9,7 +9,7 @@ import numpy as np
 # local
 import ivy
 import ivy_tests.helpers as helpers
-from ivy.core.container import Container
+from ivy.container import Container
 
 
 # layer norm
@@ -54,5 +54,5 @@ def test_layer_norm_layer(x_n_ns_n_target, with_v, dtype, tensor_fn, dev, wrappe
     if call in [helpers.torch_call]:
         # this is not a backend implemented function
         return
-    if not ivy.wrapped_mode():
+    if not ivy.array_mode():
         helpers.assert_compilable(norm_layer)
