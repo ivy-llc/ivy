@@ -7,11 +7,11 @@ import pytest
 
 # local
 import ivy
-import ivy.backends.numpy
-import ivy.backends.jax
-import ivy.backends.tensorflow
-import ivy.backends.torch
-import ivy.backends.mxnet
+import ivy.functional.backends.numpy
+import ivy.functional.backends.jax
+import ivy.functional.backends.tensorflow
+import ivy.functional.backends.torch
+import ivy.functional.backends.mxnet
 import ivy_tests.helpers as helpers
 
 
@@ -51,7 +51,7 @@ def test_cast(object_in, starting_dtype, target_dtype, dev, call):
     if call in [helpers.torch_call]:
         # pytorch scripting does not support .type() method
         return
-    if not ivy.wrapped_mode():
+    if not ivy.array_mode():
         helpers.assert_compilable(ivy.cast)
 
 

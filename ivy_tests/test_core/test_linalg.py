@@ -8,7 +8,7 @@ import numpy as np
 
 # local
 import ivy
-import ivy.backends.numpy
+import ivy.functional.backends.numpy
 import ivy_tests.helpers as helpers
 
 
@@ -36,12 +36,12 @@ def test_svd(x, dtype, tensor_fn, dev, call):
     assert vh.shape == x.shape
     # value test
     pred_u, pred_s, pred_vh = call(ivy.svd, x)
-    true_u, true_s, true_vh = ivy.backends.numpy.svd(ivy.to_numpy(x))
+    true_u, true_s, true_vh = ivy.functional.backends.numpy.svd(ivy.to_numpy(x))
     assert np.allclose(pred_u, true_u)
     assert np.allclose(pred_s, true_s)
     assert np.allclose(pred_vh, true_vh)
     # compilation test
-    if not ivy.wrapped_mode():
+    if not ivy.array_mode():
         helpers.assert_compilable(ivy.svd)
 
 
@@ -82,7 +82,7 @@ def test_vector_norm(x_n_p_n_ax_n_kd_n_tn, dtype, tensor_fn, dev, call):
     if call is helpers.torch_call:
         # pytorch jit does not support calling joint ivy methods.
         return
-    if not ivy.wrapped_mode():
+    if not ivy.array_mode():
         helpers.assert_compilable(ivy.vector_norm)
 
 
@@ -140,7 +140,7 @@ def test_matrix_norm(x_n_p_n_ax_n_kd, dtype, tensor_fn, dev, call):
         # ToDo: add correct message here
         # pytorch jit does not support Union typing.
         return
-    if not ivy.wrapped_mode():
+    if not ivy.array_mode():
         helpers.assert_compilable(ivy.matrix_norm)
 
 
@@ -163,9 +163,9 @@ def test_inv(x, dtype, tensor_fn, dev, call):
     # cardinality test
     assert ret.shape == x.shape
     # value test
-    assert np.allclose(call(ivy.inv, x), ivy.backends.numpy.inv(ivy.to_numpy(x)))
+    assert np.allclose(call(ivy.inv, x), ivy.functional.backends.numpy.inv(ivy.to_numpy(x)))
     # compilation test
-    if not ivy.wrapped_mode():
+    if not ivy.array_mode():
         helpers.assert_compilable(ivy.inv)
 
 
@@ -188,9 +188,9 @@ def test_pinv(x, dtype, tensor_fn, dev, call):
     # cardinality test
     assert ret.shape == x.shape[:-2] + (x.shape[-1], x.shape[-2])
     # value test
-    assert np.allclose(call(ivy.pinv, x), ivy.backends.numpy.pinv(ivy.to_numpy(x)))
+    assert np.allclose(call(ivy.pinv, x), ivy.functional.backends.numpy.pinv(ivy.to_numpy(x)))
     # compilation test
-    if not ivy.wrapped_mode():
+    if not ivy.array_mode():
         helpers.assert_compilable(ivy.pinv)
 
 
@@ -211,7 +211,7 @@ def test_vector_to_skew_symmetric_matrix(x, dtype, tensor_fn, dev, call):
     assert ret.shape == x.shape + (x.shape[-1],)
     # value test
     assert np.allclose(call(ivy.vector_to_skew_symmetric_matrix, x),
-                       ivy.backends.numpy.vector_to_skew_symmetric_matrix(ivy.to_numpy(x)))
+                       ivy.functional.backends.numpy.vector_to_skew_symmetric_matrix(ivy.to_numpy(x)))
     # compilation test
-    if not ivy.wrapped_mode():
+    if not ivy.array_mode():
         helpers.assert_compilable(ivy.vector_to_skew_symmetric_matrix)

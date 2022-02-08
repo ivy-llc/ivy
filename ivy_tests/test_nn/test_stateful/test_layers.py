@@ -9,7 +9,7 @@ import numpy as np
 # local
 import ivy
 import ivy_tests.helpers as helpers
-from ivy.core.container import Container
+from ivy.container import Container
 
 
 # Linear #
@@ -57,7 +57,7 @@ def test_linear_layer(bs_ic_oc_target, with_v, dtype, tensor_fn, dev, wrapped_mo
     if call is helpers.torch_call:
         # pytest scripting does not **kwargs
         return
-    if not ivy.wrapped_mode():
+    if not ivy.array_mode():
         helpers.assert_compilable(linear_layer)
 
 
@@ -90,7 +90,7 @@ def test_dropout_layer(x_shape, dtype, tensor_fn, dev, wrapped_mode, compile_gra
     if call is helpers.torch_call:
         # pytest scripting does not **kwargs
         return
-    if not ivy.wrapped_mode():
+    if not ivy.array_mode():
         helpers.assert_compilable(dropout_layer)
 
 
@@ -158,7 +158,7 @@ def test_multi_head_attention_layer(x_n_s_n_m_n_c_n_gt, with_v, build_mode, dtyp
     if call in [helpers.torch_call]:
         # torch.jit compiled functions can't take variable number of arguments, which torch.einsum takes
         return
-    if not ivy.wrapped_mode():
+    if not ivy.array_mode():
         helpers.assert_compilable(multi_head_attention_layer)
 
 
@@ -232,7 +232,7 @@ def test_conv1d_layer(x_n_fs_n_pad_n_res, with_v, dtype, tensor_fn, dev, wrapped
     if call is helpers.torch_call:
         # pytest scripting does not **kwargs
         return
-    if not ivy.wrapped_mode():
+    if not ivy.array_mode():
         helpers.assert_compilable(conv1d_layer)
 
 
@@ -306,7 +306,7 @@ def test_conv1d_transpose_layer(x_n_fs_n_pad_n_outshp_n_res, with_v, dtype, tens
     if call is helpers.torch_call:
         # pytest scripting does not **kwargs
         return
-    if not ivy.wrapped_mode():
+    if not ivy.array_mode():
         helpers.assert_compilable(conv1d_trans_layer)
 
 
@@ -396,7 +396,7 @@ def test_conv2d_layer(x_n_fs_n_pad_n_res, with_v, dtype, tensor_fn, dev, wrapped
     if call is helpers.torch_call:
         # pytest scripting does not **kwargs
         return
-    if not ivy.wrapped_mode():
+    if not ivy.array_mode():
         helpers.assert_compilable(conv2d_layer)
 
 
@@ -484,7 +484,7 @@ def test_conv2d_transpose_layer(x_n_fs_n_pad_n_outshp_n_res, with_v, dtype, tens
     if call is helpers.torch_call:
         # pytest scripting does not **kwargs
         return
-    if not ivy.wrapped_mode():
+    if not ivy.array_mode():
         helpers.assert_compilable(conv2d_transpose_layer)
 
 
@@ -562,7 +562,7 @@ def test_depthwise_conv2d_layer(x_n_fs_n_pad_n_res, with_v, dtype, tensor_fn, de
     if call is helpers.torch_call:
         # pytest scripting does not **kwargs
         return
-    if not ivy.wrapped_mode():
+    if not ivy.array_mode():
         helpers.assert_compilable(depthwise_conv2d_layer)
 
 
@@ -642,7 +642,7 @@ def test_conv3d_layer(x_n_fs_n_pad_n_res, with_v, dtype, tensor_fn, dev, wrapped
     if call is helpers.torch_call:
         # pytest scripting does not **kwargs
         return
-    if not ivy.wrapped_mode():
+    if not ivy.array_mode():
         helpers.assert_compilable(conv3d_layer)
 
 
@@ -738,7 +738,7 @@ def test_conv3d_transpose_layer(x_n_fs_n_pad_n_outshp_n_res, with_v, dtype, tens
     if call is helpers.torch_call:
         # pytest scripting does not **kwargs
         return
-    if not ivy.wrapped_mode():
+    if not ivy.array_mode():
         helpers.assert_compilable(conv3d_transpose_layer)
 
 
@@ -800,7 +800,7 @@ def test_lstm_layer(b_t_ic_hc_otf_sctv, with_v, with_initial_state, dtype, tenso
     if call in [helpers.torch_call]:
         # this is not a backend implemented function
         pytest.skip()
-    if not ivy.wrapped_mode():
+    if not ivy.array_mode():
         helpers.assert_compilable(ivy.lstm_update)
 
 
@@ -866,5 +866,5 @@ def test_sequential_layer(bs_c_target, with_v, seq_v, dtype, tensor_fn, dev, wra
     if call is helpers.torch_call:
         # pytest scripting does not **kwargs
         return
-    if not ivy.wrapped_mode():
+    if not ivy.array_mode():
         helpers.assert_compilable(seq)
