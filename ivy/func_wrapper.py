@@ -16,7 +16,7 @@ NON_WRAPPED_METHODS = ['current_framework', 'current_framework_str', 'set_framew
                        'to_ivy_module', 'tree_flatten', 'tree_unflatten', 'start_compiling', 'stop_compiling',
                        'get_compiled', 'set_wrapped_mode', 'unset_wrapped_mode', 'wrapped_mode', 'index_nest',
                        'set_nest_at_index', 'map_nest_at_index', 'multi_index_nest', 'set_nest_at_indices',
-                       'map_nest_at_indices', 'nested_indices_where', 'map']
+                       'map_nest_at_indices', 'nested_indices_where', 'map', 'unset_default_device']
 
 ARRAYLESS_RET_METHODS = ['to_numpy', 'to_list', 'to_scalar', 'shape', 'get_num_dims', 'is_array', 'is_variable']
 NESTED_ARRAY_RET_METHODS = ['unstack', 'split']
