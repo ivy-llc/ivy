@@ -2382,7 +2382,7 @@ def test_profiler(dev, call):
 
     # log dir
     this_dir = os.path.dirname(os.path.realpath(__file__))
-    log_dir = os.path.join(this_dir, 'log')
+    log_dir = os.path.join(this_dir, '../log')
 
     # with statement
     with ivy.Profiler(log_dir):
