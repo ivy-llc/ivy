@@ -1,0 +1,18 @@
+Logic
+=====
+
+.. automodule:: ivy.functional.backends.torch.core.logic
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :show-inheritance:
+
+
+.. toctree::
+   :maxdepth: -1
+   :caption: Logic
+
+   logic/logical_and.rst
+   logic/logical_or.rst
+   logic/logical_not.rst
+

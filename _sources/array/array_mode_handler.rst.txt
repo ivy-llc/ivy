@@ -1,0 +1,18 @@
+Array mode handler
+==================
+
+.. automodule:: ivy.array.array_mode_handler
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :show-inheritance:
+
+
+.. toctree::
+   :maxdepth: -1
+   :caption: Array mode handler
+
+   array_mode_handler/set_array_mode.rst
+   array_mode_handler/unset_array_mode.rst
+   array_mode_handler/array_mode.rst
+

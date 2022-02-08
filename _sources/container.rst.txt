@@ -1,0 +1,17 @@
+Container
+=========
+
+.. automodule:: ivy.container
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :show-inheritance:
+
+
+.. toctree::
+   :maxdepth: -1
+   :caption: Container
+
+   container/Container.rst
+   container/MultiDevContainer.rst
+

@@ -1,0 +1,15 @@
+Distance functions
+==================
+
+.. automodule:: ivy.functional.frontends.torch.nn.distance_functions
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :show-inheritance:
+
+
+.. toctree::
+   :maxdepth: -1
+   :caption: Distance functions
+
+

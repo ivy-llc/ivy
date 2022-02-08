@@ -1,0 +1,16 @@
+Pointwise ops
+=============
+
+.. automodule:: ivy.functional.frontends.torch.core.pointwise_ops
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :show-inheritance:
+
+
+.. toctree::
+   :maxdepth: -1
+   :caption: Pointwise ops
+
+   pointwise_ops/abs.rst
+

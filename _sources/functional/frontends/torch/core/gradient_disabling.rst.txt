@@ -1,0 +1,15 @@
+Gradient disabling
+==================
+
+.. automodule:: ivy.functional.frontends.torch.core.gradient_disabling
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :show-inheritance:
+
+
+.. toctree::
+   :maxdepth: -1
+   :caption: Gradient disabling
+
+

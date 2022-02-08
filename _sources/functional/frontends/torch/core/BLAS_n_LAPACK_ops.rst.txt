@@ -1,0 +1,15 @@
+Blas n lapack ops
+=================
+
+.. automodule:: ivy.functional.frontends.torch.core.BLAS_n_LAPACK_ops
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :show-inheritance:
+
+
+.. toctree::
+   :maxdepth: -1
+   :caption: Blas n lapack ops
+
+

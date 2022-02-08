@@ -1,0 +1,15 @@
+Utilities
+=========
+
+.. automodule:: ivy.functional.frontends.torch.core.utilities
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :show-inheritance:
+
+
+.. toctree::
+   :maxdepth: -1
+   :caption: Utilities
+
+
