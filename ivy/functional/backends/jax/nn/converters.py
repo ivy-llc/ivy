@@ -48,7 +48,7 @@ class IvyModule(ivy.Module):
         if ivy.array_mode():
             a, kw = ivy.args_to_native(*a, **kw)
         # noinspection PyUnresolvedReferences
-        params_hk = self._native_module.init(ivy.functional.core.random.RNG, *a, **kw)
+        params_hk = self._native_module.init(ivy.random.RNG, *a, **kw)
         params_dict = _hk_flat_map_to_dict(params_hk)
         self._hk_params = ivy.Container(params_dict)
         param_iterator = self._hk_params.to_iterator()
