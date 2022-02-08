@@ -9,9 +9,9 @@ from numbers import Number
 
 # local
 import ivy
-import ivy.backends.numpy
+import ivy.functional.backends.numpy
 import ivy_tests.helpers as helpers
-from ivy.core.container import Container
+from ivy.container import Container
 
 
 # variable
@@ -43,7 +43,7 @@ def test_variable(object_in, dtype, dev, call):
     if call in [helpers.torch_call]:
         # pytorch scripting does not support string devices
         return
-    if not ivy.wrapped_mode():
+    if not ivy.array_mode():
         helpers.assert_compilable(ivy.variable)
 
 
@@ -78,7 +78,7 @@ def test_is_variable(object_in, dtype, dev, call):
     assert non_var_res is False
     assert var_res is True
     # compilation test
-    if not ivy.wrapped_mode():
+    if not ivy.array_mode():
         helpers.assert_compilable(ivy.is_variable)
 
 
@@ -137,12 +137,12 @@ def test_stop_gradient(x_raw, dtype, tensor_fn, dev, call):
     # value test
     if call is not helpers.tf_graph_call:
         # Tf graph mode cannot create variables as part of the computation graph
-        assert np.array_equal(call(ivy.stop_gradient, x), ivy.backends.numpy.array(x_raw, dtype))
+        assert np.array_equal(call(ivy.stop_gradient, x), ivy.functional.backends.numpy.array(x_raw, dtype))
     # compilation test
     if call in [helpers.torch_call]:
         # pytorch scripting does not support attribute setting
         return
-    if not ivy.wrapped_mode():
+    if not ivy.array_mode():
         helpers.assert_compilable(ivy.stop_gradient)
 
 
@@ -230,7 +230,7 @@ def test_gradient_descent_update(ws_n_grads_n_lr_n_wsnew, dtype, tensor_fn, dev,
     if call in [helpers.torch_call]:
         # pytorch scripting does not support internal function definitions
         return
-    if not ivy.wrapped_mode():
+    if not ivy.array_mode():
         helpers.assert_compilable(ivy.gradient_descent_update)
 
 
@@ -262,7 +262,7 @@ def test_layerwise_gradient_descent_update(ws_n_grads_n_lr_n_wsnew, dtype, tenso
     if call in [helpers.torch_call]:
         # pytorch scripting does not support internal function definitions
         return
-    if not ivy.wrapped_mode():
+    if not ivy.array_mode():
         helpers.assert_compilable(ivy.gradient_descent_update)
 
 
@@ -294,7 +294,7 @@ def test_lars_update(ws_n_grads_n_lr_n_wsnew, dtype, tensor_fn, dev, call):
     if call in [helpers.torch_call]:
         # pytorch scripting does not support internal function definitions
         return
-    if not ivy.wrapped_mode():
+    if not ivy.array_mode():
         helpers.assert_compilable(ivy.lars_update)
 
 
@@ -332,7 +332,7 @@ def test_adam_update(ws_n_grads_n_lr_n_wsnew, dtype, tensor_fn, dev, call):
     if call in [helpers.torch_call]:
         # pytorch scripting does not support internal function definitions
         return
-    if not ivy.wrapped_mode():
+    if not ivy.array_mode():
         helpers.assert_compilable(ivy.adam_update)
 
 
@@ -372,7 +372,7 @@ def test_layerwise_adam_update(ws_n_grads_n_lr_n_wsnew, dtype, tensor_fn, dev, c
     if call in [helpers.torch_call]:
         # pytorch scripting does not support internal function definitions
         return
-    if not ivy.wrapped_mode():
+    if not ivy.array_mode():
         helpers.assert_compilable(ivy.adam_update)
 
 
@@ -412,5 +412,5 @@ def test_lamb_update(ws_n_grads_n_lr_n_wsnew, dtype, tensor_fn, dev, call):
     if call in [helpers.torch_call]:
         # pytorch scripting does not support internal function definitions
         return
-    if not ivy.wrapped_mode():
+    if not ivy.array_mode():
         helpers.assert_compilable(ivy.lamb_update)

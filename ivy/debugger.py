@@ -4,7 +4,7 @@ import pdb
 import logging
 
 # local
-from ivy.wrapper import _wrap_or_unwrap_methods, NON_WRAPPED_METHODS
+from ivy.func_wrapper import _wrap_or_unwrap_methods, NON_WRAPPED_METHODS
 
 
 queue_timeout = None

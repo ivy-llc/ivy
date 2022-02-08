@@ -11,7 +11,7 @@ from functools import reduce
 
 # local
 import ivy
-import ivy.backends.numpy
+import ivy.functional.backends.numpy
 import ivy_tests.helpers as helpers
 
 
@@ -31,7 +31,7 @@ def test_stack_images(shp_n_num_n_ar_n_newshp, dev, call):
     # cardinality test
     assert ret.shape == new_shape
     # compilation test
-    if ivy.wrapped_mode():(ivy.stack_images)
+    if ivy.array_mode():(ivy.stack_images)
 
 
 # bilinear_resample
@@ -55,12 +55,12 @@ def test_bilinear_resample(x_n_warp, dtype, tensor_fn, dev, call):
     assert ret.shape == warp.shape[:-1] + x.shape[-1:]
     # value test
     assert np.allclose(call(ivy.bilinear_resample, x, warp),
-                       ivy.backends.numpy.bilinear_resample(ivy.to_numpy(x), ivy.to_numpy(warp)))
+                       ivy.functional.backends.numpy.bilinear_resample(ivy.to_numpy(x), ivy.to_numpy(warp)))
     # compilation test
     if call in [helpers.torch_call]:
         # torch scripting does not support builtins
         return
-    if ivy.wrapped_mode():(ivy.bilinear_resample)
+    if ivy.array_mode():(ivy.bilinear_resample)
 
 
 # gradient_image
@@ -85,15 +85,15 @@ def test_gradient_image(x_n_dy_n_dx, dtype, tensor_fn, dev, call):
     assert dx.shape == x.shape
     # value test
     dy_np, dx_np = call(ivy.gradient_image, x)
-    dy_true = ivy.backends.numpy.array(dy_true, dtype)
-    dx_true = ivy.backends.numpy.array(dx_true, dtype)
+    dy_true = ivy.functional.backends.numpy.array(dy_true, dtype)
+    dx_true = ivy.functional.backends.numpy.array(dx_true, dtype)
     assert np.allclose(dy_np, dy_true)
     assert np.allclose(dx_np, dx_true)
     # compilation test
     if call in [helpers.torch_call]:
         # torch device cannot be assigned value of string while scripting
         return
-    if not ivy.wrapped_mode():
+    if not ivy.array_mode():
         helpers.assert_compilable(ivy.gradient_image)
 
 
@@ -123,7 +123,7 @@ def test_float_img_to_uint8_img(fi_tui, tensor_fn, dev, call):
     if call in [helpers.torch_call]:
         # torch device cannot be assigned value of string while scripting
         return
-    if not ivy.wrapped_mode():
+    if not ivy.array_mode():
         helpers.assert_compilable(ivy.float_img_to_uint8_img)
 
 
@@ -151,7 +151,7 @@ def test_uint8_img_to_float_img(ui_tfi, dev, call):
     if call in [helpers.torch_call]:
         # torch device cannot be assigned value of string while scripting
         return
-    if not ivy.wrapped_mode():
+    if not ivy.array_mode():
         helpers.assert_compilable(ivy.uint8_img_to_float_img)
 
 
@@ -183,5 +183,5 @@ def test_random_crop(xshp_n_cs, dev, call):
     if call in [helpers.torch_call]:
         # reduce(mul) used for flat batch size computation is not torch jit compilable
         return
-    if not ivy.wrapped_mode():
+    if not ivy.array_mode():
         helpers.assert_compilable(ivy.random_crop)
