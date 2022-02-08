@@ -5,7 +5,7 @@ import numpy as np
 
 # local
 import ivy
-import ivy.backends.numpy
+import ivy.functional.backends.numpy
 import ivy_tests.helpers as helpers
 
 
@@ -33,7 +33,7 @@ def test_cross_entropy(t_n_p_n_res, dtype, tensor_fn, dev, call):
         # cross_entropy does not have backend implementation,
         # pytorch scripting requires direct bindings to work, which bypass get_framework()
         return
-    if not ivy.wrapped_mode():
+    if not ivy.array_mode():
         helpers.assert_compilable(ivy.cross_entropy)
 
 
@@ -61,7 +61,7 @@ def test_binary_cross_entropy(t_n_p_n_res, dtype, tensor_fn, dev, call):
         # binary_cross_entropy does not have backend implementation,
         # pytorch scripting requires direct bindings to work, which bypass get_framework()
         return
-    if not ivy.wrapped_mode():
+    if not ivy.array_mode():
         helpers.assert_compilable(ivy.binary_cross_entropy)
 
 
@@ -89,5 +89,5 @@ def test_sparse_cross_entropy(t_n_p_n_res, dtype, tensor_fn, dev, call):
         # sparse_cross_entropy does not have backend implementation,
         # pytorch scripting requires direct bindings to work, which bypass get_framework()
         return
-    if not ivy.wrapped_mode():
+    if not ivy.array_mode():
         helpers.assert_compilable(ivy.sparse_cross_entropy)

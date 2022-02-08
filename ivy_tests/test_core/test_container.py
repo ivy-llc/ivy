@@ -1,5 +1,4 @@
 # global
-import copy
 import os
 import queue
 import pickle
@@ -10,8 +9,8 @@ import multiprocessing
 
 # local
 import ivy
+from ivy.container import Container
 import ivy_tests.helpers as helpers
-from ivy.core.container import Container
 
 
 def test_container_list_join(dev, call):
@@ -2330,8 +2329,8 @@ def test_container_shuffle(dev, call):
     # without key_chains specification
     container_shuffled = container.shuffle(0)
     data = ivy.array([1, 2, 3], dev=dev)
-    ivy.core.random.seed()
-    shuffled_data = ivy.to_numpy(ivy.core.random.shuffle(data))
+    ivy.functional.ivy.core.random.seed()
+    shuffled_data = ivy.to_numpy(ivy.functional.ivy.core.random.shuffle(data))
     assert (ivy.to_numpy(container_shuffled['a']) == shuffled_data).all()
     assert (ivy.to_numpy(container_shuffled.a) == shuffled_data).all()
     assert (ivy.to_numpy(container_shuffled['b']['c']) == shuffled_data).all()
@@ -2342,8 +2341,8 @@ def test_container_shuffle(dev, call):
     # with key_chains to apply
     container_shuffled = container.shuffle(0, ['a', 'b/c'])
     data = ivy.array([1, 2, 3], dev=dev)
-    ivy.core.random.seed()
-    shuffled_data = ivy.to_numpy(ivy.core.random.shuffle(data))
+    ivy.functional.ivy.core.random.seed()
+    shuffled_data = ivy.to_numpy(ivy.functional.ivy.core.random.shuffle(data))
     assert (ivy.to_numpy(container_shuffled['a']) == shuffled_data).all()
     assert (ivy.to_numpy(container_shuffled.a) == shuffled_data).all()
     assert (ivy.to_numpy(container_shuffled['b']['c']) == shuffled_data).all()
@@ -2354,8 +2353,8 @@ def test_container_shuffle(dev, call):
     # with key_chains to apply pruned
     container_shuffled = container.shuffle(0, ['a', 'b/c'], prune_unapplied=True)
     data = ivy.array([1, 2, 3], dev=dev)
-    ivy.core.random.seed()
-    shuffled_data = ivy.to_numpy(ivy.core.random.shuffle(data))
+    ivy.functional.ivy.core.random.seed()
+    shuffled_data = ivy.to_numpy(ivy.functional.ivy.core.random.shuffle(data))
     assert (ivy.to_numpy(container_shuffled['a']) == shuffled_data).all()
     assert (ivy.to_numpy(container_shuffled.a) == shuffled_data).all()
     assert (ivy.to_numpy(container_shuffled['b']['c']) == shuffled_data).all()
@@ -2365,8 +2364,8 @@ def test_container_shuffle(dev, call):
     # with key_chains to not apply pruned
     container_shuffled = container.shuffle(0, Container({'a': None, 'b': {'d': None}}), to_apply=False)
     data = ivy.array([1, 2, 3], dev=dev)
-    ivy.core.random.seed()
-    shuffled_data = ivy.to_numpy(ivy.core.random.shuffle(data))
+    ivy.functional.ivy.core.random.seed()
+    shuffled_data = ivy.to_numpy(ivy.functional.ivy.core.random.shuffle(data))
     assert (ivy.to_numpy(container_shuffled['a']) == ivy.to_numpy(data)).all()
     assert (ivy.to_numpy(container_shuffled.a) == ivy.to_numpy(data)).all()
     assert (ivy.to_numpy(container_shuffled['b']['c']) == shuffled_data).all()
@@ -2378,8 +2377,8 @@ def test_container_shuffle(dev, call):
     container_shuffled = container.shuffle(0, Container({'a': None, 'b': {'d': None}}), to_apply=False,
                                            prune_unapplied=True)
     data = ivy.array([1, 2, 3], dev=dev)
-    ivy.core.random.seed()
-    shuffled_data = ivy.to_numpy(ivy.core.random.shuffle(data))
+    ivy.functional.ivy.core.random.seed()
+    shuffled_data = ivy.to_numpy(ivy.functional.ivy.core.random.shuffle(data))
     assert 'a' not in container_shuffled
     assert (ivy.to_numpy(container_shuffled['b']['c']) == shuffled_data).all()
     assert (ivy.to_numpy(container_shuffled.b.c) == shuffled_data).all()
@@ -2391,8 +2390,8 @@ def test_container_shuffle(dev, call):
     container = Container(dict_in)
     container_shuffled = container.shuffle(0, map_sequences=True)
     data = ivy.array([1, 2, 3], dev=dev)
-    ivy.core.random.seed()
-    shuffled_data = ivy.to_numpy(ivy.core.random.shuffle(data))
+    ivy.functional.ivy.core.random.seed()
+    shuffled_data = ivy.to_numpy(ivy.functional.ivy.core.random.shuffle(data))
     assert (ivy.to_numpy(container_shuffled['a']) == shuffled_data).all()
     assert (ivy.to_numpy(container_shuffled.a) == shuffled_data).all()
     assert (ivy.to_numpy(container_shuffled['b'][0]) == shuffled_data).all()

@@ -8,7 +8,7 @@ import pytest
 
 # local
 import ivy
-import ivy.backends.numpy
+import ivy.functional.backends.numpy
 
 
 # Helpers #

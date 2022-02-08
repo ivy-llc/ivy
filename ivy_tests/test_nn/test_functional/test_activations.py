@@ -8,7 +8,7 @@ import numpy as np
 
 # local
 import ivy
-import ivy.backends.numpy
+import ivy.functional.backends.numpy
 import ivy_tests.helpers as helpers
 
 
@@ -28,9 +28,9 @@ def test_relu(x, dtype, tensor_fn, dev, call):
     # cardinality test
     assert ret.shape == x.shape
     # value test
-    assert np.allclose(call(ivy.relu, x), ivy.backends.numpy.relu(ivy.to_numpy(x)))
+    assert np.allclose(call(ivy.relu, x), ivy.functional.backends.numpy.relu(ivy.to_numpy(x)))
     # compilation test
-    if not ivy.wrapped_mode():
+    if not ivy.array_mode():
         helpers.assert_compilable(ivy.relu)
 
 
@@ -50,9 +50,9 @@ def test_leaky_relu(x, dtype, tensor_fn, dev, call):
     # cardinality test
     assert ret.shape == x.shape
     # value test
-    assert np.allclose(call(ivy.leaky_relu, x), ivy.backends.numpy.leaky_relu(ivy.to_numpy(x)))
+    assert np.allclose(call(ivy.leaky_relu, x), ivy.functional.backends.numpy.leaky_relu(ivy.to_numpy(x)))
     # compilation test
-    if not ivy.wrapped_mode():
+    if not ivy.array_mode():
         helpers.assert_compilable(ivy.leaky_relu)
 
 
@@ -74,9 +74,9 @@ def test_gelu(x, approx, dtype, tensor_fn, dev, call):
     # cardinality test
     assert ret.shape == x.shape
     # value test
-    assert np.allclose(call(ivy.gelu, x, approx), ivy.backends.numpy.gelu(ivy.to_numpy(x), approx))
+    assert np.allclose(call(ivy.gelu, x, approx), ivy.functional.backends.numpy.gelu(ivy.to_numpy(x), approx))
     # compilation test
-    if not ivy.wrapped_mode():
+    if not ivy.array_mode():
         helpers.assert_compilable(ivy.gelu)
 
 
@@ -96,9 +96,9 @@ def test_tanh(x, dtype, tensor_fn, dev, call):
     # cardinality test
     assert ret.shape == x.shape
     # value test
-    assert np.allclose(call(ivy.tanh, x), ivy.backends.numpy.tanh(ivy.to_numpy(x)))
+    assert np.allclose(call(ivy.tanh, x), ivy.functional.backends.numpy.tanh(ivy.to_numpy(x)))
     # compilation test
-    if not ivy.wrapped_mode():
+    if not ivy.array_mode():
         helpers.assert_compilable(ivy.tanh)
 
 
@@ -118,9 +118,9 @@ def test_sigmoid(x, dtype, tensor_fn, dev, call):
     # cardinality test
     assert ret.shape == x.shape
     # value test
-    assert np.allclose(call(ivy.sigmoid, x), ivy.backends.numpy.sigmoid(ivy.to_numpy(x)))
+    assert np.allclose(call(ivy.sigmoid, x), ivy.functional.backends.numpy.sigmoid(ivy.to_numpy(x)))
     # compilation test
-    if not ivy.wrapped_mode():
+    if not ivy.array_mode():
         helpers.assert_compilable(ivy.sigmoid)
 
 
@@ -140,9 +140,9 @@ def test_softmax(x, dtype, tensor_fn, dev, call):
     # cardinality test
     assert ret.shape == x.shape
     # value test
-    assert np.allclose(call(ivy.softmax, x), ivy.backends.numpy.softmax(ivy.to_numpy(x)))
+    assert np.allclose(call(ivy.softmax, x), ivy.functional.backends.numpy.softmax(ivy.to_numpy(x)))
     # compilation test
-    if not ivy.wrapped_mode():
+    if not ivy.array_mode():
         helpers.assert_compilable(ivy.softmax)
 
 
@@ -162,7 +162,7 @@ def test_softplus(x, dtype, tensor_fn, dev, call):
     # cardinality test
     assert ret.shape == x.shape
     # value test
-    assert np.allclose(call(ivy.softplus, x), ivy.backends.numpy.softplus(ivy.to_numpy(x)))
+    assert np.allclose(call(ivy.softplus, x), ivy.functional.backends.numpy.softplus(ivy.to_numpy(x)))
     # compilation test
-    if not ivy.wrapped_mode():
+    if not ivy.array_mode():
         helpers.assert_compilable(ivy.softplus)

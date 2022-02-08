@@ -47,7 +47,7 @@ def test_gelu(bs_oc_target, dtype, tensor_fn, dev, wrapped_mode, compile_graph, 
     if call is helpers.torch_call:
         # pytest scripting does not **kwargs
         return
-    if not ivy.wrapped_mode():
+    if not ivy.array_mode():
         helpers.assert_compilable(gelu_layer)
 
 
