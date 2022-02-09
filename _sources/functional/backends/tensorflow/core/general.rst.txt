@@ -28,6 +28,7 @@ General
    general/constant_pad.rst
    general/zero_pad.rst
    general/swapaxes.rst
+   general/isfinite.rst
    general/squeeze.rst
    general/zeros.rst
    general/zeros_like.rst

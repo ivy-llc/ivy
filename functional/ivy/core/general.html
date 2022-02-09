@@ -1186,6 +1186,25 @@ Default is ‘float32’.</p></li>
 </dd></dl>
 
 <dl class="py function">
+<dt id="ivy.functional.ivy.core.general.isfinite">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">isfinite</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">f</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>ivy.Framework<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/core/general.html#isfinite"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.core.general.isfinite" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tests each element x_i of the input array x to determine if finite (i.e., not NaN and not equal to positive
+or negative infinity).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>array</em>) – Input array.</p></li>
+<li><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning framework. Inferred from inputs if None.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>an array containing test results. An element out_i is True if x_i is finite and False otherwise.
+The returned array must have a data type of bool.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt id="ivy.functional.ivy.core.general.isnan">
 <code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">isnan</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">f</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>ivy.Framework<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/core/general.html#isnan"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.core.general.isnan" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns boolean map at locations where the input is not a number (nan).</p>
@@ -1997,6 +2016,7 @@ If not given, then the type of the original array is used.</p></li>
 <li class="toctree-l1"><a class="reference internal" href="general/where.html">where</a></li>
 <li class="toctree-l1"><a class="reference internal" href="general/indices_where.html">indices_where</a></li>
 <li class="toctree-l1"><a class="reference internal" href="general/isnan.html">isnan</a></li>
+<li class="toctree-l1"><a class="reference internal" href="general/isfinite.html">isfinite</a></li>
 <li class="toctree-l1"><a class="reference internal" href="general/value_is_nan.html">value_is_nan</a></li>
 <li class="toctree-l1"><a class="reference internal" href="general/has_nans.html">has_nans</a></li>
 <li class="toctree-l1"><a class="reference internal" href="general/reshape.html">reshape</a></li>
