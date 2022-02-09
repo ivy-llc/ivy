@@ -203,6 +203,7 @@
 <span class="kn">import</span> <span class="nn">math</span>
 <span class="kn">import</span> <span class="nn">einops</span>
 <span class="kn">import</span> <span class="nn">inspect</span>
+<span class="kn">import</span> <span class="nn">importlib</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">numbers</span> <span class="kn">import</span> <span class="n">Number</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Iterable</span>
@@ -1579,6 +1580,23 @@
 <span class="sd">    :return: Data type of the array</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">as_str</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="convert_dtype"><a class="viewcode-back" href="../../../../../functional/ivy/core/general/convert_dtype.html#ivy.functional.ivy.core.general.convert_dtype">[docs]</a><span class="k">def</span> <span class="nf">convert_dtype</span><span class="p">(</span><span class="n">dtype_in</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span> <span class="n">backend</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Converts a data type from one backend framework representation to another.</span>
+
+<span class="sd">    :param dtype_in: The data-type to convert, in the specified backend representation</span>
+<span class="sd">    :type dtype_in: data type</span>
+<span class="sd">    :param backend: The backend framework the dtype_in is represented in.</span>
+<span class="sd">    :type backend: str</span>
+<span class="sd">    :return: The data-type in the current ivy backend format</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">valid_backends</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;numpy&#39;</span><span class="p">,</span> <span class="s1">&#39;jax&#39;</span><span class="p">,</span> <span class="s1">&#39;tensorflow&#39;</span><span class="p">,</span> <span class="s1">&#39;torch&#39;</span><span class="p">,</span> <span class="s1">&#39;mxnet&#39;</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">backend</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">valid_backends</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;Invalid backend passed, must be one of </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">valid_backends</span><span class="p">))</span>
+    <span class="n">ivy_backend</span> <span class="o">=</span> <span class="n">importlib</span><span class="o">.</span><span class="n">import_module</span><span class="p">(</span><span class="s1">&#39;ivy.functional.backends.</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">backend</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">dtype_from_str</span><span class="p">(</span><span class="n">ivy_backend</span><span class="o">.</span><span class="n">dtype_to_str</span><span class="p">(</span><span class="n">dtype_in</span><span class="p">))</span></div>
 
 
 <div class="viewcode-block" id="dtype_to_str"><a class="viewcode-back" href="../../../../../functional/ivy/core/general/dtype_to_str.html#ivy.functional.ivy.core.general.dtype_to_str">[docs]</a><span class="k">def</span> <span class="nf">dtype_to_str</span><span class="p">(</span><span class="n">dtype_in</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span> <span class="n">f</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Framework</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span>\
