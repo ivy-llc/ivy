@@ -77,3 +77,7 @@ def einsum(equation, *operands):
     if ret.shape == ():
         return _mx.np.resize(ret, (1,)).as_nd_ndarray()
     return ret.as_nd_ndarray()
+
+
+def all(x, axis=None, keepdims=False):
+    return reduce_prod(x, axis, keepdims).astype(_mx.np.bool_)
