@@ -31,6 +31,35 @@ float64 = np.dtype('float64')
 bool = np.dtype('bool')
 
 iinfo = np.iinfo
-finfo = np.finfo
+
+class Finfo:
+
+    def __init__(self, mx_finfo):
+        self._mx_finfo = mx_finfo
+
+    @property
+    def bits(self):
+        return self._mx_finfo.bits
+
+    @property
+    def eps(self):
+        return float(self._mx_finfo.eps)
+
+    @property
+    def max(self):
+        return float(self._mx_finfo.max)
+
+    @property
+    def min(self):
+        return float(self._mx_finfo.min)
+
+    @property
+    def smallest_normal(self):
+        return float(self._mx_finfo.tiny)
+
+
+def finfo(datatype_in):
+    return Finfo(np.finfo(datatype_in))
+
 
 backend = 'mxnet'
