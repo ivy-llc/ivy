@@ -83,3 +83,15 @@ def einsum(equation, *operands):
     if ret.shape == ():
         return _tf.reshape(ret, (1,))
     return ret
+
+
+def all(x, axis=None, keepdims=False):
+    if axis is None:
+        num_dims = len(x.shape)
+        axis = tuple(range(num_dims))
+    elif isinstance(axis, list):
+        axis = tuple(axis)
+    ret = _tf.reduce_all(_tf.cast(x, _tf.bool), axis=axis, keepdims=keepdims)
+    if ret.shape == ():
+        return _tf.reshape(ret, (1,))
+    return ret
