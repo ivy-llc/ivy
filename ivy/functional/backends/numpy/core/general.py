@@ -240,6 +240,12 @@ def indices_where(x):
 
 
 isnan = _np.isnan
+
+
+def isfinite(x):
+    return _np.isfinite(x)
+
+
 reshape = _np.reshape
 broadcast_to = _np.broadcast_to
 
