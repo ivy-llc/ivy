@@ -66,6 +66,7 @@ General
    general/zeros_like.rst
    general/ones.rst
    general/ones_like.rst
+   general/full.rst
    general/one_hot.rst
    general/cross.rst
    general/matmul.rst
