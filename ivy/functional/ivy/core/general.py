@@ -882,6 +882,22 @@ def isnan(x: Union[ivy.Array, ivy.NativeArray], f: ivy.Framework = None)\
     return _cur_framework(x, f=f).isnan(x)
 
 
+def isfinite(x: Union[ivy.Array, ivy.NativeArray], f: ivy.Framework = None)\
+        -> Union[ivy.Array, ivy.NativeArray]:
+    """
+    Tests each element x_i of the input array x to determine if finite (i.e., not NaN and not equal to positive
+    or negative infinity).
+
+    :param x: Input array.
+    :type x: array
+    :param f: Machine learning framework. Inferred from inputs if None.
+    :type f: ml_framework, optional
+    :return: an array containing test results. An element out_i is True if x_i is finite and False otherwise.
+             The returned array must have a data type of bool.
+    """
+    return _cur_framework(x, f=f).isfinite(x)
+
+
 def value_is_nan(x: Union[ivy.Array, ivy.NativeArray, Number], include_infs: bool = True)\
         -> bool:
     """
