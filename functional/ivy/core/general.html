@@ -573,6 +573,23 @@ a key-value structure, and exposes public methods .keys(), .values() and items()
 </dd></dl>
 
 <dl class="py function">
+<dt id="ivy.functional.ivy.core.general.convert_dtype">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">convert_dtype</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dtype_in</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.Dtype<span class="p">, </span>str<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">backend</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/core/general.html#convert_dtype"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.core.general.convert_dtype" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts a data type from one backend framework representation to another.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dtype_in</strong> (<em>data type</em>) – The data-type to convert, in the specified backend representation</p></li>
+<li><p><strong>backend</strong> (<em>str</em>) – The backend framework the dtype_in is represented in.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The data-type in the current ivy backend format</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt id="ivy.functional.ivy.core.general.copy_array">
 <code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">copy_array</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">f</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>ivy.Framework<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/core/general.html#copy_array"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.core.general.copy_array" title="Permalink to this definition">¶</a></dt>
 <dd><p>Copy an array.</p>
@@ -1990,6 +2007,7 @@ If not given, then the type of the original array is used.</p></li>
 <li class="toctree-l1"><a class="reference internal" href="general/arg_names.html">arg_names</a></li>
 <li class="toctree-l1"><a class="reference internal" href="general/match_kwargs.html">match_kwargs</a></li>
 <li class="toctree-l1"><a class="reference internal" href="general/dtype.html">dtype</a></li>
+<li class="toctree-l1"><a class="reference internal" href="general/convert_dtype.html">convert_dtype</a></li>
 <li class="toctree-l1"><a class="reference internal" href="general/dtype_to_str.html">dtype_to_str</a></li>
 <li class="toctree-l1"><a class="reference internal" href="general/dtype_from_str.html">dtype_from_str</a></li>
 <li class="toctree-l1"><a class="reference internal" href="general/cache_fn.html">cache_fn</a></li>
