@@ -412,6 +412,10 @@ def zeros_like(x, dtype: Optional[str] = None, dev: Optional[str] = None):
     return _torch.zeros_like(x, device=dev_from_str(dev))
 
 
+def full(shape, fill_value, dtype, device=None):
+    return _torch.full(shape, fill_value, dtype=dtype_from_str(dtype), device=default_device(device))
+
+
 # noinspection PyShadowingNames
 def ones(shape: List[int], dtype: ivy.Dtype = 'float32', dev: Optional[str] = None):
     type_dict: Dict[str, _torch.dtype] = {'int8': _torch.int8,
