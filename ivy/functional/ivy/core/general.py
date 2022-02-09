@@ -10,7 +10,7 @@ import inspect
 import importlib
 import numpy as np
 from numbers import Number
-from typing import Callable, Any, Union, List, Tuple, Dict, Iterable
+from typing import Callable, Any, Union, List, Tuple, Dict, Iterable, Optional
 
 # local
 import ivy
@@ -1043,6 +1043,21 @@ def ones_like(x: Union[ivy.Array, ivy.NativeArray], dtype: ivy.Dtype = None, dev
     :return: Tensor of zeros with the same shape and type as a, unless dtype provided which overrides.
     """
     return _cur_framework(x, f=f).ones_like(x, dtype, dev)
+
+
+# noinspection PyShadowingNames
+def full(shape: Union[int, Tuple[int]], fill_value: Union[int, float], dtype: Optional[ivy.Dtype] = None,
+         device: Optional[ivy.Device] = None, f: ivy.Framework = None):
+    """
+    Returns a new array having a specified shape and filled with fill_value.
+
+    :param shape: output array shape.
+    :param fill_value: fill value.
+    :param dtype: output array data type.
+    :param device: device on which to place the created array. Default: None.
+    :param f: Machine learning framework. Inferred from inputs if None.
+    """
+    return _cur_framework(f=f).full(shape, fill_value, dtype, device)
 
 
 # noinspection PyShadowingNames
