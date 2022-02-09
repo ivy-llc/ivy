@@ -83,3 +83,10 @@ def einsum(equation, *operands):
     if ret.shape == ():
         return ret.reshape((1,))
     return ret
+
+
+def all(x, axis=None, keepdims=False):
+    ret = _np.all(x, axis, keepdims=keepdims)
+    if ret.shape == ():
+        return _np.reshape(ret, (1,))
+    return ret
