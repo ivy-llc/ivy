@@ -353,6 +353,10 @@ def isnan(x):
     return _torch.isnan(x)
 
 
+def isfinite(x):
+    return _torch.isfinite(x)
+
+
 def reshape(x, newshape: List[int]):
     if isinstance(newshape, int):
         newshape = [newshape]
