@@ -49,6 +49,35 @@ float64 = jnp.dtype('float64')
 bool = jnp.dtype('bool')
 
 iinfo = jnp.iinfo
-finfo = jnp.finfo
+
+class Finfo:
+
+    def __init__(self, jnp_finfo):
+        self._jnp_finfo = jnp_finfo
+
+    @property
+    def bits(self):
+        return self._jnp_finfo.bits
+
+    @property
+    def eps(self):
+        return float(self._jnp_finfo.eps)
+
+    @property
+    def max(self):
+        return float(self._jnp_finfo.max)
+
+    @property
+    def min(self):
+        return float(self._jnp_finfo.min)
+
+    @property
+    def smallest_normal(self):
+        return float(self._jnp_finfo.tiny)
+
+
+def finfo(datatype_in):
+    return Finfo(jnp.finfo(datatype_in))
+
 
 backend = 'jax'
