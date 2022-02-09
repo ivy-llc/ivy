@@ -380,6 +380,12 @@ def indices_where(x):
 
 
 isnan = _mx.nd.contrib.isnan
+
+
+def isfinite(x):
+    return _mx.nd.contrib.isfinite(x)
+
+
 reshape = lambda x, new_shape: x.reshape(new_shape)
 
 
