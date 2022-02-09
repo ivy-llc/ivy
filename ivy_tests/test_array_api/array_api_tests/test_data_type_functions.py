@@ -5,6 +5,7 @@ import pytest
 from hypothesis import given
 from hypothesis import strategies as st
 
+import ivy
 from . import _array_module as xp
 from . import dtype_helpers as dh
 from . import hypothesis_helpers as hh
@@ -133,8 +134,10 @@ def make_dtype_id(dtype: DataType) -> str:
 
 @pytest.mark.parametrize("dtype", dh.float_dtypes, ids=make_dtype_id)
 def test_finfo(dtype):
-    out = xp.finfo(dtype)
-    f_func = f"[finfo({dh.dtype_to_name[dtype]})]"
+    np_dtype = dtype
+    dtype = ivy.convert_dtype(np_dtype, backend='numpy')
+    out = ivy.finfo(dtype)
+    f_func = f"[finfo({dh.dtype_to_name[np_dtype]})]"
     for attr, stype in [
         ("bits", int),
         ("eps", float),
