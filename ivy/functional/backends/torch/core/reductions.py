@@ -102,3 +102,24 @@ def einsum(equation, *operands):
     if ret.shape == ():
         return ret.view((1,))
     return ret
+
+
+def all(x, axis: Optional[List[int]] = None, keepdims: bool = False):
+    x = x.type(_torch.bool)
+    if axis is None:
+        num_dims = len(x.shape)
+        axis = list(range(num_dims))
+    if isinstance(axis, int):
+        ret = _torch.all(x, dim=axis, keepdim=keepdims)
+        if ret.shape == ():
+            return ret.view((1,))
+        return ret
+    dims = len(x.shape)
+    axis = [i%dims for i in axis]
+    axis.sort()
+    for i, a in enumerate(axis):
+        x = _torch.all(x, dim=a if keepdims else a - i, keepdim=keepdims)
+    ret = x
+    if ret.shape == ():
+        return ret.view((1,))
+    return ret
