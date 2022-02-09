@@ -260,6 +260,11 @@ def zeros_like(x, dtype=None, dev=None):
         return _tf.zeros_like(x, dtype=dtype)
 
 
+def full(shape, fill_value, dtype, device=None):
+    with _tf.device(dev_from_str(default_device(device))):
+        return _tf.cast(_tf.fill(shape, fill_value), dtype_from_str(dtype))
+
+
 # noinspection PyShadowingNames
 def ones(shape, dtype='float32', dev=None):
     dtype = _tf.__dict__[dtype]
