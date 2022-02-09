@@ -271,6 +271,10 @@ def zeros_like(x, dtype=None, dev=None):
     return to_dev(_jnp.zeros_like(x, dtype=dtype), default_device(dev))
 
 
+def full(shape, fill_value, dtype, device=None):
+    return to_dev(_jnp.full(shape, fill_value, dtype_from_str(dtype)), default_device(device))
+
+
 # noinspection PyShadowingNames
 def ones(shape, dtype='float32', dev=None):
     dtype = _jnp.__dict__[dtype]
