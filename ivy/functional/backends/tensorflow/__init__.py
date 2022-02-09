@@ -31,6 +31,35 @@ float64 = tf.float64
 bool = tf.bool
 
 iinfo = tf.experimental.numpy.iinfo
-finfo = tf.experimental.numpy.finfo
+
+class Finfo:
+
+    def __init__(self, tf_finfo):
+        self._tf_finfo = tf_finfo
+
+    @property
+    def bits(self):
+        return self._tf_finfo.bits
+
+    @property
+    def eps(self):
+        return float(self._tf_finfo.eps)
+
+    @property
+    def max(self):
+        return float(self._tf_finfo.max)
+
+    @property
+    def min(self):
+        return float(self._tf_finfo.min)
+
+    @property
+    def smallest_normal(self):
+        return float(self._tf_finfo.tiny)
+
+
+def finfo(datatype_in):
+    return Finfo(tf.experimental.numpy.finfo(datatype_in))
+
 
 backend = 'tensorflow'
