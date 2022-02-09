@@ -1608,6 +1608,33 @@ def test_ones_like(x, dtype, tensor_fn, dev, call):
         helpers.assert_compilable(ivy.ones_like)
 
 
+# full
+@pytest.mark.parametrize(
+    "shape", [(), (1, 2, 3), tuple([1]*10)])
+@pytest.mark.parametrize(
+    "fill_val", [2., -7.])
+@pytest.mark.parametrize(
+    "dtype", ['float32'])
+@pytest.mark.parametrize(
+    "tensor_fn", [ivy.array, helpers.var_fn])
+def test_full(shape, fill_val, dtype, tensor_fn, dev, call):
+    # smoke test
+    ret = ivy.full(shape, fill_val, dtype, dev)
+    # type test
+    assert ivy.is_array(ret)
+    # cardinality test
+    assert ret.shape == tuple(shape)
+    # value test
+    assert np.allclose(call(ivy.full, shape, fill_val, dtype, dev),
+                       np.asarray(ivy.functional.backends.numpy.full(shape, fill_val, dtype)))
+    # compilation test
+    if call in [helpers.torch_call]:
+        # pytorch scripting cannot assign a torch.device value with a string
+        return
+    if not ivy.array_mode():
+        helpers.assert_compilable(ivy.ones)
+
+
 # one_hot
 @pytest.mark.parametrize(
     "ind_n_depth", [([0], 1), ([0, 1, 2], 3), ([[1, 3], [0, 0], [8, 4], [7, 9]], 10)])

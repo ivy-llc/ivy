@@ -269,6 +269,10 @@ def zeros_like(x, dtype=None, dev=None):
     return _to_dev(_np.zeros_like(x, dtype=dtype), dev)
 
 
+def full(shape, fill_value, dtype, device=None):
+    return _to_dev(_np.full(shape, fill_value, dtype_from_str(dtype)), device)
+
+
 # noinspection PyShadowingNames
 def ones(shape, dtype='float32', dev=None):
     dtype = 'bool_' if dtype == 'bool' else dtype
