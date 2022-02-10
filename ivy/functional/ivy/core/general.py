@@ -1451,6 +1451,26 @@ def is_float_dtype(dtype_in: Union[ivy.Dtype, str]):
     return 'float' in dtype_to_str(dtype_in)
 
 
+def valid_dtype(dtype_in: str):
+    """
+    Determines whether the provided data type (in string format) is support by the current framework.
+
+    :param dtype_in: The data type for which to check for backend support
+    :return: Boolean, whether or not the data-type string is supported.
+    """
+    return dtype_in in ivy.valid_dtype_strs
+
+
+def invalid_dtype(dtype_in: str):
+    """
+    Determines whether the provided data type (in string format) is not support by the current framework.
+
+    :param dtype_in: The data type for which to check for backend non-support
+    :return: Boolean, whether the data-type string is un-supported.
+    """
+    return dtype_in in ivy.invalid_dtype_strs
+
+
 def convert_dtype(dtype_in: Union[ivy.Dtype, str], backend: str):
     """
     Converts a data type from one backend framework representation to another.
