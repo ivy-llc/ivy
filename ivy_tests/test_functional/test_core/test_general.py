@@ -1416,6 +1416,34 @@ def test_isnan(x_n_res, dtype, tensor_fn, dev, call):
         helpers.assert_compilable(ivy.isnan)
 
 
+# isinf
+@pytest.mark.parametrize(
+    "x_n_res", [([True], [False]),
+                ([[0., float('inf')], [float('nan'), -float('inf')]],
+                 [[False, True], [False, True]])])
+@pytest.mark.parametrize(
+    "dtype", ['float32'])
+@pytest.mark.parametrize(
+    "tensor_fn", [ivy.array, helpers.var_fn])
+def test_isinf(x_n_res, dtype, tensor_fn, dev, call):
+    x, res = x_n_res
+    # smoke test
+    if isinstance(x, Number) and tensor_fn == helpers.var_fn and call is helpers.mx_call:
+        # mxnet does not support 0-dimensional variables
+        pytest.skip()
+    x = tensor_fn(x, dtype, dev)
+    ret = ivy.isinf(x)
+    # type test
+    assert ivy.is_array(ret)
+    # cardinality test
+    assert ret.shape == x.shape
+    # value test
+    assert np.allclose(call(ivy.isinf, x), res)
+    # compilation test
+    if not ivy.array_mode():
+        helpers.assert_compilable(ivy.isinf)
+
+
 # isfinite
 @pytest.mark.parametrize(
     "x_n_res", [([True], [True]),

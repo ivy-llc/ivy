@@ -353,6 +353,10 @@ def isnan(x):
     return _torch.isnan(x)
 
 
+def isinf(x):
+    return _torch.isinf(x)
+
+
 def isfinite(x):
     return _torch.isfinite(x)
 
