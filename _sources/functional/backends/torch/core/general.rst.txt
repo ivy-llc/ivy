@@ -51,6 +51,7 @@ General
    general/where.rst
    general/indices_where.rst
    general/isnan.rst
+   general/isinf.rst
    general/isfinite.rst
    general/reshape.rst
    general/broadcast_to.rst
