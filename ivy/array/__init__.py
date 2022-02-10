@@ -240,6 +240,20 @@ class Array(ArrayWithDevice, ArrayWithGeneral, ArrayWithGradients, ArrayWithImag
         return to_ivy(res)
 
     @_native_wrapper
+    def __float__(self):
+        res = self._data.__float__()
+        if res is NotImplemented:
+            return res
+        return to_ivy(res)
+
+    @_native_wrapper
+    def __int__(self):
+        res = self._data.__int__()
+        if res is NotImplemented:
+            return res
+        return to_ivy(res)
+
+    @_native_wrapper
     def __bool__(self):
         return self._data.__bool__()
 
