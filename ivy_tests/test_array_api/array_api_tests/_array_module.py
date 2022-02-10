@@ -86,3 +86,5 @@ for func_name in function_stubs.__all__ + _dtypes:
         globals()[func_name] = getattr(mod, func_name)
     except AttributeError:
         globals()[func_name] = _UndefinedStub(func_name)
+
+array_module.unset_framework()
