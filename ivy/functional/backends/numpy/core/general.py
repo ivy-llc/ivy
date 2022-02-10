@@ -240,6 +240,7 @@ def indices_where(x):
 
 
 isnan = _np.isnan
+isinf = _np.isinf
 
 
 def isfinite(x):
