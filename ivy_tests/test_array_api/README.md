@@ -246,7 +246,7 @@ come across.
   collection so that low-dependency tests are run first, and tests with faulty
   dependencies would skip/xfail.
 
-* In some tests we've found it difficult to find appropaite assertion parameters
+* In some tests we've found it difficult to find appropriate assertion parameters
   for output values (particularly epsilons for floating-point outputs), so we
   need to review these and either implement assertions or properly note the lack
   thereof.
