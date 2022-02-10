@@ -29,6 +29,12 @@ float64 = _torch.float64
 # noinspection PyShadowingBuiltins
 bool = _torch.bool
 
+all_dtypes = (int8, int16, int32, int64,
+              uint8,
+              bfloat16, float16, float32, float64)
+valid_dtypes = all_dtypes
+invalid_dtypes = (uint16, uint32, uint64)
+
 iinfo = _torch.iinfo
 
 class Finfo:
