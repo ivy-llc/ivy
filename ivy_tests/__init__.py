@@ -1,3 +1,3 @@
 from . import helpers
 
-test_shapes = ((), (1,), (1, 1), (2, 1), (1, 2), (1, 2, 3))
+test_shapes = ((), (1,), (2, 1), (1, 2, 3))
