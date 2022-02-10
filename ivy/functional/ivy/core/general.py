@@ -882,6 +882,20 @@ def isnan(x: Union[ivy.Array, ivy.NativeArray], f: ivy.Framework = None)\
     return _cur_framework(x, f=f).isnan(x)
 
 
+def isinf(x: Union[ivy.Array, ivy.NativeArray], f: ivy.Framework = None)\
+        -> Union[ivy.Array, ivy.NativeArray]:
+    """
+    Returns boolean map at locations where the input is +/- infinity (inf).
+
+    :param x: Input array.
+    :type x: array
+    :param f: Machine learning framework. Inferred from inputs if None.
+    :type f: ml_framework, optional
+    :return: Boolean values for where the values of the array are inf.
+    """
+    return _cur_framework(x, f=f).isinf(x)
+
+
 def isfinite(x: Union[ivy.Array, ivy.NativeArray], f: ivy.Framework = None)\
         -> Union[ivy.Array, ivy.NativeArray]:
     """
