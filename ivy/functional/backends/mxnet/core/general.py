@@ -380,6 +380,7 @@ def indices_where(x):
 
 
 isnan = _mx.nd.contrib.isnan
+isinf = _mx.nd.contrib.isinf
 
 
 def isfinite(x):
