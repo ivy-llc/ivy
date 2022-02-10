@@ -89,6 +89,8 @@ General
    general/dtype.rst
    general/is_int_dtype.rst
    general/is_float_dtype.rst
+   general/valid_dtype.rst
+   general/invalid_dtype.rst
    general/convert_dtype.rst
    general/dtype_to_str.rst
    general/dtype_from_str.rst

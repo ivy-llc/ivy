@@ -1168,6 +1168,20 @@ Default is ‘float32’.</p></li>
 </dd></dl>
 
 <dl class="py function">
+<dt id="ivy.functional.ivy.core.general.invalid_dtype">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">invalid_dtype</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dtype_in</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/core/general.html#invalid_dtype"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.core.general.invalid_dtype" title="Permalink to this definition">¶</a></dt>
+<dd><p>Determines whether the provided data type (in string format) is not support by the current framework.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>dtype_in</strong> – The data type for which to check for backend non-support</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Boolean, whether the data-type string is un-supported.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt id="ivy.functional.ivy.core.general.is_array">
 <code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">is_array</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Any</span></em>, <em class="sig-param"><span class="n">exclusive</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em>, <em class="sig-param"><span class="n">f</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>ivy.Framework<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; bool<a class="reference internal" href="../../../_modules/ivy/functional/ivy/core/general.html#is_array"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.core.general.is_array" title="Permalink to this definition">¶</a></dt>
 <dd><p>Determines whether the input x is an Ivy Array.</p>
@@ -1920,6 +1934,20 @@ For example, if axis: int = 0, it will be the first dimension and if axis: int =
 </dd></dl>
 
 <dl class="py function">
+<dt id="ivy.functional.ivy.core.general.valid_dtype">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">valid_dtype</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dtype_in</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/core/general.html#valid_dtype"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.core.general.valid_dtype" title="Permalink to this definition">¶</a></dt>
+<dd><p>Determines whether the provided data type (in string format) is support by the current framework.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>dtype_in</strong> – The data type for which to check for backend support</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Boolean, whether or not the data-type string is supported.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt id="ivy.functional.ivy.core.general.value_is_nan">
 <code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">value_is_nan</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">, </span>numbers.Number<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">include_infs</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">True</span></em><span class="sig-paren">)</span> &#x2192; bool<a class="reference internal" href="../../../_modules/ivy/functional/ivy/core/general.html#value_is_nan"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.core.general.value_is_nan" title="Permalink to this definition">¶</a></dt>
 <dd><p>Determine whether the single valued array or scalar is of nan type</p>
@@ -2093,6 +2121,8 @@ If not given, then the type of the original array is used.</p></li>
 <li class="toctree-l1"><a class="reference internal" href="general/dtype.html">dtype</a></li>
 <li class="toctree-l1"><a class="reference internal" href="general/is_int_dtype.html">is_int_dtype</a></li>
 <li class="toctree-l1"><a class="reference internal" href="general/is_float_dtype.html">is_float_dtype</a></li>
+<li class="toctree-l1"><a class="reference internal" href="general/valid_dtype.html">valid_dtype</a></li>
+<li class="toctree-l1"><a class="reference internal" href="general/invalid_dtype.html">invalid_dtype</a></li>
 <li class="toctree-l1"><a class="reference internal" href="general/convert_dtype.html">convert_dtype</a></li>
 <li class="toctree-l1"><a class="reference internal" href="general/dtype_to_str.html">dtype_to_str</a></li>
 <li class="toctree-l1"><a class="reference internal" href="general/dtype_from_str.html">dtype_from_str</a></li>
