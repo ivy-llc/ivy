@@ -426,20 +426,7 @@ def full(shape, fill_value, dtype, device=None):
 
 # noinspection PyShadowingNames
 def ones(shape: List[int], dtype: ivy.Dtype = 'float32', dev: Optional[str] = None):
-    type_dict: Dict[str, _torch.dtype] = {'int8': _torch.int8,
-            'int16': _torch.int16,
-            'int32': _torch.int32,
-            'int64': _torch.int64,
-            'uint8': _torch.uint8,
-            'uint16': 'uint16',
-            'uint32': 'uint32',
-            'uint64': 'uint64',
-            'bfloat16': _torch.bfloat16,
-            'float16': _torch.float16,
-            'float32': _torch.float32,
-            'float64': _torch.float64,
-            'bool': _torch.bool}
-    dtype_val: _torch.dtype = type_dict[dtype]
+    dtype_val: _torch.dtype = dtype_from_str(dtype)
     dev = default_device(dev)
     return _torch.ones(shape, dtype=dtype_val, device=dev_from_str(dev))
 
