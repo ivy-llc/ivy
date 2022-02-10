@@ -1417,6 +1417,26 @@ def dtype(x: Union[ivy.Array, ivy.NativeArray], as_str: bool = False, f: ivy.Fra
     return _cur_framework(x, f=f).dtype(x, as_str)
 
 
+def is_int_dtype(dtype_in: Union[ivy.Dtype, str]):
+    """
+    Determine whether the input data type is an int data-type.
+
+    :param dtype_in: Datatype to test
+    :return: Whether or not the data type is an integer data type
+    """
+    return 'int' in dtype_to_str(dtype_in)
+
+
+def is_float_dtype(dtype_in: Union[ivy.Dtype, str]):
+    """
+    Determine whether the input data type is an float data-type.
+
+    :param dtype_in: Datatype to test
+    :return: Whether or not the data type is a floating point data type
+    """
+    return 'float' in dtype_to_str(dtype_in)
+
+
 def convert_dtype(dtype_in: Union[ivy.Dtype, str], backend: str):
     """
     Converts a data type from one backend framework representation to another.
