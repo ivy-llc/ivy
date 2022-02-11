@@ -24,6 +24,7 @@
         <script src="../../../../_static/jquery.js"></script>
         <script src="../../../../_static/underscore.js"></script>
         <script src="../../../../_static/doctools.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../../../_static/js/theme.js"></script>
 
@@ -196,6 +197,13 @@
             
   <div class="section" id="container-types">
 <h1>container_types<a class="headerlink" href="#container-types" title="Permalink to this headline">¶</a></h1>
+<dl class="py function">
+<dt id="ivy.functional.ivy.core.general.container_types">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">container_types</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">f</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>ivy.Framework<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/ivy/functional/ivy/core/general.html#container_types"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.core.general.container_types" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return all framework-specific types which should be hierarchically parsed in an ivy.Container. Such types must adopt
+a key-value structure, and exposes public methods .keys(), .values() and items().</p>
+</dd></dl>
+
 <div class="line-block">
 <div class="line"><br /></div>
 <div class="line"><strong>Supported Frameworks:</strong></div>

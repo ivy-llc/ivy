@@ -24,6 +24,7 @@
         <script src="../../../_static/jquery.js"></script>
         <script src="../../../_static/underscore.js"></script>
         <script src="../../../_static/doctools.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../../_static/js/theme.js"></script>
 
@@ -194,8 +195,213 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="reductions">
-<h1>Reductions<a class="headerlink" href="#reductions" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="module-ivy.functional.ivy.core.reductions">
+<span id="reductions"></span><h1>Reductions<a class="headerlink" href="#module-ivy.functional.ivy.core.reductions" title="Permalink to this headline">¶</a></h1>
+<p>Collection of reduction Ivy functions</p>
+<dl class="py function">
+<dt id="ivy.functional.ivy.core.reductions.all">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">all</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">keepdims</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">f</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/core/reductions.html#all"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.core.reductions.all" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tests whether all input array elements evaluate to True along a specified axis.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> – input array.</p></li>
+<li><p><strong>axis</strong> – axis or axes along which to perform a logical AND reduction. By default, a logical AND reduction must
+be performed over the entire array. If a tuple of integers, logical AND reductions must be performed over multiple
+axes. A valid axis must be an integer on the interval [-N, N), where N is the rank (number of dimensions) of x.
+If an axis is specified as a negative integer, the function must determine the axis along which to perform a
+reduction by counting backward from the last dimension (where -1 refers to the last dimension). If provided an
+invalid axis, the function must raise an exception. Default: None.</p></li>
+<li><p><strong>keepdims</strong> – If True, the reduced axes (dimensions) must be included in the result as singleton dimensions,
+and, accordingly, the result must be compatible with the input array (see Broadcasting). Otherwise, if False,
+the reduced axes (dimensions) must not be included in the result. Default is False.</p></li>
+<li><p><strong>f</strong> – Machine learning framework. Inferred from inputs if None.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.functional.ivy.core.reductions.einsum">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">einsum</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">equation</span></em>, <em class="sig-param"><span class="o">*</span><span class="n">operands</span></em>, <em class="sig-param"><span class="n">f</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/core/reductions.html#einsum"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.core.reductions.einsum" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sums the product of the elements of the input operands along dimensions specified using a notation based on the
+Einstein summation convention.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>equation</strong> (<em>str</em>) – A str describing the contraction, in the same format as numpy.einsum.</p></li>
+<li><p><strong>operands</strong> (<em>seq of arrays</em>) – the inputs to contract (each one an ivy.Array), whose shapes should be consistent with equation.</p></li>
+<li><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning framework. Inferred from inputs if None.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The array with sums computed.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.functional.ivy.core.reductions.reduce_max">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">reduce_max</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">keepdims</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">f</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/core/reductions.html#reduce_max"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.core.reductions.reduce_max" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the maximum value along the specified axis. The maximum is taken over the flattened array by default,
+otherwise over the specified axis.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>array</em>) – Array containing numbers whose max is desired.</p></li>
+<li><p><strong>axis</strong> (<em>int</em><em> or </em><em>sequence of ints</em>) – Axis or axes along which the maxes are computed. The default is to compute the max of the flattened
+array. If this is a tuple of ints, a max is performed over multiple axes, instead of a single axis
+or all the axes as before.</p></li>
+<li><p><strong>keepdims</strong> (<em>bool</em><em>, </em><em>optional</em>) – If this is set to True, the axes which are reduced are left in the result as dimensions with size
+one. With this option, the result will broadcast correctly against the input array.</p></li>
+<li><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning framework. Inferred from inputs if None.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The array with maxes computed.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.functional.ivy.core.reductions.reduce_mean">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">reduce_mean</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">keepdims</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">f</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/core/reductions.html#reduce_mean"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.core.reductions.reduce_mean" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the arithmetic mean along a given axis.
+Returns the average of the array elements. The average is taken over the flattened array by default, otherwise over
+the specified axis.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>array</em>) – Array containing numbers whose mean is desired.</p></li>
+<li><p><strong>axis</strong> (<em>int</em><em> or </em><em>sequence of ints</em>) – Axis or axes along which the means are computed. The default is to compute the mean of the flattened
+array. If this is a tuple of ints, a mean is performed over multiple axes, instead of a single axis
+or all the axes as before.</p></li>
+<li><p><strong>keepdims</strong> (<em>bool</em><em>, </em><em>optional</em>) – If this is set to True, the axes which are reduced are left in the result as dimensions with size
+one. With this option, the result will broadcast correctly against the input array.</p></li>
+<li><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning framework. Inferred from inputs if None.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The array with means computed.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.functional.ivy.core.reductions.reduce_min">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">reduce_min</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">keepdims</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">f</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/core/reductions.html#reduce_min"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.core.reductions.reduce_min" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the minimum value along the specified axis. The minimum is taken over the flattened array by default,
+otherwise over the specified axis.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>array</em>) – Array containing numbers whose min is desired.</p></li>
+<li><p><strong>axis</strong> (<em>int</em><em> or </em><em>sequence of ints</em>) – Axis or axes along which the mins are computed. The default is to compute the min of the flattened
+array. If this is a tuple of ints, a min is performed over multiple axes, instead of a single axis
+or all the axes as before.</p></li>
+<li><p><strong>keepdims</strong> (<em>bool</em><em>, </em><em>optional</em>) – If this is set to True, the axes which are reduced are left in the result as dimensions with size
+one. With this option, the result will broadcast correctly against the input array.</p></li>
+<li><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning framework. Inferred from inputs if None.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The array with mins computed.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.functional.ivy.core.reductions.reduce_prod">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">reduce_prod</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">keepdims</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">f</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/core/reductions.html#reduce_prod"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.core.reductions.reduce_prod" title="Permalink to this definition">¶</a></dt>
+<dd><p>Multiplies array elements along a given axis.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>array</em>) – Elements to multiply.</p></li>
+<li><p><strong>axis</strong> (<em>int</em><em> or </em><em>sequence of ints</em>) – Axis or axes along which a multiplication is performed. The default, axis=None, will multiply all of
+the elements of the input array. If axis is negative it counts from the last to the first axis.
+If axis is a tuple of ints, a multiplication is performed on all of the axes specified in the tuple
+instead of a single axis or all the axes as before.</p></li>
+<li><p><strong>keepdims</strong> (<em>bool</em><em>, </em><em>optional</em>) – If this is set to True, the axes which are reduced are left in the result as dimensions with size
+one. With this option, the result will broadcast correctly against the input array.</p></li>
+<li><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning framework. Inferred from inputs if None.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The array with multiplications computed.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.functional.ivy.core.reductions.reduce_std">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">reduce_std</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">keepdims</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">f</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/core/reductions.html#reduce_std"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.core.reductions.reduce_std" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the arithmetic standard deviation along a given axis. The standard deviation is taken over
+the flattened array by default, otherwise over the specified axis.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>array</em>) – Array containing numbers whose standard deviation is desired.</p></li>
+<li><p><strong>axis</strong> (<em>int</em><em> or </em><em>sequence of ints</em>) – Axis or axes along which the means are computed. The default is to compute the mean of the flattened
+array. If this is a tuple of ints, a mean is performed over multiple axes, instead of a single axis
+or all the axes as before.</p></li>
+<li><p><strong>keepdims</strong> (<em>bool</em><em>, </em><em>optional</em>) – If this is set to True, the axes which are reduced are left in the result as dimensions with size
+one. With this option, the result will broadcast correctly against the input array.</p></li>
+<li><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning framework. Inferred from inputs if None.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The array with standard deviations computed.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.functional.ivy.core.reductions.reduce_sum">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">reduce_sum</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">keepdims</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">f</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/core/reductions.html#reduce_sum"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.core.reductions.reduce_sum" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes sum of array elements along a given axis.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>array</em>) – Elements to sum.</p></li>
+<li><p><strong>axis</strong> (<em>int</em><em> or </em><em>sequence of ints</em>) – Axis or axes along which a sum is performed. The default, axis=None, will sum all of the elements of
+the input array. If axis is negative it counts from the last to the first axis.
+If axis is a tuple of ints, a sum is performed on all of the axes specified in the tuple instead of
+a single axis or all the axes as before.</p></li>
+<li><p><strong>keepdims</strong> (<em>bool</em><em>, </em><em>optional</em>) – If this is set to True, the axes which are reduced are left in the result as dimensions with size
+one. With this option, the result will broadcast correctly against the input array.</p></li>
+<li><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning framework. Inferred from inputs if None.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The array with sums computed.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.functional.ivy.core.reductions.reduce_var">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">reduce_var</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">keepdims</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">f</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/core/reductions.html#reduce_var"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.core.reductions.reduce_var" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the arithmetic variance along a given axis. The variance is taken over the flattened array by default,
+otherwise over the specified axis.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>array</em>) – Array containing numbers whose variance is desired.</p></li>
+<li><p><strong>axis</strong> (<em>int</em><em> or </em><em>sequence of ints</em>) – Axis or axes along which the means are computed. The default is to compute the mean of the flattened
+array. If this is a tuple of ints, a mean is performed over multiple axes, instead of a single axis
+or all the axes as before.</p></li>
+<li><p><strong>keepdims</strong> (<em>bool</em><em>, </em><em>optional</em>) – If this is set to True, the axes which are reduced are left in the result as dimensions with size
+one. With this option, the result will broadcast correctly against the input array.</p></li>
+<li><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning framework. Inferred from inputs if None.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The array with variances computed.</p>
+</dd>
+</dl>
+</dd></dl>
+
 <div class="toctree-wrapper compound">
 <p class="caption"><span class="caption-text">Reductions</span></p>
 <ul>

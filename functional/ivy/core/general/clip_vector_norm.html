@@ -24,6 +24,7 @@
         <script src="../../../../_static/jquery.js"></script>
         <script src="../../../../_static/underscore.js"></script>
         <script src="../../../../_static/doctools.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../../../_static/js/theme.js"></script>
 
@@ -196,6 +197,24 @@
             
   <div class="section" id="clip-vector-norm">
 <h1>clip_vector_norm<a class="headerlink" href="#clip-vector-norm" title="Permalink to this headline">¶</a></h1>
+<dl class="py function">
+<dt id="ivy.functional.ivy.core.general.clip_vector_norm">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">clip_vector_norm</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">max_norm</span><span class="p">:</span> <span class="n">float</span></em>, <em class="sig-param"><span class="n">p</span><span class="p">:</span> <span class="n">float</span> <span class="o">=</span> <span class="default_value">2.0</span></em><span class="sig-paren">)</span> &#x2192; Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span><a class="reference internal" href="../../../../_modules/ivy/functional/ivy/core/general.html#clip_vector_norm"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.core.general.clip_vector_norm" title="Permalink to this definition">¶</a></dt>
+<dd><p>Clips (limits) the vector p-norm of an array.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>array</em>) – Input array containing elements to clip.</p></li>
+<li><p><strong>max_norm</strong> (<em>float</em>) – The maximum value of the array norm.</p></li>
+<li><p><strong>p</strong> (<em>float</em><em>, </em><em>optional</em>) – The p-value for computing the p-norm. Default is 2.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>An array with the vector norm downscaled to the max norm if needed.</p>
+</dd>
+</dl>
+</dd></dl>
+
 <div class="line-block">
 <div class="line"><br /></div>
 <div class="line"><strong>Supported Frameworks:</strong></div>

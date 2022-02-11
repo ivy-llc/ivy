@@ -24,6 +24,7 @@
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../_static/js/theme.js"></script>
 
@@ -213,6 +214,39 @@
             
   <div class="section" id="lstm">
 <h1>LSTM<a class="headerlink" href="#lstm" title="Permalink to this headline">¶</a></h1>
+<dl class="py class">
+<dt id="ivy.stateful.layers.LSTM">
+<em class="property">class </em><code class="sig-prename descclassname">ivy.stateful.layers.</code><code class="sig-name descname">LSTM</code><span class="sig-paren">(</span><em class="sig-param">input_channels</em>, <em class="sig-param">output_channels</em>, <em class="sig-param">weight_initializer=&lt;ivy.stateful.initializers.GlorotUniform object&gt;</em>, <em class="sig-param">num_layers=1</em>, <em class="sig-param">return_sequence=True</em>, <em class="sig-param">return_state=True</em>, <em class="sig-param">dev=None</em>, <em class="sig-param">v=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/stateful/layers.html#LSTM"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.stateful.layers.LSTM" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="../module/Module.html#ivy.stateful.module.Module" title="ivy.stateful.module.Module"><code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.stateful.module.Module</span></code></a></p>
+<dl class="py method">
+<dt id="ivy.stateful.layers.LSTM.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param">input_channels</em>, <em class="sig-param">output_channels</em>, <em class="sig-param">weight_initializer=&lt;ivy.stateful.initializers.GlorotUniform object&gt;</em>, <em class="sig-param">num_layers=1</em>, <em class="sig-param">return_sequence=True</em>, <em class="sig-param">return_state=True</em>, <em class="sig-param">dev=None</em>, <em class="sig-param">v=None</em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/stateful/layers.html#LSTM.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.stateful.layers.LSTM.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>LSTM layer, which is a set of stacked lstm cells.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>input_channels</strong> (<em>int</em>) – Number of input channels for the layer</p></li>
+<li><p><strong>output_channels</strong> (<em>int</em>) – Number of output channels for the layer</p></li>
+<li><p><strong>weight_initializer</strong> (<em>ivy.Initializer</em><em>, </em><em>optional</em>) – Initializer for the weights. Default is GlorotUniform.</p></li>
+<li><p><strong>num_layers</strong> (<em>int</em><em>, </em><em>optional</em>) – Number of lstm cells in the lstm layer, default is 1.</p></li>
+<li><p><strong>return_sequence</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether or not to return the entire output sequence, or just the latest timestep.
+Default is True.</p></li>
+<li><p><strong>return_state</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether or not to return the latest hidden and cell states. Default is True.</p></li>
+<li><p><strong>dev</strong> (<em>ivy.Device</em><em>, </em><em>optional</em>) – device on which to create the layer’s variables ‘cuda:0’, ‘cuda:1’, ‘cpu’ etc. Default is cpu.</p></li>
+<li><p><strong>v</strong> (<em>ivy container of parameter arrays</em><em>, </em><em>optional</em>) – the variables for each of the lstm cells, as a container, constructed internally by default.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="ivy.stateful.layers.LSTM.get_initial_state">
+<code class="sig-name descname">get_initial_state</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">batch_shape</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/stateful/layers.html#LSTM.get_initial_state"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.stateful.layers.LSTM.get_initial_state" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the initial state of the hidden and cell states, if not provided explicitly</p>
+</dd></dl>
+
+</dd></dl>
+
 <div class="line-block">
 <div class="line"><br /></div>
 <div class="line"><strong>Supported Frameworks:</strong></div>

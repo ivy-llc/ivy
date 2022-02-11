@@ -24,6 +24,7 @@
         <script src="../../../../_static/jquery.js"></script>
         <script src="../../../../_static/underscore.js"></script>
         <script src="../../../../_static/doctools.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../../../_static/js/theme.js"></script>
 
@@ -196,6 +197,24 @@
             
   <div class="section" id="variable-data">
 <h1>variable_data<a class="headerlink" href="#variable-data" title="Permalink to this headline">¶</a></h1>
+<dl class="py function">
+<dt id="ivy.functional.ivy.core.gradients.variable_data">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">variable_data</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">f</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/ivy/functional/ivy/core/gradients.html#variable_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.core.gradients.variable_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Some backends wrap arrays in a dedicated variable class. For those frameworks, this function returns that wrapped
+array. For frameworks which do not have a dedicated variable class, the function returns the data passed in.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>variable</em>) – An ivy variable.</p></li>
+<li><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning framework. Inferred from inputs if None.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The internal data stored by the variable</p>
+</dd>
+</dl>
+</dd></dl>
+
 <div class="line-block">
 <div class="line"><br /></div>
 <div class="line"><strong>Supported Frameworks:</strong></div>

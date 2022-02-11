@@ -24,6 +24,7 @@
         <script src="../../../../_static/jquery.js"></script>
         <script src="../../../../_static/underscore.js"></script>
         <script src="../../../../_static/doctools.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../../../_static/js/theme.js"></script>
 
@@ -196,6 +197,27 @@
             
   <div class="section" id="fourier-encode">
 <h1>fourier_encode<a class="headerlink" href="#fourier-encode" title="Permalink to this headline">¶</a></h1>
+<dl class="py function">
+<dt id="ivy.functional.ivy.core.general.fourier_encode">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">fourier_encode</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">max_freq</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>float<span class="p">, </span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">num_bands</span><span class="p">:</span> <span class="n">int</span> <span class="o">=</span> <span class="default_value">4</span></em>, <em class="sig-param"><span class="n">linear</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em>, <em class="sig-param"><span class="n">concat</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">True</span></em>, <em class="sig-param"><span class="n">flatten</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em><span class="sig-paren">)</span> &#x2192; Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">, </span>Tuple<span class="p">]</span><a class="reference internal" href="../../../../_modules/ivy/functional/ivy/core/general.html#fourier_encode"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.core.general.fourier_encode" title="Permalink to this definition">¶</a></dt>
+<dd><p>Pads an array with fourier encodings.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>array</em>) – Input array to encode.</p></li>
+<li><p><strong>max_freq</strong> (<em>float</em>) – The maximum frequency of the encoding.</p></li>
+<li><p><strong>num_bands</strong> (<em>int</em><em>, </em><em>optional</em>) – The number of frequency bands for the encoding. Default is 4.</p></li>
+<li><p><strong>linear</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to space the frequency bands linearly as opposed to geometrically. Default is False.</p></li>
+<li><p><strong>concat</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to concatenate the position, sin and cos values, or return seperately. Default is True.</p></li>
+<li><p><strong>flatten</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to flatten the position dimension into the batch dimension. Default is False.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>New array with the final dimension expanded, and the encodings stored in this channel.</p>
+</dd>
+</dl>
+</dd></dl>
+
 <div class="line-block">
 <div class="line"><br /></div>
 <div class="line"><strong>Supported Frameworks:</strong></div>

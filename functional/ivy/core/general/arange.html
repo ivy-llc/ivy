@@ -24,6 +24,7 @@
         <script src="../../../../_static/jquery.js"></script>
         <script src="../../../../_static/underscore.js"></script>
         <script src="../../../../_static/doctools.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../../../_static/js/theme.js"></script>
 
@@ -196,6 +197,39 @@
             
   <div class="section" id="arange">
 <h1>arange<a class="headerlink" href="#arange" title="Permalink to this headline">¶</a></h1>
+<dl class="py function">
+<dt id="ivy.functional.ivy.core.general.arange">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">arange</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">stop</span><span class="p">:</span> <span class="n">numbers.Number</span></em>, <em class="sig-param"><span class="n">start</span><span class="p">:</span> <span class="n">numbers.Number</span> <span class="o">=</span> <span class="default_value">0</span></em>, <em class="sig-param"><span class="n">step</span><span class="p">:</span> <span class="n">numbers.Number</span> <span class="o">=</span> <span class="default_value">1</span></em>, <em class="sig-param"><span class="n">dtype</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>ivy.Dtype<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">dev</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>ivy.Device<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">f</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>ivy.Framework<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span><a class="reference internal" href="../../../../_modules/ivy/functional/ivy/core/general.html#arange"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.core.general.arange" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns evenly spaced values within a given interval, with the spacing being specified.</p>
+<p>Values are generated within the half-open interval [start, stop) (in other words, the interval including start but
+excluding stop). For integer arguments the function is equivalent to the Python built-in range function,
+but returns an array in the chosen ml_framework rather than a list.</p>
+<p>See <span class="math notranslate nohighlight">\(linspace\)</span> for a certain number of evenly spaced values in an interval.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>stop</strong> (<em>number</em>) – End of interval. The interval does not include this value, except in some cases where step is not an
+integer and floating point round-off affects the length of out.</p></li>
+<li><p><strong>start</strong> (<em>number</em><em>, </em><em>optional</em>) – Start of interval. The interval includes this value. The default start value is 0.</p></li>
+<li><p><strong>step</strong> (<em>number</em><em>, </em><em>optional</em>) – Spacing between values. For any output out, this is the distance between two adjacent values,
+out[i+1] - out[i]. The default step size is 1. If step is specified as a position argument,
+start must also be given.</p></li>
+<li><p><strong>dtype</strong> (<em>data-type string</em><em>, </em><em>optional</em>) – The desired data-type for the array in string format, i.e. ‘float32’ or ‘int64’.
+If not given, then the type will be determined as the minimum type required to hold the objects in the
+sequence.</p></li>
+<li><p><strong>dev</strong> (<em>ivy.Device</em>) – device on which to create the array ‘cuda:0’, ‘cuda:1’, ‘cpu’ etc.</p></li>
+<li><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning framework. Inferred from inputs if None.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><p>Tensor of evenly spaced values.</p>
+<p>For floating point arguments, the length of the result is ceil((stop - start)/step).
+Because of floating point overflow, this rule may result in the last element of out being greater than stop.</p>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
 <div class="line-block">
 <div class="line"><br /></div>
 <div class="line"><strong>Supported Frameworks:</strong></div>

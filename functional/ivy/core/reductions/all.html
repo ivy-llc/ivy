@@ -24,6 +24,7 @@
         <script src="../../../../_static/jquery.js"></script>
         <script src="../../../../_static/underscore.js"></script>
         <script src="../../../../_static/doctools.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../../../_static/js/theme.js"></script>
 
@@ -196,6 +197,29 @@
             
   <div class="section" id="all">
 <h1>all<a class="headerlink" href="#all" title="Permalink to this headline">¶</a></h1>
+<dl class="py function">
+<dt id="ivy.functional.ivy.core.reductions.all">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">all</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">axis</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">keepdims</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">f</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/ivy/functional/ivy/core/reductions.html#all"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.core.reductions.all" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tests whether all input array elements evaluate to True along a specified axis.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> – input array.</p></li>
+<li><p><strong>axis</strong> – axis or axes along which to perform a logical AND reduction. By default, a logical AND reduction must
+be performed over the entire array. If a tuple of integers, logical AND reductions must be performed over multiple
+axes. A valid axis must be an integer on the interval [-N, N), where N is the rank (number of dimensions) of x.
+If an axis is specified as a negative integer, the function must determine the axis along which to perform a
+reduction by counting backward from the last dimension (where -1 refers to the last dimension). If provided an
+invalid axis, the function must raise an exception. Default: None.</p></li>
+<li><p><strong>keepdims</strong> – If True, the reduced axes (dimensions) must be included in the result as singleton dimensions,
+and, accordingly, the result must be compatible with the input array (see Broadcasting). Otherwise, if False,
+the reduced axes (dimensions) must not be included in the result. Default is False.</p></li>
+<li><p><strong>f</strong> – Machine learning framework. Inferred from inputs if None.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
 <div class="line-block">
 <div class="line"><br /></div>
 <div class="line"><strong>Supported Frameworks:</strong></div>

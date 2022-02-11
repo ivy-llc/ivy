@@ -24,6 +24,7 @@
         <script src="../../../../_static/jquery.js"></script>
         <script src="../../../../_static/underscore.js"></script>
         <script src="../../../../_static/doctools.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../../../_static/js/theme.js"></script>
 
@@ -196,6 +197,24 @@
             
   <div class="section" id="meshgrid">
 <h1>meshgrid<a class="headerlink" href="#meshgrid" title="Permalink to this headline">¶</a></h1>
+<dl class="py function">
+<dt id="ivy.functional.ivy.core.general.meshgrid">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">meshgrid</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">xs</span><span class="p">:</span> <span class="n">Iterable<span class="p">[</span>Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span><span class="p">]</span></span></em>, <em class="sig-param"><span class="n">indexing</span><span class="p">:</span> <span class="n">str</span> <span class="o">=</span> <span class="default_value">'ij'</span></em>, <em class="sig-param"><span class="n">f</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>ivy.Framework<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; Iterable<span class="p">[</span>Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span><span class="p">]</span><a class="reference internal" href="../../../../_modules/ivy/functional/ivy/core/general.html#meshgrid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.core.general.meshgrid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Broadcasts parameters for evaluation on an N-D grid.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>xs</strong> (<em>sequence of arrays</em>) – input arrays</p></li>
+<li><p><strong>indexing</strong> (<em>str</em><em>, </em><em>optional</em>) – The indexing method, either ‘xy’ or ‘ij’. Default is ‘ij’.</p></li>
+<li><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning framework. Inferred from inputs if None.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>list of N-D coordinate arrays for evaluating expressions on an N-D grid</p>
+</dd>
+</dl>
+</dd></dl>
+
 <div class="line-block">
 <div class="line"><br /></div>
 <div class="line"><strong>Supported Frameworks:</strong></div>

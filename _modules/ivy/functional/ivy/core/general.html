@@ -664,25 +664,6 @@
 
 
 <span class="c1"># noinspection PyShadowingNames</span>
-<div class="viewcode-block" id="cast"><a class="viewcode-back" href="../../../../../functional/ivy/core/general/cast.html#ivy.functional.ivy.core.general.cast">[docs]</a><span class="k">def</span> <span class="nf">cast</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span> <span class="n">dtype</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">,</span> <span class="n">f</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Framework</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span>\
-        <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Casts an array to a specified type.</span>
-
-<span class="sd">    :param x: Input array containing elements to cast.</span>
-<span class="sd">    :type x: array</span>
-<span class="sd">    :param dtype: The desired data-type for the array in string format, i.e. &#39;float32&#39; or &#39;int64&#39;.</span>
-<span class="sd">            If not given, then the type will be determined as the minimum type required to hold the objects in the</span>
-<span class="sd">            sequence.</span>
-<span class="sd">    :type dtype: data-type string</span>
-<span class="sd">    :param f: Machine learning framework. Inferred from inputs if None.</span>
-<span class="sd">    :type f: ml_framework, optional</span>
-<span class="sd">    :return: A new array of the same shape as input array a, with data type given by dtype.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">cast</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">dtype</span><span class="p">)</span></div>
-
-
-<span class="c1"># noinspection PyShadowingNames</span>
 <div class="viewcode-block" id="arange"><a class="viewcode-back" href="../../../../../functional/ivy/core/general/arange.html#ivy.functional.ivy.core.general.arange">[docs]</a><span class="k">def</span> <span class="nf">arange</span><span class="p">(</span><span class="n">stop</span><span class="p">:</span> <span class="n">Number</span><span class="p">,</span> <span class="n">start</span><span class="p">:</span> <span class="n">Number</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">step</span><span class="p">:</span> <span class="n">Number</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">dtype</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">dev</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Device</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
            <span class="n">f</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Framework</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">]:</span>
     <span class="sd">&quot;&quot;&quot;</span>
@@ -1609,107 +1590,6 @@
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">split_kwargs</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">split_kwargs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
     <span class="k">return</span> <span class="n">split_kwargs</span></div>
-
-
-<div class="viewcode-block" id="dtype"><a class="viewcode-back" href="../../../../../functional/ivy/core/general/dtype.html#ivy.functional.ivy.core.general.dtype">[docs]</a><span class="k">def</span> <span class="nf">dtype</span><span class="p">(</span><span class="n">x</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ivy</span><span class="o">.</span><span class="n">NativeArray</span><span class="p">],</span> <span class="n">as_str</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">f</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Framework</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span>\
-        <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Get the data type for input array x.</span>
-
-<span class="sd">    :param x: Tensor for which to get the data type.</span>
-<span class="sd">    :type x: array</span>
-<span class="sd">    :param as_str: Whether or not to return the dtype in string format. Default is False.</span>
-<span class="sd">    :type as_str: bool, optional</span>
-<span class="sd">    :param f: Machine learning framework. Inferred from inputs if None.</span>
-<span class="sd">    :type f: ml_framework, optional</span>
-<span class="sd">    :return: Data type of the array</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">as_str</span><span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="is_int_dtype"><a class="viewcode-back" href="../../../../../functional/ivy/core/general/is_int_dtype.html#ivy.functional.ivy.core.general.is_int_dtype">[docs]</a><span class="k">def</span> <span class="nf">is_int_dtype</span><span class="p">(</span><span class="n">dtype_in</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">,</span> <span class="nb">str</span><span class="p">]):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Determine whether the input data type is an int data-type.</span>
-
-<span class="sd">    :param dtype_in: Datatype to test</span>
-<span class="sd">    :return: Whether or not the data type is an integer data type</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="s1">&#39;int&#39;</span> <span class="ow">in</span> <span class="n">dtype_to_str</span><span class="p">(</span><span class="n">dtype_in</span><span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="is_float_dtype"><a class="viewcode-back" href="../../../../../functional/ivy/core/general/is_float_dtype.html#ivy.functional.ivy.core.general.is_float_dtype">[docs]</a><span class="k">def</span> <span class="nf">is_float_dtype</span><span class="p">(</span><span class="n">dtype_in</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">,</span> <span class="nb">str</span><span class="p">]):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Determine whether the input data type is an float data-type.</span>
-
-<span class="sd">    :param dtype_in: Datatype to test</span>
-<span class="sd">    :return: Whether or not the data type is a floating point data type</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="s1">&#39;float&#39;</span> <span class="ow">in</span> <span class="n">dtype_to_str</span><span class="p">(</span><span class="n">dtype_in</span><span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="valid_dtype"><a class="viewcode-back" href="../../../../../functional/ivy/core/general/valid_dtype.html#ivy.functional.ivy.core.general.valid_dtype">[docs]</a><span class="k">def</span> <span class="nf">valid_dtype</span><span class="p">(</span><span class="n">dtype_in</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">,</span> <span class="nb">str</span><span class="p">]):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Determines whether the provided data type is support by the current framework.</span>
-
-<span class="sd">    :param dtype_in: The data type for which to check for backend support</span>
-<span class="sd">    :return: Boolean, whether or not the data-type string is supported.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">dtype_to_str</span><span class="p">(</span><span class="n">dtype_in</span><span class="p">)</span> <span class="ow">in</span> <span class="n">ivy</span><span class="o">.</span><span class="n">valid_dtype_strs</span></div>
-
-
-<div class="viewcode-block" id="invalid_dtype"><a class="viewcode-back" href="../../../../../functional/ivy/core/general/invalid_dtype.html#ivy.functional.ivy.core.general.invalid_dtype">[docs]</a><span class="k">def</span> <span class="nf">invalid_dtype</span><span class="p">(</span><span class="n">dtype_in</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">,</span> <span class="nb">str</span><span class="p">]):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Determines whether the provided data type is not support by the current framework.</span>
-
-<span class="sd">    :param dtype_in: The data type for which to check for backend non-support</span>
-<span class="sd">    :return: Boolean, whether the data-type string is un-supported.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">dtype_to_str</span><span class="p">(</span><span class="n">dtype_in</span><span class="p">)</span> <span class="ow">in</span> <span class="n">ivy</span><span class="o">.</span><span class="n">invalid_dtype_strs</span></div>
-
-
-<div class="viewcode-block" id="convert_dtype"><a class="viewcode-back" href="../../../../../functional/ivy/core/general/convert_dtype.html#ivy.functional.ivy.core.general.convert_dtype">[docs]</a><span class="k">def</span> <span class="nf">convert_dtype</span><span class="p">(</span><span class="n">dtype_in</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span> <span class="n">backend</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Converts a data type from one backend framework representation to another.</span>
-
-<span class="sd">    :param dtype_in: The data-type to convert, in the specified backend representation</span>
-<span class="sd">    :type dtype_in: data type</span>
-<span class="sd">    :param backend: The backend framework the dtype_in is represented in.</span>
-<span class="sd">    :type backend: str</span>
-<span class="sd">    :return: The data-type in the current ivy backend format</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">valid_backends</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;numpy&#39;</span><span class="p">,</span> <span class="s1">&#39;jax&#39;</span><span class="p">,</span> <span class="s1">&#39;tensorflow&#39;</span><span class="p">,</span> <span class="s1">&#39;torch&#39;</span><span class="p">,</span> <span class="s1">&#39;mxnet&#39;</span><span class="p">]</span>
-    <span class="k">if</span> <span class="n">backend</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">valid_backends</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;Invalid backend passed, must be one of </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">valid_backends</span><span class="p">))</span>
-    <span class="n">ivy_backend</span> <span class="o">=</span> <span class="n">importlib</span><span class="o">.</span><span class="n">import_module</span><span class="p">(</span><span class="s1">&#39;ivy.functional.backends.</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">backend</span><span class="p">))</span>
-    <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">dtype_from_str</span><span class="p">(</span><span class="n">ivy_backend</span><span class="o">.</span><span class="n">dtype_to_str</span><span class="p">(</span><span class="n">dtype_in</span><span class="p">))</span></div>
-
-
-<div class="viewcode-block" id="dtype_to_str"><a class="viewcode-back" href="../../../../../functional/ivy/core/general/dtype_to_str.html#ivy.functional.ivy.core.general.dtype_to_str">[docs]</a><span class="k">def</span> <span class="nf">dtype_to_str</span><span class="p">(</span><span class="n">dtype_in</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span> <span class="n">f</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Framework</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span>\
-        <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Convert native data type to string representation.</span>
-
-<span class="sd">    :param dtype_in: The data type to convert to string.</span>
-<span class="sd">    :type dtype_in: data type</span>
-<span class="sd">    :param f: Machine learning framework. Inferred from inputs if None.</span>
-<span class="sd">    :type f: ml_framework, optional</span>
-<span class="sd">    :return: data type string &#39;float32&#39;</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">dtype_to_str</span><span class="p">(</span><span class="n">dtype_in</span><span class="p">)</span></div>
-
-
-<div class="viewcode-block" id="dtype_from_str"><a class="viewcode-back" href="../../../../../functional/ivy/core/general/dtype_from_str.html#ivy.functional.ivy.core.general.dtype_from_str">[docs]</a><span class="k">def</span> <span class="nf">dtype_from_str</span><span class="p">(</span><span class="n">dtype_in</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span> <span class="n">f</span><span class="p">:</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Framework</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span>\
-        <span class="o">-&gt;</span> <span class="n">ivy</span><span class="o">.</span><span class="n">Dtype</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Convert data type string representation to native data type.</span>
-
-<span class="sd">    :param dtype_in: The data type string to convert to native data type.</span>
-<span class="sd">    :type dtype_in: str</span>
-<span class="sd">    :param f: Machine learning framework. Inferred from inputs if None.</span>
-<span class="sd">    :type f: ml_framework, optional</span>
-<span class="sd">    :return: data type e.g. ivy.float32.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">_cur_framework</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">f</span><span class="o">=</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">dtype_from_str</span><span class="p">(</span><span class="n">dtype_in</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="cache_fn"><a class="viewcode-back" href="../../../../../functional/ivy/core/general/cache_fn.html#ivy.functional.ivy.core.general.cache_fn">[docs]</a><span class="k">def</span> <span class="nf">cache_fn</span><span class="p">(</span><span class="n">func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">)</span>\

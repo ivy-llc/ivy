@@ -24,6 +24,7 @@
         <script src="../../_static/jquery.js"></script>
         <script src="../../_static/underscore.js"></script>
         <script src="../../_static/doctools.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../_static/js/theme.js"></script>
 
@@ -213,6 +214,27 @@
             
   <div class="section" id="dropout">
 <h1>Dropout<a class="headerlink" href="#dropout" title="Permalink to this headline">¶</a></h1>
+<dl class="py class">
+<dt id="ivy.stateful.layers.Dropout">
+<em class="property">class </em><code class="sig-prename descclassname">ivy.stateful.layers.</code><code class="sig-name descname">Dropout</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">prob</span></em>, <em class="sig-param"><span class="n">scale</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/stateful/layers.html#Dropout"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.stateful.layers.Dropout" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="../module/Module.html#ivy.stateful.module.Module" title="ivy.stateful.module.Module"><code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.stateful.module.Module</span></code></a></p>
+<dl class="py method">
+<dt id="ivy.stateful.layers.Dropout.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">prob</span></em>, <em class="sig-param"><span class="n">scale</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/ivy/stateful/layers.html#Dropout.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.stateful.layers.Dropout.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Dropout layer. The layer randomly zeroes some of the elements of the input tensor with probability p using
+samples from a Bernoull distribution.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>prob</strong> (<em>float</em>) – The probability of zeroing out each array element.</p></li>
+<li><p><strong>scale</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to scale the output by 1/(1-prob), default is True.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
 <div class="line-block">
 <div class="line"><br /></div>
 <div class="line"><strong>Supported Frameworks:</strong></div>

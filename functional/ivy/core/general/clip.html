@@ -24,6 +24,7 @@
         <script src="../../../../_static/jquery.js"></script>
         <script src="../../../../_static/underscore.js"></script>
         <script src="../../../../_static/doctools.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../../../_static/js/theme.js"></script>
 
@@ -196,6 +197,29 @@
             
   <div class="section" id="clip">
 <h1>clip<a class="headerlink" href="#clip" title="Permalink to this headline">¶</a></h1>
+<dl class="py function">
+<dt id="ivy.functional.ivy.core.general.clip">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">clip</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">x_min</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>numbers.Number<span class="p">, </span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">x_max</span><span class="p">:</span> <span class="n">Union<span class="p">[</span>numbers.Number<span class="p">, </span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span></span></em>, <em class="sig-param"><span class="n">f</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>ivy.Framework<span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em><span class="sig-paren">)</span> &#x2192; Union<span class="p">[</span>ivy.array.Array<span class="p">, </span>ivy.NativeArray<span class="p">]</span><a class="reference internal" href="../../../../_modules/ivy/functional/ivy/core/general.html#clip"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.core.general.clip" title="Permalink to this definition">¶</a></dt>
+<dd><p>Clips (limits) the values in an array.</p>
+<p>Given an interval, values outside the interval are clipped to the interval edges (element-wise).
+For example, if an interval of [0, 1] is specified, values smaller than 0 become 0,
+and values larger than 1 become 1.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>array</em>) – Input array containing elements to clip.</p></li>
+<li><p><strong>x_min</strong> (<em>scalar</em><em> or </em><em>array</em>) – Minimum value.</p></li>
+<li><p><strong>x_max</strong> (<em>scalar</em><em> or </em><em>array</em>) – Maximum value.</p></li>
+<li><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning framework. Inferred from inputs if None.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>An array with the elements of x, but where values &lt; x_min are replaced with x_min,
+and those &gt; x_max with x_max.</p>
+</dd>
+</dl>
+</dd></dl>
+
 <div class="line-block">
 <div class="line"><br /></div>
 <div class="line"><strong>Supported Frameworks:</strong></div>

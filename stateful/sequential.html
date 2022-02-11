@@ -24,6 +24,7 @@
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
 
@@ -199,8 +200,30 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="sequential">
-<h1>Sequential<a class="headerlink" href="#sequential" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="module-ivy.stateful.sequential">
+<span id="sequential"></span><h1>Sequential<a class="headerlink" href="#module-ivy.stateful.sequential" title="Permalink to this headline">¶</a></h1>
+<p>Base class for deriving trainable modules</p>
+<dl class="py class">
+<dt id="ivy.stateful.sequential.Sequential">
+<em class="property">class </em><code class="sig-prename descclassname">ivy.stateful.sequential.</code><code class="sig-name descname">Sequential</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">sub_modules</span></em>, <em class="sig-param"><span class="n">dev</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">v</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/stateful/sequential.html#Sequential"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.stateful.sequential.Sequential" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="module/Module.html#ivy.stateful.module.Module" title="ivy.stateful.module.Module"><code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.stateful.module.Module</span></code></a></p>
+<dl class="py method">
+<dt id="ivy.stateful.sequential.Sequential.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">sub_modules</span></em>, <em class="sig-param"><span class="n">dev</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">v</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/stateful/sequential.html#Sequential.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.stateful.sequential.Sequential.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>A sequential container. Modules will be added to it in the order they are passed in the constructor.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>submodules</strong> (<em>sequence of ivy.Module instances</em>) – Submodules to chain together into a sequence.</p></li>
+<li><p><strong>dev</strong> (<em>ivy.Device</em><em>, </em><em>optional</em>) – device on which to create the layer’s variables ‘cuda:0’, ‘cuda:1’, ‘cpu’ etc.</p></li>
+<li><p><strong>v</strong> (<em>ivy container of variables</em><em>, </em><em>optional</em>) – the variables for each submodule in the sequence, constructed internally by default.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
 <div class="toctree-wrapper compound">
 <p class="caption"><span class="caption-text">Sequential</span></p>
 <ul>

@@ -24,6 +24,7 @@
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
 
@@ -203,8 +204,254 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="optimizers">
-<h1>Optimizers<a class="headerlink" href="#optimizers" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="module-ivy.stateful.optimizers">
+<span id="optimizers"></span><h1>Optimizers<a class="headerlink" href="#module-ivy.stateful.optimizers" title="Permalink to this headline">¶</a></h1>
+<p>Collection of Ivy optimizers.</p>
+<dl class="py class">
+<dt id="ivy.stateful.optimizers.Adam">
+<em class="property">class </em><code class="sig-prename descclassname">ivy.stateful.optimizers.</code><code class="sig-name descname">Adam</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">lr</span><span class="o">=</span><span class="default_value">0.0001</span></em>, <em class="sig-param"><span class="n">beta1</span><span class="o">=</span><span class="default_value">0.9</span></em>, <em class="sig-param"><span class="n">beta2</span><span class="o">=</span><span class="default_value">0.999</span></em>, <em class="sig-param"><span class="n">epsilon</span><span class="o">=</span><span class="default_value">1e-07</span></em>, <em class="sig-param"><span class="n">inplace</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">stop_gradients</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">compile_on_next_step</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">dev</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/stateful/optimizers.html#Adam"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.stateful.optimizers.Adam" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="optimizers/Optimizer.html#ivy.stateful.optimizers.Optimizer" title="ivy.stateful.optimizers.Optimizer"><code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.stateful.optimizers.Optimizer</span></code></a></p>
+<dl class="py method">
+<dt id="ivy.stateful.optimizers.Adam.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">lr</span><span class="o">=</span><span class="default_value">0.0001</span></em>, <em class="sig-param"><span class="n">beta1</span><span class="o">=</span><span class="default_value">0.9</span></em>, <em class="sig-param"><span class="n">beta2</span><span class="o">=</span><span class="default_value">0.999</span></em>, <em class="sig-param"><span class="n">epsilon</span><span class="o">=</span><span class="default_value">1e-07</span></em>, <em class="sig-param"><span class="n">inplace</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">stop_gradients</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">compile_on_next_step</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">dev</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/stateful/optimizers.html#Adam.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.stateful.optimizers.Adam.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Construct an ADAM optimizer.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>lr</strong> (<em>float</em><em>, </em><em>optional</em>) – Learning rate, default is 1e-4.</p></li>
+<li><p><strong>beta1</strong> (<em>float</em><em>, </em><em>optional</em>) – gradient forgetting factor, default is 0.9</p></li>
+<li><p><strong>beta2</strong> (<em>float</em><em>, </em><em>optional</em>) – second moment of gradient forgetting factor, default is 0.999</p></li>
+<li><p><strong>epsilon</strong> (<em>float</em><em>, </em><em>optional</em>) – divisor during adam update, preventing division by zero, default is 1e-07</p></li>
+<li><p><strong>inplace</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to update the variables in-place, or to create new variable handles.
+This is only relevant for frameworks with stateful variables such as PyTorch.
+Default is True, provided the backend framework supports it.</p></li>
+<li><p><strong>stop_gradients</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to stop the gradients of the variables after each gradient step. Default is True.</p></li>
+<li><p><strong>compile_on_next_step</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to compile the optimizer on the next step. Default is False.</p></li>
+<li><p><strong>dev</strong> (<em>ivy.Device</em><em>, </em><em>optional</em>) – device on which to create the layer’s variables ‘cuda:0’, ‘cuda:1’, ‘cpu’ etc.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="ivy.stateful.optimizers.Adam.set_state">
+<code class="sig-name descname">set_state</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">state</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/stateful/optimizers.html#Adam.set_state"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.stateful.optimizers.Adam.set_state" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set state of the optimizer.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>state</strong> (<em>Ivy container of state tensors</em>) – Nested state to update.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="ivy.stateful.optimizers.Adam.state">
+<em class="property">property </em><code class="sig-name descname">state</code><a class="headerlink" href="#ivy.stateful.optimizers.Adam.state" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="ivy.stateful.optimizers.LAMB">
+<em class="property">class </em><code class="sig-prename descclassname">ivy.stateful.optimizers.</code><code class="sig-name descname">LAMB</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">lr</span><span class="o">=</span><span class="default_value">0.0001</span></em>, <em class="sig-param"><span class="n">beta1</span><span class="o">=</span><span class="default_value">0.9</span></em>, <em class="sig-param"><span class="n">beta2</span><span class="o">=</span><span class="default_value">0.999</span></em>, <em class="sig-param"><span class="n">epsilon</span><span class="o">=</span><span class="default_value">1e-07</span></em>, <em class="sig-param"><span class="n">max_trust_ratio</span><span class="o">=</span><span class="default_value">10</span></em>, <em class="sig-param"><span class="n">decay_lambda</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">inplace</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">stop_gradients</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">compile_on_next_step</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">dev</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/stateful/optimizers.html#LAMB"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.stateful.optimizers.LAMB" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="optimizers/Optimizer.html#ivy.stateful.optimizers.Optimizer" title="ivy.stateful.optimizers.Optimizer"><code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.stateful.optimizers.Optimizer</span></code></a></p>
+<dl class="py method">
+<dt id="ivy.stateful.optimizers.LAMB.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">lr</span><span class="o">=</span><span class="default_value">0.0001</span></em>, <em class="sig-param"><span class="n">beta1</span><span class="o">=</span><span class="default_value">0.9</span></em>, <em class="sig-param"><span class="n">beta2</span><span class="o">=</span><span class="default_value">0.999</span></em>, <em class="sig-param"><span class="n">epsilon</span><span class="o">=</span><span class="default_value">1e-07</span></em>, <em class="sig-param"><span class="n">max_trust_ratio</span><span class="o">=</span><span class="default_value">10</span></em>, <em class="sig-param"><span class="n">decay_lambda</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">inplace</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">stop_gradients</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">compile_on_next_step</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">dev</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/stateful/optimizers.html#LAMB.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.stateful.optimizers.LAMB.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Construct an LAMB optimizer.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>lr</strong> (<em>float</em><em>, </em><em>optional</em>) – Learning rate, default is 1e-4.</p></li>
+<li><p><strong>beta1</strong> (<em>float</em><em>, </em><em>optional</em>) – gradient forgetting factor, default is 0.9</p></li>
+<li><p><strong>beta2</strong> (<em>float</em><em>, </em><em>optional</em>) – second moment of gradient forgetting factor, default is 0.999</p></li>
+<li><p><strong>epsilon</strong> (<em>float</em><em>, </em><em>optional</em>) – divisor during adam update, preventing division by zero, default is 1e-07</p></li>
+<li><p><strong>max_trust_ratio</strong> (<em>float</em><em>, </em><em>optional</em>) – The max value of the trust ratio; the ratio between the norm of the layer weights and
+norm of gradients update. Default is 10.</p></li>
+<li><p><strong>decay_lambda</strong> (<em>float</em><em>, </em><em>optional</em>) – The factor used for weight decay. Default is zero.</p></li>
+<li><p><strong>inplace</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to update the variables in-place, or to create new variable handles.
+This is only relevant for frameworks with stateful variables such as PyTorch.
+Default is True, provided the backend framework supports it.</p></li>
+<li><p><strong>stop_gradients</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to stop the gradients of the variables after each gradient step. Default is True.</p></li>
+<li><p><strong>compile_on_next_step</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to compile the optimizer on the next step. Default is False.</p></li>
+<li><p><strong>dev</strong> (<em>ivy.Device</em><em>, </em><em>optional</em>) – device on which to create the layer’s variables ‘cuda:0’, ‘cuda:1’, ‘cpu’ etc.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="ivy.stateful.optimizers.LAMB.set_state">
+<code class="sig-name descname">set_state</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">state</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/stateful/optimizers.html#LAMB.set_state"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.stateful.optimizers.LAMB.set_state" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set state of the optimizer.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>state</strong> (<em>Ivy container of state tensors</em>) – Nested state to update.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="ivy.stateful.optimizers.LAMB.state">
+<em class="property">property </em><code class="sig-name descname">state</code><a class="headerlink" href="#ivy.stateful.optimizers.LAMB.state" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="ivy.stateful.optimizers.LARS">
+<em class="property">class </em><code class="sig-prename descclassname">ivy.stateful.optimizers.</code><code class="sig-name descname">LARS</code><span class="sig-paren">(</span><em class="sig-param">lr=&lt;function LARS.&lt;lambda&gt;&gt;</em>, <em class="sig-param">decay_lambda=0</em>, <em class="sig-param">inplace=None</em>, <em class="sig-param">stop_gradients=True</em>, <em class="sig-param">compile_on_next_step=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/stateful/optimizers.html#LARS"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.stateful.optimizers.LARS" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="optimizers/Optimizer.html#ivy.stateful.optimizers.Optimizer" title="ivy.stateful.optimizers.Optimizer"><code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.stateful.optimizers.Optimizer</span></code></a></p>
+<dl class="py method">
+<dt id="ivy.stateful.optimizers.LARS.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param">lr=&lt;function LARS.&lt;lambda&gt;&gt;</em>, <em class="sig-param">decay_lambda=0</em>, <em class="sig-param">inplace=None</em>, <em class="sig-param">stop_gradients=True</em>, <em class="sig-param">compile_on_next_step=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/stateful/optimizers.html#LARS.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.stateful.optimizers.LARS.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Construct a Layerwise Adaptive Rate Scaling (LARS) optimizer.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>lr</strong> (<em>float</em><em>, </em><em>optional</em>) – Learning rate, default is 1e-4.</p></li>
+<li><p><strong>decay_lambda</strong> (<em>float</em><em>, </em><em>optional</em>) – The factor used for weight decay. Default is zero.</p></li>
+<li><p><strong>inplace</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to update the variables in-place, or to create new variable handles.
+This is only relevant for frameworks with stateful variables such as PyTorch.
+Default is True, provided the backend framework supports it.</p></li>
+<li><p><strong>stop_gradients</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to stop the gradients of the variables after each gradient step. Default is True.</p></li>
+<li><p><strong>compile_on_next_step</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to compile the optimizer on the next step. Default is False.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="ivy.stateful.optimizers.LARS.set_state">
+<code class="sig-name descname">set_state</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">state</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/stateful/optimizers.html#LARS.set_state"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.stateful.optimizers.LARS.set_state" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set state of the optimizer.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>state</strong> (<em>Ivy container of state tensors</em>) – Nested state to update.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="ivy.stateful.optimizers.LARS.state">
+<em class="property">property </em><code class="sig-name descname">state</code><a class="headerlink" href="#ivy.stateful.optimizers.LARS.state" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="ivy.stateful.optimizers.Optimizer">
+<em class="property">class </em><code class="sig-prename descclassname">ivy.stateful.optimizers.</code><code class="sig-name descname">Optimizer</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">lr</span></em>, <em class="sig-param"><span class="n">inplace</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">stop_gradients</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">init_on_first_step</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">compile_on_next_step</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">fallback_to_non_compiled</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">dev</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/stateful/optimizers.html#Optimizer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.stateful.optimizers.Optimizer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">abc.ABC</span></code></p>
+<dl class="py method">
+<dt id="ivy.stateful.optimizers.Optimizer.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">lr</span></em>, <em class="sig-param"><span class="n">inplace</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">stop_gradients</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">init_on_first_step</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">compile_on_next_step</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">fallback_to_non_compiled</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">dev</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/stateful/optimizers.html#Optimizer.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.stateful.optimizers.Optimizer.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Construct an general Optimizer. This is an abstract class, and must be derived.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>lr</strong> (<em>function</em><em> or </em><em>float.</em>) – Learning rate.</p></li>
+<li><p><strong>inplace</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to update the variables in-place, or to create new variable handles.
+This is only relevant for frameworks with stateful variables such as PyTorch.
+Default is True, provided the backend framework supports it.</p></li>
+<li><p><strong>stop_gradients</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to stop the gradients of the variables after each gradient step. Default is True.</p></li>
+<li><p><strong>init_on_first_step</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether the optimizer is initialized on the first step. Default is False.</p></li>
+<li><p><strong>compile_on_next_step</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to compile the optimizer on the next step. Default is False.</p></li>
+<li><p><strong>fallback_to_non_compiled</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to fall back to non-compiled forward call in the case that an error is
+raised during the compiled forward pass. Default is True.</p></li>
+<li><p><strong>dev</strong> (<em>ivy.Device</em><em>, </em><em>optional</em>) – device on which to create the layer’s variables ‘cuda:0’, ‘cuda:1’, ‘cpu’ etc.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="ivy.stateful.optimizers.Optimizer.compile_graph">
+<code class="sig-name descname">compile_graph</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">v</span></em>, <em class="sig-param"><span class="n">grads</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">ignore_missing</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/stateful/optimizers.html#Optimizer.compile_graph"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.stateful.optimizers.Optimizer.compile_graph" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="ivy.stateful.optimizers.Optimizer.compile_on_next_step">
+<code class="sig-name descname">compile_on_next_step</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/stateful/optimizers.html#Optimizer.compile_on_next_step"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.stateful.optimizers.Optimizer.compile_on_next_step" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="ivy.stateful.optimizers.Optimizer.set_state">
+<em class="property">abstract </em><code class="sig-name descname">set_state</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">state</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/stateful/optimizers.html#Optimizer.set_state"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.stateful.optimizers.Optimizer.set_state" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set state of the optimizer.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>state</strong> (<em>Ivy container of state tensors</em>) – Nested state to update.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="ivy.stateful.optimizers.Optimizer.show_graph">
+<code class="sig-name descname">show_graph</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">v</span></em>, <em class="sig-param"><span class="n">grads</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">ignore_missing</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/stateful/optimizers.html#Optimizer.show_graph"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.stateful.optimizers.Optimizer.show_graph" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="ivy.stateful.optimizers.Optimizer.step">
+<code class="sig-name descname">step</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">v</span></em>, <em class="sig-param"><span class="n">grads</span></em>, <em class="sig-param"><span class="n">ignore_missing</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/stateful/optimizers.html#Optimizer.step"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.stateful.optimizers.Optimizer.step" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update nested variables container v from overriden private self._step</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>v</strong> (<em>Ivy container of variables</em>) – Nested variables to update.</p></li>
+<li><p><strong>grads</strong> (<em>sequence of arrays</em>) – Nested gradients to update.</p></li>
+<li><p><strong>ignore_missing</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to ignore keys missing from the gradients which exist in the variables.
+Default is False.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The updated variables, following update step.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="ivy.stateful.optimizers.SGD">
+<em class="property">class </em><code class="sig-prename descclassname">ivy.stateful.optimizers.</code><code class="sig-name descname">SGD</code><span class="sig-paren">(</span><em class="sig-param">lr=&lt;function SGD.&lt;lambda&gt;&gt;</em>, <em class="sig-param">inplace=None</em>, <em class="sig-param">stop_gradients=True</em>, <em class="sig-param">compile_on_next_step=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/stateful/optimizers.html#SGD"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.stateful.optimizers.SGD" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="optimizers/Optimizer.html#ivy.stateful.optimizers.Optimizer" title="ivy.stateful.optimizers.Optimizer"><code class="xref py py-class docutils literal notranslate"><span class="pre">ivy.stateful.optimizers.Optimizer</span></code></a></p>
+<dl class="py method">
+<dt id="ivy.stateful.optimizers.SGD.__init__">
+<code class="sig-name descname">__init__</code><span class="sig-paren">(</span><em class="sig-param">lr=&lt;function SGD.&lt;lambda&gt;&gt;</em>, <em class="sig-param">inplace=None</em>, <em class="sig-param">stop_gradients=True</em>, <em class="sig-param">compile_on_next_step=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/stateful/optimizers.html#SGD.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.stateful.optimizers.SGD.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Construct a Stochastic-Gradient-Descent (SGD) optimizer.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>lr</strong> (<em>float</em><em>, </em><em>optional</em>) – Learning rate, default is 1e-4.</p></li>
+<li><p><strong>inplace</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to update the variables in-place, or to create new variable handles.
+This is only relevant for frameworks with stateful variables such as PyTorch.
+Default is True, provided the backend framework supports it.</p></li>
+<li><p><strong>stop_gradients</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to stop the gradients of the variables after each gradient step. Default is True.</p></li>
+<li><p><strong>compile_on_next_step</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to compile the optimizer on the next step. Default is False.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="ivy.stateful.optimizers.SGD.set_state">
+<code class="sig-name descname">set_state</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">state</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/ivy/stateful/optimizers.html#SGD.set_state"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.stateful.optimizers.SGD.set_state" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set state of the optimizer.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>state</strong> (<em>Ivy container of state tensors</em>) – Nested state to update.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="ivy.stateful.optimizers.SGD.state">
+<em class="property">property </em><code class="sig-name descname">state</code><a class="headerlink" href="#ivy.stateful.optimizers.SGD.state" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
 <div class="toctree-wrapper compound">
 <p class="caption"><span class="caption-text">Optimizers</span></p>
 <ul>

@@ -24,6 +24,7 @@
         <script src="../../../_static/jquery.js"></script>
         <script src="../../../_static/underscore.js"></script>
         <script src="../../../_static/doctools.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../../_static/js/theme.js"></script>
 
@@ -194,8 +195,130 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="random">
-<h1>Random<a class="headerlink" href="#random" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="module-ivy.functional.ivy.core.random">
+<span id="random"></span><h1>Random<a class="headerlink" href="#module-ivy.functional.ivy.core.random" title="Permalink to this headline">¶</a></h1>
+<p>Collection of random Ivy functions</p>
+<dl class="py function">
+<dt id="ivy.functional.ivy.core.random.multinomial">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">multinomial</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">population_size</span></em>, <em class="sig-param"><span class="n">num_samples</span></em>, <em class="sig-param"><span class="n">batch_size</span></em>, <em class="sig-param"><span class="n">probs</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">replace</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">dev</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">f</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/core/random.html#multinomial"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.core.random.multinomial" title="Permalink to this definition">¶</a></dt>
+<dd><p>Draws samples from a multinomial distribution. Specifcally, returns a tensor where each row contains num_samples
+indices sampled from the multinomial probability distribution located in the corresponding row of tensor input.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>population_size</strong> (<em>int</em>) – The size of the population from which to draw samples.</p></li>
+<li><p><strong>num_samples</strong> (<em>int</em>) – Number of independent samples to draw from the population.</p></li>
+<li><p><strong>batch_size</strong> – Number of times to draw a new set of samples from the population.</p></li>
+<li><p><strong>probs</strong> (<em>array</em><em>, </em><em>optional</em>) – The unnormalized probabilities for all elemtns in population,
+default is uniform <em>[batch_shape, num_classes]</em></p></li>
+<li><p><strong>replace</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to replace samples once they’ve been drawn. Default is True.</p></li>
+<li><p><strong>dev</strong> (<em>ivy.Device</em>) – device on which to create the array ‘cuda:0’, ‘cuda:1’, ‘cpu’ etc.</p></li>
+<li><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning framework. Inferred from inputs if None.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Drawn samples indices from the multinomial distribution.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.functional.ivy.core.random.randint">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">randint</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">low</span></em>, <em class="sig-param"><span class="n">high</span></em>, <em class="sig-param"><span class="n">shape</span></em>, <em class="sig-param"><span class="n">dev</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">f</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/core/random.html#randint"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.core.random.randint" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a tensor filled with random integers generated uniformly between low (inclusive) and high (exclusive).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>low</strong> (<em>int</em>) – Lowest integer to be drawn from the distribution.</p></li>
+<li><p><strong>high</strong> (<em>int</em>) – One above the highest integer to be drawn from the distribution.</p></li>
+<li><p><strong>shape</strong> (<em>sequence of ints</em>) – a tuple defining the shape of the output tensor.</p></li>
+<li><p><strong>dev</strong> (<em>ivy.Device</em>) – device on which to create the array ‘cuda:0’, ‘cuda:1’, ‘cpu’ etc.</p></li>
+<li><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning framework. Inferred from inputs if None.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.functional.ivy.core.random.random_normal">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">random_normal</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">mean</span><span class="o">=</span><span class="default_value">0.0</span></em>, <em class="sig-param"><span class="n">std</span><span class="o">=</span><span class="default_value">1.0</span></em>, <em class="sig-param"><span class="n">shape</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">dev</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">f</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/core/random.html#random_normal"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.core.random.random_normal" title="Permalink to this definition">¶</a></dt>
+<dd><p>Draws samples from a normal distribution.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>mean</strong> (<em>float</em>) – The mean of the normal distribution to sample from. Default is 0.</p></li>
+<li><p><strong>std</strong> (<em>float</em>) – The standard deviation of the normal distribution to sample from. Default is 1.</p></li>
+<li><p><strong>shape</strong> – Output shape. If the given shape is, e.g., (m, n, k), then m * n * k samples are drawn.
+If size is None (default), a single value is returned.</p></li>
+<li><p><strong>dev</strong> (<em>ivy.Device</em>) – device on which to create the array ‘cuda:0’, ‘cuda:1’, ‘cpu’ etc.</p></li>
+<li><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning framework. Inferred from inputs if None.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Drawn samples from the parameterized uniform distribution.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.functional.ivy.core.random.random_uniform">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">random_uniform</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">low</span><span class="o">=</span><span class="default_value">0.0</span></em>, <em class="sig-param"><span class="n">high</span><span class="o">=</span><span class="default_value">1.0</span></em>, <em class="sig-param"><span class="n">shape</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">dev</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">f</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/core/random.html#random_uniform"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.core.random.random_uniform" title="Permalink to this definition">¶</a></dt>
+<dd><p>Draws samples from a uniform distribution.
+Samples are uniformly distributed over the half-open interval [low, high) (includes low, but excludes high).
+In other words, any value within the given interval is equally likely to be drawn by uniform.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>low</strong> (<em>float</em>) – Lower boundary of the output interval. All values generated will be greater than or equal to low.
+The default value is 0.</p></li>
+<li><p><strong>high</strong> (<em>float</em>) – Upper boundary of the output interval. All values generated will be less than high.
+The default value is 1.0.</p></li>
+<li><p><strong>shape</strong> (<em>sequence of ints</em>) – Output shape. If the given shape is, e.g., (m, n, k), then m * n * k samples are drawn.
+If size is None (default), a single value is returned.</p></li>
+<li><p><strong>dev</strong> (<em>ivy.Device</em>) – device on which to create the array ‘cuda:0’, ‘cuda:1’, ‘cpu’ etc.</p></li>
+<li><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning framework. Inferred from inputs if None.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Drawn samples from the parameterized uniform distribution.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.functional.ivy.core.random.seed">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">seed</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">seed_value</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">f</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/core/random.html#seed"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.core.random.seed" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets the seed for random number generation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>seed_value</strong> (<em>int</em>) – Seed for random number generation, must be a positive integer.</p></li>
+<li><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning framework. Inferred from inputs if None.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.functional.ivy.core.random.shuffle">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">shuffle</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">f</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/core/random.html#shuffle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.core.random.shuffle" title="Permalink to this definition">¶</a></dt>
+<dd><p>Shuffles the given array along axis 0.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>array</em>) – An array object, in the specific Machine learning framework.</p></li>
+<li><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning framework. Inferred from inputs if None.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>An array object, shuffled along the first dimension.</p>
+</dd>
+</dl>
+</dd></dl>
+
 <div class="toctree-wrapper compound">
 <p class="caption"><span class="caption-text">Random</span></p>
 <ul>

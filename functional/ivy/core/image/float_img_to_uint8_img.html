@@ -24,6 +24,7 @@
         <script src="../../../../_static/jquery.js"></script>
         <script src="../../../../_static/underscore.js"></script>
         <script src="../../../../_static/doctools.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../../../_static/js/theme.js"></script>
 
@@ -196,6 +197,23 @@
             
   <div class="section" id="float-img-to-uint8-img">
 <h1>float_img_to_uint8_img<a class="headerlink" href="#float-img-to-uint8-img" title="Permalink to this headline">¶</a></h1>
+<dl class="py function">
+<dt id="ivy.functional.ivy.core.image.float_img_to_uint8_img">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">float_img_to_uint8_img</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">f</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/ivy/functional/ivy/core/image.html#float_img_to_uint8_img"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.core.image.float_img_to_uint8_img" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts an image of floats into a bit-cast 4-channel image of uint8s, which can be saved to disk.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>array</em>) – Input float image <em>[batch_shape,h,w]</em>.</p></li>
+<li><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning library. Inferred from inputs if None.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The new encoded uint8 image <em>[batch_shape,h,w,4]</em> .</p>
+</dd>
+</dl>
+</dd></dl>
+
 <div class="line-block">
 <div class="line"><br /></div>
 <div class="line"><strong>Supported Frameworks:</strong></div>

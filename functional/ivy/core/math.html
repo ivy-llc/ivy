@@ -24,6 +24,7 @@
         <script src="../../../_static/jquery.js"></script>
         <script src="../../../_static/underscore.js"></script>
         <script src="../../../_static/doctools.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../../_static/js/theme.js"></script>
 
@@ -194,8 +195,286 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="math">
-<h1>Math<a class="headerlink" href="#math" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="module-ivy.functional.ivy.core.math">
+<span id="math"></span><h1>Math<a class="headerlink" href="#module-ivy.functional.ivy.core.math" title="Permalink to this headline">¶</a></h1>
+<p>Collection of math Ivy functions.</p>
+<dl class="py function">
+<dt id="ivy.functional.ivy.core.math.acos">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">acos</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">f</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/core/math.html#acos"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.core.math.acos" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes trigonometric inverse cosine element-wise.
+The inverse of cos so that, if y = cos(x), then x = arccos(y).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>array</em>) – x-coordinate on the unit circle. For real arguments, the domain is [-1, 1].</p></li>
+<li><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning framework. Inferred from inputs if None.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The angle of the ray intersecting the unit circle at the given x-coordinate in radians [0, pi].</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.functional.ivy.core.math.acosh">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">acosh</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">f</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/core/math.html#acosh"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.core.math.acosh" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a new array with the inverse hyperbolic cosine of the elements of x.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> – Input array.</p></li>
+<li><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning framework. Inferred from inputs if None.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A new array with the inverse hyperbolic cosine of the elements of x.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.functional.ivy.core.math.asin">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">asin</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">f</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/core/math.html#asin"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.core.math.asin" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes inverse sine element-wise.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>array</em>) – y-coordinate on the unit circle.</p></li>
+<li><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning framework. Inferred from inputs if None.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The inverse sine of each element in x, in radians and in the closed interval [-pi/2, pi/2].</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.functional.ivy.core.math.asinh">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">asinh</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">f</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/core/math.html#asinh"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.core.math.asinh" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a new array with the inverse hyperbolic sine of the elements of x.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> – Input array.</p></li>
+<li><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning framework. Inferred from inputs if None.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A new array with the inverse hyperbolic sine of the elements of x.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.functional.ivy.core.math.atan">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">atan</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">f</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/core/math.html#atan"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.core.math.atan" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes trigonometric inverse tangent, element-wise.
+The inverse of tan, so that if y = tan(x) then x = arctan(y).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>array</em>) – Input array.</p></li>
+<li><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning framework. Inferred from inputs if None.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Out has the same shape as x. Its real part is in [-pi/2, pi/2] (arctan(+/-inf) returns +/-pi/2).</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.functional.ivy.core.math.atan2">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">atan2</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x1</span></em>, <em class="sig-param"><span class="n">x2</span></em>, <em class="sig-param"><span class="n">f</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/core/math.html#atan2"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.core.math.atan2" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes element-wise arc tangent of x1/x2 choosing the quadrant correctly.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x1</strong> (<em>array</em>) – y-coordinates.</p></li>
+<li><p><strong>x2</strong> (<em>array</em>) – x-coordinates. If x1.shape != x2.shape, they must be broadcastable to a common shape
+(which becomes the shape of the output).</p></li>
+<li><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning framework. Inferred from inputs if None.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Array of angles in radians, in the range [-pi, pi].</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.functional.ivy.core.math.atanh">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">atanh</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">f</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/core/math.html#atanh"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.core.math.atanh" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a new array with the inverse hyperbolic tangent of the elements of x.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> – Input array.</p></li>
+<li><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning framework. Inferred from inputs if None.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A new array with the inverse hyperbolic tangent of the elements of x.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.functional.ivy.core.math.cos">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">cos</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">f</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/core/math.html#cos"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.core.math.cos" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes trigonometric cosine element-wise.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>array</em>) – Input array, in radians (2*pi radian equals 360 degrees).</p></li>
+<li><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning framework. Inferred from inputs if None.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The cosine of x element-wise.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.functional.ivy.core.math.cosh">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">cosh</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">f</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/core/math.html#cosh"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.core.math.cosh" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a new array with the hyperbolic cosine of the elements of x.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> – Input array.</p></li>
+<li><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning framework. Inferred from inputs if None.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A new array with the hyperbolic cosine of the elements of x.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.functional.ivy.core.math.erf">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">erf</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">f</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/core/math.html#erf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.core.math.erf" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes the Gauss error function of x element-wise.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>array</em>) – Value to compute exponential for.</p></li>
+<li><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning framework. Inferred from inputs if None.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The Gauss error function of x.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.functional.ivy.core.math.exp">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">exp</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">f</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/core/math.html#exp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.core.math.exp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes exponential of x element-wise.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>array</em>) – Value to compute exponential for.</p></li>
+<li><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning framework. Inferred from inputs if None.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The exponential of each element of x.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.functional.ivy.core.math.log">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">log</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">f</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/core/math.html#log"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.core.math.log" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes natural logarithm of x element-wise.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>array</em>) – Value to compute log for.</p></li>
+<li><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning framework. Inferred from inputs if None.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The natural logarithm of each element of x.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.functional.ivy.core.math.sin">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">sin</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">f</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/core/math.html#sin"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.core.math.sin" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes trigonometric sine element-wise.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>array</em>) – Input array, in radians (2*pi radian equals 360 degrees).</p></li>
+<li><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning framework. Inferred from inputs if None.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The sine of x element-wise.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.functional.ivy.core.math.sinh">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">sinh</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">f</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/core/math.html#sinh"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.core.math.sinh" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a new array with the hyperbolic sine of the elements of x.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> – Input array.</p></li>
+<li><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning framework. Inferred from inputs if None.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A new array with the hyperbolic sine of the elements of x.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.functional.ivy.core.math.tan">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">tan</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">f</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/core/math.html#tan"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.core.math.tan" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes tangent element-wise.
+Equivalent to f.sin(x)/f.cos(x) element-wise.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<em>array</em>) – Input array, in radians (2*pi radian equals 360 degrees).</p></li>
+<li><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning framework. Inferred from inputs if None.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The tangent of x element-wise.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="ivy.functional.ivy.core.math.tanh">
+<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">tanh</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">f</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/ivy/functional/ivy/core/math.html#tanh"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.core.math.tanh" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a new array with the hyperbolic tangent of the elements of x.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> – Input array.</p></li>
+<li><p><strong>f</strong> (<em>ml_framework</em><em>, </em><em>optional</em>) – Machine learning framework. Inferred from inputs if None.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A new array with the hyperbolic tangent of the elements of x.</p>
+</dd>
+</dl>
+</dd></dl>
+
 <div class="toctree-wrapper compound">
 <p class="caption"><span class="caption-text">Math</span></p>
 <ul>
