@@ -2,6 +2,8 @@ from . import compilation
 from .compilation import *
 from . import device
 from .device import *
+from . import dtype
+from .dtype import *
 from . import general
 from .general import *
 from . import gradients
