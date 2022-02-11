@@ -194,7 +194,7 @@ def dtype_from_str(dtype_in: Union[ivy.Dtype, str], f: ivy.Framework = None)\
 # -----------#
 
 # noinspection PyShadowingBuiltins
-def iinfo(type: Union[ivy.Dtype, str, ivy.Array, ivy.NativeArray], f: ivy.Framework = None) -> ivy.Iinfo:
+def iinfo(type: Union[ivy.Dtype, str, ivy.Array, ivy.NativeArray], f: ivy.Framework = None) -> Iinfo:
     """
     Machine limits for integer data types.
 
@@ -206,7 +206,7 @@ def iinfo(type: Union[ivy.Dtype, str, ivy.Array, ivy.NativeArray], f: ivy.Framew
 
 
 # noinspection PyShadowingBuiltins
-def finfo(type: Union[ivy.Dtype, str, ivy.Array, ivy.NativeArray], f: ivy.Framework = None) -> ivy.Finfo:
+def finfo(type: Union[ivy.Dtype, str, ivy.Array, ivy.NativeArray], f: ivy.Framework = None) -> Finfo:
     """
     Machine limits for floating-point data types.
 
