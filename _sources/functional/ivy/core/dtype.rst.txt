@@ -23,4 +23,22 @@ Dtype
    dtype/dtype_from_str.rst
    dtype/iinfo.rst
    dtype/finfo.rst
+   dtype/default_dtype.rst
+   dtype/set_default_dtype.rst
+   dtype/unset_default_dtype.rst
+   dtype/default_float_dtype.rst
+   dtype/set_default_float_dtype.rst
+   dtype/unset_default_float_dtype.rst
+   dtype/default_int_dtype.rst
+   dtype/set_default_int_dtype.rst
+   dtype/unset_default_int_dtype.rst
+   dtype/DefaultDtype:
+    # noinspection PyShadowingNames
+    def __init__.rst
+   dtype/DefaultFloatDtype:
+    # noinspection PyShadowingNames
+    def __init__.rst
+   dtype/DefaultIntDtype:
+    # noinspection PyShadowingNames
+    def __init__.rst
 

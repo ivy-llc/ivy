@@ -524,8 +524,10 @@
         <span class="k">return</span> <span class="n">dev</span>
     <span class="k">global</span> <span class="n">default_device_stack</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">default_device_stack</span><span class="p">:</span>
-        <span class="n">default_device_stack</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;gpu:0&#39;</span><span class="p">]</span> <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">gpu_is_available</span><span class="p">()</span> <span class="k">else</span> <span class="p">[</span><span class="s1">&#39;cpu&#39;</span><span class="p">]</span>
-    <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">dev_from_str</span><span class="p">(</span><span class="n">default_device_stack</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span></div>
+        <span class="n">ret</span> <span class="o">=</span> <span class="s1">&#39;gpu:0&#39;</span> <span class="k">if</span> <span class="n">ivy</span><span class="o">.</span><span class="n">gpu_is_available</span><span class="p">()</span> <span class="k">else</span> <span class="s1">&#39;cpu&#39;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">ret</span> <span class="o">=</span> <span class="n">default_device_stack</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">ivy</span><span class="o">.</span><span class="n">dev_from_str</span><span class="p">(</span><span class="n">ret</span><span class="p">)</span></div>
 
 
 <span class="c1"># noinspection PyShadowingNames</span>
