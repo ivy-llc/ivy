@@ -196,7 +196,7 @@ def map(fn: Callable, constant: Dict[str, Any] = None, unique: Dict[str, Iterabl
 
 def nested_map(x: Union[Union[ivy.Array, ivy.NativeArray], Iterable], fn: Callable, include_derived: bool = False,
                to_mutable: bool = False, max_depth: int = None, depth: int = 0)\
-        -> Union[Union[ivy.Array, ivy.NativeArray], Iterable]:
+        -> Union[Union[ivy.Array, ivy.NativeArray], Iterable, Dict]:
     """
     Applies a function on x in a nested manner, whereby all dicts, lists and tuples are traversed to their lowest
     leaves before applying the method and returning x. If x is not nested, the method is applied to x directly.
