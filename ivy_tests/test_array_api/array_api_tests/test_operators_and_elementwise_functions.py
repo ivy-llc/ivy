@@ -8,27 +8,29 @@
 # test that. Tests for the special cases are generated and tested separately in
 # special_cases/
 # """
-#
-# import math
-# from enum import Enum, auto
-# from typing import Callable, List, Optional, Sequence, Union
-#
-# import pytest
-# from hypothesis import assume, given
-# from hypothesis import strategies as st
-# from hypothesis.control import reject
-#
-# from . import _array_module as xp
-# from . import array_helpers as ah
-# from . import dtype_helpers as dh
-# from . import hypothesis_helpers as hh
-# from . import pytest_helpers as ph
-# from . import shape_helpers as sh
-# from . import xps
-# from .algos import broadcast_shapes
-# from .typing import Array, DataType, Param, Scalar
-#
-# pytestmark = pytest.mark.ci
+
+import ivy
+import math
+from enum import Enum, auto
+from typing import Callable, List, Optional, Sequence, Union
+
+import pytest
+from hypothesis import assume, given
+from hypothesis import strategies as st
+from hypothesis.control import reject
+
+import ivy_tests
+from . import _array_module as xp
+from . import array_helpers as ah
+from . import dtype_helpers as dh
+from . import hypothesis_helpers as hh
+from . import pytest_helpers as ph
+from . import shape_helpers as sh
+from . import xps
+from .algos import broadcast_shapes
+from .typing import Array, DataType, Param, Scalar
+
+pytestmark = pytest.mark.ci
 #
 # # When appropiate, this module tests operators alongside their respective
 # # elementwise methods. We do this by parametrizing a generalised test method
@@ -951,22 +953,26 @@
 #             assert bool(out_idx) == (scalar_type(x1_idx) >= scalar_type(x2_idx))
 #
 #
-# @given(xps.arrays(dtype=xps.numeric_dtypes(), shape=hh.shapes()))
-# def test_isfinite(x):
-#     out = ah.isfinite(x)
-#     ph.assert_dtype("isfinite", x.dtype, out.dtype, xp.bool)
-#     ph.assert_shape("isfinite", out.shape, x.shape)
-#     if dh.is_int_dtype(x.dtype):
-#         ah.assert_exactly_equal(out, ah.true(x.shape))
-#     # Test that isfinite, isinf, and isnan are self-consistent.
-#     inf = ah.logical_or(xp.isinf(x), ah.isnan(x))
-#     ah.assert_exactly_equal(out, ah.logical_not(inf))
-#
-#     # Test the exact value by comparing to the math version
-#     if dh.is_float_dtype(x.dtype):
-#         for idx in sh.ndindex(x.shape):
-#             s = float(x[idx])
-#             assert bool(out[idx]) == math.isfinite(s)
+@pytest.mark.parametrize("dtype", ivy.all_dtype_strs)
+@pytest.mark.parametrize("shape", ivy_tests.test_shapes)
+def test_isfinite(dtype, shape):
+    if ivy.invalid_dtype(dtype):
+        pytest.skip()
+    x = ivy.cast(ivy.random_uniform(0, 10, shape), dtype)
+    out = ivy.isfinite(x)
+    assert ivy.dtype(out, as_str=True) == 'bool'
+    assert out.shape == x.shape
+    if ivy.is_int_dtype(ivy.dtype(x)):
+        assert ivy.array_equal(out, ivy.ones(x.shape, dtype='bool'))
+    # Test that isfinite, isinf, and isnan are self-consistent.
+    inf = ivy.logical_or(ivy.isinf(x), ivy.isnan(x))
+    assert ivy.array_equal(out, ivy.logical_not(inf))
+
+    # Test the exact value by comparing to the math version
+    if ivy.is_float_dtype(x.dtype):
+        for idx in sh.ndindex(x.shape):
+            s = float(x[idx])
+            assert bool(out[idx]) == math.isfinite(s)
 #
 #
 # @given(xps.arrays(dtype=xps.numeric_dtypes(), shape=hh.shapes()))
