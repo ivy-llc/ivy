@@ -3,6 +3,7 @@ Collection of MXNet general functions, wrapped to fit Ivy syntax and signature.
 """
 
 # global
+import ivy
 _round = round
 import logging
 import mxnet as _mx
@@ -83,15 +84,36 @@ def _mxnet_init_context(dev):
 
 
 def _scalar_or_flat_array_to_scalar(x):
-    return x if isinstance(x, Number) else (x.asscalar() if x.shape == () else x)
+    return x if isinstance(x, Number) else (x.asscalar() if len(x.shape) == 0 else x)
 
 
 def _flat_array_to_1_dim_array(x):
-    return _mx.nd.array([x.asscalar()]) if x.shape == () else x
+    return _mx.nd.array([x.asscalar()]) if len(x.shape) == 0 else x
 
 
 def _1_dim_array_to_flat_array(x):
     return _mx.nd.array(x.asscalar(), dtype=x.dtype) if x.shape == (1,) else x
+
+
+def _handle_flat_arrays_in(fn):
+    return _handle_flat_arrays_in_out(fn, False)
+
+
+def _handle_flat_arrays_in_out(fn, include_out=True):
+    def wrapped_fn(*args, **kwargs):
+        expanded = False
+        def expand(x):
+            nonlocal expanded
+            expanded = True
+            return _flat_array_to_1_dim_array(x)
+
+        args_expanded = ivy.nested_map(args, lambda x: expand(x) if ivy.is_array(x) and len(x.shape) == 0 else x)
+        kwargs_expanded = ivy.nested_map(kwargs, lambda x: expand(x) if ivy.is_array(x) and len(x.shape) == 0 else x)
+        ret = fn(*args_expanded, **kwargs_expanded)
+        if expanded and include_out:
+            return ivy.nested_map(ret, lambda x: _1_dim_array_to_flat_array(x) if ivy.is_array(x) else x)
+        return ret
+    return wrapped_fn
 
 
 # API #
@@ -114,7 +136,12 @@ def is_array(x, exclusive=False):
 
 
 copy_array = lambda x: x.copy()
-array_equal = lambda x0, x1: _mx.nd.min(_mx.nd.broadcast_equal(x0, x1)) == 1
+
+
+def array_equal(x0, x1):
+    return _mx.nd.min(_mx.nd.broadcast_equal(x0, x1)) == 1
+
+
 to_numpy = lambda x: x if isinstance(x, _np.ndarray) else (_np.array(x) if isinstance(x, (int, float)) else x.asnumpy())
 to_numpy.__name__ = 'to_numpy'
 to_scalar = lambda x: x if isinstance(x, Number) else x.asscalar().item()
@@ -127,52 +154,47 @@ get_num_dims = lambda x, as_tensor=False:\
     _mx.nd.shape_array(_mx.nd.shape_array(x)).reshape([]) if as_tensor else len(x.shape)
 minimum = lambda x, y: _mx.nd.array(_mx.nd.minimum(_scalar_or_flat_array_to_scalar(x), _scalar_or_flat_array_to_scalar(y)))
 maximum = lambda x, y: _mx.nd.array(_mx.nd.maximum(_scalar_or_flat_array_to_scalar(x), _scalar_or_flat_array_to_scalar(y)))
-clip = lambda x, x_min, x_max: _mx.nd.clip(_flat_array_to_1_dim_array(_mx.nd.array(x)),
-                                           _scalar_or_flat_array_to_scalar(x_min),
-                                           _scalar_or_flat_array_to_scalar(x_max))
 
 
+@_handle_flat_arrays_in_out
+def clip(x, x_min, x_max):
+    return _mx.nd.clip(_mx.nd.array(x), x_min, x_max)
+
+
+@_handle_flat_arrays_in_out
 def round(x):
-    if len(x.shape) == 0:
-        return _1_dim_array_to_flat_array(_mx.nd.round(_flat_array_to_1_dim_array(x)))
     return _mx.nd.round(x)
 
 
+@_handle_flat_arrays_in_out
 def floormod(x, y):
-    orig_x_shape = x.shape
-    if len(orig_x_shape) == 0:
-        x = _flat_array_to_1_dim_array(x)
-    if len(y.shape) == 0:
-        y = _flat_array_to_1_dim_array(y)
-    res = x % y
-    if len(orig_x_shape) == 0:
-        return _1_dim_array_to_flat_array(res)
-    return res
+    return x % y
 
 
+@_handle_flat_arrays_in_out
 def floor(x):
-    if len(x.shape) == 0:
-        return _1_dim_array_to_flat_array(_mx.nd.floor(_flat_array_to_1_dim_array(x)))
     return _mx.nd.floor(x)
 
 
+@_handle_flat_arrays_in_out
 def ceil(x):
-    if len(x.shape) == 0:
-        return _1_dim_array_to_flat_array(_mx.nd.ceil(_flat_array_to_1_dim_array(x)))
     return _mx.nd.ceil(x)
 
 
 # noinspection PyShadowingBuiltins
+@_handle_flat_arrays_in_out
 def abs(x):
-    if len(x.shape) == 0:
-        return _1_dim_array_to_flat_array(_mx.nd.abs(_flat_array_to_1_dim_array(x)))
     return _mx.nd.abs(x)
 
 
 argmax = lambda x, axis=0: _mx.nd.argmax(x, axis)
 argmin = lambda x, axis=0: _mx.nd.argmin(x, axis)
 argsort = lambda x, axis=-1: _mx.nd.argsort(x, axis)
-cast = lambda x, dtype: x.astype(dtype)
+
+
+@_handle_flat_arrays_in_out
+def cast(x, dtype):
+    return x.astype(dtype)
 
 
 # noinspection PyUnresolvedReferences
@@ -229,9 +251,8 @@ def logspace(start, stop, num, base=10., axis=None, dev=None):
     return base ** power_seq
 
 
+@_handle_flat_arrays_in_out
 def concatenate(xs, axis=-1):
-    if xs[0].shape == ():
-        return _mx.nd.concat(*[_flat_array_to_1_dim_array(x) for x in xs], dim=axis)
     return _mx.nd.concat(*xs, dim=axis)
 
 
@@ -292,8 +313,9 @@ def split(x, num_or_size_splits=None, axis=0, with_remainder=False):
     return _mx.nd.split(x, x.shape[axis] if not num_or_size_splits else num_or_size_splits, axis)
 
 
+@_handle_flat_arrays_in_out
 def repeat(x, repeats, axis=None):
-    return _mx.nd.repeat(_flat_array_to_1_dim_array(x), repeats, axis)
+    return _mx.nd.repeat(x, repeats, axis)
 
 
 def tile(x, reps):
@@ -302,8 +324,8 @@ def tile(x, reps):
     return _mx.nd.tile(_flat_array_to_1_dim_array(x), reps)
 
 
+@_handle_flat_arrays_in
 def constant_pad(x, pad_width, value=0):
-    x = _flat_array_to_1_dim_array(x)
     if isinstance(pad_width, _mx.ndarray.ndarray.NDArray):
         pad_width = pad_width.asnumpy().tolist()
     x_shape = list(x.shape)
@@ -342,30 +364,16 @@ def expand_dims(x, axis):
     return _mx.nd.expand_dims(x, axis)
 
 
+@_handle_flat_arrays_in_out
 def where(condition, x1, x2):
-    flat = False
-    if condition.shape == ():
-        condition = _flat_array_to_1_dim_array(condition)
-        flat = True
-    if x1.shape == ():
-        x1 = _flat_array_to_1_dim_array(x1)
-        flat = True
-    if x2.shape == ():
-        x2 = _flat_array_to_1_dim_array(x2)
-        flat = True
     x_shape = list(x1.shape)
     condition_shape = list(condition.shape)
     if x_shape == condition_shape:
         res = _mx.nd.where(condition, x1, x2)
-        if flat:
-            return _1_dim_array_to_flat_array(res)
         return res
     tile_reps = [int(x / c) for x, c in zip(x_shape, condition_shape)]
     tiled_condition = _mx.nd.tile(condition, tile_reps)
-    res = _mx.nd.where(tiled_condition, x1, x2)
-    if flat:
-        return _1_dim_array_to_flat_array(res)
-    return res
+    return _mx.nd.where(tiled_condition, x1, x2)
 
 
 def indices_where(x):
@@ -384,7 +392,7 @@ isinf = _mx.nd.contrib.isinf
 
 
 def isfinite(x):
-    return _mx.nd.contrib.isfinite(x)
+    return _mx.nd.contrib.isfinite(x).astype('bool')
 
 
 reshape = lambda x, new_shape: x.reshape(new_shape)

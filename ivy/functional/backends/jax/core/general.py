@@ -282,9 +282,8 @@ def full(shape, fill_value, dtype=None, device=None):
 
 
 # noinspection PyShadowingNames
-def ones(shape, dtype='float32', dev=None):
-    dtype = _jnp.__dict__[dtype]
-    return to_dev(_jnp.ones(shape, dtype), default_device(dev))
+def ones(shape, dtype=None, dev=None):
+    return to_dev(_jnp.ones(shape, dtype_from_str(default_dtype(dtype))), default_device(dev))
 
 
 # noinspection PyShadowingNames
