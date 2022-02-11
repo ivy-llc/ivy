@@ -138,6 +138,7 @@ def is_array(x, exclusive=False):
 copy_array = lambda x: x.copy()
 
 
+@_handle_flat_arrays_in_out
 def array_equal(x0, x1):
     return _mx.nd.min(_mx.nd.broadcast_equal(x0, x1)) == 1
 
@@ -387,10 +388,17 @@ def indices_where(x):
     return res
 
 
-isnan = _mx.nd.contrib.isnan
-isinf = _mx.nd.contrib.isinf
+@_handle_flat_arrays_in_out
+def isnan(x):
+    return _mx.nd.contrib.isnan(x)
 
 
+@_handle_flat_arrays_in_out
+def isinf(x):
+    return _mx.nd.contrib.isinf(x)
+
+
+@_handle_flat_arrays_in_out
 def isfinite(x):
     return _mx.nd.contrib.isfinite(x).astype('bool')
 
