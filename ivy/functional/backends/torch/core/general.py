@@ -14,7 +14,7 @@ from functools import reduce as _reduce
 from typing import List, Dict, Optional, Union
 
 # local
-from ivy.functional.ivy.core import default_device
+from ivy.functional.ivy.core import default_device, default_dtype
 from ivy.functional.backends.torch.core.device import dev_from_str, _callable_dev
 
 # API #
@@ -420,8 +420,9 @@ def zeros_like(x, dtype: Optional[str] = None, dev: Optional[str] = None):
     return _torch.zeros_like(x, device=dev_from_str(dev))
 
 
-def full(shape, fill_value, dtype, device=None):
-    return _torch.full(shape, fill_value, dtype=dtype_from_str(dtype), device=default_device(device))
+def full(shape, fill_value, dtype=None, device=None):
+    return _torch.full(
+        shape, fill_value, dtype=dtype_from_str(default_dtype(dtype, fill_value)), device=default_device(device))
 
 
 # noinspection PyShadowingNames
