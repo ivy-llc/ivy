@@ -1017,7 +1017,7 @@ def zeros_like(x: Union[ivy.Array, ivy.NativeArray], dtype: ivy.Dtype = None, de
 
 
 # noinspection PyShadowingNames
-def ones(shape: Iterable[int], dtype: ivy.Dtype = 'float32', dev: ivy.Device = None, f: ivy.Framework = None)\
+def ones(shape: Iterable[int], dtype: [ivy.Dtype, str] = 'float32', dev: ivy.Device = None, f: ivy.Framework = None)\
         -> Union[ivy.Array, ivy.NativeArray]:
     """
     Returns a new array of given shape and type, filled with ones.
