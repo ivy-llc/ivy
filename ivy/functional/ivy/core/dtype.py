@@ -6,6 +6,7 @@ Collection of dtype Ivy functions.
 # global
 import importlib
 from typing import Union
+from numbers import Number
 
 # local
 import ivy
@@ -102,23 +103,31 @@ def dtype(x: Union[ivy.Array, ivy.NativeArray], as_str: bool = False, f: ivy.Fra
     return _cur_framework(x, f=f).dtype(x, as_str)
 
 
-def is_int_dtype(dtype_in: Union[ivy.Dtype, str]):
+def is_int_dtype(dtype_in: Union[ivy.Dtype, str, ivy.Array, ivy.NativeArray, Number]):
     """
     Determine whether the input data type is an int data-type.
 
     :param dtype_in: Datatype to test
     :return: Whether or not the data type is an integer data type
     """
+    if ivy.is_array(dtype_in):
+        dtype_in = ivy.dtype(dtype_in)
+    elif isinstance(dtype_in, Number):
+        return True if isinstance(dtype_in, int) else False
     return 'int' in dtype_to_str(dtype_in)
 
 
-def is_float_dtype(dtype_in: Union[ivy.Dtype, str]):
+def is_float_dtype(dtype_in: Union[ivy.Dtype, str, ivy.Array, ivy.NativeArray, Number]):
     """
     Determine whether the input data type is an float data-type.
 
     :param dtype_in: Datatype to test
     :return: Whether or not the data type is a floating point data type
     """
+    if ivy.is_array(dtype_in):
+        dtype_in = ivy.dtype(dtype_in)
+    elif isinstance(dtype_in, Number):
+        return True if isinstance(dtype_in, float) else False
     return 'float' in dtype_to_str(dtype_in)
 
 
@@ -230,13 +239,22 @@ def _assert_dtype_correct_formatting(dtype):
 
 
 # noinspection PyShadowingNames
-def default_dtype(dtype=None, as_str=False):
+def default_dtype(dtype=None, item=None, as_str=False):
     """
     Return the input dtype if provided, otherwise return the global default dtype.
     """
     if ivy.exists(dtype):
         _assert_dtype_correct_formatting(ivy.dtype_to_str(dtype))
         return dtype
+    elif ivy.exists(item):
+        if ivy.is_float_dtype(item):
+            return default_float_dtype(as_str=as_str)
+        elif ivy.is_int_dtype(item):
+            return default_int_dtype(as_str=as_str)
+        elif as_str:
+            return 'bool'
+        else:
+            return dtype_from_str('bool')
     global default_dtype_stack
     if not default_dtype_stack:
         global default_float_dtype_stack
