@@ -368,8 +368,8 @@ def test_full(shape, dtype, fill_value):
     out = ivy.full(shape, fill_value, **kw)
     ph.assert_shape("full", out.shape, shape, shape=shape)
     dtype = ivy.default_dtype(dtype, fill_value, as_str=True)
-    assert ivy.to_scalar(ivy.reduce_min(out)) == int(fill_value) if ivy.is_int_dtype(fill_value) else fill_value
-    assert ivy.to_scalar(ivy.reduce_max(out)) == int(fill_value) if ivy.is_int_dtype(fill_value) else fill_value
+    assert ivy.to_scalar(ivy.reduce_min(out)) == (int(fill_value) if ivy.is_int_dtype(dtype) else fill_value)
+    assert ivy.to_scalar(ivy.reduce_max(out)) == (int(fill_value) if ivy.is_int_dtype(dtype) else fill_value)
     assert ivy.dtype(out, as_str=True) is dtype
 #
 #
