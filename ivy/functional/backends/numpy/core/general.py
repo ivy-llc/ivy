@@ -11,6 +11,7 @@ from functools import reduce as _reduce
 import multiprocessing as _multiprocessing
 
 # local
+from ivy.functional.ivy.core import default_dtype
 from ivy.functional.backends.numpy.core.device import _dev_callable
 
 
@@ -276,8 +277,8 @@ def zeros_like(x, dtype=None, dev=None):
     return _to_dev(_np.zeros_like(x, dtype=dtype), dev)
 
 
-def full(shape, fill_value, dtype, device=None):
-    return _to_dev(_np.full(shape, fill_value, dtype_from_str(dtype)), device)
+def full(shape, fill_value, dtype=None, device=None):
+    return _to_dev(_np.full(shape, fill_value, dtype_from_str(default_dtype(dtype, fill_value))), device)
 
 
 # noinspection PyShadowingNames

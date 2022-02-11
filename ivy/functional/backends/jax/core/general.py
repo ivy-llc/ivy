@@ -16,7 +16,7 @@ import multiprocessing as _multiprocessing
 from haiku._src.data_structures import FlatMapping
 
 # local
-from ivy.functional.ivy.core import default_device
+from ivy.functional.ivy.core import default_device, default_dtype
 from ivy.functional.backends.jax.core.device import to_dev, dev as callable_dev
 
 DTYPE_TO_STR = {_jnp.dtype('int8'): 'int8',
@@ -277,8 +277,8 @@ def zeros_like(x, dtype=None, dev=None):
     return to_dev(_jnp.zeros_like(x, dtype=dtype), default_device(dev))
 
 
-def full(shape, fill_value, dtype, device=None):
-    return to_dev(_jnp.full(shape, fill_value, dtype_from_str(dtype)), default_device(device))
+def full(shape, fill_value, dtype=None, device=None):
+    return to_dev(_jnp.full(shape, fill_value, dtype_from_str(default_dtype(dtype, fill_value))), default_device(device))
 
 
 # noinspection PyShadowingNames
