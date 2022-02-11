@@ -16,7 +16,7 @@ import multiprocessing as _multiprocessing
 from tensorflow.python.types.core import Tensor
 
 # local
-from ivy.functional.ivy.core import default_device
+from ivy.functional.ivy.core import default_device, default_dtype
 from ivy.functional.backends.tensorflow.core.device import _dev_callable, dev_from_str
 
 DTYPE_TO_STR = {_tf.int8: 'int8',
@@ -267,9 +267,9 @@ def zeros_like(x, dtype=None, dev=None):
         return _tf.zeros_like(x, dtype=dtype)
 
 
-def full(shape, fill_value, dtype, device=None):
+def full(shape, fill_value, dtype=None, device=None):
     with _tf.device(dev_from_str(default_device(device))):
-        return _tf.cast(_tf.fill(shape, fill_value), dtype_from_str(dtype))
+        return _tf.cast(_tf.fill(shape, fill_value), dtype_from_str(default_dtype(dtype, fill_value)))
 
 
 # noinspection PyShadowingNames
