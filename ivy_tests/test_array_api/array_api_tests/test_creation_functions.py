@@ -1,21 +1,23 @@
-# import math
-# from itertools import count
-# from typing import Iterator, NamedTuple, Union
-#
-# import pytest
-# from hypothesis import assume, given, note
-# from hypothesis import strategies as st
-#
-# from . import _array_module as xp
-# from . import array_helpers as ah
-# from . import dtype_helpers as dh
-# from . import hypothesis_helpers as hh
-# from . import pytest_helpers as ph
-# from . import shape_helpers as sh
-# from . import xps
-# from .typing import DataType, Scalar
-#
-# pytestmark = pytest.mark.ci
+import math
+from itertools import count
+from typing import Iterator, NamedTuple, Union
+
+import pytest
+from hypothesis import assume, given, note
+from hypothesis import strategies as st
+
+import ivy
+import ivy_tests
+from . import _array_module as xp
+from . import array_helpers as ah
+from . import dtype_helpers as dh
+from . import hypothesis_helpers as hh
+from . import pytest_helpers as ph
+from . import shape_helpers as sh
+from . import xps
+from .typing import DataType, Scalar
+
+pytestmark = pytest.mark.ci
 #
 #
 # class frange(NamedTuple):
@@ -353,32 +355,22 @@
 #     return draw(xps.from_dtype(dtype))
 #
 #
-# @given(
-#     shape=hh.shapes(),
-#     fill_value=full_fill_values(),
-#     kw=st.shared(hh.kwargs(dtype=st.none() | xps.scalar_dtypes()), key="full_kw"),
-# )
-# def test_full(shape, fill_value, kw):
-#     out = xp.full(shape, fill_value, **kw)
-#     if kw.get("dtype", None):
-#         dtype = kw["dtype"]
-#     elif isinstance(fill_value, bool):
-#         dtype = xp.bool
-#     elif isinstance(fill_value, int):
-#         dtype = dh.default_int
-#     else:
-#         dtype = dh.default_float
-#     if kw.get("dtype", None) is None:
-#         if isinstance(fill_value, bool):
-#             pass  # TODO
-#         elif isinstance(fill_value, int):
-#             ph.assert_default_int("full", out.dtype)
-#         else:
-#             ph.assert_default_float("full", out.dtype)
-#     else:
-#         ph.assert_kw_dtype("full", kw["dtype"], out.dtype)
-#     ph.assert_shape("full", out.shape, shape, shape=shape)
-#     ph.assert_fill("full", fill_value, dtype, out, fill_value=fill_value)
+@pytest.mark.parametrize('shape', ivy_tests.test_shapes)
+@pytest.mark.parametrize('dtype', list(ivy.all_dtype_strs) + [None])
+@pytest.mark.parametrize('fill_value', [0, 1, 2.5])
+def test_full(shape, dtype, fill_value):
+    if dtype is None:
+        kw = {}
+    else:
+        kw = {'dtype': dtype}
+    if ivy.invalid_dtype(dtype):
+        pytest.skip()
+    out = ivy.full(shape, fill_value, **kw)
+    ph.assert_shape("full", out.shape, shape, shape=shape)
+    dtype = ivy.default_dtype(dtype, fill_value, as_str=True)
+    assert ivy.to_scalar(ivy.reduce_min(out)) == int(fill_value) if ivy.is_int_dtype(fill_value) else fill_value
+    assert ivy.to_scalar(ivy.reduce_max(out)) == int(fill_value) if ivy.is_int_dtype(fill_value) else fill_value
+    assert ivy.dtype(out, as_str=True) is dtype
 #
 #
 # @st.composite
