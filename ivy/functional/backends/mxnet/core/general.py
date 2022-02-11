@@ -88,7 +88,7 @@ def _scalar_or_flat_array_to_scalar(x):
 
 
 def _flat_array_to_1_dim_array(x):
-    return _mx.nd.array([x.asscalar()]) if len(x.shape) == 0 else x
+    return _mx.nd.array([x.asscalar()]).astype(dtype(x)) if len(x.shape) == 0 else x
 
 
 def _1_dim_array_to_flat_array(x):
@@ -140,6 +140,10 @@ copy_array = lambda x: x.copy()
 
 @_handle_flat_arrays_in_out
 def array_equal(x0, x1):
+    if ivy.dtype(x0, as_str=True) == 'bool':
+        x0 = x0.astype('int32')
+    if ivy.dtype(x1, as_str=True) == 'bool':
+        x1 = x1.astype('int32')
     return _mx.nd.min(_mx.nd.broadcast_equal(x0, x1)) == 1
 
 
@@ -390,12 +394,12 @@ def indices_where(x):
 
 @_handle_flat_arrays_in_out
 def isnan(x):
-    return _mx.nd.contrib.isnan(x)
+    return _mx.nd.contrib.isnan(x).astype('bool')
 
 
 @_handle_flat_arrays_in_out
 def isinf(x):
-    return _mx.nd.contrib.isinf(x)
+    return _mx.nd.contrib.isinf(x).astype('bool')
 
 
 @_handle_flat_arrays_in_out
