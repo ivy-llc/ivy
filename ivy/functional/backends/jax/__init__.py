@@ -40,25 +40,25 @@ int64 = 'int64'
 uint8 = jnp.dtype('uint8')
 uint16 = jnp.dtype('uint16')
 uint32 = jnp.dtype('uint32')
-uint64 = jnp.dtype('uint64')
+uint64 = 'uint64'
 bfloat16 = jnp.dtype('bfloat16')
 float16 = jnp.dtype('float16')
 float32 = jnp.dtype('float32')
-float64 = jnp.dtype('float64')
+float64 = 'float64'
 # noinspection PyShadowingBuiltins
 bool = jnp.dtype('bool')
 
 all_dtypes = (int8, int16, int32,
               uint8, uint16, uint32, uint64,
-              bfloat16, float16, float32, float64)
+              bfloat16, float16, float32)
 valid_dtypes = all_dtypes
-invalid_dtypes = (int64,)
+invalid_dtypes = (int64, uint64, float64)
 
 all_dtype_strs = ('int8', 'int16', 'int32',
-                  'uint8', 'uint16', 'uint32', 'uint64',
-                  'bfloat16', 'float16', 'float32', 'float64')
+                  'uint8', 'uint16', 'uint32',
+                  'bfloat16', 'float16', 'float32')
 valid_dtype_strs = all_dtypes
-invalid_dtype_strs = ('int64',)
+invalid_dtype_strs = ('int64', 'uint64', 'float64')
 
 iinfo = jnp.iinfo
 
