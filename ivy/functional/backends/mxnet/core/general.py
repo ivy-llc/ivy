@@ -14,7 +14,7 @@ from functools import reduce as _reduce
 import multiprocessing as _multiprocessing
 
 # local
-from ivy.functional.ivy.core import default_device
+from ivy.functional.ivy.core import default_device, default_dtype
 from ivy.functional.backends.mxnet.core.device import _callable_dev, dev_to_str
 
 
@@ -427,11 +427,12 @@ def zeros_like(x, dtype=None, dev=None):
     return mx_zeros if not dtype else mx_zeros.astype(dtype)
 
 
-def full(shape, fill_value, dtype, device=None):
+def full(shape, fill_value, dtype=None, device=None):
     cont = _mxnet_init_context(default_device(device))
     if len(shape) == 0:
-        return _1_dim_array_to_flat_array(_mx.nd.full((1,), fill_value, cont, dtype_from_str(dtype)))
-    return _mx.nd.full(shape, fill_value, cont, dtype_from_str(dtype))
+        return _1_dim_array_to_flat_array(
+            _mx.nd.full((1,), fill_value, cont, dtype_from_str(default_dtype(dtype, fill_value))))
+    return _mx.nd.full(shape, fill_value, cont, dtype_from_str(default_dtype(dtype, fill_value)))
 
 
 # noinspection PyShadowingNames
