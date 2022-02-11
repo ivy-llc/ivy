@@ -207,6 +207,7 @@
 <span class="kn">import</span> <span class="nn">multiprocessing</span> <span class="k">as</span> <span class="nn">_multiprocessing</span>
 
 <span class="c1"># local</span>
+<span class="kn">from</span> <span class="nn">ivy.functional.ivy.core</span> <span class="kn">import</span> <span class="n">default_dtype</span>
 <span class="kn">from</span> <span class="nn">ivy.functional.backends.numpy.core.device</span> <span class="kn">import</span> <span class="n">_dev_callable</span>
 
 
@@ -472,8 +473,8 @@
     <span class="k">return</span> <span class="n">_to_dev</span><span class="p">(</span><span class="n">_np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">),</span> <span class="n">dev</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="full"><a class="viewcode-back" href="../../../../../../functional/backends/numpy/core/general/full.html#ivy.functional.backends.numpy.core.general.full">[docs]</a><span class="k">def</span> <span class="nf">full</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="n">fill_value</span><span class="p">,</span> <span class="n">dtype</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="k">return</span> <span class="n">_to_dev</span><span class="p">(</span><span class="n">_np</span><span class="o">.</span><span class="n">full</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="n">fill_value</span><span class="p">,</span> <span class="n">dtype_from_str</span><span class="p">(</span><span class="n">dtype</span><span class="p">)),</span> <span class="n">device</span><span class="p">)</span></div>
+<div class="viewcode-block" id="full"><a class="viewcode-back" href="../../../../../../functional/backends/numpy/core/general/full.html#ivy.functional.backends.numpy.core.general.full">[docs]</a><span class="k">def</span> <span class="nf">full</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="n">fill_value</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">_to_dev</span><span class="p">(</span><span class="n">_np</span><span class="o">.</span><span class="n">full</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="n">fill_value</span><span class="p">,</span> <span class="n">dtype_from_str</span><span class="p">(</span><span class="n">default_dtype</span><span class="p">(</span><span class="n">dtype</span><span class="p">,</span> <span class="n">fill_value</span><span class="p">))),</span> <span class="n">device</span><span class="p">)</span></div>
 
 
 <span class="c1"># noinspection PyShadowingNames</span>
