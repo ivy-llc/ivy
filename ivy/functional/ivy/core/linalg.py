@@ -122,3 +122,15 @@ def vector_to_skew_symmetric_matrix(vector, f=None):
     :return: Skew-symmetric matrix *[batch_shape,3,3]*.
     """
     return _cur_framework(vector, f=f).vector_to_skew_symmetric_matrix(vector)
+
+def cholesky(x, f=None):
+    """
+    Computes the cholesky decomposition of the x matrix.
+
+    :param x: Matrix to be decomposed.
+    :type x: array
+    :param f: Machine learning framework. Inferred from inputs if None.
+    :type f: ml_framework, optional
+    :return: cholesky decomposition of the matrix x.
+    """
+    return _cur_framework(x, f=f).cholesky(x)
