@@ -24,7 +24,6 @@
         <script src="../../../../_static/jquery.js"></script>
         <script src="../../../../_static/underscore.js"></script>
         <script src="../../../../_static/doctools.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../../../_static/js/theme.js"></script>
 
@@ -197,25 +196,6 @@
             
   <div class="section" id="map">
 <h1>map<a class="headerlink" href="#map" title="Permalink to this headline">¶</a></h1>
-<dl class="py function">
-<dt id="ivy.functional.ivy.core.nest.map">
-<code class="sig-prename descclassname">ivy.</code><code class="sig-name descname">map</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">fn</span><span class="p">:</span> <span class="n">Callable</span></em>, <em class="sig-param"><span class="n">constant</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Dict<span class="p">[</span>str<span class="p">, </span>Any<span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">unique</span><span class="p">:</span> <span class="n">Optional<span class="p">[</span>Dict<span class="p">[</span>str<span class="p">, </span>Iterable<span class="p">[</span>Any<span class="p">]</span><span class="p">]</span><span class="p">]</span></span> <span class="o">=</span> <span class="default_value">None</span></em>, <em class="sig-param"><span class="n">mean</span><span class="p">:</span> <span class="n">bool</span> <span class="o">=</span> <span class="default_value">False</span></em><span class="sig-paren">)</span> &#x2192; List<a class="reference internal" href="../../../../_modules/ivy/functional/ivy/core/nest.html#map"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.ivy.core.nest.map" title="Permalink to this definition">¶</a></dt>
-<dd><p>Applies a function on each item of an iterable x.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>fn</strong> (<em>callable</em>) – The function to map onto x.</p></li>
-<li><p><strong>constant</strong> (<em>dict of any</em><em>, </em><em>optional</em>) – keyword arguments which remain constant between each function call. Default is None.</p></li>
-<li><p><strong>unique</strong> (<em>dict of iterables of any</em><em>, </em><em>optional</em>) – keyword arguments which are unique for each function call. Default is None.</p></li>
-<li><p><strong>mean</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to compute the mean across the return values, and return this mean. Default is False.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>x following the applicable of fn to each of it’s iterated items.</p>
-</dd>
-</dl>
-</dd></dl>
-
 <div class="line-block">
 <div class="line"><br /></div>
 <div class="line"><strong>Supported Frameworks:</strong></div>

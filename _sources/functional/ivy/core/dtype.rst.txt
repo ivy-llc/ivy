@@ -1,0 +1,26 @@
+Dtype
+=====
+
+.. automodule:: ivy.functional.ivy.core.dtype
+    :members:
+    :special-members: __init__
+    :undoc-members:
+    :show-inheritance:
+
+
+.. toctree::
+   :maxdepth: -1
+   :caption: Dtype
+
+   dtype/cast.rst
+   dtype/dtype.rst
+   dtype/is_int_dtype.rst
+   dtype/is_float_dtype.rst
+   dtype/valid_dtype.rst
+   dtype/invalid_dtype.rst
+   dtype/convert_dtype.rst
+   dtype/dtype_to_str.rst
+   dtype/dtype_from_str.rst
+   dtype/iinfo.rst
+   dtype/finfo.rst
+

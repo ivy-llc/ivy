@@ -24,7 +24,6 @@
         <script src="../../../../_static/jquery.js"></script>
         <script src="../../../../_static/underscore.js"></script>
         <script src="../../../../_static/doctools.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
     
     <script type="text/javascript" src="../../../../_static/js/theme.js"></script>
 
@@ -195,74 +194,8 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="module-ivy.functional.backends.numpy.core.random">
-<span id="random"></span><h1>Random<a class="headerlink" href="#module-ivy.functional.backends.numpy.core.random" title="Permalink to this headline">¶</a></h1>
-<p>Collection of Numpy random functions, wrapped to fit Ivy syntax and signature.</p>
-<dl class="py function">
-<dt id="ivy.functional.backends.numpy.core.random.multinomial">
-<code class="sig-prename descclassname">ivy.functional.backends.numpy.core.random.</code><code class="sig-name descname">multinomial</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">population_size</span></em>, <em class="sig-param"><span class="n">num_samples</span></em>, <em class="sig-param"><span class="n">batch_size</span></em>, <em class="sig-param"><span class="n">probs</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">replace</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">dev</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/ivy/functional/backends/numpy/core/random.html#multinomial"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#ivy.functional.backends.numpy.core.random.multinomial" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt id="ivy.functional.backends.numpy.core.random.randint">
-<code class="sig-prename descclassname">ivy.functional.backends.numpy.core.random.</code><code class="sig-name descname">randint</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">low</span></em>, <em class="sig-param"><span class="n">high</span></em>, <em class="sig-param"><span class="n">shape</span></em>, <em class="sig-param"><span class="n">dev</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#ivy.functional.backends.numpy.core.random.randint" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt id="ivy.functional.backends.numpy.core.random.random_normal">
-<code class="sig-prename descclassname">ivy.functional.backends.numpy.core.random.</code><code class="sig-name descname">random_normal</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">mean</span><span class="o">=</span><span class="default_value">0.0</span></em>, <em class="sig-param"><span class="n">std</span><span class="o">=</span><span class="default_value">1.0</span></em>, <em class="sig-param"><span class="n">shape</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">dev</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#ivy.functional.backends.numpy.core.random.random_normal" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt id="ivy.functional.backends.numpy.core.random.random_uniform">
-<code class="sig-prename descclassname">ivy.functional.backends.numpy.core.random.</code><code class="sig-name descname">random_uniform</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">low</span><span class="o">=</span><span class="default_value">0.0</span></em>, <em class="sig-param"><span class="n">high</span><span class="o">=</span><span class="default_value">1.0</span></em>, <em class="sig-param"><span class="n">shape</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">dev</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#ivy.functional.backends.numpy.core.random.random_uniform" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt id="ivy.functional.backends.numpy.core.random.seed">
-<code class="sig-prename descclassname">ivy.functional.backends.numpy.core.random.</code><code class="sig-name descname">seed</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">seed_value</span><span class="o">=</span><span class="default_value">0</span></em><span class="sig-paren">)</span><a class="headerlink" href="#ivy.functional.backends.numpy.core.random.seed" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt id="ivy.functional.backends.numpy.core.random.shuffle">
-<code class="sig-prename descclassname">ivy.functional.backends.numpy.core.random.</code><code class="sig-name descname">shuffle</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ivy.functional.backends.numpy.core.random.shuffle" title="Permalink to this definition">¶</a></dt>
-<dd><p>permutation(x)</p>
-<p>Randomly permute a sequence, or return a permuted range.</p>
-<p>If <cite>x</cite> is a multi-dimensional array, it is only shuffled along its
-first index.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>New code should use the <code class="docutils literal notranslate"><span class="pre">permutation</span></code> method of a <code class="docutils literal notranslate"><span class="pre">default_rng()</span></code>
-instance instead; please see the <span class="xref std std-ref">random-quick-start</span>.</p>
-</div>
-<dl class="simple">
-<dt>x<span class="classifier">int or array_like</span></dt><dd><p>If <cite>x</cite> is an integer, randomly permute <code class="docutils literal notranslate"><span class="pre">np.arange(x)</span></code>.
-If <cite>x</cite> is an array, make a copy and shuffle the elements
-randomly.</p>
-</dd>
-</dl>
-<dl class="simple">
-<dt>out<span class="classifier">ndarray</span></dt><dd><p>Permuted sequence or array range.</p>
-</dd>
-</dl>
-<p>Generator.permutation: which should be used for new code.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">permutation</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
-<span class="go">array([1, 7, 4, 3, 0, 9, 2, 5, 8, 6]) # random</span>
-</pre></div>
-</div>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">permutation</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">15</span><span class="p">])</span>
-<span class="go">array([15,  1,  9,  4, 12]) # random</span>
-</pre></div>
-</div>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">arr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">9</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">permutation</span><span class="p">(</span><span class="n">arr</span><span class="p">)</span>
-<span class="go">array([[6, 7, 8], # random</span>
-<span class="go">       [0, 1, 2],</span>
-<span class="go">       [3, 4, 5]])</span>
-</pre></div>
-</div>
-</dd></dl>
-
+  <div class="section" id="random">
+<h1>Random<a class="headerlink" href="#random" title="Permalink to this headline">¶</a></h1>
 <div class="toctree-wrapper compound">
 <p class="caption"><span class="caption-text">Random</span></p>
 <ul>
