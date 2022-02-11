@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="pytest for demos" type="tests" factoryName="py.test" folderName="functional_core_tests">
+  <configuration default="false" name="pytest for demos" type="tests" factoryName="py.test">
     <module name="ivy" />
     <option name="INTERPRETER_OPTIONS" value="" />
     <option name="PARENT_ENVS" value="true" />

@@ -90,7 +90,4 @@ all_dtype_strs = ('int8', 'int16', 'int32', 'int64',
 valid_dtype_strs = all_dtypes
 invalid_dtype_strs = ()
 
-iinfo = None
-finfo = None
-
 backend = 'none'
