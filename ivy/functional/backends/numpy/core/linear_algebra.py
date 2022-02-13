@@ -24,6 +24,7 @@ def matrix_norm(x, p=2, axes=None, keepdims=False):
 inv = _np.linalg.inv
 pinv = _np.linalg.pinv
 cholesky = _np.linalg.cholesky
+cross = _np.cross
 
 
 def vector_to_skew_symmetric_matrix(vector):
