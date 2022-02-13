@@ -33,6 +33,10 @@ def pinv(x):
     return _torch.pinverse(x)
 
 
+def cross(a, b, dim):
+    return _torch.cross(a, b, dim)
+
+
 def vector_to_skew_symmetric_matrix(vector):
     batch_shape = list(vector.shape[:-1])
     # BS x 3 x 1
