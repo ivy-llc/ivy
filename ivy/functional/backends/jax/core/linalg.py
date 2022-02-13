@@ -5,7 +5,10 @@ Collection of Jax linear algebra functions, wrapped to fit Ivy syntax and signat
 # global
 import jax.numpy as _jnp
 
-svd = _jnp.linalg.svd
+
+def svd(x,full_matrices: bool = True):
+    U, D, VT=_jnp.linalg.svd(a, full_matrices=full_matrices)
+    return U, D, VT
 
 
 def matrix_norm(x, p=2, axes=None, keepdims=False):

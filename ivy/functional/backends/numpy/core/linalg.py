@@ -5,8 +5,9 @@ Collection of Numpy linear algebra functions, wrapped to fit Ivy syntax and sign
 # global
 import numpy as _np
 
-svd = _np.linalg.svd
-
+def svd(x,full_matrices: bool = True):
+    U, D, VT=_np.linalg.svd(x, full_matrices=full_matrices)
+    return U, D, VT
 
 def matrix_norm(x, p=2, axes=None, keepdims=False):
     axes = (-2, -1) if axes is None else axes

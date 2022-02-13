@@ -8,8 +8,8 @@ from typing import List
 
 
 # noinspection PyPep8Naming
-def svd(x) -> List[_torch.Tensor]:
-    U, D, V = _torch.svd(x)
+def svd(x,full_matrices: bool = True) -> List[_torch.Tensor]:
+    U, D, V = _torch.linalg.svd(x, full_matrices=full_matrices)
     VT = _torch.transpose(V, -2, -1)
     return U, D, VT
 

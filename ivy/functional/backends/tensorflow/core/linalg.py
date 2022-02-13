@@ -10,11 +10,11 @@ import ivy as _ivy
 
 
 # noinspection PyPep8Naming
-def svd(x):
+def svd(x,full_matrices: bool = True):
     batch_shape = _tf.shape(x)[:-2]
     num_batch_dims = len(batch_shape)
     transpose_dims = list(range(num_batch_dims)) + [num_batch_dims + 1, num_batch_dims]
-    D, U, V = _tf.linalg.svd(x)
+    D, U, V = _tf.linalg.svd(x,full_matrices=full_matrices)
     VT = _tf.transpose(V, transpose_dims)
     return U, D, VT
 
