@@ -23,7 +23,7 @@ def matrix_norm(x, p=2, axes=None, keepdims=False):
 
 inv = _np.linalg.inv
 pinv = _np.linalg.pinv
-cross = _np.linalg.cross
+cross = _np.cross
 
 
 def vector_to_skew_symmetric_matrix(vector):
