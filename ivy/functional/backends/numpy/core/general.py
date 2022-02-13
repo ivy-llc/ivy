@@ -319,6 +319,10 @@ def cumprod(x, axis=0, exclusive=False):
     return _np.cumprod(x, axis)
 
 
+def prod(x, axis=None, dtype=None, keepdims=None):
+    return _np.prod(x.data)#, axis=axis, dtype=dtype, keepdims=keepdims)
+
+
 # noinspection PyShadowingNames
 def identity(n, dtype='float32', batch_shape=None, dev=None):
     dtype = 'bool_' if dtype == 'bool' else dtype

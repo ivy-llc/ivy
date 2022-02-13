@@ -324,6 +324,7 @@ def matmul(x1, x2):
 
 cumsum = _tf.cumsum
 cumprod = _tf.math.cumprod
+prod = _tf.math.reduce_prod
 
 
 # noinspection PyShadowingNames

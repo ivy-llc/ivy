@@ -525,6 +525,10 @@ def cumprod(x, axis=0, exclusive=False):
     return _mx.nd.concat(*new_array_list, dim=axis)
 
 
+def prod(x, axis=None, dtype=None, keepdims=None):
+    return _mx.nd.prod(x.data)#, axis=axis, dtype=dtype, keepdims=keepdims)
+
+
 def identity(n, dtype='float32', batch_shape=None, dev=None):
     mat = _mx.nd.eye(n, dtype=dtype).copyto(_mxnet_init_context(default_device(dev)))
     if batch_shape is None:

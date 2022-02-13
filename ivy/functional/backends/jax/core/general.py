@@ -316,6 +316,10 @@ def cumprod(x, axis=0, exclusive=False):
     return _jnp.cumprod(x, axis)
 
 
+def prod(x, axis=None, dtype=None, keepdims=None):
+    return _jnp.prod(x, axis=axis, dtype=dtype, keepdims=keepdims)
+
+
 # noinspection PyShadowingNames
 def identity(n, dtype='float32', batch_shape=None, dev=None):
     dtype = _jnp.__dict__[dtype]
