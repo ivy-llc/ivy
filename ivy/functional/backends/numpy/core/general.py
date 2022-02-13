@@ -11,6 +11,8 @@ from functools import reduce as _reduce
 import multiprocessing as _multiprocessing
 
 # local
+import numpy as np
+
 from ivy.functional.ivy.core import default_dtype
 from ivy.functional.backends.numpy.core.device import _dev_callable
 
@@ -317,6 +319,10 @@ def cumprod(x, axis=0, exclusive=False):
         res = _np.cumprod(x, -1)
         return _np.swapaxes(res, axis, -1)
     return _np.cumprod(x, axis)
+
+
+def prod(x, dtype=None, keepdims=None):
+    return np.prod(x, dtype, keepdims=keepdims)
 
 
 # noinspection PyShadowingNames

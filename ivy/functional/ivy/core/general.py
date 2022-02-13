@@ -1158,6 +1158,19 @@ def cumprod(x: Union[ivy.Array, ivy.NativeArray], axis: int = 0, exclusive: bool
     return _cur_framework(x, f=f).cumprod(x, axis, exclusive)
 
 
+def prod(x: array, /, *, axis: Optional[Union[int, Tuple[int]]] = None, dtype: Optional[ivy.Dtype] = None,
+         keepdims: bool = False, dev: ivy.Device = None, f: ivy.Framework = None):
+    """
+    Calculates the product of input array x elements.
+    :param x: input array. Should have a numeric data type.
+    :param axis: axis or axes along which products must be computed
+    :param dtype: data type of the returned array
+    :param keepdims: whether the reduces axes must be included in the result
+    :param f: Machine learning framework. Inferred from inputs if None.
+    """
+    return _cur_framework(x, f=f).prod(x, axis, dtype, keepdims, dev)
+
+
 # noinspection PyShadowingNames
 def identity(n: int, dtype: ivy.Dtype = 'float32', batch_shape: Iterable[int] = None, dev: ivy.Device = None,
              f: ivy.Framework = None) -> Union[ivy.Array, ivy.NativeArray]:
