@@ -32,6 +32,8 @@ def inv(x):
 def pinv(x):
     return _torch.pinverse(x)
 
+def cholesky(x):
+    return _torch.linalg.cholesky(x)
 
 def vector_to_skew_symmetric_matrix(vector):
     batch_shape = list(vector.shape[:-1])
