@@ -14,7 +14,6 @@ import multiprocessing as _multiprocessing
 from ivy.functional.ivy.core import default_dtype
 from ivy.functional.backends.numpy.core.device import _dev_callable
 
-
 DTYPE_TO_STR = {_np.dtype('int8'): 'int8',
                 _np.dtype('int16'): 'int16',
                 _np.dtype('int32'): 'int32',
@@ -43,18 +42,18 @@ DTYPE_TO_STR = {_np.dtype('int8'): 'int8',
                 _np.bool_: 'bool'}
 
 DTYPE_FROM_STR = {'int8': _np.dtype('int8'),
-                'int16': _np.dtype('int16'),
-                'int32': _np.dtype('int32'),
-                'int64': _np.dtype('int64'),
-                'uint8': _np.dtype('uint8'),
-                'uint16': _np.dtype('uint16'),
-                'uint32': _np.dtype('uint32'),
-                'uint64': _np.dtype('uint64'),
-                'bfloat16': 'bfloat16',
-                'float16': _np.dtype('float16'),
-                'float32': _np.dtype('float32'),
-                'float64': _np.dtype('float64'),
-                'bool': _np.dtype('bool')}
+                  'int16': _np.dtype('int16'),
+                  'int32': _np.dtype('int32'),
+                  'int64': _np.dtype('int64'),
+                  'uint8': _np.dtype('uint8'),
+                  'uint16': _np.dtype('uint16'),
+                  'uint32': _np.dtype('uint32'),
+                  'uint64': _np.dtype('uint64'),
+                  'bfloat16': 'bfloat16',
+                  'float16': _np.dtype('float16'),
+                  'float32': _np.dtype('float32'),
+                  'float64': _np.dtype('float64'),
+                  'bool': _np.dtype('bool')}
 
 
 # Helpers #
@@ -207,7 +206,7 @@ def split(x, num_or_size_splits=None, axis=0, with_remainder=False):
         num_chunks_int = _math.floor(num_chunks)
         remainder = num_chunks - num_chunks_int
         if remainder != 0:
-            num_or_size_splits = [num_or_size_splits]*num_chunks_int + [int(remainder*num_or_size_splits)]
+            num_or_size_splits = [num_or_size_splits] * num_chunks_int + [int(remainder * num_or_size_splits)]
     if isinstance(num_or_size_splits, (list, tuple)):
         num_or_size_splits = _np.cumsum(num_or_size_splits[:-1])
     return _np.split(x, num_or_size_splits, axis)
@@ -246,6 +245,10 @@ isinf = _np.isinf
 
 def isfinite(x):
     return _np.isfinite(x)
+
+
+def square(x):
+    return _np.square(x)
 
 
 reshape = _np.reshape
@@ -396,8 +399,10 @@ def gather_nd(params, indices, dev=None):
     flat_params = _np.reshape(params, (-1,))
     new_shape = [1] * (len(indices_shape) - 1) + [num_index_dims]
     indices_scales = _np.reshape(result_dim_sizes[0:num_index_dims], new_shape)
-    indices_for_flat_tiled = _np.tile(_np.reshape(_np.sum(indices * indices_scales, -1, keepdims=True), (-1, 1)), (1, implicit_indices_factor))
-    implicit_indices = _np.tile(_np.expand_dims(_np.arange(implicit_indices_factor), 0), (indices_for_flat_tiled.shape[0], 1))
+    indices_for_flat_tiled = _np.tile(_np.reshape(_np.sum(indices * indices_scales, -1, keepdims=True), (-1, 1)),
+                                      (1, implicit_indices_factor))
+    implicit_indices = _np.tile(_np.expand_dims(_np.arange(implicit_indices_factor), 0),
+                                (indices_for_flat_tiled.shape[0], 1))
     indices_for_flat = indices_for_flat_tiled + implicit_indices
     flat_indices_for_flat = _np.reshape(indices_for_flat, (-1,)).astype(_np.int32)
     flat_gather = _np.take(flat_params, flat_indices_for_flat, 0)
@@ -414,12 +419,12 @@ def linear_resample(x, num_samples, axis=-1):
     x_pre_size = _reduce(_mul, x_pre_shape) if x_pre_shape else 1
     num_pre_dims = len(x_pre_shape)
     num_vals = x.shape[axis]
-    x_post_shape = x_shape[axis+1:]
+    x_post_shape = x_shape[axis + 1:]
     x_post_size = _reduce(_mul, x_post_shape) if x_post_shape else 1
     num_post_dims = len(x_post_shape)
-    xp = _np.reshape(_np.arange(num_vals*x_pre_size*x_post_size), x_shape)
-    x_coords = _np.arange(num_samples) * ((num_vals-1)/(num_samples-1)) * x_post_size
-    x_coords = _np.reshape(x_coords, [1]*num_pre_dims + [num_samples] + [1]*num_post_dims)
+    xp = _np.reshape(_np.arange(num_vals * x_pre_size * x_post_size), x_shape)
+    x_coords = _np.arange(num_samples) * ((num_vals - 1) / (num_samples - 1)) * x_post_size
+    x_coords = _np.reshape(x_coords, [1] * num_pre_dims + [num_samples] + [1] * num_post_dims)
     x_coords = _np.broadcast_to(x_coords, x_pre_shape + [num_samples] + x_post_shape)
     slc = [slice(None)] * num_x_dims
     slc[axis] = slice(0, 1, 1)

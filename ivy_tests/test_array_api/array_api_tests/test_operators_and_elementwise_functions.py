@@ -1447,11 +1447,16 @@ def test_isfinite(dtype, shape):
 #     # TODO
 #
 #
-# @given(xps.arrays(dtype=xps.numeric_dtypes(), shape=hh.shapes()))
-# def test_square(x):
-#     out = xp.square(x)
-#     ph.assert_dtype("square", x.dtype, out.dtype)
-#     ph.assert_shape("square", out.shape, x.shape)
+@pytest.mark.parametrize("dtype", ivy.all_dtype_strs)
+@pytest.mark.parametrize("shape", ivy_tests.test_shapes)
+def test_square(dtype, shape):
+    if ivy.invalid_dtype(dtype):
+        pytest.skip()
+    x = ivy.cast(ivy.random_uniform(0, 10, shape), dtype)
+    out = ivy.square(x)
+    assert ivy.dtype(out, as_str=True) == dtype
+    assert ivy.dtype(x, as_str=True) == dtype
+    assert out.shape == x.shape
 #
 #
 # @given(xps.arrays(dtype=xps.floating_dtypes(), shape=hh.shapes()))

@@ -5,6 +5,7 @@ Collection of PyTorch general functions, wrapped to fit Ivy syntax and signature
 # global
 import ivy
 import numpy as np
+
 torch_scatter = None
 import math as _math
 import torch as _torch
@@ -16,6 +17,7 @@ from typing import List, Dict, Optional, Union
 # local
 from ivy.functional.ivy.core import default_device, default_dtype
 from ivy.functional.backends.torch.core.device import dev_from_str, _callable_dev
+
 
 # API #
 # ----#
@@ -192,9 +194,9 @@ def linspace(start, stop, num, axis=None, dev=None):
             start = start.unsqueeze(-1)
             stop = stop.unsqueeze(-1)
             diff = stop - start
-            inc = diff / (num-1)
+            inc = diff / (num - 1)
             res = [start]
-            res += [start + inc*i for i in range(1, num-1)]
+            res += [start + inc * i for i in range(1, num - 1)]
             res.append(stop)
         else:
             res = [linspace_method(strt, stp, num, device=dev_from_str(dev)) for strt, stp in zip(start, stop)]
@@ -267,7 +269,7 @@ def unstack(x, axis: int, keepdims: bool = False) -> List[_torch.Tensor]:
     return ret
 
 
-def split(x, num_or_size_splits: Optional[Union[int, List[int]]] = None, axis: int = 0, with_remainder: bool = False)\
+def split(x, num_or_size_splits: Optional[Union[int, List[int]]] = None, axis: int = 0, with_remainder: bool = False) \
         -> List[_torch.Tensor]:
     if x.shape == ():
         if num_or_size_splits is not None and num_or_size_splits != 1:
@@ -285,7 +287,8 @@ def split(x, num_or_size_splits: Optional[Union[int, List[int]]] = None, axis: i
             if remainder == 0:
                 num_or_size_splits = _torch.round(_torch.tensor(dim_size) / _torch.tensor(num_or_size_splits))
             else:
-                num_or_size_splits = tuple([num_or_size_splits] * num_chunks_int + [int(remainder*num_or_size_splits)])
+                num_or_size_splits = tuple(
+                    [num_or_size_splits] * num_chunks_int + [int(remainder * num_or_size_splits)])
         else:
             num_or_size_splits = _torch.round(_torch.tensor(dim_size) / _torch.tensor(num_or_size_splits))
     elif isinstance(num_or_size_splits, list):
@@ -361,6 +364,10 @@ def isfinite(x):
     return _torch.isfinite(x)
 
 
+def square(x):
+    return _torch.square(x)
+
+
 def reshape(x, newshape: List[int]):
     if isinstance(newshape, int):
         newshape = [newshape]
@@ -404,18 +411,18 @@ def zeros_like(x, dtype: Optional[str] = None, dev: Optional[str] = None):
         dev = _callable_dev(x)
     if dtype is not None:
         type_dict: Dict[str, _torch.dtype] = {'int8': _torch.int8,
-            'int16': _torch.int16,
-            'int32': _torch.int32,
-            'int64': _torch.int64,
-            'uint8': _torch.uint8,
-            'uint16': 'uint16',
-            'uint32': 'uint32',
-            'uint64': 'uint64',
-            'bfloat16': _torch.bfloat16,
-            'float16': _torch.float16,
-            'float32': _torch.float32,
-            'float64': _torch.float64,
-            'bool': _torch.bool}
+                                              'int16': _torch.int16,
+                                              'int32': _torch.int32,
+                                              'int64': _torch.int64,
+                                              'uint8': _torch.uint8,
+                                              'uint16': 'uint16',
+                                              'uint32': 'uint32',
+                                              'uint64': 'uint64',
+                                              'bfloat16': _torch.bfloat16,
+                                              'float16': _torch.float16,
+                                              'float32': _torch.float32,
+                                              'float64': _torch.float64,
+                                              'bool': _torch.bool}
         return _torch.zeros_like(x, dtype=type_dict[dtype], device=dev_from_str(dev))
     return _torch.zeros_like(x, device=dev_from_str(dev))
 
@@ -438,18 +445,18 @@ def ones_like(x, dtype: Optional[str] = None, dev: Optional[str] = None):
         dev = _callable_dev(x)
     if dtype is not None:
         type_dict: Dict[str, _torch.dtype] = {'int8': _torch.int8,
-            'int16': _torch.int16,
-            'int32': _torch.int32,
-            'int64': _torch.int64,
-            'uint8': _torch.uint8,
-            'uint16': 'uint16',
-            'uint32': 'uint32',
-            'uint64': 'uint64',
-            'bfloat16': _torch.bfloat16,
-            'float16': _torch.float16,
-            'float32': _torch.float32,
-            'float64': _torch.float64,
-            'bool': _torch.bool}
+                                              'int16': _torch.int16,
+                                              'int32': _torch.int32,
+                                              'int64': _torch.int64,
+                                              'uint8': _torch.uint8,
+                                              'uint16': 'uint16',
+                                              'uint32': 'uint32',
+                                              'uint64': 'uint64',
+                                              'bfloat16': _torch.bfloat16,
+                                              'float16': _torch.float16,
+                                              'float32': _torch.float32,
+                                              'float64': _torch.float64,
+                                              'bool': _torch.bool}
         return _torch.ones_like(x, dtype=type_dict[dtype], device=dev_from_str(dev))
     return _torch.ones_like(x, device=dev_from_str(dev))
 
@@ -487,18 +494,18 @@ def identity(n: int, dtype: ivy.Dtype = 'float32', batch_shape: Optional[List[in
              dev: Optional[str] = None):
     dev = default_device(dev)
     type_dict: Dict[str, _torch.dtype] = {'int8': _torch.int8,
-            'int16': _torch.int16,
-            'int32': _torch.int32,
-            'int64': _torch.int64,
-            'uint8': _torch.uint8,
-            'uint16': 'uint16',
-            'uint32': 'uint32',
-            'uint64': 'uint64',
-            'bfloat16': _torch.bfloat16,
-            'float16': _torch.float16,
-            'float32': _torch.float32,
-            'float64': _torch.float64,
-            'bool': _torch.bool}
+                                          'int16': _torch.int16,
+                                          'int32': _torch.int32,
+                                          'int64': _torch.int64,
+                                          'uint8': _torch.uint8,
+                                          'uint16': 'uint16',
+                                          'uint32': 'uint32',
+                                          'uint64': 'uint64',
+                                          'bfloat16': _torch.bfloat16,
+                                          'float16': _torch.float16,
+                                          'float32': _torch.float32,
+                                          'float64': _torch.float64,
+                                          'bool': _torch.bool}
     dtype_val: _torch.dtype = type_dict[dtype]
     mat = _torch.eye(n, n, dtype=dtype_val, device=dev_from_str(dev))
     if batch_shape is None:

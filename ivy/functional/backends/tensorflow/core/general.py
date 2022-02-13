@@ -4,6 +4,7 @@ Collection of TensorFlow general functions, wrapped to fit Ivy syntax and signat
 
 # global
 import ivy
+
 _round = round
 import numpy as _np
 import math as _math
@@ -34,18 +35,18 @@ DTYPE_TO_STR = {_tf.int8: 'int8',
                 _tf.bool: 'bool'}
 
 DTYPE_FROM_STR = {'int8': _tf.int8,
-                'int16': _tf.int16,
-                'int32': _tf.int32,
-                'int64': _tf.int64,
-                'uint8': _tf.uint8,
-                'uint16': _tf.uint16,
-                'uint32': _tf.uint32,
-                'uint64': _tf.uint64,
-                'bfloat16': _tf.bfloat16,
-                'float16': _tf.float16,
-                'float32': _tf.float32,
-                'float64': _tf.float64,
-                'bool': _tf.bool}
+                  'int16': _tf.int16,
+                  'int32': _tf.int32,
+                  'int64': _tf.int64,
+                  'uint8': _tf.uint8,
+                  'uint16': _tf.uint16,
+                  'uint32': _tf.uint32,
+                  'uint64': _tf.uint64,
+                  'bfloat16': _tf.bfloat16,
+                  'float16': _tf.float16,
+                  'float32': _tf.float32,
+                  'float64': _tf.float64,
+                  'bool': _tf.bool}
 
 
 # API #
@@ -185,7 +186,7 @@ def split(x, num_or_size_splits=None, axis=0, with_remainder=False):
         num_chunks_int = _math.floor(num_chunks)
         remainder = num_chunks - num_chunks_int
         if remainder != 0:
-            num_or_size_splits = [num_or_size_splits]*num_chunks_int + [int(remainder*num_or_size_splits)]
+            num_or_size_splits = [num_or_size_splits] * num_chunks_int + [int(remainder * num_or_size_splits)]
     return _tf.split(x, num_or_size_splits, axis)
 
 
@@ -232,6 +233,7 @@ expand_dims = _tf.expand_dims
 where = lambda condition, x1, x2: _tf.where(_tf.cast(condition, _tf.bool), x1, x2)
 indices_where = _tf.where
 
+
 def isnan(x):
     if ivy.is_int_dtype(x):
         return _tf.zeros_like(x, _tf.bool)
@@ -248,6 +250,11 @@ def isfinite(x):
     if ivy.is_int_dtype(x):
         return _tf.ones_like(x, _tf.bool)
     return _tf.math.is_finite(x)
+
+
+def square(x):
+    #Todo might need to check the data type supported by tensorflow
+    return _tf.math.square(x)
 
 
 reshape = lambda x, newshape: _tf.reshape(x, (newshape,) if isinstance(newshape, int) else newshape)
@@ -336,7 +343,6 @@ def identity(n, dtype='float32', batch_shape=None, dev=None):
 
 TF_SCATTER_VAR = {}
 
-
 meshgrid = lambda *xs, indexing='ij': _tf.meshgrid(*xs, indexing=indexing)
 
 
@@ -392,20 +398,26 @@ def scatter_nd(indices, updates, shape, reduction='sum', dev=None):
     flat_result_size = _reduce(_mul, shape, 1)
     global TF_SCATTER_VAR
     if flat_result_size not in TF_SCATTER_VAR:
-        TF_SCATTER_VAR[flat_result_size] = {dtype: _tf.Variable(_tf.ones(flat_result_size, dtype=dtype) * initial_val, trainable=False)}
+        TF_SCATTER_VAR[flat_result_size] = {
+            dtype: _tf.Variable(_tf.ones(flat_result_size, dtype=dtype) * initial_val, trainable=False)}
     elif dtype not in TF_SCATTER_VAR[flat_result_size]:
-        TF_SCATTER_VAR[flat_result_size][dtype] = _tf.Variable(_tf.ones(flat_result_size, dtype=dtype) * initial_val, trainable=False)
+        TF_SCATTER_VAR[flat_result_size][dtype] = _tf.Variable(_tf.ones(flat_result_size, dtype=dtype) * initial_val,
+                                                               trainable=False)
     else:
         TF_SCATTER_VAR[flat_result_size][dtype].assign(_tf.ones(flat_result_size, dtype=dtype) * initial_val)
     flat_updates = _tf.reshape(updates, (-1,))
     new_shape = [1] * (len(indices_shape) - 1) + [num_index_dims]
     indices_scales = _tf.reshape(result_dim_sizes[0:num_index_dims], new_shape)
-    indices_for_flat_tiled = _tf.tile(_tf.reshape(_tf.reduce_sum(indices * indices_scales, -1, keepdims=True), (-1, 1)), [1, implicit_indices_factor])
-    implicit_indices = _tf.tile(_tf.expand_dims(_tf.range(implicit_indices_factor), 0), _tf.stack((_tf.shape(indices_for_flat_tiled)[0], _tf.constant(1))))
+    indices_for_flat_tiled = _tf.tile(_tf.reshape(_tf.reduce_sum(indices * indices_scales, -1, keepdims=True), (-1, 1)),
+                                      [1, implicit_indices_factor])
+    implicit_indices = _tf.tile(_tf.expand_dims(_tf.range(implicit_indices_factor), 0),
+                                _tf.stack((_tf.shape(indices_for_flat_tiled)[0], _tf.constant(1))))
     indices_for_flat = indices_for_flat_tiled + implicit_indices
     flat_indices_for_flat = _tf.reshape(indices_for_flat, (-1,))
-    flat_scatter = _tf.convert_to_tensor(func(TF_SCATTER_VAR[flat_result_size][dtype], flat_indices_for_flat, flat_updates))
-    flat_scatter = _tf.where(flat_scatter == initial_val, _tf.zeros(flat_result_size, dtype=updates.dtype), flat_scatter)
+    flat_scatter = _tf.convert_to_tensor(
+        func(TF_SCATTER_VAR[flat_result_size][dtype], flat_indices_for_flat, flat_updates))
+    flat_scatter = _tf.where(flat_scatter == initial_val, _tf.zeros(flat_result_size, dtype=updates.dtype),
+                             flat_scatter)
     with _tf.device(dev_from_str(dev)):
         res = _tf.reshape(flat_scatter, list(shape))
         return res
@@ -431,11 +443,11 @@ def linear_resample(x, num_samples, axis=-1):
     num_x_dims = len(x_shape)
     axis = axis % num_x_dims
     num_vals = x.shape[axis]
-    x_post_shape = x_shape[axis+1:]
+    x_post_shape = x_shape[axis + 1:]
     xp = _tf.range(num_vals, dtype=_tf.float32)
-    x_coords = _tf.range(num_samples, dtype=_tf.float32) * ((num_vals-1)/(num_samples-1))
+    x_coords = _tf.range(num_samples, dtype=_tf.float32) * ((num_vals - 1) / (num_samples - 1))
     x_coords = x_coords + xp[0:1]
-    return _tfp.math.interp_regular_1d_grid(x_coords, 0, num_vals-1, x, axis=axis)
+    return _tfp.math.interp_regular_1d_grid(x_coords, 0, num_vals - 1, x, axis=axis)
 
 
 def dtype(x, as_str=False):

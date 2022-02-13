@@ -4,6 +4,7 @@ Collection of MXNet general functions, wrapped to fit Ivy syntax and signature.
 
 # global
 import ivy
+
 _round = round
 import logging
 import mxnet as _mx
@@ -17,7 +18,6 @@ import multiprocessing as _multiprocessing
 # local
 from ivy.functional.ivy.core import default_device, default_dtype
 from ivy.functional.backends.mxnet.core.device import _callable_dev, dev_to_str
-
 
 DTYPE_TO_STR = {_np.dtype('int8'): 'int8',
                 _np.dtype('int16'): 'int16',
@@ -47,18 +47,18 @@ DTYPE_TO_STR = {_np.dtype('int8'): 'int8',
                 _np.bool_: 'bool'}
 
 DTYPE_FROM_STR = {'int8': _np.int8,
-                'int16': _np.int16,
-                'int32': _np.int32,
-                'int64': _np.int64,
-                'uint8': _np.uint8,
-                'uint16': _np.uint16,
-                'uint32': _np.uint32,
-                'uint64': _np.uint64,
-                'bfloat16': 'bfloat16',
-                'float16': _np.float16,
-                'float32': _np.float32,
-                'float64': _np.float64,
-                'bool': _np.bool_}
+                  'int16': _np.int16,
+                  'int32': _np.int32,
+                  'int64': _np.int64,
+                  'uint8': _np.uint8,
+                  'uint16': _np.uint16,
+                  'uint32': _np.uint32,
+                  'uint64': _np.uint64,
+                  'bfloat16': 'bfloat16',
+                  'float16': _np.float16,
+                  'float32': _np.float32,
+                  'float64': _np.float64,
+                  'bool': _np.bool_}
 
 
 # Helpers #
@@ -77,7 +77,7 @@ def _mxnet_init_context(dev):
     else:
         raise Exception("dev input {} not supported.".format(dev))
     if dev.find(":") != -1:
-        mx_dev_id = int(dev[dev.find(":")+1:])
+        mx_dev_id = int(dev[dev.find(":") + 1:])
     else:
         mx_dev_id = 0
     return _mx.Context(mx_dev, mx_dev_id)
@@ -102,6 +102,7 @@ def _handle_flat_arrays_in(fn):
 def _handle_flat_arrays_in_out(fn, include_out=True):
     def wrapped_fn(*args, **kwargs):
         expanded = False
+
         def expand(x):
             nonlocal expanded
             expanded = True
@@ -113,6 +114,7 @@ def _handle_flat_arrays_in_out(fn, include_out=True):
         if expanded and include_out:
             return ivy.nested_map(ret, lambda x: _1_dim_array_to_flat_array(x) if ivy.is_array(x) else x)
         return ret
+
     return wrapped_fn
 
 
@@ -155,10 +157,12 @@ to_list = lambda x: to_numpy(x).tolist()
 to_list.__name__ = 'to_list'
 shape = lambda x, as_tensor=False: _mx.nd.shape_array(x) if as_tensor else x.shape
 shape.__name__ = 'shape'
-get_num_dims = lambda x, as_tensor=False:\
+get_num_dims = lambda x, as_tensor=False: \
     _mx.nd.shape_array(_mx.nd.shape_array(x)).reshape([]) if as_tensor else len(x.shape)
-minimum = lambda x, y: _mx.nd.array(_mx.nd.minimum(_scalar_or_flat_array_to_scalar(x), _scalar_or_flat_array_to_scalar(y)))
-maximum = lambda x, y: _mx.nd.array(_mx.nd.maximum(_scalar_or_flat_array_to_scalar(x), _scalar_or_flat_array_to_scalar(y)))
+minimum = lambda x, y: _mx.nd.array(
+    _mx.nd.minimum(_scalar_or_flat_array_to_scalar(x), _scalar_or_flat_array_to_scalar(y)))
+maximum = lambda x, y: _mx.nd.array(
+    _mx.nd.maximum(_scalar_or_flat_array_to_scalar(x), _scalar_or_flat_array_to_scalar(y)))
 
 
 @_handle_flat_arrays_in_out
@@ -217,7 +221,7 @@ def _linspace(start, stop, num, cont):
     start = _mx.nd.array(start).reshape((1,)).astype('float32')
     stop = _mx.nd.array(stop).reshape((1,)).astype('float32')
     n_m_1 = _mx.nd.array(num - 1).reshape((1,)).astype('float32')
-    increment = (stop - start)/n_m_1
+    increment = (stop - start) / n_m_1
     increment_tiled = _mx.nd.tile(increment, num - 1)
     increments = increment_tiled * _mx.nd.array(_mx.nd.np.linspace(1, num - 1, num - 1).tolist(), ctx=cont)
     ret = _mx.nd.concat(start, start + increments, dim=0)
@@ -303,16 +307,16 @@ def split(x, num_or_size_splits=None, axis=0, with_remainder=False):
         num_chunks = x.shape[axis] / num_or_size_splits
         num_chunks_int = _math.floor(num_chunks)
         remainder_size = int((num_chunks - num_chunks_int) * num_or_size_splits)
-        num_or_size_splits = [num_or_size_splits]*num_chunks_int + [remainder_size]
+        num_or_size_splits = [num_or_size_splits] * num_chunks_int + [remainder_size]
     if isinstance(num_or_size_splits, (list, tuple)):
         csum = [0] + _np.cumsum(num_or_size_splits).tolist()
         starts = csum[:-1]
         ends = csum[1:]
         if axis < 0:
-            slices = [tuple([Ellipsis, slice(s, e, 1)] + [slice(None, None, None)]*int(abs(axis)-1))
+            slices = [tuple([Ellipsis, slice(s, e, 1)] + [slice(None, None, None)] * int(abs(axis) - 1))
                       for s, e in zip(starts, ends)]
         else:
-            slices = [tuple([slice(None, None, None)]*axis + [slice(s, e, 1)])
+            slices = [tuple([slice(None, None, None)] * axis + [slice(s, e, 1)])
                       for s, e in zip(starts, ends)]
         return [x[so] for so in slices]
     return _mx.nd.split(x, x.shape[axis] if not num_or_size_splits else num_or_size_splits, axis)
@@ -340,10 +344,11 @@ def constant_pad(x, pad_width, value=0):
     num_dims_to_add = 4 - num_dims
     new_shape = tuple([1] * num_dims_to_add + x_shape)
     mat_expanded_dims = _mx.nd.reshape(x, new_shape)
-    pad_width_flat = [0]*num_dims_to_add*2 + [item for sublist in pad_width for item in sublist]
+    pad_width_flat = [0] * num_dims_to_add * 2 + [item for sublist in pad_width for item in sublist]
     pad_expanded_dims = _mx.nd.pad(mat_expanded_dims, mode="constant", pad_width=tuple(pad_width_flat),
                                    constant_value=value)
-    new_shape = [orig_dim + pad_width_item[0] + pad_width_item[1] for orig_dim, pad_width_item in zip(x_shape, pad_width)]
+    new_shape = [orig_dim + pad_width_item[0] + pad_width_item[1] for orig_dim, pad_width_item in
+                 zip(x_shape, pad_width)]
     res = _mx.nd.reshape(pad_expanded_dims, tuple(new_shape))
     return res
 
@@ -407,6 +412,11 @@ def isfinite(x):
     return _mx.nd.contrib.isfinite(x).astype('bool')
 
 
+@_handle_flat_arrays_in_out
+def square(x):
+    return _mx.nd.numpy.square(x)
+
+
 reshape = lambda x, new_shape: x.reshape(new_shape)
 
 
@@ -417,7 +427,7 @@ def broadcast_to(x, new_shape):
     diff = num_shape_dims - num_x_dims
     if diff == 0:
         return _mx.nd.broadcast_to(x, new_shape)
-    x = _mx.nd.reshape(x, [1]*diff + x_shape)
+    x = _mx.nd.reshape(x, [1] * diff + x_shape)
     return _mx.nd.broadcast_to(x, new_shape)
 
 
@@ -481,9 +491,9 @@ def cross(x1, x2):
     b1 = x2[..., 0:1]
     b2 = x2[..., 1:2]
     b3 = x2[..., 2:3]
-    res1 = a2*b3 - a3*b2
-    res2 = a3*b1 - a1*b3
-    res3 = a1*b2 - a2*b1
+    res1 = a2 * b3 - a3 * b2
+    res2 = a3 * b1 - a1 * b3
+    res3 = a1 * b2 - a2 * b1
     res = _mx.nd.concat(res1, res2, res3, dim=-1)
     return res
 
@@ -494,16 +504,16 @@ def matmul(x1, x2):
     x2_shape = list(x2.shape)
     if len(x1_shape) != 3:
         num_x1_dims = len(x1_shape)
-        x1 = _mx.nd.reshape(x1, [1]*max(2-num_x1_dims, 0) + [-1] + x1_shape[-min(num_x1_dims, 2):])
+        x1 = _mx.nd.reshape(x1, [1] * max(2 - num_x1_dims, 0) + [-1] + x1_shape[-min(num_x1_dims, 2):])
         expanded = True
     if len(x2_shape) != 3:
         num_x2_dims = len(x2_shape)
-        x2 = _mx.nd.reshape(x2, [1]*max(2-num_x2_dims, 0) + [-1] + x2_shape[-min(num_x2_dims, 2):])
+        x2 = _mx.nd.reshape(x2, [1] * max(2 - num_x2_dims, 0) + [-1] + x2_shape[-min(num_x2_dims, 2):])
         expanded = True
     x1_batch_size = x1.shape[0]
     x2_batch_size = x2.shape[0]
     if x1_batch_size > x2_batch_size:
-        x2 = _mx.nd.tile(x2, (int(x1_batch_size/x2_batch_size), 1, 1))
+        x2 = _mx.nd.tile(x2, (int(x1_batch_size / x2_batch_size), 1, 1))
     elif x2_batch_size > x1_batch_size:
         x1 = _mx.nd.tile(x1, (int(x2_batch_size / x1_batch_size), 1, 1))
     res = _mx.nd.batch_dot(x1, x2)
@@ -530,7 +540,7 @@ def identity(n, dtype='float32', batch_shape=None, dev=None):
     if batch_shape is None:
         return mat
     else:
-        reshape_dims = [1]*len(batch_shape) + [n, n]
+        reshape_dims = [1] * len(batch_shape) + [n, n]
         tile_dims = list(batch_shape) + [1, 1]
         res = _mx.nd.tile(_mx.nd.reshape(mat, reshape_dims), tile_dims)
         return res
@@ -545,7 +555,8 @@ def meshgrid(*xs, indexing='ij'):
 # noinspection PyShadowingNames
 def scatter_flat(indices, updates, size, reduction='sum', dev=None):
     if reduction == 'replace':
-        return _mx.nd.scatter_nd(updates, _mx.nd.expand_dims(indices, 0), [size]).copyto(_mxnet_init_context(default_device(dev)))
+        return _mx.nd.scatter_nd(updates, _mx.nd.expand_dims(indices, 0), [size]).copyto(
+            _mxnet_init_context(default_device(dev)))
     else:
         raise Exception('MXNet scatter_flat currently only supports reduction mode "replace", but {} selected.'.
                         format(reduction))
@@ -557,7 +568,7 @@ def scatter_nd(indices, updates, shape, reduction='sum', dev=None):
         dev = _callable_dev(indices)
     shape = list(shape)
     num_idx_dims = len(indices.shape)
-    transpose_order = [num_idx_dims-1] + list(range(num_idx_dims-1))
+    transpose_order = [num_idx_dims - 1] + list(range(num_idx_dims - 1))
     indices = _mx.nd.transpose(indices, transpose_order)
     shape = shape if type(shape) is list else shape.asnumpy().astype(_np.int32).tolist()
     if reduction == 'replace':
@@ -582,7 +593,7 @@ def gather_nd(params, indices, dev=None):
         dev = _callable_dev(params)
     indices_shape = indices.shape
     num_idx_dims = len(indices_shape)
-    transpose_order = [num_idx_dims-1] + list(range(num_idx_dims-1))
+    transpose_order = [num_idx_dims - 1] + list(range(num_idx_dims - 1))
     indices = _mx.nd.transpose(indices, transpose_order)
     return _mx.nd.gather_nd(params, indices).copyto(_mxnet_init_context(dev))
 
@@ -595,12 +606,12 @@ def linear_resample(x, num_samples, axis=-1):
     x_pre_size = _reduce(_mul, x_pre_shape) if x_pre_shape else 1
     num_pre_dims = len(x_pre_shape)
     num_vals = x.shape[axis]
-    x_post_shape = x_shape[axis+1:]
+    x_post_shape = x_shape[axis + 1:]
     x_post_size = _reduce(_mul, x_post_shape) if x_post_shape else 1
     num_post_dims = len(x_post_shape)
-    xp = _mx.nd.reshape(_mx.nd.arange(num_vals*x_pre_size*x_post_size), x_shape)
-    x_coords = _mx.nd.arange(num_samples) * ((num_vals-1)/(num_samples-1)) * x_post_size
-    x_coords = _mx.nd.reshape(x_coords, [1]*num_pre_dims + [num_samples] + [1]*num_post_dims)
+    xp = _mx.nd.reshape(_mx.nd.arange(num_vals * x_pre_size * x_post_size), x_shape)
+    x_coords = _mx.nd.arange(num_samples) * ((num_vals - 1) / (num_samples - 1)) * x_post_size
+    x_coords = _mx.nd.reshape(x_coords, [1] * num_pre_dims + [num_samples] + [1] * num_post_dims)
     x_coords = _mx.nd.broadcast_to(x_coords, x_pre_shape + [num_samples] + x_post_shape)
     slc = [slice(None)] * num_x_dims
     slc[axis] = slice(0, 1, 1)
