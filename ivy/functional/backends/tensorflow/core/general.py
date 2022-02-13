@@ -96,8 +96,8 @@ ceil = _tf.math.ceil
 abs = _tf.abs
 
 
-def argmax(x, axis=0):
-    ret = _tf.argmax(x, axis)
+def argmax(x, axis=0, out=None):
+    ret = _tf.argmax(x, axis,output_type=out)
     if ret.shape == ():
         return _tf.reshape(ret, (-1,))
     return ret

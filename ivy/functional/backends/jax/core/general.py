@@ -129,8 +129,8 @@ ceil = _jnp.ceil
 abs = _jnp.absolute
 
 
-def argmax(x, axis=0):
-    ret = _jnp.argmax(x, axis)
+def argmax(x, axis=0, out=None, keepdims=False):
+    ret = _jnp.argmax(x, axis, out, keepdims)
     if ret.shape == ():
         return ret.reshape(-1)
     return ret

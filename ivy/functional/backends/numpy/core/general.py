@@ -119,8 +119,8 @@ ceil = lambda x: _np.asarray(_np.ceil(x))
 abs = lambda x: _np.asarray(_np.absolute(x))
 
 
-def argmax(x, axis=0):
-    ret = _np.asarray(_np.argmax(x, axis))
+def argmax(x, axis=0, out=None, keepdims=False):
+    ret = _np.asarray(_np.argmax(x, axis, out, keepdims=keepdims))
     if ret.shape == ():
         return ret.reshape(-1)
     return ret

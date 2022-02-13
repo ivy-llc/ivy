@@ -121,8 +121,8 @@ def abs(x):
     return _torch.abs(x)
 
 
-def argmax(x, axis: int = 0):
-    ret = _torch.argmax(x, axis)
+def argmax(x, axis: int = 0, dim: int = 0, keepdims: bool = False):
+    ret = _torch.argmax(x, axis, keepdim=False if dim == 0 else keepdims)
     if ret.shape == ():
         return ret.reshape(-1)
     return ret
