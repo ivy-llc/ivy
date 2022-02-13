@@ -37,7 +37,7 @@ def matrix_norm(x, p=2, axes=None, keepdims=False):
 
 inv = _tf.linalg.inv
 pinv = _tf.linalg.pinv
-
+cross = _tf.linalg.cross
 
 def vector_to_skew_symmetric_matrix(vector):
     batch_shape = list(vector.shape[:-1])
