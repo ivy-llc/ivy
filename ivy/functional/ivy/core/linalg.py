@@ -122,3 +122,18 @@ def cholesky(x):
     :return: cholesky decomposition of the matrix x.
     """
     return _cur_framework(x).cholesky(x)
+
+
+def diagonal(x, offset=0, f=None):
+    """
+    Returns the specificied diagonal of a matrix `x`
+
+    :param x: Matrix of dimensions (...., M, N)
+    :type x: array
+    :param offset: Offset of the diagonal. Default is 0.
+    :type offset: int, optional
+    :param f: Machine learning framework. Inferred from inputs if None.
+    :type f: ml_framework, optional
+    :return: Diagonal of the matrix x.
+    """
+    return _cur_framework(x).diagonal(x, offset)
