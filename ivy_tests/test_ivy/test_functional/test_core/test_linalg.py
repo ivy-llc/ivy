@@ -238,3 +238,32 @@ def test_qr(data, mode, dtype, tensor_fn, dev, call):
         assert Q.shape[-1] == x.shape[-2]
     # value test
     assert np.allclose(call(ivy.qr, x, mode)[0], ivy.functional.backends.numpy.qr(ivy.to_numpy(x), mode)[0])
+
+# diagonal
+@pytest.mark.parametrize(
+    "x,offset",
+    [
+        ([[1.0, 2, 3], [4.0, 5, 6], [7.0, 8, 9]], 0),
+        ([[1.0, 2, 3], [4.0, 5, 6], [7.0, 8, 9]], 1),
+        ([[1.0, 2, 3], [4.0, 5, 6], [7.0, 8, 9]], 2),
+        ([[1.0, 2, 3], [4.0, 5, 6], [7.0, 8, 9]], -1),
+    ],
+)
+@pytest.mark.parametrize("dtype", ['float32'])
+@pytest.mark.parametrize("tensor_fn", [ivy.array, helpers.var_fn])
+def test_diagonal(x, offset, dtype, tensor_fn, dev, call):
+    # smoke test
+    x = tensor_fn(x, dtype, dev)
+    ret = ivy.diagonal(x, offset)
+
+    # type test
+    assert ivy.is_array(ret)
+
+    # value test
+    assert np.allclose(
+                    call(ivy.diagonal, x, offset),
+                    ivy.functional.backends.numpy.diagonal(
+                                                            ivy.to_numpy(x),
+                                                            offset
+                                                            )
+                        )
