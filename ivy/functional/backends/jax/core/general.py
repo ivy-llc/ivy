@@ -246,6 +246,9 @@ def indices_where(x):
 isnan = _jnp.isnan
 isinf = _jnp.isinf
 
+def less(x1,x2):
+    return _jnp.less(x1,x2)
+    
 def isfinite(x):
     return _jnp.isfinite(x)
 
