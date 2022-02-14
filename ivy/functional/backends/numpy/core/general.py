@@ -243,6 +243,8 @@ def indices_where(x):
 isnan = _np.isnan
 isinf = _np.isinf
 
+def less(x1,x2):
+    return _np.less(x1,x2)
 
 def isfinite(x):
     return _np.isfinite(x)
