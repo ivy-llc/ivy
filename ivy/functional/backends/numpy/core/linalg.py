@@ -6,7 +6,7 @@ Collection of Numpy linear algebra functions, wrapped to fit Ivy syntax and sign
 import numpy as _np
 
 svd = _np.linalg.svd
-
+det= _np.linalg.det
 
 def matrix_norm(x, p=2, axes=None, keepdims=False):
     axes = (-2, -1) if axes is None else axes
