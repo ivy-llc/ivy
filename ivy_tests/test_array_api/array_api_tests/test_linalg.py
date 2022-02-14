@@ -182,20 +182,22 @@
 #             ], dtype=res.dtype)
 #         assert_exactly_equal(res_stack, exact_cross)
 #
-# @pytest.mark.xp_extension('linalg')
-# @given(
-#     x=xps.arrays(dtype=xps.floating_dtypes(), shape=square_matrix_shapes),
-# )
-# def test_det(x):
-#     res = linalg.det(x)
-#
-#     assert res.dtype == x.dtype, "det() did not return the correct dtype"
-#     assert res.shape == x.shape[:-2], "det() did not return the correct shape"
-#
-#     _test_stacks(linalg.det, x, res=res, dims=0)
-#
-#     # TODO: Test that res actually corresponds to the determinant of x
-#
+
+@pytest.mark.paramterize(x,[1.0,2.0,3.0,4.0])
+@pytest.mark.paramterize(dtype,['float32,float64'])
+@given(
+    x=xps.arrays(dtype=xps.floating_dtypes(), shape=square_matrix_shapes),
+)
+def test_det(x):
+    res = linalg.det(x)
+
+    assert res.dtype == x.dtype, "det() did not return the correct dtype"
+    assert res.shape == x.shape[:-2], "det() did not return the correct shape"
+
+    _test_stacks(linalg.det, x, res=res, dims=0)
+
+    # TODO: Test that res actually corresponds to the determinant of x
+
 # @pytest.mark.xp_extension('linalg')
 # @given(
 #     x=xps.arrays(dtype=dtypes, shape=matrix_shapes()),

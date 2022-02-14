@@ -134,3 +134,15 @@ def cholesky(x, f=None):
     :return: cholesky decomposition of the matrix x.
     """
     return _cur_framework(x, f=f).cholesky(x)
+
+
+def det(x,f=None):
+    """
+    Computes the determinant of square matrix x or stack of square matrices x
+    :Param x: matrix on which determinant operation is to be applied
+    :type x: array
+    :param f: Machine learning framework. Inferred from inputs if None.
+    :type f: ml_framework, optional
+    :return: zero dimensional array if 2-D array or non-zero dimensional array for each square matrix
+    """
+    return _cur_framework(x,f=f).det(x)
