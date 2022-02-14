@@ -1013,47 +1013,38 @@ def test_isfinite(dtype, shape):
 #             assert bool(out[idx]) == math.isnan(s)
 #
 #
-# @pytest.mark.parametrize(binary_argnames, make_binary_params("less", dh.numeric_dtypes))
-# @given(data=st.data())
-# def test_less(
-#     func_name,
-#     func,
-#     left_sym,
-#     left_strat,
-#     right_sym,
-#     right_strat,
-#     right_is_scalar,
-#     res_name,
-#     data,
-# ):
-#     left = data.draw(left_strat, label=left_sym)
-#     right = data.draw(right_strat, label=right_sym)
-#
-#     out = func(left, right)
-#
-#     assert_binary_param_dtype(
-#         func_name, left, right, right_is_scalar, out, res_name, xp.bool
-#     )
-#     if not right_is_scalar:
-#         # TODO: generate indices without broadcasting arrays (see test_equal comment)
-#
-#         shape = broadcast_shapes(left.shape, right.shape)
-#         ph.assert_shape(func_name, out.shape, shape)
-#         _left = xp.broadcast_to(left, shape)
-#         _right = xp.broadcast_to(right, shape)
-#
-#         promoted_dtype = dh.promotion_table[left.dtype, right.dtype]
-#         _left = ah.asarray(_left, dtype=promoted_dtype)
-#         _right = ah.asarray(_right, dtype=promoted_dtype)
-#
-#         scalar_type = dh.get_scalar_type(promoted_dtype)
-#         for idx in sh.ndindex(shape):
-#             x1_idx = _left[idx]
-#             x2_idx = _right[idx]
-#             out_idx = out[idx]
-#             assert out_idx.shape == x1_idx.shape == x2_idx.shape  # sanity check
-#             assert bool(out_idx) == (scalar_type(x1_idx) < scalar_type(x2_idx))
-#
+@pytest.mark.parametrize("dtype", ivy.all_dtype_strs)
+@pytest.mark.parametrize("shape", ivy_tests.test_shapes)
+def test_less(
+    # func_name,
+    # func,
+    # left_sym,
+    # left_strat,
+    # right_sym,
+    # right_strat,
+    # right_is_scalar,
+    # res_name,
+    # data,
+    dtype,
+    shape
+):
+    if ivy.invalid_dtype(dtype):
+        pytest.skip()
+    x1 = ivy.cast(ivy.random_uniform(0, 10, shape), dtype)
+    x2 = ivy.cast(ivy.random_uniform(0, 10, shape), dtype)
+    out = ivy.less(x1,x2)
+    assert ivy.dtype(out, as_str=True) == 'bool'
+    assert out.shape == x1.shape
+    assert out.shape == x2.shape
+
+    for idx in sh.ndindex(shape):
+            x1_idx = x1[idx]
+            x2_idx = x2[idx]
+            out_idx = out[idx]
+            assert out_idx.shape == x1_idx.shape == x2_idx.shape  # sanity check
+            assert (out_idx) == ((x1_idx) < (x2_idx))
+
+            
 #
 # @pytest.mark.parametrize(
 #     binary_argnames, make_binary_params("less_equal", dh.numeric_dtypes)
