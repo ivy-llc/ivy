@@ -13,6 +13,7 @@ import ivy
 import math
 from enum import Enum, auto
 from typing import Callable, List, Optional, Sequence, Union
+from tensorflow.python.framework.errors_impl import InvalidArgumentError
 
 import pytest
 from hypothesis import assume, given
@@ -49,11 +50,11 @@ pytestmark = pytest.mark.ci
 # func_to_op = {v: k for k, v in dh.op_to_func.items()}
 # all_op_to_symbol = {**dh.binary_op_to_symbol, **dh.inplace_op_to_symbol}
 # finite_kw = {"allow_nan": False, "allow_infinity": False}
-#
+
 # unary_argnames = ("func_name", "func", "strat")
 # UnaryParam = Param[str, Callable[[Array], Array], st.SearchStrategy[Array]]
-#
-#
+
+
 # def make_unary_params(
 #     elwise_func_name: str, dtypes: Sequence[DataType]
 # ) -> List[UnaryParam]:
@@ -202,30 +203,40 @@ pytestmark = pytest.mark.ci
 #     )
 #
 #
-# @pytest.mark.parametrize(unary_argnames, make_unary_params("abs", dh.numeric_dtypes))
-# @given(data=st.data())
-# def test_abs(func_name, func, strat, data):
-#     x = data.draw(strat, label="x")
-#     if x.dtype in dh.int_dtypes:
-#         # abs of the smallest representable negative integer is not defined
-#         mask = xp.not_equal(
-#             x, ah.full(x.shape, dh.dtype_ranges[x.dtype].min, dtype=x.dtype)
-#         )
-#         x = x[mask]
-#     out = func(x)
-#     ph.assert_dtype(func_name, x.dtype, out.dtype)
-#     ph.assert_shape(func_name, out.shape, x.shape)
-#     assert ah.all(
-#         ah.logical_not(ah.negative_mathematical_sign(out))
-#     ), f"out elements not all positively signed [{func_name}()]\n{out=}"
-#     less_zero = ah.negative_mathematical_sign(x)
-#     negx = ah.negative(x)
-#     # abs(x) = -x for x < 0
-#     ah.assert_exactly_equal(out[less_zero], negx[less_zero])
-#     # abs(x) = x for x >= 0
-#     ah.assert_exactly_equal(
-#         out[ah.logical_not(less_zero)], x[ah.logical_not(less_zero)]
-#     )
+
+@pytest.mark.parametrize("dtype", ivy.all_dtype_strs)
+@pytest.mark.parametrize("shape", ivy_tests.test_shapes)
+def test_abs(dtype, shape):
+
+    if ivy.invalid_dtype(dtype):
+        pytest.skip()
+
+    x = ivy.cast(ivy.random_uniform(-10, 10, shape), dtype)
+    out = None
+
+    try:
+        out = ivy.abs(x)
+    except InvalidArgumentError:
+        # seems like Tensorflow would complain about some dtypes, so skip them here
+        pytest.skip()
+
+    # Test the returned array have the same data type as x
+    assert ivy.dtype(out, as_str=True) == dtype
+    # Test output shape
+    assert out.shape == x.shape
+    # Test all values are positive
+    for idx in sh.ndindex(x.shape):
+        assert out[idx] >= 0
+    
+    # Test special cases
+    x = ivy.cast(ivy.array([-ivy.INF, -0.0, math.nan]), dtype)
+    out = ivy.abs(x)
+    expected = ivy.cast(ivy.array([ivy.INF, 0.0, math.nan]), dtype)
+
+    assert out[0] == expected[0]
+    assert out[1] == expected[1]
+    # Need to check NaN, however tensor(nan) == tensor(nan) is False and I don't know why
+
 #
 #
 # @given(xps.arrays(dtype=xps.floating_dtypes(), shape=hh.shapes()))
