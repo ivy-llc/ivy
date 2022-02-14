@@ -90,3 +90,10 @@ def all(x, axis=None, keepdims=False):
     if ret.shape == ():
         return _np.reshape(ret, (1,))
     return ret
+
+
+def any(x, axis=None, keepdims=False):
+    ret = _np.any(x, axis, keepdims=keepdims)
+    if ret.shape == ():
+        return _np.reshape(ret, (1,))
+    return ret

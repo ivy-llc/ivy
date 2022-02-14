@@ -90,3 +90,7 @@ def einsum(equation, *operands):
 
 def all(x, axis=None, keepdims=False):
     return reduce_prod(x, axis, keepdims).astype(_mx.np.bool_)
+
+
+def any(x, axis=None, keepdims=False):
+    return reduce_sum(x, axis, keepdims).astype(_mx.np.bool_)

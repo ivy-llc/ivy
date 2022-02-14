@@ -90,3 +90,10 @@ def all(x, axis=None, keepdims=False):
     if ret.shape == ():
         return _jnp.reshape(ret, (1,))
     return ret
+
+
+def any(x, axis=None, keepdims=False):
+    ret = _jnp.any(x, axis, keepdims=keepdims)
+    if ret.shape == ():
+        return _jnp.reshape(ret, (1,))
+    return ret
