@@ -403,6 +403,11 @@ def isinf(x):
 
 
 @_handle_flat_arrays_in_out
+def less(x1,x2):
+    return _mx.nd.lesser(x1,x2).astype('bool')
+
+
+@_handle_flat_arrays_in_out
 def isfinite(x):
     return _mx.nd.contrib.isfinite(x).astype('bool')
 
