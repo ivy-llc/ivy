@@ -16,6 +16,8 @@ def sin(x):
 def cos(x):
     if isinstance(x, float):
         return math.cos(x)
+    if x.dtype == _torch.float16:
+        return _torch.cos(_torch.tensor(x, dtype=_torch.float32))
     return _torch.cos(x)
 
 

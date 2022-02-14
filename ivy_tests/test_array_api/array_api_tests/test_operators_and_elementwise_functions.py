@@ -46,12 +46,12 @@ pytestmark = pytest.mark.ci
 # #   filtering and test logic.
 #
 #
-# func_to_op = {v: k for k, v in dh.op_to_func.items()}
-# all_op_to_symbol = {**dh.binary_op_to_symbol, **dh.inplace_op_to_symbol}
-# finite_kw = {"allow_nan": False, "allow_infinity": False}
-#
-# unary_argnames = ("func_name", "func", "strat")
-# UnaryParam = Param[str, Callable[[Array], Array], st.SearchStrategy[Array]]
+func_to_op = {v: k for k, v in dh.op_to_func.items()}
+all_op_to_symbol = {**dh.binary_op_to_symbol, **dh.inplace_op_to_symbol}
+finite_kw = {"allow_nan": False, "allow_infinity": False}
+
+unary_argnames = ("func_name", "func", "strat")
+UnaryParam = Param[str, Callable[[Array], Array], st.SearchStrategy[Array]]
 #
 #
 # def make_unary_params(
@@ -663,18 +663,29 @@ pytestmark = pytest.mark.ci
 #     ah.assert_exactly_equal(out[integers], x[integers])
 #
 #
-# @given(xps.arrays(dtype=xps.floating_dtypes(), shape=hh.shapes()))
-# def test_cos(x):
-#     out = xp.cos(x)
-#     ph.assert_dtype("cos", x.dtype, out.dtype)
-#     ph.assert_shape("cos", out.shape, x.shape)
-#     ONE = ah.one(x.shape, x.dtype)
-#     INFINITY = ah.infinity(x.shape, x.dtype)
-#     domain = ah.inrange(x, -INFINITY, INFINITY, open=True)
-#     codomain = ah.inrange(out, -ONE, ONE)
-#     # cos maps (-inf, inf) to [-1, 1]. Values outside this domain are mapped
-#     # to nan, which is already tested in the special cases.
-#     ah.assert_exactly_equal(domain, codomain)
+
+@pytest.mark.parametrize("dtype", ivy.all_dtype_strs)
+@pytest.mark.parametrize("shape", ivy_tests.test_shapes)
+def test_cos(dtype, shape):
+    #as input elements should be valid float
+    if ivy.invalid_dtype(dtype) or 'int' in dtype:
+        pytest.skip()
+    x = ivy.cast(ivy.random_uniform(-10,10, shape),dtype)
+    out = ivy.cos(x)
+    #the output should be some float
+    assert 'float' in ivy.dtype(out, as_str=True)
+    ph.assert_shape("cos", out.shape, x.shape)
+    #checking domain and codomain when the input shape in non-empty.
+    if shape != ():
+        assert [ivy.array([1.], dtype=dtype) >= i for i in out]
+        assert [ivy.array([-1.], dtype=dtype) <= i for i in out]
+        assert [ivy.array([-float('inf')], dtype=dtype) < i for i in x]
+        assert [ivy.array([float('inf')], dtype=dtype) > i for i in x]
+
+
+    #cos maps (-inf, inf) to [-1, 1]. Values outside this domain are mapped
+    #to nan, which is already tested in the special cases.
+    # ah.assert_exactly_equal(domain, codomain)
 #
 #
 # @given(xps.arrays(dtype=xps.floating_dtypes(), shape=hh.shapes()))
