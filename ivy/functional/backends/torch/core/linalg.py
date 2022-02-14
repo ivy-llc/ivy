@@ -32,8 +32,10 @@ def inv(x):
 def pinv(x):
     return _torch.pinverse(x)
 
+
 def cholesky(x):
     return _torch.linalg.cholesky(x)
+
 
 def vector_to_skew_symmetric_matrix(vector):
     batch_shape = list(vector.shape[:-1])
@@ -51,3 +53,7 @@ def vector_to_skew_symmetric_matrix(vector):
     row3 = _torch.cat((-a2s, a1s, zs), -1)
     # BS x 3 x 3
     return _torch.cat((row1, row2, row3), -2)
+
+
+def diagonal(x, offset):
+    return _torch.diagonal(x, offset=offset)
