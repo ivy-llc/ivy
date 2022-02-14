@@ -5,6 +5,7 @@ from warnings import warn
 from . import _array_module as xp
 from ._array_module import _UndefinedStub
 from .typing import DataType, ScalarType
+import torch
 
 __all__ = [
     "int_dtypes",
@@ -73,6 +74,8 @@ def is_float_dtype(dtype):
     if dtype is None:
         return False
     # TODO: Return True for float dtypes that aren't part of the spec e.g. np.float16
+    if dtype is torch.float32:
+        return True
     return dtype in float_dtypes
 
 
