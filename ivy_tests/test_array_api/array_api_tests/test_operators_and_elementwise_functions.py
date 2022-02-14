@@ -1,7 +1,7 @@
 # """
 # Tests for elementwise functions
 #
-# hltps://data-apis.github.io/array-api/latest/API_specification/elementwise_functions.html
+# https://data-apis.github.io/array-api/latest/API_specification/elementwise_functions.html
 #
 # This tests behavior that is explicitly mentioned in the spec. Note that the
 # spec does not make any accuracy requirements for functions, so this does not
