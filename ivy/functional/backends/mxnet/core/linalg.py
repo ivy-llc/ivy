@@ -49,6 +49,7 @@ def pinv(x):
             else:
                 return xT
 
+cholesky = _mx.np.linalg.cholesky
 
 cross = _mx.np.linalg.cross           
  
