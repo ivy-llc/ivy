@@ -37,6 +37,11 @@ pinv = _tf.linalg.pinv
 cholesky = _tf.linalg.cholesky
 cross = _tf.linalg.cross
 
+
+def cross(a, b, axis=-1):
+    return _tf.linalg.cross(a, b)
+
+
 def vector_to_skew_symmetric_matrix(vector):
     batch_shape = list(vector.shape[:-1])
     # BS x 3 x 1

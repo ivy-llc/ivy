@@ -49,12 +49,19 @@ def pinv(x):
                 return xT
 
 
+<<<<<<< HEAD:ivy/functional/backends/mxnet/core/linear_algebra.py
 cholesky = lambda x: _mx.np.linalg.cholesky(x.as_np_ndarray()).as_nd_ndarray()
 
 
 
 cross = _mx.np.linalg.cross
  
+=======
+cross = _mx.np.linalg.cross
+
+def cross(a,b,axis=-1):
+    return _mx.np.cross
+>>>>>>> a96aa8c89 (Updated tensorflow, mxnet):ivy/functional/backends/mxnet/core/linalg.py
 def vector_to_skew_symmetric_matrix(vector):
     batch_shape = list(vector.shape[:-1])
     # BS x 3 x 1
