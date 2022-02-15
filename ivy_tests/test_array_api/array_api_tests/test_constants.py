@@ -1,36 +1,36 @@
-# import math
-# from typing import Any, SupportsFloat
-#
-# import pytest
-#
-# from . import dtype_helpers as dh
-# from ._array_module import mod as xp
-# from .typing import Array
-#
-# pytestmark = pytest.mark.ci
-#
-#
-# def assert_scalar_float(name: str, c: Any):
-#     assert isinstance(c, SupportsFloat), f"{name}={c!r} does not look like a float"
-#
-#
-# def assert_0d_float(name: str, x: Array):
-#     assert dh.is_float_dtype(
-#         x.dtype
-#     ), f"xp.asarray(xp.{name})={x!r}, but should have float dtype"
-#
-#
-# @pytest.mark.parametrize("name, n", [("e", math.e), ("pi", math.pi)])
-# def test_irrational_numbers(name, n):
-#     assert hasattr(xp, name)
-#     c = getattr(xp, name)
-#     assert_scalar_float(name, c)
-#     floor = math.floor(n)
-#     assert c > floor, f"xp.{name}={c!r} <= {floor}"
-#     ceil = math.ceil(n)
-#     assert c < ceil, f"xp.{name}={c!r} >= {ceil}"
-#     x = xp.asarray(c)
-#     assert_0d_float("name", x)
+import math
+from typing import Any, SupportsFloat
+
+import pytest
+
+from . import dtype_helpers as dh
+from ._array_module import mod as xp
+from .typing import Array
+
+pytestmark = pytest.mark.ci
+
+
+def assert_scalar_float(name: str, c: Any):
+    assert isinstance(c, SupportsFloat), f"{name}={c!r} does not look like a float"
+
+
+def assert_0d_float(name: str, x: Array):
+    assert dh.is_float_dtype(
+        x.dtype
+    ), f"xp.asarray(xp.{name})={x!r}, but should have float dtype"
+
+
+@pytest.mark.parametrize("name, n", [("e", math.e), ("pi", math.pi)])
+def test_irrational_numbers(name, n):
+    assert hasattr(xp, name)
+    c = getattr(xp, name)
+    assert_scalar_float(name, c)
+    floor = math.floor(n)
+    assert c > floor, f"xp.{name}={c!r} <= {floor}"
+    ceil = math.ceil(n)
+    assert c < ceil, f"xp.{name}={c!r} >= {ceil}"
+    x = xp.asarray(c)
+    assert xp.is_float_dtype(x)
 #
 #
 # def test_inf():
