@@ -1099,20 +1099,25 @@ def test_isfinite(dtype, shape):
 #             assert bool(out_idx) == (scalar_type(x1_idx) <= scalar_type(x2_idx))
 #
 #
-# @given(xps.arrays(dtype=xps.floating_dtypes(), shape=hh.shapes()))
-# def test_log(x):
-#     out = xp.log(x)
-#
-#     ph.assert_dtype("log", x.dtype, out.dtype)
-#     ph.assert_shape("log", out.shape, x.shape)
-#
-#     INFINITY = ah.infinity(x.shape, x.dtype)
-#     ZERO = ah.zero(x.shape, x.dtype)
-#     domain = ah.inrange(x, ZERO, INFINITY)
-#     codomain = ah.inrange(out, -INFINITY, INFINITY)
-#     # log maps [0, inf] to [-inf, inf]. Values outside this domain are
-#     # mapped to nan, which is already tested in the special cases.
-#     ah.assert_exactly_equal(domain, codomain)
+@pytest.mark.parametrize("dtype", ivy.all_dtypes)
+@pytest.mark.parametrize("shape", ivy_tests.test_shapes)
+def test_log(dtype, shape):
+    if ivy.invalid_dtype(dtype):
+        pytest.skip()
+    x = ivy.cast(ivy.random_uniform(0.0, 10.0, shape), dtype)
+
+    out = ivy.log(x)
+    assert ivy.dtype(out, as_str=True) == ivy.float16 or ivy.float32 or ivy.float64
+    assert out.shape == x.shape
+    
+    # getting error for below code tried to do x = float('inf') still errors
+    INFINITY = ah.infinity(x.shape, x.dtype)
+    ZERO = ah.zero(x.shape, x.dtype)
+    domain = ah.inrange(x, ZERO, INFINITY)
+    codomain = ah.inrange(out, -INFINITY, INFINITY)
+    # log maps [0, inf] to [-inf, inf]. Values outside this domain are
+    # mapped to nan, which is already tested in the special cases.
+    ah.assert_exactly_equal(domain, codomain)
 #
 #
 # @given(xps.arrays(dtype=xps.floating_dtypes(), shape=hh.shapes()))
