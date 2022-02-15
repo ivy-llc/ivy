@@ -69,137 +69,137 @@ finite_kw = {"allow_nan": False, "allow_infinity": False}
 #     ]
 #
 #
-binary_argnames = (
-    "func_name",
-    "func",
-    "left_sym",
-    "left_strat",
-    "right_sym",
-    "right_strat",
-    "right_is_scalar",
-    "res_name",
-)
-BinaryParam = Param[
-    str,
-    Callable[[Array, Union[Scalar, Array]], Array],
-    str,
-    st.SearchStrategy[Array],
-    str,
-    st.SearchStrategy[Union[Scalar, Array]],
-    bool,
-]
+# binary_argnames = (
+#     "func_name",
+#     "func",
+#     "left_sym",
+#     "left_strat",
+#     "right_sym",
+#     "right_strat",
+#     "right_is_scalar",
+#     "res_name",
+# )
+# BinaryParam = Param[
+#     str,
+#     Callable[[Array, Union[Scalar, Array]], Array],
+#     str,
+#     st.SearchStrategy[Array],
+#     str,
+#     st.SearchStrategy[Union[Scalar, Array]],
+#     bool,
+# ]
 
 
-class FuncType(Enum):
-    FUNC = auto()
-    OP = auto()
-    IOP = auto()
+# class FuncType(Enum):
+#     FUNC = auto()
+#     OP = auto()
+#     IOP = auto()
 
 
-def make_binary_params(
- elwise_func_name: str, dtypes: Sequence[DataType]
-) -> List[BinaryParam]:
- if hh.FILTER_UNDEFINED_DTYPES:
-     dtypes = [d for d in dtypes if not isinstance(d, xp._UndefinedStub)]
- dtypes_strat = st.sampled_from(dtypes)
+# def make_binary_params(
+#  elwise_func_name: str, dtypes: Sequence[DataType]
+# ) -> List[BinaryParam]:
+#  if hh.FILTER_UNDEFINED_DTYPES:
+#      dtypes = [d for d in dtypes if not isinstance(d, xp._UndefinedStub)]
+#  dtypes_strat = st.sampled_from(dtypes)
 
- def make_param(
-     func_name: str, func_type: FuncType, right_is_scalar: bool
- ) -> BinaryParam:
-     if right_is_scalar:
-         left_sym = "x"
-         right_sym = "s"
-     else:
-         left_sym = "x1"
-         right_sym = "x2"
+#  def make_param(
+#      func_name: str, func_type: FuncType, right_is_scalar: bool
+#  ) -> BinaryParam:
+#      if right_is_scalar:
+#          left_sym = "x"
+#          right_sym = "s"
+#      else:
+#          left_sym = "x1"
+#          right_sym = "x2"
 
-     shared_dtypes = st.shared(dtypes_strat)
-     if right_is_scalar:
-         left_strat = xps.arrays(dtype=shared_dtypes, shape=hh.shapes())
-         right_strat = shared_dtypes.flatmap(
-             lambda d: xps.from_dtype(d, **finite_kw)
-         )
-     else:
-         if func_type is FuncType.IOP:
-             shared_shapes = st.shared(hh.shapes())
-             left_strat = xps.arrays(dtype=shared_dtypes, shape=shared_shapes)
-             right_strat = xps.arrays(dtype=shared_dtypes, shape=shared_shapes)
-         else:
-             left_strat, right_strat = hh.two_mutual_arrays(dtypes)
+#      shared_dtypes = st.shared(dtypes_strat)
+#      if right_is_scalar:
+#          left_strat = xps.arrays(dtype=shared_dtypes, shape=hh.shapes())
+#          right_strat = shared_dtypes.flatmap(
+#              lambda d: xps.from_dtype(d, **finite_kw)
+#          )
+#      else:
+#          if func_type is FuncType.IOP:
+#              shared_shapes = st.shared(hh.shapes())
+#              left_strat = xps.arrays(dtype=shared_dtypes, shape=shared_shapes)
+#              right_strat = xps.arrays(dtype=shared_dtypes, shape=shared_shapes)
+#          else:
+#              left_strat, right_strat = hh.two_mutual_arrays(dtypes)
 
-     if func_type is FuncType.FUNC:
-         func = getattr(xp, func_name)
-     else:
-         op_sym = all_op_to_symbol[func_name]
-         expr = f"{left_sym} {op_sym} {right_sym}"
-         if func_type is FuncType.OP:
+#      if func_type is FuncType.FUNC:
+#          func = getattr(xp, func_name)
+#      else:
+#          op_sym = all_op_to_symbol[func_name]
+#          expr = f"{left_sym} {op_sym} {right_sym}"
+#          if func_type is FuncType.OP:
 
-             def func(l: Array, r: Union[Scalar, Array]) -> Array:
-                 locals_ = {}
-                 locals_[left_sym] = l
-                 locals_[right_sym] = r
-                 return eval(expr, locals_)
+#              def func(l: Array, r: Union[Scalar, Array]) -> Array:
+#                  locals_ = {}
+#                  locals_[left_sym] = l
+#                  locals_[right_sym] = r
+#                  return eval(expr, locals_)
 
-         else:
+#          else:
 
-             def func(l: Array, r: Union[Scalar, Array]) -> Array:
-                 locals_ = {}
-                 locals_[left_sym] = ah.asarray(
-                     l, copy=True
-                 )  # prevents left mutating
-                 locals_[right_sym] = r
-                 exec(expr, locals_)
-                 return locals_[left_sym]
+#              def func(l: Array, r: Union[Scalar, Array]) -> Array:
+#                  locals_ = {}
+#                  locals_[left_sym] = ah.asarray(
+#                      l, copy=True
+#                  )  # prevents left mutating
+#                  locals_[right_sym] = r
+#                  exec(expr, locals_)
+#                  return locals_[left_sym]
 
-         func.__name__ = func_name  # for repr
+#          func.__name__ = func_name  # for repr
 
-     if func_type is FuncType.IOP:
-         res_name = left_sym
-     else:
-         res_name = "out"
+#      if func_type is FuncType.IOP:
+#          res_name = left_sym
+#      else:
+#          res_name = "out"
 
-     return pytest.param(
-         func_name,
-         func,
-         left_sym,
-         left_strat,
-         right_sym,
-         right_strat,
-         right_is_scalar,
-         res_name,
-         id=f"{func_name}({left_sym}, {right_sym})",
-     )
+#      return pytest.param(
+#          func_name,
+#          func,
+#          left_sym,
+#          left_strat,
+#          right_sym,
+#          right_strat,
+#          right_is_scalar,
+#          res_name,
+#          id=f"{func_name}({left_sym}, {right_sym})",
+#      )
 
- op_name = func_to_op[elwise_func_name]
- params = [
-     make_param(elwise_func_name, FuncType.FUNC, False),
-     make_param(op_name, FuncType.OP, False),
-     make_param(op_name, FuncType.OP, True),
- ]
- iop_name = f"__i{op_name[2:]}"
- if iop_name in dh.inplace_op_to_symbol.keys():
-     params.append(make_param(iop_name, FuncType.IOP, False))
-     params.append(make_param(iop_name, FuncType.IOP, True))
+#  op_name = func_to_op[elwise_func_name]
+#  params = [
+#      make_param(elwise_func_name, FuncType.FUNC, False),
+#      make_param(op_name, FuncType.OP, False),
+#      make_param(op_name, FuncType.OP, True),
+#  ]
+#  iop_name = f"__i{op_name[2:]}"
+#  if iop_name in dh.inplace_op_to_symbol.keys():
+#      params.append(make_param(iop_name, FuncType.IOP, False))
+#      params.append(make_param(iop_name, FuncType.IOP, True))
 
- return params
+#  return params
 
 
-def assert_binary_param_dtype(
-    func_name: str,
-    left: Array,
-    right: Union[Array, Scalar],
-    right_is_scalar: bool,
-    res: Array,
-    res_name: str,
-    expected: Optional[DataType] = None,
-):
-    if right_is_scalar:
-        in_dtypes = left.dtype
-    else:
-        in_dtypes = (left.dtype, right.dtype)  # type: ignore
-    ph.assert_dtype(
-        func_name, in_dtypes, res.dtype, expected, repr_name=f"{res_name}.dtype"
-    )
+# def assert_binary_param_dtype(
+#     func_name: str,
+#     left: Array,
+#     right: Union[Array, Scalar],
+#     right_is_scalar: bool,
+#     res: Array,
+#     res_name: str,
+#     expected: Optional[DataType] = None,
+# ):
+#     if right_is_scalar:
+#         in_dtypes = left.dtype
+#     else:
+#         in_dtypes = (left.dtype, right.dtype)  # type: ignore
+#     ph.assert_dtype(
+#         func_name, in_dtypes, res.dtype, expected, repr_name=f"{res_name}.dtype"
+#     )
 #
 #
 # @pytest.mark.parametrize(unary_argnames, make_unary_params("abs", dh.numeric_dtypes))
@@ -1241,27 +1241,65 @@ def test_isfinite(dtype, shape):
 #         ah.assert_exactly_equal(res, expected)
 #
 
-@pytest.mark.parametrize(
-    binary_argnames, make_binary_params("matmul", dh.numeric_dtypes)
-)
-@given(data=st.data())
-def test_matmul(
-    func_name,
-    func,
-    left_sym,
-    left_strat,
-    right_sym,
-    right_strat,
-    right_is_scalar,
-    res_name,
-    data,
-):
-    print(func)
-    left = data.draw(left_strat, label=left_sym)
-    right = data.draw(right_strat, label=right_sym)
+def test_matmul():
+    # case1 = (N,) @ (N,) -> ()
+    shape_x = (3,)
+    shape_y = (3,)
+    x = ivy.random_uniform(0, 10, shape_x)
+    y = ivy.random_uniform(0, 10, shape_y)
+    z = x @ y
+    assert z.shape == ()
 
-    res = func(left, right)
-    assert_binary_param_dtype(func_name, left, right, right_is_scalar, res, res_name)
+
+    # case2 = (M, K) @ (K, N) -> (M, N)
+    shape_x = (1,3)
+    shape_y = (3,2)
+    x = ivy.random_uniform(0, 10, shape_x)
+    y = ivy.random_uniform(0, 10, shape_y)
+    z = x @ y
+    assert z.shape[0] == shape_x[0] and z.shape[1] == shape_y[1]
+
+    # case3 = (K,.) @ (..., K, N) -> (..., N)
+    shape_x = (3,)
+    shape_y = (4,3,2)
+    x = ivy.random_uniform(0, 10, shape_x)
+    y = ivy.random_uniform(0, 10, shape_y)
+    z = x @ y
+    assert z.shape[-1] == shape_y[-1]
+
+    # case4 = (..., M, K) @ (K, ) -> (..., M)
+    shape_x = (1,2,3)
+    shape_y = (3,)
+    x = ivy.random_uniform(0, 10, shape_x)
+    y = ivy.random_uniform(0, 10, shape_y)
+    z = x @ y
+    assert z.shape[-1] == shape_x[-2]
+
+    # case5 = (M, K) @ (..., K, N) -> (..., M, N)
+    shape_x = (4,5)
+    shape_y = (6,5,6)
+    x = ivy.random_uniform(0, 10, shape_x)
+    y = ivy.random_uniform(0, 10, shape_y)
+    z = x @ y
+    assert z.shape[-2] == shape_x[0] and z.shape[-1] == shape_y[-1]
+
+    # case6 = (..., M, K) @ (K,N) -> (..., M, N)
+    shape_x = (3,4,5)
+    shape_y = (5,6)
+    x = ivy.random_uniform(0, 10, shape_x)
+    y = ivy.random_uniform(0, 10, shape_y)
+    z = x @ y
+    assert z.shape[-2] == shape_x[-2] and z.shape[-1] == shape_y[-1]
+
+    # case7 = ????
+    # if either self or other has more than two dimensions, an array
+    #having a shape determined by Broadcasting shape(self)[:-2] against
+    #shape(other)[:-2] and containing the conventional matrix product for
+    #each stacked matrix.
+
+    # case8 = Type promotion
+
+
 #
 # @pytest.mark.parametrize(
 #     unary_argnames, make_unary_params("negative", dh.numeric_dtypes)
