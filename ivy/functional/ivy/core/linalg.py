@@ -122,3 +122,21 @@ def vector_to_skew_symmetric_matrix(vector, f=None):
     :return: Skew-symmetric matrix *[batch_shape,3,3]*.
     """
     return _cur_framework(vector, f=f).vector_to_skew_symmetric_matrix(vector)
+
+
+def matrix_transpose(x, axis=None, f=None):
+    """
+    Compute the vector p-norm.
+
+    :param x: Matrix with P * Q.
+    :type x: array
+    :param perm: 
+    :type perm: 
+    :param conjugate: If matrix has complex numbers and conjugate is True.
+                      Then it will make conjugate of complex number.
+    :type conjugate:  Bool. By default, it will be False.
+    :param f: Machine learning framework. Inferred from inputs if None.
+    :type f: ml_framework, optional    
+    :return: Matrix with Q * P
+    """
+    return _cur_framework(x, f=f).matrix_transpose(x, axis)

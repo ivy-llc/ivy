@@ -49,3 +49,7 @@ def vector_to_skew_symmetric_matrix(vector):
     row3 = _torch.cat((-a2s, a1s, zs), -1)
     # BS x 3 x 3
     return _torch.cat((row1, row2, row3), -2)
+
+
+def matrix_transpose(a, axis=(0,1)):
+    return _torch.transpose(a, axis[0], axis[1])
