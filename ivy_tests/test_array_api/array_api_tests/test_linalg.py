@@ -13,31 +13,31 @@
 #
 # """
 #
-  import pytest
- from hypothesis import assume, given
- from hypothesis.strategies import (booleans, composite, none, tuples, integers,
-                                    shared, sampled_from, data, just)
- from ndindex import iter_indices
-
- from .array_helpers import assert_exactly_equal, asarray
- from .hypothesis_helpers import (xps, dtypes, shapes, kwargs, matrix_shapes,
-                                  square_matrix_shapes, symmetric_matrices,
-                                  positive_definite_matrices, MAX_ARRAY_SIZE,
-                                  invertible_matrices, two_mutual_arrays,
-                                  mutually_promotable_dtypes, one_d_shapes,
-                                  two_mutually_broadcastable_shapes,
-                                  SQRT_MAX_ARRAY_SIZE, finite_matrices)
- from . import dtype_helpers as dh
- from . import pytest_helpers as ph
- from . import shape_helpers as sh
-
- from .algos import broadcast_shapes
-
- from . import _array_module
- from . import _array_module as xp
- from ._array_module import linalg
+# import pytest
+# from hypothesis import assume, given
+# from hypothesis.strategies import (booleans, composite, none, tuples, integers,
+#                                    shared, sampled_from, data, just)
+# from ndindex import iter_indices
 #
- pytestmark = pytest.mark.ci
+# from .array_helpers import assert_exactly_equal, asarray
+# from .hypothesis_helpers import (xps, dtypes, shapes, kwargs, matrix_shapes,
+#                                  square_matrix_shapes, symmetric_matrices,
+#                                  positive_definite_matrices, MAX_ARRAY_SIZE,
+#                                  invertible_matrices, two_mutual_arrays,
+#                                  mutually_promotable_dtypes, one_d_shapes,
+#                                  two_mutually_broadcastable_shapes,
+#                                  SQRT_MAX_ARRAY_SIZE, finite_matrices)
+# from . import dtype_helpers as dh
+# from . import pytest_helpers as ph
+# from . import shape_helpers as sh
+#
+# from .algos import broadcast_shapes
+#
+# from . import _array_module
+# from . import _array_module as xp
+# from ._array_module import linalg
+#
+# pytestmark = pytest.mark.ci
 #
 #
 #
@@ -143,45 +143,45 @@
 #     )
 #     return draw(arrays1), draw(arrays2), kw
 #
- @pytest.mark.xp_extension('linalg')
- @given(
-     cross_args()
- )
- def test_cross(x1_x2_kw):
-     x1, x2, kw = x1_x2_kw
-
-     axis = kw.get('axis', -1)
-     err = "test_cross produced invalid input. This indicates a bug in the test suite."
-     assert x1.shape == x2.shape, err
-     shape = x1.shape
-     assert x1.shape[axis] == x2.shape[axis] == 3, err
-
-     res = linalg.cross(x1, x2, **kw)
-
-     assert res.dtype == dh.result_type(x1.dtype, x2.dtype), "cross() did not return the correct dtype"
-     assert res.shape == shape, "cross() did not return the correct shape"
-
-     # cross is too different from other functions to use _test_stacks, and it
-    # is the only function that works the way it does, so it's not really
-     # worth generalizing _test_stacks to handle it.
-     a = axis if axis >= 0 else axis + len(shape)
-     for _idx in sh.ndindex(shape[:a] + shape[a+1:]):
-         idx = _idx[:a] + (slice(None),) + _idx[a:]
-         assert len(idx) == len(shape), "Invalid index. This indicates a bug in the test suite."
-         res_stack = res[idx]
-         x1_stack = x1[idx]
-         x2_stack = x2[idx]
-         assert x1_stack.shape == x2_stack.shape == (3,), "Invalid cross() stack shapes. This indicates a bug in the test suite."
-         decomp_res_stack = linalg.cross(x1_stack, x2_stack)
-         assert_exactly_equal(res_stack, decomp_res_stack)
-
-         exact_cross = asarray([
-             x1_stack[1]*x2_stack[2] - x1_stack[2]*x2_stack[1],
-             x1_stack[2]*x2_stack[0] - x1_stack[0]*x2_stack[2],
-             x1_stack[0]*x2_stack[1] - x1_stack[1]*x2_stack[0],
-             ], dtype=res.dtype)
-         assert_exactly_equal(res_stack, exact_cross)
-
+# @pytest.mark.xp_extension('linalg')
+# @given(
+#     cross_args()
+# )
+# def test_cross(x1_x2_kw):
+#     x1, x2, kw = x1_x2_kw
+#
+#     axis = kw.get('axis', -1)
+#     err = "test_cross produced invalid input. This indicates a bug in the test suite."
+#     assert x1.shape == x2.shape, err
+#     shape = x1.shape
+#     assert x1.shape[axis] == x2.shape[axis] == 3, err
+#
+#     res = linalg.cross(x1, x2, **kw)
+#
+#     assert res.dtype == dh.result_type(x1.dtype, x2.dtype), "cross() did not return the correct dtype"
+#     assert res.shape == shape, "cross() did not return the correct shape"
+#
+#     # cross is too different from other functions to use _test_stacks, and it
+#     # is the only function that works the way it does, so it's not really
+#     # worth generalizing _test_stacks to handle it.
+#     a = axis if axis >= 0 else axis + len(shape)
+#     for _idx in sh.ndindex(shape[:a] + shape[a+1:]):
+#         idx = _idx[:a] + (slice(None),) + _idx[a:]
+#         assert len(idx) == len(shape), "Invalid index. This indicates a bug in the test suite."
+#         res_stack = res[idx]
+#         x1_stack = x1[idx]
+#         x2_stack = x2[idx]
+#         assert x1_stack.shape == x2_stack.shape == (3,), "Invalid cross() stack shapes. This indicates a bug in the test suite."
+#         decomp_res_stack = linalg.cross(x1_stack, x2_stack)
+#         assert_exactly_equal(res_stack, decomp_res_stack)
+#
+#         exact_cross = asarray([
+#             x1_stack[1]*x2_stack[2] - x1_stack[2]*x2_stack[1],
+#             x1_stack[2]*x2_stack[0] - x1_stack[0]*x2_stack[2],
+#             x1_stack[0]*x2_stack[1] - x1_stack[1]*x2_stack[0],
+#             ], dtype=res.dtype)
+#         assert_exactly_equal(res_stack, exact_cross)
+#
 # @pytest.mark.xp_extension('linalg')
 # @given(
 #     x=xps.arrays(dtype=xps.floating_dtypes(), shape=square_matrix_shapes),

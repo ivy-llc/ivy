@@ -50,8 +50,10 @@ def pinv(x):
                 return xT
 
 
-cross = _mx.np.linalg.cross           
- 
+cross = _mx.np.linalg.cross
+
+def cross(a,b,axis=-1):
+    return _mx.np.cross
 def vector_to_skew_symmetric_matrix(vector):
     batch_shape = list(vector.shape[:-1])
     # BS x 3 x 1

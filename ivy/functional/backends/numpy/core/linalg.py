@@ -26,6 +26,10 @@ pinv = _np.linalg.pinv
 cross = _np.cross
 
 
+def cross(a, b, axis=-1):
+    return _np.cross(a, b, axis=axis)
+
+
 def vector_to_skew_symmetric_matrix(vector):
     batch_shape = list(vector.shape[:-1])
     # BS x 3 x 1
