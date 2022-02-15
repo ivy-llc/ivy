@@ -9,7 +9,6 @@ from ._array_module import (isnan, all, any, equal, not_equal, logical_and,
 from ._array_module import logical_not, subtract, floor, ceil, where
 from . import dtype_helpers as dh
 
-
 __all__ = ['all', 'any', 'logical_and', 'logical_or', 'logical_not', 'less',
            'less_equal', 'greater', 'subtract', 'negative', 'floor', 'ceil',
            'where', 'isfinite', 'equal', 'not_equal', 'zero', 'one', 'NaN',
@@ -23,6 +22,7 @@ __all__ = ['all', 'any', 'logical_and', 'logical_or', 'logical_not', 'less',
            'assert_negative_mathematical_sign', 'same_sign',
            'assert_same_sign', 'float64',
            'asarray', 'full', 'true', 'false', 'isnan']
+
 
 def zero(shape, dtype):
     """
@@ -38,6 +38,7 @@ def zero(shape, dtype):
     """
     return zeros(shape, dtype=dtype)
 
+
 def one(shape, dtype):
     """
     Returns a full 1 array of the given dtype.
@@ -51,6 +52,7 @@ def one(shape, dtype):
     """
     return ones(shape, dtype=dtype)
 
+
 def NaN(shape, dtype):
     """
     Returns a full nan array of the given dtype.
@@ -60,6 +62,7 @@ def NaN(shape, dtype):
     if dtype not in [float32, float64]:
         raise RuntimeError(f"Unexpected dtype {dtype} in NaN().")
     return full(shape, nan, dtype=dtype)
+
 
 def infinity(shape, dtype):
     """
@@ -74,6 +77,7 @@ def infinity(shape, dtype):
         raise RuntimeError(f"Unexpected dtype {dtype} in infinity().")
     return full(shape, inf, dtype=dtype)
 
+
 def π(shape, dtype):
     """
     Returns a full π array of the given dtype.
@@ -87,17 +91,20 @@ def π(shape, dtype):
         raise RuntimeError(f"Unexpected dtype {dtype} in π().")
     return full(shape, pi, dtype=dtype)
 
+
 def true(shape):
     """
     Returns a full True array with dtype=bool.
     """
     return full(shape, True, dtype=bool)
 
+
 def false(shape):
     """
     Returns a full False array with dtype=bool.
     """
     return full(shape, False, dtype=bool)
+
 
 def isnegzero(x):
     """
@@ -110,6 +117,7 @@ def isnegzero(x):
         return false(shape)
     return equal(divide(one(shape, dtype), x), -infinity(shape, dtype))
 
+
 def isposzero(x):
     """
     Returns a mask where x is +0 (but not -0). Is all True if x has integer dtype.
@@ -120,6 +128,7 @@ def isposzero(x):
     if dh.is_int_dtype(dtype):
         return true(shape)
     return equal(divide(one(shape, dtype), x), infinity(shape, dtype))
+
 
 def exactly_equal(x, y):
     """
@@ -146,6 +155,7 @@ def exactly_equal(x, y):
 
     return equal(x, y)
 
+
 def notequal(x, y):
     """
     Same as not_equal(x, y) except it gives False when both values are nan.
@@ -164,6 +174,7 @@ def notequal(x, y):
 
     return not_equal(x, y)
 
+
 def assert_exactly_equal(x, y):
     """
     Test that the arrays x and y are exactly equal.
@@ -178,29 +189,37 @@ def assert_exactly_equal(x, y):
     print()
     assert all(exactly_equal(x, y)), f"The input arrays have different values, {x}, {y}"
 
+
 def assert_finite(x):
     """
     Test that the array x is finite
     """
     assert all(isfinite(x)), "The input array is not finite"
 
+
 def non_zero(x):
     return not_equal(x, zero(x.shape, x.dtype))
+
 
 def assert_non_zero(x):
     assert all(non_zero(x)), "The input array is not nonzero"
 
+
 def ispositive(x):
     return greater(x, zero(x.shape, x.dtype))
+
 
 def assert_positive(x):
     assert all(ispositive(x)), "The input array is not positive"
 
+
 def isnegative(x):
     return less(x, zero(x.shape, x.dtype))
 
+
 def assert_negative(x):
     assert all(isnegative(x)), "The input array is not negative"
+
 
 def inrange(x, a, b, epsilon=0, open=False):
     """
@@ -210,7 +229,8 @@ def inrange(x, a, b, epsilon=0, open=False):
     """
     eps = full(x.shape, epsilon, dtype=x.dtype)
     l = less if open else less_equal
-    return logical_and(l(a-eps, x), l(x, b+eps))
+    return logical_and(l(a - eps, x), l(x, b + eps))
+
 
 def isintegral(x):
     """
@@ -226,25 +246,29 @@ def isintegral(x):
     else:
         return full(x.shape, False, dtype=bool)
 
+
 def assert_integral(x):
     """
     Check that x has only integer values
     """
     assert all(isintegral(x)), "The input array has nonintegral values"
 
+
 def isodd(x):
     return logical_and(
         isintegral(x),
         equal(
-            remainder(x, 2*one(x.shape, x.dtype)),
+            remainder(x, 2 * one(x.shape, x.dtype)),
             one(x.shape, x.dtype)))
+
 
 def iseven(x):
     return logical_and(
         isintegral(x),
         equal(
-            remainder(x, 2*one(x.shape, x.dtype)),
+            remainder(x, 2 * one(x.shape, x.dtype)),
             zero(x.shape, x.dtype)))
+
 
 def assert_iseven(x):
     """
@@ -252,11 +276,13 @@ def assert_iseven(x):
     """
     assert all(iseven(x)), "The input array is not even"
 
+
 def assert_isinf(x):
     """
     Check that x is an infinity
     """
     assert all(isinf(x)), "The input array is not infinite"
+
 
 def positive_mathematical_sign(x):
     """
@@ -270,8 +296,10 @@ def positive_mathematical_sign(x):
     z = zero(x.shape, x.dtype)
     return logical_or(greater(x, z), isposzero(x))
 
+
 def assert_positive_mathematical_sign(x):
     assert all(positive_mathematical_sign(x)), "The input arrays do not have a positive mathematical sign"
+
 
 def negative_mathematical_sign(x):
     """
@@ -287,8 +315,10 @@ def negative_mathematical_sign(x):
         return logical_or(less(x, z), isnegzero(x))
     return less(x, z)
 
+
 def assert_negative_mathematical_sign(x):
     assert all(negative_mathematical_sign(x)), "The input arrays do not have a negative mathematical sign"
+
 
 def same_sign(x, y):
     """
@@ -303,6 +333,22 @@ def same_sign(x, y):
         logical_and(positive_mathematical_sign(x), positive_mathematical_sign(y)),
         logical_and(negative_mathematical_sign(x), negative_mathematical_sign(y)))
 
+
 def assert_same_sign(x, y):
     assert all(same_sign(x, y)), "The input arrays do not have the same sign"
 
+<<<<<<< HEAD
+=======
+
+def int_to_dtype(x, n, signed):
+    """
+    Convert the Python integer x into an n bit signed or unsigned number.
+    """
+    mask = (1 << n) - 1
+    x &= mask
+    if signed:
+        highest_bit = 1 << (n - 1)
+        if x & highest_bit:
+            x = -((~x & mask) + 1)
+    return x
+>>>>>>> 2db360550 (updated)

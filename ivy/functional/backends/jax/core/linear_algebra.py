@@ -23,15 +23,12 @@ def matrix_norm(x, p=2, axes=None, keepdims=False):
 
 inv = _jnp.linalg.inv
 pinv = _jnp.linalg.pinv
-<<<<<<< HEAD:ivy/functional/backends/jax/core/linear_algebra.py
 cholesky = _jnp.linalg.cholesky
-=======
 
 
 def cross(a, b, axis=-1):
     return _jnp.cross(a, b, axis=axis)
 
->>>>>>> a96aa8c89 (Updated tensorflow, mxnet):ivy/functional/backends/jax/core/linalg.py
 
 def vector_to_skew_symmetric_matrix(vector):
     batch_shape = list(vector.shape[:-1])

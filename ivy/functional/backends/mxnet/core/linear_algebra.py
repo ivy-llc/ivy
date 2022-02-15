@@ -50,9 +50,17 @@ def pinv(x):
 
 
 <<<<<<< HEAD:ivy/functional/backends/mxnet/core/linear_algebra.py
+<<<<<<< HEAD:ivy/functional/backends/mxnet/core/linear_algebra.py
 cholesky = lambda x: _mx.np.linalg.cholesky(x.as_np_ndarray()).as_nd_ndarray()
 
 
+=======
+cholesky = _mx.np.linalg.cholesky
+
+
+def cross(a, b, axis=-1):
+    return _mx.numpy.linalg.cross(a, b, axis=axis)
+>>>>>>> 2db360550 (updated):ivy/functional/backends/mxnet/core/linalg.py
 
 cross = _mx.np.linalg.cross
  
