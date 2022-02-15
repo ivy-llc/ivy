@@ -24,9 +24,14 @@ def matrix_norm(x, p=2, axes=None, keepdims=False):
 inv = _jnp.linalg.inv
 pinv = _jnp.linalg.pinv
 
+<<<<<<< HEAD
 
 def cross(a, b, axis=-1):
     return _jnp.cross(a, b, axis=axis)
+=======
+cross = _jnp.cross
+cholesky = _jnp.linalg.cholesky
+>>>>>>> 699168dfb8d09e0e51ad2fa9335b9ebcfc1a928b
 
 
 def vector_to_skew_symmetric_matrix(vector):

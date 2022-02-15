@@ -235,7 +235,11 @@ def test_cholesky(x, dtype, tensor_fn, dev, call):
     assert np.allclose(call(ivy.cholesky, x), ivy.functional.backends.numpy.cholesky(ivy.to_numpy(x)))
     # compilation test
     if not ivy.array_mode():
+<<<<<<< HEAD
         helpers.assert_compilable(ivy.cholesky)
 
 
 
+=======
+        helpers.assert_compilable(ivy.cholesky)
+>>>>>>> 699168dfb8d09e0e51ad2fa9335b9ebcfc1a928b

@@ -26,8 +26,12 @@ pinv = _np.linalg.pinv
 cross = _np.cross
 
 
+<<<<<<< HEAD
 def cross(a, b, axis=-1):
     return _np.cross(a, b, axis=axis)
+=======
+cholesky = _np.linalg.cholesky
+>>>>>>> 699168dfb8d09e0e51ad2fa9335b9ebcfc1a928b
 
 
 def vector_to_skew_symmetric_matrix(vector):
