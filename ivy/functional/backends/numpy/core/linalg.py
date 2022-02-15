@@ -42,5 +42,6 @@ def vector_to_skew_symmetric_matrix(vector):
     # BS x 3 x 3
     return _np.concatenate((row1, row2, row3), -2)
 
-def diagonal(x, offset):
-    return _np.diagonal(x, offset=offset)
+
+def diagonal(x, offset=0, axis1=0, axis2=1):
+    return _np.diagonal(x, offset=offset, axis1=axis1, axis2=axis2)
