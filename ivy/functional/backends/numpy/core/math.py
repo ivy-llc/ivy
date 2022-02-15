@@ -8,7 +8,8 @@ try:
     from scipy.special import erf as _erf
 except (ImportError, ModuleNotFoundError):
     _erf = None
-
+e = _np.e
+pi = _np.pi 
 sin = _np.sin
 cos = _np.cos
 tan = _np.tan
