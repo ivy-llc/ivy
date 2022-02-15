@@ -7,6 +7,9 @@ import math
 import torch as _torch
 
 
+e = _torch.e
+pi = _torch.pi 
+
 def sin(x):
     if isinstance(x, float):
         return math.sin(x)
