@@ -26,7 +26,6 @@ def matrix_norm(x, p=2, axes=None, keepdims=False):
 
 inv = _mx.nd.linalg_inverse
 
-
 DET_THRESHOLD = 1e-12
 
 
@@ -49,11 +48,12 @@ def pinv(x):
             else:
                 return xT
 
+
 cholesky = _mx.np.linalg.cholesky
 
 
-def cross(a,b,axis=-1):
-    return _mx.np.cross
+def cross(a, b, axis=-1):
+    return _mx.numpy.linalg.cross(a, b, axis=axis)
 
 
 def vector_to_skew_symmetric_matrix(vector):

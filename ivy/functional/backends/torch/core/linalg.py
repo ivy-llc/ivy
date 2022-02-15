@@ -32,8 +32,10 @@ def inv(x):
 def pinv(x):
     return _torch.pinverse(x)
 
+
 def cholesky(x):
     return _torch.linalg.cholesky(x)
+
 
 def cross(a, b, dim):
     return _torch.cross(a, b, dim)

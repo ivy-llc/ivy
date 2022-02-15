@@ -57,7 +57,7 @@ def vector_norm(x, p=2, axis=None, keepdims=False):
     elif p == 0:
         return ivy.reduce_sum(ivy.cast(x != 0, 'float32'), axis, keepdims)
     x_raised = x ** p
-    return ivy.reduce_sum(x_raised, axis, keepdims) ** (1/p)
+    return ivy.reduce_sum(x_raised, axis, keepdims) ** (1 / p)
 
 
 def matrix_norm(x, p=2, axes=None, keepdims=False, f=None):
@@ -109,8 +109,7 @@ def pinv(x, f=None):
     return _cur_framework(x, f=f).pinv(x)
 
 
-
-def cross(a,b, f=None):
+def cross(a, b, f=None):
     """
     Compute and return the cross product of 3-element vectors, a must have the same shape as b 
 
@@ -122,9 +121,8 @@ def cross(a,b, f=None):
     :type f: ml_framework, optional
     :return: an array that contains the cross products
     """
-    return _cur_framework(a,f=f).cross(a,b)
-    
-    
+    return _cur_framework(a, f=f).cross(a, b)
+
 
 def vector_to_skew_symmetric_matrix(vector, f=None):
     """
@@ -139,6 +137,7 @@ def vector_to_skew_symmetric_matrix(vector, f=None):
     :return: Skew-symmetric matrix *[batch_shape,3,3]*.
     """
     return _cur_framework(vector, f=f).vector_to_skew_symmetric_matrix(vector)
+
 
 def cholesky(x, f=None):
     """
