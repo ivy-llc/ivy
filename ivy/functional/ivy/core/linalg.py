@@ -140,3 +140,16 @@ def matrix_transpose(x, axis=None, f=None):
     :return: Matrix with Q * P
     """
     return _cur_framework(x, f=f).matrix_transpose(x, axis)
+
+
+def cholesky(x, f=None):
+    """
+    Computes the cholesky decomposition of the x matrix.
+
+    :param x: Matrix to be decomposed.
+    :type x: array
+    :param f: Machine learning framework. Inferred from inputs if None.
+    :type f: ml_framework, optional
+    :return: cholesky decomposition of the matrix x.
+    """
+    return _cur_framework(x, f=f).cholesky(x)
