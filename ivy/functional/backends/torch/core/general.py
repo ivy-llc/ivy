@@ -427,7 +427,7 @@ def full(shape, fill_value, dtype=None, device=None):
 
 def unique_all(arr, device=None):
     UniqueArray = namedtuple('UniqueArray', ['values', 'indices', 'inverse_indices', 'counts'])
-    values, inverse_indices, counts = _torch.unique(arr, sorted=True, return_inverse=True, return_counts=True)
+    values, inverse_indices, counts = _torch.unique(arr,sorted=True, return_inverse=True, return_counts=True)
     # get the indices of the elements in 'values' since torch's unique function doesn't return them
     perm = _torch.arange(inverse_indices.size(0))
     inverse, perm = inverse_indices.flip([0]), perm.flip([0])
