@@ -1,16 +1,18 @@
-# # TODO: disable if opted out, refactor things
-# import math
-# import pytest
-# from collections import Counter, defaultdict
+# TODO: disable if opted out, refactor things
+import math
+import pytest
+from collections import Counter, defaultdict
 #
-# from hypothesis import assume, given
-#
-# from . import _array_module as xp
-# from . import dtype_helpers as dh
-# from . import hypothesis_helpers as hh
-# from . import pytest_helpers as ph
-# from . import shape_helpers as sh
-# from . import xps
+from hypothesis import assume, given
+
+import ivy
+import ivy_tests
+from . import _array_module as xp
+from . import dtype_helpers as dh
+from . import hypothesis_helpers as hh
+from . import pytest_helpers as ph
+from . import shape_helpers as sh
+from . import xps
 #
 # pytestmark = pytest.mark.ci
 #
@@ -114,53 +116,53 @@
 #         expected = sum(v for k, v in counts.items() if math.isnan(k))
 #         assert nans == expected, f"{nans} NaNs in out, but should be {expected}"
 #
-#
-# @given(xps.arrays(dtype=xps.scalar_dtypes(), shape=hh.shapes(min_side=1)))
-# def test_unique_counts(x):
-#     out = xp.unique_counts(x)
-#     assert hasattr(out, "values")
-#     assert hasattr(out, "counts")
-#     ph.assert_dtype(
-#         "unique_counts", x.dtype, out.values.dtype, repr_name="out.values.dtype"
-#     )
-#     ph.assert_default_index(
-#         "unique_counts", out.counts.dtype, repr_name="out.counts.dtype"
-#     )
-#     assert (
-#         out.counts.shape == out.values.shape
-#     ), f"{out.counts.shape=}, but should be {out.values.shape=}"
-#     scalar_type = dh.get_scalar_type(out.values.dtype)
-#     counts = Counter(scalar_type(x[idx]) for idx in sh.ndindex(x.shape))
-#     vals_idx = {}
-#     nans = 0
-#     for idx in sh.ndindex(out.values.shape):
-#         val = scalar_type(out.values[idx])
-#         count = int(out.counts[idx])
-#         if math.isnan(val):
-#             nans += 1
-#             assert count == 1, (
-#                 f"out.counts[{idx}]={count} for out.values[{idx}]={val}, "
-#                 "but count should be 1 as NaNs are distinct"
-#             )
-#         else:
-#             expected = counts[val]
-#             assert (
-#                 expected > 0
-#             ), f"out.values[{idx}]={val}, but {val} not in input array"
-#             count = int(out.counts[idx])
-#             assert count == expected, (
-#                 f"out.counts[{idx}]={count} for out.values[{idx}]={val}, "
-#                 f"but should be {expected}"
-#             )
-#             assert (
-#                 val not in vals_idx.keys()
-#             ), f"out[{idx}]={val}, but {val} is also in out[{vals_idx[val]}]"
-#             vals_idx[val] = idx
-#     if dh.is_float_dtype(out.values.dtype):
-#         assume(x.size <= 128)  # may not be representable
-#         expected = sum(v for k, v in counts.items() if math.isnan(k))
-#         assert nans == expected, f"{nans} NaNs in out, but should be {expected}"
-#
+
+@given(xps.arrays(dtype=xps.scalar_dtypes(), shape=hh.shapes(min_side=1)))
+def test_unique_counts(x):
+    out = ivy.unique_counts(x)
+    assert hasattr(out, "values")
+    assert hasattr(out, "counts")
+    ph.assert_dtype(
+        "unique_counts", x.dtype, out.values.dtype, repr_name="out.values.dtype"
+    )
+    ph.assert_default_index(
+        "unique_counts", out.counts.dtype, repr_name="out.counts.dtype"
+    )
+    assert (
+        out.counts.shape == out.values.shape
+    ), f"{out.counts.shape=}, but should be {out.values.shape=}"
+    scalar_type = dh.get_scalar_type(out.values.dtype)
+    counts = Counter(scalar_type(x[idx]) for idx in sh.ndindex(x.shape))
+    vals_idx = {}
+    nans = 0
+    for idx in sh.ndindex(out.values.shape):
+        val = scalar_type(out.values[idx])
+        count = int(out.counts[idx])
+        if math.isnan(val):
+            nans += 1
+            assert count == 1, (
+                f"out.counts[{idx}]={count} for out.values[{idx}]={val}, "
+                "but count should be 1 as NaNs are distinct"
+            )
+        else:
+            expected = counts[val]
+            assert (
+                expected > 0
+            ), f"out.values[{idx}]={val}, but {val} not in input array"
+            count = int(out.counts[idx])
+            assert count == expected, (
+                f"out.counts[{idx}]={count} for out.values[{idx}]={val}, "
+                f"but should be {expected}"
+            )
+            assert (
+                val not in vals_idx.keys()
+            ), f"out[{idx}]={val}, but {val} is also in out[{vals_idx[val]}]"
+            vals_idx[val] = idx
+    if dh.is_float_dtype(out.values.dtype):
+        assume(x.size <= 128)  # may not be representable
+        expected = sum(v for k, v in counts.items() if math.isnan(k))
+        assert nans == expected, f"{nans} NaNs in out, but should be {expected}"
+
 #
 # @given(xps.arrays(dtype=xps.scalar_dtypes(), shape=hh.shapes(min_side=1)))
 # def test_unique_inverse(x):

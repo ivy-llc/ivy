@@ -1070,6 +1070,14 @@ def full(shape: Union[int, Tuple[int]], fill_value: Union[int, float], dtype: Op
     """
     return _cur_framework(f=f).full(shape, fill_value, dtype, device)
 
+def unique_counts(x: array, f: ivy.Framework = None):
+    """
+    Returns the unique elements of an input array x and the corresponding counts for each unique element in x.
+
+    :param x:input array. If x has more than one dimension, the function must flatten x and return the unique elements of the flattened array.
+    :type x: array
+    """
+    return _cur_framework(f=f).unique_counts(x)
 
 # noinspection PyShadowingNames
 def one_hot(indices: Union[ivy.Array, ivy.NativeArray], depth: int, dev: ivy.Device = None, f: ivy.Framework = None)\

@@ -12,6 +12,7 @@ from operator import mul
 from torch.types import Number
 from functools import reduce as _reduce
 from typing import List, Dict, Optional, Union
+from collections import namedtuple
 
 # local
 from ivy.functional.ivy.core import default_device, default_dtype
@@ -424,6 +425,10 @@ def full(shape, fill_value, dtype=None, device=None):
     return _torch.full(
         shape, fill_value, dtype=dtype_from_str(default_dtype(dtype, fill_value)), device=default_device(device))
 
+def unique_counts(x: array, /):
+    tensor = _torch.unique(array(x), return_counts=True)
+    uc = namedtuple('UniqueCounts', 'values counts')
+    return uc(tensor[0], tensor[1])
 
 # noinspection PyShadowingNames
 def ones(shape: List[int], dtype: ivy.Dtype = 'float32', dev: Optional[str] = None):

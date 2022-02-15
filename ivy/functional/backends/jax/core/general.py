@@ -14,6 +14,7 @@ from functools import reduce as _reduce
 from jaxlib.xla_extension import Buffer
 import multiprocessing as _multiprocessing
 from haiku._src.data_structures import FlatMapping
+from collections import namedtuple
 
 # local
 from ivy.functional.ivy.core import default_device, default_dtype
@@ -280,6 +281,10 @@ def zeros_like(x, dtype=None, dev=None):
 def full(shape, fill_value, dtype=None, device=None):
     return to_dev(_jnp.full(shape, fill_value, dtype_from_str(default_dtype(dtype, fill_value))), default_device(device))
 
+def unique_counts(x: array, /):
+    tensor = _jnp.unique(array(x), return_counts=True)
+    uc = namedtuple('UniqueCounts', 'values counts')
+    return uc(tensor[0], tensor[1])
 
 # noinspection PyShadowingNames
 def ones(shape, dtype=None, dev=None):

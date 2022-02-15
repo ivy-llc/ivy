@@ -14,6 +14,7 @@ import tensorflow_probability as _tfp
 from functools import reduce as _reduce
 import multiprocessing as _multiprocessing
 from tensorflow.python.types.core import Tensor
+from collections import namedtuple
 
 # local
 from ivy.functional.ivy.core import default_device, default_dtype
@@ -282,6 +283,10 @@ def full(shape, fill_value, dtype=None, device=None):
     with _tf.device(dev_from_str(default_device(device))):
         return _tf.cast(_tf.fill(shape, fill_value), dtype_from_str(default_dtype(dtype, fill_value)))
 
+def unique_counts(x: array, /):
+    tensor = _tf.unique_with_counts(x)
+    uc = namedtuple('UniqueCounts', 'values counts')
+    return uc(tensor[0], tensor[2])
 
 # noinspection PyShadowingNames
 def ones(shape, dtype='float32', dev=None):
