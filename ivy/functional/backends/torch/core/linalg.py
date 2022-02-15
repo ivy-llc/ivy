@@ -55,5 +55,5 @@ def vector_to_skew_symmetric_matrix(vector):
     return _torch.cat((row1, row2, row3), -2)
 
 
-def diagonal(x, offset):
-    return _torch.diagonal(x, offset=offset)
+def diagonal(x, offset: int = 0, axis1: int = 0, axis2: int = 1):
+    return _torch.diagonal(x, offset=offset, dim1=axis1, dim2=axis2)
