@@ -12,6 +12,7 @@ from operator import mul
 from torch.types import Number
 from functools import reduce as _reduce
 from typing import List, Dict, Optional, Union
+from collections import namedtuple
 
 # local
 from ivy.functional.ivy.core import default_device, default_dtype
@@ -423,6 +424,19 @@ def zeros_like(x, dtype: Optional[str] = None, dev: Optional[str] = None):
 def full(shape, fill_value, dtype=None, device=None):
     return _torch.full(
         shape, fill_value, dtype=dtype_from_str(default_dtype(dtype, fill_value)), device=default_device(device))
+
+def unique_all(arr, device=None):
+    UniqueArray = namedtuple('UniqueArray', ['values', 'indices', 'inverse_indices', 'counts'])
+    values, inverse_indices, counts = _torch.unique(arr, sorted=True, return_inverse=True, return_counts=True)
+    # get the indices of the elements in 'values' since torch's unique function doesn't return them
+    perm = _torch.arange(inverse_indices.size(0))
+    inverse, perm = inverse_indices.flip([0]), perm.flip([0])
+    perm = inverse.new_empty(values.size(0)).scatter_(0, inverse, perm)
+    #inverse_indices must have the same shape as the original array
+    inverse_indices = inverse_indices.reshape(arr.shape)
+
+    unq = UniqueArray(values, perm, inverse_indices, counts)
+    return unq
 
 
 # noinspection PyShadowingNames

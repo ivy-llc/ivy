@@ -9,6 +9,7 @@ import math as _math
 from operator import mul as _mul
 from functools import reduce as _reduce
 import multiprocessing as _multiprocessing
+from collections import namedtuple
 
 # local
 from ivy.functional.ivy.core import default_dtype
@@ -83,7 +84,7 @@ def _flat_array_to_1_dim_array(x):
 def array(object_in, dtype=None, dev=None):
     if dtype:
         dtype = 'bool_' if dtype == 'bool' else dtype
-        dtype = _np.__dict__[dtype]
+        dtype = _np.__dict__[dtype_to_str(dtype)]
     else:
         dtype = None
     return _to_dev(_np.array(object_in, dtype=dtype), dev)
@@ -279,6 +280,14 @@ def zeros_like(x, dtype=None, dev=None):
 
 def full(shape, fill_value, dtype=None, device=None):
     return _to_dev(_np.full(shape, fill_value, dtype_from_str(default_dtype(dtype, fill_value))), device)
+
+
+def unique_all(arr, device=None):
+    UniqueArray = namedtuple('UniqueArray', ['values', 'indices', 'inverse_indices', 'counts'])
+    values, indices, inverse_indices, counts = _np.unique(arr, return_index=True, return_counts=True, return_inverse=True)
+    inverse_indices = inverse_indices.reshape(arr.shape)
+    unq = UniqueArray(values, indices, inverse_indices, counts)
+    return unq
 
 
 # noinspection PyShadowingNames

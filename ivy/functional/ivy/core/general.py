@@ -1071,6 +1071,14 @@ def full(shape: Union[int, Tuple[int]], fill_value: Union[int, float], dtype: Op
     return _cur_framework(f=f).full(shape, fill_value, dtype, device)
 
 
+def unique_all(x: array, f: ivy.Framework = None):
+    """
+    Returns the unique elements of an input array x, the first occurring indices for each unique element in x,
+    the indices from the set of unique elements that reconstruct x,
+    and the corresponding counts for each unique element in x.
+    """
+    return _cur_framework(f=f).unique_all(x)
+
 # noinspection PyShadowingNames
 def one_hot(indices: Union[ivy.Array, ivy.NativeArray], depth: int, dev: ivy.Device = None, f: ivy.Framework = None)\
         -> Union[ivy.Array, ivy.NativeArray]:

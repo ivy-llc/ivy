@@ -10,6 +10,7 @@ import jax.numpy as _jnp
 import jaxlib as _jaxlib
 from numbers import Number
 from operator import mul as _mul
+from collections import namedtuple
 from functools import reduce as _reduce
 from jaxlib.xla_extension import Buffer
 import multiprocessing as _multiprocessing
@@ -85,7 +86,7 @@ def array(object_in, dtype=None, dev=None):
     if dtype:
         if dtype == 'bool':
             dtype += '_'
-        dtype = _jnp.__dict__[dtype]
+        dtype = _jnp.__dict__[dtype_to_str(dtype)]
     else:
         dtype = None
     return to_dev(_jnp.array(object_in, dtype=dtype), default_device(dev))
@@ -280,6 +281,12 @@ def zeros_like(x, dtype=None, dev=None):
 def full(shape, fill_value, dtype=None, device=None):
     return to_dev(_jnp.full(shape, fill_value, dtype_from_str(default_dtype(dtype, fill_value))), default_device(device))
 
+def unique_all(arr, device=None):
+    UniqueArray = namedtuple('UniqueArray', ['values', 'indices', 'inverse_indices', 'counts'])
+    values, indices, inverse_indices, counts = _jnp.unique(arr, return_index=True, return_inverse=True, return_counts=True)
+    inverse_indices = inverse_indices.reshape(arr.shape)
+    unq = UniqueArray(values, indices, inverse_indices, counts)
+    return unq
 
 # noinspection PyShadowingNames
 def ones(shape, dtype=None, dev=None):
