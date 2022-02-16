@@ -452,10 +452,8 @@
 
 
 <span class="c1"># noinspection PyShadowingNames</span>
-<div class="viewcode-block" id="zeros"><a class="viewcode-back" href="../../../../../../functional/backends/numpy/core/general/zeros.html#ivy.functional.backends.numpy.core.general.zeros">[docs]</a><span class="k">def</span> <span class="nf">zeros</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;float32&#39;</span><span class="p">,</span> <span class="n">dev</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="n">dtype</span> <span class="o">=</span> <span class="s1">&#39;bool_&#39;</span> <span class="k">if</span> <span class="n">dtype</span> <span class="o">==</span> <span class="s1">&#39;bool&#39;</span> <span class="k">else</span> <span class="n">dtype</span>
-    <span class="n">dtype</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="n">dtype</span><span class="p">]</span>
-    <span class="k">return</span> <span class="n">_to_dev</span><span class="p">(</span><span class="n">_np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="n">dtype</span><span class="p">),</span> <span class="n">dev</span><span class="p">)</span></div>
+<div class="viewcode-block" id="zeros"><a class="viewcode-back" href="../../../../../../functional/backends/numpy/core/general/zeros.html#ivy.functional.backends.numpy.core.general.zeros">[docs]</a><span class="k">def</span> <span class="nf">zeros</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dev</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">_to_dev</span><span class="p">(</span><span class="n">_np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">shape</span><span class="p">,</span> <span class="n">dtype_from_str</span><span class="p">(</span><span class="n">default_dtype</span><span class="p">(</span><span class="n">dtype</span><span class="p">))),</span> <span class="n">dev</span><span class="p">)</span></div>
 
 
 <span class="c1"># noinspection PyShadowingNames</span>

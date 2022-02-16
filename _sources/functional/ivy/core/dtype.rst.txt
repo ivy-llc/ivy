@@ -18,6 +18,7 @@ Dtype
    dtype/is_float_dtype.rst
    dtype/valid_dtype.rst
    dtype/invalid_dtype.rst
+   dtype/closest_valid_dtype.rst
    dtype/convert_dtype.rst
    dtype/dtype_to_str.rst
    dtype/dtype_from_str.rst
