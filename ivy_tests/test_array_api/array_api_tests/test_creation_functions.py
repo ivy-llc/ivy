@@ -493,27 +493,30 @@ def test_full(shape, dtype, fill_value):
 #         ph.assert_dtype("meshgrid", dtype, x.dtype, repr_name=f"out[{i}].dtype")
 #
 #
-# def make_one(dtype: DataType) -> Scalar:
-#     if dtype is None or dh.is_float_dtype(dtype):
-#         return 1.0
-#     elif dh.is_int_dtype(dtype):
-#         return 1
-#     else:
-#         return True
-#
-#
-# @given(hh.shapes(), hh.kwargs(dtype=st.none() | xps.scalar_dtypes()))
-# def test_ones(shape, kw):
-#     out = xp.ones(shape, **kw)
-#     if kw.get("dtype", None) is None:
-#         ph.assert_default_float("ones", out.dtype)
-#     else:
-#         ph.assert_kw_dtype("ones", kw["dtype"], out.dtype)
-#     ph.assert_shape("ones", out.shape, shape, shape=shape)
-#     dtype = kw.get("dtype", None) or dh.default_float
-#     ph.assert_fill("ones", make_one(dtype), dtype, out)
-#
-#
+def make_one(dtype: DataType) -> Scalar:
+    if dtype is None or ivy.is_float_dtype(dtype):
+        return 1.0
+    elif ivy.is_int_dtype(dtype):
+        return 1
+    else:
+        return True
+
+
+@pytest.mark.parametrize('shape', ivy_tests.test_shapes)
+@pytest.mark.parametrize('dtype', list(ivy.all_dtype_strs) + [None])
+def test_ones(shape, dtype):
+    if ivy.invalid_dtype(dtype):
+        pytest.skip()
+
+    out = ivy.ones(shape, dtype=dtype)
+    if dtype is None:
+        dtype = ivy.default_dtype(dtype)
+        assert dtype == out.dtype
+    else:
+        assert dtype == ivy.dtype_to_str(out.dtype)
+    ph.assert_shape("ones", out.shape, shape, shape=shape)
+    assert ivy.to_scalar(ivy.reduce_min(out)) == make_one(dtype)
+    assert ivy.to_scalar(ivy.reduce_max(out)) == make_one(dtype)
 # @given(
 #     x=xps.arrays(dtype=hh.dtypes, shape=hh.shapes()),
 #     kw=hh.kwargs(dtype=st.none() | xps.scalar_dtypes()),
