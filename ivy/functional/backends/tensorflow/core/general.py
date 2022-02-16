@@ -53,7 +53,7 @@ DTYPE_FROM_STR = {'int8': _tf.int8,
 
 # noinspection PyShadowingNames
 def array(object_in, dtype=None, dev=None):
-    dtype = _tf.__dict__[dtype] if dtype else dtype
+    dtype = default_dtype(dtype, object_in)
     dev = default_device(dev)
     with _tf.device(dev_from_str(dev)):
         tensor = _tf.convert_to_tensor(object_in)
