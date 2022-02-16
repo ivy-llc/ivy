@@ -1,0 +1,42 @@
+name: nightly-tests
+on: [push]
+jobs:
+  run-nightly-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout 🛎️Ivy
+        uses: actions/checkout@v2
+        with:
+          path: ivy
+          persist-credentials: false
+          submodules: 'recursive'
+
+      - name: Run JAX Tests
+        env:
+          ARRAY_API_TESTS_MODULE: ivy.functional.backends.jax
+        run: |
+          docker run --rm -v `pwd`/ivy:/ivy unifyai/ivy:latest python3 -m pytest ivy/ivy_tests/test_array_api
+
+      - name: Run MXNet Tests
+        env:
+          ARRAY_API_TESTS_MODULE: ivy.functional.backends.mxnet
+        run: |
+          docker run --rm -v `pwd`/ivy:/ivy unifyai/ivy:latest python3 -m pytest ivy/ivy_tests/test_array_api
+
+      - name: Run NumPy Tests
+        env:
+          ARRAY_API_TESTS_MODULE: ivy.functional.backends.numpy
+        run: |
+          docker run --rm -v `pwd`/ivy:/ivy unifyai/ivy:latest python3 -m pytest ivy/ivy_tests/test_array_api
+
+      - name: Run TensorFlow Tests
+        env:
+          ARRAY_API_TESTS_MODULE: ivy.functional.backends.tensorflow
+        run: |
+          docker run --rm -v `pwd`/ivy:/ivy unifyai/ivy:latest python3 -m pytest ivy/ivy_tests/test_array_api
+
+      - name: Run Torch Tests
+        env:
+          ARRAY_API_TESTS_MODULE: ivy.functional.backends.torch
+        run: |
+          docker run --rm -v `pwd`/ivy:/ivy unifyai/ivy:latest python3 -m pytest ivy/ivy_tests/test_array_api
