@@ -1,4 +1,5 @@
 # global
+import os
 import pytest
 from typing import Dict
 
@@ -21,6 +22,7 @@ TEST_CALL_METHODS: Dict[str, callable] = {'numpy': helpers.np_call,
                                           'torch': helpers.torch_call,
                                           'mxnet': helpers.mx_call}
 
+os.environ['ARRAY_API_TESTS_MODULE'] = 'ivy.functional.backends.numpy'
 
 @pytest.fixture(autouse=True)
 def run_around_tests(dev, f, wrapped_mode, compile_graph, call):
