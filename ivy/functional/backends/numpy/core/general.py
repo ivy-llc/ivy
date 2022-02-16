@@ -81,12 +81,7 @@ def _flat_array_to_1_dim_array(x):
 
 # noinspection PyShadowingNames
 def array(object_in, dtype=None, dev=None):
-    if dtype:
-        dtype = 'bool_' if dtype == 'bool' else dtype
-        dtype = _np.__dict__[dtype]
-    else:
-        dtype = None
-    return _to_dev(_np.array(object_in, dtype=dtype), dev)
+    return _to_dev(_np.array(object_in, dtype=default_dtype(dtype, object_in)), dev)
 
 
 asarray = array
