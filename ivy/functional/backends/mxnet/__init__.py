@@ -42,7 +42,23 @@ all_dtype_strs = ('int8', 'int32', 'int64',
 valid_dtype_strs = all_dtypes
 invalid_dtype_strs = ('int16', 'uint16', 'uint32', 'uint64', 'bfloat16')
 
-iinfo = np.iinfo
+
+def closest_valid_dtype(type):
+    if type is None:
+        return ivy.default_dtype()
+    type_str = dtype_to_str(type)
+    if type_str in invalid_dtype_strs:
+        return {'int16': int32,
+                'uint16': uint8,
+                'uint32': uint8,
+                'uint64': uint8,
+                'bfloat16': float16}[type_str]
+    return type
+
+
+def iinfo(type):
+    return np.iinfo(dtype_from_str(type))
+
 
 class Finfo:
 
@@ -70,8 +86,8 @@ class Finfo:
         return float(self._mx_finfo.tiny)
 
 
-def finfo(datatype_in):
-    return Finfo(np.finfo(datatype_in))
+def finfo(type):
+    return Finfo(np.finfo(dtype_from_str(type)))
 
 
 backend = 'mxnet'

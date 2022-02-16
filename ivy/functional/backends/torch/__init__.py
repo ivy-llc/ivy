@@ -41,7 +41,21 @@ all_dtype_strs = ('int8', 'int16', 'int32', 'int64',
 valid_dtype_strs = all_dtypes
 invalid_dtype_strs = ('uint16', 'uint32', 'uint64')
 
-iinfo = _torch.iinfo
+
+def closest_valid_dtype(type):
+    if type is None:
+        return ivy.default_dtype()
+    type_str = dtype_to_str(type)
+    if type_str in invalid_dtype_strs:
+        return {'uint16': uint8,
+                'uint32': uint8,
+                'uint64': uint8}[type_str]
+    return type
+
+
+def iinfo(type):
+    return _torch.iinfo(dtype_from_str(closest_valid_dtype(type)))
+
 
 class Finfo:
 
@@ -69,8 +83,8 @@ class Finfo:
         return self._torch_finfo.tiny
 
 
-def finfo(datatype_in):
-    return Finfo(_torch.finfo(datatype_in))
+def finfo(type):
+    return Finfo(_torch.finfo(dtype_from_str(type)))
 
 
 backend = 'torch'
