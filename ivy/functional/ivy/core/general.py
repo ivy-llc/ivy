@@ -236,6 +236,19 @@ def shape(x: Union[ivy.Array, ivy.NativeArray], as_array: bool = False, f: ivy.F
     return _cur_framework(x, f=f).shape(x, as_array)
 
 
+def shape_to_tuple(shape: Union[int, Tuple[int], List[int]]):
+    """
+    Returns a tuple representation of the input shape.
+
+    :param shape: The shape input to convert to tuple representation.
+    :retrn: The shape in tuple representation
+    """
+    if isinstance(shape, int):
+        return (shape,)
+    else:
+        return tuple(shape)
+
+
 def get_num_dims(x: Union[ivy.Array, ivy.NativeArray], as_array: bool = False, f: ivy.Framework = None) -> int:
     """
     Returns the number of dimensions of the array x.
