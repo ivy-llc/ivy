@@ -19,4 +19,5 @@ with_time_logs/
 *.csv#
 *.ods
 *.json
+*.suo
 .hypothesis
