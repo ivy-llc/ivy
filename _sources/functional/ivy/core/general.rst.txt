@@ -23,6 +23,7 @@ General
    general/to_scalar.rst
    general/to_list.rst
    general/shape.rst
+   general/shape_to_tuple.rst
    general/get_num_dims.rst
    general/minimum.rst
    general/maximum.rst
