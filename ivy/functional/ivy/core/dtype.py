@@ -116,7 +116,7 @@ def is_int_dtype(dtype_in: Union[ivy.Dtype, str, ivy.Array, ivy.NativeArray, Num
     elif isinstance(dtype_in, np.ndarray):
         return 'int' in dtype_in.dtype.name
     elif isinstance(dtype_in, Number):
-        return True if isinstance(dtype_in, int) else False
+        return True if isinstance(dtype_in, int) and not isinstance(dtype_in, bool) else False
     elif isinstance(dtype_in, (list, tuple, dict)):
         return True if ivy.nested_indices_where(dtype_in, lambda x: isinstance(x, int)) else False
     return 'int' in dtype_to_str(dtype_in)
@@ -162,6 +162,18 @@ def invalid_dtype(dtype_in: Union[ivy.Dtype, str, None]):
     if dtype_in is None:
         return False
     return ivy.dtype_to_str(dtype_in) in ivy.invalid_dtype_strs
+
+
+# noinspection PyShadowingBuiltins
+def closest_valid_dtype(type: Union[ivy.Dtype, str, None], f: ivy.Framework = None):
+    """
+    Determines the closest valid datatype to the datatype passed as input.
+
+    :param type: The data type for which to check the closest valid type for.
+    :param f: Machine learning framework. Inferred from inputs if None.
+    :return: The closest valid data type as a native ivy.Dtype
+    """
+    return _cur_framework(type, f=f).closest_valid_dtype(type)
 
 
 # Dtype Format Conversion #

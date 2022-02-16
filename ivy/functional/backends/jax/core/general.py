@@ -257,9 +257,8 @@ def squeeze(x, axis=None):
 
 
 # noinspection PyShadowingNames
-def zeros(shape, dtype='float32', dev=None):
-    dtype = _jnp.__dict__[dtype]
-    return to_dev(_jnp.zeros(shape, dtype), default_device(dev))
+def zeros(shape, dtype=None, dev=None):
+    return to_dev(_jnp.zeros(shape, dtype_from_str(default_dtype(dtype))), default_device(dev))
 
 
 # noinspection PyShadowingNames
