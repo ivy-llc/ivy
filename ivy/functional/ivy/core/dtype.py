@@ -114,6 +114,7 @@ def is_int_dtype(dtype_in: Union[ivy.Dtype, str, ivy.Array, ivy.NativeArray, Num
         dtype_in = ivy.dtype(dtype_in)
     elif isinstance(dtype_in, Number):
         return True if isinstance(dtype_in, int) else False
+    # ToDo: add support for nests and iterables such as lists, tuples and dicts
     return 'int' in dtype_to_str(dtype_in)
 
 
@@ -128,6 +129,7 @@ def is_float_dtype(dtype_in: Union[ivy.Dtype, str, ivy.Array, ivy.NativeArray, N
         dtype_in = ivy.dtype(dtype_in)
     elif isinstance(dtype_in, Number):
         return True if isinstance(dtype_in, float) else False
+    # ToDo: add support for nests and iterables such as lists, tuples and dicts
     return 'float' in dtype_to_str(dtype_in)
 
 
