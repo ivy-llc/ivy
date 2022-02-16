@@ -247,7 +247,10 @@ def indices_where(x):
     return res
 
 
-isnan = _np.isnan
+def isnan(x):
+    return _np.isnan(x)
+
+
 isinf = _np.isinf
 
 
