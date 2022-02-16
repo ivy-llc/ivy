@@ -241,7 +241,9 @@ def indices_where(x):
 
 
 isnan = _np.isnan
-isinf = _np.isinf
+
+def isinf(x):
+    return _np.isinf(x)
 
 
 def isfinite(x):

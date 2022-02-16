@@ -975,23 +975,27 @@ def test_isfinite(dtype, shape):
             assert bool(out[idx]) == math.isfinite(s)
 #
 #
-# @given(xps.arrays(dtype=xps.numeric_dtypes(), shape=hh.shapes()))
-# def test_isinf(x):
-#     out = xp.isinf(x)
-#
-#     ph.assert_dtype("isfinite", x.dtype, out.dtype, xp.bool)
-#     ph.assert_shape("isinf", out.shape, x.shape)
-#
-#     if dh.is_int_dtype(x.dtype):
-#         ah.assert_exactly_equal(out, ah.false(x.shape))
-#     finite_or_nan = ah.logical_or(ah.isfinite(x), ah.isnan(x))
-#     ah.assert_exactly_equal(out, ah.logical_not(finite_or_nan))
-#
-#     # Test the exact value by comparing to the math version
-#     if dh.is_float_dtype(x.dtype):
-#         for idx in sh.ndindex(x.shape):
-#             s = float(x[idx])
-#             assert bool(out[idx]) == math.isinf(s)
+@pytest.mark.parametrize("dtype", ivy.all_dtype_strs)
+@pytest.mark.parametrize("shape", ivy_tests.test_shapes)
+def test_isinf(dtype, shape):
+    if ivy.invalid_dtype(dtype):
+        pytest.skip()
+    x = ivy.cast(ivy.random_uniform(0, 10, shape), dtype)
+    out = ivy.isinf(x)
+    assert ivy.dtype(out, as_str=True) == 'bool'
+    assert out.shape == x.shape
+
+    if ivy.is_int_dtype(ivy.dtype(x)):
+        assert ivy.array_equal(out, ivy.zeros(x.shape, dtype='bool'))
+    finite_or_nan = ivy.logical_or(ivy.isfinite(x), ivy.isnan(x))
+    assert ivy.array_equal(out, ivy.logical_not(finite_or_nan))
+
+    # Test the exact value by comparing to the math version
+    if ivy.is_float_dtype(x.dtype):
+        for idx in sh.ndindex(x.shape):
+            s = float(x[idx])
+            assert bool(out[idx]) == math.isinf(s)
+
 #
 #
 # @given(xps.arrays(dtype=xps.numeric_dtypes(), shape=hh.shapes()))
