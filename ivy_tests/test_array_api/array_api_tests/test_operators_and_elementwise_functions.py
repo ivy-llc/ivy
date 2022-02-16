@@ -677,15 +677,13 @@ def test_cos(dtype, shape):
     ph.assert_shape("cos", out.shape, x.shape)
     #checking domain and codomain when the input shape in non-empty.
     if shape != ():
-        assert [ivy.array([1.], dtype=dtype) >= i for i in out]
-        assert [ivy.array([-1.], dtype=dtype) <= i for i in out]
-        assert [ivy.array([-float('inf')], dtype=dtype) < i for i in x]
-        assert [ivy.array([float('inf')], dtype=dtype) > i for i in x]
-
+        ONE = ivy.cast(ivy.broadcast_to(ivy.array([1.]), out.shape), dtype)
+        INFINITY = ivy.cast(ivy.broadcast_to(ivy.array(float('inf')), x.shape), dtype)
+        assert ivy.all(ivy.logical_and((out <= ONE), (out >= -ONE)))
+        assert ivy.all(ivy.logical_and((x < INFINITY), (x>-INFINITY)))
 
     #cos maps (-inf, inf) to [-1, 1]. Values outside this domain are mapped
     #to nan, which is already tested in the special cases.
-    # ah.assert_exactly_equal(domain, codomain)
 #
 #
 # @given(xps.arrays(dtype=xps.floating_dtypes(), shape=hh.shapes()))
