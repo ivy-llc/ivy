@@ -422,7 +422,8 @@ def zeros_like(x, dtype: Optional[str] = None, dev: Optional[str] = None):
 
 def full(shape, fill_value, dtype=None, device=None):
     return _torch.full(
-        shape, fill_value, dtype=dtype_from_str(default_dtype(dtype, fill_value)), device=default_device(device))
+        ivy.shape_to_tuple(shape), fill_value, dtype=dtype_from_str(default_dtype(dtype, fill_value)),
+        device=default_device(device))
 
 
 # noinspection PyShadowingNames
