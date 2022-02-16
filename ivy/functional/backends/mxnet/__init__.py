@@ -15,20 +15,20 @@ Device = mx.context.Context
 Dtype = type
 
 # data types
-int8 = np.dtype('int8')
+int8 = np.int8
 int16 = 'int16'
-int32 = np.dtype('int32')
-int64 = np.dtype('int64')
-uint8 = np.dtype('uint8')
+int32 = np.int32
+int64 = np.int64
+uint8 = np.uint8
 uint16 = 'uint16'
 uint32 = 'uint32'
 uint64 = 'uint64'
 bfloat16 = 'bfloat16'
-float16 = np.dtype('float16')
-float32 = np.dtype('float32')
-float64 = np.dtype('float64')
+float16 = np.float16
+float32 = np.float32
+float64 = np.float64
 # noinspection PyShadowingBuiltins
-bool = np.dtype('bool')
+bool = np.bool
 
 all_dtypes = (int8, int32, int64,
               uint8,
