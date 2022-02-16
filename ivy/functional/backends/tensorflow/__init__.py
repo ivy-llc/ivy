@@ -50,7 +50,7 @@ def closest_valid_dtype(type):
 
 
 def iinfo(type):
-    return tf.experimental.numpy.iinfo(dtype_from_str(type))
+    return tf.experimental.numpy.iinfo(dtype_to_str(type))
 
 
 class Finfo:
