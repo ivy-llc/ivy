@@ -250,6 +250,10 @@ def isfinite(x):
     return _tf.math.is_finite(x)
 
 
+def sign(x):
+    return _tf.math.sign(x)
+
+
 reshape = lambda x, newshape: _tf.reshape(x, (newshape,) if isinstance(newshape, int) else newshape)
 broadcast_to = _tf.broadcast_to
 

@@ -247,6 +247,9 @@ isinf = _np.isinf
 def isfinite(x):
     return _np.isfinite(x)
 
+def sign(x):
+    return _np.sign(x)
+
 
 reshape = _np.reshape
 broadcast_to = _np.broadcast_to

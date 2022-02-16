@@ -407,6 +407,11 @@ def isfinite(x):
     return _mx.nd.contrib.isfinite(x).astype('bool')
 
 
+
+def sign(x):
+    return _mx.nd.contrib.sign(x).astype(dtype)
+
+
 reshape = lambda x, new_shape: x.reshape(new_shape)
 
 
