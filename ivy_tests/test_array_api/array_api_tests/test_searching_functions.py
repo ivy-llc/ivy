@@ -1,18 +1,19 @@
-# import pytest
-# from hypothesis import given
-# from hypothesis import strategies as st
-#
-# from . import _array_module as xp
-# from . import dtype_helpers as dh
-# from . import hypothesis_helpers as hh
-# from . import pytest_helpers as ph
-# from . import shape_helpers as sh
-# from . import xps
-# from .algos import broadcast_shapes
+from numpy import indices
+import pytest
+from hypothesis import given
+from hypothesis import strategies as st
+
+from . import _array_module as xp
+from . import dtype_helpers as dh
+from . import hypothesis_helpers as hh
+from . import pytest_helpers as ph
+from . import shape_helpers as sh
+from . import xps
+from .algos import broadcast_shapes
 #
 # pytestmark = pytest.mark.ci
 #
-#
+#i
 # @given(
 #     x=xps.arrays(
 #         dtype=xps.numeric_dtypes(),
@@ -85,43 +86,57 @@
 #
 # # TODO: skip if opted out
 # @given(xps.arrays(dtype=xps.scalar_dtypes(), shape=hh.shapes(min_side=1)))
-# def test_nonzero(x):
-#     out = xp.nonzero(x)
-#     if x.ndim == 0:
-#         assert len(out) == 1, f"{len(out)=}, but should be 1 for 0-dimensional arrays"
-#     else:
-#         assert len(out) == x.ndim, f"{len(out)=}, but should be {x.ndim=}"
-#     size = out[0].size
-#     for i in range(len(out)):
-#         assert out[i].ndim == 1, f"out[{i}].ndim={x.ndim}, but should be 1"
-#         assert (
-#             out[i].size == size
-#         ), f"out[{i}].size={x.size}, but should be out[0].size={size}"
-#         ph.assert_default_index("nonzero", out[i].dtype, repr_name=f"out[{i}].dtype")
-#     indices = []
-#     if x.dtype == xp.bool:
-#         for idx in sh.ndindex(x.shape):
-#             if x[idx]:
-#                 indices.append(idx)
-#     else:
-#         for idx in sh.ndindex(x.shape):
-#             if x[idx] != 0:
-#                 indices.append(idx)
-#     if x.ndim == 0:
-#         assert out[0].size == len(
-#             indices
-#         ), f"{out[0].size=}, but should be {len(indices)}"
-#     else:
-#         for i in range(size):
-#             idx = tuple(int(x[i]) for x in out)
-#             f_idx = f"Extrapolated index (x[{i}] for x in out)={idx}"
-#             f_element = f"x[{idx}]={x[idx]}"
-#             assert idx in indices, f"{f_idx} results in {f_element}, a zero element"
-#             assert (
-#                 idx == indices[i]
-#             ), f"{f_idx} is in the wrong position, should be {indices.index(idx)}"
-#
-#
+def test_nonzero(x, indice=[], index=[]):
+    if x.shape == 0:
+        assert False, "length of array is zero"
+    else:
+        try:
+            if x != 0:
+                indice.append(index.copy())
+                return indice
+        except:
+            for i in range(0, len(x)):
+                index.append(i)
+                test_nonzero(x=x[i], indice=indice, index=index)
+                index.pop()
+        return indice
+
+    # out = x.nonzero(x)
+    # if x.ndim == 0:
+    #     assert len(out) == 1, f"{len(out)=}, but should be 1 for 0-dimensional arrays"
+    # else:
+    #     assert len(out) == x.ndim, f"{len(out)=}, but should be {x.ndim=}"
+    # size = out[0].size
+    # for i in range(len(out)):
+    #     assert out[i].ndim == 1, f"out[{i}].ndim={x.ndim}, but should be 1"
+    #     assert (
+    #         out[i].size == size
+    #     ), f"out[{i}].size={x.size}, but should be out[0].size={size}"
+    #     ph.assert_default_index("nonzero", out[i].dtype, repr_name=f"out[{i}].dtype")
+    # indices = []
+    # if x.dtype == xp.bool:
+    #     for idx in sh.ndindex(x.shape):
+    #         if x[idx]:
+    #             indices.append(idx)
+    # else:
+    #     for idx in sh.ndindex(x.shape):
+    #         if x[idx] != 0:
+    #             indices.append(idx)
+    # if x.ndim == 0:
+    #     assert out[0].size == len(
+    #         indices
+    #     ), f"{out[0].size=}, but should be {len(indices)}"
+    # else:
+    #     for i in range(size):
+    #         idx = tuple(int(x[i]) for x in out)
+    #         f_idx = f"Extrapolated index (x[{i}] for x in out)={idx}"
+    #         f_element = f"x[{idx}]={x[idx]}"
+    #         assert idx in indices, f"{f_idx} results in {f_element}, a zero element"
+    #         assert (
+    #             idx == indices[i]
+    #         ), f"{f_idx} is in the wrong position, should be {indices.index(idx)}"
+
+
 # @given(
 #     shapes=hh.mutually_broadcastable_shapes(3),
 #     dtypes=hh.mutually_promotable_dtypes(),
