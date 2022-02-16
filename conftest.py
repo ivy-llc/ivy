@@ -22,7 +22,8 @@ TEST_CALL_METHODS: Dict[str, callable] = {'numpy': helpers.np_call,
                                           'torch': helpers.torch_call,
                                           'mxnet': helpers.mx_call}
 
-os.environ['ARRAY_API_TESTS_MODULE'] = 'ivy.functional.backends.numpy'
+if 'ARRAY_API_TESTS_MODULE' not in os.environ:
+    os.environ['ARRAY_API_TESTS_MODULE'] = 'ivy.functional.backends.numpy'
 
 @pytest.fixture(autouse=True)
 def run_around_tests(dev, f, wrapped_mode, compile_graph, call):
@@ -89,6 +90,6 @@ def pytest_generate_tests(metafunc):
 
 def pytest_addoption(parser):
     parser.addoption('--dev', action="store", default="cpu")
-    parser.addoption('--framework', action="store", default="numpy,jax,tensorflow,torch")
+    parser.addoption('--framework', action="store", default="jax,mxnet,numpy,tensorflow,torch")
     parser.addoption('--wrapped_mode', action="store", default="both")
     parser.addoption('--compile_graph', action="store", default="true")
