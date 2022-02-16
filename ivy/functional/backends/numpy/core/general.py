@@ -133,6 +133,10 @@ def argmin(x, axis=0):
     return ret
 
 
+def min(x, axis = None, keepdims = False, device = None):
+    return _to_dev(_np.amin(x, axis = axis, keepdims = keepdims), device)
+
+
 argsort = lambda x, axis=-1: _np.asarray(_np.argsort(x, axis))
 
 

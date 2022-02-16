@@ -1,27 +1,29 @@
-# import math
-# import pytest
-# from typing import Optional
-#
-# from hypothesis import assume, given
-# from hypothesis import strategies as st
-# from hypothesis.control import reject
-#
-# from . import _array_module as xp
-# from . import dtype_helpers as dh
-# from . import hypothesis_helpers as hh
-# from . import pytest_helpers as ph
-# from . import shape_helpers as sh
-# from . import xps
-# from .typing import DataType
-#
-# pytestmark = pytest.mark.ci
-#
-#
+import math
+import pytest
+from typing import Optional
+
+from hypothesis import assume, given
+from hypothesis import strategies as st
+from hypothesis.control import reject
+
+import ivy
+import ivy_tests
+from . import _array_module as xp
+from . import dtype_helpers as dh
+from . import hypothesis_helpers as hh
+from . import pytest_helpers as ph
+from . import shape_helpers as sh
+from . import xps
+from .typing import DataType
+
+pytestmark = pytest.mark.ci
+
+
 # def kwarg_dtypes(dtype: DataType) -> st.SearchStrategy[Optional[DataType]]:
 #     dtypes = [d2 for d1, d2 in dh.promotion_table if d1 == dtype]
 #     return st.none() | st.sampled_from(dtypes)
 #
-#
+
 # @given(
 #     x=xps.arrays(
 #         dtype=xps.numeric_dtypes(),
@@ -81,18 +83,16 @@
 #
 #
 # @given(
-#     x=xps.arrays(
-#         dtype=xps.numeric_dtypes(),
-#         shape=hh.shapes(min_side=1),
-#         elements={"allow_nan": False},
+#     x = xps.arrays(
+#         dtype = xps.numeric_dtypes(),
+#         shape = hh.shapes(min_side = 1),
+#         elements = {"allow_nan": False},
 #     ),
-#     data=st.data(),
+#     data = st.data(),
 # )
 # def test_min(x, data):
-#     kw = data.draw(hh.kwargs(axis=hh.axes(x.ndim), keepdims=st.booleans()), label="kw")
-#
-#     out = xp.min(x, **kw)
-#
+#     # kw = data.draw(hh.kwargs(axis = hh.axes(x.ndim), keepdims = st.booleans()), label = "kw")
+#     out = ivy.min(x, **kw)
 #     ph.assert_dtype("min", x.dtype, out.dtype)
 #     _axes = sh.normalise_axis(kw.get("axis", None), x.ndim)
 #     ph.assert_keepdimable_shape(
@@ -107,8 +107,18 @@
 #             elements.append(s)
 #         expected = min(elements)
 #         ph.assert_scalar_equals("min", scalar_type, out_idx, min_, expected)
-#
-#
+
+@pytest.mark.parametrize("x", [[[0, 1], [2, 3]], [[0.0, 1.0], [2.0, 3.0]]])
+@pytest.mark.parametrize("axis", [None, 0, 1])
+@pytest.mark.parametrize("keepdims", [True, False])
+
+def test_min(x, axis, keepdims):
+    print(len(x), len(x[0]))
+    out = ivy.min(x, axis, keepdims)
+    print(ivy.reduce_min(out))
+    assert ivy.reduce_min(out) == 0
+
+
 # @given(
 #     x=xps.arrays(
 #         dtype=xps.numeric_dtypes(),

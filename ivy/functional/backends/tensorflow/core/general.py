@@ -110,6 +110,11 @@ def argmin(x, axis=0):
     return ret
 
 
+def min(x, axis = None, keepdims = False, device = None):
+    with _tf.device(dev_from_str(default_device(device))):
+        return _tf.math.reduce_min(x, axis, keepdims)
+
+
 argsort = lambda x, axis=-1: _tf.argsort(x, axis)
 
 

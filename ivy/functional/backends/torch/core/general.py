@@ -135,6 +135,14 @@ def argmin(x, axis: int = 0):
     return ret
 
 
+def min(x, axis = None, keepdims = False, device = None):
+    x = _torch.FloatTensor(x)
+    if axis == None:
+        return _torch.min(x)
+    else:
+        return _torch.min(input = x, dim = int(axis), keepdim = keepdims).values
+
+
 def argsort(x, axis: int = -1):
     return _torch.argsort(x, axis)
 

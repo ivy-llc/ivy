@@ -143,6 +143,11 @@ def argmin(x, axis=0):
     return ret
 
 
+
+def min(x, axis = None, keepdims = False, device = None):
+    return to_dev(_jnp.min(_jnp.asarray(x), axis = axis, keepdims = keepdims), default_device(device))
+
+
 argsort = lambda x, axis=-1: _jnp.argsort(x, axis)
 
 
