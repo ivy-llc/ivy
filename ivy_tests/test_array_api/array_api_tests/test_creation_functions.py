@@ -529,26 +529,29 @@ def test_full(shape, dtype, fill_value):
 #     ph.assert_fill("ones_like", make_one(dtype), dtype, out)
 #
 #
-# def make_zero(dtype: DataType) -> Scalar:
-#     if dtype is None or dh.is_float_dtype(dtype):
-#         return 0.0
-#     elif dh.is_int_dtype(dtype):
-#         return 0
-#     else:
-#         return False
-#
-#
-# @given(hh.shapes(), hh.kwargs(dtype=st.none() | xps.scalar_dtypes()))
-# def test_zeros(shape, kw):
-#     out = xp.zeros(shape, **kw)
-#     if kw.get("dtype", None) is None:
-#         ph.assert_default_float("zeros", out.dtype)
-#     else:
-#         ph.assert_kw_dtype("zeros", kw["dtype"], out.dtype)
-#     ph.assert_shape("zeros", out.shape, shape, shape=shape)
-#     dtype = kw.get("dtype", None) or dh.default_float
-#     ph.assert_fill("zeros", make_zero(dtype), dtype, out)
-#
+def make_zero(dtype: DataType) -> Scalar:
+    if dtype is None or dh.is_float_dtype(dtype):
+        return 0.0
+    elif dh.is_int_dtype(dtype):
+        return 0
+    else:
+        return False
+
+
+@pytest.mark.parametrize('shape', ivy_tests.test_shapes)
+@pytest.mark.parametrize('dtype', list(ivy.all_dtype_strs))
+def test_zeros(shape, dtype):
+    if ivy.invalid_dtype(dtype):
+        pytest.skip()
+    out = ivy.zeros(shape, dtype=dtype)
+    if dtype is None:
+        dtype = ivy.default_dtype(dtype)
+        assert dtype == out.dtype
+    else:
+        assert dtype == ivy.dtype_to_str(out.dtype)
+    ph.assert_shape("zeros", out.shape, shape, shape=shape)
+    assert ivy.to_scalar(ivy.reduce_min(out)) == make_zero(dtype)
+    assert ivy.to_scalar(ivy.reduce_max(out)) == make_zero(dtype)
 #
 # @given(
 #     x=xps.arrays(dtype=hh.dtypes, shape=hh.shapes()),
