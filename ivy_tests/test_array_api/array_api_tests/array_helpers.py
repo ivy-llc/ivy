@@ -232,6 +232,12 @@ def assert_integral(x):
     """
     assert all(isintegral(x)), "The input array has nonintegral values"
 
+def less_equal(x, y):
+    """
+    Check that x is less or equal to y
+    """
+    return x <= y
+
 def isodd(x):
     return logical_and(
         isintegral(x),

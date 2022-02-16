@@ -807,21 +807,27 @@ pytestmark = pytest.mark.ci
 #
 #
 # @given(xps.arrays(dtype=xps.numeric_dtypes(), shape=hh.shapes()))
-# def test_floor(x):
-#     # This test is almost identical to test_ceil
-#     out = xp.floor(x)
-#     ph.assert_dtype("floor", x.dtype, out.dtype)
-#     ph.assert_shape("floor", out.shape, x.shape)
-#     finite = ah.isfinite(x)
-#     ah.assert_integral(out[finite])
-#     assert ah.all(ah.less_equal(out[finite], x[finite]))
-#     assert ah.all(
-#         ah.less_equal(x[finite] - out[finite], ah.one(x[finite].shape, x.dtype))
-#     )
-#     integers = ah.isintegral(x)
-#     ah.assert_exactly_equal(out[integers], x[integers])
-#
-#
+
+@pytest.mark.parametrize("dtype", ivy.all_dtype_strs)
+@pytest.mark.parametrize("shape", ivy_tests.test_shapes)
+def test_floor(dtype, shape):
+    # This test is almost identical to test_ceil
+    if ivy.invalid_dtype(dtype):
+        pytest.skip()
+    x = ivy.cast(ivy.random_uniform(0, 10, shape), dtype)
+    out = ivy.cast(ivy.floor(x), dtype)
+    assert out.dtype == x.dtype
+    assert out.shape == x.shape
+    finite = ivy.isfinite(x)
+    ah.assert_integral(ivy.cast(out[finite], int))
+
+    assert ah.all(ah.less_equal(out[finite], x[finite]))
+    assert ah.all(
+        ah.less_equal(x[finite] - out[finite], ah.one(x[finite].shape, x.dtype))
+    )
+    #integers = ah.isintegral(x)
+    #ah.assert_exactly_equal(out[integers], x[integers])
+
 # @pytest.mark.parametrize(
 #     binary_argnames, make_binary_params("floor_divide", dh.numeric_dtypes)
 # )

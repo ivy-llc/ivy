@@ -115,8 +115,11 @@ clip = lambda x, x_min, x_max: _np.asarray(_np.clip(x, x_min, x_max))
 round = lambda x: _np.asarray(_np.round(x))
 floormod = lambda x, y: _np.asarray(x % y)
 floor = lambda x: _np.asarray(_np.floor(x))
+less_equal = lambda x, y: _np.asarray(_np.less_equal(x, y))
 ceil = lambda x: _np.asarray(_np.ceil(x))
 abs = lambda x: _np.asarray(_np.absolute(x))
+assert_integral = lambda x: _np.asarray(_np.issubdtype(x, int))
+remainder = lambda x, y: _np.remainder(x, y)
 
 
 def argmax(x, axis=0):
@@ -139,6 +142,17 @@ argsort = lambda x, axis=-1: _np.asarray(_np.argsort(x, axis))
 def cast(x, dtype):
     return x.astype(dtype_from_str(dtype))
 
+def assert_integral(x):
+    """
+    Check that x has only integer values
+    """
+    return _np.asarray(_np.issubdtype(x, int))
+
+def remainder(x, y):
+    """
+    Check that x has only integer values
+    """
+    return _np.remainder(x, y)
 
 # noinspection PyShadowingNames
 def arange(stop, start=0, step=1, dtype=None, dev=None):
@@ -247,6 +261,11 @@ isinf = _np.isinf
 def isfinite(x):
     return _np.isfinite(x)
 
+def floor(x):
+    return _np.floor(x)
+
+def less_equal(x, y):
+    return _np.less_equal(x, y)
 
 reshape = _np.reshape
 broadcast_to = _np.broadcast_to
@@ -282,10 +301,8 @@ def full(shape, fill_value, dtype=None, device=None):
 
 
 # noinspection PyShadowingNames
-def ones(shape, dtype='float32', dev=None):
-    dtype = 'bool_' if dtype == 'bool' else dtype
-    dtype = _np.__dict__[dtype]
-    return _to_dev(_np.ones(shape, dtype), dev)
+def ones(shape, dtype=None, dev=None):
+    return _to_dev(_np.ones(shape, dtype_from_str(default_dtype(dtype))), dev)
 
 
 # noinspection PyShadowingNames

@@ -249,6 +249,8 @@ isinf = _jnp.isinf
 def isfinite(x):
     return _jnp.isfinite(x)
 
+def floor(x):
+    return _jnp.floor(x)
 
 reshape = _jnp.reshape
 broadcast_to = _jnp.broadcast_to

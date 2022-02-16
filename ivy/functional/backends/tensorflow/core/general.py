@@ -249,6 +249,8 @@ def isfinite(x):
         return _tf.ones_like(x, _tf.bool)
     return _tf.math.is_finite(x)
 
+def floor(x):
+    return _tf.floor(x)
 
 reshape = lambda x, newshape: _tf.reshape(x, (newshape,) if isinstance(newshape, int) else newshape)
 broadcast_to = _tf.broadcast_to
