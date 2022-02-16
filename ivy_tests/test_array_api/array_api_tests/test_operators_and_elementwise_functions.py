@@ -985,8 +985,6 @@ def test_sign(dtype, shape):
     assert out.shape == x.shape
     #TODO
 
-
-
 #
 #
 # @given(xps.arrays(dtype=xps.numeric_dtypes(), shape=hh.shapes()))
