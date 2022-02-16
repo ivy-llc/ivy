@@ -121,7 +121,7 @@ def _handle_flat_arrays_in_out(fn, include_out=True):
 
 def array(object_in, dtype=None, dev=None):
     cont = _mxnet_init_context(default_device(dev))
-    return _mx.nd.array(object_in, cont, dtype=dtype)
+    return _mx.nd.array(object_in, cont, dtype=default_dtype(dtype, object_in))
 
 
 asarray = array
