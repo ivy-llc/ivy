@@ -260,12 +260,9 @@ def squeeze(x, axis=None):
     return _np.squeeze(x, axis)
 
 
-# noinspection PyShadowingNames
-def zeros(shape, dtype='float32', dev=None):
-    dtype = 'bool_' if dtype == 'bool' else dtype
-    dtype = _np.__dict__[dtype]
-    return _to_dev(_np.zeros(shape, dtype), dev)
-
+def zeros(shape, dtype=None, dev=None):
+    dev = default_device(dev)
+    return _to_dev(_np.zeros(shape, dtype_from_str(default_dtype(dtype))), dev)
 
 # noinspection PyShadowingNames
 def zeros_like(x, dtype=None, dev=None):
