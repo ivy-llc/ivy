@@ -42,7 +42,10 @@ all_dtype_strs = ('int8', 'int16', 'int32', 'int64',
 valid_dtype_strs = all_dtypes
 invalid_dtype_strs = ('bfloat16',)
 
-iinfo = np.iinfo
+
+def iinfo(type):
+    return np.iinfo(dtype_from_str(type))
+
 
 class Finfo:
 
@@ -70,8 +73,8 @@ class Finfo:
         return float(self._np_finfo.tiny)
 
 
-def finfo(datatype_in):
-    return Finfo(np.finfo(datatype_in))
+def finfo(type):
+    return Finfo(np.finfo(dtype_from_str(type)))
 
 
 backend = 'numpy'
