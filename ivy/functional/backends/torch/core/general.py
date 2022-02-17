@@ -506,7 +506,12 @@ def meshgrid(*xs, indexing='ij'):
 
 
 # noinspection PyShadowingNames
-def scatter_flat(indices, updates, size: int, reduction: str = 'sum', dev: Optional[str] = None):
+def scatter_flat(indices, updates, size: Optional[int] = None, tensor: Optional[_torch.Tensor] = None,
+                 reduction: str = 'sum', dev: Optional[str] = None):
+    target = tensor
+    target_given = ivy.exists(target)
+    if ivy.exists(size) and ivy.exists(target):
+        assert len(target.shape) == 1 and target.shape[0] == size
     if dev is None:
         dev = _callable_dev(updates)
     dtype = updates.dtype
@@ -518,7 +523,10 @@ def scatter_flat(indices, updates, size: int, reduction: str = 'sum', dev: Optio
         initial_val = _torch.tensor(-1e12).type(dtype).to(dev_from_str(dev))
     else:
         raise Exception('reduction is {}, but it must be one of "sum", "min" or "max"'.format(reduction))
-    output = _torch.ones([size], dtype=dtype).to(dev_from_str(dev)) * initial_val
+    if target_given:
+        output = tensor
+    else:
+        output = _torch.ones([size], dtype=dtype).to(dev_from_str(dev)) * initial_val
     global torch_scatter
     if torch_scatter is None:
         try:
@@ -526,7 +534,8 @@ def scatter_flat(indices, updates, size: int, reduction: str = 'sum', dev: Optio
         except:
             raise Exception('Unable to import torch_scatter, verify this is correctly installed.')
     res = torch_scatter.scatter(updates, indices.type(_torch.int64), out=output, reduce=reduction)
-    res = _torch.where(res == initial_val, _torch.zeros([size], dtype=updates.dtype).to(dev_from_str(dev)), res)
+    if not target_given:
+        return _torch.where(res == initial_val, _torch.zeros([size], dtype=updates.dtype).to(dev_from_str(dev)), res)
     return res
 
 

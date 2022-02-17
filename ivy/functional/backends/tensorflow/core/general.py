@@ -341,29 +341,32 @@ meshgrid = lambda *xs, indexing='ij': _tf.meshgrid(*xs, indexing=indexing)
 
 
 # noinspection PyShadowingNames
-def scatter_flat(indices, updates, size, reduction='sum', dev=None):
+def scatter_flat(indices, updates, size=None, tensor=None, reduction='sum', dev=None):
+    target = tensor
+    target_given = ivy.exists(target)
+    if ivy.exists(size) and ivy.exists(target):
+        assert len(target.shape) == 1 and target.shape[0] == size
     if dev is None:
         dev = _dev_callable(updates)
     dtype = updates.dtype
     if reduction == 'sum':
+        if target_given:
+            return _tf.tensor_scatter_nd_add(tensor, _tf.expand_dims(indices, -1), updates)
         return _tf.scatter_nd(_tf.expand_dims(indices, -1), updates, [size])
     elif reduction == 'min':
-        func = _tf.compat.v1.scatter_min
-        initial_val = _tf.cast(_tf.constant(2 ** 31 - 1), dtype)
+        if not target_given:
+            target = _tf.fill([size], _tf.cast(1e12, dtype))
+        res = _tf.tensor_scatter_nd_min(target, _tf.expand_dims(indices, -1), updates)
+        if not target_given:
+            res = _tf.where(res == 1e12, 0., res)
     elif reduction == 'max':
-        func = _tf.compat.v1.scatter_max
-        initial_val = _tf.cast(_tf.constant(-(2 ** 31 - 1)), dtype)
+        if not target_given:
+            target = _tf.fill([size], _tf.cast(-1e12, dtype))
+        res = _tf.tensor_scatter_nd_max(target, _tf.expand_dims(indices, -1), updates)
+        if not target_given:
+            res = _tf.where(res == -1e12, 0., res)
     else:
         raise Exception('reduction is {}, but it must be one of "sum", "min" or "max"'.format(reduction))
-    global TF_SCATTER_VAR
-    if size not in TF_SCATTER_VAR:
-        TF_SCATTER_VAR[size] = {dtype: _tf.Variable(_tf.ones(size, dtype=dtype) * initial_val, trainable=False)}
-    elif dtype not in TF_SCATTER_VAR[size]:
-        TF_SCATTER_VAR[size][dtype] = _tf.Variable(_tf.ones(size, dtype=dtype) * initial_val, trainable=False)
-    else:
-        TF_SCATTER_VAR[size][dtype].assign(_tf.ones(size, dtype=dtype) * initial_val)
-    res = _tf.convert_to_tensor(func(TF_SCATTER_VAR[size][dtype], indices, updates))
-    res = _tf.where(res == initial_val, _tf.zeros(size, dtype=updates.dtype), res)
     with _tf.device(dev_from_str(dev)):
         return res
 
