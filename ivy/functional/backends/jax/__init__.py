@@ -1,12 +1,12 @@
 import sys
 import ivy
+from jax.config import config
+config.update("jax_enable_x64", True)
 import jax as _jax
 # noinspection PyPackageRequirements
 import jaxlib
 import jax.numpy as jnp
 from jaxlib.xla_extension import Buffer
-from jax.config import config
-config.update("jax_enable_x64", True)
 
 # make ivy.Container compatible with jax pytree traversal
 from jax.tree_util import register_pytree_node
@@ -38,15 +38,15 @@ Dtype = jnp.dtype
 int8 = jnp.dtype('int8')
 int16 = jnp.dtype('int16')
 int32 = jnp.dtype('int32')
-int64 = 'int64'
+int64 = jnp.dtype('int64')
 uint8 = jnp.dtype('uint8')
 uint16 = jnp.dtype('uint16')
 uint32 = jnp.dtype('uint32')
-uint64 = 'uint64'
+uint64 = jnp.dtype('uint64')
 bfloat16 = jnp.dtype('bfloat16')
 float16 = jnp.dtype('float16')
 float32 = jnp.dtype('float32')
-float64 = 'float64'
+float64 = jnp.dtype('float64')
 # noinspection PyShadowingBuiltins
 bool = jnp.dtype('bool')
 
@@ -54,13 +54,13 @@ all_dtypes = (int8, int16, int32,
               uint8, uint16, uint32, uint64,
               bfloat16, float16, float32)
 valid_dtypes = all_dtypes
-invalid_dtypes = (int64, uint64, float64)
+invalid_dtypes = ()
 
-all_dtype_strs = ('int8', 'int16', 'int32',
-                  'uint8', 'uint16', 'uint32',
-                  'bfloat16', 'float16', 'float32')
+all_dtype_strs = ('int8', 'int16', 'int32', 'int64',
+                  'uint8', 'uint16', 'uint32', 'uint64',
+                  'bfloat16', 'float16', 'float32', 'float64')
 valid_dtype_strs = all_dtypes
-invalid_dtype_strs = ('int64', 'uint64', 'float64')
+invalid_dtype_strs = ()
 
 
 def closest_valid_dtype(type):
