@@ -556,7 +556,9 @@ def scatter_flat(indices, updates, size=None, tensor=None, reduction='sum', dev=
 
 
 # noinspection PyShadowingNames
-def scatter_nd(indices, updates, shape, reduction='sum', dev=None):
+def scatter_nd(indices, updates, shape=None, tensor=None, reduction='sum', dev=None):
+    if ivy.exists(tensor):
+        raise Exception('MXNet scatter_flat does not support scattering into an pre-existing tensor.')
     if dev is None:
         dev = _callable_dev(indices)
     shape = list(shape)

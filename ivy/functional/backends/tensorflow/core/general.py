@@ -9,9 +9,7 @@ import numpy as _np
 import math as _math
 import tensorflow as _tf
 from numbers import Number
-from operator import mul as _mul
 import tensorflow_probability as _tfp
-from functools import reduce as _reduce
 import multiprocessing as _multiprocessing
 from tensorflow.python.types.core import Tensor
 
@@ -334,9 +332,6 @@ def identity(n, dtype='float32', batch_shape=None, dev=None):
         return _tf.eye(n, n, batch_shape=batch_shape, dtype=dtype)
 
 
-TF_SCATTER_VAR = {}
-
-
 meshgrid = lambda *xs, indexing='ij': _tf.meshgrid(*xs, indexing=indexing)
 
 
@@ -372,45 +367,34 @@ def scatter_flat(indices, updates, size=None, tensor=None, reduction='sum', dev=
 
 
 # noinspection PyShadowingNames
-def scatter_nd(indices, updates, shape, reduction='sum', dev=None):
+def scatter_nd(indices, updates, shape=None, tensor=None, reduction='sum', dev=None):
+    target = tensor
+    target_given = ivy.exists(target)
+    if ivy.exists(shape) and ivy.exists(target):
+        assert ivy.shape_to_tuple(target.shape) == ivy.shape_to_tuple(shape)
     if dev is None:
         dev = _dev_callable(updates)
-    shape = list(shape)
+    shape = list(shape) if ivy.exists(shape) else list(tensor.shape)
     dtype = updates.dtype
     if reduction == 'sum':
+        if target_given:
+            return _tf.tensor_scatter_nd_add(tensor, indices, updates)
         return _tf.scatter_nd(indices, updates, shape)
     elif reduction == 'min':
-        func = _tf.compat.v1.scatter_min
-        initial_val = _tf.cast(_tf.constant(2 ** 31 - 1), dtype)
+        if not target_given:
+            target = _tf.fill(shape, _tf.cast(1e12, dtype))
+        res = _tf.tensor_scatter_nd_min(target, indices, updates)
+        if not target_given:
+            res = _tf.where(res == 1e12, 0., res)
     elif reduction == 'max':
-        func = _tf.compat.v1.scatter_max
-        initial_val = _tf.cast(_tf.constant(-(2 ** 31 - 1)), dtype)
+        if not target_given:
+            target = _tf.fill(shape, _tf.cast(-1e12, dtype))
+        res = _tf.tensor_scatter_nd_max(target, indices, updates)
+        if not target_given:
+            res = _tf.where(res == -1e12, 0., res)
     else:
         raise Exception('reduction is {}, but it must be one of "sum", "min" or "max"'.format(reduction))
-    indices_shape = indices.shape
-    num_index_dims = indices_shape[-1]
-    result_dim_sizes_list = [_reduce(_mul, shape[i + 1:], 1) for i in range(len(shape) - 1)] + [1]
-    result_dim_sizes = _tf.constant(result_dim_sizes_list)
-    implicit_indices_factor = result_dim_sizes[num_index_dims - 1]
-    flat_result_size = _reduce(_mul, shape, 1)
-    global TF_SCATTER_VAR
-    if flat_result_size not in TF_SCATTER_VAR:
-        TF_SCATTER_VAR[flat_result_size] = {dtype: _tf.Variable(_tf.ones(flat_result_size, dtype=dtype) * initial_val, trainable=False)}
-    elif dtype not in TF_SCATTER_VAR[flat_result_size]:
-        TF_SCATTER_VAR[flat_result_size][dtype] = _tf.Variable(_tf.ones(flat_result_size, dtype=dtype) * initial_val, trainable=False)
-    else:
-        TF_SCATTER_VAR[flat_result_size][dtype].assign(_tf.ones(flat_result_size, dtype=dtype) * initial_val)
-    flat_updates = _tf.reshape(updates, (-1,))
-    new_shape = [1] * (len(indices_shape) - 1) + [num_index_dims]
-    indices_scales = _tf.reshape(result_dim_sizes[0:num_index_dims], new_shape)
-    indices_for_flat_tiled = _tf.tile(_tf.reshape(_tf.reduce_sum(indices * indices_scales, -1, keepdims=True), (-1, 1)), [1, implicit_indices_factor])
-    implicit_indices = _tf.tile(_tf.expand_dims(_tf.range(implicit_indices_factor), 0), _tf.stack((_tf.shape(indices_for_flat_tiled)[0], _tf.constant(1))))
-    indices_for_flat = indices_for_flat_tiled + implicit_indices
-    flat_indices_for_flat = _tf.reshape(indices_for_flat, (-1,))
-    flat_scatter = _tf.convert_to_tensor(func(TF_SCATTER_VAR[flat_result_size][dtype], flat_indices_for_flat, flat_updates))
-    flat_scatter = _tf.where(flat_scatter == initial_val, _tf.zeros(flat_result_size, dtype=updates.dtype), flat_scatter)
     with _tf.device(dev_from_str(dev)):
-        res = _tf.reshape(flat_scatter, list(shape))
         return res
 
 
