@@ -248,7 +248,11 @@ class Array(ArrayWithDevice, ArrayWithGeneral, ArrayWithGradients, ArrayWithImag
 
     @_native_wrapper
     def __int__(self):
-        res = self._data.__int__()
+        if hasattr(self._data, '__int__'):
+            res = self._data.__int__()
+        else:
+            # noinspection PyTypeChecker
+            res = int(ivy.to_scalar(self._data))
         if res is NotImplemented:
             return res
         return to_ivy(res)
