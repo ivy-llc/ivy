@@ -1889,8 +1889,6 @@ def test_meshgrid(xs, indexing, dtype, tensor_fn, dev, call):
     "inds_n_upd_n_size_n_tnsr", [([0, 4, 1, 2], [1, 2, 3, 4], 8, None),
                                    ([0, 4, 1, 2, 0], [1, 2, 3, 4, 5], 8, None),
                                    ([0, 4, 1, 2, 0], [1, 2, 3, 4, 5], None, [11, 10, 9, 8, 7, 6])])
-# @pytest.mark.parametrize(
-#     "inds_n_upd_n_size_n_tnsr", [([0, 4, 1, 2], [1, 2, 3, 4], 8, None)])
 @pytest.mark.parametrize(
     "red", ['sum', 'min', 'max', 'replace'])
 @pytest.mark.parametrize(
@@ -1902,8 +1900,8 @@ def test_scatter_flat(inds_n_upd_n_size_n_tnsr, red, dtype, tensor_fn, dev, call
     if red in ('sum', 'min', 'max') and call is helpers.mx_call:
         # mxnet does not support sum, min or max reduction for scattering
         pytest.skip()
-    if red == 'replace' and call is not helpers.mx_call:
-        # mxnet is the only backend which supports the replace reduction
+    if red == 'replace' and call not in [helpers.mx_call, helpers.tf_call]:
+        # mxnet and tensorflow are the only backends which support the replace reduction
         pytest.skip()
     inds, upd, size, tensor = inds_n_upd_n_size_n_tnsr
     if ivy.exists(tensor) and call is helpers.mx_call:
