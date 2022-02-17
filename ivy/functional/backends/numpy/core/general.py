@@ -341,6 +341,10 @@ def scatter_flat(indices, updates, size=None, tensor=None, reduction='sum', dev=
         if not target_given:
             target = _np.zeros([size], dtype=updates.dtype)
         _np.add.at(target, indices, updates)
+    elif reduction == 'replace':
+        if not target_given:
+            target = _np.zeros([size], dtype=updates.dtype)
+        target[indices] = updates
     elif reduction == 'min':
         if not target_given:
             target = _np.ones([size], dtype=updates.dtype) * 1e12
@@ -373,6 +377,10 @@ def scatter_nd(indices, updates, shape=None, tensor=None, reduction='sum', dev=N
         if not target_given:
             target = _np.zeros(shape, dtype=updates.dtype)
         _np.add.at(target, indices_tuple, updates)
+    elif reduction == 'replace':
+        if not target_given:
+            target = _np.zeros(shape, dtype=updates.dtype)
+        target[indices] = updates
     elif reduction == 'min':
         if not target_given:
             target = _np.ones(shape, dtype=updates.dtype) * 1e12
