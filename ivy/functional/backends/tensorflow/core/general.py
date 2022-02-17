@@ -51,10 +51,10 @@ DTYPE_FROM_STR = {'int8': _tf.int8,
 
 # noinspection PyShadowingNames
 def array(object_in, dtype=None, dev=None):
-    dtype = default_dtype(dtype, object_in)
+    dtype = dtype_from_str(default_dtype(dtype, object_in))
     dev = default_device(dev)
     with _tf.device(dev_from_str(dev)):
-        tensor = _tf.convert_to_tensor(object_in)
+        tensor = _tf.convert_to_tensor(object_in, dtype=dtype)
         if dtype is None:
             return tensor
         return _tf.cast(tensor, dtype)
@@ -261,11 +261,10 @@ def squeeze(x, axis=None):
 
 
 # noinspection PyShadowingNames
-def zeros(shape, dtype='float32', dev=None):
-    dtype = _tf.__dict__[dtype]
+def zeros(shape, dtype=None, dev=None):
     dev = default_device(dev)
     with _tf.device(dev_from_str(dev)):
-        return _tf.zeros(shape, dtype)
+        return _tf.zeros(shape, dtype_from_str(default_dtype(dtype)))
 
 
 # noinspection PyShadowingNames
