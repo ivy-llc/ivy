@@ -53,7 +53,7 @@ def get_referrers_recursive(item, depth=0, max_depth=None, seen_set=None, local_
 
 
 # noinspection PyShadowingNames
-def array(object_in: Union[List, ivy.Array, ivy.NativeArray], dtype: ivy.Dtype = None,
+def array(object_in: Union[List, ivy.Array, ivy.NativeArray], dtype: Union[ivy.Dtype, str] = None,
           dev: ivy.Device = None, f: ivy.Framework = None) -> Union[ivy.Array, ivy.NativeArray]:
     """
     Creates an array.
@@ -1211,7 +1211,8 @@ def meshgrid(*xs: Iterable[Union[ivy.Array, ivy.NativeArray]], indexing: str = '
 
 
 # noinspection PyShadowingNames
-def scatter_flat(indices: Union[ivy.Array, ivy.NativeArray], updates: Union[ivy.Array, ivy.NativeArray], size: int,
+def scatter_flat(indices: Union[ivy.Array, ivy.NativeArray], updates: Union[ivy.Array, ivy.NativeArray],
+                 size: Optional[int] = None, tensor: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
                  reduction: str = 'sum', dev: ivy.Device = None, f: ivy.Framework = None)\
         -> Union[ivy.Array, ivy.NativeArray]:
     """
@@ -1223,6 +1224,8 @@ def scatter_flat(indices: Union[ivy.Array, ivy.NativeArray], updates: Union[ivy.
     :type updates: array
     :param size: The size of the result.
     :type size: int
+    :param tensor: The tensor in which to scatter the results, default is None, in which case the size is used to
+                    scatter into a zeros array.
     :param reduction: The reduction method for the scatter, one of 'sum', 'min', 'max' or 'replace'
     :type reduction: str
     :param dev: device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc. Same as updates if None.
@@ -1231,7 +1234,7 @@ def scatter_flat(indices: Union[ivy.Array, ivy.NativeArray], updates: Union[ivy.
     :type f: ml_framework, optional
     :return: New array of given shape, with the values scattered at the indices.
     """
-    return _cur_framework(indices, f=f).scatter_flat(indices, updates, size, reduction, dev)
+    return _cur_framework(indices, f=f).scatter_flat(indices, updates, size, tensor, reduction, dev)
 
 
 # noinspection PyShadowingNames
