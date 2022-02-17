@@ -27,7 +27,7 @@ def array(object_in, dtype: Optional[str] = None, dev: Optional[str] = None):
     if isinstance(object_in, np.ndarray):
         return _torch.Tensor(object_in).to(dev_from_str(dev))
     if dtype is not None:
-        return _torch.tensor(object_in, dtype=dtype_from_str(dtype), device=dev_from_str(dev))
+        return _torch.tensor(object_in, dtype=dtype_from_str(default_dtype(dtype, object_in)), device=dev_from_str(dev))
     elif isinstance(object_in, _torch.Tensor):
         return object_in.to(dev_from_str(dev))
     else:
@@ -422,7 +422,8 @@ def zeros_like(x, dtype: Optional[str] = None, dev: Optional[str] = None):
 
 def full(shape, fill_value, dtype=None, device=None):
     return _torch.full(
-        shape, fill_value, dtype=dtype_from_str(default_dtype(dtype, fill_value)), device=default_device(device))
+        ivy.shape_to_tuple(shape), fill_value, dtype=dtype_from_str(default_dtype(dtype, fill_value)),
+        device=default_device(device))
 
 
 # noinspection PyShadowingNames

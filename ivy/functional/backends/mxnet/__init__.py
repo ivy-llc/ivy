@@ -15,20 +15,20 @@ Device = mx.context.Context
 Dtype = type
 
 # data types
-int8 = np.dtype('int8')
+int8 = np.int8
 int16 = 'int16'
-int32 = np.dtype('int32')
-int64 = np.dtype('int64')
-uint8 = np.dtype('uint8')
+int32 = np.int32
+int64 = np.int64
+uint8 = np.uint8
 uint16 = 'uint16'
 uint32 = 'uint32'
 uint64 = 'uint64'
 bfloat16 = 'bfloat16'
-float16 = np.dtype('float16')
-float32 = np.dtype('float32')
-float64 = np.dtype('float64')
+float16 = np.float16
+float32 = np.float32
+float64 = np.float64
 # noinspection PyShadowingBuiltins
-bool = np.dtype('bool')
+bool = np.bool
 
 all_dtypes = (int8, int32, int64,
               uint8,
@@ -42,7 +42,23 @@ all_dtype_strs = ('int8', 'int32', 'int64',
 valid_dtype_strs = all_dtypes
 invalid_dtype_strs = ('int16', 'uint16', 'uint32', 'uint64', 'bfloat16')
 
-iinfo = np.iinfo
+
+def closest_valid_dtype(type):
+    if type is None:
+        return ivy.default_dtype()
+    type_str = dtype_to_str(type)
+    if type_str in invalid_dtype_strs:
+        return {'int16': int32,
+                'uint16': uint8,
+                'uint32': uint8,
+                'uint64': uint8,
+                'bfloat16': float16}[type_str]
+    return type
+
+
+def iinfo(type):
+    return np.iinfo(dtype_from_str(type))
+
 
 class Finfo:
 
@@ -70,8 +86,8 @@ class Finfo:
         return float(self._mx_finfo.tiny)
 
 
-def finfo(datatype_in):
-    return Finfo(np.finfo(datatype_in))
+def finfo(type):
+    return Finfo(np.finfo(dtype_from_str(type)))
 
 
 backend = 'mxnet'
