@@ -362,8 +362,9 @@ def scatter_flat(indices, updates, size=None, tensor=None, reduction='sum', dev=
             res = _tf.where(res == -1e12, 0., res)
     elif reduction == 'replace':
         if target_given:
-            return _tf.tensor_scatter_nd_update(tensor, _tf.expand_dims(indices, -1), updates)
-        return _tf.tensor_scatter_nd_update(_tf.zeros([size]), _tf.expand_dims(indices, -1), updates)
+            res = _tf.tensor_scatter_nd_update(tensor, _tf.expand_dims(indices, -1), updates)
+        else:
+            res = _tf.tensor_scatter_nd_update(_tf.zeros([size]), _tf.expand_dims(indices, -1), updates)
     else:
         raise Exception('reduction is {}, but it must be one of "sum", "min" or "max"'.format(reduction))
     with _tf.device(dev_from_str(dev)):
@@ -396,6 +397,11 @@ def scatter_nd(indices, updates, shape=None, tensor=None, reduction='sum', dev=N
         res = _tf.tensor_scatter_nd_max(target, indices, updates)
         if not target_given:
             res = _tf.where(res == -1e12, 0., res)
+    elif reduction == 'replace':
+        if target_given:
+            res = _tf.tensor_scatter_nd_update(tensor, indices, updates)
+        else:
+            res = _tf.tensor_scatter_nd_update(_tf.zeros(shape), indices, updates)
     else:
         raise Exception('reduction is {}, but it must be one of "sum", "min" or "max"'.format(reduction))
     with _tf.device(dev_from_str(dev)):
