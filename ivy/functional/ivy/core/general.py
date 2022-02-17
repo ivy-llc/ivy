@@ -1239,7 +1239,8 @@ def scatter_flat(indices: Union[ivy.Array, ivy.NativeArray], updates: Union[ivy.
 
 # noinspection PyShadowingNames
 def scatter_nd(indices: Union[ivy.Array, ivy.NativeArray], updates: Union[ivy.Array, ivy.NativeArray],
-               shape: Iterable[int], reduction: str = 'sum', dev: ivy.Device = None, f: ivy.Framework = None)\
+               shape: Optional[Iterable[int]] = None, tensor: Optional[Union[ivy.Array, ivy.NativeArray]] = None,
+               reduction: str = 'sum', dev: ivy.Device = None, f: ivy.Framework = None)\
         -> Union[ivy.Array, ivy.NativeArray]:
     """
     Scatter updates into a new array according to indices.
@@ -1248,8 +1249,10 @@ def scatter_nd(indices: Union[ivy.Array, ivy.NativeArray], updates: Union[ivy.Ar
     :type indices: array
     :param updates: Values for the new array to hold.
     :type updates: array
-    :param shape: The shape of the result.
+    :param shape: The shape of the result. Default is None, in which case tensor argument must be provided.
     :type shape: sequence of ints
+    :param tensor: The tensor in which to scatter the results, default is None, in which case the shape arg is used to
+                    scatter into a zeros array.
     :param reduction: The reduction method for the scatter, one of 'sum', 'min' or 'max'
     :type reduction: str
     :param dev: device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc. Same as updates if None.
@@ -1258,7 +1261,7 @@ def scatter_nd(indices: Union[ivy.Array, ivy.NativeArray], updates: Union[ivy.Ar
     :type f: ml_framework, optional
     :return: New array of given shape, with the values scattered at the indices.
     """
-    return _cur_framework(indices, f=f).scatter_nd(indices, updates, shape, reduction, dev)
+    return _cur_framework(indices, f=f).scatter_nd(indices, updates, shape, tensor, reduction, dev)
 
 
 # noinspection PyShadowingNames
