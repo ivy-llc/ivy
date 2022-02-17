@@ -1,4 +1,4 @@
-name: nightly-tests
+name: test-ivy
 on: [push]
 jobs:
   run-nightly-tests:
