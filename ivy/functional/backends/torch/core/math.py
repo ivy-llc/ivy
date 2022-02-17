@@ -94,10 +94,14 @@ def log(x):
 def exp(x):
     if isinstance(x, float):
         return math.exp(x)
+    
+    if 'float16' in str(x.dtype):
+        return _torch.exp(x.type(_torch.float32))
     return _torch.exp(x)
-
-
+                          
+                          
 def erf(x):
     if isinstance(x, float):
         return math.erf(x)
     return _torch.erf(x)
+

@@ -3,6 +3,7 @@ Collection of TensorFlow math functions, wrapped to fit Ivy syntax and signature
 """
 
 # global
+import math
 import tensorflow as _tf
 
 sin = _tf.sin
@@ -19,5 +20,12 @@ asinh = _tf.math.asinh
 acosh = _tf.math.acosh
 atanh = _tf.math.atanh
 log = _tf.math.log
-exp = _tf.math.exp
 erf = _tf.math.erf
+
+def exp(x):
+    if isinstance(x, float):
+        return math.exp(x)
+    
+    if x.dtype.is_integer or (x.dtype == _tf.float16):
+        return _tf.math.exp(_tf.cast(x, dtype=_tf.float32))
+    return _tf.math.exp(x)
