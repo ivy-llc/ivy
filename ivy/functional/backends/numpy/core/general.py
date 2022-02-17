@@ -11,6 +11,7 @@ from functools import reduce as _reduce
 import multiprocessing as _multiprocessing
 
 # local
+import ivy
 from ivy.functional.ivy.core import default_dtype
 from ivy.functional.backends.numpy.core.device import _dev_callable
 
@@ -329,20 +330,29 @@ def identity(n, dtype='float32', batch_shape=None, dev=None):
 meshgrid = lambda *xs, indexing='ij': _np.meshgrid(*xs, indexing=indexing)
 
 
-def scatter_flat(indices, updates, size, reduction='sum', dev=None):
+def scatter_flat(indices, updates, size=None, tensor=None, reduction='sum', dev=None):
+    target = tensor
+    target_given = ivy.exists(target)
+    if ivy.exists(size) and ivy.exists(target):
+        assert len(target.shape) == 1 and target.shape[0] == size
     if dev is None:
         dev = _dev_callable(updates)
     if reduction == 'sum':
-        target = _np.zeros([size], dtype=updates.dtype)
+        if not target_given:
+            target = _np.zeros([size], dtype=updates.dtype)
         _np.add.at(target, indices, updates)
     elif reduction == 'min':
-        target = _np.ones([size], dtype=updates.dtype) * 1e12
+        if not target_given:
+            target = _np.ones([size], dtype=updates.dtype) * 1e12
         _np.minimum.at(target, indices, updates)
-        target = _np.where(target == 1e12, 0., target)
+        if not target_given:
+            target = _np.where(target == 1e12, 0., target)
     elif reduction == 'max':
-        target = _np.ones([size], dtype=updates.dtype) * -1e12
+        if not target_given:
+            target = _np.ones([size], dtype=updates.dtype) * -1e12
         _np.maximum.at(target, indices, updates)
-        target = _np.where(target == -1e12, 0., target)
+        if not target_given:
+            target = _np.where(target == -1e12, 0., target)
     else:
         raise Exception('reduction is {}, but it must be one of "sum", "min" or "max"'.format(reduction))
     return _to_dev(target, dev)

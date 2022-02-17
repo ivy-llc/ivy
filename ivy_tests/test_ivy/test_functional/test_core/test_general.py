@@ -1886,34 +1886,50 @@ def test_meshgrid(xs, indexing, dtype, tensor_fn, dev, call):
 
 # scatter_flat
 @pytest.mark.parametrize(
-    "inds_n_upd_n_size", [([0, 4, 1, 2], [1, 2, 3, 4], 8), ([0, 4, 1, 2, 0], [1, 2, 3, 4, 5], 8)])
+    "inds_n_upd_n_size_n_tensor", [([0, 4, 1, 2], [1, 2, 3, 4], 8, None),
+                                   ([0, 4, 1, 2, 0], [1, 2, 3, 4, 5], 8, None),
+                                   ([0, 4, 1, 2, 0], [1, 2, 3, 4, 5], None, [11, 10, 9, 8, 7, 6])])
+# @pytest.mark.parametrize(
+#     "inds_n_upd_n_size_n_tensor", [([0, 4, 1, 2], [1, 2, 3, 4], 8, None)])
 @pytest.mark.parametrize(
     "red", ['sum', 'min', 'max', 'replace'])
 @pytest.mark.parametrize(
     "dtype", ['float32'])
 @pytest.mark.parametrize(
     "tensor_fn", [ivy.array, helpers.var_fn])
-def test_scatter_flat(inds_n_upd_n_size, red, dtype, tensor_fn, dev, call):
+def test_scatter_flat(inds_n_upd_n_size_n_tensor, red, dtype, tensor_fn, dev, call):
     # smoke test
-    if (red == 'sum' or red == 'min' or red == 'max') and call is helpers.mx_call:
+    if red in ('sum', 'min', 'max') and call is helpers.mx_call:
         # mxnet does not support sum, min or max reduction for scattering
         pytest.skip()
     if red == 'replace' and call is not helpers.mx_call:
         # mxnet is the only backend which supports the replace reduction
         pytest.skip()
-    inds, upd, size = inds_n_upd_n_size
+    inds, upd, size, tensor = inds_n_upd_n_size_n_tensor
+    if ivy.exists(tensor) and call is helpers.mx_call:
+        # mxnet does not support scattering into pre-existing tensors
+        pytest.skip()
     inds = ivy.array(inds, 'int32', dev)
     upd = tensor_fn(upd, dtype, dev)
-    ret = ivy.scatter_flat(inds, upd, size, red, dev)
+    if tensor:
+        # pytorch variables do not support in-place updates
+        tensor = ivy.array(tensor, dtype, dev) if ivy.current_framework_str() == 'torch'\
+            else tensor_fn(tensor, dtype, dev)
+    ret = ivy.scatter_flat(inds, upd, size, tensor, red, dev)
     # type test
     assert ivy.is_array(ret)
     # cardinality test
-    assert ret.shape == (size,)
+    if size:
+        assert ret.shape == (size,)
+    else:
+        assert ret.shape == tensor.shape
     if red == 'replace':
         return
     # value test
-    assert np.allclose(call(ivy.scatter_flat, inds, upd, size, red, dev),
-                       np.asarray(ivy.functional.backends.numpy.scatter_flat(ivy.to_numpy(inds), ivy.to_numpy(upd), size, red)))
+    assert np.allclose(call(ivy.scatter_flat, inds, upd, size, tensor, red, dev),
+                       np.asarray(ivy.functional.backends.numpy.scatter_flat(
+                           ivy.to_numpy(inds), ivy.to_numpy(upd), size,
+                           ivy.to_numpy(tensor) if ivy.exists(tensor) else tensor, red)))
     # compilation test
     if call in [helpers.torch_call]:
         # global torch_scatter var not supported when scripting
