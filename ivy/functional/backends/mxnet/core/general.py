@@ -404,7 +404,8 @@ def isinf(x):
 
 @_handle_flat_arrays_in_out
 def isfinite(x):
-    return _mx.nd.contrib.isfinite(x).astype('bool')
+    # ToDo: remove float32 conversion once int8 and uint8 work correctly. Currently 0 returns 0 for these types.
+    return _mx.nd.contrib.isfinite(x.astype('float32')).astype('bool')
 
 
 reshape = lambda x, new_shape: x.reshape(new_shape)
@@ -435,7 +436,7 @@ def squeeze(x, axis=None):
 # noinspection PyShadowingNames
 def zeros(shape, dtype='float32', dev=None):
     cont = _mxnet_init_context(default_device(dev))
-    if len(shape) == 0:
+    if len(shape) == 0 or 0 in shape:
         return _1_dim_array_to_flat_array(_mx.nd.zeros((1,), ctx=cont).astype(dtype))
     return _mx.nd.zeros(shape, ctx=cont).astype(dtype)
 
@@ -448,8 +449,9 @@ def zeros_like(x, dtype=None, dev=None):
 
 
 def full(shape, fill_value, dtype=None, device=None):
+    shape = ivy.shape_to_tuple(shape)
     cont = _mxnet_init_context(default_device(device))
-    if len(shape) == 0:
+    if len(shape) == 0 or 0 in shape:
         return _1_dim_array_to_flat_array(
             _mx.nd.full((1,), fill_value, cont, dtype_from_str(default_dtype(dtype, fill_value))))
     return _mx.nd.full(shape, fill_value, cont, dtype_from_str(default_dtype(dtype, fill_value)))
