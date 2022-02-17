@@ -337,6 +337,10 @@ def scatter_flat(indices, updates, size=None, tensor=None, reduction='sum', dev=
         if not target_given:
             target = _jnp.zeros([size], dtype=updates.dtype)
         target = target.at[indices].add(updates)
+    elif reduction == 'replace':
+        if not target_given:
+            target = _jnp.zeros([size], dtype=updates.dtype)
+        target = target.at[indices].set(updates)
     elif reduction == 'min':
         if not target_given:
             target = _jnp.ones([size], dtype=updates.dtype)*1e12
@@ -369,6 +373,10 @@ def scatter_nd(indices, updates, shape=None, tensor=None, reduction='sum', dev=N
         if not target_given:
             target = _jnp.zeros(shape, dtype=updates.dtype)
         target = target.at[indices_tuple].add(updates)
+    elif reduction == 'replace':
+        if not target_given:
+            target = _jnp.zeros(shape, dtype=updates.dtype)
+        target = target.at[indices_tuple].set(updates)
     elif reduction == 'min':
         if not target_given:
             target = _jnp.ones(shape, dtype=updates.dtype)*1e12
