@@ -1253,7 +1253,7 @@ def scatter_nd(indices: Union[ivy.Array, ivy.NativeArray], updates: Union[ivy.Ar
     :type shape: sequence of ints
     :param tensor: The tensor in which to scatter the results, default is None, in which case the shape arg is used to
                     scatter into a zeros array.
-    :param reduction: The reduction method for the scatter, one of 'sum', 'min' or 'max'
+    :param reduction: The reduction method for the scatter, one of 'sum', 'min', 'max' or 'replace'
     :type reduction: str
     :param dev: device on which to create the array 'cuda:0', 'cuda:1', 'cpu' etc. Same as updates if None.
     :type dev: ivy.Device, optional
