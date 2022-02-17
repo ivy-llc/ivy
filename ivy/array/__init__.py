@@ -120,9 +120,9 @@ class Array(ArrayWithDevice, ArrayWithGeneral, ArrayWithGradients, ArrayWithImag
 
     @_native_wrapper
     def __setitem__(self, query, val):
-        if hasattr(self._data, '__setitem__'):
+        try:
             self._data.__setitem__(query, val)
-        else:
+        except (AttributeError, TypeError):
             query = [[query]] if isinstance(query, Number) else query
             query = ivy.array(query)
             if len(query.shape) < 2:
