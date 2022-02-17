@@ -26,6 +26,6 @@ def exp(x):
     if isinstance(x, float):
         return math.exp(x)
     
-    if x.dtype.is_integer or (x.dtype == _tf.float16):
+    if x.dtype.is_integer or ('float16' in str(x.dtype)):
         return _tf.math.exp(_tf.cast(x, dtype=_tf.float32))
     return _tf.math.exp(x)
