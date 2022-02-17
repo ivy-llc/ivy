@@ -540,6 +540,8 @@
     <span class="k">elif</span> <span class="n">reduction</span> <span class="o">==</span> <span class="s1">&#39;replace&#39;</span><span class="p">:</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">target_given</span><span class="p">:</span>
             <span class="n">target</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">zeros</span><span class="p">([</span><span class="n">size</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">updates</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+        <span class="n">target</span> <span class="o">=</span> <span class="n">_np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">target</span><span class="p">)</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">target</span><span class="o">.</span><span class="n">setflags</span><span class="p">(</span><span class="n">write</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
         <span class="n">target</span><span class="p">[</span><span class="n">indices</span><span class="p">]</span> <span class="o">=</span> <span class="n">updates</span>
     <span class="k">elif</span> <span class="n">reduction</span> <span class="o">==</span> <span class="s1">&#39;min&#39;</span><span class="p">:</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">target_given</span><span class="p">:</span>
