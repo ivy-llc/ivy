@@ -344,6 +344,8 @@ def scatter_flat(indices, updates, size=None, tensor=None, reduction='sum', dev=
     elif reduction == 'replace':
         if not target_given:
             target = _np.zeros([size], dtype=updates.dtype)
+        target = _np.asarray(target).copy()
+        target.setflags(write=1)
         target[indices] = updates
     elif reduction == 'min':
         if not target_given:
