@@ -1,6 +1,7 @@
 # global
 import copy
 import functools
+from numbers import Number
 
 # local
 from . import array_mode_handler
@@ -119,7 +120,16 @@ class Array(ArrayWithDevice, ArrayWithGeneral, ArrayWithGradients, ArrayWithImag
 
     @_native_wrapper
     def __setitem__(self, query, val):
-        self._data.__setitem__(query, val)
+        if hasattr(self._data, '__setitem__'):
+            self._data.__setitem__(query, val)
+        else:
+            query = [[query]] if isinstance(query, Number) else query
+            query = ivy.array(query)
+            if len(query.shape) < 2:
+                query = ivy.expand_dims(query, -1)
+            val = [val] if isinstance(val, Number) else val
+            val = ivy.array(val, dtype=ivy.dtype(self._data))
+            self._data = ivy.scatter_nd(query, val, tensor=self._data, reduction='replace')
 
     @_native_wrapper
     def __contains__(self, key):
