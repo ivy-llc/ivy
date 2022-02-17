@@ -16,6 +16,7 @@ import multiprocessing as _multiprocessing
 from haiku._src.data_structures import FlatMapping
 
 # local
+import ivy
 from ivy.functional.ivy.core import default_device, default_dtype
 from ivy.functional.backends.jax.core.device import to_dev, dev as callable_dev
 
@@ -325,20 +326,29 @@ def identity(n, dtype='float32', batch_shape=None, dev=None):
 meshgrid = lambda *xs, indexing='ij': _jnp.meshgrid(*xs, indexing=indexing)
 
 
-def scatter_flat(indices, updates, size, reduction='sum', dev=None):
+def scatter_flat(indices, updates, size=None, tensor=None, reduction='sum', dev=None):
+    target = tensor
+    target_given = ivy.exists(target)
+    if ivy.exists(size) and ivy.exists(target):
+        assert len(target.shape) == 1 and target.shape[0] == size
     if dev is None:
         dev = callable_dev(updates)
     if reduction == 'sum':
-        target = _jnp.zeros([size], dtype=updates.dtype)
+        if not target_given:
+            target = _jnp.zeros([size], dtype=updates.dtype)
         target = target.at[indices].add(updates)
     elif reduction == 'min':
-        target = _jnp.ones([size], dtype=updates.dtype)*1e12
+        if not target_given:
+            target = _jnp.ones([size], dtype=updates.dtype)*1e12
         target = target.at[indices].min(updates)
-        target = _jnp.where(target == 1e12, 0., target)
+        if not target_given:
+            target = _jnp.where(target == 1e12, 0., target)
     elif reduction == 'max':
-        target = _jnp.ones([size], dtype=updates.dtype)*-1e12
+        if not target_given:
+            target = _jnp.ones([size], dtype=updates.dtype)*-1e12
         target = target.at[indices].max(updates)
-        target = _jnp.where(target == -1e12, 0., target)
+        if not target_given:
+            target = _jnp.where(target == -1e12, 0., target)
     else:
         raise Exception('reduction is {}, but it must be one of "sum", "min" or "max"'.format(reduction))
     return to_dev(target, dev)
