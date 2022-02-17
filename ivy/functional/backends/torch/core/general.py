@@ -540,10 +540,14 @@ def scatter_flat(indices, updates, size: Optional[int] = None, tensor: Optional[
 
 
 # noinspection PyShadowingNames
-def scatter_nd(indices, updates, shape, reduction='sum', dev=None):
+def scatter_nd(indices, updates, shape=None, tensor=None, reduction='sum', dev=None):
+    target = tensor
+    target_given = ivy.exists(target)
+    if ivy.exists(shape) and ivy.exists(target):
+        assert ivy.shape_to_tuple(target.shape) == ivy.shape_to_tuple(shape)
     if dev is None:
         dev = _callable_dev(updates)
-    shape = list(shape)
+    shape = list(shape) if ivy.exists(shape) else list(tensor.shape)
     dtype = updates.dtype
     indices_shape = indices.shape
     num_index_dims = indices_shape[-1]
@@ -559,7 +563,10 @@ def scatter_nd(indices, updates, shape, reduction='sum', dev=None):
         initial_val = _torch.tensor(-1e12).type(dtype).to(dev_from_str(dev))
     else:
         raise Exception('reduction is {}, but it must be one of "sum", "min" or "max"'.format(reduction))
-    flat_output = _torch.ones(flat_result_size, dtype=dtype).to(dev_from_str(dev)) * initial_val
+    if target_given:
+        flat_output = _torch.reshape(tensor, (flat_result_size,))
+    else:
+        flat_output = _torch.ones(flat_result_size, dtype=dtype).to(dev_from_str(dev)) * initial_val
     flat_updates = _torch.reshape(updates, (-1,))
     new_shape = [1] * (len(indices_shape) - 1) + [num_index_dims]
     indices_scales = _torch.reshape(result_dim_sizes[0:num_index_dims], new_shape)
@@ -575,10 +582,11 @@ def scatter_nd(indices, updates, shape, reduction='sum', dev=None):
             import torch_scatter as torch_scatter
         except:
             raise Exception('Unable to import torch_scatter, verify this is correctly installed.')
-    flat_scatter = torch_scatter.scatter(flat_updates, flat_indices_for_flat, out=flat_output, reduce=reduction)
-    # noinspection PyTypeChecker
-    flat_scatter = _torch.where(flat_scatter == initial_val, _torch.zeros(flat_result_size, dtype=updates.dtype)
-                                .to(dev_from_str(dev)), flat_scatter)
+    flat_scatter = torch_scatter.scatter(flat_updates, flat_indices_for_flat, out=flat_output.clone(), reduce=reduction)
+    if not target_given:
+        # noinspection PyTypeChecker
+        flat_scatter = _torch.where(flat_scatter == initial_val, _torch.zeros(flat_result_size, dtype=updates.dtype)
+                                    .to(dev_from_str(dev)), flat_scatter)
     res = _torch.reshape(flat_scatter, list(shape))
     return res
 
