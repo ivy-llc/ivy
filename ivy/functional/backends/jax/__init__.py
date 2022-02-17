@@ -5,6 +5,8 @@ import jax as _jax
 import jaxlib
 import jax.numpy as jnp
 from jaxlib.xla_extension import Buffer
+from jax.config import config
+config.update("jax_enable_x64", True)
 
 # make ivy.Container compatible with jax pytree traversal
 from jax.tree_util import register_pytree_node
