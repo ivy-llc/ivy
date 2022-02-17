@@ -355,23 +355,32 @@ def scatter_flat(indices, updates, size=None, tensor=None, reduction='sum', dev=
 
 
 # noinspection PyShadowingNames
-def scatter_nd(indices, updates, shape, reduction='sum', dev=None):
+def scatter_nd(indices, updates, shape=None, tensor=None, reduction='sum', dev=None):
+    target = tensor
+    target_given = ivy.exists(target)
+    if ivy.exists(shape) and ivy.exists(target):
+        assert ivy.shape_to_tuple(target.shape) == ivy.shape_to_tuple(shape)
     if dev is None:
         dev = callable_dev(updates)
-    shape = list(shape)
+    shape = list(shape) if ivy.exists(shape) else list(tensor.shape)
     indices_flat = indices.reshape(-1, indices.shape[-1]).T
     indices_tuple = tuple(indices_flat) + (Ellipsis,)
     if reduction == 'sum':
-        target = _jnp.zeros(shape, dtype=updates.dtype)
+        if not target_given:
+            target = _jnp.zeros(shape, dtype=updates.dtype)
         target = target.at[indices_tuple].add(updates)
     elif reduction == 'min':
-        target = _jnp.ones(shape, dtype=updates.dtype)*1e12
+        if not target_given:
+            target = _jnp.ones(shape, dtype=updates.dtype)*1e12
         target = target.at[indices_tuple].min(updates)
-        target = _jnp.where(target == 1e12, 0., target)
+        if not target_given:
+            target = _jnp.where(target == 1e12, 0., target)
     elif reduction == 'max':
-        target = _jnp.ones(shape, dtype=updates.dtype)*-1e12
+        if not target_given:
+            target = _jnp.ones(shape, dtype=updates.dtype)*-1e12
         target = target.at[indices_tuple].max(updates)
-        target = _jnp.where(target == -1e12, 0., target)
+        if not target_given:
+            target = _jnp.where(target == -1e12, 0., target)
     else:
         raise Exception('reduction is {}, but it must be one of "sum", "min" or "max"'.format(reduction))
     return to_dev(target, dev)
