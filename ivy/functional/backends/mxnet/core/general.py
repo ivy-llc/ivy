@@ -545,7 +545,9 @@ def meshgrid(*xs, indexing='ij'):
 
 
 # noinspection PyShadowingNames
-def scatter_flat(indices, updates, size, reduction='sum', dev=None):
+def scatter_flat(indices, updates, size=None, tensor=None, reduction='sum', dev=None):
+    if ivy.exists(tensor):
+        raise Exception('MXNet scatter_flat does not support scattering into an pre-existing tensor.')
     if reduction == 'replace':
         return _mx.nd.scatter_nd(updates, _mx.nd.expand_dims(indices, 0), [size]).copyto(_mxnet_init_context(default_device(dev)))
     else:
