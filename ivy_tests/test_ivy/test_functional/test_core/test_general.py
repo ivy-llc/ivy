@@ -1936,27 +1936,25 @@ def test_scatter_flat(inds_n_upd_n_size_n_tnsr_n_wdup, red, dtype, tensor_fn, de
 
 # scatter_nd
 @pytest.mark.parametrize(
-    "inds_n_upd_n_shape_tnsr", [([[4], [3], [1], [7]], [9, 10, 11, 12], [8], None), ([[0, 1, 2]], [1], [3, 3, 3], None),
-                                ([[0], [2]], [[[5, 5, 5, 5], [6, 6, 6, 6], [7, 7, 7, 7], [8, 8, 8, 8]],
-                                              [[5, 5, 5, 5], [6, 6, 6, 6], [7, 7, 7, 7], [8, 8, 8, 8]]], [4, 4, 4], None),
-                                ([[0, 1, 2]], [1], None, [[[1, 2, 3], [4, 5, 6], [7, 8, 9]],
-                                                          [[4, 5, 6], [7, 8, 9], [1, 2, 3]],
-                                                          [[7, 8, 9], [1, 2, 3], [4, 5, 6]]])])
+    "inds_n_upd_n_shape_tnsr_n_wdup",
+    [([[4], [3], [1], [7]], [9, 10, 11, 12], [8], None, False), ([[0, 1, 2]], [1], [3, 3, 3], None, False),
+     ([[0], [2]], [[[5, 5, 5, 5], [6, 6, 6, 6], [7, 7, 7, 7], [8, 8, 8, 8]],
+                   [[5, 5, 5, 5], [6, 6, 6, 6], [7, 7, 7, 7], [8, 8, 8, 8]]], [4, 4, 4], None, False),
+     ([[0, 1, 2]], [1], None, [[[1, 2, 3], [4, 5, 6], [7, 8, 9]],
+                               [[4, 5, 6], [7, 8, 9], [1, 2, 3]],
+                               [[7, 8, 9], [1, 2, 3], [4, 5, 6]]], False)])
 @pytest.mark.parametrize(
     "red", ['sum', 'min', 'max', 'replace'])
 @pytest.mark.parametrize(
     "dtype", ['float32'])
 @pytest.mark.parametrize(
     "tensor_fn", [ivy.array, helpers.var_fn])
-def test_scatter_nd(inds_n_upd_n_shape_tnsr, red, dtype, tensor_fn, dev, call):
+def test_scatter_nd(inds_n_upd_n_shape_tnsr_n_wdup, red, dtype, tensor_fn, dev, call):
     # smoke test
-    if (red == 'sum' or red == 'min' or red == 'max') and call is helpers.mx_call:
+    if red in ('sum', 'min', 'max') and call is helpers.mx_call:
         # mxnet does not support sum, min or max reduction for scattering
         pytest.skip()
-    if red == 'replace' and call is helpers.torch_call:
-        # torch does not support replace reduction
-        pytest.skip()
-    inds, upd, shape, tensor = inds_n_upd_n_shape_tnsr
+    inds, upd, shape, tensor, with_duplicates = inds_n_upd_n_shape_tnsr_n_wdup
     if ivy.exists(tensor) and call is helpers.mx_call:
         # mxnet does not support scattering into pre-existing tensors
         pytest.skip()
@@ -1974,9 +1972,10 @@ def test_scatter_nd(inds_n_upd_n_shape_tnsr, red, dtype, tensor_fn, dev, call):
         assert tuple(ret.shape) == tuple(shape)
     else:
         assert tuple(ret.shape) == tuple(tensor.shape)
-    if red == 'replace':
-        return
     # value test
+    if red == 'replace' and with_duplicates:
+        # replace with duplicates give non-deterministic outputs
+        return
     ret = call(ivy.scatter_nd, inds, upd, shape, tensor, red, dev)
     true = np.asarray(ivy.functional.backends.numpy.scatter_nd(
                                ivy.to_numpy(inds), ivy.to_numpy(upd), shape,
