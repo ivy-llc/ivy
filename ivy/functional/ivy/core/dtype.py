@@ -116,9 +116,9 @@ def is_int_dtype(dtype_in: Union[ivy.Dtype, str, ivy.Array, ivy.NativeArray, Num
     elif isinstance(dtype_in, np.ndarray):
         return 'int' in dtype_in.dtype.name
     elif isinstance(dtype_in, Number):
-        return True if isinstance(dtype_in, int) and not isinstance(dtype_in, bool) else False
+        return True if isinstance(dtype_in, (int, np.integer)) and not isinstance(dtype_in, bool) else False
     elif isinstance(dtype_in, (list, tuple, dict)):
-        return True if ivy.nested_indices_where(dtype_in, lambda x: isinstance(x, int)) else False
+        return True if ivy.nested_indices_where(dtype_in, lambda x: isinstance(x, (int, np.integer))) else False
     return 'int' in dtype_to_str(dtype_in)
 
 
@@ -134,9 +134,9 @@ def is_float_dtype(dtype_in: Union[ivy.Dtype, str, ivy.Array, ivy.NativeArray, N
     elif isinstance(dtype_in, np.ndarray):
         return 'float' in dtype_in.dtype.name
     elif isinstance(dtype_in, Number):
-        return True if isinstance(dtype_in, float) else False
+        return True if isinstance(dtype_in, (float, np.floating)) else False
     elif isinstance(dtype_in, (list, tuple, dict)):
-        return True if ivy.nested_indices_where(dtype_in, lambda x: isinstance(x, float)) else False
+        return True if ivy.nested_indices_where(dtype_in, lambda x: isinstance(x, (float, np.floating))) else False
     return 'float' in dtype_to_str(dtype_in)
 
 
