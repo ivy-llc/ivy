@@ -240,7 +240,7 @@ def default_dtype(dtype=None, item=None, as_str=False):
     """
     if ivy.exists(dtype):
         _assert_dtype_correct_formatting(ivy.dtype_to_str(dtype))
-        return dtype
+        return ivy.closest_valid_dtype(dtype)
     elif ivy.exists(item):
         if isinstance(item, (list, tuple, dict)) and len(item) == 0:
             pass
