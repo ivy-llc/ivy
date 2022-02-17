@@ -17,12 +17,6 @@ jobs:
         run: |
           docker run --rm -v `pwd`/ivy:/ivy unifyai/ivy:latest python3 -m pytest ivy/ivy_tests/test_array_api
 
-      - name: Run MXNet Tests
-        env:
-          ARRAY_API_TESTS_MODULE: ivy.functional.backends.mxnet
-        run: |
-          docker run --rm -v `pwd`/ivy:/ivy unifyai/ivy:latest python3 -m pytest ivy/ivy_tests/test_array_api
-
       - name: Run NumPy Tests
         env:
           ARRAY_API_TESTS_MODULE: ivy.functional.backends.numpy
