@@ -1886,21 +1886,21 @@ def test_meshgrid(xs, indexing, dtype, tensor_fn, dev, call):
 
 # scatter_flat
 @pytest.mark.parametrize(
-    "inds_n_upd_n_size_n_tnsr", [([0, 4, 1, 2], [1, 2, 3, 4], 8, None),
-                                   ([0, 4, 1, 2, 0], [1, 2, 3, 4, 5], 8, None),
-                                   ([0, 4, 1, 2, 0], [1, 2, 3, 4, 5], None, [11, 10, 9, 8, 7, 6])])
+    "inds_n_upd_n_size_n_tnsr_n_wdup", [([0, 4, 1, 2], [1, 2, 3, 4], 8, None, False),
+                                        ([0, 4, 1, 2, 0], [1, 2, 3, 4, 5], 8, None, True),
+                                        ([0, 4, 1, 2, 0], [1, 2, 3, 4, 5], None, [11, 10, 9, 8, 7, 6], True)])
 @pytest.mark.parametrize(
     "red", ['sum', 'min', 'max', 'replace'])
 @pytest.mark.parametrize(
     "dtype", ['float32'])
 @pytest.mark.parametrize(
     "tensor_fn", [ivy.array, helpers.var_fn])
-def test_scatter_flat(inds_n_upd_n_size_n_tnsr, red, dtype, tensor_fn, dev, call):
+def test_scatter_flat(inds_n_upd_n_size_n_tnsr_n_wdup, red, dtype, tensor_fn, dev, call):
     # smoke test
     if red in ('sum', 'min', 'max') and call is helpers.mx_call:
         # mxnet does not support sum, min or max reduction for scattering
         pytest.skip()
-    inds, upd, size, tensor = inds_n_upd_n_size_n_tnsr
+    inds, upd, size, tensor, with_duplicates = inds_n_upd_n_size_n_tnsr_n_wdup
     if ivy.exists(tensor) and call is helpers.mx_call:
         # mxnet does not support scattering into pre-existing tensors
         pytest.skip()
@@ -1918,9 +1918,10 @@ def test_scatter_flat(inds_n_upd_n_size_n_tnsr, red, dtype, tensor_fn, dev, call
         assert ret.shape == (size,)
     else:
         assert ret.shape == tensor.shape
-    if red == 'replace':
-        return
     # value test
+    if red == 'replace' and with_duplicates:
+        # replace with duplicates give non-deterministic outputs
+        return
     assert np.allclose(call(ivy.scatter_flat, inds, upd, size, tensor, red, dev),
                        np.asarray(ivy.functional.backends.numpy.scatter_flat(
                            ivy.to_numpy(inds), ivy.to_numpy(upd), size,
