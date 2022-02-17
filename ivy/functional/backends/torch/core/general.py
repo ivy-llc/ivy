@@ -559,7 +559,7 @@ def scatter_nd(indices, updates, shape=None, tensor=None, reduction='sum', dev=N
     result_dim_sizes = _torch.tensor(result_dim_sizes_list).to(dev_from_str(dev))
     implicit_indices_factor = int(result_dim_sizes[num_index_dims - 1].item())
     flat_result_size = _reduce(mul, shape, 1)
-    if reduction == 'sum':
+    if reduction in ['sum', 'replace']:
         initial_val = _torch.tensor(0).type(dtype).to(dev_from_str(dev))
     elif reduction == 'min':
         initial_val = _torch.tensor(1e12).type(dtype).to(dev_from_str(dev))
@@ -586,7 +586,11 @@ def scatter_nd(indices, updates, shape=None, tensor=None, reduction='sum', dev=N
             import torch_scatter as torch_scatter
         except:
             raise Exception('Unable to import torch_scatter, verify this is correctly installed.')
-    flat_scatter = torch_scatter.scatter(flat_updates, flat_indices_for_flat, out=flat_output.clone(), reduce=reduction)
+    if reduction == 'replace':
+        flat_output[flat_indices_for_flat] = flat_updates
+        flat_scatter = flat_output
+    else:
+        flat_scatter = torch_scatter.scatter(flat_updates, flat_indices_for_flat, out=flat_output.clone(), reduce=reduction)
     if not target_given:
         # noinspection PyTypeChecker
         flat_scatter = _torch.where(flat_scatter == initial_val, _torch.zeros(flat_result_size, dtype=updates.dtype)

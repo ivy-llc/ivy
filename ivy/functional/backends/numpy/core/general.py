@@ -382,7 +382,9 @@ def scatter_nd(indices, updates, shape=None, tensor=None, reduction='sum', dev=N
     elif reduction == 'replace':
         if not target_given:
             target = _np.zeros(shape, dtype=updates.dtype)
-        target[indices] = updates
+        target = _np.asarray(target).copy()
+        target.setflags(write=1)
+        target[indices_tuple] = updates
     elif reduction == 'min':
         if not target_given:
             target = _np.ones(shape, dtype=updates.dtype) * 1e12
