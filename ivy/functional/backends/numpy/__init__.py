@@ -43,6 +43,15 @@ valid_dtype_strs = all_dtypes
 invalid_dtype_strs = ('bfloat16',)
 
 
+def closest_valid_dtype(type):
+    if type is None:
+        return ivy.default_dtype()
+    type_str = dtype_to_str(type)
+    if type_str in invalid_dtype_strs:
+        return {'bfloat16': float16}[type_str]
+    return type
+
+
 def iinfo(type):
     return np.iinfo(dtype_from_str(type))
 
