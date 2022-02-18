@@ -7,7 +7,7 @@ import mxnet as _mx
 from numbers import Number
 
 # local
-from ivy.functional.backends.mxnet.core.general import _flat_array_to_1_dim_array
+from ivy.functional.backends.mxnet.core.general import _flat_array_to_1_dim_array, _1_dim_array_to_flat_array
 
 
 def reduce_sum(x, axis=None, keepdims=False):
@@ -89,4 +89,7 @@ def einsum(equation, *operands):
 
 
 def all(x, axis=None, keepdims=False):
-    return reduce_prod(x, axis, keepdims).astype(_mx.np.bool_)
+    ret = reduce_prod(x, axis, keepdims).astype(_mx.np.bool_)
+    if not keepdims and (axis is None or len((axis,) if isinstance(axis, int) else axis) == len(x.shape)):
+        return _1_dim_array_to_flat_array(ret)
+    return ret
