@@ -24,10 +24,11 @@ from ivy.functional.backends.torch.core.device import dev_from_str, _callable_de
 # noinspection PyShadowingNames
 def array(object_in, dtype: Optional[str] = None, dev: Optional[str] = None):
     dev = default_device(dev)
+    dtype = dtype_from_str(default_dtype(dtype, object_in))
     if isinstance(object_in, np.ndarray):
         return _torch.Tensor(object_in).to(dev_from_str(dev))
     if dtype is not None:
-        return _torch.tensor(object_in, dtype=dtype_from_str(default_dtype(dtype, object_in)), device=dev_from_str(dev))
+        return _torch.tensor(object_in, dtype=dtype, device=dev_from_str(dev))
     elif isinstance(object_in, _torch.Tensor):
         return object_in.to(dev_from_str(dev))
     else:
@@ -417,9 +418,6 @@ def zeros_like(x, dtype: Optional[str] = None, dev: Optional[str] = None):
             'int32': _torch.int32,
             'int64': _torch.int64,
             'uint8': _torch.uint8,
-            'uint16': 'uint16',
-            'uint32': 'uint32',
-            'uint64': 'uint64',
             'bfloat16': _torch.bfloat16,
             'float16': _torch.float16,
             'float32': _torch.float32,
@@ -452,9 +450,6 @@ def ones_like(x, dtype: Optional[str] = None, dev: Optional[str] = None):
             'int32': _torch.int32,
             'int64': _torch.int64,
             'uint8': _torch.uint8,
-            'uint16': 'uint16',
-            'uint32': 'uint32',
-            'uint64': 'uint64',
             'bfloat16': _torch.bfloat16,
             'float16': _torch.float16,
             'float32': _torch.float32,
@@ -501,9 +496,6 @@ def identity(n: int, dtype: ivy.Dtype = 'float32', batch_shape: Optional[List[in
             'int32': _torch.int32,
             'int64': _torch.int64,
             'uint8': _torch.uint8,
-            'uint16': 'uint16',
-            'uint32': 'uint32',
-            'uint64': 'uint64',
             'bfloat16': _torch.bfloat16,
             'float16': _torch.float16,
             'float32': _torch.float32,
@@ -686,9 +678,6 @@ def dtype_to_str(dtype_in):
             _torch.int32: 'int32',
             _torch.int64: 'int64',
             _torch.uint8: 'uint8',
-            'uint16': 'uint16',
-            'uint32': 'uint32',
-            'uint64': 'uint64',
             _torch.bfloat16: 'bfloat16',
             _torch.float16: 'float16',
             _torch.float32: 'float32',
@@ -704,9 +693,6 @@ def dtype_from_str(dtype_in: str) -> _torch.dtype:
             'int32': _torch.int32,
             'int64': _torch.int64,
             'uint8': _torch.uint8,
-            'uint16': 'uint16',
-            'uint32': 'uint32',
-            'uint64': 'uint64',
             'bfloat16': _torch.bfloat16,
             'float16': _torch.float16,
             'float32': _torch.float32,
