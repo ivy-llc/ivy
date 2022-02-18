@@ -53,6 +53,26 @@ def array_equal(x0, x1):
     return _torch.equal(x0, x1)
 
 
+def dtype_bits(dtype_in):
+    dtype_str = dtype_to_str(dtype_in)
+    if 'bool' in dtype_str:
+        return 1
+    return int(dtype_str.replace('torch.', '').replace('uint', '').replace('int', '').replace('bfloat', '').replace(
+        'float', ''))
+
+
+def equal(x1, x2):
+    x1_bits = dtype_bits(x1.dtype)
+    if isinstance(x2, (int, float, bool)):
+        return x1 == x2
+    x2_bits = dtype_bits(x2.dtype)
+    if x1_bits > x2_bits:
+        x2 = x2.type(x1.dtype)
+    elif x2_bits > x1_bits:
+        x1 = x1.type(x2.dtype)
+    return x1 == x2
+
+
 def to_numpy(x) -> np.ndarray:
     if isinstance(x, np.ndarray) or isinstance(x, (float, int, bool)):
         return x
@@ -142,6 +162,9 @@ def argsort(x, axis: int = -1):
 def cast(x, dtype_in: str):
     dtype_val = dtype_from_str(dtype_in)
     return x.type(dtype_val)
+
+
+astype = cast
 
 
 # noinspection PyShadowingNames

@@ -147,6 +147,16 @@ def array_equal(x0, x1):
     return _mx.nd.min(_mx.nd.broadcast_equal(x0, x1)) == 1
 
 
+def dtype_bits(dtype_in):
+    dtype_str = dtype_to_str(dtype_in)
+    if 'bool' in dtype_str:
+        return 1
+    return int(dtype_str.replace("<class 'numpy.", '').replace("'>", '').replace('uint', '').replace(
+        'int', '').replace('bfloat', '').replace('float', ''))
+
+
+equal = lambda x1, x2: x1 == x2
+equal.__name__ = 'equal'
 to_numpy = lambda x: x if isinstance(x, _np.ndarray) else (_np.array(x) if isinstance(x, (int, float)) else x.asnumpy())
 to_numpy.__name__ = 'to_numpy'
 to_scalar = lambda x: x if isinstance(x, Number) else x.asscalar().item()
@@ -200,6 +210,9 @@ argsort = lambda x, axis=-1: _mx.nd.argsort(x, axis)
 @_handle_flat_arrays_in_out
 def cast(x, dtype):
     return x.astype(dtype)
+
+
+astype = cast
 
 
 # noinspection PyUnresolvedReferences
