@@ -6,11 +6,12 @@ array_mode_val = False
 
 def set_array_mode(val=True):
     global array_mode_val
-    array_mode_val = val
-    if array_mode_val:
-        _wrap_methods()
-    else:
+    if val:
+        if not array_mode_val:
+            _wrap_methods()
+    elif array_mode_val:
         _unwrap_methods()
+    array_mode_val = val
 
 
 def unset_array_mode():
