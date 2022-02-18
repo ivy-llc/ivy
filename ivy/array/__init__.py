@@ -290,7 +290,7 @@ class Array(ArrayWithDevice, ArrayWithGeneral, ArrayWithGradients, ArrayWithImag
     @_native_wrapper
     def __eq__(self, other):
         other = to_native(other)
-        res = self._data.__eq__(other)
+        res = ivy.equal(self._data, other)
         if res is NotImplemented:
             return res
         return to_ivy(res)
