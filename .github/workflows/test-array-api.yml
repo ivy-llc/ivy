@@ -33,4 +33,4 @@ jobs:
         env:
           ARRAY_API_TESTS_MODULE: ivy.functional.backends.torch
         run: |
-          docker run --rm -v `pwd`/ivy:/ivy unifyai/ivy:latest python3 -m pytest ivy/ivy_tests/test_array_api
+          docker run --rm -v `pwd`/ivy:/ivy unifyai/ivy:latest python3 -m pytest ivy/ivy_tests/test_array_api -k 'not uint16 and not uint32 and not uint64'
