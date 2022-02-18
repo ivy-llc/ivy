@@ -282,7 +282,7 @@ def default_dtype(dtype=None, item=None, as_str=False):
         _assert_dtype_correct_formatting(ivy.dtype_to_str(dtype))
         return dtype
     elif ivy.exists(item):
-        if hasattr(item, '__len__') and len(item) == 0:
+        if isinstance(item, (list, tuple, dict)) and len(item) == 0:
             pass
         elif ivy.is_float_dtype(item):
             return default_float_dtype(as_str=as_str)
