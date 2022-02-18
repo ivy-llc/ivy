@@ -109,9 +109,9 @@ class Array(ArrayWithDevice, ArrayWithGeneral, ArrayWithGradients, ArrayWithImag
     @_native_wrapper
     def __getattr__(self, item):
         try:
-            attr = self._data.__getattr__(item)
-        except AttributeError:
             attr = self._data.__getattribute__(item)
+        except AttributeError:
+            attr = self._data.__getattr__(item)
         return to_ivy(attr)
 
     @_native_wrapper
