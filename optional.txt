@@ -5,9 +5,9 @@ matplotlib
 opencv-python # mod_name=cv2
 jax
 jaxlib
-tensorflow==2.6.2
+tensorflow
 tensorflow-addons # mod_name=tensorflow_addons
-tensorflow-probability==0.14.1 # mod_name=tensorflow_probability
+tensorflow-probability # mod_name=tensorflow_probability
 torch
 mxnet
 scipy
