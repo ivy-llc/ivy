@@ -19,9 +19,6 @@ int16 = _torch.int16
 int32 = _torch.int32
 int64 = _torch.int64
 uint8 = _torch.uint8
-uint16 = 'uint16'
-uint32 = 'uint32'
-uint64 = 'uint64'
 bfloat16 = _torch.bfloat16
 float16 = _torch.float16
 float32 = _torch.float32
@@ -33,7 +30,6 @@ all_dtypes = (int8, int16, int32, int64,
               uint8,
               bfloat16, float16, float32, float64)
 valid_dtypes = all_dtypes
-invalid_dtypes = (uint16, uint32, uint64)
 
 all_dtype_strs = ('int8', 'int16', 'int32', 'int64',
                   'uint8',
@@ -54,7 +50,7 @@ def closest_valid_dtype(type):
 
 
 def iinfo(type):
-    return _torch.iinfo(dtype_from_str(closest_valid_dtype(type)))
+    return _torch.iinfo(dtype_from_str(type))
 
 
 class Finfo:
