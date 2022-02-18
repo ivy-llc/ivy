@@ -103,6 +103,16 @@ def is_array(x, exclusive=False):
 
 copy_array = _jnp.array
 array_equal = _jnp.array_equal
+
+
+def dtype_bits(dtype_in):
+    dtype_str = dtype_to_str(dtype_in)
+    if 'bool' in dtype_str:
+        return 1
+    return int(dtype_str.replace('uint', '').replace('int', '').replace('bfloat', '').replace('float', ''))
+
+
+equal = lambda x1, x2: x1 == x2
 to_numpy = lambda x: _onp.asarray(_to_array(x))
 to_numpy.__name__ = 'to_numpy'
 to_scalar = lambda x: x if isinstance(x, Number) else _to_array(x).item()
@@ -143,6 +153,9 @@ argsort = lambda x, axis=-1: _jnp.argsort(x, axis)
 
 def cast(x, dtype):
     return x.astype(dtype_from_str(dtype))
+
+
+astype = cast
 
 
 # noinspection PyShadowingNames

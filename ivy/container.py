@@ -354,12 +354,12 @@ class Container(dict):
         if not ivy.exists(config):
             config = container0.config if isinstance(container0, Container) else {}
         if not isinstance(container0, dict):
-            equal_mat = ivy.equal(*containers, equality_matrix=True)
+            equal_mat = ivy.all_equal(*containers, equality_matrix=True)
             if not detect_value_diffs:
                 equal_mat = ivy.ones_like(equal_mat)
             if detect_shape_diffs:
-                shape_equal_mat = ivy.equal(*[c.shape if ivy.is_array(c) else None for c in containers],
-                                            equality_matrix=True)
+                shape_equal_mat = ivy.all_equal(*[c.shape if ivy.is_array(c) else None for c in containers],
+                                                equality_matrix=True)
                 equal_mat = ivy.logical_and(equal_mat, shape_equal_mat)
             # noinspection PyTypeChecker
             if ivy.reduce_min(ivy.cast(equal_mat, 'int32')) == 1:
