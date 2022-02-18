@@ -515,6 +515,8 @@ def inplace_increment(x, val):
     x += val
     return x
 
+def negative(x):
+    return _np.negative(x)
 
 inplace_arrays_supported = lambda: True
 inplace_variables_supported = lambda: True
