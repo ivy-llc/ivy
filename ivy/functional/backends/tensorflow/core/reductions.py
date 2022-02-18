@@ -12,10 +12,7 @@ def reduce_sum(x, axis=None, keepdims=False):
         axis = tuple(range(num_dims))
     elif isinstance(axis, list):
         axis = tuple(axis)
-    ret = _tf.reduce_sum(x, axis=axis, keepdims=keepdims)
-    if ret.shape == ():
-        return _tf.reshape(ret, (1,))
-    return ret
+    return _tf.reduce_sum(x, axis=axis, keepdims=keepdims)
 
 
 def reduce_prod(x, axis=None, keepdims=False):
@@ -24,10 +21,7 @@ def reduce_prod(x, axis=None, keepdims=False):
         axis = tuple(range(num_dims))
     elif isinstance(axis, list):
         axis = tuple(axis)
-    ret = _tf.reduce_prod(x, axis=axis, keepdims=keepdims)
-    if ret.shape == ():
-        return _tf.reshape(ret, (1,))
-    return ret
+    return _tf.reduce_prod(x, axis=axis, keepdims=keepdims)
 
 
 def reduce_mean(x, axis=None, keepdims=False):
@@ -36,10 +30,7 @@ def reduce_mean(x, axis=None, keepdims=False):
         axis = tuple(range(num_dims))
     elif isinstance(axis, list):
         axis = tuple(axis)
-    ret = _tf.reduce_mean(x, axis=axis, keepdims=keepdims)
-    if ret.shape == ():
-        return _tf.reshape(ret, (1,))
-    return ret
+    return _tf.reduce_mean(x, axis=axis, keepdims=keepdims)
 
 
 def reduce_var(x, axis=None, keepdims=False):
@@ -48,10 +39,7 @@ def reduce_var(x, axis=None, keepdims=False):
         axis = tuple(range(num_dims))
     elif isinstance(axis, list):
         axis = tuple(axis)
-    ret = _tf.math.reduce_variance(x, axis=axis, keepdims=keepdims)
-    if ret.shape == ():
-        return _tf.reshape(ret, (1,))
-    return ret
+    return _tf.math.reduce_variance(x, axis=axis, keepdims=keepdims)
 
 
 def reduce_min(x, axis=None, keepdims=False):
@@ -60,10 +48,7 @@ def reduce_min(x, axis=None, keepdims=False):
         axis = tuple(range(num_dims))
     elif isinstance(axis, list):
         axis = tuple(axis)
-    ret = _tf.reduce_min(x, axis=axis, keepdims=keepdims)
-    if ret.shape == ():
-        return _tf.reshape(ret, (1,))
-    return ret
+    return _tf.reduce_min(x, axis=axis, keepdims=keepdims)
 
 
 def reduce_max(x, axis=None, keepdims=False):
@@ -72,17 +57,11 @@ def reduce_max(x, axis=None, keepdims=False):
         axis = tuple(range(num_dims))
     elif isinstance(axis, list):
         axis = tuple(axis)
-    ret = _tf.reduce_max(x, axis=axis, keepdims=keepdims)
-    if ret.shape == ():
-        return _tf.reshape(ret, (1,))
-    return ret
+    return _tf.reduce_max(x, axis=axis, keepdims=keepdims)
 
 
 def einsum(equation, *operands):
-    ret = _tf.einsum(equation, *operands)
-    if ret.shape == ():
-        return _tf.reshape(ret, (1,))
-    return ret
+    return _tf.einsum(equation, *operands)
 
 
 def all(x, axis=None, keepdims=False):
