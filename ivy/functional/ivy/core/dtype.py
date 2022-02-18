@@ -83,6 +83,9 @@ def cast(x: Union[ivy.Array, ivy.NativeArray], dtype: ivy.Dtype)\
 astype = cast
 
 
+astype = cast
+
+
 # Queries #
 # --------#
 
@@ -108,6 +111,17 @@ def dtype_bits(dtype_in: Union[ivy.Dtype, str]) -> int:
     :return: The number of bits used to represent the data type.
     """
     return _cur_framework(dtype_in).dtype_bits(dtype_in)
+
+
+def dtype_bits(dtype_in: Union[ivy.Dtype, str], f: ivy.Framework = None) -> int:
+    """
+    Get the number of bits used for representing the input data type.
+
+    :param dtype_in: The data tpye to determine the number of bits for.
+    :param f: Machine learning framework. Inferred from inputs if None.
+    :return: The number of bits used to represent the data type.
+    """
+    return _cur_framework(dtype_in, f=f).dtype_bits(dtype_in)
 
 
 def is_int_dtype(dtype_in: Union[ivy.Dtype, str, ivy.Array, ivy.NativeArray, Number]):
