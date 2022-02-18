@@ -23,7 +23,6 @@ uint8 = np.dtype('uint8')
 uint16 = np.dtype('uint16')
 uint32 = np.dtype('uint32')
 uint64 = np.dtype('uint64')
-bfloat16 = 'bfloat16'
 float16 = np.dtype('float16')
 float32 = np.dtype('float32')
 float64 = np.dtype('float64')
@@ -34,7 +33,6 @@ all_dtypes = (int8, int16, int32, int64,
               uint8, uint16, uint32, uint64,
               float16, float32, float64)
 valid_dtypes = all_dtypes
-invalid_dtypes = (bfloat16,)
 
 all_dtype_strs = ('int8', 'int16', 'int32', 'int64',
                   'uint8', 'uint16', 'uint32', 'uint64',
