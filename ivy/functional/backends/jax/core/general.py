@@ -465,6 +465,8 @@ def inplace_decrement(x, val):
 def inplace_increment(x, val):
     raise Exception('Jax does not support inplace operations')
 
-
+def negative(x):
+    return _jnp.negative(x)
+    
 inplace_arrays_supported = lambda: False
 inplace_variables_supported = lambda: False

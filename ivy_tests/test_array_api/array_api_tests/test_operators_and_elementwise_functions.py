@@ -1244,6 +1244,17 @@ def test_isfinite(dtype, shape):
 # @pytest.mark.parametrize(
 #     unary_argnames, make_unary_params("negative", dh.numeric_dtypes)
 # )
+
+@pytest.mark.parametrize("dtype", ivy.all_dtype_strs)
+@pytest.mark.parametrize("shape", ivy_tests.test_shapes)
+def test_negative(dtype, shape):
+    if ivy.invalid_dtype(dtype):
+        pytest.skip()
+    x = ivy.cast(ivy.random_uniform(0, 10, shape), dtype)
+    out = ivy.negative(x)
+    assert out.dtype == x.dtype
+    assert out.shape == x.shape
+
 # @given(data=st.data())
 # def test_negative(func_name, func, strat, data):
 #     x = data.draw(strat, label="x")

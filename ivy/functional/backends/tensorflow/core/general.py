@@ -484,6 +484,10 @@ def inplace_increment(x, val):
         return x
     raise Exception('TensorFlow does not support inplace operations on non-Variable tensors')
 
+def negative(x):
+    if x.dtype in [_tf.uint8, _tf.uint16, _tf.uint32, _tf.uint64]:
+        return _tf.cast(_tf.negative(_tf.cast(x, _tf.float32)), x.dtype)
+    return _tf.negative(x)
 
 inplace_arrays_supported = lambda: False
 inplace_variables_supported = lambda: True
