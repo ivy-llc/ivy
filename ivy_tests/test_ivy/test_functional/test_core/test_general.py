@@ -249,7 +249,7 @@ def test_equal(x0_n_x1_n_x2_em_n_res, to_array, dev, call):
         x0 = ivy.array(x0, dev=dev)
         x1 = ivy.array(x1, dev=dev)
         x2 = ivy.array(x2, dev=dev)
-    res = ivy.equal(x0, x1, x2, equality_matrix=equality_matrix)
+    res = ivy.all_equal(x0, x1, x2, equality_matrix=equality_matrix)
     # value test
     if equality_matrix:
         assert np.array_equal(ivy.to_numpy(res), np.array(true_res))
@@ -260,7 +260,7 @@ def test_equal(x0_n_x1_n_x2_em_n_res, to_array, dev, call):
         # pytorch scripting does not support variable number of input arguments
         return
     if not ivy.array_mode():
-        helpers.assert_compilable(ivy.equal)
+        helpers.assert_compilable(ivy.all_equal)
 
 
 # to_numpy
@@ -2149,6 +2149,27 @@ def test_dtype(x, dtype, tensor_fn, dev, call):
     ret = ivy.dtype(x)
     # type test
     assert isinstance(ret, ivy.Dtype)
+
+
+# dtype bits
+@pytest.mark.parametrize(
+    "x", [1, [], [1], [[0.0, 1.0], [2.0, 3.0]]])
+@pytest.mark.parametrize(
+    "dtype", ivy.all_dtype_strs)
+@pytest.mark.parametrize(
+    "tensor_fn", [ivy.array])
+def test_dtype_bits(x, dtype, tensor_fn, dev, call):
+    # smoke test
+    if ivy.invalid_dtype(dtype):
+        pytest.skip()
+    if (isinstance(x, Number) or len(x) == 0) and tensor_fn == helpers.var_fn and call is helpers.mx_call:
+        # mxnet does not support 0-dimensional variables
+        pytest.skip()
+    x = tensor_fn(x, dtype, dev)
+    ret = ivy.dtype_bits(ivy.dtype(x))
+    # type test
+    assert isinstance(ret, int)
+    assert ret in [1, 8, 16, 32, 64]
 
 
 # dtype_to_str
