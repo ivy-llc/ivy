@@ -4,6 +4,7 @@ Collection of Numpy reduction functions, wrapped to fit Ivy syntax and signature
 
 # global
 import numpy as _np
+import numpy.array_api as _npa
 
 
 def reduce_sum(x, axis=None, keepdims=False):
@@ -86,7 +87,4 @@ def einsum(equation, *operands):
 
 
 def all(x, axis=None, keepdims=False):
-    ret = _np.all(x, axis, keepdims=keepdims)
-    if ret.shape == ():
-        return _np.reshape(ret, (1,))
-    return ret
+    return _npa.all(_npa.asarray(x), axis=axis, keepdims=keepdims)
