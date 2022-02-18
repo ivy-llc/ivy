@@ -87,4 +87,4 @@ def einsum(equation, *operands):
 
 
 def all(x, axis=None, keepdims=False):
-    return _npa.all(_npa.asarray(x), axis=axis, keepdims=keepdims)
+    return _np.asarray(_npa.all(_npa.asarray(x), axis=axis, keepdims=keepdims))
