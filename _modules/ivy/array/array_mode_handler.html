@@ -202,11 +202,12 @@
 
 <div class="viewcode-block" id="set_array_mode"><a class="viewcode-back" href="../../../array/array_mode_handler/set_array_mode.html#ivy.array.array_mode_handler.set_array_mode">[docs]</a><span class="k">def</span> <span class="nf">set_array_mode</span><span class="p">(</span><span class="n">val</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
     <span class="k">global</span> <span class="n">array_mode_val</span>
-    <span class="n">array_mode_val</span> <span class="o">=</span> <span class="n">val</span>
-    <span class="k">if</span> <span class="n">array_mode_val</span><span class="p">:</span>
-        <span class="n">_wrap_methods</span><span class="p">()</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">_unwrap_methods</span><span class="p">()</span></div>
+    <span class="k">if</span> <span class="n">val</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">array_mode_val</span><span class="p">:</span>
+            <span class="n">_wrap_methods</span><span class="p">()</span>
+    <span class="k">elif</span> <span class="n">array_mode_val</span><span class="p">:</span>
+        <span class="n">_unwrap_methods</span><span class="p">()</span>
+    <span class="n">array_mode_val</span> <span class="o">=</span> <span class="n">val</span></div>
 
 
 <div class="viewcode-block" id="unset_array_mode"><a class="viewcode-back" href="../../../array/array_mode_handler/unset_array_mode.html#ivy.array.array_mode_handler.unset_array_mode">[docs]</a><span class="k">def</span> <span class="nf">unset_array_mode</span><span class="p">():</span>
